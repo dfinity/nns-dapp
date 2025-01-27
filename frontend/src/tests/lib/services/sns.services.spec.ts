@@ -46,9 +46,7 @@ describe("sns-services", () => {
     resetIdentity();
     vi.useFakeTimers();
     vi.clearAllTimers();
-    snsSwapCommitmentsStore.reset();
     resetSnsProjects();
-    snsDerivedStateStore.reset();
   });
 
   describe("getSwapAccount", () => {

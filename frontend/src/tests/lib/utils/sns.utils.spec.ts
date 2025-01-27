@@ -40,10 +40,6 @@ import type {
 import { get } from "svelte/store";
 
 describe("sns-utils", () => {
-  beforeEach(() => {
-    snsTicketsStore.reset();
-  });
-
   describe("getSwapCanisterAccount", () => {
     it("should return swap canister account", async () => {
       const expectedAccount = await getSwapCanisterAccount({
@@ -90,9 +86,6 @@ describe("sns-utils", () => {
   });
 
   describe("hasOpenTicketInProcess", () => {
-    beforeEach(() => {
-      snsTicketsStore.reset();
-    });
     const testTicket = snsTicketMock({
       rootCanisterId: rootCanisterIdMock,
       owner: mockPrincipal,

@@ -7,11 +7,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { get } from "svelte/store";
 
 describe("imported-tokens-store", () => {
-  beforeEach(() => {
-    importedTokensStore.reset();
-    failedImportedTokenLedgerIdsStore.reset();
-  });
-
   describe("importedTokensStore", () => {
     const importedTokenA: ImportedTokenData = {
       ledgerCanisterId: principal(0),

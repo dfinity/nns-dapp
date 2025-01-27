@@ -19,7 +19,6 @@ import { get } from "svelte/store";
 
 describe("ckbtc-info-services", () => {
   beforeEach(() => {
-    ckBTCInfoStore.reset();
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity

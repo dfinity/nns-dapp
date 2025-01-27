@@ -28,10 +28,6 @@ describe("snsFilteredProposalsStore", () => {
     id: [{ id: 3n }],
   };
 
-  beforeEach(() => {
-    snsFiltersStore.reset();
-    snsProposalsStore.reset();
-  });
   it("should return undefined if filter store is not loaded", () => {
     const proposals: SnsProposalData[] = [
       snsProposal1,

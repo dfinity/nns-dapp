@@ -1,14 +1,18 @@
 import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeadingPo } from "$tests/page-objects/NnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -158,6 +162,28 @@ describe("NnsNeuronPageHeading", () => {
     });
 
     expect(await po.getNeuronTags()).toEqual(["Early Contributor Token"]);
+  });
+
+  it("should render 'Missing rewards' tag", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(
+          nowInSeconds() - SECONDS_IN_YEAR
+        ),
+      },
+    });
+
+    expect(await po.getNeuronTags()).toEqual(["Missing rewards"]);
   });
 
   it("should not display USD balance if feature flag is disabled", async () => {

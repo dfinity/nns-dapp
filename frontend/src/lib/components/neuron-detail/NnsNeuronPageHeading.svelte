@@ -19,6 +19,7 @@
   } from "$lib/utils/neuron.utils";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
 
@@ -39,6 +40,8 @@
     identity: $authStore.identity,
     accounts: $icpAccountsStore,
     i18n: $i18n,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
   });
 </script>
 

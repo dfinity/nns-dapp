@@ -7,8 +7,6 @@ import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { get } from "svelte/store";
 
 describe("ckBTC info store", () => {
-  beforeEach(() => ckBTCInfoStore.reset());
-
   const ckBtcData = {
     canisterId: CKBTC_UNIVERSE_CANISTER_ID,
     info: mockCkBTCMinterInfo,

@@ -1,4 +1,3 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as canistersApi from "$lib/api/canisters.api";
 import * as governanceApi from "$lib/api/governance.api";
 import * as indexApi from "$lib/api/icp-index.api";
@@ -90,7 +89,6 @@ describe("NnsWallet", () => {
     vi.clearAllTimers();
     cancelPollAccounts();
     resetAccountsForTesting();
-    resetNeuronsApiService();
     icpTransactionsStore.reset();
     resetIdentity();
 

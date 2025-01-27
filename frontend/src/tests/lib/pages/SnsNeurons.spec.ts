@@ -2,7 +2,6 @@ import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
-import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -57,7 +56,6 @@ describe("SnsNeurons", () => {
   const projectName = "Tetris";
 
   beforeEach(() => {
-    checkedNeuronSubaccountsStore.reset();
     page.mock({ data: { universe: rootCanisterId.toText() } });
     resetIdentity();
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(

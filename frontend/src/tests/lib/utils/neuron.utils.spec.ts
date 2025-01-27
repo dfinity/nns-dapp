@@ -54,7 +54,9 @@ import {
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
   isNeuronFollowingReset,
+  isNeuronFollowingResetVPE,
   isNeuronLosingRewards,
+  isNeuronLosingRewardsVPE,
   isPublicNeuron,
   isSpawning,
   isValidInputAmount,
@@ -70,7 +72,9 @@ import {
   neuronVotingPower,
   neuronsVotingPower,
   secondsUntilLosingRewards,
+  secondsUntilLosingRewardsVPE,
   shouldDisplayRewardLossNotification,
+  shouldDisplayRewardLossNotificationVPE,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
   topicsToFollow,
@@ -1527,6 +1531,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([hotkeyTag]);
     });
@@ -1546,6 +1551,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithoutHw,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([hotkeyTag]);
     });
@@ -1565,6 +1571,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([hwTag]);
     });
@@ -1584,6 +1591,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([]);
     });
@@ -1603,6 +1611,7 @@ describe("neuron-utils", () => {
           identity: null,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([]);
     });
@@ -1621,6 +1630,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([nfTag]);
     });
@@ -1641,6 +1651,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([nfTag, hotkeyTag]);
     });
@@ -1661,6 +1672,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([nfTag, hwTag]);
     });
@@ -1680,6 +1692,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([seedTag]);
     });
@@ -1699,6 +1712,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([ectTag]);
     });
@@ -1721,6 +1735,7 @@ describe("neuron-utils", () => {
           identity: mockIdentity,
           accounts: accountsWithHW,
           i18n: en,
+          startReducingVotingPowerAfterSeconds: undefined,
         })
       ).toEqual([seedTag, nfTag, hwTag]);
     });
@@ -1778,6 +1793,8 @@ describe("neuron-utils", () => {
               identity: mockIdentity,
               accounts: accountsWithHW,
               i18n: en,
+              startReducingVotingPowerAfterSeconds:
+                BigInt(SECONDS_IN_HALF_YEAR),
             })
           ).toEqual([
             {
@@ -1830,8 +1847,26 @@ describe("neuron-utils", () => {
             identity: mockIdentity,
             accounts: accountsWithHW,
             i18n: en,
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
           })
         ).toEqual([missingRewardsTag]);
+      });
+
+      it("returns no 'Missing rewards' tag when no voting power economics", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+            startReducingVotingPowerAfterSeconds: undefined,
+          })
+        ).toEqual([]);
       });
 
       it("returns no 'Missing rewards' tag without feature flag", () => {
@@ -1846,6 +1881,7 @@ describe("neuron-utils", () => {
             identity: mockIdentity,
             accounts: accountsWithHW,
             i18n: en,
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
           })
         ).toEqual([]);
       });
@@ -1862,8 +1898,26 @@ describe("neuron-utils", () => {
             identity: mockIdentity,
             accounts: accountsWithHW,
             i18n: en,
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
           })
         ).toEqual([missingRewardsSoonTag]);
+      });
+
+      it("returns no 'Missing rewards soon' tag w/o voting power economics", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: losingRewardSoonNeuron,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+            startReducingVotingPowerAfterSeconds: undefined,
+          })
+        ).toEqual([]);
       });
 
       it("returns no 'Missing rewards soon' tag without feature flag", () => {
@@ -1878,6 +1932,7 @@ describe("neuron-utils", () => {
             identity: mockIdentity,
             accounts: accountsWithHW,
             i18n: en,
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
           })
         ).toEqual([]);
       });
@@ -3321,6 +3376,7 @@ describe("neuron-utils", () => {
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result).toEqual({
         neuronId: neuron.neuronId.toString(),
@@ -3340,6 +3396,7 @@ describe("neuron-utils", () => {
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result.tags).toEqual([{ text: "Seed" }]);
     });
@@ -3354,6 +3411,7 @@ describe("neuron-utils", () => {
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result.tags).toEqual([{ text: "Early Contributor Token" }]);
     });
@@ -3368,6 +3426,7 @@ describe("neuron-utils", () => {
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result.tags).toEqual([{ text: "Neurons' fund" }]);
     });
@@ -3388,6 +3447,7 @@ describe("neuron-utils", () => {
           hardwareWallets: [mockHardwareWalletAccount],
         },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result.uncontrolledNeuronDetails).toEqual({
         type: "hardwareWallet",
@@ -3411,6 +3471,7 @@ describe("neuron-utils", () => {
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result.uncontrolledNeuronDetails).toEqual({
         type: "hotkey",
@@ -3431,6 +3492,7 @@ describe("neuron-utils", () => {
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result.uncontrolledNeuronDetails).toBeUndefined();
     });
@@ -3451,6 +3513,7 @@ describe("neuron-utils", () => {
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result.stake).toEqual(
         TokenAmountV2.fromUlps({
@@ -3480,6 +3543,7 @@ describe("neuron-utils", () => {
           hardwareWallets: [mockHardwareWalletAccount],
         },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result.stake).toBeUndefined();
       expect(result.uncontrolledNeuronDetails).toEqual({
@@ -3506,6 +3570,7 @@ describe("neuron-utils", () => {
         identity: mockIdentity,
         accounts: { main: mockMainAccount },
         i18n: en,
+        startReducingVotingPowerAfterSeconds: undefined,
       });
       expect(result.stake).toBeUndefined();
     });
@@ -3672,6 +3737,227 @@ describe("neuron-utils", () => {
                 losingRewardsPeriod - (notificationPeriod + 1),
             })
           )
+        ).toBe(false);
+      });
+    });
+
+    describe("secondsUntilLosingRewardsVPE", () => {
+      it("should return future date when no fullNeuron", () => {
+        expect(
+          secondsUntilLosingRewardsVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: {
+              ...mockNeuron,
+              fullNeuron: undefined,
+            },
+          })
+        ).toEqual(SECONDS_IN_HALF_YEAR);
+      });
+
+      it("should return seconds until losing rewards", () => {
+        expect(
+          secondsUntilLosingRewardsVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: 0,
+            }),
+          })
+        ).toBe(SECONDS_IN_HALF_YEAR);
+        expect(
+          secondsUntilLosingRewardsVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
+            }),
+          })
+        ).toBe(0);
+      });
+    });
+
+    describe("isNeuronLosingRewardsVPE", () => {
+      it("should return false by default", () => {
+        expect(
+          isNeuronLosingRewardsVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: {
+              ...mockNeuron,
+              fullNeuron: undefined,
+            },
+          })
+        ).toBe(false);
+      });
+
+      it("should return false w/o voting power economics", () => {
+        expect(
+          isNeuronLosingRewardsVPE({
+            startReducingVotingPowerAfterSeconds: undefined,
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
+            }),
+          })
+        ).toBe(false);
+      });
+
+      it("should return true after the reward loss has started", () => {
+        expect(
+          isNeuronLosingRewardsVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
+            }),
+          })
+        ).toBe(true);
+        expect(
+          isNeuronLosingRewardsVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod + 1,
+            }),
+          })
+        ).toBe(true);
+      });
+
+      it("should return false", () => {
+        expect(
+          isNeuronLosingRewardsVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod - 1,
+            }),
+          })
+        ).toBe(false);
+      });
+    });
+
+    describe("isNeuronFollowingResetVPE", () => {
+      it("should return false by default", () => {
+        expect(
+          isNeuronFollowingResetVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
+            neuron: {
+              ...mockNeuron,
+              fullNeuron: undefined,
+            },
+          })
+        ).toBe(false);
+      });
+
+      it("should return false w/o voting power economics", () => {
+        expect(
+          isNeuronFollowingResetVPE({
+            startReducingVotingPowerAfterSeconds: undefined,
+            clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + SECONDS_IN_MONTH,
+            }),
+          })
+        ).toBe(false);
+        expect(
+          isNeuronFollowingResetVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            clearFollowingAfterSeconds: undefined,
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + SECONDS_IN_MONTH,
+            }),
+          })
+        ).toBe(false);
+      });
+
+      it("should return true after the followings have been reset", () => {
+        expect(
+          isNeuronFollowingResetVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + SECONDS_IN_MONTH,
+            }),
+          })
+        ).toBe(true);
+        expect(
+          isNeuronFollowingResetVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + 2 * SECONDS_IN_MONTH,
+            }),
+          })
+        ).toBe(true);
+      });
+
+      it("should return false", () => {
+        expect(
+          isNeuronFollowingResetVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod + SECONDS_IN_MONTH - 1,
+            }),
+          })
+        ).toBe(false);
+      });
+    });
+
+    describe("shouldDisplayRewardLossNotificationVPE", () => {
+      it("should return false by default", () => {
+        expect(
+          shouldDisplayRewardLossNotificationVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: {
+              ...mockNeuron,
+              fullNeuron: undefined,
+            },
+          })
+        ).toBe(false);
+      });
+
+      it("should return true after notification period starts", () => {
+        expect(
+          shouldDisplayRewardLossNotificationVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod - notificationPeriod,
+            }),
+          })
+        ).toBe(true);
+        expect(
+          shouldDisplayRewardLossNotificationVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod - notificationPeriod + 1,
+            }),
+          })
+        ).toBe(true);
+      });
+
+      it("should return false w/o voting economics", () => {
+        expect(
+          shouldDisplayRewardLossNotificationVPE({
+            startReducingVotingPowerAfterSeconds: undefined,
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod - notificationPeriod,
+            }),
+          })
+        ).toBe(false);
+      });
+
+      it("should return false before notification period", () => {
+        expect(
+          shouldDisplayRewardLossNotificationVPE({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs:
+                losingRewardsPeriod - (notificationPeriod + 1),
+            }),
+          })
         ).toBe(false);
       });
     });

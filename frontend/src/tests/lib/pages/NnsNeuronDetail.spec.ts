@@ -5,12 +5,13 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import * as knownNeuronsServices from "$lib/services/known-neurons.services";
-import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -46,8 +47,6 @@ describe("NeuronDetail", () => {
     // Ensure the API is called after the first request.
     clearCache();
 
-    voteRegistrationStore.reset();
-    checkedNeuronSubaccountsStore.reset();
     fakeGovernanceApi.addNeuronWith({ neuronId, stake: neuronStake });
     fakeGovernanceApi.addNeuronWith({ neuronId: 1234n });
     fakeGovernanceApi.setLatestRewardEvent({
@@ -112,6 +111,13 @@ describe("NeuronDetail", () => {
   describe("ConfirmFollowingBanner", () => {
     const neuronId = 9753n;
 
+    beforeEach(() => {
+      networkEconomicsStore.setParameters({
+        parameters: mockNetworkEconomics,
+        certified: true,
+      });
+    });
+
     it("should not display confirm banner w/o feature flag", async () => {
       overrideFeatureFlagsStore.setFlag(
         "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
@@ -142,6 +148,23 @@ describe("NeuronDetail", () => {
       const po = await renderComponent(`${neuronId}`);
 
       expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(true);
+    });
+
+    it("should not display confirm banner w/o voting power economics", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      networkEconomicsStore.reset();
+      fakeGovernanceApi.addNeuronWith({
+        neuronId,
+        votingPowerRefreshedTimestampSeconds:
+          nowInSeconds() - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY,
+      });
+
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(false);
     });
 
     it("should display confirm banner for missing rewards neuron", async () => {

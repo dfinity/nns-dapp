@@ -35,8 +35,6 @@ import { get } from "svelte/store";
 
 describe("sns-proposals services", () => {
   beforeEach(() => {
-    snsFiltersStore.reset();
-    snsProposalsStore.reset();
     vi.spyOn(console, "error").mockRestore();
   });
   const proposal1: SnsProposalData = {
@@ -63,8 +61,6 @@ describe("sns-proposals services", () => {
 
     describe("not logged in", () => {
       beforeEach(() => {
-        snsFiltersStore.reset();
-        snsProposalsStore.reset();
         setNoIdentity();
       });
       it("should call queryProposals with the default params", async () => {
@@ -226,7 +222,6 @@ describe("sns-proposals services", () => {
 
     describe("logged in", () => {
       beforeEach(() => {
-        snsProposalsStore.reset();
         resetIdentity();
       });
 

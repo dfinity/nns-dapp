@@ -2,7 +2,6 @@ import SnsProposals from "$lib/pages/SnsProposals.svelte";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
-import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { page } from "$mocks/$app/stores";
 import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import {
@@ -46,8 +45,6 @@ describe("SnsProposals", () => {
   const projectName = "🪙";
 
   beforeEach(() => {
-    snsProposalsStore.reset();
-    snsFiltersStore.reset();
     // Reset to default value
     page.mock({ data: { universe: rootCanisterId.toText() } });
     setSnsProjects([

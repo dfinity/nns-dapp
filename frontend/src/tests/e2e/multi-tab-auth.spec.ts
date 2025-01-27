@@ -1,6 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  setFeatureFlag,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 const expectSignedOut = async (appPo: AppPo) => {
@@ -15,11 +19,12 @@ const expectSignedInAccountsPage = async (appPo: AppPo) => {
   expect(await appPo.getSignInPo().isPresent()).toBe(false);
 };
 
-const expectSignedInTokensPage = async (appPo: AppPo) => {
-  await appPo.getTokensPo().getTokensPagePo().waitFor();
-  expect(await appPo.getTokensPo().getSignInTokensPagePo().isPresent()).toBe(
-    false
-  );
+const expectSignedInPortfolioPage = async (appPo: AppPo) => {
+  await appPo.getPortfolioPo().getPortfolioPagePo().waitFor();
+
+  expect(
+    await appPo.getPortfolioPo().getPortfolioPagePo().getLoginCard().isPresent()
+  ).toBe(false);
 };
 
 test("Test multi-tab auth", async ({ page: page1, context }) => {
@@ -47,9 +52,20 @@ test("Test multi-tab auth", async ({ page: page1, context }) => {
   await page2.reload();
   await expectSignedInAccountsPage(appPo2);
 
-  // When signed in, the landing page shows the tokens page.
+  // When signed in, the landing page shows the portfolio page.
   await page1.goto("/");
-  await expectSignedInTokensPage(appPo1);
+
+  //TODO: Remove once the the feature flag is in PROD
+  await expect(page1).toHaveTitle(/.*\s\/\sNNS Dapp/);
+
+  await setFeatureFlag({
+    page: page1,
+    featureFlag: "ENABLE_PORTFOLIO_PAGE",
+    value: true,
+  });
+
+  await page1.reload();
+  await expectSignedInPortfolioPage(appPo1);
 
   await step("Sign out");
   await appPo1.getAccountMenuPo().openMenu();

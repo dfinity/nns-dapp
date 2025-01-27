@@ -62,7 +62,6 @@ describe("sns-neurons-check-balances-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    checkedNeuronSubaccountsStore.reset();
     resetSnsProjects();
 
     setSnsProjects([
