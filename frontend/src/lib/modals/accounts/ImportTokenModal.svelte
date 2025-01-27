@@ -14,7 +14,7 @@
   } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
+  import { toastsError } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
@@ -72,16 +72,25 @@
   };
   $: {
     const ledgerId = $pageStore.importTokenLedgerId;
-    if (nonNullish(ledgerId) && validateCanisterIdText(ledgerId)) {
+    if (
+      nonNullish(ledgerId) &&
+      isNullish(ledgerCanisterId) &&
+      validateCanisterIdText(ledgerId)
+    ) {
       ledgerCanisterId = Principal.fromText(ledgerId);
     }
   }
   $: {
     const indexId = $pageStore.importTokenIndexId;
-    if (nonNullish(indexId) && validateCanisterIdText(indexId)) {
+    if (
+      nonNullish(indexId) &&
+      isNullish(indexCanisterId) &&
+      validateCanisterIdText(indexId)
+    ) {
       indexCanisterId = Principal.fromText(indexId);
     }
   }
+
   let isAutoSubmitDone = false;
   $: if (
     $ENABLE_IMPORT_TOKEN_BY_URL &&
