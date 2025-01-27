@@ -102,7 +102,7 @@ describe("ResponsiveTable", () => {
       props,
       events: {
         ...(nonNullish(onNnsAction) && {
-          onNnsAction: ({ detail }) => {
+          nnsAction: ({ detail }) => {
             onNnsAction({ detail });
           },
         }),
