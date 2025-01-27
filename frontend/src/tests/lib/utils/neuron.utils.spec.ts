@@ -70,7 +70,7 @@ import {
   neuronVotingPower,
   neuronsVotingPower,
   secondsUntilLosingRewardsVPE,
-  shouldDisplayRewardLossNotificationVPE,
+  shouldDisplayMissingRewardNotification,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
   topicsToFollow,
@@ -3751,10 +3751,10 @@ describe("neuron-utils", () => {
       });
     });
 
-    describe("shouldDisplayRewardLossNotificationVPE", () => {
+    describe("shouldDisplayMissingRewardNotification", () => {
       it("should return false by default", () => {
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: {
               ...mockNeuron,
@@ -3766,7 +3766,7 @@ describe("neuron-utils", () => {
 
       it("should return true after notification period starts", () => {
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3775,7 +3775,7 @@ describe("neuron-utils", () => {
           })
         ).toBe(true);
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3787,7 +3787,7 @@ describe("neuron-utils", () => {
 
       it("should return false w/o voting economics", () => {
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: undefined,
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3799,7 +3799,7 @@ describe("neuron-utils", () => {
 
       it("should return false before notification period", () => {
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:

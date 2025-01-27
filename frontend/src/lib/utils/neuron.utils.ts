@@ -563,7 +563,7 @@ const getNeuronTagsUnrelatedToController = ({
         status: "danger",
       });
     } else if (
-      shouldDisplayRewardLossNotificationVPE({
+      shouldDisplayMissingRewardNotification({
         neuron,
         startReducingVotingPowerAfterSeconds,
       })
@@ -1345,7 +1345,7 @@ export const isNeuronLosingRewardsVPE = ({
  * e.g. "Neuron will start losing rewards in 30 days"
  * If the voting power economics are not available,
  * we assume that the neuron is not losing rewards. */
-export const shouldDisplayRewardLossNotificationVPE = ({
+export const shouldDisplayMissingRewardNotification = ({
   neuron,
   startReducingVotingPowerAfterSeconds,
 }: {
