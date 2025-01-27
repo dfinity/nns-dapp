@@ -20,7 +20,7 @@ describe("AddHotkeyModal", () => {
     return renderModal({
       component: AddHotkeyModal,
       props: { neuron: mockNeuron },
-      events
+      events,
     });
   };
 
