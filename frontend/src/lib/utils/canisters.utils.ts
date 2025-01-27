@@ -1,17 +1,19 @@
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canister.types";
 import type { CanisterDetails as CanisterInfo } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { ONE_TRILLION } from "$lib/constants/icp.constants";
 import type { AuthStoreData } from "$lib/stores/auth.store";
 import type { CanistersStore } from "$lib/stores/canisters.store";
 import { i18n } from "$lib/stores/i18n";
 import type { CanisterId } from "$lib/types/canister";
+import { formatNumber } from "$lib/utils/format.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
-import { nonNullish } from "@dfinity/utils";
+import { nonNullish, principalToSubAccount } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { formatNumber } from "./format.utils";
-import { replacePlaceholders } from "./i18n.utils";
 
 export const getCanisterFromStore = ({
   canisterId,
@@ -98,3 +100,18 @@ export const areEnoughCyclesSelected = ({
   amountCycles: number | undefined;
 }): boolean =>
   (amountCycles ?? 0) >= (minimumCycles ?? 0) && (amountCycles ?? 0) > 0;
+
+export const getCanisterCreationCmcAccountIdentifierHex = ({
+  controller,
+}: {
+  controller: Principal;
+}): string => {
+  const subAccountBytes = principalToSubAccount(controller);
+  // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds and generate cycles.
+  // To ensure everyone uses a unique address, the intended controller of the new canister is used to calculate the subaccount.
+  const accountId = AccountIdentifier.fromPrincipal({
+    principal: CYCLES_MINTING_CANISTER_ID,
+    subAccount: SubAccount.fromBytes(subAccountBytes) as SubAccount,
+  });
+  return accountId.toHex();
+};

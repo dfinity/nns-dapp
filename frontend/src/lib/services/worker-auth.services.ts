@@ -1,8 +1,8 @@
+import { logout } from "$lib/services/auth.services";
 import type { AuthStoreData } from "$lib/stores/auth.store";
 import { authRemainingTimeStore } from "$lib/stores/auth.store";
 import type { PostMessage } from "$lib/types/post-messages";
 import type { PostMessageDataResponseAuth } from "$lib/types/post-messsage.auth";
-import { logout } from "./auth.services";
 
 export interface AuthWorker {
   syncAuthIdle: (auth: AuthStoreData) => void;

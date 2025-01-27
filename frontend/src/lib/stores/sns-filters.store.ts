@@ -1,10 +1,10 @@
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
+import { writableStored } from "$lib/stores/writable-stored";
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { mapEntries } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { derived, type Readable } from "svelte/store";
-import { writableStored } from "./writable-stored";
 
 export interface ProjectFiltersStoreData {
   types: Filter<SnsProposalTypeFilterId>[];

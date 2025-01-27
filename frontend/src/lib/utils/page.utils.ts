@@ -1,6 +1,8 @@
 import { AppPath, ROUTE_ID_GROUPS } from "$lib/constants/routes.constants";
+import { ENABLE_PORTFOLIO_PAGE } from "$lib/stores/feature-flags.store";
 import { isNullish } from "@dfinity/utils";
 import type { AfterNavigate } from "@sveltejs/kit";
+import { get } from "svelte/store";
 
 /**
  * Returns an AppPath for a given path.
@@ -12,8 +14,12 @@ import type { AfterNavigate } from "@sveltejs/kit";
  * @returns {AppPath}
  */
 export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
+  const defaultPath = get(ENABLE_PORTFOLIO_PAGE)
+    ? AppPath.Portfolio
+    : AppPath.Accounts;
+
   if (isNullish(routeId)) {
-    return AppPath.Accounts;
+    return defaultPath;
   }
 
   const routeIdWithoutGroups = (routeId: string): string =>
@@ -33,7 +39,7 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
   // TODO: solve eslint type checking
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore-line
-  return AppPath[key as keyof AppPath] ?? AppPath.Accounts;
+  return AppPath[key as keyof AppPath] ?? defaultPath;
 };
 
 export const referrerPathForNav = ({

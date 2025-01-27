@@ -1,4 +1,6 @@
 import { createAgent } from "$lib/api/agent.api";
+import { sendICP } from "$lib/api/icp-ledger.api";
+import { nnsDappCanister } from "$lib/api/nns-dapp.api";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import type {
   CanisterDetails,
@@ -21,6 +23,7 @@ import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constant
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { ApiErrorKey } from "$lib/types/api.errors";
+import { getCanisterCreationCmcAccountIdentifierHex } from "$lib/utils/canisters.utils";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, pollingLimit } from "$lib/utils/utils";
@@ -29,8 +32,6 @@ import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import type { Principal } from "@dfinity/principal";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
-import { sendICP } from "./icp-ledger.api";
-import { nnsDappCanister } from "./nns-dapp.api";
 
 // This way, TS understands that if it's invalid, then the name is a string
 type LongName = string;
@@ -84,6 +85,7 @@ export const queryCanisterDetails = async ({
   return response;
 };
 
+// Attaches a canister that's not created by the user to the user account.
 export const attachCanister = async ({
   identity,
   name,
@@ -106,6 +108,8 @@ export const attachCanister = async ({
   await nnsDapp.attachCanister({
     name: name ?? "",
     canisterId,
+    // blockIndex is only specified for canisters created by the user.
+    blockIndex: undefined,
   });
 
   logWithTimestamp("Attaching canister call complete.");
@@ -232,12 +236,8 @@ export const createCanister = async ({
 
   const { cmc, nnsDapp } = await canisters(identity);
   const principal = identity.getPrincipal();
-  const toSubAccount = principalToSubAccount(principal);
-  // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
-  // To ensure everyone uses a unique address, the intended controller of the new canister is used to calculate the subaccount.
-  const recipient = AccountIdentifier.fromPrincipal({
-    principal: CYCLES_MINTING_CANISTER_ID,
-    subAccount: SubAccount.fromBytes(toSubAccount) as SubAccount,
+  const recipientHex = getCanisterCreationCmcAccountIdentifierHex({
+    controller: principal,
   });
 
   const createdAt = nowInBigIntNanoSeconds();
@@ -245,7 +245,7 @@ export const createCanister = async ({
   const blockHeight = await sendICP({
     memo: CREATE_CANISTER_MEMO,
     identity,
-    to: recipient.toHex(),
+    to: recipientHex,
     amount,
     fromSubAccount,
     createdAt,
@@ -269,6 +269,7 @@ export const createCanister = async ({
     await nnsDapp.attachCanister({
       name: name ?? "",
       canisterId,
+      blockIndex: blockHeight,
     });
   } catch (error: unknown) {
     // If the background task finishes earlier, we might get CanisterAlreadyAttachedError.
@@ -279,6 +280,52 @@ export const createCanister = async ({
   }
 
   logWithTimestamp("Create canister complete.");
+
+  return canisterId;
+};
+
+// Creates a canister based on a transaction that was performed before.
+// Used in case the canister creation process is interrupted after ICP are
+// transferred to the CMC account.
+//
+// If we see a funding transaction for canister creation, but no canister it can
+// mean either of 2 things:
+// 1. The canister was not created.
+// 2. The canister was created but not attached to the user account.
+//
+// This function takes care of both cases because notifying the CMC will create
+// the canister if it doesn't exist, or return the same response as the first
+// time if it does exist. So in either case this will give us the canister ID so
+// that we can attach it to the user account.
+export const notifyAndAttachCanister = async ({
+  identity,
+  blockIndex,
+}: {
+  identity: Identity;
+  blockIndex: bigint;
+}): Promise<Principal> => {
+  logWithTimestamp("Notify and attach canister...");
+
+  const { cmc, nnsDapp } = await canisters(identity);
+
+  const controller = identity.getPrincipal();
+
+  const canisterId = await pollNotifyCreateCanister({
+    cmc,
+    controller,
+    blockHeight: blockIndex,
+  });
+
+  // Attach the canister to the user in the nns-dapp.
+  await nnsDapp.attachCanister({
+    // We don't know the name the user originally chose so they will have to
+    // rename it, if they want, after we recover the canister.
+    name: "",
+    canisterId,
+    blockIndex,
+  });
+
+  logWithTimestamp("Notify and attach canister complete.");
 
   return canisterId;
 };

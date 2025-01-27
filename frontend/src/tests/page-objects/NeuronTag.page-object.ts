@@ -1,5 +1,5 @@
+import { TagPo } from "$tests/page-objects/Tag.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TagPo } from "./Tag.page-object";
 
 export class NeuronTagPo extends TagPo {
   private static readonly NeuronTagTID = "neuron-tag-component";

@@ -3,6 +3,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -11,7 +12,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -63,7 +63,6 @@ describe("MenuItems", () => {
   };
 
   beforeEach(() => {
-    resetMockedConstants();
     menuStore.resetForTesting();
     layoutMenuOpen.set(false);
     vi.useFakeTimers();
@@ -265,6 +264,44 @@ describe("MenuItems", () => {
       );
       expect(await menuItemsPo.getTotalValueLockedLinkPo().getHref()).toBe(
         "https://dashboard.internetcomputer.org/neurons"
+      );
+    });
+  });
+
+  describe("portfolio", () => {
+    it("should not show the icon when the feature flag is off", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", false);
+      const po = renderComponent();
+      expect(await po.getPortfolioLinkPo().isPresent()).toBe(false);
+    });
+
+    it("should show the icon when the feature flag is on", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", true);
+      const po = renderComponent();
+      expect(await po.getPortfolioLinkPo().isPresent()).toBe(true);
+    });
+  });
+
+  describe("Nns neurons missing rewards badge", () => {
+    it("should not render the badge when feature flag disabled", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        false
+      );
+      const po = renderComponent();
+      expect(await po.getNnsNeuronsMissingRewardsBadgePo().isPresent()).toEqual(
+        false
+      );
+    });
+
+    it("should render the badge when feature flag enabled", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      const po = renderComponent();
+      expect(await po.getNnsNeuronsMissingRewardsBadgePo().isPresent()).toEqual(
+        true
       );
     });
   });

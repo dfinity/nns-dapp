@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
   import ImportTokenReview from "$lib/components/accounts/ImportTokenReview.svelte";
+  import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { getIcrcTokenMetaData } from "$lib/services/icrc-accounts.services";
   import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
@@ -16,7 +17,6 @@
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { buildWalletUrl } from "$lib/utils/navigation.utils";
   import { isSnsLedgerCanisterId } from "$lib/utils/sns.utils";
-  import { LEDGER_CANISTER_ID } from "../../constants/canister-ids.constants";
   import {
     WizardModal,
     type WizardStep,

@@ -1,10 +1,13 @@
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
+import {
+  mockMainAccount,
+  mockSubAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import type {
   Operation,
   Transaction,
   TransactionWithId,
 } from "@dfinity/ledger-icp";
-import { mockMainAccount, mockSubAccount } from "./icp-accounts.store.mock";
 
 export const mockTransactionTransfer: Transaction = {
   memo: 0n,

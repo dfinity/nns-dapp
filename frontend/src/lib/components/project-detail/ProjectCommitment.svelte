@@ -1,4 +1,7 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import CommitmentProgressBar from "$lib/components/project-detail/CommitmentProgressBar.svelte";
   import NfCommitmentProgressBar from "$lib/components/project-detail/NfCommitmentProgressBar.svelte";
   import { getMaxNeuronsFundParticipation } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
@@ -14,16 +17,12 @@
     type ProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
   import { swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
-  import TestIdWrapper from "../common/TestIdWrapper.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
-  import CommitmentProgressBar from "./CommitmentProgressBar.svelte";
   import {
     Html,
     KeyValuePair,
     KeyValuePairInfo,
   } from "@dfinity/gix-components";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { ICPToken, TokenAmountV2, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 
   const { store: projectDetailStore } = getContext<ProjectDetailContext>(

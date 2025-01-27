@@ -18,6 +18,19 @@ import { definedNeuronsStore } from "$lib/derived/neurons.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
+import { getAuthenticatedIdentity } from "$lib/services/auth.services";
+import {
+  getAccountIdentity,
+  getAccountIdentityByPrincipal,
+  loadBalance,
+  transferICP,
+} from "$lib/services/icp-accounts.services";
+import { assertLedgerVersion } from "$lib/services/icp-ledger.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
+import { authStore } from "$lib/stores/auth.store";
 import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -69,15 +82,6 @@ import {
 import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getAuthenticatedIdentity } from "./auth.services";
-import {
-  getAccountIdentity,
-  getAccountIdentityByPrincipal,
-  loadBalance,
-  transferICP,
-} from "./icp-accounts.services";
-import { assertLedgerVersion } from "./icp-ledger.services";
-import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 const getIdentityAndNeuronHelper = async (
   neuronId: NeuronId
@@ -305,6 +309,7 @@ export const listNeurons = async ({
         err: error,
       });
     },
+    logMessage: "listNeurons",
   });
 };
 
@@ -690,18 +695,53 @@ export const disburse = async ({
   }
 };
 
+const refreshVotingPower = async (neuronId: NeuronId): Promise<void> => {
+  const neuron = getNeuronFromStore(neuronId);
+  const accounts = get(icpAccountsStore);
+
+  // Should not happen
+  if (isNullish(neuron)) throw new Error("No neuron in store");
+
+  const isHWControlled = isNeuronControlledByHardwareWallet({
+    neuron,
+    accounts,
+  });
+  const isHotkeyControlled = isHotKeyControllable({
+    neuron,
+    identity: get(authStore).identity,
+  });
+
+  if (isHWControlled || isHotkeyControlled) {
+    // This is a workaround for Ledger device neurons and hotkey neurons
+    // because the `refreshVotingPower` API does not currently support them.
+    const identity: Identity = await getAuthenticatedIdentity();
+    // It doesn't matter which topic to use to confirm the current state of the neuron
+    // (except NeuronManagement, which can only be handled by controllers).
+    const topic = Topic.Governance;
+    const followees =
+      followeesByTopic({
+        neuron,
+        topic,
+      }) ?? [];
+    await governanceApiService.setFollowees({
+      identity,
+      neuronId: neuron.neuronId,
+      topic,
+      followees,
+    });
+  } else {
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
+    await governanceApiService.refreshVotingPower({ neuronId, identity });
+  }
+};
+
 export const refreshVotingPowerForNeurons = async ({
   neuronIds,
 }: {
   neuronIds: NeuronId[];
 }): Promise<{ successCount: number }> => {
-  const refreshNeuron = async (neuronId: NeuronId) => {
-    const identity: Identity =
-      await getIdentityOfControllerByNeuronId(neuronId);
-    return governanceApiService.refreshVotingPower({ neuronId, identity });
-  };
-
-  const responses = await Promise.allSettled(neuronIds.map(refreshNeuron));
+  const responses = await Promise.allSettled(neuronIds.map(refreshVotingPower));
   let successCount = 0;
   responses.forEach((r, i) => {
     if (r.status === "rejected") {
@@ -978,6 +1018,7 @@ export const loadNeuron = ({
       }
       catchError(error);
     },
+    logMessage: "loadNeuron",
   });
 };
 

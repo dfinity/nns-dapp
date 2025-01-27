@@ -2,6 +2,7 @@
   import AddCanisterControllerModal from "$lib/modals/canisters/AddCanisterControllerModal.svelte";
   import AddCyclesModal from "$lib/modals/canisters/AddCyclesModal.svelte";
   import RemoveCanisterControllerModal from "$lib/modals/canisters/RemoveCanisterControllerModal.svelte";
+  import RenameCanisterModal from "$lib/modals/canisters/RenameCanisterModal.svelte";
   import UnlinkCanisterModal from "$lib/modals/canisters/UnlinkCanisterModal.svelte";
   import type {
     CanisterDetailModal,
@@ -9,7 +10,6 @@
     CanisterDetailModalRemoveController,
     CanisterDetailModalType,
   } from "$lib/types/canister-detail.modal";
-  import RenameCanisterModal from "./RenameCanisterModal.svelte";
   import type { Principal } from "@dfinity/principal";
 
   let modal: CanisterDetailModal | undefined = undefined;

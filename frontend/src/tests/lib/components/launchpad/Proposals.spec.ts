@@ -16,8 +16,6 @@ describe("Proposals", () => {
   let queryProposalsSpy;
 
   beforeEach(() => {
-    snsProposalsStore.reset();
-
     queryProposalsSpy = vi
       .spyOn(api, "queryProposals")
       .mockResolvedValue([mockProposalInfo]);

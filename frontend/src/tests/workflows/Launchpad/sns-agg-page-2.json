@@ -1416,7 +1416,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 40912415750622,
                 "slope_denominator": 262824949935962,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 26262869760070,
@@ -1499,7 +1499,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100996551636270740,
+    "icrc1_total_supply": 101463598559589840,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2718,7 +2718,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 40912415750622,
               "slope_denominator": 262824949935962,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 26262869760070,
@@ -2776,7 +2776,8 @@
         "u45jl-liaaa-aaaam-abppa-cai",
         "toj6n-haaaa-aaaal-qdika-cai",
         "wxer6-3yaaa-aaaal-qjnua-cai",
-        "eqtcs-jiaaa-aaaal-qdmia-cai"
+        "eqtcs-jiaaa-aaaal-qdmia-cai",
+        "6jvpj-sqaaa-aaaaj-azwnq-cai"
       ],
       "archives": ["fbysu-tqaaa-aaaaq-aacga-cai"]
     },
@@ -3455,7 +3456,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 36519467832205,
                 "slope_denominator": 237923751739741,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 23723112487237,
@@ -3538,7 +3539,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100741516352634,
+    "icrc1_total_supply": 100742893505862,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3889,7 +3890,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 36519467832205,
               "slope_denominator": 237923751739741,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 23723112487237,
@@ -4313,7 +4314,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995569306980,
+    "icrc1_total_supply": 995563588980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7109,7 +7110,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 46599274217624,
                 "slope_denominator": 282979308548553,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 28279922307231,
@@ -7219,7 +7220,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 20198359506098944,
+    "icrc1_total_supply": 19206210561471362,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8515,7 +8516,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 46599274217624,
               "slope_denominator": 282979308548553,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 28279922307231,
@@ -9145,7 +9146,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 42800529481250,
                 "slope_denominator": 256652167317491,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 25623390151244,
@@ -9228,7 +9229,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25206693834804576,
+    "icrc1_total_supply": 25262344526916402,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -9614,7 +9615,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 42800529481250,
               "slope_denominator": 256652167317491,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 25623390151244,
@@ -9793,6 +9794,14 @@
           "id": 14,
           "name": "Manage dapp canister settings",
           "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -10583,7 +10592,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 11069990682527,
                 "slope_denominator": 248296626053228,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7306736351998,
@@ -10691,7 +10700,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10044164211068284,
+    "icrc1_total_supply": 10053577343093811,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11147,7 +11156,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 11069990682527,
               "slope_denominator": 248296626053228,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7306736351998,
@@ -11237,14 +11246,15 @@
         "2fvu6-tqaaa-aaaap-akksa-cai",
         "ql553-iqaaa-aaaap-anuyq-cai",
         "qc6wh-6yaaa-aaaap-anuza-cai",
-        "ocqzv-tyaaa-aaaar-qal4a-cai"
+        "ocqzv-tyaaa-aaaar-qal4a-cai",
+        "2rgax-kyaaa-aaaap-anvba-cai"
       ],
       "archives": ["apf7i-uiaaa-aaaaq-aac2q-cai"]
     },
     "meta": {
       "url": "https://panda.fans",
-      "name": "ICPanda DAO",
-      "description": "A decentralized Panda meme brand built on the Internet Computer.\n",
+      "name": "ICPanda",
+      "description": "A technical panda fully running on the Internet Computer blockchain, building chain-native infrastructures and practical Web3 apps. About us: https://dmsg.net/panda",
       "logo": "/v1/sns/root/d7wvo-iiaaa-aaaaq-aacsq-cai/logo.png"
     },
     "parameters": {
@@ -11611,6 +11621,32 @@
               "target_method_name": "admin_update_bucket_canister_settings"
             }
           }
+        },
+        {
+          "id": 1115,
+          "name": "`admin_deploy_bucket` function",
+          "description": "It is used to upgrade bucket canister WASM from the ic_oss_cluster canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+              "target_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+              "validator_method_name": "validate2_admin_deploy_bucket",
+              "target_method_name": "admin_deploy_bucket"
+            }
+          }
+        },
+        {
+          "id": 1116,
+          "name": "`admin_remove_managers` function",
+          "description": "It is used to remove managers from the ic_cose_canister canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
+              "target_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
+              "validator_method_name": "validate2_admin_remove_managers",
+              "target_method_name": "admin_remove_managers"
+            }
+          }
         }
       ]
     },
@@ -11835,7 +11871,7 @@
                 "intercept_icp_e8s": 2000000000000,
                 "from_direct_participation_icp_e8s": 3666046805859,
                 "slope_denominator": 257600954816183,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 3975782274175,
@@ -11916,7 +11952,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103121990792922610,
+    "icrc1_total_supply": 103452556594683149,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12121,7 +12157,7 @@
               "intercept_icp_e8s": 2000000000000,
               "from_direct_participation_icp_e8s": 3666046805859,
               "slope_denominator": 257600954816183,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 3975782274175,
@@ -12410,6 +12446,45 @@
           }
         },
         {
+          "id": 1013,
+          "name": "BatchSetPoolLimitOrderAvailable",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchSetPoolLimitOrderAvailableValidate",
+              "target_method_name": "batchSetPoolLimitOrderAvailable"
+            }
+          }
+        },
+        {
+          "id": 1014,
+          "name": "BatchSetPoolAvailable",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchSetPoolAvailableValidate",
+              "target_method_name": "batchSetPoolAvailable"
+            }
+          }
+        },
+        {
+          "id": 1019,
+          "name": "UpgradePools",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "setUpgradePoolListValidate",
+              "target_method_name": "setUpgradePoolList"
+            }
+          }
+        },
+        {
           "id": 1101,
           "name": "RemovePool",
           "description": null,
@@ -12423,6 +12498,45 @@
           }
         },
         {
+          "id": 1104,
+          "name": "BatchRemovePool",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchRemovePoolsValidate",
+              "target_method_name": "batchRemovePools"
+            }
+          }
+        },
+        {
+          "id": 1106,
+          "name": "BatchClearRemovedPool",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "batchClearRemovedPoolValidate",
+              "target_method_name": "batchClearRemovedPool"
+            }
+          }
+        },
+        {
+          "id": 1201,
+          "name": "AddPoolInstallers",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "addPoolInstallersValidate",
+              "target_method_name": "addPoolInstallers"
+            }
+          }
+        },
+        {
           "id": 1701,
           "name": "Transfer",
           "description": null,
@@ -12432,6 +12546,19 @@
               "target_canister_id": "7eikv-2iaaa-aaaag-qdgwa-cai",
               "validator_method_name": "transferValidate",
               "target_method_name": "transfer"
+            }
+          }
+        },
+        {
+          "id": 1999,
+          "name": "SetSwapFactoryAdmin",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7vygu-3yaaa-aaaag-qjxaq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "setAdminsValidate",
+              "target_method_name": "setAdmins"
             }
           }
         },
@@ -12986,7 +13113,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 10260777177913,
                 "slope_denominator": 254542688644933,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7473761955801,
@@ -13069,7 +13196,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98712522969426190,
+    "icrc1_total_supply": 98625264299377429,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -13511,7 +13638,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 10260777177913,
               "slope_denominator": 254542688644933,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7473761955801,
@@ -13577,8 +13704,8 @@
     },
     "meta": {
       "url": "https://yuku.app/",
-      "name": "Yuku DAO",
-      "description": "Yuku is a pioneering AI Web3 Platform featuring NFT Aggregator, 3D space, and AI Avatar integration, all governed by the decentralized Yuku DAO. Users can engage in immersive experiences within the 3D environment and interact with AI Avatars, marking a significant advancement in digital innovation.\n",
+      "name": "Yuku AI",
+      "description": "Yuku AI is a groundbreaking platform at the intersection of AI and Web3, empowering users with decentralized AI agents, immersive 3D spaces, and a dynamic marketplace for AI assets. By combining AI Agent DID, Social and Payment on-chain Protocols, Yuku AI enables seamless collaboration and innovation across digital and real-world ecosystems. It's not just a platform—it's a launchpad for the next era of AI-driven civilization.",
       "logo": "/v1/sns/root/cj5nf-5yaaa-aaaaq-aacxq-cai/logo.png"
     },
     "parameters": {
@@ -14167,7 +14294,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 13274424563693,
                 "slope_denominator": 250336400025685,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7328638859966,
@@ -14213,12 +14340,6 @@
     },
     "icrc1_metadata": [
       [
-        "icrc1:logo",
-        {
-          "Text": "data:image/png;base64,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"
-        }
-      ],
-      [
         "icrc1:decimals",
         {
           "Nat": [8]
@@ -14227,7 +14348,7 @@
       [
         "icrc1:name",
         {
-          "Text": "Yuku DAO"
+          "Text": "Yuku AI"
         }
       ],
       [
@@ -14250,7 +14371,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100006604101217710,
+    "icrc1_total_supply": 99923743835706324,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14687,7 +14808,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 13274424563693,
               "slope_denominator": 250336400025685,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7328638859966,
@@ -14738,7 +14859,11 @@
       "ledger": "bliq2-niaaa-aaaaq-aac4q-cai",
       "index": "bfk5s-wyaaa-aaaaq-aac5q-cai",
       "governance": "bmjwo-aqaaa-aaaaq-aac4a-cai",
-      "dapps": ["wbdy5-yyaaa-aaaap-abysq-cai", "tu3je-fyaaa-aaaap-abymq-cai"],
+      "dapps": [
+        "wbdy5-yyaaa-aaaap-abysq-cai",
+        "tu3je-fyaaa-aaaap-abymq-cai",
+        "ed6lv-7aaaa-aaaai-aq4pa-cai"
+      ],
       "archives": ["kj2yv-baaaa-aaaaq-aadba-cai"]
     },
     "meta": {
@@ -15331,7 +15456,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 8952005956801,
                 "slope_denominator": 257099668370747,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 6467280392480,
@@ -15430,7 +15555,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100070574806156050,
+    "icrc1_total_supply": 100099551975129988,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15865,7 +15990,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 8952005956801,
               "slope_denominator": 257099668370747,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 6467280392480,

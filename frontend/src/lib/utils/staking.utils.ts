@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
+import type { TableNeuron } from "$lib/types/neurons-table";
 import type { TableProject } from "$lib/types/staking";
 import type { Universe } from "$lib/types/universe";
 import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
@@ -110,6 +111,7 @@ const getNeuronAggregateInfo = ({
   stake: TokenAmountV2 | UnavailableTokenAmount;
   availableMaturity: bigint | undefined;
   stakedMaturity: bigint | undefined;
+  isStakeLoading: boolean;
 } => {
   if (!isSignedIn) {
     const stake = new UnavailableTokenAmount(token);
@@ -118,6 +120,7 @@ const getNeuronAggregateInfo = ({
       stake,
       availableMaturity: undefined,
       stakedMaturity: undefined,
+      isStakeLoading: false,
     };
   }
   const { neuronCount, stake, availableMaturity, stakedMaturity } =
@@ -134,6 +137,7 @@ const getNeuronAggregateInfo = ({
         }),
     availableMaturity,
     stakedMaturity,
+    isStakeLoading: isNullish(stake),
   };
 };
 
@@ -156,14 +160,19 @@ export const getTableProjects = ({
         ? ICPToken
         : // If the universe is an SNS universe then the summary is non-nullish.
           asNonNullish(universe.summary).token;
-    const { neuronCount, stake, availableMaturity, stakedMaturity } =
-      getNeuronAggregateInfo({
-        isSignedIn,
-        universe,
-        token,
-        nnsNeurons,
-        snsNeurons,
-      });
+    const {
+      neuronCount,
+      stake,
+      availableMaturity,
+      stakedMaturity,
+      isStakeLoading,
+    } = getNeuronAggregateInfo({
+      isSignedIn,
+      universe,
+      token,
+      nnsNeurons,
+      snsNeurons,
+    });
     const rowHref =
       nonNullish(neuronCount) && neuronCount > 0
         ? buildNeuronsUrl({ universe: universe.canisterId })
@@ -193,11 +202,12 @@ export const getTableProjects = ({
       stakeInUsd,
       availableMaturity,
       stakedMaturity,
+      isStakeLoading,
     };
   });
 };
 
-const compareIcpFirst = createDescendingComparator(
+export const compareIcpFirst = createDescendingComparator(
   (project: TableProject) => project.universeId === OWN_CANISTER_ID_TEXT
 );
 
@@ -205,7 +215,7 @@ const comparePositiveNeuronsFirst = createDescendingComparator(
   (project: TableProject) => (project.neuronCount ?? 0) > 0
 );
 
-const compareByProjectTitle = createAscendingComparator(
+export const compareByProjectTitle = createAscendingComparator(
   (project: TableProject) => project.title.toLowerCase()
 );
 
@@ -218,3 +228,14 @@ export const sortTableProjects = (projects: TableProject[]): TableProject[] => {
     ])
   );
 };
+
+const getUsdStake = (project: TableProject | TableNeuron) => {
+  if (!("stakeInUsd" in project) || isNullish(project.stakeInUsd)) {
+    return 0;
+  }
+  return project.stakeInUsd;
+};
+
+export const getTotalStakeInUsd = (
+  projects: Array<TableProject | TableNeuron>
+): number => projects.reduce((acc, project) => acc + getUsdStake(project), 0);

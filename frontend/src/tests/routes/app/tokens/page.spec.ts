@@ -137,8 +137,6 @@ describe("Tokens route", () => {
 
   describe("when feature flag enabled", () => {
     beforeEach(() => {
-      importedTokensStore.reset();
-      failedImportedTokenLedgerIdsStore.reset();
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
       ckETHBalanceUlps = ckETHDefaultBalanceUlps;
       tetrisBalanceE8s = tetrisDefaultBalanceE8s;

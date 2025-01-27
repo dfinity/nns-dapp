@@ -1,7 +1,14 @@
 <script lang="ts">
+  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
+  import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
+  import PageHeading from "$lib/components/common/PageHeading.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
+  import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
@@ -10,12 +17,9 @@
     neuronStake,
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
-  import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
-  import PageHeading from "../common/PageHeading.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
 
@@ -36,20 +40,39 @@
     identity: $authStore.identity,
     accounts: $icpAccountsStore,
     i18n: $i18n,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
   });
 </script>
 
 <PageHeading testId="nns-neuron-page-heading-component">
   <AmountDisplay slot="title" {amount} size="huge" singleLine detailed />
-  <HeadingSubtitle slot="subtitle" testId="voting-power">
-    {#if canVote}
-      {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
-        $votingPower: formatVotingPower(neuron.votingPower),
-      })}
+  <svelte:fragment slot="subtitle">
+    {#if $ENABLE_USD_VALUES_FOR_NEURONS}
+      <HeadingSubtitleWithUsdValue
+        {amount}
+        ledgerCanisterId={LEDGER_CANISTER_ID}
+      >
+        {#if canVote}
+          {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
+            $votingPower: formatVotingPower(neuron.decidingVotingPower ?? 0n),
+          })}
+        {:else}
+          {$i18n.neuron_detail.voting_power_zero_subtitle}
+        {/if}
+      </HeadingSubtitleWithUsdValue>
     {:else}
-      {$i18n.neuron_detail.voting_power_zero_subtitle}
+      <HeadingSubtitle testId="voting-power">
+        {#if canVote}
+          {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
+            $votingPower: formatVotingPower(neuron.decidingVotingPower ?? 0n),
+          })}
+        {:else}
+          {$i18n.neuron_detail.voting_power_zero_subtitle}
+        {/if}
+      </HeadingSubtitle>
     {/if}
-  </HeadingSubtitle>
+  </svelte:fragment>
   <svelte:fragment slot="tags">
     {#each neuronTags as tag}
       <NeuronTag size="large" {tag} />

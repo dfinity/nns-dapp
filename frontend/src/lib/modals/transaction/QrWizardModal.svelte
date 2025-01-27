@@ -8,8 +8,12 @@
     type WizardSteps,
   } from "@dfinity/gix-components";
   import { decodePayment } from "@dfinity/ledger-icrc";
-  import type { Token } from "@dfinity/utils";
-  import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
+  import {
+    assertNonNullish,
+    isNullish,
+    nonNullish,
+    type Token,
+  } from "@dfinity/utils";
 
   export let testId: string | undefined = undefined;
   export let steps: WizardSteps;
@@ -66,9 +70,20 @@
 
     const { token, identifier, amount } = payment;
 
+    // NOTE: Coinbase incorrectly uses "dfinity" instead of "icp" as the token
+    // symbol in the QR payment URI. We've asked them to fix this but so far
+    // they haven't. So we work around this by allowing "dfinity" in place of
+    // "icp".
+    const coinbaseIcpTokenSymbol = "dfinity";
+    const correctIcpTokenSymbol = "icp";
+
     if (
       nonNullish(requiredToken) &&
-      token.toLowerCase() !== requiredToken.symbol.toLowerCase()
+      !(
+        token.toLowerCase() === requiredToken.symbol.toLowerCase() ||
+        (token.toLowerCase() === coinbaseIcpTokenSymbol &&
+          requiredToken.symbol.toLowerCase() === correctIcpTokenSymbol)
+      )
     ) {
       toastsError({
         labelKey: "error.qrcode_token_incompatible",

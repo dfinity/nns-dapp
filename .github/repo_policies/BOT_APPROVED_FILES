@@ -1,0 +1,12 @@
+# List of approved files that can be changed by a bot via an automated PR
+# This is to increase security and prevent accidentally updating files that shouldn't be changed by a bot
+
+Cargo.lock
+Cargo.toml
+declarations/*/*/*.did
+dfx.json
+frontend/package-lock.json
+frontend/src/tests/workflows/Launchpad/sns-agg-page-*.json
+rs/proposals/src/canisters/*/api.rs
+rs/sns_aggregator/src/types/*.rs
+rust-toolchain.toml

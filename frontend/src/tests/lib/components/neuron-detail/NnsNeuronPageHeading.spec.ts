@@ -1,10 +1,18 @@
 import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeadingPo } from "$tests/page-objects/NnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -26,6 +34,14 @@ describe("NnsNeuronPageHeading", () => {
   beforeEach(() => {
     resetIdentity();
     resetAccountsForTesting();
+
+    icpSwapTickersStore.set([
+      {
+        ...mockIcpSwapTicker,
+        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+        last_price: "10.00",
+      },
+    ]);
   });
 
   it("should render the neuron's stake", async () => {
@@ -43,10 +59,10 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render neuron's voting power", async () => {
-    const votingPower = 314_000_000n;
+    const decidingVotingPower = 314_000_000n;
     const po = renderComponent({
       ...mockNeuron,
-      votingPower,
+      decidingVotingPower,
       dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
     });
 
@@ -54,10 +70,10 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render no voting power if neuron can't vote", async () => {
-    const votingPower = 314_000_000n;
+    const decidingVotingPower = 314_000_000n;
     const po = renderComponent({
       ...mockNeuron,
-      votingPower,
+      decidingVotingPower,
       dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE - 1),
     });
 
@@ -146,5 +162,60 @@ describe("NnsNeuronPageHeading", () => {
     });
 
     expect(await po.getNeuronTags()).toEqual(["Early Contributor Token"]);
+  });
+
+  it("should render 'Missing rewards' tag", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(
+          nowInSeconds() - SECONDS_IN_YEAR
+        ),
+      },
+    });
+
+    expect(await po.getNeuronTags()).toEqual(["Missing rewards"]);
+  });
+
+  it("should not display USD balance if feature flag is disabled", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
+
+    const stake = 300_000_000n;
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: stake,
+        neuronFees: 0n,
+      },
+    });
+
+    expect(await po.hasBalanceInUsd()).toBe(false);
+  });
+
+  it("should display USD balance if feature flag is enabled", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+    const stake = 300_000_000n;
+    const po = renderComponent({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: stake,
+        neuronFees: 0n,
+      },
+    });
+
+    expect(await po.hasBalanceInUsd()).toBe(true);
+    expect(await po.getBalanceInUsd()).toBe("$30.00");
   });
 });

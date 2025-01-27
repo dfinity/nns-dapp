@@ -1,26 +1,21 @@
 //! User accounts and transactions.
-use crate::constants::MEMO_CREATE_CANISTER;
-use crate::multi_part_transactions_processor::{MultiPartTransactionToBeProcessed, MultiPartTransactionsProcessor};
+use crate::multi_part_transactions_processor::MultiPartTransactionsProcessor;
 use crate::state::StableState;
 use crate::stats::Stats;
 use candid::CandidType;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_nns_common::types::NeuronId;
-use ic_nns_constants::CYCLES_MINTING_CANISTER_ID;
 use ic_stable_structures::{storable::Bound, Storable};
-use icp_ledger::Operation::{self, Approve, Burn, Mint, Transfer};
-use icp_ledger::{AccountIdentifier, BlockIndex, Memo, Subaccount};
+use icp_ledger::{AccountIdentifier, BlockIndex, Subaccount};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::borrow::Cow;
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, HashMap, HashSet, VecDeque};
+use std::collections::{BTreeMap, HashMap, VecDeque};
 use std::fmt;
 use std::ops::RangeBounds;
-use std::time::{Duration, SystemTime};
 
 pub mod constructors;
 pub mod histogram;
@@ -33,6 +28,8 @@ use schema::{
 // This limit is for DoS protection but should be increased if we get close to
 // the limit.
 const ACCOUNT_LIMIT: u64 = 300_000;
+
+const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;
 
 // Conservatively limit the number of imported tokens to prevent using too much memory.
 // Can be revisited if users find this too restrictive.
@@ -48,12 +45,8 @@ const MAX_IMPORTED_TOKENS: i32 = 20;
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts_db: schema::proxy::AccountsDbAsProxy,
-    hardware_wallets_and_sub_accounts: HashMap<AccountIdentifier, AccountWrapper>,
-    // pending_transactions: HashMap<(from, to), (TransactionType, timestamp_ms_since_epoch)>
-    pending_transactions: HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
 
     block_height_synced_up_to: Option<BlockIndex>,
-    multi_part_transactions_processor: MultiPartTransactionsProcessor,
     accounts_db_stats: AccountsDbStats,
     accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
     last_ledger_sync_timestamp_nanos: u64,
@@ -80,12 +73,9 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, hardware_wallets_and_sub_accounts: HashMap[{:?}], pending_transactions: HashMap[{:?}], block_height_synced_up_to: {:?}, multi_part_transactions_processor: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            "AccountsStore{{accounts_db: {:?}, block_height_synced_up_to: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
             self.accounts_db,
-            self.hardware_wallets_and_sub_accounts.len(),
-            self.pending_transactions.len(),
             self.block_height_synced_up_to,
-            self.multi_part_transactions_processor,
             self.accounts_db_stats,
             self.last_ledger_sync_timestamp_nanos,
             self.neurons_topped_up_count,
@@ -182,6 +172,7 @@ struct NamedHardwareWalletAccount {
 pub struct NamedCanister {
     name: String,
     canister_id: CanisterId,
+    block_index: Option<BlockIndex>,
 }
 
 impl NamedCanister {
@@ -237,26 +228,7 @@ pub enum GetImportedTokensResponse {
     AccountNotFound,
 }
 
-#[derive(Copy, Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-pub enum TransactionType {
-    Burn,
-    Mint,
-    Transfer,
-    Approve,
-    TransferFrom,
-    StakeNeuronNotification,
-    CreateCanister,
-}
-
-#[derive(Clone, CandidType, Deserialize, Debug, Eq, PartialEq)]
-pub struct NeuronDetails {
-    account_identifier: AccountIdentifier,
-    principal: PrincipalId,
-    memo: Memo,
-    neuron_id: Option<NeuronId>,
-}
-
-#[derive(CandidType)]
+#[derive(CandidType, Debug, PartialEq)]
 pub enum CreateSubAccountResponse {
     Ok(SubAccountDetails),
     AccountNotFound,
@@ -301,7 +273,7 @@ pub struct AccountDetails {
     pub hardware_wallet_accounts: Vec<HardwareWalletAccountDetails>,
 }
 
-#[derive(CandidType)]
+#[derive(CandidType, Debug, PartialEq)]
 pub struct SubAccountDetails {
     name: String,
     sub_account: Subaccount,
@@ -319,6 +291,7 @@ pub struct HardwareWalletAccountDetails {
 pub struct AttachCanisterRequest {
     name: String,
     canister_id: CanisterId,
+    block_index: Option<BlockIndex>,
 }
 
 #[derive(CandidType)]
@@ -361,6 +334,7 @@ pub enum DetachCanisterResponse {
 impl AccountsStore {
     /// Determines whether a migration is being performed.
     #[must_use]
+    #[allow(dead_code)]
     pub fn migration_in_progress(&self) -> bool {
         self.accounts_db.migration_in_progress()
     }
@@ -440,44 +414,32 @@ impl AccountsStore {
         let account_identifier = AccountIdentifier::from(caller);
 
         if !Self::validate_account_name(&sub_account_name) {
-            CreateSubAccountResponse::NameTooLong
-        } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            let response = if let Some(sub_account_id) = (1..u8::MAX).find(|i| !account.sub_accounts.contains_key(i)) {
-                let sub_account = convert_byte_to_sub_account(sub_account_id);
-                let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
-                let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
-
-                account.sub_accounts.insert(sub_account_id, named_sub_account);
-                self.accounts_db
-                    .db_insert_account(&account_identifier.to_vec(), account);
-
-                CreateSubAccountResponse::Ok(SubAccountDetails {
-                    name: sub_account_name,
-                    sub_account,
-                    account_identifier: sub_account_identifier,
-                })
-            } else {
-                CreateSubAccountResponse::SubAccountLimitExceeded
-            };
-
-            if let CreateSubAccountResponse::Ok(SubAccountDetails {
-                name: _,
-                sub_account,
-                account_identifier: sub_account_identifier,
-            }) = response
-            {
-                let sub_account_id = sub_account.0[31];
-                self.hardware_wallets_and_sub_accounts.insert(
-                    sub_account_identifier,
-                    AccountWrapper::SubAccount(account_identifier, sub_account_id),
-                );
-                self.accounts_db_stats.sub_accounts_count += 1;
-            }
-
-            response
-        } else {
-            CreateSubAccountResponse::AccountNotFound
+            return CreateSubAccountResponse::NameTooLong;
         }
+
+        let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) else {
+            return CreateSubAccountResponse::AccountNotFound;
+        };
+
+        let Some(sub_account_id) = (1..=MAX_SUB_ACCOUNT_ID).find(|i| !account.sub_accounts.contains_key(i)) else {
+            return CreateSubAccountResponse::SubAccountLimitExceeded;
+        };
+
+        let sub_account = convert_byte_to_sub_account(sub_account_id);
+        let sub_account_identifier = AccountIdentifier::new(caller, Some(sub_account));
+        let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
+
+        account.sub_accounts.insert(sub_account_id, named_sub_account);
+        self.accounts_db
+            .db_insert_account(&account_identifier.to_vec(), account);
+
+        self.accounts_db_stats.sub_accounts_count += 1;
+
+        CreateSubAccountResponse::Ok(SubAccountDetails {
+            name: sub_account_name,
+            sub_account,
+            account_identifier: sub_account_identifier,
+        })
     }
 
     pub fn rename_sub_account(
@@ -516,8 +478,6 @@ impl AccountsStore {
         if !Self::validate_account_name(&request.name) {
             RegisterHardwareWalletResponse::NameTooLong
         } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()).clone() {
-            let hardware_wallet_account_identifier = AccountIdentifier::from(request.principal);
-
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else if account
@@ -538,81 +498,11 @@ impl AccountsStore {
                     .db_insert_account(&account_identifier.to_vec(), account);
 
                 self.accounts_db_stats.hardware_wallet_accounts_count += 1;
-                self.link_hardware_wallet_to_account(account_identifier, hardware_wallet_account_identifier);
                 RegisterHardwareWalletResponse::Ok
             }
         } else {
             RegisterHardwareWalletResponse::AccountNotFound
         }
-    }
-
-    pub fn maybe_process_transaction(
-        &mut self,
-        transfer: &Operation,
-        memo: Memo,
-        block_height: BlockIndex,
-    ) -> Result<(), String> {
-        if let Some(block_height_synced_up_to) = self.get_block_height_synced_up_to() {
-            let expected_block_height = block_height_synced_up_to + 1;
-            if block_height != block_height_synced_up_to + 1 {
-                return Err(format!(
-                    "Expected block height {expected_block_height}. Got block height {block_height}",
-                ));
-            }
-        }
-
-        match *transfer {
-            Burn { .. } | Mint { .. } | Approve { .. } => {}
-            Transfer {
-                from,
-                to,
-                spender: _,
-                amount: _,
-                fee: _,
-            } => {
-                let default_transaction_type = if matches!(transfer, Transfer { .. }) {
-                    TransactionType::Transfer
-                } else {
-                    TransactionType::TransferFrom
-                };
-
-                if self.store_has_account(to) {
-                } else if self.store_has_account(from) {
-                    if let Some(principal) = self.try_get_principal(&from) {
-                        let transaction_type =
-                            Self::get_transaction_type(from, to, memo, &principal, default_transaction_type);
-                        self.process_transaction_type(transaction_type, principal, block_height);
-                    }
-                }
-            }
-        }
-
-        self.block_height_synced_up_to = Some(block_height);
-
-        Ok(())
-    }
-
-    pub fn mark_ledger_sync_complete(&mut self) {
-        self.last_ledger_sync_timestamp_nanos = u64::try_from(
-            dfn_core::api::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap_or_else(|err| unreachable!("The current time is well after the Unix epoch. Error: {err}"))
-                .as_nanos(),
-        )
-        .unwrap_or_else(|_| unreachable!("Not impossible, but centuries in the future"));
-    }
-
-    /// Initializes the `block_height_synced_up_to` value.
-    ///
-    /// # Panics
-    /// - Panics if the `block_height_synced_up_to` value has already been initialized.
-    pub fn init_block_height_synced_up_to(&mut self, block_height: BlockIndex) {
-        assert!(
-            self.block_height_synced_up_to.is_none(),
-            "This can only be called to initialize the 'block_height_synced_up_to' value"
-        );
-
-        self.block_height_synced_up_to = Some(block_height);
     }
 
     fn find_canister_index(account: &Account, canister_id: CanisterId) -> Option<usize> {
@@ -625,50 +515,79 @@ impl AccountsStore {
     }
 
     pub fn attach_canister(&mut self, caller: PrincipalId, request: AttachCanisterRequest) -> AttachCanisterResponse {
-        if Self::validate_canister_name(&request.name) {
-            let account_identifier = AccountIdentifier::from(caller).to_vec();
-
-            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
-                let mut index_to_remove: Option<usize> = None;
-                for (index, c) in account.canisters.iter().enumerate() {
-                    if !request.name.is_empty() && c.name == request.name {
-                        return AttachCanisterResponse::NameAlreadyTaken;
-                    }
-                    // The periodic_task_runner might attach the canister before this call.
-                    // The canister attached by the periodic_task_runner has name `""`
-                    if c.canister_id == request.canister_id {
-                        if c.name.is_empty() && !request.name.is_empty() {
-                            index_to_remove = Some(index);
-                        } else {
-                            return AttachCanisterResponse::CanisterAlreadyAttached;
-                            // Note: It might be nice to tell the user the name of the existing canister.
-                        }
-                    }
-                }
-
-                if let Some(index) = index_to_remove {
-                    // Remove the previous attached canister before reattaching.
-                    account.canisters.remove(index);
-                }
-
-                if account.canisters.len() >= u8::MAX as usize {
-                    return AttachCanisterResponse::CanisterLimitExceeded;
-                }
-                account.canisters.push(NamedCanister {
-                    name: request.name,
-                    canister_id: request.canister_id,
-                });
-                account.canisters.sort();
-
-                self.accounts_db.db_insert_account(&account_identifier, account);
-
-                AttachCanisterResponse::Ok
-            } else {
-                AttachCanisterResponse::AccountNotFound
-            }
-        } else {
-            AttachCanisterResponse::NameTooLong
+        if !Self::validate_canister_name(&request.name) {
+            return AttachCanisterResponse::NameTooLong;
         }
+
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+
+        let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) else {
+            return AttachCanisterResponse::AccountNotFound;
+        };
+
+        let mut new_canister = NamedCanister {
+            name: request.name,
+            canister_id: request.canister_id,
+            block_index: request.block_index,
+        };
+
+        let mut index_to_remove: Option<usize> = None;
+        for (index, existing_canister) in account.canisters.iter().enumerate() {
+            if !new_canister.name.is_empty()
+                && existing_canister.name == new_canister.name
+                && existing_canister.canister_id != new_canister.canister_id
+            {
+                return AttachCanisterResponse::NameAlreadyTaken;
+            }
+            // The canister might already be attached.
+            // If the request is compatible with the existing canister, merge
+            // any existing information into the new canister.
+            if existing_canister.canister_id == new_canister.canister_id {
+                // We return CanisterAlreadyAttached if either the request is
+                // incompatible with the existing canister or this request
+                // doesn't add anything new.
+
+                if !existing_canister.name.is_empty() {
+                    if new_canister.name.is_empty() {
+                        new_canister.name.clone_from(&existing_canister.name);
+                    } else if existing_canister.name != new_canister.name {
+                        // Incompatible names.
+                        return AttachCanisterResponse::CanisterAlreadyAttached;
+                    }
+                }
+
+                if existing_canister.block_index.is_some() {
+                    if new_canister.block_index.is_none() {
+                        new_canister.block_index = existing_canister.block_index;
+                    } else if existing_canister.block_index != new_canister.block_index {
+                        // Incompatible block_index.
+                        return AttachCanisterResponse::CanisterAlreadyAttached;
+                    }
+                }
+
+                if new_canister == *existing_canister {
+                    // Nothing new to add.
+                    return AttachCanisterResponse::CanisterAlreadyAttached;
+                }
+
+                index_to_remove = Some(index);
+            }
+        }
+
+        if let Some(index) = index_to_remove {
+            // Remove the previous attached canister before reattaching.
+            account.canisters.remove(index);
+        }
+
+        if account.canisters.len() >= u8::MAX as usize {
+            return AttachCanisterResponse::CanisterLimitExceeded;
+        }
+        account.canisters.push(new_canister);
+        account.canisters.sort();
+
+        self.accounts_db.db_insert_account(&account_identifier, account);
+
+        AttachCanisterResponse::Ok
     }
 
     pub fn rename_canister(&mut self, caller: PrincipalId, request: RenameCanisterRequest) -> RenameCanisterResponse {
@@ -681,10 +600,10 @@ impl AccountsStore {
                 }
 
                 if let Some(index) = Self::find_canister_index(&account, request.canister_id) {
-                    account.canisters.remove(index);
+                    let existing_canister = account.canisters.remove(index);
                     account.canisters.push(NamedCanister {
                         name: request.name,
-                        canister_id: request.canister_id,
+                        ..existing_canister
                     });
                     account.canisters.sort();
                     self.accounts_db.db_insert_account(&account_identifier, account);
@@ -727,24 +646,6 @@ impl AccountsStore {
         }
     }
 
-    // We skip the checks here since in this scenario we must store the canister otherwise the user
-    // won't be able to retrieve its Id.
-    pub fn attach_newly_created_canister(&mut self, principal: PrincipalId, canister_id: CanisterId) {
-        let account_identifier = AccountIdentifier::from(principal).to_vec();
-
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
-            // We only attach if it doesn't already exist
-            if Self::find_canister_index(&account, canister_id).is_none() {
-                account.canisters.push(NamedCanister {
-                    name: String::new(),
-                    canister_id,
-                });
-                account.canisters.sort();
-                self.accounts_db.db_insert_account(&account_identifier, account);
-            }
-        }
-    }
-
     pub fn set_imported_tokens(
         &mut self,
         caller: PrincipalId,
@@ -775,43 +676,10 @@ impl AccountsStore {
         GetImportedTokensResponse::Ok(account.imported_tokens.unwrap_or_default())
     }
 
-    #[must_use]
-    pub fn get_block_height_synced_up_to(&self) -> Option<BlockIndex> {
-        self.block_height_synced_up_to
-    }
-
-    pub fn try_take_next_transaction_to_process(&mut self) -> Option<(BlockIndex, MultiPartTransactionToBeProcessed)> {
-        self.multi_part_transactions_processor.take_next()
-    }
-
-    pub fn enqueue_multi_part_transaction(
-        &mut self,
-        block_height: BlockIndex,
-        transaction: MultiPartTransactionToBeProcessed,
-    ) {
-        self.multi_part_transactions_processor.push(block_height, transaction);
-    }
-
     pub fn get_stats(&self, stats: &mut Stats) {
-        let timestamp_now_nanos = u64::try_from(
-            dfn_core::api::now()
-                .duration_since(SystemTime::UNIX_EPOCH)
-                .unwrap_or_else(|err| unreachable!("Hey, we are back in the sixties!  Seriously, if we get here, the system time is before the Unix epoch.  This should be impossible.  Error: {err}"))
-                .as_nanos(),
-        )
-        .unwrap_or_else(|_| {
-            unreachable!("Well, this could kill us if the code is still running in 500 years.  Not impossible.")
-        });
-        let duration_since_last_sync =
-            Duration::from_nanos(timestamp_now_nanos - self.last_ledger_sync_timestamp_nanos);
-
         stats.accounts_count = self.accounts_db.db_accounts_len();
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
         stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
-        stats.block_height_synced_up_to = self.block_height_synced_up_to;
-        stats.seconds_since_last_ledger_sync = duration_since_last_sync.as_secs();
-        stats.neurons_topped_up_count = self.neurons_topped_up_count;
-        stats.transactions_to_process_queue_length = self.multi_part_transactions_processor.get_queue_length();
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
         stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
@@ -823,52 +691,6 @@ impl AccountsStore {
             .fold(AccountsStoreHistogram::default(), |histogram, account| {
                 histogram + &account
             })
-    }
-
-    fn store_has_account(&mut self, account_identifier: AccountIdentifier) -> bool {
-        self.accounts_db.db_get_account(&account_identifier.to_vec()).is_some()
-            || self.hardware_wallets_and_sub_accounts.contains_key(&account_identifier)
-    }
-
-    fn try_get_principal(&self, account_identifier: &AccountIdentifier) -> Option<PrincipalId> {
-        if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
-            account.principal
-        } else {
-            match self.hardware_wallets_and_sub_accounts.get(account_identifier) {
-                Some(AccountWrapper::SubAccount(account_identifier, _)) => {
-                    let account = self.accounts_db
-                        .db_get_account
-                        (&account_identifier.to_vec())
-                        .unwrap_or_else(|| panic!("BROKEN STATE: Account identifier {account_identifier} exists in `hardware_wallets_and_sub_accounts`, but not in `accounts`."));
-                    account.principal
-                }
-                Some(AccountWrapper::HardwareWallet(linked_account_identifiers)) => linked_account_identifiers
-                    .iter()
-                    .filter_map(|account_identifier| self.accounts_db.db_get_account(&account_identifier.to_vec()))
-                    .find_map(|a| {
-                        a.hardware_wallet_accounts
-                            .iter()
-                            .find(|hw| *account_identifier == AccountIdentifier::from(hw.principal))
-                            .map(|hw| hw.principal)
-                    }),
-                None => None,
-            }
-        }
-    }
-
-    fn link_hardware_wallet_to_account(
-        &mut self,
-        account_identifier: AccountIdentifier,
-        hardware_wallet_account_identifier: AccountIdentifier,
-    ) {
-        self.hardware_wallets_and_sub_accounts
-            .entry(hardware_wallet_account_identifier)
-            .and_modify(|account_wrapper| {
-                if let AccountWrapper::HardwareWallet(account_identifiers) = account_wrapper {
-                    account_identifiers.push(account_identifier);
-                }
-            })
-            .or_insert_with(|| AccountWrapper::HardwareWallet(vec![account_identifier]));
     }
 
     fn validate_account_name(name: &str) -> bool {
@@ -883,61 +705,6 @@ impl AccountsStore {
         name.len() <= CANISTER_NAME_MAX_LENGTH
     }
 
-    #[allow(clippy::too_many_arguments)]
-    fn get_transaction_type(
-        from: AccountIdentifier,
-        to: AccountIdentifier,
-        memo: Memo,
-        principal: &PrincipalId,
-        default_transaction_type: TransactionType,
-    ) -> TransactionType {
-        // In case of the edge case that it's a transaction to itself
-        // use the default value passed when the function is called
-        if from == to {
-            default_transaction_type
-        } else if memo.0 > 0 {
-            if Self::is_create_canister_transaction(memo, &to, principal) {
-                TransactionType::CreateCanister
-            } else {
-                default_transaction_type
-            }
-        } else {
-            default_transaction_type
-        }
-    }
-
-    fn is_create_canister_transaction(memo: Memo, to: &AccountIdentifier, principal: &PrincipalId) -> bool {
-        // Creating a canister involves sending ICP directly to an account controlled by the CMC, the NNS
-        // Dapp canister then notifies the CMC of the transfer.
-        if memo == MEMO_CREATE_CANISTER {
-            let subaccount = principal.into();
-            // Check if sent to CMC account for this principal
-            let expected_to = AccountIdentifier::new(CYCLES_MINTING_CANISTER_ID.into(), Some(subaccount));
-            if *to == expected_to {
-                return true;
-            }
-        }
-        false
-    }
-
-    /// Certain transaction types require additional processing (Stake Neuron, Create Canister,
-    /// etc). Each time we detect one of these transaction types we need to add the details to the
-    /// `multi_part_transactions_processor` which will work through the required actions in the
-    /// background.
-    #[allow(clippy::too_many_arguments)]
-    fn process_transaction_type(
-        &mut self,
-        transaction_type: TransactionType,
-        principal: PrincipalId,
-        block_height: BlockIndex,
-    ) {
-        if transaction_type == TransactionType::CreateCanister {
-            self.multi_part_transactions_processor.push(
-                block_height,
-                MultiPartTransactionToBeProcessed::CreateCanisterV2(principal),
-            );
-        };
-    }
     fn assert_account_limit(&self) {
         let db_accounts_len = self.accounts_db.db_accounts_len();
         assert!(
@@ -954,9 +721,14 @@ impl StableState for AccountsStore {
         let empty_accounts = BTreeMap::<Vec<u8>, candid::Empty>::new();
         Candid((
             empty_accounts,
-            &self.hardware_wallets_and_sub_accounts,
-            // TODO: Remove pending_transactions
-            HashMap::<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>::new(),
+            // hardware_wallets_and_sub_accounts is unused but we need to encode
+            // it for backwards compatibility.
+            // TODO: Change AccountWrapper to candid::Empty after we've
+            // deployed to mainnet.
+            HashMap::<AccountIdentifier, AccountWrapper>::new(),
+            // Pending transactions are unused but we need to encode them for
+            // backwards compatibility.
+            HashMap::<(AccountIdentifier, AccountIdentifier), candid::Empty>::new(),
             // Transactions are unused but we need to encode them for backwards
             // compatibility.
             VecDeque::<candid::Empty>::new(),
@@ -964,7 +736,11 @@ impl StableState for AccountsStore {
             // backwards compatibility.
             HashMap::<AccountIdentifier, candid::Empty>::new(),
             &self.block_height_synced_up_to,
-            &self.multi_part_transactions_processor,
+            // multi_part_transactions_processor is unused but we need to encode
+            // it for backwards compatibility.
+            // TODO: Change to an arbitrary value after we've deployed to
+            // mainnet. Then remove the MultiPartTransactionsProcessor.
+            MultiPartTransactionsProcessor::default(),
             &self.last_ledger_sync_timestamp_nanos,
             &self.neurons_topped_up_count,
             Some(&self.accounts_db_stats),
@@ -979,37 +755,33 @@ impl StableState for AccountsStore {
             // Accounts are now in stable structures and no longer in a simple
             // map on the heap. So we don't need to decode them here.
             _accounts,
-            mut hardware_wallets_and_sub_accounts,
-            pending_transactions,
+            _hardware_wallets_and_sub_accounts,
+            _pending_transactions,
             // Transactions are unused but we need to decode something for backwards
             // compatibility.
             _transactions,
             _neuron_accounts,
             block_height_synced_up_to,
-            multi_part_transactions_processor,
+            _multi_part_transactions_processor,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
             accounts_db_stats_maybe,
         ): (
             candid::Reserved,
+            // TODO: Change to candid:Reserved and remove AccountWrapper after
+            // we've deployed to mainnet. If we do it now, decoding will break
+            // because of the skip quota. The decoder will think there is an
+            // attack with a lot of unnecessary data in a request.
             HashMap<AccountIdentifier, AccountWrapper>,
-            HashMap<(AccountIdentifier, AccountIdentifier), (TransactionType, u64)>,
             candid::Reserved,
-            HashMap<AccountIdentifier, NeuronDetails>,
+            candid::Reserved,
+            candid::Reserved,
             Option<BlockIndex>,
-            MultiPartTransactionsProcessor,
+            candid::Reserved,
             u64,
             u64,
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
-
-        // Remove duplicate links between hardware wallets and user accounts
-        for hw_or_sub in hardware_wallets_and_sub_accounts.values_mut() {
-            if let AccountWrapper::HardwareWallet(ids) = hw_or_sub {
-                let mut unique = HashSet::new();
-                ids.retain(|id| unique.insert(*id));
-            }
-        }
 
         let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
         let Some(accounts_db_stats) = accounts_db_stats_maybe else {
@@ -1021,10 +793,7 @@ impl StableState for AccountsStore {
             // will be replaced with an AccountsDbAsUnboundedStableBTreeMap in
             // State::from(Partitions) so it doesn't matter what we set here.
             accounts_db: AccountsDbAsProxy::default(),
-            hardware_wallets_and_sub_accounts,
-            pending_transactions,
             block_height_synced_up_to,
-            multi_part_transactions_processor,
             accounts_db_stats,
             accounts_db_stats_recomputed_on_upgrade,
             last_ledger_sync_timestamp_nanos,

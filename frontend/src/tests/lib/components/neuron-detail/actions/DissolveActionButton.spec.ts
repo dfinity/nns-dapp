@@ -2,11 +2,11 @@ import {
   startDissolving,
   stopDissolving,
 } from "$lib/services/neurons.services";
+import DissolveActionButtonTest from "$tests/lib/components/neuron-detail/actions/DissolveActionButtonTest.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronState } from "@dfinity/nns";
 import { fireEvent, render } from "@testing-library/svelte";
-import DissolveActionButtonTest from "./DissolveActionButtonTest.svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {

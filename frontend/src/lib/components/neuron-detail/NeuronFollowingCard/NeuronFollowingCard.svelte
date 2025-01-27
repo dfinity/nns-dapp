@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import FollowNeuronsButton from "$lib/components/neuron-detail/actions/FollowNeuronsButton.svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
@@ -10,8 +12,6 @@
     isNeuronControllable,
     type FolloweesNeuron,
   } from "$lib/utils/neuron.utils";
-  import FollowNeuronsButton from "../actions/FollowNeuronsButton.svelte";
-  import Followee from "./Followee.svelte";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
@@ -35,7 +35,7 @@
   onMount(listKnownNeurons);
 </script>
 
-<CardInfo noMargin>
+<CardInfo noMargin testId="neuron-following-card-component">
   <KeyValuePairInfo testId="neuron-following">
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
     <svelte:fragment slot="info"
@@ -44,7 +44,7 @@
   </KeyValuePairInfo>
 
   {#if followees.length > 0 && nonNullish(neuron)}
-    <div class="frame">
+    <div data-tid="followees-list" class="frame">
       {#each followees as followee}
         <Followee {followee} {neuron} />
       {/each}

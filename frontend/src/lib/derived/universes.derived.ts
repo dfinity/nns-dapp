@@ -1,4 +1,6 @@
 import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
+import { icrcTokensUniversesStore } from "$lib/derived/icrc-universes.derived";
+import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 import {
   snsProjectsCommittedStore,
   type SnsFullProject,
@@ -6,8 +8,6 @@ import {
 import type { Universe } from "$lib/types/universe";
 import { createUniverse } from "$lib/utils/universe.utils";
 import { derived, type Readable } from "svelte/store";
-import { icrcTokensUniversesStore } from "./icrc-universes.derived";
-import { nnsUniverseStore } from "./nns-universe.derived";
 
 export const universesStore = derived<
   [

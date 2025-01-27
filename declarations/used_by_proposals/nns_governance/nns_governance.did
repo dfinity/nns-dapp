@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-12-06_03-16-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-23_03-04-hashes-in-blocks/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record {
   hash : blob;
 };
@@ -65,6 +65,7 @@ type CanisterSettings = record {
   wasm_memory_limit : opt nat64;
   memory_allocation : opt nat64;
   compute_allocation : opt nat64;
+  wasm_memory_threshold : opt nat64;
 };
 
 type CanisterStatusResultV2 = record {
@@ -123,6 +124,7 @@ type RefreshVotingPowerResponse = record {
   // minimal until we discover there is a "real need". YAGNI.
 };
 
+// KEEP THIS IN SYNC WITH ManageNeuronCommandRequest!
 type Command = variant {
   Spawn : Spawn;
   Split : Split;
@@ -137,6 +139,8 @@ type Command = variant {
   MergeMaturity : MergeMaturity;
   Disburse : Disburse;
   RefreshVotingPower : RefreshVotingPower;
+
+  // KEEP THIS IN SYNC WITH ManageNeuronCommandRequest!
 };
 
 type Command_1 = variant {
@@ -344,15 +348,18 @@ type GovernanceCachedMetrics = record {
   };
   dissolving_neurons_count_buckets : vec record { nat64; nat64 };
   dissolving_neurons_e8s_buckets_ect : vec record { nat64; float64 };
-  non_self_authenticating_controller_neuron_subset_metrics : opt NeuronSubsetMetrics;
   dissolving_neurons_count : nat64;
   dissolving_neurons_e8s_buckets : vec record { nat64; float64 };
   total_staked_maturity_e8s_equivalent_seed : nat64;
   community_fund_total_staked_e8s : nat64;
   not_dissolving_neurons_e8s_buckets_seed : vec record { nat64; float64 };
-  public_neuron_subset_metrics : opt NeuronSubsetMetrics;
   timestamp_seconds : nat64;
   seed_neuron_count : nat64;
+
+  non_self_authenticating_controller_neuron_subset_metrics : opt NeuronSubsetMetrics;
+  public_neuron_subset_metrics : opt NeuronSubsetMetrics;
+  declining_voting_power_neuron_subset_metrics : opt NeuronSubsetMetrics;
+  fully_lost_voting_power_neuron_subset_metrics : opt NeuronSubsetMetrics;
 };
 
 type GovernanceError = record {
@@ -490,6 +497,7 @@ type ManageNeuron = record {
   neuron_id_or_subaccount : opt NeuronIdOrSubaccount;
 };
 
+// KEEP THIS IN SYNC WITH COMMAND!
 type ManageNeuronCommandRequest = variant {
   Spawn : Spawn;
   Split : Split;
@@ -503,6 +511,9 @@ type ManageNeuronCommandRequest = variant {
   StakeMaturity : StakeMaturity;
   MergeMaturity : MergeMaturity;
   Disburse : Disburse;
+  RefreshVotingPower : RefreshVotingPower;
+
+  // KEEP THIS IN SYNC WITH COMMAND!
 };
 
 type ManageNeuronRequest = record {
@@ -755,16 +766,25 @@ type NeuronStakeTransfer = record {
 };
 
 type NeuronSubsetMetrics = record {
-  total_maturity_e8s_equivalent : opt nat64;
-  maturity_e8s_equivalent_buckets : vec record { nat64; nat64 };
-  voting_power_buckets : vec record { nat64; nat64 };
-  total_staked_e8s : opt nat64;
   count : opt nat64;
+
+  total_staked_e8s : opt nat64;
+  total_maturity_e8s_equivalent : opt nat64;
   total_staked_maturity_e8s_equivalent : opt nat64;
-  staked_maturity_e8s_equivalent_buckets : vec record { nat64; nat64 };
-  staked_e8s_buckets : vec record { nat64; nat64 };
+
   total_voting_power : opt nat64;
+  total_deciding_voting_power : opt nat64;
+  total_potential_voting_power : opt nat64;
+
   count_buckets : vec record { nat64; nat64 };
+
+  staked_e8s_buckets : vec record { nat64; nat64 };
+  maturity_e8s_equivalent_buckets : vec record { nat64; nat64 };
+  staked_maturity_e8s_equivalent_buckets : vec record { nat64; nat64 };
+
+  voting_power_buckets : vec record { nat64; nat64 };
+  deciding_voting_power_buckets : vec record { nat64; nat64 };
+  potential_voting_power_buckets : vec record { nat64; nat64 };
 };
 
 type NeuronsFundAuditInfo = record {

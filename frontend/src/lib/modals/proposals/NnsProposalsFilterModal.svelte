@@ -1,5 +1,6 @@
 <script lang="ts">
   import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
+  import FilterModal from "$lib/modals/common/FilterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
   import type { Filter } from "$lib/types/filters";
@@ -10,7 +11,6 @@
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
   import { enumValues } from "$lib/utils/enum.utils";
   import { keyOf, keyOfOptional } from "$lib/utils/utils";
-  import FilterModal from "../common/FilterModal.svelte";
   import type { ProposalStatus, Topic } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
 

@@ -5,6 +5,7 @@ import {
   claimOrRefreshNeuron,
   claimOrRefreshNeuronByMemo,
   disburse,
+  getNetworkEconomicsParameters,
   increaseDissolveDelay,
   joinCommunityFund,
   leaveCommunityFund,
@@ -45,6 +46,7 @@ import {
 } from "$lib/api/governance.api";
 import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
+import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
 import type { Identity } from "@dfinity/agent";
 import type { KnownNeuron, NeuronInfo } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
@@ -108,7 +110,7 @@ const clearCacheAfter = async <R>(promise: Promise<R>) => {
 };
 
 // Should be called in between tests to clean up state.
-export const resetNeuronsApiService = () => {
+const resetNeuronsApiService = () => {
   clearCache();
 };
 
@@ -148,6 +150,9 @@ export const governanceApiService = {
       principalText: params.identity.getPrincipal().toText(),
     };
     return neuronsCache.neurons;
+  },
+  getNetworkEconomicsParameters(params: ApiQueryParams) {
+    return getNetworkEconomicsParameters(params);
   },
 
   // Action calls
@@ -215,3 +220,5 @@ export const governanceApiService = {
     return clearCacheAfter(changeNeuronVisibility(params));
   },
 };
+
+registerCleanupForTesting(resetNeuronsApiService);

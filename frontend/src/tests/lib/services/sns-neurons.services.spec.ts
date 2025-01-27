@@ -35,7 +35,6 @@ import {
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
-import { resetMockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
@@ -93,7 +92,6 @@ describe("sns-neurons-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetMockedConstants();
     resetSnsProjects();
     vi.spyOn(console, "error").mockReturnValue(undefined);
   });

@@ -1,8 +1,10 @@
 <script lang="ts">
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { TransactionInit } from "$lib/types/transaction";
-  import type { ValidateAmountFn } from "$lib/types/transaction";
+  import type {
+    TransactionInit,
+    ValidateAmountFn,
+  } from "$lib/types/transaction";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";

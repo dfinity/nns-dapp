@@ -1,4 +1,5 @@
 import { createAgent } from "$lib/api/agent.api";
+import { nnsDappCanister } from "$lib/api/nns-dapp.api";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
@@ -13,7 +14,6 @@ import {
   type ProposalId,
   type ProposalInfo,
 } from "@dfinity/nns";
-import { nnsDappCanister } from "./nns-dapp.api";
 
 export const queryProposals = async ({
   beforeProposal,

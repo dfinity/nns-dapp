@@ -1,6 +1,6 @@
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
+import { writableStored } from "$lib/stores/writable-stored";
 import type { Readable } from "svelte/store";
-import { writableStored } from "./writable-stored";
 
 type JsonRepresentationMode = "tree" | "raw";
 

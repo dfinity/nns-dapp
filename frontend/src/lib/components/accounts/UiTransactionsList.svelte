@@ -1,31 +1,38 @@
 <script lang="ts">
   // TODO: Rename to TransactionList once we remove the old one.
+  import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
+  import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
+  import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import type { UiTransaction } from "$lib/types/transaction";
-  import SkeletonCard from "../ui/SkeletonCard.svelte";
-  import NoTransactions from "./NoTransactions.svelte";
-  import TransactionCard from "./TransactionCard.svelte";
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
   import { flip } from "svelte/animate";
 
   export let transactions: UiTransaction[];
   export let loading: boolean;
   export let completed = false;
+
+  $: isEmpty = transactions.length === 0;
+
+  $: showSkeleton = isEmpty && loading;
+  $: showNoTransactions = isEmpty && !loading;
+  $: disabledInifiteScroll = loading || completed;
 </script>
 
 <div data-tid="transactions-list" class="container">
-  {#if transactions.length === 0 && !loading}
+  {#if showSkeleton}
+    <SkeletonCard cardType="info" />
+    <SkeletonCard cardType="info" />
+  {:else if showNoTransactions}
     <NoTransactions />
-  {:else if transactions.length === 0 && loading}
-    <SkeletonCard cardType="info" />
-    <SkeletonCard cardType="info" />
   {:else}
-    <InfiniteScroll on:nnsIntersect disabled={loading || completed}>
+    <InfiniteScroll on:nnsIntersect disabled={disabledInifiteScroll}>
       {#each transactions as transaction (transaction.domKey)}
         <div animate:flip={{ duration: 250 }}>
           <TransactionCard {transaction} />
         </div>
       {/each}
     </InfiniteScroll>
+
     {#if loading}
       <Spinner inline />
     {/if}

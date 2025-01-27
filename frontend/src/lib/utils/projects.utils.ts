@@ -14,7 +14,12 @@ import type {
 } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { StoreData } from "$lib/types/store";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
+import { getCommitmentE8s } from "$lib/utils/sns.utils";
 import { createDescendingComparator } from "$lib/utils/sort.utils";
+import { formatTokenE8s } from "$lib/utils/token.utils";
+import { stringifyJson } from "$lib/utils/utils";
 import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import {
@@ -23,11 +28,6 @@ import {
   nonNullish,
   type TokenAmount,
 } from "@dfinity/utils";
-import { nowInSeconds } from "./date.utils";
-import type { I18nSubstitutions } from "./i18n.utils";
-import { getCommitmentE8s } from "./sns.utils";
-import { formatTokenE8s } from "./token.utils";
-import { stringifyJson } from "./utils";
 
 export const filterProjectsStatus = ({
   swapLifecycle,

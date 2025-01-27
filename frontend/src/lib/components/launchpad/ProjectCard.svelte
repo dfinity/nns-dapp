@@ -1,5 +1,6 @@
 <script lang="ts">
   import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
+  import ProjectCardSwapInfo from "$lib/components/launchpad/ProjectCardSwapInfo.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
@@ -8,9 +9,7 @@
   import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import ProjectCardSwapInfo from "./ProjectCardSwapInfo.svelte";
-  import { Card } from "@dfinity/gix-components";
-  import { Spinner } from "@dfinity/gix-components";
+  import { Card, Spinner } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";

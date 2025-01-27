@@ -9,9 +9,6 @@ import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("SnsFilterStatusModal", () => {
-  beforeEach(() => {
-    snsFiltersStore.reset();
-  });
   const filters: Filter<SnsProposalDecisionStatus>[] = [
     {
       id: "1",

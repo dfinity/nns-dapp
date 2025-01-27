@@ -46,7 +46,6 @@ describe("ImportTokenModal", () => {
   let queryIcrcTokenSpy: MockInstance;
 
   beforeEach(() => {
-    importedTokensStore.reset();
     resetIdentity();
     resetSnsProjects();
     busyStore.resetForTesting();

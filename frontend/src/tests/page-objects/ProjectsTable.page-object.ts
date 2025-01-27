@@ -1,5 +1,6 @@
 import { ProjectsTableRowPo } from "$tests/page-objects/ProjectsTableRow.page-object";
 import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";
+import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ProjectsTablePo extends ResponsiveTablePo {
@@ -7,6 +8,10 @@ export class ProjectsTablePo extends ResponsiveTablePo {
 
   static under(element: PageObjectElement): ProjectsTablePo {
     return new ProjectsTablePo(element.byTestId(ProjectsTablePo.TID));
+  }
+
+  getUsdValueBannerPo(): UsdValueBannerPo {
+    return UsdValueBannerPo.under(this.root);
   }
 
   getProjectsTableRowPos(): Promise<ProjectsTableRowPo[]> {

@@ -1,4 +1,4 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
+import * as canistersApi from "$lib/api/canisters.api";
 import * as governanceApi from "$lib/api/governance.api";
 import * as indexApi from "$lib/api/icp-index.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
@@ -14,15 +14,20 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import NnsWallet from "$lib/pages/NnsWallet.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
+import { canistersStore } from "$lib/stores/canisters.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpTransactionsStore } from "$lib/stores/icp-transactions.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { getCanisterCreationCmcAccountIdentifierHex } from "$lib/utils/canisters.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import { page } from "$mocks/$app/stores";
+import AccountsTest from "$tests/lib/pages/AccountsTest.svelte";
 import {
   mockIdentity,
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
+import { mockCanister } from "$tests/mocks/canisters.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -58,7 +63,6 @@ import { memoToNeuronAccountIdentifier } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
-import AccountsTest from "./AccountsTest.svelte";
 
 vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/accounts.api");
@@ -85,7 +89,6 @@ describe("NnsWallet", () => {
     vi.clearAllTimers();
     cancelPollAccounts();
     resetAccountsForTesting();
-    resetNeuronsApiService();
     icpTransactionsStore.reset();
     resetIdentity();
 
@@ -406,6 +409,17 @@ describe("NnsWallet", () => {
       const po = await renderWallet(props);
 
       expect(await po.getWalletPageHeadingPo().getTitle()).toBe("4.32 ICP");
+    });
+
+    it("should not render Ledger neuron hotkey warning for not HW wallet", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      const po = await renderWallet(props);
+      expect(await po.getLedgerNeuronHotkeyWarningPo().isBannerVisible()).toBe(
+        false
+      );
     });
 
     it("should reload balance on open", async () => {
@@ -907,6 +921,93 @@ describe("NnsWallet", () => {
         expect(spyClaimNeuron).toBeCalledTimes(0);
       });
     });
+
+    describe("when there are canister creation transactions", () => {
+      const createCanisterMemo = 0x41455243n;
+      const cmcAccountIdentifierHex =
+        getCanisterCreationCmcAccountIdentifierHex({
+          controller: mockIdentity.getPrincipal(),
+        });
+      const fundingTransaction = createMockSendTransactionWithId({
+        to: cmcAccountIdentifierHex,
+        memo: createCanisterMemo,
+      });
+
+      it("should notify for missing canisters", async () => {
+        vi.spyOn(canistersApi, "notifyAndAttachCanister").mockResolvedValue(
+          undefined
+        );
+        vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+          transactions: [fundingTransaction],
+          oldestTxId,
+          balance: mainBalanceE8s,
+        });
+
+        canistersStore.setCanisters({
+          certified: true,
+          canisters: [],
+        });
+
+        await renderWallet({
+          accountIdentifier: mockMainAccount.identifier,
+        });
+
+        expect(canistersApi.notifyAndAttachCanister).toBeCalledWith({
+          blockIndex: fundingTransaction.id,
+          identity: mockIdentity,
+        });
+        expect(canistersApi.notifyAndAttachCanister).toBeCalledTimes(1);
+      });
+
+      it("should not notify for present canisters", async () => {
+        vi.spyOn(canistersApi, "notifyAndAttachCanister").mockResolvedValue(
+          undefined
+        );
+        vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+          transactions: [fundingTransaction],
+          oldestTxId,
+          balance: mainBalanceE8s,
+        });
+
+        canistersStore.setCanisters({
+          certified: true,
+          canisters: [
+            {
+              ...mockCanister,
+              block_index: [fundingTransaction.id],
+            },
+          ],
+        });
+
+        await renderWallet({
+          accountIdentifier: mockMainAccount.identifier,
+        });
+
+        expect(canistersApi.notifyAndAttachCanister).toBeCalledTimes(0);
+      });
+
+      it("should not notify if canisters aren't loaded", async () => {
+        vi.spyOn(canistersApi, "notifyAndAttachCanister").mockResolvedValue(
+          undefined
+        );
+        vi.spyOn(indexApi, "getTransactions").mockResolvedValue({
+          transactions: [fundingTransaction],
+          oldestTxId,
+          balance: mainBalanceE8s,
+        });
+
+        canistersStore.setCanisters({
+          certified: undefined,
+          canisters: undefined,
+        });
+
+        await renderWallet({
+          accountIdentifier: mockMainAccount.identifier,
+        });
+
+        expect(canistersApi.notifyAndAttachCanister).toBeCalledTimes(0);
+      });
+    });
   });
 
   describe("accounts loaded (Subaccount)", () => {
@@ -1006,6 +1107,30 @@ describe("NnsWallet", () => {
       const po = await renderWallet(props);
       expect(await po.getListNeuronsButtonPo().isPresent()).toBe(true);
       expect(await po.getShowHardwareWalletButtonPo().isPresent()).toBe(true);
+    });
+
+    it("should display Ledger neuron hotkey warning", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      const po = await renderWallet(props);
+
+      expect(await po.getLedgerNeuronHotkeyWarningPo().isBannerVisible()).toBe(
+        true
+      );
+    });
+
+    it("should not display Ledger neuron hotkey warning when feature flag off", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        false
+      );
+      const po = await renderWallet(props);
+
+      expect(await po.getLedgerNeuronHotkeyWarningPo().isBannerVisible()).toBe(
+        false
+      );
     });
 
     describe("when there are staking transactions", () => {

@@ -1,6 +1,6 @@
+import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
 import { toastsError } from "$lib/stores/toasts.store";
-import type { RootCanisterId, RootCanisterIdText } from "$lib/types/sns";
-import { loadSnsAccounts } from "./sns-accounts.services";
+import type { RootCanisterId } from "$lib/types/sns";
 
 /**
  * Load Sns projects accounts balances.
@@ -9,28 +9,18 @@ import { loadSnsAccounts } from "./sns-accounts.services";
  *
  * @param {rootCanisterIds: RootCanisterId[], excludeRootCanisterIds?: RootCanisterIdText[]} params
  * @param {RootCanisterId[]} params.rootCanisterIds The list of root canister ids - Sns projects - for which the balance of the accounts should be fetched.
- * @param {RootCanisterIdText[] | undefined} params.excludeRootCanisterIds As the balance is also loaded by loadSnsAccounts() - to perform query and UPDATE call - this variable can be used to avoid to perform unnecessary query and per extension to override data in the balance store.
  */
 export const uncertifiedLoadSnsesAccountsBalances = async ({
   rootCanisterIds,
-  excludeRootCanisterIds = [],
 }: {
   rootCanisterIds: RootCanisterId[];
-  excludeRootCanisterIds?: RootCanisterIdText[];
 }): Promise<void> => {
-  const results: PromiseSettledResult<[void]>[] = await Promise.allSettled(
-    (
-      rootCanisterIds.filter(
-        (rootCanisterId) =>
-          !excludeRootCanisterIds.includes(rootCanisterId.toText())
-      ) ?? []
-    ).map((rootCanisterId) =>
-      Promise.all([
-        loadSnsAccounts({
-          rootCanisterId,
-          strategy: "query",
-        }),
-      ])
+  const results: PromiseSettledResult<void>[] = await Promise.allSettled(
+    rootCanisterIds.map((rootCanisterId) =>
+      loadSnsAccounts({
+        rootCanisterId,
+        strategy: "query",
+      })
     )
   );
 

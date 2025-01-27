@@ -1,6 +1,6 @@
+import type { Account } from "$lib/types/account";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { Writable } from "svelte/store";
-import type { Account } from "./account";
 
 export interface HardwareWalletNeuronInfo extends NeuronInfo {
   controlledByNNSDapp: boolean;

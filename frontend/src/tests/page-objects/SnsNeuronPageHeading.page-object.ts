@@ -1,4 +1,5 @@
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
+import { HeadingSubtitleWithUsdValuePo } from "$tests/page-objects/HeadingSubtitleWithUsdValue.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -9,6 +10,10 @@ export class SnsNeuronPageHeadingPo extends BasePageObject {
     return new SnsNeuronPageHeadingPo(
       element.byTestId(SnsNeuronPageHeadingPo.TID)
     );
+  }
+
+  getHeadingSubtitleWithUsdValuePo(): HeadingSubtitleWithUsdValuePo {
+    return HeadingSubtitleWithUsdValuePo.under(this.root);
   }
 
   getAmountDisplayPo(): AmountDisplayPo {
@@ -25,5 +30,13 @@ export class SnsNeuronPageHeadingPo extends BasePageObject {
 
   hasHotkeyTag(): Promise<boolean> {
     return this.root.byTestId("hotkey-tag").isPresent();
+  }
+
+  hasBalanceInUsd(): Promise<boolean> {
+    return this.getHeadingSubtitleWithUsdValuePo().hasAmountInUsd();
+  }
+
+  getBalanceInUsd(): Promise<string> {
+    return this.getHeadingSubtitleWithUsdValuePo().getAmountInUsd();
   }
 }

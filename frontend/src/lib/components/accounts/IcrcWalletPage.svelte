@@ -1,6 +1,8 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import IcrcBalancesObserver from "$lib/components/accounts/IcrcBalancesObserver.svelte";
+  import ImportTokenRemoveConfirmation from "$lib/components/accounts/ImportTokenRemoveConfirmation.svelte";
+  import WalletMorePopover from "$lib/components/accounts/WalletMorePopover.svelte";
   import WalletPageHeader from "$lib/components/accounts/WalletPageHeader.svelte";
   import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
@@ -26,8 +28,6 @@
   } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken as checkImportedToken } from "$lib/utils/imported-tokens.utils";
-  import ImportTokenRemoveConfirmation from "./ImportTokenRemoveConfirmation.svelte";
-  import WalletMorePopover from "./WalletMorePopover.svelte";
   import { IconDots, Island, Spinner, Tag } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";

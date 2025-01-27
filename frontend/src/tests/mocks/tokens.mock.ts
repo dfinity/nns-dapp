@@ -10,13 +10,16 @@ import {
 import { NNS_TOKEN } from "$lib/constants/tokens.constants";
 import type { TokensStoreData } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import {
   mockCkETHTESTToken,
   mockCkETHToken,
 } from "$tests/mocks/cketh-accounts.mock";
+import {
+  mockSnsFullProject,
+  mockSnsToken,
+} from "$tests/mocks/sns-projects.mock";
 import type { Subscriber } from "svelte/store";
-import { mockCkBTCToken } from "./ckbtc-accounts.mock";
-import { mockSnsFullProject, mockSnsToken } from "./sns-projects.mock";
 
 export const mockCkUSDCToken: IcrcTokenMetadata = {
   name: "ckUSDC",

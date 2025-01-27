@@ -5,8 +5,8 @@ import {
   type FeatureKey,
 } from "$lib/constants/environment.constants";
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
+import { writableStored } from "$lib/stores/writable-stored";
 import { derived, get, type Readable } from "svelte/store";
-import { writableStored } from "./writable-stored";
 
 type OverrideFeatureFlagsData = Partial<FeatureFlags<boolean>>;
 export interface OverrideFeatureFlagsStore
@@ -37,6 +37,8 @@ export const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
   "ENABLE_EXPORT_NEURONS_REPORT",
   "ENABLE_USD_VALUES",
   "ENABLE_USD_VALUES_FOR_NEURONS",
+  "ENABLE_PORTFOLIO_PAGE",
+  "ENABLE_IMPORT_TOKEN_BY_URL",
 ];
 
 /**
@@ -156,7 +158,9 @@ export const {
   ENABLE_EXPORT_NEURONS_REPORT,
   ENABLE_USD_VALUES,
   ENABLE_USD_VALUES_FOR_NEURONS,
+  ENABLE_PORTFOLIO_PAGE,
   // Used only in tests only
   TEST_FLAG_EDITABLE,
   TEST_FLAG_NOT_EDITABLE,
+  ENABLE_IMPORT_TOKEN_BY_URL,
 } = featureFlagsStore;

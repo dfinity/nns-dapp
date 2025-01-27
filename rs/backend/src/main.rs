@@ -8,7 +8,6 @@ use crate::accounts_store::{
 use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::perf::PerformanceCount;
-use crate::periodic_tasks_runner::run_periodic_tasks;
 use crate::state::{init_state, restore_state, save_state, with_state, with_state_mut, StableState};
 use crate::tvl::TvlResponse;
 use candid::candid_method;
@@ -31,11 +30,9 @@ mod arguments;
 mod assets;
 mod canisters;
 mod constants;
-mod ledger_sync;
 mod metrics_encoder;
 mod multi_part_transactions_processor;
 mod perf;
-mod periodic_tasks_runner;
 mod spawn;
 mod state;
 mod stats;
@@ -307,23 +304,6 @@ pub fn get_histogram_impl() -> AccountsStoreHistogram {
     with_state(|state| state.accounts_store.get_histogram())
 }
 
-/// Executes on every block height and is used to run background processes.
-///
-/// These background processes include:
-/// - Sync transactions from the ledger
-/// - Process any queued 'multi-part' actions (e.g. staking a neuron or topping up a canister)
-/// - Prune old transactions if memory usage is too high
-#[export_name = "canister_heartbeat"]
-pub fn canister_heartbeat() {
-    let future = run_periodic_tasks();
-
-    dfn_core::api::futures::spawn(future);
-    let migration_in_progress = with_state_mut(|s| s.accounts_store.migration_in_progress());
-    if migration_in_progress {
-        dfn_core::api::futures::spawn(call_step_migration_with_retries());
-    }
-}
-
 /// Steps the migration.
 #[export_name = "canister_update step_migration"]
 pub fn step_migration() {
@@ -343,11 +323,13 @@ fn step_migration_impl(step_size: u32) {
 }
 
 /// Calls `step_migration()` without panicking and rolling back if anything goes wrong.
+#[allow(dead_code)]
 async fn call_step_migration(step_size: u32) -> Result<(), (RejectionCode, String)> {
     ic_cdk::api::call::call(ic_cdk::id(), "step_migration", (step_size,)).await
 }
 
 /// Calls step migration, dropping the step size to 1 on failure.
+#[allow(dead_code)]
 async fn call_step_migration_with_retries() {
     for step_size in [AccountsDbAsProxy::MIGRATION_STEP_SIZE, 1] {
         if let Err((code, msg)) = call_step_migration(step_size).await {

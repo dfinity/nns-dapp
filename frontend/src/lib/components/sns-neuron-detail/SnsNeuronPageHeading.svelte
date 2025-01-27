@@ -1,6 +1,11 @@
 <script lang="ts">
+  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
+  import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
+  import PageHeading from "$lib/components/common/PageHeading.svelte";
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { selectedTokenStore } from "$lib/derived/selected-token.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
@@ -9,15 +14,14 @@
     isUserHotkey,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import HeadingSubtitle from "../common/HeadingSubtitle.svelte";
-  import PageHeading from "../common/PageHeading.svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
   import { Tag } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;
   export let parameters: SnsNervousSystemParameters;
+  export let ledgerCanisterId: Principal | undefined;
 
   let token: Token | undefined;
   $: token = $selectedTokenStore;
@@ -47,15 +51,29 @@
       <AmountDisplay {amount} size="huge" singleLine detailed />
     {/if}
   </svelte:fragment>
-  <HeadingSubtitle slot="subtitle" testId="voting-power">
-    {#if votingPower > 0}
-      {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
-        $votingPower: formatVotingPower(votingPower),
-      })}
+  <svelte:fragment slot="subtitle">
+    {#if $ENABLE_USD_VALUES_FOR_NEURONS}
+      <HeadingSubtitleWithUsdValue {amount} {ledgerCanisterId}>
+        {#if votingPower > 0}
+          {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
+            $votingPower: formatVotingPower(votingPower),
+          })}
+        {:else}
+          {$i18n.neuron_detail.voting_power_zero_subtitle}
+        {/if}
+      </HeadingSubtitleWithUsdValue>
     {:else}
-      {$i18n.neuron_detail.voting_power_zero_subtitle}
+      <HeadingSubtitle testId="voting-power">
+        {#if votingPower > 0}
+          {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
+            $votingPower: formatVotingPower(votingPower),
+          })}
+        {:else}
+          {$i18n.neuron_detail.voting_power_zero_subtitle}
+        {/if}
+      </HeadingSubtitle>
     {/if}
-  </HeadingSubtitle>
+  </svelte:fragment>
   <svelte:fragment slot="tags">
     {#if isHotkey}
       <Tag size="large" testId="hotkey-tag">{$i18n.neurons.hotkey_control}</Tag>

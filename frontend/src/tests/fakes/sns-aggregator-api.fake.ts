@@ -32,12 +32,18 @@ const reset = () => {
 
 export const addProjectWith = ({
   rootCanisterId,
+  ledgerCanisterId,
   lifecycle,
 }: {
   rootCanisterId: string;
+  ledgerCanisterId?: string;
   lifecycle: SnsSwapLifecycle;
 }): CachedSnsDto => {
-  const project = aggregatorSnsMockWith({ rootCanisterId, lifecycle });
+  const project = aggregatorSnsMockWith({
+    rootCanisterId,
+    ledgerCanisterId,
+    lifecycle,
+  });
   projects.push(project);
   return project;
 };

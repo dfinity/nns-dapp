@@ -18,8 +18,7 @@
   } from "$lib/utils/responsive-table.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
   import { IconSort, IconSouth } from "@dfinity/gix-components";
-  import { assertNonNullish, isNullish } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
   export let tableData: Array<RowDataType>;

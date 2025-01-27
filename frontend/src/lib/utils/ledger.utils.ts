@@ -6,6 +6,7 @@ import {
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
 import { i18n } from "$lib/stores/i18n";
 import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { ReadRequest, RequestId, Signature } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
@@ -16,7 +17,6 @@ import type {
   ResponseSignUpdateCall,
 } from "@zondax/ledger-icp";
 import { get } from "svelte/store";
-import { replacePlaceholders } from "./i18n.utils";
 
 export const decodePublicKey = async ({
   principalText,

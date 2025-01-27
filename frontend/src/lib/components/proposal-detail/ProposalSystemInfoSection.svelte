@@ -1,12 +1,10 @@
 <script lang="ts">
+  import ProposalSystemInfoEntry from "$lib/components/proposal-detail/ProposalSystemInfoEntry.svelte";
+  import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import ProposalSystemInfoEntry from "./ProposalSystemInfoEntry.svelte";
-  import ProposalSystemInfoProposerEntry from "./ProposalSystemInfoProposerEntry.svelte";
-  import type { NeuronId } from "@dfinity/nns";
-  import type { ProposalId } from "@dfinity/nns";
-  import type { ProposalInfo } from "@dfinity/nns";
+  import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
 

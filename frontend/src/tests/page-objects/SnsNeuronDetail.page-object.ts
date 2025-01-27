@@ -6,6 +6,7 @@ import { SnsNeuronFollowingCardPo } from "$tests/page-objects/SnsNeuronFollowing
 import { SnsNeuronHotkeysCardPo } from "$tests/page-objects/SnsNeuronHotkeysCard.page-object";
 import { SnsNeuronMaturitySectionPo } from "$tests/page-objects/SnsNeuronMaturitySection.page-object";
 import { SnsNeuronPageHeaderPo } from "$tests/page-objects/SnsNeuronPageHeader.page-object";
+import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading.page-object";
 import { SnsNeuronVotingPowerSectionPo } from "$tests/page-objects/SnsNeuronVotingPowerSection.page-object";
 import { SummaryPo } from "$tests/page-objects/Summary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -16,6 +17,10 @@ export class SnsNeuronDetailPo extends BasePageObject {
 
   static under(element: PageObjectElement): SnsNeuronDetailPo {
     return new SnsNeuronDetailPo(element.byTestId(SnsNeuronDetailPo.TID));
+  }
+
+  getSnsNeuronPageHeadingPo(): SnsNeuronPageHeadingPo {
+    return SnsNeuronPageHeadingPo.under(this.root);
   }
 
   getSkeletonCardPos(): Promise<SkeletonCardPo[]> {

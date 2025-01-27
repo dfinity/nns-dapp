@@ -1,3 +1,5 @@
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+
 type LogType = "log" | "debug" | "warn" | "error";
 
 const logTypes: LogType[] = ["log", "debug", "warn", "error"];
@@ -22,7 +24,8 @@ export const failTestsThatLogToConsole = () => {
     gotLogs = false;
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await runResolvedPromises();
     if (!isLoggingAllowed && gotLogs) {
       throw new Error(
         "Your test produced console logs, which is not allowed.\n" +

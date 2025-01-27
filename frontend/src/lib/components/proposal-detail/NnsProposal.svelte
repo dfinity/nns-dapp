@@ -1,12 +1,16 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import NnsProposalProposerActionsEntry from "$lib/components/proposal-detail/NnsProposalProposerActionsEntry.svelte";
+  import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
+  import NnsProposalSummarySection from "$lib/components/proposal-detail/NnsProposalSummarySection.svelte";
+  import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
+  import ProposalSystemInfoSection from "$lib/components/proposal-detail/ProposalSystemInfoSection.svelte";
+  import ProposalVotingSection from "$lib/components/proposal-detail/ProposalVotingSection.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { AppPath } from "$lib/constants/routes.constants";
-  import {
-    actionableProposalsActiveStore,
-    actionableProposalsNavigationIdsStore,
-  } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalsNavigationIdsStore } from "$lib/derived/actionable-universes.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { filteredProposals } from "$lib/derived/proposals.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
@@ -22,12 +26,6 @@
     mapProposalInfo,
     navigateToProposal,
   } from "$lib/utils/proposals.utils";
-  import NnsProposalProposerActionsEntry from "./NnsProposalProposerActionsEntry.svelte";
-  import NnsProposalProposerPayloadEntry from "./NnsProposalProposerPayloadEntry.svelte";
-  import NnsProposalSummarySection from "./NnsProposalSummarySection.svelte";
-  import ProposalNavigation from "./ProposalNavigation.svelte";
-  import ProposalSystemInfoSection from "./ProposalSystemInfoSection.svelte";
-  import ProposalVotingSection from "./ProposalVotingSection.svelte";
   import { SplitBlock } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";

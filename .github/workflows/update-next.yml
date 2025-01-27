@@ -23,12 +23,14 @@ jobs:
           app-id: ${{ vars.PR_AUTOMATION_BOT_PUBLIC_APP_ID }}
           private-key: ${{ secrets.PR_AUTOMATION_BOT_PUBLIC_PRIVATE_KEY }}
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Read Node.js version from .nvmrc
+        id: node-version
+        run: echo "NODE_VERSION=$(cat frontend/.nvmrc)" >> $GITHUB_ENV
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
           registry-url: 'https://registry.npmjs.org'
-      - name: Install latest npm
-        run: npm install -g npm@latest
+          node-version: ${{ env.NODE_VERSION }}
       - name: Update gix-components
         if: ${{ inputs.gix_components }}
         run: |

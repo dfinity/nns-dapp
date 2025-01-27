@@ -5,7 +5,10 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
+  import {
+    ENABLE_IMPORT_TOKEN_BY_URL,
+    ENABLE_USD_VALUES,
+  } from "$lib/stores/feature-flags.store";
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
@@ -14,10 +17,15 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import { IconAccountsPage } from "@dfinity/gix-components";
-  import { IconPlus, IconSettings, Tooltip } from "@dfinity/gix-components";
-  import { Popover } from "@dfinity/gix-components";
+  import {
+    IconHeldTokens,
+    IconPlus,
+    IconSettings,
+    Popover,
+    Tooltip,
+  } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+  import { pageStore } from "$lib/derived/page.derived";
 
   export let userTokensData: UserToken[];
 
@@ -84,7 +92,7 @@
 <div class="wrapper" data-tid="tokens-page-component">
   {#if $ENABLE_USD_VALUES}
     <UsdValueBanner usdAmount={totalBalanceInUsd} {hasUnpricedTokens}>
-      <IconAccountsPage slot="icon" />
+      <IconHeldTokens slot="icon" />
     </UsdValueBanner>
   {/if}
 
@@ -147,7 +155,7 @@
     <HideZeroBalancesToggle />
   </Popover>
 
-  {#if showImportTokenModal}
+  {#if showImportTokenModal || ($ENABLE_IMPORT_TOKEN_BY_URL && nonNullish($pageStore.importTokenLedgerId))}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
 </div>

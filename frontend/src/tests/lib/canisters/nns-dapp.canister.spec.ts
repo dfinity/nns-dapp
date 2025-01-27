@@ -242,12 +242,20 @@ describe("NNSDapp", () => {
       service.attach_canister.mockResolvedValue({ Ok: null });
       const nnsDapp = await createNnsDapp(service);
 
+      expect(service.attach_canister).toBeCalledTimes(0);
+
       await nnsDapp.attachCanister({
         name: "test",
         canisterId: mockCanister.canister_id,
+        blockIndex: 123n,
       });
 
-      expect(service.attach_canister).toBeCalled();
+      expect(service.attach_canister).toBeCalledWith({
+        name: "test",
+        canister_id: mockCanister.canister_id,
+        block_index: [123n],
+      });
+      expect(service.attach_canister).toBeCalledTimes(1);
     });
 
     it("should throw CanisterAlreadyAttachedError", async () => {
@@ -261,6 +269,7 @@ describe("NNSDapp", () => {
         nnsDapp.attachCanister({
           name: "test",
           canisterId: mockCanister.canister_id,
+          blockIndex: 123n,
         });
 
       expect(call).rejects.toThrowError(CanisterAlreadyAttachedError);
@@ -277,6 +286,7 @@ describe("NNSDapp", () => {
         nnsDapp.attachCanister({
           name: "test",
           canisterId: mockCanister.canister_id,
+          blockIndex: 123n,
         });
 
       expect(call).rejects.toThrowError(CanisterNameAlreadyTakenError);
@@ -293,6 +303,7 @@ describe("NNSDapp", () => {
         nnsDapp.attachCanister({
           name: "test",
           canisterId: mockCanister.canister_id,
+          blockIndex: 123n,
         });
 
       expect(call).rejects.toThrowError(CanisterNameTooLongError);
@@ -309,6 +320,7 @@ describe("NNSDapp", () => {
         nnsDapp.attachCanister({
           name: "test",
           canisterId: mockCanister.canister_id,
+          blockIndex: 123n,
         });
 
       expect(call).rejects.toThrowError(CanisterLimitExceededError);

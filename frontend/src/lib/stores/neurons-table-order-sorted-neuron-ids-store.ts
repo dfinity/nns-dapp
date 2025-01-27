@@ -1,4 +1,6 @@
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 import { definedNeuronsStore } from "$lib/derived/neurons.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { i18n } from "$lib/stores/i18n";
@@ -11,13 +13,30 @@ import {
 import { derived } from "svelte/store";
 
 const tableNeuronsToSortStore = derived(
-  [authStore, icpAccountsStore, i18n, definedNeuronsStore],
-  ([$authStore, $icpAccountsStore, $i18n, $definedNeuronsStore]) => {
+  [
+    authStore,
+    icpAccountsStore,
+    i18n,
+    definedNeuronsStore,
+    icpSwapUsdPricesStore,
+    startReducingVotingPowerAfterSecondsStore,
+  ],
+  ([
+    $authStore,
+    $icpAccountsStore,
+    $i18n,
+    $definedNeuronsStore,
+    $icpSwapUsdPricesStore,
+    $startReducingVotingPowerAfterSecondsStore,
+  ]) => {
     const tableNeurons = tableNeuronsFromNeuronInfos({
       identity: $authStore.identity,
       accounts: $icpAccountsStore,
       i18n: $i18n,
       neuronInfos: $definedNeuronsStore,
+      icpSwapUsdPrices: $icpSwapUsdPricesStore,
+      startReducingVotingPowerAfterSeconds:
+        $startReducingVotingPowerAfterSecondsStore,
     });
     return tableNeurons.sort(compareById);
   }

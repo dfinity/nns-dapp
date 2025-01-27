@@ -1,6 +1,6 @@
 import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
+import { loadIcrcToken } from "$lib/services/icrc-accounts.services";
 import type { Unsubscriber } from "svelte/store";
-import { loadIcrcToken } from "./icrc-accounts.services";
 
 export const watchIcrcTokensLoadTokenData = (): Unsubscriber => {
   return icrcCanistersStore.subscribe((canistersData) => {

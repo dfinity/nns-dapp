@@ -1,10 +1,5 @@
-import { Actor } from "@dfinity/agent";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
-import type { ProposalId } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
-import { nonNullish } from "@dfinity/utils";
-import type { NNSDappCanisterOptions } from "./nns-dapp.canister.types";
-import { idlFactory as certifiedIdlFactory } from "./nns-dapp.certified.idl";
+import type { NNSDappCanisterOptions } from "$lib/canisters/nns-dapp/nns-dapp.canister.types";
+import { idlFactory as certifiedIdlFactory } from "$lib/canisters/nns-dapp/nns-dapp.certified.idl";
 import {
   AccountNotFoundError,
   CanisterAlreadyAttachedError,
@@ -19,9 +14,9 @@ import {
   SubAccountLimitExceededError,
   TooManyImportedTokensError,
   UnknownProposalPayloadError,
-} from "./nns-dapp.errors";
-import type { NNSDappService } from "./nns-dapp.idl";
-import { idlFactory } from "./nns-dapp.idl";
+} from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
+import { idlFactory } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   AccountDetails,
   CanisterDetails,
@@ -34,7 +29,12 @@ import type {
   RenameSubAccountRequest,
   RenameSubAccountResponse,
   SubAccountDetails,
-} from "./nns-dapp.types";
+} from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { Actor } from "@dfinity/agent";
+import { AccountIdentifier } from "@dfinity/ledger-icp";
+import type { ProposalId } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
+import { nonNullish, toNullable } from "@dfinity/utils";
 
 export class NNSDappCanister {
   private constructor(
@@ -218,13 +218,16 @@ export class NNSDappCanister {
   public attachCanister = async ({
     name,
     canisterId,
+    blockIndex,
   }: {
     name: string;
     canisterId: Principal;
+    blockIndex: bigint | undefined;
   }): Promise<void> => {
     const response = await this.certifiedService.attach_canister({
       name,
       canister_id: canisterId,
+      block_index: toNullable(blockIndex),
     });
     if ("Ok" in response) {
       return;

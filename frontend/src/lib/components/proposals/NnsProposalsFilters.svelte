@@ -1,6 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
+  import FiltersWrapper from "$lib/components/proposals/FiltersWrapper.svelte";
   import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
   import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
@@ -10,7 +11,6 @@
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
   import type { ProposalsFilterModalProps } from "$lib/types/proposals";
   import { enumsExclude } from "$lib/utils/enum.utils";
-  import FiltersWrapper from "./FiltersWrapper.svelte";
   import { ProposalStatus, Topic } from "@dfinity/nns";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;

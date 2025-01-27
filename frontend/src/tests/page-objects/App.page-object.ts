@@ -9,19 +9,20 @@ import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
+import { PortfolioRoutePo } from "$tests/page-objects/PortfolioRoute.page-object";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { ProposalDetailPo } from "$tests/page-objects/ProposalDetail.page-object";
 import { ProposalsPo } from "$tests/page-objects/Proposals.page-object";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
+import { SignInAccountsPo } from "$tests/page-objects/SignInAccounts.page-object";
 import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { ToastsPo } from "$tests/page-objects/Toasts.page-object";
+import { TokensRoutePo } from "$tests/page-objects/TokensRoute.page-object";
 import { WalletPo } from "$tests/page-objects/Wallet.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { isNullish } from "@dfinity/utils";
 import { expect } from "@playwright/test";
-import { SignInAccountsPo } from "./SignInAccounts.page-object";
-import { TokensRoutePo } from "./TokensRoute.page-object";
 
 export class AppPo extends BasePageObject {
   getSignInPo(): SignInPo {
@@ -38,6 +39,10 @@ export class AppPo extends BasePageObject {
 
   getSignInAccountsPo(): SignInAccountsPo {
     return SignInAccountsPo.under(this.root);
+  }
+
+  getPortfolioPo(): PortfolioRoutePo {
+    return PortfolioRoutePo.under(this.root);
   }
 
   getTokensPo(): TokensRoutePo {

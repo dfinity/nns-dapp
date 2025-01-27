@@ -1,4 +1,5 @@
 import NnsAvailableMaturityItemAction from "$lib/components/neuron-detail/NnsAvailableMaturityItemAction.svelte";
+import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
@@ -14,7 +15,6 @@ import {
 } from "$tests/utils/accounts.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NeuronContextActionsTest from "./NeuronContextActionsTest.svelte";
 
 describe("NnsAvailableMaturityItemAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {

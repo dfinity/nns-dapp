@@ -1,5 +1,6 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
   import SkeletonProjectCard from "$lib/components/ui/SkeletonProjectCard.svelte";
   import {
     snsProjectsActivePadStore,
@@ -11,7 +12,6 @@
     comparesByDecentralizationSaleOpenTimestampDesc,
     filterProjectsStatus,
   } from "$lib/utils/projects.utils";
-  import ProjectCard from "./ProjectCard.svelte";
   import { Html } from "@dfinity/gix-components";
   import { SnsSwapLifecycle } from "@dfinity/sns";
 

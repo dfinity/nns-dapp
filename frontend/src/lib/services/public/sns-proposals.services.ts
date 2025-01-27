@@ -10,6 +10,7 @@ import {
   getSnsNeuronIdentity,
   syncSnsNeurons,
 } from "$lib/services/sns-neurons.services";
+import { queryAndUpdate } from "$lib/services/utils.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
@@ -33,7 +34,6 @@ import type {
 } from "@dfinity/sns";
 import { fromDefinedNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { queryAndUpdate } from "../utils.services";
 
 export const registerVote = async ({
   rootCanisterId,
@@ -177,6 +177,7 @@ export const loadSnsProposals = async ({
         err,
       });
     },
+    logMessage: "loadSnsProposals",
   });
 };
 
@@ -225,5 +226,6 @@ export const getSnsProposalById = async ({
       });
       handleError?.(err);
     },
+    logMessage: "getSnsProposalById",
   });
 };

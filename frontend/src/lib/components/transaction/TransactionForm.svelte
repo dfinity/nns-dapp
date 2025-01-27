@@ -10,9 +10,9 @@
   import { InvalidAmountError } from "$lib/types/neurons.errors";
   import type {
     TransactionNetwork,
+    TransactionSelectDestinationMethods,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import type { TransactionSelectDestinationMethods } from "$lib/types/transaction";
   import {
     assertEnoughAccountFunds,
     invalidAddress,
@@ -24,8 +24,12 @@
     toTokenAmountV2,
   } from "$lib/utils/token.utils";
   import type { Principal } from "@dfinity/principal";
-  import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
-  import { isNullish } from "@dfinity/utils";
+  import {
+    isNullish,
+    TokenAmount,
+    TokenAmountV2,
+    type Token,
+  } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   // Tested in the TransactionModal

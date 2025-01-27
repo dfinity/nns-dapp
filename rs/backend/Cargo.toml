@@ -9,11 +9,11 @@ base64 = "0.22.1"
 candid = "0.10.10"
 flate2 = "1.0.30"
 hex = "0.4.3"
-itertools = "0.13.0"
+itertools = "0.14.0"
 lazy_static = "1.5.0"
 lzma-rs = "0.3.0"
 regex = "1.11.0"
-serde = "1.0.209"
+serde = "1.0.217"
 serde_bytes = "0.11.15"
 serde_cbor = "0.11.2"
 sha2 = "0.10.8"
@@ -43,12 +43,12 @@ on_wire = { workspace = true }
 proposals = { path = "../proposals" }
 
 [dev-dependencies]
-anyhow = "1.0.86"
+anyhow = "1.0.95"
 candid_parser = "0.1.2"
 ic_principal = "0.1.0"
 maplit = "1.0.2"
 pretty_assertions = "1.4.0"
-proptest = "1.5.0"
+proptest = "1.6.0"
 rand = "0.8.5"
 slotmap = "1"
 tokio = { version = "1.39.3", features = ["full"] }

@@ -1,4 +1,4 @@
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-12-06_03-16-base/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-16_16-18-base/rs/sns/root/canister/root.did>
 type CanisterCallError = record {
   code : opt int32;
   description : text;
@@ -44,9 +44,16 @@ type CanisterSummary = record {
   canister_id : opt principal;
 };
 
+type ChunkedCanisterWasm = record {
+  wasm_module_hash : blob;
+  store_canister_id : principal;
+  chunk_hashes_list : vec blob;
+};
+
 type ChangeCanisterRequest = record {
   arg : blob;
   wasm_module : blob;
+  chunked_canister_wasm : opt ChunkedCanisterWasm;
   stop_before_installing : bool;
   mode : CanisterInstallMode;
   canister_id : principal;
@@ -62,6 +69,7 @@ type DefiniteCanisterSettings = record {
   wasm_memory_limit : opt nat;
   memory_allocation : opt nat;
   compute_allocation : opt nat;
+  wasm_memory_threshold : opt nat;
 };
 
 type DefiniteCanisterSettingsArgs = record {
@@ -70,6 +78,7 @@ type DefiniteCanisterSettingsArgs = record {
   wasm_memory_limit : opt nat;
   memory_allocation : nat;
   compute_allocation : nat;
+  wasm_memory_threshold : opt nat;
 };
 
 type FailedUpdate = record {
@@ -114,6 +123,7 @@ type ManageDappCanisterSettingsRequest = record {
   wasm_memory_limit : opt nat64;
   memory_allocation : opt nat64;
   compute_allocation : opt nat64;
+  wasm_memory_threshold : opt nat64;
 };
 
 type ManageDappCanisterSettingsResponse = record {

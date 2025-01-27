@@ -7,8 +7,6 @@ describe("snsSwapMetricsStore", () => {
     saleBuyerCount: 123,
   };
 
-  beforeEach(() => snsSwapMetricsStore.reset());
-
   it("should set metrics", () => {
     snsSwapMetricsStore.setMetrics({
       rootCanisterId: mockPrincipal,

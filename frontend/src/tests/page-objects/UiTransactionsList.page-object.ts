@@ -18,8 +18,16 @@ export class UiTransactionsListPo extends BasePageObject {
     return TransactionCardPo.allUnder(this.root);
   }
 
+  hasSkeleton(): Promise<boolean> {
+    return this.getSkeletonCardPo().isPresent();
+  }
+
   hasNoTransactions(): Promise<boolean> {
     return this.isPresent("no-transactions-component");
+  }
+
+  hasSpinner() {
+    return this.isPresent("spinner");
   }
 
   async waitForLoaded(): Promise<void> {

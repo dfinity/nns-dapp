@@ -1,3 +1,4 @@
+import { IcpExchangeRatePo } from "$tests/page-objects/IcpExchangeRate.page-object";
 import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -13,8 +14,8 @@ export class UsdValueBannerPo extends BasePageObject {
     return TooltipIconPo.under(this.root.querySelector(".totals"));
   }
 
-  getExchangeRateTooltipIconPo(): TooltipIconPo {
-    return TooltipIconPo.under(this.root.querySelector(".exchange-rate"));
+  getIcpExchangeRatePo(): IcpExchangeRatePo {
+    return IcpExchangeRatePo.under(this.root);
   }
 
   getPrimaryAmount(): Promise<string> {
@@ -30,7 +31,6 @@ export class UsdValueBannerPo extends BasePageObject {
   }
 
   async hasError(): Promise<boolean> {
-    const classNames = await this.root.getClasses();
-    return classNames.includes("has-error");
+    return this.getIcpExchangeRatePo().hasError();
   }
 }

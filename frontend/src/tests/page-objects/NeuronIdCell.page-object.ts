@@ -1,8 +1,8 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { HashPo } from "$tests/page-objects/Hash.page-object";
+import { NeuronTagPo } from "$tests/page-objects/NeuronTag.page-object";
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { NeuronTagPo } from "./NeuronTag.page-object";
-import { TooltipPo } from "./Tooltip.page-object";
 
 export class NeuronIdCellPo extends BasePageObject {
   private static readonly TID = "neuron-id-cell-component";

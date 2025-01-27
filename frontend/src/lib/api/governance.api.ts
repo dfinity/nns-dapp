@@ -1,6 +1,6 @@
 import { createAgent } from "$lib/api/agent.api";
+import { ledgerCanister as getLedgerCanister } from "$lib/api/icp-ledger.api";
 import type { SubAccountArray } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { DFINITY_NEURON, IC_NEURON } from "$lib/constants/api.constants";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
@@ -9,6 +9,7 @@ import type { Agent, Identity } from "@dfinity/agent";
 import type {
   E8s,
   KnownNeuron,
+  NetworkEconomics,
   NeuronId,
   NeuronInfo,
   ProposalId,
@@ -21,7 +22,6 @@ import {
   type RewardEvent,
 } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
-import { ledgerCanister as getLedgerCanister } from "./icp-ledger.api";
 
 /**
  * COMMON TYPES
@@ -451,14 +451,6 @@ export const queryKnownNeurons = async ({
 
   const knownNeurons = await canister.listKnownNeurons(certified);
 
-  if (knownNeurons.find(({ id }) => id === DFINITY_NEURON.id) === undefined) {
-    knownNeurons.push(DFINITY_NEURON);
-  }
-
-  if (knownNeurons.find(({ id }) => id === IC_NEURON.id) === undefined) {
-    knownNeurons.push(IC_NEURON);
-  }
-
   logWithTimestamp(`Querying Known Neurons certified:${certified} complete.`);
   return knownNeurons;
 };
@@ -601,4 +593,24 @@ export const changeNeuronVisibility = async ({
   logWithTimestamp(
     `Visibility change complete for ${neuronIds.length} neurons. IDs: ${neuronIds.join(", ")}. New visibility: ${visibility}`
   );
+};
+
+export const getNetworkEconomicsParameters = async ({
+  identity,
+  certified,
+}: ApiQueryParams): Promise<NetworkEconomics> => {
+  logWithTimestamp(
+    `Getting network economics parameters call certified: ${certified}...`
+  );
+
+  const { canister: governance } = await governanceCanister({ identity });
+  const response = await governance.getNetworkEconomicsParameters({
+    certified,
+  });
+
+  logWithTimestamp(
+    `Getting network economics parameters call certified: ${certified} complete.`
+  );
+
+  return response;
 };

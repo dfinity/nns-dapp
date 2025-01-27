@@ -1,22 +1,25 @@
 <script lang="ts">
-  import { Card, IconRight } from "@dfinity/gix-components";
+  import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
+  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import {
     followeesNeurons,
     getNeuronTags,
     type FolloweesNeuron,
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
-  import Followee from "../neuron-detail/NeuronFollowingCard/Followee.svelte";
+  import { Card, IconRight } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { authStore } from "$lib/stores/auth.store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import { i18n } from "$lib/stores/i18n";
-  import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
-  import { createEventDispatcher } from "svelte";
-
-  const dispatch = createEventDispatcher<{ nnsClick: void }>();
+  import { nonNullish } from "@dfinity/utils";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
+  export let onClick: (() => void) | undefined;
+
+  let isClickable: boolean;
+  $: isClickable = nonNullish(onClick);
 
   let neuronTags: NeuronTagData[];
   $: neuronTags = getNeuronTags({
@@ -24,6 +27,8 @@
     identity: $authStore.identity,
     accounts: $icpAccountsStore,
     i18n: $i18n,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
   });
 
   let followees: FolloweesNeuron[];
@@ -32,10 +37,10 @@
 
 <Card
   testId="nns-loosing-rewards-neuron-card-component"
-  role="button"
+  role={isClickable ? "button" : undefined}
   noMargin
   ariaLabel={$i18n.losing_rewards_modal.goto_neuron}
-  on:click={() => dispatch("nnsClick")}
+  on:click={onClick}
 >
   <div class="wrapper">
     <div class="header">
@@ -47,9 +52,11 @@
           <NeuronTag {tag} />
         {/each}
       </div>
-      <div class="icon-right">
-        <IconRight />
-      </div>
+      {#if isClickable}
+        <div class="icon-right">
+          <IconRight />
+        </div>
+      {/if}
     </div>
 
     {#if followees.length > 0}

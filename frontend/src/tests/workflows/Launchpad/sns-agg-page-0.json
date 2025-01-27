@@ -248,7 +248,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 314100000000,
-        "sns_tokens_per_icp": 1
+        "sns_tokens_per_icp": 1.0
       }
     },
     "icrc1_metadata": [
@@ -290,7 +290,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999973787494000,
+    "icrc1_total_supply": 799999965962794000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -343,7 +343,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 1,
+      "sns_tokens_per_icp": 1.0,
       "buyer_total_icp_e8s": 314100000000,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
@@ -374,9 +374,9 @@
       "governance": "2jvtu-yqaaa-aaaaq-aaama-cai",
       "dapps": [
         "6hsbt-vqaaa-aaaaf-aaafq-cai",
-        "4glvk-ryaaa-aaaaf-aaaia-cai",
+        "62rh2-kiaaa-aaaaf-bmy5q-cai",
         "s4yi7-yiaaa-aaaar-qacpq-cai",
-        "4ijyc-kiaaa-aaaaf-aaaja-cai",
+        "nafek-diaaa-aaaar-qalxa-cai",
         "3vlw6-fiaaa-aaaaf-aaa3a-cai",
         "rturd-qaaaa-aaaaf-aabaq-cai",
         "gonut-hqaaa-aaaaf-aby7a-cai",
@@ -385,16 +385,14 @@
         "r2pvs-tyaaa-aaaar-ajcwq-cai",
         "cpi5u-yiaaa-aaaar-aqw5a-cai",
         "tktqu-nyaaa-aaaar-qackq-cai",
-        "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+        "jodzs-iqaaa-aaaar-qamqa-cai",
         "lxq5i-mqaaa-aaaaf-bih7q-cai",
         "6ofpc-2aaaa-aaaaf-biibq-cai",
         "6klfq-niaaa-aaaar-qadbq-cai",
         "64dy3-wqaaa-aaaaf-biicq-cai",
         "2notu-qyaaa-aaaar-qaeha-cai",
         "2kpva-5aaaa-aaaar-qaehq-cai",
-        "zi2i7-nqaaa-aaaar-qaemq-cai",
-        "62rh2-kiaaa-aaaaf-bmy5q-cai",
-        "nafek-diaaa-aaaar-qalxa-cai"
+        "zi2i7-nqaaa-aaaar-qaemq-cai"
       ],
       "archives": ["2sqpr-ciaaa-aaaaq-aaaoq-cai"]
     },
@@ -913,6 +911,19 @@
           }
         },
         {
+          "id": 7002,
+          "name": "Expand OpenChat onto a new subnet",
+          "description": "This will instruct the Registry to expand OpenChat onto a new subnet, allowing it to scale to many more users, groups and communities",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+              "target_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+              "validator_method_name": "expand_onto_subnet_validate",
+              "target_method_name": "expand_onto_subnet"
+            }
+          }
+        },
+        {
           "id": 8000,
           "name": "Stake NNS neuron",
           "description": "This will instruct the NeuronController canister to stake a new neuron with 1 ICP.\n\nSubsequent 'ManageNnsNeuron' and 'TransferFromTreasury' proposals can be made to update the neuron's configuration and increase its stake.",
@@ -935,6 +946,19 @@
               "target_canister_id": "tktqu-nyaaa-aaaar-qackq-cai",
               "validator_method_name": "manage_nns_neuron_validate",
               "target_method_name": "manage_nns_neuron"
+            }
+          }
+        },
+        {
+          "id": 9000,
+          "name": "Upgrade canister",
+          "description": "This will instruct the OpenChatInstaller canister to upgrade the specified canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "jodzs-iqaaa-aaaar-qamqa-cai",
+              "target_canister_id": "jodzs-iqaaa-aaaar-qamqa-cai",
+              "validator_method_name": "upgrade_canister_validate",
+              "target_method_name": "upgrade_canister"
             }
           }
         },
@@ -1066,7 +1090,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 100000000000000,
-        "sns_tokens_per_icp": 25
+        "sns_tokens_per_icp": 25.0
       }
     },
     "icrc1_metadata": [
@@ -1102,7 +1126,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10124927902157952,
+    "icrc1_total_supply": 10136049403065566,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1154,7 +1178,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 25,
+      "sns_tokens_per_icp": 25.0,
       "buyer_total_icp_e8s": 100000000000000,
       "cf_participant_count": 113,
       "neurons_fund_participation_icp_e8s": 33317301010214,
@@ -1365,7 +1389,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 0,
-        "sns_tokens_per_icp": 0
+        "sns_tokens_per_icp": 0.0
       }
     },
     "icrc1_metadata": [
@@ -1432,7 +1456,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 0,
+      "sns_tokens_per_icp": 0.0,
       "buyer_total_icp_e8s": 0,
       "cf_participant_count": null,
       "neurons_fund_participation_icp_e8s": null,
@@ -1597,6 +1621,14 @@
           "id": 14,
           "name": "Manage dapp canister settings",
           "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1832,7 +1864,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 610720932668740,
+    "icrc1_total_supply": 614708238673287,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2237,7 +2269,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102964869212728060,
+    "icrc1_total_supply": 103336229221612443,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2500,7 +2532,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 0,
-        "sns_tokens_per_icp": 0
+        "sns_tokens_per_icp": 0.0
       }
     },
     "icrc1_metadata": [
@@ -2530,7 +2562,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 1e18,
+    "icrc1_total_supply": 1000000000000000000,
     "swap_params": {
       "params": null
     },
@@ -2567,7 +2599,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 0,
+      "sns_tokens_per_icp": 0.0,
       "buyer_total_icp_e8s": 0,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": null,
@@ -2846,7 +2878,7 @@
           "max_icp_e8s": 2000000000000,
           "swap_due_timestamp_seconds": 1690462231,
           "min_participants": 200,
-          "sns_token_e8s": 2e17,
+          "sns_token_e8s": 200000000000000000,
           "sale_delay_seconds": null,
           "max_participant_icp_e8s": 5000000000,
           "min_direct_participation_icp_e8s": null,
@@ -2858,7 +2890,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 2000000000000,
-        "sns_tokens_per_icp": 100000
+        "sns_tokens_per_icp": 100000.0
       }
     },
     "icrc1_metadata": [
@@ -2894,7 +2926,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 927526487328286700,
+    "icrc1_total_supply": 929066722374789820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2905,7 +2937,7 @@
         "max_icp_e8s": 2000000000000,
         "swap_due_timestamp_seconds": 1690462231,
         "min_participants": 200,
-        "sns_token_e8s": 2e17,
+        "sns_token_e8s": 200000000000000000,
         "sale_delay_seconds": null,
         "max_participant_icp_e8s": 5000000000,
         "min_direct_participation_icp_e8s": null,
@@ -2946,7 +2978,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 100000,
+      "sns_tokens_per_icp": 100000.0,
       "buyer_total_icp_e8s": 2000000000000,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
@@ -3205,7 +3237,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 5e16,
+    "icrc1_total_supply": 50000000000000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3469,7 +3501,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 0,
-        "sns_tokens_per_icp": 0
+        "sns_tokens_per_icp": 0.0
       }
     },
     "icrc1_metadata": [
@@ -3499,7 +3531,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 2.1e17,
+    "icrc1_total_supply": 210000000000000000,
     "swap_params": {
       "params": null
     },
@@ -3534,7 +3566,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 0,
+      "sns_tokens_per_icp": 0.0,
       "buyer_total_icp_e8s": 0,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": null,
@@ -3749,7 +3781,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 0,
-        "sns_tokens_per_icp": 0
+        "sns_tokens_per_icp": 0.0
       }
     },
     "icrc1_metadata": [
@@ -3820,7 +3852,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 0,
+      "sns_tokens_per_icp": 0.0,
       "buyer_total_icp_e8s": 0,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": null,

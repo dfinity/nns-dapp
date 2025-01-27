@@ -4,6 +4,7 @@ import {
   changeNeuronVisibility,
   claimOrRefreshNeuronByMemo,
   disburse,
+  getNetworkEconomicsParameters,
   increaseDissolveDelay,
   joinCommunityFund,
   leaveCommunityFund,
@@ -838,6 +839,43 @@ describe("neurons-api", () => {
         memo,
         controller,
       });
+    });
+  });
+
+  describe("getNetworkEconomicsParameters", () => {
+    const identity = mockIdentity;
+
+    it("should call the canister to get the network economics parameters", async () => {
+      const certified = true;
+      await getNetworkEconomicsParameters({
+        certified,
+        identity,
+      });
+      expect(
+        mockGovernanceCanister.getNetworkEconomicsParameters
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockGovernanceCanister.getNetworkEconomicsParameters
+      ).toHaveBeenCalledWith({ certified });
+    });
+
+    it("throws error when call fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.getNetworkEconomicsParameters.mockImplementation(
+        vi.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        getNetworkEconomicsParameters({
+          certified: false,
+          identity,
+        });
+      await expect(call).rejects.toThrow(error);
+      expect(
+        mockGovernanceCanister.getNetworkEconomicsParameters
+      ).toHaveBeenCalledWith({ certified: false });
     });
   });
 });

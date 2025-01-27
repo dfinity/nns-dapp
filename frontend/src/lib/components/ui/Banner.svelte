@@ -75,11 +75,11 @@
 
     padding: var(--padding-2x);
     border-radius: var(--border-radius);
-    background: var(--input-background);
+    background-color: var(--banner-background);
   }
 
   .banner.isCritical {
-    background: var(--tooltip-background);
+    background-color: var(--tooltip-background);
 
     .title {
       color: var(--tooltip-text-color);

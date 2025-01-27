@@ -9,6 +9,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Staking from "$lib/routes/Staking.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -19,6 +20,7 @@ import {
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
 import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
@@ -416,6 +418,11 @@ describe("Staking", () => {
         ],
         certified: true,
       });
+
+      networkEconomicsStore.setParameters({
+        parameters: mockNetworkEconomics,
+        certified: true,
+      });
     });
 
     it("should not display LosingRewardsBanner by default", async () => {
@@ -433,6 +440,21 @@ describe("Staking", () => {
 
       expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);
       expect(await po.getLosingRewardsBannerPo().isVisible()).toBe(true);
+    });
+
+    it("should not display LosingRewardsBanner w/o voting power economics", async () => {
+      networkEconomicsStore.setParameters({
+        parameters: undefined,
+        certified: undefined,
+      });
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      const po = await renderComponent();
+
+      expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);
+      expect(await po.getLosingRewardsBannerPo().isVisible()).toBe(false);
     });
   });
 });

@@ -1,17 +1,22 @@
+import { clearCache } from "$lib/api-services/governance.api-service";
 import * as governanceApi from "$lib/api/governance.api";
 import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import * as knownNeuronsServices from "$lib/services/known-neurons.services";
-import { checkedNeuronSubaccountsStore } from "$lib/stores/checked-neurons.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { NnsNeuronDetailPo } from "$tests/page-objects/NnsNeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/governance.api");
 
@@ -39,8 +44,9 @@ describe("NeuronDetail", () => {
 
   beforeEach(() => {
     resetIdentity();
-    voteRegistrationStore.reset();
-    checkedNeuronSubaccountsStore.reset();
+    // Ensure the API is called after the first request.
+    clearCache();
+
     fakeGovernanceApi.addNeuronWith({ neuronId, stake: neuronStake });
     fakeGovernanceApi.addNeuronWith({ neuronId: 1234n });
     fakeGovernanceApi.setLatestRewardEvent({
@@ -100,6 +106,149 @@ describe("NeuronDetail", () => {
     const po = await renderComponent(`${neuronId}`);
 
     expect(await po.getNeuronId()).toEqual(`${neuronId}`);
+  });
+
+  describe("ConfirmFollowingBanner", () => {
+    const neuronId = 9753n;
+
+    beforeEach(() => {
+      networkEconomicsStore.setParameters({
+        parameters: mockNetworkEconomics,
+        certified: true,
+      });
+    });
+
+    it("should not display confirm banner w/o feature flag", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        false
+      );
+      fakeGovernanceApi.addNeuronWith({
+        neuronId,
+        votingPowerRefreshedTimestampSeconds:
+          nowInSeconds() - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY,
+      });
+
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should display confirm banner for missing rewards soon neuron", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      fakeGovernanceApi.addNeuronWith({
+        neuronId,
+        votingPowerRefreshedTimestampSeconds:
+          nowInSeconds() - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY,
+      });
+
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(true);
+    });
+
+    it("should not display confirm banner w/o voting power economics", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      networkEconomicsStore.reset();
+      fakeGovernanceApi.addNeuronWith({
+        neuronId,
+        votingPowerRefreshedTimestampSeconds:
+          nowInSeconds() - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY,
+      });
+
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should display confirm banner for missing rewards neuron", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      fakeGovernanceApi.addNeuronWith({
+        neuronId,
+        votingPowerRefreshedTimestampSeconds:
+          nowInSeconds() - SECONDS_IN_HALF_YEAR - SECONDS_IN_DAY,
+      });
+
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(true);
+    });
+
+    it("should not display confirm banner for not missing rewards neuron", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      fakeGovernanceApi.addNeuronWith({
+        neuronId,
+        stake: neuronStake,
+        votingPowerRefreshedTimestampSeconds: nowInSeconds(),
+      });
+
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should call refreshVotingPower", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      const testNeuron = fakeGovernanceApi.addNeuronWith({
+        neuronId,
+        votingPowerRefreshedTimestampSeconds:
+          nowInSeconds() - SECONDS_IN_HALF_YEAR - SECONDS_IN_DAY,
+        controller: mockIdentity.getPrincipal().toText(),
+      });
+
+      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([testNeuron]);
+      const spyRefreshVotingPower = vi
+        .spyOn(governanceApi, "refreshVotingPower")
+        .mockResolvedValue();
+      vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
+
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(
+        await po
+          .getNnsNeuronRewardStatusActionPo()
+          .getConfirmFollowingButtonPo()
+          .isPresent()
+      ).toBe(true);
+
+      expect(spyRefreshVotingPower).toHaveBeenCalledTimes(0);
+      // open modal
+      await po
+        .getNnsNeuronRewardStatusActionPo()
+        .getConfirmFollowingButtonPo()
+        .click();
+      await runResolvedPromises();
+
+      const modal = po.getNnsNeuronModalsPo().getLosingRewardNeuronsModalPo();
+      expect(await modal.isPresent()).toEqual(true);
+      const cards = await modal.getNnsLosingRewardsNeuronCardPos();
+      expect(cards.length).toEqual(1);
+      expect(await cards[0].getNeuronId()).toEqual(`${neuronId}`);
+
+      await modal.clickConfirmFollowing();
+      await runResolvedPromises();
+
+      expect(spyRefreshVotingPower).toHaveBeenCalledTimes(1);
+      expect(spyRefreshVotingPower).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        neuronId: testNeuron.neuronId,
+      });
+    });
   });
 
   it("should render nns project name", async () => {

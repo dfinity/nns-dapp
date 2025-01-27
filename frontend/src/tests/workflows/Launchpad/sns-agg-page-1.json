@@ -320,7 +320,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98205897256766300,
+    "icrc1_total_supply": 98208183346918366,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -545,6 +545,14 @@
           "id": 14,
           "name": "Manage dapp canister settings",
           "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -795,7 +803,7 @@
           "max_icp_e8s": 80000000000000,
           "swap_due_timestamp_seconds": 1694800800,
           "min_participants": 300,
-          "sns_token_e8s": 4e16,
+          "sns_token_e8s": 40000000000000000,
           "sale_delay_seconds": null,
           "max_participant_icp_e8s": 7500000000000,
           "min_direct_participation_icp_e8s": null,
@@ -843,7 +851,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100916340486692510,
+    "icrc1_total_supply": 100857216916404989,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -854,7 +862,7 @@
         "max_icp_e8s": 80000000000000,
         "swap_due_timestamp_seconds": 1694800800,
         "min_participants": 300,
-        "sns_token_e8s": 4e16,
+        "sns_token_e8s": 40000000000000000,
         "sale_delay_seconds": null,
         "max_participant_icp_e8s": 7500000000000,
         "min_direct_participation_icp_e8s": null,
@@ -1546,7 +1554,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50391001230537090,
+    "icrc1_total_supply": 50442770057420785,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1628,7 +1636,7 @@
       "ledger": "rffwt-piaaa-aaaaq-aabqq-cai",
       "index": "rlh33-uyaaa-aaaaq-aabrq-cai",
       "governance": "rceqh-cqaaa-aaaaq-aabqa-cai",
-      "dapps": ["47222-6qaaa-aaaag-qcpwq-cai"],
+      "dapps": ["u5cd5-naaaa-aaaad-aaehq-cai"],
       "archives": ["qupim-xaaaa-aaaaq-aabva-cai"]
     },
     "meta": {
@@ -1943,7 +1951,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961351087932912,
+    "icrc1_total_supply": 9961387845420762,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2173,6 +2181,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1010,
           "name": "nuance_assets_commit_proposed_batch",
           "description": "Commit frontend canister assets via proposal",
@@ -2336,7 +2352,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10095947312877124,
+    "icrc1_total_supply": 10108101348899383,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2725,7 +2741,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12650726185265496,
+    "icrc1_total_supply": 12676021069926879,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3029,7 +3045,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 37159444431962,
                 "slope_denominator": 280051136356584,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 27963235414916,
@@ -3114,7 +3130,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 1e16,
+    "icrc1_total_supply": 10000000000000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3206,7 +3222,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 37159444431962,
               "slope_denominator": 280051136356584,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 27963235414916,
@@ -3313,7 +3329,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 40000000000000,
                 "slope_denominator": 253804757553229,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 25360886452602,
@@ -3398,7 +3414,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 1e17,
+    "icrc1_total_supply": 100000000000000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3455,7 +3471,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 40000000000000,
               "slope_denominator": 253804757553229,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 25360886452602,
@@ -3649,6 +3665,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1001,
           "name": "Manage NNS neuron",
           "description": "Proposal to manage an ICP neuron under control of the Gold DAO.",
@@ -3795,7 +3819,7 @@
           "swap_start_timestamp_seconds": 1702468800,
           "swap_due_timestamp_seconds": 1703678400,
           "min_participants": 100,
-          "sns_token_e8s": 2e16,
+          "sns_token_e8s": 20000000000000000,
           "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "transaction_fee_e8s": 100000,
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -4052,7 +4076,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 46956554757250,
                 "slope_denominator": 290007024197410,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 28949711244677,
@@ -4106,7 +4130,7 @@
           "max_icp_e8s": 103949711244677,
           "swap_due_timestamp_seconds": 1703678400,
           "min_participants": 100,
-          "sns_token_e8s": 2e16,
+          "sns_token_e8s": 20000000000000000,
           "sale_delay_seconds": null,
           "max_participant_icp_e8s": 20000000000000,
           "min_direct_participation_icp_e8s": 20000000000000,
@@ -4160,7 +4184,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99704696326645550,
+    "icrc1_total_supply": 99616874841944460,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
@@ -4171,7 +4195,7 @@
         "max_icp_e8s": 103949711244677,
         "swap_due_timestamp_seconds": 1703678400,
         "min_participants": 100,
-        "sns_token_e8s": 2e16,
+        "sns_token_e8s": 20000000000000000,
         "sale_delay_seconds": null,
         "max_participant_icp_e8s": 20000000000000,
         "min_direct_participation_icp_e8s": 20000000000000,
@@ -4198,7 +4222,7 @@
         "swap_start_timestamp_seconds": 1702468800,
         "swap_due_timestamp_seconds": 1703678400,
         "min_participants": 100,
-        "sns_token_e8s": 2e16,
+        "sns_token_e8s": 20000000000000000,
         "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
         "transaction_fee_e8s": 100000,
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -4455,7 +4479,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 46956554757250,
               "slope_denominator": 290007024197410,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 28949711244677,

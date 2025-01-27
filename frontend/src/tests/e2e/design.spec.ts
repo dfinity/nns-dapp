@@ -1,6 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { replaceContent, signInWithNewUser } from "$tests/utils/e2e.test-utils";
+import {
+  replaceContent,
+  setFeatureFlag,
+  signInWithNewUser,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
@@ -23,7 +27,16 @@ test.describe("Design", () => {
 
   test("App loading spinner is removed", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveTitle("Tokens / NNS Dapp");
+    await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
+
+    await setFeatureFlag({
+      page,
+      featureFlag: "ENABLE_PORTFOLIO_PAGE",
+      value: true,
+    });
+
+    await page.reload();
+    await expect(page).toHaveTitle("Portfolio / NNS Dapp");
 
     // Wait for the button to make sure the app is loaded
     await page.locator("[data-tid=login-button]").waitFor();
@@ -40,11 +53,21 @@ test.describe("Design", () => {
 
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage();
-
       await page.goto("/");
-      await expect(page).toHaveTitle("Tokens / NNS Dapp");
+      await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
 
+      await setFeatureFlag({
+        page,
+        featureFlag: "ENABLE_PORTFOLIO_PAGE",
+        value: true,
+      });
+
+      await page.reload();
+      await expect(page).toHaveTitle("Portfolio / NNS Dapp");
       await signInWithNewUser({ page, context: browser.contexts()[0] });
+
+      await page.goto("/tokens");
+      await expect(page).toHaveTitle("Tokens / NNS Dapp");
     });
 
     test.afterAll(async () => {
@@ -72,6 +95,18 @@ test.describe("Design", () => {
         pattern: /[0-9.]+/,
         replacements: ["9.00"],
       });
+
+      // The governance metrics are only updated once a day so for the first 24h
+      // after a snapshot is created, the metrics might be different than what
+      // we expectand we need to replace them with the expected value.
+      if ((await appPo.getMenuItemsPo().getTvlMetric()) === "$99") {
+        await replaceContent({
+          page,
+          selectors: ['[data-tid="tvl-metric"]'],
+          pattern: /\$[0-9’]+/,
+          replacements: ["$4’500’001’000"],
+        });
+      }
 
       await expect(page).toHaveScreenshot();
     };

@@ -1,12 +1,13 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.page-object";
+import { LedgerNeuronHotkeyWarningPo } from "$tests/page-objects/LedgerNeuronHotkeyWarning.page-object";
 import { SignInPo } from "$tests/page-objects/SignIn.page-object";
+import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
 import { WalletMorePopoverPo } from "$tests/page-objects/WalletMorePopover.page-object";
 import { WalletPageHeaderPo } from "$tests/page-objects/WalletPageHeader.page-object";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { UiTransactionsListPo } from "./UiTransactionsList.page-object";
 
 export class NnsWalletPo extends BasePageObject {
   private static readonly TID = "nns-wallet-component";
@@ -49,6 +50,10 @@ export class NnsWalletPo extends BasePageObject {
 
   getListNeuronsButtonPo(): ButtonPo {
     return this.getButton("ledger-list-button");
+  }
+
+  getLedgerNeuronHotkeyWarningPo(): LedgerNeuronHotkeyWarningPo {
+    return LedgerNeuronHotkeyWarningPo.under(this.root);
   }
 
   getShowHardwareWalletButtonPo(): ButtonPo {

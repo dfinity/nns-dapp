@@ -1,8 +1,8 @@
+import { AgeBonusTextPo } from "$tests/page-objects/AgeBonusText.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { AgeBonusTextPo } from "./AgeBonusText.page-object";
-import type { ButtonPo } from "./Button.page-object";
 
 export class SnsNeuronStateItemActionPo extends BasePageObject {
   private static readonly TID = "sns-neuron-state-item-action-component";

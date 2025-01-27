@@ -1,3 +1,4 @@
+import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type {
   CachedSnsDto,
   CachedSnsTokenMetadataDto,
@@ -34,9 +35,6 @@ const initSnsAggreagatorStore =
 
 export const snsAggregatorIncludingAbortedProjectsStore =
   initSnsAggreagatorStore();
-
-// This project has been abandoned https://dfinity.slack.com/archives/C039M7YS6F6/p1733302975333649
-const CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID = "ibahq-taaaa-aaaaq-aadna-cai";
 
 export const snsAggregatorStore: SnsAggregatorStore = derived(
   snsAggregatorIncludingAbortedProjectsStore,

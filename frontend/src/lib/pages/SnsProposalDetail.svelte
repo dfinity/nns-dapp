@@ -7,11 +7,10 @@
   import SnsProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
   import SnsProposalVotingSection from "$lib/components/sns-proposals/SnsProposalVotingSection.svelte";
   import SkeletonDetails from "$lib/components/ui/SkeletonDetails.svelte";
-  import {
-    actionableProposalsActiveStore,
-    actionableProposalsNavigationIdsStore,
-  } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
+  import { actionableProposalsNavigationIdsStore } from "$lib/derived/actionable-universes.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { debugSnsProposalStore } from "$lib/derived/debug.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
@@ -37,11 +36,13 @@
     type SnsProposalDataMap,
   } from "$lib/utils/sns-proposals.utils";
   import { isUniverseNns } from "$lib/utils/universe.utils";
-  import { debugSnsProposalStore } from "../derived/debug.derived";
   import { SplitBlock } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import type { SnsProposalData, SnsProposalId } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemFunction,
+    SnsProposalData,
+    SnsProposalId,
+  } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { tick } from "svelte";
   import type { Readable } from "svelte/store";

@@ -56,7 +56,7 @@ describe("NnsNeuronDetailCard", () => {
   it("should render neuron voting power", async () => {
     const po = renderComponent({
       ...mockNeuron,
-      votingPower: 3_000_000_000n,
+      decidingVotingPower: 3_000_000_000n,
     });
 
     expect(await po.getVotingPower()).toBe("30.00");

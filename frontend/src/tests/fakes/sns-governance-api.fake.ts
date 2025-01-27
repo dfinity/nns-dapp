@@ -322,7 +322,7 @@ async function queryProposal({
 }): Promise<SnsProposalData> {
   const proposal = proposals
     .get(mapKey({ identity, rootCanisterId }))
-    .proposals.find(({ id }) => fromNullable(id).id === proposalId.id);
+    ?.proposals.find(({ id }) => fromNullable(id).id === proposalId.id);
   if (isNullish(proposal)) {
     throw new SnsGovernanceError(
       `No proposal for given proposalId ${proposalId.id}`

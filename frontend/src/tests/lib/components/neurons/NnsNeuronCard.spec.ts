@@ -1,5 +1,7 @@
 import NnsNeuronCard from "$lib/components/neurons/NnsNeuronCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -7,6 +9,7 @@ import {
   mockHardwareWalletAccount,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronCardPo } from "$tests/page-objects/NnsNeuronCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -182,6 +185,37 @@ describe("NnsNeuronCard", () => {
     expect(await po.getNeuronTags()).toEqual(["Seed"]);
   });
 
+  it("renders 'Missing rewards' tag", async () => {
+    overrideFeatureFlagsStore.setFlag(
+      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+      true
+    );
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
+    setAccountsForTesting({
+      main: mockMainAccount,
+      subAccounts: [],
+    });
+    const { container } = render(NnsNeuronCard, {
+      props: {
+        neuron: {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            votingPowerRefreshedTimestampSeconds: BigInt(
+              nowInSeconds - SECONDS_IN_YEAR
+            ),
+          },
+        },
+      },
+    });
+    const po = NnsNeuronCardPo.under(new JestPageObjectElement(container));
+
+    expect(await po.getNeuronTags()).toEqual(["Missing rewards"]);
+  });
+
   it("renders proper text when status is LOCKED", async () => {
     const MORE_THAN_ONE_YEAR = 60 * 60 * 24 * 365 * 1.5;
     const { getByText } = render(NnsNeuronCard, {
@@ -252,14 +286,13 @@ describe("NnsNeuronCard", () => {
   it("renders voting power in `proposerNeuron` version", async () => {
     const { getByText } = render(NnsNeuronCard, {
       props: {
-        neuron: mockNeuron,
+        neuron: {
+          ...mockNeuron,
+          decidingVotingPower: 864_000_000n,
+        },
         proposerNeuron: true,
       },
     });
-    const votingValue = formatTokenE8s({
-      value: mockNeuron.votingPower,
-      detailed: true,
-    });
-    expect(getByText(votingValue)).toBeInTheDocument();
+    expect(getByText("8.64")).toBeInTheDocument();
   });
 });

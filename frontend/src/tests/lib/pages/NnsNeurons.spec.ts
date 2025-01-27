@@ -1,18 +1,23 @@
-import { resetNeuronsApiService } from "$lib/api-services/governance.api-service";
 import * as api from "$lib/api/governance.api";
-import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import {
+  SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_YEAR,
+} from "$lib/constants/constants";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { NeuronState, NeuronVisibility } from "@dfinity/nns";
+import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 
@@ -29,10 +34,6 @@ describe("NnsNeurons", () => {
       maturityE8sEquivalent: 0n,
     },
   };
-
-  beforeEach(() => {
-    resetNeuronsApiService();
-  });
 
   const renderComponent = async () => {
     const { container } = render(NnsNeurons);
@@ -106,6 +107,109 @@ describe("NnsNeurons", () => {
       expect(await rows[2].getStake()).toBe("0 ICP");
       expect(await rows[2].hasGoToDetailButton()).toBe(false);
     });
+
+    it("should provide USD prices", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            cachedNeuronStake: 300_000_000n,
+          },
+        },
+      ]);
+
+      icpSwapTickersStore.set([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "11.00",
+        },
+      ]);
+
+      const po = await renderComponent();
+
+      // The neuron has a stake of 3 ICP.
+      // There are 11 USD in 1 ICP.
+      // So the stake is $33.
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(await rows[0].getStakeInUsd()).toBe("$33.00");
+    });
+
+    it("should not show total USD value banner when feature flag is disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should show total USD value banner when feature flag is enabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+    });
+
+    it("should show total stake in USD", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            cachedNeuronStake: 300_000_000n,
+          },
+        },
+      ]);
+
+      icpSwapTickersStore.set([
+        {
+          ...mockIcpSwapTicker,
+          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+          last_price: "11.00",
+        },
+      ]);
+
+      const po = await renderComponent();
+
+      expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
+      expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$33.00");
+      expect(
+        await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
+      ).toBe(false);
+    });
+
+    it("should display `Missing rewards` tag", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      networkEconomicsStore.setParameters({
+        parameters: mockNetworkEconomics,
+        certified: true,
+      });
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockFullNeuron,
+            votingPowerRefreshedTimestampSeconds: BigInt(
+              nowInSeconds() - SECONDS_IN_YEAR
+            ),
+          },
+        },
+      ]);
+
+      const po = await renderComponent();
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(await rows[0].getTags()).toEqual(["Missing rewards"]);
+    });
   });
 
   describe("LosingRewardsBanner", () => {
@@ -122,6 +226,10 @@ describe("NnsNeurons", () => {
           },
         },
       ]);
+      networkEconomicsStore.setParameters({
+        parameters: mockNetworkEconomics,
+        certified: true,
+      });
     });
 
     it("should not display LosingRewardsBanner by default", async () => {
@@ -139,36 +247,6 @@ describe("NnsNeurons", () => {
 
       expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);
       expect(await po.getLosingRewardsBannerPo().isVisible()).toBe(true);
-    });
-  });
-
-  describe("MakeNeuronsVisibilityBanner", () => {
-    const privateControlledNeuron = {
-      ...mockNeuron,
-      visibility: NeuronVisibility.Private,
-      fullNeuron: {
-        ...mockNeuron.fullNeuron,
-        controller: mockMainAccount.principal.toText(),
-      },
-    };
-    beforeEach(() => {
-      vi.useFakeTimers();
-      vi.setSystemTime(new Date("2024-01-01"));
-      vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
-        mockIdentity
-      );
-      setAccountsForTesting({
-        main: mockMainAccount,
-        hardwareWallets: [],
-      });
-      vi.spyOn(api, "queryNeurons").mockResolvedValue([
-        privateControlledNeuron,
-      ]);
-    });
-    it("should render makeNeuronsPublicBanner", async () => {
-      const po = await renderComponent();
-
-      expect(await po.getMakeNeuronsPublicBannerPo().isPresent()).toBe(true);
     });
   });
 

@@ -1,3 +1,4 @@
+import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -11,7 +12,6 @@ import type {
   SnsSwapTicket,
 } from "@dfinity/sns";
 import type { FinalizeSwapResponse } from "@dfinity/sns/dist/candid/sns_swap";
-import type { PngDataUrl } from "./assets";
 
 export type RootCanisterId = Principal;
 export type RootCanisterIdText = string;

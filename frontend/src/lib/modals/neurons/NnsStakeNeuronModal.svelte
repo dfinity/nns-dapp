@@ -4,25 +4,24 @@
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
   import NnsStakeNeuron from "$lib/components/neurons/NnsStakeNeuron.svelte";
   import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
+  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import {
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
   import { i18n } from "$lib/stores/i18n";
-  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import {
     WizardModal,
+    wizardStepIndex,
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import { wizardStepIndex } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
-  import { createEventDispatcher, onDestroy, tick } from "svelte";
-  import { onMount } from "svelte";
+  import { createEventDispatcher, onDestroy, onMount, tick } from "svelte";
 
   onMount(() => {
     pollAccounts();

@@ -2,6 +2,7 @@ import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
   replaceContent,
+  setFeatureFlag,
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
@@ -23,9 +24,22 @@ const createHotkeyNeuronsInOtherAccount = async ({
 }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
+
   await page.goto("/");
-  await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
+
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_PORTFOLIO_PAGE",
+    value: true,
+  });
+
+  await page.reload();
+  await expect(page).toHaveTitle("Portfolio / NNS Dapp");
   await signInWithNewUser({ page, context });
+
+  await page.goto("/tokens");
+  await expect(page).toHaveTitle("Tokens / NNS Dapp");
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
   await appPo.getIcpTokens(21);
@@ -66,6 +80,12 @@ test("Test neurons table", async ({ page, context, browser }) => {
 
   await step("Sign in");
   await signInWithNewUser({ page, context });
+
+  await setFeatureFlag({
+    page,
+    featureFlag: "ENABLE_USD_VALUES_FOR_NEURONS",
+    value: true,
+  });
 
   const principal = await appPo.getCanistersPo().getPrincipal();
 

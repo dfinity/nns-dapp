@@ -1,6 +1,7 @@
 import * as canisterApi from "$lib/api/canisters.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
+import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import CanisterDetail from "$lib/pages/CanisterDetail.svelte";
 import { authStore } from "$lib/stores/auth.store";
 import { canistersStore } from "$lib/stores/canisters.store";
@@ -57,6 +58,7 @@ describe("CanisterDetail", () => {
         {
           canister_id: canisterId,
           name: "",
+          block_index: [],
         },
       ]);
     });
@@ -96,6 +98,7 @@ describe("CanisterDetail", () => {
         {
           canister_id: canisterId,
           name: canisterName,
+          block_index: [],
         },
       ]);
     });
@@ -122,6 +125,7 @@ describe("CanisterDetail", () => {
         {
           canister_id: canisterId,
           name: "canister name",
+          block_index: [],
         },
       ]);
     });
@@ -148,6 +152,7 @@ describe("CanisterDetail", () => {
         {
           canister_id: canisterId,
           name: "",
+          block_index: [],
         },
       ]);
       const { queryByTestId } = render(CanisterDetail, props);
@@ -165,6 +170,7 @@ describe("CanisterDetail", () => {
         {
           canister_id: Principal.fromText(canisterIdText),
           name: "",
+          block_index: [],
         },
       ]);
       const po = await renderComponent();
@@ -177,6 +183,7 @@ describe("CanisterDetail", () => {
         {
           canister_id: canisterId,
           name: canisterName,
+          block_index: [],
         },
       ]);
       const po = await renderComponent();
@@ -187,9 +194,10 @@ describe("CanisterDetail", () => {
   describe("rename button", () => {
     const newName = "new name";
     const oldName = "old name";
-    const canisterOldName = {
+    const canisterOldName: CanisterDetails = {
       canister_id: canisterId,
       name: oldName,
+      block_index: [],
     };
     const canisterNewName = {
       ...canisterOldName,
@@ -245,6 +253,7 @@ describe("CanisterDetail", () => {
         {
           canister_id: canisterId,
           name: "",
+          block_index: [],
         },
       ]);
     });

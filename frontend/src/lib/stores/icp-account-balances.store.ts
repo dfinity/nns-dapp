@@ -1,7 +1,7 @@
 import type { AccountIdentifierString } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
+import { queuedStore } from "$lib/stores/queued-store";
 import type { Readable } from "svelte/store";
-import { queuedStore } from "./queued-store";
 
 export interface IcpAccountBalanceStoreData {
   balanceE8s: bigint;

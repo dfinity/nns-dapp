@@ -148,7 +148,8 @@
     "manage_ii": "Manage Internet Identity",
     "source_code": "Source Code",
     "settings": "Settings",
-    "reporting": "Reporting"
+    "reporting": "Reporting",
+    "portfolio": "Portfolio"
   },
   "header": {
     "menu": "Open menu to access navigation options",
@@ -192,7 +193,11 @@
     "error_csv_generation": "Failed to generate CSV file",
     "error_file_system_access": "Unable to save file. Please check your permissions.",
     "error_neurons": "There was an error exporting the neurons. Please try again.",
-    "error_transactions": "There was an error exporting the transactions. Please try again."
+    "error_transactions": "There was an error exporting the transactions. Please try again.",
+    "range_filter_title": "Reporting Date Range",
+    "range_filter_all": "All transactions",
+    "range_last_year": "Last year",
+    "range_year_to_date": "Year to date"
   },
   "auth": {
     "login": "Sign in with Internet Identity",
@@ -378,9 +383,6 @@
     "public_neuron_description": "This neuron exposes additional information, including its votes.",
     "private_neuron_description": "This neuron limits information it exposes publicly.",
     "learn_more": "Learn more",
-    "make_neurons_public_banner_title": "Neurons can now be private or public",
-    "make_neurons_public_banner_description": "If you would like to make your neurons public, you can open one and change it under “Advanced Details & Settings”.",
-    "make_neurons_public_action_text": "Make Neurons Public",
     "create_as_public": "Create as a public neuron",
     "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals.",
     "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
@@ -388,16 +390,20 @@
   "losing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
     "confirming": "Confirming following. This may take a moment.",
-    "confirm": "Confirm Following"
+    "confirm": "Confirm Following",
+    "badge_label": "Confirm following to avoid missing rewards",
+    "hw_create_neuron_warning": "It is recommended to <strong>Add Hotkey</strong> now, otherwise the NNS dapp will not be able to warn you if this neuron starts missing voting rewards due to inactivity.",
+    "hw_hotkey_warning": "You may have neurons that are not added to the NNS dapp. If you want to view your neurons and get alerts in case they start missing voting rewards, you can add them by clicking <strong>Show Neurons > Add to NNS Dapp</strong>."
   },
   "losing_rewards_banner": {
+    "confirm_title": "Confirm following or vote manually to avoid missing rewards",
     "days_left_title": "$timeLeft left to confirm your neuron following",
     "rewards_missing_title": "One or more of your neurons are missing voting rewards"
   },
   "losing_rewards_modal": {
     "goto_neuron": "Go to neuron details",
-    "title": "Review your following for neurons",
-    "label": "Neurons",
+    "title": "Review following",
+    "label": "Neuron(s)",
     "no_following": "This neuron has no following configured. You need to vote manually to earn voting rewards."
   },
   "new_followee": {
@@ -1180,5 +1186,29 @@
     "failed_tooltip": "The NNS dapp couldn’t load an imported token. Please try again later, or contact the developers.",
     "maximum_reached_tooltip": "You've already imported the maximum number of $max tokens. You need to remove another token before you can import more.",
     "doc_link_label": "How to find ICRC token ledger"
+  },
+  "portfolio": {
+    "login_title": "Session expired",
+    "login_description": "Earn rewards, participate in governance and join the communities. Login to gain optimal access of the platform.",
+    "no_tokens_card_title": "Store and transfer tokens securely in the NNS wallet",
+    "no_tokens_card_description": "running 100% on the Internet Computer blockchain - Ready to get started?",
+    "no_tokens_card_button": "Buy ICP",
+    "no_neurons_card_description": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
+    "no_neurons_card_button": "Start Staking",
+    "held_tokens_card_title": "Total Token Balance",
+    "held_tokens_card_link": "View tokens",
+    "held_tokens_card_list_first_column": "Top Tokens Held",
+    "held_tokens_card_list_second_column_mobile": "Balance",
+    "held_tokens_card_list_second_column": "Value Native",
+    "held_tokens_card_list_third_column": "Value $",
+    "held_tokens_card_info_row": "Store and transfer tokens securely in the NNS wallet — running 100% on the Internet Computer blockchain. Tokens allow you to participate in ICP's onchain governance systems.",
+    "staked_tokens_card_title": "Total Staking Balance",
+    "staked_tokens_card_link": "Stake neurons",
+    "staked_tokens_card_list_first_column": "Top Staked Neurons",
+    "staked_tokens_card_list_second_column_mobile": "Balance $/Maturity",
+    "staked_tokens_card_list_second_column": "Maturity",
+    "staked_tokens_card_list_third_column": "Staked",
+    "staked_tokens_card_info_row": "Optimize voting power and earn rewards by increasing your staked neurons.",
+    "total_assets_title": "Total Holdings"
   }
 }

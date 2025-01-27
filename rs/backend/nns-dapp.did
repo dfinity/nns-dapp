@@ -74,12 +74,18 @@ type CanisterDetails =
     record {
         name: text;
         canister_id: principal;
+        // The `block_index` that was passed to `notify_create_canister` if the
+        // canister was created by the user.
+        block_index: opt nat64;
     };
 
 type AttachCanisterRequest =
     record {
         name: text;
         canister_id: principal;
+        // The `block_index` that was passed to `notify_create_canister` if the
+        // canister was created by the user.
+        block_index: opt nat64;
     };
 
 type AttachCanisterResponse =
@@ -130,16 +136,10 @@ type Stats =
         accounts_count: nat64;
         sub_accounts_count: nat64;
         hardware_wallet_accounts_count: nat64;
-        block_height_synced_up_to: opt nat64;
-        seconds_since_last_ledger_sync: nat64;
-        neurons_topped_up_count: nat64;
-        transactions_to_process_queue_length: nat32;
         performance_counts: vec PerformanceCount;
         stable_memory_size_bytes: opt nat64;
         wasm_memory_size_bytes: opt nat64;
         migration_countdown: opt nat32;
-        exceptional_transactions_count: opt nat32;
-        periodic_tasks_count: opt nat32;
         accounts_db_stats_recomputed_on_upgrade: opt bool;
     };
 

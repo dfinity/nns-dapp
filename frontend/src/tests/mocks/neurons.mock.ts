@@ -1,10 +1,10 @@
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import type { KnownNeuron, Neuron, NeuronInfo } from "@dfinity/nns";
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
-import { mockIdentity } from "./auth.store.mock";
 
 export const mockFullNeuron: Neuron = {
   id: 1n,
@@ -44,6 +44,9 @@ export const createMockFullNeuron = (id: number | bigint) => {
 };
 
 export const mockNeuron: NeuronInfo = {
+  votingPowerRefreshedTimestampSeconds: 0n,
+  decidingVotingPower: 0n,
+  potentialVotingPower: 0n,
   neuronId: 1n,
   dissolveDelaySeconds: 11_111n,
   recentBallots: [],
@@ -52,6 +55,7 @@ export const mockNeuron: NeuronInfo = {
   state: NeuronState.Locked,
   joinedCommunityFundTimestampSeconds: undefined,
   retrievedAtTimestampSeconds: 10n,
+  /** @deprecated */
   votingPower: 300_000_000n,
   ageSeconds: 100n,
   visibility: undefined,

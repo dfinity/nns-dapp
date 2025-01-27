@@ -1,3 +1,6 @@
+import { createAgent } from "$lib/api/agent.api";
+import { governanceCanister } from "$lib/api/governance.api";
+import { wrapper } from "$lib/api/sns-wrapper.api";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
@@ -22,9 +25,6 @@ import {
   createAgent as createAgentUtils,
   toNullable,
 } from "@dfinity/utils";
-import { createAgent } from "./agent.api";
-import { governanceCanister } from "./governance.api";
-import { wrapper } from "./sns-wrapper.api";
 
 export const testAccountPrincipal =
   "jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe";

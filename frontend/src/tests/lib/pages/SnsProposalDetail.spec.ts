@@ -74,12 +74,10 @@ describe("SnsProposalDetail", () => {
     page.reset();
     resetSnsProjects();
     actionableProposalsSegmentStore.resetForTesting();
-    snsProposalsStore.reset();
   });
 
   describe("not logged in", () => {
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
       setNoIdentity();
       page.mock({ data: { universe: rootCanisterId.toText() } });
       setSnsProjects([
@@ -210,6 +208,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should redirect to the list of sns proposals if proposal is not found", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
       // There is no proposal with id 2 in the fake implementation.
       // Therefore, the page should redirect to the list of proposals.
       render(SnsProposalDetail, {
@@ -221,6 +220,12 @@ describe("SnsProposalDetail", () => {
         const { path } = get(pageStore);
         return expect(path).toEqual(AppPath.Proposals);
       });
+      expect(console.error).toBeCalledWith(
+        expect.objectContaining({
+          error: new Error("No proposal for given proposalId 2"),
+        })
+      );
+      expect(console.error).toBeCalledTimes(1);
     });
 
     it("should not render content if universe changes to Nns", async () => {
@@ -401,6 +406,7 @@ describe("SnsProposalDetail", () => {
     });
 
     it("should navigate to the proposal from the next Sns", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
       mockCommittedSnsProjectsWithVotableProposals([
         { rootCanisterId: principal1, proposalIds: [20n, 19n] },
         { rootCanisterId: principal2, proposalIds: [30n, 29n] },
@@ -433,9 +439,32 @@ describe("SnsProposalDetail", () => {
           id: "/(app)/proposal/",
         },
       });
+
+      await runResolvedPromises();
+      // The navigation changes both the proposal ID and the universe.
+      // In reality this will cause a navigation and a new component will be
+      // rendered with the new proposal ID and universe.
+      // But in the test, the component notices the change in universe (because
+      // it comes from the store) but not the change in proposal ID (because
+      // it's passed in as a prop). So it tries to load proposal 19 from the
+      // wrong universe, which causes these errors.
+      expect(console.error).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          error: new Error("No proposal for given proposalId 19"),
+        })
+      );
+      expect(console.error).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          error: new Error("No proposal for given proposalId 19"),
+        })
+      );
+      expect(console.error).toBeCalledTimes(2);
     });
 
     it("should navigate to the proposal from the previous Sns", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
       mockCommittedSnsProjectsWithVotableProposals([
         { rootCanisterId: principal1, proposalIds: [20n, 19n] },
         { rootCanisterId: principal2, proposalIds: [30n, 29n] },
@@ -468,12 +497,33 @@ describe("SnsProposalDetail", () => {
           id: "/(app)/proposal/",
         },
       });
+
+      await runResolvedPromises();
+      // The navigation changes both the proposal ID and the universe.
+      // In reality this will cause a navigation and a new component will be
+      // rendered with the new proposal ID and universe.
+      // But in the test, the component notices the change in universe (because
+      // it comes from the store) but not the change in proposal ID (because
+      // it's passed in as a prop). So it tries to load proposal 30 from the
+      // wrong universe, which causes these errors.
+      expect(console.error).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({
+          error: new Error("No proposal for given proposalId 30"),
+        })
+      );
+      expect(console.error).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({
+          error: new Error("No proposal for given proposalId 30"),
+        })
+      );
+      expect(console.error).toBeCalledTimes(2);
     });
   });
 
   describe("not logged in that logs in afterwards", () => {
     beforeEach(() => {
-      vi.spyOn(console, "error").mockImplementation(() => undefined);
       page.mock({ data: { universe: rootCanisterId.toText() } });
     });
 
@@ -512,6 +562,23 @@ describe("SnsProposalDetail", () => {
 
       fakeSnsGovernanceApi.addProposalWith({
         identity: new AnonymousIdentity(),
+        rootCanisterId,
+        ...proposal,
+        proposal_creation_timestamp_seconds: proposalCreatedTimestamp,
+        ballots: [
+          [
+            getSnsNeuronIdAsHexString(mockSnsNeuron),
+            {
+              vote: SnsVote.Unspecified,
+              voting_power: 100_000_000n,
+              cast_timestamp_seconds: 0n,
+            },
+          ],
+        ],
+      });
+
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: mockIdentity,
         rootCanisterId,
         ...proposal,
         proposal_creation_timestamp_seconds: proposalCreatedTimestamp,

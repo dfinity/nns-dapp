@@ -1,5 +1,6 @@
 <script lang="ts">
   import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
+  import Hash from "$lib/components/ui/Hash.svelte";
   import NewSnsFolloweeModal from "$lib/modals/sns/neurons/NewSnsFolloweeModal.svelte";
   import { removeFollowee } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -8,9 +9,10 @@
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
-  import { followeesByFunction } from "$lib/utils/sns-neuron.utils";
-  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-  import Hash from "../ui/Hash.svelte";
+  import {
+    followeesByFunction,
+    subaccountToHexString,
+  } from "$lib/utils/sns-neuron.utils";
   import { IconClose, Value } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type {

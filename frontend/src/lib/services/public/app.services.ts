@@ -1,11 +1,11 @@
 import { browser } from "$app/environment";
 import { displayAndCleanLogoutMsg } from "$lib/services/auth.services";
+import { loadIcrcCanisters } from "$lib/services/icrc-canisters.services";
+import { watchIcrcTokensLoadTokenData } from "$lib/services/icrc-tokens.services";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import { loadIcrcCanisters } from "../icrc-canisters.services";
-import { watchIcrcTokensLoadTokenData } from "../icrc-tokens.services";
 
 /**
  * Load the application public data that are available globally ("global stores").

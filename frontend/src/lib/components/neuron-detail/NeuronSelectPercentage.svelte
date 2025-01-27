@@ -4,8 +4,7 @@
   import { formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
-  import { InputRange, KeyValuePair } from "@dfinity/gix-components";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { InputRange, KeyValuePair, Tooltip } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

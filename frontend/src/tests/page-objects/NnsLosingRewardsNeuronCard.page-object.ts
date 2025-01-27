@@ -1,6 +1,7 @@
 import { CardPo } from "$tests/page-objects/Card.page-object";
+import { FolloweePo } from "$tests/page-objects/Followee.page-object";
+import { NeuronTagPo } from "$tests/page-objects/NeuronTag.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { FolloweePo } from "./Followee.page-object";
 
 export class NnsLosingRewardsNeuronCardPo extends CardPo {
   private static readonly TID = "nns-loosing-rewards-neuron-card-component";
@@ -29,5 +30,14 @@ export class NnsLosingRewardsNeuronCardPo extends CardPo {
 
   async getNeuronId(): Promise<string> {
     return this.getElement("neuron-id").getText();
+  }
+
+  getNeuronTagPos(): Promise<NeuronTagPo[]> {
+    return NeuronTagPo.allUnder(this.root);
+  }
+
+  async getNeuronTags(): Promise<string[]> {
+    const pos = await this.getNeuronTagPos();
+    return Promise.all(pos.map((po) => po.getText()));
   }
 }

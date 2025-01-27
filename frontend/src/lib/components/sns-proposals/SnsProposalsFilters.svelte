@@ -1,6 +1,8 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableProposalsSegment from "$lib/components/proposals/ActionableProposalsSegment.svelte";
+  import FiltersWrapper from "$lib/components/proposals/FiltersWrapper.svelte";
+  import FiltersButton from "$lib/components/ui/FiltersButton.svelte";
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
@@ -11,8 +13,6 @@
     snsFiltersStore,
     type ProjectFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
-  import FiltersWrapper from "../proposals/FiltersWrapper.svelte";
-  import FiltersButton from "../ui/FiltersButton.svelte";
   import type { Principal } from "@dfinity/principal";
 
   let modal: "types" | "status" | undefined = undefined;

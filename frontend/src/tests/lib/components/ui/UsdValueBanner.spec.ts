@@ -1,6 +1,7 @@
 import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import en from "$tests/mocks/i18n.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -92,10 +93,9 @@ describe("UsdValueBanner", () => {
     setIcpPrice(icpPrice);
 
     const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
+    const message = `1 ICP = $10.00 ${en.accounts.token_price_source}`;
 
-    expect(await po.getExchangeRateTooltipIconPo().getTooltipText()).toEqual(
-      "1 ICP = $10.00 Token prices are in ckUSDC based on data provided by ICPSwap."
-    );
+    expect(await po.getIcpExchangeRatePo().getTooltipText()).toEqual(message);
   });
 
   it("should not have an error by default", async () => {
@@ -116,11 +116,10 @@ describe("UsdValueBanner", () => {
     setIcpPrice(icpPrice);
 
     const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
+    const message = en.accounts.token_price_error;
 
     expect(await po.hasError()).toBe(true);
-    expect(await po.getExchangeRateTooltipIconPo().getTooltipText()).toEqual(
-      "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
-    );
+    expect(await po.getIcpExchangeRatePo().getTooltipText()).toEqual(message);
   });
 
   it("should show a tooltip about unpriced tokens", async () => {

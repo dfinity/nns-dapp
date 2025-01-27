@@ -1,6 +1,8 @@
 import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
+import { queuedStore } from "$lib/stores/queued-store";
+import { writableStored } from "$lib/stores/writable-stored";
 import {
   concatenateUniqueProposals,
   excludeProposals,
@@ -14,8 +16,6 @@ import type {
   Topic,
 } from "@dfinity/nns";
 import { writable } from "svelte/store";
-import { queuedStore } from "./queued-store";
-import { writableStored } from "./writable-stored";
 
 export interface ProposalsFiltersStore {
   topics: Topic[];

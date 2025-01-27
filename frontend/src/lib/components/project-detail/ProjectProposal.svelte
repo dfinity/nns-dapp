@@ -1,11 +1,10 @@
 <script lang="ts">
+  import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
   import { getProjectProposal } from "$lib/getters/sns-summary";
   import { loadProposal } from "$lib/services/public/proposals.services";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummary } from "$lib/types/sns";
-  import NnsProposalCard from "../proposals/NnsProposalCard.svelte";
-  import type { ProposalId } from "@dfinity/nns";
-  import type { ProposalInfo } from "@dfinity/nns";
+  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
 
   export let summary: SnsSummary;

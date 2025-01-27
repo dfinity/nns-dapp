@@ -13,6 +13,7 @@ export enum AppPath {
   Settings = "/settings",
   Tokens = "/tokens",
   Reporting = "/reporting",
+  Portfolio = "/portfolio",
 }
 
 // SvelteKit uses the group defined in src/routes/(app)/ as part of the routeId. It also prefixes it with /.
@@ -38,3 +39,6 @@ export const PROJECT_PARAM = "project";
 export const PROPOSAL_PARAM = "proposal";
 export const ACCOUNT_PARAM = "account";
 export const ACTIONABLE_PROPOSALS_PARAM = "actionable";
+
+export const IMPORT_TOKEN_LEDGER_ID_PARAM = "import-ledger-id";
+export const IMPORT_TOKEN_INDEX_ID_PARAM = "import-index-id";

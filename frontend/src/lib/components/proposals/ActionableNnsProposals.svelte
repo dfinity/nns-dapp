@@ -1,9 +1,9 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
   import UniverseWithActionableProposals from "$lib/components/proposals/UniverseWithActionableProposals.svelte";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import NnsProposalCard from "./NnsProposalCard.svelte";
 </script>
 
 <TestIdWrapper testId="actionable-nns-proposals-component">

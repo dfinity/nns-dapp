@@ -1,36 +1,53 @@
 <script lang="ts">
+  import ConfirmFollowingActionButton from "$lib/components/neuron-detail/actions/ConfirmFollowingActionButton.svelte";
+  import FollowNeuronsButton from "$lib/components/neuron-detail/actions/FollowNeuronsButton.svelte";
+  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
-    isNeuronFollowingReset,
-    isNeuronLosingRewards,
-    secondsUntilLosingRewards,
-    shouldDisplayRewardLossNotification,
+    isNeuronFollowingResetVPE,
+    isNeuronLosingRewardsVPE,
+    secondsUntilLosingRewardsVPE,
+    shouldDisplayRewardLossNotificationVPE,
   } from "$lib/utils/neuron.utils";
   import {
     IconCheckCircleFill,
     IconError,
     IconWarning,
   } from "@dfinity/gix-components";
-  import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import { type NeuronInfo } from "@dfinity/nns";
-  import { secondsToDuration } from "@dfinity/utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import FollowNeuronsButton from "./actions/FollowNeuronsButton.svelte";
-  import ConfirmFollowingButton from "./actions/ConfirmFollowingButton.svelte";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
-  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
+  import { nonNullish, secondsToDuration } from "@dfinity/utils";
+  import {
+    clearFollowingAfterSecondsStore,
+    startReducingVotingPowerAfterSecondsStore,
+  } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
 
   let isFollowingReset = false;
-  $: isFollowingReset = isNeuronFollowingReset(neuron);
+  $: isFollowingReset = isNeuronFollowingResetVPE({
+    neuron,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
+    clearFollowingAfterSeconds: $clearFollowingAfterSecondsStore,
+  });
 
   let isLosingRewards = false;
-  $: isLosingRewards = isNeuronLosingRewards(neuron);
+  $: isLosingRewards = isNeuronLosingRewardsVPE({
+    neuron,
+    startReducingVotingPowerAfterSeconds:
+      $startReducingVotingPowerAfterSecondsStore,
+  });
 
   let isLosingRewardsSoon = false;
   $: isLosingRewardsSoon =
-    !isLosingRewards && shouldDisplayRewardLossNotification(neuron);
+    !isLosingRewards &&
+    shouldDisplayRewardLossNotificationVPE({
+      neuron,
+      startReducingVotingPowerAfterSeconds:
+        $startReducingVotingPowerAfterSecondsStore,
+    });
 
   let icon: typeof IconError | typeof IconWarning | typeof IconCheckCircleFill;
   $: icon =
@@ -48,7 +65,13 @@
         ? $i18n.neuron_detail.reward_status_losing_soon
         : $i18n.neuron_detail.reward_status_active;
 
-  const getDescription = (neuron: NeuronInfo): string => {
+  const getDescription = ({
+    neuron,
+    startReducingVotingPowerAfterSeconds,
+  }: {
+    neuron: NeuronInfo;
+    startReducingVotingPowerAfterSeconds: bigint;
+  }): string => {
     if (isFollowingReset)
       return $i18n.neuron_detail.reward_status_inactive_reset_description;
 
@@ -56,7 +79,12 @@
       return $i18n.neuron_detail.reward_status_inactive_description;
 
     const timeUntilLoss = secondsToDuration({
-      seconds: BigInt(secondsUntilLosingRewards(neuron)),
+      seconds: BigInt(
+        secondsUntilLosingRewardsVPE({
+          neuron,
+          startReducingVotingPowerAfterSeconds,
+        })
+      ),
       i18n: $i18n.time,
     });
     return replacePlaceholders(
@@ -66,46 +94,50 @@
       }
     );
   };
-
-  const tooltipText = replacePlaceholders($i18n.losing_rewards.description, {
-    $period: secondsToDissolveDelayDuration(
-      BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS)
-    ),
-  });
 </script>
 
-<CommonItemAction
-  testId="nns-neuron-reward-status-action-component"
-  {tooltipText}
-  tooltipId="neuron-reward-status-icon"
->
-  <span
-    slot="icon"
-    class="icon"
-    class:isLosingRewards
-    class:isLosingRewardsSoon
+{#if nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
+  <CommonItemAction
+    testId="nns-neuron-reward-status-action-component"
+    tooltipText={replacePlaceholders($i18n.losing_rewards.description, {
+      $period: secondsToDissolveDelayDuration(
+        $startReducingVotingPowerAfterSecondsStore
+      ),
+    })}
+    tooltipId="neuron-reward-status-icon"
   >
-    <svelte:component this={icon} />
-  </span>
-  <span slot="title" data-tid="state-title">
-    {title}
-  </span>
+    <span
+      slot="icon"
+      class="icon"
+      class:isLosingRewards
+      class:isLosingRewardsSoon
+    >
+      <svelte:component this={icon} />
+    </span>
+    <span slot="title" data-tid="state-title">
+      {title}
+    </span>
 
-  <span
-    slot="subtitle"
-    class="description"
-    class:negative={isLosingRewards || isLosingRewardsSoon}
-    data-tid="state-description"
-  >
-    {getDescription(neuron)}
-  </span>
+    <span
+      slot="subtitle"
+      class="description"
+      class:negative={isLosingRewards || isLosingRewardsSoon}
+      data-tid="state-description"
+    >
+      {getDescription({
+        neuron,
+        startReducingVotingPowerAfterSeconds:
+          $startReducingVotingPowerAfterSecondsStore,
+      })}
+    </span>
 
-  {#if isFollowingReset}
-    <FollowNeuronsButton />
-  {:else}
-    <ConfirmFollowingButton neuronIds={[neuron.neuronId]} />
-  {/if}
-</CommonItemAction>
+    {#if isFollowingReset}
+      <FollowNeuronsButton variant="secondary" />
+    {:else}
+      <ConfirmFollowingActionButton {neuron} />
+    {/if}
+  </CommonItemAction>
+{/if}
 
 <style lang="scss">
   .icon {

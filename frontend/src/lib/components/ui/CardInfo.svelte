@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ColumnRow from "./ColumnRow.svelte";
+  import ColumnRow from "$lib/components/ui/ColumnRow.svelte";
 
   // Same data-tid as <Card /> for backwards compatibility with existing jest test
   export let testId = "card";

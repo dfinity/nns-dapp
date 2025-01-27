@@ -16,7 +16,6 @@ import { waitFor } from "@testing-library/svelte";
 
 describe("ProjectStatusSection", () => {
   beforeEach(() => {
-    snsTicketsStore.reset();
     resetIdentity();
   });
 

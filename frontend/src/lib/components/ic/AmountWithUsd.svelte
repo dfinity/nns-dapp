@@ -2,8 +2,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { formatNumber } from "$lib/utils/format.utils";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-  import { TokenAmountV2 } from "@dfinity/utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   export let amount: TokenAmountV2 | UnavailableTokenAmount;
   export let amountInUsd: number | undefined;

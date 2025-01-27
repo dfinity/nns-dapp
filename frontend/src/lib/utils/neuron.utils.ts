@@ -30,7 +30,23 @@ import type {
   NeuronVisibilityRowData,
   UncontrolledNeuronDetailsData,
 } from "$lib/types/neuron-visibility-row";
+import {
+  getAccountByPrincipal,
+  isAccountHardwareWallet,
+} from "$lib/utils/accounts.utils";
+import { daysToSeconds, nowInSeconds } from "$lib/utils/date.utils";
+import {
+  formatNumber,
+  shortenWithMiddleEllipsis,
+} from "$lib/utils/format.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
+import { getVotingBallot, getVotingPower } from "$lib/utils/proposals.utils";
+import {
+  createAscendingComparator,
+  mergeComparators,
+} from "$lib/utils/sort.utils";
+import { formatTokenE8s, numberToUlps } from "$lib/utils/token.utils";
+import { isDefined } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
@@ -65,16 +81,6 @@ import {
 } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
 import { get } from "svelte/store";
-import {
-  getAccountByPrincipal,
-  isAccountHardwareWallet,
-} from "./accounts.utils";
-import { daysToSeconds, nowInSeconds } from "./date.utils";
-import { formatNumber, shortenWithMiddleEllipsis } from "./format.utils";
-import { getVotingBallot, getVotingPower } from "./proposals.utils";
-import { createAscendingComparator, mergeComparators } from "./sort.utils";
-import { formatTokenE8s, numberToUlps } from "./token.utils";
-import { isDefined } from "./utils";
 
 export type StateInfo = {
   Icon?: ComponentType;
@@ -109,8 +115,11 @@ const stateInfoMapper: StateMapper = {
 export const getStateInfo = (neuronState: NeuronState): StateInfo =>
   stateInfoMapper[neuronState];
 
+// TODO(mstr): Rename to neuronPotentialVotingPower
 /**
  * Calculation of the voting power of a neuron.
+ *
+ * Note: This calculation ignores the case where the neuron starts missing voting rewards due to user inactivity (related to votingPowerRefreshedTimestampSeconds).
  *
  * If neuron's dissolve delay is less than 6 months, the voting power is 0.
  *
@@ -163,6 +172,9 @@ interface VotingPowerParams {
   maxDissolveDelaySeconds?: number;
   minDissolveDelaySeconds?: number;
 }
+
+// TODO(mstr): Rename to calculatePotentialNeuronVotingPower
+// Because it doesn't take into account the NNS neuron's activity state.
 /**
  * For now used only internally in this file.
  *
@@ -216,6 +228,7 @@ export const ageMultiplier = (ageSeconds: bigint): number =>
   });
 
 export const activityMultiplier = ({ fullNeuron }: NeuronInfo) => {
+  // TODO(mstr): use properties from the NeuronInfo
   const { decidingVotingPower = 0n, potentialVotingPower = 0n } =
     fullNeuron ?? {};
 
@@ -464,15 +477,23 @@ export const getNeuronTags = ({
   identity,
   accounts,
   i18n,
+  startReducingVotingPowerAfterSeconds,
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
   i18n: I18n;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
-  tags.push(...getNeuronTagsUnrelatedToController({ neuron, i18n }));
+  tags.push(
+    ...getNeuronTagsUnrelatedToController({
+      neuron,
+      i18n,
+      startReducingVotingPowerAfterSeconds,
+    })
+  );
 
   const isHWControlled = isNeuronControlledByHardwareWallet({
     neuron,
@@ -487,12 +508,37 @@ export const getNeuronTags = ({
   return tags;
 };
 
+/**
+ * Converts seconds to a human-readable duration for missing rewards tag.
+ * Uses more detailed format when the duration is < 7 days.
+ * Examples:
+ * - 7d 23h — `7 days to confirm`
+ * - 7d 11h — `7 days to confirm`
+ * - 7d 1h — `7 days to confirm`
+ * - 6d 2h — `6 days, 2 hours to confirm`
+ */
+const secondsToMissingRewardsDuration = ({
+  seconds,
+  i18n,
+}: {
+  seconds: bigint;
+  i18n: I18n;
+}): string => {
+  const days = Math.floor(Number(seconds) / SECONDS_IN_DAY);
+  return secondsToDuration({
+    seconds: days < 7 ? seconds : BigInt(days * SECONDS_IN_DAY),
+    i18n: i18n.time,
+  });
+};
+
 const getNeuronTagsUnrelatedToController = ({
   neuron,
   i18n,
+  startReducingVotingPowerAfterSeconds,
 }: {
   neuron: NeuronInfo;
   i18n: I18n;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
@@ -506,18 +552,34 @@ const getNeuronTagsUnrelatedToController = ({
     tags.push({ text: i18n.neurons.community_fund });
   }
 
-  if (get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)) {
-    if (isNeuronLosingRewards(neuron)) {
+  // Skip the "missing rewards" tag when voting power economics not available
+  if (
+    nonNullish(startReducingVotingPowerAfterSeconds) &&
+    get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)
+  ) {
+    if (
+      isNeuronLosingRewardsVPE({ neuron, startReducingVotingPowerAfterSeconds })
+    ) {
       tags.push({
         text: i18n.neurons.missing_rewards,
         status: "danger",
       });
-    } else if (shouldDisplayRewardLossNotification(neuron)) {
+    } else if (
+      shouldDisplayRewardLossNotificationVPE({
+        neuron,
+        startReducingVotingPowerAfterSeconds,
+      })
+    ) {
       tags.push({
         text: replacePlaceholders(i18n.neurons.missing_rewards_soon, {
-          $timeLeft: secondsToDuration({
-            seconds: BigInt(secondsUntilLosingRewards(neuron)),
-            i18n: i18n.time,
+          $timeLeft: secondsToMissingRewardsDuration({
+            seconds: BigInt(
+              secondsUntilLosingRewardsVPE({
+                neuron,
+                startReducingVotingPowerAfterSeconds,
+              })
+            ),
+            i18n,
           }),
         }),
         status: "warning",
@@ -533,11 +595,15 @@ export const createNeuronVisibilityRowData = ({
   identity,
   accounts,
   i18n,
+  startReducingVotingPowerAfterSeconds,
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
   i18n: I18n;
+  // The function should work w/o voting power economics to not block the visibility functionality.
+  // In this case only the "Missing Rewards" tag will be missing.
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
 }): NeuronVisibilityRowData => {
   return {
     neuronId: neuron.neuronId.toString(),
@@ -551,6 +617,7 @@ export const createNeuronVisibilityRowData = ({
     tags: getNeuronTagsUnrelatedToController({
       neuron,
       i18n,
+      startReducingVotingPowerAfterSeconds,
     }),
     uncontrolledNeuronDetails: getNeuronVisibilityRowUncontrolledNeuronDetails({
       neuron,
@@ -1222,6 +1289,7 @@ export const getVotingPowerRefreshedTimestampSeconds = ({
   // to avoid unnecessary notifications.
   fullNeuron?.votingPowerRefreshedTimestampSeconds ?? BigInt(nowInSeconds());
 
+// @deprecated
 export const secondsUntilLosingRewards = (neuron: NeuronInfo): number => {
   const rewardLossStart =
     Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
@@ -1229,6 +1297,7 @@ export const secondsUntilLosingRewards = (neuron: NeuronInfo): number => {
   return rewardLossStart - nowInSeconds();
 };
 
+// @deprecated
 export const isNeuronFollowingReset = (neuron: NeuronInfo): boolean => {
   const neuronFollowingResetTimestampSeconds =
     Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
@@ -1237,12 +1306,86 @@ export const isNeuronFollowingReset = (neuron: NeuronInfo): boolean => {
   return nowInSeconds() >= neuronFollowingResetTimestampSeconds;
 };
 
+// @deprecated
 export const isNeuronLosingRewards = (neuron: NeuronInfo): boolean =>
   secondsUntilLosingRewards(neuron) <= 0;
 
 // e.g. "Neuron will start losing rewards in 30 days"
+// @deprecated
 export const shouldDisplayRewardLossNotification = (
   neuron: NeuronInfo
 ): boolean =>
   secondsUntilLosingRewards(neuron) <=
   daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS);
+
+export const secondsUntilLosingRewardsVPE = ({
+  neuron,
+  startReducingVotingPowerAfterSeconds,
+}: {
+  neuron: NeuronInfo;
+  startReducingVotingPowerAfterSeconds: bigint;
+}): number => {
+  const rewardLossStart = Number(
+    getVotingPowerRefreshedTimestampSeconds(neuron) +
+      startReducingVotingPowerAfterSeconds
+  );
+  return rewardLossStart - nowInSeconds();
+};
+
+/** If the voting power economics are not available,
+ *  we assume that the neuron's following is not reset. */
+export const isNeuronFollowingResetVPE = ({
+  neuron,
+  startReducingVotingPowerAfterSeconds,
+  clearFollowingAfterSeconds,
+}: {
+  neuron: NeuronInfo;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
+  clearFollowingAfterSeconds: bigint | undefined;
+}): boolean => {
+  if (
+    isNullish(startReducingVotingPowerAfterSeconds) ||
+    isNullish(clearFollowingAfterSeconds)
+  ) {
+    return false;
+  }
+  const neuronFollowingResetTimestampSeconds =
+    getVotingPowerRefreshedTimestampSeconds(neuron) +
+    startReducingVotingPowerAfterSeconds +
+    clearFollowingAfterSeconds;
+  return nowInSeconds() >= neuronFollowingResetTimestampSeconds;
+};
+
+/** If the voting power economics are not available,
+ *  we assume that the neuron is not losing rewards. */
+export const isNeuronLosingRewardsVPE = ({
+  neuron,
+  startReducingVotingPowerAfterSeconds,
+}: {
+  neuron: NeuronInfo;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
+}): boolean =>
+  isNullish(startReducingVotingPowerAfterSeconds)
+    ? false
+    : secondsUntilLosingRewardsVPE({
+        neuron,
+        startReducingVotingPowerAfterSeconds,
+      }) <= 0;
+
+/**
+ * e.g. "Neuron will start losing rewards in 30 days"
+ * If the voting power economics are not available,
+ * we assume that the neuron is not losing rewards. */
+export const shouldDisplayRewardLossNotificationVPE = ({
+  neuron,
+  startReducingVotingPowerAfterSeconds,
+}: {
+  neuron: NeuronInfo;
+  startReducingVotingPowerAfterSeconds: bigint | undefined;
+}): boolean =>
+  isNullish(startReducingVotingPowerAfterSeconds)
+    ? false
+    : secondsUntilLosingRewardsVPE({
+        neuron,
+        startReducingVotingPowerAfterSeconds,
+      }) <= daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS);

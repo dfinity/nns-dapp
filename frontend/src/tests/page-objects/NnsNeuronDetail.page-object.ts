@@ -1,13 +1,15 @@
+import { ConfirmFollowingBannerPo } from "$tests/page-objects/ConfirmFollowingBanner.page-object";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { NnsNeuronHotkeysCardPo } from "$tests/page-objects/NnsNeuronHotkeysCard.page-object";
 import { NnsNeuronMaturitySectionPo } from "$tests/page-objects/NnsNeuronMaturitySection.page-object";
 import { NnsNeuronModalsPo } from "$tests/page-objects/NnsNeuronModals.page-object";
+import { NnsNeuronPageHeaderPo } from "$tests/page-objects/NnsNeuronPageHeader.page-object";
+import { NnsNeuronRewardStatusActionPo } from "$tests/page-objects/NnsNeuronRewardStatusAction.page-object";
 import { NnsNeuronTestnetFunctionsCardPo } from "$tests/page-objects/NnsNeuronTestnetFunctionsCard.page-object";
 import { NnsNeuronVotingPowerSectionPo } from "$tests/page-objects/NnsNeuronVotingPowerSection.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { NnsNeuronPageHeaderPo } from "./NnsNeuronPageHeader.page-object";
 
 export class NnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "nns-neuron-detail-component";
@@ -69,6 +71,14 @@ export class NnsNeuronDetailPo extends BasePageObject {
     return this.getPageHeaderPo().getUniverse();
   }
 
+  getConfirmFollowingBannerPo(): ConfirmFollowingBannerPo {
+    return ConfirmFollowingBannerPo.under(this.root);
+  }
+
+  getNnsNeuronRewardStatusActionPo(): NnsNeuronRewardStatusActionPo {
+    return NnsNeuronRewardStatusActionPo.under(this.root);
+  }
+
   getVotingPowerSectionPo(): NnsNeuronVotingPowerSectionPo {
     return NnsNeuronVotingPowerSectionPo.under(this.root);
   }
@@ -124,6 +134,16 @@ export class NnsNeuronDetailPo extends BasePageObject {
     await this.getNnsNeuronModalsPo()
       .getNnsAddMaturityModalPo()
       .addMaturity(amount);
+  }
+
+  async updateVotingPowerRefreshedTimestamp(timestamp: number): Promise<void> {
+    await this.getNnsNeuronTestnetFunctionsCardPo().clickUpdateVotingPowerRefreshedTimestamp();
+    await this.getNnsNeuronModalsPo()
+      .getUpdateVotingPowerRefreshedModalPo()
+      .waitFor();
+    await this.getNnsNeuronModalsPo()
+      .getUpdateVotingPowerRefreshedModalPo()
+      .updateTimestampSeconds(timestamp);
   }
 
   async spawnNeuron({ percentage }: { percentage: number }): Promise<void> {

@@ -8,7 +8,12 @@ import type {
   VotingNeuron,
 } from "$lib/types/proposals";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
+import { nowInSeconds } from "$lib/utils/date.utils";
+import { errorToString } from "$lib/utils/error.utils";
+import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { buildProposalUrl } from "$lib/utils/navigation.utils";
+import { toNnsVote } from "$lib/utils/sns-proposals.utils";
+import { isDefined, keyOf, keyOfOptional } from "$lib/utils/utils";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -29,11 +34,6 @@ import {
 import type { SnsVote } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { nowInSeconds } from "./date.utils";
-import { errorToString } from "./error.utils";
-import { replacePlaceholders } from "./i18n.utils";
-import { toNnsVote } from "./sns-proposals.utils";
-import { isDefined, keyOf, keyOfOptional } from "./utils";
 
 export const lastProposalId = (
   proposalInfos: ProposalInfo[]
@@ -139,7 +139,7 @@ export const getVotingBallot = ({
 // We first check the voting power of the ballot from the proposal. Which is the voting power that was used to vote.
 // In the edge case that the proposal voting power is not present, then we show the neuron voting power.
 export const getVotingPower = ({
-  neuron: { neuronId, votingPower },
+  neuron: { neuronId, decidingVotingPower },
   proposal,
 }: {
   neuron: NeuronInfo;
@@ -148,7 +148,9 @@ export const getVotingPower = ({
   getVotingBallot({
     neuronId,
     proposalInfo: proposal,
-  })?.votingPower ?? votingPower;
+  })?.votingPower ??
+  decidingVotingPower ??
+  0n;
 
 export const selectedNeuronsVotingPower = ({
   neurons,

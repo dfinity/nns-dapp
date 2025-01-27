@@ -9,6 +9,13 @@ import {
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
+import { getCurrentIdentity } from "$lib/services/auth.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateOnError,
+  type QueryAndUpdateOnResponse,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
 import {
   proposalPayloadsStore,
   proposalsFiltersStore,
@@ -27,13 +34,6 @@ import {
 import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { getCurrentIdentity } from "../auth.services";
-import {
-  queryAndUpdate,
-  type QueryAndUpdateOnError,
-  type QueryAndUpdateOnResponse,
-  type QueryAndUpdateStrategy,
-} from "../utils.services";
 
 const handleFindProposalsError = ({
   error: err,

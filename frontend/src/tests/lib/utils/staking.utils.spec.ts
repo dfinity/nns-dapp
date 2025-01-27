@@ -4,7 +4,11 @@ import {
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import type { Universe } from "$lib/types/universe";
-import { getTableProjects, sortTableProjects } from "$lib/utils/staking.utils";
+import {
+  getTableProjects,
+  getTotalStakeInUsd,
+  sortTableProjects,
+} from "$lib/utils/staking.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -59,6 +63,7 @@ describe("staking.utils", () => {
       tokenSymbol: "ICP",
       availableMaturity: 0n,
       stakedMaturity: 0n,
+      isStakeLoading: false,
     };
 
     const defaultExpectedSnsTableProject = {
@@ -76,6 +81,7 @@ describe("staking.utils", () => {
       tokenSymbol: snsTokenSymbol,
       availableMaturity: 0n,
       stakedMaturity: 0n,
+      isStakeLoading: false,
     };
 
     const nnsNeuronWithStake = {
@@ -598,6 +604,7 @@ describe("staking.utils", () => {
           stakeInUsd: undefined,
           availableMaturity: undefined,
           stakedMaturity: undefined,
+          isStakeLoading: true,
         },
         {
           ...defaultExpectedSnsTableProject,
@@ -606,6 +613,7 @@ describe("staking.utils", () => {
           stakeInUsd: undefined,
           availableMaturity: undefined,
           stakedMaturity: undefined,
+          isStakeLoading: true,
         },
       ]);
     });
@@ -731,6 +739,38 @@ describe("staking.utils", () => {
         snsC,
         snsD,
       ]);
+    });
+  });
+
+  describe("getTotalStakeInUsd", () => {
+    it("should add up USD stakes", () => {
+      const project1 = {
+        ...mockTableProject,
+        stakeInUsd: 2,
+      };
+      const project2 = {
+        ...mockTableProject,
+        stakeInUsd: 3,
+      };
+
+      expect(getTotalStakeInUsd([project1, project2])).toBe(5);
+    });
+
+    it("should ignore tokens with unknown stake in USD when adding up the total", () => {
+      const project1 = {
+        ...mockTableProject,
+        stakeInUsd: 3,
+      };
+      const project2 = {
+        ...mockTableProject,
+        stakeInUsd: undefined,
+      };
+      const project3 = {
+        ...mockTableProject,
+        stakeInUsd: 5,
+      };
+
+      expect(getTotalStakeInUsd([project1, project2, project3])).toBe(8);
     });
   });
 });

@@ -6,5 +6,5 @@ export const createActionEvent = ({ type, data }: Action) =>
       type,
       data,
     },
-    bubbles: true,
+    bubbles: false,
   });

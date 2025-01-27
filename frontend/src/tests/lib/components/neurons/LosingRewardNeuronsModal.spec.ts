@@ -13,6 +13,7 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { LosingRewardNeuronsModalPo } from "$tests/page-objects/LosingRewardNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -64,8 +65,21 @@ describe("LosingRewardNeuronsModal", () => {
   }));
   let spyRefreshVotingPower;
 
-  const renderComponent = ({ onClose }: { onClose?: () => void } = {}) => {
-    const { container, component } = render(LosingRewardNeuronsModal);
+  const renderComponent = ({
+    neurons,
+    withNeuronNavigation,
+    onClose,
+  }: {
+    neurons?: NeuronInfo[];
+    withNeuronNavigation?: boolean;
+    onClose?: () => void;
+  } = {}) => {
+    const { container, component } = render(LosingRewardNeuronsModal, {
+      props: {
+        neurons,
+        withNeuronNavigation,
+      },
+    });
 
     if (nonNullish(onClose)) {
       component.$on("nnsClose", onClose);
@@ -97,31 +111,11 @@ describe("LosingRewardNeuronsModal", () => {
       .mockResolvedValue();
   });
 
-  it("should not display active neurons", async () => {
-    neuronsStore.setNeurons({
-      neurons,
-      certified: true,
-    });
-    const po = await renderComponent();
-    const cards = await po.getNnsLosingRewardsNeuronCardPos();
-
-    expect(cards.length).toEqual(2);
-    expect(await cards[0].getNeuronId()).toEqual(
-      `${losingRewardsNeuron.neuronId}`
-    );
-    expect(await cards[1].getNeuronId()).toEqual(
-      `${in10DaysLosingRewardsNeuron.neuronId}`
-    );
-  });
-
   it("should dispatch on close", async () => {
-    neuronsStore.setNeurons({
-      neurons,
-      certified: true,
-    });
     const onClose = vi.fn();
     const po = await renderComponent({
       onClose,
+      neurons,
     });
 
     expect(onClose).toHaveBeenCalledTimes(0);
@@ -130,17 +124,19 @@ describe("LosingRewardNeuronsModal", () => {
   });
 
   it("should confirm following", async () => {
+    const neurons = [in10DaysLosingRewardsNeuron, losingRewardsNeuron];
     neuronsStore.setNeurons({
-      neurons: [in10DaysLosingRewardsNeuron, losingRewardsNeuron],
+      neurons,
       certified: true,
     });
-    const po = await renderComponent({});
+    const po = await renderComponent({
+      neurons,
+    });
 
     expect((await po.getNnsLosingRewardsNeuronCardPos()).length).toEqual(2);
 
     await po.clickConfirmFollowing();
     await runResolvedPromises();
-    expect((await po.getNnsLosingRewardsNeuronCardPos()).length).toEqual(0);
 
     expect(spyRefreshVotingPower).toHaveBeenCalledTimes(2);
     expect(spyRefreshVotingPower).toHaveBeenCalledWith({
@@ -154,13 +150,10 @@ describe("LosingRewardNeuronsModal", () => {
   });
 
   it("should navigate to the neuron details", async () => {
-    neuronsStore.setNeurons({
-      neurons: [losingRewardsNeuron],
-      certified: true,
-    });
     const onClose = vi.fn();
     const po = await renderComponent({
       onClose,
+      neurons: [losingRewardsNeuron],
     });
     const firstCards = (await po.getNnsLosingRewardsNeuronCardPos())[0];
     expect(onClose).toHaveBeenCalledTimes(0);
@@ -182,17 +175,33 @@ describe("LosingRewardNeuronsModal", () => {
     });
   });
 
+  it("should not navigate to the neuron details when withNeuronNavigation=false", async () => {
+    const onClose = vi.fn();
+    const po = await renderComponent({
+      onClose,
+      neurons: [losingRewardsNeuron],
+      withNeuronNavigation: false,
+    });
+    const firstCards = (await po.getNnsLosingRewardsNeuronCardPos())[0];
+    expect(get(pageStore).path).toEqual("/staking");
+    expect(firstCards).not.toEqual(undefined);
+
+    await firstCards.click();
+    await runResolvedPromises();
+
+    expect(onClose).toHaveBeenCalledTimes(0);
+    expect(get(pageStore).path).toEqual("/staking");
+  });
+
   it("should fetch known neurons", async () => {
     const queryKnownNeuronsSpy = vi
       .spyOn(governanceApi, "queryKnownNeurons")
       .mockResolvedValue([]);
-    neuronsStore.setNeurons({
-      neurons,
-      certified: true,
-    });
 
     expect(queryKnownNeuronsSpy).toHaveBeenCalledTimes(0);
-    await renderComponent();
+    await renderComponent({
+      neurons,
+    });
     await runResolvedPromises();
     expect(queryKnownNeuronsSpy).toHaveBeenCalledTimes(2);
     expect(queryKnownNeuronsSpy).toHaveBeenCalledWith({

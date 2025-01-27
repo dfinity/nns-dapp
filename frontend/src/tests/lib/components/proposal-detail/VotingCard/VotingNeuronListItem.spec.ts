@@ -19,7 +19,7 @@ describe("VotingNeuronListItem", () => {
       neuron: {
         ...mockNeuron,
         neuronId,
-        votingPower,
+        decidingVotingPower: votingPower,
       },
       proposal: mockProposalInfo,
     });

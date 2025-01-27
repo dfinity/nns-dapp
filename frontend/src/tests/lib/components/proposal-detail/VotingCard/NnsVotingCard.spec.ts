@@ -4,15 +4,13 @@ import * as proposalsApi from "$lib/api/proposals.api";
 import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import {
-  voteRegistrationStore,
-  votingNeuronSelectStore,
-} from "$lib/stores/vote-registration.store";
+import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import {
   SELECTED_PROPOSAL_CONTEXT_KEY,
   type SelectedProposalContext,
   type SelectedProposalStore,
 } from "$lib/types/selected-proposal.context";
+import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
@@ -26,7 +24,6 @@ import { SnsNeuronPermissionType } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 import { mock } from "vitest-mock-extended";
-import ContextWrapperTest from "../../ContextWrapperTest.svelte";
 
 describe("VotingCard", () => {
   const neuronIds = [111, 222].map(BigInt);
@@ -72,8 +69,6 @@ describe("VotingCard", () => {
   };
 
   beforeEach(() => {
-    voteRegistrationStore.reset();
-
     neuronsStore.setNeurons({ neurons: [], certified: true });
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
     resetIdentity();

@@ -1,19 +1,18 @@
-import * as governanceApi from "$lib/api/governance.api";
 import {
   SECONDS_IN_DAY,
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
-import { neuronsStore } from "$lib/stores/neurons.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import NnsNeuronRewardStatusActionTest from "$tests/lib/components/neuron-detail/NnsNeuronRewardStatusActionTest.svelte";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronRewardStatusActionPo } from "$tests/page-objects/NnsNeuronRewardStatusAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import NnsNeuronRewardStatusActionTest from "./NnsNeuronRewardStatusActionTest.svelte";
 
 describe("NnsNeuronRewardStatusAction", () => {
   const renderComponent = (neuron: NeuronInfo) => {
@@ -30,6 +29,11 @@ describe("NnsNeuronRewardStatusAction", () => {
 
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime("2024-01-01");
+
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
   });
 
   it("should render active neuron state", async () => {
@@ -48,6 +52,20 @@ describe("NnsNeuronRewardStatusAction", () => {
     );
     expect(await po.getConfirmFollowingButtonPo().isPresent()).toBe(true);
     expect(await po.getFollowNeuronsButtonPo().isPresent()).toBe(false);
+  });
+
+  it("should not render active neuron state w/o voting power economics params", async () => {
+    const testNeuron = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockFullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(nowInSeconds()),
+      },
+    };
+    networkEconomicsStore.reset();
+    const po = renderComponent(testNeuron);
+
+    expect(await po.isPresent()).toBe(false);
   });
 
   it("should render losing soon neuron state", async () => {
@@ -110,42 +128,8 @@ describe("NnsNeuronRewardStatusAction", () => {
     );
     expect(await po.getConfirmFollowingButtonPo().isPresent()).toBe(false);
     expect(await po.getFollowNeuronsButtonPo().isPresent()).toBe(true);
-  });
-
-  it("should refresh voting power", async () => {
-    const testNeuron = {
-      ...mockNeuron,
-      fullNeuron: {
-        ...mockFullNeuron,
-        votingPowerRefreshedTimestampSeconds: BigInt(
-          nowInSeconds() - SECONDS_IN_HALF_YEAR + 10 * SECONDS_IN_DAY
-        ),
-        controller: mockIdentity.getPrincipal().toText(),
-      },
-    };
-    resetIdentity();
-    neuronsStore.setNeurons({
-      neurons: [testNeuron],
-      certified: true,
-    });
-    vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([testNeuron]);
-    const spyRefreshVotingPower = vi
-      .spyOn(governanceApi, "refreshVotingPower")
-      .mockResolvedValue();
-    vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
-
-    const po = renderComponent(testNeuron);
-
-    expect(spyRefreshVotingPower).toHaveBeenCalledTimes(0);
-
-    expect(await po.getConfirmFollowingButtonPo().isPresent()).toBe(true);
-    await po.getConfirmFollowingButtonPo().click();
-    await runResolvedPromises();
-
-    expect(spyRefreshVotingPower).toHaveBeenCalledTimes(1);
-    expect(spyRefreshVotingPower).toHaveBeenCalledWith({
-      identity: mockIdentity,
-      neuronId: testNeuron.neuronId,
-    });
+    expect(await po.getFollowNeuronsButtonPo().isButtonVariantSecondary()).toBe(
+      true
+    );
   });
 });

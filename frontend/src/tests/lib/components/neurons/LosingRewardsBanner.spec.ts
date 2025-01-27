@@ -1,9 +1,11 @@
 import * as governanceApi from "$lib/api/governance.api";
 import LosingRewardsBanner from "$lib/components/neurons/LosingRewardsBanner.svelte";
 import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { LosingRewardsBannerPo } from "$tests/page-objects/LosingRewardsBanner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -70,11 +72,26 @@ describe("LosingRewardsBanner", () => {
     vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
     vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue(refreshedNeurons);
     vi.spyOn(governanceApi, "refreshVotingPower").mockResolvedValue();
+
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
   });
 
   it("should not display banner when all neurons are active", async () => {
     neuronsStore.setNeurons({
       neurons: [activeNeuron],
+      certified: true,
+    });
+    const po = await renderComponent();
+    expect(await po.isVisible()).toBe(false);
+  });
+
+  it("should not display banner w/o voting power economics", async () => {
+    networkEconomicsStore.reset();
+    neuronsStore.setNeurons({
+      neurons: [losingRewardsNeuron],
       certified: true,
     });
     const po = await renderComponent();
@@ -136,6 +153,24 @@ describe("LosingRewardsBanner", () => {
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(true);
   });
 
+  it("should not display active neurons in the modal", async () => {
+    neuronsStore.setNeurons({
+      neurons: [activeNeuron, in10DaysLosingRewardsNeuron],
+      certified: true,
+    });
+    const po = await renderComponent();
+
+    await po.clickConfirm();
+    const cards = await po
+      .getLosingRewardNeuronsModalPo()
+      .getNnsLosingRewardsNeuronCardPos();
+
+    expect(cards.length).toEqual(1);
+    expect(await cards[0].getNeuronId()).toEqual(
+      `${in10DaysLosingRewardsNeuron.neuronId}`
+    );
+  });
+
   it("should close modal when all refreshed", async () => {
     const spyRefreshVotingPower = vi
       .spyOn(governanceApi, "refreshVotingPower")
@@ -149,10 +184,20 @@ describe("LosingRewardsBanner", () => {
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);
     await po.clickConfirm();
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(true);
+    expect(
+      await po
+        .getLosingRewardNeuronsModalPo()
+        .getNnsLosingRewardsNeuronCardPos()
+    ).toHaveLength(1);
 
     await po.getLosingRewardNeuronsModalPo().clickConfirmFollowing();
     await runResolvedPromises();
 
+    expect(
+      await po
+        .getLosingRewardNeuronsModalPo()
+        .getNnsLosingRewardsNeuronCardPos()
+    ).toHaveLength(0);
     vi.advanceTimersToNextFrame();
     expect(spyRefreshVotingPower).toBeCalledTimes(1);
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);

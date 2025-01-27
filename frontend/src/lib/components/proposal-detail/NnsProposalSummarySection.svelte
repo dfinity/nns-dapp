@@ -1,8 +1,7 @@
 <script lang="ts">
+  import ProposalSummarySection from "$lib/components/proposal-detail/ProposalSummarySection.svelte";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import ProposalSummarySection from "./ProposalSummarySection.svelte";
-  import type { Proposal } from "@dfinity/nns";
-  import type { ProposalInfo } from "@dfinity/nns";
+  import type { Proposal, ProposalInfo } from "@dfinity/nns";
 
   export let proposalInfo: ProposalInfo;
 

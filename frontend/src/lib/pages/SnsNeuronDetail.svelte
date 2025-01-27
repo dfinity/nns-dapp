@@ -38,10 +38,13 @@
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import { Island } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
-  import type { SnsNeuron } from "@dfinity/sns";
-  import type { Token, TokenAmountV2 } from "@dfinity/utils";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import {
+    isNullish,
+    nonNullish,
+    type Token,
+    type TokenAmountV2,
+  } from "@dfinity/utils";
   import { onMount, setContext } from "svelte";
 
   export let neuronId: string | null | undefined;
@@ -75,6 +78,9 @@
 
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
+
+  let ledgerCanisterId: Principal | undefined;
+  $: ledgerCanisterId = $selectedUniverseStore.summary?.ledgerCanisterId;
 
   let governanceCanisterId: Principal | undefined;
   $: governanceCanisterId =
@@ -193,6 +199,7 @@
           <SnsNeuronPageHeading
             {parameters}
             neuron={$selectedSnsNeuronStore.neuron}
+            {ledgerCanisterId}
           />
           <Separator spacing="none" />
           <SnsNeuronVotingPowerSection

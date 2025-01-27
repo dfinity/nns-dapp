@@ -1,11 +1,11 @@
 <script lang="ts">
+  import Countdown from "$lib/components/proposals/Countdown.svelte";
   import ProposalStatusTag from "$lib/components/ui/ProposalStatusTag.svelte";
   import { PROPOSER_ID_DISPLAY_SPLIT_LENGTH } from "$lib/constants/proposals.constants";
   import { i18n } from "$lib/stores/i18n";
   import type { UniversalProposalStatus } from "$lib/types/proposals";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import Countdown from "./Countdown.svelte";
   import {
     Card,
     IconChat,

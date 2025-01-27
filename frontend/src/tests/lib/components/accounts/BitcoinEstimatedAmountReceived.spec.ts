@@ -8,10 +8,6 @@ import en from "$tests/mocks/i18n.mock";
 import { render } from "@testing-library/svelte";
 
 describe("BitcoinEstimatedAmountReceived", () => {
-  beforeEach(() => {
-    ckBTCInfoStore.reset();
-  });
-
   describe("should display zero as estimated received amount", () => {
     const zeroBtc = `${formatEstimatedFee(0n)} ${en.ckbtc.btc}`;
 

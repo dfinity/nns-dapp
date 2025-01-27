@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ProjectSwapDetails from "$lib/components/project-detail/ProjectSwapDetails.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import {
@@ -6,7 +7,6 @@
     type ProjectDetailContext,
   } from "$lib/types/project-detail.context";
   import type { SnsSummary, SnsSummaryMetadata } from "$lib/types/sns";
-  import ProjectSwapDetails from "./ProjectSwapDetails.svelte";
   import { KeyValuePair } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
   import { getContext } from "svelte";

@@ -1,8 +1,10 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import IC_LOGO from "$lib/assets/icp.svg";
+  import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import HardwareWalletListNeuronsButton from "$lib/components/accounts/HardwareWalletListNeuronsButton.svelte";
   import HardwareWalletShowActionButton from "$lib/components/accounts/HardwareWalletShowActionButton.svelte";
+  import LedgerNeuronHotkeyWarning from "$lib/components/accounts/LedgerNeuronHotkeyWarning.svelte";
   import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
   import ReceiveButton from "$lib/components/accounts/ReceiveButton.svelte";
   import RenameSubAccountButton from "$lib/components/accounts/RenameSubAccountButton.svelte";
@@ -27,6 +29,7 @@
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
   import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
   import WalletModals from "$lib/modals/accounts/WalletModals.svelte";
+  import { notifyAndAttachCanisterIfNeeded } from "$lib/services/canisters.services";
   import {
     cancelPollAccounts,
     loadBalance,
@@ -41,6 +44,8 @@
     listNeurons,
   } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
+  import { canistersStore } from "$lib/stores/canisters.store";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import {
@@ -48,8 +53,7 @@
     type IcpTransactionsStoreData,
   } from "$lib/stores/icp-transactions.store";
   import { toastsError } from "$lib/stores/toasts.store";
-  import type { Account } from "$lib/types/account";
-  import type { AccountIdentifierText } from "$lib/types/account";
+  import type { Account, AccountIdentifierText } from "$lib/types/account";
   import type { UiTransaction } from "$lib/types/transaction";
   import {
     WALLET_CONTEXT_KEY,
@@ -155,6 +159,35 @@
     account: $selectedAccountStore.account,
     transactionsStore: $icpTransactionsStore,
     neuronAccounts: $neuronAccountsStore,
+  });
+
+  const tryNotifyAndAttachCanister = ({
+    account,
+    transactionsStore,
+    canisters,
+  }: {
+    account: Account | undefined;
+    transactionsStore: IcpTransactionsStoreData;
+    canisters: CanisterDetails[] | undefined;
+  }) => {
+    if (
+      isNullish(canisters) ||
+      isNullish(account) ||
+      isNullish(transactionsStore[account.identifier])
+    ) {
+      return;
+    }
+    const transactions = transactionsStore[account.identifier].transactions;
+    notifyAndAttachCanisterIfNeeded({
+      transactions,
+      canisters,
+    });
+  };
+
+  $: tryNotifyAndAttachCanister({
+    account: $selectedAccountStore.account,
+    transactionsStore: $icpTransactionsStore,
+    canisters: $canistersStore?.canisters,
   });
 
   let uiTransactions: UiTransaction[] | undefined;
@@ -380,6 +413,10 @@
             {/if}
             <SignInGuard />
           </WalletPageHeading>
+
+          {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION && isHardwareWallet}
+            <LedgerNeuronHotkeyWarning />
+          {/if}
 
           <Separator spacing="none" />
 

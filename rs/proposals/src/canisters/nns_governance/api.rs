@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2024-12-06_03-16-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-23_03-04-hashes-in-blocks/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -184,6 +184,7 @@ pub struct Controllers {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct CanisterSettings {
     pub freezing_threshold: Option<u64>,
+    pub wasm_memory_threshold: Option<u64>,
     pub controllers: Option<Controllers>,
     pub log_visibility: Option<i32>,
     pub wasm_memory_limit: Option<u64>,
@@ -502,10 +503,14 @@ pub struct NeuronSubsetMetrics {
     pub voting_power_buckets: Vec<(u64, u64)>,
     pub total_staked_e8s: Option<u64>,
     pub count: Option<u64>,
+    pub deciding_voting_power_buckets: Vec<(u64, u64)>,
     pub total_staked_maturity_e8s_equivalent: Option<u64>,
+    pub total_potential_voting_power: Option<u64>,
+    pub total_deciding_voting_power: Option<u64>,
     pub staked_maturity_e8s_equivalent_buckets: Vec<(u64, u64)>,
     pub staked_e8s_buckets: Vec<(u64, u64)>,
     pub total_voting_power: Option<u64>,
+    pub potential_voting_power_buckets: Vec<(u64, u64)>,
     pub count_buckets: Vec<(u64, u64)>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -525,12 +530,14 @@ pub struct GovernanceCachedMetrics {
     pub total_staked_e8s_seed: u64,
     pub total_staked_maturity_e8s_equivalent_ect: u64,
     pub total_staked_e8s: u64,
+    pub fully_lost_voting_power_neuron_subset_metrics: Option<NeuronSubsetMetrics>,
     pub not_dissolving_neurons_count: u64,
     pub total_locked_e8s: u64,
     pub neurons_fund_total_active_neurons: u64,
     pub total_voting_power_non_self_authenticating_controller: Option<u64>,
     pub total_staked_maturity_e8s_equivalent: u64,
     pub not_dissolving_neurons_e8s_buckets_ect: Vec<(u64, f64)>,
+    pub declining_voting_power_neuron_subset_metrics: Option<NeuronSubsetMetrics>,
     pub total_staked_e8s_ect: u64,
     pub not_dissolving_neurons_staked_maturity_e8s_equivalent_sum: u64,
     pub dissolved_neurons_e8s: u64,
@@ -982,6 +989,7 @@ pub enum ManageNeuronCommandRequest {
     Spawn(Spawn),
     Split(Split),
     Follow(Follow),
+    RefreshVotingPower(RefreshVotingPower),
     ClaimOrRefresh(ClaimOrRefresh),
     Configure(Configure),
     RegisterVote(RegisterVote),

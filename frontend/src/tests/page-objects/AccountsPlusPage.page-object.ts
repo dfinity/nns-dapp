@@ -1,7 +1,7 @@
+import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
+import { SignInAccountsPo } from "$tests/page-objects/SignInAccounts.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { AccountsPo } from "./Accounts.page-object";
-import { SignInAccountsPo } from "./SignInAccounts.page-object";
 
 export class AccountsPlusPagePo extends BasePageObject {
   private static readonly TID = "accounts-plus-page-component";

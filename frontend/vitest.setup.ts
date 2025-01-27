@@ -15,6 +15,7 @@ import {
 import { navigating, page } from "./__mocks__/$app/stores";
 import { IntersectionObserverPassive } from "./src/tests/mocks/infinitescroll.mock";
 import { failTestsThatLogToConsole } from "./src/tests/utils/console.test-utils";
+import { CustomEventForTesting } from "./src/tests/utils/custom-event.test-utils";
 import {
   mockedConstants,
   setDefaultTestConstants,
@@ -31,28 +32,38 @@ beforeEach(() => {
 
   // Resets/restores any global objects(eg. window, document, Date, ) that were stubbed/mocked during testing
   vi.unstubAllGlobals();
+
+  vi.stubGlobal("CustomEvent", CustomEventForTesting);
 });
 
-// Reset every store before each test.
-const resetStoreFunctions = vi.hoisted(() => {
+const cleanupFunctions = vi.hoisted(() => {
   return [];
 });
 
+// Reset every store before each test.
 vi.mock("svelte/store", async (importOriginal) => {
   const svelteStoreModule = await importOriginal();
   return {
     ...svelteStoreModule,
     writable: <T>(initialValue, ...otherArgs) => {
       const store = svelteStoreModule.writable<T>(initialValue, ...otherArgs);
-      resetStoreFunctions.push(() => store.set(initialValue));
+      cleanupFunctions.push(() => store.set(initialValue));
       return store;
     },
   };
 });
 
+vi.mock("$lib/utils/test-support.utils", async () => {
+  return {
+    registerCleanupForTesting: (cleanup: () => void) => {
+      cleanupFunctions.push(cleanup);
+    },
+  };
+});
+
 beforeEach(() => {
-  for (const reset of resetStoreFunctions) {
-    reset();
+  for (const cleanup of cleanupFunctions) {
+    cleanup();
   }
 });
 
@@ -84,8 +95,10 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_EXPORT_NEURONS_REPORT: false,
       ENABLE_USD_VALUES: false,
       ENABLE_USD_VALUES_FOR_NEURONS: false,
+      ENABLE_PORTFOLIO_PAGE: false,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
+      ENABLE_IMPORT_TOKEN_BY_URL: false,
     }),
     fetchRootKey: "false",
     host: "https://icp-api.io",

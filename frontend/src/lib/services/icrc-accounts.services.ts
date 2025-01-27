@@ -10,6 +10,10 @@ import {
   getAuthenticatedIdentity,
   getCurrentIdentity,
 } from "$lib/services/auth.services";
+import {
+  queryAndUpdate,
+  type QueryAndUpdateStrategy,
+} from "$lib/services/utils.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import {
@@ -33,7 +37,6 @@ import {
 import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { queryAndUpdate, type QueryAndUpdateStrategy } from "./utils.services";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
@@ -116,6 +119,7 @@ export const loadIcrcToken = ({
       // Hide unproven data
       tokensStore.resetUniverse(ledgerCanisterId);
     },
+    logMessage: "loadIcrcToken",
   });
 };
 

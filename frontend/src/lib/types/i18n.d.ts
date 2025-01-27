@@ -155,6 +155,7 @@ interface I18nNavigation {
   source_code: string;
   settings: string;
   reporting: string;
+  portfolio: string;
 }
 
 interface I18nHeader {
@@ -201,6 +202,10 @@ interface I18nReporting {
   error_file_system_access: string;
   error_neurons: string;
   error_transactions: string;
+  range_filter_title: string;
+  range_filter_all: string;
+  range_last_year: string;
+  range_year_to_date: string;
 }
 
 interface I18nAuth {
@@ -391,9 +396,6 @@ interface I18nNeurons {
   public_neuron_description: string;
   private_neuron_description: string;
   learn_more: string;
-  make_neurons_public_banner_title: string;
-  make_neurons_public_banner_description: string;
-  make_neurons_public_action_text: string;
   create_as_public: string;
   create_as_public_tooltip: string;
   create_as_public_neuron_failure: string;
@@ -403,9 +405,13 @@ interface I18nLosing_rewards {
   description: string;
   confirming: string;
   confirm: string;
+  badge_label: string;
+  hw_create_neuron_warning: string;
+  hw_hotkey_warning: string;
 }
 
 interface I18nLosing_rewards_banner {
+  confirm_title: string;
   days_left_title: string;
   rewards_missing_title: string;
 }
@@ -1246,6 +1252,31 @@ interface I18nImport_token {
   doc_link_label: string;
 }
 
+interface I18nPortfolio {
+  login_title: string;
+  login_description: string;
+  no_tokens_card_title: string;
+  no_tokens_card_description: string;
+  no_tokens_card_button: string;
+  no_neurons_card_description: string;
+  no_neurons_card_button: string;
+  held_tokens_card_title: string;
+  held_tokens_card_link: string;
+  held_tokens_card_list_first_column: string;
+  held_tokens_card_list_second_column_mobile: string;
+  held_tokens_card_list_second_column: string;
+  held_tokens_card_list_third_column: string;
+  held_tokens_card_info_row: string;
+  staked_tokens_card_title: string;
+  staked_tokens_card_link: string;
+  staked_tokens_card_list_first_column: string;
+  staked_tokens_card_list_second_column_mobile: string;
+  staked_tokens_card_list_second_column: string;
+  staked_tokens_card_list_third_column: string;
+  staked_tokens_card_info_row: string;
+  total_assets_title: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1536,6 +1567,7 @@ interface I18n {
   sync: I18nSync;
   tokens: I18nTokens;
   import_token: I18nImport_token;
+  portfolio: I18nPortfolio;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

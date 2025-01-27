@@ -1,11 +1,11 @@
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
+import FolloweeTest from "$tests/lib/components/neuron-detail/NeuronFollowingCard/FolloweeTest.svelte";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { FolloweePo } from "$tests/page-objects/Followee.page-object";
 import { VotingHistoryModalPo } from "$tests/page-objects/VotingHistoryModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
-import FolloweeTest from "./FolloweeTest.svelte";
 
 describe("Followee", () => {
   let copySpy;

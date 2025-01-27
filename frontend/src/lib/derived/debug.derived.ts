@@ -10,6 +10,7 @@ import {
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   proposalPayloadsStore,
@@ -123,6 +124,7 @@ export const initDebugStore = () =>
       defaultIcrcCanistersStore,
       importedTokensStore,
       failedImportedTokenLedgerIdsStore,
+      networkEconomicsStore,
     ],
     ([
       $busyStore,
@@ -153,6 +155,7 @@ export const initDebugStore = () =>
       $defaultIcrcCanistersStore,
       $importedTokensStore,
       $failedImportedTokenLedgerIdsStore,
+      $networkEconomicsParametersStore,
     ]) => ({
       busy: $busyStore,
       accounts: $accountsStore,
@@ -182,5 +185,6 @@ export const initDebugStore = () =>
       defaultIcrcCanistersStore: $defaultIcrcCanistersStore,
       importedTokensStore: $importedTokensStore,
       failedImportedTokenLedgerIdsStore: $failedImportedTokenLedgerIdsStore,
+      networkEconomicsParametersStore: $networkEconomicsParametersStore,
     })
   );
