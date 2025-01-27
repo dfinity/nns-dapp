@@ -5,40 +5,40 @@
 </script>
 
 <Card {testId}>
-  <div class="wrapper">
+  <span class="wrapper">
     <div class="header">
       <div class="header-wrapper">
-        <div class="icon skeleton" />
+        <div class="icon skeleton"></div>
         <div class="text-content">
-          <div class="title skeleton" />
-          <div class="amount skeleton" />
+          <div class="title skeleton"></div>
+          <div class="amount skeleton"></div>
         </div>
       </div>
-      <div class="link skeleton" />
+      <div class="link skeleton"></div>
     </div>
 
-    <div class="body">
-      <div class="header">
-        <span class="skeleton" />
-        <span class="skeleton justify-end" />
-        <span class="skeleton justify-end tablet-up" />
-      </div>
+    <span class="body">
+      <span class="header">
+        <span class="skeleton"></span>
+        <span class="skeleton justify-end"></span>
+        <span class="skeleton justify-end tablet-up"></span>
+      </span>
 
       <div class="list">
         {#each Array(4) as _, i (i)}
           <div class="row">
             <div class="info">
-              <div class="logo-skeleton skeleton" />
-              <div class="title-skeleton skeleton" />
+              <div class="logo-skeleton skeleton"></div>
+              <div class="title-skeleton skeleton"></div>
             </div>
 
-            <div class="balance-native skeleton" />
-            <div class="balance-usd skeleton" />
+            <div class="balance-native skeleton"></div>
+            <div class="balance-usd skeleton"></div>
           </div>
         {/each}
       </div>
-    </div>
-  </div>
+    </span>
+  </span>
 </Card>
 
 <style lang="scss">
