@@ -554,5 +554,39 @@ describe("ImportTokenModal", () => {
         "You have already imported this token, you can find it in the token list."
       );
     });
+
+    it("should navigate to tokens on close w/o query params", async () => {
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [],
+      });
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+      const reviewPo = po.getImportTokenReviewPo();
+
+      await runResolvedPromises();
+
+      expect(get(pageStore)).toMatchObject({
+        importTokenLedgerId: ledgerCanisterId.toText(),
+        importTokenIndexId: indexCanisterId.toText(),
+        path: AppPath.Tokens,
+      });
+
+      expect(await formPo.isPresent()).toEqual(false);
+      expect(await reviewPo.isPresent()).toEqual(true);
+
+      await po.closeModal();
+      expect(get(pageStore)).toMatchObject({
+        importTokenLedgerId: undefined,
+        importTokenIndexId: undefined,
+        path: AppPath.Tokens,
+      });
+    });
   });
 });
