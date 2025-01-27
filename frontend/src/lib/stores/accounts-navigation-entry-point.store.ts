@@ -3,7 +3,7 @@ import { writable } from "svelte/store";
 
 type AccountsEntryPoint = AppPath.Portfolio | AppPath.Tokens;
 
-const initTokensTableOrderStore = () => {
+const initAccountsNavigationEntryPoint = () => {
   const { subscribe, set } = writable<AccountsEntryPoint>(AppPath.Tokens);
 
   return {
@@ -12,4 +12,5 @@ const initTokensTableOrderStore = () => {
   };
 };
 
-export const accountsNavigationEntryPointStore = initTokensTableOrderStore();
+export const accountsNavigationEntryPointStore =
+  initAccountsNavigationEntryPoint();
