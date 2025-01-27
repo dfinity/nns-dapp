@@ -10,14 +10,12 @@ import {
   E8S_PER_ICP,
 } from "$lib/constants/icp.constants";
 import {
-  CLEAR_FOLLOWING_AFTER_SECONDS,
   MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
-  START_REDUCING_VOTING_POWER_AFTER_SECONDS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
@@ -1288,35 +1286,6 @@ export const getVotingPowerRefreshedTimestampSeconds = ({
   // When the fullNeuron is not presented, we assume that the neuron is not losing rewards
   // to avoid unnecessary notifications.
   fullNeuron?.votingPowerRefreshedTimestampSeconds ?? BigInt(nowInSeconds());
-
-// @deprecated
-export const secondsUntilLosingRewards = (neuron: NeuronInfo): number => {
-  const rewardLossStart =
-    Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
-    START_REDUCING_VOTING_POWER_AFTER_SECONDS;
-  return rewardLossStart - nowInSeconds();
-};
-
-// @deprecated
-export const isNeuronFollowingReset = (neuron: NeuronInfo): boolean => {
-  const neuronFollowingResetTimestampSeconds =
-    Number(getVotingPowerRefreshedTimestampSeconds(neuron)) +
-    START_REDUCING_VOTING_POWER_AFTER_SECONDS +
-    CLEAR_FOLLOWING_AFTER_SECONDS;
-  return nowInSeconds() >= neuronFollowingResetTimestampSeconds;
-};
-
-// @deprecated
-export const isNeuronLosingRewards = (neuron: NeuronInfo): boolean =>
-  secondsUntilLosingRewards(neuron) <= 0;
-
-// e.g. "Neuron will start losing rewards in 30 days"
-// @deprecated
-export const shouldDisplayRewardLossNotification = (
-  neuron: NeuronInfo
-): boolean =>
-  secondsUntilLosingRewards(neuron) <=
-  daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS);
 
 export const secondsUntilLosingRewardsVPE = ({
   neuron,
