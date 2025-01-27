@@ -14,7 +14,7 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import type { SnsNeuron } from "@dfinity/sns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 import { writable } from "svelte/store";
 
 export const renderContextWrapper = <T>({
@@ -23,12 +23,12 @@ export const renderContextWrapper = <T>({
   contextValue,
   props,
 }: {
-  Component: typeof SvelteComponent;
+  Component: Component;
   contextKey: symbol;
   contextValue: T;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: any;
-}): RenderResult<SvelteComponent> =>
+}): RenderResult<Component> =>
   render(ContextWrapperTest, {
     props: {
       contextKey,
@@ -42,9 +42,9 @@ export const renderSelectedAccountContext = ({
   Component,
   account,
 }: {
-  Component: typeof SvelteComponent;
+  Component: Component;
   account: Account | undefined;
-}): RenderResult<SvelteComponent> =>
+}): RenderResult<Component> =>
   renderContextWrapper({
     contextKey: WALLET_CONTEXT_KEY,
     contextValue: {
@@ -62,7 +62,7 @@ export const renderSelectedSnsNeuronContext = ({
   reload,
   props,
 }: {
-  Component: typeof SvelteComponent;
+  Component: Component;
   neuron: SnsNeuron;
   reload: () => Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
