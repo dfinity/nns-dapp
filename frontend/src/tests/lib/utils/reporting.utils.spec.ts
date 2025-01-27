@@ -445,7 +445,7 @@ describe("reporting utils", () => {
 
       expect(datasets[0].metadata[1]).toEqual({
         label: "Neuron ID",
-        value: "1",
+        value: '="1"',
       });
     });
   });
