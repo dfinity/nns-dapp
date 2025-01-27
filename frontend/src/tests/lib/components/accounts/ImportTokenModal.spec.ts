@@ -1,11 +1,15 @@
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
-import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { page } from "$mocks/$app/stores";
@@ -446,5 +450,109 @@ describe("ImportTokenModal", () => {
     await runResolvedPromises();
 
     expect(get(pageStore).path).toEqual(AppPath.Tokens);
+  });
+
+  describe.only("Import token by URL", () => {
+    beforeEach(() => {
+      page.mock({
+        routeId: AppPath.Tokens,
+        data: {
+          universe: OWN_CANISTER_ID_TEXT,
+          importTokenLedgerId: ledgerCanisterId.toText(),
+          importTokenIndexId: indexCanisterId.toText(),
+        },
+      });
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
+    });
+
+    it("imports from URL", async () => {
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [],
+      });
+      const setImportedTokensSpy = vi
+        .spyOn(importedTokensApi, "setImportedTokens")
+        .mockResolvedValue();
+
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+      const reviewPo = po.getImportTokenReviewPo();
+
+      await runResolvedPromises();
+
+      // Should be on review step
+      expect(await formPo.isPresent()).toEqual(false);
+      expect(await reviewPo.isPresent()).toEqual(true);
+      // With fetched token data
+      expect(
+        await reviewPo.getLedgerCanisterIdPo().getCanisterIdText()
+      ).toEqual(ledgerCanisterId.toText());
+      expect(await reviewPo.getIndexCanisterIdPo().getCanisterIdText()).toEqual(
+        indexCanisterId.toText()
+      );
+      expect(await reviewPo.getTokenName()).toEqual(tokenMetaData.name);
+      expect(await reviewPo.getTokenSymbol()).toEqual(tokenMetaData.symbol);
+      expect(await reviewPo.getLogoSource()).toEqual(tokenMetaData.logo);
+      expect(setImportedTokensSpy).toBeCalledTimes(0);
+
+      await reviewPo.getConfirmButtonPo().click();
+
+      await runResolvedPromises();
+
+      expect(setImportedTokensSpy).toBeCalledTimes(1);
+      expect(setImportedTokensSpy).toBeCalledWith({
+        identity: mockIdentity,
+        importedTokens: [
+          {
+            index_canister_id: [indexCanisterId],
+            ledger_canister_id: ledgerCanisterId,
+          },
+        ],
+      });
+    });
+
+    it("should wait for imported tokens to be loaded before validation", async () => {
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+      const reviewPo = po.getImportTokenReviewPo();
+
+      await runResolvedPromises();
+
+      expect(await formPo.isPresent()).toEqual(true);
+      expect(await reviewPo.isPresent()).toEqual(false);
+      expect(await formPo.getLedgerCanisterInputPo().getValue()).toEqual(
+        ledgerCanisterId.toText()
+      );
+      expect(await formPo.getIndexCanisterInputPo().getValue()).toEqual(
+        indexCanisterId.toText()
+      );
+
+      expect(get(toastsStore)).toMatchObject([]);
+
+      // Return the same token ledger ID
+      // (imported tokens are loaded on page load, so we need to mock the store update)
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+
+      await runResolvedPromises();
+
+      expect(await formPo.isPresent()).toEqual(true);
+      expect(await reviewPo.isPresent()).toEqual(false);
+
+      expectToastError(
+        "You have already imported this token, you can find it in the token list."
+      );
+    });
   });
 });
