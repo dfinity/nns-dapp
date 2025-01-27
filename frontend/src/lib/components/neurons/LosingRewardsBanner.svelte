@@ -4,7 +4,7 @@
   import Banner from "$lib/components/ui/Banner.svelte";
   import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import {
-    isNeuronLosingRewardsVPE,
+    isNeuronMissingReward,
     secondsUntilLosingRewardsVPE,
   } from "$lib/utils/neuron.utils";
   import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
@@ -27,7 +27,7 @@
     neuron: NeuronInfo;
     startReducingVotingPowerAfterSeconds: bigint;
   }) =>
-    isNeuronLosingRewardsVPE({ neuron, startReducingVotingPowerAfterSeconds })
+    isNeuronMissingReward({ neuron, startReducingVotingPowerAfterSeconds })
       ? $i18n.losing_rewards_banner.rewards_missing_title
       : replacePlaceholders($i18n.losing_rewards_banner.days_left_title, {
           $timeLeft: secondsToDuration({

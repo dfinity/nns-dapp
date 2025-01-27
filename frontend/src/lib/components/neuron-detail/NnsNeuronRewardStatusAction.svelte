@@ -7,7 +7,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     isNeuronFollowingResetVPE,
-    isNeuronLosingRewardsVPE,
+    isNeuronMissingReward,
     secondsUntilLosingRewardsVPE,
     shouldDisplayMissingRewardNotification,
   } from "$lib/utils/neuron.utils";
@@ -34,7 +34,7 @@
   });
 
   let isLosingRewards = false;
-  $: isLosingRewards = isNeuronLosingRewardsVPE({
+  $: isLosingRewards = isNeuronMissingReward({
     neuron,
     startReducingVotingPowerAfterSeconds:
       $startReducingVotingPowerAfterSecondsStore,

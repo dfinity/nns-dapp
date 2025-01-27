@@ -556,7 +556,7 @@ const getNeuronTagsUnrelatedToController = ({
     get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)
   ) {
     if (
-      isNeuronLosingRewardsVPE({ neuron, startReducingVotingPowerAfterSeconds })
+      isNeuronMissingReward({ neuron, startReducingVotingPowerAfterSeconds })
     ) {
       tags.push({
         text: i18n.neurons.missing_rewards,
@@ -1327,7 +1327,7 @@ export const isNeuronFollowingResetVPE = ({
 
 /** If the voting power economics are not available,
  *  we assume that the neuron is not losing rewards. */
-export const isNeuronLosingRewardsVPE = ({
+export const isNeuronMissingReward = ({
   neuron,
   startReducingVotingPowerAfterSeconds,
 }: {
