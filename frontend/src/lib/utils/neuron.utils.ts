@@ -1303,7 +1303,7 @@ export const secondsUntilLosingRewardsVPE = ({
 
 /** If the voting power economics are not available,
  *  we assume that the neuron's following is not reset. */
-export const isNeuronFollowingResetVPE = ({
+export const isNeuronFollowingReset = ({
   neuron,
   startReducingVotingPowerAfterSeconds,
   clearFollowingAfterSeconds,

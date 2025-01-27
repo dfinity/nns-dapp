@@ -53,7 +53,7 @@ import {
   isNeuronControllable,
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
-  isNeuronFollowingResetVPE,
+  isNeuronFollowingReset,
   isNeuronMissingReward,
   isPublicNeuron,
   isSpawning,
@@ -3677,10 +3677,10 @@ describe("neuron-utils", () => {
       });
     });
 
-    describe("isNeuronFollowingResetVPE", () => {
+    describe("isNeuronFollowingReset", () => {
       it("should return false by default", () => {
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: {
@@ -3693,7 +3693,7 @@ describe("neuron-utils", () => {
 
       it("should return false w/o voting power economics", () => {
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: undefined,
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: neuronWithRefreshedTimestamp({
@@ -3703,7 +3703,7 @@ describe("neuron-utils", () => {
           })
         ).toBe(false);
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: undefined,
             neuron: neuronWithRefreshedTimestamp({
@@ -3716,7 +3716,7 @@ describe("neuron-utils", () => {
 
       it("should return true after the followings have been reset", () => {
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: neuronWithRefreshedTimestamp({
@@ -3726,7 +3726,7 @@ describe("neuron-utils", () => {
           })
         ).toBe(true);
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: neuronWithRefreshedTimestamp({
@@ -3739,7 +3739,7 @@ describe("neuron-utils", () => {
 
       it("should return false", () => {
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: neuronWithRefreshedTimestamp({

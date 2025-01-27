@@ -6,7 +6,7 @@
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
-    isNeuronFollowingResetVPE,
+    isNeuronFollowingReset,
     isNeuronMissingReward,
     secondsUntilLosingRewardsVPE,
     shouldDisplayMissingRewardNotification,
@@ -26,7 +26,7 @@
   export let neuron: NeuronInfo;
 
   let isFollowingReset = false;
-  $: isFollowingReset = isNeuronFollowingResetVPE({
+  $: isFollowingReset = isNeuronFollowingReset({
     neuron,
     startReducingVotingPowerAfterSeconds:
       $startReducingVotingPowerAfterSecondsStore,
