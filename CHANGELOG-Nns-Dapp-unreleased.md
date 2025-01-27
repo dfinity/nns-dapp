@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Change the Sign In icon in the staking pages
+
 #### Deprecated
 
 #### Removed
