@@ -1,16 +1,18 @@
 import IncreaseStakeButton from "$lib/components/neuron-detail/actions/IncreaseStakeButton.svelte";
 import { IncreaseStakeButtonPo } from "$tests/page-objects/IncreaseStakeButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 
 describe("IncreaseStakeButton", () => {
   const renderComponent = async ({
     increaseStakeCallback = () => undefined,
-    ...props
   }) => {
-    const { container, component } = render(IncreaseStakeButton, props);
-
-    component.$on("increaseStake", increaseStakeCallback);
+    const { container } = render(IncreaseStakeButton, {
+      props: {},
+      events: {
+        increaseStake: increaseStakeCallback,
+      },
+    });
 
     return IncreaseStakeButtonPo.under(new JestPageObjectElement(container));
   };

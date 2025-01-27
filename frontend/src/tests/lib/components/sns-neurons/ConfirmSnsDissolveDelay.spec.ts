@@ -6,9 +6,9 @@ import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { ConfirmSnsDissolveDelayPo } from "$tests/page-objects/ConfirmSnsDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
-import { render } from "@testing-library/svelte";
 
 describe("ConfirmSnsDissolveDelay", () => {
   const delayInSeconds = Math.round(12.3 * SECONDS_IN_DAY);
@@ -29,13 +29,14 @@ describe("ConfirmSnsDissolveDelay", () => {
     onNnsBack = null,
     onNnsConfirm = null,
   }) => {
-    const { container, component } = render(ConfirmSnsDissolveDelay, props);
-    if (nonNullish(onNnsBack)) {
-      component.$on("nnsBack", onNnsBack);
-    }
-    if (nonNullish(onNnsConfirm)) {
-      component.$on("nnsConfirm", onNnsConfirm);
-    }
+    const { container } = render(ConfirmSnsDissolveDelay, {
+      props,
+      events: {
+        ...(nonNullish(onNnsBack) && { nnsBack: onNnsBack }),
+        ...(nonNullish(onNnsConfirm) && { nnsConfirm: onNnsConfirm }),
+      },
+    });
+
     return ConfirmSnsDissolveDelayPo.under(
       new JestPageObjectElement(container)
     );

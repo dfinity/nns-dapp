@@ -12,10 +12,10 @@ import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { LosingRewardNeuronsModalPo } from "$tests/page-objects/LosingRewardNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
-import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("LosingRewardNeuronsModal", () => {
@@ -74,16 +74,15 @@ describe("LosingRewardNeuronsModal", () => {
     withNeuronNavigation?: boolean;
     onClose?: () => void;
   } = {}) => {
-    const { container, component } = render(LosingRewardNeuronsModal, {
+    const { container } = render(LosingRewardNeuronsModal, {
       props: {
         neurons,
         withNeuronNavigation,
       },
+      events: {
+        ...(nonNullish(onClose) && { nnsClose: onClose }),
+      },
     });
-
-    if (nonNullish(onClose)) {
-      component.$on("nnsClose", onClose);
-    }
 
     return LosingRewardNeuronsModalPo.under(
       new JestPageObjectElement(container)

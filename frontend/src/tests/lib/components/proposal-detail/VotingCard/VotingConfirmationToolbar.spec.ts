@@ -5,7 +5,8 @@ import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { Vote } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = 10_000_000_000n;
@@ -101,10 +102,15 @@ describe("VotingConfirmationToolbar", () => {
   });
 
   it("should hide confirmation and dispatch on confirm", async () => {
-    const { component, container } = render(VotingConfirmationToolbar);
-    let calledVoteType: Vote = Vote.Unspecified;
     const onConfirm = vi.fn((ev) => (calledVoteType = ev?.detail?.voteType));
-    component.$on("nnsConfirm", onConfirm);
+
+    const { container } = render(VotingConfirmationToolbar, {
+      props: {},
+      events: {
+        nnsConfirm: onConfirm
+      }
+    });
+    let calledVoteType: Vote = Vote.Unspecified;
 
     await fireEvent.click(
       container.querySelector('[data-tid="vote-no"]') as Element
