@@ -45,6 +45,14 @@ export type CsvHeader<T> = {
   label: string;
 };
 
+/**
+ * Forces Excel to treat a value as a string by wrapping it in an Excel formula.
+ * Uses the '="value"' format which prevents Excel from automatically converting
+ * large numbers into scientific notation or losing precision.
+ *
+ */
+const wrapAsExcelStringFormula = (value: string) => `="${value}"`;
+
 const escapeCsvValue = (value: unknown): string => {
   if (isNullish(value)) return "";
 
@@ -323,7 +331,9 @@ export const buildTransactionsDatasets = ({
     if (entity.type === "neuron") {
       metadata.push({
         label: i18n.reporting.neuron_id,
-        value: entity.originalData.neuronId.toString(),
+        value: wrapAsExcelStringFormula(
+          entity.originalData.neuronId.toString()
+        ),
       });
     }
 
@@ -443,7 +453,7 @@ export const buildNeuronsDatasets = ({
       controllerId: neuron.fullNeuron?.controller?.toString() ?? "",
       project: stake.token.name,
       symbol: stake.token.symbol,
-      neuronId: neuron.neuronId.toString(),
+      neuronId: wrapAsExcelStringFormula(neuron.neuronId.toString()),
       neuronAccountId: neuron.fullNeuron?.accountIdentifier.toString() ?? "",
       stake: formatTokenV2({
         value: stake,
