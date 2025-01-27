@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { type Component as SvelteComponent, setContext } from "svelte";
+  import { type Component as ComponentDefinition, setContext } from "svelte";
 
-  export let Component: SvelteComponent;
+  export let Component: ComponentDefinition;
   export let contextKey: symbol;
   export let contextValue: unknown;
   export let props: object = {};

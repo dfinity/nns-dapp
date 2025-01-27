@@ -9,7 +9,7 @@ import {
 import type { Proposal } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 describe("ProposalSystemInfoSection", () => {
   const {
@@ -49,7 +49,7 @@ describe("ProposalSystemInfoSection", () => {
     value: string | undefined;
     description: string | undefined;
     testId: string;
-    renderResult: RenderResult<SvelteComponent>;
+    renderResult: RenderResult<Component>;
   }) => {
     const { getByText, getByTestId } = renderResult;
     expect(getByText(label)).toBeInTheDocument();

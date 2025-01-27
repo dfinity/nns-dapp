@@ -7,7 +7,7 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 describe("NewSnsFolloweeModal", () => {
   const reload = vi.fn();
@@ -19,7 +19,7 @@ describe("NewSnsFolloweeModal", () => {
     });
   });
 
-  const renderNewSnsFolloweeModal = (): RenderResult<SvelteComponent> =>
+  const renderNewSnsFolloweeModal = (): RenderResult<Component> =>
     renderSelectedSnsNeuronContext({
       Component: NewSnsFolloweeModal,
       reload,

@@ -12,7 +12,7 @@ import {
 import { principal } from "$tests/mocks/sns-projects.mock";
 import type { SnsNeuron } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 describe("FollowSnsTopicSection", () => {
   const reload = vi.fn();
@@ -30,7 +30,7 @@ describe("FollowSnsTopicSection", () => {
     });
   });
 
-  const renderComponent = (): RenderResult<SvelteComponent> =>
+  const renderComponent = (): RenderResult<Component> =>
     renderSelectedSnsNeuronContext({
       Component: FollowSnsTopicSection,
       reload,
