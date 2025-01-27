@@ -38,7 +38,7 @@ export const render = <C extends SvelteComponent>(
 
   const allEvents = Object.entries(
     nonNullish(componentOptions) && "events" in componentOptions
-      ? componentOptions.events ?? {}
+      ? (componentOptions.events ?? {})
       : {}
   );
 

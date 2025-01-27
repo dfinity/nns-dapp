@@ -3,10 +3,10 @@ import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import type { VotingNeuron } from "$lib/types/proposals";
 import { formatVotingPower } from "$lib/utils/neuron.utils";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
+import { render } from "$tests/utils/svelte.test-utils";
 import { Vote } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
-import { render } from "$tests/utils/svelte.test-utils";
 
 describe("VotingConfirmationToolbar", () => {
   const votingPower = 10_000_000_000n;
@@ -107,8 +107,8 @@ describe("VotingConfirmationToolbar", () => {
     const { container } = render(VotingConfirmationToolbar, {
       props: {},
       events: {
-        nnsConfirm: onConfirm
-      }
+        nnsConfirm: onConfirm,
+      },
     });
     let calledVoteType: Vote = Vote.Unspecified;
 
