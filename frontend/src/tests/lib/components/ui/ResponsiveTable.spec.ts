@@ -1,5 +1,9 @@
 import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
-import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
+import type {
+  ResponsiveTableColumn,
+  ResponsiveTableOrder,
+  ResponsiveTableRowData,
+} from "$lib/types/responsive-table";
 import { createAscendingComparator } from "$lib/utils/sort.utils";
 import TestTableAgeCell from "$tests/lib/components/ui/TestTableAgeCell.svelte";
 import TestTableNameCell from "$tests/lib/components/ui/TestTableNameCell.svelte";
@@ -79,13 +83,32 @@ describe("ResponsiveTable", () => {
     });
   });
 
-  const renderComponent = ({ onNnsAction = null, ...props }) => {
-    const { container, component } = render(ResponsiveTable, props);
-    if (nonNullish(onNnsAction)) {
-      component.$on("nnsAction", ({ detail }) => {
-        onNnsAction({ detail });
-      });
-    }
+  interface RenderComponentProps {
+    testId?: string;
+    tableData: ResponsiveTableRowData[];
+    columns: ResponsiveTableColumn<TestRowData>[];
+    order?: ResponsiveTableOrder;
+    gridRowsPerTableRow?: number;
+    getRowStyle?: (rowData: ResponsiveTableRowData) => string;
+  }
+
+  const renderComponent = ({
+    onNnsAction = null,
+    ...props
+  }: RenderComponentProps & {
+    onNnsAction?: ({ detail }: { detail: unknown }) => void;
+  }) => {
+    const { container } = render(ResponsiveTable, {
+      props,
+      events: {
+        ...(nonNullish(onNnsAction) && {
+          onNnsAction: ({ detail }) => {
+            onNnsAction({ detail });
+          },
+        }),
+      },
+    });
+
     return ResponsiveTablePo.under(new JestPageObjectElement(container));
   };
 
