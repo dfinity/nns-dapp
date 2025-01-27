@@ -1,10 +1,10 @@
 import SelectCyclesCanister from "$lib/components/canisters/SelectCyclesCanister.svelte";
 import SelectCyclesCanisterTest from "$tests/lib/components/canisters/SelectCyclesCanisterTest.svelte";
 import en from "$tests/mocks/i18n.mock";
-import { render as renderUtils } from "$tests/utils/svelte.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
 
 vitest.mock("$lib/services/canisters.services", () => {
   return {
@@ -91,15 +91,12 @@ describe("SelectCyclesCanister", () => {
   it("dispatches nnsSelectAmount event on click", async () => {
     const fn = vitest.fn();
 
-    const { container, queryByTestId } = renderUtils(
-      SelectCyclesCanister,
-      {
-        props,
-        events: {
-          nnsSelectAmount: fn,
-        },
-      }
-    );
+    const { container, queryByTestId } = render(SelectCyclesCanister, {
+      props,
+      events: {
+        nnsSelectAmount: fn,
+      },
+    });
 
     const icpInputElement = container.querySelector<HTMLInputElement>(
       'input[name="icp-amount"]'

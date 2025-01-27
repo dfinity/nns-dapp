@@ -6,7 +6,7 @@ import {
 import { NnsDestinationAddressPo } from "$tests/page-objects/NnsDestinationAddress.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { render as renderUtils } from "$tests/utils/svelte.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import type { Mock } from "vitest";
 
 describe("NnsDestinationAddress", () => {
@@ -36,7 +36,7 @@ describe("NnsDestinationAddress", () => {
   });
 
   const renderComponent = () => {
-    const { container } = renderUtils(NnsDestinationAddress, {
+    const { container } = render(NnsDestinationAddress, {
       props: {},
       events: {
         nnsAddress: (event) => {

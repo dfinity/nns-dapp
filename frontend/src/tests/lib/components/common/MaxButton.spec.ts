@@ -1,6 +1,6 @@
 import MaxButton from "$lib/components/common/MaxButton.svelte";
-import { render as renderUtils } from "$tests/utils/svelte.test-utils";
-import { fireEvent, render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
+import { fireEvent } from "@testing-library/svelte";
 
 describe("MaxButton", () => {
   it("should render a button", () => {
@@ -15,7 +15,7 @@ describe("MaxButton", () => {
 
   it("should trigger on click event", () =>
     new Promise<void>((done) => {
-      const { container } = renderUtils(MaxButton, {
+      const { container } = render(MaxButton, {
         props: {},
         events: {
           click: () => done(),
