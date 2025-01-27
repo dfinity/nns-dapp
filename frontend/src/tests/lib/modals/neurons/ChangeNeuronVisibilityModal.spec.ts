@@ -77,16 +77,18 @@ describe("ChangeNeuronVisibilityModal", () => {
   let stopBusySpy;
 
   const renderComponent = async (neuron = mockNeuron) => {
+    const nnsClose = vi.fn();
+
     const { container, component } = await renderModal({
       component: ChangeNeuronVisibilityModal,
       props: {
         defaultSelectedNeuron: neuron,
         makePublic: !isPublicNeuron(neuron),
       },
+      events: {
+        nnsClose,
+      },
     });
-
-    const nnsClose = vi.fn();
-    component.$on("nnsClose", nnsClose);
 
     return {
       po: ChangeNeuronVisibilityModalPo.under(

@@ -4,9 +4,10 @@ import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { ProposalsFilterModalProps } from "$lib/types/proposals";
 import { enumKeys } from "$lib/utils/enum.utils";
 import en from "$tests/mocks/i18n.mock";
+import { render } from "$tests/utils/svelte.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { Topic } from "@dfinity/nns";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("ProposalsFilterModal", () => {
@@ -59,12 +60,11 @@ describe("ProposalsFilterModal", () => {
 
   it("should forward close modal event", () =>
     new Promise<void>((done) => {
-      const { container, component } = render(ProposalsFilterModal, {
+      const { container } = render(ProposalsFilterModal, {
         props,
-      });
-
-      component.$on("nnsClose", () => {
-        done();
+        events: {
+          nnsClose: () => done(),
+        },
       });
 
       const button: HTMLButtonElement | null = container.querySelector(

@@ -10,7 +10,8 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { Topic } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
-import { render, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {
@@ -56,8 +57,13 @@ describe("NewFolloweeModal", () => {
   });
 
   it("adds a followee from a valid address", async () => {
-    const { container, component } = render(NewFolloweeModal, {
+    const onClose = vi.fn();
+
+    const { container } = render(NewFolloweeModal, {
       props: { neuron: mockNeuron, topic: Topic.Unspecified },
+      events: {
+        nnsClose: onClose
+      }
     });
 
     const inputElement: HTMLInputElement | null = container.querySelector(
@@ -70,9 +76,6 @@ describe("NewFolloweeModal", () => {
 
     const formElement = container.querySelector("form");
     expect(formElement).toBeInTheDocument();
-
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
 
     formElement && (await fireEvent.submit(formElement));
 
@@ -111,8 +114,14 @@ describe("NewFolloweeModal", () => {
 
   it("follow known neurons", async () => {
     knownNeuronsStore.setNeurons([mockKnownNeuron]);
-    const { queryAllByTestId, component } = render(NewFolloweeModal, {
+
+    const onClose = vi.fn();
+
+    const { queryAllByTestId } = render(NewFolloweeModal, {
       props: { neuron: mockNeuron, topic: Topic.Unspecified },
+      events: {
+        nnsClose: onClose
+      }
     });
 
     const knownNeuronElements = queryAllByTestId("known-neuron-item");
@@ -124,9 +133,6 @@ describe("NewFolloweeModal", () => {
 
     expect(followButton).toBeInTheDocument();
 
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
-
     followButton && (await fireEvent.click(followButton));
 
     expect(addFollowee).toBeCalled();
@@ -137,8 +143,13 @@ describe("NewFolloweeModal", () => {
   it("unfollow known neurons", async () => {
     knownNeuronsStore.setNeurons([mockKnownNeuron]);
 
-    const { queryByTestId, component } = render(NewFolloweeModal, {
+    const onClose = vi.fn();
+
+    const { queryByTestId } = render(NewFolloweeModal, {
       props: { neuron: followingNeuron, topic: Topic.Unspecified },
+      events: {
+        nnsClose: onClose
+      }
     });
 
     const knownNeuronElement = queryByTestId(
@@ -146,9 +157,6 @@ describe("NewFolloweeModal", () => {
     );
 
     expect(knownNeuronElement).toBeInTheDocument();
-
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
 
     const knownNeuronButton = knownNeuronElement?.querySelector("button");
     expect(knownNeuronButton).toBeInTheDocument();
