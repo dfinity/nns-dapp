@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Reporting: Add Excel string format preservation for neuron ids.
+
 #### Security
 
 #### Not Published
