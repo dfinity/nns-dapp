@@ -1,7 +1,6 @@
 import {
   SECONDS_IN_7_DAYS,
   SECONDS_IN_HALF_YEAR,
-  SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
 import { Topic } from "@dfinity/nns";
@@ -36,21 +35,6 @@ export const TOPICS_TO_FOLLOW_NNS = [
   ),
   ...LAST_TOPICS,
 ];
-
-// A neuron's voting power begins to decrease linearly if it remains inactive for this duration.
-// Inactivity means no manual votes cast and no updates to the list of followed neurons (followees).
-// Draft ic pr: https://github.com/dfinity/ic/blob/c2da5aca97a07bae4fcbf5d72a8c0448b40599d7/rs/nns/governance/canister/governance.did#L582)
-// TODO(mstr): replace with the actual ic link.
-// @deprecated
-export const START_REDUCING_VOTING_POWER_AFTER_SECONDS = SECONDS_IN_HALF_YEAR;
-
-// After a neuron has experienced voting power reduction for this amount of time,
-// a couple of things happen:
-// 1. Deciding voting power reaches 0.
-// 2. Its following on topics other than NeuronManagement are cleared.
-// https://github.com/dfinity/ic/blob/c2da5aca97a07bae4fcbf5d72a8c0448b40599d7/rs/nns/governance/canister/governance.did#L584
-// @deprecated
-export const CLEAR_FOLLOWING_AFTER_SECONDS = SECONDS_IN_MONTH;
 
 // To notify users that their rewards will start decreasing in 30 days.
 export const NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS = 30;
