@@ -8,16 +8,21 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import { Topic } from "@dfinity/nns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import type { ComponentProps } from "svelte";
 import { get } from "svelte/store";
 
 describe("ProposalsFilterModal", () => {
-  const props: { props: ProposalsFilterModalProps } = {
+  const nestedProps: { props: { props: ProposalsFilterModalProps } } = {
     props: {
-      category: "topics",
-      filters: Topic,
-      selectedFilters: DEFAULT_PROPOSALS_FILTERS.topics,
+      props: {
+        category: "topics",
+        filters: Topic,
+        selectedFilters: DEFAULT_PROPOSALS_FILTERS.topics,
+      },
     },
   };
+
+  const props = nestedProps as unknown as ComponentProps<ProposalsFilterModal>;
 
   it("should display modal", () => {
     const { container } = render(ProposalsFilterModal, {
