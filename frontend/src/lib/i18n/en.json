@@ -1189,7 +1189,7 @@
   },
   "portfolio": {
     "login_title": "Session expired",
-    "login_description": "Sign in to start earning voting rewards and participate in the Internet Computer’s onchain governance",
+    "login_description": "Sign in and start staking to earn voting rewards and participate in the Internet Computer’s onchain governance.",
     "no_tokens_card_title": "Store and transfer tokens securely in the NNS wallet",
     "no_tokens_card_description": "running 100% on the Internet Computer blockchain — Ready to get started?",
     "no_tokens_card_button": "Buy ICP",
