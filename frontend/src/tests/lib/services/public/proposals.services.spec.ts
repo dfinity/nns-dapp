@@ -292,6 +292,8 @@ describe("proposals-services", () => {
     beforeEach(() => {
       vi.spyOn(console, "error").mockReturnValue();
       setNoIdentity();
+
+      vi.spyOn(api, "queryProposals").mockResolvedValue(mockProposals);
     });
 
     it("should use anonymous identity", () => {

@@ -5,10 +5,12 @@ import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { LosingRewardNeuronsModalPo } from "$tests/page-objects/LosingRewardNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -120,6 +122,20 @@ describe("LosingRewardNeuronsModal", () => {
     expect(onClose).toHaveBeenCalledTimes(0);
     await po.clickCancel();
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("should display description", async () => {
+    const po = await renderComponent({ neurons });
+    expect(await po.getDescriptionPo().isPresent()).toEqual(false);
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
+    await runResolvedPromises();
+    expect(await po.getDescriptionPo().isPresent()).toEqual(true);
+    expect(await po.getDescriptionPo().getText()).toEqual(
+      "ICP neurons that are inactive for 6 months start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following."
+    );
   });
 
   it("should confirm following", async () => {
