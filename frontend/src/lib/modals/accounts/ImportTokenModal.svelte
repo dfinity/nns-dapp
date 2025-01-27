@@ -8,7 +8,10 @@
   import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
   import { addImportedToken } from "$lib/services/imported-tokens.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
+  import {
+    DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING,
+    ENABLE_IMPORT_TOKEN_BY_URL,
+  } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
@@ -70,19 +73,29 @@
   };
   $: {
     const ledgerId = $pageStore.importTokenLedgerId;
-    if (nonNullish(ledgerId) && validateCanisterIdText(ledgerId)) {
+    if (
+      nonNullish(ledgerId) &&
+      isNullish(ledgerCanisterId) &&
+      validateCanisterIdText(ledgerId)
+    ) {
       ledgerCanisterId = Principal.fromText(ledgerId);
     }
   }
   $: {
     const indexId = $pageStore.importTokenIndexId;
-    if (nonNullish(indexId) && validateCanisterIdText(indexId)) {
+    if (
+      nonNullish(indexId) &&
+      isNullish(indexCanisterId) &&
+      validateCanisterIdText(indexId)
+    ) {
       indexCanisterId = Principal.fromText(indexId);
     }
   }
+
   let isAutoSubmitDone = false;
   $: if (
     $authSignedInStore &&
+    $ENABLE_IMPORT_TOKEN_BY_URL &&
     !isAutoSubmitDone &&
     // Wait for the imported tokens to be loaded (for successful validation).
     nonNullish($importedTokensStore?.importedTokens)

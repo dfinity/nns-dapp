@@ -966,7 +966,7 @@
     "is_sns": "You cannot import SNS tokens, they are added by the NNS.",
     "is_important": "This token is already in the token list.",
     "is_icp": "You cannot import ICP.",
-    "invalid_canister_id": "\"$canisterId\" is not a valid canister ID."
+    "invalid_canister_id": "Importing the token was unsuccessful because \"$canisterId\" is not a valid canister ID. Please verify the ID and retry."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
