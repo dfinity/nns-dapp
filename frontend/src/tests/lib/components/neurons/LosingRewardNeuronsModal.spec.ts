@@ -127,13 +127,16 @@ describe("LosingRewardNeuronsModal", () => {
 
   it("should display description", async () => {
     const po = await renderComponent({ neurons });
-    expect(await po.hasDescription()).toEqual(false);
+    expect(await po.getDescriptionPo().isPresent()).toEqual(false);
     networkEconomicsStore.setParameters({
       parameters: mockNetworkEconomics,
       certified: true,
     });
     await runResolvedPromises();
-    expect(await po.hasDescription()).toEqual(true);
+    expect(await po.getDescriptionPo().isPresent()).toEqual(true);
+    expect(await po.getDescriptionPo().getText()).toEqual(
+      "ICP neurons that are inactive for 6 months start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following."
+    );
   });
 
   it("should confirm following", async () => {

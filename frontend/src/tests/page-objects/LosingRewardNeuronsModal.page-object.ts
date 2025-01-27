@@ -20,8 +20,8 @@ export class LosingRewardNeuronsModalPo extends ModalPo {
     return ConfirmFollowingButtonPo.under(this.root);
   }
 
-  hasDescription(): Promise<boolean> {
-    return this.root.byTestId("losing-rewards-description").isPresent();
+  getDescriptionPo(): PageObjectElement {
+    return this.root.byTestId("losing-rewards-description");
   }
 
   async clickConfirmFollowing(): Promise<void> {
