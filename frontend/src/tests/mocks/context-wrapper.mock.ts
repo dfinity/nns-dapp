@@ -33,12 +33,10 @@ export const renderContextWrapper = <T>({
 }): RenderResult<SvelteComponent> =>
   render(ContextWrapperTest, {
     props: {
-      props: {
-        contextKey,
-        contextValue,
-        Component,
-        props,
-      },
+      contextKey,
+      contextValue,
+      Component,
+      props,
     },
     events,
   });

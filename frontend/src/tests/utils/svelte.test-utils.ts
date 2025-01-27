@@ -2,6 +2,7 @@ import { nonNullish } from "@dfinity/utils";
 import {
   render as svelteRender,
   type RenderResult,
+  type SvelteComponentOptions,
 } from "@testing-library/svelte";
 import type { ComponentProps, SvelteComponent } from "svelte";
 
@@ -31,10 +32,14 @@ export const render = <C extends SvelteComponent>(
       : componentOptions
     : {};
 
-  const { component, ...rest } = svelteRender(cmp, props, {
-    ...renderOptions,
-    baseElement: container,
-  });
+  const { component, ...rest } = svelteRender(
+    cmp,
+    { props } as SvelteComponentOptions<C>,
+    {
+      ...renderOptions,
+      baseElement: container,
+    }
+  );
 
   const allEvents = Object.entries(
     nonNullish(componentOptions) && "events" in componentOptions
