@@ -51,7 +51,7 @@ export type CsvHeader<T> = {
  * large numbers into scientific notation or losing precision.
  *
  */
-const wrapAsExcelStringFormula = (value: string) => `="${value}"`;
+const wrapAsExcelStringFormula = (value: bigint) => `="${value.toString()}"`;
 
 const escapeCsvValue = (value: unknown): string => {
   if (isNullish(value)) return "";
@@ -331,9 +331,7 @@ export const buildTransactionsDatasets = ({
     if (entity.type === "neuron") {
       metadata.push({
         label: i18n.reporting.neuron_id,
-        value: wrapAsExcelStringFormula(
-          entity.originalData.neuronId.toString()
-        ),
+        value: wrapAsExcelStringFormula(entity.originalData.neuronId),
       });
     }
 
@@ -453,7 +451,7 @@ export const buildNeuronsDatasets = ({
       controllerId: neuron.fullNeuron?.controller?.toString() ?? "",
       project: stake.token.name,
       symbol: stake.token.symbol,
-      neuronId: wrapAsExcelStringFormula(neuron.neuronId.toString()),
+      neuronId: wrapAsExcelStringFormula(neuron.neuronId),
       neuronAccountId: neuron.fullNeuron?.accountIdentifier.toString() ?? "",
       stake: formatTokenV2({
         value: stake,
