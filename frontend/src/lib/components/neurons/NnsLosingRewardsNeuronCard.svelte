@@ -40,7 +40,7 @@
   role={isClickable ? "button" : undefined}
   noMargin
   ariaLabel={$i18n.losing_rewards_modal.goto_neuron}
-  on:click={onClick}
+  on:click={() => onClick?.()}
 >
   <div class="wrapper">
     <div class="header">
