@@ -611,5 +611,45 @@ describe("ImportTokenModal", () => {
         path: AppPath.Tokens,
       });
     });
+
+    it("catches invalid canister ID formats from URL", async () => {
+      page.mock({
+        routeId: AppPath.Tokens,
+        data: {
+          universe: OWN_CANISTER_ID_TEXT,
+          importTokenLedgerId: "INVALID_CANISTER_ID",
+          importTokenIndexId: indexCanisterId.toText(),
+        },
+      });
+
+      const consoleErrorSpy = vi.spyOn(console, "error").mockReturnValue();
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [],
+      });
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+      const reviewPo = po.getImportTokenReviewPo();
+
+      await runResolvedPromises();
+
+      // Should stay on the form
+      expect(await formPo.isPresent()).toEqual(true);
+      expect(await reviewPo.isPresent()).toEqual(false);
+
+      expect(consoleErrorSpy).toBeCalledTimes(1);
+      expectToastError(
+        'Importing the token was unsuccessful because "INVALID_CANISTER_ID" is not a valid canister ID. Please verify the ID and retry.'
+      );
+      expect(consoleErrorSpy).toBeCalledWith(
+        new Error(`Invalid character: "_"`)
+      );
+    });
   });
 });
