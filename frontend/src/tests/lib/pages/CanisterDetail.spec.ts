@@ -27,6 +27,11 @@ describe("CanisterDetail", () => {
   beforeEach(() => {
     authStore.setForTesting(mockIdentity);
     canistersStore.setCanisters({ canisters: undefined, certified: true });
+
+    vi.spyOn(icpIndexApi, "getTransactions").mockResolvedValue({
+      balance: 0n,
+      transactions: [],
+    });
   });
 
   const canisterId = mockCanisterId;
