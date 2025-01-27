@@ -9,7 +9,7 @@
     isNeuronFollowingResetVPE,
     isNeuronLosingRewardsVPE,
     secondsUntilLosingRewardsVPE,
-    shouldDisplayRewardLossNotificationVPE,
+    shouldDisplayRewardLossNotification,
   } from "$lib/utils/neuron.utils";
   import {
     IconCheckCircleFill,
@@ -43,7 +43,7 @@
   let isLosingRewardsSoon = false;
   $: isLosingRewardsSoon =
     !isLosingRewards &&
-    shouldDisplayRewardLossNotificationVPE({
+    shouldDisplayRewardLossNotification({
       neuron,
       startReducingVotingPowerAfterSeconds:
         $startReducingVotingPowerAfterSecondsStore,
