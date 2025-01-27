@@ -11,7 +11,7 @@
   import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
@@ -22,10 +22,13 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import { Principal } from "@dfinity/principal";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { pageStore } from "$lib/derived/page.derived";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -50,6 +53,43 @@
   let ledgerCanisterId: Principal | undefined;
   let indexCanisterId: Principal | undefined;
   let tokenMetaData: IcrcTokenMetadata | undefined;
+
+  const validateCanisterIdText = (canisterIdText: string): boolean => {
+    try {
+      return Boolean(Principal.fromText(canisterIdText));
+    } catch (err) {
+      console.error(err);
+      toastsError({
+        labelKey: "error__imported_tokens.invalid_canister_id",
+        substitutions: { $canisterId: canisterIdText },
+      });
+      close();
+      goto(AppPath.Tokens);
+      return false;
+    }
+  };
+  $: {
+    const ledgerId = $pageStore.importTokenLedgerId;
+    if (nonNullish(ledgerId) && validateCanisterIdText(ledgerId)) {
+      ledgerCanisterId = Principal.fromText(ledgerId);
+    }
+  }
+  $: {
+    const indexId = $pageStore.importTokenIndexId;
+    if (nonNullish(indexId) && validateCanisterIdText(indexId)) {
+      indexCanisterId = Principal.fromText(indexId);
+    }
+  }
+  let isAutoSubmitDone = false;
+  $: if (
+    $authSignedInStore &&
+    !isAutoSubmitDone &&
+    // Wait for the imported tokens to be loaded (for successful validation).
+    nonNullish($importedTokensStore?.importedTokens)
+  ) {
+    isAutoSubmitDone = true;
+    onSubmit();
+  }
 
   const getTokenMetaData = async (
     ledgerCanisterId: Principal
@@ -163,7 +203,7 @@
         importedTokens: $importedTokensStore.importedTokens,
       });
       if (success) {
-        dispatch("nnsClose");
+        close();
         goto(
           buildWalletUrl({
             universe: ledgerCanisterId.toText(),
@@ -174,6 +214,8 @@
       stopBusy("import-token-importing");
     }
   };
+
+  const close = () => dispatch("nnsClose");
 </script>
 
 <WizardModal
@@ -181,7 +223,11 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  on:nnsClose={() => {
+    close();
+    // Navigate on close to clear all query parameters.
+    goto(AppPath.Tokens);
+  }}
 >
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
 
