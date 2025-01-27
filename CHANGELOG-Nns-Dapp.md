@@ -11,6 +11,31 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 134977
+
+### Application
+
+#### Added
+
+- Portfolio dashboard with holdings and staked value.
+
+#### Changed
+
+- Change the USD value icon in the token pages
+- Proceed with rollout of re-enabling of certification of certain calls from `10%` to `30%`.
+
+#### Removed
+
+- Remove canister creation fallback from backend canister.
+- Stop processing ICP transactions in the nns-dapp canister.
+- Stop exporting stats related to transaction processing.
+
+#### Fixed
+
+- Improved the display of date range options in the mobile view of the Reporting page.
+
+### Operations
+
 ## Proposal 134787
 
 ### Application
