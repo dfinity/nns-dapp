@@ -11,7 +11,6 @@
     compareTokensAlphabetically,
     compareTokensByBalance,
   } from "$lib/utils/tokens-table.utils";
-  import { nonNullish } from "@dfinity/utils";
 
   export let userTokensData: Array<UserToken>;
   export let firstColumnHeader: string;
