@@ -48,7 +48,6 @@ pub struct AccountsStore {
 
     accounts_db_stats: AccountsDbStats,
     accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
-    neurons_topped_up_count: u64,
 }
 
 /// A wrapper around a value that returns true for `PartialEq` and `Eq` equality checks, regardless of the value.
@@ -71,8 +70,8 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, accounts_db_stats: {:?}, neurons_topped_up_count: {:?}}}",
-            self.accounts_db, self.accounts_db_stats, self.neurons_topped_up_count,
+            "AccountsStore{{accounts_db: {:?}, accounts_db_stats: {:?}}}",
+            self.accounts_db, self.accounts_db_stats,
         )
     }
 }
@@ -740,7 +739,9 @@ impl StableState for AccountsStore {
             // last_ledger_sync_timestamp_nanos is unused but we need to encode
             // it for backwards compatibility.
             0u64,
-            &self.neurons_topped_up_count,
+            // neurons_topped_up_count is unused but we need to encode
+            // it for backwards compatibility.
+            0u64,
             Some(&self.accounts_db_stats),
         ))
         .into_bytes()
@@ -762,7 +763,7 @@ impl StableState for AccountsStore {
             _block_height_synced_up_to,
             _multi_part_transactions_processor,
             _last_ledger_sync_timestamp_nanos,
-            neurons_topped_up_count,
+            _neurons_topped_up_count,
             accounts_db_stats_maybe,
         ): (
             candid::Reserved,
@@ -777,7 +778,7 @@ impl StableState for AccountsStore {
             candid::Reserved,
             candid::Reserved,
             candid::Reserved,
-            u64,
+            candid::Reserved,
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
@@ -793,7 +794,6 @@ impl StableState for AccountsStore {
             accounts_db: AccountsDbAsProxy::default(),
             accounts_db_stats,
             accounts_db_stats_recomputed_on_upgrade,
-            neurons_topped_up_count,
         })
     }
 }
