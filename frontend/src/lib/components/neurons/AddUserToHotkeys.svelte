@@ -34,7 +34,7 @@
 
 <div class="wrapper" data-tid="add-principal-to-hotkeys-modal">
   {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
-    <Banner htmlText={$i18n.losing_rewards.hw_create_neuron_warning}>
+    <Banner htmlText={$i18n.missing_rewards.hw_create_neuron_warning}>
       <BannerIcon slot="icon">
         <IconInfo />
       </BannerIcon>

@@ -387,7 +387,7 @@
     "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals.",
     "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
   },
-  "losing_rewards": {
+  "missing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
     "confirming": "Confirming following. This may take a moment.",
     "confirm": "Confirm Following",
@@ -395,12 +395,12 @@
     "hw_create_neuron_warning": "It is recommended to <strong>Add Hotkey</strong> now, otherwise the NNS dapp will not be able to warn you if this neuron starts missing voting rewards due to inactivity.",
     "hw_hotkey_warning": "You may have neurons that are not added to the NNS dapp. If you want to view your neurons and get alerts in case they start missing voting rewards, you can add them by clicking <strong>Show Neurons > Add to NNS Dapp</strong>."
   },
-  "losing_rewards_banner": {
+  "missing_rewards_banner": {
     "confirm_title": "Confirm following or vote manually to avoid missing rewards",
     "days_left_title": "$timeLeft left to confirm your neuron following",
     "rewards_missing_title": "One or more of your neurons are missing voting rewards"
   },
-  "losing_rewards_modal": {
+  "missing_rewards_modal": {
     "goto_neuron": "Go to neuron details",
     "title": "Review following",
     "label": "Neuron(s)",
@@ -776,8 +776,8 @@
     "amount_maturity": "$amount maturity",
     "created": "Date Created",
     "reward_status_active": "Active neuron",
-    "reward_status_losing_soon": "Missing rewards soon",
-    "reward_status_losing_soon_description": "$time to confirm following",
+    "reward_status_missing_soon": "Missing rewards soon",
+    "reward_status_missing_soon_description": "$time to confirm following",
     "reward_status_inactive": "Inactive neuron",
     "reward_status_inactive_description": "Confirm following or vote manually to continue receiving rewards",
     "reward_status_inactive_reset_description": "Following has been reset. Confirm following or vote manually to continue receiving rewards",

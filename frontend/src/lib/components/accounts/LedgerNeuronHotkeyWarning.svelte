@@ -25,7 +25,7 @@
     <Banner
       isClosable
       on:nnsClose={dismissBanner}
-      htmlText={$i18n.losing_rewards.hw_hotkey_warning}
+      htmlText={$i18n.missing_rewards.hw_hotkey_warning}
     >
       <BannerIcon slot="icon">
         <IconInfo />
