@@ -27,7 +27,7 @@ use schema::{
 
 // This limit is for DoS protection but should be increased if we get close to
 // the limit.
-const ACCOUNT_LIMIT: u64 = 300_000;
+const ACCOUNT_LIMIT: u64 = 330_000;
 
 const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;
 
