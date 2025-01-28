@@ -1,7 +1,6 @@
 import FollowSnsTopicSection from "$lib/components/sns-neuron-detail/FollowSnsTopicSection.svelte";
 import * as snsNeuronsServices from "$lib/services/sns-neurons.services";
 import { removeFollowee } from "$lib/services/sns-neurons.services";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
@@ -10,12 +9,14 @@ import {
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { FollowSnsTopicSectionPo } from "$tests/page-objects/FollowSnsTopicSection.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
 
 describe("FollowSnsTopicSection", () => {
   const reload = vi.fn();
+  const rootCanisterId = principal(2);
   const followee1 = createMockSnsNeuron({ id: [1, 2, 3] });
   const followee2 = createMockSnsNeuron({ id: [5, 6, 7] });
   const followees = [followee1.id[0], followee2.id[0]];
@@ -30,64 +31,69 @@ describe("FollowSnsTopicSection", () => {
     });
   });
 
-  const renderComponent = (): RenderResult<SvelteComponent> =>
-    renderSelectedSnsNeuronContext({
+  const renderComponent = () => {
+    const { container } = renderSelectedSnsNeuronContext({
       Component: FollowSnsTopicSection,
       reload,
       neuron,
       props: {
         neuron,
-        rootCanisterId: principal(2),
+        rootCanisterId,
         nsFunction: nervousSystemFunctionMock,
       },
     });
 
-  it("renders follow topic section", () => {
-    const { queryByTestId } = renderComponent();
+    return FollowSnsTopicSectionPo.under(new JestPageObjectElement(container));
+  };
 
-    expect(
-      queryByTestId(`follow-topic-${nervousSystemFunctionMock.id}-section`)
-    ).toBeInTheDocument();
+  it("renders follow topic section", async () => {
+    const po = renderComponent();
+
+    expect(await po.isPresent()).toBe(true);
   });
 
-  it("renders followees for that topic", () => {
-    const { queryAllByTestId, getAllByText } = renderComponent();
+  it("renders followees for that topic", async () => {
+    const po = renderComponent();
 
-    expect(queryAllByTestId("current-followee-item").length).toBe(
-      followees.length
+    const followeePos = await po.getHashPos();
+    expect(followeePos.length).toBe(2);
+    expect(await followeePos[0].getFullText()).toBe(
+      getSnsNeuronIdAsHexString(followee1)
     );
-    // Id appears as title and in the tooltip
-    [followee1, followee2].forEach((followee) => {
-      expect(
-        getAllByText(
-          shortenWithMiddleEllipsis(getSnsNeuronIdAsHexString(followee))
-        ).length
-      ).toBe(2);
-    });
+    expect(await followeePos[1].getFullText()).toBe(
+      getSnsNeuronIdAsHexString(followee2)
+    );
   });
 
   it("opens new followee modal", async () => {
-    const { getByTestId, queryByTestId } = renderComponent();
+    const po = renderComponent();
 
-    const button = getByTestId("open-new-followee-modal");
-    expect(button).toBeInTheDocument();
-    fireEvent.click(button);
+    const sectionPo = await po.getFollowTopicSectionPo();
+    const modalPo = po.getNewSnsFolloweeModalPo();
+    expect(await modalPo.isPresent()).toBe(false);
 
-    await waitFor(() =>
-      expect(queryByTestId("add-followee-button")).toBeInTheDocument()
-    );
+    await sectionPo.getAddFolloweeButtonPo().click();
+    await runResolvedPromises();
+
+    expect(await modalPo.isPresent()).toBe(true);
   });
 
   it("removes followee", async () => {
-    const { queryAllByTestId } = renderComponent();
+    const po = renderComponent();
+    await runResolvedPromises();
 
-    const followeeElements = queryAllByTestId("current-followee-item");
-    expect(followeeElements.length).toBe(followees.length);
+    expect(removeFollowee).toBeCalledTimes(0);
+    await po.removeFollowee(getSnsNeuronIdAsHexString(followee1));
+    await runResolvedPromises();
 
-    const followeeToRemove = followeeElements[0];
-    const removeButton = followeeToRemove.querySelector("button");
-    fireEvent.click(removeButton);
-
-    await waitFor(() => expect(removeFollowee).toBeCalled());
+    expect(removeFollowee).toBeCalledWith({
+      rootCanisterId,
+      neuron,
+      functionId: nervousSystemFunctionMock.id,
+      followee: {
+        id: followee1.id[0].id,
+      },
+    });
+    expect(removeFollowee).toBeCalledTimes(1);
   });
 });
