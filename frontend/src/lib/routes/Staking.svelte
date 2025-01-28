@@ -3,6 +3,7 @@
   import SignInGuard from "$lib/components/common/SignInGuard.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
+  import LosingRewardsBanner from "$lib/components/neurons/LosingRewardsBanner.svelte";
   import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -11,12 +12,13 @@
   import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
   import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { Universe } from "$lib/types/universe";
   import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
-  import { IconNeuronsPage, PageBanner } from "@dfinity/gix-components";
+  import { IconStakedTokens, PageBanner } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
@@ -27,8 +29,6 @@
     type Token,
   } from "@dfinity/utils";
   import { get } from "svelte/store";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
-  import LosingRewardsBanner from "$lib/components/neurons/LosingRewardsBanner.svelte";
 
   const getShowStakingBanner = ({
     isSignedIn,
@@ -152,7 +152,7 @@
     <div class="content">
       {#if showStakingBanner}
         <PageBanner testId="staking-page-banner">
-          <IconNeuronsPage slot="image" />
+          <IconStakedTokens slot="image" />
           <svelte:fragment slot="title">{$i18n.staking.title}</svelte:fragment>
           <p class="description" slot="description">{$i18n.staking.text}</p>
           <SignInGuard slot="actions" />
