@@ -39,7 +39,7 @@
   testId="nns-loosing-rewards-neuron-card-component"
   role={isClickable ? "button" : undefined}
   noMargin
-  ariaLabel={$i18n.losing_rewards_modal.goto_neuron}
+  ariaLabel={$i18n.missing_rewards_modal.goto_neuron}
   on:click={onClick}
 >
   <div class="wrapper">
@@ -67,7 +67,7 @@
       </div>
     {:else}
       <p data-tid="no-following" class="no-following">
-        {$i18n.losing_rewards_modal.no_following}
+        {$i18n.missing_rewards_modal.no_following}
       </p>
     {/if}
   </div>

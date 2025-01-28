@@ -17,12 +17,15 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 - Proceed with rollout of re-enabling of certification of certain calls from `30%` to `100%`.
+- Change the Page Banner icon in the staking page.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+- Reporting: Add Excel string format preservation for neuron ids.
 
 #### Security
 

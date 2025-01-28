@@ -28,8 +28,8 @@
     startReducingVotingPowerAfterSeconds: bigint;
   }) =>
     isNeuronMissingReward({ neuron, startReducingVotingPowerAfterSeconds })
-      ? $i18n.losing_rewards_banner.rewards_missing_title
-      : replacePlaceholders($i18n.losing_rewards_banner.days_left_title, {
+      ? $i18n.missing_rewards_banner.rewards_missing_title
+      : replacePlaceholders($i18n.missing_rewards_banner.days_left_title, {
           $timeLeft: secondsToDuration({
             seconds: BigInt(
               secondsUntilMissingReward({
@@ -52,7 +52,7 @@
         startReducingVotingPowerAfterSeconds:
           $startReducingVotingPowerAfterSecondsStore,
       })}
-      text={replacePlaceholders($i18n.losing_rewards.description, {
+      text={replacePlaceholders($i18n.missing_rewards.description, {
         // TODO(mstr): Rename to secondsToRoundedDuration
         $period: secondsToDissolveDelayDuration(
           $startReducingVotingPowerAfterSecondsStore
@@ -67,7 +67,7 @@
           data-tid="confirm-button"
           class="danger"
           on:click={() => (isModalVisible = true)}
-          >{$i18n.losing_rewards.confirm}</button
+          >{$i18n.missing_rewards.confirm}</button
         >
       </div>
     </Banner>

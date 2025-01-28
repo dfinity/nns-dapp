@@ -10,7 +10,7 @@
       data-tid="badge"
       class="badge"
       role="status"
-      aria-label={$i18n.losing_rewards.badge_label}
+      aria-label={$i18n.missing_rewards.badge_label}
     ></span>
   {/if}
 </TestIdWrapper>
