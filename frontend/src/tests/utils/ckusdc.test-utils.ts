@@ -7,7 +7,7 @@ import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.st
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 
-export const setCkUSDCanisters = () => {
+export const setCkUSDCCanisters = () => {
   defaultIcrcCanistersStore.setCanisters({
     ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
     indexCanisterId: CKUSDC_INDEX_CANISTER_ID,

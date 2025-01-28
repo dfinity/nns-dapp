@@ -34,7 +34,7 @@ import { PortfolioRoutePo } from "$tests/page-objects/PortfolioRoute.page-object
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
-import { setCkUSDCanisters } from "$tests/utils/ckusd.test-utils";
+import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
@@ -84,7 +84,7 @@ describe("Portfolio route", () => {
     );
 
     setCkETHCanisters();
-    setCkUSDCanisters();
+    setCkUSDCCanisters();
   });
 
   it("should load ICP Swap tickers", async () => {

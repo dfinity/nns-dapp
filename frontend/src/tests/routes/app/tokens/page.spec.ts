@@ -44,7 +44,7 @@ import type { TokensTableRowPo } from "$tests/page-objects/TokensTableRow.page-o
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
-import { setCkUSDCanisters } from "$tests/utils/ckusd.test-utils";
+import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
@@ -209,7 +209,7 @@ describe("Tokens route", () => {
       setAccountsForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });
-      setCkUSDCanisters();
+      setCkUSDCCanisters();
     });
 
     describe("when logged in", () => {
