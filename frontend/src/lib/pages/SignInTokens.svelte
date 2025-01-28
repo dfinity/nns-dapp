@@ -14,7 +14,7 @@
   export let userTokensData: UserToken[];
   let showImportTokenModal = false;
   $: showImportTokenModal =
-    ENABLE_IMPORT_TOKEN_BY_URL &&
+    $ENABLE_IMPORT_TOKEN_BY_URL &&
     // Since there are two ImportTokenModals on both Tokens and SignInTokens pages,
     // we need to hide this modal after a successful sign-in to
     // prevent it from blocking this component’s destruction.

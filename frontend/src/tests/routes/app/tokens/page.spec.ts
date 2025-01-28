@@ -1078,7 +1078,9 @@ describe("Tokens route", () => {
       const po = await renderPage();
       await runResolvedPromises();
 
-      expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
+      expect(
+        await po.getSignInTokensPagePo().getImportTokenModalPo().isPresent()
+      ).toBe(true);
     });
 
     it("does not open import token modal when flag disabled", async () => {
@@ -1087,7 +1089,9 @@ describe("Tokens route", () => {
       const po = await renderPage();
       await runResolvedPromises();
 
-      expect(await po.getImportTokenModalPo().isPresent()).toBe(false);
+      expect(
+        await po.getSignInTokensPagePo().getImportTokenModalPo().isPresent()
+      ).toBe(false);
     });
   });
 });

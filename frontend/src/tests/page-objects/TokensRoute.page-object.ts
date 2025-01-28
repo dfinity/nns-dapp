@@ -1,7 +1,6 @@
 import { CkBTCReceiveModalPo } from "$tests/page-objects/CkBTCReceiveModal.page-object";
 import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionModal.page-object";
 import { IcrcTokenTransactionModalPo } from "$tests/page-objects/IcrcTokenTransactionModal.page-object";
-import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { ImportTokenRemoveConfirmationPo } from "$tests/page-objects/ImportTokenRemoveConfirmation.page-object";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { SignInTokensPagePo } from "$tests/page-objects/SignInTokens.page-object";
@@ -18,10 +17,6 @@ export class TokensRoutePo extends BasePageObject {
 
   getSignInTokensPagePo(): SignInTokensPagePo {
     return SignInTokensPagePo.under(this.root);
-  }
-
-  getImportTokenModalPo(): ImportTokenModalPo {
-    return ImportTokenModalPo.under(this.root);
   }
 
   hasLoginPage(): Promise<boolean> {
