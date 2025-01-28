@@ -14,7 +14,7 @@
   } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
@@ -114,19 +114,16 @@
       });
     }
   };
+  const wasAlreadyImported = (ledgerCanisterId: Principal): boolean =>
+    isImportedToken({
+      ledgerCanisterId,
+      importedTokens: $importedTokensStore?.importedTokens,
+    });
   const validateLedgerCanister = (
     ledgerCanisterId: Principal
   ): { errorLabelKey: string | undefined } => {
     if (ledgerCanisterId.toText() === LEDGER_CANISTER_ID.toText()) {
       return { errorLabelKey: "error__imported_tokens.is_icp" };
-    }
-    if (
-      isImportedToken({
-        ledgerCanisterId,
-        importedTokens: $importedTokensStore?.importedTokens,
-      })
-    ) {
-      return { errorLabelKey: "error__imported_tokens.is_duplication" };
     }
     if (
       isSnsLedgerCanisterId({
@@ -159,6 +156,19 @@
         fee: 0n,
       };
       next();
+      return;
+    }
+
+    if (wasAlreadyImported(ledgerCanisterId)) {
+      toastsShow({
+        level: "warn",
+        labelKey: "error__imported_tokens.is_duplication",
+      });
+      goto(
+        buildWalletUrl({
+          universe: ledgerCanisterId.toText(),
+        })
+      );
       return;
     }
 
