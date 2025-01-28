@@ -41,7 +41,7 @@ describe("TokensTable", () => {
     orderStore?: Writable<TokensTableOrder>;
     order?: TokensTableOrder;
   }) => {
-    const { container } = render(TokensTable, {
+    const { container, component } = render(TokensTable, {
       props: {
         userTokensData,
         firstColumnHeader,
