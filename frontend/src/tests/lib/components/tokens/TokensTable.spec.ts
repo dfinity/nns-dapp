@@ -3,10 +3,8 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-import type { TokensTableOrder } from "$lib/types/tokens-page";
-import { writable, type Writable } from "svelte/store";
-//import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
 import { ActionType } from "$lib/types/actions";
+import type { TokensTableOrder } from "$lib/types/tokens-page";
 import {
   UserTokenAction,
   type UserTokenData,
@@ -25,7 +23,7 @@ import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
+import { get, writable, type Writable } from "svelte/store";
 import type { Mock } from "vitest";
 
 describe("TokensTable", () => {
