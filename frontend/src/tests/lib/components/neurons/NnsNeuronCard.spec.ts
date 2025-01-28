@@ -57,7 +57,7 @@ describe("NnsNeuronCard", () => {
   });
 
   it("renders role and aria-label passed", async () => {
-    const role = "link";
+    const role = "button";
     const ariaLabel = "test label";
     const { container } = render(NnsNeuronCard, {
       props: {
