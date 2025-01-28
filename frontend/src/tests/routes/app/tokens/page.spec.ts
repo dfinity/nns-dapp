@@ -1,6 +1,7 @@
 import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
@@ -16,6 +17,7 @@ import {
   CKUSDC_LEDGER_CANISTER_ID,
   CKUSDC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckusdc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
@@ -27,6 +29,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { numberToUlps } from "$lib/utils/token.utils";
+import { page } from "$mocks/$app/stores";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
 import {
   mockIdentity,
@@ -1053,6 +1056,38 @@ describe("Tokens route", () => {
         expect(get(icpSwapTickersStore)).toBeUndefined();
         expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
       });
+    });
+  });
+
+  describe("import tokens", () => {
+    beforeEach(() => {
+      setNoIdentity();
+      page.mock({
+        routeId: AppPath.Tokens,
+        data: {
+          universe: OWN_CANISTER_ID_TEXT,
+          importTokenLedgerId: principal(1).toText(),
+        },
+      });
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(undefined);
+    });
+
+    it.only("opens import token modal when ledger canister id in URL", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
+
+      const po = await renderPage();
+      await runResolvedPromises();
+
+      expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
+    });
+
+    it("does not open import token modal when flag disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", false);
+
+      const po = await renderPage();
+      await runResolvedPromises();
+
+      expect(await po.getImportTokenModalPo().isPresent()).toBe(false);
     });
   });
 });
