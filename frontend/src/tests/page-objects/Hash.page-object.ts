@@ -10,6 +10,11 @@ export class HashPo extends BasePageObject {
     return new HashPo(element.byTestId(HashPo.TID));
   }
 
+  static async allUnder(element: PageObjectElement): Promise<HashPo[]> {
+    return Array.from(await element.allByTestId(HashPo.TID)).map(
+      (el) => new HashPo(el)
+    );
+  }
   getTooltipPo(): TooltipPo {
     return TooltipPo.under(this.root);
   }
