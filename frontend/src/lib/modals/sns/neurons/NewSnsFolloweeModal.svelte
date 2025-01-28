@@ -45,7 +45,7 @@
   };
 </script>
 
-<Modal on:nnsClose>
+<Modal testId="new-sns-followee-modal-component" on:nnsClose>
   <svelte:fragment slot="title">{$i18n.new_followee.title}</svelte:fragment>
 
   <form on:submit|preventDefault={add}>

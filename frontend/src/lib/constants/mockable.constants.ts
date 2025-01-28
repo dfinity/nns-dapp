@@ -15,7 +15,7 @@ export const DEV = import.meta.env.DEV;
 //
 // Whether we do query+update calls remains fixed for the duration of the
 // sessions, by which we mean until the next time the app/page is reloaded.
-const RESTORE_QUERY_AND_UPDATE_ROLLOUT_PERCENTAGE: number = 30;
+const RESTORE_QUERY_AND_UPDATE_ROLLOUT_PERCENTAGE: number = 100;
 
 const getForceCallStrategyForPercentage = (
   percentage: number
