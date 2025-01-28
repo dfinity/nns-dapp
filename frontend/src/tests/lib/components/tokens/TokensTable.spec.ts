@@ -3,6 +3,9 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import type { TokensTableOrder } from "$lib/types/tokens-page";
+import { writable, type Writable } from "svelte/store";
+//import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
 import { ActionType } from "$lib/types/actions";
 import {
   UserTokenAction,
@@ -16,11 +19,13 @@ import {
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
-import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { createActionEvent } from "$tests/utils/actions.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
+import { get } from "svelte/store";
 import type { Mock } from "vitest";
 
 describe("TokensTable", () => {
@@ -28,16 +33,34 @@ describe("TokensTable", () => {
     userTokensData,
     firstColumnHeader,
     onAction,
+    orderStore,
+    order,
   }: {
     userTokensData: Array<UserTokenData | UserTokenLoading>;
     firstColumnHeader?: string;
     onAction?: Mock;
+    orderStore?: Writable<TokensTableOrder>;
+    order?: TokensTableOrder;
   }) => {
     const { container, component } = render(TokensTable, {
-      props: { userTokensData, firstColumnHeader },
+      props: {
+        userTokensData,
+        firstColumnHeader,
+        order: order ?? get(orderStore),
+      },
     });
 
     component.$on("nnsAction", onAction);
+
+    if (orderStore) {
+      component.$$.update = () => {
+        orderStore.set(component.$$.ctx[component.$$.props["order"]]);
+      };
+    }
+
+    orderStore?.subscribe((order) => {
+      component.$set({ order });
+    });
 
     return TokensTablePo.under(new JestPageObjectElement(container));
   };
@@ -442,5 +465,169 @@ describe("TokensTable", () => {
 
     expect(await row1Po.hasImportedTokenTag()).toBe(false);
     expect(await row2Po.hasImportedTokenTag()).toBe(true);
+  });
+
+  describe("Sorting", () => {
+    const tokenIcp = createUserToken({
+      universeId: OWN_CANISTER_ID,
+      title: "Internet Computer",
+    });
+    const tokenA = createUserToken({
+      universeId: principal(0),
+      title: "A",
+    });
+    const tokenB = createUserToken({
+      universeId: principal(1),
+      title: "B",
+    });
+
+    const getProjectNames = async (po) =>
+      Promise.all((await po.getRows()).map((row) => row.getProjectName()));
+
+    it("should not allow sorting without order", async () => {
+      const po = renderTable({
+        userTokensData: [tokenIcp, tokenA],
+      });
+
+      expect(await po.getColumnHeaderWithArrow()).toBe(undefined);
+    });
+
+    it("should allow sorting when order is specified", async () => {
+      const po = renderTable({
+        userTokensData: [tokenIcp, tokenA],
+        order: [
+          {
+            columnId: "balance",
+          },
+        ],
+      });
+
+      expect(await po.getColumnHeaderWithArrow()).toBe("Balance");
+    });
+
+    it("should change order based on order prop", async () => {
+      const tokensTableOrderStore: Writable<TokensTableOrder> = writable([
+        {
+          columnId: "balance",
+        },
+      ]);
+      const po = renderTable({
+        userTokensData: [tokenIcp, tokenA],
+        orderStore: tokensTableOrderStore,
+      });
+
+      expect(await getProjectNames(po)).toEqual(["Internet Computer", "A"]);
+
+      tokensTableOrderStore.set([
+        {
+          columnId: "title",
+        },
+      ]);
+      await runResolvedPromises();
+
+      expect(await getProjectNames(po)).toEqual(["A", "Internet Computer"]);
+    });
+
+    it("should change order store based on clicked header", async () => {
+      const tokensTableOrderStore: Writable<TokensTableOrder> = writable([
+        {
+          columnId: "balance",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+      const firstColumnHeader = "Projects";
+      const po = renderTable({
+        firstColumnHeader,
+        userTokensData: [tokenIcp, tokenA],
+        orderStore: tokensTableOrderStore,
+      });
+
+      expect(get(tokensTableOrderStore)).toEqual([
+        {
+          columnId: "balance",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+
+      await po.clickColumnHeader(firstColumnHeader);
+
+      expect(get(tokensTableOrderStore)).toEqual([
+        {
+          columnId: "title",
+        },
+        {
+          columnId: "balance",
+        },
+      ]);
+
+      await po.clickColumnHeader("Balance");
+
+      expect(get(tokensTableOrderStore)).toEqual([
+        {
+          columnId: "balance",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+
+      await po.clickColumnHeader("Balance");
+
+      expect(get(tokensTableOrderStore)).toEqual([
+        {
+          columnId: "balance",
+          reversed: true,
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+    });
+
+    it("should order imported tokens without balance before other tokens without balance", async () => {
+      const po = renderTable({
+        userTokensData: [tokenIcp, tokenA, tokenB],
+        order: [
+          {
+            columnId: "balance",
+          },
+          {
+            columnId: "title",
+          },
+        ],
+      });
+
+      // If B is not an imported token, it comes after A.
+      expect(await getProjectNames(po)).toEqual([
+        "Internet Computer",
+        "A",
+        "B",
+      ]);
+
+      // Make B an imported token.
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            ledgerCanisterId: tokenB.universeId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+
+      await runResolvedPromises();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // If B is an imported token, it comes before A.
+      expect(await getProjectNames(po)).toEqual([
+        "Internet Computer",
+        "B",
+        "A",
+      ]);
+    });
   });
 });
