@@ -4,10 +4,9 @@
   import Layout from "$lib/components/layout/Layout.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { referrerPathStore } from "$lib/stores/routes.store";
-  import { nonNullish } from "@dfinity/utils";
 
   const back = async () => {
-    if (nonNullish($referrerPathStore)) {
+    if ($referrerPathStore.length > 0) {
       // Referrer might be a detail page which needs query parameters therefore we use the browser API to go back there
       history.back();
       return;

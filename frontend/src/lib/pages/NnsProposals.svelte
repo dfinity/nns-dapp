@@ -79,7 +79,7 @@
   onMount(async () => {
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Proposal,
-      effectivePreviousPath: $referrerPathStore,
+      effectivePreviousPath: $referrerPathStore.at(-1),
       currentData: $sortedProposals.proposals,
     });
 

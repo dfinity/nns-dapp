@@ -38,7 +38,7 @@
   onMount(async () => {
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Canister,
-      effectivePreviousPath: $referrerPathStore,
+      effectivePreviousPath: $referrerPathStore.at(-1),
       currentData: $canistersStore.canisters,
     });
 
