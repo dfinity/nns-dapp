@@ -52,7 +52,7 @@
         startReducingVotingPowerAfterSeconds:
           $startReducingVotingPowerAfterSecondsStore,
       })}
-      text={replacePlaceholders($i18n.losing_rewards.description, {
+      text={replacePlaceholders($i18n.missing_rewards.description, {
         // TODO(mstr): Rename to secondsToRoundedDuration
         $period: secondsToDissolveDelayDuration(
           $startReducingVotingPowerAfterSecondsStore
@@ -67,7 +67,7 @@
           data-tid="confirm-button"
           class="danger"
           on:click={() => (isModalVisible = true)}
-          >{$i18n.losing_rewards.confirm}</button
+          >{$i18n.missing_rewards.confirm}</button
         >
       </div>
     </Banner>

@@ -16,7 +16,7 @@
   <Banner
     testId="confirm-following-banner-component"
     {title}
-    text={replacePlaceholders($i18n.losing_rewards.description, {
+    text={replacePlaceholders($i18n.missing_rewards.description, {
       $period: secondsToDissolveDelayDuration(
         $startReducingVotingPowerAfterSecondsStore
       ),

@@ -387,7 +387,7 @@
     "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals.",
     "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
   },
-  "losing_rewards": {
+  "missing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
     "confirming": "Confirming following. This may take a moment.",
     "confirm": "Confirm Following",

@@ -99,7 +99,7 @@
 {#if nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
   <CommonItemAction
     testId="nns-neuron-reward-status-action-component"
-    tooltipText={replacePlaceholders($i18n.losing_rewards.description, {
+    tooltipText={replacePlaceholders($i18n.missing_rewards.description, {
       $period: secondsToDissolveDelayDuration(
         $startReducingVotingPowerAfterSecondsStore
       ),

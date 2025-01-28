@@ -55,7 +55,7 @@
   <div class="wrapper">
     {#if nonNullish($startReducingVotingPowerAfterSecondsStore)}
       <p class="description" data-tid="losing-rewards-description">
-        {replacePlaceholders($i18n.losing_rewards.description, {
+        {replacePlaceholders($i18n.missing_rewards.description, {
           $period: secondsToDissolveDelayDuration(
             BigInt($startReducingVotingPowerAfterSecondsStore)
           ),
