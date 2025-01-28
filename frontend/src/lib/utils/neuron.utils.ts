@@ -572,7 +572,7 @@ const getNeuronTagsUnrelatedToController = ({
         text: replacePlaceholders(i18n.neurons.missing_rewards_soon, {
           $timeLeft: secondsToMissingRewardsDuration({
             seconds: BigInt(
-              secondsUntilLosingRewardsVPE({
+              secondsUntilMissingReward({
                 neuron,
                 startReducingVotingPowerAfterSeconds,
               })
@@ -1283,11 +1283,11 @@ export const isPublicNeuron = (neuronInfo: NeuronInfo): boolean => {
 export const getVotingPowerRefreshedTimestampSeconds = ({
   fullNeuron,
 }: NeuronInfo): bigint =>
-  // When the fullNeuron is not presented, we assume that the neuron is not losing rewards
+  // When the fullNeuron is not presented, we assume that the neuron is not missing rewards
   // to avoid unnecessary notifications.
   fullNeuron?.votingPowerRefreshedTimestampSeconds ?? BigInt(nowInSeconds());
 
-export const secondsUntilLosingRewardsVPE = ({
+export const secondsUntilMissingReward = ({
   neuron,
   startReducingVotingPowerAfterSeconds,
 }: {
@@ -1326,7 +1326,7 @@ export const isNeuronFollowingReset = ({
 };
 
 /** If the voting power economics are not available,
- *  we assume that the neuron is not losing rewards. */
+ *  we assume that the neuron is not missing rewards. */
 export const isNeuronMissingReward = ({
   neuron,
   startReducingVotingPowerAfterSeconds,
@@ -1336,15 +1336,15 @@ export const isNeuronMissingReward = ({
 }): boolean =>
   isNullish(startReducingVotingPowerAfterSeconds)
     ? false
-    : secondsUntilLosingRewardsVPE({
+    : secondsUntilMissingReward({
         neuron,
         startReducingVotingPowerAfterSeconds,
       }) <= 0;
 
 /**
- * e.g. "Neuron will start losing rewards in 30 days"
+ * e.g. "Neuron will start missing rewards in 30 days"
  * If the voting power economics are not available,
- * we assume that the neuron is not losing rewards. */
+ * we assume that the neuron is not missing rewards. */
 export const shouldDisplayMissingRewardNotification = ({
   neuron,
   startReducingVotingPowerAfterSeconds,
@@ -1354,7 +1354,7 @@ export const shouldDisplayMissingRewardNotification = ({
 }): boolean =>
   isNullish(startReducingVotingPowerAfterSeconds)
     ? false
-    : secondsUntilLosingRewardsVPE({
+    : secondsUntilMissingReward({
         neuron,
         startReducingVotingPowerAfterSeconds,
       }) <= daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS);

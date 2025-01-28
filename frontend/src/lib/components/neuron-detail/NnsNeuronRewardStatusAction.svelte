@@ -8,7 +8,7 @@
   import {
     isNeuronFollowingReset,
     isNeuronMissingReward,
-    secondsUntilLosingRewardsVPE,
+    secondsUntilMissingReward,
     shouldDisplayMissingRewardNotification,
   } from "$lib/utils/neuron.utils";
   import {
@@ -80,7 +80,7 @@
 
     const timeUntilLoss = secondsToDuration({
       seconds: BigInt(
-        secondsUntilLosingRewardsVPE({
+        secondsUntilMissingReward({
           neuron,
           startReducingVotingPowerAfterSeconds,
         })
