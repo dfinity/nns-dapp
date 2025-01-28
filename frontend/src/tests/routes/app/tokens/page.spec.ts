@@ -1072,7 +1072,7 @@ describe("Tokens route", () => {
       vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(undefined);
     });
 
-    it.only("opens import token modal when ledger canister id in URL", async () => {
+    it("opens import token modal when ledger canister id in URL", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
 
       const po = await renderPage();
