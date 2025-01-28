@@ -17,14 +17,14 @@ import {
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { createActionEvent } from "$tests/utils/actions.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get, writable, type Writable } from "svelte/store";
-import { render } from "$tests/utils/svelte.test-utils";
 import type { Mock } from "vitest";
 
 describe("TokensTable", () => {
