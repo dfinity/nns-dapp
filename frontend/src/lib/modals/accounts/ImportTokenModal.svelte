@@ -56,9 +56,11 @@
   let indexCanisterId: Principal | undefined;
   let tokenMetaData: IcrcTokenMetadata | undefined;
 
-  const validateCanisterIdText = (canisterIdText: string): boolean => {
+  const getCanisterIdFromText = (
+    canisterIdText: string
+  ): Principal | undefined => {
     try {
-      return Boolean(Principal.fromText(canisterIdText));
+      return Principal.fromText(canisterIdText);
     } catch (err) {
       console.error(err);
       toastsError({
@@ -67,27 +69,24 @@
       });
       close();
       goto(AppPath.Tokens);
-      return false;
     }
   };
   $: {
-    const ledgerId = $pageStore.importTokenLedgerId;
     if (
-      nonNullish(ledgerId) &&
+      $ENABLE_IMPORT_TOKEN_BY_URL &&
       isNullish(ledgerCanisterId) &&
-      validateCanisterIdText(ledgerId)
+      nonNullish($pageStore.importTokenLedgerId)
     ) {
-      ledgerCanisterId = Principal.fromText(ledgerId);
+      ledgerCanisterId = getCanisterIdFromText($pageStore.importTokenLedgerId);
     }
   }
   $: {
-    const indexId = $pageStore.importTokenIndexId;
     if (
-      nonNullish(indexId) &&
+      $ENABLE_IMPORT_TOKEN_BY_URL &&
       isNullish(indexCanisterId) &&
-      validateCanisterIdText(indexId)
+      nonNullish($pageStore.importTokenIndexId)
     ) {
-      indexCanisterId = Principal.fromText(indexId);
+      indexCanisterId = getCanisterIdFromText($pageStore.importTokenIndexId);
     }
   }
 
