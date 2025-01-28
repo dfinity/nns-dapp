@@ -88,7 +88,7 @@
       i18n: $i18n.time,
     });
     return replacePlaceholders(
-      $i18n.neuron_detail.reward_status_losing_soon_description,
+      $i18n.neuron_detail.reward_status_missing_soon_description,
       {
         $time: timeUntilLoss,
       }

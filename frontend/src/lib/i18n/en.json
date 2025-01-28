@@ -777,7 +777,7 @@
     "created": "Date Created",
     "reward_status_active": "Active neuron",
     "reward_status_losing_soon": "Missing rewards soon",
-    "reward_status_losing_soon_description": "$time to confirm following",
+    "reward_status_missing_soon_description": "$time to confirm following",
     "reward_status_inactive": "Inactive neuron",
     "reward_status_inactive_description": "Confirm following or vote manually to continue receiving rewards",
     "reward_status_inactive_reset_description": "Following has been reset. Confirm following or vote manually to continue receiving rewards",

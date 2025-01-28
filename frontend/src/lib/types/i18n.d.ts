@@ -807,7 +807,7 @@ interface I18nNeuron_detail {
   created: string;
   reward_status_active: string;
   reward_status_losing_soon: string;
-  reward_status_losing_soon_description: string;
+  reward_status_missing_soon_description: string;
   reward_status_inactive: string;
   reward_status_inactive_description: string;
   reward_status_inactive_reset_description: string;
