@@ -1,11 +1,11 @@
 import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenFormPo } from "$tests/page-objects/ImportTokenForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import type { Principal } from "@dfinity/principal";
-import { overrideFeatureFlagsStore } from "../../../../lib/stores/feature-flags.store";
-import { resetIdentity, setNoIdentity } from "../../../mocks/auth.store.mock";
 
 describe("ImportTokenForm", () => {
   const renderComponent = (props: {
