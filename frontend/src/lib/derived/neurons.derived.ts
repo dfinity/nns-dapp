@@ -2,7 +2,7 @@ import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   hasValidStake,
-  shouldDisplayRewardLossNotificationVPE,
+  shouldDisplayMissingRewardNotification,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
 } from "$lib/utils/neuron.utils";
@@ -25,7 +25,7 @@ export const soonLosingRewardNeuronsStore: Readable<NeuronInfo[]> = derived(
   ($definedNeuronsStore) =>
     sortNeuronsByVotingPowerRefreshedTimeout(
       $definedNeuronsStore.filter((neuron) =>
-        shouldDisplayRewardLossNotificationVPE({
+        shouldDisplayMissingRewardNotification({
           neuron,
           startReducingVotingPowerAfterSeconds: get(
             startReducingVotingPowerAfterSecondsStore

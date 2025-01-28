@@ -1,6 +1,4 @@
 import SnsNeuronFollowingCard from "$lib/components/sns-neuron-detail/SnsNeuronFollowingCard.svelte";
-import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
@@ -9,6 +7,8 @@ import {
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { SnsNeuronFollowingCardPo } from "$tests/page-objects/SnsNeuronFollowingCard.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsNeuronPermissionType,
@@ -73,7 +73,14 @@ describe("SnsNeuronFollowingCard", () => {
         neuron,
       });
 
-    it("renders followees and their topics", () => {
+    const renderComponent = (neuron: SnsNeuron) => {
+      const { container } = renderCard(neuron);
+      return SnsNeuronFollowingCardPo.under(
+        new JestPageObjectElement(container)
+      );
+    };
+
+    it("renders followees and their topics", async () => {
       // Use same rootCanisterId as in `renderSelectedSnsNeuronContext`
       setSnsProjects([
         {
@@ -81,40 +88,42 @@ describe("SnsNeuronFollowingCard", () => {
           nervousFunctions: [function0, function1, function2],
         },
       ]);
-      const { getAllByText } = renderCard(neuronWithFollowees);
+      const po = renderComponent(neuronWithFollowees);
+      const followeePos = await po.getSnsFolloweePos();
 
-      [followee1, followee2].forEach((followee) => {
-        expect(
-          getAllByText(
-            shortenWithMiddleEllipsis(getSnsNeuronIdAsHexString(followee))
-          ).length
-        ).toBe(2);
-      });
+      expect(followeePos.length).toBe(2);
 
-      // 1 followee
-      expect(getAllByText(function0.name).length).toBe(1);
-      // 1 followee
-      expect(getAllByText(function1.name).length).toBe(1);
-      // 2 followees
-      expect(getAllByText(function2.name).length).toBe(2);
+      const tags1 = await followeePos[0].getTagPos();
+      expect(await Promise.all(tags1.map((tag) => tag.getText()))).toEqual([
+        function0.name,
+        function2.name,
+      ]);
+
+      const tags2 = await followeePos[1].getTagPos();
+      expect(await Promise.all(tags2.map((tag) => tag.getText()))).toEqual([
+        function1.name,
+        function2.name,
+      ]);
     });
 
-    it("shows loading while no ns functions", () => {
+    it("shows loading while no ns functions", async () => {
       resetSnsProjects();
-      const { queryByTestId } = renderCard(neuronWithFollowees);
-      expect(queryByTestId("skeleton-followees")).toBeInTheDocument();
+      const po = renderComponent(neuronWithFollowees);
+
+      expect(await po.hasSkeletonFollowees()).toBe(true);
     });
 
-    it("does not render skeletong if no followees", () => {
+    it("does not render skeletong if no followees", async () => {
       resetSnsProjects();
-      const { queryByTestId } = renderCard(controlledNeuron);
-      expect(queryByTestId("skeleton-followees")).not.toBeInTheDocument();
+      const po = renderComponent(controlledNeuron);
+
+      expect(await po.hasSkeletonFollowees()).toBe(false);
     });
 
-    it("renders button to follow neurons", () => {
-      const { queryByTestId } = renderCard(controlledNeuron);
+    it("renders button to follow neurons", async () => {
+      const po = renderComponent(controlledNeuron);
 
-      expect(queryByTestId("sns-follow-neurons-button")).toBeInTheDocument();
+      expect(await po.getFollowSnsNeuronsButtonPo().isPresent()).toBe(true);
     });
   });
 
@@ -137,12 +146,17 @@ describe("SnsNeuronFollowingCard", () => {
         neuron,
       });
 
-    it("does not render button to follow neurons", () => {
-      const { queryByTestId } = renderCard(uncontrolledNeuron);
+    const renderComponent = (neuron: SnsNeuron) => {
+      const { container } = renderCard(neuron);
+      return SnsNeuronFollowingCardPo.under(
+        new JestPageObjectElement(container)
+      );
+    };
 
-      expect(
-        queryByTestId("sns-follow-neurons-button")
-      ).not.toBeInTheDocument();
+    it("does not render button to follow neurons", async () => {
+      const po = renderComponent(uncontrolledNeuron);
+
+      expect(await po.getFollowSnsNeuronsButtonPo().isPresent()).toBe(false);
     });
   });
 });
