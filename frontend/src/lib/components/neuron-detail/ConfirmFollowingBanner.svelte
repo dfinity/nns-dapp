@@ -9,7 +9,7 @@
   import { nonNullish } from "@dfinity/utils";
 
   let title: string;
-  $: title = $i18n.losing_rewards_banner.confirm_title;
+  $: title = $i18n.missing_rewards_banner.confirm_title;
 </script>
 
 {#if nonNullish($startReducingVotingPowerAfterSecondsStore)}

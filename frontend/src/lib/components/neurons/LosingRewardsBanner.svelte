@@ -28,8 +28,8 @@
     startReducingVotingPowerAfterSeconds: bigint;
   }) =>
     isNeuronLosingRewardsVPE({ neuron, startReducingVotingPowerAfterSeconds })
-      ? $i18n.losing_rewards_banner.rewards_missing_title
-      : replacePlaceholders($i18n.losing_rewards_banner.days_left_title, {
+      ? $i18n.missing_rewards_banner.rewards_missing_title
+      : replacePlaceholders($i18n.missing_rewards_banner.days_left_title, {
           $timeLeft: secondsToDuration({
             seconds: BigInt(
               secondsUntilLosingRewardsVPE({
