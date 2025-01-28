@@ -16,7 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Change the PageBanner icon in the staking page.
+- Change the Page Banner icon in the staking page.
 
 #### Deprecated
 
