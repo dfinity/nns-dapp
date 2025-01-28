@@ -11,9 +11,9 @@ import {
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { render } from "$tests/utils/svelte.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import type { RenderResult } from "@testing-library/svelte";
-import { render } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 
