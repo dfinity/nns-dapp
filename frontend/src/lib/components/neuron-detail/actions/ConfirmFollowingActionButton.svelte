@@ -13,5 +13,5 @@
     openNnsNeuronModal({
       type: "confirm-following",
       data: { neuron },
-    })}>{$i18n.losing_rewards.confirm}</button
+    })}>{$i18n.missing_rewards.confirm}</button
 >

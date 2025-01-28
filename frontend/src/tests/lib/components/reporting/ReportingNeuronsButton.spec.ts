@@ -137,7 +137,7 @@ describe("ReportingNeuronsButton", () => {
           expect.objectContaining({
             data: expect.arrayContaining([
               expect.objectContaining({
-                neuronId: "1",
+                neuronId: '="1"',
                 project: "Internet Computer",
                 symbol: "ICP",
                 neuronAccountId:

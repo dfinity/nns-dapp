@@ -62,7 +62,7 @@
     isFollowingReset || isLosingRewards
       ? $i18n.neuron_detail.reward_status_inactive
       : isLosingRewardsSoon
-        ? $i18n.neuron_detail.reward_status_losing_soon
+        ? $i18n.neuron_detail.reward_status_missing_soon
         : $i18n.neuron_detail.reward_status_active;
 
   const getDescription = ({
@@ -88,7 +88,7 @@
       i18n: $i18n.time,
     });
     return replacePlaceholders(
-      $i18n.neuron_detail.reward_status_losing_soon_description,
+      $i18n.neuron_detail.reward_status_missing_soon_description,
       {
         $time: timeUntilLoss,
       }
@@ -99,7 +99,7 @@
 {#if nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
   <CommonItemAction
     testId="nns-neuron-reward-status-action-component"
-    tooltipText={replacePlaceholders($i18n.losing_rewards.description, {
+    tooltipText={replacePlaceholders($i18n.missing_rewards.description, {
       $period: secondsToDissolveDelayDuration(
         $startReducingVotingPowerAfterSecondsStore
       ),
