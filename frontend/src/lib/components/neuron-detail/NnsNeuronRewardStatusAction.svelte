@@ -6,10 +6,10 @@
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
-    isNeuronFollowingResetVPE,
-    isNeuronLosingRewardsVPE,
-    secondsUntilLosingRewardsVPE,
-    shouldDisplayRewardLossNotificationVPE,
+    isNeuronFollowingReset,
+    isNeuronMissingReward,
+    secondsUntilMissingReward,
+    shouldDisplayMissingRewardNotification,
   } from "$lib/utils/neuron.utils";
   import {
     IconCheckCircleFill,
@@ -26,7 +26,7 @@
   export let neuron: NeuronInfo;
 
   let isFollowingReset = false;
-  $: isFollowingReset = isNeuronFollowingResetVPE({
+  $: isFollowingReset = isNeuronFollowingReset({
     neuron,
     startReducingVotingPowerAfterSeconds:
       $startReducingVotingPowerAfterSecondsStore,
@@ -34,7 +34,7 @@
   });
 
   let isLosingRewards = false;
-  $: isLosingRewards = isNeuronLosingRewardsVPE({
+  $: isLosingRewards = isNeuronMissingReward({
     neuron,
     startReducingVotingPowerAfterSeconds:
       $startReducingVotingPowerAfterSecondsStore,
@@ -43,7 +43,7 @@
   let isLosingRewardsSoon = false;
   $: isLosingRewardsSoon =
     !isLosingRewards &&
-    shouldDisplayRewardLossNotificationVPE({
+    shouldDisplayMissingRewardNotification({
       neuron,
       startReducingVotingPowerAfterSeconds:
         $startReducingVotingPowerAfterSecondsStore,
@@ -80,7 +80,7 @@
 
     const timeUntilLoss = secondsToDuration({
       seconds: BigInt(
-        secondsUntilLosingRewardsVPE({
+        secondsUntilMissingReward({
           neuron,
           startReducingVotingPowerAfterSeconds,
         })
