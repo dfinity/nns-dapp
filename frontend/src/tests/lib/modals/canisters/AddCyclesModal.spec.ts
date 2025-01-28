@@ -101,9 +101,14 @@ describe("AddCyclesModal", () => {
   });
 
   const testTopUp = async (selectedAccount = mockMainAccount) => {
-    const { queryByTestId, container, component } = await renderModal({
+    const done = vi.fn();
+
+    const { queryByTestId, container } = await renderModal({
       component: AddCyclesModalTest,
       props,
+      events: {
+        nnsClose: done,
+      },
     });
     // Wait for the onMount to load the conversion rate
     await waitFor(() => expect(getIcpToCyclesExchangeRate).toBeCalled());
@@ -135,9 +140,6 @@ describe("AddCyclesModal", () => {
         queryByTestId("confirm-cycles-canister-screen")
       ).toBeInTheDocument()
     );
-
-    const done = vi.fn();
-    component.$on("nnsClose", done);
 
     expect(get(toastsStore)).toEqual([]);
 

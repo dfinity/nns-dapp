@@ -445,7 +445,7 @@ describe("reporting utils", () => {
 
       expect(datasets[0].metadata[1]).toEqual({
         label: "Neuron ID",
-        value: "1",
+        value: '="1"',
       });
     });
   });
@@ -528,7 +528,7 @@ describe("reporting utils", () => {
               dissolveDate: "N/A",
               dissolveDelaySeconds: "1 minute",
               neuronAccountId: "accountIdentifier",
-              neuronId: "10",
+              neuronId: '="10"',
               project: "Internet Computer",
               stake: "0.2999",
               stakedMaturity: "2.00",
@@ -542,7 +542,7 @@ describe("reporting utils", () => {
               dissolveDate: "Oct 14, 2023",
               dissolveDelaySeconds: "1 minute",
               neuronAccountId: "accountIdentifier",
-              neuronId: "10",
+              neuronId: '="10"',
               project: "Internet Computer",
               stake: "0.2999",
               stakedMaturity: "2.00",

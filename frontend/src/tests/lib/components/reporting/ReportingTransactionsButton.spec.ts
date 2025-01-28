@@ -18,10 +18,11 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/icp-ledger.api");
@@ -80,16 +81,20 @@ describe("ReportingTransactionsButton", () => {
       period,
     }: { onTrigger?: () => void; period: ReportingPeriod } = { period: "all" }
   ) => {
-    const { container, component } = render(ReportingTransactionsButton, {
-      period,
+    const { container } = render(ReportingTransactionsButton, {
+      props: {
+        period,
+      },
+      events: {
+        ...(nonNullish(onTrigger) && {
+          nnsExportIcpTransactionsCsvTriggered: onTrigger,
+        }),
+      },
     });
     const po = ReportingTransactionsButtonPo.under({
       element: new JestPageObjectElement(container),
     });
 
-    if (onTrigger) {
-      component.$on("nnsExportIcpTransactionsCsvTriggered", onTrigger);
-    }
     return po;
   };
 

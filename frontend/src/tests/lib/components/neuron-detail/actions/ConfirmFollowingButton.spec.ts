@@ -5,10 +5,10 @@ import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { ConfirmFollowingButtonPo } from "$tests/page-objects/ConfirmFollowingButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore } from "@dfinity/gix-components";
 import { nonNullish } from "@dfinity/utils";
-import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("ConfirmFollowingButton", () => {
@@ -35,10 +35,19 @@ describe("ConfirmFollowingButton", () => {
     vi.spyOn(api, "refreshVotingPower").mockResolvedValue();
   });
 
-  const renderComponent = async ({ nnsComplete = undefined, ...props }) => {
-    const { container, component } = render(ConfirmFollowingButton, props);
-
-    if (nonNullish(nnsComplete)) component.$on("nnsComplete", nnsComplete);
+  const renderComponent = async ({
+    nnsComplete = undefined,
+    ...props
+  }: {
+    neuronIds: bigint[];
+    nnsComplete?: () => void;
+  }) => {
+    const { container } = render(ConfirmFollowingButton, {
+      props,
+      events: {
+        ...(nonNullish(nnsComplete) && { nnsComplete }),
+      },
+    });
 
     return ConfirmFollowingButtonPo.under(new JestPageObjectElement(container));
   };

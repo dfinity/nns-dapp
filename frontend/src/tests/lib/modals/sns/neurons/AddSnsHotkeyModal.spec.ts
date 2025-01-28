@@ -5,7 +5,7 @@ import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.moc
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 describe("AddSnsHotkeyModal", () => {
   const reload = vi.fn();
@@ -16,11 +16,14 @@ describe("AddSnsHotkeyModal", () => {
     });
   });
 
-  const renderAddSnsHotkeyModal = async (): Promise<RenderResult<Component>> =>
+  const renderAddSnsHotkeyModal = async (
+    events?: Record<string, ($event: CustomEvent) => void>
+  ): Promise<RenderResult<SvelteComponent>> =>
     renderSelectedSnsNeuronContext({
       Component: AddSnsHotkeyModal,
       reload,
       neuron: mockSnsNeuron,
+      events,
     });
 
   it("should display modal", async () => {
@@ -61,8 +64,11 @@ describe("AddSnsHotkeyModal", () => {
 
   it("should call addHotkey service, reload and close modal", async () => {
     const principalString = "aaaaa-aa";
-    const { container, queryByTestId, component } =
-      await renderAddSnsHotkeyModal();
+    const onClose = vi.fn();
+
+    const { container, queryByTestId } = await renderAddSnsHotkeyModal({
+      nnsClose: onClose,
+    });
 
     const inputElement = container.querySelector("input[type='text']");
     expect(inputElement).not.toBeNull();
@@ -75,8 +81,6 @@ describe("AddSnsHotkeyModal", () => {
     const buttonElement = queryByTestId("add-principal-button");
     expect(buttonElement).not.toBeNull();
 
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
     buttonElement && (await fireEvent.click(buttonElement));
     expect(addHotkey).toBeCalled();
 

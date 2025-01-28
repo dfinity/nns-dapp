@@ -9,14 +9,14 @@
   import { nonNullish } from "@dfinity/utils";
 
   let title: string;
-  $: title = $i18n.losing_rewards_banner.confirm_title;
+  $: title = $i18n.missing_rewards_banner.confirm_title;
 </script>
 
 {#if nonNullish($startReducingVotingPowerAfterSecondsStore)}
   <Banner
     testId="confirm-following-banner-component"
     {title}
-    text={replacePlaceholders($i18n.losing_rewards.description, {
+    text={replacePlaceholders($i18n.missing_rewards.description, {
       $period: secondsToDissolveDelayDuration(
         $startReducingVotingPowerAfterSecondsStore
       ),

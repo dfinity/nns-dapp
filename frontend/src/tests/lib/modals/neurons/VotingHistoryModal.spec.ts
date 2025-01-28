@@ -4,7 +4,8 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
+import { waitFor } from "@testing-library/svelte";
 
 describe("VotingHistoryModal", () => {
   const props = {
@@ -53,10 +54,12 @@ describe("VotingHistoryModal", () => {
 
     it("should close on error", async () => {
       const onClose = vi.fn();
-      const { component } = render(VotingHistoryModal, {
+      render(VotingHistoryModal, {
         props,
+        events: {
+          nnsClose: onClose,
+        },
       });
-      component.$on("nnsClose", onClose);
 
       await waitFor(() => expect(onClose).toBeCalled());
     });

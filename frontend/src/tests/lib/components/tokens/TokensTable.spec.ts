@@ -19,8 +19,9 @@ import {
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { createActionEvent } from "$tests/utils/actions.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { render, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
 import type { Mock } from "vitest";
 
 describe("TokensTable", () => {
@@ -33,11 +34,12 @@ describe("TokensTable", () => {
     firstColumnHeader?: string;
     onAction?: Mock;
   }) => {
-    const { container, component } = render(TokensTable, {
+    const { container } = render(TokensTable, {
       props: { userTokensData, firstColumnHeader },
+      events: {
+        nnsAction: onAction,
+      },
     });
-
-    component.$on("nnsAction", onAction);
 
     return TokensTablePo.under(new JestPageObjectElement(container));
   };

@@ -14,24 +14,18 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Portfolio dashboard with holdings and staked value.
-
 #### Changed
 
-- Change the USD value icon in the token pages
-- Proceed with rollout of re-enabling of certification of certain calls from `10%` to `30%`.
+- Proceed with rollout of re-enabling of certification of certain calls from `30%` to `100%`.
+- Change the Page Banner icon in the staking page.
 
 #### Deprecated
 
 #### Removed
 
-- Remove canister creation fallback from backend canister.
-- Stop processing ICP transactions in the nns-dapp canister.
-- Stop exporting stats related to transaction processing.
-
 #### Fixed
 
-- Improved the display of date range options in the mobile view of the Reporting page.
+- Reporting: Add Excel string format preservation for neuron ids.
 
 #### Security
 

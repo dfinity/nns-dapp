@@ -10,8 +10,9 @@ import { mockSnsFullProject, principal } from "$tests/mocks/sns-projects.mock";
 import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import { Principal } from "@dfinity/principal";
-import { render } from "@testing-library/svelte";
+import { nonNullish } from "@dfinity/utils";
 
 describe("SelectUniverseList", () => {
   const projects = [
@@ -24,10 +25,13 @@ describe("SelectUniverseList", () => {
   ];
 
   const renderComponent = ({ onSelect }: { onSelect?: () => void } = {}) => {
-    const { container, component } = render(SelectUniverseList);
-    if (onSelect) {
-      component.$on("nnsSelectUniverse", onSelect);
-    }
+    const { container } = render(SelectUniverseList, {
+      props: {},
+      events: {
+        ...(nonNullish(onSelect) && { nnsSelectUniverse: onSelect }),
+      },
+    });
+
     return SelectUniverseListPo.under(new JestPageObjectElement(container));
   };
 

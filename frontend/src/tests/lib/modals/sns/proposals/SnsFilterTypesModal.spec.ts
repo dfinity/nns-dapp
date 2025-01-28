@@ -3,8 +3,9 @@ import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { render } from "$tests/utils/svelte.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("SnsFilterTypesModal", () => {
@@ -55,12 +56,11 @@ describe("SnsFilterTypesModal", () => {
 
   it("should forward close modal event", () =>
     new Promise<void>((done) => {
-      const { container, component } = render(SnsFilterTypesModal, {
+      const { container } = render(SnsFilterTypesModal, {
         props,
-      });
-
-      component.$on("nnsClose", () => {
-        done();
+        events: {
+          nnsClose: () => done(),
+        },
       });
 
       const button: HTMLButtonElement | null = container.querySelector(

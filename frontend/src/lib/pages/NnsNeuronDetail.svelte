@@ -38,7 +38,7 @@
     getNeuronById,
     isSpawning,
     neuronVoting,
-    shouldDisplayRewardLossNotification,
+    shouldDisplayMissingRewardNotification,
   } from "$lib/utils/neuron.utils";
   import { Island } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
@@ -47,6 +47,7 @@
   import { writable } from "svelte/store";
   import ConfirmFollowingBanner from "$lib/components/neuron-detail/ConfirmFollowingBanner.svelte";
   import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuronIdText: string | undefined | null;
 
@@ -155,7 +156,11 @@
   $: isConfirmFollowingVisible =
     $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION &&
     nonNullish(neuron) &&
-    shouldDisplayRewardLossNotification(neuron);
+    shouldDisplayMissingRewardNotification({
+      neuron,
+      startReducingVotingPowerAfterSeconds:
+        $startReducingVotingPowerAfterSecondsStore,
+    });
 </script>
 
 <TestIdWrapper testId="nns-neuron-detail-component">

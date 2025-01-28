@@ -28,12 +28,15 @@ describe("ProjectsTable", () => {
   const snsTokenSymbol = "TOK";
 
   const renderComponent = ({ onNnsStakeTokens = null } = {}) => {
-    const { container, component } = render(ProjectsTable);
-    if (nonNullish(onNnsStakeTokens)) {
-      component.$on("nnsStakeTokens", ({ detail }) =>
-        onNnsStakeTokens({ detail })
-      );
-    }
+    const { container } = render(ProjectsTable, {
+      props: {},
+      events: {
+        ...(nonNullish(onNnsStakeTokens) && {
+          nnsStakeTokens: ({ detail }) => onNnsStakeTokens({ detail }),
+        }),
+      },
+    });
+
     return ProjectsTablePo.under(new JestPageObjectElement(container));
   };
 

@@ -5,6 +5,7 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { mockBTCAddressMainnet } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { render as renderUtils } from "$tests/utils/svelte.test-utils";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("AddressInput", () => {
@@ -43,10 +44,12 @@ describe("AddressInput", () => {
     });
 
     it("should trigger the event on click on qr code scanner button", () => {
-      const { getByTestId, component } = render(AddressInput, { props });
-
       const openSpy = vi.fn();
-      component.$on("nnsOpenQRCodeReader", openSpy);
+
+      const { getByTestId } = renderUtils(AddressInput, {
+        props,
+        events: { nnsOpenQRCodeReader: openSpy },
+      });
 
       const button = getByTestId(
         "address-qr-code-scanner"

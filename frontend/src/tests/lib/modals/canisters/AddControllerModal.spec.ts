@@ -3,17 +3,18 @@ import { addController } from "$lib/services/canisters.services";
 import AddControllerModal from "$tests/lib/modals/canisters/AddControllerModalTest.svelte";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 describe("AddControllerModal", () => {
   const reloadMock = vi.fn();
 
-  const renderAddControllerModal = async (): Promise<
-    RenderResult<Component>
-  > => {
+  const renderAddControllerModal = async (
+    events?: Record<string, ($event: CustomEvent) => void>
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: AddControllerModal,
       props: { reloadDetails: reloadMock },
+      events,
     });
   };
 
@@ -31,8 +32,11 @@ describe("AddControllerModal", () => {
 
   it("should call addController service and close modal", async () => {
     const principalString = "aaaaa-aa";
-    const { container, queryByTestId, component } =
-      await renderAddControllerModal();
+    const onClose = vi.fn();
+
+    const { container, queryByTestId } = await renderAddControllerModal({
+      nnsClose: onClose,
+    });
 
     const inputElement = container.querySelector("input[type='text']");
     expect(inputElement).not.toBeNull();
@@ -57,8 +61,6 @@ describe("AddControllerModal", () => {
     );
     expect(confirmButton).not.toBeNull();
 
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
     confirmButton && (await fireEvent.click(confirmButton));
 
     expect(addController).toBeCalled();

@@ -2,21 +2,24 @@ import StakeItemAction from "$lib/components/neuron-detail/StakeItemAction.svelt
 import { mockToken, mockUniverse } from "$tests/mocks/sns-projects.mock";
 import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 
 describe("StakeItemAction", () => {
   const renderComponent = ({
     increaseStakeCallback = () => undefined,
     ...props
   }) => {
-    const { container, component } = render(StakeItemAction, {
-      universe: mockUniverse,
-      token: mockToken,
-      neuronStake: 123456789n,
-      ...props,
+    const { container } = render(StakeItemAction, {
+      props: {
+        universe: mockUniverse,
+        token: mockToken,
+        neuronStake: 123456789n,
+        ...props,
+      },
+      events: {
+        increaseStake: increaseStakeCallback,
+      },
     });
-
-    component.$on("increaseStake", increaseStakeCallback);
 
     return StakeItemActionPo.under(new JestPageObjectElement(container));
   };

@@ -1,6 +1,7 @@
 import FollowTopicsSection from "$lib/components/neurons/FollowTopicSection.svelte";
 import FollowTopicsSectionTest from "$tests/lib/components/neurons/FollowTopicSectionTest.svelte";
-import { fireEvent, render, waitFor } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
+import { fireEvent, waitFor } from "@testing-library/svelte";
 
 describe("FollowTopicsSection", () => {
   const title = "title";
@@ -31,14 +32,18 @@ describe("FollowTopicsSection", () => {
   });
 
   it("triggers open event", async () => {
-    const { queryByTestId, component } = render(FollowTopicsSection, {
+    const openSpy = vi.fn();
+
+    const { queryByTestId } = render(FollowTopicsSection, {
       props: {
         id: "3",
         count: 4,
       },
+      events: {
+        nnsOpen: openSpy,
+      },
     });
-    const openSpy = vi.fn();
-    component.$on("nnsOpen", openSpy);
+
     const button = queryByTestId("open-new-followee-modal");
     button && fireEvent.click(button);
 

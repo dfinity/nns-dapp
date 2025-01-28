@@ -3,7 +3,6 @@
   import { Modal } from "@dfinity/gix-components";
   import { createEventDispatcher, onMount } from "svelte";
   import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
-  import { START_REDUCING_VOTING_POWER_AFTER_SECONDS } from "$lib/constants/neurons.constants";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
@@ -12,6 +11,8 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import type { NeuronInfo } from "@dfinity/nns";
   import ConfirmFollowingButton from "$lib/components/neuron-detail/actions/ConfirmFollowingButton.svelte";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
+  import { nonNullish } from "@dfinity/utils";
 
   export let neurons: NeuronInfo[];
   export let withNeuronNavigation = true;
@@ -48,19 +49,21 @@
 
 <Modal on:nnsClose testId="losing-reward-neurons-modal-component">
   <svelte:fragment slot="title">
-    {$i18n.losing_rewards_modal.title}
+    {$i18n.missing_rewards_modal.title}
   </svelte:fragment>
 
   <div class="wrapper">
-    <p class="description">
-      {replacePlaceholders($i18n.losing_rewards.description, {
-        $period: secondsToDissolveDelayDuration(
-          BigInt(START_REDUCING_VOTING_POWER_AFTER_SECONDS)
-        ),
-      })}
-    </p>
+    {#if nonNullish($startReducingVotingPowerAfterSecondsStore)}
+      <p class="description" data-tid="losing-rewards-description">
+        {replacePlaceholders($i18n.missing_rewards.description, {
+          $period: secondsToDissolveDelayDuration(
+            BigInt($startReducingVotingPowerAfterSecondsStore)
+          ),
+        })}
+      </p>
+    {/if}
 
-    <h3 class="label">{$i18n.losing_rewards_modal.label}</h3>
+    <h3 class="label">{$i18n.missing_rewards_modal.label}</h3>
     <ul class="cards">
       {#each neurons as neuron (neuron.neuronId)}
         <li>

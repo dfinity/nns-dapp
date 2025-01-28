@@ -29,7 +29,7 @@ import {
   waitFor,
   type RenderResult,
 } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 describe("TransactionModal", () => {
   const renderTransactionModal = ({
@@ -44,6 +44,7 @@ describe("TransactionModal", () => {
     mustSelectNetwork = false,
     showLedgerFee,
     skipHardwareWallets,
+    events,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
@@ -53,6 +54,7 @@ describe("TransactionModal", () => {
     mustSelectNetwork?: boolean;
     showLedgerFee?: boolean;
     skipHardwareWallets?: boolean;
+    events?: Record<string, ($event: CustomEvent) => void>;
   }) =>
     renderModal({
       component: TransactionModal,
@@ -68,6 +70,7 @@ describe("TransactionModal", () => {
           showLedgerFee,
         },
       },
+      events,
     });
 
   beforeEach(() => {
@@ -106,6 +109,7 @@ describe("TransactionModal", () => {
     sourceAccount,
     mustSelectNetwork = false,
     showLedgerFee,
+    events,
   }: {
     destinationAddress?: string;
     sourceAccount?: Account;
@@ -113,7 +117,8 @@ describe("TransactionModal", () => {
     rootCanisterId?: Principal;
     mustSelectNetwork?: boolean;
     showLedgerFee?: boolean;
-  }): Promise<RenderResult<Component>> => {
+    events?: Record<string, ($event: CustomEvent) => void>;
+  }): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderTransactionModal({
       destinationAddress,
       sourceAccount,
@@ -121,6 +126,7 @@ describe("TransactionModal", () => {
       rootCanisterId,
       mustSelectNetwork,
       showLedgerFee,
+      events,
     });
 
     const { getByTestId, container } = result;
@@ -176,12 +182,14 @@ describe("TransactionModal", () => {
     });
 
     it("should trigger close on cancel", async () => {
-      const { getByTestId, component } = await renderTransactionModal({
-        rootCanisterId: OWN_CANISTER_ID,
-      });
-
       const onClose = vi.fn();
-      component.$on("nnsClose", onClose);
+
+      const { getByTestId } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+        events: {
+          nnsClose: onClose,
+        },
+      });
 
       await clickByTestId(getByTestId, "transaction-button-cancel");
 
@@ -335,12 +343,14 @@ describe("TransactionModal", () => {
     });
 
     it("should move to the last step and trigger nnsSubmit event", async () => {
-      const { getByTestId, component } = await renderEnter10ICPAndNext({
-        rootCanisterId: OWN_CANISTER_ID,
-      });
-
       const onSubmit = vi.fn();
-      component.$on("nnsSubmit", onSubmit);
+
+      const { getByTestId } = await renderEnter10ICPAndNext({
+        rootCanisterId: OWN_CANISTER_ID,
+        events: {
+          nnsSubmit: onSubmit,
+        },
+      });
 
       const confirmButton = getByTestId("transaction-button-execute");
 
@@ -455,10 +465,14 @@ describe("TransactionModal", () => {
 
   describe("with sns project id", () => {
     it("should move to the last step and trigger nnsSubmit event", async () => {
-      const { getByTestId, container, component } =
-        await renderTransactionModal({
-          rootCanisterId: mockPrincipal,
-        });
+      const onSubmit = vi.fn();
+
+      const { getByTestId, container } = await renderTransactionModal({
+        rootCanisterId: mockPrincipal,
+        events: {
+          nnsSubmit: onSubmit,
+        },
+      });
 
       const participateButton = getByTestId("transaction-button-next");
       expect(participateButton?.hasAttribute("disabled")).toBeTruthy();
@@ -489,9 +503,6 @@ describe("TransactionModal", () => {
       expect(
         getByTestId("transaction-summary-total-received")?.textContent
       ).toContain(icpAmount);
-
-      const onSubmit = vi.fn();
-      component.$on("nnsSubmit", onSubmit);
 
       const confirmButton = getByTestId("transaction-button-execute");
 

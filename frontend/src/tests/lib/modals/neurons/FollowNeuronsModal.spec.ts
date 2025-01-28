@@ -5,8 +5,9 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { FollowNeuronsModalPo } from "$tests/page-objects/FollowNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { Topic } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
+import { nonNullish } from "@dfinity/utils";
 
 describe("FollowNeuronsModal", () => {
   const neuronFollowing = {
@@ -35,14 +36,14 @@ describe("FollowNeuronsModal", () => {
   });
 
   const renderComponent = ({ onClose }: { onClose?: () => void }) => {
-    const { container, component } = render(FollowNeuronsModal, {
+    const { container } = render(FollowNeuronsModal, {
       props: {
         neuronId: neuronFollowing.neuronId,
       },
+      events: {
+        ...(nonNullish(onClose) && { nnsClose: onClose }),
+      },
     });
-    if (onClose) {
-      component.$on("nnsClose", onClose);
-    }
 
     return FollowNeuronsModalPo.under(new JestPageObjectElement(container));
   };

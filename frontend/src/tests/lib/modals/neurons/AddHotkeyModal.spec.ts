@@ -4,7 +4,7 @@ import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {
@@ -14,10 +14,13 @@ vi.mock("$lib/services/neurons.services", () => {
 });
 
 describe("AddHotkeyModal", () => {
-  const renderAddHotkeyModal = async (): Promise<RenderResult<Component>> => {
+  const renderAddHotkeyModal = async (
+    events?: Record<string, ($event: CustomEvent) => void>
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: AddHotkeyModal,
       props: { neuron: mockNeuron },
+      events,
     });
   };
 
@@ -78,8 +81,11 @@ describe("AddHotkeyModal", () => {
 
   it("should call addHotkey service and close modal", async () => {
     const principalString = "aaaaa-aa";
-    const { container, queryByTestId, component } =
-      await renderAddHotkeyModal();
+    const onClose = vi.fn();
+
+    const { container, queryByTestId } = await renderAddHotkeyModal({
+      nnsClose: onClose,
+    });
 
     const inputElement = container.querySelector("input[type='text']");
     expect(inputElement).not.toBeNull();
@@ -92,8 +98,6 @@ describe("AddHotkeyModal", () => {
     const buttonElement = queryByTestId("add-principal-button");
     expect(buttonElement).not.toBeNull();
 
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
     buttonElement && (await fireEvent.click(buttonElement));
     expect(addHotkey).toBeCalled();
 

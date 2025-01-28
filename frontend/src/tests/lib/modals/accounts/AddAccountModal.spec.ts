@@ -8,7 +8,7 @@ import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 describe("AddAccountModal", () => {
   const mockLedgerIdentity = new MockLedgerIdentity();
@@ -45,7 +45,7 @@ describe("AddAccountModal", () => {
 
   const shouldNavigateSubaccountStep = async ({
     queryByText,
-  }: RenderResult<Component>) => {
+  }: RenderResult<SvelteComponent>) => {
     const accountCard = queryByText(en.accounts.new_account_title);
     expect(accountCard).not.toBeNull();
 
@@ -63,7 +63,7 @@ describe("AddAccountModal", () => {
 
   const shouldNavigateHardwareWalletStep = async ({
     queryByText,
-  }: RenderResult<Component>) => {
+  }: RenderResult<SvelteComponent>) => {
     const accountCard = queryByText(en.accounts.attach_hardware_title);
     expect(accountCard).not.toBeNull();
 
@@ -178,7 +178,7 @@ describe("AddAccountModal", () => {
   const shouldNavigateHardwareWalletConnect = async ({
     container,
     queryByText,
-  }: RenderResult<Component>) => {
+  }: RenderResult<SvelteComponent>) => {
     const input = container.querySelector("input") as HTMLInputElement;
     await fireEvent.input(input, { target: { value: "test" } });
 
@@ -223,8 +223,7 @@ describe("AddAccountModal", () => {
 
   const shouldAttachWallet = async ({
     getByTestId,
-    component,
-  }: RenderResult<Component>) => {
+  }: RenderResult<SvelteComponent>) => {
     const connect = getByTestId("ledger-connect-button") as HTMLButtonElement;
 
     fireEvent.click(connect);
@@ -237,21 +236,25 @@ describe("AddAccountModal", () => {
 
     const attach = getByTestId("ledger-attach-button") as HTMLButtonElement;
 
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
-
     fireEvent.click(attach);
-
-    await waitFor(() => expect(onClose).toBeCalled());
   };
 
   it("should attach wallet to new account ", async () => {
-    const renderResult = await renderModal({ component: AddAccountModal });
+    const onClose = vi.fn();
+
+    const renderResult = await renderModal({
+      component: AddAccountModal,
+      events: {
+        nnsClose: onClose,
+      },
+    });
 
     await shouldNavigateHardwareWalletStep(renderResult);
 
     await shouldNavigateHardwareWalletConnect(renderResult);
 
     await shouldAttachWallet(renderResult);
+
+    await waitFor(() => expect(onClose).toBeCalled());
   });
 });

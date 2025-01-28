@@ -4,8 +4,8 @@
   import Banner from "$lib/components/ui/Banner.svelte";
   import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import {
-    isNeuronLosingRewardsVPE,
-    secondsUntilLosingRewardsVPE,
+    isNeuronMissingReward,
+    secondsUntilMissingReward,
   } from "$lib/utils/neuron.utils";
   import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -27,12 +27,12 @@
     neuron: NeuronInfo;
     startReducingVotingPowerAfterSeconds: bigint;
   }) =>
-    isNeuronLosingRewardsVPE({ neuron, startReducingVotingPowerAfterSeconds })
-      ? $i18n.losing_rewards_banner.rewards_missing_title
-      : replacePlaceholders($i18n.losing_rewards_banner.days_left_title, {
+    isNeuronMissingReward({ neuron, startReducingVotingPowerAfterSeconds })
+      ? $i18n.missing_rewards_banner.rewards_missing_title
+      : replacePlaceholders($i18n.missing_rewards_banner.days_left_title, {
           $timeLeft: secondsToDuration({
             seconds: BigInt(
-              secondsUntilLosingRewardsVPE({
+              secondsUntilMissingReward({
                 neuron,
                 startReducingVotingPowerAfterSeconds,
               })
@@ -52,7 +52,7 @@
         startReducingVotingPowerAfterSeconds:
           $startReducingVotingPowerAfterSecondsStore,
       })}
-      text={replacePlaceholders($i18n.losing_rewards.description, {
+      text={replacePlaceholders($i18n.missing_rewards.description, {
         // TODO(mstr): Rename to secondsToRoundedDuration
         $period: secondsToDissolveDelayDuration(
           $startReducingVotingPowerAfterSecondsStore
@@ -67,7 +67,7 @@
           data-tid="confirm-button"
           class="danger"
           on:click={() => (isModalVisible = true)}
-          >{$i18n.losing_rewards.confirm}</button
+          >{$i18n.missing_rewards.confirm}</button
         >
       </div>
     </Banner>

@@ -13,7 +13,7 @@
   const onClick = async () => {
     startBusy({
       initiator: "refresh-voting-power",
-      labelKey: "losing_rewards.confirming",
+      labelKey: "missing_rewards.confirming",
     });
 
     const totalCount = neuronIds.length;
@@ -28,5 +28,5 @@
   on:click={onClick}
   class="secondary"
   data-tid="confirm-following-button-component"
-  >{$i18n.losing_rewards.confirm}</button
+  >{$i18n.missing_rewards.confirm}</button
 >

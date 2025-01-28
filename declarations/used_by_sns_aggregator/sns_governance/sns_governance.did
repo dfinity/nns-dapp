@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-16_16-18-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-23_03-04-hashes-in-blocks/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -482,6 +482,7 @@ type NervousSystemParameters = record {
   voting_rewards_parameters : opt VotingRewardsParameters;
   maturity_modulation_disabled : opt bool;
   max_number_of_principals_per_neuron : opt nat64;
+  automatically_advance_target_version : opt bool;
 };
 
 type Neuron = record {
@@ -785,6 +786,7 @@ type UpgradeStepsReset = record {
 type TargetVersionSet = record {
   new_target_version : opt Version;
   old_target_version : opt Version;
+  is_advanced_automatically : opt bool;
 };
 
 type TargetVersionReset = record {

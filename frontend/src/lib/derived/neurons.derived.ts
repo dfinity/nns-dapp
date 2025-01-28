@@ -1,13 +1,14 @@
+import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   hasValidStake,
-  shouldDisplayRewardLossNotification,
+  shouldDisplayMissingRewardNotification,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
 } from "$lib/utils/neuron.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
-import { derived, type Readable } from "svelte/store";
+import { derived, get, type Readable } from "svelte/store";
 
 export const definedNeuronsStore: Readable<NeuronInfo[]> = derived(
   neuronsStore,
@@ -23,7 +24,14 @@ export const soonLosingRewardNeuronsStore: Readable<NeuronInfo[]> = derived(
   definedNeuronsStore,
   ($definedNeuronsStore) =>
     sortNeuronsByVotingPowerRefreshedTimeout(
-      $definedNeuronsStore.filter(shouldDisplayRewardLossNotification)
+      $definedNeuronsStore.filter((neuron) =>
+        shouldDisplayMissingRewardNotification({
+          neuron,
+          startReducingVotingPowerAfterSeconds: get(
+            startReducingVotingPowerAfterSecondsStore
+          ),
+        })
+      )
     )
 );
 

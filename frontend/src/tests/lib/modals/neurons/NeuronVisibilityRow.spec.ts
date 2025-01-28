@@ -2,8 +2,8 @@ import NeuronVisibilityRow from "$lib/modals/neurons/NeuronVisibilityRow.svelte"
 import type { NeuronVisibilityRowData } from "$lib/types/neuron-visibility-row";
 import { NeuronVisibilityRowPo } from "$tests/page-objects/NeuronVisibilityRow.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-import { render } from "@testing-library/svelte";
 
 describe("NeuronVisibilityRow", () => {
   const renderComponent = ({
@@ -16,11 +16,12 @@ describe("NeuronVisibilityRow", () => {
     disabled?: boolean;
   }) => {
     const nnsChangeMock = vi.fn();
-    const { container, component } = render(NeuronVisibilityRow, {
+    const { container } = render(NeuronVisibilityRow, {
       props: { rowData, checked, disabled },
+      events: {
+        nnsChange: nnsChangeMock,
+      },
     });
-
-    component.$on("nnsChange", nnsChangeMock);
 
     const po = NeuronVisibilityRowPo.under({
       element: new JestPageObjectElement(container),

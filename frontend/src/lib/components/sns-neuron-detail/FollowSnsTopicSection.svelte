@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
   import NewSnsFolloweeModal from "$lib/modals/sns/neurons/NewSnsFolloweeModal.svelte";
@@ -56,40 +57,43 @@
   };
 </script>
 
-<FollowTopicSection
-  on:nnsOpen={openModal}
-  count={followees.length}
-  id={nsFunction.id.toString()}
->
-  <svelte:fragment slot="title">{nsFunction.name}</svelte:fragment>
-  <svelte:fragment slot="subtitle"
-    >{fromNullable(nsFunction.description)}</svelte:fragment
+<TestIdWrapper testId="follow-sns-topic-section-component">
+  <FollowTopicSection
+    on:nnsOpen={openModal}
+    count={followees.length}
+    id={nsFunction.id.toString()}
   >
-  <ul>
-    {#each followees as followee (subaccountToHexString(followee.id))}
-      {@const followeeIdHex = subaccountToHexString(followee.id)}
-      <li data-tid="current-followee-item">
-        <Value>
-          <Hash text={followeeIdHex} id={followeeIdHex} tagName="span" />
-        </Value>
-        <button
-          class="text"
-          aria-label={$i18n.core.remove}
-          on:click={() => removeCurrentFollowee(followee)}><IconClose /></button
-        >
-      </li>
-    {/each}
-  </ul>
-</FollowTopicSection>
+    <svelte:fragment slot="title">{nsFunction.name}</svelte:fragment>
+    <svelte:fragment slot="subtitle"
+      >{fromNullable(nsFunction.description)}</svelte:fragment
+    >
+    <ul>
+      {#each followees as followee (subaccountToHexString(followee.id))}
+        {@const followeeIdHex = subaccountToHexString(followee.id)}
+        <li data-tid="current-followee-item">
+          <Value>
+            <Hash text={followeeIdHex} id={followeeIdHex} tagName="span" />
+          </Value>
+          <button
+            class="text"
+            aria-label={$i18n.core.remove}
+            on:click={() => removeCurrentFollowee(followee)}
+            ><IconClose /></button
+          >
+        </li>
+      {/each}
+    </ul>
+  </FollowTopicSection>
 
-{#if showModal}
-  <NewSnsFolloweeModal
-    {rootCanisterId}
-    {neuron}
-    functionId={nsFunction.id}
-    on:nnsClose={closeModal}
-  />
-{/if}
+  {#if showModal}
+    <NewSnsFolloweeModal
+      {rootCanisterId}
+      {neuron}
+      functionId={nsFunction.id}
+      on:nnsClose={closeModal}
+    />
+  {/if}
+</TestIdWrapper>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/card";
