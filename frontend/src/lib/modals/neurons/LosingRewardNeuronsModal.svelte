@@ -49,7 +49,7 @@
 
 <Modal on:nnsClose testId="losing-reward-neurons-modal-component">
   <svelte:fragment slot="title">
-    {$i18n.losing_rewards_modal.title}
+    {$i18n.missing_rewards_modal.title}
   </svelte:fragment>
 
   <div class="wrapper">
@@ -63,7 +63,7 @@
       </p>
     {/if}
 
-    <h3 class="label">{$i18n.losing_rewards_modal.label}</h3>
+    <h3 class="label">{$i18n.missing_rewards_modal.label}</h3>
     <ul class="cards">
       {#each neurons as neuron (neuron.neuronId)}
         <li>

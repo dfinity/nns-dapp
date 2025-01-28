@@ -416,7 +416,7 @@ interface I18nLosing_rewards_banner {
   rewards_missing_title: string;
 }
 
-interface I18nLosing_rewards_modal {
+interface I18nMissing_rewards_modal {
   goto_neuron: string;
   title: string;
   label: string;
@@ -1518,7 +1518,7 @@ interface I18n {
   neurons: I18nNeurons;
   losing_rewards: I18nLosing_rewards;
   losing_rewards_banner: I18nLosing_rewards_banner;
-  losing_rewards_modal: I18nLosing_rewards_modal;
+  missing_rewards_modal: I18nMissing_rewards_modal;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;

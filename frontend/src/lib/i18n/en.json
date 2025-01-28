@@ -400,7 +400,7 @@
     "days_left_title": "$timeLeft left to confirm your neuron following",
     "rewards_missing_title": "One or more of your neurons are missing voting rewards"
   },
-  "losing_rewards_modal": {
+  "missing_rewards_modal": {
     "goto_neuron": "Go to neuron details",
     "title": "Review following",
     "label": "Neuron(s)",
