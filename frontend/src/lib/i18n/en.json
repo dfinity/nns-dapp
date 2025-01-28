@@ -1190,9 +1190,9 @@
   },
   "portfolio": {
     "login_title": "Session expired",
-    "login_description": "Earn rewards, participate in governance and join the communities. Login to gain optimal access of the platform.",
+    "login_description": "Sign in and start staking to earn voting rewards and participate in the Internet Computer’s onchain governance.",
     "no_tokens_card_title": "Store and transfer tokens securely in the NNS wallet",
-    "no_tokens_card_description": "running 100% on the Internet Computer blockchain - Ready to get started?",
+    "no_tokens_card_description": "running 100% on the Internet Computer blockchain — Ready to get started?",
     "no_tokens_card_button": "Buy ICP",
     "no_neurons_card_description": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
     "no_neurons_card_button": "Start Staking",
@@ -1209,7 +1209,7 @@
     "staked_tokens_card_list_second_column_mobile": "Balance $/Maturity",
     "staked_tokens_card_list_second_column": "Maturity",
     "staked_tokens_card_list_third_column": "Staked",
-    "staked_tokens_card_info_row": "Optimize voting power and earn rewards by increasing your staked neurons.",
+    "staked_tokens_card_info_row": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
     "total_assets_title": "Total Holdings"
   }
 }

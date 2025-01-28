@@ -46,7 +46,6 @@ pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts_db: schema::proxy::AccountsDbAsProxy,
 
-    block_height_synced_up_to: Option<BlockIndex>,
     accounts_db_stats: AccountsDbStats,
     accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
     last_ledger_sync_timestamp_nanos: u64,
@@ -73,9 +72,8 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, block_height_synced_up_to: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
+            "AccountsStore{{accounts_db: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
             self.accounts_db,
-            self.block_height_synced_up_to,
             self.accounts_db_stats,
             self.last_ledger_sync_timestamp_nanos,
             self.neurons_topped_up_count,
@@ -735,7 +733,9 @@ impl StableState for AccountsStore {
             // Neuron accounts are unused but we need to encode them for
             // backwards compatibility.
             HashMap::<AccountIdentifier, candid::Empty>::new(),
-            &self.block_height_synced_up_to,
+            // block_height_synced_up_to is unused but we need to encode it for
+            // backwards compatibility.
+            None as Option<BlockIndex>,
             // multi_part_transactions_processor is unused but we need to encode
             // it for backwards compatibility.
             // TODO: Change to an arbitrary value after we've deployed to
@@ -761,7 +761,7 @@ impl StableState for AccountsStore {
             // compatibility.
             _transactions,
             _neuron_accounts,
-            block_height_synced_up_to,
+            _block_height_synced_up_to,
             _multi_part_transactions_processor,
             last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
@@ -776,7 +776,7 @@ impl StableState for AccountsStore {
             candid::Reserved,
             candid::Reserved,
             candid::Reserved,
-            Option<BlockIndex>,
+            candid::Reserved,
             candid::Reserved,
             u64,
             u64,
@@ -793,7 +793,6 @@ impl StableState for AccountsStore {
             // will be replaced with an AccountsDbAsUnboundedStableBTreeMap in
             // State::from(Partitions) so it doesn't matter what we set here.
             accounts_db: AccountsDbAsProxy::default(),
-            block_height_synced_up_to,
             accounts_db_stats,
             accounts_db_stats_recomputed_on_upgrade,
             last_ledger_sync_timestamp_nanos,

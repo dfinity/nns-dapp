@@ -54,9 +54,7 @@ import {
   isNeuronControllableByUser,
   isNeuronControlledByHardwareWallet,
   isNeuronFollowingReset,
-  isNeuronFollowingResetVPE,
-  isNeuronLosingRewards,
-  isNeuronLosingRewardsVPE,
+  isNeuronMissingReward,
   isPublicNeuron,
   isSpawning,
   isValidInputAmount,
@@ -71,10 +69,8 @@ import {
   neuronStakedMaturity,
   neuronVotingPower,
   neuronsVotingPower,
-  secondsUntilLosingRewards,
-  secondsUntilLosingRewardsVPE,
-  shouldDisplayRewardLossNotification,
-  shouldDisplayRewardLossNotificationVPE,
+  secondsUntilMissingReward,
+  shouldDisplayMissingRewardNotification,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
   topicsToFollow,
@@ -3593,68 +3589,90 @@ describe("neuron-utils", () => {
     const losingRewardsPeriod = SECONDS_IN_HALF_YEAR;
     const notificationPeriod = 30 * SECONDS_IN_DAY;
 
-    describe("secondsUntilLosingRewards", () => {
+    describe("secondsUntilMissingReward", () => {
       it("should return future date when no fullNeuron", () => {
         expect(
-          secondsUntilLosingRewards({
-            ...mockNeuron,
-            fullNeuron: undefined,
+          secondsUntilMissingReward({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: {
+              ...mockNeuron,
+              fullNeuron: undefined,
+            },
           })
         ).toEqual(SECONDS_IN_HALF_YEAR);
       });
 
       it("should return seconds until losing rewards", () => {
         expect(
-          secondsUntilLosingRewards(
-            neuronWithRefreshedTimestamp({
+          secondsUntilMissingReward({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs: 0,
-            })
-          )
+            }),
+          })
         ).toBe(SECONDS_IN_HALF_YEAR);
         expect(
-          secondsUntilLosingRewards(
-            neuronWithRefreshedTimestamp({
+          secondsUntilMissingReward({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
-            })
-          )
+            }),
+          })
         ).toBe(0);
       });
     });
 
-    describe("isNeuronLosingRewards", () => {
+    describe("isNeuronMissingReward", () => {
       it("should return false by default", () => {
         expect(
-          isNeuronLosingRewards({
-            ...mockNeuron,
-            fullNeuron: undefined,
+          isNeuronMissingReward({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: {
+              ...mockNeuron,
+              fullNeuron: undefined,
+            },
+          })
+        ).toBe(false);
+      });
+
+      it("should return false w/o voting power economics", () => {
+        expect(
+          isNeuronMissingReward({
+            startReducingVotingPowerAfterSeconds: undefined,
+            neuron: neuronWithRefreshedTimestamp({
+              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
+            }),
           })
         ).toBe(false);
       });
 
       it("should return true after the reward loss has started", () => {
         expect(
-          isNeuronLosingRewards(
-            neuronWithRefreshedTimestamp({
+          isNeuronMissingReward({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
-            })
-          )
+            }),
+          })
         ).toBe(true);
         expect(
-          isNeuronLosingRewards(
-            neuronWithRefreshedTimestamp({
+          isNeuronMissingReward({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod + 1,
-            })
-          )
+            }),
+          })
         ).toBe(true);
       });
 
       it("should return false", () => {
         expect(
-          isNeuronLosingRewards(
-            neuronWithRefreshedTimestamp({
+          isNeuronMissingReward({
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod - 1,
-            })
-          )
+            }),
+          })
         ).toBe(false);
       });
     });
@@ -3663,176 +3681,6 @@ describe("neuron-utils", () => {
       it("should return false by default", () => {
         expect(
           isNeuronFollowingReset({
-            ...mockNeuron,
-            fullNeuron: undefined,
-          })
-        ).toBe(false);
-      });
-
-      it("should return true after the followings have been reset", () => {
-        expect(
-          isNeuronFollowingReset(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs:
-                losingRewardsPeriod + SECONDS_IN_MONTH,
-            })
-          )
-        ).toBe(true);
-        expect(
-          isNeuronFollowingReset(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs:
-                losingRewardsPeriod + 2 * SECONDS_IN_MONTH,
-            })
-          )
-        ).toBe(true);
-      });
-
-      it("should return false", () => {
-        expect(
-          isNeuronFollowingReset(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs:
-                losingRewardsPeriod + SECONDS_IN_MONTH - 1,
-            })
-          )
-        ).toBe(false);
-      });
-    });
-
-    describe("shouldDisplayRewardLossNotification", () => {
-      it("should return false by default", () => {
-        expect(
-          shouldDisplayRewardLossNotification({
-            ...mockNeuron,
-            fullNeuron: undefined,
-          })
-        ).toBe(false);
-      });
-
-      it("should return true after notification period starts", () => {
-        expect(
-          shouldDisplayRewardLossNotification(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs:
-                losingRewardsPeriod - notificationPeriod,
-            })
-          )
-        ).toBe(true);
-        expect(
-          shouldDisplayRewardLossNotification(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs:
-                losingRewardsPeriod - notificationPeriod + 1,
-            })
-          )
-        ).toBe(true);
-      });
-
-      it("should return false before notification period", () => {
-        expect(
-          shouldDisplayRewardLossNotification(
-            neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs:
-                losingRewardsPeriod - (notificationPeriod + 1),
-            })
-          )
-        ).toBe(false);
-      });
-    });
-
-    describe("secondsUntilLosingRewardsVPE", () => {
-      it("should return future date when no fullNeuron", () => {
-        expect(
-          secondsUntilLosingRewardsVPE({
-            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
-            neuron: {
-              ...mockNeuron,
-              fullNeuron: undefined,
-            },
-          })
-        ).toEqual(SECONDS_IN_HALF_YEAR);
-      });
-
-      it("should return seconds until losing rewards", () => {
-        expect(
-          secondsUntilLosingRewardsVPE({
-            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
-            neuron: neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs: 0,
-            }),
-          })
-        ).toBe(SECONDS_IN_HALF_YEAR);
-        expect(
-          secondsUntilLosingRewardsVPE({
-            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
-            neuron: neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
-            }),
-          })
-        ).toBe(0);
-      });
-    });
-
-    describe("isNeuronLosingRewardsVPE", () => {
-      it("should return false by default", () => {
-        expect(
-          isNeuronLosingRewardsVPE({
-            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
-            neuron: {
-              ...mockNeuron,
-              fullNeuron: undefined,
-            },
-          })
-        ).toBe(false);
-      });
-
-      it("should return false w/o voting power economics", () => {
-        expect(
-          isNeuronLosingRewardsVPE({
-            startReducingVotingPowerAfterSeconds: undefined,
-            neuron: neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
-            }),
-          })
-        ).toBe(false);
-      });
-
-      it("should return true after the reward loss has started", () => {
-        expect(
-          isNeuronLosingRewardsVPE({
-            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
-            neuron: neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod,
-            }),
-          })
-        ).toBe(true);
-        expect(
-          isNeuronLosingRewardsVPE({
-            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
-            neuron: neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod + 1,
-            }),
-          })
-        ).toBe(true);
-      });
-
-      it("should return false", () => {
-        expect(
-          isNeuronLosingRewardsVPE({
-            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
-            neuron: neuronWithRefreshedTimestamp({
-              votingPowerRefreshedTimestampAgeSecs: losingRewardsPeriod - 1,
-            }),
-          })
-        ).toBe(false);
-      });
-    });
-
-    describe("isNeuronFollowingResetVPE", () => {
-      it("should return false by default", () => {
-        expect(
-          isNeuronFollowingResetVPE({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: {
@@ -3845,7 +3693,7 @@ describe("neuron-utils", () => {
 
       it("should return false w/o voting power economics", () => {
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: undefined,
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: neuronWithRefreshedTimestamp({
@@ -3855,7 +3703,7 @@ describe("neuron-utils", () => {
           })
         ).toBe(false);
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: undefined,
             neuron: neuronWithRefreshedTimestamp({
@@ -3868,7 +3716,7 @@ describe("neuron-utils", () => {
 
       it("should return true after the followings have been reset", () => {
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: neuronWithRefreshedTimestamp({
@@ -3878,7 +3726,7 @@ describe("neuron-utils", () => {
           })
         ).toBe(true);
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: neuronWithRefreshedTimestamp({
@@ -3891,7 +3739,7 @@ describe("neuron-utils", () => {
 
       it("should return false", () => {
         expect(
-          isNeuronFollowingResetVPE({
+          isNeuronFollowingReset({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
             neuron: neuronWithRefreshedTimestamp({
@@ -3903,10 +3751,10 @@ describe("neuron-utils", () => {
       });
     });
 
-    describe("shouldDisplayRewardLossNotificationVPE", () => {
+    describe("shouldDisplayMissingRewardNotification", () => {
       it("should return false by default", () => {
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: {
               ...mockNeuron,
@@ -3918,7 +3766,7 @@ describe("neuron-utils", () => {
 
       it("should return true after notification period starts", () => {
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3927,7 +3775,7 @@ describe("neuron-utils", () => {
           })
         ).toBe(true);
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3939,7 +3787,7 @@ describe("neuron-utils", () => {
 
       it("should return false w/o voting economics", () => {
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: undefined,
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3951,7 +3799,7 @@ describe("neuron-utils", () => {
 
       it("should return false before notification period", () => {
         expect(
-          shouldDisplayRewardLossNotificationVPE({
+          shouldDisplayMissingRewardNotification({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
