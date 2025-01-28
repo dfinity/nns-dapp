@@ -68,6 +68,7 @@
         substitutions: { $canisterId: canisterIdText },
       });
       close();
+      // Navigate to clear all query parameters.
       goto(AppPath.Tokens);
     }
   };
