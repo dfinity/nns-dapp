@@ -445,7 +445,7 @@
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2025-01-22",
         "IC_COMMIT_FOR_PROPOSALS": "release-2025-01-23_03-04-hashes-in-blocks",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-01-16_16-18-base"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-01-23_03-04-hashes-in-blocks"
       },
       "packtool": ""
     }

@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-16_16-18-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-23_03-04-hashes-in-blocks/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -87,6 +87,7 @@ pub struct MaturityModulation {
 pub struct TargetVersionSet {
     pub old_target_version: Option<Version>,
     pub new_target_version: Option<Version>,
+    pub is_advanced_automatically: Option<bool>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpgradeStepsReset {
@@ -177,6 +178,7 @@ pub struct NervousSystemParameters {
     pub max_dissolve_delay_seconds: Option<u64>,
     pub max_dissolve_delay_bonus_percentage: Option<u64>,
     pub max_followees_per_function: Option<u64>,
+    pub automatically_advance_target_version: Option<bool>,
     pub neuron_claimer_permissions: Option<NeuronPermissionList>,
     pub neuron_minimum_stake_e8s: Option<u64>,
     pub max_neuron_age_for_age_bonus: Option<u64>,
