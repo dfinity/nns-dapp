@@ -5,7 +5,7 @@ import { renderSelectedSnsNeuronContext } from "$tests/mocks/context-wrapper.moc
 import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 describe("AddSnsHotkeyModal", () => {
   const reload = vi.fn();
@@ -18,7 +18,7 @@ describe("AddSnsHotkeyModal", () => {
 
   const renderAddSnsHotkeyModal = async (
     events?: Record<string, ($event: CustomEvent) => void>
-  ): Promise<RenderResult<SvelteComponent>> =>
+  ): Promise<RenderResult<Component>> =>
     renderSelectedSnsNeuronContext({
       Component: AddSnsHotkeyModal,
       reload,
