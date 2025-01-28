@@ -28,7 +28,7 @@ import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionMod
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { TokenAmountV2 } from "@dfinity/utils";
+import { TokenAmountV2, nonNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -38,7 +38,13 @@ vi.mock("$lib/services/icrc-accounts.services");
 vi.mock("$lib/services/ckbtc-convert.services");
 
 describe("CkBTCTransactionModal", () => {
-  const renderTransactionModal = (selectedAccount?: Account) =>
+  const renderTransactionModal = ({
+    selectedAccount,
+    events,
+  }: {
+    selectedAccount?: Account;
+    events?: Record<string, ($event: CustomEvent) => void>;
+  }) =>
     renderModal({
       component: CkBTCTransactionModal,
       props: {
@@ -51,6 +57,7 @@ describe("CkBTCTransactionModal", () => {
         canisters: mockCkBTCAdditionalCanisters,
         universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       },
+      events,
     });
 
   const renderModalToPo = async (params?: {
@@ -58,15 +65,16 @@ describe("CkBTCTransactionModal", () => {
     nnsClose?: () => void;
     nnsTransfer?: () => void;
   }): Promise<CkBTCTransactionModalPo> => {
-    const { container, component } = await renderTransactionModal(
-      params?.selectedAccount
-    );
-    if (params?.nnsClose) {
-      component.$on("nnsClose", params?.nnsClose);
-    }
-    if (params?.nnsTransfer) {
-      component.$on("nnsTransfer", params?.nnsTransfer);
-    }
+    const { container } = await renderTransactionModal({
+      selectedAccount: params?.selectedAccount,
+      events: {
+        ...(nonNullish(params?.nnsClose) && { nnsClose: params.nnsClose }),
+        ...(nonNullish(params?.nnsTransfer) && {
+          nnsTransfer: params.nnsTransfer,
+        }),
+      },
+    });
+
     return CkBTCTransactionModalPo.under(new JestPageObjectElement(container));
   };
 

@@ -4,8 +4,9 @@ import {
   type WalletStore,
 } from "$lib/types/wallet.context";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 import type { RenderResult } from "@testing-library/svelte";
-import { render, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 
@@ -30,13 +31,16 @@ export const modalToolbarSelector = "div.content";
 export const renderModal = async ({
   component,
   props,
+  events,
 }: {
   component: typeof SvelteComponent;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: Record<string, any>;
+  events?: Record<string, ($event: CustomEvent) => void>;
 }): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(component, {
     props,
+    events,
   });
 
   const { container } = modal;

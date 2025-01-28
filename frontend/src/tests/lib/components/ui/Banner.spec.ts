@@ -2,19 +2,19 @@ import BannerTest from "$tests/lib/components/ui/BannerTest.svelte";
 import { BannerPo } from "$tests/page-objects/Banner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import { nonNullish } from "@dfinity/utils";
 
 describe("Banner", () => {
   const renderComponent = ({
     props = {},
     onClose,
   }: { props?: unknown; onClose?: () => void } = {}) => {
-    const { container, component } = render(BannerTest, {
+    const { container } = render(BannerTest, {
       props,
+      events: {
+        ...(nonNullish(onClose) && { nnsClose: onClose }),
+      },
     });
-
-    if (onClose) {
-      component.$on("nnsClose", onClose);
-    }
 
     return BannerPo.under(new JestPageObjectElement(container));
   };

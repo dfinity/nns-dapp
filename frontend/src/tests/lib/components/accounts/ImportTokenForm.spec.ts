@@ -11,14 +11,17 @@ describe("ImportTokenForm", () => {
     indexCanisterId: Principal | undefined;
     addIndexCanisterMode?: boolean | undefined;
   }) => {
+    const nnsSubmit = vi.fn();
+    const nnsClose = vi.fn();
+
     const { container, component } = render(ImportTokenForm, {
       props,
+      events: {
+        nnsSubmit: nnsSubmit,
+        nnsClose: nnsClose,
+      },
     });
 
-    const nnsSubmit = vi.fn();
-    component.$on("nnsSubmit", nnsSubmit);
-    const nnsClose = vi.fn();
-    component.$on("nnsClose", nnsClose);
     const getPropLedgerCanisterId = () =>
       component.$$.ctx[component.$$.props["ledgerCanisterId"]];
     const getPropIndexCanisterId = () =>

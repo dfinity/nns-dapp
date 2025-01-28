@@ -17,9 +17,10 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import type { Neuron } from "@dfinity/nns";
 import { NeuronState, NeuronType } from "@dfinity/nns";
-import { fireEvent, render } from "@testing-library/svelte";
+import { fireEvent } from "@testing-library/svelte";
 
 describe("NnsNeuronCard", () => {
   const nowInSeconds = 1689843195;
@@ -42,12 +43,14 @@ describe("NnsNeuronCard", () => {
 
   it("is clickable", async () => {
     const spyClick = vi.fn();
-    const { container, component } = render(NnsNeuronCard, {
+    const { container } = render(NnsNeuronCard, {
       props: {
         neuron: mockNeuron,
       },
+      events: {
+        click: spyClick,
+      },
     });
-    component.$on("click", spyClick);
 
     const articleElement = container.querySelector("article");
 

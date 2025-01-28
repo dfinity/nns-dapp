@@ -39,6 +39,7 @@ import {
 import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
 import { GovernanceCanister } from "@dfinity/nns";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 import { mock } from "vitest-mock-extended";
@@ -91,12 +92,13 @@ describe("NnsStakeNeuronModal", () => {
   });
 
   const renderComponent = async ({ onClose }: { onClose?: () => void }) => {
-    const { container, component } = await renderModal({
+    const { container } = await renderModal({
       component: NnsStakeNeuronModal,
+      events: {
+        ...(nonNullish(onClose) && { nnsClose: onClose }),
+      },
     });
-    if (onClose) {
-      component.$on("nnsClose", onClose);
-    }
+
     return NnsStakeNeuronModalPo.under(new JestPageObjectElement(container));
   };
 

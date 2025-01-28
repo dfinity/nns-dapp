@@ -5,7 +5,7 @@ import {
 } from "$mocks/$app/navigation";
 import { LinkToCanistersPo } from "$tests/page-objects/LinkToCanisters.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
 
 describe("LinkToCanisters", () => {
   beforeEach(() => {
@@ -13,15 +13,19 @@ describe("LinkToCanisters", () => {
   });
 
   const renderComponent = () => {
-    const { container, component } = render(LinkToCanisters);
+    const onNnsClick = vi.fn();
+
+    const { container } = render(LinkToCanisters, {
+      props: {},
+      events: {
+        nnsLink: onNnsClick,
+      },
+    });
     const po = LinkToCanistersPo.under({
       element: new JestPageObjectElement(container),
     });
 
     container.addEventListener("click", mockLinkClickEvent);
-
-    const onNnsClick = vi.fn();
-    component.$on("nnsLink", onNnsClick);
 
     return { po, onNnsClick };
   };

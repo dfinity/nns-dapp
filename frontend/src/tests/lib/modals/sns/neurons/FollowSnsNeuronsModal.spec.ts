@@ -7,6 +7,7 @@ import { FollowSnsNeuronsModalPo } from "$tests/page-objects/FollowSnsNeuronsMod
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 
 describe("FollowSnsNeuronsModal", () => {
   const neuron = {
@@ -16,7 +17,7 @@ describe("FollowSnsNeuronsModal", () => {
   const reload = vi.fn();
 
   const renderComponent = ({ onClose }: { onClose?: () => void }) => {
-    const { container, component } = renderSelectedSnsNeuronContext({
+    const { container } = renderSelectedSnsNeuronContext({
       Component: FollowSnsNeuronsModal,
       reload,
       neuron,
@@ -24,10 +25,11 @@ describe("FollowSnsNeuronsModal", () => {
         rootCanisterId,
         neuron,
       },
+      events: {
+        ...(nonNullish(onClose) && { nnsClose: onClose }),
+      },
     });
-    if (onClose) {
-      component.$on("nnsClose", onClose);
-    }
+
     return FollowSnsNeuronsModalPo.under(new JestPageObjectElement(container));
   };
 
