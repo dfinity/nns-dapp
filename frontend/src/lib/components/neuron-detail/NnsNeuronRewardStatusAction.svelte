@@ -62,7 +62,7 @@
     isFollowingReset || isLosingRewards
       ? $i18n.neuron_detail.reward_status_inactive
       : isLosingRewardsSoon
-        ? $i18n.neuron_detail.reward_status_losing_soon
+        ? $i18n.neuron_detail.reward_status_missing_soon
         : $i18n.neuron_detail.reward_status_active;
 
   const getDescription = ({
