@@ -1,6 +1,7 @@
 import FilterModal from "$lib/modals/common/FilterModal.svelte";
 import FilterModalTest from "$tests/lib/modals/common/FilterModalTest.svelte";
-import { fireEvent, render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
+import { fireEvent } from "@testing-library/svelte";
 
 describe("FilterModal", () => {
   const filters = [
@@ -46,12 +47,11 @@ describe("FilterModal", () => {
 
   it("should forward close modal event", () =>
     new Promise<void>((done) => {
-      const { queryByTestId, component } = render(FilterModal, {
+      const { queryByTestId } = render(FilterModal, {
         props,
-      });
-
-      component.$on("nnsClose", () => {
-        done();
+        events: {
+          nnsClose: () => done(),
+        },
       });
 
       const button = queryByTestId("close");
@@ -60,12 +60,11 @@ describe("FilterModal", () => {
 
   it("should trigger nnsChange event when checkbox is clicked", () =>
     new Promise<void>((done) => {
-      const { container, component } = render(FilterModal, {
+      const { container } = render(FilterModal, {
         props,
-      });
-
-      component.$on("nnsChange", () => {
-        done();
+        events: {
+          nnsChange: () => done(),
+        },
       });
 
       const checkboxes = container.querySelectorAll("input[type=checkbox]");
@@ -74,12 +73,11 @@ describe("FilterModal", () => {
 
   it("should trigger nnsConfirm event when primary button is clicked", () =>
     new Promise<void>((done) => {
-      const { queryByTestId, component } = render(FilterModal, {
+      const { queryByTestId } = render(FilterModal, {
         props,
-      });
-
-      component.$on("nnsConfirm", () => {
-        done();
+        events: {
+          nnsConfirm: () => done(),
+        },
       });
 
       const button = queryByTestId("apply-filters");
@@ -88,12 +86,11 @@ describe("FilterModal", () => {
 
   it("should trigger nnsSelectAll when select all button is clicked", () =>
     new Promise<void>((done) => {
-      const { queryByTestId, component } = render(FilterModal, {
+      const { queryByTestId } = render(FilterModal, {
         props,
-      });
-
-      component.$on("nnsSelectAll", () => {
-        done();
+        events: {
+          nnsSelectAll: () => done(),
+        },
       });
 
       const button = queryByTestId("filter-modal-select-all");
@@ -102,12 +99,11 @@ describe("FilterModal", () => {
 
   it("should trigger nnsClearSelection when clear button is clicked", () =>
     new Promise<void>((done) => {
-      const { queryByTestId, component } = render(FilterModal, {
+      const { queryByTestId } = render(FilterModal, {
         props,
-      });
-
-      component.$on("nnsClearSelection", () => {
-        done();
+        events: {
+          nnsClearSelection: () => done(),
+        },
       });
 
       const button = queryByTestId("filter-modal-clear");

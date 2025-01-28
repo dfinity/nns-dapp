@@ -8,8 +8,8 @@ import TestTableAgeCell from "$tests/lib/components/ui/TestTableAgeCell.svelte";
 import TestTableNameCell from "$tests/lib/components/ui/TestTableNameCell.svelte";
 import { ResponsiveTableSortModalPo } from "$tests/page-objects/ResponsiveTableSortModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
-import { render } from "@testing-library/svelte";
 import { get, writable, type Writable } from "svelte/store";
 
 describe("ResponsiveTableSortModal", () => {
@@ -53,12 +53,16 @@ describe("ResponsiveTableSortModal", () => {
     onClose?: () => void;
   }) => {
     const { container, component } = render(ResponsiveTableSortModal, {
-      columns,
-      order,
-    });
-    component.$on("nnsClose", () => {
-      orderStore?.set(component.$$.ctx[component.$$.props["order"]]);
-      onClose?.();
+      props: {
+        columns,
+        order,
+      },
+      events: {
+        nnsClose: () => {
+          orderStore?.set(component.$$.ctx[component.$$.props["order"]]);
+          onClose?.();
+        },
+      },
     });
 
     return ResponsiveTableSortModalPo.under(

@@ -19,7 +19,9 @@ describe("NewSnsFolloweeModal", () => {
     });
   });
 
-  const renderNewSnsFolloweeModal = (): RenderResult<SvelteComponent> =>
+  const renderNewSnsFolloweeModal = (
+    events?: Record<string, ($event: CustomEvent) => void>
+  ): RenderResult<SvelteComponent> =>
     renderSelectedSnsNeuronContext({
       Component: NewSnsFolloweeModal,
       reload,
@@ -29,6 +31,7 @@ describe("NewSnsFolloweeModal", () => {
         neuron: mockSnsNeuron,
         functionId,
       },
+      events,
     });
 
   it("should display modal", async () => {
@@ -41,7 +44,11 @@ describe("NewSnsFolloweeModal", () => {
     const followeeHex = subaccountToHexString(
       arrayOfNumberToUint8Array([1, 2, 4])
     );
-    const { container, queryByTestId, component } = renderNewSnsFolloweeModal();
+    const onClose = vi.fn();
+
+    const { container, queryByTestId } = renderNewSnsFolloweeModal({
+      nnsClose: onClose,
+    });
 
     const inputElement = container.querySelector("input[type='text']");
     expect(inputElement).not.toBeNull();
@@ -54,8 +61,6 @@ describe("NewSnsFolloweeModal", () => {
     const buttonElement = queryByTestId("add-followee-button");
     expect(buttonElement).not.toBeNull();
 
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
     buttonElement && (await fireEvent.click(buttonElement));
     expect(addFollowee).toBeCalled();
 

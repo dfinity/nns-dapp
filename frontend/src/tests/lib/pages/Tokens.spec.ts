@@ -1,3 +1,4 @@
+import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
@@ -8,6 +9,7 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
@@ -327,6 +329,12 @@ describe("Tokens page", () => {
       });
 
       it("opens import token modal when ledger canister id in URL", async () => {
+        vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue({
+          name: "Tetris",
+          symbol: "TET",
+          logo: "https://tetris.tet/logo.png",
+        } as IcrcTokenMetadata);
+
         page.mock({
           routeId: AppPath.Tokens,
           data: {

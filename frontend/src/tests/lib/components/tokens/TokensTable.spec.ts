@@ -22,8 +22,9 @@ import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { createActionEvent } from "$tests/utils/actions.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { render, waitFor } from "@testing-library/svelte";
+import { waitFor } from "@testing-library/svelte";
 import { get, writable, type Writable } from "svelte/store";
+import { render } from "$tests/utils/svelte.test-utils";
 import type { Mock } from "vitest";
 
 describe("TokensTable", () => {
@@ -40,15 +41,16 @@ describe("TokensTable", () => {
     orderStore?: Writable<TokensTableOrder>;
     order?: TokensTableOrder;
   }) => {
-    const { container, component } = render(TokensTable, {
+    const { container } = render(TokensTable, {
       props: {
         userTokensData,
         firstColumnHeader,
         order: order ?? get(orderStore),
       },
+      events: {
+        nnsAction: onAction,
+      },
     });
-
-    component.$on("nnsAction", onAction);
 
     if (orderStore) {
       component.$$.update = () => {

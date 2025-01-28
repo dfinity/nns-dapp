@@ -14,10 +14,10 @@ import { mockFullNeuron } from "$tests/mocks/neurons.mock";
 import { ChangeBulkNeuronVisibilityFormPo } from "$tests/page-objects/ChangeBulkNeuronVisibilityForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronType, NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
-import { render } from "@testing-library/svelte";
 
 describe("ChangeBulkNeuronVisibilityForm", () => {
   const createMockNeuron = ({
@@ -132,21 +132,20 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
       | null;
     onNnsCancel?: (() => void) | null;
   }) => {
-    const { container, component } = render(ChangeBulkNeuronVisibilityForm, {
+    const { container } = render(ChangeBulkNeuronVisibilityForm, {
       props: {
         defaultSelectedNeuron,
         makePublic: makePublic,
       },
+      events: {
+        ...(nonNullish(onNnsSubmit) && {
+          nnsSubmit: ({ detail }) => {
+            onNnsSubmit({ detail });
+          },
+        }),
+        ...(nonNullish(onNnsCancel) && { nnsCancel: onNnsCancel }),
+      },
     });
-
-    if (nonNullish(onNnsSubmit)) {
-      component.$on("nnsSubmit", ({ detail }) => {
-        onNnsSubmit({ detail });
-      });
-    }
-    if (nonNullish(onNnsCancel)) {
-      component.$on("nnsCancel", onNnsCancel);
-    }
 
     return ChangeBulkNeuronVisibilityFormPo.under(
       new JestPageObjectElement(container)

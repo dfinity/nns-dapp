@@ -4,7 +4,8 @@ import en from "$tests/mocks/i18n.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { AmountInputPo } from "$tests/page-objects/AmountInput.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { fireEvent, render } from "@testing-library/svelte";
+import { render } from "$tests/utils/svelte.test-utils";
+import { fireEvent } from "@testing-library/svelte";
 
 describe("AmountInput", () => {
   const props = { amount: 10.25, max: 11 };
@@ -27,8 +28,12 @@ describe("AmountInput", () => {
 
   it("should trigger max value", () =>
     new Promise<void>((done) => {
-      const { container, component } = render(AmountInput, { props });
-      component.$on("nnsMax", () => done());
+      const { container } = render(AmountInput, {
+        props,
+        events: {
+          nnsMax: () => done(),
+        },
+      });
 
       const button: HTMLButtonElement = container.querySelector(
         "button"

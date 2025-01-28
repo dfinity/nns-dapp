@@ -78,10 +78,14 @@ describe("CreateCanisterModal", () => {
     canisterName,
     selectedAccount = undefined,
   }) => {
-    const { queryByTestId, container, component, queryByText } =
-      await renderModal({
-        component: CreateCanisterModal,
-      });
+    const done = vi.fn();
+
+    const { queryByTestId, container, queryByText } = await renderModal({
+      component: CreateCanisterModal,
+      events: {
+        nnsClose: done,
+      },
+    });
     await selectAccountGoToNameForm({
       container,
       queryByTestId,
@@ -134,9 +138,6 @@ describe("CreateCanisterModal", () => {
     if (canisterName.length > 0) {
       expect(queryByText(canisterName)).toBeInTheDocument();
     }
-
-    const done = vi.fn();
-    component.$on("nnsClose", done);
 
     expect(get(toastsStore)).toEqual([]);
 

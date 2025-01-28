@@ -43,8 +43,13 @@ describe("LinkCanisterModal", () => {
   };
 
   it("should attach a canister by id and close modal", async () => {
-    const { queryByTestId, container, component } = await renderModal({
+    const onClose = vi.fn();
+
+    const { queryByTestId, container } = await renderModal({
       component: LinkCanisterModal,
+      events: {
+        nnsClose: onClose,
+      },
     });
 
     await fillForm({
@@ -52,9 +57,6 @@ describe("LinkCanisterModal", () => {
       name: "test",
       principalText: "aaaaa-aa",
     });
-
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
 
     expect(attachCanister).not.toBeCalled();
     await clickByTestId(queryByTestId, "link-canister-button");
@@ -80,12 +82,14 @@ describe("LinkCanisterModal", () => {
   });
 
   it("should close modal on cancel", async () => {
-    const { queryByTestId, component } = await renderModal({
-      component: LinkCanisterModal,
-    });
-
     const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
+
+    const { queryByTestId } = await renderModal({
+      component: LinkCanisterModal,
+      events: {
+        nnsClose: onClose,
+      },
+    });
 
     await clickByTestId(queryByTestId, "cancel-button");
     await waitFor(() => expect(onClose).toBeCalled());

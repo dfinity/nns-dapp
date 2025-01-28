@@ -8,10 +8,11 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
-import { render } from "@testing-library/svelte";
+import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");
@@ -52,15 +53,19 @@ describe("ReportingNeuronsButton", () => {
   });
 
   const renderComponent = ({ onTrigger }: { onTrigger?: () => void } = {}) => {
-    const { container, component } = render(ReportingNeuronsButton);
+    const { container } = render(ReportingNeuronsButton, {
+      props: {},
+      events: {
+        ...(nonNullish(onTrigger) && {
+          nnsExportNeuronsCsvTriggered: onTrigger,
+        }),
+      },
+    });
 
     const po = ReportingNeuronsButtonPo.under({
       element: new JestPageObjectElement(container),
     });
 
-    if (onTrigger) {
-      component.$on("nnsExportNeuronsCsvTriggered", onTrigger);
-    }
     return po;
   };
 

@@ -223,7 +223,6 @@ describe("AddAccountModal", () => {
 
   const shouldAttachWallet = async ({
     getByTestId,
-    component,
   }: RenderResult<SvelteComponent>) => {
     const connect = getByTestId("ledger-connect-button") as HTMLButtonElement;
 
@@ -237,21 +236,25 @@ describe("AddAccountModal", () => {
 
     const attach = getByTestId("ledger-attach-button") as HTMLButtonElement;
 
-    const onClose = vi.fn();
-    component.$on("nnsClose", onClose);
-
     fireEvent.click(attach);
-
-    await waitFor(() => expect(onClose).toBeCalled());
   };
 
   it("should attach wallet to new account ", async () => {
-    const renderResult = await renderModal({ component: AddAccountModal });
+    const onClose = vi.fn();
+
+    const renderResult = await renderModal({
+      component: AddAccountModal,
+      events: {
+        nnsClose: onClose,
+      },
+    });
 
     await shouldNavigateHardwareWalletStep(renderResult);
 
     await shouldNavigateHardwareWalletConnect(renderResult);
 
     await shouldAttachWallet(renderResult);
+
+    await waitFor(() => expect(onClose).toBeCalled());
   });
 });
