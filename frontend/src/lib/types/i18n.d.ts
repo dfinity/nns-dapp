@@ -401,7 +401,7 @@ interface I18nNeurons {
   create_as_public_neuron_failure: string;
 }
 
-interface I18nLosing_rewards {
+interface I18nMissing_rewards {
   description: string;
   confirming: string;
   confirm: string;
@@ -410,13 +410,13 @@ interface I18nLosing_rewards {
   hw_hotkey_warning: string;
 }
 
-interface I18nLosing_rewards_banner {
+interface I18nMissing_rewards_banner {
   confirm_title: string;
   days_left_title: string;
   rewards_missing_title: string;
 }
 
-interface I18nLosing_rewards_modal {
+interface I18nMissing_rewards_modal {
   goto_neuron: string;
   title: string;
   label: string;
@@ -806,8 +806,8 @@ interface I18nNeuron_detail {
   amount_maturity: string;
   created: string;
   reward_status_active: string;
-  reward_status_losing_soon: string;
-  reward_status_losing_soon_description: string;
+  reward_status_missing_soon: string;
+  reward_status_missing_soon_description: string;
   reward_status_inactive: string;
   reward_status_inactive_description: string;
   reward_status_inactive_reset_description: string;
@@ -1517,9 +1517,9 @@ interface I18n {
   neuron_types: I18nNeuron_types;
   staking: I18nStaking;
   neurons: I18nNeurons;
-  losing_rewards: I18nLosing_rewards;
-  losing_rewards_banner: I18nLosing_rewards_banner;
-  losing_rewards_modal: I18nLosing_rewards_modal;
+  missing_rewards: I18nMissing_rewards;
+  missing_rewards_banner: I18nMissing_rewards_banner;
+  missing_rewards_modal: I18nMissing_rewards_modal;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
   voting: I18nVoting;

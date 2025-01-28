@@ -27,7 +27,7 @@ use schema::{
 
 // This limit is for DoS protection but should be increased if we get close to
 // the limit.
-const ACCOUNT_LIMIT: u64 = 300_000;
+const ACCOUNT_LIMIT: u64 = 330_000;
 
 const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;
 
@@ -48,7 +48,6 @@ pub struct AccountsStore {
 
     accounts_db_stats: AccountsDbStats,
     accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
-    last_ledger_sync_timestamp_nanos: u64,
     neurons_topped_up_count: u64,
 }
 
@@ -72,11 +71,8 @@ impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, accounts_db_stats: {:?}, last_ledger_sync_timestamp_nanos: {:?}, neurons_topped_up_count: {:?}}}",
-            self.accounts_db,
-            self.accounts_db_stats,
-            self.last_ledger_sync_timestamp_nanos,
-            self.neurons_topped_up_count,
+            "AccountsStore{{accounts_db: {:?}, accounts_db_stats: {:?}, neurons_topped_up_count: {:?}}}",
+            self.accounts_db, self.accounts_db_stats, self.neurons_topped_up_count,
         )
     }
 }
@@ -741,7 +737,9 @@ impl StableState for AccountsStore {
             // TODO: Change to an arbitrary value after we've deployed to
             // mainnet. Then remove the MultiPartTransactionsProcessor.
             MultiPartTransactionsProcessor::default(),
-            &self.last_ledger_sync_timestamp_nanos,
+            // last_ledger_sync_timestamp_nanos is unused but we need to encode
+            // it for backwards compatibility.
+            0u64,
             &self.neurons_topped_up_count,
             Some(&self.accounts_db_stats),
         ))
@@ -763,7 +761,7 @@ impl StableState for AccountsStore {
             _neuron_accounts,
             _block_height_synced_up_to,
             _multi_part_transactions_processor,
-            last_ledger_sync_timestamp_nanos,
+            _last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
             accounts_db_stats_maybe,
         ): (
@@ -778,7 +776,7 @@ impl StableState for AccountsStore {
             candid::Reserved,
             candid::Reserved,
             candid::Reserved,
-            u64,
+            candid::Reserved,
             u64,
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
@@ -795,7 +793,6 @@ impl StableState for AccountsStore {
             accounts_db: AccountsDbAsProxy::default(),
             accounts_db_stats,
             accounts_db_stats_recomputed_on_upgrade,
-            last_ledger_sync_timestamp_nanos,
             neurons_topped_up_count,
         })
     }
