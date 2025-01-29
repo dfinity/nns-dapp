@@ -6,6 +6,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -264,13 +265,10 @@ describe("ProjectsTable", () => {
         certified: true,
       });
       const po = renderComponent();
-      const rowPos = await po.getProjectsTableRowPos();
-      expect(rowPos).toHaveLength(2);
-      expect(await rowPos[0].getNeuronCount()).toBe("2");
-      expect(await rowPos[0].getHref()).toBe(
-        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-      );
-      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
+      const rowPo = await po.getRowByTitle("Internet Computer");
+      expect(await rowPo.getNeuronCount()).toBe("2");
+      expect(await rowPo.getHref()).toBe(`/neurons/?u=${OWN_CANISTER_ID_TEXT}`);
+      expect(await rowPo.hasGoToNeuronsTableAction()).toBe(true);
     });
 
     it("should render SNS neurons count", async () => {
@@ -280,11 +278,10 @@ describe("ProjectsTable", () => {
         certified: true,
       });
       const po = renderComponent();
-      const rowPos = await po.getProjectsTableRowPos();
-      expect(rowPos).toHaveLength(2);
-      expect(await rowPos[1].getNeuronCount()).toBe("3");
-      expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
-      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
+      const rowPo = await po.getRowByTitle(snsTitle);
+      expect(await rowPo.getNeuronCount()).toBe("3");
+      expect(await rowPo.getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
+      expect(await rowPo.hasGoToNeuronsTableAction()).toBe(true);
     });
 
     it("should filter NNS neurons without stake", async () => {
@@ -309,9 +306,8 @@ describe("ProjectsTable", () => {
         certified: true,
       });
       const po = renderComponent();
-      const rowPos = await po.getProjectsTableRowPos();
-      expect(rowPos).toHaveLength(2);
-      expect(await rowPos[1].getNeuronCount()).toBe("2");
+      const rowPo = await po.getRowByTitle(snsTitle);
+      expect(await rowPo.getNeuronCount()).toBe("2");
     });
 
     it("should not render neurons count when not signed in", async () => {
@@ -691,6 +687,62 @@ describe("ProjectsTable", () => {
       expect(console.error).toBeCalledTimes(1);
     });
 
+    it("should order by stake by default", async () => {
+      const po = renderComponent();
+
+      expect(get(projectsTableOrderStore)).toEqual([
+        {
+          columnId: "stake",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+    });
+
+    it("should change order based on order store", async () => {
+      const po = renderComponent();
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+
+      projectsTableOrderStore.set([
+        {
+          columnId: "title",
+        },
+      ]);
+
+      expect(await po.getColumnHeaderWithArrow()).toBe("Nervous Systems");
+    });
+
+    it("should change order store based on clicked header", async () => {
+      const po = renderComponent();
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+
+      expect(get(projectsTableOrderStore)).toEqual([
+        {
+          columnId: "stake",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+
+      await po.clickColumnHeader("Neurons");
+
+      expect(get(projectsTableOrderStore)).toEqual([
+        {
+          columnId: "neurons",
+        },
+        {
+          columnId: "stake",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+    });
+
     describe("Nns neurons missing rewards badge", () => {
       it("should render the badge in Nns row", async () => {
         overrideFeatureFlagsStore.setFlag(
@@ -826,9 +878,9 @@ describe("ProjectsTable", () => {
     expect(
       await Promise.all(rowPos.map((project) => project.getProjectTitle()))
     ).toEqual([
-      "Internet Computer",
       "B with neurons",
       "Z with neurons",
+      "Internet Computer",
       "A without neurons",
       "X without neurons",
     ]);
