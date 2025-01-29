@@ -3,7 +3,7 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { secondsToRoundedDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     getSnsLockedTimeInSeconds,
@@ -69,7 +69,7 @@
   $: minDissolveDelayDescription = isNullish(snsParameters)
     ? ""
     : replacePlaceholders($i18n.sns_neurons.min_dissolve_delay_description, {
-        $duration: `${secondsToDissolveDelayDuration(
+        $duration: `${secondsToRoundedDuration(
           BigInt(minSnsDissolveDelaySeconds)
         )}`,
       });

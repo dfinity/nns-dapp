@@ -11,7 +11,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { secondsToRoundedDuration } from "$lib/utils/date.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
   import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
@@ -53,8 +53,7 @@
           $startReducingVotingPowerAfterSecondsStore,
       })}
       text={replacePlaceholders($i18n.missing_rewards.description, {
-        // TODO(mstr): Rename to secondsToRoundedDuration
-        $period: secondsToDissolveDelayDuration(
+        $period: secondsToRoundedDuration(
           $startReducingVotingPowerAfterSecondsStore
         ),
       })}
