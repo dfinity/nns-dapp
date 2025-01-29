@@ -110,16 +110,25 @@ describe("ImportTokenModal", () => {
 
       expect(queryIcrcTokenSpy).toBeCalledTimes(0);
       expect(await formPo.isPresent()).toEqual(true);
+      expect(get(pageStore)).toMatchObject({
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
+      });
 
       await formPo.getSubmitButtonPo().click();
 
+      expect(get(pageStore)).toMatchObject({
+        path: AppPath.Wallet,
+        universe: ledgerCanisterId.toText(),
+      });
       expect(get(busyStore)).toEqual([]);
-      expectToastError(
-        "You have already imported this token, you can find it in the token list."
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "warn",
+          text: "You have already imported this token, you can find it in the token list.",
+        },
+      ]);
       expect(queryIcrcTokenSpy).toBeCalledTimes(0);
-      // Stays on the form.
-      expect(await formPo.isPresent()).toEqual(true);
     });
 
     it("should catch importing of Snses", async () => {
@@ -473,15 +482,26 @@ describe("ImportTokenModal", () => {
         .spyOn(importedTokensApi, "setImportedTokens")
         .mockResolvedValue();
 
-      importedTokensStore.set({
-        importedTokens: [],
-        certified: true,
-      });
-
       const po = renderComponent();
       const formPo = po.getImportTokenFormPo();
       const reviewPo = po.getImportTokenReviewPo();
 
+      await runResolvedPromises();
+
+      expect(await formPo.isPresent()).toEqual(true);
+      expect(await reviewPo.isPresent()).toEqual(false);
+      expect(await formPo.getLedgerCanisterInputPo().getValue()).toEqual(
+        ledgerCanisterId.toText()
+      );
+      expect(await formPo.getIndexCanisterInputPo().getValue()).toEqual(
+        indexCanisterId.toText()
+      );
+
+      // it should wait for the imported tokens to be loaded before validating
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
       await runResolvedPromises();
 
       // Should be on review step
@@ -538,29 +558,11 @@ describe("ImportTokenModal", () => {
       expect(await reviewPo.isPresent()).toEqual(false);
     });
 
-    it("should wait for imported tokens to be loaded before validation", async () => {
-      const po = renderComponent();
-      const formPo = po.getImportTokenFormPo();
-      const reviewPo = po.getImportTokenReviewPo();
-
-      await runResolvedPromises();
-
-      expect(await formPo.isPresent()).toEqual(true);
-      expect(await reviewPo.isPresent()).toEqual(false);
-      expect(await formPo.getLedgerCanisterInputPo().getValue()).toEqual(
-        ledgerCanisterId.toText()
-      );
-      expect(await formPo.getIndexCanisterInputPo().getValue()).toEqual(
-        indexCanisterId.toText()
-      );
-
-      expect(get(toastsStore)).toMatchObject([]);
-
-      // Return the same token ledger ID
-      // (imported tokens are loaded on page load, so we need to mock the store update)
+    it("should navigate to the imported token page when importing a duplicate", async () => {
       importedTokensStore.set({
         importedTokens: [
           {
+            // same ledger canister ID
             ledgerCanisterId,
             indexCanisterId: undefined,
           },
@@ -568,14 +570,22 @@ describe("ImportTokenModal", () => {
         certified: true,
       });
 
+      renderComponent();
       await runResolvedPromises();
 
-      expect(await formPo.isPresent()).toEqual(true);
-      expect(await reviewPo.isPresent()).toEqual(false);
+      expect(get(pageStore)).toMatchObject({
+        importTokenLedgerId: undefined,
+        importTokenIndexId: undefined,
+        path: AppPath.Wallet,
+        universe: ledgerCanisterId.toText(),
+      });
 
-      expectToastError(
-        "You have already imported this token, you can find it in the token list."
-      );
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "warn",
+          text: "You have already imported this token, you can find it in the token list.",
+        },
+      ]);
     });
 
     it("should navigate to tokens on close w/o query params", async () => {
@@ -610,6 +620,36 @@ describe("ImportTokenModal", () => {
         importTokenIndexId: undefined,
         path: AppPath.Tokens,
       });
+    });
+
+    it("catches duplications", async () => {
+      importedTokensStore.set({
+        importedTokens: [
+          {
+            // same ledger canister ID
+            ledgerCanisterId,
+            indexCanisterId: undefined,
+          },
+        ],
+        certified: true,
+      });
+
+      renderComponent();
+      await runResolvedPromises();
+
+      expect(get(pageStore)).toMatchObject({
+        importTokenLedgerId: undefined,
+        importTokenIndexId: undefined,
+        path: AppPath.Wallet,
+        universe: ledgerCanisterId.toText(),
+      });
+
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "warn",
+          text: "You have already imported this token, you can find it in the token list.",
+        },
+      ]);
     });
 
     it("catches invalid canister ID formats from URL", async () => {
