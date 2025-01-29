@@ -428,7 +428,7 @@
           "ENABLE_USD_VALUES": true,
           "ENABLE_USD_VALUES_FOR_NEURONS": true,
           "ENABLE_PORTFOLIO_PAGE": true,
-          "ENABLE_IMPORT_TOKEN_BY_URL": false
+          "ENABLE_IMPORT_TOKEN_BY_URL": true
         }
       }
     },
