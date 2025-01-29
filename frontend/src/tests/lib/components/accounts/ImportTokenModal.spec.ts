@@ -535,7 +535,7 @@ describe("ImportTokenModal", () => {
       });
     });
 
-    it("closes on cancel click", async () => {
+    it("removes the URL parameters on cancel click", async () => {
       vi.spyOn(console, "error").mockReturnValue();
       queryIcrcTokenSpy = vi
         .spyOn(ledgerApi, "queryIcrcToken")
