@@ -172,12 +172,12 @@ interface VotingPowerParams {
   minDissolveDelaySeconds?: number;
 }
 
-// TODO(mstr): Rename to calculatePotentialNeuronVotingPower
-// Because it doesn't take into account the NNS neuron's activity state.
 /**
- * For now used only internally in this file.
+ * Calculate the voting power of a neuron.
  *
- * It might be useful to use it for SNS neurons.
+ * Note: For the NNS neurons it calculates potential voting power (similar to neuron.potentialVotingPower).
+ * The actual voting power of the NNS neuron can be found in the decidingVotingPower field,
+ * as it accounts for missing voting rewards due to user inactivity (votingPowerRefreshedTimestampSeconds).
  *
  * @param {VotingPowerParams}
  * @returns {bigint}
