@@ -12,9 +12,8 @@ import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import { AppPath } from "$lib/constants/routes.constants";
-import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import {
