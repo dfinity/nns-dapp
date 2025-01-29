@@ -1,3 +1,4 @@
+import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { TokensTablePo } from "$tests/page-objects/TokensTable.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -15,5 +16,9 @@ export class SignInTokensPagePo extends BasePageObject {
 
   getTokenNames(): Promise<string[]> {
     return this.getTokensTablePo().getTokenNames();
+  }
+
+  getImportTokenModalPo(): ImportTokenModalPo {
+    return ImportTokenModalPo.under(this.root);
   }
 }

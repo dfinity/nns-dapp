@@ -1,10 +1,14 @@
 <script lang="ts">
   import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
   import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
+  import SignIn from "$lib/components/common/SignIn.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import Banner from "$lib/components/ui/Banner.svelte";
+  import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { Html, IconOpenInNew } from "@dfinity/gix-components";
+  import { Html, IconInfo, IconOpenInNew } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
@@ -34,7 +38,9 @@
     {$i18n.import_token.doc_link_label}
   </a>
 
-  <form on:submit|preventDefault={() => dispatch("nnsSubmit")}>
+  <form
+    on:submit|preventDefault={() => $authSignedInStore && dispatch("nnsSubmit")}
+  >
     {#if addIndexCanisterMode}
       <ImportTokenCanisterId
         testId="ledger-canister-id-view"
@@ -74,8 +80,16 @@
       <Html text={$i18n.import_token.index_canister_description} />
     </p>
 
-    {#if !addIndexCanisterMode}
+    {#if !addIndexCanisterMode && $authSignedInStore}
       <CalloutWarning htmlText={$i18n.import_token.warning} />
+    {/if}
+
+    {#if !$authSignedInStore}
+      <Banner text="Please sign in to proceed with the token import.">
+        <BannerIcon slot="icon">
+          <IconInfo />
+        </BannerIcon>
+      </Banner>
     {/if}
 
     <div class="toolbar">
@@ -88,14 +102,18 @@
         {$i18n.core.cancel}
       </button>
 
-      <button
-        data-tid="submit-button"
-        class="primary"
-        type="submit"
-        disabled={isSubmitDisabled}
-      >
-        {addIndexCanisterMode ? $i18n.core.add : $i18n.core.next}
-      </button>
+      {#if $authSignedInStore}
+        <button
+          data-tid="submit-button"
+          class="primary"
+          type="submit"
+          disabled={isSubmitDisabled}
+        >
+          {addIndexCanisterMode ? $i18n.core.add : $i18n.core.next}
+        </button>
+      {:else}
+        <SignIn />
+      {/if}
     </div>
   </form>
 </TestIdWrapper>
