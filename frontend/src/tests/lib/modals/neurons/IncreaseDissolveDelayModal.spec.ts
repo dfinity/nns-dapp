@@ -6,7 +6,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {
@@ -18,7 +18,7 @@ vi.mock("$lib/services/neurons.services", () => {
 describe("IncreaseDissolveDelayModal", () => {
   const renderIncreaseDelayModal = async (
     neuron: NeuronInfo
-  ): Promise<RenderResult<SvelteComponent>> => {
+  ): Promise<RenderResult<Component>> => {
     return renderModal({
       component: IncreaseDissolveDelayModal,
       props: { neuron },

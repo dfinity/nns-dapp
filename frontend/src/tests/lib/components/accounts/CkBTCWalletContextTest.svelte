@@ -1,11 +1,11 @@
 <script lang="ts">
   import CkBTCAccountsModals from "$lib/modals/accounts/CkBTCAccountsModals.svelte";
   import type { Account } from "$lib/types/account";
-  import { WalletStore } from "$lib/types/wallet.context";
-  import type { SvelteComponent } from "svelte";
+  import type { WalletStore } from "$lib/types/wallet.context";
+  import type { Component } from "svelte";
   import { writable } from "svelte/store";
 
-  export let testComponent: typeof SvelteComponent;
+  export let testComponent: Component;
   export let account: Account | undefined;
 
   export const walletStore = writable<WalletStore>({
