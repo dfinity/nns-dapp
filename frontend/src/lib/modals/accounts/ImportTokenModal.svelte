@@ -72,21 +72,27 @@
       goto(AppPath.Tokens);
     }
   };
+  let isLedgerCanisterIdProcessed = false;
   $: {
     if (
       $ENABLE_IMPORT_TOKEN_BY_URL &&
+      !isLedgerCanisterIdProcessed &&
       isNullish(ledgerCanisterId) &&
       nonNullish($pageStore.importTokenLedgerId)
     ) {
+      isLedgerCanisterIdProcessed = true;
       ledgerCanisterId = getCanisterIdFromText($pageStore.importTokenLedgerId);
     }
   }
+  let isIndexCanisterIdProcessed = false;
   $: {
     if (
       $ENABLE_IMPORT_TOKEN_BY_URL &&
+      !isIndexCanisterIdProcessed &&
       isNullish(indexCanisterId) &&
       nonNullish($pageStore.importTokenIndexId)
     ) {
+      isIndexCanisterIdProcessed = true;
       indexCanisterId = getCanisterIdFromText($pageStore.importTokenIndexId);
     }
   }
