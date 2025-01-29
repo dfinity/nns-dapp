@@ -1,17 +1,17 @@
 <script lang="ts">
   import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
   import CalloutWarning from "$lib/components/common/CalloutWarning.svelte";
+  import SignIn from "$lib/components/common/SignIn.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import Banner from "$lib/components/ui/Banner.svelte";
+  import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
   import { Html, IconInfo, IconOpenInNew } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import SignIn from "$lib/components/common/SignIn.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import Banner from "$lib/components/ui/Banner.svelte";
-  import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
 
   export let ledgerCanisterId: Principal | undefined = undefined;
   export let indexCanisterId: Principal | undefined = undefined;

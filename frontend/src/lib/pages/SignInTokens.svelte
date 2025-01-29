@@ -1,15 +1,15 @@
 <script lang="ts">
   import SignIn from "$lib/components/common/SignIn.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { pageStore } from "$lib/derived/page.derived";
+  import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
+  import { ENABLE_IMPORT_TOKEN_BY_URL } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
   import { IconAccountsPage, PageBanner } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { ENABLE_IMPORT_TOKEN_BY_URL } from "$lib/stores/feature-flags.store";
-  import { pageStore } from "$lib/derived/page.derived";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let userTokensData: UserToken[];
   let showImportTokenModal = false;
