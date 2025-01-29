@@ -11,12 +11,7 @@ import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import {
-  CKUSDC_INDEX_CANISTER_ID,
-  CKUSDC_LEDGER_CANISTER_ID,
-  CKUSDC_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/ckusdc-canister-ids.constants";
-import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import {
@@ -49,6 +44,7 @@ import type { TokensTableRowPo } from "$tests/page-objects/TokensTableRow.page-o
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
+import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
@@ -213,15 +209,7 @@ describe("Tokens route", () => {
       setAccountsForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });
-
-      defaultIcrcCanistersStore.setCanisters({
-        ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
-        indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
-      });
-      tokensStore.setToken({
-        canisterId: CKUSDC_UNIVERSE_CANISTER_ID,
-        token: mockCkUSDCToken,
-      });
+      setCkUSDCCanisters();
     });
 
     describe("when logged in", () => {
