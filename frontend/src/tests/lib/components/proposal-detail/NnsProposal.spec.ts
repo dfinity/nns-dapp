@@ -36,7 +36,6 @@ describe("Proposal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    referrerPathStore.set(undefined);
   });
 
   const renderProposalModern = (id = 1000n) =>
@@ -136,7 +135,7 @@ describe("Proposal", () => {
     vi.spyOn(filteredProposals, "subscribe").mockImplementation(
       createMockProposalsStoreSubscribe(generateMockProposals(10))
     );
-    referrerPathStore.set(AppPath.Launchpad);
+    referrerPathStore.pushPath(AppPath.Launchpad);
 
     const { container } = renderProposalModern(5n);
     const po = ProposalNavigationPo.under(new JestPageObjectElement(container));

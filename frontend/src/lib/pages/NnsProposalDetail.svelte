@@ -60,7 +60,7 @@
     }
 
     return goto(
-      $referrerPathStore === AppPath.Launchpad
+      $referrerPathStore.at(-1) === AppPath.Launchpad
         ? AppPath.Launchpad
         : AppPath.Proposals
     );

@@ -8,16 +8,15 @@
   import { referrerPathStore } from "$lib/stores/routes.store";
 
   const back = async (): Promise<void> => {
+    const lastReferrer = $referrerPathStore.at(-1);
     // This is a hack to jump back to the specific project page (because of the query params)
-    if ($referrerPathStore === AppPath.Project) {
+    if (lastReferrer === AppPath.Project) {
       history.back();
       return;
     }
 
     goto(
-      $referrerPathStore === AppPath.Launchpad
-        ? $referrerPathStore
-        : $proposalsPathStore
+      lastReferrer === AppPath.Launchpad ? lastReferrer : $proposalsPathStore
     );
   };
 </script>

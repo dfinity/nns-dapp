@@ -28,8 +28,6 @@ describe("Layout", () => {
   };
 
   it("should go back to the accounts page as fallback", async () => {
-    referrerPathStore.set(undefined);
-
     renderSettingsAndBack();
 
     await waitFor(() => {
@@ -39,8 +37,7 @@ describe("Layout", () => {
   });
 
   it("should go back to referrer", async () => {
-    referrerPathStore.set(AppPath.Wallet);
-
+    referrerPathStore.pushPath(AppPath.Wallet);
     const spy = vi.spyOn(history, "back");
 
     renderSettingsAndBack();
