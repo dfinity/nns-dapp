@@ -56,11 +56,7 @@
         <span role="columnheader"
           >{$i18n.portfolio.held_tokens_card_list_first_column}</span
         >
-
-        <span class="mobile-only justify-end" role="columnheader"
-          >{$i18n.portfolio.held_tokens_card_list_second_column_mobile}</span
-        >
-        <span class="tablet-up justify-end" role="columnheader"
+        <span class="justify-end" role="columnheader"
           >{$i18n.portfolio.held_tokens_card_list_second_column}</span
         >
         <span class="tablet-up justify-end" role="columnheader"
@@ -245,9 +241,6 @@
     }
 
     @include media.min-width(medium) {
-      .mobile-only {
-        display: none;
-      }
       .tablet-up {
         display: flex !important;
       }
