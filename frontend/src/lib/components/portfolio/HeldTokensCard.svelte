@@ -241,9 +241,6 @@
     }
 
     @include media.min-width(medium) {
-      .mobile-only {
-        display: none;
-      }
       .tablet-up {
         display: flex !important;
       }
