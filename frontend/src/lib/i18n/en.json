@@ -1205,7 +1205,7 @@
     "staked_tokens_card_title": "Total Staking Balance",
     "staked_tokens_card_link": "Stake neurons",
     "staked_tokens_card_list_first_column": "Projects",
-    "staked_tokens_card_list_second_column_mobile": "Balance $/Maturity",
+    "staked_tokens_card_list_second_column_mobile": "Balance / Maturity",
     "staked_tokens_card_list_second_column": "Maturity",
     "staked_tokens_card_list_third_column": "Staked",
     "staked_tokens_card_info_row": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
