@@ -2,6 +2,7 @@ import { CanisterCardPo } from "$tests/page-objects/CanisterCard.page-object";
 import { CreateCanisterModalPo } from "$tests/page-objects/CreateCanisterModal.page-object";
 import { HashPo } from "$tests/page-objects/Hash.page-object";
 import { LinkCanisterModalPo } from "$tests/page-objects/LinkCanisterModal.page-object";
+import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -10,6 +11,11 @@ export class CanistersPo extends BasePageObject {
 
   static under(element: PageObjectElement): CanistersPo {
     return new CanistersPo(element.byTestId(CanistersPo.TID));
+  }
+
+  getSkeletonCardPo(): SkeletonCardPo {
+    // There are multiple but we only need one.
+    return SkeletonCardPo.under(this.root);
   }
 
   getCanisterCardPos(): Promise<CanisterCardPo[]> {
@@ -65,5 +71,10 @@ export class CanistersPo extends BasePageObject {
     await modal.waitFor();
     await modal.linkCanister({ canisterId, name });
     await modal.waitForClosed();
+  }
+
+  async waitForContentLoaded(): Promise<void> {
+    await this.waitFor();
+    await this.getSkeletonCardPo().waitForAbsent();
   }
 }
