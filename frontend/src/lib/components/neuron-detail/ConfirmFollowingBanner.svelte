@@ -4,7 +4,7 @@
   import Banner from "$lib/components/ui/Banner.svelte";
   import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { secondsToRoundedDuration } from "$lib/utils/date.utils";
   import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
   import { nonNullish } from "@dfinity/utils";
 
@@ -17,7 +17,7 @@
     testId="confirm-following-banner-component"
     {title}
     text={replacePlaceholders($i18n.missing_rewards.description, {
-      $period: secondsToDissolveDelayDuration(
+      $period: secondsToRoundedDuration(
         $startReducingVotingPowerAfterSecondsStore
       ),
     })}

@@ -1,6 +1,6 @@
 import IneligibleNeuronsCard from "$lib/components/proposal-detail/IneligibleNeuronsCard.svelte";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
-import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+import { secondsToRoundedDuration } from "$lib/utils/date.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { IneligibleNeuronData } from "$lib/utils/neuron.utils";
 import en from "$tests/mocks/i18n.mock";
@@ -70,7 +70,7 @@ describe("IneligibleNeuronsCard", () => {
     expect(
       getByText(
         replacePlaceholders(en.proposal_detail__ineligible.reason_short, {
-          $minDissolveDelay: secondsToDissolveDelayDuration(
+          $minDissolveDelay: secondsToRoundedDuration(
             BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE)
           ),
         }),
@@ -134,7 +134,7 @@ describe("IneligibleNeuronsCard", () => {
     expect(
       getByText(
         replacePlaceholders(en.proposal_detail__ineligible.reason_short, {
-          $minDissolveDelay: secondsToDissolveDelayDuration(
+          $minDissolveDelay: secondsToRoundedDuration(
             BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE)
           ),
         }),

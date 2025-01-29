@@ -2,7 +2,7 @@
   import VotingCardNeuronList from "$lib/components/proposal-detail/VotingCard/VotingCardNeuronList.svelte";
   import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { secondsToRoundedDuration } from "$lib/utils/date.utils";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type {
@@ -21,9 +21,7 @@
   $: reasonShort = replacePlaceholders(
     $i18n.proposal_detail__ineligible.reason_short,
     {
-      $minDissolveDelay: secondsToDissolveDelayDuration(
-        minSnsDissolveDelaySeconds
-      ),
+      $minDissolveDelay: secondsToRoundedDuration(minSnsDissolveDelaySeconds),
     }
   );
   const reasonText = ({ reason }: IneligibleNeuronData) =>
@@ -42,9 +40,7 @@
 {#if visible}
   <p class="description" data-tid="ineligible-neurons-description">
     {replacePlaceholders($i18n.proposal_detail__ineligible.text, {
-      $minDissolveDelay: secondsToDissolveDelayDuration(
-        minSnsDissolveDelaySeconds
-      ),
+      $minDissolveDelay: secondsToRoundedDuration(minSnsDissolveDelaySeconds),
     })}
   </p>
   <VotingCardNeuronList>
