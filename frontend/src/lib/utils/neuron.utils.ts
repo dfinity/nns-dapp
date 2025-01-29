@@ -113,11 +113,12 @@ const stateInfoMapper: StateMapper = {
 export const getStateInfo = (neuronState: NeuronState): StateInfo =>
   stateInfoMapper[neuronState];
 
-// TODO(mstr): Rename to neuronPotentialVotingPower
 /**
- * Calculation of the voting power of a neuron.
+ * Calculation of the potential voting power of a neuron.
  *
- * Note: This calculation ignores the case where the neuron starts missing voting rewards due to user inactivity (related to votingPowerRefreshedTimestampSeconds).
+ * Note: The result is equal to the neuron’s potentialVotingPower field value.
+ * The actual voting power of the neuron can be found in the decidingVotingPower field,
+ * as it accounts for missing voting rewards due to user inactivity (votingPowerRefreshedTimestampSeconds).
  *
  * If neuron's dissolve delay is less than 6 months, the voting power is 0.
  *
@@ -139,7 +140,7 @@ export const getStateInfo = (neuronState: NeuronState): StateInfo =>
  * @param {number} params.newDissolveDelayInSeconds It will calculate the voting power with the new dissolve delay if provided
  * @returns {bigint}
  */
-export const neuronVotingPower = ({
+export const neuronPotentialVotingPower = ({
   neuron,
   newDissolveDelayInSeconds,
 }: {

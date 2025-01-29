@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     neuronStake as getNeuronStake,
-    neuronVotingPower,
+    neuronPotentialVotingPower,
   } from "$lib/utils/neuron.utils";
   import type { NeuronInfo } from "@dfinity/nns";
 
@@ -23,7 +23,7 @@
   });
   const calculateVotingPower = (delayInSeconds: number) =>
     Number(
-      neuronVotingPower({
+      neuronPotentialVotingPower({
         neuron,
         newDissolveDelayInSeconds: BigInt(Math.round(delayInSeconds)),
       })
