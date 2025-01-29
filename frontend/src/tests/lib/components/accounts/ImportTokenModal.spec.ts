@@ -653,14 +653,15 @@ describe("ImportTokenModal", () => {
     });
 
     it("catches invalid canister ID formats from URL", async () => {
-      page.mock({
+      const pageData = {
         routeId: AppPath.Tokens,
         data: {
           universe: OWN_CANISTER_ID_TEXT,
           importTokenLedgerId: "INVALID_CANISTER_ID",
           importTokenIndexId: indexCanisterId.toText(),
         },
-      });
+      };
+      page.mock(pageData);
 
       const consoleErrorSpy = vi.spyOn(console, "error").mockReturnValue();
       vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
@@ -677,6 +678,10 @@ describe("ImportTokenModal", () => {
       const formPo = po.getImportTokenFormPo();
       const reviewPo = po.getImportTokenReviewPo();
 
+      await runResolvedPromises();
+
+      // Imitate the second page emission
+      page.mock(pageData);
       await runResolvedPromises();
 
       // Should stay on the form
