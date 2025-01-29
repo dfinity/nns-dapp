@@ -1,4 +1,7 @@
-import type { ResponsiveTableColumn } from "$lib/types/responsive-table";
+import type {
+  ResponsiveTableColumn,
+  ResponsiveTableOrder,
+} from "$lib/types/responsive-table";
 import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { TokenAmountV2 } from "@dfinity/utils";
 
@@ -17,4 +20,11 @@ export type TableProject = {
   isStakeLoading?: boolean;
 };
 
-export type ProjectsTableColumn = ResponsiveTableColumn<TableProject>;
+export type ProjectsTableColumnId = "title" | "stake" | "neurons";
+
+export type ProjectsTableColumn = ResponsiveTableColumn<
+  TableProject,
+  ProjectsTableColumnId
+>;
+
+export type ProjectsTableOrder = ResponsiveTableOrder<ProjectsTableColumnId>;
