@@ -215,9 +215,27 @@ const comparePositiveNeuronsFirst = createDescendingComparator(
   (project: TableProject) => (project.neuronCount ?? 0) > 0
 );
 
+export const compareByNeuronCount = createDescendingComparator(
+  (project: TableProject) => project.neuronCount
+);
+
 export const compareByProjectTitle = createAscendingComparator(
   (project: TableProject) => project.title.toLowerCase()
 );
+
+export const compareByStakeInUsd = createDescendingComparator(
+  (project: TableProject) => getUsdStake(project)
+);
+
+// This is used when clicking the "Stake" header, but in addition to sorting
+// by stake, it has a number of tie breakers.
+// Note that it tries to sort by USD stake but also sorts tokens with neurons
+// above tokens without neurons if there is no exchange rate for that project.
+export const compareByStake = mergeComparators([
+  compareByStakeInUsd,
+  comparePositiveNeuronsFirst,
+  compareIcpFirst,
+]);
 
 export const sortTableProjects = (projects: TableProject[]): TableProject[] => {
   return [...projects].sort(
