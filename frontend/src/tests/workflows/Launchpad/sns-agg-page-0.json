@@ -290,7 +290,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999965962794000,
+    "icrc1_total_supply": 799999964610394000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -742,6 +742,58 @@
           }
         },
         {
+          "id": 2006,
+          "name": "Set community verification",
+          "description": "This proposal will mark the given public community as 'verified' (blue tick) if it passes. The proposal summary should be used to provide evidence that the given community legitimately represents the given name. Additionally, if a different name is provided for this community and this name is already used by an existing public community or group which isn't itself 'verified' then this proposal will rename that community/group by adding a random suffix like _436 and the given community will take on the given name. This is to address the scenario where a public community or group has been created for a name which it doesn't legitimately represent.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+              "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+              "validator_method_name": "set_community_verification_validate",
+              "target_method_name": "set_community_verification"
+            }
+          }
+        },
+        {
+          "id": 2007,
+          "name": "Set group verification",
+          "description": "This proposal will mark the given public group as 'verified' (blue tick) if it passes. The proposal summary should be used to provide evidence that the given group legitimately represents the given name. Additionally, if a different name is provided for this group and this name is already used by an existing public group or community which isn't itself 'verified' then this proposal will rename that group/community by adding a random suffix like _436 and the given group will take on the given name. This is to address the scenario where a public group or community has been created for a name which it doesn't legitimately represent.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+              "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+              "validator_method_name": "set_group_verification_validate",
+              "target_method_name": "set_group_verification"
+            }
+          }
+        },
+        {
+          "id": 2008,
+          "name": "Revoke community verification",
+          "description": "Revoke the verified status (blue tick) of the given community. This would be used if the given community no longer legitimately represents its name. The proposal summary should be used to provide evidence.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+              "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+              "validator_method_name": "revoke_community_verification_validate",
+              "target_method_name": "revoke_community_verification"
+            }
+          }
+        },
+        {
+          "id": 2009,
+          "name": "Revoke group verification",
+          "description": "Revoke the verified status (blue tick) of the given group. This would be used if the given group no longer legitimately represents its name. The proposal summary should be used to provide evidence.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+              "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+              "validator_method_name": "revoke_group_verification_validate",
+              "target_method_name": "revoke_group_verification"
+            }
+          }
+        },
+        {
           "id": 3000,
           "name": "Upgrade notifications canisters",
           "description": "This will upload the given WASM to the notifications_index and trigger a rolling upgrade of notifications_canisters on each subnet.",
@@ -1126,7 +1178,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10136049403065566,
+    "icrc1_total_supply": 10136463240694330,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1864,7 +1916,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 614708238673287,
+    "icrc1_total_supply": 614709845436650,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2269,7 +2321,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 103336229221612443,
+    "icrc1_total_supply": 103339593571199101,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2926,7 +2978,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 929066722374789820,
+    "icrc1_total_supply": 929089185639901440,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
