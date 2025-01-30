@@ -155,7 +155,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-    padding: var(--padding-2x);
 
     @include media.min-width(large) {
       display: grid;
