@@ -219,9 +219,9 @@ describe("canisters-api", () => {
       mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(10_000n);
 
       const response = await getIcpToCyclesExchangeRate(mockIdentity);
-      expect(mockCMCCanister.getIcpToCyclesConversionRate).toHaveBeenCalledWith(
-        { certified: true }
-      );
+      expect(mockCMCCanister.getIcpToCyclesConversionRate).toBeCalledWith({
+        certified: true,
+      });
       expect(response).toEqual(10_000n);
     });
   });
