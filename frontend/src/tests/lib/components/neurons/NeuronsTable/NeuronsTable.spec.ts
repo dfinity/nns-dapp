@@ -467,6 +467,13 @@ describe("NeuronsTable", () => {
     ]);
   });
 
+  it("should not disable sorting on mobile", async () => {
+    const po = renderComponent({
+      neurons: [neuron1, neuron2, neuron3, neuron4],
+    });
+    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(true);
+  });
+
   it("should render dissolve delay", async () => {
     const po = renderComponent({
       neurons: [

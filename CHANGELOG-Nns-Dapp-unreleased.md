@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 - Import tokens by URL.
 - Custom sorting of staking nervous systems table.
+- Custom sorting of tokens table.
 
 #### Changed
 

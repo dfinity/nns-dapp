@@ -165,6 +165,17 @@ describe("NnsAccounts", () => {
         await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
       ).toBe(false);
     });
+
+    it("should not allow sorting", async () => {
+      const po = renderComponent([]);
+
+      expect(await po.getTokensTablePo().getColumnHeaderWithArrow()).toBe(
+        undefined
+      );
+      expect(
+        await po.getTokensTablePo().getOpenSortModalButtonPo().isPresent()
+      ).toBe(false);
+    });
   });
 
   // TODO: Move the pollAccounts to Accounts route when universe selected is NNS instead of the child.
