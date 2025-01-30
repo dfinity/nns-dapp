@@ -825,7 +825,7 @@ describe("ProjectsTable", () => {
     expect(await po.getProjectsTableRowPos()).toHaveLength(3);
   });
 
-  it("should sort projects", async () => {
+  it("should sort projects by stake in USD, with unpriced neurons before no neuron and then alphabetically with ICP before the rest", async () => {
     const snsNeuronWithStake = createMockSnsNeuron({
       stake: 100_000_000n,
       id: [1, 1, 3],
@@ -834,6 +834,10 @@ describe("ProjectsTable", () => {
     const rootCanisterId2 = principal(102);
     const rootCanisterId3 = principal(103);
     const rootCanisterId4 = principal(104);
+    const rootCanisterId5 = principal(105);
+    const rootCanisterId6 = principal(106);
+    const ledgerCanisterId5 = principal(205);
+    const ledgerCanisterId6 = principal(206);
     setSnsProjects([
       {
         projectName: "A without neurons",
@@ -850,6 +854,16 @@ describe("ProjectsTable", () => {
       {
         projectName: "Z with neurons",
         rootCanisterId: rootCanisterId4,
+      },
+      {
+        projectName: "C with less USD",
+        rootCanisterId: rootCanisterId5,
+        ledgerCanisterId: ledgerCanisterId5,
+      },
+      {
+        projectName: "D with more USD",
+        rootCanisterId: rootCanisterId6,
+        ledgerCanisterId: ledgerCanisterId6,
       },
     ]);
     snsNeuronsStore.setNeurons({
@@ -872,12 +886,45 @@ describe("ProjectsTable", () => {
       neurons: [snsNeuronWithStake],
       certified: true,
     });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: rootCanisterId5,
+      neurons: [snsNeuronWithStake],
+      certified: true,
+    });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: rootCanisterId6,
+      neurons: [snsNeuronWithStake],
+      certified: true,
+    });
+
+    icpSwapTickersStore.set([
+      {
+        ...mockIcpSwapTicker,
+        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+        last_price: "10.00",
+      },
+      {
+        ...mockIcpSwapTicker,
+        base_id: ledgerCanisterId5.toText(),
+        last_price: "10.00",
+      },
+      {
+        ...mockIcpSwapTicker,
+        base_id: ledgerCanisterId6.toText(),
+        // This is the price of 1 ICP in tokens. So lower means the token is
+        // worth more.
+        last_price: "5.00",
+      },
+    ]);
+
     const po = renderComponent();
     const rowPos = await po.getProjectsTableRowPos();
-    expect(rowPos).toHaveLength(5);
+    expect(rowPos).toHaveLength(7);
     expect(
       await Promise.all(rowPos.map((project) => project.getProjectTitle()))
     ).toEqual([
+      "D with more USD",
+      "C with less USD",
       "B with neurons",
       "Z with neurons",
       "Internet Computer",
