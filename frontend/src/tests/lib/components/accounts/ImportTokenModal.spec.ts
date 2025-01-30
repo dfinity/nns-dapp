@@ -535,6 +535,49 @@ describe("ImportTokenModal", () => {
       });
     });
 
+    it("removes the URL parameters on cancel click", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      queryIcrcTokenSpy = vi
+        .spyOn(ledgerApi, "queryIcrcToken")
+        .mockRejectedValue(new Error());
+
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [],
+      });
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+      const reviewPo = po.getImportTokenReviewPo();
+
+      await runResolvedPromises();
+
+      expect(await formPo.isPresent()).toEqual(true);
+      expect(await reviewPo.isPresent()).toEqual(false);
+
+      expect(get(pageStore)).toMatchObject({
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
+        importTokenLedgerId: ledgerCanisterId.toText(),
+        importTokenIndexId: indexCanisterId.toText(),
+      });
+
+      await formPo.getCancelButtonPo().click();
+      await runResolvedPromises();
+
+      expect(get(pageStore)).toMatchObject({
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
+        importTokenLedgerId: undefined,
+        importTokenIndexId: undefined,
+      });
+    });
+
     it("does not auto validate when feature flag disabled", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", false);
       vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
