@@ -8,6 +8,7 @@
 
 <style lang="scss">
   .filters {
+    margin: var(--button-border-size);
     display: flex;
     flex-wrap: wrap;
     gap: var(--padding);
