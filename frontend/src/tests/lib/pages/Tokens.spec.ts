@@ -9,6 +9,7 @@ import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
@@ -28,6 +29,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("Tokens page", () => {
   const positiveBalance = createUserToken({
@@ -181,8 +183,8 @@ describe("Tokens page", () => {
     const po = renderPage([unavailableBalance, positiveBalance]);
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Unavailable balance",
       "Positive balance",
+      "Unavailable balance",
     ]);
 
     await po.getSettingsButtonPo().click();
@@ -200,16 +202,16 @@ describe("Tokens page", () => {
     const po = renderPage([icpZeroBalance, positiveBalance]);
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Internet Computer",
       "Positive balance",
+      "Internet Computer",
     ]);
 
     await po.getSettingsButtonPo().click();
     await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Internet Computer",
       "Positive balance",
+      "Internet Computer",
     ]);
   });
 
@@ -407,5 +409,73 @@ describe("Tokens page", () => {
     expect(
       await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
     ).toBe(true);
+  });
+
+  it("should order by balance by default", async () => {
+    const po = renderPage(userTokensPageMock);
+
+    expect(get(tokensTableOrderStore)).toEqual([
+      {
+        columnId: "balance",
+      },
+      {
+        columnId: "title",
+      },
+    ]);
+
+    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+      "Balance"
+    );
+  });
+
+  it("should change order based on order store", async () => {
+    const po = renderPage(userTokensPageMock);
+    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+      "Balance"
+    );
+
+    tokensTableOrderStore.set([
+      {
+        columnId: "title",
+      },
+    ]);
+
+    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+      "Projects"
+    );
+  });
+
+  it("should change order store based on clicked header", async () => {
+    const po = renderPage(userTokensPageMock);
+    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+      "Balance"
+    );
+
+    expect(get(tokensTableOrderStore)).toEqual([
+      {
+        columnId: "balance",
+      },
+      {
+        columnId: "title",
+      },
+    ]);
+
+    await po.getTokensTable().clickColumnHeader("Projects");
+
+    expect(get(tokensTableOrderStore)).toEqual([
+      {
+        columnId: "title",
+      },
+      {
+        columnId: "balance",
+      },
+    ]);
+  });
+
+  it("should disable sorting on mobile", async () => {
+    const po = renderPage(userTokensPageMock);
+    expect(
+      await po.getTokensTable().getOpenSortModalButtonPo().isPresent()
+    ).toBe(false);
   });
 });

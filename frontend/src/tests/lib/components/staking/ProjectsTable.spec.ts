@@ -932,4 +932,9 @@ describe("ProjectsTable", () => {
       "X without neurons",
     ]);
   });
+
+  it("should not disable sorting on mobile", async () => {
+    const po = renderComponent();
+    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(true);
+  });
 });

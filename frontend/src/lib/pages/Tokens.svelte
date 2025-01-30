@@ -4,6 +4,7 @@
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
+  import { pageStore } from "$lib/derived/page.derived";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
   import {
     ENABLE_IMPORT_TOKEN_BY_URL,
@@ -12,6 +13,7 @@
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+  import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
   import type { ImportedTokenData } from "$lib/types/imported-tokens";
   import type { UserToken } from "$lib/types/tokens-page";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -25,7 +27,6 @@
     Tooltip,
   } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
-  import { pageStore } from "$lib/derived/page.derived";
 
   export let userTokensData: UserToken[];
 
@@ -100,6 +101,7 @@
     userTokensData={shownTokensData}
     on:nnsAction
     firstColumnHeader={$i18n.tokens.projects_header}
+    bind:order={$tokensTableOrderStore}
   >
     <div slot="header-icon">
       <button
