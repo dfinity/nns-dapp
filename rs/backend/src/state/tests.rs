@@ -1,83 +1,60 @@
 use crate::{
-    accounts_store::schema::{map::AccountsDbAsMap, proxy::AccountsDb, AccountsDbTrait},
-    state::{partitions::PartitionsMaybe, AssetHashes, Assets, PerformanceCounts, StableState, State},
+    accounts_store::{
+        schema::{map::AccountsDbAsMap, proxy::AccountsDb, AccountsDbTrait},
+        RegisterHardwareWalletRequest,
+    },
+    assets::{insert_asset_into_state, Asset},
+    perf::PerformanceCount,
+    state::{reset_partitions, AssetHashes, Assets, PerformanceCounts, StableState, State},
     tvl::state::TvlState,
 };
+use ic_base_types::PrincipalId;
 use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
 use pretty_assertions::assert_eq;
 use proptest::proptest;
 use std::rc::Rc;
 
-/// Creates a populated test state for testing.
-pub fn setup_test_state() -> State {
-    State {
-        accounts_store: crate::accounts_store::tests::setup_test_store(),
-        assets: Assets::default(),
-        asset_hashes: AssetHashes::default(),
-        performance: PerformanceCounts::test_data(),
-        partitions_maybe: PartitionsMaybe::None(VectorMemory::default()),
-        tvl_state: TvlState::test_data(),
+pub(crate) fn populate_test_state(num_accounts: u64, state: &mut State) {
+    for account_index in 0..num_accounts {
+        let principal_id = PrincipalId::new_user_test_id(account_index);
+        state.accounts_store.add_account(principal_id);
+        state
+            .accounts_store
+            .create_sub_account(principal_id, "sub_account".to_string());
+        state
+            .accounts_store
+            .register_hardware_wallet(principal_id, RegisterHardwareWalletRequest::test_data());
     }
-}
-
-#[test]
-fn state_heap_contents_can_be_serialized_and_deserialized() {
-    let mut toy_state = setup_test_state();
-    let bytes: Vec<u8> = toy_state.encode();
-    let parsed = State::decode(bytes).expect("Failed to parse");
-    // Drop the accounts DB from the accounts store before comparing. We use
-    // stable structures to store the accounts DB, which are stored separately
-    // so we don't encode/decode them as part of the accounts store.
-    let _dropped_accounts_db = toy_state
-        .accounts_store
-        .replace_accounts_db(AccountsDb::Map(AccountsDbAsMap::default()));
-    // This is the highly valuable state:
-    assert_eq!(
-        toy_state.accounts_store, parsed.accounts_store,
-        "Accounts store has changed"
-    );
-    // It's nice if we keep these:
-    assert_eq!(toy_state.assets, parsed.assets, "Assets have changed");
-    assert_eq!(toy_state.asset_hashes, parsed.asset_hashes, "Asset hashes have changed");
-    assert_eq!(toy_state.tvl_state, parsed.tvl_state, "TVL state has changed");
-}
-
-#[test]
-fn state_can_be_created() {
-    // State is backed by stable memory:
-    let memory = DefaultMemoryImpl::default();
-    let mut state = State::new(memory);
-
-    // Basic functionality check - we can insert an account?
-    state
-        .accounts_store
-        .db_insert_account(&[0u8; 32], crate::accounts_store::schema::tests::toy_account(1, 2));
+    insert_asset_into_state(state, "asset", Asset::new_stable(vec![0u8; 100]));
+    state.performance = PerformanceCounts::test_data();
+    state.tvl_state = TvlState::test_data();
 }
 
 fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
-    // State is backed by stable memory:
-    let memory = DefaultMemoryImpl::default();
-    // We will get a second reference to the same memory so that we can compare the initial state to the state post-upgrade.
-    let memory_after_upgrade = Rc::clone(&memory);
+    // A brand new state with no data (should be called in `init`).
+    let mut state = State::new();
 
-    // On init, the state is created using a schema specified in the init arguments:
-    let mut state = State::new(memory);
-    // Typically the state is populated with data:
-    // Inserting an account creates:
-    // - An account entry, that is stored on the heap or in stable structures depending on the schema.
-    // - Database stats that record the number of accounts; these are currently stored on the heap for all schemas.
-    for toy_account_index in 0..num_accounts {
-        state.accounts_store.db_insert_account(
-            &toy_account_index.to_be_bytes()[..],
-            crate::accounts_store::schema::tests::toy_account(toy_account_index, 2),
-        );
-    }
-    // The state is backed by stable memory.  Pre-upgrade, any state that is not already in stable memory must be saved.
+    // Populate the state with some data.
+    populate_test_state(num_accounts, &mut state);
+
+    // Save the state (should be called in `pre_upgrade`).
     state.save();
-    // Post-upgrade state can then be restored from memory.
-    let new_state = State::new_restored(memory_after_upgrade);
-    // The state should be restored to the same state as before:
-    assert_eq!(state, new_state);
+
+    // Restore the state (should be called in `post_upgrade`).
+    let new_state = State::new_restored();
+
+    // Now we examine the restored state against the original state:
+
+    // The content in the AccountsStore are either in stable structures, or serialized/deserialized during upgrades.
+    assert_eq!(new_state.accounts_store, state.accounts_store);
+    // The assets and tvl state are serialized/deserialized during upgrades.
+    assert_eq!(new_state.assets, state.assets);
+    assert_eq!(new_state.tvl_state, state.tvl_state);
+    // The asset hashes are recomputed from assets during upgrades.
+    assert_eq!(new_state.asset_hashes, state.asset_hashes);
+    // The performance counts are not persisted through upgrades, so they are reset after upgrades.
+    assert_ne!(state.performance, PerformanceCounts::default());
+    assert_eq!(new_state.performance, PerformanceCounts::default());
 }
 
 proptest! {
@@ -85,6 +62,11 @@ proptest! {
     // Note: By popular demand this is run with various sizes, although size _should_ have no
     // effect on the test.
     fn state_of_any_size_can_be_saved_and_recovered_from_stable_memory(num_accounts: u8) {
+        // Reset the partitions to ensure a clean slate. This is needed because the partitions are
+        // in a thread-local variable. The `proptest!` macro runs different iterations of the test
+        // in the same thread, and hence the partitions can have values from the previous iteration
+        // if not reset explicitly.
+        reset_partitions();
         state_can_be_saved_and_recovered_from_stable_memory(u64::from(num_accounts))
     }
 }

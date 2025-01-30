@@ -35,37 +35,6 @@ impl core::fmt::Debug for Partitions {
     }
 }
 
-#[derive(strum_macros::Display)]
-pub enum PartitionsMaybe {
-    /// Memory that has a memory manager.
-    Partitions(Partitions),
-    /// Memory that does not have any kind of memory manager.
-    None(DefaultMemoryImpl),
-}
-
-impl Default for PartitionsMaybe {
-    fn default() -> Self {
-        PartitionsMaybe::None(DefaultMemoryImpl::default())
-    }
-}
-
-impl core::fmt::Debug for PartitionsMaybe {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            PartitionsMaybe::Partitions(partitions) => {
-                write!(f, "MemoryWithPartitionType::MemoryManager({partitions:?})")
-            }
-            PartitionsMaybe::None(memory) => {
-                write!(
-                    f,
-                    "MemoryWithPartitionType::None( Memory with {} pages )",
-                    memory.size()
-                )
-            }
-        }
-    }
-}
-
 /// The virtual memory IDs for the partitions.
 ///
 /// IMPORTANT: There must be a 1-1 mapping between enum entries and virtual memories (aka partitions of the stable memory).
