@@ -3,7 +3,7 @@ import { referrerPathStore } from "$lib/stores/routes.store";
 import { derived, type Readable } from "svelte/store";
 
 /**
- * Derives the origin page (Portfolio or Tokens) to return to from Accounts.
+ * Derives the origin page (Portfolio or Tokens) to return from Accounts.
  * Looks at last three entries to handle navigation flows:
  * Portfolio/Tokens -> Accounts -> Wallet -> (back) -> Accounts -> (back) -> Origin
  *
