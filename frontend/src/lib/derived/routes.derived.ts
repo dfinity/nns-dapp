@@ -4,7 +4,7 @@ import { derived, type Readable } from "svelte/store";
 
 /**
  * Derives the origin page (Portfolio or Tokens) to return to from Accounts.
- * Looks at last two entries to handle navigation flows:
+ * Looks at last three entries to handle navigation flows:
  * Portfolio/Tokens -> Accounts -> Wallet -> (back) -> Accounts -> (back) -> Origin
  *
  * Returns AppPath.Tokens as default if no matching page is found.
