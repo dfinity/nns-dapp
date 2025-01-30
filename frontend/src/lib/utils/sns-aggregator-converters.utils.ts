@@ -166,6 +166,7 @@ export const convertNervousSystemParameters = ({
   maturity_modulation_disabled,
   max_number_of_principals_per_neuron,
 }: CachedNervousSystemParametersDto): SnsNervousSystemParameters => ({
+  automatically_advance_target_version: [],
   default_followees: convertDefaultFollowees(default_followees),
   max_dissolve_delay_seconds: numberToNullableBigInt(
     max_dissolve_delay_seconds
