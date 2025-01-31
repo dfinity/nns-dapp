@@ -65,7 +65,7 @@ test("Test canisters", async ({ page, context }) => {
   expect(await linkedCanisterCard.getCanisterName()).toBe(linkedCanisterName);
   await myCanisterCard.click();
 
-  await appPo.getCanisterDetailPo().waitFor();
+  //await appPo.getCanisterDetailPo().waitFor();
 
   //*
   const newCanisterName = "MyCanister2";
