@@ -249,6 +249,16 @@ pub struct RegisterHardwareWalletRequest {
     principal: PrincipalId,
 }
 
+#[cfg(test)]
+impl RegisterHardwareWalletRequest {
+    pub fn test_data() -> Self {
+        RegisterHardwareWalletRequest {
+            name: "test".to_string(),
+            principal: PrincipalId::new_user_test_id(0),
+        }
+    }
+}
+
 #[derive(CandidType)]
 pub enum RegisterHardwareWalletResponse {
     Ok,
