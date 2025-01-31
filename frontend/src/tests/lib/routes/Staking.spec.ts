@@ -84,7 +84,6 @@ describe("Staking", () => {
         rootCanisterId: snsCanisterId,
       },
     ]);
-    snsNeuronsStore.reset();
 
     const po = renderComponent();
     expect(await po.getPageBannerPo().isPresent()).toBe(false);

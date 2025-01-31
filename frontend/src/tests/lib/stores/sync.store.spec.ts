@@ -2,8 +2,6 @@ import { syncStore } from "$lib/stores/sync.store";
 import { get } from "svelte/store";
 
 describe("sync.store", () => {
-  beforeEach(() => syncStore.reset());
-
   const data = {
     balances: "idle",
     transactions: "idle",

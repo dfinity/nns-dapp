@@ -5,7 +5,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import TokensPage from "$lib/pages/Tokens.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -75,7 +74,6 @@ describe("Tokens page", () => {
   };
 
   beforeEach(() => {
-    hideZeroBalancesStore.resetForTesting();
     vi.useFakeTimers();
 
     importedTokensStore.set({ importedTokens: [], certified: true });

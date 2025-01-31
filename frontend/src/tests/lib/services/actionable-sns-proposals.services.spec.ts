@@ -32,10 +32,6 @@ import type { MockInstance } from "@vitest/spy";
 import { get } from "svelte/store";
 
 describe("actionable-sns-proposals.services", () => {
-  beforeEach(() => {
-    failedActionableSnsesStore.resetForTesting();
-  });
-
   describe("loadActionableProposalsForSns", () => {
     const allPermissions = Int32Array.from(enumValues(SnsNeuronPermissionType));
     const subaccount = neuronSubaccount({

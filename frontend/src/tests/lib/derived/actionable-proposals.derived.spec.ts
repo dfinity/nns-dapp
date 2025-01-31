@@ -30,7 +30,6 @@ describe("actionable proposals derived stores", () => {
 
   beforeEach(() => {
     resetSnsProjects();
-    failedActionableSnsesStore.resetForTesting();
   });
 
   describe("actionableProposalIndicationVisibleStore", () => {

@@ -81,10 +81,6 @@ describe("NeuronsTable", () => {
     return NeuronsTablePo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    neuronsTableOrderStore.reset();
-  });
-
   it("should render desktop headers", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     expect(await po.getDesktopColumnHeaders()).toEqual([

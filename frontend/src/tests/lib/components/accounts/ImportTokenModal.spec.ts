@@ -52,7 +52,6 @@ describe("ImportTokenModal", () => {
   beforeEach(() => {
     resetIdentity();
     resetSnsProjects();
-    busyStore.resetForTesting();
 
     queryIcrcTokenSpy = vi
       .spyOn(ledgerApi, "queryIcrcToken")
