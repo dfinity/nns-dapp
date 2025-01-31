@@ -95,11 +95,16 @@ test("Test canisters", async ({ page, context }) => {
   expect(await myCanisterCard.getCanisterName()).toBe(newCanisterName);
 
   step("Open linked canister");
-  await linkedCanisterCard.click();
-  expect(await appPo.getCanisterDetailPo().getErrorMessage()).toBe(
-    "You are not the controller of this canister. Only controllers have access to its cycles and controllers."
-  );
-  expect(await appPo.getToastsPo().getMessages()).toEqual([]);
+
+    for (let i = 0; i < 25; i++) {
+    await linkedCanisterCard.click();
+    expect(await appPo.getCanisterDetailPo().getErrorMessage()).toBe(
+      "You are not the controller of this canister. Only controllers have access to its cycles and controllers."
+    );
+    expect(await appPo.getToastsPo().getMessages()).toEqual([]);
+    await appPo.goBack();
+    await canistersPo.waitForContentLoaded();
+  }
 
   //await new Promise((r) => setTimeout(r, 2000));
 
