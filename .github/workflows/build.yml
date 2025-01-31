@@ -85,8 +85,8 @@ jobs:
         uses: ./.github/actions/test-e2e
         with:
           test_filter: 'canisters.spec.ts'
-          shard_number: 2
-          shard_count: 2
+          shard_number: 1
+          shard_count: 1
   test-playwright-e2e-shard-3-of-2:
     needs: build
     runs-on: ubuntu-20.04
@@ -98,8 +98,8 @@ jobs:
         uses: ./.github/actions/test-e2e
         with:
           test_filter: 'canisters.spec.ts'
-          shard_number: 2
-          shard_count: 2
+          shard_number: 1
+          shard_count: 1
   test-playwright-e2e-shard-4-of-2:
     needs: build
     runs-on: ubuntu-20.04
@@ -111,8 +111,8 @@ jobs:
         uses: ./.github/actions/test-e2e
         with:
           test_filter: 'canisters.spec.ts'
-          shard_number: 2
-          shard_count: 2
+          shard_number: 1
+          shard_count: 1
   test-playwright-e2e-shard-5-of-2:
     needs: build
     runs-on: ubuntu-20.04
@@ -124,8 +124,8 @@ jobs:
         uses: ./.github/actions/test-e2e
         with:
           test_filter: 'canisters.spec.ts'
-          shard_number: 2
-          shard_count: 2
+          shard_number: 1
+          shard_count: 1
   test-playwright-e2e-shard-6-of-2:
     needs: build
     runs-on: ubuntu-20.04
@@ -137,8 +137,8 @@ jobs:
         uses: ./.github/actions/test-e2e
         with:
           test_filter: 'canisters.spec.ts'
-          shard_number: 2
-          shard_count: 2
+          shard_number: 1
+          shard_count: 1
   test-playwright-e2e-shard-2-of-2:
     needs: build
     runs-on: ubuntu-20.04
@@ -150,8 +150,8 @@ jobs:
         uses: ./.github/actions/test-e2e
         with:
           test_filter: 'canisters.spec.ts'
-          shard_number: 2
-          shard_count: 2
+          shard_number: 1
+          shard_count: 1
   test-upgrade-downgrade:
     if: false
     needs: build
