@@ -129,7 +129,7 @@ impl State {
     pub fn new_restored(memory: DefaultMemoryImpl) -> Self {
         println!("START state::new_restored: ())");
         let partitions = Partitions::from(memory);
-        let mut state = Self::recover_heap_from_managed_memory(&partitions.get(PartitionType::Heap.memory_id()));
+        let mut state = Self::recover_heap_from_managed_memory(&partitions);
         let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
             partitions.get(PartitionType::Accounts.memory_id()),
         ));
