@@ -3,10 +3,6 @@ import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { get } from "svelte/store";
 
 describe("nnsLatestRewardEventStore", () => {
-  beforeEach(() => {
-    nnsLatestRewardEventStore.reset();
-  });
-
   it("should set reward event", () => {
     const initialReward = get(nnsLatestRewardEventStore);
     expect(initialReward).toBeUndefined();

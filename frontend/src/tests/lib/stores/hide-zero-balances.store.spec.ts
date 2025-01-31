@@ -3,10 +3,6 @@ import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
 import { get } from "svelte/store";
 
 describe("hideZeroBalancesStore", () => {
-  beforeEach(() => {
-    hideZeroBalancesStore.resetForTesting();
-  });
-
   it("should be initialized with the default value", () => {
     expect(get(hideZeroBalancesStore)).toBe("show");
   });

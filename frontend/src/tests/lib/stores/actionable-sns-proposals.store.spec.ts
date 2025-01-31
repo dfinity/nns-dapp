@@ -65,10 +65,6 @@ describe("actionableSnsProposalsStore", () => {
 });
 
 describe("failedActionableSnsesStore", () => {
-  beforeEach(() => {
-    failedActionableSnsesStore.resetForTesting();
-  });
-
   it("should store root canister ids", () => {
     expect(get(failedActionableSnsesStore)).toEqual([]);
     failedActionableSnsesStore.add("1");
