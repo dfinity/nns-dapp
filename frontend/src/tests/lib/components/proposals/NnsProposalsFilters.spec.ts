@@ -37,8 +37,6 @@ describe("NnsProposalsFilters", () => {
   };
 
   beforeEach(() => {
-    actionableProposalsSegmentStore.resetForTesting();
-    proposalsFiltersStore.reset();
     resetIdentity();
   });
 
@@ -109,10 +107,6 @@ describe("NnsProposalsFilters", () => {
       await runResolvedPromises();
       return NnsProposalFiltersPo.under(new JestPageObjectElement(container));
     };
-
-    beforeEach(() => {
-      proposalsFiltersStore.reset();
-    });
 
     describe("when signed out", () => {
       beforeEach(() => {
