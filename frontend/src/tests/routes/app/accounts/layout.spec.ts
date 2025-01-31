@@ -2,6 +2,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { referrerPathStore } from "$lib/stores/routes.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import AccountsLayout from "$routes/(app)/(u)/(list)/accounts/+layout.svelte";
@@ -63,7 +64,7 @@ describe("Accounts layout", () => {
     expect(queryByTestId("back")).toBeInTheDocument();
   });
 
-  it("back button should navigate to tokens page when coming from tokens page", async () => {
+  it("back button should navigate by default to tokens page", async () => {
     page.mock({
       routeId: AppPath.Accounts,
     });
@@ -74,6 +75,17 @@ describe("Accounts layout", () => {
 
     expect(get(pageStore).path).toEqual(AppPath.Tokens);
   });
-});
 
-// it("back button should navigate to tokens page when coming from tokens page", async () => {
+  it("back button should navigate to tokens page when coming from Portfolio page", async () => {
+    referrerPathStore.pushPath(AppPath.Portfolio);
+    page.mock({
+      routeId: AppPath.Accounts,
+    });
+    const { queryByTestId } = render(AccountsLayout);
+
+    expect(get(pageStore).path).toEqual(AppPath.Accounts);
+    await fireEvent.click(queryByTestId("back"));
+
+    expect(get(pageStore).path).toEqual(AppPath.Portfolio);
+  });
+});
