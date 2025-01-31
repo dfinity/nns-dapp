@@ -3,7 +3,7 @@ import { listCanisters } from "$lib/services/canisters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockCanistersStoreSubscribe } from "$tests/mocks/canisters.mock";
+import { mockCanisters } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
@@ -39,9 +39,10 @@ describe("Canisters", () => {
     authStoreMock = vi.spyOn(authStore, "subscribe");
     resetIdentity();
 
-    vi.spyOn(canistersStore, "subscribe").mockImplementation(
-      mockCanistersStoreSubscribe
-    );
+    canistersStore.setCanisters({
+      canisters: mockCanisters,
+      certified: true,
+    });
   });
 
   it("should render ic", () => {

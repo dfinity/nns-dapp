@@ -7,11 +7,10 @@ import {
   CKBTC_INDEX_CANISTER_ID,
   CKBTC_MINTER_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import type { CanistersStore } from "$lib/stores/canisters.store";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { Principal } from "@dfinity/principal";
-import { writable, type Subscriber } from "svelte/store";
+import { writable } from "svelte/store";
 
 export const mockCanisterId = Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai");
 export const mockCanister: CanisterInfo = {
@@ -49,14 +48,6 @@ export const mockCanisterDetails: CanisterDetails = {
     computeAllocation: 2_000n,
   },
   idleCyclesBurnedPerDay: 3_000n,
-};
-
-export const mockCanistersStoreSubscribe = (
-  run: Subscriber<CanistersStore>
-): (() => void) => {
-  run({ canisters: mockCanisters, certified: true });
-
-  return () => undefined;
 };
 
 export const mockCanisterDetailsStore = writable<SelectCanisterDetailsStore>({
