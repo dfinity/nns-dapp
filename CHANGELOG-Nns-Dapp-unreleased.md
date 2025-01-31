@@ -18,7 +18,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 - Proceed with rollout of re-enabling of certification of certain calls from `30%` to `100%`.
 - Change the Page Banner icon in the staking page.
-- Refactors for cleaning up stable storage migration code for accounts.
 
 #### Deprecated
 
