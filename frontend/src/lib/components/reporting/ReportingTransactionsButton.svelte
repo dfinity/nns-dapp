@@ -1,31 +1,33 @@
 <script lang="ts">
+  import { queryNeurons } from "$lib/api/governance.api";
+  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
+  import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
+  import { getAccountTransactionsConcurrently } from "$lib/services/reporting.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { IconDown } from "@dfinity/gix-components";
-  import { ICPToken, nonNullish } from "@dfinity/utils";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import type { Account } from "$lib/types/account";
+  import type { ReportingPeriod } from "$lib/types/reporting";
+  import { formatDateCompact } from "$lib/utils/date.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
+  import {
+    CsvGenerationError,
+    FileSystemAccessError,
+  } from "$lib/utils/reporting.save-csv-to-file.utils";
   import {
     buildTransactionsDatasets,
     convertPeriodToNanosecondRange,
-    CsvGenerationError,
-    FileSystemAccessError,
     generateCsvFileToSave,
     type CsvHeader,
     type TransactionsCsvData,
   } from "$lib/utils/reporting.utils";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { formatDateCompact } from "$lib/utils/date.utils";
-  import { authStore } from "$lib/stores/auth.store";
-  import { getAccountTransactionsConcurrently } from "$lib/services/reporting.services";
   import { SignIdentity, type Identity } from "@dfinity/agent";
-  import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { Account } from "$lib/types/account";
-  import type { Readable } from "svelte/store";
+  import { IconDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { queryNeurons } from "$lib/api/governance.api";
-  import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
-  import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import type { ReportingPeriod } from "$lib/types/reporting";
+  import { ICPToken, nonNullish } from "@dfinity/utils";
+  import type { Readable } from "svelte/store";
 
   export let period: ReportingPeriod = "all";
 
