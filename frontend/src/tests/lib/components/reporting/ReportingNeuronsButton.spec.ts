@@ -2,12 +2,12 @@ import * as gobernanceApi from "$lib/api/governance.api";
 import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
 import {
   CsvGenerationError,
   FileSystemAccessError,
 } from "$lib/utils/reporting.save-csv-to-file.utils";
 import * as exportToCsvUtils from "$lib/utils/reporting.utils";
-import { generateCsvFileToSave } from "$lib/utils/reporting.utils";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
@@ -24,20 +24,21 @@ vi.mock("$lib/api/governance.api");
 describe("ReportingNeuronsButton", () => {
   let spyQueryNeurons;
   let spyBuildNeuronsDatasets;
+  let spySaveGeneratedCsv;
 
   beforeEach(() => {
     vi.clearAllTimers();
     resetIdentity();
 
-    vi.spyOn(exportToCsvUtils, "generateCsvFileToSave").mockImplementation(
-      vi.fn()
-    );
     vi.spyOn(toastsStore, "toastsError");
     vi.spyOn(console, "error").mockImplementation(() => {});
     spyBuildNeuronsDatasets = vi.spyOn(
       exportToCsvUtils,
       "buildNeuronsDatasets"
     );
+    spySaveGeneratedCsv = vi
+      .spyOn(reportingSaveCsvToFile, "saveGeneratedCsv")
+      .mockResolvedValue();
 
     const mockDate = new Date("2023-10-14T00:00:00Z");
     vi.useFakeTimers();
@@ -76,18 +77,18 @@ describe("ReportingNeuronsButton", () => {
   it("should name the file with the date of the export", async () => {
     const po = renderComponent();
 
-    expect(generateCsvFileToSave).toBeCalledTimes(0);
+    expect(spySaveGeneratedCsv).toBeCalledTimes(0);
 
     await po.click();
     await runResolvedPromises();
 
     const expectedFileName = `neurons_export_20231014`;
-    expect(generateCsvFileToSave).toBeCalledWith(
+    expect(spySaveGeneratedCsv).toBeCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
       })
     );
-    expect(generateCsvFileToSave).toBeCalledTimes(1);
+    expect(spySaveGeneratedCsv).toBeCalledTimes(1);
   });
 
   it("should fetch neurons and sort them by stake", async () => {
@@ -135,36 +136,25 @@ describe("ReportingNeuronsButton", () => {
   it("should transform neuron data correctly", async () => {
     const po = renderComponent();
 
-    expect(generateCsvFileToSave).toBeCalledTimes(0);
+    expect(spySaveGeneratedCsv).toBeCalledTimes(0);
 
     await po.click();
     await runResolvedPromises();
 
-    expect(generateCsvFileToSave).toBeCalledWith(
+    const expectedCsv = [
+      "NNS Account Principal ID,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+      'Export Date Time,"Oct 14, 2023 12:00 AM"',
+      "",
+      ",,Neuron ID,Project Name,Symbol,Neuron Account ID,Controller Principal ID,Stake,Available Maturity,Staked Maturity,Dissolve Delay,Dissolve Date,Creation Date,State",
+      ',,"\'=""1""",Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,1,30.00,0.0000001,0,"3 hours, 5 minutes",N/A,"Jan 1, 1970",Locked',
+    ].join("\n");
+
+    expect(spySaveGeneratedCsv).toBeCalledWith(
       expect.objectContaining({
-        datasets: expect.arrayContaining([
-          expect.objectContaining({
-            data: expect.arrayContaining([
-              expect.objectContaining({
-                neuronId: '="1"',
-                project: "Internet Computer",
-                symbol: "ICP",
-                neuronAccountId:
-                  "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
-                controllerId: "1",
-                creationDate: "Jan 1, 1970",
-                dissolveDate: "N/A",
-                dissolveDelaySeconds: "3 hours, 5 minutes",
-                stakedMaturity: "0",
-                stake: "30.00",
-                state: "Locked",
-              }),
-            ]),
-          }),
-        ]),
+        csvContent: expectedCsv,
       })
     );
-    expect(generateCsvFileToSave).toBeCalledTimes(1);
+    expect(spySaveGeneratedCsv).toBeCalledTimes(1);
   });
 
   it("should show error toast when file system access fails", async () => {
