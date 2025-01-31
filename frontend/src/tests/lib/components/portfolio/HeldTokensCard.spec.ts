@@ -73,6 +73,17 @@ describe("HeldTokensCard", () => {
       expect(balances.length).toBe(3);
       expect(balances).toEqual(["$0.00", "$0.00", "$0.00"]);
     });
+
+    it("should render rows as DIV tag", async () => {
+      const po = renderComponent({
+        topHeldTokens: mockTokens,
+        usdAmount: 0,
+      });
+
+      const allTags = await po.getRowsTags();
+
+      expect(allTags.every((tag) => tag === "DIV")).toBe(true);
+    });
   });
 
   describe("when signed in", () => {
@@ -207,6 +218,16 @@ describe("HeldTokensCard", () => {
       expect(nativeBalances).toEqual(["21.60 ICP", "21.60 ckBTC"]);
 
       expect(await po.getInfoRow().isPresent()).toBe(true);
+    });
+
+    it("should render rows as an A tag", async () => {
+      const po = renderComponent({
+        topHeldTokens: mockTokens,
+      });
+
+      const allTags = await po.getRowsTags();
+
+      expect(allTags.every((tag) => tag === "A")).toBe(true);
     });
   });
 });

@@ -11,6 +11,10 @@ class HeldTokensCardRowPo extends BasePageObject {
     return rows.map((el) => new HeldTokensCardRowPo(el));
   }
 
+  getRowTag(): Promise<string> {
+    return this.root.getTagName();
+  }
+
   getHeldTokenTitle(): Promise<string> {
     return this.getText("title");
   }
@@ -60,5 +64,10 @@ export class HeldTokensCardPo extends BasePageObject {
     return Promise.all(
       rows.map((row) => row.getHeldTokenBalanceInNativeCurrency())
     );
+  }
+
+  async getRowsTags(): Promise<string[]> {
+    const rows = await this.getRows();
+    return Promise.all(rows.map((row) => row.getRowTag()));
   }
 }

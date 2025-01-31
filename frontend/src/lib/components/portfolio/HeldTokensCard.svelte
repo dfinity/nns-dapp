@@ -66,7 +66,14 @@
 
       <div class="list" role="rowgroup">
         {#each topHeldTokens as heldToken (heldToken.domKey)}
-          <div class="row" data-tid="held-token-card-row" role="row">
+          <svelte:element
+            this={$authSignedInStore ? "a" : "div"}
+            href={$authSignedInStore ? heldToken.rowHref : undefined}
+            class="row"
+            class:link={$authSignedInStore}
+            data-tid="held-token-card-row"
+            role="row"
+          >
             <div class="info" role="cell">
               <div>
                 <Logo
@@ -102,7 +109,7 @@
             >
               ${formatNumber(heldToken?.balanceInUsd ?? 0)}
             </div>
-          </div>
+          </svelte:element>
         {/each}
         {#if showInfoRow}
           <div class="info-row desktop-only" role="note" data-tid="info-row">
@@ -154,6 +161,15 @@
         flex-direction: column;
         background-color: var(--card-background);
         flex-grow: 1;
+
+        .link {
+          text-decoration: none;
+          cursor: pointer;
+
+          &:hover {
+            background-color: var(--table-row-background-hover);
+          }
+        }
 
         .row {
           display: grid;
