@@ -110,8 +110,8 @@ pub fn with_partitions<R>(f: impl FnOnce(&Partitions) -> R) -> R {
     PARTITIONS.with_borrow(|p| f(p))
 }
 
-/// Resets the stable memory partitions. This is only used in tests where the partitions are not
-/// treated as global's, and usually it's only needed for `proptest!`.
+/// Resets the stable memory partitions. This is only used in tests where the `Partitions` is not
+/// treated as a global variable, and usually it's only needed for `proptest!`.
 #[cfg(test)]
 pub fn reset_partitions() {
     PARTITIONS.replace(Partitions::from(DefaultMemoryImpl::default()));
