@@ -36,3 +36,9 @@ export const setIcpSwapUsdPrices = (prices: Record<string, number>) => {
 
   icpSwapTickersStore.set(tickers);
 };
+
+export const setIcpPrice = (icpPrice: number) => {
+  setIcpSwapUsdPrices({
+    [LEDGER_CANISTER_ID.toText()]: icpPrice,
+  });
+};

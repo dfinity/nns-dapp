@@ -1,20 +1,18 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { createUserToken } from "$tests/mocks/tokens-page.mock";
 import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -40,13 +38,7 @@ describe("NnsAccounts", () => {
       return mockAccountDetails;
     });
 
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-    ]);
+    setIcpPrice(10);
   });
 
   describe("when tokens flag is enabled", () => {
