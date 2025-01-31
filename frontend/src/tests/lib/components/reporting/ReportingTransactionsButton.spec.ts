@@ -4,6 +4,10 @@ import ReportingTransactionsButton from "$lib/components/reporting/ReportingTran
 import * as exportDataService from "$lib/services/reporting.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
+import {
+  CsvGenerationError,
+  FileSystemAccessError,
+} from "$lib/utils/reporting.save-csv-to-file.utils";
 import * as exportToCsv from "$lib/utils/reporting.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -280,7 +284,7 @@ describe("ReportingTransactionsButton", () => {
 
   it("should show error toast when file system access fails", async () => {
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
-      new exportToCsv.FileSystemAccessError("File system access denied")
+      new FileSystemAccessError("File system access denied")
     );
 
     const po = renderComponent();
@@ -298,7 +302,7 @@ describe("ReportingTransactionsButton", () => {
 
   it("should show error toast when Csv generation fails", async () => {
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockRejectedValueOnce(
-      new exportToCsv.CsvGenerationError("Csv generation failed")
+      new CsvGenerationError("Csv generation failed")
     );
 
     const po = renderComponent();

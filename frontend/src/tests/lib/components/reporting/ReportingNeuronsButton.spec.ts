@@ -2,6 +2,10 @@ import * as gobernanceApi from "$lib/api/governance.api";
 import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import {
+  CsvGenerationError,
+  FileSystemAccessError,
+} from "$lib/utils/reporting.save-csv-to-file.utils";
 import * as exportToCsvUtils from "$lib/utils/reporting.utils";
 import { generateCsvFileToSave } from "$lib/utils/reporting.utils";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -165,7 +169,7 @@ describe("ReportingNeuronsButton", () => {
 
   it("should show error toast when file system access fails", async () => {
     vi.spyOn(exportToCsvUtils, "generateCsvFileToSave").mockRejectedValueOnce(
-      new exportToCsvUtils.FileSystemAccessError("File system access denied")
+      new FileSystemAccessError("File system access denied")
     );
 
     const po = renderComponent();
@@ -183,7 +187,7 @@ describe("ReportingNeuronsButton", () => {
 
   it("should show error toast when Csv generation fails", async () => {
     vi.spyOn(exportToCsvUtils, "generateCsvFileToSave").mockRejectedValueOnce(
-      new exportToCsvUtils.CsvGenerationError("Csv generation failed")
+      new CsvGenerationError("Csv generation failed")
     );
 
     const po = renderComponent();
