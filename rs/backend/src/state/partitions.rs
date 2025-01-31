@@ -120,7 +120,7 @@ impl Partitions {
 
     /// Writes given bytes into the "managed memory", which is the stable memory section to store
     /// data that needs to be persisted across upgrades by serialization/deserialization.
-    pub fn write_bytes_to_managed_memory(&self, bytes: Vec<u8>) {
+    pub fn write_bytes_to_managed_memory(&self, bytes: &[u8]) {
         let len = bytes.len();
         let length_field = u64::try_from(len)
             .unwrap_or_else(|e| {
@@ -130,11 +130,12 @@ impl Partitions {
             })
             .to_be_bytes();
         self.growing_write(PartitionType::Heap.memory_id(), 0, &length_field);
-        self.growing_write(PartitionType::Heap.memory_id(), 8, &bytes);
+        self.growing_write(PartitionType::Heap.memory_id(), 8, bytes);
     }
 
     /// Reads bytes from the "managed memory", which is the stable memory section to store data that
     /// needs to be persisted across upgrades by serialization/deserialization.
+    #[must_use]
     pub fn read_bytes_from_managed_memory(&self) -> Vec<u8> {
         let memory = self.get(PartitionType::Heap.memory_id());
         let len = {

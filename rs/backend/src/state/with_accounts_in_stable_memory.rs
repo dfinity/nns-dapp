@@ -10,7 +10,7 @@ impl State {
         let candid_bytes = self.encode();
         match &self.partitions_maybe {
             PartitionsMaybe::Partitions(partitions) => {
-                partitions.write_bytes_to_managed_memory(candid_bytes);
+                partitions.write_bytes_to_managed_memory(&candid_bytes);
             }
             PartitionsMaybe::None(_) => {
                 println!("END state::save_heap: ()");
