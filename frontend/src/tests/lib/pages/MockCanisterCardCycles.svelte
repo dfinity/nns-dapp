@@ -13,13 +13,13 @@
 </script>
 
 <div data-tid="mock-canister-card-instance-count">
-  { instanceCount }
+  {instanceCount}
 </div>
 
 {#if false}
   <div>
-    We must reference canister to avoid
-    "Component has unused export property 'canister'."
+    We must reference canister to avoid "Component has unused export property
+    'canister'."
     {canister}
   </div>
 {/if}
