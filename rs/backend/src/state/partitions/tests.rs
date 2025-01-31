@@ -229,17 +229,26 @@ fn write_to_and_read_from_managed_memory_should_work() {
     let toy_bytes = b"foo_bar".to_vec();
     partitions.write_bytes_to_managed_memory(&toy_bytes);
     let read_bytes = partitions.read_bytes_from_managed_memory();
-    assert_eq!(read_bytes, toy_bytes, "Managed memory read did not return the expected bytes.");
+    assert_eq!(
+        read_bytes, toy_bytes,
+        "Managed memory read did not return the expected bytes."
+    );
 
     // Reading a previously written buffer should return the same bytes, when the buffer is smaller.
     let toy_bytes = b"foo".to_vec();
     partitions.write_bytes_to_managed_memory(&toy_bytes);
     let read_bytes = partitions.read_bytes_from_managed_memory();
-    assert_eq!(read_bytes, toy_bytes, "Managed memory read did not return the expected bytes.");
+    assert_eq!(
+        read_bytes, toy_bytes,
+        "Managed memory read did not return the expected bytes."
+    );
 
     // Reading a previously written buffer should return the same bytes, when the buffer is larger.
     let toy_bytes = b"foo_bar".to_vec();
     partitions.write_bytes_to_managed_memory(&toy_bytes);
     let read_bytes = partitions.read_bytes_from_managed_memory();
-    assert_eq!(read_bytes, toy_bytes, "Managed memory read did not return the expected bytes.");
+    assert_eq!(
+        read_bytes, toy_bytes,
+        "Managed memory read did not return the expected bytes."
+    );
 }
