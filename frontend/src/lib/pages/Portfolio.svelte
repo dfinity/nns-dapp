@@ -156,6 +156,10 @@
     flex-direction: column;
     gap: var(--padding-2x);
 
+    @include media.min-width(medium) {
+      padding: var(--padding-2x);
+    }
+
     @include media.min-width(large) {
       display: grid;
       grid-template-rows: auto 1fr;
