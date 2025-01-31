@@ -1,11 +1,13 @@
 import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { HeadingSubtitleWithUsdValuePo } from "$tests/page-objects/HeadingSubtitleWithUsdValue.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  setIcpPrice,
+  setIcpSwapUsdPrices,
+} from "$tests/utils/icp-swap.test-utils";
 import { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -28,13 +30,7 @@ describe("HeadingSubtitleWithUsdValue", () => {
   };
 
   beforeEach(() => {
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-    ]);
+    setIcpPrice(10);
   });
 
   it("should render amount in USD", async () => {
@@ -77,18 +73,9 @@ describe("HeadingSubtitleWithUsdValue", () => {
   it("should get token price based on ledger canister ID", async () => {
     const ledgerCanisterId = principal(3);
 
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: ledgerCanisterId.toText(),
-        last_price: "2.00",
-      },
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-    ]);
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId.toText()]: 5,
+    });
 
     const amount = TokenAmountV2.fromString({
       amount: "3",

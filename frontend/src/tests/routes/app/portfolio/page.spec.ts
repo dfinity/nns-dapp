@@ -1,5 +1,7 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import {
@@ -153,7 +155,7 @@ describe("Portfolio route", () => {
   describe("when logged in", () => {
     const icpBalanceE8s = 100n * 100_000_000n; // 100ICP(1ICP==10$) -> $1000
     const ckBTCBalanceE8s = 1n * 100_000_000n; // 1BTC(1BTC==10_000ICP) -> $100_000
-    const ckETHBalanceUlps = 1n * 100_000_000_000_000_000n; // 1ETH(1ETH=100ICP) -> $1000
+    const ckETHBalanceUlps = BigInt(0.1 * 1_000_000_000_000_000_000); // 0.1ETH(1ETH=1000ICP) -> $1000
     const tetrisBalanceE8s = 2n * 100_000_000n; // 2Tetris(1Tetris==1ICP) -> $20
     const importedToken1BalanceE6s = 100n * 1_000_000n; // 100ZTOKEN1(1ZTOKEN1==1ICP) -> $1000
     const ckUSDCBalanceE6s = 1n * 1_000_000n; // 1USDC -> $1
@@ -273,38 +275,14 @@ describe("Portfolio route", () => {
       setAccountsForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });
-      icpSwapTickersStore.set([
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKBTC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "0.0001",
-        },
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKTESTBTC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "0.0001",
-        },
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKETH_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "0.001",
-        },
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "10.00",
-        },
-        {
-          ...mockIcpSwapTicker,
-          base_id: importedToken1Id.toText(),
-          last_price: "1.00",
-        },
-        {
-          ...mockIcpSwapTicker,
-          base_id: tetrisSNS.ledgerCanisterId.toText(),
-          last_price: "1.00",
-        },
-      ]);
+      setIcpSwapUsdPrices({
+        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: 100_000,
+        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: 100_000,
+        [CKETH_UNIVERSE_CANISTER_ID.toText()]: 10_000,
+        [LEDGER_CANISTER_ID.toText()]: 10,
+        [importedToken1Id.toText()]: 10,
+        [tetrisSNS.ledgerCanisterId.toText()]: 10,
+      });
 
       const nnsNeuronWithStake = {
         ...mockNeuron,
@@ -333,7 +311,7 @@ describe("Portfolio route", () => {
       // 1BTC -> $100_000
       // 1BTCTest -> $100_000
       // 100ICP -> $1000
-      // 1ETH -> $1000
+      // 0.1ETH -> $1000
       // 1USDC -> $1
       // 100ZTOKEN1 -> $1000
       // 2Tetris -> $20

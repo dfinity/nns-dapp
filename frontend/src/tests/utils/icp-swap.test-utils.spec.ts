@@ -2,7 +2,10 @@ import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
+import {
+  setIcpPrice,
+  setIcpSwapUsdPrices,
+} from "$tests/utils/icp-swap.test-utils";
 import { get } from "svelte/store";
 
 describe("icp-swap.test-utils.spec.ts", () => {
@@ -47,6 +50,17 @@ describe("icp-swap.test-utils.spec.ts", () => {
 
       expect(get(icpSwapUsdPricesStore)).toEqual({
         [CKBTC_LEDGER_CANISTER_ID.toText()]: 99_000,
+        [LEDGER_CANISTER_ID.toText()]: 123,
+        [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
+      });
+    });
+  });
+
+  describe("setIcpPrice", () => {
+    it("should set the price of ICP to 123 USD", () => {
+      setIcpPrice(123);
+
+      expect(get(icpSwapUsdPricesStore)).toEqual({
         [LEDGER_CANISTER_ID.toText()]: 123,
         [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
       });
