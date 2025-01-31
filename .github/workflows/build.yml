@@ -30,14 +30,14 @@ jobs:
       - name: Skip build for testing
         # Set to true and set a recent `run_id` below to reuse an existing build
         # instead of building.
-        if: true
+        if: false
         id: skip_build
         run: |
           echo "skip_build=true" >> "$GITHUB_OUTPUT"
           mkdir out
           # The run ID is the number at the end of a URL like this:
           # https://github.com/dfinity/nns-dapp/actions/runs/5801187848
-          run_id=13067959045
+          run_id=5801187848
           gh run download "$run_id" --dir ./out -n out
       - name: Build nns-dapp repo
         if: steps.skip_build.outputs.skip_build != 'true'
@@ -84,61 +84,8 @@ jobs:
       - name: Run Playwright e2e test shard 1/2
         uses: ./.github/actions/test-e2e
         with:
-          test_filter: 'canisters.spec.ts'
           shard_number: 1
-          shard_count: 1
-  test-playwright-e2e-shard-3-of-2:
-    needs: build
-    runs-on: ubuntu-20.04
-    timeout-minutes: 30
-    steps:
-      - name: Checkout nns-dapp
-        uses: actions/checkout@v4
-      - name: Run Playwright e2e test shard 2/2
-        uses: ./.github/actions/test-e2e
-        with:
-          test_filter: 'canisters.spec.ts'
-          shard_number: 1
-          shard_count: 1
-  test-playwright-e2e-shard-4-of-2:
-    needs: build
-    runs-on: ubuntu-20.04
-    timeout-minutes: 30
-    steps:
-      - name: Checkout nns-dapp
-        uses: actions/checkout@v4
-      - name: Run Playwright e2e test shard 2/2
-        uses: ./.github/actions/test-e2e
-        with:
-          test_filter: 'canisters.spec.ts'
-          shard_number: 1
-          shard_count: 1
-  test-playwright-e2e-shard-5-of-2:
-    needs: build
-    runs-on: ubuntu-20.04
-    timeout-minutes: 30
-    steps:
-      - name: Checkout nns-dapp
-        uses: actions/checkout@v4
-      - name: Run Playwright e2e test shard 2/2
-        uses: ./.github/actions/test-e2e
-        with:
-          test_filter: 'canisters.spec.ts'
-          shard_number: 1
-          shard_count: 1
-  test-playwright-e2e-shard-6-of-2:
-    needs: build
-    runs-on: ubuntu-20.04
-    timeout-minutes: 30
-    steps:
-      - name: Checkout nns-dapp
-        uses: actions/checkout@v4
-      - name: Run Playwright e2e test shard 2/2
-        uses: ./.github/actions/test-e2e
-        with:
-          test_filter: 'canisters.spec.ts'
-          shard_number: 1
-          shard_count: 1
+          shard_count: 2
   test-playwright-e2e-shard-2-of-2:
     needs: build
     runs-on: ubuntu-20.04
@@ -149,11 +96,9 @@ jobs:
       - name: Run Playwright e2e test shard 2/2
         uses: ./.github/actions/test-e2e
         with:
-          test_filter: 'canisters.spec.ts'
-          shard_number: 1
-          shard_count: 1
+          shard_number: 2
+          shard_count: 2
   test-upgrade-downgrade:
-    if: false
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
@@ -177,7 +122,6 @@ jobs:
       - name: Run uprade-downgrade test
         run: ./scripts/nns-dapp/upgrade-downgrade-test --wasm out/nns-dapp_test.wasm.gz --args out/nns-dapp-arg-local.did --github_step_summary "$GITHUB_STEP_SUMMARY"
   test-upgrade-stable:
-    if: false
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
@@ -208,7 +152,6 @@ jobs:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
   test-test-account-api:
-    if: false
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
@@ -229,7 +172,6 @@ jobs:
       - name: Check that test accounts can be created and read
         run: ./scripts/nns-dapp/test-account.test
   test-rest:
-    if: false
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 40
@@ -344,7 +286,6 @@ jobs:
       - name: Stop replica
         run: dfx stop
   network_independent_wasm:
-    if: false
     name: "Same wasms for mainnet and local"
     # Note: The dockerfile structure SHOULD guarantee that the network is not used in any Wasm build commands.
     #       As long as that holds, this test is not needed.
@@ -413,7 +354,6 @@ jobs:
             echo "ERROR: wasm hashes differ between mainnet and local."
           }
   aggregator_test:
-    if: false
     needs: build
     runs-on: ubuntu-20.04
     timeout-minutes: 60
@@ -519,7 +459,6 @@ jobs:
       - name: Stop replica
         run: dfx stop
   assets:
-    if: false
     name: "Upload assets"
     needs: build
     runs-on: ubuntu-20.04
@@ -591,7 +530,7 @@ jobs:
           ) | tee -a $GITHUB_STEP_SUMMARY
           (( wasm_size <= max_size )) || { echo "The WASM is too large" ; exit 1 ; }
   build-pass:
-    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2"]
+    needs: ["build", "test-playwright-e2e-shard-1-of-2", "test-playwright-e2e-shard-2-of-2", "test-rest", "network_independent_wasm", "aggregator_test", "assets", "test-upgrade-downgrade", "test-test-account-api", "test-upgrade-stable"]
     if: ${{ always() }}
     runs-on: ubuntu-20.04
     steps:

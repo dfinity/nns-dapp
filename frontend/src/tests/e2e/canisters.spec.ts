@@ -65,9 +65,6 @@ test("Test canisters", async ({ page, context }) => {
   expect(await linkedCanisterCard.getCanisterName()).toBe(linkedCanisterName);
   await myCanisterCard.click();
 
-  //await appPo.getCanisterDetailPo().waitFor();
-
-  //*
   const newCanisterName = "MyCanister2";
   const canisterDetail = appPo.getCanisterDetailPo();
   await canisterDetail.clickRename();
@@ -85,30 +82,19 @@ test("Test canisters", async ({ page, context }) => {
     "Cycles added successfully",
   ]);
   await appPo.getToastsPo().closeAll();
-//*/
 
   step("Verify name");
   await appPo.goBack();
   await canistersPo.waitForContentLoaded();
   [myCanisterCard, linkedCanisterCard] = await canistersPo.getCanisterCardPos();
-  //expect(await myCanisterCard.getCanisterName()).toBe(newCanisterName);
   expect(await myCanisterCard.getCanisterName()).toBe(newCanisterName);
 
   step("Open linked canister");
-
-    for (let i = 0; i < 25; i++) {
-    await linkedCanisterCard.click();
-    expect(await appPo.getCanisterDetailPo().getErrorMessage()).toBe(
-      "You are not the controller of this canister. Only controllers have access to its cycles and controllers."
-    );
-    expect(await appPo.getToastsPo().getMessages()).toEqual([]);
-    await appPo.goBack();
-    await canistersPo.waitForContentLoaded();
-  }
-
-  //await new Promise((r) => setTimeout(r, 2000));
-
-  //return;
+  await linkedCanisterCard.click();
+  expect(await appPo.getCanisterDetailPo().getErrorMessage()).toBe(
+    "You are not the controller of this canister. Only controllers have access to its cycles and controllers."
+  );
+  expect(await appPo.getToastsPo().getMessages()).toEqual([]);
 
   step("Check transaction descriptions");
   await appPo.goToNnsMainAccountWallet();

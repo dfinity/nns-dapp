@@ -1,16 +1,25 @@
+// This import needs to be at the top for the mock to work:
+import MockCanisterCardCycles from "$tests/lib/pages/MockCanisterCardCycles.svelte";
+
 import Canisters from "$lib/pages/Canisters.svelte";
 import { listCanisters } from "$lib/services/canisters.services";
 import { authStore } from "$lib/stores/auth.store";
 import { canistersStore } from "$lib/stores/canisters.store";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockCanisters } from "$tests/mocks/canisters.mock";
+import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { Principal } from "@dfinity/principal";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import type { MockInstance } from "vitest";
+
+vi.mock("$lib/components/canisters/CanisterCardCycles.svelte", () => ({
+  default: MockCanisterCardCycles,
+}));
 
 vi.mock("$lib/services/canisters.services", () => {
   return {
@@ -108,6 +117,37 @@ describe("Canisters", () => {
 
     await waitFor(() =>
       expect(queryByTestId("create-canister-modal-title")).toBeInTheDocument()
+    );
+  });
+
+  it("should not recreate cards when store is repopulated with same canisters", async () => {
+    const mockCanisterCopy = {
+      ...mockCanister,
+      // Make sure we have a different instance of the same Principal.
+      // This forces the component to use `.toText()` on the principal to use it
+      // as a key to prevent rerendering when the list changes.
+      canister_id: Principal.fromText(mockCanister.canister_id.toText()),
+    };
+    canistersStore.setCanisters({
+      canisters: [mockCanister],
+      certified: false,
+    });
+    const { getByTestId } = render(Canisters);
+    await runResolvedPromises();
+
+    const cardsCreatedCount = getByTestId(
+      "mock-canister-card-instance-count"
+    ).textContent;
+
+    canistersStore.setCanisters({
+      canisters: [mockCanisterCopy],
+      certified: true,
+    });
+    await runResolvedPromises();
+
+    // No additional cards should have been created.
+    expect(getByTestId("mock-canister-card-instance-count").textContent).toBe(
+      cardsCreatedCount
     );
   });
 });
