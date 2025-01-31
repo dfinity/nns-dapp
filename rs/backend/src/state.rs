@@ -107,16 +107,17 @@ pub fn with_state_mut<R>(f: impl FnOnce(&mut State) -> R) -> R {
 
 /// An accessor for the partitions.
 pub fn with_partitions<R>(f: impl FnOnce(&Partitions) -> R) -> R {
-    PARTITIONS.with_borrow(|p| f(&p))
+    PARTITIONS.with_borrow(|p| f(p))
 }
 
 /// Resets the stable memory partitions. This is only used in tests where the partitions are not
-/// treated as globals, and usually it's only needed for `proptest!`.
+/// treated as global's, and usually it's only needed for `proptest!`.
 #[cfg(test)]
 pub fn reset_partitions() {
     PARTITIONS.replace(Partitions::from(DefaultMemoryImpl::default()));
 }
 
+#[allow(clippy::new_without_default)]
 impl State {
     /// Creates new state. Should be called in `init`.
     #[must_use]

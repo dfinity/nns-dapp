@@ -1,18 +1,12 @@
 use crate::{
-    accounts_store::{
-        schema::{map::AccountsDbAsMap, proxy::AccountsDb, AccountsDbTrait},
-        RegisterHardwareWalletRequest,
-    },
+    accounts_store::RegisterHardwareWalletRequest,
     assets::{insert_asset_into_state, Asset},
-    perf::PerformanceCount,
-    state::{reset_partitions, AssetHashes, Assets, PerformanceCounts, StableState, State},
+    state::{reset_partitions, PerformanceCounts, State},
     tvl::state::TvlState,
 };
 use ic_base_types::PrincipalId;
-use ic_stable_structures::{DefaultMemoryImpl, VectorMemory};
 use pretty_assertions::assert_eq;
 use proptest::proptest;
-use std::rc::Rc;
 
 pub(crate) fn populate_test_state(num_accounts: u64, state: &mut State) {
     for account_index in 0..num_accounts {
@@ -41,20 +35,20 @@ fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
     state.save();
 
     // Restore the state (should be called in `post_upgrade`).
-    let new_state = State::new_restored();
+    let restored_state = State::new_restored();
 
     // Now we examine the restored state against the original state:
 
     // The content in the AccountsStore are either in stable structures, or serialized/deserialized during upgrades.
-    assert_eq!(new_state.accounts_store, state.accounts_store);
+    assert_eq!(restored_state.accounts_store, state.accounts_store);
     // The assets and tvl state are serialized/deserialized during upgrades.
-    assert_eq!(new_state.assets, state.assets);
-    assert_eq!(new_state.tvl_state, state.tvl_state);
+    assert_eq!(restored_state.assets, state.assets);
+    assert_eq!(restored_state.tvl_state, state.tvl_state);
     // The asset hashes are recomputed from assets during upgrades.
-    assert_eq!(new_state.asset_hashes, state.asset_hashes);
+    assert_eq!(restored_state.asset_hashes, state.asset_hashes);
     // The performance counts are not persisted through upgrades, so they are reset after upgrades.
     assert_ne!(state.performance, PerformanceCounts::default());
-    assert_eq!(new_state.performance, PerformanceCounts::default());
+    assert_eq!(restored_state.performance, PerformanceCounts::default());
 }
 
 proptest! {
