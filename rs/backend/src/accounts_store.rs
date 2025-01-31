@@ -47,24 +47,7 @@ pub struct AccountsStore {
     accounts_db: schema::proxy::AccountsDbAsProxy,
 
     accounts_db_stats: AccountsDbStats,
-    accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
 }
-
-/// A wrapper around a value that returns true for `PartialEq` and `Eq` equality checks, regardless of the value.
-///
-/// This is intended to be used on incidental, volatile fields.  A structure containing such a field will typically wish to disregard the field in any comparison.
-#[derive(Default)]
-struct IgnoreEq<T>(T)
-where
-    T: Default;
-
-impl<T: Default> PartialEq for IgnoreEq<T> {
-    fn eq(&self, _: &Self) -> bool {
-        true
-    }
-}
-
-impl<T: Default> Eq for IgnoreEq<T> {}
 
 impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -684,7 +667,6 @@ impl AccountsStore {
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
         stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
-        stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
 
     #[must_use]
@@ -792,7 +774,6 @@ impl StableState for AccountsStore {
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
-        let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
         let Some(accounts_db_stats) = accounts_db_stats_maybe else {
             return Err("Accounts DB stats should be present since the stable structures migration.".to_string());
         };
@@ -803,7 +784,6 @@ impl StableState for AccountsStore {
             // State::from(Partitions) so it doesn't matter what we set here.
             accounts_db: AccountsDbAsProxy::default(),
             accounts_db_stats,
-            accounts_db_stats_recomputed_on_upgrade,
         })
     }
 }
