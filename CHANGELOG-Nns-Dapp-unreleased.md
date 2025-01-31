@@ -30,7 +30,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 - Reporting: Add Excel string format preservation for neuron ids.
-- Navigation: Back button when navigating back from the tokens page.
+- Navigation: Fix back button in accounts page when coming from the portfolio page.
 
 #### Security
 
