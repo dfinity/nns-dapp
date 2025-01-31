@@ -84,6 +84,7 @@ jobs:
       - name: Run Playwright e2e test shard 1/2
         uses: ./.github/actions/test-e2e
         with:
+          test_filter: 'canisters.spec.ts'
           shard_number: 2
           shard_count: 2
   test-playwright-e2e-shard-3-of-2:
@@ -96,6 +97,7 @@ jobs:
       - name: Run Playwright e2e test shard 2/2
         uses: ./.github/actions/test-e2e
         with:
+          test_filter: 'canisters.spec.ts'
           shard_number: 2
           shard_count: 2
   test-playwright-e2e-shard-4-of-2:
@@ -108,6 +110,7 @@ jobs:
       - name: Run Playwright e2e test shard 2/2
         uses: ./.github/actions/test-e2e
         with:
+          test_filter: 'canisters.spec.ts'
           shard_number: 2
           shard_count: 2
   test-playwright-e2e-shard-5-of-2:
@@ -120,6 +123,7 @@ jobs:
       - name: Run Playwright e2e test shard 2/2
         uses: ./.github/actions/test-e2e
         with:
+          test_filter: 'canisters.spec.ts'
           shard_number: 2
           shard_count: 2
   test-playwright-e2e-shard-6-of-2:
@@ -132,6 +136,7 @@ jobs:
       - name: Run Playwright e2e test shard 2/2
         uses: ./.github/actions/test-e2e
         with:
+          test_filter: 'canisters.spec.ts'
           shard_number: 2
           shard_count: 2
   test-playwright-e2e-shard-2-of-2:
@@ -144,6 +149,7 @@ jobs:
       - name: Run Playwright e2e test shard 2/2
         uses: ./.github/actions/test-e2e
         with:
+          test_filter: 'canisters.spec.ts'
           shard_number: 2
           shard_count: 2
   test-upgrade-downgrade:

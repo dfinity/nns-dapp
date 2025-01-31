@@ -50,7 +50,7 @@ runs:
       run: |
         export PLAYWRIGHT_BASE_URL="$(../scripts/dfx-canister-url nns-dapp)"
         PLAYWRIGHT_FILES="$(ls src/tests/e2e/${{ inputs.test_filter }} | cat | split -n r/${{ inputs.shard_number }}/${{ inputs.shard_count }})"
-        npm run test-e2e -- --update-snapshots ${PLAYWRIGHT_FILES:-}
+        npm run test-e2e -- --repeat-each 6 --update-snapshots ${PLAYWRIGHT_FILES:-}
     - name: List Playwright results
       if: ${{ failure() }}
       shell: bash
