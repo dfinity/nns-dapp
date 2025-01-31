@@ -67,7 +67,7 @@ test("Test canisters", async ({ page, context }) => {
 
   await appPo.getCanisterDetailPo().waitFor();
 
-  /*
+  //*
   const newCanisterName = "MyCanister2";
   const canisterDetail = appPo.getCanisterDetailPo();
   await canisterDetail.clickRename();
@@ -92,6 +92,7 @@ test("Test canisters", async ({ page, context }) => {
   await canistersPo.waitForContentLoaded();
   [myCanisterCard, linkedCanisterCard] = await canistersPo.getCanisterCardPos();
   //expect(await myCanisterCard.getCanisterName()).toBe(newCanisterName);
+  expect(await myCanisterCard.getCanisterName()).toBe(newCanisterName);
 
   step("Open linked canister");
   await linkedCanisterCard.click();
@@ -100,9 +101,9 @@ test("Test canisters", async ({ page, context }) => {
   );
   expect(await appPo.getToastsPo().getMessages()).toEqual([]);
 
-  await new Promise((r) => setTimeout(r, 2000));
+  //await new Promise((r) => setTimeout(r, 2000));
 
-  return;
+  //return;
 
   step("Check transaction descriptions");
   await appPo.goToNnsMainAccountWallet();
