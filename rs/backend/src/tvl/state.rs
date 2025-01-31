@@ -5,6 +5,7 @@ use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 
 #[derive(CandidType, Default, Debug, Deserialize, PartialEq)]
+#[cfg_attr(test, derive(Clone))]
 pub struct TvlState {
     pub total_locked_icp_e8s: u64,
     pub usd_e8s_per_icp: u64,

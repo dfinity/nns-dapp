@@ -74,7 +74,7 @@ impl Partitions {
     }
 
     /// Writes, growing the memory if necessary.
-    pub fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
+    fn growing_write(&self, memory_id: MemoryId, offset: u64, bytes: &[u8]) {
         let memory = self.get(memory_id);
         let min_pages: u64 = u64::try_from(bytes.len())
             .unwrap_or_else(|err| unreachable!("Buffer for growing_write is longer than 2**64 bytes?? Err: {err}"))

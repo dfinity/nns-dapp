@@ -1,6 +1,7 @@
 //! User accounts and transactions.
+use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use crate::multi_part_transactions_processor::MultiPartTransactionsProcessor;
-use crate::state::StableState;
+use crate::state::{partitions::PartitionType, with_partitions, StableState};
 use crate::stats::Stats;
 use candid::CandidType;
 use dfn_candid::Candid;
@@ -17,7 +18,6 @@ use std::collections::{BTreeMap, HashMap, VecDeque};
 use std::fmt;
 use std::ops::RangeBounds;
 
-pub mod constructors;
 pub mod histogram;
 pub mod schema;
 use schema::{
@@ -45,7 +45,6 @@ const MAX_IMPORTED_TOKENS: i32 = 20;
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
     accounts_db: schema::proxy::AccountsDbAsProxy,
-
     accounts_db_stats: AccountsDbStats,
 }
 
@@ -92,7 +91,7 @@ impl AccountsDbTrait for AccountsStore {
     }
 }
 
-#[derive(Default, CandidType, Deserialize, Debug, Eq, PartialEq)]
+#[derive(Default, CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
 pub struct AccountsDbStats {
     pub sub_accounts_count: u64,
     pub hardware_wallet_accounts_count: u64,
@@ -318,6 +317,36 @@ pub enum DetachCanisterResponse {
 }
 
 impl AccountsStore {
+    /// Creates a new `AccountsStore`. Should be called in `init`.
+    #[must_use]
+    pub fn new() -> Self {
+        let accounts_partition = with_partitions(|partitions| partitions.get(PartitionType::Accounts.memory_id()));
+        let accounts_db = AccountsDbAsProxy::from(AccountsDb::UnboundedStableBTreeMap(
+            AccountsDbAsUnboundedStableBTreeMap::new(accounts_partition),
+        ));
+        let accounts_db_stats = AccountsDbStats::default();
+
+        Self {
+            accounts_db,
+            accounts_db_stats,
+        }
+    }
+
+    /// Recovers the state from stable memory. Should be called in `post_upgrade`.
+    #[must_use]
+    pub fn new_restored(serializable_state: AccountsStoreSerializableState) -> Self {
+        let AccountsStoreSerializableState { accounts_db_stats } = serializable_state;
+        let accounts_partition = with_partitions(|partitions| partitions.get(PartitionType::Accounts.memory_id()));
+        let accounts_db = AccountsDbAsProxy::from(AccountsDb::UnboundedStableBTreeMap(
+            AccountsDbAsUnboundedStableBTreeMap::load(accounts_partition),
+        ));
+
+        Self {
+            accounts_db,
+            accounts_db_stats,
+        }
+    }
+
     /// Determines whether a migration is being performed.
     #[must_use]
     #[allow(dead_code)]
@@ -699,7 +728,26 @@ impl AccountsStore {
     }
 }
 
-impl StableState for AccountsStore {
+/// The component(s) of the `AccountsStore` that are serialized and de-serialized during upgrades.
+pub struct AccountsStoreSerializableState {
+    accounts_db_stats: AccountsDbStats,
+}
+
+impl From<AccountsStore> for AccountsStoreSerializableState {
+    fn from(accounts_store: AccountsStore) -> Self {
+        let AccountsStore {
+            // Field(s) persisted by serialization/deserialization through upgrades:
+            accounts_db_stats,
+
+            // Field(s) not persisted by serialization/deserialization through upgrades:
+            accounts_db: _,
+        } = accounts_store;
+
+        Self { accounts_db_stats }
+    }
+}
+
+impl StableState for AccountsStoreSerializableState {
     fn encode(&self) -> Vec<u8> {
         // Accounts are now in stable structures and no longer in a simple map
         // on the heap. So we don't need to encode them here.
@@ -778,13 +826,7 @@ impl StableState for AccountsStore {
             return Err("Accounts DB stats should be present since the stable structures migration.".to_string());
         };
 
-        Ok(AccountsStore {
-            // Because the stable structures migration is finished, accounts_db
-            // will be replaced with an AccountsDbAsUnboundedStableBTreeMap in
-            // State::from(Partitions) so it doesn't matter what we set here.
-            accounts_db: AccountsDbAsProxy::default(),
-            accounts_db_stats,
-        })
+        Ok(Self { accounts_db_stats })
     }
 }
 

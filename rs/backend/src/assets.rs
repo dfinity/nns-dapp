@@ -65,6 +65,7 @@ impl ContentEncoding {
 const LABEL_ASSETS: &[u8] = b"http_assets";
 
 #[derive(Default, Debug, Eq, PartialEq)]
+#[cfg_attr(test, derive(Clone))]
 pub struct AssetHashes(RbTree<Vec<u8>, Hash>);
 
 impl From<&Assets> for AssetHashes {
@@ -115,6 +116,7 @@ impl Asset {
 }
 
 #[derive(Default, CandidType, Deserialize, PartialEq, Eq, Debug)]
+#[cfg_attr(test, derive(Clone))]
 pub struct Assets(HashMap<String, Asset>);
 
 impl Assets {
