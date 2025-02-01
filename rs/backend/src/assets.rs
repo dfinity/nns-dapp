@@ -324,14 +324,14 @@ fn security_headers() -> Vec<HeaderField> {
 
 fn make_asset_certificate_header(asset_hashes: &AssetHashes, asset_name: &str) -> (String, String) {
     let certificate = dfn_core::api::data_certificate().unwrap_or_else(|| {
-        dfn_core::api::trap_with("data certificate is only available in query calls");
+        panic!("data certificate is only available in query calls");
     });
     let witness = asset_hashes.0.witness(asset_name.as_bytes());
     let tree = labeled(LABEL_ASSETS, witness);
     let mut serializer = serde_cbor::ser::Serializer::new(vec![]);
     serializer.self_describe().unwrap();
     tree.serialize(&mut serializer)
-        .unwrap_or_else(|e| dfn_core::api::trap_with(&format!("failed to serialize a hash tree: {e}")));
+        .unwrap_or_else(|e| panic!("failed to serialize a hash tree: {e}"));
     (
         "IC-Certificate".to_string(),
         format!(
@@ -420,11 +420,11 @@ pub fn insert_tar_xz(compressed: Vec<u8>) {
                 .to_vec();
 
             let name = String::from_utf8(name_bytes.clone()).unwrap_or_else(|e| {
-                dfn_core::api::trap_with(&format!(
+                panic!(
                     "non-utf8 file name {}: {}",
                     String::from_utf8_lossy(&name_bytes),
                     e
-                ));
+                );
             });
 
             let mut bytes = Vec::new();

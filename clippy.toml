@@ -7,4 +7,5 @@ disallowed-macros = [
 ]
 disallowed-methods = [
     { path = "dfn_core::api::print", reason = "Use ic_cdk::print or ic_cdk::println instead" },
+    { path = "dfn_core::api::trap_with", reason = "Use panic! instead" },
 ]

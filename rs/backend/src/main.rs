@@ -296,7 +296,7 @@ pub fn get_histogram_impl() -> AccountsStoreHistogram {
     // - Users should make query calls.
     let is_query_call = ic_cdk::api::data_certificate().is_some();
     if !is_query_call {
-        dfn_core::api::trap_with("Sorry, the histogram is available only as a query call.");
+        panic!("Sorry, the histogram is available only as a query call.");
     }
     // Gets the histogram:
     with_state(|state| state.accounts_store.get_histogram())
@@ -328,7 +328,7 @@ fn add_stable_asset_impl(asset_bytes: Vec<u8>) {
             insert_asset("/assets/canvaskit/canvaskit.js", Asset::new_stable(asset_bytes));
         }
         unknown_hash => {
-            dfn_core::api::trap_with(&format!("Unknown asset with hash {unknown_hash}"));
+            panic!("Unknown asset with hash {unknown_hash}");
         }
     }
 }
@@ -349,7 +349,7 @@ pub fn create_toy_accounts() {
     over(candid_one, |num_accounts: u128| {
         let caller = ic_cdk::caller();
         if !ic_cdk::api::is_controller(&caller) {
-            dfn_core::api::trap_with("Only the controller may generate toy accounts");
+            panic!("Only the controller may generate toy accounts");
         }
         with_state_mut(|s| {
             s.accounts_store
@@ -372,7 +372,7 @@ pub fn get_toy_account() {
 fn get_toy_account_impl(toy_account_index: u64) -> GetAccountResponse {
     let caller = ic_cdk::caller();
     if !ic_cdk::api::is_controller(&caller) {
-        dfn_core::api::trap_with("Only the controller may access toy accounts");
+        panic!("Only the controller may access toy accounts");
     }
     let principal = PrincipalId::new_user_test_id(toy_account_index);
     with_state(|s| match s.accounts_store.get_account(principal) {

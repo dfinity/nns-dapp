@@ -5,7 +5,6 @@
 //!
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
-use dfn_core::api::trap_with;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
@@ -93,9 +92,9 @@ impl Partitions {
         let len = bytes.len();
         let length_field = u64::try_from(len)
             .unwrap_or_else(|e| {
-                trap_with(&format!(
+                panic!(
                     "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
-                ));
+                );
             })
             .to_be_bytes();
         self.growing_write(PartitionType::Heap.memory_id(), 0, &length_field);
