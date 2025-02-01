@@ -1,12 +1,14 @@
 use crate::{
-    accounts_store::RegisterHardwareWalletRequest,
+    accounts_store::{schema::AccountsDbTrait, RegisterHardwareWalletRequest},
     assets::{insert_asset_into_state, Asset},
     state::{reset_partitions, PerformanceCounts, State},
+    stats::Stats,
     tvl::state::TvlState,
 };
 use ic_base_types::PrincipalId;
 use pretty_assertions::assert_eq;
 use proptest::proptest;
+use std::collections::BTreeMap;
 
 pub(crate) fn populate_test_state(num_accounts: u64, state: &mut State) {
     for account_index in 0..num_accounts {
@@ -31,6 +33,21 @@ fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
     // Populate the state with some data.
     populate_test_state(num_accounts, &mut state);
 
+    // Destructure to make sure all fields are covered.
+    let State {
+        accounts_store,
+        assets,
+        asset_hashes,
+        tvl_state,
+        performance: _, // This field is not persisted through upgrades.
+    } = &state;
+    let expected_accounts: BTreeMap<_, _> = accounts_store.range(..).collect();
+    let mut expected_account_stats = Stats::default();
+    accounts_store.get_stats(&mut expected_account_stats);
+    let expected_assets = assets.clone();
+    let expected_tvl_state = tvl_state.clone();
+    let expected_asset_hashes = asset_hashes.clone();
+
     // Save the state (should be called in `pre_upgrade`).
     state.save();
 
@@ -39,15 +56,21 @@ fn state_can_be_saved_and_recovered_from_stable_memory(num_accounts: u64) {
 
     // Now we examine the restored state against the original state:
 
-    // The content in the AccountsStore are either in stable structures, or serialized/deserialized during upgrades.
-    assert_eq!(restored_state.accounts_store, state.accounts_store);
+    // The accounts in the AccountsStore are either in stable structures.
+    assert_eq!(
+        restored_state.accounts_store.range(..).collect::<BTreeMap<_, _>>(),
+        expected_accounts
+    );
+    // The account stats, assets, and tvl state are serialized/deserialized during upgrades.
     // The assets and tvl state are serialized/deserialized during upgrades.
-    assert_eq!(restored_state.assets, state.assets);
-    assert_eq!(restored_state.tvl_state, state.tvl_state);
+    let mut actual_account_stats = Stats::default();
+    restored_state.accounts_store.get_stats(&mut actual_account_stats);
+    assert_eq!(actual_account_stats, expected_account_stats);
+    assert_eq!(restored_state.assets, expected_assets);
+    assert_eq!(restored_state.tvl_state, expected_tvl_state);
     // The asset hashes are recomputed from assets during upgrades.
-    assert_eq!(restored_state.asset_hashes, state.asset_hashes);
+    assert_eq!(restored_state.asset_hashes, expected_asset_hashes);
     // The performance counts are not persisted through upgrades, so they are reset after upgrades.
-    assert_ne!(state.performance, PerformanceCounts::default());
     assert_eq!(restored_state.performance, PerformanceCounts::default());
 }
 

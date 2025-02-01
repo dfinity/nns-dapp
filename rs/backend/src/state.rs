@@ -1,12 +1,9 @@
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
-mod with_accounts_in_stable_memory;
 
-use self::partitions::{PartitionType, Partitions};
-use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
-use crate::accounts_store::schema::proxy::AccountsDb;
-use crate::accounts_store::AccountsStore;
+use self::partitions::Partitions;
+use crate::accounts_store::{AccountsStore, AccountsStoreSerializableState};
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
 use crate::perf::PerformanceCounts;
@@ -86,7 +83,7 @@ pub fn restore_state() {
 /// # Panics
 /// Panics when the function is called before the `init_state` or `restore_state` is called.
 pub fn save_state() {
-    STATE.with_borrow(|s| s.as_ref().expect("State not initialized").save());
+    STATE.take().expect("State not initialized").save();
 }
 
 /// An accessor for the state.
@@ -117,45 +114,60 @@ pub fn reset_partitions() {
     PARTITIONS.replace(Partitions::from(DefaultMemoryImpl::default()));
 }
 
-#[allow(clippy::new_without_default)]
-impl State {
-    /// Creates new state. Should be called in `init`.
-    #[must_use]
-    pub fn new() -> Self {
-        let accounts_partition = with_partitions(|p| p.get(PartitionType::Accounts.memory_id()));
-        let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
-            AccountsDbAsUnboundedStableBTreeMap::new(accounts_partition),
-        ));
-        State {
+/// Represents the parts of the `State` that are serialized and de-serialized during upgrades.
+struct SerializableState {
+    accounts_store: AccountsStoreSerializableState,
+    assets: Assets,
+    tvl_state: TvlState,
+}
+
+impl From<State> for SerializableState {
+    fn from(state: State) -> Self {
+        // Destructure and consume the state.
+        let State {
+            // Field(s) persisted by serialization/deserialization through upgrades:
             accounts_store,
-            assets: Assets::default(),
-            asset_hashes: AssetHashes::default(),
-            performance: PerformanceCounts::default(),
-            tvl_state: TvlState::default(),
+            assets,
+            tvl_state,
+
+            // Field(s) not persisted by serialization/deserialization through upgrades:
+            asset_hashes: _,
+            performance: _,
+        } = state;
+
+        let accounts_store = AccountsStoreSerializableState::from(accounts_store);
+
+        SerializableState {
+            accounts_store,
+            assets,
+            tvl_state,
         }
-    }
-
-    /// Recovers the state from stable memory. Should be called in `post_upgrade`.
-    #[must_use]
-    pub fn new_restored() -> Self {
-        println!("START state::new_restored: ())");
-        let accounts_partition = with_partitions(|p| p.get(PartitionType::Accounts.memory_id()));
-        let mut state = Self::recover_heap_from_managed_memory();
-        let accounts_db =
-            AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(accounts_partition));
-        // Replace the default accountsdb created by `serde` with the one from stable memory.
-        let _deserialized_accounts_db = state.accounts_store.replace_accounts_db(accounts_db);
-        println!("END   state::new_restored: ()");
-        state
-    }
-
-    /// Saves the state to stable memory. Should be called in `pre_upgrade`.
-    pub fn save(&self) {
-        self.save_heap_to_managed_memory();
     }
 }
 
-impl StableState for State {
+impl From<SerializableState> for State {
+    fn from(serializable: SerializableState) -> Self {
+        let SerializableState {
+            accounts_store,
+            assets,
+            tvl_state,
+        } = serializable;
+
+        let accounts_store = AccountsStore::new_restored(accounts_store);
+        let asset_hashes = AssetHashes::from(&assets);
+        let performance = PerformanceCounts::default();
+
+        Self {
+            accounts_store,
+            assets,
+            asset_hashes,
+            performance,
+            tvl_state,
+        }
+    }
+}
+
+impl StableState for SerializableState {
     fn encode(&self) -> Vec<u8> {
         Candid((
             self.accounts_store.encode(),
@@ -169,17 +181,53 @@ impl StableState for State {
     fn decode(bytes: Vec<u8>) -> Result<Self, String> {
         let (account_store_bytes, assets_bytes, tvl_state_bytes) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
+        let accounts_store = AccountsStoreSerializableState::decode(account_store_bytes)?;
         let assets = Assets::decode(assets_bytes)?;
-        let asset_hashes = AssetHashes::from(&assets);
-        let performance = PerformanceCounts::default();
         let tvl_state = TvlState::decode(tvl_state_bytes)?;
 
-        Ok(State {
-            accounts_store: AccountsStore::decode(account_store_bytes)?,
+        Ok(Self {
+            accounts_store,
             assets,
-            asset_hashes,
-            performance,
             tvl_state,
         })
+    }
+}
+
+#[allow(clippy::new_without_default)]
+impl State {
+    /// Creates new state. Should be called in `init`.
+    #[must_use]
+    pub fn new() -> Self {
+        State {
+            accounts_store: AccountsStore::new(),
+            assets: Assets::default(),
+            asset_hashes: AssetHashes::default(),
+            performance: PerformanceCounts::default(),
+            tvl_state: TvlState::default(),
+        }
+    }
+
+    /// Recovers the state from stable memory. Should be called in `post_upgrade`.
+    ///
+    /// # Panics
+    /// Panics if the state cannot be decoded.
+    #[must_use]
+    pub fn new_restored() -> Self {
+        println!("START state::new_restored: ())");
+        let candid_bytes = with_partitions(Partitions::read_bytes_from_managed_memory);
+        let decoded = SerializableState::decode(candid_bytes).unwrap_or_else(|e| {
+            panic!("Decoding stable memory failed. Error: {e:?}");
+        });
+        let state = State::from(decoded);
+        println!("END   state::new_restored: ()");
+        state
+    }
+
+    // Saves the state. Should be called in `pre_upgrade`.
+    fn save(self) {
+        let serializable = SerializableState::from(self);
+        println!("START state::save_heap: ()");
+        let bytes = serializable.encode();
+        with_partitions(|partitions| partitions.write_bytes_to_managed_memory(&bytes));
     }
 }
