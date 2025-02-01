@@ -1,5 +1,5 @@
 use crate::{
-    accounts_store::{schema::AccountsDbTrait, RegisterHardwareWalletRequest},
+    accounts_store::RegisterHardwareWalletRequest,
     assets::{insert_asset_into_state, Asset},
     state::{reset_partitions, PerformanceCounts, State},
     stats::Stats,

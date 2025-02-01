@@ -1,8 +1,7 @@
 //! Test data for unit tests and test networks.
 
 use crate::accounts_store::{
-    schema::AccountsDbTrait, Account, AccountsStore, AttachCanisterRequest, CanisterId, PrincipalId,
-    RegisterHardwareWalletRequest,
+    Account, AccountsStore, AttachCanisterRequest, CanisterId, PrincipalId, RegisterHardwareWalletRequest,
 };
 
 #[cfg(test)]
@@ -124,7 +123,7 @@ impl AccountsStore {
     /// - The index of the first account created by this call.  The account indices are `first...first+num_accounts-1`.
     pub fn create_toy_accounts(&mut self, num_accounts: u64) -> u64 {
         // If we call this function twice, we don't want to create the same accounts again, so we index from the number of existing accounts.
-        let num_existing_accounts = self.accounts_db.db_accounts_len();
+        let num_existing_accounts = self.accounts_db.len();
         let (index_range_start, index_range_end) = (num_existing_accounts, (num_existing_accounts + num_accounts));
         // Creates accounts:
         for toy_account_index in index_range_start..index_range_end {
@@ -174,5 +173,5 @@ impl AccountsStore {
 fn should_be_able_to_create_large_accounts_store() {
     let num_accounts = 10_000;
     let accounts_store = AccountsStore::with_toy_accounts(num_accounts);
-    assert_eq!(num_accounts, accounts_store.accounts_db.db_accounts_len());
+    assert_eq!(num_accounts, accounts_store.accounts_db.len());
 }
