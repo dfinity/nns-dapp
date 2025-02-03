@@ -4,6 +4,7 @@ import ReportingTransactionsButton from "$lib/components/reporting/ReportingTran
 import * as exportDataService from "$lib/services/reporting.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
+import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
 import {
   CsvGenerationError,
   FileSystemAccessError,
@@ -33,19 +34,19 @@ vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/governance.api");
 
 describe("ReportingTransactionsButton", () => {
-  let spyGenerateCsvFileToSave;
   let spyToastError;
   let spyQueryNeurons;
   let spyExportDataService;
+  let spySaveGeneratedCsv;
 
   beforeEach(() => {
     vi.clearAllTimers();
     resetIdentity();
     resetAccountsForTesting();
 
-    spyGenerateCsvFileToSave = vi
-      .spyOn(exportToCsv, "generateCsvFileToSave")
-      .mockImplementation(() => Promise.resolve());
+    spySaveGeneratedCsv = vi
+      .spyOn(reportingSaveCsvToFile, "saveGeneratedCsv")
+      .mockResolvedValue();
     spyToastError = vi.spyOn(toastsStore, "toastsError");
     spyQueryNeurons = vi
       .spyOn(governanceApi, "queryNeurons")
@@ -106,21 +107,53 @@ describe("ReportingTransactionsButton", () => {
     const po = renderComponent();
 
     expect(await po.isDisabled()).toBe(false);
-    expect(spyGenerateCsvFileToSave).toHaveBeenCalledTimes(0);
+    expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(0);
 
     await po.click();
     await runResolvedPromises();
 
     const expectedFileName = `icp_transactions_export_20231014`;
-    expect(spyGenerateCsvFileToSave).toHaveBeenCalledWith(
+    expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
       })
     );
-    expect(spyGenerateCsvFileToSave).toHaveBeenCalledTimes(1);
+    expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(1);
   });
 
   it("should transform transaction data correctly", async () => {
+    const po = renderComponent();
+
+    expect(spySaveGeneratedCsv).toBeCalledTimes(0);
+
+    await po.click();
+    await runResolvedPromises();
+
+    const expectedCsvContent = [
+      "Account ID,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+      "Account Name,Main",
+      "Balance(ICP),1'234'567.8901",
+      "Controller Principal ID,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+      "Transactions,2",
+      'Export Date Time,"Oct 14, 2023 12:00 AM"',
+      "",
+      ",,TX ID,Project Name,Symbol,To,From,TX Type,Amount(ICP),Date Time",
+      ',,1234,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
+      ',,1,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
+    ].join("\n");
+
+    expect(spySaveGeneratedCsv).toBeCalledWith(
+      expect.objectContaining({
+        csvContent: expectedCsvContent,
+      })
+    );
+    expect(spySaveGeneratedCsv).toBeCalledTimes(1);
+  });
+
+  it("should transform transaction data correctly to csv", async () => {
+    const spyGenerateCsvFileToSave = vi
+      .spyOn(exportToCsv, "generateCsvFileToSave")
+      .mockResolvedValue();
     const po = renderComponent();
 
     expect(spyGenerateCsvFileToSave).toBeCalledTimes(0);
