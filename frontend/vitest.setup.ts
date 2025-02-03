@@ -93,9 +93,13 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
-Element.prototype.animate = vi
-  .fn()
-  .mockImplementation(() => ({ cancel: vi.fn(), finished: Promise.resolve() }));
+// In Gix-components and OISY we "only" mock Element.prototype.animate but, this is insufficent for the existing test suite of NNS-dapp.
+// Transition set as |global lead the test suite to fail with errors such as "TypeError: Cannot set properties of undefined (setting 'onfinish')".
+// That is why we are mocking all transition.
+// References:
+// - https://github.com/testing-library/svelte-testing-library/issues/416
+// - https://github.com/testing-library/svelte-testing-library/issues/284
+vi.mock("svelte/transition");
 
 // Environment Variables Setup
 vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
