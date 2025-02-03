@@ -42,7 +42,8 @@ const cleanupFunctions = vi.hoisted(() => {
 
 // Reset every store before each test.
 vi.mock("svelte/store", async (importOriginal) => {
-  const svelteStoreModule = await importOriginal();
+  const svelteStoreModule =
+    await importOriginal<typeof import("svelte/store")>();
   return {
     ...svelteStoreModule,
     writable: <T>(initialValue, ...otherArgs) => {
