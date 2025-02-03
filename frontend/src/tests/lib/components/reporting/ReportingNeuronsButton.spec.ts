@@ -134,6 +134,45 @@ describe("ReportingNeuronsButton", () => {
   });
 
   it("should transform neuron data correctly", async () => {
+    const spyGenerateCsvFileToSave = vi
+      .spyOn(exportToCsvUtils, "generateCsvFileToSave")
+      .mockResolvedValue();
+
+    const po = renderComponent();
+
+    expect(spyGenerateCsvFileToSave).toBeCalledTimes(0);
+
+    await po.click();
+    await runResolvedPromises();
+
+    expect(spyGenerateCsvFileToSave).toBeCalledWith(
+      expect.objectContaining({
+        datasets: expect.arrayContaining([
+          expect.objectContaining({
+            data: expect.arrayContaining([
+              expect.objectContaining({
+                neuronId: '="1"',
+                project: "Internet Computer",
+                symbol: "ICP",
+                neuronAccountId:
+                  "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
+                controllerId: "1",
+                creationDate: "Jan 1, 1970",
+                dissolveDate: "N/A",
+                dissolveDelaySeconds: "3 hours, 5 minutes",
+                stakedMaturity: "0",
+                stake: "30.00",
+                state: "Locked",
+              }),
+            ]),
+          }),
+        ]),
+      })
+    );
+    expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
+  });
+
+  it("should transform neuron data correctly to csv", async () => {
     const po = renderComponent();
 
     expect(spySaveGeneratedCsv).toBeCalledTimes(0);

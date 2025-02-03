@@ -150,6 +150,68 @@ describe("ReportingTransactionsButton", () => {
     expect(spySaveGeneratedCsv).toBeCalledTimes(1);
   });
 
+  it("should transform transaction data correctly to csv", async () => {
+    const spyGenerateCsvFileToSave = vi
+      .spyOn(exportToCsv, "generateCsvFileToSave")
+      .mockResolvedValue();
+    const po = renderComponent();
+
+    expect(spyGenerateCsvFileToSave).toBeCalledTimes(0);
+
+    await po.click();
+    await runResolvedPromises();
+
+    expect(spyGenerateCsvFileToSave).toBeCalledWith(
+      expect.objectContaining({
+        datasets: expect.arrayContaining([
+          {
+            data: expect.arrayContaining([
+              {
+                amount: "-1.0001",
+                from: "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+                id: "1234",
+                project: "Internet Computer",
+                symbol: "ICP",
+                timestamp: "Jan 1, 2023 12:00 AM",
+                to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
+                type: "Sent",
+              },
+            ]),
+            metadata: [
+              {
+                label: "Account ID",
+                value:
+                  "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+              },
+              {
+                label: "Account Name",
+                value: "Main",
+              },
+              {
+                label: "Balance(ICP)",
+                value: "1'234'567.8901",
+              },
+              {
+                label: "Controller Principal ID",
+                value:
+                  "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+              },
+              {
+                label: "Transactions",
+                value: "2",
+              },
+              {
+                label: "Export Date Time",
+                value: "Oct 14, 2023 12:00 AM",
+              },
+            ],
+          },
+        ]),
+      })
+    );
+    expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
+  });
+
   it("should fetch transactions for accounts and neurons", async () => {
     resetAccountsForTesting();
 
