@@ -74,7 +74,7 @@ describe("NeuronsTable", () => {
     neurons ??= get(neuronsStore);
 
     const testProps = $state({
-      neurons
+      neurons,
     });
 
     const { container } = render(NeuronsTable, {

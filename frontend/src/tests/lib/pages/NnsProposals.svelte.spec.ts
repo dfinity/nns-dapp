@@ -346,15 +346,13 @@ describe("NnsProposals", () => {
 
       it("should disable infinite scroll when all proposals loaded", async () => {
         const testProps = $state({
-          disableInfiniteScroll: false
+          disableInfiniteScroll: false,
         });
 
-        render(NnsProposals, {props: testProps});
+        render(NnsProposals, { props: testProps });
 
         await waitFor(() =>
-          expect(
-              testProps.disableInfiniteScroll
-          ).toBe(false)
+          expect(testProps.disableInfiniteScroll).toBe(false)
         );
       });
 
