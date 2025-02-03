@@ -55,8 +55,10 @@ describe("TokensTable", () => {
     });
 
     if (orderStore) {
-      $effect(() => {
-        orderStore.set(testProps.order);
+      $effect.root(() => {
+        $effect(() => {
+          orderStore.set(testProps.order);
+        });
       });
     }
 
