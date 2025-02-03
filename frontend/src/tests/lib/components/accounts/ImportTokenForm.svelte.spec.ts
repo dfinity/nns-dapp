@@ -16,18 +16,18 @@ describe("ImportTokenForm", () => {
     const nnsSubmit = vi.fn();
     const nnsClose = vi.fn();
 
-    const { container, component } = render(ImportTokenForm, {
-      props,
+    const reactiveProps = $state(props);
+
+    const { container } = render(ImportTokenForm, {
+      props: reactiveProps,
       events: {
         nnsSubmit: nnsSubmit,
         nnsClose: nnsClose,
       },
     });
 
-    const getPropLedgerCanisterId = () =>
-      component.$$.ctx[component.$$.props["ledgerCanisterId"]];
-    const getPropIndexCanisterId = () =>
-      component.$$.ctx[component.$$.props["indexCanisterId"]];
+    const getPropLedgerCanisterId = () => reactiveProps.ledgerCanisterId;
+    const getPropIndexCanisterId = () => reactiveProps.indexCanisterId;
 
     return {
       po: ImportTokenFormPo.under(new JestPageObjectElement(container)),

@@ -345,13 +345,15 @@ describe("NnsProposals", () => {
       });
 
       it("should disable infinite scroll when all proposals loaded", async () => {
-        const { component } = render(NnsProposals);
+        const testProps = $state({
+          disableInfiniteScroll: false
+        });
 
-        // How to check the value of a prop in a Svelte component
-        // https://github.com/testing-library/svelte-testing-library/issues/117
+        render(NnsProposals, {props: testProps});
+
         await waitFor(() =>
           expect(
-            component.$$.ctx[component.$$.props["disableInfiniteScroll"]]
+              testProps.disableInfiniteScroll
           ).toBe(false)
         );
       });

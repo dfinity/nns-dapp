@@ -52,14 +52,16 @@ describe("ResponsiveTableSortModal", () => {
     orderStore?: Writable<ResponsiveTableOrder>;
     onClose?: () => void;
   }) => {
-    const { container, component } = render(ResponsiveTableSortModal, {
-      props: {
-        columns,
-        order,
-      },
+    const testProps = $state({
+      columns,
+      order,
+    });
+
+    const { container } = render(ResponsiveTableSortModal, {
+      props: testProps,
       events: {
         nnsClose: () => {
-          orderStore?.set(component.$$.ctx[component.$$.props["order"]]);
+          orderStore?.set(testProps.order);
           onClose?.();
         },
       },

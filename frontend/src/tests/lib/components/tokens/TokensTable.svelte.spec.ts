@@ -41,25 +41,27 @@ describe("TokensTable", () => {
     orderStore?: Writable<TokensTableOrder>;
     order?: TokensTableOrder;
   }) => {
-    const { container, component } = render(TokensTable, {
-      props: {
-        userTokensData,
-        firstColumnHeader,
-        order: order ?? get(orderStore),
-      },
+    const testProps = $state({
+      userTokensData,
+      firstColumnHeader,
+      order: order ?? get(orderStore),
+    });
+
+    const { container } = render(TokensTable, {
+      props: testProps,
       events: {
         nnsAction: onAction,
       },
     });
 
     if (orderStore) {
-      component.$$.update = () => {
-        orderStore.set(component.$$.ctx[component.$$.props["order"]]);
-      };
+      $effect(() => {
+        orderStore.set(testProps.order);
+      });
     }
 
     orderStore?.subscribe((order) => {
-      component.$set({ order });
+      testProps.order = order;
     });
 
     return TokensTablePo.under(new JestPageObjectElement(container));

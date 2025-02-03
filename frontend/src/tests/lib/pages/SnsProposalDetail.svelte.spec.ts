@@ -235,10 +235,12 @@ describe("SnsProposalDetail", () => {
       });
       fakeSnsGovernanceApi.pause();
 
-      const { container, component } = render(SnsProposalDetail, {
-        props: {
-          proposalIdText: proposalId.id.toString(),
-        },
+      const testProps = $state({
+        proposalIdText: proposalId.id.toString(),
+      });
+
+      const { container } = render(SnsProposalDetail, {
+        props: testProps,
       });
       const po = SnsProposalDetailPo.under(
         new JestPageObjectElement(container)
@@ -250,7 +252,7 @@ describe("SnsProposalDetail", () => {
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
 
       page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
-      component.$set({ proposalIdText: proposalId.id.toString() });
+      testProps.proposalIdText = proposalId.id.toString();
       await waitFor(async () => expect(await po.isContentLoaded()).toBe(false));
     });
 

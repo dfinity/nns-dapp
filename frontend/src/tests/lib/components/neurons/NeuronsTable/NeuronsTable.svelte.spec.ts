@@ -72,11 +72,16 @@ describe("NeuronsTable", () => {
     neuronsStore?: Writable<TableNeuron[]>;
   }) => {
     neurons ??= get(neuronsStore);
-    const { container, component } = render(NeuronsTable, {
-      neurons,
+
+    const testProps = $state({
+      neurons
+    });
+
+    const { container } = render(NeuronsTable, {
+      props: testProps,
     });
     neuronsStore?.subscribe((neurons) => {
-      component.$set({ neurons });
+      testProps.neurons = neurons;
     });
     return NeuronsTablePo.under(new JestPageObjectElement(container));
   };
