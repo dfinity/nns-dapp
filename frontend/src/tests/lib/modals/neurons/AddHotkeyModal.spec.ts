@@ -4,7 +4,7 @@ import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {
@@ -16,7 +16,7 @@ vi.mock("$lib/services/neurons.services", () => {
 describe("AddHotkeyModal", () => {
   const renderAddHotkeyModal = async (
     events?: Record<string, ($event: CustomEvent) => void>
-  ): Promise<RenderResult<Component>> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: AddHotkeyModal,
       props: { neuron: mockNeuron },

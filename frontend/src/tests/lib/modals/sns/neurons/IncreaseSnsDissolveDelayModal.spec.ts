@@ -21,7 +21,7 @@ import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken, fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/services/sns-parameters.services");
@@ -43,7 +43,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
   const reloadNeuron = vi.fn().mockResolvedValue(undefined);
   const renderIncreaseDelayModal = async (
     neuron: SnsNeuron
-  ): Promise<RenderResult<Component>> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: IncreaseSnsDissolveDelayModal,
       props: {

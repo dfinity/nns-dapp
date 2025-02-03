@@ -29,7 +29,7 @@ import {
   waitFor,
   type RenderResult,
 } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 describe("TransactionModal", () => {
   const renderTransactionModal = ({
@@ -118,7 +118,7 @@ describe("TransactionModal", () => {
     mustSelectNetwork?: boolean;
     showLedgerFee?: boolean;
     events?: Record<string, ($event: CustomEvent) => void>;
-  }): Promise<RenderResult<Component>> => {
+  }): Promise<RenderResult<SvelteComponent>> => {
     const result = await renderTransactionModal({
       destinationAddress,
       sourceAccount,

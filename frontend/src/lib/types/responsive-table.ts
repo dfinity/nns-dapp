@@ -1,5 +1,5 @@
 import type { Comparator } from "$lib/utils/sort.utils";
-import type { Component } from "svelte";
+import type { ComponentType, SvelteComponent } from "svelte";
 
 export interface ResponsiveTableRowData {
   // Used in forEach for consistent rendering. Must be unique per table.
@@ -21,7 +21,7 @@ export interface ResponsiveTableColumn<
 > {
   id?: IdType;
   title: string;
-  cellComponent?: Component<{ rowData: RowDataType }>;
+  cellComponent?: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
   alignment: ColumnAlignment;
   templateColumns: TemplateItem[];
   comparator?: Comparator<RowDataType>;

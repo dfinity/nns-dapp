@@ -1,15 +1,12 @@
 <script lang="ts">
-  import {
-    WALLET_CONTEXT_KEY,
-    type WalletContext,
-  } from "$lib/types/wallet.context";
+  import { WALLET_CONTEXT_KEY, WalletContext } from "$lib/types/wallet.context";
   import {
     mockHardwareWalletNeuronsStore,
     mockNeuronStake,
   } from "$tests/mocks/hardware-wallet-neurons.store.mock";
-  import { setContext, type Component } from "svelte";
+  import { SvelteComponent, setContext } from "svelte";
 
-  export let testComponent: Component;
+  export let testComponent: typeof SvelteComponent;
 
   setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: mockHardwareWalletNeuronsStore,

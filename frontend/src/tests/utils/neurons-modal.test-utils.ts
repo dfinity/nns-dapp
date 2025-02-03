@@ -1,8 +1,8 @@
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 export const selectPercentage = async (
-  renderResult: RenderResult<Component>
+  renderResult: RenderResult<SvelteComponent>
 ) => {
   const { queryByTestId } = renderResult;
   const rangeElement = queryByTestId("input-range");
@@ -19,7 +19,9 @@ export const selectPercentage = async (
 
 export const AMOUNT_INPUT_SELECTOR = "input[name='amount']";
 
-export const enterAmount = async (renderResult: RenderResult<Component>) => {
+export const enterAmount = async (
+  renderResult: RenderResult<SvelteComponent>
+) => {
   const { queryAllByText, getByTestId, container } = renderResult;
 
   await waitFor(() =>

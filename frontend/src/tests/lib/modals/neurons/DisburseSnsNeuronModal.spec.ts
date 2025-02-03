@@ -19,7 +19,7 @@ import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/services/sns-accounts.services");
@@ -33,7 +33,7 @@ describe("DisburseSnsNeuronModal", () => {
   const renderDisburseModal = async (
     neuron: SnsNeuron,
     reloadNeuron: () => Promise<void> = () => Promise.resolve()
-  ): Promise<RenderResult<Component>> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: DisburseSnsNeuronModal,
       props: {

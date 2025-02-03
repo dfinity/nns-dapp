@@ -29,7 +29,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 
@@ -44,7 +44,7 @@ describe("DisburseNnsNeuronModal", () => {
 
   const renderDisburseModal = async (
     neuron: NeuronInfo
-  ): Promise<RenderResult<Component>> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: DisburseNnsNeuronModal,
       props: { neuron },

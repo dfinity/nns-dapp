@@ -3,14 +3,14 @@ import { addController } from "$lib/services/canisters.services";
 import AddControllerModal from "$tests/lib/modals/canisters/AddControllerModalTest.svelte";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 describe("AddControllerModal", () => {
   const reloadMock = vi.fn();
 
   const renderAddControllerModal = async (
     events?: Record<string, ($event: CustomEvent) => void>
-  ): Promise<RenderResult<Component>> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: AddControllerModal,
       props: { reloadDetails: reloadMock },

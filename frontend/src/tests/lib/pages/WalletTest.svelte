@@ -2,9 +2,9 @@
   import { page } from "$app/stores";
   import { AppPath } from "$lib/constants/routes.constants";
   import { pathForRouteId } from "$lib/utils/page.utils";
-  import type { Component } from "svelte";
+  import type { SvelteComponent } from "svelte";
 
-  export let testComponent: Component;
+  export let testComponent: typeof SvelteComponent;
   export let accountIdentifier: string | undefined = undefined;
   let currentAppPath: string | undefined = undefined;
   $: currentAppPath = pathForRouteId($page.route.id);

@@ -6,7 +6,7 @@ import {
 } from "$lib/types/wallet.context";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import { render } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 
 export const renderWalletActions = ({
@@ -14,7 +14,7 @@ export const renderWalletActions = ({
   component,
 }: {
   account: Account | undefined;
-  component: Component;
+  component: typeof SvelteComponent;
 }) =>
   render(ContextWrapperTest, {
     props: {

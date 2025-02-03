@@ -7,7 +7,7 @@ import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte"
 import { render } from "$tests/utils/svelte.test-utils";
 import type { RenderResult } from "@testing-library/svelte";
 import { waitFor } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 
 // TODO: rename and move this modal.mock.ts to modal.test-utils.ts
@@ -33,11 +33,11 @@ export const renderModal = async ({
   props,
   events,
 }: {
-  component: Component;
+  component: typeof SvelteComponent;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: Record<string, any>;
   events?: Record<string, ($event: CustomEvent) => void>;
-}): Promise<RenderResult<Component>> => {
+}): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(component, {
     props,
     events,
@@ -54,10 +54,10 @@ export const renderModalContextWrapper = async <T>({
   contextKey,
   contextValue,
 }: {
-  Component: Component;
+  Component: typeof SvelteComponent;
   contextKey: symbol;
   contextValue: T;
-}): Promise<RenderResult<Component>> => {
+}): Promise<RenderResult<SvelteComponent>> => {
   const modal = render(ContextWrapperTest, {
     props: {
       contextKey,
@@ -76,9 +76,9 @@ export const renderModalSelectedAccountContextWrapper = ({
   Component,
   account,
 }: {
-  Component: Component;
+  Component: typeof SvelteComponent;
   account: Account | undefined;
-}): Promise<RenderResult<Component>> =>
+}): Promise<RenderResult<SvelteComponent>> =>
   renderModalContextWrapper({
     contextKey: WALLET_CONTEXT_KEY,
     contextValue: {

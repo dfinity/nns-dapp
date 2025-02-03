@@ -11,7 +11,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 describe("NnsStakeMaturityModal", () => {
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe("NnsStakeMaturityModal", () => {
   };
   const renderNnsStakeMaturityModal = async (
     neuron = neuronIc
-  ): Promise<RenderResult<Component>> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: NnsStakeMaturityModal,
       props: {
@@ -59,7 +59,7 @@ describe("NnsStakeMaturityModal", () => {
   });
 
   it("should call stakeMaturity service on confirm click", async () => {
-    const renderResult: RenderResult<Component> =
+    const renderResult: RenderResult<SvelteComponent> =
       await renderNnsStakeMaturityModal();
 
     await selectPercentage(renderResult);
@@ -78,7 +78,7 @@ describe("NnsStakeMaturityModal", () => {
   });
 
   it("should go back in modal on cancel click", async () => {
-    const renderResult: RenderResult<Component> =
+    const renderResult: RenderResult<SvelteComponent> =
       await renderNnsStakeMaturityModal();
 
     await selectPercentage(renderResult);
@@ -104,7 +104,7 @@ describe("NnsStakeMaturityModal", () => {
     });
 
     it("should call stakeMaturity service on confirm click for HW", async () => {
-      const renderResult: RenderResult<Component> =
+      const renderResult: RenderResult<SvelteComponent> =
         await renderNnsStakeMaturityModal(neuronHW);
 
       await selectPercentage(renderResult);

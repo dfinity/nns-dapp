@@ -1,5 +1,5 @@
 import type { RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 export const testProgress = ({
   result: { container },
@@ -7,7 +7,7 @@ export const testProgress = ({
   label,
   status,
 }: {
-  result: RenderResult<Component>;
+  result: RenderResult<SvelteComponent>;
   position: number;
   label: string;
   status: "In progress" | "Completed";

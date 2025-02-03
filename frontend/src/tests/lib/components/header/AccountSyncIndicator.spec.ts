@@ -8,7 +8,7 @@ import {
   waitFor,
   type RenderResult,
 } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 
 describe("AccountSyncIndicator", () => {
   describe("not signed in", () => {
@@ -121,7 +121,7 @@ describe("AccountSyncIndicator", () => {
 
     const testPopover = async (
       label: string
-    ): Promise<RenderResult<Component>> => {
+    ): Promise<RenderResult<SvelteComponent>> => {
       const result = render(AccountSyncIndicator);
 
       const { getByTestId, queryByRole, getByText } = result;

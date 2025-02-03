@@ -12,7 +12,7 @@ import type { Principal } from "@dfinity/principal";
 import type { TokenAmountV2 } from "@dfinity/utils";
 import { toNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { SvelteComponent } from "svelte";
 import { writable } from "svelte/store";
 
 export const snsTicketMock = ({
@@ -48,7 +48,7 @@ export const renderContextCmp = ({
   summary?: SnsSummaryWrapper;
   swapCommitment?: SnsSwapCommitment;
   totalTokensSupply?: TokenAmountV2;
-  Component: Component;
+  Component: typeof SvelteComponent;
   reload?: () => void;
 }) =>
   render(ContextWrapperTest, {

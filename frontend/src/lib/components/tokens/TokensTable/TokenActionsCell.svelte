@@ -12,13 +12,15 @@
   } from "$lib/types/tokens-page";
   import { isUserTokenLoading } from "$lib/utils/user-token.utils";
   import { nonNullish } from "@dfinity/utils";
-  import type { Component } from "svelte";
+  import type { ComponentType, SvelteComponent } from "svelte";
 
   export let rowData: UserTokenData | UserTokenLoading | UserTokenFailed;
 
   const actionMapper: Record<
     UserTokenAction,
-    Component<{ userToken: UserTokenData | UserTokenFailed }>
+    ComponentType<
+      SvelteComponent<{ userToken: UserTokenData | UserTokenFailed }>
+    >
   > = {
     [UserTokenAction.GoToDetail]: GoToDetailIcon,
     [UserTokenAction.Receive]: ReceiveButton,
