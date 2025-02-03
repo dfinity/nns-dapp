@@ -3,7 +3,7 @@ import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-tr
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -17,7 +17,6 @@ describe("snsSelectedTransactionFeeStore", () => {
     tokenMetadata: mockToken,
   };
   beforeEach(() => {
-    resetSnsProjects();
     page.mock({ data: { universe: mockPrincipal.toText() } });
   });
 

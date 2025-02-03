@@ -10,7 +10,7 @@ import {
   mockSnsSwapCommitment,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -18,9 +18,6 @@ import { get } from "svelte/store";
 describe("selected sns project derived stores", () => {
   const rootCanisterId = principal(0);
   const rootCanisterIdText = rootCanisterId.toText();
-  beforeEach(() => {
-    resetSnsProjects();
-  });
 
   describe("snsOnlyProjectStore", () => {
     beforeEach(() => {

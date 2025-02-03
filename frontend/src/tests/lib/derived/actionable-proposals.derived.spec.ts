@@ -18,7 +18,7 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -27,10 +27,6 @@ describe("actionable proposals derived stores", () => {
   const principal0 = principal(0);
   const principal1 = principal(1);
   const principal2 = principal(2);
-
-  beforeEach(() => {
-    resetSnsProjects();
-  });
 
   describe("actionableProposalIndicationVisibleStore", () => {
     it("returns true when the user is signed-in and on proposals page", async () => {

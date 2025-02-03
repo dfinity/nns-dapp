@@ -26,7 +26,7 @@ import {
   createIcpUserToken,
 } from "$tests/mocks/tokens-page.mock";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -166,7 +166,6 @@ describe("tokens-list-base.derived", () => {
 
   describe("tokensListVisitorsStore", () => {
     beforeEach(() => {
-      resetSnsProjects();
       setCkETHCanisters();
     });
 
