@@ -4425,6 +4425,7 @@ dependencies = [
  "ic_principal",
  "idl2json",
  "pretty_assertions",
+ "registry-canister",
  "serde",
  "serde_bytes",
  "serde_json",

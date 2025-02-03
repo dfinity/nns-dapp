@@ -29,6 +29,7 @@ ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2025-
 ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
 ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
 ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
 
