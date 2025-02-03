@@ -3,10 +3,7 @@ import {
   sortedProposals,
 } from "$lib/derived/proposals.derived";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-import {
-  proposalsFiltersStore,
-  proposalsStore,
-} from "$lib/stores/proposals.store";
+import { proposalsStore } from "$lib/stores/proposals.store";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import type { ProposalInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -53,11 +50,6 @@ describe("proposals-derived", () => {
   });
 
   describe("filteredActionableProposals", () => {
-    beforeEach(() => {
-      proposalsStore.resetForTesting();
-      proposalsFiltersStore.reset();
-    });
-
     it("should append isActionable", () => {
       proposalsStore.setProposalsForTesting({
         proposals: [...mockProposals],

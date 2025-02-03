@@ -61,7 +61,6 @@ describe("SnsProposals", () => {
         ],
       },
     ]);
-    actionableProposalsSegmentStore.resetForTesting();
   });
 
   describe("logged in user", () => {

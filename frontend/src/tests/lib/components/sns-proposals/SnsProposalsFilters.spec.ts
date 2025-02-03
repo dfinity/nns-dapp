@@ -1,6 +1,4 @@
 import SnsProposalsFilters from "$lib/components/sns-proposals/SnsProposalsFilters.svelte";
-import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
-import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { SnsProposalFiltersPo } from "$tests/page-objects/SnsProposalFilters.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -16,8 +14,6 @@ describe("SnsProposalsFilters", () => {
 
   beforeEach(() => {
     resetIdentity();
-    proposalsFiltersStore.reset();
-    actionableProposalsSegmentStore.resetForTesting();
   });
 
   it("should render filter buttons", async () => {
@@ -49,10 +45,6 @@ describe("SnsProposalsFilters", () => {
   });
 
   describe("actionable proposals", () => {
-    beforeEach(() => {
-      proposalsFiltersStore.reset();
-    });
-
     it("should render actionable proposals segment", async () => {
       const po = await renderComponent();
 

@@ -14,13 +14,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Import tokens by URL.
-- Custom sorting of staking nervous systems table.
+* Custom sorting of staking nervous systems table.
+* Custom sorting of tokens table.
 
 #### Changed
-
-- Proceed with rollout of re-enabling of certification of certain calls from `30%` to `100%`.
-- Change the Page Banner icon in the staking page.
 
 #### Deprecated
 
@@ -28,7 +25,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-- Reporting: Add Excel string format preservation for neuron ids.
+* Fix the back button on the accounts page when navigating from the portfolio page.
 
 #### Security
 

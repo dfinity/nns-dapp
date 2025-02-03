@@ -4,7 +4,6 @@ import {
 } from "$lib/derived/sns/sns-tokens.derived";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import {
-  resetSnsProjects,
   setProdSnsProjects,
   setSnsProjects,
 } from "$tests/utils/sns.test-utils";
@@ -32,8 +31,6 @@ describe("sns-tokens.derived", () => {
   };
 
   beforeEach(() => {
-    resetSnsProjects();
-
     setSnsProjects([
       {
         rootCanisterId: Principal.fromText(batmanRootCanisterIdText),

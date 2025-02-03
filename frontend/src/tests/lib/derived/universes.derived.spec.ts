@@ -23,15 +23,11 @@ import {
   ckTESTBTCUniverseMock,
   nnsUniverseMock,
 } from "$tests/mocks/universe.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("universes derived stores", () => {
-  beforeEach(() => {
-    resetSnsProjects();
-  });
-
   describe("ckTESTBTC enabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", true);

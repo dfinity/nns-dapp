@@ -24,7 +24,7 @@ import { IcrcTokenTransactionModalPo } from "$tests/page-objects/IcrcTokenTransa
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { SnsWalletPo } from "$tests/page-objects/SnsWallet.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -74,7 +74,6 @@ describe("SnsWallet", () => {
   beforeEach(() => {
     vi.useRealTimers();
     resetIdentity();
-    resetSnsProjects();
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
     });

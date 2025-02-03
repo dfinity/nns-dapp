@@ -2,7 +2,6 @@ import * as agent from "$lib/api/agent.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import NnsProposalProposerPayloadEntry from "$lib/components/proposal-detail/NnsProposalProposerPayloadEntry.svelte";
 import { jsonRepresentationStore } from "$lib/stores/json-representation.store";
-import { proposalPayloadsStore } from "$lib/stores/proposals.store";
 import {
   mockProposalInfo,
   proposalActionMotion,
@@ -22,7 +21,6 @@ describe("NnsProposalProposerPayloadEntry", () => {
   const payload = { b: "c" };
 
   beforeEach(() => {
-    proposalPayloadsStore.reset();
     vi.spyOn(NNSDappCanister, "create").mockImplementation(() => nnsDappMock);
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });

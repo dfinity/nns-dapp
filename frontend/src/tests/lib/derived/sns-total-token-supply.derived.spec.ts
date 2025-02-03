@@ -2,17 +2,12 @@ import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.de
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
-  resetSnsProjects,
   setProdSnsProjects,
   setSnsProjects,
 } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
 
 describe("SNS Total Tokens Supply store", () => {
-  beforeEach(() => {
-    resetSnsProjects();
-  });
-
   const totalTokenSupply = 1_000_000_000n;
 
   const totalSupplyData = {

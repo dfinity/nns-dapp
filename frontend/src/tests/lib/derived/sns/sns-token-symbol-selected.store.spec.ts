@@ -3,7 +3,7 @@ import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-s
 import { page } from "$mocks/$app/stores";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -18,7 +18,6 @@ describe("currentSnsTokenLabelStore", () => {
   };
 
   beforeEach(() => {
-    resetSnsProjects();
     page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
   });
 
