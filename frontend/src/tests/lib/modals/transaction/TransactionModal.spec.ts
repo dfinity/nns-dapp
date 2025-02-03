@@ -514,9 +514,11 @@ describe("TransactionModal", () => {
 
   describe("progress", () => {
     it("should got to step progress", () => {
-      const { component } = render(TransactionModalTest);
+      const testProps = $state({ currentStep: undefined });
 
-      expect(component.$$.ctx[component.$$.props["currentStep"]]).toEqual({
+      render(TransactionModalTest, { props: testProps });
+
+      expect(testProps.currentStep).toEqual({
         name: "Progress",
         title: "",
       });

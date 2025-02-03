@@ -84,20 +84,20 @@ describe("SelectAccountDropdown", () => {
     });
 
     it("should reset selected accounts on selectable list of accounts change", async () => {
-      const { component } = render(SelectAccountDropdown, {
-        props: {
-          ...props,
-          selectedAccount: mockHardwareWalletAccount,
-        },
+      const testProps = $state({
+        ...props,
+        selectedAccount: mockHardwareWalletAccount,
+      });
+
+      render(SelectAccountDropdown, {
+        props: testProps,
       });
 
       // We are interested in the bind value(s) not the one of the HTML element. It's the bind value that kept the wrong value in memory when we developed related fix.
       // In addition, the select binds `selectedAccountIdentifier` and we also want to ensure that the side effect resolve the `selectedAccount` when the code reset it.
-      expect(component.$$.ctx[component.$$.props["selectedAccount"]]).toEqual(
-        mockHardwareWalletAccount
-      );
+      expect(testProps.selectedAccount).toEqual(mockHardwareWalletAccount);
 
-      const { component: component2 } = render(SelectAccountDropdown, {
+      render(SelectAccountDropdown, {
         props: {
           ...props,
           selectedAccount: mockHardwareWalletAccount,
@@ -106,9 +106,7 @@ describe("SelectAccountDropdown", () => {
       });
 
       await waitFor(() =>
-        expect(
-          component2.$$.ctx[component2.$$.props["selectedAccount"]]
-        ).toEqual(mockMainAccount)
+        expect(testProps.selectedAccount).toEqual(mockMainAccount)
       );
     });
 

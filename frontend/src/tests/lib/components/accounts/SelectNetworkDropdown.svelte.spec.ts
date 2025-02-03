@@ -51,10 +51,14 @@ describe("SelectNetworkDropdown", () => {
   });
 
   it("should bind select to selected network", async () => {
-    const { getByTestId, component, container } = render(
-      SelectNetworkDropdown,
-      { props }
-    );
+    const testProps = $state({
+      ...props,
+      selectedNetwork: undefined,
+    });
+
+    const { getByTestId, container } = render(SelectNetworkDropdown, {
+      props: testProps,
+    });
 
     const optionDefault = container.querySelector("option[disabled]");
     expect(optionDefault).not.toBeNull();
@@ -68,71 +72,74 @@ describe("SelectNetworkDropdown", () => {
       });
 
     await waitFor(() =>
-      expect(component.$$.ctx[component.$$.props["selectedNetwork"]]).toEqual(
-        TransactionNetwork.ICP
-      )
+      expect(testProps.selectedNetwork).toEqual(TransactionNetwork.ICP)
     );
   });
 
   it("should auto select ckBTC network", async () => {
-    const { component } = render(SelectNetworkDropdown, {
-      props: {
-        ...props,
-        selectedDestinationAddress: mockCkBTCAddress,
-      },
+    const testProps = $state({
+      ...props,
+      selectedDestinationAddress: mockCkBTCAddress,
+      selectedNetwork: undefined,
+    });
+
+    render(SelectNetworkDropdown, {
+      props: testProps,
     });
 
     await waitFor(() =>
-      expect(component.$$.ctx[component.$$.props["selectedNetwork"]]).toEqual(
-        TransactionNetwork.ICP
-      )
+      expect(testProps.selectedNetwork).toEqual(TransactionNetwork.ICP)
     );
   });
 
   it("should auto select BTC testnet network", async () => {
-    const { component } = render(SelectNetworkDropdown, {
-      props: {
-        ...props,
-        universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
-        selectedDestinationAddress: mockBTCAddressTestnet,
-      },
+    const testProps = $state({
+      ...props,
+      universeId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      selectedDestinationAddress: mockBTCAddressTestnet,
+      selectedNetwork: undefined,
+    });
+
+    render(SelectNetworkDropdown, {
+      props: testProps,
     });
 
     await waitFor(() =>
-      expect(component.$$.ctx[component.$$.props["selectedNetwork"]]).toEqual(
-        TransactionNetwork.BTC_TESTNET
-      )
+      expect(testProps.selectedNetwork).toEqual(TransactionNetwork.BTC_TESTNET)
     );
   });
 
   it("should auto select BTC mainnet network", async () => {
-    const { component } = render(SelectNetworkDropdown, {
-      props: {
-        ...props,
-        selectedDestinationAddress: mockBTCAddressMainnet,
-      },
+    const testProps = $state({
+      ...props,
+      selectedDestinationAddress: mockBTCAddressMainnet,
+      selectedNetwork: undefined,
+    });
+
+    render(SelectNetworkDropdown, {
+      props: testProps,
     });
 
     await waitFor(() =>
-      expect(component.$$.ctx[component.$$.props["selectedNetwork"]]).toEqual(
-        TransactionNetwork.BTC_MAINNET
-      )
+      expect(testProps.selectedNetwork).toEqual(TransactionNetwork.BTC_MAINNET)
     );
   });
 
   it("should auto not select BTC mainnet network", async () => {
-    const { component } = render(SelectNetworkDropdown, {
-      props: {
-        ...props,
-        selectedNetwork: TransactionNetwork.ICP,
-        selectedDestinationAddress: mockBTCAddressMainnet,
-      },
+    const testProps = $state({
+      ...props,
+      selectedNetwork: TransactionNetwork.ICP,
+      selectedDestinationAddress: mockBTCAddressMainnet,
+    });
+
+    render(SelectNetworkDropdown, {
+      props: testProps,
     });
 
     await waitFor(() =>
-      expect(
-        component.$$.ctx[component.$$.props["selectedNetwork"]]
-      ).not.toEqual(TransactionNetwork.BTC_MAINNET)
+      expect(testProps.selectedNetwork).not.toEqual(
+        TransactionNetwork.BTC_MAINNET
+      )
     );
   });
 });
