@@ -29,7 +29,7 @@
     layoutMenuOpen,
     menuCollapsed,
   } from "@dfinity/gix-components";
-  import type { ComponentType } from "svelte";
+  import type { Component } from "svelte";
   import { cubicIn, cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
 
@@ -43,7 +43,7 @@
       | typeof IconNeurons
       | typeof IconVote
       | typeof IconRocketLaunch;
-    statusIcon?: ComponentType;
+    statusIcon?: Component;
   }[];
   $: routes = [
     ...($ENABLE_PORTFOLIO_PAGE
