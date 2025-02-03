@@ -2,10 +2,6 @@ import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposal
 import { get } from "svelte/store";
 
 describe("actionable proposals segment store", () => {
-  beforeEach(() => {
-    actionableProposalsSegmentStore.resetForTesting();
-  });
-
   it('should have "actionable" by default ', () => {
     expect(get(actionableProposalsSegmentStore).selected).toEqual("actionable");
   });

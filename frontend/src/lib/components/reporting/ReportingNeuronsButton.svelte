@@ -1,20 +1,22 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { IconDown } from "@dfinity/gix-components";
-  import {
-    buildNeuronsDatasets,
-    CsvGenerationError,
-    FileSystemAccessError,
-    generateCsvFileToSave,
-  } from "$lib/utils/reporting.utils";
-  import { toastsError } from "$lib/stores/toasts.store";
-  import { formatDateCompact } from "$lib/utils/date.utils";
-  import type { NeuronInfo } from "@dfinity/nns";
-  import type { Identity } from "@dfinity/agent";
   import { queryNeurons } from "$lib/api/governance.api";
-  import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
   import { getAuthenticatedIdentity } from "$lib/services/auth.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsError } from "$lib/stores/toasts.store";
+  import { formatDateCompact } from "$lib/utils/date.utils";
+  import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
+  import {
+    CsvGenerationError,
+    FileSystemAccessError,
+  } from "$lib/utils/reporting.save-csv-to-file.utils";
+  import {
+    buildNeuronsDatasets,
+    generateCsvFileToSave,
+  } from "$lib/utils/reporting.utils";
+  import type { Identity } from "@dfinity/agent";
+  import { IconDown } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
 
   let loading = false;
 

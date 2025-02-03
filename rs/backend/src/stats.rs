@@ -38,8 +38,6 @@ pub struct Stats {
     pub stable_memory_size_bytes: Option<u64>,
     pub wasm_memory_size_bytes: Option<u64>,
     pub migration_countdown: Option<u32>, // When non-zero, a migration is in progress.
-    /// Whether account stats were recomputed on upgrade.
-    pub accounts_db_stats_recomputed_on_upgrade: Option<bool>,
 }
 
 /// Encodes the metrics into the format scraped by the monitoring system.

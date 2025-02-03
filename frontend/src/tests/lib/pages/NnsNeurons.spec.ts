@@ -1,5 +1,4 @@
 import * as api from "$lib/api/governance.api";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_YEAR,
@@ -7,15 +6,14 @@ import {
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -121,13 +119,7 @@ describe("NnsNeurons", () => {
         },
       ]);
 
-      icpSwapTickersStore.set([
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "11.00",
-        },
-      ]);
+      setIcpPrice(11);
 
       const po = await renderComponent();
 
@@ -167,13 +159,7 @@ describe("NnsNeurons", () => {
         },
       ]);
 
-      icpSwapTickersStore.set([
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "11.00",
-        },
-      ]);
+      setIcpPrice(11);
 
       const po = await renderComponent();
 

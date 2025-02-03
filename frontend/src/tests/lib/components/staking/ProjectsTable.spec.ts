@@ -16,6 +16,7 @@ import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -897,25 +898,10 @@ describe("ProjectsTable", () => {
       certified: true,
     });
 
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-      {
-        ...mockIcpSwapTicker,
-        base_id: ledgerCanisterId5.toText(),
-        last_price: "10.00",
-      },
-      {
-        ...mockIcpSwapTicker,
-        base_id: ledgerCanisterId6.toText(),
-        // This is the price of 1 ICP in tokens. So lower means the token is
-        // worth more.
-        last_price: "5.00",
-      },
-    ]);
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId5.toText()]: 1,
+      [ledgerCanisterId6.toText()]: 2,
+    });
 
     const po = renderComponent();
     const rowPos = await po.getProjectsTableRowPos();
@@ -931,5 +917,10 @@ describe("ProjectsTable", () => {
       "A without neurons",
       "X without neurons",
     ]);
+  });
+
+  it("should not disable sorting on mobile", async () => {
+    const po = renderComponent();
+    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(true);
   });
 });
