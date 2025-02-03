@@ -10,7 +10,7 @@ import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SelectUniverseDropdownPo } from "$tests/page-objects/SelectUniverseDropdown.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import {
@@ -28,7 +28,6 @@ describe("SelectUniverseNav", () => {
   };
 
   beforeEach(() => {
-    resetSnsProjects();
     resetIdentity();
     page.mock({
       data: { universe: OWN_CANISTER_ID_TEXT },

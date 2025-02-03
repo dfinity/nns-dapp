@@ -12,7 +12,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { SnsStakeNeuronModalPo } from "$tests/page-objects/SnsStakeNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Principal } from "@dfinity/principal";
 import { TokenAmount } from "@dfinity/utils";
@@ -37,7 +37,6 @@ describe("SnsStakeNeuronModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetSnsProjects();
 
     setSnsProjects([
       {

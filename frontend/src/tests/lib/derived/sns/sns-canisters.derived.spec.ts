@@ -1,5 +1,5 @@
 import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
@@ -14,8 +14,6 @@ describe("sns-canisters.derived", () => {
   const robinLedgerCanisterId = Principal.fromText(robinLedgerCanisterIdText);
 
   beforeEach(() => {
-    resetSnsProjects();
-
     setSnsProjects([
       {
         rootCanisterId: batmanRootCanisterId,

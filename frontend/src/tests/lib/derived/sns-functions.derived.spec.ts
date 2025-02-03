@@ -2,7 +2,6 @@ import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import {
-  resetSnsProjects,
   setProdSnsProjects,
   setSnsProjects,
 } from "$tests/utils/sns.test-utils";
@@ -10,10 +9,6 @@ import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
 describe("sns functions store", () => {
-  beforeEach(() => {
-    resetSnsProjects();
-  });
-
   it("should be set to an empty object", () => {
     const store = get(snsFunctionsStore);
     expect(store).toEqual({});
