@@ -140,19 +140,22 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
 }));
 
 vi.mock("./src/lib/constants/mockable.constants.ts", () => mockedConstants);
-setDefaultTestConstants({
+
+const defaultTestContants = {
   DEV: false,
   FORCE_CALL_STRATEGY: undefined,
   IS_TEST_ENV: true,
   QR_CODE_RENDERED_DEFAULT_STATE: true,
   ENABLE_QR_CODE_READER: false,
   isForceCallStrategy: function () {
-    return this.FORCE_CALL_STRATEGY === "query";
+    return defaultTestContants.FORCE_CALL_STRATEGY === "query";
   },
   notForceCallStrategy: function () {
-    return !this.isForceCallStrategy();
+    return !defaultTestContants.isForceCallStrategy();
   },
-});
+};
+
+setDefaultTestConstants(defaultTestContants);
 
 failTestsThatLogToConsole();
 
