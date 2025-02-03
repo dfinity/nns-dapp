@@ -1066,7 +1066,6 @@ describe("sns-neurons-services", () => {
         mockTokenStore
       );
 
-      tokensStore.reset();
       setSnsProjects([
         {
           rootCanisterId: mockPrincipal,

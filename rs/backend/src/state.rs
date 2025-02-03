@@ -3,7 +3,7 @@ pub mod partitions;
 pub mod tests;
 mod with_accounts_in_stable_memory;
 
-use self::partitions::{PartitionType, Partitions, PartitionsMaybe};
+use self::partitions::{PartitionType, Partitions};
 use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use crate::accounts_store::schema::proxy::AccountsDb;
 use crate::accounts_store::AccountsStore;
@@ -25,7 +25,6 @@ pub struct State {
     pub assets: Assets,
     pub asset_hashes: AssetHashes,
     pub performance: PerformanceCounts,
-    pub partitions_maybe: PartitionsMaybe,
     pub tvl_state: TvlState,
 }
 
@@ -50,7 +49,6 @@ impl core::fmt::Debug for State {
             assets: _,
             asset_hashes: _,
             performance: _,
-            partitions_maybe,
             tvl_state,
         } = self;
         writeln!(f, "State {{")?;
@@ -58,7 +56,6 @@ impl core::fmt::Debug for State {
         writeln!(f, "  assets: <html etc> (elided)")?;
         writeln!(f, "  asset_hashes: <hashes of the assets> (elided)")?;
         writeln!(f, "  performance: <stats for the metrics endpoint> (elided)")?;
-        writeln!(f, "  partitions_maybe: {partitions_maybe:?}")?;
         writeln!(f, "  tvl_state: {tvl_state:?}")?;
         writeln!(f, "}}")
     }
@@ -71,16 +68,17 @@ pub trait StableState: Sized {
 
 thread_local! {
     static STATE: RefCell<Option<State>> = const { RefCell::new(None) };
+    static PARTITIONS: RefCell<Partitions> = RefCell::new(Partitions::from(DefaultMemoryImpl::default()));
 }
 
 /// Initializes the state when the canister is initialized.
 pub fn init_state() {
-    STATE.with_borrow_mut(|s| *s = Some(State::new(DefaultMemoryImpl::default())));
+    STATE.set(Some(State::new()));
 }
 
 /// Initializes the state when the canister is upgraded.
 pub fn restore_state() {
-    STATE.with_borrow_mut(|s| *s = Some(State::new_restored(DefaultMemoryImpl::default())));
+    STATE.set(Some(State::new_restored()));
 }
 
 /// Saves the state to stable memory.
@@ -107,37 +105,53 @@ pub fn with_state_mut<R>(f: impl FnOnce(&mut State) -> R) -> R {
     STATE.with_borrow_mut(|s| f(s.as_mut().expect("State not initialized")))
 }
 
+/// An accessor for the partitions.
+pub fn with_partitions<R>(f: impl FnOnce(&Partitions) -> R) -> R {
+    PARTITIONS.with_borrow(|p| f(p))
+}
+
+/// Resets the stable memory partitions. This is only used in tests where the `Partitions` is not
+/// treated as a global variable, and usually it's only needed for `proptest!`.
+#[cfg(test)]
+pub fn reset_partitions() {
+    PARTITIONS.replace(Partitions::from(DefaultMemoryImpl::default()));
+}
+
+#[allow(clippy::new_without_default)]
 impl State {
-    /// Creates new state with the specified schema.
+    /// Creates new state. Should be called in `init`.
     #[must_use]
-    pub fn new(memory: DefaultMemoryImpl) -> Self {
-        let partitions = Partitions::from(memory);
+    pub fn new() -> Self {
+        let accounts_partition = with_partitions(|p| p.get(PartitionType::Accounts.memory_id()));
         let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
-            AccountsDbAsUnboundedStableBTreeMap::new(partitions.get(PartitionType::Accounts.memory_id())),
+            AccountsDbAsUnboundedStableBTreeMap::new(accounts_partition),
         ));
         State {
             accounts_store,
             assets: Assets::default(),
             asset_hashes: AssetHashes::default(),
             performance: PerformanceCounts::default(),
-            partitions_maybe: PartitionsMaybe::Partitions(partitions),
             tvl_state: TvlState::default(),
         }
     }
 
+    /// Recovers the state from stable memory. Should be called in `post_upgrade`.
     #[must_use]
-    pub fn new_restored(memory: DefaultMemoryImpl) -> Self {
+    pub fn new_restored() -> Self {
         println!("START state::new_restored: ())");
-        let partitions = Partitions::from(memory);
-        let mut state = Self::recover_heap_from_managed_memory(&partitions.get(PartitionType::Heap.memory_id()));
-        let accounts_db = AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(
-            partitions.get(PartitionType::Accounts.memory_id()),
-        ));
+        let accounts_partition = with_partitions(|p| p.get(PartitionType::Accounts.memory_id()));
+        let mut state = Self::recover_heap_from_managed_memory();
+        let accounts_db =
+            AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(accounts_partition));
         // Replace the default accountsdb created by `serde` with the one from stable memory.
         let _deserialized_accounts_db = state.accounts_store.replace_accounts_db(accounts_db);
-        state.partitions_maybe = PartitionsMaybe::Partitions(partitions);
         println!("END   state::new_restored: ()");
         state
+    }
+
+    /// Saves the state to stable memory. Should be called in `pre_upgrade`.
+    pub fn save(&self) {
+        self.save_heap_to_managed_memory();
     }
 }
 
@@ -165,16 +179,7 @@ impl StableState for State {
             assets,
             asset_hashes,
             performance,
-            partitions_maybe: PartitionsMaybe::None(DefaultMemoryImpl::default()),
             tvl_state,
         })
-    }
-}
-
-// Methods called on pre_upgrade and post_upgrade.
-impl State {
-    /// Saves any unsaved state to stable memory.
-    pub fn save(&self) {
-        self.save_heap_to_managed_memory();
     }
 }

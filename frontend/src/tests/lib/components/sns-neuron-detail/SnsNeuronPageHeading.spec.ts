@@ -1,5 +1,5 @@
 import SnsNeuronPageHeading from "$lib/components/sns-neuron-detail/SnsNeuronPageHeading.svelte";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
@@ -7,10 +7,8 @@ import {
 } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
@@ -19,6 +17,7 @@ import {
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -65,18 +64,10 @@ describe("SnsNeuronPageHeading", () => {
     // of the neuron age.
     vi.useFakeTimers();
 
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-      {
-        ...mockIcpSwapTicker,
-        base_id: ledgerCanisterId.toText(),
-        last_price: "100.00",
-      },
-    ]);
+    setIcpSwapUsdPrices({
+      [LEDGER_CANISTER_ID.toText()]: 10,
+      [ledgerCanisterId.toText()]: 0.1,
+    });
   });
 
   it("should render the neuron's stake", async () => {

@@ -47,32 +47,14 @@ pub struct AccountsStore {
     accounts_db: schema::proxy::AccountsDbAsProxy,
 
     accounts_db_stats: AccountsDbStats,
-    accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
-    neurons_topped_up_count: u64,
 }
-
-/// A wrapper around a value that returns true for `PartialEq` and `Eq` equality checks, regardless of the value.
-///
-/// This is intended to be used on incidental, volatile fields.  A structure containing such a field will typically wish to disregard the field in any comparison.
-#[derive(Default)]
-struct IgnoreEq<T>(T)
-where
-    T: Default;
-
-impl<T: Default> PartialEq for IgnoreEq<T> {
-    fn eq(&self, _: &Self) -> bool {
-        true
-    }
-}
-
-impl<T: Default> Eq for IgnoreEq<T> {}
 
 impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, accounts_db_stats: {:?}, neurons_topped_up_count: {:?}}}",
-            self.accounts_db, self.accounts_db_stats, self.neurons_topped_up_count,
+            "AccountsStore{{accounts_db: {:?}, accounts_db_stats: {:?}}}",
+            self.accounts_db, self.accounts_db_stats,
         )
     }
 }
@@ -248,6 +230,16 @@ pub enum RenameSubAccountResponse {
 pub struct RegisterHardwareWalletRequest {
     name: String,
     principal: PrincipalId,
+}
+
+#[cfg(test)]
+impl RegisterHardwareWalletRequest {
+    pub fn test_data() -> Self {
+        RegisterHardwareWalletRequest {
+            name: "test".to_string(),
+            principal: PrincipalId::new_user_test_id(0),
+        }
+    }
 }
 
 #[derive(CandidType)]
@@ -675,7 +667,6 @@ impl AccountsStore {
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
         stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
-        stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
 
     #[must_use]
@@ -740,7 +731,9 @@ impl StableState for AccountsStore {
             // last_ledger_sync_timestamp_nanos is unused but we need to encode
             // it for backwards compatibility.
             0u64,
-            &self.neurons_topped_up_count,
+            // neurons_topped_up_count is unused but we need to encode
+            // it for backwards compatibility.
+            0u64,
             Some(&self.accounts_db_stats),
         ))
         .into_bytes()
@@ -762,7 +755,7 @@ impl StableState for AccountsStore {
             _block_height_synced_up_to,
             _multi_part_transactions_processor,
             _last_ledger_sync_timestamp_nanos,
-            neurons_topped_up_count,
+            _neurons_topped_up_count,
             accounts_db_stats_maybe,
         ): (
             candid::Reserved,
@@ -777,11 +770,10 @@ impl StableState for AccountsStore {
             candid::Reserved,
             candid::Reserved,
             candid::Reserved,
-            u64,
+            candid::Reserved,
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
-        let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
         let Some(accounts_db_stats) = accounts_db_stats_maybe else {
             return Err("Accounts DB stats should be present since the stable structures migration.".to_string());
         };
@@ -792,8 +784,6 @@ impl StableState for AccountsStore {
             // State::from(Partitions) so it doesn't matter what we set here.
             accounts_db: AccountsDbAsProxy::default(),
             accounts_db_stats,
-            accounts_db_stats_recomputed_on_upgrade,
-            neurons_topped_up_count,
         })
     }
 }

@@ -7,10 +7,6 @@ import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("HideZeroBalancesToggle", () => {
-  beforeEach(() => {
-    hideZeroBalancesStore.resetForTesting();
-  });
-
   const renderComponent = () => {
     const { container } = render(HideZeroBalancesToggle);
     return HideZeroBalancesTogglePo.under(new JestPageObjectElement(container));

@@ -113,11 +113,12 @@ const stateInfoMapper: StateMapper = {
 export const getStateInfo = (neuronState: NeuronState): StateInfo =>
   stateInfoMapper[neuronState];
 
-// TODO(mstr): Rename to neuronPotentialVotingPower
 /**
- * Calculation of the voting power of a neuron.
+ * Calculation of the potential voting power of a neuron.
  *
- * Note: This calculation ignores the case where the neuron starts missing voting rewards due to user inactivity (related to votingPowerRefreshedTimestampSeconds).
+ * Note: The result is equal to the neuron’s potentialVotingPower field value.
+ * The actual voting power of the neuron can be found in the decidingVotingPower field,
+ * as it accounts for missing voting rewards due to user inactivity (votingPowerRefreshedTimestampSeconds).
  *
  * If neuron's dissolve delay is less than 6 months, the voting power is 0.
  *
@@ -139,7 +140,7 @@ export const getStateInfo = (neuronState: NeuronState): StateInfo =>
  * @param {number} params.newDissolveDelayInSeconds It will calculate the voting power with the new dissolve delay if provided
  * @returns {bigint}
  */
-export const neuronVotingPower = ({
+export const neuronPotentialVotingPower = ({
   neuron,
   newDissolveDelayInSeconds,
 }: {
@@ -171,12 +172,12 @@ interface VotingPowerParams {
   minDissolveDelaySeconds?: number;
 }
 
-// TODO(mstr): Rename to calculatePotentialNeuronVotingPower
-// Because it doesn't take into account the NNS neuron's activity state.
 /**
- * For now used only internally in this file.
+ * Calculate the voting power of a neuron.
  *
- * It might be useful to use it for SNS neurons.
+ * Note: For the NNS neurons it calculates potential voting power (similar to neuron.potentialVotingPower).
+ * The actual voting power of the NNS neuron can be found in the decidingVotingPower field,
+ * as it accounts for missing voting rewards due to user inactivity (votingPowerRefreshedTimestampSeconds).
  *
  * @param {VotingPowerParams}
  * @returns {bigint}

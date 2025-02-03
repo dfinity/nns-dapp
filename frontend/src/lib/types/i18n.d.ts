@@ -1008,6 +1008,7 @@ interface I18nError__imported_tokens {
   is_sns: string;
   is_important: string;
   is_icp: string;
+  invalid_canister_id: string;
 }
 
 interface I18nError__sns {
@@ -1263,7 +1264,6 @@ interface I18nPortfolio {
   held_tokens_card_title: string;
   held_tokens_card_link: string;
   held_tokens_card_list_first_column: string;
-  held_tokens_card_list_second_column_mobile: string;
   held_tokens_card_list_second_column: string;
   held_tokens_card_list_third_column: string;
   held_tokens_card_info_row: string;

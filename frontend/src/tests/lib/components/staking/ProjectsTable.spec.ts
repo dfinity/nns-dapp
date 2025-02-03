@@ -6,6 +6,7 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -15,6 +16,7 @@ import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -264,13 +266,10 @@ describe("ProjectsTable", () => {
         certified: true,
       });
       const po = renderComponent();
-      const rowPos = await po.getProjectsTableRowPos();
-      expect(rowPos).toHaveLength(2);
-      expect(await rowPos[0].getNeuronCount()).toBe("2");
-      expect(await rowPos[0].getHref()).toBe(
-        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-      );
-      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
+      const rowPo = await po.getRowByTitle("Internet Computer");
+      expect(await rowPo.getNeuronCount()).toBe("2");
+      expect(await rowPo.getHref()).toBe(`/neurons/?u=${OWN_CANISTER_ID_TEXT}`);
+      expect(await rowPo.hasGoToNeuronsTableAction()).toBe(true);
     });
 
     it("should render SNS neurons count", async () => {
@@ -280,11 +279,10 @@ describe("ProjectsTable", () => {
         certified: true,
       });
       const po = renderComponent();
-      const rowPos = await po.getProjectsTableRowPos();
-      expect(rowPos).toHaveLength(2);
-      expect(await rowPos[1].getNeuronCount()).toBe("3");
-      expect(await rowPos[1].getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
-      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
+      const rowPo = await po.getRowByTitle(snsTitle);
+      expect(await rowPo.getNeuronCount()).toBe("3");
+      expect(await rowPo.getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
+      expect(await rowPo.hasGoToNeuronsTableAction()).toBe(true);
     });
 
     it("should filter NNS neurons without stake", async () => {
@@ -309,9 +307,8 @@ describe("ProjectsTable", () => {
         certified: true,
       });
       const po = renderComponent();
-      const rowPos = await po.getProjectsTableRowPos();
-      expect(rowPos).toHaveLength(2);
-      expect(await rowPos[1].getNeuronCount()).toBe("2");
+      const rowPo = await po.getRowByTitle(snsTitle);
+      expect(await rowPo.getNeuronCount()).toBe("2");
     });
 
     it("should not render neurons count when not signed in", async () => {
@@ -691,6 +688,62 @@ describe("ProjectsTable", () => {
       expect(console.error).toBeCalledTimes(1);
     });
 
+    it("should order by stake by default", async () => {
+      const po = renderComponent();
+
+      expect(get(projectsTableOrderStore)).toEqual([
+        {
+          columnId: "stake",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+    });
+
+    it("should change order based on order store", async () => {
+      const po = renderComponent();
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+
+      projectsTableOrderStore.set([
+        {
+          columnId: "title",
+        },
+      ]);
+
+      expect(await po.getColumnHeaderWithArrow()).toBe("Nervous Systems");
+    });
+
+    it("should change order store based on clicked header", async () => {
+      const po = renderComponent();
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+
+      expect(get(projectsTableOrderStore)).toEqual([
+        {
+          columnId: "stake",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+
+      await po.clickColumnHeader("Neurons");
+
+      expect(get(projectsTableOrderStore)).toEqual([
+        {
+          columnId: "neurons",
+        },
+        {
+          columnId: "stake",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+    });
+
     describe("Nns neurons missing rewards badge", () => {
       it("should render the badge in Nns row", async () => {
         overrideFeatureFlagsStore.setFlag(
@@ -773,7 +826,7 @@ describe("ProjectsTable", () => {
     expect(await po.getProjectsTableRowPos()).toHaveLength(3);
   });
 
-  it("should sort projects", async () => {
+  it("should sort projects by stake in USD, with unpriced neurons before no neuron and then alphabetically with ICP before the rest", async () => {
     const snsNeuronWithStake = createMockSnsNeuron({
       stake: 100_000_000n,
       id: [1, 1, 3],
@@ -782,6 +835,10 @@ describe("ProjectsTable", () => {
     const rootCanisterId2 = principal(102);
     const rootCanisterId3 = principal(103);
     const rootCanisterId4 = principal(104);
+    const rootCanisterId5 = principal(105);
+    const rootCanisterId6 = principal(106);
+    const ledgerCanisterId5 = principal(205);
+    const ledgerCanisterId6 = principal(206);
     setSnsProjects([
       {
         projectName: "A without neurons",
@@ -798,6 +855,16 @@ describe("ProjectsTable", () => {
       {
         projectName: "Z with neurons",
         rootCanisterId: rootCanisterId4,
+      },
+      {
+        projectName: "C with less USD",
+        rootCanisterId: rootCanisterId5,
+        ledgerCanisterId: ledgerCanisterId5,
+      },
+      {
+        projectName: "D with more USD",
+        rootCanisterId: rootCanisterId6,
+        ledgerCanisterId: ledgerCanisterId6,
       },
     ]);
     snsNeuronsStore.setNeurons({
@@ -820,17 +887,40 @@ describe("ProjectsTable", () => {
       neurons: [snsNeuronWithStake],
       certified: true,
     });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: rootCanisterId5,
+      neurons: [snsNeuronWithStake],
+      certified: true,
+    });
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: rootCanisterId6,
+      neurons: [snsNeuronWithStake],
+      certified: true,
+    });
+
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId5.toText()]: 1,
+      [ledgerCanisterId6.toText()]: 2,
+    });
+
     const po = renderComponent();
     const rowPos = await po.getProjectsTableRowPos();
-    expect(rowPos).toHaveLength(5);
+    expect(rowPos).toHaveLength(7);
     expect(
       await Promise.all(rowPos.map((project) => project.getProjectTitle()))
     ).toEqual([
-      "Internet Computer",
+      "D with more USD",
+      "C with less USD",
       "B with neurons",
       "Z with neurons",
+      "Internet Computer",
       "A without neurons",
       "X without neurons",
     ]);
+  });
+
+  it("should not disable sorting on mobile", async () => {
+    const po = renderComponent();
+    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(true);
   });
 });

@@ -5,7 +5,6 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { ENABLE_EXPORT_NEURONS_REPORT } from "$lib/stores/feature-flags.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
-  import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
 
   onMount(async () => {
@@ -13,7 +12,7 @@
   });
 
   const back = async () => {
-    if (nonNullish($referrerPathStore)) {
+    if ($referrerPathStore.length > 0) {
       // Referrer might be a detail page which needs query parameters therefore we use the browser API to go back there
       history.back();
       return;

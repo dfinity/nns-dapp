@@ -1,6 +1,7 @@
 import * as ckBTCMinterApi from "$lib/api/ckbtc-minter.api";
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
@@ -11,12 +12,8 @@ import {
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import {
-  CKUSDC_INDEX_CANISTER_ID,
-  CKUSDC_LEDGER_CANISTER_ID,
-  CKUSDC_UNIVERSE_CANISTER_ID,
-} from "$lib/constants/ckusdc-canister-ids.constants";
-import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import {
@@ -27,6 +24,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { numberToUlps } from "$lib/utils/token.utils";
+import { page } from "$mocks/$app/stores";
 import TokensRoute from "$routes/(app)/(nns)/tokens/+page.svelte";
 import {
   mockIdentity,
@@ -49,6 +47,7 @@ import type { TokensTableRowPo } from "$tests/page-objects/TokensTableRow.page-o
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
+import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
@@ -213,15 +212,7 @@ describe("Tokens route", () => {
       setAccountsForTesting({
         main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
       });
-
-      defaultIcrcCanistersStore.setCanisters({
-        ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
-        indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
-      });
-      tokensStore.setToken({
-        canisterId: CKUSDC_UNIVERSE_CANISTER_ID,
-        token: mockCkUSDCToken,
-      });
+      setCkUSDCCanisters();
     });
 
     describe("when logged in", () => {
@@ -546,9 +537,11 @@ describe("Tokens route", () => {
         expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
 
         const tokensPagePo = po.getTokensPagePo();
-        const rowsPos = await tokensPagePo.getTokensTable().getRows();
+        const rowPo = await tokensPagePo
+          .getTokensTable()
+          .getRowByName("Internet Computer");
 
-        expect(await rowsPos[0].getBalanceInUsd()).toEqual("$12.35");
+        expect(await rowPo.getBalanceInUsd()).toEqual("$12.35");
       });
 
       it("should not load ICP Swap tickers without feature flag", async () => {
@@ -669,22 +662,20 @@ describe("Tokens route", () => {
             );
           });
 
-          it("should display imported tokens after important with balance", async () => {
+          it("should display imported tokens after important and before SNS", async () => {
             const po = await renderPage();
             const tokensPagePo = po.getTokensPagePo();
             expect(await tokensPagePo.getTokenNames()).toEqual([
+              // With balance:
               "Internet Computer",
-              // ck with balance
-              "ckBTC",
-              "ckUSDC",
-              // Imported tokens should be placed with the SNS tokens that have a non-zero balance
-              // and should be sorted alphabetically.
-              "ATOKEN2", // Imported without balance
-              "Tetris", // SNS with balance
-              "ZTOKEN1", // Imported with balance
+              "ckBTC", // Important
+              "ckUSDC", // Important
+              "ZTOKEN1", // Imported
+              "Tetris", // SNS
               // Zero balance
-              "ckETH",
-              "Pacman",
+              "ckETH", // Important
+              "ATOKEN2", // Imported
+              "Pacman", // SNS
             ]);
           });
         });
@@ -765,11 +756,11 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ATOKEN2",
-          "Tetris",
           "ZTOKEN1",
-          failedImportedTokenIdText, // failed imported token
+          "Tetris",
           "ckETH",
+          "ATOKEN2",
+          failedImportedTokenIdText, // failed imported token
           "Pacman",
         ]);
       });
@@ -785,11 +776,11 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "Tetris",
           "ZTOKEN1",
+          "Tetris",
+          "ckETH",
           failedImportedTokenIdText, // failed
           importedToken2Id.toText(), // failed
-          "ckETH",
           "Pacman",
         ]);
       });
@@ -898,11 +889,11 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ATOKEN2",
-          "Tetris",
           "ZTOKEN1",
-          "aaaaa-aa", // failedTokenRow
+          "Tetris",
           "ckETH",
+          "ATOKEN2",
+          "aaaaa-aa", // failedTokenRow
           "Pacman",
         ]);
 
@@ -937,10 +928,10 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ATOKEN2",
-          "Tetris",
           "ZTOKEN1",
+          "Tetris",
           "ckETH",
+          "ATOKEN2",
           "Pacman",
         ]);
       });
@@ -1053,6 +1044,42 @@ describe("Tokens route", () => {
         expect(get(icpSwapTickersStore)).toBeUndefined();
         expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
       });
+    });
+  });
+
+  describe("import tokens", () => {
+    beforeEach(() => {
+      setNoIdentity();
+      page.mock({
+        routeId: AppPath.Tokens,
+        data: {
+          universe: OWN_CANISTER_ID_TEXT,
+          importTokenLedgerId: principal(1).toText(),
+        },
+      });
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(undefined);
+    });
+
+    it("opens import token modal when ledger canister id in URL", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
+
+      const po = await renderPage();
+      await runResolvedPromises();
+
+      expect(
+        await po.getSignInTokensPagePo().getImportTokenModalPo().isPresent()
+      ).toBe(true);
+    });
+
+    it("does not open import token modal when flag disabled", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", false);
+
+      const po = await renderPage();
+      await runResolvedPromises();
+
+      expect(
+        await po.getSignInTokensPagePo().getImportTokenModalPo().isPresent()
+      ).toBe(false);
     });
   });
 });

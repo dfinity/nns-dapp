@@ -60,7 +60,7 @@ test("Test canisters", async ({ page, context }) => {
   step("Rename canister");
   const canisterCards = await canistersPo.getCanisterCardPos();
   expect(canisterCards).toHaveLength(2);
-  const [myCanisterCard, linkedCanisterCard] = canisterCards;
+  let [myCanisterCard, linkedCanisterCard] = canisterCards;
   expect(await myCanisterCard.getCanisterName()).toBe(canisterName);
   expect(await linkedCanisterCard.getCanisterName()).toBe(linkedCanisterName);
   await myCanisterCard.click();
@@ -85,6 +85,8 @@ test("Test canisters", async ({ page, context }) => {
 
   step("Verify name");
   await appPo.goBack();
+  await canistersPo.waitForContentLoaded();
+  [myCanisterCard, linkedCanisterCard] = await canistersPo.getCanisterCardPos();
   expect(await myCanisterCard.getCanisterName()).toBe(newCanisterName);
 
   step("Open linked canister");

@@ -23,7 +23,6 @@ describe("icrc-transactions services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    icrcTransactionsStore.reset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 

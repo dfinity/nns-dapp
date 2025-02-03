@@ -61,7 +61,7 @@ export const getIcpToCyclesExchangeRate = async (
   logWithTimestamp("Getting ICP to Cycles ratio call...");
   const { cmc } = await canisters(identity);
 
-  const response = await cmc.getIcpToCyclesConversionRate();
+  const response = await cmc.getIcpToCyclesConversionRate({ certified: true });
 
   logWithTimestamp("Getting ICP to Cycles ratio complete.");
 

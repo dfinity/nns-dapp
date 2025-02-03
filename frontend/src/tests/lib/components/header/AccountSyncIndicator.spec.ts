@@ -11,10 +11,6 @@ import {
 import type { Component } from "svelte";
 
 describe("AccountSyncIndicator", () => {
-  beforeEach(() => {
-    syncStore.reset();
-  });
-
   describe("not signed in", () => {
     beforeEach(() => {
       setNoIdentity();

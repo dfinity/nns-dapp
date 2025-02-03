@@ -5,6 +5,9 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import type { Universe } from "$lib/types/universe";
 import {
+  compareByNeuronCount,
+  compareByStake,
+  compareByStakeInUsd,
   getTableProjects,
   getTotalStakeInUsd,
   sortTableProjects,
@@ -616,6 +619,83 @@ describe("staking.utils", () => {
           isStakeLoading: true,
         },
       ]);
+    });
+  });
+
+  describe("compareByNeuronCount", () => {
+    it("should compare by number of neurons", () => {
+      const project1 = {
+        ...mockTableProject,
+        neuronCount: 1,
+      };
+      const project2 = {
+        ...mockTableProject,
+        neuronCount: 2,
+      };
+
+      expect(compareByNeuronCount(project1, project2)).toEqual(1);
+    });
+  });
+
+  describe("compareByStakeInUsd", () => {
+    it("should compare by USD balance", () => {
+      const project1 = {
+        ...mockTableProject,
+        stakeInUsd: 1,
+      };
+      const project2 = {
+        ...mockTableProject,
+        stakeInUsd: 2,
+      };
+
+      expect(compareByStakeInUsd(project1, project2)).toEqual(1);
+    });
+  });
+
+  describe("compareByStake", () => {
+    it("should compare by USD stake", () => {
+      const project1 = {
+        ...mockTableProject,
+        stakeInUsd: 1,
+      };
+      const project2 = {
+        ...mockTableProject,
+        stakeInUsd: 2,
+      };
+
+      expect(compareByStake(project1, project2)).toEqual(1);
+    });
+
+    it("should compare projects with neurons before projects without neurons, if neither has a stake in USD", () => {
+      const project1 = {
+        ...mockTableProject,
+        stakeInUsd: undefined,
+        neuronCount: 0,
+      };
+      const project2 = {
+        ...mockTableProject,
+        stakeInUsd: undefined,
+        neuronCount: 1,
+      };
+
+      expect(compareByStake(project1, project2)).toEqual(1);
+    });
+
+    it("should compare ICP before other projects, if neither have neurons", () => {
+      const project1 = {
+        ...mockTableProject,
+        stakeInUsd: undefined,
+        neuronCount: 0,
+        universeId: principal(2).toText(),
+      };
+      const project2 = {
+        ...mockTableProject,
+        stakeInUsd: undefined,
+        neuronCount: 0,
+        universeId: OWN_CANISTER_ID_TEXT,
+      };
+
+      expect(compareByStake(project1, project2)).toEqual(1);
     });
   });
 

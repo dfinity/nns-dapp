@@ -38,7 +38,7 @@
   onMount(async () => {
     const reload = reloadRouteData({
       expectedPreviousPath: AppPath.Canister,
-      effectivePreviousPath: $referrerPathStore,
+      effectivePreviousPath: $referrerPathStore.at(-1),
       currentData: $canistersStore.canisters,
     });
 
@@ -78,7 +78,7 @@
     </div>
 
     <div class="card-grid">
-      {#each $canistersStore.canisters ?? [] as canister (canister.canister_id)}
+      {#each $canistersStore.canisters ?? [] as canister (canister.canister_id.toText())}
         <CanisterCard
           ariaLabel={$i18n.canisters.aria_label_canister_card}
           href={buildCanisterDetailsHref(canister.canister_id)}

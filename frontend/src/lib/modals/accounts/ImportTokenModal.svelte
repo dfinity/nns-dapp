@@ -8,10 +8,13 @@
   import { matchLedgerIndexPair } from "$lib/services/icrc-index.services";
   import { addImportedToken } from "$lib/services/imported-tokens.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING } from "$lib/stores/feature-flags.store";
+  import {
+    DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING,
+    ENABLE_IMPORT_TOKEN_BY_URL,
+  } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
@@ -22,10 +25,12 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import { Principal } from "@dfinity/principal";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { pageStore } from "$lib/derived/page.derived";
 
   let currentStep: WizardStep | undefined = undefined;
 
@@ -51,6 +56,56 @@
   let indexCanisterId: Principal | undefined;
   let tokenMetaData: IcrcTokenMetadata | undefined;
 
+  const getCanisterIdFromText = (
+    canisterIdText: string
+  ): Principal | undefined => {
+    try {
+      return Principal.fromText(canisterIdText);
+    } catch (err) {
+      console.error(err);
+      toastsError({
+        labelKey: "error__imported_tokens.invalid_canister_id",
+        substitutions: { $canisterId: canisterIdText },
+      });
+      close();
+    }
+  };
+  let isLedgerCanisterIdProcessed = false;
+  $: {
+    if (
+      $ENABLE_IMPORT_TOKEN_BY_URL &&
+      !isLedgerCanisterIdProcessed &&
+      isNullish(ledgerCanisterId) &&
+      nonNullish($pageStore.importTokenLedgerId)
+    ) {
+      isLedgerCanisterIdProcessed = true;
+      ledgerCanisterId = getCanisterIdFromText($pageStore.importTokenLedgerId);
+    }
+  }
+  let isIndexCanisterIdProcessed = false;
+  $: {
+    if (
+      $ENABLE_IMPORT_TOKEN_BY_URL &&
+      !isIndexCanisterIdProcessed &&
+      isNullish(indexCanisterId) &&
+      nonNullish($pageStore.importTokenIndexId)
+    ) {
+      isIndexCanisterIdProcessed = true;
+      indexCanisterId = getCanisterIdFromText($pageStore.importTokenIndexId);
+    }
+  }
+
+  let isAutoSubmitDone = false;
+  $: if (
+    $ENABLE_IMPORT_TOKEN_BY_URL &&
+    !isAutoSubmitDone &&
+    // Wait for the imported tokens to be loaded (for successful validation).
+    nonNullish($importedTokensStore?.importedTokens)
+  ) {
+    isAutoSubmitDone = true;
+    onSubmit();
+  }
+
   const getTokenMetaData = async (
     ledgerCanisterId: Principal
   ): Promise<IcrcTokenMetadata | undefined> => {
@@ -63,19 +118,16 @@
       });
     }
   };
+  const wasAlreadyImported = (ledgerCanisterId: Principal): boolean =>
+    isImportedToken({
+      ledgerCanisterId,
+      importedTokens: $importedTokensStore?.importedTokens,
+    });
   const validateLedgerCanister = (
     ledgerCanisterId: Principal
   ): { errorLabelKey: string | undefined } => {
     if (ledgerCanisterId.toText() === LEDGER_CANISTER_ID.toText()) {
       return { errorLabelKey: "error__imported_tokens.is_icp" };
-    }
-    if (
-      isImportedToken({
-        ledgerCanisterId,
-        importedTokens: $importedTokensStore?.importedTokens,
-      })
-    ) {
-      return { errorLabelKey: "error__imported_tokens.is_duplication" };
     }
     if (
       isSnsLedgerCanisterId({
@@ -108,6 +160,20 @@
         fee: 0n,
       };
       next();
+      return;
+    }
+
+    if (wasAlreadyImported(ledgerCanisterId)) {
+      toastsShow({
+        level: "warn",
+        labelKey: "error__imported_tokens.is_duplication",
+      });
+      dispatch("nnsClose");
+      goto(
+        buildWalletUrl({
+          universe: ledgerCanisterId.toText(),
+        })
+      );
       return;
     }
 
@@ -163,7 +229,7 @@
         importedTokens: $importedTokensStore.importedTokens,
       });
       if (success) {
-        dispatch("nnsClose");
+        close();
         goto(
           buildWalletUrl({
             universe: ledgerCanisterId.toText(),
@@ -174,6 +240,12 @@
       stopBusy("import-token-importing");
     }
   };
+
+  const close = () => {
+    dispatch("nnsClose");
+    // Navigate on close to clear all query parameters.
+    goto(AppPath.Tokens);
+  };
 </script>
 
 <WizardModal
@@ -181,7 +253,7 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  on:nnsClose={close}
 >
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
 
@@ -189,7 +261,7 @@
     <ImportTokenForm
       bind:ledgerCanisterId
       bind:indexCanisterId
-      on:nnsClose
+      on:nnsClose={close}
       on:nnsSubmit={onSubmit}
     />
   {/if}

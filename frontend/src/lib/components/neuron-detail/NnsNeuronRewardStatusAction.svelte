@@ -3,7 +3,7 @@
   import FollowNeuronsButton from "$lib/components/neuron-detail/actions/FollowNeuronsButton.svelte";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { secondsToRoundedDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     isNeuronFollowingReset,
@@ -100,7 +100,7 @@
   <CommonItemAction
     testId="nns-neuron-reward-status-action-component"
     tooltipText={replacePlaceholders($i18n.missing_rewards.description, {
-      $period: secondsToDissolveDelayDuration(
+      $period: secondsToRoundedDuration(
         $startReducingVotingPowerAfterSecondsStore
       ),
     })}

@@ -1,13 +1,10 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
@@ -16,6 +13,7 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import {
@@ -216,25 +214,14 @@ describe("SnsNeurons", () => {
     it("should provide USD prices", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
 
-      icpSwapTickersStore.set([
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "10.00",
-        },
-        {
-          ...mockIcpSwapTicker,
-          base_id: ledgerCanisterId.toText(),
-          last_price: "100.00",
-        },
-      ]);
+      setIcpSwapUsdPrices({
+        [ledgerCanisterId.toText()]: 0.1,
+      });
 
       const po = await renderComponent();
 
       const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
-      // We have a stake of 4 and 2 in the neurons.
-      // There are 10 USD in 1 ICP and 100 SNS tokens in 1 ICP.
-      // So each token is $0.10.
+      // We have a stake of 4 and 2 in the neurons and each token is $0.10.
       expect(await rows[0].getStakeInUsd()).toBe("$0.40");
       expect(await rows[1].getStakeInUsd()).toBe("$0.20");
     });
@@ -258,25 +245,15 @@ describe("SnsNeurons", () => {
     it("should show total stake in USD", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
 
-      icpSwapTickersStore.set([
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "10.00",
-        },
-        {
-          ...mockIcpSwapTicker,
-          base_id: ledgerCanisterId.toText(),
-          last_price: "100.00",
-        },
-      ]);
+      setIcpSwapUsdPrices({
+        [ledgerCanisterId.toText()]: 0.1,
+      });
 
       const po = await renderComponent();
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
-      // We have a stake of 4 and 2 in the neurons, for a total of 6.
-      // There are 10 USD in 1 ICP and 100 SNS tokens in 1 ICP.
-      // So each token is $0.10.
+      // We have a stake of 4 and 2 in the neurons, for a total of 6
+      // and each token is $0.10.
       expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$0.60");
       expect(
         await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
@@ -286,14 +263,10 @@ describe("SnsNeurons", () => {
     it("should show absent total stake in USD if token price is unknown", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
 
-      icpSwapTickersStore.set([
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "10.00",
-        },
+      setIcpSwapUsdPrices({
         // No price for the SNS token.
-      ]);
+        [ledgerCanisterId.toText()]: undefined,
+      });
 
       const po = await renderComponent();
 

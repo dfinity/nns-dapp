@@ -7,7 +7,7 @@
   import {
     formatVotingPower,
     neuronStake,
-    neuronVotingPower,
+    neuronPotentialVotingPower,
   } from "$lib/utils/neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
@@ -66,7 +66,7 @@
     <p class="label">{$i18n.neurons.voting_power}</p>
     <p class="value">
       {formatVotingPower(
-        neuronVotingPower({
+        neuronPotentialVotingPower({
           neuron,
           newDissolveDelayInSeconds: delayInSeconds,
         })

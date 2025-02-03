@@ -13,9 +13,13 @@
   import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
+  import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import {
+    compareByNeuronCount,
+    compareByProjectTitle,
+    compareByStake,
     getTableProjects,
     getTotalStakeInUsd,
     sortTableProjects,
@@ -30,10 +34,12 @@
 
   const columns: ProjectsTableColumn[] = [
     {
+      id: "title",
       title: $i18n.staking.nervous_systems,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["minmax(min-content, max-content)"],
+      comparator: compareByProjectTitle,
     },
     {
       title: "",
@@ -41,10 +47,12 @@
       templateColumns: ["1fr"],
     },
     {
+      id: "stake",
       title: $i18n.neuron_detail.stake,
       cellComponent: ProjectStakeCell,
       alignment: "right",
       templateColumns: ["max-content"],
+      comparator: compareByStake,
     },
     {
       title: "",
@@ -63,10 +71,12 @@
       templateColumns: ["1fr"],
     },
     {
+      id: "neurons",
       title: $i18n.neurons.title,
       cellComponent: ProjectNeuronsCell,
       alignment: "right",
       templateColumns: ["max-content"],
+      comparator: compareByNeuronCount,
     },
     {
       title: "",
@@ -128,6 +138,7 @@
     tableData={sortedTableProjects}
     {columns}
     on:nnsAction={handleAction}
+    bind:order={$projectsTableOrderStore}
   ></ResponsiveTable>
 </div>
 

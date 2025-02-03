@@ -60,7 +60,7 @@ export const daysToDuration = (days: number): string => {
  *
  * @param seconds
  */
-export const secondsToDissolveDelayDuration = (seconds: bigint): string => {
+export const secondsToRoundedDuration = (seconds: bigint): string => {
   const i18nObj = get(i18n);
   const years = seconds / BigInt(SECONDS_IN_YEAR);
   const months = (seconds % BigInt(SECONDS_IN_YEAR)) / BigInt(SECONDS_IN_MONTH);

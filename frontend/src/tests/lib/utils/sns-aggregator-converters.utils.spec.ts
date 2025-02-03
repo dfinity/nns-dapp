@@ -755,6 +755,7 @@ describe("sns aggregator converters utils", () => {
             ],
           },
         ],
+        automatically_advance_target_version: [],
         max_dissolve_delay_seconds: [252460800n],
         max_dissolve_delay_bonus_percentage: [100n],
         max_followees_per_function: [15n],
@@ -774,11 +775,7 @@ describe("sns aggregator converters utils", () => {
         transaction_fee_e8s: [100000n],
         max_number_of_proposals_with_ballots: [700n],
         max_age_bonus_percentage: [25n],
-        neuron_grantable_permissions: [
-          {
-            permissions: [0, 1, 2, 3, 4],
-          },
-        ],
+        neuron_grantable_permissions: [{ permissions: [0, 1, 2, 3, 4] }],
         voting_rewards_parameters: [
           {
             final_reward_rate_basis_points: [75n],
@@ -821,6 +818,7 @@ describe("sns aggregator converters utils", () => {
       };
 
       const expectedSnsNervousSystemParameters: SnsNervousSystemParameters = {
+        automatically_advance_target_version: [],
         default_followees: [],
         max_dissolve_delay_seconds: [],
         max_dissolve_delay_bonus_percentage: [],

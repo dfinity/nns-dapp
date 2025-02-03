@@ -65,9 +65,9 @@ import {
   neuronAge,
   neuronAvailableMaturity,
   neuronCanBeSplit,
+  neuronPotentialVotingPower,
   neuronStake,
   neuronStakedMaturity,
-  neuronVotingPower,
   neuronsVotingPower,
   secondsUntilMissingReward,
   shouldDisplayMissingRewardNotification,
@@ -118,7 +118,7 @@ describe("neuron-utils", () => {
     neuronsStore.setNeurons({ neurons: [], certified: true });
   });
 
-  describe("votingPower", () => {
+  describe("neuronPotentialVotingPower", () => {
     const tokenStake = TokenAmount.fromString({
       amount: "2.2",
       token: ICPToken,
@@ -134,7 +134,7 @@ describe("neuron-utils", () => {
     };
     it("should return zero for delays less than six months", () => {
       expect(
-        neuronVotingPower({
+        neuronPotentialVotingPower({
           neuron: mockNeuron,
           newDissolveDelayInSeconds: 100n,
         })
@@ -143,7 +143,7 @@ describe("neuron-utils", () => {
 
     it("should return more than stake when delay more than six months", () => {
       expect(
-        neuronVotingPower({
+        neuronPotentialVotingPower({
           neuron,
           newDissolveDelayInSeconds: BigInt(
             SECONDS_IN_HALF_YEAR + SECONDS_IN_HOUR
@@ -158,7 +158,7 @@ describe("neuron-utils", () => {
         dissolveDelaySeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
       };
       expect(
-        neuronVotingPower({
+        neuronPotentialVotingPower({
           neuron: agedNeuron,
         })
       ).toBe(tokenStake.toE8s() * 2n);
@@ -176,10 +176,10 @@ describe("neuron-utils", () => {
         ageSeconds: 2n,
         dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
       };
-      const powerWithAge = neuronVotingPower({
+      const powerWithAge = neuronPotentialVotingPower({
         neuron: agedNeuron,
       });
-      const powerWithoutAge = neuronVotingPower({
+      const powerWithoutAge = neuronPotentialVotingPower({
         neuron: notSoAgedNeuron,
       });
       expect(powerWithAge).toBeGreaterThan(powerWithoutAge);
@@ -191,11 +191,11 @@ describe("neuron-utils", () => {
         ageSeconds: BigInt(SECONDS_IN_YEAR),
         dissolveDelaySeconds: BigInt(SECONDS_IN_YEAR),
       };
-      const powerWithNewDissolve = neuronVotingPower({
+      const powerWithNewDissolve = neuronPotentialVotingPower({
         neuron: agedNeuron,
         newDissolveDelayInSeconds: BigInt(SECONDS_IN_EIGHT_YEARS),
       });
-      const powerWithoutAge = neuronVotingPower({
+      const powerWithoutAge = neuronPotentialVotingPower({
         neuron: agedNeuron,
       });
       expect(powerWithNewDissolve).toBeGreaterThan(powerWithoutAge);
@@ -211,7 +211,7 @@ describe("neuron-utils", () => {
           cachedNeuronStake: 200_000_000n,
         },
       };
-      const power = neuronVotingPower({
+      const power = neuronPotentialVotingPower({
         neuron,
       });
       expect(power).toEqual(252_343_750n);

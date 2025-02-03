@@ -1499,7 +1499,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101463598559589840,
+    "icrc1_total_supply": 101555937187566468,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3086,6 +3086,19 @@
               "target_method_name": "icrc55_command"
             }
           }
+        },
+        {
+          "id": 7001,
+          "name": "transfer DKP",
+          "description": "transfer DKP from Neutrinite",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
+              "target_canister_id": "zfcdd-tqaaa-aaaaq-aaaga-cai",
+              "validator_method_name": "validate_icrc_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -3539,7 +3552,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100742893505862,
+    "icrc1_total_supply": 100772279094188,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4314,7 +4327,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995563588980,
+    "icrc1_total_supply": 995562026980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5795,6 +5808,32 @@
               "target_method_name": "NFTUnStake"
             }
           }
+        },
+        {
+          "id": 1097,
+          "name": "monitor_icp_to_cycles",
+          "description": "Converts ICP to Cycles. (This is done manually, Monitor also has an automatic conversion feature based on the configuration.)",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMonitorIcpToCycles",
+              "target_method_name": "monitor_icp_to_cycles"
+            }
+          }
+        },
+        {
+          "id": 1098,
+          "name": "validatorMonitorSendCycles",
+          "description": "Sends Cycles to a specific canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+              "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+              "validator_method_name": "validatorMonitorSendCycles",
+              "target_method_name": "monitor_send_cycles"
+            }
+          }
         }
       ]
     },
@@ -7220,7 +7259,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19206210561471362,
+    "icrc1_total_supply": 19207972351830883,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9229,7 +9268,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25262344526916402,
+    "icrc1_total_supply": 25262587863625653,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10700,7 +10739,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10053577343093811,
+    "icrc1_total_supply": 10055785070192885,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11952,7 +11991,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103452556594683149,
+    "icrc1_total_supply": 103464983687760525,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12533,6 +12572,19 @@
               "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
               "validator_method_name": "addPoolInstallersValidate",
               "target_method_name": "addPoolInstallers"
+            }
+          }
+        },
+        {
+          "id": 1203,
+          "name": "SetInstallerModuleHash",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "target_canister_id": "4mmnk-kiaaa-aaaag-qbllq-cai",
+              "validator_method_name": "setInstallerModuleHashValidate",
+              "target_method_name": "setInstallerModuleHash"
             }
           }
         },
@@ -13196,7 +13248,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98625264299377429,
+    "icrc1_total_supply": 98631401352778104,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14371,7 +14423,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99923743835706324,
+    "icrc1_total_supply": 99923762145693423,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15555,7 +15607,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100099551975129988,
+    "icrc1_total_supply": 100101047563631280,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

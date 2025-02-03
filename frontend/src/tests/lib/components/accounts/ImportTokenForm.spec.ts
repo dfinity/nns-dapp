@@ -1,4 +1,6 @@
 import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenFormPo } from "$tests/page-objects/ImportTokenForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -36,6 +38,11 @@ describe("ImportTokenForm", () => {
     };
   };
 
+  beforeEach(() => {
+    resetIdentity();
+    overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
+  });
+
   it("should render ledger canister id", async () => {
     const { po } = renderComponent({
       ledgerCanisterId: principal(0),
@@ -65,7 +72,7 @@ describe("ImportTokenForm", () => {
     expect(await po.getIndexCanisterInputPo().isRequired()).toEqual(false);
   });
 
-  it("should render a warning message", async () => {
+  it("should render a warning message and next button when sign-in", async () => {
     const { po } = renderComponent({
       ledgerCanisterId: principal(0),
       indexCanisterId: undefined,
@@ -74,6 +81,9 @@ describe("ImportTokenForm", () => {
     expect((await po.getWarningPo().getText()).trim()).toEqual(
       "Warning: Be careful what token you import! Anyone can create a token including one with the same name as existing tokens, such as ckBTC."
     );
+    expect(await po.getSignBannerPo().isPresent()).toEqual(false);
+    expect(await po.getSignInPo().isPresent()).toEqual(false);
+    expect(await po.getSubmitButtonPo().isPresent()).toEqual(true);
   });
 
   it("should enable the next button only when the ledger canister id is valid", async () => {
@@ -179,5 +189,20 @@ describe("ImportTokenForm", () => {
       "Index Canister ID"
     );
     expect(await po.getSubmitButtonPo().getText()).toEqual("Add");
+  });
+
+  it("displays sign-in invitation when signed-out", async () => {
+    setNoIdentity();
+    const ledgerCanisterId = principal(0);
+    const { po } = renderComponent({
+      ledgerCanisterId,
+      indexCanisterId: undefined,
+      addIndexCanisterMode: true,
+    });
+
+    expect(await po.getSignInPo().isPresent()).toEqual(true);
+    expect(await po.getSubmitButtonPo().isPresent()).toEqual(false);
+    expect(await po.getSignBannerPo().isPresent()).toEqual(true);
+    expect(await po.getWarningPo().isPresent()).toEqual(false);
   });
 });

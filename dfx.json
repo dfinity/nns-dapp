@@ -428,7 +428,7 @@
           "ENABLE_USD_VALUES": true,
           "ENABLE_USD_VALUES_FOR_NEURONS": true,
           "ENABLE_PORTFOLIO_PAGE": true,
-          "ENABLE_IMPORT_TOKEN_BY_URL": false
+          "ENABLE_IMPORT_TOKEN_BY_URL": true
         }
       }
     },
@@ -443,7 +443,7 @@
         "DIDC_VERSION": "didc 0.4.0",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2025-01-22",
+        "SNSDEMO_RELEASE": "release-2025-01-29",
         "IC_COMMIT_FOR_PROPOSALS": "release-2025-01-23_03-04-hashes-in-blocks",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-01-23_03-04-hashes-in-blocks"
       },

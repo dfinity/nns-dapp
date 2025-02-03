@@ -7,7 +7,7 @@ import {
   nanoSecondsToDateTime,
   secondsToDate,
   secondsToDateTime,
-  secondsToDissolveDelayDuration,
+  secondsToRoundedDuration,
   secondsToTime,
 } from "$lib/utils/date.utils";
 import en from "$tests/mocks/i18n.mock";
@@ -73,53 +73,49 @@ describe("daysToDuration", () => {
   });
 });
 
-describe("secondsToDissolveDelayDuration", () => {
+describe("secondsToRoundedDuration", () => {
   it("should display a day", () => {
-    expect(secondsToDissolveDelayDuration(BigInt(SECONDS_IN_DAY))).toContain(
+    expect(secondsToRoundedDuration(BigInt(SECONDS_IN_DAY))).toContain(
       en.time.day
     );
-    expect(secondsToDissolveDelayDuration(BigInt(SECONDS_IN_DAY))).toContain(
-      "1"
-    );
+    expect(secondsToRoundedDuration(BigInt(SECONDS_IN_DAY))).toContain("1");
   });
 
   it("should display 1 month", () => {
-    expect(secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH))).toContain(
+    expect(secondsToRoundedDuration(BigInt(SECONDS_IN_MONTH))).toContain(
       en.time.month
     );
-    expect(secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH))).toContain(
-      "1"
+    expect(secondsToRoundedDuration(BigInt(SECONDS_IN_MONTH))).toContain("1");
+    expect(secondsToRoundedDuration(BigInt(SECONDS_IN_MONTH))).not.toContain(
+      en.time.month_plural
     );
-    expect(
-      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH))
-    ).not.toContain(en.time.month_plural);
   });
 
   it("should display 2 months", () => {
-    expect(
-      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 2))
-    ).toContain(en.time.month_plural);
-    expect(
-      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 2))
-    ).toContain("2");
+    expect(secondsToRoundedDuration(BigInt(SECONDS_IN_MONTH * 2))).toContain(
+      en.time.month_plural
+    );
+    expect(secondsToRoundedDuration(BigInt(SECONDS_IN_MONTH * 2))).toContain(
+      "2"
+    );
   });
 
   it("should display 1 year", () => {
+    expect(secondsToRoundedDuration(BigInt(SECONDS_IN_MONTH * 12))).toContain(
+      en.time.year
+    );
+    expect(secondsToRoundedDuration(BigInt(SECONDS_IN_MONTH * 12))).toContain(
+      "1"
+    );
     expect(
-      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 12))
-    ).toContain(en.time.year);
-    expect(
-      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 12))
-    ).toContain("1");
-    expect(
-      secondsToDissolveDelayDuration(BigInt(SECONDS_IN_MONTH * 12))
+      secondsToRoundedDuration(BigInt(SECONDS_IN_MONTH * 12))
     ).not.toContain(en.time.year_plural);
   });
 
   it("should display 2 years, 9 months, 11 days", () => {
-    expect(secondsToDissolveDelayDuration(87_654_321n)).toContain("2");
-    expect(secondsToDissolveDelayDuration(87_654_321n)).toContain("9");
-    expect(secondsToDissolveDelayDuration(87_654_321n)).toContain("11");
+    expect(secondsToRoundedDuration(87_654_321n)).toContain("2");
+    expect(secondsToRoundedDuration(87_654_321n)).toContain("9");
+    expect(secondsToRoundedDuration(87_654_321n)).toContain("11");
   });
 });
 

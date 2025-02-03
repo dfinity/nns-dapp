@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { Modal } from "@dfinity/gix-components";
   import { createEventDispatcher, onMount } from "svelte";
-  import { secondsToDissolveDelayDuration } from "$lib/utils/date.utils";
+  import { secondsToRoundedDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
@@ -56,7 +56,7 @@
     {#if nonNullish($startReducingVotingPowerAfterSecondsStore)}
       <p class="description" data-tid="losing-rewards-description">
         {replacePlaceholders($i18n.missing_rewards.description, {
-          $period: secondsToDissolveDelayDuration(
+          $period: secondsToRoundedDuration(
             BigInt($startReducingVotingPowerAfterSecondsStore)
           ),
         })}

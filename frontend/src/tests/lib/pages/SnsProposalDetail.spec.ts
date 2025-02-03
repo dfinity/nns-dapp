@@ -73,7 +73,6 @@ describe("SnsProposalDetail", () => {
     resetIdentity();
     page.reset();
     resetSnsProjects();
-    actionableProposalsSegmentStore.resetForTesting();
   });
 
   describe("not logged in", () => {

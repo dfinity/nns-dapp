@@ -17,10 +17,6 @@ describe("icpAccountBalancesStore", () => {
     });
   };
 
-  beforeEach(() => {
-    icpAccountBalancesStore.resetForTesting();
-  });
-
   it("should be initialized to empty", () => {
     expect(get(icpAccountBalancesStore)).toEqual({});
   });
