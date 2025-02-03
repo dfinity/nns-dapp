@@ -7,7 +7,7 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
-import { SvelteComponent, tick } from "svelte";
+import { tick, type Component } from "svelte";
 
 let metricsCallback: MetricsCallback | undefined;
 
@@ -158,9 +158,7 @@ describe("Warnings", () => {
         );
       });
 
-      const waitAndClose = async ({
-        getByTestId,
-      }: RenderResult<SvelteComponent>) => {
+      const waitAndClose = async ({ getByTestId }: RenderResult<Component>) => {
         await waitFor(() =>
           expect(getByTestId("test-env-warning-ack")).not.toBeNull()
         );

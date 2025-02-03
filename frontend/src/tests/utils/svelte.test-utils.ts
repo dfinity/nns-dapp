@@ -3,16 +3,20 @@ import {
   render as svelteRender,
   type RenderResult,
 } from "@testing-library/svelte";
-import type { ComponentProps, SvelteComponent } from "svelte";
+import {
+  type Component,
+  type ComponentProps,
+  type SvelteComponent as LegacyComponent,
+} from "svelte";
 
 // TestingLibrary internal type
-type ComponentType<C> = C extends SvelteComponent
+type ComponentType<C> = C extends LegacyComponent
   ? new (...args: unknown[]) => C
   : C;
 
 // Adapted from Svelte render to work around the surprising behavior that render
 // reuses the same container element between different calls from the same test.
-export const render = <C extends SvelteComponent>(
+export const render = <C extends Component>(
   cmp: ComponentType<C>,
   componentOptions?:
     | {
