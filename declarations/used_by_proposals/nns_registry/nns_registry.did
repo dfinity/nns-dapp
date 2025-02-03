@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-23_03-04-hashes-in-blocks/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-30_03-03-hashes-in-blocks/rs/registry/canister/canister/registry.did>
 // A brief note about the history of this file: This file used to be
 // automatically generated, but now, it is hand-crafted, because the
 // auto-generator has some some pretty degenerate behaviors. The worst of those
@@ -274,6 +274,11 @@ type RemoveNodeDirectlyPayload = record { node_id : principal };
 
 type RemoveNodeOperatorsPayload = record {
   node_operators_to_remove : vec blob;
+  node_operator_principals_to_remove : opt NodeOperatorPrincipals;
+};
+
+type NodeOperatorPrincipals = record {
+  principals : vec principal;
 };
 
 type RemoveNodesPayload = record { node_ids : vec principal };
