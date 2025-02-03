@@ -1,6 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
+import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import WalletLayout from "$routes/(app)/(u)/(detail)/wallet/+layout.svelte";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
@@ -43,5 +44,23 @@ describe("Wallet layout", () => {
       path: AppPath.Accounts,
       universe: OWN_CANISTER_ID_TEXT,
     });
+  });
+
+  it("back button should navigate to Portfolio page previous page is Portfolio page", async () => {
+    page.mock({
+      routeId: AppPath.Wallet,
+      data: {
+        universe: OWN_CANISTER_ID_TEXT,
+        account: mockMainAccount.identifier,
+      },
+    });
+    referrerPathStore.pushPath(AppPath.Portfolio);
+
+    const { queryByTestId } = render(WalletLayout);
+
+    expect(get(pageStore).path).toEqual(AppPath.Wallet);
+    await fireEvent.click(queryByTestId("back"));
+
+    expect(get(pageStore).path).toEqual(AppPath.Portfolio);
   });
 });
