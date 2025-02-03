@@ -42,7 +42,7 @@ export const render = <C extends Component>(
       // TODO: remove once events are migrated to callback props
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      events,
+      events: componentOptions?.events,
     },
     {
       ...renderOptions,
