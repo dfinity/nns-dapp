@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-23_03-04-hashes-in-blocks/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-30_03-03-hashes-in-blocks/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -912,8 +912,10 @@ pub struct ListKnownNeuronsResponse {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ListNeurons {
+    pub page_size: Option<u64>,
     pub include_public_neurons_in_full_neurons: Option<bool>,
     pub neuron_ids: Vec<u64>,
+    pub page_number: Option<u64>,
     pub include_empty_neurons_readable_by_caller: Option<bool>,
     pub include_neurons_readable_by_caller: bool,
 }
@@ -921,6 +923,7 @@ pub struct ListNeurons {
 pub struct ListNeuronsResponse {
     pub neuron_infos: Vec<(u64, NeuronInfo)>,
     pub full_neurons: Vec<Neuron>,
+    pub total_pages_available: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DateRangeFilter {
