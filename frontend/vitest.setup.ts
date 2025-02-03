@@ -190,10 +190,3 @@ vi.mock("$app/stores", () => ({
   page,
   navigating,
 }));
-
-// Issue: https://github.com/testing-library/svelte-testing-library/issues/206
-Object.defineProperty(global, "requestAnimationFrame", {
-  value: (fn) => {
-    return window.setTimeout(() => fn(Date.now()), 0);
-  },
-});
