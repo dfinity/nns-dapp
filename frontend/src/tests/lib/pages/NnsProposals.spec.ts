@@ -7,10 +7,7 @@ import NnsProposals from "$lib/pages/NnsProposals.svelte";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableProposalsSegmentStore } from "$lib/stores/actionable-proposals-segment.store";
 import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
-import {
-  proposalsFiltersStore,
-  proposalsStore,
-} from "$lib/stores/proposals.store";
+import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import {
   mockIdentity,
   resetIdentity,
@@ -47,10 +44,6 @@ describe("NnsProposals", () => {
   };
 
   beforeEach(() => {
-    proposalsStore.resetForTesting();
-    proposalsFiltersStore.reset();
-    actionableProposalsSegmentStore.resetForTesting();
-
     resetIdentity();
     vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue(mockProposals);
     // Loading proposals is debounced but we don't want to wait for the delay in

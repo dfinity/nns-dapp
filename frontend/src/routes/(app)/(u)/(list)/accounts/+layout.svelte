@@ -4,10 +4,10 @@
   import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
   import Layout from "$lib/components/layout/Layout.svelte";
   import LayoutList from "$lib/components/layout/LayoutList.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
   import { accountsTitleStore } from "$lib/derived/accounts-title.derived";
+  import { accountsPageOrigin } from "$lib/derived/routes.derived";
 
-  const back = (): Promise<void> => goto(AppPath.Tokens);
+  const back = (): Promise<void> => goto($accountsPageOrigin);
 </script>
 
 <LayoutList title={$accountsTitleStore}>

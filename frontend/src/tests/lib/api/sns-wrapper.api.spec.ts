@@ -2,7 +2,7 @@ import * as agent from "$lib/api/agent.api";
 import { clearWrapperCache, wrappers } from "$lib/api/sns-wrapper.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import type { SnsWrapper } from "@dfinity/sns";
 import { mock } from "vitest-mock-extended";
@@ -10,7 +10,6 @@ import { mock } from "vitest-mock-extended";
 describe("sns-wrapper api", () => {
   beforeEach(() => {
     clearWrapperCache();
-    resetSnsProjects();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 

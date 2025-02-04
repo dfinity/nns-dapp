@@ -2,15 +2,11 @@ import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
 
 describe("nsFunctionsProjectStore", () => {
   const rootCanisterId = rootCanisterIdMock;
-
-  beforeEach(() => {
-    resetSnsProjects();
-  });
 
   it("returns the functions", () => {
     const rootCanisterId = rootCanisterIdMock;

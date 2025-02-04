@@ -21,7 +21,6 @@ describe("icp-transactions services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    icpTransactionsStore.reset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 

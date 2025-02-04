@@ -1,15 +1,17 @@
 import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { dispatchIntersecting } from "$lib/utils/events.utils";
 import en from "$tests/mocks/i18n.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import {
+  setIcpPrice,
+  setIcpSwapUsdPrices,
+} from "$tests/utils/icp-swap.test-utils";
 import { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -44,13 +46,7 @@ describe("WalletPageHeading", () => {
   };
 
   beforeEach(() => {
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-    ]);
+    setIcpPrice(10);
   });
 
   it("should render balance as title and no skeleton", async () => {
@@ -207,18 +203,9 @@ describe("WalletPageHeading", () => {
 
     const ledgerCanisterId = principal(3);
 
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: ledgerCanisterId.toText(),
-        last_price: "2.00",
-      },
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-    ]);
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId.toText()]: 5,
+    });
 
     const balance = TokenAmountV2.fromString({
       amount: "3",

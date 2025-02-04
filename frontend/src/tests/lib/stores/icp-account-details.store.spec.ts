@@ -32,10 +32,6 @@ describe("icpAccountDetailsStore", () => {
     certified: true,
   };
 
-  beforeEach(() => {
-    icpAccountDetailsStore.resetForTesting();
-  });
-
   it("should be initialized to undefined", () => {
     expect(get(icpAccountDetailsStore)).toBeUndefined();
   });

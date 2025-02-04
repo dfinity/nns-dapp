@@ -5,15 +5,11 @@ import {
   snsProjectsRecordStore,
   snsProjectsStore,
 } from "$lib/derived/sns/sns-projects.derived";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
 describe("projects.derived", () => {
-  beforeEach(() => {
-    resetSnsProjects();
-  });
-
   describe("projectsDerived", () => {
     it("should set projects of all statuses", () => {
       setSnsProjects([

@@ -27,7 +27,6 @@ import {
 import { SnsProposalDetailPo } from "$tests/page-objects/SnsProposalDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
-  resetSnsProjects,
   setProdSnsProjects,
   setSnsProjects,
 } from "$tests/utils/sns.test-utils";
@@ -72,8 +71,6 @@ describe("SnsProposalDetail", () => {
   beforeEach(() => {
     resetIdentity();
     page.reset();
-    resetSnsProjects();
-    actionableProposalsSegmentStore.resetForTesting();
   });
 
   describe("not logged in", () => {

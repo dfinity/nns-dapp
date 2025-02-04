@@ -4,7 +4,7 @@ import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -37,8 +37,6 @@ describe("snsNeuronsTableOrderSortedNeuronIdsStore", () => {
   const mockRootCanisterId = Principal.fromText("rrkah-fqaaa-aaaaa-aaaaq-cai");
 
   beforeEach(() => {
-    neuronsTableOrderStore.reset();
-    resetSnsProjects();
     snsNeuronsStore.setNeurons({
       rootCanisterId: mockRootCanisterId,
       neurons: testSnsNeurons,

@@ -9,15 +9,11 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectDestinationAddress", () => {
-  beforeEach(() => {
-    resetSnsProjects();
-  });
-
   describe("nns accounts", () => {
     const mockSubAccount2 = {
       ...mockSubAccount,

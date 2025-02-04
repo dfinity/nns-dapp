@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-23_03-04-hashes-in-blocks/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-30_03-03-hashes-in-blocks/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -325,7 +325,12 @@ pub struct RemoveNodeDirectlyPayload {
     pub node_id: Principal,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct NodeOperatorPrincipals {
+    pub principals: Vec<Principal>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct RemoveNodeOperatorsPayload {
+    pub node_operator_principals_to_remove: Option<NodeOperatorPrincipals>,
     pub node_operators_to_remove: Vec<serde_bytes::ByteBuf>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
