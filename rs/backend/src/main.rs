@@ -385,18 +385,22 @@ fn add_stable_asset_impl(asset_bytes: Vec<u8>) {
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[export_name = "canister_update create_toy_accounts"]
 pub fn create_toy_accounts() {
-    over(candid_one, |num_accounts: u128| {
-        let caller = ic_cdk::caller();
-        if !ic_cdk::api::is_controller(&caller) {
-            dfn_core::api::trap_with("Only the controller may generate toy accounts");
-        }
-        with_state_mut(|s| {
-            s.accounts_store
-                .create_toy_accounts(u64::try_from(num_accounts).unwrap_or_else(|_| {
-                    unreachable!("The number of accounts is well below the number of atoms in the universe")
-                }))
-        })
-    });
+    over(candid_one, create_toy_accounts_impl);
+}
+
+#[cfg(any(test, feature = "toy_data_gen"))]
+#[candid_method(update, rename = "create_toy_accounts")]
+fn create_toy_accounts_impl(num_accounts: u128) -> u64 {
+    let caller = ic_cdk::caller();
+    if !ic_cdk::api::is_controller(&caller) {
+        dfn_core::api::trap_with("Only the controller may generate toy accounts");
+    }
+    with_state_mut(|s| {
+        s.accounts_store
+            .create_toy_accounts(u64::try_from(num_accounts).unwrap_or_else(|_| {
+                unreachable!("The number of accounts is well below the number of atoms in the universe")
+            }))
+    })
 }
 
 /// Gets any toy account by toy account index.
