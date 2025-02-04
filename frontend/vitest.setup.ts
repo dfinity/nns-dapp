@@ -176,3 +176,12 @@ Object.defineProperty(global, "requestAnimationFrame", {
     return window.setTimeout(() => fn(Date.now()), 0);
   },
 });
+
+class MockResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+Object.defineProperty(global, "ResizeObserver", {
+  value: MockResizeObserver,
+});
