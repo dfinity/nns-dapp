@@ -242,5 +242,6 @@ service: (opt Config) -> {
     step_migration: (nat32) -> ();
 
     // Methods available in the test build only:
+    create_toy_accounts: (nat) -> (nat64) query;
     get_toy_account: (nat64) -> (GetAccountResponse) query;
 }
