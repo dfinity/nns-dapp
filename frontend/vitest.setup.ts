@@ -70,7 +70,7 @@ vi.mock("$lib/utils/test-support.utils", async () => {
   };
 });
 
-beforeEach(() => {
+beforeEach(async () => {
   for (const cleanup of cleanupFunctions) {
     cleanup();
   }
@@ -79,6 +79,9 @@ beforeEach(() => {
   // something that needs to be cleaned up. In particular, stores created with
   // writableStored write to localStorage, and resetting them also causes them
   // to write to localStorage.
+  if (vi.isFakeTimers()) {
+    await vi.runAllTimersAsync();
+  }
   vi.clearAllTimers();
   vi.useRealTimers();
   localStorage.clear();
