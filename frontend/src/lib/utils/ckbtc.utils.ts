@@ -1,9 +1,9 @@
-import { notForceCallStrategy } from "$lib/constants/mockable.constants";
 import type { CkBTCInfoStoreUniverseData } from "$lib/stores/ckbtc-info.store";
 import { i18n } from "$lib/stores/i18n";
 import type { Account } from "$lib/types/account";
 import { CkBTCErrorRetrieveBtcMinAmount } from "$lib/types/ckbtc.errors";
 import { assertEnoughAccountFunds } from "$lib/utils/accounts.utils";
+import { notForceCallStrategy } from "$lib/utils/call.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { isNullish } from "@dfinity/utils";
