@@ -17,7 +17,7 @@ import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
@@ -51,7 +51,6 @@ describe("ImportTokenModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetSnsProjects();
 
     queryIcrcTokenSpy = vi
       .spyOn(ledgerApi, "queryIcrcToken")

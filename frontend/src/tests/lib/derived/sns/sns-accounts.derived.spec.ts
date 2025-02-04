@@ -1,7 +1,7 @@
 import { snsAccountsStore } from "$lib/derived/sns/sns-accounts.derived";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { get } from "svelte/store";
 
@@ -32,8 +32,6 @@ describe("sns-accounts.derived", () => {
   };
 
   beforeEach(() => {
-    resetSnsProjects();
-
     setSnsProjects([
       {
         rootCanisterId: Principal.fromText(batmanRootCanisterIdText),

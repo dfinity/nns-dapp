@@ -13,14 +13,10 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectAccountDropdown", () => {
-  beforeEach(() => {
-    resetSnsProjects();
-  });
-
   describe("no accounts", () => {
     beforeEach(() => {
       resetAccountsForTesting();

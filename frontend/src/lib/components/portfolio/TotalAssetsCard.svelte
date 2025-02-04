@@ -104,6 +104,10 @@
             }
           }
         }
+
+        .secondary-amount {
+          color: var(--text-description);
+        }
       }
     }
   }

@@ -30,7 +30,7 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
@@ -42,7 +42,6 @@ describe("Staking", () => {
   const snsCanisterId = principal(1112);
 
   beforeEach(() => {
-    resetSnsProjects();
     resetIdentity();
     resetAccountsForTesting();
 
