@@ -181,6 +181,7 @@ COPY ./config.json /build/dfx.json
 WORKDIR /build
 # Ensure that the code is newer than any cache.
 RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs
+RUN wc dfx.json
 RUN RUSTFLAGS="--cfg feature=\"reconfigurable\"" ./build-sns-aggregator.sh
 RUN mv sns_aggregator.wasm.gz sns_aggregator_dev.wasm.gz
 RUN ./build-sns-aggregator.sh
