@@ -62,6 +62,11 @@ const escapeCsvValue = (value: unknown): string => {
 
   let stringValue = String(value);
 
+  const patternForExcelFormulaString = /^="\d+"$/;
+  if (patternForExcelFormulaString.test(stringValue)) {
+    return stringValue;
+  }
+
   const patternForSpecialCharacters = /[",\r\n=@|]/;
   if (!patternForSpecialCharacters.test(stringValue)) {
     return stringValue;

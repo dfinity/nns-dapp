@@ -26,6 +26,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Fix the back button on the accounts page when navigating from the portfolio page.
+* Reporting: Correct the formatting of neuron ids in the CSV output.
 
 #### Security
 

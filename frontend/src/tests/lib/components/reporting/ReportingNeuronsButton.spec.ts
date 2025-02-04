@@ -185,7 +185,7 @@ describe("ReportingNeuronsButton", () => {
       'Export Date Time,"Oct 14, 2023 12:00 AM"',
       "",
       ",,Neuron ID,Project Name,Symbol,Neuron Account ID,Controller Principal ID,Stake,Available Maturity,Staked Maturity,Dissolve Delay,Dissolve Date,Creation Date,State",
-      ',,"\'=""1""",Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,1,30.00,0.0000001,0,"3 hours, 5 minutes",N/A,"Jan 1, 1970",Locked',
+      ',,="1",Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,1,30.00,0.0000001,0,"3 hours, 5 minutes",N/A,"Jan 1, 1970",Locked',
     ].join("\n");
 
     expect(spySaveGeneratedCsv).toBeCalledWith(
