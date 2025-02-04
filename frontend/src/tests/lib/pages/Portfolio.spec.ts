@@ -1,12 +1,9 @@
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import Portfolio from "$lib/pages/Portfolio.svelte";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
@@ -19,6 +16,7 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -232,13 +230,7 @@ describe("Portfolio page", () => {
     beforeEach(() => {
       resetIdentity();
 
-      icpSwapTickersStore.set([
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "10.00",
-        },
-      ]);
+      setIcpPrice(10);
     });
 
     it("should not display the LoginCard when the user is logged in", async () => {

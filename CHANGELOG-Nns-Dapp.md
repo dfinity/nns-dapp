@@ -11,6 +11,25 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 135055
+
+### Application
+
+#### Added
+
+- Import tokens by URL.
+
+#### Changed
+
+- Proceed with rollout of re-enabling of certification of certain calls from `30%` to `100%`.
+- Change the Page Banner icon in the staking page.
+
+#### Fixed
+
+- Reporting: Add Excel string format preservation for neuron ids.
+
+### Operations
+
 ## Proposal 134977
 
 ### Application

@@ -7,7 +7,7 @@ import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
@@ -19,7 +19,6 @@ describe("Summary", () => {
 
   beforeEach(() => {
     page.reset();
-    resetSnsProjects();
   });
 
   describe("no universe", () => {

@@ -233,7 +233,8 @@ pub type UpdateUnassignedNodesConfigPayload = crate::canisters::nns_registry::ap
 
 /// NNS function 23 - `RemoveNodeOperators`
 /// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L34>
-pub type RemoveNodeOperatorsPayload = ic_protobuf::registry::node_operator::v1::RemoveNodeOperatorsPayload;
+pub type RemoveNodeOperatorsPayload =
+    registry_canister::mutations::do_remove_node_operators::RemoveNodeOperatorsPayload;
 
 #[derive(CandidType, Serialize, Deserialize, Clone)]
 pub struct RemoveNodeOperatorsPayloadHumanReadable {

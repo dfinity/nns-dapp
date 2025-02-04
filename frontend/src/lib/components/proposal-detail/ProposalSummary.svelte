@@ -83,8 +83,8 @@
 
     :global(table),
     :global(pre) {
-      background: var(--input-background);
-      color: var(--input-background-contrast);
+      background: var(--card-background);
+      color: var(--card-background-contrast);
       border-radius: var(--border-radius);
 
       font-family:
@@ -141,12 +141,6 @@
         &:active {
           color: var(--primary-contrast);
         }
-      }
-
-      :global(table),
-      :global(pre) {
-        background: var(--card-background);
-        color: var(--card-background-contrast);
       }
     }
   }

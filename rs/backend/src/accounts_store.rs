@@ -1,6 +1,7 @@
 //! User accounts and transactions.
+use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use crate::multi_part_transactions_processor::MultiPartTransactionsProcessor;
-use crate::state::StableState;
+use crate::state::{partitions::PartitionType, with_partitions, StableState};
 use crate::stats::Stats;
 use candid::CandidType;
 use dfn_candid::Candid;
@@ -17,7 +18,6 @@ use std::collections::{BTreeMap, HashMap, VecDeque};
 use std::fmt;
 use std::ops::RangeBounds;
 
-pub mod constructors;
 pub mod histogram;
 pub mod schema;
 use schema::{
@@ -47,24 +47,7 @@ pub struct AccountsStore {
     accounts_db: schema::proxy::AccountsDbAsProxy,
 
     accounts_db_stats: AccountsDbStats,
-    accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
 }
-
-/// A wrapper around a value that returns true for `PartialEq` and `Eq` equality checks, regardless of the value.
-///
-/// This is intended to be used on incidental, volatile fields.  A structure containing such a field will typically wish to disregard the field in any comparison.
-#[derive(Default)]
-struct IgnoreEq<T>(T)
-where
-    T: Default;
-
-impl<T: Default> PartialEq for IgnoreEq<T> {
-    fn eq(&self, _: &Self) -> bool {
-        true
-    }
-}
-
-impl<T: Default> Eq for IgnoreEq<T> {}
 
 impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -249,6 +232,16 @@ pub struct RegisterHardwareWalletRequest {
     principal: PrincipalId,
 }
 
+#[cfg(test)]
+impl RegisterHardwareWalletRequest {
+    pub fn test_data() -> Self {
+        RegisterHardwareWalletRequest {
+            name: "test".to_string(),
+            principal: PrincipalId::new_user_test_id(0),
+        }
+    }
+}
+
 #[derive(CandidType)]
 pub enum RegisterHardwareWalletResponse {
     Ok,
@@ -325,6 +318,21 @@ pub enum DetachCanisterResponse {
 }
 
 impl AccountsStore {
+    /// Creates a new `AccountsStore`. Should be called during canister `init`.
+    #[must_use]
+    pub fn new() -> Self {
+        let accounts_partition = with_partitions(|p| p.get(PartitionType::Accounts.memory_id()));
+        let accounts_db = AccountsDbAsProxy::from(AccountsDb::UnboundedStableBTreeMap(
+            AccountsDbAsUnboundedStableBTreeMap::new(accounts_partition),
+        ));
+        let accounts_db_stats = AccountsDbStats::default();
+
+        Self {
+            accounts_db,
+            accounts_db_stats,
+        }
+    }
+
     /// Determines whether a migration is being performed.
     #[must_use]
     #[allow(dead_code)]
@@ -674,7 +682,6 @@ impl AccountsStore {
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
         stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
         stats.migration_countdown = Some(self.accounts_db.migration_countdown());
-        stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
     }
 
     #[must_use]
@@ -782,18 +789,17 @@ impl StableState for AccountsStore {
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
-        let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
         let Some(accounts_db_stats) = accounts_db_stats_maybe else {
             return Err("Accounts DB stats should be present since the stable structures migration.".to_string());
         };
+        let accounts_partition = with_partitions(|partitions| partitions.get(PartitionType::Accounts.memory_id()));
+        let accounts_db = AccountsDbAsProxy::from(AccountsDb::UnboundedStableBTreeMap(
+            AccountsDbAsUnboundedStableBTreeMap::load(accounts_partition),
+        ));
 
         Ok(AccountsStore {
-            // Because the stable structures migration is finished, accounts_db
-            // will be replaced with an AccountsDbAsUnboundedStableBTreeMap in
-            // State::from(Partitions) so it doesn't matter what we set here.
-            accounts_db: AccountsDbAsProxy::default(),
+            accounts_db,
             accounts_db_stats,
-            accounts_db_stats_recomputed_on_upgrade,
         })
     }
 }

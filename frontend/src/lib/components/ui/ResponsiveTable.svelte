@@ -27,6 +27,7 @@
   export let gridRowsPerTableRow = 1;
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
+  export let disableMobileSorting = false;
 
   let nonLastColumns: ResponsiveTableColumn<RowDataType>[];
   let lastColumn: ResponsiveTableColumn<RowDataType> | undefined;
@@ -132,7 +133,7 @@
             role="columnheader"
             style="--column-span: {lastColumn.templateColumns.length}"
             class="desktop-align-{lastColumn.alignment} header-icon"
-            >{#if isSortingEnabled}<button
+            >{#if isSortingEnabled && !disableMobileSorting}<button
                 data-tid="open-sort-modal"
                 class="mobile-only icon-only"
                 on:click={openSortModal}><IconSort /></button

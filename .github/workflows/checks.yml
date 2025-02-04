@@ -342,7 +342,7 @@ jobs:
           Ledger canister ID:     np5km-uyaaa-aaaaq-aadrq-cai
           Index canister ID:      n535v-yiaaa-aaaaq-aadsq-cai
           Swap canister ID:       n223b-vqaaa-aaaaq-aadsa-cai
-          Transaction fee:      50
+          Transaction fee:      1000
           Minimum neuron stake: 100
           Proposal fee:         15000")
   checks-pass:

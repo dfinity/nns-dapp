@@ -36,13 +36,11 @@ import {
   ckETHUniverseMock,
   nnsUniverseMock,
 } from "$tests/mocks/universe.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("UniverseAccountsBalance", () => {
   beforeEach(() => {
-    resetSnsProjects();
-
     page.mock({
       data: { universe: mockSnsCanisterId.toText() },
     });

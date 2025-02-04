@@ -20,7 +20,6 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
-import { resetSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { HttpAgent } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
@@ -57,7 +56,6 @@ describe("NeuronDetail", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetSnsProjects();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
     vi.spyOn(icpLedgerApi, "queryAccountBalance").mockResolvedValue(0n);

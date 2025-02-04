@@ -17,7 +17,7 @@ import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenModalPo } from "$tests/page-objects/ImportTokenModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
@@ -51,8 +51,6 @@ describe("ImportTokenModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetSnsProjects();
-    busyStore.resetForTesting();
 
     queryIcrcTokenSpy = vi
       .spyOn(ledgerApi, "queryIcrcToken")
@@ -532,6 +530,49 @@ describe("ImportTokenModal", () => {
             ledger_canister_id: ledgerCanisterId,
           },
         ],
+      });
+    });
+
+    it("removes the URL parameters on cancel click", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      queryIcrcTokenSpy = vi
+        .spyOn(ledgerApi, "queryIcrcToken")
+        .mockRejectedValue(new Error());
+
+      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
+        imported_tokens: [],
+      });
+      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
+
+      importedTokensStore.set({
+        importedTokens: [],
+        certified: true,
+      });
+
+      const po = renderComponent();
+      const formPo = po.getImportTokenFormPo();
+      const reviewPo = po.getImportTokenReviewPo();
+
+      await runResolvedPromises();
+
+      expect(await formPo.isPresent()).toEqual(true);
+      expect(await reviewPo.isPresent()).toEqual(false);
+
+      expect(get(pageStore)).toMatchObject({
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
+        importTokenLedgerId: ledgerCanisterId.toText(),
+        importTokenIndexId: indexCanisterId.toText(),
+      });
+
+      await formPo.getCancelButtonPo().click();
+      await runResolvedPromises();
+
+      expect(get(pageStore)).toMatchObject({
+        path: AppPath.Tokens,
+        universe: OWN_CANISTER_ID_TEXT,
+        importTokenLedgerId: undefined,
+        importTokenIndexId: undefined,
       });
     });
 
