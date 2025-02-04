@@ -15,6 +15,10 @@ class HeldTokensCardRowPo extends BasePageObject {
     return this.root.getTagName();
   }
 
+  getRowHref(): Promise<string> {
+    return this.root.getAttribute("href");
+  }
+
   getHeldTokenTitle(): Promise<string> {
     return this.getText("title");
   }
@@ -69,5 +73,10 @@ export class HeldTokensCardPo extends BasePageObject {
   async getRowsTags(): Promise<string[]> {
     const rows = await this.getRows();
     return Promise.all(rows.map((row) => row.getRowTag()));
+  }
+
+  async getRowsHref(): Promise<string[]> {
+    const rows = await this.getRows();
+    return Promise.all(rows.map((row) => row.getRowHref()));
   }
 }

@@ -81,8 +81,10 @@ describe("HeldTokensCard", () => {
       });
 
       const allTags = await po.getRowsTags();
+      const allHrefs = await po.getRowsHref();
 
       expect(allTags.every((tag) => tag === "DIV")).toBe(true);
+      expect(allHrefs).toEqual([null, null, null]);
     });
   });
 
@@ -226,8 +228,14 @@ describe("HeldTokensCard", () => {
       });
 
       const allTags = await po.getRowsTags();
+      const allHrefs = await po.getRowsHref();
 
       expect(allTags.every((tag) => tag === "A")).toBe(true);
+      expect(allHrefs).toEqual([
+        mockTokens[0].rowHref,
+        mockTokens[1].rowHref,
+        mockTokens[2].rowHref,
+      ]);
     });
   });
 });
