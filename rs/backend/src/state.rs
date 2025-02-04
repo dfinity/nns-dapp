@@ -1,11 +1,8 @@
 pub mod partitions;
 #[cfg(test)]
 pub mod tests;
-mod with_accounts_in_stable_memory;
 
-use self::partitions::{PartitionType, Partitions};
-use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
-use crate::accounts_store::schema::proxy::AccountsDb;
+use self::partitions::Partitions;
 use crate::accounts_store::AccountsStore;
 use crate::assets::AssetHashes;
 use crate::assets::Assets;
@@ -13,6 +10,7 @@ use crate::perf::PerformanceCounts;
 use crate::tvl::state::TvlState;
 
 use dfn_candid::Candid;
+use dfn_core::api::trap_with;
 use ic_cdk::println;
 use ic_stable_structures::DefaultMemoryImpl;
 use on_wire::{FromWire, IntoWire};
@@ -122,12 +120,8 @@ impl State {
     /// Creates new state. Should be called in `init`.
     #[must_use]
     pub fn new() -> Self {
-        let accounts_partition = with_partitions(|p| p.get(PartitionType::Accounts.memory_id()));
-        let accounts_store = AccountsStore::from(AccountsDb::UnboundedStableBTreeMap(
-            AccountsDbAsUnboundedStableBTreeMap::new(accounts_partition),
-        ));
         State {
-            accounts_store,
+            accounts_store: AccountsStore::new(),
             assets: Assets::default(),
             asset_hashes: AssetHashes::default(),
             performance: PerformanceCounts::default(),
@@ -139,19 +133,18 @@ impl State {
     #[must_use]
     pub fn new_restored() -> Self {
         println!("START state::new_restored: ())");
-        let accounts_partition = with_partitions(|p| p.get(PartitionType::Accounts.memory_id()));
-        let mut state = Self::recover_heap_from_managed_memory();
-        let accounts_db =
-            AccountsDb::UnboundedStableBTreeMap(AccountsDbAsUnboundedStableBTreeMap::load(accounts_partition));
-        // Replace the default accountsdb created by `serde` with the one from stable memory.
-        let _deserialized_accounts_db = state.accounts_store.replace_accounts_db(accounts_db);
+        let bytes = with_partitions(Partitions::read_bytes_from_managed_memory);
+        let state =
+            State::decode(bytes).unwrap_or_else(|e| trap_with(&format!("Decoding stable memory failed. Error: {e:?}")));
         println!("END   state::new_restored: ()");
         state
     }
 
     /// Saves the state to stable memory. Should be called in `pre_upgrade`.
     pub fn save(&self) {
-        self.save_heap_to_managed_memory();
+        println!("START state::save_heap: ()");
+        let bytes = self.encode();
+        with_partitions(|p| p.write_bytes_to_managed_memory(&bytes));
     }
 }
 
