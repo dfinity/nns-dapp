@@ -80,7 +80,10 @@ beforeEach(async () => {
   // writableStored write to localStorage, and resetting them also causes them
   // to write to localStorage.
   if (vi.isFakeTimers()) {
-    await vi.runAllTimersAsync();
+    // See https://testing-library.com/docs/using-fake-timers/
+    // "It's important to also call runOnlyPendingTimers before switching to
+    // real timers."
+    await vi.runOnlyPendingTimers();
   }
   vi.clearAllTimers();
   vi.useRealTimers();
