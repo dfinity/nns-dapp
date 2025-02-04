@@ -3,27 +3,17 @@
 //! The proxy manages migrations from one implementation to another.
 use super::accounts_in_unbounded_stable_btree_map::{AccountsDbAsUnboundedStableBTreeMap, ProductionMemoryType};
 use super::{map::AccountsDbAsMap, Account, AccountsDbTrait};
-use core::fmt;
 use core::ops::RangeBounds;
 
 mod enum_boilerplate;
-mod migration;
 
 /// An accounts database delegates API calls to underlying implementations.
 ///
-/// Notes:
-/// - The proxy manages migrations from one implementation to another, if applicable.
-/// - The proxy code itself will specify which databases are currently in
-///   use and how to migrate from one database to another.
-/// - It is the responsibility of the post-install hook to look at any
-///   version information and set up the db accordingly.
-///
-/// # Current data storage
-/// - Accounts are stored as a map.  No migrations are undertaken.
+/// TODO: delete this entirely, since the migration logic is removed and the delegation is
+/// unnecessary.
 #[derive(Debug)]
 pub struct AccountsDbAsProxy {
     authoritative_db: AccountsDb,
-    migration: Option<Migration>,
 }
 
 impl Default for AccountsDbAsProxy {
@@ -32,27 +22,9 @@ impl Default for AccountsDbAsProxy {
     }
 }
 
-struct Migration {
-    /// The database being migrated to
-    db: AccountsDb,
-    /// The next account to migrate.
-    next_to_migrate: Option<Vec<u8>>,
-}
-
-impl fmt::Debug for Migration {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // Note: The `next_to_migrate` field is rarely interesting so is omitted.
-        //       The database type and number of entries suffices.
-        self.db.fmt(f)
-    }
-}
-
 impl From<AccountsDb> for AccountsDbAsProxy {
     fn from(db: AccountsDb) -> Self {
-        AccountsDbAsProxy {
-            authoritative_db: db,
-            migration: None,
-        }
+        AccountsDbAsProxy { authoritative_db: db }
     }
 }
 
@@ -66,9 +38,6 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// Inserts into all the underlying databases.
     fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
         self.authoritative_db.db_insert_account(account_key, account.clone());
-        if let Some(migration) = &mut self.migration {
-            migration.db.db_insert_account(account_key, account);
-        }
     }
     /// Checks the authoritative database.
     fn db_contains_account(&self, account_key: &[u8]) -> bool {
@@ -81,9 +50,6 @@ impl AccountsDbTrait for AccountsDbAsProxy {
     /// Removes an account from all underlying databases.
     fn db_remove_account(&mut self, account_key: &[u8]) {
         self.authoritative_db.db_remove_account(account_key);
-        if let Some(migration) = self.migration.as_mut() {
-            migration.db.db_remove_account(account_key);
-        }
     }
     /// Gets the length from the authoritative database.
     fn db_accounts_len(&self) -> u64 {

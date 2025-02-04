@@ -333,18 +333,6 @@ impl AccountsStore {
         }
     }
 
-    /// Determines whether a migration is being performed.
-    #[must_use]
-    #[allow(dead_code)]
-    pub fn migration_in_progress(&self) -> bool {
-        self.accounts_db.migration_in_progress()
-    }
-    /// Advances the migration by one step.
-    ///
-    /// Note: This is a pass-through to the underlying `AccountsDb::step_migration`.  Please see that for further details.
-    pub fn step_migration(&mut self, step_size: u32) {
-        self.accounts_db.step_migration(step_size);
-    }
     #[must_use]
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
@@ -681,7 +669,7 @@ impl AccountsStore {
         stats.accounts_count = self.accounts_db.db_accounts_len();
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
         stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
-        stats.migration_countdown = Some(self.accounts_db.migration_countdown());
+        stats.migration_countdown = Some(0);
     }
 
     #[must_use]

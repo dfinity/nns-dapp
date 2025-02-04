@@ -7,11 +7,7 @@ pub mod proxy;
 
 // Mechanics
 use crate::accounts_store::Account;
-use candid::{CandidType, Deserialize};
 use core::ops::RangeBounds;
-use serde::Serialize;
-use strum_macros::EnumIter;
-mod label_serialization;
 #[cfg(test)]
 pub mod tests;
 
@@ -112,38 +108,6 @@ pub trait AccountsDbTrait {
 
     /// Returns an iterator over the entries in the map where keys belong to the specified range.
     fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_>;
-}
-
-/// A label to identify the schema.
-///
-/// Note: The numeric representations of these labels are guaranteed to be stable.
-#[repr(u32)]
-#[derive(Clone, Copy, Debug, EnumIter, PartialEq, Eq, CandidType, Serialize, Deserialize)]
-pub enum SchemaLabel {
-    /// Data is stored on the heap in a `BTreeMap` and serialized to stable memory on upgrade.
-    /// Implemented by: [`map::AccountsDbAsMap`]
-    Map = 0,
-    /// Every account is serialized separately and stored in a `StableBTreeMap`.  The remaining
-    /// data, mostly consisting of transactions, is serialized into a single large blob in the
-    /// `pre_upgrade` hook.
-    AccountsInStableMemory = 1,
-}
-
-impl Default for SchemaLabel {
-    fn default() -> Self {
-        Self::AccountsInStableMemory
-    }
-}
-
-/// Schema Label as written to stable memory.
-pub type SchemaLabelBytes = [u8; SchemaLabel::MAX_BYTES];
-
-/// Errors that can occur when de-serializing a schema label.
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-pub enum SchemaLabelError {
-    InvalidChecksum,
-    InvalidLabel(u32),
-    InsufficientBytes,
 }
 
 /// A trait for data stores that support `BTreeMap` for account storage.
