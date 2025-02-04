@@ -36,7 +36,6 @@ impl PerformanceCount {
 #[derive(CandidType, Deserialize, Clone, Debug, Default, Eq, PartialEq)]
 pub struct PerformanceCounts {
     pub instruction_counts: VecDeque<PerformanceCount>,
-    pub exceptional_transactions: Option<VecDeque<u64>>,
     // TODO[NNS1-2913]: Delete this once the stable memory migration is complete.  This is used purely to get
     // an idea of how long, in wall clock time, migration is likely to take.
     pub periodic_tasks_count: Option<u32>,
@@ -51,7 +50,6 @@ impl PerformanceCounts {
         self.instruction_counts.push_back(count);
     }
 
-    /// Note: The `exceptional_transactions_count` saturates at `u32::MAX`, in the very unlikely event that we reach that limit.
     pub fn get_stats(&self, stats: &mut Stats) {
         stats.performance_counts = self.instruction_counts.iter().cloned().collect();
     }
