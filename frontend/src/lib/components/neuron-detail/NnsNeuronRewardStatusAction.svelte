@@ -9,7 +9,7 @@
     isNeuronFollowingReset,
     isNeuronMissingReward,
     secondsUntilMissingReward,
-    shouldDisplayMissingRewardNotification,
+    isNeuronMissingRewardSoon,
   } from "$lib/utils/neuron.utils";
   import {
     IconCheckCircleFill,
@@ -43,7 +43,7 @@
   let isLosingRewardsSoon = false;
   $: isLosingRewardsSoon =
     !isLosingRewards &&
-    shouldDisplayMissingRewardNotification({
+    isNeuronMissingRewardSoon({
       neuron,
       startReducingVotingPowerAfterSeconds:
         $startReducingVotingPowerAfterSecondsStore,
