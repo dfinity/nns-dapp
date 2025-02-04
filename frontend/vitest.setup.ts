@@ -21,7 +21,10 @@ import {
   setDefaultTestConstants,
 } from "./src/tests/utils/mockable-constants.test-utils";
 
-beforeEach(() => {
+beforeEach(async () => {
+  vi.clearAllTimers();
+  vi.useRealTimers();
+
   // Restore all mocks original behvior before each test.
   //
   // NOTE: This restores mocks created with vi.spyOn() to their production
@@ -79,14 +82,6 @@ beforeEach(async () => {
   // something that needs to be cleaned up. In particular, stores created with
   // writableStored write to localStorage, and resetting them also causes them
   // to write to localStorage.
-  if (vi.isFakeTimers()) {
-    // See https://testing-library.com/docs/using-fake-timers/
-    // "It's important to also call runOnlyPendingTimers before switching to
-    // real timers."
-    await vi.runOnlyPendingTimers();
-  }
-  vi.clearAllTimers();
-  vi.useRealTimers();
   localStorage.clear();
 });
 
