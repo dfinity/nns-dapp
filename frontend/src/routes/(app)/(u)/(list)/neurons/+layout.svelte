@@ -7,7 +7,6 @@
   import { i18n } from "$lib/stores/i18n";
 
   const back = (): Promise<void> => goto($neuronsPageOrigin);
-
 </script>
 
 <LayoutList title={$i18n.navigation.neurons}>
