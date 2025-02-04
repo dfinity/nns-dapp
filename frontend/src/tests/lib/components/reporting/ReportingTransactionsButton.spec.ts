@@ -121,7 +121,7 @@ describe("ReportingTransactionsButton", () => {
     expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(1);
   });
 
-  it("should transform transaction data correctly", async () => {
+  it("should transform transaction data correctly to csv", async () => {
     const po = renderComponent();
 
     expect(spySaveGeneratedCsv).toBeCalledTimes(0);
@@ -150,7 +150,7 @@ describe("ReportingTransactionsButton", () => {
     expect(spySaveGeneratedCsv).toBeCalledTimes(1);
   });
 
-  it("should transform transaction data correctly to csv", async () => {
+  it("should transform transaction data correctly", async () => {
     const spyGenerateCsvFileToSave = vi
       .spyOn(exportToCsv, "generateCsvFileToSave")
       .mockResolvedValue();

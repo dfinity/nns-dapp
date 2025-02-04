@@ -1,6 +1,7 @@
 //! User accounts and transactions.
+use crate::accounts_store::schema::accounts_in_unbounded_stable_btree_map::AccountsDbAsUnboundedStableBTreeMap;
 use crate::multi_part_transactions_processor::MultiPartTransactionsProcessor;
-use crate::state::StableState;
+use crate::state::{partitions::PartitionType, with_partitions, StableState};
 use crate::stats::Stats;
 use candid::CandidType;
 use dfn_candid::Candid;
@@ -17,7 +18,6 @@ use std::collections::{BTreeMap, HashMap, VecDeque};
 use std::fmt;
 use std::ops::RangeBounds;
 
-pub mod constructors;
 pub mod histogram;
 pub mod schema;
 use schema::{
@@ -318,6 +318,21 @@ pub enum DetachCanisterResponse {
 }
 
 impl AccountsStore {
+    /// Creates a new `AccountsStore`. Should be called during canister `init`.
+    #[must_use]
+    pub fn new() -> Self {
+        let accounts_partition = with_partitions(|p| p.get(PartitionType::Accounts.memory_id()));
+        let accounts_db = AccountsDbAsProxy::from(AccountsDb::UnboundedStableBTreeMap(
+            AccountsDbAsUnboundedStableBTreeMap::new(accounts_partition),
+        ));
+        let accounts_db_stats = AccountsDbStats::default();
+
+        Self {
+            accounts_db,
+            accounts_db_stats,
+        }
+    }
+
     /// Determines whether a migration is being performed.
     #[must_use]
     #[allow(dead_code)]
@@ -777,12 +792,13 @@ impl StableState for AccountsStore {
         let Some(accounts_db_stats) = accounts_db_stats_maybe else {
             return Err("Accounts DB stats should be present since the stable structures migration.".to_string());
         };
+        let accounts_partition = with_partitions(|partitions| partitions.get(PartitionType::Accounts.memory_id()));
+        let accounts_db = AccountsDbAsProxy::from(AccountsDb::UnboundedStableBTreeMap(
+            AccountsDbAsUnboundedStableBTreeMap::load(accounts_partition),
+        ));
 
         Ok(AccountsStore {
-            // Because the stable structures migration is finished, accounts_db
-            // will be replaced with an AccountsDbAsUnboundedStableBTreeMap in
-            // State::from(Partitions) so it doesn't matter what we set here.
-            accounts_db: AccountsDbAsProxy::default(),
+            accounts_db,
             accounts_db_stats,
         })
     }
