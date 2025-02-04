@@ -36,6 +36,14 @@ beforeEach(() => {
   vi.stubGlobal("CustomEvent", CustomEventForTesting);
 });
 
+afterEach(async () => {
+  // Do this in afterEach such that if any timers cause any errors or logs,
+  // these are associated with the test that caused them.
+  if (vi.isFakeTimers()) {
+    await vi.runAllTimersAsync();
+  }
+});
+
 const cleanupFunctions = vi.hoisted(() => {
   return [];
 });
