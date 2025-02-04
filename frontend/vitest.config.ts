@@ -59,11 +59,13 @@ export default defineConfig(
       watch: false,
       setupFiles: ["./vitest.setup.ts"],
       globalSetup: ["./vitest.global-setup.ts"],
-      deps: {
-        optimizer: {
-          ssr: {
-            include: ["@dfinity/gix-components"],
-          },
+      // Resolve for example Cannot redefine property: SnsWrapper
+      //  ❯ src/tests/lib/services/sns-sale.services.spec.ts
+      // vi.spyOn(dfinitySns, "SnsWrapper").mockReturnValue(...
+      // https://github.com/vitest-dev/vitest/issues/5625#issuecomment-2078969371
+      server: {
+        deps: {
+          inline: ["@dfinity/sns", "@dfinity/utils"],
         },
       },
       reporters: ["basic", "hanging-process"],
