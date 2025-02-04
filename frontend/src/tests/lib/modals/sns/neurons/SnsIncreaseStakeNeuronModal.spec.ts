@@ -22,7 +22,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 describe("SnsIncreaseStakeNeuronModal", () => {
   const reloadNeuron = vi.fn();
@@ -43,7 +43,7 @@ describe("SnsIncreaseStakeNeuronModal", () => {
   };
 
   const renderSnsIncreaseStakeNeuronModal = async (): Promise<
-    RenderResult<SvelteComponent>
+    RenderResult<Component>
   > => {
     return renderModal({
       component: SnsIncreaseStakeNeuronModal,
@@ -89,7 +89,7 @@ describe("SnsIncreaseStakeNeuronModal", () => {
       });
 
       it("should not be able to execute transaction", async () => {
-        const renderResult: RenderResult<SvelteComponent> =
+        const renderResult: RenderResult<Component> =
           await renderSnsIncreaseStakeNeuronModal();
 
         await enterAmount(renderResult);
@@ -107,7 +107,7 @@ describe("SnsIncreaseStakeNeuronModal", () => {
       });
 
       it("should call increaseStakeNeuron service on confirm click", async () => {
-        const renderResult: RenderResult<SvelteComponent> =
+        const renderResult: RenderResult<Component> =
           await renderSnsIncreaseStakeNeuronModal();
 
         await enterAmount(renderResult);
@@ -121,7 +121,7 @@ describe("SnsIncreaseStakeNeuronModal", () => {
       });
 
       it("should go back in modal on cancel click", async () => {
-        const renderResult: RenderResult<SvelteComponent> =
+        const renderResult: RenderResult<Component> =
           await renderSnsIncreaseStakeNeuronModal();
 
         await enterAmount(renderResult);

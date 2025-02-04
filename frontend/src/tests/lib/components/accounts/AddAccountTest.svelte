@@ -5,9 +5,9 @@
     AddAccountContext,
   } from "$lib/types/add-account.context";
   import { addAccountStoreMock } from "$tests/mocks/add-account.store.mock";
-  import { SvelteComponent, setContext } from "svelte";
+  import { Component, setContext } from "svelte";
 
-  export let testComponent: typeof SvelteComponent;
+  export let testComponent: Component;
   export let nextCallback: () => void | undefined = undefined;
 
   setContext<AddAccountContext>(ADD_ACCOUNT_CONTEXT_KEY, {

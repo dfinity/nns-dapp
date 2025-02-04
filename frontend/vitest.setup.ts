@@ -80,7 +80,7 @@ global.TextEncoder = TextEncoder;
   global as { IntersectionObserver: typeof IntersectionObserver }
 ).IntersectionObserver = IntersectionObserverPassive;
 
-// We mock ResizeObserver because neither JSDOM nor Happy DOM supports it.
+// We mock ResizeObserver and element.animate because neither JSDOM nor Happy DOM supports them, while Svelte v5 requires them.
 // Interesting related thread: https://github.com/testing-library/svelte-testing-library/issues/284
 global.ResizeObserver = class ResizeObserver {
   observe() {
@@ -93,6 +93,10 @@ global.ResizeObserver = class ResizeObserver {
     // do nothing
   }
 };
+
+Element.prototype.animate = vi
+  .fn()
+  .mockImplementation(() => ({ cancel: vi.fn(), finished: Promise.resolve() }));
 
 // Environment Variables Setup
 vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
@@ -177,10 +181,3 @@ vi.mock("$app/stores", () => ({
   page,
   navigating,
 }));
-
-// Issue: https://github.com/testing-library/svelte-testing-library/issues/206
-Object.defineProperty(global, "requestAnimationFrame", {
-  value: (fn) => {
-    return window.setTimeout(() => fn(Date.now()), 0);
-  },
-});
