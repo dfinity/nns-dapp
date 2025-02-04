@@ -5,6 +5,7 @@
 //!
 //! This code also stores virtual memory IDs and other memory functions.
 use core::borrow::Borrow;
+use dfn_core::api::trap_with;
 use ic_cdk::api::stable::WASM_PAGE_SIZE_IN_BYTES;
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, Memory};
@@ -31,37 +32,6 @@ impl core::fmt::Debug for Partitions {
             )?;
         }
         writeln!(f, "}}")
-    }
-}
-
-#[derive(strum_macros::Display)]
-pub enum PartitionsMaybe {
-    /// Memory that has a memory manager.
-    Partitions(Partitions),
-    /// Memory that does not have any kind of memory manager.
-    None(DefaultMemoryImpl),
-}
-
-impl Default for PartitionsMaybe {
-    fn default() -> Self {
-        PartitionsMaybe::None(DefaultMemoryImpl::default())
-    }
-}
-
-impl core::fmt::Debug for PartitionsMaybe {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            PartitionsMaybe::Partitions(partitions) => {
-                write!(f, "MemoryWithPartitionType::MemoryManager({partitions:?})")
-            }
-            PartitionsMaybe::None(memory) => {
-                write!(
-                    f,
-                    "MemoryWithPartitionType::None( Memory with {} pages )",
-                    memory.size()
-                )
-            }
-        }
     }
 }
 
@@ -115,6 +85,37 @@ impl Partitions {
             memory.grow(min_pages - current_pages);
         }
         memory.write(offset, bytes);
+    }
+
+    /// Writes given bytes into the "managed memory", which is the stable memory section to store
+    /// data that needs to be persisted across upgrades by serialization/deserialization.
+    pub fn write_bytes_to_managed_memory(&self, bytes: &[u8]) {
+        let len = bytes.len();
+        let length_field = u64::try_from(len)
+            .unwrap_or_else(|e| {
+                trap_with(&format!(
+                    "The serialized memory takes more than 2**64 bytes.  Amazing: {e:?}"
+                ));
+            })
+            .to_be_bytes();
+        self.growing_write(PartitionType::Heap.memory_id(), 0, &length_field);
+        self.growing_write(PartitionType::Heap.memory_id(), 8, bytes);
+    }
+
+    /// Reads bytes from the "managed memory", which is the stable memory section to store data that
+    /// needs to be persisted across upgrades by serialization/deserialization.
+    #[must_use]
+    pub fn read_bytes_from_managed_memory(&self) -> Vec<u8> {
+        let memory = self.get(PartitionType::Heap.memory_id());
+        let len = {
+            let mut length_field = [0u8; 8];
+            memory.read(0, &mut length_field);
+            usize::try_from(u64::from_be_bytes(length_field))
+                .unwrap_or_else(|err| unreachable!("The stable memory size appears to be larger than usize: {err:?}"))
+        };
+        let mut bytes = vec![0u8; len];
+        memory.read(8, &mut bytes);
+        bytes
     }
 }
 

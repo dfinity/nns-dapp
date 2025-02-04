@@ -8,7 +8,7 @@ import {
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { snsFinalizationStatusResponseMock } from "$tests/mocks/sns-finalization-status.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -17,7 +17,6 @@ describe("sns-finalization-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetSnsProjects();
     resetSnsFinalizationStatusStore();
 
     vi.useFakeTimers().setSystemTime(now);

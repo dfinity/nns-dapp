@@ -63,6 +63,8 @@ describe("MenuItems", () => {
   };
 
   beforeEach(() => {
+    // NOTE: menuStore.resetForTesting() sets the menuStore to EXPANDED, while
+    // the store is initialized to undefined. So it's not actually resetting.
     menuStore.resetForTesting();
     layoutMenuOpen.set(false);
     vi.useFakeTimers();

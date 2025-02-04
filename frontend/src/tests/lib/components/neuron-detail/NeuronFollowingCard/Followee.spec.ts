@@ -16,8 +16,6 @@ describe("Followee", () => {
   };
 
   beforeEach(() => {
-    knownNeuronsStore.reset();
-
     vi.spyOn(console, "error").mockReturnValue();
     copySpy = vi.fn();
     Object.assign(navigator, {

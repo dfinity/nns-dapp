@@ -35,20 +35,6 @@ get_upgrade_invariant_stats() {
   dfx canister call nns-dapp get_stats | idl2json | jq '{accounts_count, sub_accounts_count}'
 }
 
-# Verifies that accounts were not recomputed on upgrade.
-# Recomputing on upgrade is very expensive for stable memory.
-assert_accounts_db_stats_are_not_recomputed_on_upgrade() {
-  local expected_value actual_value
-  expected_value="[false]"
-  actual_value="$(dfx canister call nns-dapp get_stats | idl2json | jq -c '.accounts_db_stats_recomputed_on_upgrade')"
-  [[ "$expected_value" == "$actual_value" ]] || {
-    echo "ERROR: Recompute stats on upgrade is not as expected."
-    echo "Expected: $expected_value"
-    echo "Actual:   $actual_value"
-    exit 1
-  }
-}
-
 get_accounts_count() {
   dfx canister call nns-dapp get_stats | idl2json | jq -r .accounts_count
 }
@@ -152,11 +138,6 @@ upgrade_nnsdapp() {
       exit 1
     } >&2
   fi
-
-  # Going forwards, this should always be false.  Historically it was always true.
-  #
-  # TODO: Delete the code path for recomputing stats on upgrade.
-  assert_accounts_db_stats_are_not_recomputed_on_upgrade
 }
 
 # This file is intended to be sourced, but if called directly, offer some help

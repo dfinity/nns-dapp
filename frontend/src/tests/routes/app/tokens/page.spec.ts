@@ -537,9 +537,11 @@ describe("Tokens route", () => {
         expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
 
         const tokensPagePo = po.getTokensPagePo();
-        const rowsPos = await tokensPagePo.getTokensTable().getRows();
+        const rowPo = await tokensPagePo
+          .getTokensTable()
+          .getRowByName("Internet Computer");
 
-        expect(await rowsPos[0].getBalanceInUsd()).toEqual("$12.35");
+        expect(await rowPo.getBalanceInUsd()).toEqual("$12.35");
       });
 
       it("should not load ICP Swap tickers without feature flag", async () => {
@@ -660,22 +662,20 @@ describe("Tokens route", () => {
             );
           });
 
-          it("should display imported tokens after important with balance", async () => {
+          it("should display imported tokens after important and before SNS", async () => {
             const po = await renderPage();
             const tokensPagePo = po.getTokensPagePo();
             expect(await tokensPagePo.getTokenNames()).toEqual([
+              // With balance:
               "Internet Computer",
-              // ck with balance
-              "ckBTC",
-              "ckUSDC",
-              // Imported tokens should be placed with the SNS tokens that have a non-zero balance
-              // and should be sorted alphabetically.
-              "ATOKEN2", // Imported without balance
-              "Tetris", // SNS with balance
-              "ZTOKEN1", // Imported with balance
+              "ckBTC", // Important
+              "ckUSDC", // Important
+              "ZTOKEN1", // Imported
+              "Tetris", // SNS
               // Zero balance
-              "ckETH",
-              "Pacman",
+              "ckETH", // Important
+              "ATOKEN2", // Imported
+              "Pacman", // SNS
             ]);
           });
         });
@@ -756,11 +756,11 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ATOKEN2",
-          "Tetris",
           "ZTOKEN1",
-          failedImportedTokenIdText, // failed imported token
+          "Tetris",
           "ckETH",
+          "ATOKEN2",
+          failedImportedTokenIdText, // failed imported token
           "Pacman",
         ]);
       });
@@ -776,11 +776,11 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "Tetris",
           "ZTOKEN1",
+          "Tetris",
+          "ckETH",
           failedImportedTokenIdText, // failed
           importedToken2Id.toText(), // failed
-          "ckETH",
           "Pacman",
         ]);
       });
@@ -889,11 +889,11 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ATOKEN2",
-          "Tetris",
           "ZTOKEN1",
-          "aaaaa-aa", // failedTokenRow
+          "Tetris",
           "ckETH",
+          "ATOKEN2",
+          "aaaaa-aa", // failedTokenRow
           "Pacman",
         ]);
 
@@ -928,10 +928,10 @@ describe("Tokens route", () => {
           "Internet Computer",
           "ckBTC",
           "ckUSDC",
-          "ATOKEN2",
-          "Tetris",
           "ZTOKEN1",
+          "Tetris",
           "ckETH",
+          "ATOKEN2",
           "Pacman",
         ]);
       });

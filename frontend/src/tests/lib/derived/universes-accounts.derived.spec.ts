@@ -16,14 +16,10 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
 
 describe("universes-accounts", () => {
-  beforeEach(() => {
-    resetSnsProjects();
-  });
-
   it("should derive Nns accounts", () => {
     setAccountsForTesting({
       main: mockMainAccount,

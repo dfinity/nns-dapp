@@ -140,7 +140,6 @@ type Stats =
         stable_memory_size_bytes: opt nat64;
         wasm_memory_size_bytes: opt nat64;
         migration_countdown: opt nat32;
-        accounts_db_stats_recomputed_on_upgrade: opt bool;
     };
 
 type PerformanceCount =
@@ -234,7 +233,6 @@ service: (opt Config) -> {
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;
-    get_exceptional_transactions: () -> (opt vec nat64) query;
     get_tvl : () -> (TvlResponse) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
@@ -243,5 +241,6 @@ service: (opt Config) -> {
     step_migration: (nat32) -> ();
 
     // Methods available in the test build only:
+    create_toy_accounts: (nat) -> (nat64);
     get_toy_account: (nat64) -> (GetAccountResponse) query;
 }

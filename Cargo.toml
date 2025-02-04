@@ -7,30 +7,31 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "2.0.100"
+version = "2.0.101"
 
 [workspace.dependencies]
 ic-cdk = "0.17.1"
 ic-cdk-macros = "0.17.0"
 ic-cdk-timers = "0.11.0"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-management-canister-types = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-23_03-04-hashes-in-blocks" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-management-canister-types = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2025-01-30_03-03-hashes-in-blocks" }
 
 [profile.release]
 lto = false

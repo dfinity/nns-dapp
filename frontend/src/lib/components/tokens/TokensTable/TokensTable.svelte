@@ -61,6 +61,7 @@
   tableData={userTokensData}
   {columns}
   bind:order
+  disableMobileSorting
   on:nnsAction
 >
   <slot name="last-row" slot="last-row" />

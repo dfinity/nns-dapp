@@ -30,7 +30,7 @@ import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
@@ -47,7 +47,6 @@ describe("icrc-accounts-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetSnsProjects();
 
     vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
     vi.spyOn(ledgerApi, "queryIcrcBalance").mockImplementation(

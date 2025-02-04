@@ -18,6 +18,11 @@ import {
   neuronStake,
   neuronStakedMaturity,
 } from "$lib/utils/neuron.utils";
+import {
+  CsvGenerationError,
+  FileSystemAccessError,
+  saveGeneratedCsv,
+} from "$lib/utils/reporting.save-csv-to-file.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
@@ -49,7 +54,6 @@ export type CsvHeader<T> = {
  * Forces Excel to treat a value as a string by wrapping it in an Excel formula.
  * Uses the '="value"' format which prevents Excel from automatically converting
  * large numbers into scientific notation or losing precision.
- *
  */
 const wrapAsExcelStringFormula = (value: bigint) => `="${value.toString()}"`;
 
@@ -57,6 +61,11 @@ const escapeCsvValue = (value: unknown): string => {
   if (isNullish(value)) return "";
 
   let stringValue = String(value);
+
+  const patternForExcelFormulaString = /^="\d+"$/;
+  if (patternForExcelFormulaString.test(stringValue)) {
+    return stringValue;
+  }
 
   const patternForSpecialCharacters = /[",\r\n=@|]/;
   if (!patternForSpecialCharacters.test(stringValue)) {
@@ -118,84 +127,11 @@ export const convertToCsv = <T>({
 
   for (const row of data) {
     const values = headers.map((header) => escapeCsvValue(row[header.id]));
+
     csvRows.push([...emptyPrefix, ...values].join(","));
   }
 
   return csvRows.join("\n");
-};
-
-export class FileSystemAccessError extends Error {
-  constructor(message: string, options: ErrorOptions = {}) {
-    super(message, options);
-    this.name = "FileSystemAccessError";
-  }
-}
-
-export class CsvGenerationError extends Error {
-  constructor(message: string, options: ErrorOptions = {}) {
-    super(message, options);
-    this.name = "CSVGenerationError";
-  }
-}
-
-// Source: https://web.dev/patterns/files/save-a-file
-const saveFileWithPicker = async ({
-  blob,
-  fileName,
-  description,
-}: {
-  blob: Blob;
-  fileName: string;
-  description: string;
-}) => {
-  try {
-    const handle = await window.showSaveFilePicker({
-      suggestedName: `${fileName}.csv`,
-      types: [
-        {
-          description,
-          accept: { "text/csv": [".csv"] },
-        },
-      ],
-    });
-    const writable = await handle.createWritable();
-    await writable.write(blob);
-    await writable.close();
-  } catch (error) {
-    // User cancelled the save dialog - not an error
-    if (error instanceof Error && error.name === "AbortError") return;
-
-    throw new FileSystemAccessError(
-      "Failed to save file using File System Access API",
-      { cause: error }
-    );
-  }
-};
-
-const saveFileWithAnchor = ({
-  blob,
-  fileName,
-}: {
-  blob: Blob;
-  fileName: string;
-}) => {
-  try {
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${fileName}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    throw new FileSystemAccessError(
-      "Failed to save file using fallback method",
-      {
-        cause: error,
-      }
-    );
-  }
 };
 
 export const combineDatasetsToCsv = <T>({
@@ -250,22 +186,7 @@ export const generateCsvFileToSave = async <T>({
 }): Promise<void> => {
   try {
     const csvContent = combineDatasetsToCsv({ datasets, headers });
-
-    const blob = new Blob([csvContent], {
-      type: "text/csv;charset=utf-8;",
-    });
-
-    // TODO: Investigate the random issues with showSaveFilePicker.
-    const isShowSaveFilePickerEnabled = false;
-    if (
-      "showSaveFilePicker" in window &&
-      typeof window.showSaveFilePicker === "function" &&
-      isShowSaveFilePickerEnabled
-    ) {
-      await saveFileWithPicker({ blob, fileName, description });
-    } else {
-      saveFileWithAnchor({ blob, fileName });
-    }
+    await saveGeneratedCsv({ csvContent, fileName, description });
   } catch (error) {
     console.error(error);
     if (

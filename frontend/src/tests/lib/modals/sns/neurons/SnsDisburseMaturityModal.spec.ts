@@ -13,7 +13,7 @@ import {
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { SnsNeuron } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
@@ -42,8 +42,6 @@ describe("SnsDisburseMaturityModal", () => {
   };
 
   beforeEach(() => {
-    resetSnsProjects();
-
     authStore.setForTesting(mockIdentity);
     setSnsProjects([
       {

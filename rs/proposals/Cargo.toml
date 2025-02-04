@@ -24,6 +24,7 @@ ic-nervous-system-common = { workspace = true }
 ic-nervous-system-root = { workspace = true }
 ic-nns-constants = { workspace = true }
 ic-protobuf = { workspace = true }
+registry-canister = { workspace = true }
 
 ic-cdk = { workspace = true }
 ic-cdk-macros = { workspace = true }

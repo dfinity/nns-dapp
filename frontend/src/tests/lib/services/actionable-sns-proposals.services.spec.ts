@@ -13,7 +13,7 @@ import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { Principal } from "@dfinity/principal";
 import {
@@ -32,10 +32,6 @@ import type { MockInstance } from "@vitest/spy";
 import { get } from "svelte/store";
 
 describe("actionable-sns-proposals.services", () => {
-  beforeEach(() => {
-    failedActionableSnsesStore.resetForTesting();
-  });
-
   describe("loadActionableProposalsForSns", () => {
     const allPermissions = Int32Array.from(enumValues(SnsNeuronPermissionType));
     const subaccount = neuronSubaccount({
@@ -127,7 +123,6 @@ describe("actionable-sns-proposals.services", () => {
     let spyConsoleError;
 
     beforeEach(() => {
-      resetSnsProjects();
       resetIdentity();
 
       resetIdentity();

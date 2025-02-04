@@ -11,7 +11,7 @@ import {
   ckTESTBTCTokenBase,
   icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -51,10 +51,6 @@ describe("tokens-list-base.derived", () => {
   };
 
   describe("tokensListBaseStore", () => {
-    beforeEach(() => {
-      resetSnsProjects();
-    });
-
     it("should return ICP, ckBTC and ckTESTBTC without any other data loaded", () => {
       expect(get(tokensListBaseStore)).toEqual([
         icpTokenBase,

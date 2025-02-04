@@ -11,7 +11,6 @@ import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalSystemInfoSectionPo } from "$tests/page-objects/SnsProposalSystemInfoSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
@@ -42,7 +41,6 @@ describe("ProposalSystemInfoSection", () => {
   };
 
   beforeEach(() => {
-    resetSnsProjects();
     fakeSnsGovernanceApi.addNervousSystemFunctionWith({
       rootCanisterId,
       ...nervousFunction,

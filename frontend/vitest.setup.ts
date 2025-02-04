@@ -42,7 +42,8 @@ const cleanupFunctions = vi.hoisted(() => {
 
 // Reset every store before each test.
 vi.mock("svelte/store", async (importOriginal) => {
-  const svelteStoreModule = await importOriginal();
+  const svelteStoreModule =
+    await importOriginal<typeof import("svelte/store")>();
   return {
     ...svelteStoreModule,
     writable: <T>(initialValue, ...otherArgs) => {
@@ -78,6 +79,20 @@ global.TextEncoder = TextEncoder;
 (
   global as { IntersectionObserver: typeof IntersectionObserver }
 ).IntersectionObserver = IntersectionObserverPassive;
+
+// We mock ResizeObserver because neither JSDOM nor Happy DOM supports it.
+// Interesting related thread: https://github.com/testing-library/svelte-testing-library/issues/284
+global.ResizeObserver = class ResizeObserver {
+  observe() {
+    // do nothing
+  }
+  unobserve() {
+    // do nothing
+  }
+  disconnect() {
+    // do nothing
+  }
+};
 
 // Environment Variables Setup
 vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
@@ -123,12 +138,6 @@ setDefaultTestConstants({
   IS_TEST_ENV: true,
   QR_CODE_RENDERED_DEFAULT_STATE: true,
   ENABLE_QR_CODE_READER: false,
-  isForceCallStrategy: function () {
-    return this.FORCE_CALL_STRATEGY === "query";
-  },
-  notForceCallStrategy: function () {
-    return !this.isForceCallStrategy();
-  },
 });
 
 failTestsThatLogToConsole();

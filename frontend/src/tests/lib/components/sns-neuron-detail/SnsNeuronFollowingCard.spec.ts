@@ -19,7 +19,6 @@ import {
 describe("SnsNeuronFollowingCard", () => {
   beforeEach(() => {
     resetIdentity();
-    resetSnsProjects();
   });
 
   describe("user has permissions to manage followees", () => {
