@@ -564,7 +564,7 @@ const getNeuronTagsUnrelatedToController = ({
         status: "danger",
       });
     } else if (
-      shouldDisplayMissingRewardNotification({
+      isNeuronMissingRewardSoon({
         neuron,
         startReducingVotingPowerAfterSeconds,
       })
@@ -1346,7 +1346,7 @@ export const isNeuronMissingReward = ({
  * e.g. "Neuron will start missing rewards in 30 days"
  * If the voting power economics are not available,
  * we assume that the neuron is not missing rewards. */
-export const shouldDisplayMissingRewardNotification = ({
+export const isNeuronMissingRewardSoon = ({
   neuron,
   startReducingVotingPowerAfterSeconds,
 }: {
