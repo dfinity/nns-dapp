@@ -174,7 +174,6 @@ describe("NnsAccounts", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: MockInstance;
     beforeEach(() => {
-      vi.clearAllTimers();
       cancelPollAccounts();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);

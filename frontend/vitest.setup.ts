@@ -74,6 +74,14 @@ beforeEach(() => {
   for (const cleanup of cleanupFunctions) {
     cleanup();
   }
+
+  // Do these cleanups after cleanup functions, in case a cleanup function does
+  // something that needs to be cleaned up. In particular, stores created with
+  // writableStored write to localStorage, and resetting them also causes them
+  // to write to localStorage.
+  vi.clearAllTimers();
+  vi.useRealTimers();
+  localStorage.clear();
 });
 
 // Mock SubtleCrypto to test @dfinity/auth-client

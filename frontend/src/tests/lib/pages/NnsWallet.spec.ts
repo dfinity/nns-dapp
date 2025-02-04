@@ -86,7 +86,6 @@ describe("NnsWallet", () => {
   const accountTransactions = [mockTransactionWithId];
 
   beforeEach(() => {
-    vi.clearAllTimers();
     cancelPollAccounts();
     resetAccountsForTesting();
     resetIdentity();

@@ -933,7 +933,6 @@ describe("icp-accounts.services", () => {
 
     beforeEach(() => {
       resetAccountsForTesting();
-      vi.clearAllTimers();
       cancelPollAccounts();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);

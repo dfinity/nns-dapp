@@ -14,8 +14,6 @@ import { mock } from "vitest-mock-extended";
 
 describe("icp-ledger.api", () => {
   beforeEach(() => {
-    vi.clearAllTimers();
-
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
