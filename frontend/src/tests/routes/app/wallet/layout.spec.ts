@@ -46,7 +46,7 @@ describe("Wallet layout", () => {
     });
   });
 
-  it("back button should navigate to Portfolio page previous page is Portfolio page", async () => {
+  it("back button should navigate to Portfolio page if previous page was Portfolio page", async () => {
     page.mock({
       routeId: AppPath.Wallet,
       data: {
