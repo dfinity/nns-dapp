@@ -1,11 +1,10 @@
 <script lang="ts">
   import VotingCard from "$lib/components/proposal-detail/VotingCard/VotingCard.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import { isForceCallStrategy } from "$lib/constants/mockable.constants";
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
+  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
   import { neuronsStore } from "$lib/stores/neurons.store";
-  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import {
     voteRegistrationStore,
     type VoteRegistrationStoreEntry,
@@ -15,6 +14,7 @@
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
   } from "$lib/types/selected-proposal.context";
+  import { isForceCallStrategy } from "$lib/utils/call.utils";
   import {
     filterIneligibleNnsNeurons,
     votedNeuronDetails,
