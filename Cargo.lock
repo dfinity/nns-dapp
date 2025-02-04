@@ -5128,7 +5128,7 @@ dependencies = [
  "base64 0.22.1",
  "candid",
  "dfn_candid",
- "dfn_core",
+ "ic-base-types",
  "ic-cdk 0.17.1",
  "ic-cdk-macros 0.17.1",
  "ic-cdk-timers 0.11.0",
