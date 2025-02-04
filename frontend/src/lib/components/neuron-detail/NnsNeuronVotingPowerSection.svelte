@@ -13,6 +13,7 @@
     dissolveDelayMultiplier,
     formatVotingPower,
     formattedStakedMaturity,
+    hasEnoughDissolveDelayToVote,
     neuronDashboardUrl,
     neuronStake,
   } from "$lib/utils/neuron.utils";
@@ -24,8 +25,7 @@
 
   // The API might return a non-zero voting power even if the neuron can't vote.
   let canVote: boolean;
-  $: canVote =
-    neuron.dissolveDelaySeconds >= BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
+  $: canVote = hasEnoughDissolveDelayToVote(neuron);
 
   let isReducedVotingPower = false;
   $: isReducedVotingPower =
