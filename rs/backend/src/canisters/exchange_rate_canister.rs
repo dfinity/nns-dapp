@@ -98,13 +98,17 @@ pub enum GetExchangeRateResult {
 #[cfg(not(test))]
 mod prod {
     use super::{GetExchangeRateRequest, GetExchangeRateResult};
-    use dfn_candid::candid;
     use ic_nns_constants::EXCHANGE_RATE_CANISTER_ID;
 
     pub async fn get_exchange_rate(request: GetExchangeRateRequest) -> Result<GetExchangeRateResult, String> {
-        dfn_core::call(EXCHANGE_RATE_CANISTER_ID, "get_exchange_rate", candid, (request,))
-            .await
-            .map_err(|e| e.1)
+        ic_cdk::call::<(GetExchangeRateRequest,), (GetExchangeRateResult,)>(
+            EXCHANGE_RATE_CANISTER_ID.into(),
+            "get_exchange_rate",
+            (request,),
+        )
+        .await
+        .map(|r: (GetExchangeRateResult,)| r.0)
+        .map_err(|e| e.1)
     }
 }
 

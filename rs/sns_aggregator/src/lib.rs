@@ -17,10 +17,11 @@ use std::time::Duration;
 
 use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service, CandidType, Principal};
-use dfn_core::api::{call, CanisterId};
 use fast_scheduler::FastScheduler;
+use ic_cdk::api::call::call;
+use ic_cdk::api::management_canister::main::CanisterIdRecord;
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
-use ic_management_canister_types::{CanisterIdRecord, IC_00};
+use ic_management_canister_types::IC_00;
 use serde::Deserialize;
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
@@ -84,9 +85,13 @@ struct CanisterStatusResultV2 {
 #[ic_cdk_macros::update]
 #[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
 async fn get_canister_status() -> CanisterStatusResultV2 {
-    let own_canister_id = dfn_core::api::id();
-    let canister_id_record: CanisterIdRecord = CanisterId::unchecked_from_principal(own_canister_id.get()).into();
-    let result = call(IC_00, "canister_status", dfn_candid::candid, (canister_id_record,)).await;
+    let own_canister_id = ic_cdk::api::id();
+    let canister_id_record = CanisterIdRecord {
+        canister_id: own_canister_id,
+    };
+    let result = call(IC_00.into(), "canister_status", (canister_id_record,))
+        .await
+        .map(|(r,)| r);
     result.unwrap_or_else(|err| panic!("Couldn't get canister_status of {own_canister_id}.  Err: {err:#?}"))
 }
 
