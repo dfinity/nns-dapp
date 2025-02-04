@@ -1,6 +1,7 @@
 import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import {
+  hasEnoughDissolveDelayToVote,
   hasValidStake,
   isNeuronMissingRewardSoon,
   sortNeuronsByStake,
@@ -24,13 +25,16 @@ export const soonLosingRewardNeuronsStore: Readable<NeuronInfo[]> = derived(
   definedNeuronsStore,
   ($definedNeuronsStore) =>
     sortNeuronsByVotingPowerRefreshedTimeout(
-      $definedNeuronsStore.filter((neuron) =>
-        isNeuronMissingRewardSoon({
-          neuron,
-          startReducingVotingPowerAfterSeconds: get(
-            startReducingVotingPowerAfterSecondsStore
-          ),
-        })
+      $definedNeuronsStore.filter(
+        (neuron) =>
+          // Neurons that are not able to vote cannot suddenly miss rewards.
+          hasEnoughDissolveDelayToVote(neuron) &&
+          isNeuronMissingRewardSoon({
+            neuron,
+            startReducingVotingPowerAfterSeconds: get(
+              startReducingVotingPowerAfterSecondsStore
+            ),
+          })
       )
     )
 );
