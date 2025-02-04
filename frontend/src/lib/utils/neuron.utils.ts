@@ -15,6 +15,7 @@ import {
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
+  NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
@@ -551,9 +552,12 @@ const getNeuronTagsUnrelatedToController = ({
     tags.push({ text: i18n.neurons.community_fund });
   }
 
-  // Skip the "missing rewards" tag when voting power economics not available
+  // Skip the "missing rewards" tags when
+  // 1. neuron has not enough dissolve delay to vote
+  // 2. no voting power economics available
   if (
     nonNullish(startReducingVotingPowerAfterSeconds) &&
+    hasEnoughDissolveDelayToVote(neuron) &&
     get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)
   ) {
     if (
