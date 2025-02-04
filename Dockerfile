@@ -32,13 +32,14 @@ FROM base as tool_versions
 SHELL ["bash", "-c"]
 RUN mkdir -p config
 COPY dfx.json dfx.json
+COPY config.json config.json
 ENV NODE_VERSION=16.17.1
 RUN jq -r .dfx dfx.json > config/dfx_version
-RUN jq -r '.defaults.build.config.NODE_VERSION' dfx.json > config/node_version
-RUN jq -r '.defaults.build.config.DIDC_RELEASE' dfx.json > config/didc_version
-RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' dfx.json > config/optimizer_version
-RUN jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json > config/ic_wasm_version
-RUN jq -r '.defaults.build.config.BINSTALL_VERSION' dfx.json > config/binstall_version
+RUN jq -r '.defaults.build.config.NODE_VERSION' config.json > config/node_version
+RUN jq -r '.defaults.build.config.DIDC_RELEASE' config.json > config/didc_version
+RUN jq -r '.defaults.build.config.OPTIMIZER_VERSION' config.json > config/optimizer_version
+RUN jq -r '.defaults.build.config.IC_WASM_VERSION' config.json > config/ic_wasm_version
+RUN jq -r '.defaults.build.config.BINSTALL_VERSION' config.json > config/binstall_version
 
 # This is the "builder", i.e. the base image used later to build the final code.
 FROM base as builder
@@ -88,7 +89,7 @@ RUN cargo binstall --no-confirm "ic-wasm@$(cat config/ic_wasm_version)" && comma
 # Note: This MUST NOT be used as an input for the frontend or wasm.
 FROM builder AS configurator
 SHELL ["bash", "-c"]
-COPY dfx.json config.sh canister_ids.jso[n] /build/
+COPY dfx.json config.json config.sh canister_ids.jso[n] /build/
 COPY global-config.json /root/.config/dfx/networks.json
 COPY scripts/network-config /build/scripts/network-config
 COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
@@ -106,7 +107,7 @@ RUN didc encode "$(cat nns-dapp-arg-${DFX_NETWORK}.did)" | xxd -r -p >nns-dapp-a
 #       The mainnet config is compiled in and may be overridden using deploy args.
 FROM builder AS mainnet_configurator
 SHELL ["bash", "-c"]
-COPY dfx.json config.sh /build/
+COPY dfx.json config.json config.sh /build/
 COPY scripts/network-config /build/scripts/network-config
 COPY scripts/dfx-canister-url /build/scripts/dfx-canister-url
 COPY scripts/clap.bash /build/scripts/clap.bash
@@ -143,6 +144,7 @@ COPY ./build-rs.sh /build/
 COPY ./Cargo.toml /build/
 COPY ./Cargo.lock /build/
 COPY ./dfx.json /build/
+COPY ./config.json /build/
 COPY --from=build_frontend /build/assets.tar.xz /build/
 WORKDIR /build
 # We need to make sure that the rebuild happens if the code has changed.
@@ -175,6 +177,7 @@ COPY ./build-rs.sh /build/build-rs.sh
 COPY ./Cargo.toml /build/Cargo.toml
 COPY ./Cargo.lock /build/Cargo.lock
 COPY ./dfx.json /build/dfx.json
+COPY ./config.json /build/dfx.json
 WORKDIR /build
 # Ensure that the code is newer than any cache.
 RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs

@@ -3,8 +3,8 @@
 
 Cargo.lock
 Cargo.toml
+config.json
 declarations/*/*/*.did
-dfx.json
 frontend/package-lock.json
 frontend/src/tests/workflows/Launchpad/sns-agg-page-*.json
 rs/proposals/src/canisters/*/api.rs

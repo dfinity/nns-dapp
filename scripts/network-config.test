@@ -10,14 +10,6 @@ sample_global_config() {
   cat <<-EOF
 	{
 	  "local": {
-	    "config": {
-	      "FETCH_ROOT_KEY": true,
-	      "HOST": "http://localhost:8080",
-	      "FEATURE_FLAGS": {
-		"ENABLE_SNS": true,
-		"ENABLE_SNS_2": true
-	      }
-	    },
 	    "bind": "127.0.0.1:8080",
 	    "type": "ephemeral",
 	    "replica": {
@@ -25,10 +17,6 @@ sample_global_config() {
 	    }
 	  },
 	  "fubar": {
-	    "config": {
-	      "FETCH_ROOT_KEY": true,
-	      "HOST": "https://fubar.testnet.dfinity.network"
-	    },
 	    "providers": [
 	      "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
 	    ],
@@ -60,14 +48,6 @@ sample_local_config() {
 	  },
 	  "networks": {
 	    "mainnet": {
-	      "config": {
-		"FETCH_ROOT_KEY": false,
-		"API_HOST": "https://icp-api.io",
-		"STATIC_HOST": "https://icp0.io",
-		"FEATURE_FLAGS": {
-		  "ENABLE_CKTESTBTC": false
-		}
-	      },
 	      "providers": [
 		"https://icp-api.io/"
 	      ],

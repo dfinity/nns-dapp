@@ -17,7 +17,7 @@ runs:
       uses: actions/checkout@v4
     - name: Get node version
       shell: bash
-      run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+      run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
