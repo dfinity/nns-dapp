@@ -80,6 +80,20 @@ global.TextEncoder = TextEncoder;
   global as { IntersectionObserver: typeof IntersectionObserver }
 ).IntersectionObserver = IntersectionObserverPassive;
 
+// We mock ResizeObserver because neither JSDOM nor Happy DOM supports it.
+// Interesting related thread: https://github.com/testing-library/svelte-testing-library/issues/284
+global.ResizeObserver = class ResizeObserver {
+  observe() {
+    // do nothing
+  }
+  unobserve() {
+    // do nothing
+  }
+  disconnect() {
+    // do nothing
+  }
+};
+
 // Environment Variables Setup
 vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
   getEnvVars: () => ({
