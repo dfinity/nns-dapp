@@ -389,7 +389,7 @@ pub fn create_toy_accounts() {
 }
 
 #[cfg(any(test, feature = "toy_data_gen"))]
-#[candid_method(query, rename = "create_toy_accounts")]
+#[candid_method(update, rename = "create_toy_accounts")]
 fn create_toy_accounts_impl(num_accounts: u128) -> u64 {
     let caller = ic_cdk::caller();
     if !ic_cdk::api::is_controller(&caller) {
