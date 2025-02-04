@@ -26,7 +26,7 @@ jobs:
       - name: Find newer IC release, if any
         id: update
         run: |
-          current_release="$(jq -r .defaults.build.config.IC_COMMIT_FOR_PROPOSALS dfx.json)"
+          current_release="$(jq -r .defaults.build.config.IC_COMMIT_FOR_PROPOSALS config.json)"
           echo "Current IC release: $current_release"
           latest_release=$(curl -sSL https://api.github.com/repos/dfinity/ic/releases/latest | jq .tag_name -r)
           echo "Latest IC release:  $latest_release"
@@ -73,12 +73,12 @@ jobs:
           reviewers: mstrasinskis, dskloetd, yhabib
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: |
-            dfx.json
+            config.json
             declarations/*/*.did
             rs/proposals/src/canisters/*/api.rs
           delete-branch: true
           title: 'bot: Update proposals candid bindings'
-          # Note: It is _likely_ but not guaranteed that the .did files match the `IC_COMMIT` in `dfx.json`.  The files in the PR have a header that give this information reliably.
+          # Note: It is _likely_ but not guaranteed that the .did files match the `IC_COMMIT` in `config.json`.  The files in the PR have a header that give this information reliably.
           #       We do _not_ put a commit in the PR title as it could be misleading.
           body: |
             # Motivation
@@ -86,7 +86,7 @@ jobs:
             Even with no changes, just updating the reference is good practice.
 
             # Changes
-            * Update the version of `IC_COMMIT_FOR_PROPOSALS` specified in `dfx.json`.
+            * Update the version of `IC_COMMIT_FOR_PROPOSALS` specified in `config.json`.
             * Updated the `proposals` candid files to the versions in that commit.
             * Updated the Rust code derived from `.did` files in the proposals payload rendering crate.
 

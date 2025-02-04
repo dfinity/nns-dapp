@@ -16,9 +16,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Get cargo sort version
-        run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' dfx.json >> $GITHUB_ENV
+        run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' config.json >> $GITHUB_ENV
       - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -112,7 +112,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -143,16 +143,16 @@ jobs:
         run: command -v didc
       - name: Run the ic_commit code generator for proposals
         run: |
-          ./scripts/update_ic_commit --crate proposals --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT_FOR_PROPOSALS dfx.json)"
+          ./scripts/update_ic_commit --crate proposals --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT_FOR_PROPOSALS config.json)"
           ./scripts/proposals/did2rs
       - name: Run the ic_commit code generator for sns_aggregator
         run: |
-          ./scripts/update_ic_commit --crate sns_aggregator --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT_FOR_SNS_AGGREGATOR dfx.json)"
+          ./scripts/update_ic_commit --crate sns_aggregator --ic_commit "$(jq -re .defaults.build.config.IC_COMMIT_FOR_SNS_AGGREGATOR config.json)"
           ./scripts/sns/aggregator/mk_nns_patch.sh
       - name: Verify that there are no code changes
         run: |
           if git diff | grep . ; then
-                  echo "ERROR: The code is not consistent with the IC_COMMIT in dfx.json"
+                  echo "ERROR: The code is not consistent with the IC_COMMIT in config.json"
                   echo "Note:  didc version: $(didc --version)"
                   exit 1
           fi
@@ -189,7 +189,7 @@ jobs:
         uses: ./.github/actions/install_binstall
       - name: Install tools
         run: |
-          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+          cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION config.json)"
       - name: Check mainnet config
         run: bash -x config.test
   migration-test-utils-work:
@@ -200,7 +200,7 @@ jobs:
       - name: Install cargo binstall
         uses: ./.github/actions/install_binstall
       - name: Install idl2json
-        run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+        run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION config.json)" && idl2json --version
       - name: Test migration utilities
         run: |
           set +x
@@ -217,7 +217,7 @@ jobs:
       - name: Install cargo binstall
         uses: ./.github/actions/install_binstall
       - name: Install idl2json
-        run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)" && idl2json --version
+        run: cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION config.json)" && idl2json --version
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Install dfx
@@ -233,7 +233,7 @@ jobs:
       - name: Install sponge
         run: sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
       - name: Get node version
-        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' dfx.json >> $GITHUB_ENV
+        run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}

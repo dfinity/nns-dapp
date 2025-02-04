@@ -29,15 +29,15 @@ fi
   exit 1
 } >&2
 
-: "Bump IC_COMMIT in dfx.json"
+: "Bump IC_COMMIT in config.json"
 bump_ic_commit() {
   export IC_COMMIT_CONFIG_FIELD="$1"
-  NEW_CONFIG="$(DFX_IC_COMMIT="$DFX_IC_COMMIT" jq '.defaults.build.config[env.IC_COMMIT_CONFIG_FIELD] = (env.DFX_IC_COMMIT)' "$SOURCE_DIR/../dfx.json")"
+  NEW_CONFIG="$(DFX_IC_COMMIT="$DFX_IC_COMMIT" jq '.defaults.build.config[env.IC_COMMIT_CONFIG_FIELD] = (env.DFX_IC_COMMIT)' "$SOURCE_DIR/../config.json")"
   [[ "$NEW_CONFIG" != "" ]] || {
-    echo "ERROR: Failed to set ${IC_COMMIT_CONFIG_FIELD}  in dfx.json.  Please verify that dfx.json is valid JSON."
+    echo "ERROR: Failed to set ${IC_COMMIT_CONFIG_FIELD}  in config.json.  Please verify that config.json is valid JSON."
     exit 1
   } >&2
-  printf "%s\n" "$NEW_CONFIG" >"$SOURCE_DIR/../dfx.json"
+  printf "%s\n" "$NEW_CONFIG" >"$SOURCE_DIR/../config.json"
 }
 
 : "Get the latest did files"
