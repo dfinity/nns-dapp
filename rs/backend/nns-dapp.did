@@ -233,7 +233,6 @@ service: (opt Config) -> {
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;
-    get_exceptional_transactions: () -> (opt vec nat64) query;
     get_tvl : () -> (TvlResponse) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;

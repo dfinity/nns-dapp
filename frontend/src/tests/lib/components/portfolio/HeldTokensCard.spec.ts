@@ -73,6 +73,19 @@ describe("HeldTokensCard", () => {
       expect(balances.length).toBe(3);
       expect(balances).toEqual(["$0.00", "$0.00", "$0.00"]);
     });
+
+    it("should render rows as DIV tag", async () => {
+      const po = renderComponent({
+        topHeldTokens: mockTokens,
+        usdAmount: 0,
+      });
+
+      const allTags = await po.getRowsTags();
+      const allHrefs = await po.getRowsHref();
+
+      expect(allTags.every((tag) => tag === "DIV")).toBe(true);
+      expect(allHrefs).toEqual([null, null, null]);
+    });
   });
 
   describe("when signed in", () => {
@@ -207,6 +220,22 @@ describe("HeldTokensCard", () => {
       expect(nativeBalances).toEqual(["21.60 ICP", "21.60 ckBTC"]);
 
       expect(await po.getInfoRow().isPresent()).toBe(true);
+    });
+
+    it("should render rows as an A tag", async () => {
+      const po = renderComponent({
+        topHeldTokens: mockTokens,
+      });
+
+      const allTags = await po.getRowsTags();
+      const allHrefs = await po.getRowsHref();
+
+      expect(allTags.every((tag) => tag === "A")).toBe(true);
+      expect(allHrefs).toEqual([
+        mockTokens[0].rowHref,
+        mockTokens[1].rowHref,
+        mockTokens[2].rowHref,
+      ]);
     });
   });
 });

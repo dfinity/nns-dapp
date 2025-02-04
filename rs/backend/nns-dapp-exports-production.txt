@@ -5,7 +5,6 @@ canister_pre_upgrade
 canister_query __long_message_noop
 canister_query get_account
 canister_query get_canisters
-canister_query get_exceptional_transactions
 canister_query get_histogram
 canister_query get_imported_tokens
 canister_query get_stats

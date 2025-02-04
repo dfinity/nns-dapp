@@ -420,21 +420,6 @@ fn get_toy_account_impl(toy_account_index: u64) -> GetAccountResponse {
     })
 }
 
-#[export_name = "canister_query get_exceptional_transactions"]
-pub fn get_exceptional_transactions() {
-    over(candid, |()| get_exceptional_transactions_impl());
-}
-
-#[candid_method(query, rename = "get_exceptional_transactions")]
-fn get_exceptional_transactions_impl() -> Option<Vec<u64>> {
-    with_state(|s| {
-        s.performance
-            .exceptional_transactions
-            .as_ref()
-            .map(|transactions| transactions.iter().copied().collect::<Vec<u64>>())
-    })
-}
-
 #[export_name = "canister_query get_tvl"]
 pub fn get_tvl() {
     over(candid, |()| get_tvl_impl());
