@@ -2,6 +2,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import {
   accountsPageOrigin,
+  neuronsPageOrigin,
   walletPageOrigin,
 } from "$lib/derived/routes.derived";
 import { referrerPathStore } from "$lib/stores/routes.store";
@@ -72,6 +73,27 @@ describe("routes.derived", () => {
       referrerPathStore.pushPath(AppPath.Wallet);
 
       expect(get(walletPageOrigin)).toBe(AppPath.Tokens);
+    });
+  });
+
+  describe("neuronsPageOrigin.derived", () => {
+    it("should return Portfolio when it was the last page visited", () => {
+      referrerPathStore.pushPath(AppPath.Portfolio);
+
+      expect(get(neuronsPageOrigin)).toBe(AppPath.Portfolio);
+    });
+
+    it("should return to Staking page when it was the last page visited", () => {
+      referrerPathStore.pushPath(AppPath.Staking);
+
+      expect(get(neuronsPageOrigin)).toBe(AppPath.Staking);
+    });
+
+    it("should return to Staking page as defaultf", () => {
+      referrerPathStore.pushPath(AppPath.Portfolio);
+      referrerPathStore.pushPath(AppPath.Settings);
+
+      expect(get(neuronsPageOrigin)).toBe(AppPath.Staking);
     });
   });
 });
