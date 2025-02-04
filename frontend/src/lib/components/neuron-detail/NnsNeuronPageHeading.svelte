@@ -5,7 +5,6 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
