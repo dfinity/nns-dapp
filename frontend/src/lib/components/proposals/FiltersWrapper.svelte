@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { fade } from "svelte/transition";
+  import { testSafeFade } from "@dfinity/gix-components";
 </script>
 
-<div class="filters" data-tid="proposals-filters" in:fade={{ duration: 150 }}>
+<div class="filters" data-tid="proposals-filters" in:testSafeFade={{ duration: 150 }}>
   <slot />
 </div>
 

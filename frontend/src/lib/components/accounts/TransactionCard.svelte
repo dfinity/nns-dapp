@@ -9,7 +9,7 @@
     TransactionIconType,
     UiTransaction,
   } from "$lib/types/transaction";
-  import { KeyValuePair, fadeGlobal } from "@dfinity/gix-components";
+  import { KeyValuePair, testSafeFade } from "@dfinity/gix-components";
   import {
     nonNullish,
     type TokenAmount,
@@ -55,7 +55,7 @@
   $: seconds = timestamp && timestamp.getTime() / 1000;
 </script>
 
-<article data-tid="transaction-card" transition:fadeGlobal>
+<article data-tid="transaction-card" transition:testSafeFade>
   <div class="icon">
     <TransactionIcon type={iconType} {isPending} />
   </div>
