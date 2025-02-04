@@ -423,6 +423,7 @@ describe("utils", () => {
       it("should show 'high load' message after ~1 minute", async () => {
         let calls = 0;
         const failuresBeforeHighLoadMessage = 3;
+        let caughtError;
         const _ = poll({
           fn: async () => {
             calls += 1;
@@ -433,6 +434,8 @@ describe("utils", () => {
           millisecondsToWait: 20 * 1000,
           useExponentialBackoff: false,
           failuresBeforeHighLoadMessage,
+        }).catch((err) => {
+          caughtError = err;
         });
         expect(calls).toEqual(1);
         await advanceTime();
@@ -441,6 +444,10 @@ describe("utils", () => {
         await advanceTime();
         expect(calls).toBeGreaterThanOrEqual(failuresBeforeHighLoadMessage);
         expect(get(toastsStore)).toMatchObject(highLoadToast);
+
+        expect(caughtError).toBeUndefined();
+        await vi.runAllTimersAsync();
+        expect(caughtError).toBeInstanceOf(PollingLimitExceededError);
       });
 
       it("should hide 'high load' message after success", async () => {
@@ -493,6 +500,7 @@ describe("utils", () => {
       });
 
       it("should show 'high load' message only once", async () => {
+        let caughtError;
         const _ = poll({
           fn: async () => {
             throw new Error();
@@ -502,6 +510,8 @@ describe("utils", () => {
           millisecondsToWait: 20 * 1000,
           useExponentialBackoff: false,
           failuresBeforeHighLoadMessage: 3,
+        }).catch((err) => {
+          caughtError = err;
         });
         expect(get(toastsStore)).toEqual([]);
         await advanceTime();
@@ -513,6 +523,10 @@ describe("utils", () => {
         await advanceTime();
         // Still only 1 toast.
         expect(get(toastsStore)).toMatchObject(highLoadToast);
+
+        expect(caughtError).toBeUndefined();
+        await vi.runAllTimersAsync();
+        expect(caughtError).toBeInstanceOf(PollingLimitExceededError);
       });
 
       it("should stop polling when cancelled during wait", async () => {
