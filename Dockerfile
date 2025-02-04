@@ -177,7 +177,7 @@ COPY ./build-rs.sh /build/build-rs.sh
 COPY ./Cargo.toml /build/Cargo.toml
 COPY ./Cargo.lock /build/Cargo.lock
 COPY ./dfx.json /build/dfx.json
-COPY ./config.json /build/dfx.json
+COPY ./config.json /build/config.json
 WORKDIR /build
 # Ensure that the code is newer than any cache.
 RUN touch --no-create rs/sns_aggregator/src/main.rs rs/sns_aggregator/src/lib.rs
