@@ -13,6 +13,7 @@
   import { keyOf, keyOfOptional } from "$lib/utils/utils";
   import type { ProposalStatus, Topic } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
+  import { createAscendingComparator } from "$lib/utils/sort.utils";
 
   export let props: ProposalsFilterModalProps | undefined;
 
@@ -55,6 +56,13 @@
         .map(mapToFilter)
     : [];
   $: selectedFilters = props?.selectedFilters || [];
+
+  const compareByName = createAscendingComparator(
+    ({ name }: Filter<Topic | ProposalStatus>) => name
+  );
+  let sortedFilterValues: Filter<Topic | ProposalStatus>[];
+  $: sortedFilterValues =
+    category === "topics" ? filtersValues.sort(compareByName) : filtersValues;
 
   const dispatch = createEventDispatcher();
   const close = () => dispatch("nnsClose", { selectedFilters });
@@ -101,7 +109,7 @@
   };
 
   const selectAll = () => {
-    selectedFilters = filtersValues.map(({ value }) => value);
+    selectedFilters = sortedFilterValues.map(({ value }) => value);
   };
 
   const clear = () => {
@@ -116,7 +124,7 @@
   on:nnsChange={onChange}
   on:nnsSelectAll={selectAll}
   on:nnsClearSelection={clear}
-  filters={filtersValues}
+  filters={sortedFilterValues}
 >
   <span slot="title"
     >{keyOfOptional({ obj: $i18n.voting, key: category }) ?? ""}</span
