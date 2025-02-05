@@ -21,7 +21,7 @@ import {
   setDefaultTestConstants,
 } from "./src/tests/utils/mockable-constants.test-utils";
 
-beforeEach(async () => {
+beforeEach(() => {
   vi.clearAllTimers();
   vi.useRealTimers();
 
@@ -73,7 +73,7 @@ vi.mock("$lib/utils/test-support.utils", async () => {
   };
 });
 
-beforeEach(async () => {
+beforeEach(() => {
   for (const cleanup of cleanupFunctions) {
     cleanup();
   }
