@@ -37,8 +37,9 @@ describe("NnsNeuronRewardStatusAction", () => {
   });
 
   it("should render active neuron state", async () => {
-    const testNeuron = {
+    const testNeuron: NeuronInfo = {
       ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
       fullNeuron: {
         ...mockFullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(nowInSeconds()),
@@ -54,9 +55,24 @@ describe("NnsNeuronRewardStatusAction", () => {
     expect(await po.getFollowNeuronsButtonPo().isPresent()).toBe(false);
   });
 
-  it("should not render active neuron state w/o voting power economics params", async () => {
-    const testNeuron = {
+  it("should not render active neuron state when neuron dissolve delay is too low for voting", async () => {
+    const testNeuron: NeuronInfo = {
       ...mockNeuron,
+      dissolveDelaySeconds: 0n,
+      fullNeuron: {
+        ...mockFullNeuron,
+        votingPowerRefreshedTimestampSeconds: BigInt(nowInSeconds()),
+      },
+    };
+    const po = renderComponent(testNeuron);
+
+    expect(await po.isPresent()).toBe(false);
+  });
+
+  it("should not render active neuron state w/o voting power economics params", async () => {
+    const testNeuron: NeuronInfo = {
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
       fullNeuron: {
         ...mockFullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(nowInSeconds()),
@@ -70,8 +86,9 @@ describe("NnsNeuronRewardStatusAction", () => {
 
   it("should render losing soon neuron state", async () => {
     const tenDays = 10;
-    const testNeuron = {
+    const testNeuron: NeuronInfo = {
       ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
       fullNeuron: {
         ...mockFullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(
@@ -90,8 +107,9 @@ describe("NnsNeuronRewardStatusAction", () => {
   });
 
   it("should render inactive neuron reward state", async () => {
-    const testNeuron = {
+    const testNeuron: NeuronInfo = {
       ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
       fullNeuron: {
         ...mockFullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(
@@ -110,8 +128,9 @@ describe("NnsNeuronRewardStatusAction", () => {
   });
 
   it("should render inactive/reset following neuron reward state", async () => {
-    const testNeuron = {
+    const testNeuron: NeuronInfo = {
       ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
       fullNeuron: {
         ...mockFullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(

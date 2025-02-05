@@ -1,5 +1,8 @@
 import NnsLosingRewardsNeuronCard from "$lib/components/neurons/NnsLosingRewardsNeuronCard.svelte";
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import {
+  SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_YEAR,
+} from "$lib/constants/constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -18,6 +21,7 @@ describe("NnsLosingRewardsNeuronCard", () => {
   const neuron: NeuronInfo = {
     ...mockNeuron,
     neuronId,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...mockFullNeuron,
       controller: mockIdentity.getPrincipal().toText(),

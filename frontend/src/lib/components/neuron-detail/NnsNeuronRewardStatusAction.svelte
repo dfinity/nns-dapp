@@ -9,7 +9,8 @@
     isNeuronFollowingReset,
     isNeuronMissingReward,
     secondsUntilMissingReward,
-    shouldDisplayMissingRewardNotification,
+    isNeuronMissingRewardSoon,
+    hasEnoughDissolveDelayToVote,
   } from "$lib/utils/neuron.utils";
   import {
     IconCheckCircleFill,
@@ -43,7 +44,7 @@
   let isLosingRewardsSoon = false;
   $: isLosingRewardsSoon =
     !isLosingRewards &&
-    shouldDisplayMissingRewardNotification({
+    isNeuronMissingRewardSoon({
       neuron,
       startReducingVotingPowerAfterSeconds:
         $startReducingVotingPowerAfterSecondsStore,
@@ -96,7 +97,7 @@
   };
 </script>
 
-{#if nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
+{#if hasEnoughDissolveDelayToVote(neuron) && nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
   <CommonItemAction
     testId="nns-neuron-reward-status-action-component"
     tooltipText={replacePlaceholders($i18n.missing_rewards.description, {
