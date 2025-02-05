@@ -1,10 +1,8 @@
 import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import en from "$tests/mocks/i18n.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 
 describe("UsdValueBanner", () => {
@@ -20,16 +18,6 @@ describe("UsdValueBanner", () => {
       hasUnpricedTokens,
     });
     return UsdValueBannerPo.under(new JestPageObjectElement(container));
-  };
-
-  const setIcpPrice = (icpPrice: number) => {
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: String(icpPrice),
-      },
-    ]);
   };
 
   it("should display the USD amount", async () => {

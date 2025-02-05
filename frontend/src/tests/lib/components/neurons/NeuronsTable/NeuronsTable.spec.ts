@@ -81,10 +81,6 @@ describe("NeuronsTable", () => {
     return NeuronsTablePo.under(new JestPageObjectElement(container));
   };
 
-  beforeEach(() => {
-    neuronsTableOrderStore.reset();
-  });
-
   it("should render desktop headers", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     expect(await po.getDesktopColumnHeaders()).toEqual([
@@ -465,6 +461,13 @@ describe("NeuronsTable", () => {
       { columnId: "maturity" },
       { columnId: "stake", reversed: true },
     ]);
+  });
+
+  it("should not disable sorting on mobile", async () => {
+    const po = renderComponent({
+      neurons: [neuron1, neuron2, neuron3, neuron4],
+    });
+    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(true);
   });
 
   it("should render dissolve delay", async () => {

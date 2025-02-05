@@ -59,11 +59,6 @@ describe("icpAccountsStore", () => {
     });
   };
 
-  beforeEach(() => {
-    icpAccountDetailsStore.resetForTesting();
-    icpAccountBalancesStore.resetForTesting();
-  });
-
   it("should be initialized to empty", () => {
     expect(get(icpAccountsStore)).toEqual({
       main: undefined,

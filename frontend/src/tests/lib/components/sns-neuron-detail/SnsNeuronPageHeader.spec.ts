@@ -11,7 +11,7 @@ import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronPageHeaderPo } from "$tests/page-objects/SnsNeuronPageHeader.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -57,8 +57,6 @@ describe("SnsNeuronPageHeader", () => {
   };
 
   beforeEach(() => {
-    resetSnsProjects();
-    neuronsTableOrderStore.reset();
     setSnsProjects([
       {
         rootCanisterId: rootCanisterId,

@@ -14,7 +14,7 @@ import {
   mockSnsSwapCommitment,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -45,8 +45,6 @@ describe("sns-services", () => {
   beforeEach(() => {
     resetIdentity();
     vi.useFakeTimers();
-    vi.clearAllTimers();
-    resetSnsProjects();
   });
 
   describe("getSwapAccount", () => {

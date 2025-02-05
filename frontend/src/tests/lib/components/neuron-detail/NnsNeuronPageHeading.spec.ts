@@ -1,9 +1,7 @@
 import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -11,7 +9,6 @@ import {
   mockHardwareWalletAccount,
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeadingPo } from "$tests/page-objects/NnsNeuronPageHeading.page-object";
@@ -20,6 +17,7 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { NeuronType } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
@@ -35,13 +33,7 @@ describe("NnsNeuronPageHeading", () => {
     resetIdentity();
     resetAccountsForTesting();
 
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-    ]);
+    setIcpPrice(10);
   });
 
   it("should render the neuron's stake", async () => {

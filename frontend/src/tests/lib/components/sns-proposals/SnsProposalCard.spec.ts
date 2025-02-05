@@ -23,7 +23,6 @@ describe("SnsProposalCard", () => {
   const now = 1698139468000;
   const nowInSeconds = Math.ceil(now / 1000);
   beforeEach(() => {
-    vi.clearAllTimers();
     vi.useFakeTimers().setSystemTime(now);
   });
 

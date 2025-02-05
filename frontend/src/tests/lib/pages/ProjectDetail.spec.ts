@@ -37,7 +37,7 @@ import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -81,10 +81,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
   const nowInSeconds = Math.floor(now / 1000);
 
   beforeEach(() => {
-    resetSnsProjects();
     userCountryStore.set(NOT_LOADED);
 
-    vi.clearAllTimers();
     vi.useFakeTimers().setSystemTime(now);
 
     vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);

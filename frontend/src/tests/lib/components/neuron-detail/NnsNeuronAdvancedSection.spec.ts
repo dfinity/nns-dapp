@@ -44,7 +44,6 @@ describe("NnsNeuronAdvancedSection", () => {
   };
 
   beforeEach(() => {
-    nnsLatestRewardEventStore.reset();
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
     resetIdentity();

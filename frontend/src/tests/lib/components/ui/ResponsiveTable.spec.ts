@@ -90,6 +90,7 @@ describe("ResponsiveTable", () => {
     order?: ResponsiveTableOrder;
     gridRowsPerTableRow?: number;
     getRowStyle?: (rowData: ResponsiveTableRowData) => string;
+    disableMobileSorting?: boolean;
   }
 
   const renderComponent = ({
@@ -341,6 +342,22 @@ describe("ResponsiveTable", () => {
     await sortModal.waitForClosed();
     await po.openSortModal();
     expect(await sortModal.getOptionWithArrow()).toBe("Age");
+  });
+
+  it("should disable mobile sorting", async () => {
+    const po = renderComponent({
+      columns,
+      tableData,
+      order: [{ columnId: "name" }],
+      disableMobileSorting: true,
+    });
+    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(false);
+
+    // Desktop sorting should still work.
+    expect(await po.getColumnHeaderWithArrow()).toBe("Name");
+
+    await po.clickColumnHeader("Age");
+    expect(await po.getColumnHeaderWithArrow()).toBe("Age");
   });
 
   it("should not have a sorting button if no columns are sortable", async () => {

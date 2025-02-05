@@ -12,12 +12,10 @@ use crate::state::{init_state, restore_state, save_state, with_state, with_state
 use crate::tvl::TvlResponse;
 use candid::candid_method;
 
-use accounts_store::schema::proxy::AccountsDbAsProxy;
 pub use candid::{CandidType, Deserialize};
 use dfn_candid::{candid, candid_one};
 use dfn_core::{over, over_async};
-use ic_cdk::api::call::RejectionCode;
-use ic_cdk::{eprintln, println};
+use ic_cdk::println;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
@@ -304,43 +302,6 @@ pub fn get_histogram_impl() -> AccountsStoreHistogram {
     with_state(|state| state.accounts_store.get_histogram())
 }
 
-/// Steps the migration.
-#[export_name = "canister_update step_migration"]
-pub fn step_migration() {
-    over(candid_one, step_migration_impl);
-}
-
-#[candid_method(update, rename = "step_migration")]
-fn step_migration_impl(step_size: u32) {
-    let caller = ic_cdk::caller();
-    let own_canister_id = ic_cdk::api::id();
-    if caller != own_canister_id {
-        dfn_core::api::trap_with("Only the canister itself may call step_migration");
-    }
-    with_state_mut(|s| {
-        s.accounts_store.step_migration(step_size);
-    });
-}
-
-/// Calls `step_migration()` without panicking and rolling back if anything goes wrong.
-#[allow(dead_code)]
-async fn call_step_migration(step_size: u32) -> Result<(), (RejectionCode, String)> {
-    ic_cdk::api::call::call(ic_cdk::id(), "step_migration", (step_size,)).await
-}
-
-/// Calls step migration, dropping the step size to 1 on failure.
-#[allow(dead_code)]
-async fn call_step_migration_with_retries() {
-    for step_size in [AccountsDbAsProxy::MIGRATION_STEP_SIZE, 1] {
-        if let Err((code, msg)) = call_step_migration(step_size).await {
-            println!("WARNING: step_migration failed with step size {step_size}: {code:?} {msg}");
-        } else {
-            return;
-        }
-    }
-    eprintln!("ERROR: step_migration failed.");
-}
-
 /// Add an asset to be served by the canister.
 ///
 /// Only a whitelist of assets are accepted.
@@ -385,18 +346,22 @@ fn add_stable_asset_impl(asset_bytes: Vec<u8>) {
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[export_name = "canister_update create_toy_accounts"]
 pub fn create_toy_accounts() {
-    over(candid_one, |num_accounts: u128| {
-        let caller = ic_cdk::caller();
-        if !ic_cdk::api::is_controller(&caller) {
-            dfn_core::api::trap_with("Only the controller may generate toy accounts");
-        }
-        with_state_mut(|s| {
-            s.accounts_store
-                .create_toy_accounts(u64::try_from(num_accounts).unwrap_or_else(|_| {
-                    unreachable!("The number of accounts is well below the number of atoms in the universe")
-                }))
-        })
-    });
+    over(candid_one, create_toy_accounts_impl);
+}
+
+#[cfg(any(test, feature = "toy_data_gen"))]
+#[candid_method(update, rename = "create_toy_accounts")]
+fn create_toy_accounts_impl(num_accounts: u128) -> u64 {
+    let caller = ic_cdk::caller();
+    if !ic_cdk::api::is_controller(&caller) {
+        dfn_core::api::trap_with("Only the controller may generate toy accounts");
+    }
+    with_state_mut(|s| {
+        s.accounts_store
+            .create_toy_accounts(u64::try_from(num_accounts).unwrap_or_else(|_| {
+                unreachable!("The number of accounts is well below the number of atoms in the universe")
+            }))
+    })
 }
 
 /// Gets any toy account by toy account index.
@@ -417,21 +382,6 @@ fn get_toy_account_impl(toy_account_index: u64) -> GetAccountResponse {
     with_state(|s| match s.accounts_store.get_account(principal) {
         Some(account) => GetAccountResponse::Ok(account),
         None => GetAccountResponse::AccountNotFound,
-    })
-}
-
-#[export_name = "canister_query get_exceptional_transactions"]
-pub fn get_exceptional_transactions() {
-    over(candid, |()| get_exceptional_transactions_impl());
-}
-
-#[candid_method(query, rename = "get_exceptional_transactions")]
-fn get_exceptional_transactions_impl() -> Option<Vec<u64>> {
-    with_state(|s| {
-        s.performance
-            .exceptional_transactions
-            .as_ref()
-            .map(|transactions| transactions.iter().copied().collect::<Vec<u64>>())
     })
 }
 

@@ -103,9 +103,10 @@
               font-size: 2.5rem; // 40px
             }
           }
-          .secondary-amount {
-            color: var(--text-description);
-          }
+        }
+
+        .secondary-amount {
+          color: var(--text-description);
         }
       }
     }

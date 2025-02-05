@@ -18,12 +18,11 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { SelectUniverseDropdownPo } from "$tests/page-objects/SelectUniverseDropdown.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("SelectUniverseDropdown", () => {
   beforeEach(() => {
-    resetSnsProjects();
     resetIdentity();
 
     page.mock({

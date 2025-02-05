@@ -5,7 +5,7 @@ import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { FollowSnsNeuronsModalPo } from "$tests/page-objects/FollowSnsNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
 
@@ -32,10 +32,6 @@ describe("FollowSnsNeuronsModal", () => {
 
     return FollowSnsNeuronsModalPo.under(new JestPageObjectElement(container));
   };
-
-  beforeEach(() => {
-    resetSnsProjects();
-  });
 
   it("renders title", async () => {
     const po = renderComponent({});

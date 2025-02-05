@@ -59,7 +59,6 @@ describe("ckbtc-convert-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    vi.clearAllTimers();
 
     vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
       () => minterCanisterMock

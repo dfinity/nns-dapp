@@ -22,6 +22,9 @@ import {
 } from "./src/tests/utils/mockable-constants.test-utils";
 
 beforeEach(() => {
+  vi.clearAllTimers();
+  vi.useRealTimers();
+
   // Restore all mocks original behvior before each test.
   //
   // NOTE: This restores mocks created with vi.spyOn() to their production
@@ -36,13 +39,22 @@ beforeEach(() => {
   vi.stubGlobal("CustomEvent", CustomEventForTesting);
 });
 
+afterEach(async () => {
+  // Do this in afterEach such that if any timers cause any errors or logs,
+  // these are associated with the test that caused them.
+  if (vi.isFakeTimers()) {
+    await vi.runAllTimersAsync();
+  }
+});
+
 const cleanupFunctions = vi.hoisted(() => {
   return [];
 });
 
 // Reset every store before each test.
 vi.mock("svelte/store", async (importOriginal) => {
-  const svelteStoreModule = await importOriginal();
+  const svelteStoreModule =
+    await importOriginal<typeof import("svelte/store")>();
   return {
     ...svelteStoreModule,
     writable: <T>(initialValue, ...otherArgs) => {
@@ -65,6 +77,12 @@ beforeEach(() => {
   for (const cleanup of cleanupFunctions) {
     cleanup();
   }
+
+  // Do these cleanups after cleanup functions, in case a cleanup function does
+  // something that needs to be cleaned up. In particular, stores created with
+  // writableStored write to localStorage, and resetting them also causes them
+  // to write to localStorage.
+  localStorage.clear();
 });
 
 // Mock SubtleCrypto to test @dfinity/auth-client
@@ -78,6 +96,20 @@ global.TextEncoder = TextEncoder;
 (
   global as { IntersectionObserver: typeof IntersectionObserver }
 ).IntersectionObserver = IntersectionObserverPassive;
+
+// We mock ResizeObserver because neither JSDOM nor Happy DOM supports it.
+// Interesting related thread: https://github.com/testing-library/svelte-testing-library/issues/284
+global.ResizeObserver = class ResizeObserver {
+  observe() {
+    // do nothing
+  }
+  unobserve() {
+    // do nothing
+  }
+  disconnect() {
+    // do nothing
+  }
+};
 
 // Environment Variables Setup
 vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
@@ -123,12 +155,6 @@ setDefaultTestConstants({
   IS_TEST_ENV: true,
   QR_CODE_RENDERED_DEFAULT_STATE: true,
   ENABLE_QR_CODE_READER: false,
-  isForceCallStrategy: function () {
-    return this.FORCE_CALL_STRATEGY === "query";
-  },
-  notForceCallStrategy: function () {
-    return !this.isForceCallStrategy();
-  },
 });
 
 failTestsThatLogToConsole();

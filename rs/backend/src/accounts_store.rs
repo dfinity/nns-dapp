@@ -1,12 +1,14 @@
 //! User accounts and transactions.
 use crate::multi_part_transactions_processor::MultiPartTransactionsProcessor;
-use crate::state::StableState;
+use crate::state::{partitions::PartitionType, with_partitions, StableState};
 use crate::stats::Stats;
 use candid::CandidType;
 use dfn_candid::Candid;
 use histogram::AccountsStoreHistogram;
 use ic_base_types::{CanisterId, PrincipalId};
-use ic_stable_structures::{storable::Bound, Storable};
+use ic_stable_structures::{
+    memory_manager::VirtualMemory, storable::Bound, DefaultMemoryImpl, StableBTreeMap, Storable,
+};
 use icp_ledger::{AccountIdentifier, BlockIndex, Subaccount};
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
@@ -15,15 +17,8 @@ use std::borrow::Cow;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap, VecDeque};
 use std::fmt;
-use std::ops::RangeBounds;
 
-pub mod constructors;
 pub mod histogram;
-pub mod schema;
-use schema::{
-    proxy::{AccountsDb, AccountsDbAsProxy},
-    AccountsDbTrait,
-};
 
 // This limit is for DoS protection but should be increased if we get close to
 // the limit.
@@ -35,79 +30,41 @@ const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;
 // Can be revisited if users find this too restrictive.
 const MAX_IMPORTED_TOKENS: i32 = 20;
 
-/// Accounts, transactions and related data.
-///
-/// Note: Some monitoring fields are not included in the `Eq` and `PartialEq` implementations.  Additionally, please note
-/// that the `ic_stable_structures::BTreeMap` does not have an implementation of `Eq`, so special care needs to be taken when comparing
-/// data backed by stable structures.
-#[derive(Default)]
-#[cfg_attr(test, derive(Eq, PartialEq))]
+/// Accounts and related data.
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
-    accounts_db: schema::proxy::AccountsDbAsProxy,
-
+    accounts_db: StableBTreeMap<Vec<u8>, Account, VirtualMemory<DefaultMemoryImpl>>,
     accounts_db_stats: AccountsDbStats,
-    accounts_db_stats_recomputed_on_upgrade: IgnoreEq<Option<bool>>,
 }
 
-/// A wrapper around a value that returns true for `PartialEq` and `Eq` equality checks, regardless of the value.
-///
-/// This is intended to be used on incidental, volatile fields.  A structure containing such a field will typically wish to disregard the field in any comparison.
-#[derive(Default)]
-struct IgnoreEq<T>(T)
-where
-    T: Default;
-
-impl<T: Default> PartialEq for IgnoreEq<T> {
-    fn eq(&self, _: &Self) -> bool {
-        true
+impl Default for AccountsStore {
+    fn default() -> Self {
+        Self::new()
     }
 }
-
-impl<T: Default> Eq for IgnoreEq<T> {}
 
 impl fmt::Debug for AccountsStore {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "AccountsStore{{accounts_db: {:?}, accounts_db_stats: {:?}}}",
-            self.accounts_db, self.accounts_db_stats,
+            "AccountsStore{{accounts_db: StableBTreeMap{{.. {} entries}}, accounts_db_stats: {:?}}}",
+            self.accounts_db.len(),
+            self.accounts_db_stats,
         )
     }
 }
 
-impl AccountsDbTrait for AccountsStore {
-    fn db_insert_account(&mut self, account_key: &[u8], account: Account) {
-        self.accounts_db.db_insert_account(account_key, account);
-    }
-    fn db_contains_account(&self, account_key: &[u8]) -> bool {
-        self.accounts_db.db_contains_account(account_key)
-    }
-    fn db_get_account(&self, account_key: &[u8]) -> Option<Account> {
-        self.accounts_db.db_get_account(account_key)
-    }
-    fn db_remove_account(&mut self, account_key: &[u8]) {
-        self.accounts_db.db_remove_account(account_key);
-    }
-    fn db_accounts_len(&self) -> u64 {
-        self.accounts_db.db_accounts_len()
-    }
-    fn iter(&self) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
-        self.accounts_db.iter()
-    }
-    fn first_key_value(&self) -> Option<(Vec<u8>, Account)> {
-        self.accounts_db.first_key_value()
-    }
-    fn last_key_value(&self) -> Option<(Vec<u8>, Account)> {
-        self.accounts_db.last_key_value()
-    }
-    fn values(&self) -> Box<dyn Iterator<Item = Account> + '_> {
-        self.accounts_db.values()
-    }
-    fn range(&self, key_range: impl RangeBounds<Vec<u8>>) -> Box<dyn Iterator<Item = (Vec<u8>, Account)> + '_> {
-        self.accounts_db.range(key_range)
+/// Check whether two account databases contain the same data.
+///
+/// It should be possible to use this to confirm that data has been preserved during a migration.
+#[cfg(test)]
+impl PartialEq for AccountsStore {
+    fn eq(&self, other: &Self) -> bool {
+        self.accounts_db.range(..).eq(other.accounts_db.range(..)) && self.accounts_db_stats == other.accounts_db_stats
     }
 }
+#[cfg(test)]
+impl Eq for AccountsStore {}
 
 #[derive(Default, CandidType, Deserialize, Debug, Eq, PartialEq)]
 pub struct AccountsDbStats {
@@ -249,6 +206,16 @@ pub struct RegisterHardwareWalletRequest {
     principal: PrincipalId,
 }
 
+#[cfg(test)]
+impl RegisterHardwareWalletRequest {
+    pub fn test_data() -> Self {
+        RegisterHardwareWalletRequest {
+            name: "test".to_string(),
+            principal: PrincipalId::new_user_test_id(0),
+        }
+    }
+}
+
 #[derive(CandidType)]
 pub enum RegisterHardwareWalletResponse {
     Ok,
@@ -325,22 +292,23 @@ pub enum DetachCanisterResponse {
 }
 
 impl AccountsStore {
-    /// Determines whether a migration is being performed.
+    /// Creates a new `AccountsStore`. Should be called during canister `init`.
     #[must_use]
-    #[allow(dead_code)]
-    pub fn migration_in_progress(&self) -> bool {
-        self.accounts_db.migration_in_progress()
+    pub fn new() -> Self {
+        let accounts_partition = with_partitions(|partitions| partitions.get(PartitionType::Accounts.memory_id()));
+        let accounts_db = StableBTreeMap::new(accounts_partition);
+        let accounts_db_stats = AccountsDbStats::default();
+
+        Self {
+            accounts_db,
+            accounts_db_stats,
+        }
     }
-    /// Advances the migration by one step.
-    ///
-    /// Note: This is a pass-through to the underlying `AccountsDb::step_migration`.  Please see that for further details.
-    pub fn step_migration(&mut self, step_size: u32) {
-        self.accounts_db.step_migration(step_size);
-    }
+
     #[must_use]
     pub fn get_account(&self, caller: PrincipalId) -> Option<AccountDetails> {
         let account_identifier = AccountIdentifier::from(caller);
-        if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
+        if let Some(account) = self.accounts_db.get(&account_identifier.to_vec()) {
             // If the principal is empty, return None so that the browser will call add_account
             // which will allow us to set the principal.
             let principal = account.principal?;
@@ -383,19 +351,17 @@ impl AccountsStore {
     pub fn add_account(&mut self, caller: PrincipalId) -> bool {
         self.assert_account_limit();
         let account_identifier = AccountIdentifier::from(caller);
-        if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
+        if let Some(account) = self.accounts_db.get(&account_identifier.to_vec()) {
             if account.principal.is_none() {
                 // This is an old account that needs a one-off fix to set the principal and update the transactions.
                 let mut account = account.clone();
                 account.principal = Some(caller);
-                self.accounts_db
-                    .db_insert_account(&account_identifier.to_vec(), account);
+                self.accounts_db.insert(account_identifier.to_vec(), account);
             }
             false
         } else {
             let new_account = Account::new(caller, account_identifier);
-            self.accounts_db
-                .db_insert_account(&account_identifier.to_vec(), new_account);
+            self.accounts_db.insert(account_identifier.to_vec(), new_account);
 
             true
         }
@@ -410,7 +376,7 @@ impl AccountsStore {
             return CreateSubAccountResponse::NameTooLong;
         }
 
-        let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) else {
+        let Some(mut account) = self.accounts_db.get(&account_identifier.to_vec()) else {
             return CreateSubAccountResponse::AccountNotFound;
         };
 
@@ -423,8 +389,7 @@ impl AccountsStore {
         let named_sub_account = NamedSubAccount::new(sub_account_name.clone(), sub_account_identifier);
 
         account.sub_accounts.insert(sub_account_id, named_sub_account);
-        self.accounts_db
-            .db_insert_account(&account_identifier.to_vec(), account);
+        self.accounts_db.insert(account_identifier.to_vec(), account);
 
         self.accounts_db_stats.sub_accounts_count += 1;
 
@@ -444,14 +409,14 @@ impl AccountsStore {
 
         if !Self::validate_account_name(&request.new_name) {
             RenameSubAccountResponse::NameTooLong
-        } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
+        } else if let Some(mut account) = self.accounts_db.get(&account_identifier) {
             if let Some(sub_account) = account
                 .sub_accounts
                 .values_mut()
                 .find(|sub_account| sub_account.account_identifier == request.account_identifier)
             {
                 sub_account.name = request.new_name;
-                self.accounts_db.db_insert_account(&account_identifier, account);
+                self.accounts_db.insert(account_identifier, account);
                 RenameSubAccountResponse::Ok
             } else {
                 RenameSubAccountResponse::SubAccountNotFound
@@ -470,7 +435,7 @@ impl AccountsStore {
 
         if !Self::validate_account_name(&request.name) {
             RegisterHardwareWalletResponse::NameTooLong
-        } else if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier.to_vec()).clone() {
+        } else if let Some(mut account) = self.accounts_db.get(&account_identifier.to_vec()).clone() {
             if account.hardware_wallet_accounts.len() == (u8::MAX as usize) {
                 RegisterHardwareWalletResponse::HardwareWalletLimitExceeded
             } else if account
@@ -487,8 +452,7 @@ impl AccountsStore {
                 account
                     .hardware_wallet_accounts
                     .sort_unstable_by_key(|hw| hw.name.clone());
-                self.accounts_db
-                    .db_insert_account(&account_identifier.to_vec(), account);
+                self.accounts_db.insert(account_identifier.to_vec(), account);
 
                 self.accounts_db_stats.hardware_wallet_accounts_count += 1;
                 RegisterHardwareWalletResponse::Ok
@@ -514,7 +478,7 @@ impl AccountsStore {
 
         let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-        let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) else {
+        let Some(mut account) = self.accounts_db.get(&account_identifier) else {
             return AttachCanisterResponse::AccountNotFound;
         };
 
@@ -578,7 +542,7 @@ impl AccountsStore {
         account.canisters.push(new_canister);
         account.canisters.sort();
 
-        self.accounts_db.db_insert_account(&account_identifier, account);
+        self.accounts_db.insert(account_identifier, account);
 
         AttachCanisterResponse::Ok
     }
@@ -587,7 +551,7 @@ impl AccountsStore {
         if Self::validate_canister_name(&request.name) {
             let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-            if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
+            if let Some(mut account) = self.accounts_db.get(&account_identifier) {
                 if !request.name.is_empty() && account.canisters.iter().any(|c| c.name == request.name) {
                     return RenameCanisterResponse::NameAlreadyTaken;
                 }
@@ -599,7 +563,7 @@ impl AccountsStore {
                         ..existing_canister
                     });
                     account.canisters.sort();
-                    self.accounts_db.db_insert_account(&account_identifier, account);
+                    self.accounts_db.insert(account_identifier, account);
                     RenameCanisterResponse::Ok
                 } else {
                     RenameCanisterResponse::CanisterNotFound
@@ -616,10 +580,10 @@ impl AccountsStore {
     pub fn detach_canister(&mut self, caller: PrincipalId, request: DetachCanisterRequest) -> DetachCanisterResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
 
-        if let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) {
+        if let Some(mut account) = self.accounts_db.get(&account_identifier) {
             if let Some(index) = Self::find_canister_index(&account, request.canister_id) {
                 account.canisters.remove(index);
-                self.accounts_db.db_insert_account(&account_identifier, account);
+                self.accounts_db.insert(account_identifier, account);
                 DetachCanisterResponse::Ok
             } else {
                 DetachCanisterResponse::CanisterNotFound
@@ -632,7 +596,7 @@ impl AccountsStore {
     #[must_use]
     pub fn get_canisters(&self, caller: PrincipalId) -> Vec<NamedCanister> {
         let account_identifier = AccountIdentifier::from(caller);
-        if let Some(account) = self.accounts_db.db_get_account(&account_identifier.to_vec()) {
+        if let Some(account) = self.accounts_db.get(&account_identifier.to_vec()) {
             account.canisters.clone()
         } else {
             Vec::new()
@@ -650,19 +614,19 @@ impl AccountsStore {
             };
         }
         let account_identifier = AccountIdentifier::from(caller).to_vec();
-        let Some(mut account) = self.accounts_db.db_get_account(&account_identifier) else {
+        let Some(mut account) = self.accounts_db.get(&account_identifier) else {
             return SetImportedTokensResponse::AccountNotFound;
         };
 
         account.imported_tokens = Some(new_imported_tokens);
 
-        self.accounts_db.db_insert_account(&account_identifier, account);
+        self.accounts_db.insert(account_identifier, account);
         SetImportedTokensResponse::Ok
     }
 
     pub fn get_imported_tokens(&mut self, caller: PrincipalId) -> GetImportedTokensResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
-        let Some(account) = self.accounts_db.db_get_account(&account_identifier) else {
+        let Some(account) = self.accounts_db.get(&account_identifier) else {
             return GetImportedTokensResponse::AccountNotFound;
         };
 
@@ -670,11 +634,10 @@ impl AccountsStore {
     }
 
     pub fn get_stats(&self, stats: &mut Stats) {
-        stats.accounts_count = self.accounts_db.db_accounts_len();
+        stats.accounts_count = self.accounts_db.len();
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
         stats.hardware_wallet_accounts_count = self.accounts_db_stats.hardware_wallet_accounts_count;
-        stats.migration_countdown = Some(self.accounts_db.migration_countdown());
-        stats.accounts_db_stats_recomputed_on_upgrade = self.accounts_db_stats_recomputed_on_upgrade.0;
+        stats.migration_countdown = Some(0);
     }
 
     #[must_use]
@@ -699,7 +662,7 @@ impl AccountsStore {
     }
 
     fn assert_account_limit(&self) {
-        let db_accounts_len = self.accounts_db.db_accounts_len();
+        let db_accounts_len = self.accounts_db.len();
         assert!(
             db_accounts_len < ACCOUNT_LIMIT,
             "Pre migration account limit exceeded {db_accounts_len}"
@@ -782,18 +745,15 @@ impl StableState for AccountsStore {
             Option<AccountsDbStats>,
         ) = Candid::from_bytes(bytes).map(|c| c.0)?;
 
-        let accounts_db_stats_recomputed_on_upgrade = IgnoreEq(Some(accounts_db_stats_maybe.is_none()));
         let Some(accounts_db_stats) = accounts_db_stats_maybe else {
             return Err("Accounts DB stats should be present since the stable structures migration.".to_string());
         };
+        let accounts_partition = with_partitions(|partitions| partitions.get(PartitionType::Accounts.memory_id()));
+        let accounts_db = StableBTreeMap::load(accounts_partition);
 
         Ok(AccountsStore {
-            // Because the stable structures migration is finished, accounts_db
-            // will be replaced with an AccountsDbAsUnboundedStableBTreeMap in
-            // State::from(Partitions) so it doesn't matter what we set here.
-            accounts_db: AccountsDbAsProxy::default(),
+            accounts_db,
             accounts_db_stats,
-            accounts_db_stats_recomputed_on_upgrade,
         })
     }
 }

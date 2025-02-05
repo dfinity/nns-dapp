@@ -113,10 +113,7 @@ describe("IcrcWallet", () => {
 
   beforeEach(() => {
     balancesObserverCallback = undefined;
-    vi.clearAllTimers();
-    vi.useRealTimers();
     resetIdentity();
-    busyStore.resetForTesting();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],

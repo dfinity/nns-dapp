@@ -3,8 +3,6 @@ import { syncStore } from "$lib/stores/sync.store";
 import { get } from "svelte/store";
 
 describe("sync.derived", () => {
-  beforeEach(() => syncStore.reset());
-
   it("should be idle per default", () => {
     const store = get(syncOverallStatusStore);
     expect(store).toEqual("idle");

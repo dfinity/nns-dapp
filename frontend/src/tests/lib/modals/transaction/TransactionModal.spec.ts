@@ -18,7 +18,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { TransactionModalPo } from "$tests/page-objects/TransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
 import type { Principal } from "@dfinity/principal";
@@ -75,7 +75,6 @@ describe("TransactionModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetSnsProjects();
 
     setAccountsForTesting({
       main: mockMainAccount,
