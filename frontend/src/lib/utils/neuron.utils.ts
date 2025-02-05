@@ -1342,6 +1342,7 @@ export const isNeuronMissingReward = ({
         startReducingVotingPowerAfterSeconds,
       }) <= 0;
 
+// TODO(mstr): Rename to use the plural form of "rewards" in related functions.
 /**
  * e.g. "Neuron will start missing rewards in 30 days"
  * If the voting power economics are not available,
