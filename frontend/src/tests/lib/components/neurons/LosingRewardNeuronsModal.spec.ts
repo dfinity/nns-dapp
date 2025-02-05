@@ -25,6 +25,7 @@ describe("LosingRewardNeuronsModal", () => {
   const activeNeuron = {
     ...mockNeuron,
     neuronId: 0n,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...mockFullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(nowSeconds),
@@ -34,6 +35,7 @@ describe("LosingRewardNeuronsModal", () => {
   const in10DaysLosingRewardsNeuron = {
     ...mockNeuron,
     neuronId: 1n,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...mockFullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(
@@ -45,6 +47,7 @@ describe("LosingRewardNeuronsModal", () => {
   const losingRewardsNeuron = {
     ...mockNeuron,
     neuronId: 2n,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...mockFullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(

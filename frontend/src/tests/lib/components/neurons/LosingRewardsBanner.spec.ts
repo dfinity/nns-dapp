@@ -17,6 +17,7 @@ describe("LosingRewardsBanner", () => {
   const activeNeuron = {
     ...mockNeuron,
     neuronId: 0n,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...mockFullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(nowSeconds),
@@ -26,6 +27,7 @@ describe("LosingRewardsBanner", () => {
   const in10DaysLosingRewardsNeuron = {
     ...mockNeuron,
     neuronId: 1n,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...mockFullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(
@@ -37,6 +39,7 @@ describe("LosingRewardsBanner", () => {
   const losingRewardsNeuron = {
     ...mockNeuron,
     neuronId: 2n,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...mockFullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(
@@ -52,6 +55,7 @@ describe("LosingRewardsBanner", () => {
   ];
   const refreshedNeurons = neurons.map((neuron) => ({
     ...neuron,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...neuron.fullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(nowSeconds),
