@@ -433,7 +433,6 @@ describe("reporting utils", () => {
     const NANOS_IN_MS = BigInt(1_000_000);
 
     beforeEach(() => {
-      vi.clearAllTimers();
       vi.useFakeTimers();
       vi.setSystemTime(mockDate);
     });

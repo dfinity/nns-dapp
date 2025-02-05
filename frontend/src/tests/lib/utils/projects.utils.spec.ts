@@ -50,10 +50,6 @@ describe("project-utils", () => {
     restrictedCountries: [],
   });
 
-  beforeEach(() => {
-    vi.useRealTimers();
-  });
-
   describe("filter", () => {
     it("should filter by status", () => {
       expect(

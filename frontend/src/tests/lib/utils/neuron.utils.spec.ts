@@ -56,7 +56,7 @@ import {
   isNeuronControlledByHardwareWallet,
   isNeuronFollowingReset,
   isNeuronMissingReward,
-  isNeuronMissingRewardSoon,
+  isNeuronMissingRewardsSoon,
   isPublicNeuron,
   isSpawning,
   isValidInputAmount,
@@ -3835,7 +3835,7 @@ describe("neuron-utils", () => {
     describe("isNeuronMissingRewardSoon", () => {
       it("should return false by default", () => {
         expect(
-          isNeuronMissingRewardSoon({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: {
               ...mockNeuron,
@@ -3847,7 +3847,7 @@ describe("neuron-utils", () => {
 
       it("should return true after notification period starts", () => {
         expect(
-          isNeuronMissingRewardSoon({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3856,7 +3856,7 @@ describe("neuron-utils", () => {
           })
         ).toBe(true);
         expect(
-          isNeuronMissingRewardSoon({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3868,7 +3868,7 @@ describe("neuron-utils", () => {
 
       it("should return false w/o voting economics", () => {
         expect(
-          isNeuronMissingRewardSoon({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: undefined,
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3880,7 +3880,7 @@ describe("neuron-utils", () => {
 
       it("should return false before notification period", () => {
         expect(
-          isNeuronMissingRewardSoon({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:

@@ -50,8 +50,6 @@ describe("canisters-api", () => {
   const fee = 10_000n;
 
   beforeEach(() => {
-    vi.clearAllTimers();
-
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
     // real network request via agent.syncTime().
     vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);

@@ -3,7 +3,7 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import {
   hasEnoughDissolveDelayToVote,
   hasValidStake,
-  isNeuronMissingRewardSoon,
+  isNeuronMissingRewardsSoon,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
 } from "$lib/utils/neuron.utils";
@@ -29,7 +29,7 @@ export const soonLosingRewardNeuronsStore: Readable<NeuronInfo[]> = derived(
         (neuron) =>
           // Neurons that are not able to vote cannot suddenly miss rewards.
           hasEnoughDissolveDelayToVote(neuron) &&
-          isNeuronMissingRewardSoon({
+          isNeuronMissingRewardsSoon({
             neuron,
             startReducingVotingPowerAfterSeconds: get(
               startReducingVotingPowerAfterSecondsStore

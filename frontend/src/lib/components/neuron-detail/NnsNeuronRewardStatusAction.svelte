@@ -9,7 +9,7 @@
     isNeuronFollowingReset,
     isNeuronMissingReward,
     secondsUntilMissingReward,
-    isNeuronMissingRewardSoon,
+    isNeuronMissingRewardsSoon,
     hasEnoughDissolveDelayToVote,
   } from "$lib/utils/neuron.utils";
   import {
@@ -44,7 +44,7 @@
   let isLosingRewardsSoon = false;
   $: isLosingRewardsSoon =
     !isLosingRewards &&
-    isNeuronMissingRewardSoon({
+    isNeuronMissingRewardsSoon({
       neuron,
       startReducingVotingPowerAfterSeconds:
         $startReducingVotingPowerAfterSecondsStore,

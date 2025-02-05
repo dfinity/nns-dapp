@@ -238,8 +238,6 @@ service: (opt Config) -> {
     http_request: (request: HttpRequest) -> (HttpResponse) query;
     add_stable_asset: (asset: blob) -> ();
 
-    step_migration: (nat32) -> ();
-
     // Methods available in the test build only:
     create_toy_accounts: (nat) -> (nat64);
     get_toy_account: (nat64) -> (GetAccountResponse) query;

@@ -14,7 +14,6 @@ describe("timer.worker-utils", () => {
   beforeEach(() => {
     silentConsoleErrors();
 
-    vi.clearAllTimers();
     vi.useFakeTimers().setSystemTime(now);
 
     spyPostMessage = vi.fn();
@@ -69,6 +68,8 @@ describe("timer.worker-utils", () => {
       });
 
       expect(job).toHaveBeenCalledTimes(1);
+
+      worker.stop();
     });
 
     it("should not call job if already started", async () => {
@@ -93,6 +94,8 @@ describe("timer.worker-utils", () => {
       });
 
       expect(anotherJob).not.toHaveBeenCalled();
+
+      worker.stop();
     });
 
     it("should call job after interval", async () => {
@@ -117,6 +120,8 @@ describe("timer.worker-utils", () => {
       await advanceTime(5000);
 
       expect(job).toHaveBeenCalledTimes(3);
+
+      worker.stop();
     });
 
     it("should call job with identity and data", async () => {
@@ -132,6 +137,8 @@ describe("timer.worker-utils", () => {
       });
 
       expect(job).toBeCalledWith({ identity: mockIdentity, data });
+
+      worker.stop();
     });
 
     it("should call job after interval with same parameter", async () => {
@@ -162,6 +169,8 @@ describe("timer.worker-utils", () => {
       await advanceTime(5000);
 
       expect(job).toBeCalledWith({ identity: mockIdentity, data });
+
+      worker.stop();
     });
 
     it("should stop timer", async () => {
@@ -183,6 +192,8 @@ describe("timer.worker-utils", () => {
       await advanceTime(5000);
 
       expect(job).toHaveBeenCalledTimes(1);
+
+      worker.stop();
     });
 
     it("should stop timer on job error", async () => {
@@ -213,6 +224,8 @@ describe("timer.worker-utils", () => {
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((worker as any).timer).toBeUndefined();
+
+      worker.stop();
     });
 
     it("should call postMessage when status changes", async () => {
@@ -239,6 +252,8 @@ describe("timer.worker-utils", () => {
           state: "idle",
         },
       });
+
+      worker.stop();
     });
 
     it("should allow call to postMessage when timer is not idle", async () => {
@@ -276,6 +291,8 @@ describe("timer.worker-utils", () => {
       });
 
       expect(spyPostMessage).toHaveBeenCalledWith(testMsg);
+
+      worker.stop();
     });
 
     it("should not allow call to postMessage when timer is already idle", async () => {
@@ -324,6 +341,8 @@ describe("timer.worker-utils", () => {
       });
 
       expect(spyPostMessage).not.toHaveBeenCalledWith(testMsg);
+
+      worker.stop();
     });
   });
 });

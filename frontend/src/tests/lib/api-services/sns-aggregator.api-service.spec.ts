@@ -20,7 +20,6 @@ describe("sns-aggregator api-service", () => {
 
   beforeEach(() => {
     clearSnsAggregatorCache();
-    vi.useRealTimers();
     resolveFn = undefined;
     rejectFn = undefined;
     vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(

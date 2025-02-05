@@ -83,7 +83,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
   beforeEach(() => {
     userCountryStore.set(NOT_LOADED);
 
-    vi.clearAllTimers();
     vi.useFakeTimers().setSystemTime(now);
 
     vi.spyOn(ledgerApi, "sendICP").mockResolvedValue(undefined);
