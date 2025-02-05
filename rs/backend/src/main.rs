@@ -10,7 +10,6 @@ use crate::assets::{hash_bytes, insert_asset, Asset};
 use crate::perf::PerformanceCount;
 use crate::state::{init_state, restore_state, save_state, with_state, with_state_mut, StableState};
 use crate::tvl::TvlResponse;
-use candid::candid_method;
 
 use accounts_store::schema::proxy::AccountsDbAsProxy;
 pub use candid::{CandidType, Deserialize};
@@ -92,7 +91,6 @@ fn post_upgrade(args_maybe: Option<CanisterArguments>) {
 }
 
 #[must_use]
-#[candid_method(query, rename = "http_request")]
 #[ic_cdk::query]
 pub fn http_request(req: assets::HttpRequest) -> assets::HttpResponse {
     assets::http_request(req)
@@ -108,7 +106,6 @@ fn get_caller() -> PrincipalId {
 /// include all accounts controlled by the user's principal directly and also any hardware wallet
 /// accounts they have registered.
 #[must_use]
-#[candid_method(query, rename = "get_account")]
 #[ic_cdk::query]
 pub fn get_account() -> GetAccountResponse {
     let principal = get_caller();
@@ -123,7 +120,6 @@ pub fn get_account() -> GetAccountResponse {
 /// Returns true if the account was created, else false (which happens if the principal already has
 /// an account).
 #[must_use]
-#[candid_method(update, rename = "add_account")]
 #[ic_cdk::update]
 pub fn add_account() -> AccountIdentifier {
     let principal = get_caller();
@@ -137,7 +133,6 @@ pub fn add_account() -> AccountIdentifier {
 /// user's principal (the fact that it is controlled by the same principal as the user's other
 /// ledger accounts is not derivable externally).
 #[must_use]
-#[candid_method(update, rename = "create_sub_account")]
 #[ic_cdk::update]
 pub fn create_sub_account(sub_account_name: String) -> CreateSubAccountResponse {
     let principal = get_caller();
@@ -148,7 +143,6 @@ pub fn create_sub_account(sub_account_name: String) -> CreateSubAccountResponse 
 ///
 /// These aliases are not visible externally or to anyone else.
 #[must_use]
-#[candid_method(update, rename = "rename_sub_account")]
 #[ic_cdk::update]
 pub fn rename_sub_account(request: RenameSubAccountRequest) -> RenameSubAccountResponse {
     let principal = get_caller();
@@ -161,7 +155,6 @@ pub fn rename_sub_account(request: RenameSubAccountRequest) -> RenameSubAccountR
 /// the IC from the account, the user must use the hardware wallet to sign each request.
 /// Some read-only calls do not require signing, e.g. viewing the account's ICP balance.
 #[must_use]
-#[candid_method(update, rename = "register_hardware_wallet")]
 #[ic_cdk::update]
 pub fn register_hardware_wallet(request: RegisterHardwareWalletRequest) -> RegisterHardwareWalletResponse {
     let principal = get_caller();
@@ -170,7 +163,6 @@ pub fn register_hardware_wallet(request: RegisterHardwareWalletRequest) -> Regis
 
 /// Returns the list of canisters which the user has attached to their account.
 #[must_use]
-#[candid_method(query, rename = "get_canisters")]
 #[ic_cdk::query]
 pub fn get_canisters() -> Vec<NamedCanister> {
     let principal = get_caller();
@@ -179,7 +171,6 @@ pub fn get_canisters() -> Vec<NamedCanister> {
 
 /// Attaches a canister to the user's account.
 #[must_use]
-#[candid_method(update, rename = "attach_canister")]
 #[ic_cdk::update]
 pub fn attach_canister(request: AttachCanisterRequest) -> AttachCanisterResponse {
     let principal = get_caller();
@@ -188,7 +179,6 @@ pub fn attach_canister(request: AttachCanisterRequest) -> AttachCanisterResponse
 
 /// Renames a canister of the user.
 #[must_use]
-#[candid_method(update, rename = "rename_canister")]
 #[ic_cdk::update]
 pub fn rename_canister(request: RenameCanisterRequest) -> RenameCanisterResponse {
     let principal = get_caller();
@@ -197,7 +187,6 @@ pub fn rename_canister(request: RenameCanisterRequest) -> RenameCanisterResponse
 
 /// Detaches a canister from the user's account.
 #[must_use]
-#[candid_method(update, rename = "detach_canister")]
 #[ic_cdk::update]
 pub fn detach_canister(request: DetachCanisterRequest) -> DetachCanisterResponse {
     let principal = get_caller();
@@ -205,7 +194,6 @@ pub fn detach_canister(request: DetachCanisterRequest) -> DetachCanisterResponse
 }
 
 #[must_use]
-#[candid_method(update, rename = "set_imported_tokens")]
 #[ic_cdk::update]
 pub fn set_imported_tokens(settings: ImportedTokens) -> SetImportedTokensResponse {
     let principal = get_caller();
@@ -213,14 +201,12 @@ pub fn set_imported_tokens(settings: ImportedTokens) -> SetImportedTokensRespons
 }
 
 #[must_use]
-#[candid_method(query, rename = "get_imported_tokens")]
 #[ic_cdk::query]
 pub fn get_imported_tokens() -> GetImportedTokensResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.get_imported_tokens(principal))
 }
 
-#[candid_method(update, rename = "get_proposal_payload")]
 #[ic_cdk::update]
 pub async fn get_proposal_payload(proposal_id: u64) -> Result<proposals::Json, String> {
     proposals::get_proposal_payload(proposal_id).await
@@ -231,7 +217,6 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<proposals::Json, S
 /// These stats include things such as the number of accounts registered, the memory usage, the
 /// number of neurons created, etc.
 #[must_use]
-#[candid_method(query, rename = "get_stats")]
 #[ic_cdk::query]
 pub fn get_stats() -> stats::Stats {
     with_state(stats::get_stats)
@@ -244,7 +229,6 @@ pub fn get_stats() -> stats::Stats {
 /// Note: This is expensive to compute, as it scans across all
 /// accounts, so this is not included in the general stats above.
 #[must_use]
-#[candid_method(query, rename = "get_histogram")]
 #[ic_cdk::query]
 pub fn get_histogram() -> AccountsStoreHistogram {
     // The API is intended for ad-hoc analysis only and may be discontinued at any time.
@@ -259,7 +243,6 @@ pub fn get_histogram() -> AccountsStoreHistogram {
 }
 
 /// Steps the migration.
-#[candid_method(update, rename = "step_migration")]
 #[ic_cdk::update]
 pub fn step_migration(step_size: u32) {
     let caller = ic_cdk::caller();
@@ -294,7 +277,6 @@ async fn call_step_migration_with_retries() {
 /// Add an asset to be served by the canister.
 ///
 /// Only a whitelist of assets are accepted.
-#[candid_method(update, rename = "add_stable_asset")]
 #[ic_cdk::update]
 pub fn add_stable_asset(asset_bytes: Vec<u8>) {
     let hash_bytes = hash_bytes(&asset_bytes);
@@ -330,7 +312,6 @@ pub fn add_stable_asset(asset_bytes: Vec<u8>) {
 /// - If the requested number of accounts is too large, the call will run out of cycles and be killed.
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[must_use]
-#[candid_method(update, rename = "create_toy_accounts")]
 #[ic_cdk::update]
 pub fn create_toy_accounts(num_accounts: u128) -> u64 {
     let caller = ic_cdk::caller();
@@ -348,7 +329,6 @@ pub fn create_toy_accounts(num_accounts: u128) -> u64 {
 /// Gets any toy account by toy account index.
 #[cfg(any(test, feature = "toy_data_gen"))]
 #[must_use]
-#[candid_method(query, rename = "get_toy_account")]
 #[ic_cdk::query]
 pub fn get_toy_account(toy_account_index: u64) -> GetAccountResponse {
     let caller = ic_cdk::caller();
@@ -363,7 +343,6 @@ pub fn get_toy_account(toy_account_index: u64) -> GetAccountResponse {
 }
 
 #[must_use]
-#[candid_method(query, rename = "get_tvl")]
 #[ic_cdk::query]
 pub fn get_tvl() -> TvlResponse {
     tvl::get_tvl()
