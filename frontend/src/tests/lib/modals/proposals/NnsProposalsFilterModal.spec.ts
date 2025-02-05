@@ -19,7 +19,7 @@ describe("ProposalsFilterModal", () => {
     },
   };
 
-  const renderComponent = (onNnsClose?: () => {}): FilterModalPo => {
+  const renderComponent = (onNnsClose?: () => void): FilterModalPo => {
     const { container, component } = render(ProposalsFilterModal, { props });
 
     if (onNnsClose) {
