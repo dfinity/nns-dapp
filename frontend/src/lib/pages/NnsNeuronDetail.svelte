@@ -41,7 +41,7 @@
     getNeuronById,
     isSpawning,
     neuronVoting,
-    isNeuronMissingRewardSoon,
+    isNeuronMissingRewardsSoon,
   } from "$lib/utils/neuron.utils";
   import { Island } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
@@ -156,7 +156,7 @@
   $: isConfirmFollowingVisible =
     $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION &&
     nonNullish(neuron) &&
-    isNeuronMissingRewardSoon({
+    isNeuronMissingRewardsSoon({
       neuron,
       startReducingVotingPowerAfterSeconds:
         $startReducingVotingPowerAfterSecondsStore,
