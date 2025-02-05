@@ -3919,7 +3919,6 @@ dependencies = [
  "candid_parser",
  "cycles-minting-canister",
  "dfn_candid",
- "dfn_core",
  "dfn_protobuf",
  "flate2",
  "hex",
