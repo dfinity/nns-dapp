@@ -4,11 +4,11 @@ description: |
   Optionally installs nns-dapp and sns_aggregator.
 inputs:
   snsdemo_ref:
-    description: "The git ref at which to use the snsdemo scripts.  Defaults to the release tag in dfx.json"
+    description: "The git ref at which to use the snsdemo scripts.  Defaults to the release tag in config.json"
     required: false
     default: ""
   snapshot_url:
-    description: "The URL of the snapshot to download and install.  Defaults to the URL of the release tag in dfx.json."
+    description: "The URL of the snapshot to download and install.  Defaults to the URL of the release tag in config.json."
     required: false
     default: ""
   nns_dapp_wasm:
@@ -41,7 +41,7 @@ runs:
       shell: bash
       run: |
         SNSDEMO_REF="${{ inputs.snsdemo_ref }}"
-        test -n "$SNSDEMO_REF" || SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+        test -n "$SNSDEMO_REF" || SNSDEMO_REF="$(jq -r .defaults.build.config.SNSDEMO_RELEASE config.json)"
         echo "ref=$SNSDEMO_REF" >> "$GITHUB_OUTPUT"
     - name: Determine snsdemo snapshot URL
       id: snsdemo_snapshot
@@ -67,7 +67,7 @@ runs:
     - name: Install SNS script dependencies
       shell: bash
       run: |
-        cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION dfx.json)"
+        cargo binstall --no-confirm "idl2json_cli@$(jq -r .defaults.build.config.IDL2JSON_VERSION config.json)"
     - name: Get test environment
       shell: bash
       run: |
@@ -76,10 +76,7 @@ runs:
         # uses to determine the version will be replaced by the snapshot.
         export DFX_VERSION="$(dfx --version | sed 's/dfx //')"
         scripts/dfx-snapshot-install --snapshot state.tar.xz
-        # Change to $HOME to avoid using nns-dapp dfx.json.
-        pushd "$HOME"
         dfx start --background &> '${{ inputs.logfile }}'
-        popd
         dfx identity use snsdemo8
     - name: Wait before installing canisters
       if: ${{ inputs.nns_dapp_wasm }} || ${{ inputs.sns_aggregator_wasm }}

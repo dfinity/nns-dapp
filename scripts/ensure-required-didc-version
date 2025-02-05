@@ -4,7 +4,7 @@ set -euo pipefail
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
 ACTUAL_VERSION="$(didc --version)"
-EXPECTED_VERSION="$(jq -r '.defaults.build.config.DIDC_VERSION' "$SOURCE_DIR/../dfx.json")"
+EXPECTED_VERSION="$(jq -r '.defaults.build.config.DIDC_VERSION' "$SOURCE_DIR/../config.json")"
 
 if [[ "${ACTUAL_VERSION:-}" != "${EXPECTED_VERSION:-}" ]]; then
   echo "Expected didc version '$EXPECTED_VERSION', but found '$ACTUAL_VERSION'"

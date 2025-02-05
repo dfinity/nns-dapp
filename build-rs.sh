@@ -36,6 +36,8 @@ cargo build "${cargo_args[@]}"
 echo Optimising wasm
 wasm_path="$(canister_name="$canister_name" jq -r '.canisters[env.canister_name].wasm' dfx.json)"
 [[ "$wasm_path" != "${wasm_path%.wasm.gz}" ]] || {
+  echo "dskloetx cat dfx.json"
+  cat dfx.json
   echo "ERROR: dfx.json should have a wasm path ending in .wasm.gz for $canister_name.  It's the new standard..."
   exit 1
 } >&2
