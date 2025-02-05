@@ -9,21 +9,24 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsMissingRewardsBadgePo } from "$tests/page-objects/NnsNeuronsMissingRewardsBadge.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import type { NeuronInfo } from "@dfinity/nns";
 
 describe("NnsNeuronsMissingRewardsBadge", () => {
   const nowSeconds = nowInSeconds();
-  const activeNeuron = {
+  const activeNeuron: NeuronInfo = {
     ...mockNeuron,
     neuronId: 0n,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...mockFullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(nowSeconds),
       controller: mockIdentity.getPrincipal().toText(),
     },
   };
-  const losingRewardsNeuron = {
+  const losingRewardsNeuron: NeuronInfo = {
     ...mockNeuron,
     neuronId: 2n,
+    dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
     fullNeuron: {
       ...mockFullNeuron,
       votingPowerRefreshedTimestampSeconds: BigInt(
