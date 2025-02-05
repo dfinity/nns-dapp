@@ -23,5 +23,4 @@ canister_update register_hardware_wallet
 canister_update rename_canister
 canister_update rename_sub_account
 canister_update set_imported_tokens
-canister_update step_migration
 main

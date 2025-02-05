@@ -3,10 +3,6 @@ import { writableStored } from "$lib/stores/writable-stored";
 import { get } from "svelte/store";
 
 describe("writableStored", () => {
-  beforeEach(() => {
-    localStorage.clear();
-  });
-
   it("writes to local storage when state changes", () => {
     const store = writableStored({
       key: StoreLocalStorageKey.ProposalFilters,

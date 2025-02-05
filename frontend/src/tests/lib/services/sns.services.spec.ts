@@ -45,7 +45,6 @@ describe("sns-services", () => {
   beforeEach(() => {
     resetIdentity();
     vi.useFakeTimers();
-    vi.clearAllTimers();
   });
 
   describe("getSwapAccount", () => {

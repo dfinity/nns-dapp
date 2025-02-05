@@ -20,7 +20,6 @@ describe("CkBTCUpdateBalanceButton", () => {
   beforeEach(() => {
     resetIdentity();
     vi.useFakeTimers().setSystemTime(now);
-    vi.clearAllTimers();
     vi.spyOn(api, "updateBalance").mockRejectedValue(
       new MinterNoNewUtxosError({
         required_confirmations: 12,

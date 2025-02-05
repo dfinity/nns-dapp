@@ -11,10 +11,8 @@ use crate::perf::PerformanceCount;
 use crate::state::{init_state, restore_state, save_state, with_state, with_state_mut, StableState};
 use crate::tvl::TvlResponse;
 
-use accounts_store::schema::proxy::AccountsDbAsProxy;
 pub use candid::{CandidType, Deserialize};
-use ic_cdk::api::call::RejectionCode;
-use ic_cdk::{eprintln, println};
+use ic_cdk::println;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
@@ -240,38 +238,6 @@ pub fn get_histogram() -> AccountsStoreHistogram {
     }
     // Gets the histogram:
     with_state(|state| state.accounts_store.get_histogram())
-}
-
-/// Steps the migration.
-#[ic_cdk::update]
-pub fn step_migration(step_size: u32) {
-    let caller = ic_cdk::caller();
-    let own_canister_id = ic_cdk::api::id();
-    if caller != own_canister_id {
-        ic_cdk::api::trap("Only the canister itself may call step_migration");
-    }
-    with_state_mut(|s| {
-        s.accounts_store.step_migration(step_size);
-    });
-}
-
-/// Calls `step_migration()` without panicking and rolling back if anything goes wrong.
-#[allow(dead_code)]
-async fn call_step_migration(step_size: u32) -> Result<(), (RejectionCode, String)> {
-    ic_cdk::api::call::call(ic_cdk::id(), "step_migration", (step_size,)).await
-}
-
-/// Calls step migration, dropping the step size to 1 on failure.
-#[allow(dead_code)]
-async fn call_step_migration_with_retries() {
-    for step_size in [AccountsDbAsProxy::MIGRATION_STEP_SIZE, 1] {
-        if let Err((code, msg)) = call_step_migration(step_size).await {
-            println!("WARNING: step_migration failed with step size {step_size}: {code:?} {msg}");
-        } else {
-            return;
-        }
-    }
-    eprintln!("ERROR: step_migration failed.");
 }
 
 /// Add an asset to be served by the canister.

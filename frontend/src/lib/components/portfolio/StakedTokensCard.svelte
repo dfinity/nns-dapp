@@ -70,7 +70,14 @@
 
       <div class="list" role="rowgroup">
         {#each topStakedTokens as stakedToken (stakedToken.domKey)}
-          <div class="row" data-tid="staked-tokens-card-row" role="row">
+          <svelte:element
+            this={$authSignedInStore ? "a" : "div"}
+            href={$authSignedInStore ? stakedToken.rowHref : undefined}
+            class="row"
+            class:link={$authSignedInStore}
+            data-tid="staked-tokens-card-row"
+            role="row"
+          >
             <div class="info" role="cell">
               <div>
                 <Logo
@@ -115,7 +122,7 @@
                 : PRICE_NOT_AVAILABLE_PLACEHOLDER}
               {stakedToken.stake.token.symbol}
             </div>
-          </div>
+          </svelte:element>
         {/each}
         {#if showInfoRow}
           <div class="info-row desktop-only" role="note" data-tid="info-row">
@@ -166,6 +173,14 @@
         flex-direction: column;
         background-color: var(--card-background);
         flex-grow: 1;
+
+        .link {
+          text-decoration: none;
+          cursor: pointer;
+          &:hover {
+            background-color: var(--table-row-background-hover);
+          }
+        }
 
         .row {
           display: grid;

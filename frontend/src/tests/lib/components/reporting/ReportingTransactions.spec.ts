@@ -32,7 +32,6 @@ describe("ReportingTransactions", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllTimers();
     resetIdentity();
     resetAccountsForTesting();
 

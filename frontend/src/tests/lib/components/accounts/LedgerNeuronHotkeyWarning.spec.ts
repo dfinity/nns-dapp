@@ -12,10 +12,6 @@ describe("LedgerNeuronHotkeyWarning", () => {
     );
   };
 
-  beforeEach(() => {
-    localStorage.clear();
-  });
-
   it("should be shown when localStorageKey not set", async () => {
     const po = await renderComponent();
     expect(localStorage.getItem(localStorageKey)).toBeNull();

@@ -15,6 +15,7 @@ import {
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
+  NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
@@ -564,7 +565,7 @@ const getNeuronTagsUnrelatedToController = ({
         status: "danger",
       });
     } else if (
-      shouldDisplayMissingRewardNotification({
+      isNeuronMissingRewardsSoon({
         neuron,
         startReducingVotingPowerAfterSeconds,
       })
@@ -1326,6 +1327,7 @@ export const isNeuronFollowingReset = ({
   return nowInSeconds() >= neuronFollowingResetTimestampSeconds;
 };
 
+// TODO(mstr): Rename to use the plural form of "rewards" in related functions.
 /** If the voting power economics are not available,
  *  we assume that the neuron is not missing rewards. */
 export const isNeuronMissingReward = ({
@@ -1346,7 +1348,7 @@ export const isNeuronMissingReward = ({
  * e.g. "Neuron will start missing rewards in 30 days"
  * If the voting power economics are not available,
  * we assume that the neuron is not missing rewards. */
-export const shouldDisplayMissingRewardNotification = ({
+export const isNeuronMissingRewardsSoon = ({
   neuron,
   startReducingVotingPowerAfterSeconds,
 }: {
@@ -1359,3 +1361,11 @@ export const shouldDisplayMissingRewardNotification = ({
         neuron,
         startReducingVotingPowerAfterSeconds,
       }) <= daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS);
+
+/**
+ * Returns `true` if the neuron's dissolve delay meets the voting requirements
+ */
+export const hasEnoughDissolveDelayToVote = ({
+  dissolveDelaySeconds,
+}: NeuronInfo): boolean =>
+  dissolveDelaySeconds >= BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);

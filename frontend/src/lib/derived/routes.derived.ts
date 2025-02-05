@@ -41,3 +41,18 @@ export const walletPageOrigin = derived(
     return AppPath.Tokens;
   }
 );
+
+/**
+ * Derives the origin page (Portfolio or Tokens) to return from Neurons.
+ * Looks at last entry to handle navigation flows:
+ * Portfolio -> Neurons -> (back) -> Portfolio
+ * Tokens -> Neurons -> (back) -> Tokens
+ *
+ * Returns AppPath.Tokens as default if no matching page is found.
+ */
+export const neuronsPageOrigin = derived(referrerPathStore, (paths) => {
+  const lastPath = paths.at(-1);
+  if (lastPath === AppPath.Portfolio) return lastPath;
+
+  return AppPath.Staking;
+});
