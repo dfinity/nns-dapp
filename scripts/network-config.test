@@ -10,6 +10,14 @@ sample_global_config() {
   cat <<-EOF
 	{
 	  "local": {
+	    "config": {
+	      "FETCH_ROOT_KEY": true,
+	      "HOST": "http://localhost:8080",
+	      "FEATURE_FLAGS": {
+		"ENABLE_SNS": true,
+		"ENABLE_SNS_2": true
+	      }
+	    },
 	    "bind": "127.0.0.1:8080",
 	    "type": "ephemeral",
 	    "replica": {
@@ -17,6 +25,10 @@ sample_global_config() {
 	    }
 	  },
 	  "fubar": {
+	    "config": {
+	      "FETCH_ROOT_KEY": true,
+	      "HOST": "https://fubar.testnet.dfinity.network"
+	    },
 	    "providers": [
 	      "http://[2a00:fb01:400:42:5000:d1ff:fefe:987e]:8080"
 	    ],
@@ -25,7 +37,7 @@ sample_global_config() {
 	}
 	EOF
 }
-# dfx.json used in tests
+# config.json used in tests
 sample_local_config() {
   cat <<-"EOF"
 	{
@@ -48,6 +60,14 @@ sample_local_config() {
 	  },
 	  "networks": {
 	    "mainnet": {
+	      "config": {
+		"FETCH_ROOT_KEY": false,
+		"API_HOST": "https://icp-api.io",
+		"STATIC_HOST": "https://icp0.io",
+		"FEATURE_FLAGS": {
+		  "ENABLE_CKTESTBTC": false
+		}
+	      },
 	      "providers": [
 		"https://icp-api.io/"
 	      ],
@@ -69,7 +89,7 @@ sample_local_config() {
 # - HOME - a temporary HOME directory
 # - GLOBAL_NETWORK_CONFIG_FILE - the global config file for that test environment
 # - PWD - the PWD will be in a toy project in the temporary HOME
-# - dfx.json - local network configuration.
+# - config.json - local network configuration.
 mk_env() {
   HOME="$(mktemp -d)"
   export HOME
@@ -77,7 +97,7 @@ mk_env() {
   . "$SCRIPT_TO_TEST"
   mkdir toy_project
   cd toy_project
-  sample_local_config >dfx.json
+  sample_local_config >config.json
   mkdir -p "$HOME/.config/dfx"
   sample_global_config >"$HOME/.config/dfx/networks.json"
 }
@@ -116,13 +136,13 @@ title() {
     exit 1
   } >&2
 
-  test -e dfx.json || {
-    echo "ERROR: Should have a dfx.json in the current directory."
+  test -e config.json || {
+    echo "ERROR: Should have a config.json in the current directory."
     exit 1
   } >&2
 
-  jq -e .networks dfx.json >/dev/null || {
-    echo "ERROR: The local dfx.json should have a .networks entry."
+  jq -e .networks config.json >/dev/null || {
+    echo "ERROR: The local config.json should have a .networks entry."
     exit 1
   } >&2
 
@@ -365,7 +385,7 @@ done
   mk_env
   DFX_NETWORK=local
   export DFX_NETWORK
-  jq 'del(.networks)' dfx.json | sponge dfx.json
+  jq 'del(.networks)' config.json | sponge config.json
   ACTUAL_CONFIG="$(network_config)" || {
     retval="$?"
     echo "FAIL: network_config should have returned zero but:"
