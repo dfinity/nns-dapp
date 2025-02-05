@@ -1,19 +1,16 @@
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import TokensPage from "$lib/pages/Tokens.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import {
   createIcpUserToken,
@@ -22,12 +19,14 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { TokensPagePo } from "$tests/page-objects/TokensPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("Tokens page", () => {
   const positiveBalance = createUserToken({
@@ -75,17 +74,10 @@ describe("Tokens page", () => {
   };
 
   beforeEach(() => {
-    hideZeroBalancesStore.resetForTesting();
     vi.useFakeTimers();
 
     importedTokensStore.set({ importedTokens: [], certified: true });
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-    ]);
+    setIcpPrice(10);
   });
 
   it("should render the tokens table", async () => {
@@ -181,8 +173,8 @@ describe("Tokens page", () => {
     const po = renderPage([unavailableBalance, positiveBalance]);
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Unavailable balance",
       "Positive balance",
+      "Unavailable balance",
     ]);
 
     await po.getSettingsButtonPo().click();
@@ -200,16 +192,16 @@ describe("Tokens page", () => {
     const po = renderPage([icpZeroBalance, positiveBalance]);
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Internet Computer",
       "Positive balance",
+      "Internet Computer",
     ]);
 
     await po.getSettingsButtonPo().click();
     await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Internet Computer",
       "Positive balance",
+      "Internet Computer",
     ]);
   });
 
@@ -407,5 +399,73 @@ describe("Tokens page", () => {
     expect(
       await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
     ).toBe(true);
+  });
+
+  it("should order by balance by default", async () => {
+    const po = renderPage(userTokensPageMock);
+
+    expect(get(tokensTableOrderStore)).toEqual([
+      {
+        columnId: "balance",
+      },
+      {
+        columnId: "title",
+      },
+    ]);
+
+    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+      "Balance"
+    );
+  });
+
+  it("should change order based on order store", async () => {
+    const po = renderPage(userTokensPageMock);
+    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+      "Balance"
+    );
+
+    tokensTableOrderStore.set([
+      {
+        columnId: "title",
+      },
+    ]);
+
+    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+      "Projects"
+    );
+  });
+
+  it("should change order store based on clicked header", async () => {
+    const po = renderPage(userTokensPageMock);
+    expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
+      "Balance"
+    );
+
+    expect(get(tokensTableOrderStore)).toEqual([
+      {
+        columnId: "balance",
+      },
+      {
+        columnId: "title",
+      },
+    ]);
+
+    await po.getTokensTable().clickColumnHeader("Projects");
+
+    expect(get(tokensTableOrderStore)).toEqual([
+      {
+        columnId: "title",
+      },
+      {
+        columnId: "balance",
+      },
+    ]);
+  });
+
+  it("should disable sorting on mobile", async () => {
+    const po = renderPage(userTokensPageMock);
+    expect(
+      await po.getTokensTable().getOpenSortModalButtonPo().isPresent()
+    ).toBe(false);
   });
 });

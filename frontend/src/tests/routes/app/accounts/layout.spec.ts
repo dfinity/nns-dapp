@@ -2,6 +2,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { referrerPathStore } from "$lib/stores/routes.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import AccountsLayout from "$routes/(app)/(u)/(list)/accounts/+layout.svelte";
@@ -51,31 +52,40 @@ describe("Accounts layout", () => {
     });
   });
 
-  describe("when tokens flag is enabled", () => {
-    it("should not show the split content navigation", () => {
-      const { queryByTestId } = render(AccountsLayout);
+  it("should not show the split content navigation", () => {
+    const { queryByTestId } = render(AccountsLayout);
 
-      expect(
-        queryByTestId("select-universe-nav-title")
-      ).not.toBeInTheDocument();
+    expect(queryByTestId("select-universe-nav-title")).not.toBeInTheDocument();
+  });
+
+  it("should render back button", () => {
+    const { queryByTestId } = render(AccountsLayout);
+
+    expect(queryByTestId("back")).toBeInTheDocument();
+  });
+
+  it("back button should navigate by default to tokens page", async () => {
+    page.mock({
+      routeId: AppPath.Accounts,
     });
+    const { queryByTestId } = render(AccountsLayout);
 
-    it("should render back button", () => {
-      const { queryByTestId } = render(AccountsLayout);
+    expect(get(pageStore).path).toEqual(AppPath.Accounts);
+    await fireEvent.click(queryByTestId("back"));
 
-      expect(queryByTestId("back")).toBeInTheDocument();
+    expect(get(pageStore).path).toEqual(AppPath.Tokens);
+  });
+
+  it("back button should navigate to tokens page when coming from Portfolio page", async () => {
+    referrerPathStore.pushPath(AppPath.Portfolio);
+    page.mock({
+      routeId: AppPath.Accounts,
     });
+    const { queryByTestId } = render(AccountsLayout);
 
-    it("back button should navigate to tokens page", async () => {
-      page.mock({
-        routeId: AppPath.Accounts,
-      });
-      const { queryByTestId } = render(AccountsLayout);
+    expect(get(pageStore).path).toEqual(AppPath.Accounts);
+    await fireEvent.click(queryByTestId("back"));
 
-      expect(get(pageStore).path).toEqual(AppPath.Accounts);
-      await fireEvent.click(queryByTestId("back"));
-
-      expect(get(pageStore).path).toEqual(AppPath.Tokens);
-    });
+    expect(get(pageStore).path).toEqual(AppPath.Portfolio);
   });
 });

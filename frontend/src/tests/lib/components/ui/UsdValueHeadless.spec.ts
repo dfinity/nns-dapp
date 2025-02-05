@@ -1,9 +1,8 @@
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import UsdValueHeadlessTest from "$tests/lib/components/ui/UsdValueHeadlessTest.svelte";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { UsdValueHeadlessPo } from "$tests/page-objects/UsdValueHeadless.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 
 describe("UsdValueHeadless", () => {
@@ -23,16 +22,6 @@ describe("UsdValueHeadless", () => {
     });
 
     return UsdValueHeadlessPo.under(new JestPageObjectElement(container));
-  };
-
-  const setIcpPrice = (icpPrice: number) => {
-    icpSwapTickersStore.set([
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: String(icpPrice),
-      },
-    ]);
   };
 
   it("should handle undefined usdAmount", async () => {

@@ -112,6 +112,19 @@ describe("StakedTokensCard", () => {
 
       expect(await po.getInfoRow().isPresent()).toBe(false);
     });
+
+    it("should render rows as DIV tag", async () => {
+      const po = renderComponent({
+        topStakedTokens: mockStakedTokens,
+        usdAmount: 0,
+      });
+
+      const allTags = await po.getRowsTags();
+      const allHrefs = await po.getRowsHref();
+
+      expect(allTags.every((tag) => tag === "DIV")).toBe(true);
+      expect(allHrefs).toEqual([null, null, null, null]);
+    });
   });
 
   describe("when signed in", () => {
@@ -294,6 +307,23 @@ describe("StakedTokensCard", () => {
       expect(stakesInNativeCurrency).toEqual(["0.01 ICP"]);
 
       expect(await po.getInfoRow().isPresent()).toBe(true);
+    });
+
+    it("should render rows as an A tag", async () => {
+      const po = renderComponent({
+        topStakedTokens: mockStakedTokens,
+      });
+
+      const allTags = await po.getRowsTags();
+      const allHrefs = await po.getRowsHref();
+
+      expect(allTags.every((tag) => tag === "A")).toBe(true);
+      expect(allHrefs).toEqual([
+        mockStakedTokens[0].rowHref,
+        mockStakedTokens[1].rowHref,
+        mockStakedTokens[2].rowHref,
+        mockStakedTokens[3].rowHref,
+      ]);
     });
   });
 });

@@ -43,7 +43,6 @@ describe("imported-tokens-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    busyStore.resetForTesting();
     vi.spyOn(console, "error").mockReturnValue();
     vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
   });

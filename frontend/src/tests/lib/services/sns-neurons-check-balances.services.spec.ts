@@ -15,7 +15,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsNeuronPermissionType,
   neuronSubaccount,
@@ -62,7 +62,6 @@ describe("sns-neurons-check-balances-services", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetSnsProjects();
 
     setSnsProjects([
       {

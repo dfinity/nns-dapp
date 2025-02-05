@@ -13,6 +13,14 @@ class StakedTokensCardRowPo extends BasePageObject {
     return rows.map((el) => new StakedTokensCardRowPo(el));
   }
 
+  getRowTag(): Promise<string> {
+    return this.root.getTagName();
+  }
+
+  getRowHref(): Promise<string> {
+    return this.root.getAttribute("href");
+  }
+
   getStakedTokenTitle(): Promise<string> {
     return this.getText("title");
   }
@@ -73,5 +81,15 @@ export class StakedTokensCardPo extends BasePageObject {
     return Promise.all(
       rows.map((row) => row.getStakedTokenStakeInNativeCurrency())
     );
+  }
+
+  async getRowsTags(): Promise<string[]> {
+    const rows = await this.getRows();
+    return Promise.all(rows.map((row) => row.getRowTag()));
+  }
+
+  async getRowsHref(): Promise<string[]> {
+    const rows = await this.getRows();
+    return Promise.all(rows.map((row) => row.getRowHref()));
   }
 }

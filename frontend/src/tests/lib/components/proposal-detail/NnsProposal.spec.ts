@@ -53,7 +53,6 @@ describe("Proposal", () => {
     });
 
   beforeEach(() => {
-    actionableProposalsSegmentStore.resetForTesting();
     vi.spyOn(proposalsApi, "queryProposalPayload").mockResolvedValue({});
     actionableProposalsSegmentStore.set("all");
   });

@@ -1,9 +1,7 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { E8S_PER_ICP } from "$lib/constants/icp.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { icpTokensListUser } from "$lib/derived/icp-tokens-list-user.derived";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import {
   UserTokenAction,
   type UserTokenData,
@@ -15,7 +13,6 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import {
   createIcpUserToken,
   icpTokenBase,
@@ -24,6 +21,7 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -151,13 +149,7 @@ describe("icp-tokens-list-user.derived", () => {
       const hwAccountBalance = 3;
       const icpPrice = 10;
 
-      icpSwapTickersStore.set([
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: String(icpPrice),
-        },
-      ]);
+      setIcpPrice(icpPrice);
 
       setAccountsForTesting({
         main: {

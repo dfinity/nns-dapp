@@ -346,7 +346,6 @@ describe("ParticipateSwapModal", () => {
     let spyQueryAccount: MockInstance;
     beforeEach(() => {
       resetAccountsForTesting();
-      vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = 10_000_000n;

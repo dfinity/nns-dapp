@@ -86,10 +86,8 @@ describe("NnsWallet", () => {
   const accountTransactions = [mockTransactionWithId];
 
   beforeEach(() => {
-    vi.clearAllTimers();
     cancelPollAccounts();
     resetAccountsForTesting();
-    icpTransactionsStore.reset();
     resetIdentity();
 
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(

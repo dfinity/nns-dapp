@@ -68,8 +68,6 @@
         substitutions: { $canisterId: canisterIdText },
       });
       close();
-      // Navigate to clear all query parameters.
-      goto(AppPath.Tokens);
     }
   };
   let isLedgerCanisterIdProcessed = false;
@@ -170,6 +168,7 @@
         level: "warn",
         labelKey: "error__imported_tokens.is_duplication",
       });
+      dispatch("nnsClose");
       goto(
         buildWalletUrl({
           universe: ledgerCanisterId.toText(),
@@ -242,7 +241,11 @@
     }
   };
 
-  const close = () => dispatch("nnsClose");
+  const close = () => {
+    dispatch("nnsClose");
+    // Navigate on close to clear all query parameters.
+    goto(AppPath.Tokens);
+  };
 </script>
 
 <WizardModal
@@ -250,11 +253,7 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose={() => {
-    close();
-    // Navigate on close to clear all query parameters.
-    goto(AppPath.Tokens);
-  }}
+  on:nnsClose={close}
 >
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
 
@@ -262,7 +261,7 @@
     <ImportTokenForm
       bind:ledgerCanisterId
       bind:indexCanisterId
-      on:nnsClose
+      on:nnsClose={close}
       on:nnsSubmit={onSubmit}
     />
   {/if}

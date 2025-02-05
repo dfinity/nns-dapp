@@ -15,7 +15,7 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsNeuron, mockSnsNeuronId } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
@@ -45,8 +45,6 @@ describe("DisburseSnsNeuronModal", () => {
   };
 
   beforeEach(() => {
-    resetSnsProjects();
-
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
       testIdentity
     );

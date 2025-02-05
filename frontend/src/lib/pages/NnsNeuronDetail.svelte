@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import ConfirmFollowingBanner from "$lib/components/neuron-detail/ConfirmFollowingBanner.svelte";
   import NeuronFollowingCard from "$lib/components/neuron-detail/NeuronFollowingCard/NeuronFollowingCard.svelte";
   import NeuronVotingHistoryCard from "$lib/components/neuron-detail/NeuronVotingHistoryCard.svelte";
   import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
@@ -16,8 +17,8 @@
   import SkeletonHeader from "$lib/components/ui/SkeletonHeader.svelte";
   import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
-  import { isForceCallStrategy } from "$lib/constants/mockable.constants";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import {
@@ -25,6 +26,7 @@
     refreshNeuronIfNeeded,
   } from "$lib/services/neurons.services";
   import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
+  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -34,20 +36,18 @@
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
+  import { isForceCallStrategy } from "$lib/utils/call.utils";
   import {
     getNeuronById,
     isSpawning,
     neuronVoting,
-    shouldDisplayMissingRewardNotification,
+    isNeuronMissingRewardsSoon,
   } from "$lib/utils/neuron.utils";
   import { Island } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
-  import ConfirmFollowingBanner from "$lib/components/neuron-detail/ConfirmFollowingBanner.svelte";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
-  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuronIdText: string | undefined | null;
 
@@ -156,7 +156,7 @@
   $: isConfirmFollowingVisible =
     $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION &&
     nonNullish(neuron) &&
-    shouldDisplayMissingRewardNotification({
+    isNeuronMissingRewardsSoon({
       neuron,
       startReducingVotingPowerAfterSeconds:
         $startReducingVotingPowerAfterSecondsStore,

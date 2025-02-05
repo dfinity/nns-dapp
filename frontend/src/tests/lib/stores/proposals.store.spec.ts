@@ -9,11 +9,6 @@ import { ProposalStatus, Topic } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("proposals-store", () => {
-  beforeEach(() => {
-    proposalsStore.resetForTesting();
-    proposalsFiltersStore.reset();
-  });
-
   describe("proposals", () => {
     it("should set proposals", () => {
       const mutationStore = proposalsStore.getSingleMutationProposalsStore();

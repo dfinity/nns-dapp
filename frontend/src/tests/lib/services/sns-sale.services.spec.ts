@@ -190,7 +190,6 @@ describe("sns-api", () => {
   describe("loadOpenTicket", () => {
     describe("when polling is enabled", () => {
       beforeEach(() => {
-        vi.clearAllTimers();
         const now = Date.now();
         vi.useFakeTimers().setSystemTime(now);
       });
@@ -455,7 +454,6 @@ describe("sns-api", () => {
 
     describe("when disabling polling", () => {
       beforeEach(() => {
-        vi.clearAllTimers();
         const now = Date.now();
         vi.useFakeTimers().setSystemTime(now);
       });
@@ -541,7 +539,6 @@ describe("sns-api", () => {
 
   describe("loadNewSaleTicket ", () => {
     beforeEach(() => {
-      vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
     });
@@ -1018,7 +1015,6 @@ describe("sns-api", () => {
 
   describe("participateInSnsSale", () => {
     beforeEach(() => {
-      vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
     });

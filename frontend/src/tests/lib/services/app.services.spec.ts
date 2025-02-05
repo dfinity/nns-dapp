@@ -28,7 +28,6 @@ describe("app-services", () => {
   beforeEach(() => {
     resetIdentity();
     clearSnsAggregatorCache();
-    // resetSnsProjects();
     vi.spyOn(LedgerCanister, "create").mockImplementation(
       (): LedgerCanister => mockLedgerCanister
     );

@@ -50,8 +50,6 @@ describe("canisters-api", () => {
   const fee = 10_000n;
 
   beforeEach(() => {
-    vi.clearAllTimers();
-
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
     // real network request via agent.syncTime().
     vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
@@ -219,7 +217,9 @@ describe("canisters-api", () => {
       mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(10_000n);
 
       const response = await getIcpToCyclesExchangeRate(mockIdentity);
-      expect(mockCMCCanister.getIcpToCyclesConversionRate).toBeCalled();
+      expect(mockCMCCanister.getIcpToCyclesConversionRate).toBeCalledWith({
+        certified: true,
+      });
       expect(response).toEqual(10_000n);
     });
   });
