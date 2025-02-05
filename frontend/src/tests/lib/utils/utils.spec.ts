@@ -31,7 +31,6 @@ import { get } from "svelte/store";
 describe("utils", () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.clearAllTimers();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
 

@@ -62,7 +62,6 @@ describe("IncreaseSnsDissolveDelayModal", () => {
       testIdentity
     );
 
-    vi.clearAllTimers();
     vi.useFakeTimers().setSystemTime(now);
 
     setSnsProjects([

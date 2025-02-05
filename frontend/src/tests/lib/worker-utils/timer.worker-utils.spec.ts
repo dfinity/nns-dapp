@@ -14,7 +14,6 @@ describe("timer.worker-utils", () => {
   beforeEach(() => {
     silentConsoleErrors();
 
-    vi.clearAllTimers();
     vi.useFakeTimers().setSystemTime(now);
 
     spyPostMessage = vi.fn();

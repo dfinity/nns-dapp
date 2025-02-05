@@ -40,7 +40,6 @@ describe("ReportingTransactionsButton", () => {
   let spySaveGeneratedCsv;
 
   beforeEach(() => {
-    vi.clearAllTimers();
     resetIdentity();
     resetAccountsForTesting();
 
