@@ -80,7 +80,7 @@ check_dfx_orbit_identity() {
     {
       echo
       echo "Your identity '$DFX_IDENTITY' needs to be registered with the orbit station."
-      echo "Ask someone on the team to add your principal '$MY_PRINCIPAL' to the 'Team member' group."
+      echo "Ask someone on the NNS team to add your principal '$MY_PRINCIPAL' to the 'Team member' group."
     } >&2
     exit 1
   fi
@@ -101,7 +101,7 @@ require_asset_permission() {
     {
       echo "You need permission to $permission_description."
       echo "Request permission with:"
-      echo "dfx-orbit --identity \"$DFX_IDENTITY\" --station \"$STATION\" request asset permission $ASSET_CANISTER_ID $lowercase_permission --target \"$MY_PRINCIPAL\""
+      echo "dfx-orbit --identity \"$DFX_IDENTITY\" --station \"$STATION\" request --title \"Add $permission permission for $USER\" asset permission $ASSET_CANISTER_ID $lowercase_permission --target \"$MY_PRINCIPAL\""
     } >&2
     exit 1
   fi
