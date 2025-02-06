@@ -15,6 +15,7 @@ import {
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
+  NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
@@ -1360,3 +1361,11 @@ export const isNeuronMissingRewardsSoon = ({
         neuron,
         startReducingVotingPowerAfterSeconds,
       }) <= daysToSeconds(NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS);
+
+/**
+ * Returns `true` if the neuron's dissolve delay meets the voting requirements
+ */
+export const hasEnoughDissolveDelayToVote = ({
+  dissolveDelaySeconds,
+}: NeuronInfo): boolean =>
+  dissolveDelaySeconds >= BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);

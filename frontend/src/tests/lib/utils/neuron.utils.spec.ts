@@ -43,6 +43,7 @@ import {
   getSpawningTimeInSeconds,
   getTopicSubtitle,
   getTopicTitle,
+  hasEnoughDissolveDelayToVote,
   hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
@@ -3805,6 +3806,38 @@ describe("neuron-utils", () => {
               votingPowerRefreshedTimestampAgeSecs:
                 losingRewardsPeriod - (notificationPeriod + 1),
             }),
+          })
+        ).toBe(false);
+      });
+    });
+
+    describe("hasEnoughDissolveDelayToVote", () => {
+      it("should return true", () => {
+        expect(
+          hasEnoughDissolveDelayToVote({
+            ...mockNeuron,
+            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
+          })
+        ).toBe(true);
+        expect(
+          hasEnoughDissolveDelayToVote({
+            ...mockNeuron,
+            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR) * 100n,
+          })
+        ).toBe(true);
+      });
+
+      it("should return false", () => {
+        expect(
+          hasEnoughDissolveDelayToVote({
+            ...mockNeuron,
+            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR - 1),
+          })
+        ).toBe(false);
+        expect(
+          hasEnoughDissolveDelayToVote({
+            ...mockNeuron,
+            dissolveDelaySeconds: 0n,
           })
         ).toBe(false);
       });
