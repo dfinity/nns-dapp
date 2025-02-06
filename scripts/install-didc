@@ -11,7 +11,7 @@ clap.define short=r long=release desc="The didc release to install" variable=REL
 source "$(clap.build)"
 
 if [[ "${RELEASE:-}" == "pinned" ]]; then
-  RELEASE="$(jq -r '.defaults.build.config.DIDC_RELEASE' "$SOURCE_DIR/../dfx.json")"
+  RELEASE="$(jq -r '.defaults.build.config.DIDC_RELEASE' "$SOURCE_DIR/../config.json")"
 fi
 
 echo "Installing didc release $RELEASE"

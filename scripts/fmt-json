@@ -4,3 +4,6 @@ cd "$(dirname "$(realpath "$0")")/.."
 
 # shellcheck disable=SC2094 # The file is completely read before it is written so this is correct and safe.
 cat <<<"$(jq . dfx.json)" >dfx.json
+
+# shellcheck disable=SC2094 # The file is completely read before it is written so this is correct and safe.
+cat <<<"$(jq . config.json)" config.json
