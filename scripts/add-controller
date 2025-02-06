@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+print_help() {
+  cat <<-EOF
+
+	Add a controller to a canister, without a requirement to already be a
+	controller.
+	This can only work when PocketIC is running.
+	EOF
+}
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=c long=canister desc="Name or ID of the canister to control" variable=CANISTER default=""
+clap.define short=p long=principal desc="Name or ID of the canister to control" variable=PRINCIPAL_TO_ADD default="$(dfx identity get-principal)"
+clap.define long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+export DFX_NETWORK
+
+CURRENT_CONTROLLER="$(dfx canister info "$CANISTER" | grep '^Controllers:' | awk '{print $2}')"
+
+dfx canister update-settings "$CANISTER" --add-controller "$PRINCIPAL_TO_ADD" --impersonate "$CURRENT_CONTROLLER"
