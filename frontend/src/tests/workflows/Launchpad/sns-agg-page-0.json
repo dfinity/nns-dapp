@@ -290,7 +290,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999964610394000,
+    "icrc1_total_supply": 799999963431494000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1178,7 +1178,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10136463240694330,
+    "icrc1_total_supply": 10136575001376363,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1916,7 +1916,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 614709845436650,
+    "icrc1_total_supply": 614715112943436,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2008,9 +2008,9 @@
       "archives": ["4zzzg-yyaaa-aaaaq-aaazq-cai"]
     },
     "meta": {
-      "url": "https://yral.com",
-      "name": "YRAL",
-      "description": "A decentralized short-video social media platform governed by the people for the people",
+      "url": "https://dolr.ai",
+      "name": "DOLR AI",
+      "description": "World’s First AI-Powered Unstoppable Social Cloud",
       "logo": "/v1/sns/root/67bll-riaaa-aaaaq-aaauq-cai/logo.png"
     },
     "parameters": {
@@ -2321,7 +2321,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 103339593571199101,
+    "icrc1_total_supply": 103704920010830753,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2978,7 +2978,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 929089185639901440,
+    "icrc1_total_supply": 929701402707088863,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

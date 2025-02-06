@@ -1499,7 +1499,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101555937187566468,
+    "icrc1_total_supply": 101556362673869898,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3552,7 +3552,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100772279094188,
+    "icrc1_total_supply": 100771577887607,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4327,7 +4327,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995562026980,
+    "icrc1_total_supply": 995561029980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4431,7 +4431,7 @@
       "logo": "/v1/sns/root/hjcnr-bqaaa-aaaaq-aacka-cai/logo.png"
     },
     "parameters": {
-      "reserved_ids": [1015],
+      "reserved_ids": [1015, 1098],
       "functions": [
         {
           "id": 0,
@@ -5823,8 +5823,8 @@
           }
         },
         {
-          "id": 1098,
-          "name": "validatorMonitorSendCycles",
+          "id": 1099,
+          "name": "monitor_send_cycles",
           "description": "Sends Cycles to a specific canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
@@ -7259,7 +7259,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19207972351830883,
+    "icrc1_total_supply": 19208646666664828,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9268,7 +9268,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25262587863625653,
+    "icrc1_total_supply": 25262737619283542,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -9705,7 +9705,7 @@
       "ledger": "ddsp7-7iaaa-aaaaq-aacqq-cai",
       "index": "dnqcx-eyaaa-aaaaq-aacrq-cai",
       "governance": "detjl-sqaaa-aaaaq-aacqa-cai",
-      "dapps": [],
+      "dapps": ["52fzd-2aaaa-aaaal-qmzsa-cai"],
       "archives": ["aiez4-zqaaa-aaaaq-aac2a-cai"]
     },
     "meta": {
@@ -10154,6 +10154,136 @@
               "target_canister_id": "bgpwv-eqaaa-aaaal-qb6eq-cai",
               "validator_method_name": "validate_commit_proposed_batch",
               "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 50000,
+          "name": "Increase Player Value",
+          "description": "Increase a players value by £0.25m.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateRevaluePlayerUp",
+              "target_method_name": "revaluePlayerUp"
+            }
+          }
+        },
+        {
+          "id": 51000,
+          "name": "Decrease Player Value",
+          "description": "Decrease a players value by £0.25m.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateRevaluePlayerDown",
+              "target_method_name": "revaluePlayerDown"
+            }
+          }
+        },
+        {
+          "id": 52000,
+          "name": "Loan Player",
+          "description": "Loan a player to a different club.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateLoanPlayer",
+              "target_method_name": "loanPlayer"
+            }
+          }
+        },
+        {
+          "id": 53000,
+          "name": "Transfer Player",
+          "description": "Transfer a player to a different club.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateTransferPlayer",
+              "target_method_name": "transferPlayer"
+            }
+          }
+        },
+        {
+          "id": 54000,
+          "name": "Submit Fixture Data",
+          "description": "Function to submit fixture data for a match.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateSubmitFixtureData",
+              "target_method_name": "submitFixtureData"
+            }
+          }
+        },
+        {
+          "id": 55000,
+          "name": "Create New League",
+          "description": "Function to create a new football league.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateCreateLeague",
+              "target_method_name": "createLeague"
+            }
+          }
+        },
+        {
+          "id": 56000,
+          "name": "Update League",
+          "description": "Function to update a football league's details.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateUpdateLeague",
+              "target_method_name": "updateLeague"
+            }
+          }
+        },
+        {
+          "id": 57000,
+          "name": "Reschedule Fixture",
+          "description": "Function to reschedule a postponed fixture.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateRescheduleFixture",
+              "target_method_name": "rescheduleFixture"
+            }
+          }
+        },
+        {
+          "id": 58000,
+          "name": "Create Player",
+          "description": "Function to create a new player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateCreatePlayer",
+              "target_method_name": "createPlayer"
+            }
+          }
+        },
+        {
+          "id": 59000,
+          "name": "Create Club",
+          "description": "Function to create a new football club.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateCreateClub",
+              "target_method_name": "createClub"
             }
           }
         }
@@ -10739,7 +10869,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10055785070192885,
+    "icrc1_total_supply": 10056315861472961,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11286,7 +11416,8 @@
         "ql553-iqaaa-aaaap-anuyq-cai",
         "qc6wh-6yaaa-aaaap-anuza-cai",
         "ocqzv-tyaaa-aaaar-qal4a-cai",
-        "2rgax-kyaaa-aaaap-anvba-cai"
+        "2rgax-kyaaa-aaaap-anvba-cai",
+        "e7tgb-6aaaa-aaaap-akqfa-cai"
       ],
       "archives": ["apf7i-uiaaa-aaaaq-aac2q-cai"]
     },
@@ -11991,7 +12122,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103464983687760525,
+    "icrc1_total_supply": 103588378978401011,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -13248,7 +13379,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98631401352778104,
+    "icrc1_total_supply": 98639461900637023,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14423,7 +14554,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99923762145693423,
+    "icrc1_total_supply": 99923803553036172,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15607,7 +15738,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100101047563631280,
+    "icrc1_total_supply": 100102043443330715,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
