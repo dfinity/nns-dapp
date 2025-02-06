@@ -1,5 +1,4 @@
 //! User accounts and transactions.
-use crate::multi_part_transactions_processor::MultiPartTransactionsProcessor;
 use crate::state::{partitions::PartitionType, with_partitions, StableState};
 use crate::stats::Stats;
 use candid::CandidType;
@@ -695,10 +694,8 @@ impl StableState for AccountsStore {
             // backwards compatibility.
             None as Option<BlockIndex>,
             // multi_part_transactions_processor is unused but we need to encode
-            // it for backwards compatibility.
-            // TODO: Change to an arbitrary value after we've deployed to
-            // mainnet. Then remove the MultiPartTransactionsProcessor.
-            MultiPartTransactionsProcessor::default(),
+            // something for backwards compatibility.
+            (),
             // last_ledger_sync_timestamp_nanos is unused but we need to encode
             // it for backwards compatibility.
             0u64,
