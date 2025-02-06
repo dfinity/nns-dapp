@@ -21,6 +21,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Display proposal topics in alphabetical order.
+
 #### Deprecated
 
 #### Removed
