@@ -2,5 +2,5 @@
 # Prints build configuration as KEY=VALUE lines, suitable for bash and github actions.
 set -euo pipefail
 cd "$(dirname "$(realpath "$0")")"
-jq -r '.defaults.build.config | to_entries | .[] | .key+"="+(.value|@sh)' dfx.json
+jq -r '.defaults.build.config | to_entries | .[] | .key+"="+(.value|@sh)' config.json
 jq -r '"DFX_VERSION="+.dfx' dfx.json
