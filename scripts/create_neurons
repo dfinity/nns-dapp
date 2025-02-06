@@ -25,7 +25,7 @@ source "$(clap.build)"
 GOVERNANCE_CANISTER_ID=$(dfx canister --network local id nns-governance)
 
 # Create neurons
-for (( i=1; i<=NUM_NEURONS; i++ )); do
+for ((i = 1; i <= NUM_NEURONS; i++)); do
   # Generate random memo using /dev/urandom
   MEMO=$(od -vAn -N8 -tu8 </dev/urandom | tr -d ' ')
 
