@@ -40,7 +40,7 @@ describe("ProposalsFilterModal", () => {
     expect(await po.getModalTitle()).toBe("Topics");
   });
 
-  it("should render checkboxes", async () => {
+  it("should render checkboxes sorted by Label", async () => {
     const po = renderComponent();
     const checkboxes = await po.getFilterEntryPos();
     const checkboxLabels = (
@@ -53,7 +53,8 @@ describe("ProposalsFilterModal", () => {
       )
       .map((key: string) => en.topics[key]);
 
-    expect(checkboxLabels).toEqual(expectedLabels);
+    expect(checkboxLabels).not.toEqual(expectedLabels);
+    expect(checkboxLabels).toEqual(expectedLabels.sort());
   });
 
   it("should not render filter Unspecified", async () => {
@@ -92,8 +93,8 @@ describe("ProposalsFilterModal", () => {
 
     expect(get(proposalsFiltersStore).topics).toEqual([
       ...DEFAULT_PROPOSALS_FILTERS.topics,
-      1,
-      2,
+      15,
+      8,
     ]);
   });
 
