@@ -1,0 +1,150 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
+PATH="$SOURCE_DIR:$PATH"
+
+print_help() {
+  cat <<-EOF
+
+	Releases a new wasm to beta.nns.ic0.app.
+
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="orbit"
+clap.define short=s long=station desc="The orbit station to use" variable=STATION default="nns-team"
+clap.define long=skip-checks desc="Skip the checks that dfx-orbit is set up correctly" variable=SKIP_CHECKS nargs=0
+clap.define short=c long=commit desc="The commit to download the wasm for" variable=COMMIT default="main"
+clap.define long=install-mode desc="Install mode" variable=INSTALL_MODE default="upgrade"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+NNS_TEAM_STATION_ID="fv4dp-biaaa-aaaal-amrua-cai"
+NNS_DAPP_BETA_CANISTER_ID="$(dfx canister id nns-dapp --network beta)"
+ASSET_CANISTER_ID="qoju7-6iaaa-aaaal-amsga-cai"
+
+check_dfx_orbit_installed() {
+  if ! command -v dfx-orbit >/dev/null; then
+    {
+      echo "You need dfx-orbit. Install it with:"
+      echo "cargo install -f --git https://github.com/dfinity/orbit.git --bin dfx-orbit"
+    } >&2
+    exit 1
+  fi
+}
+
+check_dfx_orbit_station() {
+  if ! dfx-orbit station use "$STATION"; then
+    {
+      echo "You need to have the '$STATION' station set up. Set it up with:"
+      echo "dfx-orbit station add --station-id $NNS_TEAM_STATION_ID --network beta \"$STATION\""
+    } >&2
+    exit 1
+  fi
+}
+
+IDENTITY_JSON_FILE="$HOME/.config/dfx/identity/$DFX_IDENTITY/identity.json"
+
+maybe_identity_password() {
+  if [[ -e "$IDENTITY_JSON_FILE" ]]; then
+    echo "If asked for a password, enter the password of your dfx identity '$DFX_IDENTITY'."
+  fi
+}
+
+check_dfx_orbit_identity() {
+  if ! dfx identity list 2>/dev/null | grep "$DFX_IDENTITY" >/dev/null; then
+    {
+      echo "You need to have the identity $DFX_IDENTITY set up. Set it up with:"
+      echo "dfx identity new --storage-mode password-protected orbit"
+      echo
+      echo "NOTE: dfx-orbit does not support Keyring protected identities, which is the default for dfx."
+    } >&2
+    exit 1
+  fi
+
+  if [[ -e "$IDENTITY_JSON_FILE" ]] && [[ "$(jq '.keyring_identity_suffix // null' "$IDENTITY_JSON_FILE")" != "null" ]]; then
+    {
+      echo "dfx-orbit does not support Keyring protected identities."
+      echo "Use a different identity than '$DFX_IDENTITY'."
+    } >&2
+    exit 1
+  fi
+
+  maybe_identity_password
+  MY_PRINCIPAL="$(dfx identity get-principal --identity "$DFX_IDENTITY")"
+
+  maybe_identity_password
+  if ! dfx-orbit --station "$STATION" --identity "$DFX_IDENTITY" me; then
+    {
+      echo
+      echo "Your identity '$DFX_IDENTITY' needs to be registered with the orbit station."
+      echo "Ask someone on the NNS team to add your principal '$MY_PRINCIPAL' to the 'Team member' group."
+    } >&2
+    exit 1
+  fi
+}
+
+has_asset_permission() {
+  principal="$1"
+  permission="$2"
+  dfx canister call "$ASSET_CANISTER_ID" list_permitted "(record { permission = variant { $permission } })" --identity anonymous --network mainnet | idl2json | jq -r '.[]' | grep -q "$principal"
+}
+
+require_asset_permission() {
+  permission="$1"
+  permission_description="$2"
+  lowercase_permission="$(echo "$permission" | tr '[:upper:]' '[:lower:]')"
+
+  if ! has_asset_permission "$MY_PRINCIPAL" "$permission"; then
+    {
+      echo "You need permission to $permission_description."
+      echo "Request permission with:"
+      echo "dfx-orbit --identity \"$DFX_IDENTITY\" --station \"$STATION\" request --title \"Add $permission permission for $USER\" asset permission $ASSET_CANISTER_ID $lowercase_permission --target \"$MY_PRINCIPAL\""
+    } >&2
+    exit 1
+  fi
+}
+
+check_asset_permissions() {
+  require_asset_permission Commit "commit assets to the asset canister"
+  require_asset_permission Prepare "upload wasm chunks to the asset canister"
+}
+
+check_dfx_orbit_setup() {
+  if [[ "${SKIP_CHECKS:-}" == "true" ]]; then
+    return
+  fi
+
+  check_dfx_orbit_installed
+  check_dfx_orbit_station
+  check_dfx_orbit_identity
+  check_asset_permissions
+
+  echo "All checks passed. If you want to skip these checks in the future, use the --skip-checks flag."
+}
+
+check_dfx_orbit_setup
+
+TOP_DIR=$(git rev-parse --show-toplevel)
+WASM_DIR="$TOP_DIR/release/ci"
+WASM_PATH="$WASM_DIR/nns-dapp.wasm.gz"
+COMMIT="$(git rev-parse "$COMMIT")"
+
+cd "$TOP_DIR"
+
+DFX_NETWORK=beta ./config.sh
+
+echo
+echo "Downloading wasm from CI..."
+"$SOURCE_DIR/nns-dapp/download-ci-wasm" --commit "$COMMIT" --dir "$WASM_DIR"
+
+TITLE="Install NNS dapp at commit $COMMIT"
+SUMMARY="$TITLE"
+
+dfx-orbit --station "$STATION" --identity "$DFX_IDENTITY" request --title "$TITLE" --summary "$SUMMARY" canister install --mode "$INSTALL_MODE" --wasm "$WASM_PATH" "$NNS_DAPP_BETA_CANISTER_ID" --argument "$(cat nns-dapp-arg-beta.did)" --asset-canister "$ASSET_CANISTER_ID"
+
+echo
+echo "Installation was requested. A team member now needs to approve the request."
