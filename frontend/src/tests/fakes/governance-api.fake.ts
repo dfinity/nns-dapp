@@ -201,10 +201,12 @@ export const addNeuronWith = ({
   neuronType,
   controller,
   stake,
+  dissolveDelaySeconds,
   votingPowerRefreshedTimestampSeconds = nowInSeconds(),
 }: {
   identity?: Identity;
   votingPowerRefreshedTimestampSeconds?: bigint | number;
+  dissolveDelaySeconds?: bigint | number;
 } & Partial<FakeNeuronParams>): NeuronInfo => {
   const neuron = { ...mockNeuron, fullNeuron: { ...mockNeuron.fullNeuron } };
   if (neuronId) {
@@ -220,6 +222,9 @@ export const addNeuronWith = ({
   }
   if (controller) {
     neuron.fullNeuron.controller = controller;
+  }
+  if (nonNullish(dissolveDelaySeconds)) {
+    neuron.dissolveDelaySeconds = BigInt(dissolveDelaySeconds);
   }
   if (nonNullish(votingPowerRefreshedTimestampSeconds)) {
     neuron.fullNeuron.votingPowerRefreshedTimestampSeconds = BigInt(

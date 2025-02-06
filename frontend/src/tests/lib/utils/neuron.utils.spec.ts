@@ -3828,7 +3828,7 @@ describe("neuron-utils", () => {
       });
     });
 
-    describe("isNeuronMissingRewardsSoon", () => {
+    describe("isNeuronMissingRewardSoon", () => {
       it("should return false by default", () => {
         expect(
           isNeuronMissingRewardsSoon({

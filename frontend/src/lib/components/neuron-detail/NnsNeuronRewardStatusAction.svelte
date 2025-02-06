@@ -10,6 +10,7 @@
     isNeuronMissingReward,
     secondsUntilMissingReward,
     isNeuronMissingRewardsSoon,
+    hasEnoughDissolveDelayToVote,
   } from "$lib/utils/neuron.utils";
   import {
     IconCheckCircleFill,
@@ -96,7 +97,7 @@
   };
 </script>
 
-{#if nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
+{#if hasEnoughDissolveDelayToVote(neuron) && nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
   <CommonItemAction
     testId="nns-neuron-reward-status-action-component"
     tooltipText={replacePlaceholders($i18n.missing_rewards.description, {

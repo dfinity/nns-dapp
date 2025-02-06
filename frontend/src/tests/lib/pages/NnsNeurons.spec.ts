@@ -205,6 +205,7 @@ describe("NnsNeurons", () => {
       vi.spyOn(api, "queryNeurons").mockResolvedValue([
         {
           ...mockNeuron,
+          dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
           fullNeuron: {
             ...mockFullNeuron,
             votingPowerRefreshedTimestampSeconds: BigInt(
