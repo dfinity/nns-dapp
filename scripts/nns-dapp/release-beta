@@ -18,6 +18,7 @@ clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_ID
 clap.define short=s long=station desc="The orbit station to use" variable=STATION default="nns-team"
 clap.define long=skip-checks desc="Skip the checks that dfx-orbit is set up correctly" variable=SKIP_CHECKS nargs=0
 clap.define short=c long=commit desc="The commit to download the wasm for" variable=COMMIT default="main"
+clap.define long=install-mode desc="Install mode" variable=INSTALL_MODE default="upgrade"
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
@@ -143,7 +144,7 @@ echo "Downloading wasm from CI..."
 TITLE="Install NNS dapp at commit $COMMIT"
 SUMMARY="$TITLE"
 
-dfx-orbit --station "$STATION" --identity "$DFX_IDENTITY" request --title "$TITLE" --summary "$SUMMARY" canister install --mode upgrade --wasm "$WASM_PATH" "$NNS_DAPP_BETA_CANISTER_ID" --argument "$(cat nns-dapp-arg-beta.did)" --asset-canister "$ASSET_CANISTER_ID"
+dfx-orbit --station "$STATION" --identity "$DFX_IDENTITY" request --title "$TITLE" --summary "$SUMMARY" canister install --mode "$INSTALL_MODE" --wasm "$WASM_PATH" "$NNS_DAPP_BETA_CANISTER_ID" --argument "$(cat nns-dapp-arg-beta.did)" --asset-canister "$ASSET_CANISTER_ID"
 
 echo
 echo "Instation was requested. A team member now needs to approve the request."
