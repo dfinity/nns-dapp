@@ -1843,24 +1843,20 @@ describe("neuron-utils", () => {
           true
         );
 
-        const tenDaysToConfirmSeconds =
-          nowSeconds -
-          SECONDS_IN_HALF_YEAR +
-          SECONDS_IN_DAY * 10 +
-          10 * 60 * 60;
+        const oneDayToConfirmSeconds =
+          nowSeconds - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY;
         expect(
           getNeuronTags({
             neuron: {
               ...mockNeuron,
               dissolveDelaySeconds: enoughDissolveDelayToVote - 1n,
               votingPowerRefreshedTimestampSeconds: BigInt(
-                tenDaysToConfirmSeconds
+                oneDayToConfirmSeconds
               ),
               fullNeuron: {
                 ...mockNeuron.fullNeuron,
-                dissolveDelaySeconds: enoughDissolveDelayToVote,
                 votingPowerRefreshedTimestampSeconds: BigInt(
-                  tenDaysToConfirmSeconds
+                  oneDayToConfirmSeconds
                 ),
               },
             } as NeuronInfo,
