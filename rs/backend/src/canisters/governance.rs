@@ -10,13 +10,13 @@ type GetMetricsCallResult = Result<Result<GovernanceCachedMetrics, GovernanceErr
 
 #[cfg(not(test))]
 mod prod {
-    use super::GetMetricsCallResult;
-    use dfn_candid::candid;
+    use super::{GetMetricsCallResult, GovernanceCachedMetrics, GovernanceError};
     use ic_nns_constants::GOVERNANCE_CANISTER_ID;
 
     pub async fn get_metrics() -> GetMetricsCallResult {
-        dfn_core::call(GOVERNANCE_CANISTER_ID, "get_metrics", candid, ())
+        ic_cdk::call(GOVERNANCE_CANISTER_ID.into(), "get_metrics", ())
             .await
+            .map(|r: (Result<GovernanceCachedMetrics, GovernanceError>,)| r.0)
             .map_err(|e| e.1)
     }
 }
