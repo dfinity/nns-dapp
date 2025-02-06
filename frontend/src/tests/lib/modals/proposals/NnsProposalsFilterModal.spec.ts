@@ -69,6 +69,7 @@ describe("ProposalsFilterModal", () => {
   it("should forward close modal event", async () => {
     const onNnsClose = vitest.fn();
     const po = renderComponent(onNnsClose);
+    expect(onNnsClose).toHaveBeenCalledTimes(0);
     await po.clickCloseButton();
     expect(onNnsClose).toHaveBeenCalledTimes(1);
   });
@@ -85,11 +86,15 @@ describe("ProposalsFilterModal", () => {
     await secondInput.click();
     expect(await secondInput.isChecked()).toBe(true);
 
+    expect(get(proposalsFiltersStore).topics).toEqual([]);
+
     await po.clickConfirmButton();
 
-    const selectedTopics = get(proposalsFiltersStore).topics;
-
-    expect(selectedTopics).toEqual([...DEFAULT_PROPOSALS_FILTERS.topics, 1, 2]);
+    expect(get(proposalsFiltersStore).topics).toEqual([
+      ...DEFAULT_PROPOSALS_FILTERS.topics,
+      1,
+      2,
+    ]);
   });
 
   it("should select all filters", async () => {
