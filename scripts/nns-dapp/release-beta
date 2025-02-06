@@ -144,3 +144,6 @@ TITLE="Install NNS dapp at commit $COMMIT"
 SUMMARY="$TITLE"
 
 dfx-orbit --station "$STATION" --identity "$DFX_IDENTITY" request --title "$TITLE" --summary "$SUMMARY" canister install --mode upgrade --wasm "$WASM_PATH" "$NNS_DAPP_BETA_CANISTER_ID" --argument "$(cat nns-dapp-arg-beta.did)" --asset-canister "$ASSET_CANISTER_ID"
+
+echo
+echo "Instation was requested. A team member now needs to approve the request."
