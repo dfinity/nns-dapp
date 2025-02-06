@@ -25,7 +25,6 @@ mod assets;
 mod canisters;
 mod constants;
 mod metrics_encoder;
-mod multi_part_transactions_processor;
 mod perf;
 mod spawn;
 mod state;
