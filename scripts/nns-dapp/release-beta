@@ -90,7 +90,7 @@ check_dfx_orbit_identity() {
 has_asset_permission() {
   principal="$1"
   permission="$2"
-  dfx canister call qoju7-6iaaa-aaaal-amsga-cai list_permitted "(record { permission = variant { $permission } })" --identity anonymous --network mainnet | idl2json | jq -r '.[]' | grep -q "$principal"
+  dfx canister call $ASSET_CANISTER_ID list_permitted "(record { permission = variant { $permission } })" --identity anonymous --network mainnet | idl2json | jq -r '.[]' | grep -q "$principal"
 }
 
 require_asset_permission() {
