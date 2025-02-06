@@ -17,6 +17,7 @@ source "$SOURCE_DIR/clap.bash"
 # Define options
 clap.define short=n long=number desc="Number of neurons to create" variable=NUM_NEURONS default="10"
 clap.define short=p long=principal desc="Principal ID (defaults to current dfx identity)" variable=CONTROLLER default="$(dfx identity get-principal)"
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
 
 # Source the output file
 source "$(clap.build)"
@@ -38,10 +39,10 @@ for ((i = 1; i <= NUM_NEURONS; i++)); do
   ACCOUNT_IDENTIFIER=$(scripts/convert-id --input text --output account_identifier --subaccount_format hex "$GOVERNANCE_CANISTER_ID" "$SUBACCOUNT")
 
   # Transfer funds
-  dfx ledger --network local transfer "$ACCOUNT_IDENTIFIER" --amount 1 --memo "$MEMO"
+  dfx ledger --network "$DFX_NETWORK" transfer "$ACCOUNT_IDENTIFIER" --amount 1 --memo "$MEMO"
 
   # Claim the neuron
-  dfx canister --network local call nns-governance claim_or_refresh_neuron_from_account "(record { controller = opt principal \"${CONTROLLER}\"; memo = ${MEMO} : nat64 })"
+  dfx canister --network "$DFX_NETWORK" call nns-governance claim_or_refresh_neuron_from_account "(record { controller = opt principal \"${CONTROLLER}\"; memo = ${MEMO} : nat64 })"
 
   echo "Neuron $i created successfully"
   echo "----------------------------"
