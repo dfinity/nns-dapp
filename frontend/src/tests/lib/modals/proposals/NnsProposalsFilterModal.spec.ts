@@ -20,11 +20,10 @@ describe("ProposalsFilterModal", () => {
   };
 
   const renderComponent = (onNnsClose?: () => void): FilterModalPo => {
-    const { container, component } = render(ProposalsFilterModal, { props });
-
-    if (onNnsClose) {
-      component.$on("nnsClose", onNnsClose);
-    }
+    const { container } = render(ProposalsFilterModal, {
+      props,
+      events: { nnsClose: onNnsClose },
+    });
 
     return FilterModalPo.under(new JestPageObjectElement(container));
   };
