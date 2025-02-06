@@ -4,8 +4,10 @@ SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 PATH="$SOURCE_DIR:$PATH"
 
 print_help() {
-    cat <<-EOF
-	Creates multiple neurons with random memos.
+  cat <<-EOF
+
+	Create and controll new neurons
+
 	EOF
 }
 
@@ -14,7 +16,7 @@ source "$SOURCE_DIR/clap.bash"
 
 # Define options
 clap.define short=n long=number desc="Number of neurons to create" variable=NUM_NEURONS default="10"
-clap.define short=p long=principal desc="Principal ID (defaults to current dfx identity)" variable=CONTROLLER default=$(dfx identity get-principal)
+clap.define short=p long=principal desc="Principal ID (defaults to current dfx identity)" variable=CONTROLLER default="$(dfx identity get-principal)"
 
 # Source the output file
 source "$(clap.build)"
@@ -23,27 +25,26 @@ source "$(clap.build)"
 GOVERNANCE_CANISTER_ID=$(dfx canister --network local id nns-governance)
 
 # Create neurons
-for (( i=1; i<=$NUM_NEURONS; i++ ))
-do
-    # Generate random memo using /dev/urandom
-    MEMO=$(od -vAn -N8 -tu8 < /dev/urandom | tr -d ' ')
+for (( i=1; i<=NUM_NEURONS; i++ )); do
+  # Generate random memo using /dev/urandom
+  MEMO=$(od -vAn -N8 -tu8 </dev/urandom | tr -d ' ')
 
-    echo "Creating neuron $i of $NUM_NEURONS with memo: $MEMO"
+  echo "Creating neuron $i of $NUM_NEURONS with memo: $MEMO"
 
-    # Generate subaccount
-    SUBACCOUNT="$(scripts/convert-id --input text --output hex --as_neuron_subaccount $CONTROLLER $MEMO)"
+  # Generate subaccount
+  SUBACCOUNT="$(scripts/convert-id --input text --output hex --as_neuron_subaccount "$CONTROLLER" "$MEMO")"
 
-    # Generate account identifier
-    ACCOUNT_IDENTIFIER=$(scripts/convert-id --input text --output account_identifier --subaccount_format hex $GOVERNANCE_CANISTER_ID $SUBACCOUNT)
+  # Generate account identifier
+  ACCOUNT_IDENTIFIER=$(scripts/convert-id --input text --output account_identifier --subaccount_format hex "$GOVERNANCE_CANISTER_ID" "$SUBACCOUNT")
 
-    # Transfer funds
-    dfx ledger --network local transfer $ACCOUNT_IDENTIFIER --amount 1 --memo $MEMO
+  # Transfer funds
+  dfx ledger --network local transfer "$ACCOUNT_IDENTIFIER" --amount 1 --memo "$MEMO"
 
-    # Claim the neuron
-    dfx canister --network local call nns-governance claim_or_refresh_neuron_from_account "(record { controller = opt principal \"${CONTROLLER}\"; memo = ${MEMO} : nat64 })"
+  # Claim the neuron
+  dfx canister --network local call nns-governance claim_or_refresh_neuron_from_account "(record { controller = opt principal \"${CONTROLLER}\"; memo = ${MEMO} : nat64 })"
 
-    echo "Neuron $i created successfully"
-    echo "----------------------------"
+  echo "Neuron $i created successfully"
+  echo "----------------------------"
 done
 
 echo "All $NUM_NEURONS neurons created successfully"
