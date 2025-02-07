@@ -123,7 +123,7 @@ check_dfx_orbit_setup() {
   check_dfx_orbit_identity
   check_asset_permissions
 
-  echo "All checks passed. If you want to skip these checks in the future, use the --skip-checks flag."
+  echo "✅ All checks passed. If you want to skip these checks in the future, use the --skip-checks flag."
 }
 
 check_dfx_orbit_setup
@@ -141,8 +141,16 @@ echo
 echo "Downloading wasm from CI..."
 "$SOURCE_DIR/nns-dapp/download-ci-wasm" --commit "$COMMIT" --dir "$WASM_DIR"
 
-TITLE="Install NNS dapp at commit $COMMIT"
-SUMMARY="$TITLE"
+TITLE="Install NNS dapp at commit ${COMMIT:0:10}"
+SUMMARY="Install NNS dapp at commit $COMMIT
+
+Verify the build before approving:
+
+1. git fetch
+2. git checkout $COMMIT
+3. git merge-base --is-ancestor HEAD origin/main && echo OK || echo \"Commit is not on main branch!\"
+4. ./scripts/docker-build
+5. sha256sum nns-dapp.wasm.gz"
 
 dfx-orbit --station "$STATION" --identity "$DFX_IDENTITY" request --title "$TITLE" --summary "$SUMMARY" canister install --mode "$INSTALL_MODE" --wasm "$WASM_PATH" "$NNS_DAPP_BETA_CANISTER_ID" --argument "$(cat nns-dapp-arg-beta.did)" --asset-canister "$ASSET_CANISTER_ID"
 
