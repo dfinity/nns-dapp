@@ -17,7 +17,7 @@ clap.define short=i long=identity desc="Identity to use to create proposals" var
 source "$(clap.build)"
 
 # Check if a replica is running:
-if ! pgrep -x replica; then
+if ! pgrep -q -x replica && ! pgrep -q -x pocket-ic; then
   echo "A replica must be running to submit proposals to." >&2
   exit 1
 fi
@@ -33,7 +33,7 @@ fi
 PEM="${IDENTITY_PATH}/identity.pem"
 NNS_URL="http://localhost:$(
   cd ~
-  dfx info replica-port
+  dfx info webserver-port
 )"
 NEURON_ID="$(cat "${IDENTITY_PATH}/neurons/local")"
 SUMMARY="Testing proposal payloads"

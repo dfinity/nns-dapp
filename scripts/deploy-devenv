@@ -30,7 +30,7 @@ else
   exit 1
 fi
 
-if ! pgrep -x replica; then
+if ! pgrep -q -x replica && ! pgrep -q -x pocket-ic; then
   echo "A local replica must be running to deploy to." >&2
   exit 1
 fi
