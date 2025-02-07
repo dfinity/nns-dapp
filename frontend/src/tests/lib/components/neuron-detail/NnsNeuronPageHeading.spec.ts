@@ -1,5 +1,8 @@
 import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import {
+  SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_YEAR,
+} from "$lib/constants/constants";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
@@ -167,6 +170,7 @@ describe("NnsNeuronPageHeading", () => {
     });
     const po = renderComponent({
       ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(
