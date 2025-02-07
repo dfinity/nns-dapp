@@ -71,13 +71,6 @@ pub struct AccountsDbStats {
     pub hardware_wallet_accounts_count: u64,
 }
 
-/// An abstraction over sub-accounts and hardware wallets.
-#[derive(CandidType, Deserialize, Debug, Eq, PartialEq)]
-enum AccountWrapper {
-    SubAccount(AccountIdentifier, u8),      // Account Identifier + Sub Account Identifier
-    HardwareWallet(Vec<AccountIdentifier>), // Vec of Account Identifiers since a hardware wallet could theoretically be shared between multiple accounts
-}
-
 /// A user's account.
 #[derive(CandidType, Deserialize, Debug, Eq, PartialEq, Clone)]
 pub struct Account {
@@ -678,9 +671,7 @@ impl StableState for AccountsStore {
             empty_accounts,
             // hardware_wallets_and_sub_accounts is unused but we need to encode
             // it for backwards compatibility.
-            // TODO: Change AccountWrapper to candid::Empty after we've
-            // deployed to mainnet.
-            HashMap::<AccountIdentifier, AccountWrapper>::new(),
+            HashMap::<AccountIdentifier, candid::Empty>::new(),
             // Pending transactions are unused but we need to encode them for
             // backwards compatibility.
             HashMap::<(AccountIdentifier, AccountIdentifier), candid::Empty>::new(),
@@ -727,11 +718,7 @@ impl StableState for AccountsStore {
             accounts_db_stats_maybe,
         ): (
             candid::Reserved,
-            // TODO: Change to candid:Reserved and remove AccountWrapper after
-            // we've deployed to mainnet. If we do it now, decoding will break
-            // because of the skip quota. The decoder will think there is an
-            // attack with a lot of unnecessary data in a request.
-            HashMap<AccountIdentifier, AccountWrapper>,
+            candid::Reserved,
             candid::Reserved,
             candid::Reserved,
             candid::Reserved,
