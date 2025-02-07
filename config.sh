@@ -10,7 +10,7 @@ set -euo pipefail
 # - In javascript, load config.json, located in the repo root directory and created by running this script.
 #
 # To define a constant:
-# - Add it to dfx.json
+# - Add it to config.json
 #   - either under defaults.networks.config.SOMEVAR=SOMEVAL
 #   - or under networks.SOME_NETWORK.config.SOMEVAR=SOMEVAL
 # - Verify that the constant appears in config.json if you run this script.
@@ -171,9 +171,9 @@ local_deployment_data="$(
 
 : "Put all configuration in JSON."
 : "In case of conflict:"
-: "- The dfx.json networks section has the highest priority,"
+: "- The config.json networks section has the highest priority,"
 : "- next, look at the environment,"
-: "- last is the defaults section in dfx.json"
+: "- last is the defaults section in config.json"
 : ""
 : "After assembling the configuration:"
 : "- replace OWN_CANISTER_ID"
@@ -184,7 +184,7 @@ json=$(HOST=$(dfx-canister-url --network "$DFX_NETWORK" --type api) jq -s --sort
   .DFX_NETWORK = env.DFX_NETWORK |
   . as $config |
   .HOST=env.HOST
-    ' dfx.json <(network_config) <(echo "$local_deployment_data"))
+    ' config.json <(network_config) <(echo "$local_deployment_data"))
 
 dfxNetwork=$(echo "$json" | jq -r ".DFX_NETWORK")
 cmcCanisterId=$(echo "$json" | jq -r ".CYCLES_MINTING_CANISTER_ID")

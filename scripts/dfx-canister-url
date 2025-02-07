@@ -117,11 +117,11 @@ inject_canister_id() {
   *) printf "%s\n" "$root_url" ;;
   esac
 }
-# ... Network config may be in dfx.json (deprecated) or in the user's global network config, if it exists.
+# ... Network config may be in config.json (deprecated) or in the user's global network config, if it exists.
 GLOBAL_NETWORK_CONFIG_FILE="$HOME/.config/dfx/networks.json"
 network_config() {
   : "Getting the local and global network config..."
-  jq '.networks // {}' dfx.json
+  jq '.networks // {}' config.json
   ! test -e "$GLOBAL_NETWORK_CONFIG_FILE" || cat "$GLOBAL_NETWORK_CONFIG_FILE"
 }
 network_url() {

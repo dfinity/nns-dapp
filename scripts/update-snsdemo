@@ -54,7 +54,7 @@ done
 cd "$SOURCE_DIR/.."
 
 # Update the snsdemo commit in dfx.json
-jq --arg c "$SNSDEMO_RELEASE" '.defaults.build.config.SNSDEMO_RELEASE |= $c' dfx.json | sponge dfx.json
+jq --arg c "$SNSDEMO_RELEASE" '.defaults.build.config.SNSDEMO_RELEASE |= $c' config.json | sponge config.json
 
 # Update dfx to match snsdemo
 v="$DFX_VERSION" jq '.dfx |= env.v' dfx.json | sponge dfx.json

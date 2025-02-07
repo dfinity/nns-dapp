@@ -24,7 +24,7 @@ jobs:
       - name: Update to match the snsdemo repo
         id: update
         run: |
-          current_release="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+          current_release="$(jq -r .defaults.build.config.SNSDEMO_RELEASE config.json)"
           echo "Current snsdemo release: $current_release"
           latest_release=$(curl -sSL https://api.github.com/repos/dfinity/snsdemo/releases/latest | jq .tag_name -r)
           echo "Latest snsdemo release:  $latest_release"
@@ -50,7 +50,7 @@ jobs:
           set -x
           echo snsdemo needs an update
           # Install `didc`
-          snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_RELEASE dfx.json)"
+          snsdemo/bin/dfx-software-didc-install --release "$(jq -r .defaults.build.config.DIDC_RELEASE config.json)"
           # Install sponge
           sudo apt-get update -yy && sudo apt-get install -yy moreutils && command -v sponge
           # Update
@@ -72,7 +72,9 @@ jobs:
           branch-suffix: timestamp
           reviewers: mstrasinskis, dskloetd, yhabib
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
-          add-paths: dfx.json
+          add-paths: |
+            config.json
+            dfx.json
           delete-branch: true
           title: 'bot: Update snsdemo to ${{ steps.update.outputs.release }}'
           body: |
@@ -80,7 +82,7 @@ jobs:
             We would like to keep the testing environment, provided by snsdemo, up to date.
 
             # Changes
-            * Updated `snsdemo` version in `dfx.json`.
+            * Updated `snsdemo` version in `config.json`.
             * Ensured that the `dfx` version in `dfx.json` matches `snsdemo`.
 
             # Tests
