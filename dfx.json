@@ -300,154 +300,57 @@
   },
   "networks": {
     "mainnet": {
-      "config": {
-        "FETCH_ROOT_KEY": false,
-        "API_HOST": "https://icp-api.io",
-        "STATIC_HOST": "https://icp0.io",
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
-        }
-      },
       "providers": [
         "https://icp0.io"
       ],
       "type": "persistent"
     },
     "app": {
-      "config": {
-        "FETCH_ROOT_KEY": false,
-        "API_HOST": "https://icp-api.io",
-        "STATIC_HOST": "https://icp0.io",
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
-        }
-      },
       "providers": [
         "https://icp0.io"
       ],
       "type": "persistent"
     },
     "beta": {
-      "config": {
-        "FETCH_ROOT_KEY": false,
-        "API_HOST": "https://icp-api.io",
-        "STATIC_HOST": "https://icp0.io",
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
-        }
-      },
       "providers": [
         "https://icp0.io"
       ],
       "type": "persistent"
     },
     "devenv_llorenc": {
-      "config": {
-        "HOST": "https://llorenc-ingress.devenv.dfinity.network",
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
-        }
-      },
       "providers": [
         "https://llorenc-ingress.devenv.dfinity.network"
       ],
       "type": "persistent"
     },
     "devenv_dskloet": {
-      "config": {
-        "HOST": "https://dskloet-ingress.devenv.dfinity.network",
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
-        }
-      },
       "providers": [
         "https://dskloet-ingress.devenv.dfinity.network"
       ],
       "type": "persistent"
     },
     "devenv_mstr": {
-      "config": {
-        "HOST": "https://mstr-ingress.devenv.dfinity.network",
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
-        }
-      },
       "providers": [
         "https://mstr-ingress.devenv.dfinity.network"
       ],
       "type": "persistent"
     },
     "devenv_cosku": {
-      "config": {
-        "HOST": "https://cosku-ingress.devenv.dfinity.network",
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
-        }
-      },
       "providers": [
         "https://cosku-ingress.devenv.dfinity.network"
       ],
       "type": "persistent"
     },
     "devenv_yhabib": {
-      "config": {
-        "HOST": "https://yhabib-ingress.devenv.dfinity.network",
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
-        }
-      },
       "providers": [
         "https://yhabib-ingress.devenv.dfinity.network"
       ],
       "type": "persistent"
-    },
-    "local": {
-      "config": {
-        "HOST": "http://localhost:8080",
-        "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
-        }
-      },
-      "bind": "127.0.0.1:8080",
-      "type": "ephemeral"
     }
   },
   "defaults": {
     "replica": {
       "subnet_type": "system"
-    },
-    "network": {
-      "config": {
-        "FETCH_ROOT_KEY": true,
-        "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false,
-          "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION": true,
-          "ENABLE_EXPORT_NEURONS_REPORT": true,
-          "ENABLE_USD_VALUES": true,
-          "ENABLE_USD_VALUES_FOR_NEURONS": true,
-          "ENABLE_PORTFOLIO_PAGE": true,
-          "ENABLE_IMPORT_TOKEN_BY_URL": true
-        }
-      }
-    },
-    "build": {
-      "config": {
-        "NODE_VERSION": "18.14.2",
-        "IC_WASM_VERSION": "0.6.0",
-        "IDL2JSON_VERSION": "0.8.8",
-        "OPTIMIZER_VERSION": "0.3.6",
-        "BINSTALL_VERSION": "1.3.0",
-        "DIDC_RELEASE": "2024-05-14",
-        "DIDC_VERSION": "didc 0.4.0",
-        "POCKETIC_VERSION": "3.0.1",
-        "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2025-02-05",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2025-01-30_03-03-hashes-in-blocks",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-01-30_03-03-hashes-in-blocks"
-      },
-      "packtool": ""
     }
   },
   "version": 1

@@ -1,10 +1,10 @@
 name: 'Clone the snsdemo repository'
 description: |
-  Ensures that the snsdemo repository is checked out at the commit specified in `dfx.json`.
+  Ensures that the snsdemo repository is checked out at the commit specified in `config.json`.
 
   * If the snsdemo repository is already present: Checks that the repo is checked
     out at the expected commit.  If not, this fails with an error message.
-  * Otherwise: Clones the snsdemo repository at the commit specified in `dfx.json`
+  * Otherwise: Clones the snsdemo repository at the commit specified in `config.json`
 inputs:
   token:
     description: "Github access token used to clone"
@@ -33,7 +33,7 @@ runs:
       id: snsdemo_ref
       shell: bash
       run: |
-        SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE dfx.json)"
+        SNSDEMO_RELEASE="$(jq -r .defaults.build.config.SNSDEMO_RELEASE config.json)"
         echo "ref=$SNSDEMO_RELEASE" >> "$GITHUB_OUTPUT"
     - name: Check that the existing repo has the expected commit.
       if: ${{ steps.have_snsdemo.outputs.have_snsdemo == 'true' }}

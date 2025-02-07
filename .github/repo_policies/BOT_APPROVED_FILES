@@ -3,6 +3,7 @@
 
 Cargo.lock
 Cargo.toml
+config.json
 declarations/*/*/*.did
 dfx.json
 frontend/package-lock.json

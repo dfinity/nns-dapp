@@ -1,6 +1,6 @@
 name: 'Installs ic-wasm'
 description: |
-  Installs `cargo ic-wasm` at the version specified in dfx.json
+  Installs `cargo ic-wasm` at the version specified in config.json
 runs:
   using: "composite"
   steps:
@@ -8,7 +8,7 @@ runs:
       id: ic-wasm-version
       shell: bash
       run: |
-        echo "IC_WASM_VERSION=$(jq -r '.defaults.build.config.IC_WASM_VERSION' dfx.json)" >> "$GITHUB_OUTPUT"
+        echo "IC_WASM_VERSION=$(jq -r '.defaults.build.config.IC_WASM_VERSION' config.json)" >> "$GITHUB_OUTPUT"
         echo "IC_WASM_PATH=/home/runner/.cargo/bin/ic-wasm" >> "$GITHUB_OUTPUT"
     - name: Cache ic-wasm
       id: cache-ic-wasm

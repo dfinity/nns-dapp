@@ -26,7 +26,7 @@ jobs:
       - name: Find newer IC release, if any
         id: update
         run: |
-          current_release="$(jq -r .defaults.build.config.IC_COMMIT_FOR_SNS_AGGREGATOR dfx.json)"
+          current_release="$(jq -r .defaults.build.config.IC_COMMIT_FOR_SNS_AGGREGATOR config.json)"
           echo "Current IC release: $current_release"
           latest_release=$(curl -sSL https://api.github.com/repos/dfinity/ic/releases/latest | jq .tag_name -r)
           echo "Latest IC release:  $latest_release"
@@ -66,7 +66,7 @@ jobs:
           reviewers: mstrasinskis, dskloetd, anchpop, aterga, yhabib
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: |
-            dfx.json
+            config.json
             declarations/*/*.did
             rs/sns_aggregator/src/types/*
           branch: bot-aggregator-update
@@ -80,7 +80,7 @@ jobs:
             Even with no changes, just updating the reference is good practice.
 
             # Changes
-            * Update the version of `IC_COMMIT_FOR_SNS_AGGREGATOR` specified in `dfx.json`.
+            * Update the version of `IC_COMMIT_FOR_SNS_AGGREGATOR` specified in `config.json`.
             * Updated the `sns_aggregator` candid files to the versions in that commit.
             * Updated the Rust code derived from `.did` files in the aggregator.
 
