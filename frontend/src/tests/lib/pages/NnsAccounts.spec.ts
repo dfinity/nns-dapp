@@ -11,7 +11,6 @@ import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { createUserToken } from "$tests/mocks/tokens-page.mock";
 import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import {
   advanceTime,
@@ -32,7 +31,6 @@ describe("NnsAccounts", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetAccountsForTesting();
     // TODO: Move the pollAccounts to Accounts route when universe selected is NNS instead of the child.
     vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
       return mockAccountDetails;

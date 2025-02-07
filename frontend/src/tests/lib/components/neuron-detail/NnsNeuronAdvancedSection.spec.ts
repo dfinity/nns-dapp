@@ -16,10 +16,7 @@ import { createMockNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
@@ -47,7 +44,6 @@ describe("NnsNeuronAdvancedSection", () => {
     vi.useFakeTimers();
     vi.setSystemTime(nowInSeconds * 1000);
     resetIdentity();
-    resetAccountsForTesting();
   });
 
   it("should render neuron data", async () => {

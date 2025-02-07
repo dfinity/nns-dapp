@@ -26,10 +26,7 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
@@ -43,7 +40,6 @@ describe("Staking", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetAccountsForTesting();
 
     page.mock({
       routeId: AppPath.Staking,

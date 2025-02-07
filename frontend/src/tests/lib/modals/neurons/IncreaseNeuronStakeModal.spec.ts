@@ -10,10 +10,7 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor } from "@testing-library/svelte";
 
@@ -35,10 +32,6 @@ describe("IncreaseNeuronStakeModal", () => {
   });
 
   describe("when accounts store is empty", () => {
-    beforeEach(() => {
-      resetAccountsForTesting();
-    });
-
     it("should fetch accounts and render account selector", async () => {
       const mainBalanceE8s = 10_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
