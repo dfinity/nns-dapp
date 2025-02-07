@@ -215,7 +215,7 @@ install_state() {
 
 output_restore_backup_script() {
   cat <<-EOF
-	if pgrep -q -x replica || pgrep -q -x pocket-ic; then
+	if pgrep -x replica || pgrep -x pocket-ic; then
 	  echo "A replica is still running. State should be restored automatically when the replica is stopped." >&2
 	  exit 1
 	fi

@@ -33,7 +33,7 @@ source "$(clap.build)"
 # shellcheck disable=SC2009
 SCRIPT_COUNT="$(ps -A -o command | grep -c "^bash .*$(basename "$0")")"
 
-if pgrep -q -x replica || pgrep -q -x pocket-ic || [ "$SCRIPT_COUNT" -gt 2 ]; then
+if pgrep -x replica || pgrep -x pocket-ic || [ "$SCRIPT_COUNT" -gt 2 ]; then
   echo "ERROR: There is already a replica running. Please stop it first."
   exit 1
 fi

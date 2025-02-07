@@ -17,7 +17,7 @@ clap.define short=i long=identity desc="Identity to use to create proposals" var
 source "$(clap.build)"
 
 # Check if a replica is running:
-if ! pgrep -q -x replica && ! pgrep -q -x pocket-ic; then
+if ! pgrep -x replica && ! pgrep -x pocket-ic; then
   echo "A replica must be running to submit proposals to." >&2
   exit 1
 fi
