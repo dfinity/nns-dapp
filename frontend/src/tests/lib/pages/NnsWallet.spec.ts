@@ -47,10 +47,7 @@ import { IcpTransactionModalPo } from "$tests/page-objects/IcpTransactionModal.p
 import { NnsWalletPo } from "$tests/page-objects/NnsWallet.page-object";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import {
@@ -87,7 +84,6 @@ describe("NnsWallet", () => {
 
   beforeEach(() => {
     cancelPollAccounts();
-    resetAccountsForTesting();
     resetIdentity();
 
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
