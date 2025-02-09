@@ -129,15 +129,6 @@ describe("AccountMenu", () => {
         vi.spyOn(console, "error").mockImplementation(() => {});
       });
 
-      it("should not show the LinkToReporting button if feature flag is off(by default", async () => {
-        const { accountMenuPo } = renderComponent();
-        await accountMenuPo.openMenu();
-
-        expect(await accountMenuPo.getLinkToReportingPo().isPresent()).toBe(
-          false
-        );
-      });
-
       it("should display Reporting button link", async () => {
         const { accountMenuPo } = renderComponent();
         await accountMenuPo.openMenu();
