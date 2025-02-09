@@ -8,7 +8,6 @@
   import Logout from "$lib/components/header/Logout.svelte";
   import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { ENABLE_EXPORT_NEURONS_REPORT } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { IconUser, Popover } from "@dfinity/gix-components";
 
@@ -41,9 +40,7 @@
 
         <LinkToCanisters on:nnsLink={closeMenu} />
 
-        {#if $ENABLE_EXPORT_NEURONS_REPORT}
-          <LinkToReporting on:nnsLink={closeMenu} />
-        {/if}
+        <LinkToReporting on:nnsLink={closeMenu} />
 
         <Logout on:nnsLogoutTriggered={toggle} />
       </div>
