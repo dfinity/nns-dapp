@@ -10,10 +10,7 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { ReportingTransactionsPo } from "$tests/page-objects/ReportingTransactions.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/icp-ledger.api");
@@ -33,7 +30,6 @@ describe("ReportingTransactions", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetAccountsForTesting();
 
     vi.spyOn(exportToCsv, "generateCsvFileToSave").mockImplementation(() =>
       Promise.resolve()

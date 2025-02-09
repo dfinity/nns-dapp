@@ -16,10 +16,7 @@ import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronCardPo } from "$tests/page-objects/NnsNeuronCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import type { Neuron } from "@dfinity/nns";
 import { NeuronState, NeuronType } from "@dfinity/nns";
@@ -30,8 +27,6 @@ describe("NnsNeuronCard", () => {
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(nowInSeconds * 1000);
     resetIdentity();
-
-    resetAccountsForTesting();
   });
 
   it("renders a Card", () => {

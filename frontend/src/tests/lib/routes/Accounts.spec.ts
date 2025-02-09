@@ -25,10 +25,7 @@ import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -64,7 +61,6 @@ describe("Accounts", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetAccountsForTesting();
 
     subaccountBalance = subaccountBalanceDefault;
     mainAccountBalance = mainAccountBalanceDefault;

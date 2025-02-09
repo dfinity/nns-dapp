@@ -9,10 +9,7 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/NnsNeuronDissolveDelayItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
@@ -39,7 +36,6 @@ describe("NnsNeuronDissolveDelayItemAction", () => {
   };
 
   beforeEach(() => {
-    resetAccountsForTesting();
     resetIdentity();
   });
 

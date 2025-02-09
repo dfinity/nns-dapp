@@ -20,10 +20,7 @@ import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { SelectUniverseCardPo } from "$tests/page-objects/SelectUniverseCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
@@ -41,7 +38,6 @@ describe("SelectUniverseCard", () => {
   };
 
   beforeEach(() => {
-    resetAccountsForTesting();
     resetIdentity();
   });
 

@@ -9,10 +9,7 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsAvailableMaturityItemActionPo } from "$tests/page-objects/NnsAvailableMaturityItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
@@ -32,7 +29,6 @@ describe("NnsAvailableMaturityItemAction", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetAccountsForTesting();
   });
 
   it("should render available maturity", async () => {

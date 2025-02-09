@@ -36,10 +36,7 @@ import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Identity } from "@dfinity/agent";
 import { AnonymousIdentity } from "@dfinity/agent";
@@ -155,7 +152,6 @@ describe("neurons-services", () => {
 
   beforeEach(() => {
     spyConsoleError = vi.spyOn(console, "error");
-    resetAccountsForTesting();
     resetAccountIdentity();
 
     vi.spyOn(icpAccountsServices, "loadBalance").mockReturnValue(undefined);
