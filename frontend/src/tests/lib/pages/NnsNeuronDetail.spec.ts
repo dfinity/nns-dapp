@@ -206,6 +206,7 @@ describe("NeuronDetail", () => {
       );
       const testNeuron = fakeGovernanceApi.addNeuronWith({
         neuronId,
+        dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
         votingPowerRefreshedTimestampSeconds:
           nowInSeconds() - SECONDS_IN_HALF_YEAR - SECONDS_IN_DAY,
         controller: mockIdentity.getPrincipal().toText(),
