@@ -156,7 +156,7 @@
     $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION &&
     nonNullish(neuron) &&
     $soonLosingRewardNeuronsStore.some(
-      (neuronInfo) => neuronInfo.neuronId === neuron.neuronId
+      ({ neuronId }) => neuronId === neuron!.neuronId
     );
 </script>
 
