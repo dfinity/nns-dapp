@@ -16,10 +16,7 @@ import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeadingPo } from "$tests/page-objects/NnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { NeuronType } from "@dfinity/nns";
@@ -34,7 +31,6 @@ describe("NnsNeuronPageHeading", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetAccountsForTesting();
 
     setIcpPrice(10);
   });

@@ -39,10 +39,7 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
@@ -132,8 +129,6 @@ describe("sns-api", () => {
     cancelPollGetOpenTicket();
 
     vi.useFakeTimers();
-
-    resetAccountsForTesting();
 
     vi.spyOn(agentApi, "createAgent").mockImplementation(async () =>
       mock<Agent>()

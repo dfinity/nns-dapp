@@ -17,10 +17,7 @@ import {
   createIcpUserToken,
   icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -104,10 +101,6 @@ describe("icp-tokens-list-user.derived", () => {
   };
 
   describe("icpTokensListVisitors", () => {
-    beforeEach(() => {
-      resetAccountsForTesting();
-    });
-
     it("should return empty if no accounts", () => {
       expect(get(icpTokensListUser)).toEqual([loadingUserTokenData]);
     });
