@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+	Gets a transaction from a ledger canister given its index.
+	If the transaction needs to come from an archive canister, the script will get
+	it from the archive canister.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=l long=ledger_canister_id desc="The canister ID of the ledger canister" variable=LEDGER_CANISTER_ID default=""
+clap.define short=i long=index desc="The transaction index" variable=TRANSACTION_INDEX default=""
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+if [[ -z "$LEDGER_CANISTER_ID" ]]; then
+  echo "Ledger canister ID is required" >&2
+  exit 1
+fi
+
+if [[ -z "$TRANSACTION_INDEX" ]]; then
+  echo "Transaction index is required" >&2
+  exit 1
+fi
+
+get_transaction() {
+  canister_id="$1"
+  dfx canister call "$canister_id" --network "$DFX_NETWORK" get_transactions --query "(record { start = $TRANSACTION_INDEX : nat; length = 1 : nat })" | idl2json --bytes-as hex
+}
+
+JSON_RESPONSE="$(get_transaction "$LEDGER_CANISTER_ID")"
+
+ARCHIVED_TRANSACTIONS="$(jq -r '.archived_transactions' <<<"$JSON_RESPONSE")"
+
+if [[ -n "$ARCHIVED_TRANSACTIONS" ]]; then
+  ARCHIVE_CANISTER_ID="$(jq -r '.[0].callback.principal' <<<"$ARCHIVED_TRANSACTIONS")"
+  JSON_RESPONSE="$(get_transaction "$ARCHIVE_CANISTER_ID")"
+fi
+
+jq -r '.transactions[0]' <<<"$JSON_RESPONSE"
