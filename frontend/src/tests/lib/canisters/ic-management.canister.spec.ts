@@ -78,7 +78,7 @@ describe("ICManagementCanister", () => {
       const call = () =>
         icManagement.getCanisterDetails(Principal.fromText("aaaaa-aa"));
 
-      expect(call).rejects.toThrowError(UserNotTheControllerError);
+      await expect(call).rejects.toThrowError(UserNotTheControllerError);
     });
 
     it('throws Error if "IC0512" is present, but not as "Error Code"', async () => {
@@ -97,7 +97,7 @@ describe("ICManagementCanister", () => {
       const call = () =>
         icManagement.getCanisterDetails(Principal.fromText("aaaaa-aa"));
 
-      expect(call).rejects.toThrowError(Error);
+      await expect(call).rejects.toThrowError(Error);
     });
 
     it("throws Error", async () => {
@@ -110,7 +110,7 @@ describe("ICManagementCanister", () => {
       const call = () =>
         icManagement.getCanisterDetails(Principal.fromText("aaaaa-aa"));
 
-      expect(call).rejects.toThrowError(Error);
+      await expect(call).rejects.toThrowError(Error);
     });
   });
 
@@ -164,7 +164,7 @@ describe("ICManagementCanister", () => {
           canisterId: mockCanisterId,
           settings: mockCanisterSettings,
         });
-      expect(call).rejects.toThrowError(UserNotTheControllerError);
+      await expect(call).rejects.toThrowError(UserNotTheControllerError);
     });
 
     it("throws Error", async () => {
@@ -179,7 +179,7 @@ describe("ICManagementCanister", () => {
           canisterId: mockCanisterId,
           settings: mockCanisterSettings,
         });
-      expect(call).rejects.toThrowError(Error);
+      await expect(call).rejects.toThrowError(Error);
     });
   });
 });

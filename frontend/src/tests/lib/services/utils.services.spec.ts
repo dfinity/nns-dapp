@@ -33,7 +33,7 @@ describe("api-utils", () => {
             logMessage: "test-log",
           });
 
-        expect(call).rejects.toThrowError();
+        await expect(call).rejects.toThrowError();
       });
 
       it("should use 'query' strategy by default", async () => {

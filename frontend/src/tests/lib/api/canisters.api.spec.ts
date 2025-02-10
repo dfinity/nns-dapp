@@ -117,7 +117,7 @@ describe("canisters-api", () => {
           name: longName,
         });
 
-      expect(call).rejects.toThrowError(
+      await expect(call).rejects.toThrowError(
         new NameTooLongError("error__canister.name_too_long", {
           $name: longName,
         })
@@ -146,7 +146,7 @@ describe("canisters-api", () => {
           name: longName,
         });
 
-      expect(call).rejects.toThrowError(
+      await expect(call).rejects.toThrowError(
         new NameTooLongError("error__canister.name_too_long", {
           $name: longName,
         })
@@ -333,7 +333,7 @@ describe("canisters-api", () => {
           amount: 300_000_000n,
           fee,
         });
-      expect(call).rejects.toThrow();
+      await expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
       expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
     });
@@ -348,7 +348,7 @@ describe("canisters-api", () => {
           fee,
         });
 
-      expect(call).rejects.toThrowError(
+      await expect(call).rejects.toThrowError(
         new NameTooLongError("error__canister.name_too_long", {
           $name: longName,
         })
@@ -505,7 +505,7 @@ describe("canisters-api", () => {
           canisterId: mockCanisterDetails.id,
           fee,
         });
-      expect(call).rejects.toThrow();
+      await expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyTopUp).not.toBeCalled();
     });
   });

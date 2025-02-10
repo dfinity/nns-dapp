@@ -243,7 +243,7 @@ describe("LedgerIdentity", () => {
       const identity = await LedgerIdentity.create();
 
       const call = () => identity.transformRequest(mockHttpRequest1);
-      expect(call).rejects.toMatchObject({
+      await expect(call).rejects.toMatchObject({
         message: "error__ledger.app_version_not_supported",
         renderAsHtml: true,
       });
@@ -267,7 +267,7 @@ describe("LedgerIdentity", () => {
       identity.flagUpcomingStakeNeuron();
 
       const call = () => identity.transformRequest(mockHttpRequest1);
-      expect(call).rejects.toMatchObject({
+      await expect(call).rejects.toMatchObject({
         message: "error__ledger.app_version_not_supported",
         renderAsHtml: true,
       });

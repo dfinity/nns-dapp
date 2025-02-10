@@ -18,7 +18,7 @@ describe("ledger-utils", () => {
   describe("decodePublicKey", () => {
     const principalText = new MockLedgerIdentity().getPrincipal().toText();
 
-    it("should throw an error because ledger is closed", () => {
+    it("should throw an error because ledger is closed", async () => {
       const call = () =>
         decodePublicKey({
           principalText,
@@ -26,13 +26,13 @@ describe("ledger-utils", () => {
           returnCode: ExtendedLedgerError.AppNotOpen as unknown as LedgerError,
         } as ResponseAddress);
 
-      expect(call).rejects.toMatchObject({
+      await expect(call).rejects.toMatchObject({
         message: "error__ledger.please_open",
         renderAsHtml: false,
       });
     });
 
-    it("should throw an error because ledger is locked", () => {
+    it("should throw an error because ledger is locked", async () => {
       const call = () =>
         decodePublicKey({
           principalText,
@@ -40,13 +40,13 @@ describe("ledger-utils", () => {
           returnCode: LedgerError.TransactionRejected,
         } as ResponseAddress);
 
-      expect(call).rejects.toMatchObject({
+      await expect(call).rejects.toMatchObject({
         message: "error__ledger.locked",
         renderAsHtml: false,
       });
     });
 
-    it("should throw an error because public key cannot be fetched", () => {
+    it("should throw an error because public key cannot be fetched", async () => {
       const call = () =>
         decodePublicKey({
           principalText,
@@ -55,7 +55,7 @@ describe("ledger-utils", () => {
             ExtendedLedgerError.CannotFetchPublicKey as unknown as LedgerError,
         } as ResponseAddress);
 
-      expect(call).rejects.toMatchObject({
+      await expect(call).rejects.toMatchObject({
         message: "error__ledger.fetch_public_key",
         renderAsHtml: false,
       });
@@ -68,7 +68,7 @@ describe("ledger-utils", () => {
           publicKey: fromHexString(rawPublicKeyHex) as unknown as Buffer,
         } as ResponseAddress);
 
-      expect(call).rejects.toMatchObject({
+      await expect(call).rejects.toMatchObject({
         message: "error__ledger.principal_not_match",
         renderAsHtml: false,
       });
@@ -86,34 +86,34 @@ describe("ledger-utils", () => {
   });
 
   describe("decodeSignature", () => {
-    it("should throw an error if no signature is provided", () => {
+    it("should throw an error if no signature is provided", async () => {
       const call = () =>
         decodeSignature({
           signatureRS: undefined,
           returnCode: LedgerError.UnknownError,
         } as unknown as ResponseSign);
 
-      expect(call).rejects.toThrow(
+      await expect(call).rejects.toThrow(
         new LedgerErrorMessage(
           `A ledger error happened during signature. undefined (code ${LedgerError.UnknownError}).`
         )
       );
     });
 
-    it("should throw an error if transaction is rejected", () => {
+    it("should throw an error if transaction is rejected", async () => {
       const call = () =>
         decodeSignature({
           signatureRS: Uint8Array.from("test", (x) => x.charCodeAt(0)),
           returnCode: LedgerError.TransactionRejected,
         } as unknown as ResponseSign);
 
-      expect(call).rejects.toMatchObject({
+      await expect(call).rejects.toMatchObject({
         message: "error__ledger.user_rejected_transaction",
         renderAsHtml: false,
       });
     });
 
-    it("should throw an error if signature too short", () => {
+    it("should throw an error if signature too short", async () => {
       const test = "test";
 
       const call = () =>
@@ -122,7 +122,7 @@ describe("ledger-utils", () => {
           returnCode: LedgerError.WrongLength,
         } as unknown as ResponseSign);
 
-      expect(call).rejects.toThrow(
+      await expect(call).rejects.toThrow(
         new LedgerErrorMessage(
           `Signature must be 64 bytes long (is ${test.length})`
         )

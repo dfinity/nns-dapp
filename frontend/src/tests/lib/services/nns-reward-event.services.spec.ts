@@ -40,7 +40,7 @@ describe("nns-reward-event-services", () => {
 
     const call = async () => await loadLatestRewardEvent();
 
-    expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
+    await expect(call).rejects.toThrow(Error(mockIdentityErrorMsg));
     expect(get(nnsLatestRewardEventStore)).toBeUndefined();
 
     resetIdentity();
