@@ -14,11 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Custom sorting of staking nervous systems table.
-* Custom sorting of tokens table.
-* Navigation to a token's wallet from the top token positions on the portfolio page.
-* Navigation to a project's neurons from the top projects on the portfolio page.
-
 #### Changed
 
 * No missing rewards notification for neurons without a dissolve delay.
@@ -28,9 +23,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-* Fix the back button on the accounts page when navigating from the portfolio page.
-* Reporting: Correct the formatting of neuron ids in the CSV output.
 
 #### Security
 
