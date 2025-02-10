@@ -87,6 +87,10 @@ const toTestNnsVotingNode =
     nnsNeuronToVotingNeuron({ neuron, proposal });
 
 describe("proposals-utils", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
   it("should find no last proposal id", () =>
     expect(lastProposalId([])).toBeUndefined());
 

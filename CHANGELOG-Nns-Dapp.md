@@ -11,6 +11,24 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 135201
+
+### Application
+
+#### Added
+
+* Custom sorting of staking nervous systems table.
+* Custom sorting of tokens table.
+* Navigation to a token's wallet from the top token positions on the portfolio page.
+* Navigation to a project's neurons from the top projects on the portfolio page.
+
+#### Fixed
+
+* Fix the back button on the accounts page when navigating from the portfolio page.
+* Reporting: Correct the formatting of neuron ids in the CSV output.
+
+### Operations
+
 ## Proposal 135055
 
 ### Application
