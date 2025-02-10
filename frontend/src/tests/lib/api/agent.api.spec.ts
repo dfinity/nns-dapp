@@ -1,18 +1,21 @@
 import * as agentApi from "$lib/api/agent.api";
+import { mockCreateAgent } from "$tests/mocks/agent.mock";
 import type {
   Agent,
+  AgentLog,
   ApiQueryResponse,
   CallOptions,
   HttpAgent,
   Identity,
+  ObserveFunction,
   QueryFields,
   ReadStateOptions,
   SubmitResponse,
 } from "@dfinity/agent";
+import { AgentCallError } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import * as utils from "@dfinity/utils";
 import type { Mocked } from "vitest";
-import { mock } from "vitest-mock-extended";
 
 const host = "http://localhost:8000";
 const testPrincipal1 = Principal.fromHex("123123123");
@@ -37,7 +40,7 @@ describe("agent-api", () => {
 
     utilsCreateAgentSpy = vi
       .spyOn(utils, "createAgent")
-      .mockResolvedValue(mock<HttpAgent>());
+      .mockImplementation(mockCreateAgent);
   });
 
   it("createAgent should create an agent", async () => {
@@ -62,12 +65,12 @@ describe("agent-api", () => {
 
     expect(utilsCreateAgentSpy).not.toBeCalled();
 
-    const mockAgent1 = mock<HttpAgent>();
+    const mockAgent1 = await mockCreateAgent();
     utilsCreateAgentSpy.mockResolvedValue(mockAgent1);
     const agent1 = await createAgent(testIdentity1);
     expect(utilsCreateAgentSpy).toBeCalledTimes(1);
 
-    const mockAgent2 = mock<HttpAgent>();
+    const mockAgent2 = await mockCreateAgent();
     utilsCreateAgentSpy.mockResolvedValue(mockAgent2);
     const agent2 = await createAgent(testIdentity2);
     expect(utilsCreateAgentSpy).toBeCalledTimes(2);
@@ -93,7 +96,7 @@ describe("agent-api", () => {
     let agent: Agent;
 
     beforeEach(async () => {
-      mockAgent = mock<HttpAgent>();
+      mockAgent = await mockCreateAgent();
       utilsCreateAgentSpy.mockResolvedValue(mockAgent);
 
       agent = await createAgent(testIdentity);
@@ -226,7 +229,7 @@ describe("agent-api", () => {
     let agent: Agent;
 
     beforeEach(async () => {
-      mockAgent = mock<HttpAgent>();
+      mockAgent = await mockCreateAgent();
       utilsCreateAgentSpy.mockResolvedValue(mockAgent);
 
       agent = await createAgent(testIdentity);
@@ -315,9 +318,10 @@ describe("agent-api", () => {
     // different objects.
     const testIdentity2 = createIdentity(testPrincipal1);
 
-    const mockAgent = mock<HttpAgent>();
+    let mockAgent;
 
     beforeEach(async () => {
+      mockAgent = await mockCreateAgent();
       utilsCreateAgentSpy.mockResolvedValue(mockAgent);
     });
 
@@ -432,6 +436,194 @@ describe("agent-api", () => {
 
       expect(mockAgent.query).toBeCalledTimes(2);
       expect(mockAgent.query).toBeCalledWith(...params, testIdentity2);
+    });
+  });
+
+  describe("with agent log", () => {
+    let mockAgent: Mocked<HttpAgent>;
+    let logSubscriber: ObserveFunction<AgentLog> | undefined;
+
+    const invalidSignatureMessage =
+      "Error while making call: Server returned an error:\n Code: 400 (Bad Request)\n  Body: Invalid signature: Invalid basic signature: EcdsaP256 signature could not be verified: public key 04219a05346288ccd0a293a341790087152e8cf332219b6f66a69ebac3383a78e2aa8c14a7a944190ca1a0040e353f18056e9ec7fcb128860f4318c207d589c429, signature 9b9facce1f719d6dc177243df0a196f04c794b2d46b9b01c7723f3f58bf348addb3af491331af8785e25b1c2cd93afd4db627da3ec4183c566dec5fca0713341, error: verification failed\n";
+    const response = {
+      ok: false,
+      status: 400,
+      statusText: "Bad Request",
+      headers: [
+        ["content-length", "396"] as [string, string],
+        ["content-type", "text/plain; charset=utf-8"] as [string, string],
+      ],
+    };
+    const requestId =
+      "436fdf3d349c375f1018f8fa6612bed1988cc000ccdb26e5c0f292a75994cea1";
+    const senderPubkey =
+      "303c300c060a2b0601040183b8430102032c000a000000000000000b01013c658db985648bbc2f58bc796f82cc94e8695f790fa7f676788b37513116d68a";
+    const senderSig =
+      "9b9facce1f719d6dc177243df0a196f04c794b2d46b9b01c7723f3f58bf348addb3af491331af8785e25b1c2cd93afd4db627da3ec4183c566dec5fca0713341";
+    const ingressExpiry = "1738765560000000000";
+
+    const invalidSignatureError = new AgentCallError(
+      invalidSignatureMessage,
+      response,
+      requestId,
+      senderPubkey,
+      senderSig,
+      ingressExpiry
+    );
+    const invalidSignatureLogEntry: AgentLog = {
+      message: invalidSignatureMessage,
+      level: "error",
+      error: invalidSignatureError,
+    };
+
+    beforeEach(async () => {
+      vi.useFakeTimers();
+      vi.spyOn(console, "warn").mockReturnValue();
+
+      logSubscriber = undefined;
+
+      mockAgent = await mockCreateAgent();
+      vi.mocked(mockAgent.log.subscribe).mockImplementation((func) => {
+        logSubscriber = func;
+      });
+
+      utilsCreateAgentSpy.mockResolvedValue(mockAgent);
+    });
+
+    it("subscribes to invalid signature errors", async () => {
+      expect(logSubscriber).toBe(undefined);
+      expect(mockAgent.log.subscribe).toBeCalledTimes(0);
+
+      await createAgent(createIdentity(testPrincipal1));
+
+      expect(mockAgent.log.subscribe).toBeCalledTimes(1);
+      expect(logSubscriber).not.toBe(undefined);
+
+      expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(null);
+      expect(console.warn).toBeCalledTimes(0);
+
+      logSubscriber(invalidSignatureLogEntry);
+
+      const expectedDebugInfo = JSON.stringify({
+        requestId,
+        senderPubkey,
+        senderSig,
+        ingressExpiry,
+        debugInfoRecordedTimestamp: new Date().toISOString(),
+      });
+
+      expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(
+        expectedDebugInfo
+      );
+
+      expect(console.warn).toBeCalledWith(
+        "Found invalid signature debug info:",
+        expectedDebugInfo
+      );
+      expect(console.warn).toBeCalledTimes(1);
+    });
+
+    it("ignores other errors", async () => {
+      expect(logSubscriber).toBe(undefined);
+      expect(mockAgent.log.subscribe).toBeCalledTimes(0);
+
+      await createAgent(createIdentity(testPrincipal1));
+
+      expect(mockAgent.log.subscribe).toBeCalledTimes(1);
+      expect(logSubscriber).not.toBe(undefined);
+
+      expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(null);
+      expect(console.warn).toBeCalledTimes(0);
+
+      logSubscriber({
+        ...invalidSignatureLogEntry,
+        message: "Some other error",
+      });
+
+      expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(null);
+      expect(console.warn).toBeCalledTimes(0);
+    });
+
+    it("ignores non-error entries", async () => {
+      expect(logSubscriber).toBe(undefined);
+      expect(mockAgent.log.subscribe).toBeCalledTimes(0);
+
+      await createAgent(createIdentity(testPrincipal1));
+
+      expect(mockAgent.log.subscribe).toBeCalledTimes(1);
+      expect(logSubscriber).not.toBe(undefined);
+
+      expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(null);
+      expect(console.warn).toBeCalledTimes(0);
+
+      logSubscriber({
+        ...invalidSignatureLogEntry,
+        level: "info",
+      });
+
+      expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(null);
+      expect(console.warn).toBeCalledTimes(0);
+    });
+
+    it("keeps only the last invalid signature debug info", async () => {
+      expect(logSubscriber).toBe(undefined);
+      expect(mockAgent.log.subscribe).toBeCalledTimes(0);
+
+      await createAgent(createIdentity(testPrincipal1));
+
+      expect(mockAgent.log.subscribe).toBeCalledTimes(1);
+      expect(logSubscriber).not.toBe(undefined);
+
+      expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(null);
+      expect(console.warn).toBeCalledTimes(0);
+
+      logSubscriber(invalidSignatureLogEntry);
+
+      const expectedDebugInfo = JSON.stringify({
+        requestId,
+        senderPubkey,
+        senderSig,
+        ingressExpiry,
+        debugInfoRecordedTimestamp: new Date().toISOString(),
+      });
+
+      expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(
+        expectedDebugInfo
+      );
+
+      const newRequestId = requestId + "new";
+      const newSenderPubkey = senderPubkey + "new";
+      const newSenderSig = senderSig + "new";
+      const newIngressExpiry = ingressExpiry + "new";
+
+      const newInvalidSignatureError = new AgentCallError(
+        invalidSignatureMessage,
+        response,
+        newRequestId,
+        newSenderPubkey,
+        newSenderSig,
+        newIngressExpiry
+      );
+
+      const newInvalidSignatureLogEntry: AgentLog = {
+        message: invalidSignatureMessage,
+        level: "error",
+        error: newInvalidSignatureError,
+      };
+
+      logSubscriber(newInvalidSignatureLogEntry);
+
+      const newExpectedDebugInfo = JSON.stringify({
+        requestId: newRequestId,
+        senderPubkey: newSenderPubkey,
+        senderSig: newSenderSig,
+        ingressExpiry: newIngressExpiry,
+        debugInfoRecordedTimestamp: new Date().toISOString(),
+      });
+
+      expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(
+        newExpectedDebugInfo
+      );
     });
   });
 });
