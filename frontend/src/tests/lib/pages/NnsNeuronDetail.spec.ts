@@ -23,6 +23,7 @@ vi.mock("$lib/api/governance.api");
 describe("NeuronDetail", () => {
   fakeGovernanceApi.install();
 
+  const dissolveDelaySeconds = SECONDS_IN_HALF_YEAR;
   const neuronId = 314n;
   const neuronStake = 300_000_000n;
   const latestRewardEventTimestamp = Math.floor(
@@ -47,8 +48,12 @@ describe("NeuronDetail", () => {
     // Ensure the API is called after the first request.
     clearCache();
 
-    fakeGovernanceApi.addNeuronWith({ neuronId, stake: neuronStake });
-    fakeGovernanceApi.addNeuronWith({ neuronId: 1234n });
+    fakeGovernanceApi.addNeuronWith({
+      neuronId,
+      stake: neuronStake,
+      dissolveDelaySeconds,
+    });
+    fakeGovernanceApi.addNeuronWith({ neuronId: 1234n, dissolveDelaySeconds });
     fakeGovernanceApi.setLatestRewardEvent({
       rounds_since_last_distribution: [3n] as [bigint],
       actual_timestamp_seconds: BigInt(latestRewardEventTimestamp),
@@ -127,6 +132,24 @@ describe("NeuronDetail", () => {
         neuronId,
         votingPowerRefreshedTimestampSeconds:
           nowInSeconds() - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY,
+        dissolveDelaySeconds,
+      });
+
+      const po = await renderComponent(`${neuronId}`);
+
+      expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(false);
+    });
+
+    it("should not display confirm banner w/o enough dissolve delay", async () => {
+      overrideFeatureFlagsStore.setFlag(
+        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+        true
+      );
+      fakeGovernanceApi.addNeuronWith({
+        neuronId,
+        votingPowerRefreshedTimestampSeconds:
+          nowInSeconds() - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY,
+        dissolveDelaySeconds: dissolveDelaySeconds - 1,
       });
 
       const po = await renderComponent(`${neuronId}`);
@@ -143,6 +166,7 @@ describe("NeuronDetail", () => {
         neuronId,
         votingPowerRefreshedTimestampSeconds:
           nowInSeconds() - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY,
+        dissolveDelaySeconds,
       });
 
       const po = await renderComponent(`${neuronId}`);
@@ -160,6 +184,7 @@ describe("NeuronDetail", () => {
         neuronId,
         votingPowerRefreshedTimestampSeconds:
           nowInSeconds() - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY,
+        dissolveDelaySeconds,
       });
 
       const po = await renderComponent(`${neuronId}`);
@@ -176,6 +201,7 @@ describe("NeuronDetail", () => {
         neuronId,
         votingPowerRefreshedTimestampSeconds:
           nowInSeconds() - SECONDS_IN_HALF_YEAR - SECONDS_IN_DAY,
+        dissolveDelaySeconds,
       });
 
       const po = await renderComponent(`${neuronId}`);
@@ -192,6 +218,7 @@ describe("NeuronDetail", () => {
         neuronId,
         stake: neuronStake,
         votingPowerRefreshedTimestampSeconds: nowInSeconds(),
+        dissolveDelaySeconds,
       });
 
       const po = await renderComponent(`${neuronId}`);
@@ -209,6 +236,7 @@ describe("NeuronDetail", () => {
         votingPowerRefreshedTimestampSeconds:
           nowInSeconds() - SECONDS_IN_HALF_YEAR - SECONDS_IN_DAY,
         controller: mockIdentity.getPrincipal().toText(),
+        dissolveDelaySeconds,
       });
 
       vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([testNeuron]);

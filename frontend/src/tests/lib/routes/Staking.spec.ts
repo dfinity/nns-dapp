@@ -403,6 +403,7 @@ describe("Staking", () => {
         neurons: [
           {
             ...mockNeuron,
+            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
             fullNeuron: {
               ...mockFullNeuron,
               votingPowerRefreshedTimestampSeconds: BigInt(
