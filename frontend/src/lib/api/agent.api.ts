@@ -16,6 +16,7 @@ import {
   AgentQueryError,
   AgentReadStateError,
   IdentityInvalidError,
+  SignIdentity,
 } from "@dfinity/agent";
 import type { JsonObject } from "@dfinity/candid";
 import type { Principal } from "@dfinity/principal";
@@ -133,6 +134,26 @@ class IdentityAgentWrapper implements Agent {
   }
 }
 
+const getIdentityToUse = (identity: Identity): Identity => {
+  if (identity instanceof SignIdentity) {
+    const originalSign = identity.sign.bind(identity);
+    identity.sign = async (blob: ArrayBuffer) => {
+      const ret = await originalSign(blob);
+      const stack = new Error().stack;
+      const win = window as { signBad?: boolean };
+      if (stack?.includes("sendICP") && win.signBad === true) {
+        delete win.signBad;
+        const view = new Uint8Array(ret);
+        view[0] ^= 1;
+        console.log("dskloetx sign replaced", identity, ret, new Error().stack);
+      }
+      return ret;
+    };
+    return identity;
+  }
+  return identity;
+};
+
 const INVALID_SIGNATURE_DEBUG_INFO_KEY = "invalidSignatureDebugInfo";
 
 const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
@@ -189,7 +210,7 @@ export const createAgent = async ({
   // e.g. a particular agent for anonymous call and another for signed-in identity
   if (agents?.[principalAsText] === undefined) {
     const agent = await createAgentUtil({
-      identity,
+      identity: getIdentityToUse(identity),
       ...(host !== undefined && { host }),
       fetchRootKey: FETCH_ROOT_KEY,
     });
@@ -203,7 +224,7 @@ export const createAgent = async ({
   }
 
   return new IdentityAgentWrapper({
-    identity,
+    identity: getIdentityToUse(identity),
     wrappedAgent: agents[principalAsText],
   });
 };
