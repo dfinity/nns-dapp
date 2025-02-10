@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+	Finds the first transaction at or after a given timestamp in a ledger canister.
+	If the transaction needs to come from an archive canister, the script will get
+	it from the archive canister.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=l long=ledger_canister_id desc="The canister ID of the ledger canister" variable=LEDGER_CANISTER_ID default=""
+clap.define short=t long=timestamp desc="The timestamp in seconds" variable=TIMESTAMP default=""
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+if [[ -z "$LEDGER_CANISTER_ID" ]]; then
+  echo "Ledger canister ID is required" >&2
+  exit 1
+fi
+
+if [[ -z "$TIMESTAMP" ]]; then
+  echo "Timestamp is required" >&2
+  exit 1
+fi
+
+get_transaction() {
+  index="$1"
+  "$SOURCE_DIR/get-transaction" --ledger_canister_id "$LEDGER_CANISTER_ID" --index "$index" --network "$DFX_NETWORK"
+}
+
+start_index=0
+end_index="$(dfx canister call "$LEDGER_CANISTER_ID" --query --network "$DFX_NETWORK" get_transactions '(record { start = 0 : nat; length = 0 : nat })' | idl2json | jq -r .log_length | sed -e 's/_//g')"
+
+echo "Binary searching for timestamp $TIMESTAMP" >&2
+
+while [[ $start_index -lt $end_index ]]; do
+  echo "Searching in range [$start_index, $end_index) of length" \
+    "$((end_index - start_index))." \
+    "$(echo "l($((end_index - start_index))) / l(2) + 1" | bc -l | xargs printf "%1.0f\n")" \
+    "steps remaining." >&2
+  mid_index=$((start_index + (end_index - start_index) / 2))
+  mid_timestamp_ns="$(get_transaction "$mid_index" | jq -r .timestamp)"
+  mid_timestamp="$(("$mid_timestamp_ns" / 1000000000))"
+  if [[ "$mid_timestamp" -ge "$TIMESTAMP" ]]; then
+    end_index="$mid_index"
+  else
+    start_index="$((mid_index + 1))"
+  fi
+done
+echo -n "Found index: " >&2
+echo "$start_index"
