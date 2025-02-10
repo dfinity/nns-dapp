@@ -1625,7 +1625,7 @@ dependencies = [
  "phantom_newtype",
  "prost",
  "serde",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
 ]
 
@@ -2006,7 +2006,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_cbor",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
  "subtle",
  "zeroize",
@@ -2023,7 +2023,7 @@ dependencies = [
  "phantom_newtype",
  "serde",
  "serde_cbor",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
  "thiserror 2.0.11",
  "zeroize",
@@ -2149,7 +2149,7 @@ dependencies = [
  "ic-protobuf",
  "ic-utils",
  "serde",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
 ]
 
@@ -2310,7 +2310,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_cbor",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
 ]
 
@@ -2659,7 +2659,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_json",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
 ]
 
@@ -2688,7 +2688,7 @@ dependencies = [
  "prost",
  "serde",
  "serde_bytes",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
 ]
 
@@ -2804,7 +2804,7 @@ dependencies = [
  "candid",
  "ic-protobuf",
  "serde",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
 ]
 
@@ -2881,7 +2881,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_json",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
 ]
 
@@ -2905,7 +2905,7 @@ dependencies = [
  "prost",
  "serde",
  "serde_bytes",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
 ]
 
@@ -3139,7 +3139,7 @@ dependencies = [
  "serde_cbor",
  "serde_json",
  "serde_with",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
  "thiserror 2.0.11",
  "thousands",
@@ -3274,7 +3274,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_cbor",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
 ]
 
@@ -3318,7 +3318,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "sha2",
- "strum",
+ "strum 0.26.3",
  "strum_macros",
  "time",
 ]
@@ -3948,7 +3948,7 @@ dependencies = [
  "serde_cbor",
  "sha2",
  "slotmap",
- "strum",
+ "strum 0.27.0",
  "strum_macros",
  "tar",
  "tokio",
@@ -5220,6 +5220,12 @@ checksum = "8fec0f0aef304996cf250b31b5a10dee7980c85da9d759361292b8bca5a18f06"
 dependencies = [
  "strum_macros",
 ]
+
+[[package]]
+name = "strum"
+version = "0.27.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ce1475c515a4f03a8a7129bb5228b81a781a86cb0b3fbbc19e1c556d491a401f"
 
 [[package]]
 name = "strum_macros"
