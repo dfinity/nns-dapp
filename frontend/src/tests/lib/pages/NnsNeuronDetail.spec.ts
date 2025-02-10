@@ -237,7 +237,6 @@ describe("NeuronDetail", () => {
         votingPowerRefreshedTimestampSeconds:
           nowInSeconds() - SECONDS_IN_HALF_YEAR - SECONDS_IN_DAY,
         controller: mockIdentity.getPrincipal().toText(),
-        dissolveDelaySeconds,
       });
 
       vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([testNeuron]);
