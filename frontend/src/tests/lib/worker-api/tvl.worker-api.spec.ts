@@ -43,14 +43,14 @@ describe("tvl worker-api", () => {
       expect(getTVLSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
+    it("throws an error if no token", async () => {
       tvlCanisterMock.getTVL.mockImplementation(async () => {
         throw new Error();
       });
 
       const call = () => queryTVL(paramsCanisterId);
 
-      expect(call).rejects.toThrowError();
+      await expect(call).rejects.toThrowError();
     });
   });
 

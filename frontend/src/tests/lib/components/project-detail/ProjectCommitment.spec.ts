@@ -75,7 +75,7 @@ describe("ProjectCommitment", () => {
     });
     const po = renderComponent(summary);
 
-    expect(po.getCurrentTotalCommitment()).resolves.toEqual("500.00 ICP");
+    await expect(po.getCurrentTotalCommitment()).resolves.toEqual("500.00 ICP");
   });
 
   it("should hide success message when current commitment is less then the min participation goal", async () => {

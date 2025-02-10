@@ -41,13 +41,13 @@ describe("icrc-ledger.worker-api", () => {
     expect(balanceSpy).toBeCalled();
   });
 
-  it("should bubble errors", () => {
+  it("should bubble errors", async () => {
     ledgerCanisterMock.balance.mockImplementation(() =>
       Promise.reject(new Error())
     );
 
     const call = () => getIcrcBalance(params);
 
-    expect(call).rejects.toThrowError();
+    await expect(call).rejects.toThrowError();
   });
 });

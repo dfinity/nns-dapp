@@ -75,13 +75,13 @@ describe("icrc-index api", () => {
       });
     });
 
-    it("throws an error if canister throws", () => {
+    it("throws an error if canister throws", async () => {
       const err = new Error("test");
       indexCanisterMock.getTransactions.mockRejectedValue(err);
 
       const call = () => getTransactions(params);
 
-      expect(call).rejects.toThrowError(err);
+      await expect(call).rejects.toThrowError(err);
     });
   });
 
@@ -111,7 +111,7 @@ describe("icrc-index api", () => {
       });
     });
 
-    it("throws an error if canister throws", () => {
+    it("throws an error if canister throws", async () => {
       const err = new Error("test");
       indexCanisterMock.ledgerId.mockRejectedValue(err);
 
@@ -122,7 +122,7 @@ describe("icrc-index api", () => {
           certified: true,
         });
 
-      expect(call).rejects.toThrowError(err);
+      await expect(call).rejects.toThrowError(err);
     });
   });
 });

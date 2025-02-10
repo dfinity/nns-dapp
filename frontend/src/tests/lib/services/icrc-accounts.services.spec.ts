@@ -720,7 +720,7 @@ describe("icrc-accounts-services", () => {
           ledgerCanisterId,
         });
 
-      expect(call).rejects.toThrow(testError);
+      await expect(call).rejects.toThrow(testError);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledTimes(1);
       expect(ledgerApi.queryIcrcToken).toHaveBeenCalledWith({
         identity: mockIdentity,

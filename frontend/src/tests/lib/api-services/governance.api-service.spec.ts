@@ -186,7 +186,7 @@ describe("neurons api-service", () => {
     });
 
     it("should fail if queryNeuron api fails", async () => {
-      expect(() =>
+      await expect(() =>
         governanceApiService.queryNeuron({ neuronId: 999n, ...params })
       ).rejects.toThrow("No neuron with id 999");
       expect(api.queryNeuron).toHaveBeenCalledTimes(1);
@@ -231,7 +231,7 @@ describe("neurons api-service", () => {
     });
 
     it("should fail if queryNeurons api fails", async () => {
-      expect(() =>
+      await expect(() =>
         governanceApiService.queryNeurons({
           identity: unknownIdentity,
           ...params,
@@ -299,9 +299,9 @@ describe("neurons api-service", () => {
       const params = { identity: identity1, certified: true };
       vi.spyOn(api, "queryNeurons").mockRejectedValueOnce(new Error("500"));
 
-      expect(() => governanceApiService.queryNeurons(params)).rejects.toThrow(
-        "500"
-      );
+      await expect(() =>
+        governanceApiService.queryNeurons(params)
+      ).rejects.toThrow("500");
       expect(await governanceApiService.queryNeurons(params)).toEqual([
         neuron1,
       ]);
@@ -353,7 +353,7 @@ describe("neurons api-service", () => {
         new Error("500")
       );
 
-      expect(() =>
+      await expect(() =>
         governanceApiService.queryKnownNeurons(certifiedParams)
       ).rejects.toThrow("500");
       expect(api.queryKnownNeurons).toHaveBeenCalledTimes(1);
@@ -410,7 +410,7 @@ describe("neurons api-service", () => {
         new Error("500")
       );
 
-      expect(() =>
+      await expect(() =>
         governanceApiService.queryKnownNeurons(certifiedParams)
       ).rejects.toThrow("500");
       expect(
@@ -474,7 +474,7 @@ describe("neurons api-service", () => {
     });
 
     it("should fail if queryLastestRewardEvent api fails", async () => {
-      expect(() =>
+      await expect(() =>
         governanceApiService.queryLastestRewardEvent({
           identity: unknownIdentity,
           ...params,

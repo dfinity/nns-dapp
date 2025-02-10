@@ -2229,14 +2229,14 @@ describe("neurons-services", () => {
       expect(getAccountIdentityByPrincipal).toBeCalledTimes(1);
     });
 
-    it("should raise NotAuthorizedNeuronError if fullNeuron is not defined", () => {
+    it("should raise NotAuthorizedNeuronError if fullNeuron is not defined", async () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: undefined,
       };
       neuronsStore.setNeurons({ neurons: [neuron], certified: true });
       const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
-      expect(call).rejects.toThrow(NotAuthorizedNeuronError);
+      await expect(call).rejects.toThrow(NotAuthorizedNeuronError);
     });
 
     it("should raise NotAuthorizedNeuronError if contoller is not in authStore nor accounts helper", async () => {
@@ -2251,7 +2251,7 @@ describe("neurons-services", () => {
       };
       neuronsStore.setNeurons({ neurons: [neuron], certified: true });
       const call = () => getIdentityOfControllerByNeuronId(neuron.neuronId);
-      expect(call).rejects.toThrow(NotAuthorizedNeuronError);
+      await expect(call).rejects.toThrow(NotAuthorizedNeuronError);
     });
   });
 
