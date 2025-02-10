@@ -28,10 +28,10 @@
     ThemeToggleButton,
     layoutMenuOpen,
     menuCollapsed,
+    testSafeScale,
   } from "@dfinity/gix-components";
   import type { Component } from "svelte";
   import { cubicIn, cubicOut } from "svelte/easing";
-  import { scale } from "svelte/transition";
 
   let routes: {
     context: string;
@@ -127,8 +127,8 @@
     <div
       data-tid="menu-footer"
       class="menu-footer"
-      out:scale={{ duration: 200, easing: cubicOut }}
-      in:scale={{ duration: 200, easing: cubicIn }}
+      out:testSafeScale={{ duration: 200, easing: cubicOut }}
+      in:testSafeScale={{ duration: 200, easing: cubicIn }}
     >
       <TotalValueLocked layout="stacked" />
       <div class="menu-footer-buttons">

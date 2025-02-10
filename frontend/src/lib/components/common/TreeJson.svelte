@@ -6,8 +6,7 @@
     type TreeJsonValueType,
   } from "$lib/utils/json.utils";
   import { typeOfLikeANumber } from "$lib/utils/utils";
-  import { IconExpandMore } from "@dfinity/gix-components";
-  import { fade } from "svelte/transition";
+  import { IconExpandMore, testSafeFade } from "@dfinity/gix-components";
 
   export let json: unknown | undefined = undefined;
   export let defaultExpandedLevel = Infinity;
@@ -72,7 +71,7 @@
   {/if}
   {#if !collapsed}
     <!-- children of expandable-key -->
-    <ul class:root class:is-array={isArray} in:fade data-tid={testId}>
+    <ul class:root class:is-array={isArray} in:testSafeFade data-tid={testId}>
       {#each children as [key, value]}
         <li class:root class:key-is-index={keyIsIndex}>
           <svelte:self
