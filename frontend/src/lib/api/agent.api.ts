@@ -162,7 +162,11 @@ const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
 };
 
 const logRecordedInvalidSignatureDebugInfo = () => {
-  if (INVALID_SIGNATURE_DEBUG_INFO_KEY in localStorage) {
+  if (
+    typeof window !== "undefined" &&
+    window.localStorage &&
+    INVALID_SIGNATURE_DEBUG_INFO_KEY in localStorage
+  ) {
     console.warn(
       "Found invalid signature debug info:",
       localStorage.getItem(INVALID_SIGNATURE_DEBUG_INFO_KEY)
