@@ -3,6 +3,7 @@ import {
   setImportedTokens,
 } from "$lib/api/imported-tokens.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
+import { mockCreateAgent } from "$tests/mocks/agent.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockImportedToken } from "$tests/mocks/icrc-accounts.mock";
 import * as dfinityUtils from "@dfinity/utils";
@@ -17,7 +18,7 @@ describe("imported-tokens-api", () => {
     );
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
     // real network request via agent.syncTime().
-    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
+    vi.spyOn(dfinityUtils, "createAgent").mockImplementation(mockCreateAgent);
   });
 
   describe("getImportedTokens", () => {

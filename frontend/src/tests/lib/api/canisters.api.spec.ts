@@ -21,6 +21,7 @@ import {
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { mockCreateAgent } from "$tests/mocks/agent.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
@@ -52,7 +53,7 @@ describe("canisters-api", () => {
   beforeEach(() => {
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
     // real network request via agent.syncTime().
-    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
+    vi.spyOn(dfinityUtils, "createAgent").mockImplementation(mockCreateAgent);
 
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     const now = Date.now();
