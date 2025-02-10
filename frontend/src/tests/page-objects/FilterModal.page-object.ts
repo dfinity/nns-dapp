@@ -31,4 +31,8 @@ export class FilterModalPo extends ModalPo {
   clickConfirmButton(): Promise<void> {
     return this.click("apply-filters");
   }
+
+  clickCloseButton(): Promise<void> {
+    return this.click("close");
+  }
 }

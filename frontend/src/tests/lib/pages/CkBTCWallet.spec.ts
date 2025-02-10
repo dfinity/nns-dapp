@@ -111,8 +111,6 @@ describe("CkBTCWallet", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllTimers();
-    vi.useRealTimers();
     resetIdentity();
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({

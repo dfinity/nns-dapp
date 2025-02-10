@@ -37,10 +37,7 @@ import {
   createIcpUserToken,
   icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -213,7 +210,6 @@ describe("tokens-list-user.derived", () => {
 
   describe("tokensListUserStore", () => {
     beforeEach(() => {
-      resetAccountsForTesting();
       authStore.setForTesting(mockIdentity);
 
       setSnsProjects([snsTetris, snsPacman]);

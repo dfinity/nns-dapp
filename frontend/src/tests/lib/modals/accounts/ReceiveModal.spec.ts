@@ -8,18 +8,11 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import type { Principal } from "@dfinity/principal";
 
 describe("ReceiveModal", () => {
   const reloadSpy = vi.fn();
-
-  beforeEach(() => {
-    resetAccountsForTesting();
-  });
 
   const qrCodeLabel = "test QR code";
   const logo = "logo";

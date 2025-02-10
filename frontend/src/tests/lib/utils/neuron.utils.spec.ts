@@ -43,6 +43,7 @@ import {
   getSpawningTimeInSeconds,
   getTopicSubtitle,
   getTopicTitle,
+  hasEnoughDissolveDelayToVote,
   hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
@@ -55,6 +56,7 @@ import {
   isNeuronControlledByHardwareWallet,
   isNeuronFollowingReset,
   isNeuronMissingReward,
+  isNeuronMissingRewardsSoon,
   isPublicNeuron,
   isSpawning,
   isValidInputAmount,
@@ -70,7 +72,6 @@ import {
   neuronStakedMaturity,
   neuronsVotingPower,
   secondsUntilMissingReward,
-  shouldDisplayMissingRewardNotification,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
   topicsToFollow,
@@ -112,6 +113,7 @@ import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("neuron-utils", () => {
+  const enoughDissolveDelayToVote = BigInt(SECONDS_IN_HALF_YEAR);
   const nowSeconds = nowInSeconds();
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(nowSeconds * 1000);
@@ -1739,6 +1741,7 @@ describe("neuron-utils", () => {
     describe("Periodic confirmation tags", () => {
       const losingRewardNeuron: NeuronInfo = {
         ...mockNeuron,
+        dissolveDelaySeconds: enoughDissolveDelayToVote,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           votingPowerRefreshedTimestampSeconds: BigInt(
@@ -1752,6 +1755,7 @@ describe("neuron-utils", () => {
         daysBeforeMissingRewardsSoon * SECONDS_IN_DAY;
       const losingRewardSoonNeuron: NeuronInfo = {
         ...mockNeuron,
+        dissolveDelaySeconds: enoughDissolveDelayToVote,
         fullNeuron: {
           ...mockNeuron.fullNeuron,
           votingPowerRefreshedTimestampSeconds: BigInt(
@@ -1776,11 +1780,13 @@ describe("neuron-utils", () => {
             getNeuronTags({
               neuron: {
                 ...mockNeuron,
+                dissolveDelaySeconds: enoughDissolveDelayToVote,
                 votingPowerRefreshedTimestampSeconds: BigInt(
                   nowSeconds - SECONDS_IN_HALF_YEAR + secondsToConfirm
                 ),
                 fullNeuron: {
                   ...mockNeuron.fullNeuron,
+                  dissolveDelaySeconds: enoughDissolveDelayToVote,
                   votingPowerRefreshedTimestampSeconds: BigInt(
                     nowSeconds - SECONDS_IN_HALF_YEAR + secondsToConfirm
                   ),
@@ -1831,6 +1837,37 @@ describe("neuron-utils", () => {
         );
       });
 
+      it("returns no 'XX days to confirm' tag when dissolve delay too low", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+
+        const oneDayToConfirmSeconds =
+          nowSeconds - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY;
+        expect(
+          getNeuronTags({
+            neuron: {
+              ...mockNeuron,
+              dissolveDelaySeconds: enoughDissolveDelayToVote - 1n,
+              votingPowerRefreshedTimestampSeconds: BigInt(
+                oneDayToConfirmSeconds
+              ),
+              fullNeuron: {
+                ...mockNeuron.fullNeuron,
+                votingPowerRefreshedTimestampSeconds: BigInt(
+                  oneDayToConfirmSeconds
+                ),
+              },
+            } as NeuronInfo,
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+          })
+        ).toEqual([]);
+      });
+
       it("returns 'Missing rewards' tag", () => {
         overrideFeatureFlagsStore.setFlag(
           "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
@@ -1846,6 +1883,26 @@ describe("neuron-utils", () => {
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
           })
         ).toEqual([missingRewardsTag]);
+      });
+
+      it("returns no 'Missing rewards' tag when dissolve delay too low", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: {
+              ...losingRewardNeuron,
+              dissolveDelaySeconds: enoughDissolveDelayToVote - 1n,
+            },
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+          })
+        ).toEqual([]);
       });
 
       it("returns no 'Missing rewards' tag when no voting power economics", () => {
@@ -1897,6 +1954,26 @@ describe("neuron-utils", () => {
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
           })
         ).toEqual([missingRewardsSoonTag]);
+      });
+
+      it("returns no 'Missing rewards soon' tag when dissolve delay too low", () => {
+        overrideFeatureFlagsStore.setFlag(
+          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
+          true
+        );
+
+        expect(
+          getNeuronTags({
+            neuron: {
+              ...losingRewardSoonNeuron,
+              dissolveDelaySeconds: enoughDissolveDelayToVote - 1n,
+            },
+            identity: mockIdentity,
+            accounts: accountsWithHW,
+            i18n: en,
+            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+          })
+        ).toEqual([]);
       });
 
       it("returns no 'Missing rewards soon' tag w/o voting power economics", () => {
@@ -3751,10 +3828,10 @@ describe("neuron-utils", () => {
       });
     });
 
-    describe("shouldDisplayMissingRewardNotification", () => {
+    describe("isNeuronMissingRewardsSoon", () => {
       it("should return false by default", () => {
         expect(
-          shouldDisplayMissingRewardNotification({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: {
               ...mockNeuron,
@@ -3766,7 +3843,7 @@ describe("neuron-utils", () => {
 
       it("should return true after notification period starts", () => {
         expect(
-          shouldDisplayMissingRewardNotification({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3775,7 +3852,7 @@ describe("neuron-utils", () => {
           })
         ).toBe(true);
         expect(
-          shouldDisplayMissingRewardNotification({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3787,7 +3864,7 @@ describe("neuron-utils", () => {
 
       it("should return false w/o voting economics", () => {
         expect(
-          shouldDisplayMissingRewardNotification({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: undefined,
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
@@ -3799,12 +3876,44 @@ describe("neuron-utils", () => {
 
       it("should return false before notification period", () => {
         expect(
-          shouldDisplayMissingRewardNotification({
+          isNeuronMissingRewardsSoon({
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             neuron: neuronWithRefreshedTimestamp({
               votingPowerRefreshedTimestampAgeSecs:
                 losingRewardsPeriod - (notificationPeriod + 1),
             }),
+          })
+        ).toBe(false);
+      });
+    });
+
+    describe("hasEnoughDissolveDelayToVote", () => {
+      it("should return true", () => {
+        expect(
+          hasEnoughDissolveDelayToVote({
+            ...mockNeuron,
+            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
+          })
+        ).toBe(true);
+        expect(
+          hasEnoughDissolveDelayToVote({
+            ...mockNeuron,
+            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR) * 100n,
+          })
+        ).toBe(true);
+      });
+
+      it("should return false", () => {
+        expect(
+          hasEnoughDissolveDelayToVote({
+            ...mockNeuron,
+            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR - 1),
+          })
+        ).toBe(false);
+        expect(
+          hasEnoughDissolveDelayToVote({
+            ...mockNeuron,
+            dissolveDelaySeconds: 0n,
           })
         ).toBe(false);
       });

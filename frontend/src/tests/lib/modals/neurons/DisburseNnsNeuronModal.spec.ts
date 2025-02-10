@@ -19,10 +19,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { DisburseNnsNeuronModalPo } from "$tests/page-objects/DisburseNnsNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -124,10 +121,6 @@ describe("DisburseNnsNeuronModal", () => {
   });
 
   describe("when accounts store is empty", () => {
-    beforeEach(() => {
-      resetAccountsForTesting();
-    });
-
     it("should fetch accounts and render account selector", async () => {
       const mainBalanceE8s = 10_000_000n;
       let resolveQueryAccount;
@@ -166,8 +159,6 @@ describe("DisburseNnsNeuronModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: MockInstance;
     beforeEach(() => {
-      resetAccountsForTesting();
-      vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = 10_000_000n;

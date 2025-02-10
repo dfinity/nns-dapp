@@ -27,7 +27,6 @@ describe("ReportingNeuronsButton", () => {
   let spySaveGeneratedCsv;
 
   beforeEach(() => {
-    vi.clearAllTimers();
     resetIdentity();
 
     vi.spyOn(toastsStore, "toastsError");

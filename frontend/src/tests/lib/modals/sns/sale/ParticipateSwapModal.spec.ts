@@ -31,10 +31,7 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ParticipateSwapModalPo } from "$tests/page-objects/ParticipateSwapModal.page-object";
 import type { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -53,7 +50,6 @@ describe("ParticipateSwapModal", () => {
   beforeEach(() => {
     cancelPollAccounts();
     resetIdentity();
-    resetAccountsForTesting();
     snsTicketsStore.setNoTicket(rootCanisterIdMock);
 
     vi.spyOn(snsServices, "getSwapAccount").mockResolvedValue(
@@ -275,7 +271,6 @@ describe("ParticipateSwapModal", () => {
     let resolveQueryAccounts;
 
     beforeEach(() => {
-      resetAccountsForTesting();
       queryAccountBalanceSpy = vi
         .spyOn(ledgerApi, "queryAccountBalance")
         .mockResolvedValue(mainBalanceE8s);
@@ -345,8 +340,6 @@ describe("ParticipateSwapModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: MockInstance;
     beforeEach(() => {
-      resetAccountsForTesting();
-      vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = 10_000_000n;

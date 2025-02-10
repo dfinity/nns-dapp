@@ -331,7 +331,7 @@ sha256() {
 }
 
 get_dfx_identity() {
-  if pgrep -x replica; then
+  if pgrep -x replica || pgrep -x pocket-ic; then
     (
       echo
       echo "A replica is running."

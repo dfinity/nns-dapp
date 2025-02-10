@@ -16,7 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Custom sorting of staking nervous systems table.
 * Custom sorting of tokens table.
-* Navigation to a token's wallet from the top token positions on the portfolio page
+* Navigation to a token's wallet from the top token positions on the portfolio page.
+* Navigation to a project's neurons from the top projects on the portfolio page.
 
 #### Changed
 

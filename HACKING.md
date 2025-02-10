@@ -21,7 +21,7 @@ This document list a couple of useful information to develop the NNS-dapp fronte
 
 NNS-dapp frontend uses an `.env` file to read various environment information and variables.
 
-The repo itself does **not** contain any such file because the source of truth we are using is `dfx.json`.
+The repo itself does **not** contain any such file because the source of truth we are using is `dfx.json` and `config.json`.
 That is why we are providing a `./config.sh` script that generate the above environment file automatically.
 
 ## Local
@@ -212,7 +212,7 @@ Likewise, as the configuration is not yet automated, there are no `.env` variabl
 
 Because the e2e tests are using the `local` environment to perform, we cannot enable `ENABLE_CKTESTBTC` per default.
 
-Therefore, this flag should also be manually set to `true` in [`dfx.json`](./dfx.json) and the `.env` should be generated.
+Therefore, this flag should also be manually set to `true` in [`config.json`](./config.json) and the `.env` should be generated.
 
 Use `scripts/nns-dapp/test-config --update` to update `arg.did` and `env` files under `nns-dapp/test-config-assets`
 

@@ -11,7 +11,15 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .filters {
+    // compensate for the negative margin of the filter buttons
+    margin: var(--button-border-size);
+    @include media.min-width(medium) {
+      margin: 0;
+    }
+
     display: flex;
     flex-wrap: wrap;
     gap: var(--padding);

@@ -14,10 +14,7 @@ import {
 import { renderModal } from "$tests/mocks/modal.mock";
 import { MergeNeuronsModalPo } from "$tests/page-objects/MergeNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
@@ -45,7 +42,6 @@ describe("MergeNeuronsModal", () => {
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(
       testIdentity
     );
-    resetAccountsForTesting();
   });
 
   const selectAndTestTwoNeurons = async ({ po, neurons }) => {

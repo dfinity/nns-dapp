@@ -33,7 +33,7 @@ source "$(clap.build)"
 # shellcheck disable=SC2009
 SCRIPT_COUNT="$(ps -A -o command | grep -c "^bash .*$(basename "$0")")"
 
-if pgrep -x replica || [ "$SCRIPT_COUNT" -gt 2 ]; then
+if pgrep -x replica || pgrep -x pocket-ic || [ "$SCRIPT_COUNT" -gt 2 ]; then
   echo "ERROR: There is already a replica running. Please stop it first."
   exit 1
 fi
@@ -56,8 +56,10 @@ fi
 
 "$SOURCE_DIR/dfx-snapshot-install" --backup-dir "$BACKUP_DIR" --snapshot "$SNAPSHOT_ARCHIVE" "$CLEAN_ARG"
 
-# Change to $HOME to avoid using nns-dapp dfx.json.
+# Change to $HOME to allow using a different version of dfx than required by
+# dfx.json, in case the snapshot was created with a different version.
 cd "$HOME"
+
 echo "*********************************************************************"
 echo "*                                                                   *"
 echo "*  If the state was generated on a different type of machine, then  *"

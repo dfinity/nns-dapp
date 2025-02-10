@@ -49,10 +49,7 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import {
   advanceTime,
@@ -80,7 +77,6 @@ describe("icp-accounts.services", () => {
 
   beforeEach(() => {
     vi.spyOn(console, "error").mockReturnValue();
-    resetAccountsForTesting();
     resetIdentity();
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
       mockGetIdentity
@@ -932,8 +928,6 @@ describe("icp-accounts.services", () => {
     };
 
     beforeEach(() => {
-      resetAccountsForTesting();
-      vi.clearAllTimers();
       cancelPollAccounts();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);

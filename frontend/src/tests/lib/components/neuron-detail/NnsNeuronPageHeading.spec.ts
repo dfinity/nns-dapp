@@ -1,5 +1,8 @@
 import NnsNeuronPageHeading from "$lib/components/neuron-detail/NnsNeuronPageHeading.svelte";
-import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import {
+  SECONDS_IN_HALF_YEAR,
+  SECONDS_IN_YEAR,
+} from "$lib/constants/constants";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
@@ -13,10 +16,7 @@ import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPageHeadingPo } from "$tests/page-objects/NnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { NeuronType } from "@dfinity/nns";
@@ -31,7 +31,6 @@ describe("NnsNeuronPageHeading", () => {
 
   beforeEach(() => {
     resetIdentity();
-    resetAccountsForTesting();
 
     setIcpPrice(10);
   });
@@ -167,6 +166,7 @@ describe("NnsNeuronPageHeading", () => {
     });
     const po = renderComponent({
       ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(

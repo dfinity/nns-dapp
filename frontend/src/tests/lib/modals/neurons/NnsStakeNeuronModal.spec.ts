@@ -28,10 +28,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsStakeNeuronModalPo } from "$tests/page-objects/NnsStakeNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -520,7 +517,6 @@ describe("NnsStakeNeuronModal", () => {
 
     beforeEach(() => {
       neuronsStore.setNeurons({ neurons: [newNeuron], certified: true });
-      resetAccountsForTesting();
       const mainBalanceE8s = 10_000_000n;
       vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(
         mainBalanceE8s
@@ -563,8 +559,6 @@ describe("NnsStakeNeuronModal", () => {
   describe("when no accounts and user navigates away", () => {
     let spyQueryAccount: MockInstance;
     beforeEach(() => {
-      resetAccountsForTesting();
-      vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
       const mainBalanceE8s = 10_000_000n;

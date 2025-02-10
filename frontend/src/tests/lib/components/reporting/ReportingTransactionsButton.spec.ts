@@ -40,9 +40,7 @@ describe("ReportingTransactionsButton", () => {
   let spySaveGeneratedCsv;
 
   beforeEach(() => {
-    vi.clearAllTimers();
     resetIdentity();
-    resetAccountsForTesting();
 
     spySaveGeneratedCsv = vi
       .spyOn(reportingSaveCsvToFile, "saveGeneratedCsv")
@@ -213,8 +211,6 @@ describe("ReportingTransactionsButton", () => {
   });
 
   it("should fetch transactions for accounts and neurons", async () => {
-    resetAccountsForTesting();
-
     setAccountsForTesting({
       main: mockMainAccount,
     });
@@ -287,7 +283,6 @@ describe("ReportingTransactionsButton", () => {
     const beginningOfYearInNanoseconds =
       BigInt(beginningOfYear.getTime()) * NANOS_IN_MS;
 
-    resetAccountsForTesting();
     setAccountsForTesting({
       main: mockMainAccount,
     });

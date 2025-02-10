@@ -8,7 +8,6 @@ import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { AccountsPlusPagePo } from "$tests/page-objects/AccountsPlusPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { resetAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/icp-ledger.api");
@@ -22,7 +21,6 @@ describe("Accounts page", () => {
   };
 
   beforeEach(() => {
-    resetAccountsForTesting();
     vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(314000000n);
   });

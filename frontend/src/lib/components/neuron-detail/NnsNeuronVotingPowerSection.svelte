@@ -3,7 +3,6 @@
   import NnsNeuronRewardStatusAction from "$lib/components/neuron-detail/NnsNeuronRewardStatusAction.svelte";
   import NnsNeuronStateItemAction from "$lib/components/neuron-detail/NnsNeuronStateItemAction.svelte";
   import NnsStakeItemAction from "$lib/components/neuron-detail/NnsStakeItemAction.svelte";
-  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -13,6 +12,7 @@
     dissolveDelayMultiplier,
     formatVotingPower,
     formattedStakedMaturity,
+    hasEnoughDissolveDelayToVote,
     neuronDashboardUrl,
     neuronStake,
   } from "$lib/utils/neuron.utils";
@@ -24,8 +24,7 @@
 
   // The API might return a non-zero voting power even if the neuron can't vote.
   let canVote: boolean;
-  $: canVote =
-    neuron.dissolveDelaySeconds >= BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
+  $: canVote = hasEnoughDissolveDelayToVote(neuron);
 
   let isReducedVotingPower = false;
   $: isReducedVotingPower =

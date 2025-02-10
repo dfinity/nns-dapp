@@ -39,10 +39,7 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
@@ -133,8 +130,6 @@ describe("sns-api", () => {
 
     vi.useFakeTimers();
 
-    resetAccountsForTesting();
-
     vi.spyOn(agentApi, "createAgent").mockImplementation(async () =>
       mock<Agent>()
     );
@@ -190,7 +185,6 @@ describe("sns-api", () => {
   describe("loadOpenTicket", () => {
     describe("when polling is enabled", () => {
       beforeEach(() => {
-        vi.clearAllTimers();
         const now = Date.now();
         vi.useFakeTimers().setSystemTime(now);
       });
@@ -455,7 +449,6 @@ describe("sns-api", () => {
 
     describe("when disabling polling", () => {
       beforeEach(() => {
-        vi.clearAllTimers();
         const now = Date.now();
         vi.useFakeTimers().setSystemTime(now);
       });
@@ -541,7 +534,6 @@ describe("sns-api", () => {
 
   describe("loadNewSaleTicket ", () => {
     beforeEach(() => {
-      vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
     });
@@ -1018,7 +1010,6 @@ describe("sns-api", () => {
 
   describe("participateInSnsSale", () => {
     beforeEach(() => {
-      vi.clearAllTimers();
       const now = Date.now();
       vi.useFakeTimers().setSystemTime(now);
     });

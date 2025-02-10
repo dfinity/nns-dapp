@@ -9,19 +9,12 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
-import {
-  resetAccountsForTesting,
-  setAccountsForTesting,
-} from "$tests/utils/accounts.test-utils";
+import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 describe("SelectAccountDropdown", () => {
   describe("no accounts", () => {
-    beforeEach(() => {
-      resetAccountsForTesting();
-    });
-
     const props = { rootCanisterId: OWN_CANISTER_ID };
     it("should render spinner", () => {
       const { getByTestId } = render(SelectAccountDropdown, { props });
