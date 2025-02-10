@@ -88,7 +88,6 @@
           "ENABLE_CKTESTBTC": false,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION": true,
-          "ENABLE_EXPORT_NEURONS_REPORT": true,
           "ENABLE_USD_VALUES": true,
           "ENABLE_USD_VALUES_FOR_NEURONS": true,
           "ENABLE_PORTFOLIO_PAGE": true,

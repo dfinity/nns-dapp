@@ -2,7 +2,6 @@ import { goto } from "$app/navigation";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import Layout from "$routes/(app)/(nns)/reporting/+layout.svelte";
@@ -25,19 +24,6 @@ describe("Layout", () => {
 
     return render(Layout);
   };
-
-  beforeEach(() => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", true);
-  });
-
-  it("should redirect to /accounts if feature flag is off", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_EXPORT_NEURONS_REPORT", false);
-
-    renderReporting();
-
-    expect(goto).toHaveBeenCalledWith(AppPath.Accounts);
-    expect(goto).toHaveBeenCalledTimes(1);
-  });
 
   it("should stay in the page if feature flag is on", () => {
     renderReporting();
