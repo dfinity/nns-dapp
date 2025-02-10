@@ -11,7 +11,11 @@ const screenshotsWithDifferentViewports = async ({
   step: string;
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await expect(page).toHaveScreenshot(`${step}_desktop.png`);
+  await expect(page).toHaveScreenshot(`${step}_desktop.png`, {
+    mask: [
+      page.locator('[data-tid="actionable-proposal-count-badge-component"]'),
+    ],
+  });
 
   await page.setViewportSize({ width: 375, height: 667 });
   await expect(page).toHaveScreenshot(`${step}_mobile.png`);
