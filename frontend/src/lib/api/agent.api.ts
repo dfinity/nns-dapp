@@ -11,7 +11,12 @@ import type {
   ReadStateResponse,
   SubmitResponse,
 } from "@dfinity/agent";
-import { AgentCallError, IdentityInvalidError } from "@dfinity/agent";
+import {
+  AgentCallError,
+  AgentQueryError,
+  AgentReadStateError,
+  IdentityInvalidError,
+} from "@dfinity/agent";
 import type { JsonObject } from "@dfinity/candid";
 import type { Principal } from "@dfinity/principal";
 import {
@@ -134,7 +139,11 @@ const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
   if (
     logEntry.level != "error" ||
     !logEntry.message.includes("Invalid signature") ||
-    !(logEntry.error instanceof AgentCallError)
+    !(
+      logEntry.error instanceof AgentCallError ||
+      logEntry.error instanceof AgentQueryError ||
+      logEntry.error instanceof AgentReadStateError
+    )
   ) {
     return;
   }
