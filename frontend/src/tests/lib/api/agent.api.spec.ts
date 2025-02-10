@@ -1,6 +1,5 @@
 import * as agentApi from "$lib/api/agent.api";
 import { mockCreateAgent } from "$tests/mocks/agent.mock";
-import { advanceTime } from "$tests/utils/timers.test-utils";
 import type {
   Agent,
   AgentLog,
@@ -591,8 +590,6 @@ describe("agent-api", () => {
       expect(localStorage.getItem("invalidSignatureDebugInfo")).toBe(
         expectedDebugInfo
       );
-
-      advanceTime(300000);
 
       const newRequestId = requestId + "new";
       const newSenderPubkey = senderPubkey + "new";
