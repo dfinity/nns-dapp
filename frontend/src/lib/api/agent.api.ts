@@ -1,6 +1,7 @@
 import { FETCH_ROOT_KEY } from "$lib/constants/environment.constants";
 import type {
   Agent,
+  AgentLog,
   ApiQueryResponse,
   CallOptions,
   HttpAgent,
@@ -10,7 +11,7 @@ import type {
   ReadStateResponse,
   SubmitResponse,
 } from "@dfinity/agent";
-import { IdentityInvalidError } from "@dfinity/agent";
+import { AgentCallError, IdentityInvalidError } from "@dfinity/agent";
 import type { JsonObject } from "@dfinity/candid";
 import type { Principal } from "@dfinity/principal";
 import {
@@ -127,6 +128,42 @@ class IdentityAgentWrapper implements Agent {
   }
 }
 
+const INVALID_SIGNATURE_DEBUG_INFO_KEY = "invalidSignatureDebugInfo";
+
+const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
+  if (
+    logEntry.level != "error" ||
+    !logEntry.message.includes("Invalid signature") ||
+    !(logEntry.error instanceof AgentCallError)
+  ) {
+    return;
+  }
+
+  localStorage.setItem(
+    INVALID_SIGNATURE_DEBUG_INFO_KEY,
+    JSON.stringify({
+      requestId: logEntry.error.requestId,
+      senderPubkey: logEntry.error.senderPubkey,
+      senderSig: logEntry.error.senderSig,
+      ingressExpiry: logEntry.error.ingressExpiry,
+      debugInfoRecordedTimestamp: new Date().toISOString(),
+    })
+  );
+  logRecordedInvalidSignatureDebugInfo();
+};
+
+const logRecordedInvalidSignatureDebugInfo = () => {
+  if (INVALID_SIGNATURE_DEBUG_INFO_KEY in localStorage) {
+    console.warn(
+      "Found invalid signature debug info:",
+      localStorage.getItem(INVALID_SIGNATURE_DEBUG_INFO_KEY)
+    );
+  }
+};
+
+// Also log on page load for easy discovery.
+logRecordedInvalidSignatureDebugInfo();
+
 export const createAgent = async ({
   identity,
   host,
@@ -143,6 +180,8 @@ export const createAgent = async ({
       ...(host !== undefined && { host }),
       fetchRootKey: FETCH_ROOT_KEY,
     });
+
+    agent.log.subscribe(storeInvalidSignatureDebugInfo);
 
     agents = {
       ...(nonNullish(agents) && agents),
