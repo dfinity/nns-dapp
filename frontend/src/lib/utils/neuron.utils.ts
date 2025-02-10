@@ -58,6 +58,7 @@ import {
   NeuronState,
   NeuronType,
   NeuronVisibility,
+  ProposalStatus,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -1212,6 +1213,29 @@ export const maturityLastDistribution = ({
 
 export const neuronDashboardUrl = ({ neuronId }: NeuronInfo): string =>
   `https://dashboard.internetcomputer.org/neuron/${neuronId.toString()}`;
+
+export const getProposalStatusTitle = ({
+  status,
+  i18n,
+}: {
+  status: ProposalStatus;
+  i18n: I18n;
+}): string => {
+  const mapper: Record<ProposalStatus, string> = {
+    [ProposalStatus.Unknown]: i18n.status.Unknown,
+    [ProposalStatus.Open]: i18n.status.Open,
+    [ProposalStatus.Rejected]: i18n.status.Rejected,
+    [ProposalStatus.Accepted]: i18n.status.Accepted,
+    [ProposalStatus.Executed]: i18n.status.Executed,
+    [ProposalStatus.Failed]: i18n.status.Failed,
+  };
+  return (
+    mapper[status] ??
+    replacePlaceholders(i18n.error.unknown_proposal_status_title, {
+      $statusId: status.toString(),
+    })
+  );
+};
 
 export const getTopicTitle = ({
   topic,
