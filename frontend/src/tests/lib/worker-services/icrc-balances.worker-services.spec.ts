@@ -62,6 +62,6 @@ describe("balances.worker-services", () => {
 
     const call = () => getIcrcAccountsBalances(params);
 
-    expect(call).rejects.toThrowError();
+    await expect(call).rejects.toThrowError();
   });
 });

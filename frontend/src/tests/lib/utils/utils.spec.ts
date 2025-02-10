@@ -650,7 +650,7 @@ describe("utils", () => {
           });
 
         const pollPromise = callPoll();
-        expect(callPoll).rejects.toThrowError(PollingCancelledError);
+        await expect(callPoll).rejects.toThrowError(PollingCancelledError);
 
         const expectedPollResult = "foo";
         resolvePromise(expectedPollResult);

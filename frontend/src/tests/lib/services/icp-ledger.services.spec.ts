@@ -423,7 +423,7 @@ describe("icp-ledger.services", () => {
           identity,
           minVersion,
         });
-      expect(call).rejects.toThrow(LedgerErrorMessage);
+      await expect(call).rejects.toThrow(LedgerErrorMessage);
     });
 
     it("should not throw if ledger version is larger than min version", async () => {

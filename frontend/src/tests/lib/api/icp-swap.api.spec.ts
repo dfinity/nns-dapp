@@ -23,7 +23,7 @@ describe("icp-swap.api", () => {
         ok: false,
       } as Response);
 
-      expect(queryIcpSwapTickers()).rejects.toThrow(
+      await expect(queryIcpSwapTickers()).rejects.toThrow(
         new Error("Failed to fetch ticker information from ICP Swap")
       );
     });

@@ -193,7 +193,7 @@ describe("NNSDapp", () => {
           principal: mockPrincipal,
         });
 
-      expect(call).rejects.toThrow(err);
+      await expect(call).rejects.toThrow(err);
     };
 
     it("should throw register Ledger device error not found", async () =>
@@ -272,7 +272,7 @@ describe("NNSDapp", () => {
           blockIndex: 123n,
         });
 
-      expect(call).rejects.toThrowError(CanisterAlreadyAttachedError);
+      await expect(call).rejects.toThrowError(CanisterAlreadyAttachedError);
     });
 
     it("should throw CanisterNameAlreadyTakenError", async () => {
@@ -289,7 +289,7 @@ describe("NNSDapp", () => {
           blockIndex: 123n,
         });
 
-      expect(call).rejects.toThrowError(CanisterNameAlreadyTakenError);
+      await expect(call).rejects.toThrowError(CanisterNameAlreadyTakenError);
     });
 
     it("should throw CanisterNameTooLongError", async () => {
@@ -306,7 +306,7 @@ describe("NNSDapp", () => {
           blockIndex: 123n,
         });
 
-      expect(call).rejects.toThrowError(CanisterNameTooLongError);
+      await expect(call).rejects.toThrowError(CanisterNameTooLongError);
     });
 
     it("should throw CanisterLimitExceededError", async () => {
@@ -323,7 +323,7 @@ describe("NNSDapp", () => {
           blockIndex: 123n,
         });
 
-      expect(call).rejects.toThrowError(CanisterLimitExceededError);
+      await expect(call).rejects.toThrowError(CanisterLimitExceededError);
     });
   });
 
@@ -357,7 +357,7 @@ describe("NNSDapp", () => {
           canisterId: mockCanister.canister_id,
         });
 
-      expect(call).rejects.toThrowError(CanisterNotFoundError);
+      await expect(call).rejects.toThrowError(CanisterNotFoundError);
     });
 
     it("should throw CanisterNameAlreadyTakenError", async () => {
@@ -373,7 +373,7 @@ describe("NNSDapp", () => {
           canisterId: mockCanister.canister_id,
         });
 
-      expect(call).rejects.toThrowError(CanisterNameAlreadyTakenError);
+      await expect(call).rejects.toThrowError(CanisterNameAlreadyTakenError);
     });
 
     it("should throw CanisterNameTooLongError", async () => {
@@ -389,7 +389,7 @@ describe("NNSDapp", () => {
           canisterId: mockCanister.canister_id,
         });
 
-      expect(call).rejects.toThrowError(CanisterNameTooLongError);
+      await expect(call).rejects.toThrowError(CanisterNameTooLongError);
     });
   });
 
@@ -413,7 +413,7 @@ describe("NNSDapp", () => {
 
       const call = () => nnsDapp.detachCanister(mockCanister.canister_id);
 
-      expect(call).rejects.toThrowError(CanisterNotFoundError);
+      await expect(call).rejects.toThrowError(CanisterNotFoundError);
     });
   });
 
@@ -457,7 +457,7 @@ describe("NNSDapp", () => {
         proposalId: 0n,
       });
 
-    expect(call).rejects.toThrowError(ProposalPayloadNotFoundError);
+    await expect(call).rejects.toThrowError(ProposalPayloadNotFoundError);
   });
 
   it("should throw ProposalPayloadTooLargeError", async () => {
@@ -472,7 +472,7 @@ describe("NNSDapp", () => {
         proposalId: 0n,
       });
 
-    expect(call).rejects.toThrowError(ProposalPayloadTooLargeError);
+    await expect(call).rejects.toThrowError(ProposalPayloadTooLargeError);
   });
 
   it("should throw UnknownProposalPayloadError", async () => {
@@ -487,7 +487,7 @@ describe("NNSDapp", () => {
         proposalId: 0n,
       });
 
-    expect(call).rejects.toThrowError(UnknownProposalPayloadError);
+    await expect(call).rejects.toThrowError(UnknownProposalPayloadError);
   });
 
   describe("NNSDapp.getImportedTokens", () => {

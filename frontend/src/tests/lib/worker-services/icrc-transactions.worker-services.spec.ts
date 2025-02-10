@@ -271,6 +271,6 @@ describe("transactions.worker-services", () => {
         data,
       });
 
-    expect(call).rejects.toThrowError();
+    await expect(call).rejects.toThrowError();
   });
 });
