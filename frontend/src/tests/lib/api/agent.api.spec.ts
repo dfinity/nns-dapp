@@ -1,4 +1,5 @@
 import * as agentApi from "$lib/api/agent.api";
+import { mockCreateAgent } from "$tests/mocks/agent.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import type {
   Agent,
@@ -7,7 +8,6 @@ import type {
   CallOptions,
   HttpAgent,
   Identity,
-  ObservableLog,
   ObserveFunction,
   QueryFields,
   ReadStateOptions,
@@ -17,7 +17,6 @@ import { AgentCallError } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import * as utils from "@dfinity/utils";
 import type { Mocked } from "vitest";
-import { mock } from "vitest-mock-extended";
 
 const host = "http://localhost:8000";
 const testPrincipal1 = Principal.fromHex("123123123");
@@ -34,15 +33,6 @@ const createAgent = (identity: Identity) =>
     host,
   });
 
-const createMockAgent = () => {
-  const mockAgent = mock<HttpAgent>({
-    log: mock<ObservableLog>({
-      subscribe: vi.fn(),
-    }),
-  });
-  return mockAgent;
-};
-
 describe("agent-api", () => {
   let utilsCreateAgentSpy;
 
@@ -51,7 +41,7 @@ describe("agent-api", () => {
 
     utilsCreateAgentSpy = vi
       .spyOn(utils, "createAgent")
-      .mockImplementation(async () => createMockAgent());
+      .mockImplementation(mockCreateAgent);
   });
 
   it("createAgent should create an agent", async () => {
@@ -76,12 +66,12 @@ describe("agent-api", () => {
 
     expect(utilsCreateAgentSpy).not.toBeCalled();
 
-    const mockAgent1 = createMockAgent();
+    const mockAgent1 = await mockCreateAgent();
     utilsCreateAgentSpy.mockResolvedValue(mockAgent1);
     const agent1 = await createAgent(testIdentity1);
     expect(utilsCreateAgentSpy).toBeCalledTimes(1);
 
-    const mockAgent2 = createMockAgent();
+    const mockAgent2 = await mockCreateAgent();
     utilsCreateAgentSpy.mockResolvedValue(mockAgent2);
     const agent2 = await createAgent(testIdentity2);
     expect(utilsCreateAgentSpy).toBeCalledTimes(2);
@@ -107,7 +97,7 @@ describe("agent-api", () => {
     let agent: Agent;
 
     beforeEach(async () => {
-      mockAgent = createMockAgent();
+      mockAgent = await mockCreateAgent();
       utilsCreateAgentSpy.mockResolvedValue(mockAgent);
 
       agent = await createAgent(testIdentity);
@@ -240,7 +230,7 @@ describe("agent-api", () => {
     let agent: Agent;
 
     beforeEach(async () => {
-      mockAgent = createMockAgent();
+      mockAgent = await mockCreateAgent();
       utilsCreateAgentSpy.mockResolvedValue(mockAgent);
 
       agent = await createAgent(testIdentity);
@@ -329,9 +319,10 @@ describe("agent-api", () => {
     // different objects.
     const testIdentity2 = createIdentity(testPrincipal1);
 
-    const mockAgent = createMockAgent();
+    let mockAgent;
 
     beforeEach(async () => {
+      mockAgent = await mockCreateAgent();
       utilsCreateAgentSpy.mockResolvedValue(mockAgent);
     });
 
@@ -486,13 +477,13 @@ describe("agent-api", () => {
       error: invalidSignatureError,
     };
 
-    beforeEach(() => {
+    beforeEach(async () => {
       vi.useFakeTimers();
       vi.spyOn(console, "warn").mockReturnValue();
 
       logSubscriber = undefined;
 
-      mockAgent = createMockAgent();
+      mockAgent = await mockCreateAgent();
       vi.mocked(mockAgent.log.subscribe).mockImplementation((func) => {
         logSubscriber = func;
       });
