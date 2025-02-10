@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+	Gets transactions from a ledger canister given a range of indices.
+	If the transactions need to come from archive canisters, the script will get
+	them from archive canisters.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define short=l long=ledger_canister_id desc="The canister ID of the ledger canister" variable=LEDGER_CANISTER_ID default=""
+clap.define short=s long=start_index desc="The index for the first transaction" variable=START_INDEX default=""
+clap.define short=e long=end_index desc="One more than the index of the last transaction" variable=END_INDEX default=""
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+if [[ -z "$LEDGER_CANISTER_ID" ]]; then
+  echo "Ledger canister ID is required" >&2
+  exit 1
+fi
+
+if [[ -z "$START_INDEX" ]]; then
+  echo "Start index is required" >&2
+  exit 1
+fi
+
+if [[ -z "$END_INDEX" ]]; then
+  echo "End index is required" >&2
+  exit 1
+fi
+
+min() {
+  if [[ "$1" -lt "$2" ]]; then
+    echo "$1"
+  else
+    echo "$2"
+  fi
+}
+
+max() {
+  if [[ "$1" -gt "$2" ]]; then
+    echo "$1"
+  else
+    echo "$2"
+  fi
+}
+
+get_transactions() {
+  canister_id="$1"
+  start_index="$(max "$START_INDEX" "$2")"
+  end_index="$(min "$END_INDEX" "$3")"
+  #echo "canister_id: $canister_id, start_index: $start_index, end_index: $end_index" >&2
+  while [[ $start_index -lt $end_index ]]; do
+    echo "start $start_index, end $end_index" >&2
+    length="$((end_index - start_index))"
+    json_response="$(dfx canister call "$canister_id" --query --network "$DFX_NETWORK" get_transactions \
+      "(record { start = $start_index : nat; length = $length : nat })" |
+      idl2json --bytes-as hex)"
+    result_length="$(jq -r '.transactions | length' <<<"$json_response")"
+    start_index="$((start_index + result_length))"
+    jq '.transactions[]' <<<"$json_response"
+  done
+}
+
+max_archive_end_index=0
+
+while read -r archive_canister; do
+  #echo "archive_canister: $archive_canister" >&2
+  archive_canister_id="$(jq -r '.canister_id' <<<"$archive_canister")"
+  archive_start_index="$(jq -r '.block_range_start' <<<"$archive_canister" | sed -e 's/_//g')"
+  archive_end_index="$(($(jq -r '.block_range_end' <<<"$archive_canister" | sed -e 's/_//g') + 1))"
+  #echo "archive_canister_id: $archive_canister_id, archive_start_index: $archive_start_index, archive_end_index: $archive_end_index" >&2
+  get_transactions "$archive_canister_id" "$archive_start_index" "$archive_end_index"
+  max_archive_end_index="$archive_end_index"
+done < <(dfx canister call "$LEDGER_CANISTER_ID" --query --network "$DFX_NETWORK" archives | idl2json | jq -c '.[]')
+
+#echo "max_archive_end_index: $max_archive_end_index" >&2
+
+get_transactions "$LEDGER_CANISTER_ID" "$max_archive_end_index" "$END_INDEX"
