@@ -115,8 +115,10 @@ describe("neurons-derived", () => {
   });
 
   describe("soonLosingRewardNeuronsStore", () => {
+    const enoughDissolveDelayToVote = BigInt(SECONDS_IN_HALF_YEAR);
     const neuron1 = {
       ...mockNeuron,
+      dissolveDelaySeconds: enoughDissolveDelayToVote,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(
@@ -127,6 +129,7 @@ describe("neurons-derived", () => {
     };
     const neuron2 = {
       ...mockNeuron,
+      dissolveDelaySeconds: enoughDissolveDelayToVote,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         votingPowerRefreshedTimestampSeconds: 0n,
@@ -135,6 +138,7 @@ describe("neurons-derived", () => {
     };
     const neuron3 = {
       ...mockNeuron,
+      dissolveDelaySeconds: enoughDissolveDelayToVote,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         votingPowerRefreshedTimestampSeconds: 0n,
@@ -143,6 +147,7 @@ describe("neurons-derived", () => {
     };
     const freshNeuron = {
       ...mockNeuron,
+      dissolveDelaySeconds: enoughDissolveDelayToVote,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
         votingPowerRefreshedTimestampSeconds: BigInt(nowInSeconds()),
@@ -195,6 +200,18 @@ describe("neurons-derived", () => {
         certified: true,
       });
       expect(get(soonLosingRewardNeuronsStore)).toEqual([]);
+    });
+
+    it("should not include neurons that have not enough dissolve delay to vote", () => {
+      const notEnoughDissolveDelayToVoteNeuron = {
+        ...neuron1,
+        dissolveDelaySeconds: enoughDissolveDelayToVote - 1n,
+      };
+      neuronsStore.setNeurons({
+        neurons: [notEnoughDissolveDelayToVoteNeuron, neuron1],
+        certified: true,
+      });
+      expect(get(soonLosingRewardNeuronsStore)).toEqual([neuron1]);
     });
   });
 });

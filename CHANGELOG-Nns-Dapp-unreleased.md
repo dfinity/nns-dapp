@@ -21,6 +21,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* No missing rewards notification for neurons without a dissolve delay.
+
 #### Deprecated
 
 #### Removed

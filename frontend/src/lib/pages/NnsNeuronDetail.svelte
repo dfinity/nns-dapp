@@ -18,7 +18,6 @@
   import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import {
@@ -41,13 +40,13 @@
     getNeuronById,
     isSpawning,
     neuronVoting,
-    isNeuronMissingRewardsSoon,
   } from "$lib/utils/neuron.utils";
   import { Island } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
+  import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
 
   export let neuronIdText: string | undefined | null;
 
@@ -156,11 +155,9 @@
   $: isConfirmFollowingVisible =
     $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION &&
     nonNullish(neuron) &&
-    isNeuronMissingRewardsSoon({
-      neuron,
-      startReducingVotingPowerAfterSeconds:
-        $startReducingVotingPowerAfterSecondsStore,
-    });
+    $soonLosingRewardNeuronsStore.some(
+      ({ neuronId }) => neuronId === neuron!.neuronId
+    );
 </script>
 
 <TestIdWrapper testId="nns-neuron-detail-component">
