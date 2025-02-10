@@ -40,6 +40,7 @@ import {
   getDissolvingTimestampSeconds,
   getNeuronById,
   getNeuronTags,
+  getProposalStatusTitle,
   getSpawningTimeInSeconds,
   getTopicSubtitle,
   getTopicTitle,
@@ -3283,7 +3284,7 @@ describe("neuron-utils", () => {
     it("should return a title for every topic", () => {
       for (const topic of enumValues(Topic)) {
         expect(getTopicTitle({ topic, i18n: en })).toBe(
-          en.follow_neurons[`topic_${topic}_title`]
+          en.topics[Topic[topic]]
         );
       }
     });
@@ -3293,7 +3294,7 @@ describe("neuron-utils", () => {
         "All Except Governance, and SNS & Neurons' Fund"
       );
       expect(getTopicTitle({ topic: Topic.NeuronManagement, i18n: en })).toBe(
-        "Manage Neuron"
+        "Neuron Management"
       );
       expect(getTopicTitle({ topic: Topic.ExchangeRate, i18n: en })).toBe(
         "Exchange Rate"
@@ -3357,7 +3358,7 @@ describe("neuron-utils", () => {
     it("should return a title for every topic", () => {
       for (const topic of enumValues(Topic)) {
         expect(getTopicSubtitle({ topic, i18n: en })).toBe(
-          en.follow_neurons[`topic_${topic}_subtitle`]
+          en.follow_neurons_topic_subtitles[Topic[topic]]
         );
       }
     });
