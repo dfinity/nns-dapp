@@ -321,7 +321,7 @@ describe("SnsWallet", () => {
 
       // The Finish button is only rendered after the modal animation has finished.
       expect(await receiveModalPo.getFinishButtonPo().isPresent()).toBe(false);
-      await advanceTime(50);
+      await advanceTime(500);
       expect(await receiveModalPo.getFinishButtonPo().isPresent()).toBe(true);
 
       await receiveModalPo.clickFinish();
