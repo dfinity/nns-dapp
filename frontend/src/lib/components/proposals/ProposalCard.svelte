@@ -118,6 +118,7 @@
   h3 {
     padding: var(--padding-2x) 0 var(--padding-0_5x);
     margin-bottom: var(--padding-2x);
+    overflow-wrap: break-word;
   }
 
   p {
