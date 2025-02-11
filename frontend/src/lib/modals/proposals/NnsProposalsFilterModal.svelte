@@ -18,6 +18,7 @@
     getTopicTitle,
   } from "$lib/utils/neuron.utils";
   import { isNullish } from "@dfinity/utils";
+  import { sortNnsTopics } from "$lib/utils/proposals.utils";
 
   export let props: ProposalsFilterModalProps | undefined;
 
@@ -55,6 +56,7 @@
         .filter((value) =>
           category === "topics" ? !DEPRECATED_TOPICS.includes(value) : true
         )
+        .sort(sortNnsTopics($i18n))
         .map(mapToFilter)
     : [];
   $: selectedFilters = props?.selectedFilters || [];
