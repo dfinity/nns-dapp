@@ -51,13 +51,14 @@
   $: category = props?.category ?? "uncategorized";
   $: filters = props?.filters;
   $: filtersValues = filters
-    ? enumValues(filters)
-        .filter((value) => value !== PROPOSAL_FILTER_UNSPECIFIED_VALUE)
-        .filter((value) =>
-          category === "topics" ? !DEPRECATED_TOPICS.includes(value) : true
-        )
-        .sort(sortNnsTopics($i18n))
-        .map(mapToFilter)
+    ? sortNnsTopics({
+        topics: enumValues(filters)
+          .filter((value) => value !== PROPOSAL_FILTER_UNSPECIFIED_VALUE)
+          .filter((value) =>
+            category === "topics" ? !DEPRECATED_TOPICS.includes(value) : true
+          ),
+        i18n: $i18n,
+      }).map(mapToFilter)
     : [];
   $: selectedFilters = props?.selectedFilters || [];
 

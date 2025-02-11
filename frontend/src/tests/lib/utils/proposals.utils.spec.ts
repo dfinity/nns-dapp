@@ -1157,7 +1157,7 @@ describe("proposals-utils", () => {
     it("sorts topics", () => {
       const i18n = en;
       // To ensure the correct order after Topic changes, enumValues is used.
-      expect(enumValues(Topic).sort(sortNnsTopics(i18n))).toEqual([
+      expect(sortNnsTopics({ topics: enumValues(Topic), i18n })).toEqual([
         /* Governance 4 */ Topic.Governance,
         /* SNS & Neurons' Fund 14 */ Topic.SnsAndCommunityFund,
         /* Unspecified 0 */ Topic.Unspecified,
@@ -1182,16 +1182,19 @@ describe("proposals-utils", () => {
         /* Subnet Rental [16] */ Topic.SubnetRental,
       ]);
 
-      expect([].sort(sortNnsTopics(i18n))).toEqual([]);
+      expect(sortNnsTopics({ topics: [], i18n })).toEqual([]);
     });
 
     it("ignores letter case when sorting", () => {
       const i18n = en;
       expect(
-        [
-          /* SNS Decentralization Swap [11] */ Topic.SnsDecentralizationSale,
-          /* Service Nervous System Management [18] */ Topic.ServiceNervousSystemManagement,
-        ].sort(sortNnsTopics(i18n))
+        sortNnsTopics({
+          topics: [
+            /* SNS Decentralization Swap [11] */ Topic.SnsDecentralizationSale,
+            /* Service Nervous System Management [18] */ Topic.ServiceNervousSystemManagement,
+          ],
+          i18n,
+        })
       ).toEqual([
         /* Service Nervous System Management [18] */ Topic.ServiceNervousSystemManagement,
         /* SNS Decentralization Swap [11] */ Topic.SnsDecentralizationSale,
