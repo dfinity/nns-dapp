@@ -135,6 +135,8 @@ interface I18nError {
   invalid_ledger_index_pair: string;
   index_canister_validation: string;
   refresh_voting_power: string;
+  unknown_topic_title: string;
+  unknown_proposal_status_title: string;
 }
 
 interface I18nWarning {
@@ -438,47 +440,30 @@ interface I18nNew_followee {
 
 interface I18nFollow_neurons {
   description: string;
-  topic_0_title: string;
-  topic_0_subtitle: string;
-  topic_1_title: string;
-  topic_1_subtitle: string;
-  topic_2_title: string;
-  topic_2_subtitle: string;
-  topic_3_title: string;
-  topic_3_subtitle: string;
-  topic_4_title: string;
-  topic_4_subtitle: string;
-  topic_5_title: string;
-  topic_5_subtitle: string;
-  topic_6_title: string;
-  topic_6_subtitle: string;
-  topic_7_title: string;
-  topic_7_subtitle: string;
-  topic_8_title: string;
-  topic_8_subtitle: string;
-  topic_9_title: string;
-  topic_9_subtitle: string;
-  topic_10_title: string;
-  topic_10_subtitle: string;
-  topic_11_title: string;
-  topic_11_subtitle: string;
-  topic_12_title: string;
-  topic_12_subtitle: string;
-  topic_13_title: string;
-  topic_13_subtitle: string;
-  topic_14_title: string;
-  topic_14_subtitle: string;
-  topic_15_title: string;
-  topic_15_subtitle: string;
-  topic_16_title: string;
-  topic_16_subtitle: string;
-  topic_17_title: string;
-  topic_17_subtitle: string;
-  topic_18_title: string;
-  topic_18_subtitle: string;
   current_followees: string;
   add: string;
-  unknown_topic_title: string;
+}
+
+interface I18nFollow_neurons_topic_subtitles {
+  Unspecified: string;
+  NeuronManagement: string;
+  ExchangeRate: string;
+  NetworkEconomics: string;
+  Governance: string;
+  NodeAdmin: string;
+  ParticipantManagement: string;
+  SubnetManagement: string;
+  NetworkCanisterManagement: string;
+  Kyc: string;
+  NodeProviderRewards: string;
+  SnsDecentralizationSale: string;
+  IcOsVersionDeployment: string;
+  IcOsVersionElection: string;
+  SnsAndCommunityFund: string;
+  ApiBoundaryNodeManagement: string;
+  SubnetRental: string;
+  ProtocolCanisterManagement: string;
+  ServiceNervousSystemManagement: string;
 }
 
 interface I18nVoting {
@@ -1521,6 +1506,7 @@ interface I18n {
   missing_rewards_modal: I18nMissing_rewards_modal;
   new_followee: I18nNew_followee;
   follow_neurons: I18nFollow_neurons;
+  follow_neurons_topic_subtitles: I18nFollow_neurons_topic_subtitles;
   voting: I18nVoting;
   actionable_proposals_sign_in: I18nActionable_proposals_sign_in;
   actionable_proposals_empty: I18nActionable_proposals_empty;

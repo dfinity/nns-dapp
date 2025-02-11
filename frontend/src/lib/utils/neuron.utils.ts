@@ -58,6 +58,7 @@ import {
   NeuronState,
   NeuronType,
   NeuronVisibility,
+  ProposalStatus,
   Topic,
   Vote,
   ineligibleNeurons,
@@ -1213,6 +1214,29 @@ export const maturityLastDistribution = ({
 export const neuronDashboardUrl = ({ neuronId }: NeuronInfo): string =>
   `https://dashboard.internetcomputer.org/neuron/${neuronId.toString()}`;
 
+export const getProposalStatusTitle = ({
+  status,
+  i18n,
+}: {
+  status: ProposalStatus;
+  i18n: I18n;
+}): string => {
+  const mapper: Record<ProposalStatus, string> = {
+    [ProposalStatus.Unknown]: i18n.status.Unknown,
+    [ProposalStatus.Open]: i18n.status.Open,
+    [ProposalStatus.Rejected]: i18n.status.Rejected,
+    [ProposalStatus.Accepted]: i18n.status.Accepted,
+    [ProposalStatus.Executed]: i18n.status.Executed,
+    [ProposalStatus.Failed]: i18n.status.Failed,
+  };
+  return (
+    mapper[status] ??
+    replacePlaceholders(i18n.error.unknown_proposal_status_title, {
+      $statusId: status.toString(),
+    })
+  );
+};
+
 export const getTopicTitle = ({
   topic,
   i18n,
@@ -1221,29 +1245,30 @@ export const getTopicTitle = ({
   i18n: I18n;
 }): string => {
   const mapper: Record<Topic, string> = {
-    [Topic.Unspecified]: i18n.follow_neurons.topic_0_title,
-    [Topic.NeuronManagement]: i18n.follow_neurons.topic_1_title,
-    [Topic.ExchangeRate]: i18n.follow_neurons.topic_2_title,
-    [Topic.NetworkEconomics]: i18n.follow_neurons.topic_3_title,
-    [Topic.Governance]: i18n.follow_neurons.topic_4_title,
-    [Topic.NodeAdmin]: i18n.follow_neurons.topic_5_title,
-    [Topic.ParticipantManagement]: i18n.follow_neurons.topic_6_title,
-    [Topic.SubnetManagement]: i18n.follow_neurons.topic_7_title,
-    [Topic.NetworkCanisterManagement]: i18n.follow_neurons.topic_8_title,
-    [Topic.Kyc]: i18n.follow_neurons.topic_9_title,
-    [Topic.NodeProviderRewards]: i18n.follow_neurons.topic_10_title,
-    [Topic.SnsDecentralizationSale]: i18n.follow_neurons.topic_11_title,
-    [Topic.IcOsVersionDeployment]: i18n.follow_neurons.topic_12_title,
-    [Topic.IcOsVersionElection]: i18n.follow_neurons.topic_13_title,
-    [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_title,
-    [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_title,
-    [Topic.SubnetRental]: i18n.follow_neurons.topic_16_title,
-    [Topic.ProtocolCanisterManagement]: i18n.follow_neurons.topic_17_title,
-    [Topic.ServiceNervousSystemManagement]: i18n.follow_neurons.topic_18_title,
+    [Topic.Unspecified]: i18n.topics.Unspecified,
+    [Topic.NeuronManagement]: i18n.topics.NeuronManagement,
+    [Topic.ExchangeRate]: i18n.topics.ExchangeRate,
+    [Topic.NetworkEconomics]: i18n.topics.NetworkEconomics,
+    [Topic.Governance]: i18n.topics.Governance,
+    [Topic.NodeAdmin]: i18n.topics.NodeAdmin,
+    [Topic.ParticipantManagement]: i18n.topics.ParticipantManagement,
+    [Topic.SubnetManagement]: i18n.topics.SubnetManagement,
+    [Topic.NetworkCanisterManagement]: i18n.topics.NetworkCanisterManagement,
+    [Topic.Kyc]: i18n.topics.Kyc,
+    [Topic.NodeProviderRewards]: i18n.topics.NodeProviderRewards,
+    [Topic.SnsDecentralizationSale]: i18n.topics.SnsDecentralizationSale,
+    [Topic.IcOsVersionDeployment]: i18n.topics.IcOsVersionDeployment,
+    [Topic.IcOsVersionElection]: i18n.topics.IcOsVersionElection,
+    [Topic.SnsAndCommunityFund]: i18n.topics.SnsAndCommunityFund,
+    [Topic.ApiBoundaryNodeManagement]: i18n.topics.ApiBoundaryNodeManagement,
+    [Topic.SubnetRental]: i18n.topics.SubnetRental,
+    [Topic.ProtocolCanisterManagement]: i18n.topics.ProtocolCanisterManagement,
+    [Topic.ServiceNervousSystemManagement]:
+      i18n.topics.ServiceNervousSystemManagement,
   };
   return (
     mapper[topic] ??
-    replacePlaceholders(i18n.follow_neurons.unknown_topic_title, {
+    replacePlaceholders(i18n.error.unknown_topic_title, {
       $topicId: topic.toString(),
     })
   );
@@ -1257,26 +1282,38 @@ export const getTopicSubtitle = ({
   i18n: I18n;
 }): string => {
   const mapper: Record<Topic, string> = {
-    [Topic.Unspecified]: i18n.follow_neurons.topic_0_subtitle,
-    [Topic.NeuronManagement]: i18n.follow_neurons.topic_1_subtitle,
-    [Topic.ExchangeRate]: i18n.follow_neurons.topic_2_subtitle,
-    [Topic.NetworkEconomics]: i18n.follow_neurons.topic_3_subtitle,
-    [Topic.Governance]: i18n.follow_neurons.topic_4_subtitle,
-    [Topic.NodeAdmin]: i18n.follow_neurons.topic_5_subtitle,
-    [Topic.ParticipantManagement]: i18n.follow_neurons.topic_6_subtitle,
-    [Topic.SubnetManagement]: i18n.follow_neurons.topic_7_subtitle,
-    [Topic.NetworkCanisterManagement]: i18n.follow_neurons.topic_8_subtitle,
-    [Topic.Kyc]: i18n.follow_neurons.topic_9_subtitle,
-    [Topic.NodeProviderRewards]: i18n.follow_neurons.topic_10_subtitle,
-    [Topic.SnsDecentralizationSale]: i18n.follow_neurons.topic_11_subtitle,
-    [Topic.IcOsVersionDeployment]: i18n.follow_neurons.topic_12_subtitle,
-    [Topic.IcOsVersionElection]: i18n.follow_neurons.topic_13_subtitle,
-    [Topic.SnsAndCommunityFund]: i18n.follow_neurons.topic_14_subtitle,
-    [Topic.ApiBoundaryNodeManagement]: i18n.follow_neurons.topic_15_subtitle,
-    [Topic.SubnetRental]: i18n.follow_neurons.topic_16_subtitle,
-    [Topic.ProtocolCanisterManagement]: i18n.follow_neurons.topic_17_subtitle,
+    [Topic.Unspecified]: i18n.follow_neurons_topic_subtitles.Unspecified,
+    [Topic.NeuronManagement]:
+      i18n.follow_neurons_topic_subtitles.NeuronManagement,
+    [Topic.ExchangeRate]: i18n.follow_neurons_topic_subtitles.ExchangeRate,
+    [Topic.NetworkEconomics]:
+      i18n.follow_neurons_topic_subtitles.NetworkEconomics,
+    [Topic.Governance]: i18n.follow_neurons_topic_subtitles.Governance,
+    [Topic.NodeAdmin]: i18n.follow_neurons_topic_subtitles.NodeAdmin,
+    [Topic.ParticipantManagement]:
+      i18n.follow_neurons_topic_subtitles.ParticipantManagement,
+    [Topic.SubnetManagement]:
+      i18n.follow_neurons_topic_subtitles.SubnetManagement,
+    [Topic.NetworkCanisterManagement]:
+      i18n.follow_neurons_topic_subtitles.NetworkCanisterManagement,
+    [Topic.Kyc]: i18n.follow_neurons_topic_subtitles.Kyc,
+    [Topic.NodeProviderRewards]:
+      i18n.follow_neurons_topic_subtitles.NodeProviderRewards,
+    [Topic.SnsDecentralizationSale]:
+      i18n.follow_neurons_topic_subtitles.SnsDecentralizationSale,
+    [Topic.IcOsVersionDeployment]:
+      i18n.follow_neurons_topic_subtitles.IcOsVersionDeployment,
+    [Topic.IcOsVersionElection]:
+      i18n.follow_neurons_topic_subtitles.IcOsVersionElection,
+    [Topic.SnsAndCommunityFund]:
+      i18n.follow_neurons_topic_subtitles.SnsAndCommunityFund,
+    [Topic.ApiBoundaryNodeManagement]:
+      i18n.follow_neurons_topic_subtitles.ApiBoundaryNodeManagement,
+    [Topic.SubnetRental]: i18n.follow_neurons_topic_subtitles.SubnetRental,
+    [Topic.ProtocolCanisterManagement]:
+      i18n.follow_neurons_topic_subtitles.ProtocolCanisterManagement,
     [Topic.ServiceNervousSystemManagement]:
-      i18n.follow_neurons.topic_18_subtitle,
+      i18n.follow_neurons_topic_subtitles.ServiceNervousSystemManagement,
   };
   return mapper[topic];
 };

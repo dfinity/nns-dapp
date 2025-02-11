@@ -40,6 +40,7 @@ import {
   getDissolvingTimestampSeconds,
   getNeuronById,
   getNeuronTags,
+  getProposalStatusTitle,
   getSpawningTimeInSeconds,
   getTopicSubtitle,
   getTopicTitle,
@@ -102,6 +103,7 @@ import {
   NeuronState,
   NeuronType,
   NeuronVisibility,
+  ProposalStatus,
   Topic,
   Vote,
   type BallotInfo,
@@ -3241,11 +3243,48 @@ describe("neuron-utils", () => {
     });
   });
 
+  describe("getProposalStatusTitle", () => {
+    it("should return a title for every status", () => {
+      for (const status of enumValues(ProposalStatus)) {
+        expect(getProposalStatusTitle({ status, i18n: en })).toBe(
+          en.status[ProposalStatus[status]]
+        );
+      }
+    });
+
+    it("should return the correct title", () => {
+      expect(
+        getProposalStatusTitle({ status: ProposalStatus.Unknown, i18n: en })
+      ).toBe("Unknown");
+      expect(
+        getProposalStatusTitle({ status: ProposalStatus.Open, i18n: en })
+      ).toBe("Open");
+      expect(
+        getProposalStatusTitle({ status: ProposalStatus.Rejected, i18n: en })
+      ).toBe("Rejected");
+      expect(
+        getProposalStatusTitle({ status: ProposalStatus.Accepted, i18n: en })
+      ).toBe("Adopted");
+      expect(
+        getProposalStatusTitle({ status: ProposalStatus.Executed, i18n: en })
+      ).toBe("Executed");
+      expect(
+        getProposalStatusTitle({ status: ProposalStatus.Failed, i18n: en })
+      ).toBe("Failed");
+    });
+
+    it("should render unknown topics", () => {
+      expect(
+        getProposalStatusTitle({ status: 1000 as ProposalStatus, i18n: en })
+      ).toBe("Unknown Proposal Status (1000)");
+    });
+  });
+
   describe("getTopicTitle", () => {
     it("should return a title for every topic", () => {
       for (const topic of enumValues(Topic)) {
         expect(getTopicTitle({ topic, i18n: en })).toBe(
-          en.follow_neurons[`topic_${topic}_title`]
+          en.topics[Topic[topic]]
         );
       }
     });
@@ -3255,7 +3294,7 @@ describe("neuron-utils", () => {
         "All Except Governance, and SNS & Neurons' Fund"
       );
       expect(getTopicTitle({ topic: Topic.NeuronManagement, i18n: en })).toBe(
-        "Manage Neuron"
+        "Neuron Management"
       );
       expect(getTopicTitle({ topic: Topic.ExchangeRate, i18n: en })).toBe(
         "Exchange Rate"
@@ -3319,7 +3358,7 @@ describe("neuron-utils", () => {
     it("should return a title for every topic", () => {
       for (const topic of enumValues(Topic)) {
         expect(getTopicSubtitle({ topic, i18n: en })).toBe(
-          en.follow_neurons[`topic_${topic}_subtitle`]
+          en.follow_neurons_topic_subtitles[Topic[topic]]
         );
       }
     });
