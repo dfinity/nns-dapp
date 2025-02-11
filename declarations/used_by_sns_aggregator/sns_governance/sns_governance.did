@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-30_03-03-hashes-in-blocks/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-06_12-26-revert-hashes-in-blocks/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -56,6 +56,7 @@ type CanisterStatusResultV2 = record {
   settings : DefiniteCanisterSettingsArgs;
   idle_cycles_burned_per_day : nat;
   module_hash : opt blob;
+  query_stats : opt QueryStats;
 };
 
 type CanisterStatusType = variant {
@@ -609,6 +610,13 @@ type ProposalData = record {
 
 type ProposalId = record {
   id : nat64;
+};
+
+type QueryStats = record {
+  num_calls_total : opt nat;
+  num_instructions_total : opt nat;
+  request_payload_bytes_total : opt nat;
+  response_payload_bytes_total : opt nat;
 };
 
 type RegisterDappCanisters = record {
