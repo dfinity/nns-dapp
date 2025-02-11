@@ -12,10 +12,10 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { filteredActionableProposals } from "$lib/derived/proposals.derived";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
-  import { InfiniteScroll } from "@dfinity/gix-components";
+  import { InfiniteScroll, testSafeFade } from "@dfinity/gix-components";
   import type { ProposalInfo } from "@dfinity/nns";
   import { isNullish } from "@dfinity/utils";
-  import { fade } from "svelte/transition";
+
   export let hidden: boolean;
   export let disableInfiniteScroll: boolean;
   export let loading: boolean;
@@ -35,7 +35,7 @@
 
   {#if display}
     {#if !$actionableProposalsActiveStore}
-      <div in:fade data-tid="all-proposal-list">
+      <div in:testSafeFade data-tid="all-proposal-list">
         {#if loadingAnimation === "skeleton"}
           <LoadingProposals />
         {:else if $filteredActionableProposals.proposals.length === 0}
@@ -59,7 +59,7 @@
         {/if}
       </div>
     {:else}
-      <div in:fade data-tid="actionable-proposal-list">
+      <div in:testSafeFade data-tid="actionable-proposal-list">
         {#if !$authSignedInStore}
           <ActionableProposalsSignIn />
         {:else if isNullish(actionableProposals)}

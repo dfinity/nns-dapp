@@ -10,10 +10,9 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
-  import { InfiniteScroll } from "@dfinity/gix-components";
+  import { InfiniteScroll, testSafeFade } from "@dfinity/gix-components";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { fromNullable, isNullish } from "@dfinity/utils";
-  import { fade } from "svelte/transition";
 
   export let proposals: SnsProposalActionableData[] | undefined;
   export let actionableSelected: boolean;
@@ -26,7 +25,7 @@
   <SnsProposalsFilters />
 
   {#if !actionableSelected}
-    <div in:fade data-tid="all-proposal-list">
+    <div in:testSafeFade data-tid="all-proposal-list">
       {#if proposals === undefined}
         <LoadingProposals />
       {:else if proposals.length === 0}
@@ -51,7 +50,7 @@
       {/if}
     </div>
   {:else}
-    <div in:fade data-tid="actionable-proposal-list">
+    <div in:testSafeFade data-tid="actionable-proposal-list">
       {#if !$authSignedInStore}
         <ActionableProposalsSignIn />
       {:else if isNullish(proposals)}
