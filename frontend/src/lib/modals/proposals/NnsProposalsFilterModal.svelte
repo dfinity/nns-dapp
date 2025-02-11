@@ -17,6 +17,7 @@
     getProposalStatusTitle,
     getTopicTitle,
   } from "$lib/utils/neuron.utils";
+  import { isNullish } from "@dfinity/utils";
 
   export let props: ProposalsFilterModalProps | undefined;
 
@@ -33,15 +34,14 @@
     return {
       id: String(value),
       value,
-      name:
-        props?.category === undefined
-          ? "Unspecified"
-          : props?.category === "status"
-            ? getProposalStatusTitle({
-                status: value as ProposalStatus,
-                i18n: $i18n,
-              })
-            : getTopicTitle({ topic: value as Topic, i18n: $i18n }),
+      name: isNullish(props?.category)
+        ? "Unspecified"
+        : props?.category === "status"
+          ? getProposalStatusTitle({
+              status: value as ProposalStatus,
+              i18n: $i18n,
+            })
+          : getTopicTitle({ topic: value as Topic, i18n: $i18n }),
       checked: selectedFilters?.includes(value),
     };
   };
