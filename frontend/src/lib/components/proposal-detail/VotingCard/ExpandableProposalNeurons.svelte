@@ -1,6 +1,9 @@
 <script lang="ts">
-  import { Collapsible, IconExpandCircleDown } from "@dfinity/gix-components";
-  import { fade } from "svelte/transition";
+  import {
+    Collapsible,
+    IconExpandCircleDown,
+    testSafeFade,
+  } from "@dfinity/gix-components";
 
   export let testId: string;
 
@@ -8,7 +11,7 @@
   let expanded: boolean;
 </script>
 
-<div class="container" in:fade>
+<div class="container" in:testSafeFade>
   <Collapsible
     {testId}
     expandButton={false}

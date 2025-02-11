@@ -4,9 +4,12 @@
   import { jsonRepresentationModeStore } from "$lib/derived/json-representation.derived";
   import { i18n } from "$lib/stores/i18n";
   import { expandObject, getObjMaxDepth } from "$lib/utils/utils";
-  import { IconCollapseAll, IconExpandAll } from "@dfinity/gix-components";
+  import {
+    IconCollapseAll,
+    IconExpandAll,
+    testSafeFade,
+  } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
-  import { fade } from "svelte/transition";
 
   const DEFAULT_EXPANDED_LEVEL = 1;
 
@@ -38,12 +41,12 @@
       on:click={toggleExpanded}
     >
       {#if isAllExpanded}
-        <div in:fade>
+        <div in:testSafeFade>
           <IconCollapseAll />
           <span class="expand-all-label">{$i18n.core.collapse_all}</span>
         </div>
       {:else}
-        <div in:fade>
+        <div in:testSafeFade>
           <IconExpandAll />
           <span class="expand-all-label">{$i18n.core.expand_all}</span>
         </div>
@@ -52,7 +55,7 @@
   {/if}
   <div data-tid="json-wrapper" class="json-wrapper">
     {#if $jsonRepresentationModeStore === "tree"}
-      <div in:fade>
+      <div in:testSafeFade>
         <TreeJson
           testId="tree-json"
           json={expandedData}
@@ -60,7 +63,7 @@
         />
       </div>
     {:else}
-      <div in:fade>
+      <div in:testSafeFade>
         <RawJson testId="raw-json" {json} />
       </div>
     {/if}
