@@ -35,13 +35,20 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   step("New user is signed in");
   await signInWithNewUser({ page, context: browser.contexts()[0] });
-  await portfolioPo.getPortfolioPagePo().getNoHeldTokensCard().waitFor();
-  await portfolioPo.getPortfolioPagePo().getNoStakedTokensCarPo().waitFor();
-  await screenshotsWithDifferentViewports({ page, step: "signed_in" });
 
-  step("Get some ICP");
+  step("Get some ICP and BTC");
   await page.goto("/tokens");
   await appPo.getIcpTokens(41);
+  const ckBTCRow = await appPo
+    .getTokensPo()
+    .getTokensPagePo()
+    .getTokensTable()
+    .getRowByName("ckBTC");
+  await ckBTCRow.waitForBalance();
+  await appPo.getBtc(1);
+  await ckBTCRow.click();
+  await appPo.getWalletPo().getCkBTCWalletPo().clickRefreshBalance();
+  await appPo.waitForNotBusy();
 
   step("Stake neuron (for voting)");
   await appPo.goToStaking();
