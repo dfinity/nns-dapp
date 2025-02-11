@@ -273,7 +273,7 @@ describe("NnsProposals", () => {
         await filterModal.clickConfirmButton();
 
         // Finish the fade transition of the modal.
-        await advanceTime(25);
+        await advanceTime(500);
         await filterModal.waitForAbsent();
 
         // Stop waiting for the debounce to reload proposals.
@@ -295,7 +295,6 @@ describe("NnsProposals", () => {
         // should not result in displaying old data which doesn't match the
         // current filters.
         proposalRequests[1].resolve([matchingProposal]);
-        //await advanceTime(500);
         await runResolvedPromises();
         // We should still see both proposals from the request from after the
         // filter was removed.
