@@ -10,19 +10,19 @@
   } from "$lib/types/proposals";
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
   import { enumValues } from "$lib/utils/enum.utils";
-  import { keyOf, keyOfOptional } from "$lib/utils/utils";
+  import { keyOfOptional } from "$lib/utils/utils";
   import type { ProposalStatus, Topic } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
+  import {
+    getProposalStatusTitle,
+    getTopicTitle,
+  } from "$lib/utils/neuron.utils";
+  import { isNullish } from "@dfinity/utils";
 
   export let props: ProposalsFilterModalProps | undefined;
 
   let visible: boolean;
   let category: string;
-  let i18nKeys: unknown | undefined;
-  $: i18nKeys =
-    props?.category !== undefined
-      ? keyOf({ obj: $i18n, key: props?.category })
-      : undefined;
   let filters: ProposalsFilters | undefined;
   let filtersValues: Filter<Topic | ProposalStatus>[];
   let selectedFilters: (Topic | ProposalStatus)[];
@@ -34,11 +34,14 @@
     return {
       id: String(value),
       value,
-      name:
-        keyOfOptional({
-          obj: i18nKeys,
-          key: filters?.[value] ?? "",
-        }) ?? "Unspecified",
+      name: isNullish(props?.category)
+        ? "Unspecified"
+        : props?.category === "status"
+          ? getProposalStatusTitle({
+              status: value as ProposalStatus,
+              i18n: $i18n,
+            })
+          : getTopicTitle({ topic: value as Topic, i18n: $i18n }),
       checked: selectedFilters?.includes(value),
     };
   };

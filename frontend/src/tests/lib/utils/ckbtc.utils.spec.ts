@@ -116,7 +116,9 @@ describe("ckbtc.utils", () => {
         infoData: undefined,
       })
     ).toThrow(
-      new NotEnoughAmountError(en.error__ckbtc.retrieve_btc_min_amount_unknown)
+      new CkBTCErrorRetrieveBtcMinAmount(
+        en.error__ckbtc.retrieve_btc_min_amount_unknown
+      )
     );
   });
 
@@ -130,7 +132,7 @@ describe("ckbtc.utils", () => {
         },
       })
     ).toThrow(
-      new NotEnoughAmountError(
+      new CkBTCErrorRetrieveBtcMinAmount(
         en.error__ckbtc.wait_ckbtc_info_parameters_certified
       )
     );

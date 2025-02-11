@@ -37,6 +37,7 @@ import { toastsStore } from "@dfinity/gix-components";
 import { Vote } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import {
+  SnsGovernanceError,
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -219,7 +220,7 @@ describe("SnsProposalDetail", () => {
       });
       expect(console.error).toBeCalledWith(
         expect.objectContaining({
-          error: new Error("No proposal for given proposalId 2"),
+          error: new SnsGovernanceError("No proposal for given proposalId 2"),
         })
       );
       expect(console.error).toBeCalledTimes(1);
@@ -450,13 +451,13 @@ describe("SnsProposalDetail", () => {
       expect(console.error).toHaveBeenNthCalledWith(
         2,
         expect.objectContaining({
-          error: new Error("No proposal for given proposalId 19"),
+          error: new SnsGovernanceError("No proposal for given proposalId 19"),
         })
       );
       expect(console.error).toHaveBeenNthCalledWith(
         1,
         expect.objectContaining({
-          error: new Error("No proposal for given proposalId 19"),
+          error: new SnsGovernanceError("No proposal for given proposalId 19"),
         })
       );
       expect(console.error).toBeCalledTimes(2);
@@ -508,13 +509,13 @@ describe("SnsProposalDetail", () => {
       expect(console.error).toHaveBeenNthCalledWith(
         2,
         expect.objectContaining({
-          error: new Error("No proposal for given proposalId 30"),
+          error: new SnsGovernanceError("No proposal for given proposalId 30"),
         })
       );
       expect(console.error).toHaveBeenNthCalledWith(
         1,
         expect.objectContaining({
-          error: new Error("No proposal for given proposalId 30"),
+          error: new SnsGovernanceError("No proposal for given proposalId 30"),
         })
       );
       expect(console.error).toBeCalledTimes(2);
