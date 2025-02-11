@@ -1,4 +1,3 @@
-import { Crypto as SubtleCrypto } from "@peculiar/webcrypto";
 import "@testing-library/jest-dom";
 import { configure } from "@testing-library/svelte";
 import "fake-indexeddb/auto";
@@ -83,12 +82,6 @@ beforeEach(() => {
   // writableStored write to localStorage, and resetting them also causes them
   // to write to localStorage.
   localStorage.clear();
-});
-
-// Mock SubtleCrypto to test @dfinity/auth-client
-const crypto = new SubtleCrypto();
-Object.defineProperty(global, "crypto", {
-  value: crypto,
 });
 
 global.TextEncoder = TextEncoder;
