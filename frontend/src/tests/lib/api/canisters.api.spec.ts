@@ -13,7 +13,7 @@ import {
 } from "$lib/api/canisters.api";
 import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import { NameTooLongError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
+import { CanisterNameTooLongError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import {
   CREATE_CANISTER_MEMO,
   TOP_UP_CANISTER_MEMO,
@@ -119,7 +119,7 @@ describe("canisters-api", () => {
         });
 
       await expect(call).rejects.toThrowError(
-        new NameTooLongError("error__canister.name_too_long", {
+        new CanisterNameTooLongError("error__canister.name_too_long", {
           $name: longName,
         })
       );
@@ -148,7 +148,7 @@ describe("canisters-api", () => {
         });
 
       await expect(call).rejects.toThrowError(
-        new NameTooLongError("error__canister.name_too_long", {
+        new CanisterNameTooLongError("error__canister.name_too_long", {
           $name: longName,
         })
       );
@@ -350,7 +350,7 @@ describe("canisters-api", () => {
         });
 
       await expect(call).rejects.toThrowError(
-        new NameTooLongError("error__canister.name_too_long", {
+        new CanisterNameTooLongError("error__canister.name_too_long", {
           $name: longName,
         })
       );

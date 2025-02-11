@@ -600,7 +600,7 @@ describe("NNSDapp", () => {
 
       await expect(call).rejects.toThrowError(
         new TooManyImportedTokensError("error__imported_tokens.too_many", {
-          limit: "10",
+          $limit: "10",
         })
       );
     });

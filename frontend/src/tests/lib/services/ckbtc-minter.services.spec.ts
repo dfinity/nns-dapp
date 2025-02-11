@@ -11,7 +11,7 @@ import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
 import * as busyStore from "$lib/stores/busy.store";
 import { ckbtcPendingUtxosStore } from "$lib/stores/ckbtc-pending-utxos.store";
 import { ckbtcRetrieveBtcStatusesStore } from "$lib/stores/ckbtc-retrieve-btc-statuses.store";
-import { ApiErrorKey } from "$lib/types/api.errors";
+import { CkBTCErrorKey } from "$lib/types/ckbtc.errors";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -113,7 +113,7 @@ describe("ckbtc-minter-services", () => {
 
       const spyReload = vi.fn();
 
-      const err = new ApiErrorKey(en.error__ckbtc.already_process);
+      const err = new CkBTCErrorKey(en.error__ckbtc.already_process);
 
       const result = await services.updateBalance({
         ...params,
@@ -157,7 +157,7 @@ describe("ckbtc-minter-services", () => {
 
       expect(result).toEqual({
         success: false,
-        err: new MinterGenericError(error),
+        err: new CkBTCErrorKey(error),
       });
     });
 
@@ -168,7 +168,7 @@ describe("ckbtc-minter-services", () => {
         throw new MinterTemporaryUnavailableError(error);
       });
 
-      const err = new ApiErrorKey(
+      const err = new CkBTCErrorKey(
         `${en.error__ckbtc.temporary_unavailable} (${error})`
       );
 
@@ -182,7 +182,7 @@ describe("ckbtc-minter-services", () => {
         throw new MinterAlreadyProcessingError();
       });
 
-      const err = new ApiErrorKey(en.error__ckbtc.already_process);
+      const err = new CkBTCErrorKey(en.error__ckbtc.already_process);
 
       const result = await services.updateBalance(params);
 
@@ -318,7 +318,7 @@ describe("ckbtc-minter-services", () => {
 
       expect(result).toEqual({
         success: false,
-        err: new MinterGenericError(error),
+        err: new CkBTCErrorKey(error),
       });
     });
 
