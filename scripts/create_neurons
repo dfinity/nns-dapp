@@ -28,14 +28,14 @@ GOVERNANCE_CANISTER_ID=$(dfx canister --network local id nns-governance)
 
 # Download governance wasm, same version as what we are currently running
 COMMIT=$(dfx canister metadata nns-governance git_commit_id)
-curl -LsSf "https://download.dfinity.systems/ic/$COMMIT/canisters/governance-canister_test.wasm.gz" > governance-canister_test.wasm.gz
+curl -LsSf "https://download.dfinity.systems/ic/$COMMIT/canisters/governance-canister_test.wasm.gz" >governance-canister_test.wasm.gz
 
 # Function to reset rate limit by upgrading governance canister
 reset_rate_limit() {
-    echo "Resetting rate limit by upgrading governance canister..."
-    scripts/propose-install-canister --canister nns-governance --wasm governance-canister_test.wasm.gz
-    echo "Rate limit reset completed"
-    sleep 5
+  echo "Resetting rate limit by upgrading governance canister..."
+  scripts/propose-install-canister --canister nns-governance --wasm governance-canister_test.wasm.gz
+  echo "Rate limit reset completed"
+  sleep 5
 }
 
 # Function to create a single neuron
