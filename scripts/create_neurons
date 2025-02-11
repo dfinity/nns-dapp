@@ -16,7 +16,7 @@ source "$SOURCE_DIR/clap.bash"
 
 # Define options
 clap.define short=c long=count desc="Number of neurons to create" variable=NUM_NEURONS default="10"
-clap.define short=p long=principal desc="Principal ID (defaults to current dfx identity)" variable=CONTROLLER
+clap.define short=p long=principal desc="Principal ID (defaults to current dfx identity)" variable=CONTROLLER default="$(dfx identity get-principal)"
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
 
 # Source the output file
@@ -24,10 +24,6 @@ source "$(clap.build)"
 
 # Get governance canister ID
 GOVERNANCE_CANISTER_ID=$(dfx canister --network "$DFX_NETWORK" id nns-governance)
-
-if [[ -z "${CONTROLLER:-}" ]]; then
-  CONTROLLER=$(dfx identity --network "$DFX_NETWORK" get-principal)
-fi
 
 # Create neurons
 for ((i = 1; i <= NUM_NEURONS; i++)); do
