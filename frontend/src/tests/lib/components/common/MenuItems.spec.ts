@@ -101,7 +101,7 @@ describe("MenuItems", () => {
     menuStore.toggle();
 
     // Wait for the animation.
-    await advanceTime();
+    await advanceTime(500);
 
     expect(get(menuCollapsed)).toBe(true);
     expect(await po.hasFooter()).toBe(false);
@@ -121,7 +121,7 @@ describe("MenuItems", () => {
 
     menuStore.toggle();
     // Wait for the animation.
-    await advanceTime();
+    await advanceTime(500);
 
     expect(get(menuCollapsed)).toBe(true);
     expect(await po.hasFooter()).toBe(false);
@@ -134,7 +134,7 @@ describe("MenuItems", () => {
 
     layoutMenuOpen.set(false);
     // Wait for the animation.
-    await advanceTime();
+    await advanceTime(500);
 
     expect(get(menuCollapsed)).toBe(true);
     expect(await po.hasFooter()).toBe(false);

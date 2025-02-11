@@ -68,7 +68,7 @@ export default defineConfig(
           inline: ["@dfinity/sns", "@dfinity/utils"],
         },
       },
-      reporters: ["basic", "hanging-process"],
+      reporters: ["default", "hanging-process"],
       sequence: {
         hooks: "list",
       },
