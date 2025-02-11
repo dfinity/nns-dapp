@@ -115,7 +115,7 @@ describe("Tokens page", () => {
     await po.getBackdropPo().click();
 
     // Finish transitions
-    await advanceTime();
+    await advanceTime(500);
 
     expect(await po.getHideZeroBalancesTogglePo().isPresent()).toBe(false);
     expect(await po.getBackdropPo().isPresent()).toBe(false);
@@ -133,7 +133,7 @@ describe("Tokens page", () => {
     await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
     // Finish transitions
-    await advanceTime();
+    await advanceTime(500);
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
       "Positive balance",
@@ -161,7 +161,7 @@ describe("Tokens page", () => {
     await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
     // Finish transitions
-    await advanceTime();
+    await advanceTime(500);
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
       "Positive balance",
@@ -181,7 +181,7 @@ describe("Tokens page", () => {
     await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
     // Finish transitions
-    await advanceTime();
+    await advanceTime(500);
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
       "Positive balance",
@@ -214,7 +214,7 @@ describe("Tokens page", () => {
     await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
     // Finish transitions
-    await advanceTime();
+    await advanceTime(500);
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
       "Positive balance",
@@ -224,7 +224,7 @@ describe("Tokens page", () => {
     await po.getShowAllButtonPo().click();
 
     // Finish transitions
-    await advanceTime();
+    await advanceTime(500);
 
     expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
     expect(await po.getTokensTable().getTokenNames()).toEqual([

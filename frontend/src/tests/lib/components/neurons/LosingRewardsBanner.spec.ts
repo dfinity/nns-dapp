@@ -10,7 +10,10 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { LosingRewardsBannerPo } from "$tests/page-objects/LosingRewardsBanner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import {
+  advanceTime,
+  runResolvedPromises,
+} from "$tests/utils/timers.test-utils";
 
 describe("LosingRewardsBanner", () => {
   const nowSeconds = nowInSeconds();
@@ -202,7 +205,7 @@ describe("LosingRewardsBanner", () => {
         .getLosingRewardNeuronsModalPo()
         .getNnsLosingRewardsNeuronCardPos()
     ).toHaveLength(0);
-    vi.advanceTimersToNextFrame();
+    await advanceTime(500);
     expect(spyRefreshVotingPower).toBeCalledTimes(1);
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);
   });
