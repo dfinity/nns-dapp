@@ -195,8 +195,8 @@ vi.mock("$app/stores", () => ({
 }));
 
 // Issue: https://github.com/testing-library/svelte-testing-library/issues/206
-Object.defineProperty(global, "requestAnimationFrame", {
-  value: (fn) => {
+beforeEach(() => {
+  vi.stubGlobal("requestAnimationFrame", (fn) => {
     return window.setTimeout(() => fn(Date.now()), 0);
-  },
+  });
 });
