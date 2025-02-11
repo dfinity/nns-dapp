@@ -24,6 +24,7 @@ import {
   replaceAndConcatenateProposals,
   replaceProposals,
   selectedNeuronsVotingPower,
+  sortNnsTopics,
   sortProposalsByIdDescendingOrder,
 } from "$lib/utils/proposals.utils";
 import en from "$tests/mocks/i18n.mock";
@@ -1149,6 +1150,52 @@ describe("proposals-utils", () => {
         proposal0,
       ]);
       expect(sortProposalsByIdDescendingOrder([])).toEqual([]);
+    });
+  });
+
+  describe("sortNnsTopics", () => {
+    it("sorts topics", () => {
+      const i18n = en;
+      // To ensure the correct order after Topic changes, enumValues is used.
+      expect(enumValues(Topic).sort(sortNnsTopics(i18n))).toEqual([
+        /* Governance 4 */ Topic.Governance,
+        /* SNS & Neurons' Fund 14 */ Topic.SnsAndCommunityFund,
+        /* Unspecified 0 */ Topic.Unspecified,
+
+        // Sorted alphabetically
+
+        /* API Boundary Node Management [15] */ Topic.ApiBoundaryNodeManagement,
+        /* Application Canister Management [8] */ Topic.NetworkCanisterManagement,
+        /* Exchange Rate [2] */ Topic.ExchangeRate,
+        /* IC OS Version Deployment [12] */ Topic.IcOsVersionDeployment,
+        /* IC OS Version Election [13] */ Topic.IcOsVersionElection,
+        /* KYC [9] */ Topic.Kyc,
+        /* Network Economics [3] */ Topic.NetworkEconomics,
+        /* Neuron Management [1] */ Topic.NeuronManagement,
+        /* Node Admin [5] */ Topic.NodeAdmin,
+        /* Node Provider Rewards [10] */ Topic.NodeProviderRewards,
+        /* Participant Management [6] */ Topic.ParticipantManagement,
+        /* Protocol Canister Management [17] */ Topic.ProtocolCanisterManagement,
+        /* Service Nervous System Management [18] */ Topic.ServiceNervousSystemManagement,
+        /* SNS Decentralization Swap [11] */ Topic.SnsDecentralizationSale,
+        /* Subnet Management [7] */ Topic.SubnetManagement,
+        /* Subnet Rental [16] */ Topic.SubnetRental,
+      ]);
+
+      expect([].sort(sortNnsTopics(i18n))).toEqual([]);
+    });
+
+    it("ignores letter case when sorting", () => {
+      const i18n = en;
+      expect(
+        [
+          /* SNS Decentralization Swap [11] */ Topic.SnsDecentralizationSale,
+          /* Service Nervous System Management [18] */ Topic.ServiceNervousSystemManagement,
+        ].sort(sortNnsTopics(i18n))
+      ).toEqual([
+        /* Service Nervous System Management [18] */ Topic.ServiceNervousSystemManagement,
+        /* SNS Decentralization Swap [11] */ Topic.SnsDecentralizationSale,
+      ]);
     });
   });
 });
