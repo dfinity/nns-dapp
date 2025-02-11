@@ -18,6 +18,7 @@ source "$SOURCE_DIR/clap.bash"
 clap.define short=n long=number desc="Number of neurons to create" variable=NUM_NEURONS default="10"
 clap.define short=p long=principal desc="Principal ID (defaults to current dfx identity)" variable=CONTROLLER default="$(dfx identity get-principal)"
 clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="local"
+clap.define short=b long=batch desc="Batch size for parallel creation" variable=BATCH_SIZE default="25"
 
 # Source the output file
 source "$(clap.build)"
@@ -25,12 +26,26 @@ source "$(clap.build)"
 # Get governance canister ID
 GOVERNANCE_CANISTER_ID=$(dfx canister --network local id nns-governance)
 
-# Create neurons
-for ((i = 1; i <= NUM_NEURONS; i++)); do
+# Download governance wasm, same version as what we are currently running
+COMMIT=$(dfx canister metadata nns-governance git_commit_id)
+curl -LsSf "https://download.dfinity.systems/ic/$COMMIT/canisters/governance-canister_test.wasm.gz" > governance-canister_test.wasm.gz
+
+# Function to reset rate limit by upgrading governance canister
+reset_rate_limit() {
+    echo "Resetting rate limit by upgrading governance canister..."
+    scripts/propose-install-canister --canister nns-governance --wasm governance-canister_test.wasm.gz
+    echo "Rate limit reset completed"
+    sleep 5
+}
+
+# Function to create a single neuron
+create_neuron() {
+  local index=$1
+
   # Generate random memo using /dev/urandom
   MEMO=$(od -vAn -N8 -tu8 </dev/urandom | tr -d ' ')
 
-  echo "Creating neuron $i of $NUM_NEURONS with memo: $MEMO"
+  echo "Creating neuron $index of $NUM_NEURONS with memo: $MEMO"
 
   # Generate subaccount
   SUBACCOUNT="$(scripts/convert-id --input text --output hex --as_neuron_subaccount "$CONTROLLER" "$MEMO")"
@@ -41,11 +56,53 @@ for ((i = 1; i <= NUM_NEURONS; i++)); do
   # Transfer funds
   dfx ledger --network "$DFX_NETWORK" transfer "$ACCOUNT_IDENTIFIER" --amount 1 --memo "$MEMO"
 
-  # Claim the neuron
-  dfx canister --network "$DFX_NETWORK" call nns-governance claim_or_refresh_neuron_from_account "(record { controller = opt principal \"${CONTROLLER}\"; memo = ${MEMO} : nat64 })"
+  # Claim the neuron and capture the output
+  local RESULT
+  RESULT=$(dfx canister --network "$DFX_NETWORK" call nns-governance claim_or_refresh_neuron_from_account "(record { controller = opt principal \"${CONTROLLER}\"; memo = ${MEMO} : nat64 })")
 
-  echo "Neuron $i created successfully"
+  # Check for rate limit errors
+  if echo "$RESULT" | grep -q "error_type = 2 : int32"; then
+    echo "Rate limit reached after creating neuron $index"
+    return 1
+  fi
+
+  echo "Neuron $index created successfully"
+  echo "$RESULT"
   echo "----------------------------"
-done
+  return 0
+}
 
-echo "All $NUM_NEURONS neurons created successfully"
+# Process neurons in batches
+for ((batch_start = 1; batch_start <= NUM_NEURONS; batch_start += BATCH_SIZE)); do
+  batch_end=$((batch_start + BATCH_SIZE - 1))
+  if [ "$batch_end" -gt "$NUM_NEURONS" ]; then
+    batch_end=$NUM_NEURONS
+  fi
+
+  echo "Processing batch of neurons $batch_start to $batch_end"
+
+  # Array to store background process IDs for this batch
+  pids=()
+
+  # Start neuron creation processes for this batch
+  for ((i = batch_start; i <= batch_end; i++)); do
+    create_neuron "$i" &
+    pids+=("$!")
+  done
+
+  # Wait for all processes in this batch to complete and check for errors
+  failed=0
+  for pid in "${pids[@]}"; do
+    if ! wait "$pid"; then
+      failed=$((failed + 1))
+    fi
+  done
+
+  # If any process failed (rate limit), reset and continue
+  if [ "$failed" -gt 0 ]; then
+    echo "Rate limit reached at $(date "+%H:%M:%S"). Attempting reset..."
+    reset_rate_limit
+  elif [ "$batch_end" -lt "$NUM_NEURONS" ]; then
+    sleep 1
+  fi
+done
