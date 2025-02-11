@@ -799,6 +799,7 @@ describe("SnsProposalDetail", () => {
         .mockImplementation(
           () => resolveQueryProposalApiPromise as Promise<SnsProposalData>
         );
+      spyQueryProposalApi.mockClear();
 
       expect(spyQueryProposalApi).toBeCalledTimes(0);
 
