@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-30_03-03-hashes-in-blocks/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-06_12-26-revert-hashes-in-blocks/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record {
   hash : blob;
 };
@@ -451,6 +451,11 @@ type ListNeurons = record {
 
   page_number: opt nat64;
   page_size: opt nat64;
+  neuron_subaccounts: opt vec NeuronSubaccount;
+};
+
+type NeuronSubaccount = record {
+  subaccount : blob;
 };
 
 // Output of the list_neurons method.

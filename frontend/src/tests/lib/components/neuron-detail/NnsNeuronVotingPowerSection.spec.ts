@@ -1,4 +1,5 @@
 import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
+import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
@@ -140,7 +141,10 @@ describe("NnsStakeItemAction", () => {
   });
 
   it("should render item actions", async () => {
-    const po = renderComponent(mockNeuron);
+    const po = renderComponent({
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
+    });
 
     expect(await po.hasStakeItemAction()).toBe(true);
     expect(await po.hasNeuronStateItemAction()).toBe(true);
@@ -156,7 +160,10 @@ describe("NnsStakeItemAction", () => {
       parameters: mockNetworkEconomics,
       certified: true,
     });
-    const po = renderComponent(mockNeuron);
+    const po = renderComponent({
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
+    });
 
     expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(true);
   });
@@ -166,7 +173,10 @@ describe("NnsStakeItemAction", () => {
       "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
       false
     );
-    const po = renderComponent(mockNeuron);
+    const po = renderComponent({
+      ...mockNeuron,
+      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
+    });
 
     expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(false);
   });

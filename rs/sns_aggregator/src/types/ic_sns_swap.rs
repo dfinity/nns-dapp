@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-01-30_03-03-hashes-in-blocks/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-06_12-26-revert-hashes-in-blocks/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -240,11 +240,19 @@ pub struct DefiniteCanisterSettingsArgs {
     pub compute_allocation: candid::Nat,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct QueryStats {
+    pub response_payload_bytes_total: Option<candid::Nat>,
+    pub num_instructions_total: Option<candid::Nat>,
+    pub num_calls_total: Option<candid::Nat>,
+    pub request_payload_bytes_total: Option<candid::Nat>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CanisterStatusResultV2 {
     pub status: CanisterStatusType,
     pub memory_size: candid::Nat,
     pub cycles: candid::Nat,
     pub settings: DefiniteCanisterSettingsArgs,
+    pub query_stats: Option<QueryStats>,
     pub idle_cycles_burned_per_day: candid::Nat,
     pub module_hash: Option<serde_bytes::ByteBuf>,
 }

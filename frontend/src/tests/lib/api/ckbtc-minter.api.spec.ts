@@ -51,14 +51,14 @@ describe("ckbtc-minter api", () => {
       expect(getBTCAddressSpy).toBeCalled();
     });
 
-    it("throws an error if no token", () => {
+    it("throws an error if no token", async () => {
       minterCanisterMock.getBtcAddress.mockImplementation(async () => {
         throw new Error();
       });
 
       const call = () => getBTCAddress(params);
 
-      expect(call).rejects.toThrowError();
+      await expect(call).rejects.toThrowError();
     });
   });
 
@@ -74,14 +74,14 @@ describe("ckbtc-minter api", () => {
       expect(getBTCAddressSpy).toBeCalled();
     });
 
-    it("bubble errors", () => {
+    it("bubble errors", async () => {
       minterCanisterMock.updateBalance.mockImplementation(async () => {
         throw new Error();
       });
 
       const call = () => updateBalance(params);
 
-      expect(call).rejects.toThrowError();
+      await expect(call).rejects.toThrowError();
     });
   });
 
@@ -112,7 +112,7 @@ describe("ckbtc-minter api", () => {
       );
     });
 
-    it("bubble errors", () => {
+    it("bubble errors", async () => {
       minterCanisterMock.retrieveBtcWithApproval.mockImplementation(
         async () => {
           throw new Error();
@@ -125,7 +125,7 @@ describe("ckbtc-minter api", () => {
           ...retrieveWithApprovalParams,
         });
 
-      expect(call).rejects.toThrowError();
+      await expect(call).rejects.toThrowError();
     });
   });
 
@@ -182,14 +182,14 @@ describe("ckbtc-minter api", () => {
       expect(estimateFeeSpy).toBeCalled();
     });
 
-    it("bubble errors", () => {
+    it("bubble errors", async () => {
       minterCanisterMock.estimateWithdrawalFee.mockImplementation(async () => {
         throw new Error();
       });
 
       const call = () => estimateFee(feeParams);
 
-      expect(call).rejects.toThrowError();
+      await expect(call).rejects.toThrowError();
     });
   });
 
@@ -205,14 +205,14 @@ describe("ckbtc-minter api", () => {
       expect(minterFeeSpy).toBeCalled();
     });
 
-    it("bubble errors", () => {
+    it("bubble errors", async () => {
       minterCanisterMock.getMinterInfo.mockImplementation(async () => {
         throw new Error();
       });
 
       const call = () => minterInfo(params);
 
-      expect(call).rejects.toThrowError();
+      await expect(call).rejects.toThrowError();
     });
   });
 });

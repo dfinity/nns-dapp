@@ -128,7 +128,6 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKTESTBTC: true,
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
       ENABLE_PERIODIC_FOLLOWING_CONFIRMATION: false,
-      ENABLE_EXPORT_NEURONS_REPORT: false,
       ENABLE_USD_VALUES: false,
       ENABLE_USD_VALUES_FOR_NEURONS: false,
       ENABLE_PORTFOLIO_PAGE: false,
@@ -198,3 +197,10 @@ vi.mock("$app/stores", () => ({
   page,
   navigating,
 }));
+
+// Issue: https://github.com/testing-library/svelte-testing-library/issues/206
+beforeEach(() => {
+  vi.stubGlobal("requestAnimationFrame", (fn) => {
+    return window.setTimeout(() => fn(Date.now()), 0);
+  });
+});

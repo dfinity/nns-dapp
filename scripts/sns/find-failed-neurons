@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Searches for transactions to a governance subaccount between start and end
+# index/timestamp where the amount is less than the minimum stake.
+# For the recipient governance subaccounts, it checks which ones currently
+# have a balance less than the minimum stake.
+
+# --start_timestamp 1724659500 --end_timestamp 1725870000
+# OGY: --start_index 65990 --end_index 100333
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/../clap.bash"
+# Define options
+clap.define long=root_canister_id desc="The canister ID of the root canister" variable=ROOT_CANISTER_ID default=""
+clap.define long=governance_canister_id desc="The canister ID of the governance canister" variable=GOVERNANCE_CANISTER_ID default=""
+clap.define long=ledger_canister_id desc="The canister ID of the ledger canister" variable=LEDGER_CANISTER_ID default=""
+clap.define long=index_canister_id desc="The canister ID of the index canister" variable=INDEX_CANISTER_ID default=""
+clap.define long=start_timestamp desc="The timestamp in seconds after which to search for transactions" variable=START_TIMESTAMP default=""
+clap.define long=start_index desc="The transaction index after which to search for transactions" variable=START_INDEX default=""
+clap.define long=end_timestamp desc="The timestamp in seconds before which to search for transactions" variable=END_TIMESTAMP default=""
+clap.define long=end_index desc="The transaction index before which to search for transactions" variable=END_INDEX default=""
+clap.define long=min_stake_e8s desc="The minimum requires stake for a neuron" variable=MIN_STAKE_E8S default=""
+clap.define short=n long=network desc="The dfx network to use" variable=DFX_NETWORK default="mainnet"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+SNS="${1:-}"
+
+if [[ -n "${SNS}" ]]; then
+  if [[ "$DFX_NETWORK" != "mainnet" ]]; then
+    echo "For networks other than mainnet SNS parameters must be specified individually" >&2
+    exit 1
+  fi
+
+  SNS_DATA="$("$SOURCE_DIR/aggregator/get-sns" --json "$SNS")"
+  SNS_NAME="$(echo "$SNS_DATA" | jq -r .meta.name)"
+  echo "Checking SNS $SNS_NAME" >&2
+
+  ROOT_CANISTER_ID="${ROOT_CANISTER_ID:-$(echo "$SNS_DATA" | jq -r '.canister_ids.root_canister_id')}"
+  LEDGER_CANISTER_ID="${LEDGER_CANISTER_ID:-$(echo "$SNS_DATA" | jq -r '.canister_ids.ledger_canister_id')}"
+  GOVERNANCE_CANISTER_ID="${GOVERNANCE_CANISTER_ID:-$(echo "$SNS_DATA" | jq -r '.canister_ids.governance_canister_id')}"
+  INDEX_CANISTER_ID="${INDEX_CANISTER_ID:-$(echo "$SNS_DATA" | jq -r '.canister_ids.index_canister_id')}"
+  MIN_STAKE_E8S="${MIN_STAKE_E8S:-$(echo "$SNS_DATA" | jq -r '.nervous_system_parameters.neuron_minimum_stake_e8s')}"
+fi
+
+if [[ -z "${ROOT_CANISTER_ID:-}" ]]; then
+  echo "Root canister ID is required" >&2
+  exit 1
+fi
+
+if [[ -z "${GOVERNANCE_CANISTER_ID:-}" ]]; then
+  echo "Governance canister ID is required" >&2
+  exit 1
+fi
+
+if [[ -z "${LEDGER_CANISTER_ID:-}" ]]; then
+  echo "Ledger canister ID is required" >&2
+  exit 1
+fi
+
+if [[ -z "${INDEX_CANISTER_ID:-}" ]]; then
+  echo "Index canister ID is required" >&2
+  exit 1
+fi
+
+if [[ -z "${MIN_STAKE_E8S:-}" ]]; then
+  echo "Minimum stake is required" >&2
+  exit 1
+fi
+
+if [[ -z "${START_INDEX:-}" ]]; then
+  if [[ -z "${START_TIMESTAMP:-}" ]]; then
+    echo "Start index or timestamp is required" >&2
+    exit 1
+  fi
+  echo "Start timestamp refers to $(date -d "@${START_TIMESTAMP}")"
+  START_INDEX=$("$SOURCE_DIR/../find-transaction-from-timestamp" --ledger_canister_id "$LEDGER_CANISTER_ID" --timestamp "$START_TIMESTAMP" --network "$DFX_NETWORK")
+fi
+
+if [[ -z "${END_INDEX:-}" ]]; then
+  if [[ -z "${END_TIMESTAMP:-}" ]]; then
+    END_INDEX="$(dfx canister call "$LEDGER_CANISTER_ID" --query --network "$DFX_NETWORK" get_transactions '(record { start = 0 : nat; length = 0 : nat })' | idl2json | jq -r .log_length | sed -e 's/_//g')"
+  else
+    echo "End timestamp refers to $(date -d "@${END_TIMESTAMP}")"
+    END_INDEX=$("$SOURCE_DIR/../find-transaction-from-timestamp" --ledger_canister_id "$LEDGER_CANISTER_ID" --timestamp "$END_TIMESTAMP" --network "$DFX_NETWORK")
+  fi
+fi
+
+echo "Start index: $START_INDEX, end index: $END_INDEX" >&2
+echo "Minimum stake: $MIN_STAKE_E8S" >&2
+
+get_entries() {
+  "$SOURCE_DIR/../get-transactions" --ledger_canister_id "$LEDGER_CANISTER_ID" --network "$DFX_NETWORK" --start_index "$START_INDEX" --end_index "$END_INDEX" |
+    jq -c ".transfer[0] | select(.to.owner == \"$GOVERNANCE_CANISTER_ID\") | {amount: .amount | gsub(\"_\"; \"\") | tonumber, to } | select(.amount < $MIN_STAKE_E8S) | {owner: .to.owner, subaccount: .to.subaccount[0]}" |
+    sort |
+    uniq
+  echo >&2
+}
+
+echo
+
+while read -r line; do
+  owner=$(echo "$line" | jq -r '.owner')
+  subaccount=$(echo "$line" | jq -r '.subaccount')
+  subaccount_blob="$("$SOURCE_DIR/../convert-id" --input hex --output blob "$subaccount")"
+  balance="$(dfx canister call --query --network "$DFX_NETWORK" "$INDEX_CANISTER_ID" icrc1_balance_of "( record { owner = principal \"$owner\"; subaccount = opt blob \"$subaccount_blob\"; } )" | idl2json | sed -e 's/[\"_]//g')"
+  if [[ "balance" -lt "$MIN_STAKE_E8S" && "$balance" -gt 0 ]]; then
+    icrc1_address="$("$SOURCE_DIR/../convert-id" --input text --subaccount_format hex --output icrc1 "$owner" "$subaccount")"
+    #echo "$balance; $icrc1_address"
+    echo -e "${balance}\thttps://dashboard.internetcomputer.org/sns/$ROOT_CANISTER_ID/account/$icrc1_address"
+  fi
+done < <(get_entries)

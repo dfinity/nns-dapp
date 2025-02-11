@@ -54,13 +54,13 @@ describe("icrc-index.worker-api", () => {
     expect(getTransactionsSpy).toBeCalled();
   });
 
-  it("should bubble errors", () => {
+  it("should bubble errors", async () => {
     indexCanisterMock.getTransactions.mockImplementation(async () => {
       throw new Error();
     });
 
     const call = () => getIcrcTransactions(params);
 
-    expect(call).rejects.toThrowError();
+    await expect(call).rejects.toThrowError();
   });
 });

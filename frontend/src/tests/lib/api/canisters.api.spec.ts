@@ -21,6 +21,7 @@ import {
 import { CYCLES_MINTING_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { MAX_CANISTER_NAME_LENGTH } from "$lib/constants/canisters.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
+import { mockCreateAgent } from "$tests/mocks/agent.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCanisterDetails,
@@ -52,7 +53,7 @@ describe("canisters-api", () => {
   beforeEach(() => {
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
     // real network request via agent.syncTime().
-    vi.spyOn(dfinityUtils, "createAgent").mockReturnValue(undefined);
+    vi.spyOn(dfinityUtils, "createAgent").mockImplementation(mockCreateAgent);
 
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     const now = Date.now();
@@ -117,7 +118,7 @@ describe("canisters-api", () => {
           name: longName,
         });
 
-      expect(call).rejects.toThrowError(
+      await expect(call).rejects.toThrowError(
         new NameTooLongError("error__canister.name_too_long", {
           $name: longName,
         })
@@ -146,7 +147,7 @@ describe("canisters-api", () => {
           name: longName,
         });
 
-      expect(call).rejects.toThrowError(
+      await expect(call).rejects.toThrowError(
         new NameTooLongError("error__canister.name_too_long", {
           $name: longName,
         })
@@ -333,7 +334,7 @@ describe("canisters-api", () => {
           amount: 300_000_000n,
           fee,
         });
-      expect(call).rejects.toThrow();
+      await expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
       expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
     });
@@ -348,7 +349,7 @@ describe("canisters-api", () => {
           fee,
         });
 
-      expect(call).rejects.toThrowError(
+      await expect(call).rejects.toThrowError(
         new NameTooLongError("error__canister.name_too_long", {
           $name: longName,
         })
@@ -505,7 +506,7 @@ describe("canisters-api", () => {
           canisterId: mockCanisterDetails.id,
           fee,
         });
-      expect(call).rejects.toThrow();
+      await expect(call).rejects.toThrow();
       expect(mockCMCCanister.notifyTopUp).not.toBeCalled();
     });
   });
