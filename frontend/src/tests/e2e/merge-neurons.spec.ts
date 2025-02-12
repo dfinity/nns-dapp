@@ -82,6 +82,13 @@ test("Test merge neurons", async ({ page, context }) => {
   step("Merge neurons");
   await appPo.goToNnsNeurons();
 
+  // We get for component to appear and the skeletong to go away
+  footerPo
+    .getMergeNeuronsModalPo()
+    .getConfirmNeuronsMergePo()
+    .getMergedNeuronDetailCardPo()
+    .waitFor();
+
   await footerPo.mergeNeurons({
     sourceNeurondId: neuronId1,
     targetNeuronId: neuronId2,
