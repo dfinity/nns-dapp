@@ -46,12 +46,25 @@ describe("ProposalsFilterModal", () => {
     const checkboxLabels = (
       await Promise.all(checkboxes.map((checkbox) => checkbox.getText()))
     ).map((s) => s.trim());
-    const expectedLabels = enumKeys(Topic)
-      .filter(
-        (key: string) =>
-          key !== "Unspecified" && key !== "SnsDecentralizationSale"
-      )
-      .map((key: string) => en.topics[key]);
+    const expectedLabels = [
+      "Governance",
+      "SNS & Neurons' Fund",
+      "API Boundary Node Management",
+      "Application Canister Management",
+      "Exchange Rate",
+      "IC OS Version Deployment",
+      "IC OS Version Election",
+      "KYC",
+      "Network Economics",
+      "Neuron Management",
+      "Node Admin",
+      "Node Provider Rewards",
+      "Participant Management",
+      "Protocol Canister Management",
+      "Service Nervous System Management",
+      "Subnet Management",
+      "Subnet Rental",
+    ];
 
     expect(checkboxLabels).toEqual(expectedLabels);
   });
@@ -92,8 +105,8 @@ describe("ProposalsFilterModal", () => {
 
     expect(get(proposalsFiltersStore).topics).toEqual([
       ...DEFAULT_PROPOSALS_FILTERS.topics,
-      1,
-      2,
+      Topic.Governance,
+      Topic.SnsAndCommunityFund,
     ]);
   });
 

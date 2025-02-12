@@ -12,7 +12,13 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import { errorToString } from "$lib/utils/error.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { buildProposalUrl } from "$lib/utils/navigation.utils";
+import { getTopicTitle } from "$lib/utils/neuron.utils";
 import { toNnsVote } from "$lib/utils/sns-proposals.utils";
+import {
+  createAscendingComparator,
+  createDescendingComparator,
+  mergeComparators,
+} from "$lib/utils/sort.utils";
 import { isDefined, keyOf, keyOfOptional } from "$lib/utils/utils";
 import type {
   Ballot,
@@ -638,3 +644,34 @@ export const sortProposalsByIdDescendingOrder = (
     if (idB < idA) return -1;
     return 0;
   });
+
+/**
+ * Sort NNS topics in the following order:
+ *
+ * - Governance
+ * - SNS & Neurons' Fund
+ * - Unspecified (All Except Governance, and SNS & Neurons' Fund)
+ * - Rest topics sorted alphabetically
+ */
+export const sortNnsTopics = ({
+  topics,
+  i18n,
+}: {
+  topics: Topic[];
+  i18n: I18n;
+}) =>
+  topics.sort(
+    mergeComparators([
+      createDescendingComparator((topic: Topic) => topic === Topic.Governance),
+      createDescendingComparator(
+        (topic: Topic) => topic === Topic.SnsAndCommunityFund
+      ),
+      createDescendingComparator((topic: Topic) => topic === Topic.Unspecified),
+      createAscendingComparator((topic: Topic) =>
+        getTopicTitle({
+          topic,
+          i18n,
+        }).toLowerCase()
+      ),
+    ])
+  );
