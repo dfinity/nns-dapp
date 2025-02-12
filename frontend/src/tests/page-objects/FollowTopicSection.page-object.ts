@@ -41,6 +41,10 @@ export class FollowTopicSectionPo extends BasePageObject {
     return this.getButton("open-new-followee-modal");
   }
 
+  getTopicTitle(): Promise<string> {
+    return this.getText("topic-title");
+  }
+
   async getBadgeNumber(): Promise<number> {
     return Number(await this.getText(`topic-${this.topic}-followees-badge`));
   }
