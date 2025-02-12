@@ -111,10 +111,10 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore finished expect a Promise that resolve an animation.
 Element.prototype.animate = () => ({
   cancel: vi.fn(),
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore finished expect a Promise that resolves an Animation. For simplicity reason we mock it as undefined.
   finished: Promise.resolve(),
 });
 
