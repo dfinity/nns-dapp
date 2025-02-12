@@ -93,7 +93,7 @@ lint_wasm() {
   } >&2
   wasm_info="$(get_wasm_info "$wasm_path")"
   test_method="get_toy_account"
-  echo "${wasm_info:-}" | grep -q "$test_method" || {
+  echo "${wasm_info:-}" | grep "$test_method" >/dev/null || {
     echo "ERROR: This test needs test builds of the Wasm."
     echo "Expected: Test methods including '$test_method'."
     echo "Actual:   The exported methods do not include '$test_method':"
