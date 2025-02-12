@@ -17,8 +17,8 @@
   // Load KnownNeurons which are used in the FollowNnsTopicSections
   onMount(() => listKnownNeurons());
 
-  let topics: Topic[];
-  $: topics = neuron
+  let sortedTopics: Topic[];
+  $: sortedTopics = neuron
     ? sortNnsTopics({ topics: topicsToFollow(neuron), i18n: $i18n })
     : [];
 </script>
@@ -29,7 +29,7 @@
 
     <Separator spacing="medium" />
 
-    {#each topics as topic}
+    {#each sortedTopics as topic}
       <FollowNnsTopicSection {neuron} {topic} />
     {/each}
   </div>
