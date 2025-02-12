@@ -1,6 +1,8 @@
 import * as governanceApi from "$lib/api/governance.api";
 import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
+import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { enumValues } from "$lib/utils/enum.utils";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { EditFollowNeuronsPo } from "$tests/page-objects/EditFollowNeurons.page-object";
@@ -48,6 +50,37 @@ describe("EditFollowNeurons", () => {
     const po = renderComponent();
     expect(await po.getBadgeNumber(Topic.ExchangeRate)).toBe(2);
     expect(await po.getBadgeNumber(Topic.Governance)).toBe(0);
+  });
+
+  it("renders topics in specific order", async () => {
+    const po = renderComponent();
+    const sectionTitles = await po.getFollowNnsTopicTitles();
+
+    // Deprecated + NeuronManagement (because it's not public)
+    const hiddenTopicCount = DEPRECATED_TOPICS.length + 1;
+    expect(sectionTitles.length).toBe(
+      enumValues(Topic).length - hiddenTopicCount
+    );
+
+    expect(sectionTitles).toEqual([
+      "Governance",
+      "SNS & Neurons' Fund",
+      "All Except Governance, and SNS & Neurons' Fund",
+      "API Boundary Node Management",
+      "Application Canister Management",
+      "Exchange Rate",
+      "IC OS Version Deployment",
+      "IC OS Version Election",
+      "KYC",
+      "Network Economics",
+      "Node Admin",
+      "Node Provider Rewards",
+      "Participant Management",
+      "Protocol Canister Management",
+      "Service Nervous System Management",
+      "Subnet Management",
+      "Subnet Rental",
+    ]);
   });
 
   it("displays the followees of the user in specific topic", async () => {

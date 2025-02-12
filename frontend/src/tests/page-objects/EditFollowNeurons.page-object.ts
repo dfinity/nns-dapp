@@ -14,6 +14,15 @@ export class EditFollowNeuronsPo extends BasePageObject {
     return FollowNnsTopicSectionPo.allUnder(this.root);
   }
 
+  async getFollowNnsTopicTitles(): Promise<string[]> {
+    const topicSectionPos = await this.getFollowNnsTopicSectionPos();
+    return Promise.all(
+      topicSectionPos.map(async (po) =>
+        (await po.getFollowTopicSectionPo()).getTopicTitle()
+      )
+    );
+  }
+
   getFollowTopicSectionPo(topic: number): FollowTopicSectionPo {
     return FollowTopicSectionPo.under({
       element: this.root,
