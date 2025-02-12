@@ -83,6 +83,18 @@ describe("EditFollowNeurons", () => {
     ]);
   });
 
+  it("renders topics with separator", async () => {
+    const po = renderComponent();
+    const sectionPos = await po.getFollowNnsTopicSectionPos();
+
+    for (const sectionPo of sectionPos) {
+      expect(await sectionPo.hasSeparator()).toBe(
+        (await (await sectionPo.getFollowTopicSectionPo()).getTopicTitle()) ===
+          "All Except Governance, and SNS & Neurons' Fund"
+      );
+    }
+  });
+
   it("displays the followees of the user in specific topic", async () => {
     const po = renderComponent();
     const topicSectionPo = await po.getFollowTopicSectionPo(Topic.ExchangeRate);
