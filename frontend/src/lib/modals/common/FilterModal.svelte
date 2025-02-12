@@ -1,6 +1,10 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+  import type {
+    Filter,
+    NnsProposalFilterCategory,
+    SnsProposalTypeFilterId,
+  } from "$lib/types/filters";
   import { Checkbox, Modal, Spinner } from "@dfinity/gix-components";
   import { Topic, type ProposalStatus } from "@dfinity/nns";
   import type { SnsProposalDecisionStatus } from "@dfinity/sns";
@@ -16,6 +20,7 @@
   // `undefined` means the filters are not loaded yet.
   export let filters: Filter<FiltersData>[] | undefined;
   export let visible = true;
+  export let category: undefined | NnsProposalFilterCategory = undefined;
 
   let loading: boolean;
   $: loading = isNullish(filters);
@@ -62,7 +67,7 @@
 
     {#if filters}
       <div class="filters">
-        {#each filters as { id, name, checked, value, category } (id)}
+        {#each filters as { id, name, checked, value } (id)}
           <Checkbox
             testId={`filter-modal-option-${id}`}
             inputId={id}

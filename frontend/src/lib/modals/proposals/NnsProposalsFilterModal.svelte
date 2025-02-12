@@ -118,6 +118,7 @@
 
 <FilterModal
   {visible}
+  {category}
   on:nnsClose={close}
   on:nnsConfirm={filter}
   on:nnsChange={onChange}
