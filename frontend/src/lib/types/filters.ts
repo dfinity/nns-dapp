@@ -6,7 +6,10 @@ export type SnsProposalTypeFilterId =
   | string
   | typeof ALL_SNS_GENERIC_PROPOSAL_TYPES_ID;
 
+export type NnsProposalFilterCategory = "topics" | "status" | "uncategorized";
+
 export type Filter<T> = {
+  category: NnsProposalFilterCategory;
   name: string;
   value: T;
   id: string;

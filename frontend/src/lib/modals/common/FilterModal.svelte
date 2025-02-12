@@ -2,10 +2,11 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
   import { Checkbox, Modal, Spinner } from "@dfinity/gix-components";
-  import type { ProposalStatus, Topic } from "@dfinity/nns";
+  import { Topic, type ProposalStatus } from "@dfinity/nns";
   import type { SnsProposalDecisionStatus } from "@dfinity/sns";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   type FiltersData =
     | SnsProposalTypeFilterId
@@ -61,13 +62,16 @@
 
     {#if filters}
       <div class="filters">
-        {#each filters as { id, name, checked } (id)}
+        {#each filters as { id, name, checked, value, category } (id)}
           <Checkbox
             testId={`filter-modal-option-${id}`}
             inputId={id}
             {checked}
             on:nnsChange={() => onChange(id)}>{name}</Checkbox
           >
+          {#if category === "topics" && value === Topic.SnsAndCommunityFund}
+            <Separator testId={`separator-${id}`} spacing="medium" />
+          {/if}
         {/each}
       </div>
     {:else}
