@@ -15,10 +15,11 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
   import { isSelectedPath } from "$lib/utils/navigation.utils";
-  import { Card, testSafeScale } from "@dfinity/gix-components";
+  import { Card } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import { cubicOut } from "svelte/easing";
+  import { scale } from "svelte/transition";
 
   export let selected: boolean;
   // "link" for desktop, "button" for mobile, "dropdown" to open the modal
@@ -73,7 +74,7 @@
           {#if $actionableProposalIndicationVisibleStore}
             {#if $actionableProposalTotalCountStore > 0 && mounted}
               <div
-                in:testSafeScale={{
+                in:scale={{
                   duration: 250,
                   easing: cubicOut,
                 }}
