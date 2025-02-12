@@ -1,6 +1,8 @@
 accounts_count
 hardware_wallet_accounts_count
+heap_memory_bytes
 nns_dapp_migration_countdown
 nns_dapp_stable_memory_size_gib
 nns_dapp_wasm_memory_size_gib
+stable_memory_bytes
 sub_accounts_count
