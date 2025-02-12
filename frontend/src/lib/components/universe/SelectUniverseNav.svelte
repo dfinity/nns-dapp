@@ -50,8 +50,8 @@
   // 2. add some gap, because the Nav title is hidden on mobile
   .select-universe {
     margin: var(--padding-1_5x) var(--padding) 0;
-    @include media.min-width(large) {
-      margin-top: var(--padding-1_5x) 0 0;
+    @include media.min-width(medium) {
+      margin: var(--padding-1_5x) 0 0;
     }
   }
 </style>
