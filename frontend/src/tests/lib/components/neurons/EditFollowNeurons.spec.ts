@@ -54,21 +54,15 @@ describe("EditFollowNeurons", () => {
 
   it("renders topics in specific order", async () => {
     const po = renderComponent();
-    const topicSections = await po.getFollowNnsTopicSectionPos();
+    const sectionTitles = await po.getFollowNnsTopicTitles();
 
     // Deprecated + NeuronManagement (because it's not public)
     const hiddenTopicCount = DEPRECATED_TOPICS.length + 1;
-    expect(topicSections.length).toBe(
+    expect(sectionTitles.length).toBe(
       enumValues(Topic).length - hiddenTopicCount
     );
 
-    const topicTitles = await Promise.all(
-      topicSections.map(async (sectionPo) =>
-        (await sectionPo.getFollowTopicSectionPo()).getTopicTitle()
-      )
-    );
-
-    expect(topicTitles).toEqual([
+    expect(sectionTitles).toEqual([
       "Governance",
       "SNS & Neurons' Fund",
       "All Except Governance, and SNS & Neurons' Fund",
