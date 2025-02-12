@@ -1,27 +1,12 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-const screenshotsWithDifferentViewports = async ({
-  page,
-  step,
-}: {
-  page: Page;
-  step: string;
-}) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await expect(page).toHaveScreenshot(`${step}_desktop.png`, {
-    mask: [
-      page.locator(
-        '[data-tid="actionable-proposal-count-badge-component"] [data-tid="tooltip-component"]'
-      ),
-    ],
-  });
-
-  await page.setViewportSize({ width: 375, height: 667 });
-  await expect(page).toHaveScreenshot(`${step}_mobile.png`);
-};
+const VIEWPORT_SIZES = {
+  desktop: { width: 1440, height: 900 },
+  mobile: { width: 375, height: 667 },
+} as const;
 
 test("Visual test Landing Page", async ({ page, browser }) => {
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -31,7 +16,12 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await page.goto("/");
   await portfolioPo.getPortfolioPagePo().getLoginCard().waitFor();
   await expect(page).toHaveTitle("Portfolio / NNS Dapp");
-  await screenshotsWithDifferentViewports({ page, step: "initial" });
+
+  await page.setViewportSize(VIEWPORT_SIZES.desktop);
+  await expect(page).toHaveScreenshot(`initial_desktop.png`);
+
+  await page.setViewportSize(VIEWPORT_SIZES.mobile);
+  await expect(page).toHaveScreenshot(`initial_mobile.png`);
 
   step("New user is signed in");
   await signInWithNewUser({ page, context: browser.contexts()[0] });
@@ -63,5 +53,11 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   await portfolioPo.getPortfolioPagePo().getHeldTokensCardPo().waitFor();
   await portfolioPo.getPortfolioPagePo().getStakedTokensCardPo().waitFor();
-  await screenshotsWithDifferentViewports({ page, step: "final_assets" });
+
+  await page.setViewportSize(VIEWPORT_SIZES.desktop);
+  await appPo.toggleSidebar();
+  await expect(page).toHaveScreenshot(`final_assets_desktop.png`);
+
+  await page.setViewportSize(VIEWPORT_SIZES.mobile);
+  await expect(page).toHaveScreenshot(`final_assets_mobile.png`);
 });
