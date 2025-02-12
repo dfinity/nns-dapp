@@ -29,6 +29,11 @@ export class MergeNeuronsModalPo extends ModalPo {
       sourceNeurondId,
       targetNeuronId,
     });
+
+    // We get for component to appear and the skeletong to go away
+    await this.getConfirmNeuronsMergePo()
+      .getMergedNeuronDetailCardPo()
+      .waitFor();
     await this.getConfirmNeuronsMergePo().getConfirmMergeButtonPo().click();
     await this.waitForAbsent();
   }
