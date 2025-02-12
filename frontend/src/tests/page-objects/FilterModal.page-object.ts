@@ -28,6 +28,10 @@ export class FilterModalPo extends ModalPo {
     });
   }
 
+  getFilterEntrySeparatorByIdPo(testId: string): PageObjectElement {
+    return this.root.byTestId(`separator-${testId}`);
+  }
+
   clickConfirmButton(): Promise<void> {
     return this.click("apply-filters");
   }
