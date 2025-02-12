@@ -63,8 +63,8 @@ describe("EditFollowNeurons", () => {
     );
 
     const topicTitles = await Promise.all(
-      topicSections.map(async (x) =>
-        (await x.getFollowTopicSectionPo()).getTopicTitle()
+      topicSections.map(async (sectionPo) =>
+        (await sectionPo.getFollowTopicSectionPo()).getTopicTitle()
       )
     );
 
