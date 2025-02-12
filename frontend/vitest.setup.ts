@@ -111,9 +111,12 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
-Element.prototype.animate = vi
-  .fn()
-  .mockImplementation(() => ({ cancel: vi.fn(), finished: Promise.resolve() }));
+Element.prototype.animate = () => ({
+  cancel: vi.fn(),
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore finished expect a Promise that resolves an Animation. For simplicity reason we mock it as undefined.
+  finished: Promise.resolve(),
+});
 
 // Environment Variables Setup
 vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
