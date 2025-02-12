@@ -72,6 +72,16 @@ pub fn encode_metrics(w: &mut MetricsEncoder<Vec<u8>>) -> std::io::Result<()> {
         "Amount of wasm memory used by this canister, in binary gigabytes",
     )?;
     w.encode_gauge(
+        "stable_memory_bytes",
+        stable_memory_size_bytes() as f64,
+        "Amount of stable memory used by this canister, in bytes",
+    )?;
+    w.encode_gauge(
+        "heap_memory_bytes",
+        wasm_memory_size_bytes() as f64,
+        "Amount of wasm memory used by this canister, in bytes",
+    )?;
+    w.encode_gauge(
         "nns_dapp_migration_countdown",
         f64::from(stats.migration_countdown.unwrap_or(0)),
         "When non-zero, a migration is in progress.",

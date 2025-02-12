@@ -7,6 +7,7 @@
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
   import { onMount } from "svelte";
+  import { sortNnsTopics } from "$lib/utils/proposals.utils";
 
   export let neuronId: NeuronId;
 
@@ -16,8 +17,10 @@
   // Load KnownNeurons which are used in the FollowNnsTopicSections
   onMount(() => listKnownNeurons());
 
-  let topics: Topic[];
-  $: topics = neuron ? topicsToFollow(neuron) : [];
+  let sortedTopics: Topic[];
+  $: sortedTopics = neuron
+    ? sortNnsTopics({ topics: topicsToFollow(neuron), i18n: $i18n })
+    : [];
 </script>
 
 {#if neuron !== undefined}
@@ -26,7 +29,7 @@
 
     <Separator spacing="medium" />
 
-    {#each topics as topic}
+    {#each sortedTopics as topic}
       <FollowNnsTopicSection {neuron} {topic} />
     {/each}
   </div>

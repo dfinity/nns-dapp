@@ -18,6 +18,7 @@
     getTopicTitle,
   } from "$lib/utils/neuron.utils";
   import { isNullish } from "@dfinity/utils";
+  import { sortNnsTopics } from "$lib/utils/proposals.utils";
 
   export let props: ProposalsFilterModalProps | undefined;
 
@@ -50,12 +51,14 @@
   $: category = props?.category ?? "uncategorized";
   $: filters = props?.filters;
   $: filtersValues = filters
-    ? enumValues(filters)
-        .filter((value) => value !== PROPOSAL_FILTER_UNSPECIFIED_VALUE)
-        .filter((value) =>
-          category === "topics" ? !DEPRECATED_TOPICS.includes(value) : true
-        )
-        .map(mapToFilter)
+    ? sortNnsTopics({
+        topics: enumValues(filters)
+          .filter((value) => value !== PROPOSAL_FILTER_UNSPECIFIED_VALUE)
+          .filter((value) =>
+            category === "topics" ? !DEPRECATED_TOPICS.includes(value) : true
+          ),
+        i18n: $i18n,
+      }).map(mapToFilter)
     : [];
   $: selectedFilters = props?.selectedFilters || [];
 

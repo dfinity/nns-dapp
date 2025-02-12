@@ -9,12 +9,13 @@
     TransactionIconType,
     UiTransaction,
   } from "$lib/types/transaction";
-  import { KeyValuePair, testSafeFade } from "@dfinity/gix-components";
+  import { KeyValuePair } from "@dfinity/gix-components";
   import {
     nonNullish,
     type TokenAmount,
     type TokenAmountV2,
   } from "@dfinity/utils";
+  import { fade } from "svelte/transition";
 
   export let transaction: UiTransaction;
 
@@ -55,7 +56,7 @@
   $: seconds = timestamp && timestamp.getTime() / 1000;
 </script>
 
-<article data-tid="transaction-card" transition:testSafeFade>
+<article data-tid="transaction-card" transition:fade|global>
   <div class="icon">
     <TransactionIcon type={iconType} {isPending} />
   </div>

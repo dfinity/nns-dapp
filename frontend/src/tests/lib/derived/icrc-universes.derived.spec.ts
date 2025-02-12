@@ -1,3 +1,4 @@
+import UNKNOWN_LOGO from "$lib/assets/question-mark.svg";
 import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
   CKETHSEPOLIA_LEDGER_CANISTER_ID,
@@ -95,7 +96,7 @@ describe("icrcTokensUniversesStore", () => {
     });
     expect(get(icrcTokensUniversesStore)).toMatchObject([
       {
-        logo: "/src/lib/assets/question-mark.svg",
+        logo: UNKNOWN_LOGO,
       },
     ]);
   });
