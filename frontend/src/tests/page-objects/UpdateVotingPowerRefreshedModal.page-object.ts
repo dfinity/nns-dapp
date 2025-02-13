@@ -27,6 +27,5 @@ export class UpdateVotingPowerRefreshedModalPo extends ModalPo {
       .byTestId("update-voting-power-refreshed-seconds-input")
       .typeText(seconds.toString());
     await this.click("confirm-update-voting-power-refreshed-button");
-    await this.waitForClosed();
   }
 }

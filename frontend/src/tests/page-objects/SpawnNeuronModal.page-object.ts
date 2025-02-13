@@ -15,6 +15,5 @@ export class SpawnNeuronModalPo extends ModalPo {
 
   async spawnNeuron({ percentage }: { percentage: number }): Promise<void> {
     await this.getNeuronSelectPercentagePo().spawnNeuron({ percentage });
-    await this.waitForClosed();
   }
 }
