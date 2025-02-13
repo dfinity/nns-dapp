@@ -3,7 +3,7 @@
   import FilterModal from "$lib/modals/common/FilterModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
-  import type { Filter } from "$lib/types/filters";
+  import type { Filter, NnsProposalFilterCategory } from "$lib/types/filters";
   import type {
     ProposalsFilterModalProps,
     ProposalsFilters,
@@ -23,7 +23,7 @@
   export let props: ProposalsFilterModalProps | undefined;
 
   let visible: boolean;
-  let category: string;
+  let category: NnsProposalFilterCategory;
   let filters: ProposalsFilters | undefined;
   let filtersValues: Filter<Topic | ProposalStatus>[];
   let selectedFilters: (Topic | ProposalStatus)[];
@@ -44,6 +44,7 @@
             })
           : getTopicTitle({ topic: value as Topic, i18n: $i18n }),
       checked: selectedFilters?.includes(value),
+      category,
     };
   };
 
@@ -117,6 +118,7 @@
 
 <FilterModal
   {visible}
+  {category}
   on:nnsClose={close}
   on:nnsConfirm={filter}
   on:nnsChange={onChange}

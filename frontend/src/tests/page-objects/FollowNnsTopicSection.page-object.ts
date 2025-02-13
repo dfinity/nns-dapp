@@ -33,6 +33,10 @@ export class FollowNnsTopicSectionPo extends BasePageObject {
     });
   }
 
+  async hasSeparator(): Promise<boolean> {
+    return this.root.byTestId("separator").isPresent();
+  }
+
   getNewFolloweeModalPo(): NewFolloweeModalPo {
     return NewFolloweeModalPo.under(this.root);
   }

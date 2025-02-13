@@ -13,7 +13,8 @@
     getTopicTitle,
   } from "$lib/utils/neuron.utils";
   import { IconClose, Value } from "@dfinity/gix-components";
-  import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
+  import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let topic: Topic;
   export let neuron: NeuronInfo;
@@ -83,6 +84,11 @@
       {/each}
     </ul>
   </FollowTopicSection>
+
+  {#if topic === Topic.Unspecified}
+    <Separator testId="separator" spacing="small" />
+  {/if}
+
   {#if showNewFolloweeModal}
     <NewFolloweeModal {neuron} {topic} on:nnsClose={closeNewFolloweeModal} />
   {/if}
