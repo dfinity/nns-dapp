@@ -13,6 +13,7 @@ import {
   syncAccounts,
   transferTokens,
 } from "$lib/services/icrc-accounts.services";
+import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import {
