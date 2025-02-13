@@ -14,6 +14,7 @@ import {
   queryAndUpdate,
   type QueryAndUpdateStrategy,
 } from "$lib/services/utils.services";
+import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import {
@@ -182,14 +183,17 @@ export const loadAccounts = async ({
     strategy,
     request: ({ certified, identity }) =>
       getAccounts({ identity, certified, ledgerCanisterId }),
-    onLoad: ({ response: accounts, certified }) =>
-      icrcAccountsStore.set({
+    onLoad: ({ response: accounts, certified }) => {
+      canistersErrorsStore.delete(ledgerCanisterId.toString());
+
+      return icrcAccountsStore.set({
         ledgerCanisterId,
         accounts: {
           accounts,
           certified,
         },
-      }),
+      });
+    },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
@@ -201,6 +205,11 @@ export const loadAccounts = async ({
       // hide unproven data
       icrcAccountsStore.resetUniverse(ledgerCanisterId);
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
+
+      canistersErrorsStore.set({
+        canisterId: ledgerCanisterId.toString(),
+        rawError: err,
+      });
 
       if (
         isImportedToken({

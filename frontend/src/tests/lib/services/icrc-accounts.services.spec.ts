@@ -13,6 +13,7 @@ import {
   syncAccounts,
   transferTokens,
 } from "$lib/services/icrc-accounts.services";
+import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import {
@@ -248,6 +249,55 @@ describe("icrc-accounts-services", () => {
       });
     });
 
+    it("should track failing canister if query call fails", async () => {
+      const error = new Error();
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(error);
+
+      expect(get(canistersErrorsStore)).toEqual({});
+
+      await loadAccounts({
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
+        strategy: "query",
+      });
+
+      expect(get(canistersErrorsStore)).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toString()]: { raw: error },
+      });
+    });
+
+    it("should track failing canister if update call fails", async () => {
+      const error = new Error();
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(error);
+
+      expect(get(canistersErrorsStore)).toEqual({});
+
+      await loadAccounts({
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
+        strategy: "update",
+      });
+
+      expect(get(canistersErrorsStore)).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toString()]: { raw: error },
+      });
+    });
+
+    it("should remove tracked failed canister if call works", async () => {
+      const error = new Error();
+      canistersErrorsStore.set({
+        canisterId: CKBTC_UNIVERSE_CANISTER_ID.toString(),
+        rawError: error,
+      });
+
+      expect(get(canistersErrorsStore)).toEqual({
+        [CKBTC_UNIVERSE_CANISTER_ID.toString()]: { raw: error },
+      });
+
+      await loadAccounts({
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
+      });
+
+      expect(get(canistersErrorsStore)).toEqual({});
+    });
     it("displays a toast on error", async () => {
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
         new Error("test")
