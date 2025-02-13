@@ -4010,7 +4010,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100003734545497630,
+    "icrc1_total_supply": 100004615078011667,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4960,7 +4960,7 @@
       ]
     ],
     "icrc1_fee": [500000000],
-    "icrc1_total_supply": 4195135952153294,
+    "icrc1_total_supply": 4197482927002230,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5053,7 +5053,7 @@
         "25nnx-kyaaa-aaaao-ab43a-cai",
         "3y5ko-7qaaa-aaaal-aaaaq-cai"
       ],
-      "archives": []
+      "archives": ["nqoj7-3aaaa-aaaaq-aaeoq-cai"]
     },
     "meta": {
       "url": "https://nfid.one/",
@@ -5191,6 +5191,45 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 1000,
+          "name": "grant_permission ",
+          "description": "Proposal to add new NervousSystemFunction: grant_permission",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+              "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+              "validator_method_name": "validate_grant_permission",
+              "target_method_name": "grant_permission"
+            }
+          }
+        },
+        {
+          "id": 1001,
+          "name": "revoke_permission",
+          "description": "Proposal to add new NervousSystemFunction: revoke_permission",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+              "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+              "validator_method_name": "validate_revoke_permission",
+              "target_method_name": "revoke_permission"
+            }
+          }
+        },
+        {
+          "id": 1003,
+          "name": "commit_proposed_batch",
+          "description": "commit the batch that proposed by community who has Prepare permisson",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+              "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
         }
       ]
     },
@@ -5229,7 +5268,7 @@
     },
     "swap_state": {
       "swap": {
-        "lifecycle": 2,
+        "lifecycle": 3,
         "init": {
           "nns_proposal_id": 134941,
           "sns_root_canister_id": "m2blf-zqaaa-aaaaq-aaejq-cai",
@@ -5534,8 +5573,8 @@
         "decentralization_sale_open_timestamp_seconds": 1737900000
       },
       "derived": {
-        "buyer_total_icp_e8s": 11216832094684,
-        "sns_tokens_per_icp": 3876.5317
+        "buyer_total_icp_e8s": 18927437549942,
+        "sns_tokens_per_icp": 2297.3213
       }
     },
     "icrc1_metadata": [
@@ -5577,7 +5616,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 213412031353800000,
+    "icrc1_total_supply": 213412031289160000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -5883,18 +5922,18 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 3876.53173828125,
-      "buyer_total_icp_e8s": 11216832094684,
-      "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 5560526096752,
-      "direct_participation_icp_e8s": 5656305997932,
-      "direct_participant_count": 227,
-      "cf_neuron_count": 0
+      "sns_tokens_per_icp": 2297.3212890625,
+      "buyer_total_icp_e8s": 18927437549942,
+      "cf_participant_count": 11,
+      "neurons_fund_participation_icp_e8s": 8355416426945,
+      "direct_participation_icp_e8s": 10572021122997,
+      "direct_participant_count": 413,
+      "cf_neuron_count": 30
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1737900000,
-      "lifecycle": 2,
-      "decentralization_swap_termination_timestamp_seconds": null
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1739109633
     }
   },
   {
@@ -6855,8 +6894,8 @@
         "decentralization_sale_open_timestamp_seconds": 1738221300
       },
       "derived": {
-        "buyer_total_icp_e8s": 13863430186425,
-        "sns_tokens_per_icp": 1803.3055
+        "buyer_total_icp_e8s": 18805377659615,
+        "sns_tokens_per_icp": 1329.407
       }
     },
     "icrc1_metadata": [
@@ -7658,12 +7697,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 1803.3055419921875,
-      "buyer_total_icp_e8s": 13863430186425,
+      "sns_tokens_per_icp": 1329.406982421875,
+      "buyer_total_icp_e8s": 18805377659615,
       "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 6732691477414,
-      "direct_participation_icp_e8s": 7130738709011,
-      "direct_participant_count": 219,
+      "neurons_fund_participation_icp_e8s": 8411188833192,
+      "direct_participation_icp_e8s": 10394188826423,
+      "direct_participant_count": 344,
       "cf_neuron_count": 0
     },
     "lifecycle": {

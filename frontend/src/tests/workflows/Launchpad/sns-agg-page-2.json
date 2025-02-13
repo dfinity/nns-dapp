@@ -1499,7 +1499,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101556362673869898,
+    "icrc1_total_supply": 101634539269570523,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2777,7 +2777,8 @@
         "toj6n-haaaa-aaaal-qdika-cai",
         "wxer6-3yaaa-aaaal-qjnua-cai",
         "eqtcs-jiaaa-aaaal-qdmia-cai",
-        "6jvpj-sqaaa-aaaaj-azwnq-cai"
+        "6jvpj-sqaaa-aaaaj-azwnq-cai",
+        "gpdxq-kqaaa-aaaae-qakya-cai"
       ],
       "archives": ["fbysu-tqaaa-aaaaq-aacga-cai"]
     },
@@ -3552,7 +3553,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100771577887607,
+    "icrc1_total_supply": 100808462178702,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4327,7 +4328,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995561029980,
+    "icrc1_total_supply": 995558658980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7259,7 +7260,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19208646666664828,
+    "icrc1_total_supply": 19209313409603230,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9268,7 +9269,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25262737619283542,
+    "icrc1_total_supply": 25262785943045929,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -9715,7 +9716,10 @@
       "logo": "/v1/sns/root/gyito-zyaaa-aaaaq-aacpq-cai/logo.png"
     },
     "parameters": {
-      "reserved_ids": [],
+      "reserved_ids": [
+        3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000,
+        14000, 15000, 16000, 17000, 18000, 21000, 22000, 23000
+      ],
       "functions": [
         {
           "id": 0,
@@ -9872,214 +9876,6 @@
           }
         },
         {
-          "id": 3000,
-          "name": "SubmitFixtureData",
-          "description": "Proposal to create the endpoint for adding the callback function for submitting Premier League match fixture data.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateSubmitFixtureData",
-              "target_method_name": "executeSubmitFixtureData"
-            }
-          }
-        },
-        {
-          "id": 4000,
-          "name": "AddIntitialFixtures",
-          "description": "Proposal to create the endpoint for adding the callback function to add the initial fixtures of the season.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateAddInitialFixtures",
-              "target_method_name": "executeAddInitialFixtures"
-            }
-          }
-        },
-        {
-          "id": 5000,
-          "name": "MoveFixture",
-          "description": "Proposal to create the endpoint for adding the callback function to move a fixture.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateMoveFixture",
-              "target_method_name": "executeMoveFixture"
-            }
-          }
-        },
-        {
-          "id": 6000,
-          "name": "MoveFixture",
-          "description": "Proposal to create the endpoint for adding the callback function to postpone a fixture.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validatePostponeFixture",
-              "target_method_name": "executePostponeFixture"
-            }
-          }
-        },
-        {
-          "id": 7000,
-          "name": "RescheduleFixture",
-          "description": "Proposal to create the endpoint for adding the callback function to reschedule a fixture.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateRescheduleFixture",
-              "target_method_name": "executeRescheduleFixture"
-            }
-          }
-        },
-        {
-          "id": 8000,
-          "name": "TransferPlayer",
-          "description": "Proposal to create the endpoint for adding the callback function to transfer a player.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateTransferPlayer",
-              "target_method_name": "executeTransferPlayer"
-            }
-          }
-        },
-        {
-          "id": 9000,
-          "name": "LoanPlayer",
-          "description": "Proposal to create the endpoint for adding the callback function to loan a player.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateLoanPlayer",
-              "target_method_name": "executeLoanPlayer"
-            }
-          }
-        },
-        {
-          "id": 10000,
-          "name": "RecallPlayer",
-          "description": "Proposal to create the endpoint for adding the callback function to recall a player.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateRecallPlayer",
-              "target_method_name": "executeRecallPlayer"
-            }
-          }
-        },
-        {
-          "id": 11000,
-          "name": "CreatePlayer",
-          "description": "Proposal to create the endpoint for adding the callback function to create a new player.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateAddNewPlayer",
-              "target_method_name": "executeAddNewPlayer"
-            }
-          }
-        },
-        {
-          "id": 12000,
-          "name": "UpdatePlayer",
-          "description": "Proposal to create the endpoint for adding the callback function to update a player.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateUpdatePlayer",
-              "target_method_name": "executeUpdatePlayer"
-            }
-          }
-        },
-        {
-          "id": 13000,
-          "name": "SetPlayerInjury",
-          "description": "Proposal to create the endpoint for adding the callback function to set a player's injury.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateSetPlayerInjury",
-              "target_method_name": "executeSetPlayerInjury"
-            }
-          }
-        },
-        {
-          "id": 14000,
-          "name": "RetirePlayer",
-          "description": "Proposal to create the endpoint for adding the callback function to retire a player.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateRetirePlayer",
-              "target_method_name": "executeRetirePlayer"
-            }
-          }
-        },
-        {
-          "id": 15000,
-          "name": "UnretirePlayer",
-          "description": "Proposal to create the endpoint for adding the callback function to unretire a player.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateUnretirePlayer",
-              "target_method_name": "executeUnretirePlayer"
-            }
-          }
-        },
-        {
-          "id": 16000,
-          "name": "PromoteFormerTeam",
-          "description": "Proposal to create the endpoint for adding the callback function to promote a former club into the Premier League.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validatePromoteFormerTeam",
-              "target_method_name": "executePromoteFormerTeam"
-            }
-          }
-        },
-        {
-          "id": 17000,
-          "name": "PromoteNewTeam",
-          "description": "Proposal to create the endpoint for adding the callback function to promote a new club into the Premier League.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validatePromoteNewTeam",
-              "target_method_name": "executePromoteNewTeam"
-            }
-          }
-        },
-        {
-          "id": 18000,
-          "name": "UpdateTeam",
-          "description": "Proposal to create the endpoint for adding the callback function to update a Premier League club's details.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateUpdateTeam",
-              "target_method_name": "executeUpdateTeam"
-            }
-          }
-        },
-        {
           "id": 19000,
           "name": "CreateDAONeuron",
           "description": "Proposal to create the endpoint for adding the callback function for creating the DAO controlled neuron.",
@@ -10102,45 +9898,6 @@
               "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
               "validator_method_name": "validateManageDAONeuron",
               "target_method_name": "executeManageDAONeuron"
-            }
-          }
-        },
-        {
-          "id": 21000,
-          "name": "Add AddNewToken Callback Function.",
-          "description": "Proposal to create the endpoint for adding the callback function to add a new ICRC-1 token for use as a currency within the private leagues feature.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateAddNewToken",
-              "target_method_name": "executeAddNewToken"
-            }
-          }
-        },
-        {
-          "id": 22000,
-          "name": "Add CreatePlayer Callback Function",
-          "description": "Proposal to create the endpoint for adding the callback function to create a new player.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validateCreatePlayer",
-              "target_method_name": "executeCreatePlayer"
-            }
-          }
-        },
-        {
-          "id": 23000,
-          "name": "Promote New Club",
-          "description": "Add Promoted Championship Team.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "target_canister_id": "bboqb-jiaaa-aaaal-qb6ea-cai",
-              "validator_method_name": "validatePromoteNewClub",
-              "target_method_name": "executePromoteNewClub"
             }
           }
         },
@@ -10284,6 +10041,19 @@
               "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
               "validator_method_name": "validateCreateClub",
               "target_method_name": "createClub"
+            }
+          }
+        },
+        {
+          "id": 60000,
+          "name": "Update Player",
+          "description": "Function to update a football player.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+              "validator_method_name": "validateUpdatePlayer",
+              "target_method_name": "updatePlayer"
             }
           }
         }
@@ -10869,7 +10639,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10056315861472961,
+    "icrc1_total_supply": 10060619854408376,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -12122,7 +11892,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103588378978401011,
+    "icrc1_total_supply": 103691839826213950,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -13379,7 +13149,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98639461900637023,
+    "icrc1_total_supply": 98657821392280280,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14554,7 +14324,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99923803553036172,
+    "icrc1_total_supply": 99923819744026140,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15738,7 +15508,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100102043443330715,
+    "icrc1_total_supply": 100103669775680860,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
