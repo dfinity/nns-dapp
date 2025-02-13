@@ -15,6 +15,5 @@ export class AddHotkeyModalPo extends ModalPo {
 
   async addHotkey(principal: string): Promise<void> {
     await this.getAddPrincipalPo().addPrincipal(principal);
-    await this.waitForClosed();
   }
 }

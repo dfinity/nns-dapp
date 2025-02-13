@@ -30,9 +30,4 @@ export class ConfirmationModalPo extends ModalPo {
   async clickYes(): Promise<void> {
     await this.getConfirmYesButton().click();
   }
-
-  async confirmYes(): Promise<void> {
-    await this.clickYes();
-    await this.waitForClosed();
-  }
 }

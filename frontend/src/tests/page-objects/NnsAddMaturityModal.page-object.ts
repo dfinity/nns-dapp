@@ -18,6 +18,5 @@ export class NnsAddMaturityModalPo extends ModalPo {
   async addMaturity(amount: number): Promise<void> {
     await this.getTextInputPo().typeText(amount.toString());
     await this.click("confirm-add-maturity-button");
-    await this.waitForClosed();
   }
 }

@@ -16,6 +16,5 @@ export class NewFolloweeModalPo extends ModalPo {
   async followNeuronId(neuronId: string): Promise<void> {
     await this.getTextInputPo().typeText(neuronId);
     await this.click("follow-neuron-button");
-    await this.waitForClosed();
   }
 }
