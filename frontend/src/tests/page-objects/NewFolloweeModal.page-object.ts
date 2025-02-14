@@ -1,3 +1,4 @@
+import { KnownNeuronFollowItemPo } from "$tests/page-objects/KnownNeuronFollowItem.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -11,6 +12,10 @@ export class NewFolloweeModalPo extends ModalPo {
 
   getTextInputPo(): TextInputPo {
     return TextInputPo.under({ element: this.root });
+  }
+
+  getKnownNeuronItemPos(): Promise<KnownNeuronFollowItemPo[]> {
+    return KnownNeuronFollowItemPo.allUnder(this.root);
   }
 
   async followNeuronId(neuronId: string): Promise<void> {

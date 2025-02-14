@@ -1,17 +1,16 @@
 import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
 import { addFollowee, removeFollowee } from "$lib/services/neurons.services";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
-import en from "$tests/mocks/i18n.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockFullNeuron,
   mockKnownNeuron,
   mockNeuron,
 } from "$tests/mocks/neurons.mock";
+import { NewFolloweeModalPo } from "$tests/page-objects/NewFolloweeModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { Topic } from "@dfinity/nns";
-import { fireEvent } from "@testing-library/dom";
-import { waitFor } from "@testing-library/svelte";
+import { Topic, type NeuronInfo } from "@dfinity/nns";
 
 vi.mock("$lib/services/neurons.services", () => {
   return {
@@ -27,10 +26,18 @@ vi.mock("$lib/services/known-neurons.services", () => {
 });
 
 describe("NewFolloweeModal", () => {
-  const followingNeuron = {
+  const neuron = {
     ...mockNeuron,
     fullNeuron: {
       ...mockFullNeuron,
+      controller: mockIdentity.getPrincipal().toText(),
+    },
+  };
+
+  const followingNeuron = {
+    ...mockNeuron,
+    fullNeuron: {
+      ...neuron.fullNeuron,
       followees: [
         {
           topic: Topic.Unspecified,
@@ -44,127 +51,125 @@ describe("NewFolloweeModal", () => {
     knownNeuronsStore.setNeurons([]);
   });
 
-  it("renders an input for a neuron address", () => {
+  const renderComponent = ({
+    neuron,
+    topic,
+    onClose,
+  }: {
+    neuron: NeuronInfo;
+    topic: Topic;
+    onClose?: () => void;
+  }) => {
     const { container } = render(NewFolloweeModal, {
-      props: { neuron: mockNeuron, topic: Topic.Unspecified },
+      props: {
+        neuron,
+        topic,
+      },
+      events: {
+        nnsClose: onClose,
+      },
     });
 
-    const inputElement = container.querySelector(
-      '[name="new-followee-address"]'
-    );
+    return NewFolloweeModalPo.under(new JestPageObjectElement(container));
+  };
 
-    expect(inputElement).toBeInTheDocument();
+  it("renders an input for a neuron address", async () => {
+    const po = renderComponent({ neuron, topic: Topic.Unspecified });
+
+    expect(await po.getTextInputPo().isPresent()).toBe(true);
   });
 
   it("adds a followee from a valid address", async () => {
     const onClose = vi.fn();
+    const po = renderComponent({ neuron, topic: Topic.Unspecified, onClose });
 
-    const { container } = render(NewFolloweeModal, {
-      props: { neuron: mockNeuron, topic: Topic.Unspecified },
-      events: {
-        nnsClose: onClose,
-      },
+    expect(addFollowee).toBeCalledTimes(0);
+    expect(onClose).toBeCalledTimes(0);
+
+    await po.followNeuronId("123");
+
+    expect(addFollowee).toBeCalledWith({
+      followee: 123n,
+      neuronId: neuron.neuronId,
+      topic: Topic.Unspecified,
     });
 
-    const inputElement: HTMLInputElement | null = container.querySelector(
-      'input[name="new-followee-address"]'
-    );
-
-    expect(inputElement).toBeInTheDocument();
-    inputElement &&
-      (await fireEvent.input(inputElement, { target: { value: 123 } }));
-
-    const formElement = container.querySelector("form");
-    expect(formElement).toBeInTheDocument();
-
-    formElement && (await fireEvent.submit(formElement));
-
-    expect(addFollowee).toBeCalled();
-    await waitFor(() => expect(onClose).toBeCalled());
+    expect(addFollowee).toBeCalledTimes(1);
+    expect(onClose).toBeCalledTimes(1);
   });
 
   it("renders known neurons", async () => {
     knownNeuronsStore.setNeurons([mockKnownNeuron]);
-    const { queryAllByTestId } = render(NewFolloweeModal, {
-      props: { neuron: mockNeuron, topic: Topic.Unspecified },
-    });
+    const po = renderComponent({ neuron, topic: Topic.Unspecified });
 
-    const knownNeuronElements = queryAllByTestId("known-neuron-item");
-
-    expect(knownNeuronElements.length).toBe(1);
+    const knownNeurons = await po.getKnownNeuronItemPos();
+    expect(knownNeurons.length).toBe(1);
   });
 
   it("renders known neurons to unfollow", async () => {
     knownNeuronsStore.setNeurons([mockKnownNeuron]);
-    const { queryByTestId } = render(NewFolloweeModal, {
-      props: { neuron: followingNeuron, topic: Topic.Unspecified },
+    const po = renderComponent({
+      neuron: followingNeuron,
+      topic: Topic.Unspecified,
     });
 
-    const knownNeuronElement = queryByTestId(
-      `known-neuron-item-${mockKnownNeuron.id}`
-    );
+    const knownNeurons = await po.getKnownNeuronItemPos();
+    expect(knownNeurons.length).toBe(1);
 
-    expect(knownNeuronElement).toBeInTheDocument();
-
-    const knownNeuronButton = knownNeuronElement?.querySelector("button");
-    expect(knownNeuronButton).toBeInTheDocument();
-    knownNeuronButton &&
-      expect(knownNeuronButton.innerHTML).toEqual(en.new_followee.unfollow);
+    expect(await knownNeurons[0].getButton().getText()).toBe("Unfollow");
   });
 
   it("follow known neurons", async () => {
     knownNeuronsStore.setNeurons([mockKnownNeuron]);
-
     const onClose = vi.fn();
+    const po = renderComponent({ neuron, topic: Topic.Unspecified, onClose });
 
-    const { queryAllByTestId } = render(NewFolloweeModal, {
-      props: { neuron: mockNeuron, topic: Topic.Unspecified },
-      events: {
-        nnsClose: onClose,
-      },
+    const knownNeurons = await po.getKnownNeuronItemPos();
+    expect(knownNeurons.length).toBe(1);
+
+    expect(addFollowee).toBeCalledTimes(0);
+    expect(removeFollowee).toBeCalledTimes(0);
+    expect(onClose).toBeCalledTimes(0);
+
+    const knownNeuron = knownNeurons[0];
+    await knownNeuron.getButton().click();
+
+    expect(addFollowee).toBeCalledWith({
+      followee: mockKnownNeuron.id,
+      neuronId: neuron.neuronId,
+      topic: Topic.Unspecified,
     });
-
-    const knownNeuronElements = queryAllByTestId("known-neuron-item");
-
-    expect(knownNeuronElements.length).toBe(1);
-    const knownNeuronElement: HTMLElement = knownNeuronElements[0];
-
-    const followButton = knownNeuronElement.querySelector("button");
-
-    expect(followButton).toBeInTheDocument();
-
-    followButton && (await fireEvent.click(followButton));
-
-    expect(addFollowee).toBeCalled();
+    expect(addFollowee).toBeCalledTimes(1);
     expect(removeFollowee).not.toBeCalled();
-    await waitFor(() => expect(onClose).toBeCalled());
+    expect(onClose).toBeCalledTimes(1);
   });
 
   it("unfollow known neurons", async () => {
     knownNeuronsStore.setNeurons([mockKnownNeuron]);
-
     const onClose = vi.fn();
-
-    const { queryByTestId } = render(NewFolloweeModal, {
-      props: { neuron: followingNeuron, topic: Topic.Unspecified },
-      events: {
-        nnsClose: onClose,
-      },
+    const po = renderComponent({
+      neuron: followingNeuron,
+      topic: Topic.Unspecified,
+      onClose,
     });
 
-    const knownNeuronElement = queryByTestId(
-      `known-neuron-item-${mockKnownNeuron.id}`
-    );
+    const knownNeurons = await po.getKnownNeuronItemPos();
+    expect(knownNeurons.length).toBe(1);
 
-    expect(knownNeuronElement).toBeInTheDocument();
+    expect(addFollowee).toBeCalledTimes(0);
+    expect(removeFollowee).toBeCalledTimes(0);
+    expect(onClose).toBeCalledTimes(0);
 
-    const knownNeuronButton = knownNeuronElement?.querySelector("button");
-    expect(knownNeuronButton).toBeInTheDocument();
+    const knownNeuron = knownNeurons[0];
+    await knownNeuron.getButton().click();
 
-    knownNeuronButton && (await fireEvent.click(knownNeuronButton));
-
-    expect(removeFollowee).toBeCalled();
+    expect(removeFollowee).toBeCalledWith({
+      followee: mockKnownNeuron.id,
+      neuronId: neuron.neuronId,
+      topic: Topic.Unspecified,
+    });
+    expect(removeFollowee).toBeCalledTimes(1);
     expect(addFollowee).not.toBeCalled();
-    await waitFor(() => expect(onClose).toBeCalled());
+    expect(onClose).toBeCalledTimes(1);
   });
 });
