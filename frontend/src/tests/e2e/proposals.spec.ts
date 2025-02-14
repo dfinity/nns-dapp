@@ -68,19 +68,21 @@ test("Test proposals", async ({ page, context }) => {
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
-    .selectTopicFilter([Topic.ExchangeRate]);
+    .selectTopicFilter([Topic.NetworkEconomics]);
   await nnsProposalListPo.waitForContentLoaded();
 
-  expect(await getVisibleCardTopics()).toEqual(["Exchange Rate"]);
+  expect(await getVisibleCardTopics()).toEqual(["Network Economics"]);
 
   // Invert topic filter
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
-    .selectAllTopicsExcept([Topic.ExchangeRate]);
+    .selectAllTopicsExcept([Topic.NetworkEconomics]);
   await nnsProposalListPo.waitForContentLoaded();
 
-  expect((await getVisibleCardTopics()).includes("Exchange Rate")).toBe(false);
+  expect((await getVisibleCardTopics()).includes("Network Economics")).toBe(
+    false
+  );
 
   step("Filter proposals by Status");
   const getVisibleCardStatuses = () => nnsProposalListPo.getCardStatuses();
