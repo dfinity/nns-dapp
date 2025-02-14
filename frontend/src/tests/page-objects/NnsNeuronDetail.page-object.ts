@@ -112,38 +112,39 @@ export class NnsNeuronDetailPo extends BasePageObject {
       .getDissolveButtonPo()
       .click();
     const modal = this.getNnsNeuronModalsPo().getDissolveActionButtonModalPo();
-    await modal.confirmYes();
+    await modal.clickYes();
+    await modal.waitForClosed();
   }
 
   async addHotkey(principal: string): Promise<void> {
     await this.getNnsNeuronHotkeysCardPo().clickAddHotkey();
-    await this.getNnsNeuronModalsPo()
-      .getAddHotkeyModalPo()
-      .addHotkey(principal);
+    const modal = this.getNnsNeuronModalsPo().getAddHotkeyModalPo();
+    await modal.addHotkey(principal);
+    await modal.waitForClosed();
   }
 
   async joinCommunityFund(): Promise<void> {
     await this.getAdvancedSectionPo().clickJoinCommunityFundCheckbox();
     const modal =
       await this.getNnsNeuronModalsPo().getJoinCommunityFundModalPo();
-    await modal.confirmYes();
+    await modal.clickYes();
+    await modal.waitForClosed();
   }
 
   async addMaturity(amount: number): Promise<void> {
     await this.getNnsNeuronTestnetFunctionsCardPo().clickAddMaturity();
-    await this.getNnsNeuronModalsPo()
-      .getNnsAddMaturityModalPo()
-      .addMaturity(amount);
+    const modal = this.getNnsNeuronModalsPo().getNnsAddMaturityModalPo();
+    await modal.addMaturity(amount);
+    await modal.waitForClosed();
   }
 
   async updateVotingPowerRefreshedTimestamp(timestamp: number): Promise<void> {
     await this.getNnsNeuronTestnetFunctionsCardPo().clickUpdateVotingPowerRefreshedTimestamp();
-    await this.getNnsNeuronModalsPo()
-      .getUpdateVotingPowerRefreshedModalPo()
-      .waitFor();
-    await this.getNnsNeuronModalsPo()
-      .getUpdateVotingPowerRefreshedModalPo()
-      .updateTimestampSeconds(timestamp);
+    const modal =
+      this.getNnsNeuronModalsPo().getUpdateVotingPowerRefreshedModalPo();
+    await modal.waitFor();
+    await modal.updateTimestampSeconds(timestamp);
+    await modal.waitForClosed();
   }
 
   async spawnNeuron({ percentage }: { percentage: number }): Promise<void> {
@@ -151,8 +152,8 @@ export class NnsNeuronDetailPo extends BasePageObject {
       .getAvailableMaturityItemActionPo()
       .getSpawnButton()
       .click();
-    await this.getNnsNeuronModalsPo()
-      .getSpawnNeuronModalPo()
-      .spawnNeuron({ percentage });
+    const modal = this.getNnsNeuronModalsPo().getSpawnNeuronModalPo();
+    await modal.spawnNeuron({ percentage });
+    await modal.waitForClosed();
   }
 }

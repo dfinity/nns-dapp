@@ -33,7 +33,9 @@ export class CanisterDetailPo extends BasePageObject {
   }
 
   async renameCanister(newName: string): Promise<void> {
-    await this.getRenameCanisterModalPo().rename(newName);
+    const modal = this.getRenameCanisterModalPo();
+    await modal.rename(newName);
+    await modal.waitForAbsent();
   }
 
   getCanisterPageHeading(): CanisterPageHeadingPo {
