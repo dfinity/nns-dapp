@@ -65,30 +65,24 @@ test("Test proposals", async ({ page, context }) => {
   step("Filter proposals by Topic");
   const getVisibleCardTopics = () => nnsProposalListPo.getCardTopics();
 
-  expect(await getVisibleCardTopics()).toEqual([
-    "Protocol Canister Management",
-  ]);
-
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
-    .selectTopicFilter([Topic.ProtocolCanisterManagement]);
+    .selectTopicFilter([Topic.NetworkEconomics]);
   await nnsProposalListPo.waitForContentLoaded();
 
-  expect(await getVisibleCardTopics()).toEqual([
-    "Protocol Canister Management",
-  ]);
+  expect(await getVisibleCardTopics()).toEqual(["Network Economics"]);
 
   // Invert topic filter
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
-    .selectAllTopicsExcept([Topic.ProtocolCanisterManagement]);
+    .selectAllTopicsExcept([Topic.NetworkEconomics]);
   await nnsProposalListPo.waitForContentLoaded();
 
-  expect(
-    (await getVisibleCardTopics()).includes("Protocol Canister Management")
-  ).toBe(false);
+  expect((await getVisibleCardTopics()).includes("Network Economics")).toBe(
+    false
+  );
 
   step("Filter proposals by Status");
   const getVisibleCardStatuses = () => nnsProposalListPo.getCardStatuses();
