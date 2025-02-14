@@ -3,6 +3,8 @@ import type { ParticipateSwapModalPo } from "$tests/page-objects/ParticipateSwap
 import { ProjectInfoSectionPo } from "$tests/page-objects/ProjectInfoSection.page-object";
 import { ProjectMetadataSectionPo } from "$tests/page-objects/ProjectMetadataSection.page-object";
 import { ProjectStatusSectionPo } from "$tests/page-objects/ProjectStatusSection.page-object";
+import { ProposalCardPo } from "$tests/page-objects/ProposalCard.page-object";
+import { SaleInProgressModalPo } from "$tests/page-objects/SaleInProgressModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -35,6 +37,14 @@ export class ProjectDetailPo extends BasePageObject {
     return this.getProjectStatusSectionPo()
       .getParticipateButtonPo()
       .getParticipateSwapModalPo();
+  }
+
+  getProposalCardPo(): ProposalCardPo {
+    return ProposalCardPo.under(this.root);
+  }
+
+  getSaleInProgressModalPo(): SaleInProgressModalPo {
+    return SaleInProgressModalPo.under(this.root);
   }
 
   getProjectName(): Promise<string> {
