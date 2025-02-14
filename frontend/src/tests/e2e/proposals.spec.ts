@@ -65,6 +65,10 @@ test("Test proposals", async ({ page, context }) => {
   step("Filter proposals by Topic");
   const getVisibleCardTopics = () => nnsProposalListPo.getCardTopics();
 
+  expect(await getVisibleCardTopics()).toEqual([
+    "Protocol Canister Management",
+  ]);
+
   await appPo
     .getProposalsPo()
     .getNnsProposalFiltersPo()
