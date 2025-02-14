@@ -57,11 +57,9 @@ while true; do
   if [[ "$IN_PROGRESS" -eq 0 ]]; then
     echo "All checks passed."
     gh --repo "$REPO" pr ready "$PR"
-    echo "PR marked as 'Ready for review'."
 
     if [[ "$MERGE_WHEN_READY" == "true" ]]; then
       gh --repo "$REPO" pr merge "$PR" --auto
-      echo "PR marked as 'Merge when ready'."
     fi
     exit 0
   fi
