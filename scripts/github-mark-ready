@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+print_help() {
+  cat <<-EOF
+
+  Mark a GitHub PR as ready for review once all checks have passed.
+  EXAMPLE USAGE:
+		$0 --merge-when-ready https://github.com/dfinity/nns-dapp/pull/6425
+	EOF
+}
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+# Define options
+clap.define long=merge-when-ready desc="Also mark the PR as 'Merge when ready'" variable=MERGE_WHEN_READY nargs=0 default="false"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+URL="${1:-}"
+URL_PATTERN="https://github.com/([^/]*/[^/]*)/pull/([^/]*).*"
+
+if [[ -z "${URL:-}" ]]; then
+  print_help
+  exit 0
+fi
+
+if ! [[ "$URL" =~ $URL_PATTERN ]]; then
+  echo "Invalid URL: $URL" >&2
+  echo "URL should match the pattern: $URL_PATTERN" >&2
+  exit 1
+fi
+
+REPO=$(echo "$URL" | sed -E "s|$URL_PATTERN|\\1|")
+PR=$(echo "$URL" | sed -E "s|$URL_PATTERN|\\2|")
+
+echo "Watching PR $PR on $REPO..."
+
+get_pr_status() {
+  gh --repo "$REPO" pr view "$PR" --json statusCheckRollup | jq '[ .statusCheckRollup[] ] | { in_progress: [ .[] | select(.status == "IN_PROGRESS") ] | length, failed: [ .[] | select(.conclusion == "FAILURE") ] | length }'
+}
+
+overwrite=false
+
+while true; do
+  STATUS=$(get_pr_status)
+  IN_PROGRESS=$(echo "$STATUS" | jq '.in_progress')
+  FAILED=$(echo "$STATUS" | jq '.failed')
+
+  if [[ "$FAILED" -gt 0 ]]; then
+    echo "$FAILED checks failed."
+    exit 1
+  fi
+
+  if [[ "$IN_PROGRESS" -eq 0 ]]; then
+    echo "All checks passed."
+    gh --repo "$REPO" pr ready "$PR"
+
+    if [[ "$MERGE_WHEN_READY" == "true" ]]; then
+      gh --repo "$REPO" pr merge "$PR" --auto
+    fi
+    exit 0
+  fi
+
+  if [[ "$overwrite" == "true" ]]; then
+    # Overwrite the previous output line.
+    tput cuu1
+    tput el
+  fi
+  echo "Checks in progress: $IN_PROGRESS"
+  overwrite=true
+  sleep 10
+done
