@@ -28,12 +28,10 @@ export class MockNNSDappCanister extends NNSDappCanister {
     return AccountIdentifier.fromHex(mockMainAccount.identifier);
   }
 
-   
   public async getAccount(_: { certified: boolean }): Promise<AccountDetails> {
     return mockAccountDetails;
   }
 
-   
   public async createSubAccount(_: {
     subAccountName: string;
   }): Promise<SubAccountDetails> {

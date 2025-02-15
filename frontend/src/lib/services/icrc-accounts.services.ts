@@ -38,7 +38,6 @@ import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
- 
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {
   // TODO: Support Ledger Devices
   return getAuthenticatedIdentity();

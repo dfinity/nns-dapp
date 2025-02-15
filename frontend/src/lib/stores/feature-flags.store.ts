@@ -63,7 +63,6 @@ const initOverrideFeatureFlagsStore = (): OverrideFeatureFlagsStore => {
     removeFlag(flag: FeatureKey) {
       assertValidFeatureFlag(flag);
       update((featureFlags) => {
-         
         const { [flag]: _, ...rest } = featureFlags;
         return rest;
       });
@@ -126,7 +125,6 @@ export const initConsoleInterface = (): FeatureFlagsConsoleInterface => {
 };
 
 if (browser) {
-   
   (
     window as unknown as { __featureFlags: FeatureFlagsConsoleInterface }
   ).__featureFlags = initConsoleInterface();

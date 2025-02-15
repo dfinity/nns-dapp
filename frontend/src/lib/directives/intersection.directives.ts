@@ -3,7 +3,7 @@ import { dispatchIntersecting } from "$lib/utils/events.utils";
 
 export const onIntersection = (element: HTMLElement) => {
   // IntersectionObserverInit is not recognized by the linter
-   
+
   const options: IntersectionObserverInit = {
     threshold: INTERSECTION_THRESHOLD,
   };

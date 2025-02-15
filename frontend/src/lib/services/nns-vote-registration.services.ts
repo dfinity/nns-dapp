@@ -203,6 +203,5 @@ const updateAfterNnsVoteRegistration = async (
       strategy: "update",
     }),
     reloadProposal(),
-     
   ]).then(([_, proposal]) => proposal);
 };

@@ -64,7 +64,6 @@ export const defaultIcrcCanistersStore = initDefaultIcrcCanistersStore();
 // In the devtools console, run:
 // __experimentalAddIcrc1Token(ledgerCanisterId, indexCanisterId)
 if (browser) {
-   
   (
     window as unknown as {
       __experimentalAddIcrc1Token: (

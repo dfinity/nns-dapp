@@ -267,7 +267,7 @@ export const toIcpAccountIdentifier = (
 ): IcpAccountIdentifierText => {
   try {
     return maybeIcrcToIcpAccountIdentifier(accountIdentifier);
-  } catch (err: unknown) {
+  } catch (_) {
     // We ignore the error. The provided account identifier was not a valid Icrc account identifier.
     // We continue with the provided account identifier which might either be a valid Icp account identifier or just incorrect.
   }
