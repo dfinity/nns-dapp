@@ -133,11 +133,11 @@ describe("ReportingTransactionsButton", () => {
       "Balance(ICP),1'234'567.8901",
       "Controller Principal ID,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
       "Transactions,2",
-      'Export Date Time,"Oct 14, 2023 12:00 AM"',
+      'Export Date Time,"Oct 14, 2023 12:00 AM"',
       "",
       ",,TX ID,Project Name,Symbol,To,From,TX Type,Amount(ICP),Date Time",
-      ',,1234,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
-      ',,1,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
+      ',,1234,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
+      ',,1,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
     ].join("\n");
 
     expect(spySaveGeneratedCsv).toBeCalledWith(
@@ -170,7 +170,7 @@ describe("ReportingTransactionsButton", () => {
                 id: "1234",
                 project: "Internet Computer",
                 symbol: "ICP",
-                timestamp: "Jan 1, 2023 12:00 AM",
+                timestamp: "Jan 1, 2023 12:00 AM",
                 to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
                 type: "Sent",
               },
@@ -200,7 +200,7 @@ describe("ReportingTransactionsButton", () => {
               },
               {
                 label: "Export Date Time",
-                value: "Oct 14, 2023 12:00 AM",
+                value: "Oct 14, 2023 12:00 AM",
               },
             ],
           },
