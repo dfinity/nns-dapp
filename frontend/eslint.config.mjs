@@ -4,6 +4,7 @@ import sveltePlugin from "eslint-plugin-svelte";
 import globals from "globals";
 import svelteParser from "svelte-eslint-parser";
 import tsLint from "typescript-eslint";
+import svelteConfig from "./svelte.config.js";
 
 export default [
   jsLint.configs.recommended,
@@ -45,10 +46,9 @@ export default [
     files: ["**/*.svelte"],
     languageOptions: {
       parser: svelteParser,
-      sourceType: "script",
       parserOptions: {
         parser: tsLint.parser,
-        // svelteConfig: svelteConfig,
+        svelteConfig,
       },
     },
   },
@@ -60,7 +60,6 @@ export default [
       "src/lib/canisters/**/*",
       // .eslintignore
       "**/.DS_Store",
-      // "node_modules/*",
       "build",
       ".svelte-kit",
       "package",
