@@ -14,7 +14,7 @@
     "prepare": "svelte-kit sync",
     "check": "svelte-kit sync && svelte-check --fail-on-warnings --tsconfig ./tsconfig.json && npm run lint",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "eslint --max-warnings 0 .",
+    "lint": "prettier --check './**/*.{ts,js,mjs,json,scss,svelte,html}' && eslint --max-warnings 0 .",
     "format": "prettier --write './**/*.{ts,js,mjs,json,scss,svelte,html}'",
     "format:modified": "prettier --write $(git diff --diff-filter=ACM --name-only | egrep \"\\.(ts|js|mjs|json|scss|svelte|html)$\" | cut -d'/' -f2-)",
     "test": "tsc --noEmit -p ./tsconfig.spec.json && npm run vitest",
