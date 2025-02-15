@@ -8,7 +8,7 @@ declare namespace App {
   // interface Platform {}
 }
 
-/* eslint-disable */
+ 
 
 declare namespace svelteHTML {
   // Svelte needs help to support typing of custom events.
@@ -26,7 +26,7 @@ declare namespace svelteHTML {
   }
 }
 
-/* eslint-enable */
+ 
 
 // Solves following lint warning:
 //

@@ -203,6 +203,6 @@ const updateAfterNnsVoteRegistration = async (
       strategy: "update",
     }),
     reloadProposal(),
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
   ]).then(([_, proposal]) => proposal);
 };

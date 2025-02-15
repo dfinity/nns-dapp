@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 import { DEFAULT_TOAST_DURATION_MILLIS } from "$lib/constants/constants";
 import type { ToastLabelKey, ToastMsg } from "$lib/types/toast";
 import { errorToString } from "$lib/utils/error.utils";
