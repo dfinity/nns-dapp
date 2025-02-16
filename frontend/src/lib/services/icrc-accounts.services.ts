@@ -106,6 +106,7 @@ export const loadIcrcToken = ({
           importedTokens: get(importedTokensStore)?.importedTokens,
         })
       ) {
+        // this could be handled by the new store.
         // Do not display error toasts for imported tokens.
         // Failed imported tokens will be shown with a warning icon in the UI.
         failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
@@ -203,12 +204,14 @@ export const loadAccounts = async ({
       icrcAccountsStore.resetUniverse(ledgerCanisterId);
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
 
+      //this could be handled by the new store
       if (
         isImportedToken({
           ledgerCanisterId,
           importedTokens: get(importedTokensStore)?.importedTokens,
         })
       ) {
+        //this could be handled by the new store
         // Do not display error toasts for imported tokens.
         // Failed imported tokens will be shown with a warning icon in the UI.
         failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
@@ -221,8 +224,20 @@ export const loadAccounts = async ({
         );
       }
 
+      // maybe expose has method in the store
+      // if (!get(canistersErrorsStore)[ledgerCanisterId.toText()]) {
+      //   // this executes before adding to the store. we could check if there is an error, and then not show the toast as it was already shown
+      //   toastsError(
+      //     toToastError({
+      //       err,
+      //       fallbackErrorLabelKey: "error.accounts_load",
+      //     })
+      //   );
+      // }
+
       handleError?.();
     },
+    canisterId: ledgerCanisterId.toText(),
     logMessage: "Syncing Accounts",
   });
 };
