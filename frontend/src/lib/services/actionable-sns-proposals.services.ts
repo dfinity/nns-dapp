@@ -3,7 +3,7 @@ import { MAX_ACTIONABLE_REQUEST_COUNT } from "$lib/constants/constants";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
+import { loadSnsNeurons } from "$lib/services/sns-neurons.services";
 import {
   actionableSnsProposalsStore,
   failedActionableSnsesStore,
