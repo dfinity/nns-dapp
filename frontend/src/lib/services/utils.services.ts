@@ -3,6 +3,7 @@ import {
   getAuthenticatedIdentity,
   getCurrentIdentity,
 } from "$lib/services/auth.services";
+import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
 
@@ -40,6 +41,7 @@ export const queryAndUpdate = async <R, E>({
   strategy,
   logMessage,
   identityType = "authorized",
+  canisterId,
 }: {
   request: (options: { certified: boolean; identity: Identity }) => Promise<R>;
   onLoad: QueryAndUpdateOnResponse<R>;
@@ -47,6 +49,7 @@ export const queryAndUpdate = async <R, E>({
   onError?: QueryAndUpdateOnError<E>;
   strategy?: QueryAndUpdateStrategy;
   identityType?: QueryAndUpdateIdentity;
+  canisterId?: string;
 }): Promise<void> => {
   let certifiedDone = false;
   let requests: Array<Promise<void>>;
@@ -89,11 +92,20 @@ export const queryAndUpdate = async <R, E>({
 
         onLoad({ certified, strategy: currentStrategy, response });
         log({ postfix: ` ${certified ? "update" : "query"} complete.` });
+
+        if (canisterId) canistersErrorsStore.delete(canisterId);
       })
       .catch((error: E) => {
         if (certifiedDone) return;
         certifiedDone ||= certified;
         onError?.({ certified, strategy: currentStrategy, error, identity });
+
+        if (canisterId) {
+          canistersErrorsStore.set({
+            canisterId: canisterId,
+            rawError: error,
+          });
+        }
       });
 
   // apply fetching strategy
