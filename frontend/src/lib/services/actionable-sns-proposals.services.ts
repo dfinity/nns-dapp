@@ -3,11 +3,12 @@ import { MAX_ACTIONABLE_REQUEST_COUNT } from "$lib/constants/constants";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
-import { loadSnsNeurons } from "$lib/services/sns-neurons.services";
+import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
 import {
   actionableSnsProposalsStore,
   failedActionableSnsesStore,
 } from "$lib/stores/actionable-sns-proposals.store";
+import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
 import {
@@ -67,8 +68,13 @@ export const loadActionableProposalsForSns = async (
   } catch (err) {
     console.error(err);
 
+    // do we also need this store to handle failed canisters? rootCanister and governanceCanister are different though
     // Store the failed root canister ID to provide the correct loading state.
     failedActionableSnsesStore.add(rootCanisterId.toText());
+    canistersErrorsStore.set({
+      canisterId: rootCanisterId.toText(),
+      rawError: err,
+    });
   }
 };
 

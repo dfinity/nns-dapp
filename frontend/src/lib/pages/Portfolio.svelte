@@ -71,7 +71,7 @@
 
   let areStakedTokensLoading: boolean;
   $: areStakedTokensLoading = tableProjects.some(
-    (project) => project.isStakeLoading
+    (project) => project.isStakeLoading && !project.hasError
   );
 
   // Determines the display state of the staked tokens card

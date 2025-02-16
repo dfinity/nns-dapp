@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
+import type { CanistersErrorsStoreData } from "$lib/stores/canisters-errors.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import type { TableProject } from "$lib/types/staking";
 import type { Universe } from "$lib/types/universe";
@@ -147,12 +148,14 @@ export const getTableProjects = ({
   nnsNeurons,
   snsNeurons,
   icpSwapUsdPrices,
+  canistersErrors,
 }: {
   universes: Universe[];
   isSignedIn: boolean;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
+  canistersErrors: CanistersErrorsStoreData;
 }): TableProject[] => {
   return universes.map((universe) => {
     const token =
@@ -183,6 +186,10 @@ export const getTableProjects = ({
       isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error"
         ? undefined
         : icpSwapUsdPrices[ledgerCanisterId.toText()];
+
+    const hasCanisterAnError =
+      canistersErrors[universe.summary?.rootCanisterId.toText() ?? ""];
+
     const stakeInUsd =
       stake instanceof TokenAmountV2
         ? getUsdValue({
@@ -203,6 +210,7 @@ export const getTableProjects = ({
       availableMaturity,
       stakedMaturity,
       isStakeLoading,
+      hasError: hasCanisterAnError,
     };
   });
 };

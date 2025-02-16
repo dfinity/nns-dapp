@@ -16,6 +16,7 @@
   } from "$lib/services/accounts-balances.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
+  import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { UserToken } from "$lib/types/tokens-page";
@@ -61,6 +62,7 @@
       nnsNeurons: $neuronsStore?.neurons,
       snsNeurons: $snsNeuronsStore,
       icpSwapUsdPrices: $icpSwapUsdPricesStore,
+      canistersErrors: $canistersErrorsStore,
     })}
   /></TestIdWrapper
 >
