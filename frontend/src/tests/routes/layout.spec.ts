@@ -1,10 +1,19 @@
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
+import {
+  enableAutoOutboundTracking,
+  enableAutoPageviews,
+} from "$lib/services/analytics";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
 import App from "$routes/+layout.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
+
+vi.mock("$lib/services/analytics", () => ({
+  enableAutoPageviews: vi.fn(),
+  enableAutoOutboundTracking: vi.fn(),
+}));
 
 vi.mock("$lib/services/worker-auth.services", () => ({
   initAuthWorker: vi.fn(() =>
@@ -59,5 +68,18 @@ describe("Layout", () => {
     await runResolvedPromises();
 
     expect(spy).toBeCalled();
+  });
+
+  it("should initialize analytics tracking on mount", async () => {
+    render(App);
+
+    expect(enableAutoPageviews).toHaveBeenCalled();
+    expect(enableAutoOutboundTracking).toHaveBeenCalled();
+
+    resetIdentity();
+    await runResolvedPromises();
+
+    expect(enableAutoPageviews).toHaveBeenCalledTimes(1);
+    expect(enableAutoOutboundTracking).toHaveBeenCalledTimes(1);
   });
 });

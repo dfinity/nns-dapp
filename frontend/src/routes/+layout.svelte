@@ -1,6 +1,10 @@
 <script lang="ts">
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import {
+    enableAutoOutboundTracking,
+    enableAutoPageviews,
+  } from "$lib/services/analytics";
+  import {
     initAuthWorker,
     type AuthWorker,
   } from "$lib/services/worker-auth.services";
@@ -38,6 +42,8 @@
   };
 
   onMount(async () => {
+    enableAutoPageviews();
+    enableAutoOutboundTracking();
     worker = await initAuthWorker();
     await syncAuth($authStore);
   });
