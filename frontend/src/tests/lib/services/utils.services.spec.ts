@@ -1,4 +1,8 @@
-import { queryAndUpdate } from "$lib/services/utils.services";
+import {
+  queryAndUpdate,
+  queryAndUpdateWithCanisterErrorTrack,
+} from "$lib/services/utils.services";
+import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
 import * as devUtils from "$lib/utils/dev.utils";
 import {
   mockIdentity,
@@ -7,6 +11,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { tick } from "svelte";
+import { get } from "svelte/store";
 
 describe("api-utils", () => {
   describe("queryAndUpdate", () => {
@@ -334,6 +339,90 @@ describe("api-utils", () => {
 
         expect(log).toBeCalled();
       });
+    });
+  });
+
+  describe("queryAndUpdateWithCanisterErrorTrack", () => {
+    const TEST_CANISTER_ID = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+
+    beforeEach(() => {
+      resetIdentity();
+    });
+
+    it("should delete canister error on successful response", async () => {
+      const response = { data: "test" };
+      const request = vi.fn().mockResolvedValue(response);
+      const onLoad = vi.fn();
+
+      canistersErrorsStore.set({
+        canisterId: TEST_CANISTER_ID,
+        rawError: "initial error",
+      });
+
+      await queryAndUpdateWithCanisterErrorTrack({
+        request,
+        onLoad,
+        logMessage: "test-log",
+        canisterId: TEST_CANISTER_ID,
+      });
+
+      expect(get(canistersErrorsStore)).toEqual({});
+    });
+
+    it("should set canister error on error response", async () => {
+      const error = new Error("test error");
+      const request = vi.fn().mockRejectedValue(error);
+      const onLoad = vi.fn();
+      const onError = vi.fn();
+
+      await queryAndUpdateWithCanisterErrorTrack({
+        request,
+        onLoad,
+        onError,
+        logMessage: "test-log",
+        canisterId: TEST_CANISTER_ID,
+      });
+
+      expect(get(canistersErrorsStore)).toEqual({
+        [TEST_CANISTER_ID]: { raw: error },
+      });
+    });
+
+    it("should not update error store for query call in query_and_update strategy", async () => {
+      let resolveUpdate: (value: unknown) => void;
+      let rejectQuery: (value: unknown) => void;
+      const queryError = new Error("query error");
+
+      const request = vi
+        .fn()
+        .mockImplementation(({ certified }: { certified: boolean }) =>
+          certified
+            ? new Promise((resolve) => (resolveUpdate = resolve))
+            : new Promise((_, reject) => (rejectQuery = reject))
+        );
+      const onLoad = vi.fn();
+      const onError = vi.fn();
+
+      queryAndUpdateWithCanisterErrorTrack({
+        request,
+        onLoad,
+        onError,
+        logMessage: "test-log",
+        canisterId: TEST_CANISTER_ID,
+        strategy: "query_and_update",
+      });
+
+      await runResolvedPromises();
+
+      rejectQuery(queryError);
+      await runResolvedPromises();
+
+      expect(get(canistersErrorsStore)).toEqual({});
+
+      resolveUpdate({});
+      await runResolvedPromises();
+
+      expect(get(canistersErrorsStore)).toEqual({});
     });
   });
 });
