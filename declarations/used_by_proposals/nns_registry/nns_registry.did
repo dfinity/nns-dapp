@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-06_12-26-revert-hashes-in-blocks/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-13_03-06-base/rs/registry/canister/canister/registry.did>
 // A brief note about the history of this file: This file used to be
 // automatically generated, but now, it is hand-crafted, because the
 // auto-generator has some some pretty degenerate behaviors. The worst of those
@@ -81,7 +81,6 @@ type CreateSubnetPayload = record {
   gossip_pfn_evaluation_period_ms : nat32;
   max_ingress_messages_per_block : nat64;
   max_number_of_canisters : nat64;
-  ecdsa_config : opt EcdsaInitialConfig;
   chain_key_config : opt InitialChainKeyConfig;
   gossip_max_artifact_streams_per_peer : nat32;
   replica_version_id : text;
@@ -256,7 +255,6 @@ type RecoverSubnetPayload = record {
   replacement_nodes : opt vec principal;
   subnet_id : principal;
   registry_store_uri : opt record { text; text; nat64 };
-  ecdsa_config : opt EcdsaInitialConfig;
   chain_key_config : opt InitialChainKeyConfig;
   state_hash : blob;
   time_ns : nat64;
@@ -424,9 +422,6 @@ type UpdateSubnetPayload = record {
   chain_key_config : opt ChainKeyConfig;
   chain_key_signing_enable : opt vec MasterPublicKeyId;
   chain_key_signing_disable : opt vec MasterPublicKeyId;
-  ecdsa_config : opt EcdsaConfig;
-  ecdsa_key_signing_enable : opt vec EcdsaKeyId;
-  ecdsa_key_signing_disable : opt vec EcdsaKeyId;
 };
 
 type ChainKeyConfig = record {
