@@ -108,6 +108,8 @@ describe("TextInputForm", () => {
       onConfirm: callback,
     });
 
+    await po.enterText("test");
+
     expect(callback).toBeCalledTimes(0);
     await po.clickSubmitButton();
     expect(callback).toBeCalledTimes(1);
