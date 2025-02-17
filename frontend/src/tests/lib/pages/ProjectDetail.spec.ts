@@ -205,7 +205,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           unmount = resolve;
         });
         renderComponent({ ...props, unmountWhen });
-        //const { unmount } = render(ProjectDetail, props);
 
         await runResolvedPromises();
         let expectedCalls = 0;
