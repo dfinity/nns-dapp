@@ -33,6 +33,10 @@ export class FollowNnsTopicSectionPo extends BasePageObject {
     });
   }
 
+  async hasSeparator(): Promise<boolean> {
+    return this.root.byTestId("separator").isPresent();
+  }
+
   getNewFolloweeModalPo(): NewFolloweeModalPo {
     return NewFolloweeModalPo.under(this.root);
   }
@@ -43,5 +47,15 @@ export class FollowNnsTopicSectionPo extends BasePageObject {
         (await el.getText()).trim()
       )
     );
+  }
+
+  async addFollowee(followee: string): Promise<void> {
+    const followTopicSection = await this.getFollowTopicSectionPo();
+    await followTopicSection.getCollapsiblePo().expand();
+    await followTopicSection.getAddFolloweeButtonPo().click();
+
+    const modal = this.getNewFolloweeModalPo();
+    await modal.followNeuronId(followee);
+    await modal.waitForAbsent();
   }
 }

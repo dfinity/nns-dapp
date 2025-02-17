@@ -2,7 +2,7 @@ import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import ProposalsFilterModal from "$lib/modals/proposals/NnsProposalsFilterModal.svelte";
 import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import type { ProposalsFilterModalProps } from "$lib/types/proposals";
-import { enumKeys } from "$lib/utils/enum.utils";
+import { enumKeys, enumValues } from "$lib/utils/enum.utils";
 import en from "$tests/mocks/i18n.mock";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -67,6 +67,17 @@ describe("ProposalsFilterModal", () => {
     ];
 
     expect(checkboxLabels).toEqual(expectedLabels);
+  });
+
+  it("should render separator", async () => {
+    const po = renderComponent();
+
+    for (const value of enumValues(Topic)) {
+      const separator = await po.getFilterEntrySeparatorByIdPo(`${value}`);
+      expect(await separator.isPresent()).toEqual(
+        value === Topic.SnsAndCommunityFund
+      );
+    }
   });
 
   it("should not render filter Unspecified", async () => {

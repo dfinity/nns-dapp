@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-06_12-26-revert-hashes-in-blocks/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-13_03-06-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -123,29 +123,6 @@ pub struct SubnetFeatures {
     pub sev_enabled: Option<bool>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub enum EcdsaCurve {
-    #[serde(rename = "secp256k1")]
-    Secp256K1,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct EcdsaKeyId {
-    pub name: String,
-    pub curve: EcdsaCurve,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct EcdsaKeyRequest {
-    pub key_id: EcdsaKeyId,
-    pub subnet_id: Option<Principal>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct EcdsaInitialConfig {
-    pub quadruples_to_create_in_advance: u32,
-    pub max_queue_size: Option<u32>,
-    pub keys: Vec<EcdsaKeyRequest>,
-    pub signature_request_timeout_ns: Option<u64>,
-    pub idkg_key_rotation_period_ms: Option<u64>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub enum SchnorrAlgorithm {
     #[serde(rename = "ed25519")]
     Ed25519,
@@ -166,6 +143,16 @@ pub enum VetKdCurve {
 pub struct VetKdKeyId {
     pub name: String,
     pub curve: VetKdCurve,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum EcdsaCurve {
+    #[serde(rename = "secp256k1")]
+    Secp256K1,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct EcdsaKeyId {
+    pub name: String,
+    pub curve: EcdsaCurve,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum MasterPublicKeyId {
@@ -212,7 +199,6 @@ pub struct CreateSubnetPayload {
     pub gossip_pfn_evaluation_period_ms: u32,
     pub max_ingress_messages_per_block: u64,
     pub max_number_of_canisters: u64,
-    pub ecdsa_config: Option<EcdsaInitialConfig>,
     pub gossip_max_artifact_streams_per_peer: u32,
     pub replica_version_id: String,
     pub gossip_max_duplicity: u32,
@@ -305,7 +291,6 @@ pub struct RecoverSubnetPayload {
     pub replacement_nodes: Option<Vec<Principal>>,
     pub subnet_id: Principal,
     pub registry_store_uri: Option<(String, String, u64)>,
-    pub ecdsa_config: Option<EcdsaInitialConfig>,
     pub state_hash: serde_bytes::ByteBuf,
     pub chain_key_config: Option<InitialChainKeyConfig>,
     pub time_ns: u64,
@@ -445,14 +430,6 @@ pub struct UpdateSshReadOnlyAccessForAllUnassignedNodesPayload {
     pub ssh_readonly_keys: Vec<String>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct EcdsaConfig {
-    pub quadruples_to_create_in_advance: u32,
-    pub max_queue_size: Option<u32>,
-    pub key_ids: Vec<EcdsaKeyId>,
-    pub signature_request_timeout_ns: Option<u64>,
-    pub idkg_key_rotation_period_ms: Option<u64>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct ChainKeyConfig {
     pub signature_request_timeout_ns: Option<u64>,
     pub key_configs: Vec<KeyConfig>,
@@ -469,20 +446,17 @@ pub struct UpdateSubnetPayload {
     pub subnet_id: Principal,
     pub max_ingress_bytes_per_message: Option<u64>,
     pub dkg_dealings_per_block: Option<u64>,
-    pub ecdsa_key_signing_disable: Option<Vec<EcdsaKeyId>>,
     pub max_block_payload_size: Option<u64>,
     pub start_as_nns: Option<bool>,
     pub is_halted: Option<bool>,
     pub chain_key_signing_enable: Option<Vec<MasterPublicKeyId>>,
     pub max_ingress_messages_per_block: Option<u64>,
     pub max_number_of_canisters: Option<u64>,
-    pub ecdsa_config: Option<EcdsaConfig>,
     pub retransmission_request_ms: Option<u32>,
     pub dkg_interval_length: Option<u64>,
     pub registry_poll_period_ms: Option<u32>,
     pub max_chunk_wait_ms: Option<u32>,
     pub receive_check_cache_size: Option<u32>,
-    pub ecdsa_key_signing_enable: Option<Vec<EcdsaKeyId>>,
     pub ssh_backup_access: Option<Vec<String>>,
     pub max_chunk_size: Option<u32>,
     pub initial_notary_delay_millis: Option<u64>,

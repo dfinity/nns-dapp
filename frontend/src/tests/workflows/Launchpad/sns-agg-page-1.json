@@ -320,7 +320,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98233011316749512,
+    "icrc1_total_supply": 98233048571176747,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -851,7 +851,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100810328908560063,
+    "icrc1_total_supply": 100793826792647608,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1554,7 +1554,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50463935998404074,
+    "icrc1_total_supply": 50468909141801453,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1951,7 +1951,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961413971180554,
+    "icrc1_total_supply": 9961418515028222,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2352,7 +2352,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10108144917233974,
+    "icrc1_total_supply": 10108146521983900,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2612,6 +2612,19 @@
               "target_method_name": "addToken"
             }
           }
+        },
+        {
+          "id": 1005,
+          "name": "Call manage_neuron on the WTN Governance canister",
+          "description": "This will enable the SONIC SNS Governance canister to manage WTN neurons, allowing it to perform actions such as voting on WTN proposals",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "3xwpq-ziaaa-aaaah-qcn4a-cai",
+              "target_canister_id": "jfnic-kaaaa-aaaaq-aadla-cai",
+              "validator_method_name": "manageWTNValidate",
+              "target_method_name": "manage_neuron"
+            }
+          }
         }
       ]
     },
@@ -2749,7 +2762,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12682761426707589,
+    "icrc1_total_supply": 12682825911443560,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4186,7 +4199,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99582823793653338,
+    "icrc1_total_supply": 99568006751137968,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

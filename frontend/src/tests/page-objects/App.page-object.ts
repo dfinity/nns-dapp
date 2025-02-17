@@ -285,4 +285,8 @@ export class AppPo extends BasePageObject {
       await this.getSelectUniverseListPo().getSnsUniverseCards();
     expect(snsUniverseCards.length).toBeGreaterThanOrEqual(1);
   }
+
+  async toggleSidebar(): Promise<void> {
+    await this.getButton("menu-collapse").click();
+  }
 }

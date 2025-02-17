@@ -32,6 +32,7 @@ import {
   createFinalizationStatusMock,
   snsFinalizationStatusResponseMock,
 } from "$tests/mocks/sns-finalization-status.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -43,6 +44,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { nonNullish } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -69,6 +71,7 @@ describe("ProjectDetail", () => {
   fakeLocationApi.install();
 
   const rootCanisterId = mockCanisterId;
+  const swapCanisterId = principal(5);
   const userCountryCode = "CH";
   const notUserCountryCode = "US";
   const newBalance = 10_000_000_000n;
@@ -113,6 +116,26 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     );
   });
 
+  const renderComponent = ({
+    rootCanisterId,
+    unmountWhen,
+  }: {
+    rootCanisterId: string;
+    unmountWhen?: Promise<void>;
+  }) => {
+    const { container, unmount } = render(ProjectDetail, {
+      props: {
+        rootCanisterId,
+      },
+    });
+
+    if (nonNullish(unmountWhen)) {
+      unmountWhen.then(unmount);
+    }
+
+    return ProjectDetailPo.under(new JestPageObjectElement(container));
+  };
+
   describe("not logged in user", () => {
     beforeEach(() => {
       page.mock({ data: { universe: null } });
@@ -128,6 +151,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         setSnsProjects([
           {
             rootCanisterId,
+            swapCanisterId,
             lifecycle: SnsSwapLifecycle.Open,
             directParticipantCount: [],
             certified: true,
@@ -136,9 +160,13 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should fetch swap metrics on load", async () => {
-        render(ProjectDetail, props);
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
+        renderComponent(props);
 
         await runResolvedPromises();
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledWith({
+          swapCanisterId,
+        });
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
       });
     });
@@ -159,7 +187,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should NOT start watching swap metrics", async () => {
-        render(ProjectDetail, props);
+        renderComponent(props);
 
         await runResolvedPromises();
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
@@ -172,7 +200,11 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should start watching derived state and stop on unmounting", async () => {
-        const { unmount } = render(ProjectDetail, props);
+        let unmount: () => void;
+        const unmountWhen = new Promise<void>((resolve) => {
+          unmount = resolve;
+        });
+        renderComponent({ ...props, unmountWhen });
 
         await runResolvedPromises();
         let expectedCalls = 0;
@@ -197,23 +229,22 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should not load user's commitment", async () => {
-        render(ProjectDetail, props);
+        renderComponent(props);
 
-        await waitFor(() =>
-          expect(snsApi.querySnsSwapCommitment).not.toBeCalled()
-        );
+        await runResolvedPromises();
+        expect(snsApi.querySnsSwapCommitment).not.toBeCalled();
       });
 
       it("should render info section", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        expect(queryByTestId("sns-project-detail-info")).toBeInTheDocument();
+        expect(await po.getProjectInfoSectionPo().isPresent()).toBe(true);
       });
 
       it("should render status section", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
       });
     });
 
@@ -234,9 +265,10 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should query metrics but not watch them", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
+        expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
 
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
 
@@ -265,9 +297,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should NOT query metrics nor watch them", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
 
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
 
@@ -279,9 +311,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should not query total commitments, nor start watching them", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
         expect(snsApi.querySnsDerivedState).not.toBeCalled();
 
         const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
@@ -292,7 +324,7 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should query finalization status and load it in store", async () => {
-        render(ProjectDetail, props);
+        renderComponent(props);
 
         await runResolvedPromises();
         const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
@@ -317,15 +349,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should show a proposal card from the proposal id", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
         await runResolvedPromises();
 
-        expect(queryByTestId("proposal-card")).toBeInTheDocument();
+        expect(await po.getProposalCardPo().isPresent()).toBe(true);
       });
 
       it("should not reload proposal when derived state updates", async () => {
-        render(ProjectDetail, props);
+        renderComponent(props);
 
         await runResolvedPromises();
 
@@ -403,17 +435,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             has_created_neuron_recipes: [],
           },
         });
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        await waitFor(() =>
-          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
+        await po
+          .getProjectStatusSectionPo()
+          .getCommitmentAmountDisplayPo()
+          .waitFor();
+        expect(await po.getProjectStatusSectionPo().getCommitmentAmount()).toBe(
+          "1.00"
         );
-
-        expect(
-          queryByTestId("sns-user-commitment")?.querySelector(
-            "[data-tid='token-value']"
-          )?.innerHTML
-        ).toMatch(formatTokenE8s({ value: userCommitment }));
       });
 
       describe("no open ticket and no commitment", () => {
@@ -426,11 +456,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         const renderProjectDetail = async (): Promise<ProjectDetailPo> => {
-          const { container } = render(ProjectDetail, props);
-
+          const po = renderComponent(props);
           await runResolvedPromises();
-
-          return ProjectDetailPo.under(new JestPageObjectElement(container));
+          return po;
         };
 
         it("should enable button without loading user's country if no deny list", async () => {
@@ -520,13 +548,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
         });
 
         const participateInSwap = async (): Promise<ProjectDetailPo> => {
-          const { container } = render(ProjectDetail, props);
+          const projectDetail = renderComponent(props);
 
           await runResolvedPromises();
-
-          const projectDetail = ProjectDetailPo.under(
-            new JestPageObjectElement(container)
-          );
 
           await waitFor(async () =>
             expect(
@@ -628,25 +652,27 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
 
         expect(snsApi.querySnsSwapCommitment).not.toBeCalled();
 
-        const { getByTestId, queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        expect(queryByTestId("sns-user-commitment")).not.toBeInTheDocument();
+        expect(
+          await po
+            .getProjectStatusSectionPo()
+            .getCommitmentAmountDisplayPo()
+            .isPresent()
+        ).toBe(false);
 
-        await waitFor(() =>
-          expect(getByTestId("sale-in-progress-modal")).toBeInTheDocument()
-        );
+        await po.getSaleInProgressModalPo().waitFor();
 
         expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(2);
 
-        await waitFor(() =>
-          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
-        );
+        await po
+          .getProjectStatusSectionPo()
+          .getCommitmentAmountDisplayPo()
+          .waitFor();
 
-        expect(
-          queryByTestId("sns-user-commitment")?.querySelector(
-            "[data-tid='token-value']"
-          )?.innerHTML
-        ).toMatch(formatTokenE8s({ value: testTicket.amount_icp_e8s }));
+        expect(await po.getProjectStatusSectionPo().getCommitmentAmount()).toBe(
+          formatTokenE8s({ value: testTicket.amount_icp_e8s })
+        );
         expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(3);
       });
     });
@@ -674,9 +700,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should query metrics but not watch them", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
 
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(1);
 
@@ -720,9 +746,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should NOT query metrics nor watch them", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
 
         expect(snsMetricsApi.querySnsSwapMetrics).toBeCalledTimes(0);
 
@@ -734,9 +760,9 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should not query total commitments, nor start watching them", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        expect(queryByTestId("sns-project-detail-status")).toBeInTheDocument();
+        expect(await po.getProjectStatusSectionPo().isPresent()).toBe(true);
         expect(snsApi.querySnsDerivedState).not.toBeCalled();
 
         const retryDelay = WATCH_SALE_STATE_EVERY_MILLISECONDS;
@@ -747,17 +773,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should load user's commitment", async () => {
-        const { queryByTestId } = render(ProjectDetail, props);
+        const po = renderComponent(props);
 
-        await waitFor(() =>
-          expect(queryByTestId("sns-user-commitment")).toBeInTheDocument()
+        await po
+          .getProjectStatusSectionPo()
+          .getCommitmentAmountDisplayPo()
+          .waitFor();
+        expect(await po.getProjectStatusSectionPo().getCommitmentAmount()).toBe(
+          "1.00"
         );
-
-        expect(
-          queryByTestId("sns-user-commitment")?.querySelector(
-            "[data-tid='token-value']"
-          )?.innerHTML
-        ).toMatch(formatTokenE8s({ value: userCommitment }));
       });
     });
   });
@@ -776,10 +800,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     });
 
     it("should redirect to launchpad", async () => {
-      render(ProjectDetail, {
-        props: {
-          rootCanisterId: "invalid-project",
-        },
+      renderComponent({
+        rootCanisterId: "invalid-project",
       });
 
       await waitFor(() => {
@@ -803,10 +825,8 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
     });
 
     it("should redirect to launchpad", async () => {
-      render(ProjectDetail, {
-        props: {
-          rootCanisterId: "aaaaa-aa",
-        },
+      renderComponent({
+        rootCanisterId: "aaaaa-aa",
       });
 
       await waitFor(() => {

@@ -1437,7 +1437,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 5407742689656567,
+    "icrc1_total_supply": 5409964721936268,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1824,7 +1824,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999793830000,
+    "icrc1_total_supply": 99999792780000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2226,7 +2226,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041684903304449152,
+    "icrc1_total_supply": 1041681841547654797,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2871,7 +2871,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11660309875828410,
+    "icrc1_total_supply": 11660397603481324,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4376,7 +4376,7 @@
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2329873688049625241,
+    "icrc1_total_supply": 2323890163812797836,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4588,6 +4588,14 @@
           "id": 14,
           "name": "Manage dapp canister settings",
           "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -4928,7 +4936,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999815920000,
+    "icrc1_total_supply": 1999999799870000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -8267,7 +8275,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100114950628348633,
+    "icrc1_total_supply": 100120635209219944,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

@@ -29,7 +29,11 @@ export class MergeNeuronsModalPo extends ModalPo {
       sourceNeurondId,
       targetNeuronId,
     });
+
+    // We wait for the component to appear to ensure the UI remains stable and the button is within the viewport
+    await this.getConfirmNeuronsMergePo()
+      .getMergedNeuronDetailCardPo()
+      .waitFor();
     await this.getConfirmNeuronsMergePo().getConfirmMergeButtonPo().click();
-    await this.waitForAbsent();
   }
 }
