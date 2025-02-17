@@ -34,7 +34,7 @@ const pageUniverseIdStore: Readable<Principal> = derived(
     if (![null, undefined, OWN_CANISTER_ID_TEXT].includes(universe)) {
       try {
         return Principal.fromText(universe);
-      } catch (error: unknown) {
+      } catch (_) {
         // Ignore error as we redirect to default Nns or ckBTC
       }
     }

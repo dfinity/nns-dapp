@@ -172,7 +172,7 @@
         return valid || labelKey === undefined
           ? undefined
           : replacePlaceholders(translate({ labelKey }), substitutions ?? {});
-      } catch (error) {
+      } catch (_) {
         return $i18n.error.amount_not_valid;
       }
     }

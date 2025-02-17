@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { UserNotTheControllerError } from "$lib/canisters/ic-management/ic-management.errors";
 import { NotEnoughAmountError } from "$lib/types/common.errors";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";

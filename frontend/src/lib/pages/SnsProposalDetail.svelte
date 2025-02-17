@@ -151,7 +151,7 @@
             : syncSnsNeurons(universeId),
         ]);
         await reloadProposal();
-      } catch (error) {
+      } catch (_) {
         toastsError({
           labelKey: "error.wrong_proposal_id",
           substitutions: {
