@@ -21,10 +21,12 @@ use fast_scheduler::FastScheduler;
 use ic_cdk::api::call::call;
 use ic_cdk::api::management_canister::main::CanisterIdRecord;
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
-use ic_management_canister_types::IC_00;
+use ic_base_types::{CanisterId};
 use serde::Deserialize;
 use state::{Config, StableState, STATE};
 use types::Icrc1Value;
+
+const IC_00: CanisterId = CanisterId::ic_00();
 
 /// API method for basic health checks.
 ///
@@ -89,6 +91,7 @@ async fn get_canister_status() -> CanisterStatusResultV2 {
     let canister_id_record = CanisterIdRecord {
         canister_id: own_canister_id,
     };
+
     let result = call(IC_00.into(), "canister_status", (canister_id_record,))
         .await
         .map(|(r,)| r);
