@@ -14,12 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Store debug info to help diagnose "invalid signature" issues.
-
 #### Changed
-
-* No missing rewards notification for neurons without a dissolve delay.
-* Display proposal topics in alphabetical order.
 
 #### Deprecated
 
