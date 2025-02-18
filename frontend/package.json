@@ -52,7 +52,7 @@
     "eslint-plugin-svelte": "^2.46.1",
     "fake-indexeddb": "^6.0.0",
     "globals": "^15.15.0",
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.0.0",
     "node-fetch": "^3.3.2",
     "postcss": "^8.4.47",
     "prettier": "^3.5.0",
