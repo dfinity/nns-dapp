@@ -252,7 +252,7 @@ export const stakeNeuron = async ({
           visibility: NeuronVisibility.Public,
           identity: accountIdentity,
         });
-      } catch (err) {
+      } catch (_) {
         toastsError({
           labelKey: "neurons.create_as_public_neuron_failure",
         });
@@ -1231,7 +1231,7 @@ export const claimNeuronsIfNeeded = async ({
         memo,
         controller,
       });
-    } catch (err) {
+    } catch (_) {
       // The neuron might already be disbursed. Regardless we did this in the
       // background so we don't want to bother the user with this.
     }

@@ -1,20 +1,20 @@
 <script lang="ts">
+  import Input from "$lib/components/ui/Input.svelte";
+  import { updateVotingPowerRefreshedTimestamp } from "$lib/services/nns-neurons-dev.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsError } from "$lib/stores/toasts.store";
+  import { secondsToDateTime } from "$lib/utils/date.utils";
   import { Modal, Spinner } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { createEventDispatcher } from "svelte";
-  import { updateVotingPowerRefreshedTimestamp } from "$lib/services/nns-neurons-dev.services";
   import { isNullish } from "@dfinity/utils";
-  import Input from "$lib/components/ui/Input.svelte";
-  import { secondsToDateTime } from "$lib/utils/date.utils";
+  import { createEventDispatcher } from "svelte";
 
   const YEAR_2099_SECONDS = new Date(2099, 0, 0).getTime() / 1000;
 
   const toBigInt = (value: number | undefined): bigint | undefined => {
     try {
       if (value !== undefined) return BigInt(value);
-    } catch (err) {
+    } catch (_) {
       // Do nothing
     }
     return undefined;

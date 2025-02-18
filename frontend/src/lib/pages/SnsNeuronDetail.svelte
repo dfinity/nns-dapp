@@ -145,7 +145,7 @@
       });
 
       await Promise.all([loadNeuron(), loadSnsAccounts({ rootCanisterId })]);
-    } catch (err: unknown) {
+    } catch (_) {
       // $pageStore.universe might be an invalid principal, like empty or yolo
       await goBack(true);
     }
