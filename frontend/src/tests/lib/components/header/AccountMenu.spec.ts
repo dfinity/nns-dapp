@@ -6,10 +6,14 @@ import {
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { advanceTime } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("AccountMenu", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
   const renderComponent = () => {
     const { container } = render(AccountMenu);
 
@@ -98,8 +102,8 @@ describe("AccountMenu", () => {
       await preventLinkNavigation(accountMenuPo);
       await linkToSettingsPo.click();
 
-      //wait for goto to be triggered
-      await runResolvedPromises();
+      // Wait for the popover closing transition to finish.
+      await advanceTime(250);
 
       expect(await accountMenuPo.isOpen()).toBe(false);
     });
@@ -126,8 +130,8 @@ describe("AccountMenu", () => {
       await preventLinkNavigation(accountMenuPo);
       await canistersLinkPo.click();
 
-      //wait for goto to be triggered
-      await runResolvedPromises();
+      // Wait for the popover closing transition to finish.
+      await advanceTime(250);
 
       expect(await accountMenuPo.isOpen()).toBe(false);
     });
@@ -153,8 +157,8 @@ describe("AccountMenu", () => {
         await preventLinkNavigation(accountMenuPo);
         await linkToReportingPo.click();
 
-        //wait for goto to be triggered
-        await runResolvedPromises();
+        // Wait for the popover closing transition to finish.
+        await advanceTime(250);
 
         expect(await accountMenuPo.isOpen()).toBe(false);
       });
