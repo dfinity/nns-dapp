@@ -20,16 +20,22 @@ describe("AccountMenu", () => {
     const linkToSettingsPo = accountMenuPo.getLinkToSettingsPo();
     const linkToReportingPo = accountMenuPo.getLinkToReportingPo();
 
-    canistersLinkPo.root.addEventListener("click", mockLinkClickEvent);
-    linkToSettingsPo.root.addEventListener("click", mockLinkClickEvent);
-    linkToReportingPo.root.addEventListener("click", mockLinkClickEvent);
-
     return {
       accountMenuPo,
       canistersLinkPo,
       linkToSettingsPo,
       linkToReportingPo,
     };
+  };
+
+  const preventLinkNavigation = async (accountMenuPo: AccountMenuPo) => {
+    const canistersLinkPo = accountMenuPo.getCanistersLinkPo();
+    const linkToSettingsPo = accountMenuPo.getLinkToSettingsPo();
+    const linkToReportingPo = accountMenuPo.getLinkToReportingPo();
+
+    await canistersLinkPo.root.addEventListener("click", mockLinkClickEvent);
+    await linkToSettingsPo.root.addEventListener("click", mockLinkClickEvent);
+    await linkToReportingPo.root.addEventListener("click", mockLinkClickEvent);
   };
 
   it("should be closed by default", async () => {
@@ -89,6 +95,7 @@ describe("AccountMenu", () => {
       const { accountMenuPo, linkToSettingsPo } = renderComponent();
       await accountMenuPo.openMenu();
 
+      await preventLinkNavigation(accountMenuPo);
       await linkToSettingsPo.click();
 
       //wait for goto to be triggered
@@ -116,6 +123,7 @@ describe("AccountMenu", () => {
 
       expect(await accountMenuPo.getAccountDetailsPo().isPresent()).toBe(true);
 
+      await preventLinkNavigation(accountMenuPo);
       await canistersLinkPo.click();
 
       //wait for goto to be triggered
@@ -142,6 +150,7 @@ describe("AccountMenu", () => {
         const { accountMenuPo, linkToReportingPo } = renderComponent();
         await accountMenuPo.openMenu();
 
+        await preventLinkNavigation(accountMenuPo);
         await linkToReportingPo.click();
 
         //wait for goto to be triggered
