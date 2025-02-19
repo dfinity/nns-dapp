@@ -1,6 +1,7 @@
+import { PLAUSIBLE_DOMAIN } from "$lib/constants/environment.constants";
 import Plausible from "plausible-tracker";
 
-const domain = "nns.ic0.app";
+const domain = PLAUSIBLE_DOMAIN;
 let tracker: ReturnType<typeof Plausible> | null = null;
 
 export const initAnalytics = () => {
