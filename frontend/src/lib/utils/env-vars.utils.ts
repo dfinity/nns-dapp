@@ -28,6 +28,7 @@ type EnvironmentVars = {
   wasmCanisterId: string;
   // Environments without TVL are valid
   tvlCanisterId?: string;
+  plausibleDomain?: string;
 };
 
 const mandatoryEnvVarKeys: EnvironmentVars = {
@@ -151,6 +152,9 @@ const getBuildEnvVars = (): EnvironmentVars => {
     ),
     tvlCanisterId: convertEmtpyStringToUndefined(
       import.meta.env.VITE_TVL_CANISTER_ID
+    ),
+    plausibleDomain: convertEmtpyStringToUndefined(
+      import.meta.env.VITE_PLAUSIBLE_DOMAIN
     ),
   };
   assertEnvVars(envVars);
