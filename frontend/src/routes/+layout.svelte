@@ -7,10 +7,9 @@
   } from "$lib/services/worker-auth.services";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
   import { toastsClean } from "$lib/stores/toasts.store";
-  import { onDestroy, onMount } from "svelte";
+  import { onMount } from "svelte";
 
   let ready = false;
-  let cleanupFunctions: ReturnType<typeof initAnalytics> = [];
   let worker: AuthWorker | undefined;
 
   const syncAuth = async (auth: AuthStoreData) => {
@@ -39,14 +38,10 @@
   };
 
   onMount(async () => {
-    cleanupFunctions = initAnalytics();
+    initAnalytics();
 
     worker = await initAuthWorker();
     await syncAuth($authStore);
-  });
-
-  onDestroy(() => {
-    if (cleanupFunctions.length > 0) cleanupFunctions.forEach((fn) => fn());
   });
 
   $: syncAuth($authStore);

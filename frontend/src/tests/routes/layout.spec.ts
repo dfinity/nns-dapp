@@ -7,16 +7,6 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 
-const mockCleanupFn1 = vi.fn();
-const mockCleanupFn2 = vi.fn();
-
-vi.mock("plausible-tracker", () => ({
-  default: () => ({
-    enableAutoPageviews: () => mockCleanupFn1,
-    enableAutoOutboundTracking: () => mockCleanupFn2,
-  }),
-}));
-
 vi.mock("$lib/services/worker-auth.services", () => ({
   initAuthWorker: vi.fn(() =>
     Promise.resolve({
@@ -85,19 +75,5 @@ describe("Layout", () => {
     await runResolvedPromises();
 
     expect(initAnalyticsSpy).toHaveBeenCalledTimes(1);
-    expect(mockCleanupFn1).not.toHaveBeenCalled();
-    expect(mockCleanupFn2).not.toHaveBeenCalled();
-  });
-
-  it("should call cleanup functions on unmount", async () => {
-    const { unmount } = render(App);
-
-    expect(mockCleanupFn1).not.toHaveBeenCalled();
-    expect(mockCleanupFn2).not.toHaveBeenCalled();
-
-    unmount();
-
-    expect(mockCleanupFn1).toHaveBeenCalledTimes(1);
-    expect(mockCleanupFn2).toHaveBeenCalledTimes(1);
   });
 });
