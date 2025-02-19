@@ -10,7 +10,7 @@
   import { onDestroy, onMount } from "svelte";
 
   let ready = false;
-  let cleanupFunctions: ReturnType<typeof initAnalytics>;
+  let cleanupFunctions: ReturnType<typeof initAnalytics> = [];
   let worker: AuthWorker | undefined;
 
   const syncAuth = async (auth: AuthStoreData) => {
