@@ -207,6 +207,7 @@ ckethLedgerCanisterId=$(echo "$json" | jq -r '.CKETH_LEDGER_CANISTER_ID // ""')
 ckethIndexCanisterId=$(echo "$json" | jq -r '.CKETH_INDEX_CANISTER_ID // ""')
 ckusdcLedgerCanisterId=$(echo "$json" | jq -r '.CKUSDC_LEDGER_CANISTER_ID // ""')
 ckusdcIndexCanisterId=$(echo "$json" | jq -r '.CKUSDC_INDEX_CANISTER_ID // ""')
+plausibleDomain=$(echo "$json" | jq -r '.PLAUSIBLE_DOMAIN // ""')
 
 echo "VITE_DFX_NETWORK=$dfxNetwork
 VITE_CYCLES_MINTING_CANISTER_ID=$cmcCanisterId
@@ -221,6 +222,7 @@ VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
 VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
 VITE_ICP_SWAP_URL=$icpSwapUrl
+VITE_PLAUSIBLE_DOMAIN=$plausibleDomain
 VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
 VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
 VITE_CKBTC_MINTER_CANISTER_ID=${ckbtcMinterCanisterId:-}
