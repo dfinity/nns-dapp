@@ -240,11 +240,20 @@ describe("ImportTokenModal", () => {
   });
 
   it("should leave the form after successful validation", async () => {
+    let resolveQueryIcrcToken: () => void;
+    vi.spyOn(ledgerApi, "queryIcrcToken").mockImplementation(
+      () =>
+        new Promise(
+          (resolve) => (resolveQueryIcrcToken = () => resolve(tokenMetaData))
+        )
+    );
+
     const po = renderComponent();
     const formPo = po.getImportTokenFormPo();
 
     await formPo.getLedgerCanisterInputPo().typeText(ledgerCanisterId.toText());
     await formPo.getSubmitButtonPo().click();
+    await runResolvedPromises();
 
     expect(get(busyStore)).toEqual([
       {
@@ -254,6 +263,7 @@ describe("ImportTokenModal", () => {
     ]);
 
     // Wait for toast error to be called.
+    resolveQueryIcrcToken();
     await runResolvedPromises();
 
     expect(get(busyStore)).toEqual([]);
@@ -339,9 +349,12 @@ describe("ImportTokenModal", () => {
       .mockResolvedValue({
         imported_tokens: [],
       });
+    let resolveSetImportedTokens: () => void;
     const setImportedTokensSpy = vi
       .spyOn(importedTokensApi, "setImportedTokens")
-      .mockResolvedValue();
+      .mockImplementation(
+        () => new Promise((resolve) => (resolveSetImportedTokens = resolve))
+      );
 
     importedTokensStore.set({
       importedTokens: [],
@@ -366,6 +379,7 @@ describe("ImportTokenModal", () => {
     expect(setImportedTokensSpy).toBeCalledTimes(0);
 
     await reviewPo.getConfirmButtonPo().click();
+    await runResolvedPromises();
 
     expect(get(busyStore)).toEqual([
       {
@@ -374,6 +388,7 @@ describe("ImportTokenModal", () => {
       },
     ]);
 
+    resolveSetImportedTokens();
     await runResolvedPromises();
 
     expect(get(busyStore)).toEqual([]);
