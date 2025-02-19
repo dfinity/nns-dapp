@@ -215,7 +215,7 @@ const cspConnectSrc = () => {
     "https://7sppf-6aaaa-aaaaq-aaata-cai.raw.icp0.io",
     // Used for the metrics of SNS1(Dragginz) launch.
     "https://zcdfx-6iaaa-aaaaq-aaagq-cai.raw.icp0.io",
-    // Used for user metrics
+    // Used for anonymous user metrics
     "https://plausible.io/api/event",
   ];
 
