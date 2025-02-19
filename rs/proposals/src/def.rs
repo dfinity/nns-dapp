@@ -18,7 +18,6 @@ use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha2::Sha256;
 use ic_management_canister_types::CanisterInstallMode;
 use serde::{Deserialize, Serialize};
-use std::convert::TryFrom;
 use std::fmt::Write;
 
 // NNS function 1 - CreateSubnet
