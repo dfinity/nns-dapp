@@ -1,9 +1,10 @@
 import { PLAUSIBLE_DOMAIN } from "$lib/constants/environment.constants";
+import { isNullish } from "@dfinity/utils";
 import Plausible from "plausible-tracker";
 
-const domain = PLAUSIBLE_DOMAIN;
+export const initAnalytics = (domain = PLAUSIBLE_DOMAIN) => {
+  if (isNullish(domain)) return;
 
-export const initAnalytics = () => {
   const tracker = Plausible({
     domain,
     hashMode: false,

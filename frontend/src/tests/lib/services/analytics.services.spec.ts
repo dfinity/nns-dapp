@@ -1,7 +1,5 @@
-import { PLAUSIBLE_DOMAIN } from "$lib/constants/environment.constants";
 import { initAnalytics } from "$lib/services/analytics.services";
 import Plausible from "plausible-tracker";
-import { describe, expect, it, vi } from "vitest";
 
 vi.mock("plausible-tracker", () => {
   const enableAutoPageviews = vi.fn(() => () => {});
@@ -16,11 +14,24 @@ vi.mock("plausible-tracker", () => {
 });
 
 describe("analytics service", () => {
-  it("should initialize Plausible with correct configuration", () => {
-    initAnalytics();
+  const plausibleDomain = "test-domain";
 
+  it("should not do anything if domain is not set", async () => {
+    expect(Plausible).toHaveBeenCalledTimes(0);
+
+    initAnalytics(undefined);
+
+    expect(Plausible).toHaveBeenCalledTimes(0);
+  });
+
+  it("should initialize Plausible with correct configuration", () => {
+    expect(Plausible).toHaveBeenCalledTimes(0);
+
+    initAnalytics(plausibleDomain);
+
+    expect(Plausible).toHaveBeenCalledTimes(1);
     expect(Plausible).toHaveBeenCalledWith({
-      domain: PLAUSIBLE_DOMAIN,
+      domain: plausibleDomain,
       hashMode: false,
       trackLocalhost: false,
     });
@@ -32,7 +43,7 @@ describe("analytics service", () => {
     expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(0);
     expect(tracker.enableAutoOutboundTracking).toHaveBeenCalledTimes(0);
 
-    initAnalytics();
+    initAnalytics(plausibleDomain);
 
     expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(1);
     expect(tracker.enableAutoOutboundTracking).toHaveBeenCalledTimes(1);
