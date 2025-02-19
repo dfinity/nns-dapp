@@ -236,23 +236,6 @@ pub type UpdateUnassignedNodesConfigPayload = crate::canisters::nns_registry::ap
 pub type RemoveNodeOperatorsPayload =
     registry_canister::mutations::do_remove_node_operators::RemoveNodeOperatorsPayload;
 
-#[derive(CandidType, Serialize, Deserialize, Clone)]
-pub struct RemoveNodeOperatorsPayloadHumanReadable {
-    pub node_operators_to_remove: Vec<PrincipalId>,
-}
-
-impl From<RemoveNodeOperatorsPayload> for RemoveNodeOperatorsPayloadHumanReadable {
-    fn from(payload: RemoveNodeOperatorsPayload) -> Self {
-        RemoveNodeOperatorsPayloadHumanReadable {
-            node_operators_to_remove: payload
-                .node_operators_to_remove
-                .into_iter()
-                .map(|o| PrincipalId::try_from(o).unwrap())
-                .collect(),
-        }
-    }
-}
-
 /// NNS function 24 - `RerouteCanisterRange`
 /// <https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/reroute_canister_ranges.rs#L66>
 pub type RerouteCanisterRangesPayload = crate::canisters::nns_registry::api::RerouteCanisterRangesPayload;

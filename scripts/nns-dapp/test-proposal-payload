@@ -94,6 +94,19 @@ test_nns_function_11() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
+test_nns_function_23() {
+  subcommand="propose-to-remove-node-operators"
+
+  PROPOSAL_ID="$(run_ic_admin \
+    "$subcommand" \
+    $USER_PRINCIPAL)"
+
+  ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
+  EXPECTED_PAYLOAD="{\"node_operators_to_remove\":[], \"node_operator_principals_to_remove\":{\"principals\":[\"$USER_PRINCIPAL\"]}}"
+
+  verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
+}
+
 test_nns_function_25() {
   subcommand="propose-to-add-firewall-rules"
 
