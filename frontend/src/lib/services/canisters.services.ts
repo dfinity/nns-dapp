@@ -31,6 +31,7 @@ import {
 } from "$lib/services/icp-accounts.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { canistersStore } from "$lib/stores/canisters.store";
+import { checkedAttachCanisterBlockIndicesStore } from "$lib/stores/checked-block-indices.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
 import { LedgerErrorMessage } from "$lib/types/ledger.errors";
@@ -469,6 +470,9 @@ export const notifyAndAttachCanisterIfNeeded = async ({
   for (const blockIndex of newBlockIndices) {
     if (existingBlockIndices.has(blockIndex)) {
       continue;
+    }
+    if (!checkedAttachCanisterBlockIndicesStore.addBlockIndex(blockIndex)) {
+      return;
     }
     // This may also trigger for canisters that were created before we stored
     // the block_index of each canister. That will simply backfill the

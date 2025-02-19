@@ -18,7 +18,6 @@ use ic_base_types::{CanisterId, PrincipalId};
 use ic_crypto_sha2::Sha256;
 use ic_management_canister_types::CanisterInstallMode;
 use serde::{Deserialize, Serialize};
-use std::convert::TryFrom;
 use std::fmt::Write;
 
 // NNS function 1 - CreateSubnet
@@ -235,23 +234,6 @@ pub type UpdateUnassignedNodesConfigPayload = crate::canisters::nns_registry::ap
 /// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L34>
 pub type RemoveNodeOperatorsPayload =
     registry_canister::mutations::do_remove_node_operators::RemoveNodeOperatorsPayload;
-
-#[derive(CandidType, Serialize, Deserialize, Clone)]
-pub struct RemoveNodeOperatorsPayloadHumanReadable {
-    pub node_operators_to_remove: Vec<PrincipalId>,
-}
-
-impl From<RemoveNodeOperatorsPayload> for RemoveNodeOperatorsPayloadHumanReadable {
-    fn from(payload: RemoveNodeOperatorsPayload) -> Self {
-        RemoveNodeOperatorsPayloadHumanReadable {
-            node_operators_to_remove: payload
-                .node_operators_to_remove
-                .into_iter()
-                .map(|o| PrincipalId::try_from(o).unwrap())
-                .collect(),
-        }
-    }
-}
 
 /// NNS function 24 - `RerouteCanisterRange`
 /// <https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/reroute_canister_ranges.rs#L66>

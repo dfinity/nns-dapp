@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Loads Plausible analytics
+
 #### Changed
 
 #### Deprecated
@@ -21,6 +23,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
+
+* Rendering of `RemoveNodeOperatorsPayload` proposals.
 
 #### Security
 

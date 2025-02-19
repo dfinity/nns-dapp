@@ -1,5 +1,6 @@
 <script lang="ts">
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
+  import { initAnalytics } from "$lib/services/analytics.services";
   import {
     initAuthWorker,
     type AuthWorker,
@@ -9,7 +10,6 @@
   import { onMount } from "svelte";
 
   let ready = false;
-
   let worker: AuthWorker | undefined;
 
   const syncAuth = async (auth: AuthStoreData) => {
@@ -38,6 +38,8 @@
   };
 
   onMount(async () => {
+    initAnalytics();
+
     worker = await initAuthWorker();
     await syncAuth($authStore);
   });
