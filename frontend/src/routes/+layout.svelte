@@ -1,16 +1,16 @@
 <script lang="ts">
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
-  import { initAnalytics } from "$lib/services/analytics";
+  import { initAnalytics } from "$lib/services/analytics.services";
   import {
     initAuthWorker,
     type AuthWorker,
   } from "$lib/services/worker-auth.services";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
   import { toastsClean } from "$lib/stores/toasts.store";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
   let ready = false;
-
+  let cleanupFunctions: ReturnType<typeof initAnalytics>;
   let worker: AuthWorker | undefined;
 
   const syncAuth = async (auth: AuthStoreData) => {
@@ -39,9 +39,14 @@
   };
 
   onMount(async () => {
-    initAnalytics();
+    cleanupFunctions = initAnalytics();
+
     worker = await initAuthWorker();
     await syncAuth($authStore);
+  });
+
+  onDestroy(() => {
+    if (cleanupFunctions.length > 0) cleanupFunctions.forEach((fn) => fn());
   });
 
   $: syncAuth($authStore);

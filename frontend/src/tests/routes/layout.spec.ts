@@ -1,4 +1,5 @@
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
+import * as analytics from "$lib/services/analytics.services";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
 import App from "$routes/+layout.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -6,13 +7,13 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
 
-const mockEnableAutoPageviews = vi.fn();
-const mockEnableAutoOutboundTracking = vi.fn();
+const mockCleanupFn1 = vi.fn();
+const mockCleanupFn2 = vi.fn();
 
 vi.mock("plausible-tracker", () => ({
   default: () => ({
-    enableAutoPageviews: mockEnableAutoPageviews,
-    enableAutoOutboundTracking: mockEnableAutoOutboundTracking,
+    enableAutoPageviews: () => mockCleanupFn1,
+    enableAutoOutboundTracking: () => mockCleanupFn2,
   }),
 }));
 
@@ -72,15 +73,31 @@ describe("Layout", () => {
   });
 
   it("should initialize analytics tracking on mount", async () => {
+    const initAnalyticsSpy = vi.spyOn(analytics, "initAnalytics");
+
+    expect(initAnalyticsSpy).not.toHaveBeenCalled();
+
     render(App);
 
-    expect(mockEnableAutoPageviews).toHaveBeenCalledTimes(1);
-    expect(mockEnableAutoOutboundTracking).toHaveBeenCalledTimes(1);
+    expect(initAnalyticsSpy).toHaveBeenCalledTimes(1);
 
     resetIdentity();
     await runResolvedPromises();
 
-    expect(mockEnableAutoPageviews).toHaveBeenCalledTimes(1);
-    expect(mockEnableAutoOutboundTracking).toHaveBeenCalledTimes(1);
+    expect(initAnalyticsSpy).toHaveBeenCalledTimes(1);
+    expect(mockCleanupFn1).not.toHaveBeenCalled();
+    expect(mockCleanupFn2).not.toHaveBeenCalled();
+  });
+
+  it("should call cleanup functions on unmount", async () => {
+    const { unmount } = render(App);
+
+    expect(mockCleanupFn1).not.toHaveBeenCalled();
+    expect(mockCleanupFn2).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(mockCleanupFn1).toHaveBeenCalledTimes(1);
+    expect(mockCleanupFn2).toHaveBeenCalledTimes(1);
   });
 });
