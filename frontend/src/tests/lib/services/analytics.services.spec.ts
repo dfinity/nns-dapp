@@ -29,6 +29,9 @@ describe("analytics service", () => {
   it("should enable auto page views and outbound tracking", () => {
     const tracker = Plausible();
 
+    expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(0);
+    expect(tracker.enableAutoOutboundTracking).toHaveBeenCalledTimes(0);
+
     initAnalytics();
 
     expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(1);
