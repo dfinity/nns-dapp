@@ -1,5 +1,6 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { nonNullish } from "@dfinity/utils";
 
 export class DropdownPo extends BasePageObject {
   private static readonly TID = "dropdown-component";
@@ -19,5 +20,23 @@ export class DropdownPo extends BasePageObject {
 
   async waitForOption(testId: string): Promise<void> {
     return this.root.byTestId(testId).waitFor();
+  }
+
+  private getOptionElement(optionIndex: number): PageObjectElement {
+    return this.root.querySelector(`option:nth-child(${optionIndex + 1})`);
+  }
+
+  async getOption(optionIndex: number): Promise<string> {
+    return await this.getOptionElement(optionIndex).getText();
+  }
+
+  async isDisabled(optionIndex: number): Promise<boolean> {
+    const value =
+      await this.getOptionElement(optionIndex).getAttribute("disabled");
+    return nonNullish(value);
+  }
+
+  async getOptionValue(optionIndex: number): Promise<string> {
+    return await this.getOptionElement(optionIndex).getAttribute("value");
   }
 }

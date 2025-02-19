@@ -53,13 +53,7 @@ test("Test neuron following", async ({ page, context }) => {
   followNnsTopicSections.reverse();
   const followee = "123";
   for (const followNnsTopicSection of followNnsTopicSections) {
-    const followTopicSection =
-      await followNnsTopicSection.getFollowTopicSectionPo();
-    await followTopicSection.getCollapsiblePo().expand();
-    await followTopicSection.getAddFolloweeButtonPo().click();
-    await followNnsTopicSection
-      .getNewFolloweeModalPo()
-      .followNeuronId(followee);
+    await followNnsTopicSection.addFollowee(followee);
     const followees = await followNnsTopicSection.getFollowees();
     expect(followees).toContain(followee);
   }

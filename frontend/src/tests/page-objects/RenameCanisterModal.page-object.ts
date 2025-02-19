@@ -34,6 +34,5 @@ export class RenameCanisterModalPo extends ModalPo {
   async rename(newName: string): Promise<void> {
     await this.enterName(newName);
     await this.clickRenameButton();
-    await this.waitForAbsent();
   }
 }

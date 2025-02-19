@@ -21,6 +21,8 @@ pub mod histogram;
 
 // This limit is for DoS protection but should be increased if we get close to
 // the limit.
+// When you increase this limit, make sure to also increase the limit on the alerts.
+// See for example https://github.com/dfinity-ops/k8s/pull/731
 const ACCOUNT_LIMIT: u64 = 330_000;
 
 const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;

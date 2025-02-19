@@ -119,7 +119,7 @@
       // Check valid rootCanisterId
       try {
         Principal.fromText(rootCanisterId);
-      } catch (error: unknown) {
+      } catch (_) {
         // set values as not found
         $projectDetailStore.summary = undefined;
         $projectDetailStore.swapCommitment = undefined;
@@ -285,7 +285,7 @@
         rootCanisterId: Principal.fromText(rootCanisterId),
         ticket: undefined,
       });
-    } catch (error: unknown) {
+    } catch (_) {
       // ignore error
       // it can happen if the rootCanisterId is not valid
     }

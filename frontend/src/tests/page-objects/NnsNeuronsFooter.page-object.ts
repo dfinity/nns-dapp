@@ -52,9 +52,8 @@ export class NnsNeuronsFooterPo extends BasePageObject {
     targetNeuronId: string;
   }): Promise<void> {
     await this.clickMergeNeuronsButton();
-    await this.getMergeNeuronsModalPo().mergeNeurons({
-      sourceNeurondId,
-      targetNeuronId,
-    });
+    const modal = this.getMergeNeuronsModalPo();
+    await modal.mergeNeurons({ sourceNeurondId, targetNeuronId });
+    await modal.waitForClosed();
   }
 }

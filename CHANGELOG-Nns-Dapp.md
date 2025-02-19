@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 135306
+
+### Application
+
+#### Added
+
+* Store debug info to help diagnose "invalid signature" issues.
+
+#### Changed
+
+* No missing rewards notification for neurons without a dissolve delay.
+* Display proposal topics in alphabetical order.
+
+### Operations
+
 ## Proposal 135201
 
 ### Application

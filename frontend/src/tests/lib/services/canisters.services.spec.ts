@@ -864,5 +864,25 @@ describe("canisters-services", () => {
 
       expect(api.notifyAndAttachCanister).toBeCalledTimes(0);
     });
+
+    it("should notify only once per session", async () => {
+      await notifyAndAttachCanisterIfNeeded({
+        transactions: [fundingTransaction],
+        canisters: [],
+      });
+
+      expect(api.notifyAndAttachCanister).toBeCalledWith({
+        blockIndex,
+        identity: mockIdentity,
+      });
+      expect(api.notifyAndAttachCanister).toBeCalledTimes(1);
+
+      await notifyAndAttachCanisterIfNeeded({
+        transactions: [fundingTransaction],
+        canisters: [],
+      });
+      // Still only called once.
+      expect(api.notifyAndAttachCanister).toBeCalledTimes(1);
+    });
   });
 });

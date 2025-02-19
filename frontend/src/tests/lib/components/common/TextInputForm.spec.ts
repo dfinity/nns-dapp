@@ -2,19 +2,46 @@ import TextInputFormTest from "$tests/lib/components/common/TextInputFormTest.sv
 import { TextInputFormPo } from "$tests/page-objects/TextInputForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { clickByTestId } from "$tests/utils/utils.test-utils";
 
 describe("TextInputForm", () => {
   const mandatoryProps = {
     placeholderLabelKey: "test",
   };
 
-  const renderComponent = (props) => {
-    const testId = props.testId ?? "text-input-form";
+  const renderComponent = ({
+    placeholderLabelKey,
+    text,
+    disabledConfirm,
+    disabledInput,
+    required,
+    errorMessage,
+    onClose,
+    onConfirm,
+    testId = "text-input-form",
+  }: {
+    placeholderLabelKey: string;
+    text?: string;
+    disabledConfirm?: boolean;
+    disabledInput?: boolean;
+    required?: boolean;
+    errorMessage?: string;
+    onClose?: () => void;
+    onConfirm?: () => void;
+    testId?: string;
+  }) => {
     const { container } = render(TextInputFormTest, {
       props: {
         testId,
-        ...props,
+        placeholderLabelKey,
+        text,
+        disabledConfirm,
+        disabledInput,
+        required,
+        errorMessage,
+      },
+      events: {
+        nnsClose: onClose,
+        nnsConfirmText: onConfirm,
       },
     });
 
@@ -62,31 +89,29 @@ describe("TextInputForm", () => {
     expect(await po.getErrorMessage()).toBe(errorMessage);
   });
 
-  it("should trigger nnsClose when cancel is clicked", () => {
+  it("should trigger nnsClose when cancel is clicked", async () => {
     const callback = vi.fn();
-
-    const { getByTestId } = render(TextInputFormTest, {
-      props: mandatoryProps,
-      events: {
-        nnsClose: callback,
-      },
+    const po = renderComponent({
+      ...mandatoryProps,
+      onClose: callback,
     });
 
-    clickByTestId(getByTestId, "cancel");
-    expect(callback).toHaveBeenCalled();
+    expect(callback).toBeCalledTimes(0);
+    await po.clickCancelButton();
+    expect(callback).toBeCalledTimes(1);
   });
 
-  it("should trigger nnsConfirmText when confirm is clicked", () => {
+  it("should trigger nnsConfirmText when confirm is clicked", async () => {
     const callback = vi.fn();
-
-    const { getByTestId } = render(TextInputFormTest, {
-      props: mandatoryProps,
-      events: {
-        nnsConfirmText: callback,
-      },
+    const po = renderComponent({
+      ...mandatoryProps,
+      onConfirm: callback,
     });
 
-    clickByTestId(getByTestId, "confirm-text-input-screen-button");
-    expect(callback).toHaveBeenCalled();
+    await po.enterText("test");
+
+    expect(callback).toBeCalledTimes(0);
+    await po.clickSubmitButton();
+    expect(callback).toBeCalledTimes(1);
   });
 });

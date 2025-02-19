@@ -1,34 +1,32 @@
 import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
-import { formatTokenE8s } from "$lib/utils/token.utils";
-import en from "$tests/mocks/i18n.mock";
-import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { CurrentBalancePo } from "$tests/page-objects/CurrentBalance.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("CurrentBalance", () => {
   const props = {
     balance: TokenAmount.fromE8s({
-      amount: mockMainAccount.balanceUlps,
+      amount: 1_234_567_89_000_000n,
       token: ICPToken,
     }),
   };
 
-  it("should render a title", () => {
-    const { getByText } = render(CurrentBalance, { props });
+  const renderComponent = (props) => {
+    const { container } = render(CurrentBalance, { props });
 
-    expect(
-      getByText(en.accounts.current_balance, { exact: false })
-    ).toBeTruthy();
+    return CurrentBalancePo.under(new JestPageObjectElement(container));
+  };
+
+  it("should render a title", async () => {
+    const po = renderComponent(props);
+
+    expect(await po.getText()).toContain("Current balance:");
   });
 
-  it("should render a balance in ICP", () => {
-    const { getByText, queryByTestId } = render(CurrentBalance, { props });
+  it("should render a balance in ICP", async () => {
+    const po = renderComponent(props);
 
-    const icp: HTMLSpanElement | null = queryByTestId("token-value");
-
-    expect(icp?.innerHTML).toEqual(
-      `${formatTokenE8s({ value: mockMainAccount.balanceUlps })}`
-    );
-    expect(getByText(`ICP`)).toBeTruthy();
+    expect(await po.AmountDisplayPo.getText()).toBe("1'234'567.89 ICP");
   });
 });

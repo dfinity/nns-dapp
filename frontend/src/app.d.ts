@@ -8,8 +8,6 @@ declare namespace App {
   // interface Platform {}
 }
 
-/* eslint-disable */
-
 declare namespace svelteHTML {
   // Svelte needs help to support typing of custom events.
   // Source: https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#im-using-an-attributeevent-on-a-dom-element-and-it-throws-a-type-error
@@ -25,8 +23,6 @@ declare namespace svelteHTML {
     "on:nnsIcrcTokenModal"?: CompositionEventHandler<T>;
   }
 }
-
-/* eslint-enable */
 
 // Solves following lint warning:
 //

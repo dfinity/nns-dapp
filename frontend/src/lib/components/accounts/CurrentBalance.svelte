@@ -6,7 +6,7 @@
   export let balance: TokenAmountV2;
 </script>
 
-<div>
+<div data-tid="current-balance-component">
   <p>{$i18n.accounts.current_balance}:</p>
   <AmountDisplay inline={true} amount={balance} />
 </div>

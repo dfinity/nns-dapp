@@ -28,8 +28,16 @@ export class TextInputFormPo extends BasePageObject {
     return this.getButton("confirm-text-input-screen-button");
   }
 
+  getCancelButtonPo(): ButtonPo {
+    return this.getButton("cancel");
+  }
+
   clickSubmitButton(): Promise<void> {
     return this.getConfirmButtonPo().click();
+  }
+
+  clickCancelButton(): Promise<void> {
+    return this.getCancelButtonPo().click();
   }
 
   getErrorMessage(): Promise<string | null> {

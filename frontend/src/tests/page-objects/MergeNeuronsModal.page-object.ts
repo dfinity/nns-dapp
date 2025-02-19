@@ -35,6 +35,5 @@ export class MergeNeuronsModalPo extends ModalPo {
       .getMergedNeuronDetailCardPo()
       .waitFor();
     await this.getConfirmNeuronsMergePo().getConfirmMergeButtonPo().click();
-    await this.waitForAbsent();
   }
 }
