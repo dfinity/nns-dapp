@@ -34,15 +34,4 @@ describe("analytics service", () => {
     expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(1);
     expect(tracker.enableAutoOutboundTracking).toHaveBeenCalledTimes(1);
   });
-
-  it("should return cleanup functions", () => {
-    const cleanupFunctions = initAnalytics();
-
-    expect(Array.isArray(cleanupFunctions)).toBe(true);
-    expect(cleanupFunctions).toHaveLength(2);
-
-    cleanupFunctions.forEach((cleanup) => {
-      expect(typeof cleanup).toBe("function");
-    });
-  });
 });

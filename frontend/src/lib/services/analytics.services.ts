@@ -1,13 +1,9 @@
 import { PLAUSIBLE_DOMAIN } from "$lib/constants/environment.constants";
 import Plausible from "plausible-tracker";
 
-type Cleanup = () => void;
-
 const domain = PLAUSIBLE_DOMAIN;
 
-export const initAnalytics = (): Cleanup[] => {
-  const cleanUpFunctions: Cleanup[] = [];
-
+export const initAnalytics = () => {
   const tracker = Plausible({
     domain,
     hashMode: false,
@@ -15,8 +11,6 @@ export const initAnalytics = (): Cleanup[] => {
     trackLocalhost: false,
   });
 
-  cleanUpFunctions.push(tracker.enableAutoPageviews());
-  cleanUpFunctions.push(tracker.enableAutoOutboundTracking());
-
-  return cleanUpFunctions;
+  tracker.enableAutoPageviews();
+  tracker.enableAutoOutboundTracking();
 };
