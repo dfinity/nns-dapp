@@ -24,6 +24,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Rendering of `RemoveNodeOperatorsPayload` proposals.
+
 #### Security
 
 #### Not Published
