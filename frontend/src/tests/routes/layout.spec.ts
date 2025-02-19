@@ -1,4 +1,5 @@
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
+import * as analytics from "$lib/services/analytics.services";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
 import App from "$routes/+layout.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -59,5 +60,20 @@ describe("Layout", () => {
     await runResolvedPromises();
 
     expect(spy).toBeCalled();
+  });
+
+  it("should initialize analytics tracking on mount", async () => {
+    const initAnalyticsSpy = vi.spyOn(analytics, "initAnalytics");
+
+    expect(initAnalyticsSpy).not.toHaveBeenCalled();
+
+    render(App);
+
+    expect(initAnalyticsSpy).toHaveBeenCalledTimes(1);
+
+    resetIdentity();
+    await runResolvedPromises();
+
+    expect(initAnalyticsSpy).toHaveBeenCalledTimes(1);
   });
 });
