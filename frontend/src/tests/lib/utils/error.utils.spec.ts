@@ -3,7 +3,7 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import {
   errorToString,
-  isCanisterOutOfCycles,
+  isCanisterOutOfCyclesError,
   isMethodNotSupportedError,
   isPayloadSizeError,
   toToastError,
@@ -136,7 +136,7 @@ describe("error-utils", () => {
         "Code": "SysTransient"
         "Message": "IC0207: Canister 75lp5-u7777-77776-qaaba-cai is unable to process query calls because it's frozen. Please top up the canister with cycles and try again."`;
       const err = new Error(message);
-      expect(isCanisterOutOfCycles(err)).toBe(true);
+      expect(isCanisterOutOfCyclesError(err)).toBe(true);
     });
 
     it("returns true for out of cycles update error", () => {
@@ -148,13 +148,13 @@ describe("error-utils", () => {
         "Reject code": "2"
         "Reject message": "Canister 75lp5-u7777-77776-qaaba-cai is out of cycles"`;
       const err = new Error(message);
-      expect(isCanisterOutOfCycles(err)).toBe(true);
+      expect(isCanisterOutOfCyclesError(err)).toBe(true);
     });
 
     it("returns false for other errors and non errors", () => {
-      expect(isCanisterOutOfCycles(new Error("test"))).toBe(false);
-      expect(isCanisterOutOfCycles(undefined)).toBe(false);
-      expect(isCanisterOutOfCycles({})).toBe(false);
+      expect(isCanisterOutOfCyclesError(new Error("test"))).toBe(false);
+      expect(isCanisterOutOfCyclesError(undefined)).toBe(false);
+      expect(isCanisterOutOfCyclesError({})).toBe(false);
     });
 
     it("returns false for different error codes", () => {
@@ -165,7 +165,7 @@ describe("error-utils", () => {
         "Code": "SysTransient"
         "Message": "IC0503: Some other error message"`;
       const err = new Error(message);
-      expect(isCanisterOutOfCycles(err)).toBe(false);
+      expect(isCanisterOutOfCyclesError(err)).toBe(false);
     });
   });
 });

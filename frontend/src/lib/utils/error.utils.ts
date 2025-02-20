@@ -200,7 +200,7 @@ export const isMethodNotSupportedError = (err: unknown): boolean =>
  *   "Reject code": "2"
  *   "Reject message": "Canister 75lp5-u7777-77776-qaaba-cai is out of cycles""
  */
-export const isCanisterOutOfCycles = (error: unknown): boolean => {
+export const isCanisterOutOfCyclesError = (error: unknown): boolean => {
   if (!error || typeof error !== "object") return false;
 
   const errorMessage = (error as Error).message;
