@@ -1,6 +1,7 @@
 import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import type { Account } from "$lib/types/account";
 import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
 import {
   mockHardwareWalletAccount,
@@ -73,9 +74,10 @@ describe("SelectAccountDropdown", () => {
     });
 
     it("should reset selected accounts on selectable list of accounts change", async () => {
-      const testProps = $state({
+      let testProps = $state({
         ...props,
         selectedAccount: mockHardwareWalletAccount,
+        filterAccounts: (_account: Account): boolean => true,
       });
 
       render(SelectAccountDropdown, {
@@ -86,18 +88,18 @@ describe("SelectAccountDropdown", () => {
       // In addition, the select binds `selectedAccountIdentifier` and we also want to ensure that the side effect resolve the `selectedAccount` when the code reset it.
       expect(testProps.selectedAccount).toEqual(mockHardwareWalletAccount);
 
-      const testUpdateProps = $state({
+      testProps = {
         ...props,
         selectedAccount: mockHardwareWalletAccount,
-        filterAccounts: (account) => !isAccountHardwareWallet(account),
-      });
+        filterAccounts: (account: Account) => !isAccountHardwareWallet(account),
+      };
 
       render(SelectAccountDropdown, {
-        props: testUpdateProps,
+        props: testProps,
       });
 
       await waitFor(() =>
-        expect(testUpdateProps.selectedAccount).toEqual(mockMainAccount)
+        expect(testProps.selectedAccount).toEqual(mockMainAccount)
       );
     });
 
