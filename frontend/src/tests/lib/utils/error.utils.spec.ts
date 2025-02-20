@@ -3,6 +3,7 @@ import { LedgerErrorKey } from "$lib/types/ledger.errors";
 import { HardwareWalletAttachError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import {
   errorToString,
+  isCanisterOutOfCyclesError,
   isMethodNotSupportedError,
   isPayloadSizeError,
   toToastError,
@@ -123,6 +124,49 @@ describe("error-utils", () => {
       expect(isMethodNotSupportedError(new Error("another error"))).toBe(false);
       expect(isMethodNotSupportedError(undefined)).toBe(false);
       expect(isMethodNotSupportedError({})).toBe(false);
+    });
+  });
+
+  describe("isCanisterOutOfCycles", () => {
+    it("returns true for out of cycles query error", () => {
+      const message = `Call failed:
+        Canister: 75lp5-u7777-77776-qaaba-cai
+        Method: icrc1_balance_of (query)
+        "Status": "rejected"
+        "Code": "SysTransient"
+        "Message": "IC0207: Canister 75lp5-u7777-77776-qaaba-cai is unable to process query calls because it's frozen. Please top up the canister with cycles and try again."`;
+      const err = new Error(message);
+      expect(isCanisterOutOfCyclesError(err)).toBe(true);
+    });
+
+    it("returns true for out of cycles update error", () => {
+      const message = `Call failed:
+        Canister: 75lp5-u7777-77776-qaaba-cai
+        Method: icrc1_balance_of (update)
+        "Request ID": "476ad2adfb1e755277240038da963f54d16093d2d4b1d370e82c1cd1a089e73f"
+        "Error code": "IC0207"
+        "Reject code": "2"
+        "Reject message": "Canister 75lp5-u7777-77776-qaaba-cai is out of cycles"`;
+      const err = new Error(message);
+      expect(isCanisterOutOfCyclesError(err)).toBe(true);
+    });
+
+    it("returns false for other errors and non errors", () => {
+      expect(isCanisterOutOfCyclesError(undefined)).toBe(false);
+      expect(isCanisterOutOfCyclesError({})).toBe(false);
+      expect(isCanisterOutOfCyclesError(new Error("test"))).toBe(false);
+      expect(isCanisterOutOfCyclesError(new Error("IC02070"))).toBe(false);
+    });
+
+    it("returns false for different error codes", () => {
+      const message = `Call failed:
+        Canister: 75lp5-u7777-77776-qaaba-cai
+        Method: icrc1_balance_of (query)
+        "Status": "rejected"
+        "Code": "SysTransient"
+        "Message": "IC0503: Some other error message"`;
+      const err = new Error(message);
+      expect(isCanisterOutOfCyclesError(err)).toBe(false);
     });
   });
 });
