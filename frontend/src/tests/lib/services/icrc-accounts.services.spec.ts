@@ -13,13 +13,13 @@ import {
   syncAccounts,
   transferTokens,
 } from "$lib/services/icrc-accounts.services";
-import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
+import { outOfCyclesCanistersStore } from "$lib/stores/out-of-cycles-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -249,55 +249,56 @@ describe("icrc-accounts-services", () => {
       });
     });
 
-    it("should track failing canister if query call fails", async () => {
-      const error = new Error();
-      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(error);
+    it("should track error if query call fails if outOfCyclesError", async () => {
+      const outOfCyclesError = new Error("IC0207");
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
+        outOfCyclesError
+      );
 
-      expect(get(canistersErrorsStore)).toEqual({});
+      expect(get(outOfCyclesCanistersStore)).toEqual([]);
 
       await loadAccounts({
         ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
         strategy: "query",
       });
 
-      expect(get(canistersErrorsStore)).toEqual({
-        [CKBTC_UNIVERSE_CANISTER_ID.toString()]: { raw: error },
-      });
+      expect(get(outOfCyclesCanistersStore)).toEqual([
+        CKBTC_LEDGER_CANISTER_ID.toString(),
+      ]);
     });
 
-    it("should track failing canister if update call fails", async () => {
-      const error = new Error();
-      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(error);
+    it("should track error if update call fails if outOfCyclesError", async () => {
+      const outOfCyclesError = new Error("IC0207");
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
+        outOfCyclesError
+      );
 
-      expect(get(canistersErrorsStore)).toEqual({});
+      expect(get(outOfCyclesCanistersStore)).toEqual([]);
 
       await loadAccounts({
         ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
         strategy: "update",
       });
 
-      expect(get(canistersErrorsStore)).toEqual({
-        [CKBTC_UNIVERSE_CANISTER_ID.toString()]: { raw: error },
-      });
+      expect(get(outOfCyclesCanistersStore)).toEqual([
+        CKBTC_LEDGER_CANISTER_ID.toString(),
+      ]);
     });
 
     it("should remove tracked failed canister if call works", async () => {
-      const error = new Error();
-      canistersErrorsStore.set({
-        canisterId: CKBTC_UNIVERSE_CANISTER_ID.toString(),
-        rawError: error,
-      });
+      outOfCyclesCanistersStore.add(CKBTC_UNIVERSE_CANISTER_ID.toString());
 
-      expect(get(canistersErrorsStore)).toEqual({
-        [CKBTC_UNIVERSE_CANISTER_ID.toString()]: { raw: error },
-      });
+      expect(get(outOfCyclesCanistersStore)).toEqual([
+        CKBTC_UNIVERSE_CANISTER_ID.toString(),
+      ]);
 
       await loadAccounts({
         ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
       });
 
-      expect(get(canistersErrorsStore)).toEqual({});
+      expect(get(outOfCyclesCanistersStore)).toEqual([]);
     });
+
     it("displays a toast on error", async () => {
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
         new Error("test")

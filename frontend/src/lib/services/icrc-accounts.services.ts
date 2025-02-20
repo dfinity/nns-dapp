@@ -14,19 +14,22 @@ import {
   queryAndUpdate,
   type QueryAndUpdateStrategy,
 } from "$lib/services/utils.services";
-import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
+import { outOfCyclesCanistersStore } from "$lib/stores/out-of-cycles-canisters.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { isLastCall } from "$lib/utils/env.utils";
-import { toToastError } from "$lib/utils/error.utils";
+import {
+  isCanisterOutOfCyclesError,
+  toToastError,
+} from "$lib/utils/error.utils";
 import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import type { Identity } from "@dfinity/agent";
@@ -184,7 +187,7 @@ export const loadAccounts = async ({
     request: ({ certified, identity }) =>
       getAccounts({ identity, certified, ledgerCanisterId }),
     onLoad: ({ response: accounts, certified }) => {
-      canistersErrorsStore.delete(ledgerCanisterId.toString());
+      outOfCyclesCanistersStore.delete(ledgerCanisterId.toString());
 
       return icrcAccountsStore.set({
         ledgerCanisterId,
@@ -197,6 +200,10 @@ export const loadAccounts = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
+      if (isCanisterOutOfCyclesError(err)) {
+        outOfCyclesCanistersStore.add(ledgerCanisterId.toString());
+      }
+
       // Ignore error on query call only if there will be an update call
       if (certified !== true && strategy !== "query") {
         return;
@@ -205,11 +212,6 @@ export const loadAccounts = async ({
       // hide unproven data
       icrcAccountsStore.resetUniverse(ledgerCanisterId);
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
-
-      canistersErrorsStore.set({
-        canisterId: ledgerCanisterId.toString(),
-        rawError: err,
-      });
 
       if (
         isImportedToken({
