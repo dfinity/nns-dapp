@@ -1,7 +1,4 @@
-import { PLAUSIBLE_DOMAIN } from "$lib/constants/environment.constants";
-import { initAnalytics } from "$lib/services/analytics.services";
 import Plausible from "plausible-tracker";
-import { describe, expect, it, vi } from "vitest";
 
 vi.mock("plausible-tracker", () => {
   const enableAutoPageviews = vi.fn(() => () => {});
@@ -16,17 +13,53 @@ vi.mock("plausible-tracker", () => {
 });
 
 describe("analytics service", () => {
-  it("should initialize Plausible with correct configuration", () => {
+  const getEnvVarsFactory = (plausibleDomain: string) => () => ({
+    plausibleDomain,
+    featureFlags: "{}",
+  });
+
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
+  it("should not do anything if domain is not set", async () => {
+    vi.doMock("$lib/utils/env-vars.utils", () => ({
+      getEnvVars: getEnvVarsFactory(undefined),
+    }));
+
+    const { initAnalytics } = await import("$lib/services/analytics.services");
+
+    expect(Plausible).toHaveBeenCalledTimes(0);
+    initAnalytics();
+    expect(Plausible).toHaveBeenCalledTimes(0);
+  });
+
+  it("should initialize Plausible with correct configuration", async () => {
+    const plausibleDomain = "test-domain";
+    vi.doMock("$lib/utils/env-vars.utils", () => ({
+      getEnvVars: getEnvVarsFactory(plausibleDomain),
+    }));
+
+    const { initAnalytics } = await import("$lib/services/analytics.services");
+
+    expect(Plausible).toHaveBeenCalledTimes(0);
     initAnalytics();
 
+    expect(Plausible).toHaveBeenCalledTimes(1);
     expect(Plausible).toHaveBeenCalledWith({
-      domain: PLAUSIBLE_DOMAIN,
+      domain: plausibleDomain,
       hashMode: false,
       trackLocalhost: false,
     });
   });
 
-  it("should enable auto page views and outbound tracking", () => {
+  it("should enable auto page views and outbound tracking", async () => {
+    vi.doMock("$lib/utils/env-vars.utils", () => ({
+      getEnvVars: getEnvVarsFactory("some-domain"),
+    }));
+
+    const { initAnalytics } = await import("$lib/services/analytics.services");
+
     const tracker = Plausible();
 
     expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(0);
