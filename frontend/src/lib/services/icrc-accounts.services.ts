@@ -14,7 +14,6 @@ import {
   queryAndUpdate,
   type QueryAndUpdateStrategy,
 } from "$lib/services/utils.services";
-import { canistersErrorsStore } from "$lib/stores/canisters-errors.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import {
@@ -206,6 +205,10 @@ export const loadAccounts = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
+      if (isCanisterOutOfCyclesError(err)) {
+        outOfCyclesCanistersStore.add(ledgerCanisterId.toString());
+      }
+
       // Ignore error on query call only if there will be an update call
       if (certified !== true && strategy !== "query") {
         return;
@@ -218,11 +221,6 @@ export const loadAccounts = async ({
       // hide unproven data
       icrcAccountsStore.resetUniverse(ledgerCanisterId);
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
-
-      canistersErrorsStore.set({
-        canisterId: ledgerCanisterId.toString(),
-        rawError: err,
-      });
 
       if (
         isImportedToken({
