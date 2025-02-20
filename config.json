@@ -18,7 +18,8 @@
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        }
+        },
+        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
       }
     },
     "beta": {
@@ -28,7 +29,8 @@
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        }
+        },
+        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
       }
     },
     "devenv_llorenc": {
@@ -93,8 +95,7 @@
           "ENABLE_USD_VALUES_FOR_NEURONS": true,
           "ENABLE_PORTFOLIO_PAGE": true,
           "ENABLE_IMPORT_TOKEN_BY_URL": true
-        },
-        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
+        }
       }
     },
     "build": {
