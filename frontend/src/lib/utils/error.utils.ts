@@ -207,7 +207,8 @@ export const isCanisterOutOfCyclesError = (error: unknown): boolean => {
   if (!errorMessage) return false;
 
   // https://github.com/dfinity/ic/blob/6e327863fd0e72d8cf9c5c46fc1263f548fad4f5/rs/protobuf/src/gen/state/state.ingress.v1.rs#L146
-  if (errorMessage.includes("IC0207")) return true;
+  const errorCodeRegex = /\bIC0207\b/;
+  if (errorCodeRegex.test(errorMessage)) return true;
 
   return false;
 };

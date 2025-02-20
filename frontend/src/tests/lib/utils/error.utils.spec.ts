@@ -152,9 +152,10 @@ describe("error-utils", () => {
     });
 
     it("returns false for other errors and non errors", () => {
-      expect(isCanisterOutOfCyclesError(new Error("test"))).toBe(false);
       expect(isCanisterOutOfCyclesError(undefined)).toBe(false);
       expect(isCanisterOutOfCyclesError({})).toBe(false);
+      expect(isCanisterOutOfCyclesError(new Error("test"))).toBe(false);
+      expect(isCanisterOutOfCyclesError(new Error("IC02070"))).toBe(false);
     });
 
     it("returns false for different error codes", () => {
