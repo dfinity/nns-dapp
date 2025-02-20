@@ -86,16 +86,18 @@ describe("SelectAccountDropdown", () => {
       // In addition, the select binds `selectedAccountIdentifier` and we also want to ensure that the side effect resolve the `selectedAccount` when the code reset it.
       expect(testProps.selectedAccount).toEqual(mockHardwareWalletAccount);
 
+      const testUpdateProps = $state({
+        ...props,
+        selectedAccount: mockHardwareWalletAccount,
+        filterAccounts: (account) => !isAccountHardwareWallet(account),
+      });
+
       render(SelectAccountDropdown, {
-        props: {
-          ...props,
-          selectedAccount: mockHardwareWalletAccount,
-          filterAccounts: (account) => !isAccountHardwareWallet(account),
-        },
+        props: testUpdateProps,
       });
 
       await waitFor(() =>
-        expect(testProps.selectedAccount).toEqual(mockMainAccount)
+        expect(testUpdateProps.selectedAccount).toEqual(mockMainAccount)
       );
     });
 
