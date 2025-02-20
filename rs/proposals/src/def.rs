@@ -232,8 +232,7 @@ pub type UpdateUnassignedNodesConfigPayload = crate::canisters::nns_registry::ap
 
 /// NNS function 23 - `RemoveNodeOperators`
 /// <https://github.com/dfinity/ic/blob/5b2647754d0c2200b645d08a6ddce32251438ed5/rs/protobuf/def/registry/node_operator/v1/node_operator.proto#L34>
-pub type RemoveNodeOperatorsPayload =
-    registry_canister::mutations::do_remove_node_operators::RemoveNodeOperatorsPayload;
+pub type RemoveNodeOperatorsPayload = crate::canisters::nns_registry::api::RemoveNodeOperatorsPayload;
 
 /// NNS function 24 - `RerouteCanisterRange`
 /// <https://github.com/dfinity/ic/blob/5a1b0fe380dda87e7a3fcc62d48d646a91d2f12c/rs/registry/canister/src/mutations/reroute_canister_ranges.rs#L66>
