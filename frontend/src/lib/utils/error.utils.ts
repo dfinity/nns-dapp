@@ -181,3 +181,33 @@ export const isPayloadSizeError = (err: unknown): boolean => {
 
 export const isMethodNotSupportedError = (err: unknown): boolean =>
   err instanceof UnsupportedMethodError;
+
+/**
+ * Identifies errors of canisters out-of-cycles
+ * Below expamples of error messages for both query and update calls
+ * "Call failed:
+ *   Canister: 75lp5-u7777-77776-qaaba-cai
+ *   Method: icrc1_balance_of (query)
+ *   "Status": "rejected"
+ *   "Code": "SysTransient"
+ *   "Message": "IC0207: Canister 75lp5-u7777-77776-qaaba-cai is unable to process query calls because it's frozen. Please top up the canister with cycles and try again.""
+ *
+ * "Call failed:
+ *   Canister: 75lp5-u7777-77776-qaaba-cai
+ *   Method: icrc1_balance_of (update)
+ *   "Request ID": "476ad2adfb1e755277240038da963f54d16093d2d4b1d370e82c1cd1a089e73f"
+ *   "Error code": "IC0207"
+ *   "Reject code": "2"
+ *   "Reject message": "Canister 75lp5-u7777-77776-qaaba-cai is out of cycles""
+ */
+export const isCanisterOutOfCycles = (error: unknown): boolean => {
+  if (!error || typeof error !== "object") return false;
+
+  const errorMessage = (error as Error).message;
+  if (!errorMessage) return false;
+
+  // https://github.com/dfinity/ic/blob/6e327863fd0e72d8cf9c5c46fc1263f548fad4f5/rs/protobuf/src/gen/state/state.ingress.v1.rs#L146
+  if (errorMessage.includes("IC0207")) return true;
+
+  return false;
+};
