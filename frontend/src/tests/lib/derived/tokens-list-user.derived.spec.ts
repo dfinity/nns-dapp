@@ -9,10 +9,13 @@ import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { outOfCyclesCanistersStore } from "$lib/stores/out-of-cycles-canisters.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import {
   UserTokenAction,
+  type UserTokenBase,
   type UserTokenData,
+  type UserTokenFailed,
   type UserTokenLoading,
 } from "$lib/types/tokens-page";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
@@ -90,13 +93,23 @@ describe("tokens-list-user.derived", () => {
   const tetrisHref = buildWalletUrl({
     universe: snsTetris.rootCanisterId.toText(),
   });
-  const tetrisTokenLoading: UserTokenLoading = {
+
+  const tetrisTokenBase: UserTokenBase = {
     universeId: snsTetris.rootCanisterId,
     ledgerCanisterId: snsTetris.ledgerCanisterId,
     title: snsTetris.projectName,
     logo: "https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/root/g3pce-2iaae/logo.png",
-    balance: "loading",
     actions: [],
+  };
+  const tetrisTokenFailed: UserTokenFailed = {
+    ...tetrisTokenBase,
+    balance: "failed",
+    domKey: tetrisHref,
+  };
+  const tetrisTokenLoading: UserTokenLoading = {
+    ...tetrisTokenBase,
+    actions: [],
+    balance: "loading",
     rowHref: tetrisHref,
     domKey: tetrisHref,
   };
@@ -318,6 +331,23 @@ describe("tokens-list-user.derived", () => {
         ckTESTBTCTokenLoading,
         ckETHTokenLoading,
         tetrisUserToken,
+        pacmanTokenLoading,
+      ]);
+    });
+
+    it("should return failed balance for Testris token due to the ledger canister being out of cycles", () => {
+      outOfCyclesCanistersStore.add(snsTetris.ledgerCanisterId.toText());
+      icrcAccountsStore.set({
+        accounts: { accounts: [mockSnsMainAccount], certified: true },
+        ledgerCanisterId: snsTetris.ledgerCanisterId,
+      });
+
+      expect(get(tokensListUserStore)).toEqual([
+        icpUserTokenLoading,
+        ckBTCTokenLoading,
+        ckTESTBTCTokenLoading,
+        ckETHTokenLoading,
+        tetrisTokenFailed,
         pacmanTokenLoading,
       ]);
     });
