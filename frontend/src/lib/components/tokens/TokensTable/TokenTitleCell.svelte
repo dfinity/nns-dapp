@@ -44,7 +44,9 @@
     <div data-tid="failed-token-info" class="failed-token-info">
       <Tooltip
         id="failed-token-info"
-        text={importedToken ? $i18n.import_token.failed_tooltip : undefined}
+        text={importedToken
+          ? $i18n.import_token.failed_tooltip
+          : $i18n.tokens.balance_failed_tooltip}
       >
         <IconError size="20px" />
       </Tooltip>
