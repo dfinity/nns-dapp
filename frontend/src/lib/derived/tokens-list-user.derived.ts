@@ -1,19 +1,24 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import {
-  icpSwapUsdPricesStore,
-  type IcpSwapUsdPricesStore,
-  type IcpSwapUsdPricesStoreData,
+    icpSwapUsdPricesStore,
+    type IcpSwapUsdPricesStore,
+    type IcpSwapUsdPricesStoreData,
 } from "$lib/derived/icp-swap.derived";
 import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
 import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
 import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
 import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
+import {
+    outOfCyclesCanistersStore,
+    type OutOfCyclesCanistersStore,
+    type OutOfCyclesCanistersStoreData,
+} from "$lib/stores/out-of-cycles-canisters.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
-  UserTokenAction,
-  type UserToken,
-  type UserTokenBase,
+    UserTokenAction,
+    type UserToken,
+    type UserTokenBase,
 } from "$lib/types/tokens-page";
 import { sumAccounts } from "$lib/utils/accounts.utils";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
@@ -50,11 +55,13 @@ const convertToUserTokenData = ({
   tokensByUniverse,
   baseTokenData,
   icpSwapUsdPrices,
+  outOfCyclesCanisters,
 }: {
   accounts: UniversesAccounts;
   tokensByUniverse: Record<string, IcrcTokenMetadata>;
   baseTokenData: UserTokenBase;
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
+  outOfCyclesCanisters: OutOfCyclesCanistersStoreData;
 }): UserToken => {
   const token = tokensByUniverse[baseTokenData.universeId.toText()];
   const rowHref = isUniverseNns(baseTokenData.universeId)
@@ -62,6 +69,18 @@ const convertToUserTokenData = ({
     : buildWalletUrl({
         universe: baseTokenData.universeId.toText(),
       });
+
+  const isLedgerCanisterOutOfCycles = outOfCyclesCanisters.includes(
+    baseTokenData.ledgerCanisterId.toText()
+  );
+  if (isLedgerCanisterOutOfCycles) {
+    return {
+      ...baseTokenData,
+      balance: "failed",
+      domKey: rowHref,
+    };
+  }
+
   const accountsList = accounts[baseTokenData.universeId.toText()];
   const mainAccount = accountsList?.find(({ type }) => type === "main");
   if (isNullish(token) || isNullish(accountsList) || isNullish(mainAccount)) {
@@ -114,6 +133,7 @@ export const tokensListUserStore = derived<
     Readable<Record<string, IcrcTokenMetadata>>,
     Readable<Array<string>>,
     IcpSwapUsdPricesStore,
+    OutOfCyclesCanistersStore,
   ],
   UserToken[]
 >(
@@ -123,6 +143,7 @@ export const tokensListUserStore = derived<
     tokensByUniverseIdStore,
     failedExistentImportedTokenLedgerIdsStore,
     icpSwapUsdPricesStore,
+    outOfCyclesCanistersStore,
   ],
   ([
     tokensList,
@@ -130,6 +151,7 @@ export const tokensListUserStore = derived<
     tokensByUniverse,
     failedImportedTokenLedgerIds,
     icpSwapUsdPrices,
+    outOfCyclesCanisters,
   ]) => [
     ...tokensList.map((baseTokenData) =>
       convertToUserTokenData({
@@ -137,6 +159,7 @@ export const tokensListUserStore = derived<
         accounts,
         tokensByUniverse,
         icpSwapUsdPrices,
+        outOfCyclesCanisters,
       })
     ),
     ...failedImportedTokenLedgerIds.map(toUserTokenFailed),
