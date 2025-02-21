@@ -46,7 +46,7 @@
         id="failed-token-info"
         text={importedToken
           ? $i18n.import_token.failed_tooltip
-          : $i18n.tokens.balance_failed_tooltip}
+          : $i18n.tokens.ledger_canister_error_tooltip}
       >
         <IconError size="20px" />
       </Tooltip>
