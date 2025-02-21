@@ -42,15 +42,10 @@
 
   {#if isUserTokenFailed(rowData)}
     <div data-tid="failed-token-info" class="failed-token-info">
-      <Tooltip id="failed-token-info">
-        <IconError size="20px" />
-      </Tooltip>
-    </div>
-  {/if}
-
-  {#if isUserTokenFailed(rowData) && importedToken}
-    <div data-tid="failed-token-info" class="failed-token-info">
-      <Tooltip id="failed-token-info" text={$i18n.import_token.failed_tooltip}>
+      <Tooltip
+        id="failed-token-info"
+        text={importedToken ? $i18n.import_token.failed_tooltip : undefined}
+      >
         <IconError size="20px" />
       </Tooltip>
     </div>
