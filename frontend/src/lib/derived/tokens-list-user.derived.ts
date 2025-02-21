@@ -1,24 +1,24 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import {
-    icpSwapUsdPricesStore,
-    type IcpSwapUsdPricesStore,
-    type IcpSwapUsdPricesStoreData,
+  icpSwapUsdPricesStore,
+  type IcpSwapUsdPricesStore,
+  type IcpSwapUsdPricesStoreData,
 } from "$lib/derived/icp-swap.derived";
 import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
 import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
 import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
 import { universesAccountsStore } from "$lib/derived/universes-accounts.derived";
 import {
-    outOfCyclesCanistersStore,
-    type OutOfCyclesCanistersStore,
-    type OutOfCyclesCanistersStoreData,
+  outOfCyclesCanistersStore,
+  type OutOfCyclesCanistersStore,
+  type OutOfCyclesCanistersStoreData,
 } from "$lib/stores/out-of-cycles-canisters.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
-    UserTokenAction,
-    type UserToken,
-    type UserTokenBase,
+  UserTokenAction,
+  type UserToken,
+  type UserTokenBase,
 } from "$lib/types/tokens-page";
 import { sumAccounts } from "$lib/utils/accounts.utils";
 import { buildAccountsUrl, buildWalletUrl } from "$lib/utils/navigation.utils";
