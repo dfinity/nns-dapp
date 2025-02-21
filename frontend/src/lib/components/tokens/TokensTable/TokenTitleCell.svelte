@@ -24,7 +24,7 @@
 
 <div class="title-logo-wrapper">
   <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
-  {#if isUserTokenFailed(rowData)}
+  {#if isUserTokenFailed(rowData) && importedToken}
     <Hash text={`${rowData.universeId.toText()}`} tagName="span" tooltipTop />
   {:else}
     <div class="title-wrapper">
@@ -39,7 +39,16 @@
   {#if importedToken}
     <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
   {/if}
+
   {#if isUserTokenFailed(rowData)}
+    <div data-tid="failed-token-info" class="failed-token-info">
+      <Tooltip id="failed-token-info">
+        <IconError size="20px" />
+      </Tooltip>
+    </div>
+  {/if}
+
+  {#if isUserTokenFailed(rowData) && importedToken}
     <div data-tid="failed-token-info" class="failed-token-info">
       <Tooltip id="failed-token-info" text={$i18n.import_token.failed_tooltip}>
         <IconError size="20px" />
