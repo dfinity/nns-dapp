@@ -20,12 +20,16 @@ import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
+import { outOfCyclesCanistersStore } from "$lib/stores/out-of-cycles-canisters.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { isLastCall } from "$lib/utils/env.utils";
-import { toToastError } from "$lib/utils/error.utils";
+import {
+  isCanisterOutOfCyclesError,
+  toToastError,
+} from "$lib/utils/error.utils";
 import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
 import type { Identity } from "@dfinity/agent";
@@ -182,20 +186,32 @@ export const loadAccounts = async ({
     strategy,
     request: ({ certified, identity }) =>
       getAccounts({ identity, certified, ledgerCanisterId }),
-    onLoad: ({ response: accounts, certified }) =>
-      icrcAccountsStore.set({
+    onLoad: ({ response: accounts, certified }) => {
+      // Do not remove for successful query calls in query-and-update strategy
+      const isQueryCallOfAQueryAndUpdateCall =
+        strategy === "query_and_update" && certified === false;
+      if (!isQueryCallOfAQueryAndUpdateCall) {
+        outOfCyclesCanistersStore.delete(ledgerCanisterId.toString());
+      }
+
+      return icrcAccountsStore.set({
         ledgerCanisterId,
         accounts: {
           accounts,
           certified,
         },
-      }),
+      });
+    },
     onError: ({ error: err, certified }) => {
       console.error(err);
 
       // Ignore error on query call only if there will be an update call
       if (certified !== true && strategy !== "query") {
         return;
+      }
+
+      if (isCanisterOutOfCyclesError(err)) {
+        outOfCyclesCanistersStore.add(ledgerCanisterId.toString());
       }
 
       // hide unproven data
