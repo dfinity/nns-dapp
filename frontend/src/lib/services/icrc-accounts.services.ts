@@ -187,7 +187,12 @@ export const loadAccounts = async ({
     request: ({ certified, identity }) =>
       getAccounts({ identity, certified, ledgerCanisterId }),
     onLoad: ({ response: accounts, certified }) => {
-      outOfCyclesCanistersStore.delete(ledgerCanisterId.toString());
+      // Do not remove for successful query calls in query-and-update strategy
+      const isQueryCallOfAQueryAndUpdateCall =
+        strategy === "query_and_update" && certified === false;
+      if (!isQueryCallOfAQueryAndUpdateCall) {
+        outOfCyclesCanistersStore.delete(ledgerCanisterId.toString());
+      }
 
       return icrcAccountsStore.set({
         ledgerCanisterId,
