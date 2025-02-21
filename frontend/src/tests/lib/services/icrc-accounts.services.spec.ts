@@ -249,7 +249,7 @@ describe("icrc-accounts-services", () => {
       });
     });
 
-    it("should track error if query call fails if outOfCyclesError", async () => {
+    it("should track canister if query call fails if outOfCyclesError", async () => {
       const outOfCyclesError = new Error("IC0207");
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
         outOfCyclesError
@@ -267,7 +267,7 @@ describe("icrc-accounts-services", () => {
       ]);
     });
 
-    it("should track error if update call fails if outOfCyclesError", async () => {
+    it("should track canister if update call fails if outOfCyclesError", async () => {
       const outOfCyclesError = new Error("IC0207");
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
         outOfCyclesError
@@ -283,6 +283,27 @@ describe("icrc-accounts-services", () => {
       expect(get(outOfCyclesCanistersStore)).toEqual([
         CKBTC_LEDGER_CANISTER_ID.toString(),
       ]);
+    });
+
+    it("should not track canister if query fails and update succeeds if outOfCyclesError", async () => {
+      const outOfCyclesError = new Error("IC0207");
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockImplementation(
+        async ({ certified }) => {
+          if (certified) {
+            return mockCkBTCMainAccount.balanceUlps;
+          }
+          throw outOfCyclesError;
+        }
+      );
+
+      expect(get(outOfCyclesCanistersStore)).toEqual([]);
+
+      await loadAccounts({
+        ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
+        strategy: "query_and_update",
+      });
+
+      expect(get(outOfCyclesCanistersStore)).toEqual([]);
     });
 
     it("should remove tracked failed canister if call works", async () => {

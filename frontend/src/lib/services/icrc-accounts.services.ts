@@ -200,13 +200,13 @@ export const loadAccounts = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
-      if (isCanisterOutOfCyclesError(err)) {
-        outOfCyclesCanistersStore.add(ledgerCanisterId.toString());
-      }
-
       // Ignore error on query call only if there will be an update call
       if (certified !== true && strategy !== "query") {
         return;
+      }
+
+      if (isCanisterOutOfCyclesError(err)) {
+        outOfCyclesCanistersStore.add(ledgerCanisterId.toString());
       }
 
       // hide unproven data
