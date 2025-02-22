@@ -10,6 +10,15 @@ All the Internet computer interactions are done through ic-js or the official [a
 
 ## Installation and local development
 
+Set the node version defined in [config.json](https://github.com/dfinity/nns-dapp/blob/main/config.json#L103).
+
+If you use [nvm](https://github.com/nvm-sh/nvm), you can run the following command to set your .nvmrc file and then use that version of node
+
+```
+npm run sync-node-version
+nvm use
+```
+
 Clone the project on your computer and install the libraries:
 
 ```bash
