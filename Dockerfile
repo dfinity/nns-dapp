@@ -33,7 +33,6 @@ SHELL ["bash", "-c"]
 RUN mkdir -p config
 COPY dfx.json dfx.json
 COPY config.json config.json
-ENV NODE_VERSION=18.20.5
 RUN jq -r .dfx dfx.json > config/dfx_version
 RUN jq -r '.defaults.build.config.NODE_VERSION' config.json > config/node_version
 RUN jq -r '.defaults.build.config.DIDC_RELEASE' config.json > config/didc_version
