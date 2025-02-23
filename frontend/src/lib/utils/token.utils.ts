@@ -313,6 +313,14 @@ export class UnavailableTokenAmount {
   }
 }
 
+export class FailedTokenAmount {
+  public token: Token;
+
+  constructor(token: Token) {
+    this.token = token;
+  }
+}
+
 export const sortUserTokens = (tokens: UserToken[]): UserToken[] => [
   // sort only tokens with valid balance
   ...tokens

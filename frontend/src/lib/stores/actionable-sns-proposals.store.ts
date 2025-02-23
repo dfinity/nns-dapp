@@ -1,4 +1,5 @@
 import { removeKeys } from "$lib/utils/utils";
+import type { CanisterIdString } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { writable, type Readable } from "svelte/store";
@@ -22,7 +23,8 @@ export interface ActionableSnsProposalsStore
   resetForTesting: () => void;
 }
 
-interface FailedActionableSnsesStore extends Readable<string[]> {
+export type FailedActionableSnsesStoreData = CanisterIdString[];
+interface FailedActionableSnsesStore extends Readable<CanisterIdString[]> {
   add: (rootCanisterId: string) => void;
   remove: (rootCanisterId: string) => void;
   resetForTesting: () => void;
