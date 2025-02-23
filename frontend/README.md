@@ -12,11 +12,11 @@ All the Internet computer interactions are done through ic-js or the official [a
 
 Set the node version defined in [config.json](https://github.com/dfinity/nns-dapp/blob/main/config.json#L103).
 
-If you use [nvm](https://github.com/nvm-sh/nvm), you can run the following command to set your .nvmrc file and then use that version of node
+If you use [nvm](https://github.com/nvm-sh/nvm), you can run the following commands to set up the correct Node.js version:
 
-```
-npm run sync-node-version
-nvm use
+```bash
+npm run sync-node-version  # Creates .nvmrc with the required version
+nvm use                    # Switches to the specified version
 ```
 
 Clone the project on your computer and install the libraries:
