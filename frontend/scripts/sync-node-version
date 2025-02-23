@@ -2,5 +2,5 @@
 set -euo pipefail
 ROOT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/../.."
 
-NODE_VERSION=$(jq -r '.defaults.build.config.NODE_VERSION' $ROOT_DIR/config.json)
-echo "v$NODE_VERSION" >$ROOT_DIR/frontend/.nvmrc
+NODE_VERSION=$(jq -r '.defaults.build.config.NODE_VERSION' "$ROOT_DIR"/config.json)
+echo "v$NODE_VERSION" >"$ROOT_DIR"/frontend/.nvmrc
