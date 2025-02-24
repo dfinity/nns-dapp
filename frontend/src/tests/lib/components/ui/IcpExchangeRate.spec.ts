@@ -67,7 +67,7 @@ describe("IcpExchangeRate", () => {
     const hasError = false;
 
     const po = renderComponent({ icpPrice, hasError });
-    const message = `1 ICP = $10.00${en.accounts.token_price_source}`;
+    const message = `1 ICP = $10.00 ${en.accounts.token_price_source}`;
 
     expect(await po.getTooltipText()).toEqual(message);
   });

@@ -60,7 +60,6 @@
   };
 
   export const reloadTransactions = async () => {
-    console.log('dskloetx IcrcWalletTransactionsList reloadTransactions 1');
     // If we are already loading transactions we do not want to double the calls
     if (loading) {
       return;

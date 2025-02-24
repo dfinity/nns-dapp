@@ -16,7 +16,7 @@ import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-obje
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
-import { runResolvedPromises, advanceTime } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
@@ -45,7 +45,6 @@ describe("SnsProposals", () => {
   const projectName = "🪙";
 
   beforeEach(() => {
-    vi.useFakeTimers();
     // Reset to default value
     page.mock({ data: { universe: rootCanisterId.toText() } });
     setSnsProjects([
@@ -83,7 +82,6 @@ describe("SnsProposals", () => {
       it("should load nervous system functions", async () => {
         const { queryByTestId } = render(SnsProposals);
 
-        await advanceTime(500);
         await waitFor(() =>
           expect(queryByTestId("proposal-card")).toBeInTheDocument()
         );
@@ -138,7 +136,6 @@ describe("SnsProposals", () => {
       it("should render proposals", async () => {
         const { queryAllByTestId, queryByTestId } = render(SnsProposals);
 
-        await advanceTime(500);
         await waitFor(() =>
           expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
         );
@@ -162,7 +159,6 @@ describe("SnsProposals", () => {
       it("should render not found text", async () => {
         const { queryByTestId, container } = render(SnsProposals);
 
-        await advanceTime(500);
         await waitFor(() =>
           expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
         );
@@ -188,7 +184,6 @@ describe("SnsProposals", () => {
       it("should render proposals", async () => {
         const { queryAllByTestId, queryByTestId } = render(SnsProposals);
 
-        await advanceTime(500);
         await waitFor(() =>
           expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
         );
@@ -252,7 +247,6 @@ describe("SnsProposals", () => {
       const { getByTestId, queryAllByTestId, queryByTestId } =
         render(SnsProposals);
 
-      await advanceTime(500);
       await waitFor(() =>
         expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
       );
@@ -283,7 +277,6 @@ describe("SnsProposals", () => {
 
       // Apply filters
       fireEvent.click(getByTestId("apply-filters"));
-      await advanceTime(500);
 
       // Wait for modal to close
       await waitFor(() =>
@@ -296,7 +289,6 @@ describe("SnsProposals", () => {
     it("should filter by types", async () => {
       const { getByTestId, queryAllByTestId, queryByTestId } =
         render(SnsProposals);
-      await advanceTime(500);
 
       await waitFor(() =>
         expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
@@ -306,7 +298,7 @@ describe("SnsProposals", () => {
       expect(queryAllByTestId("proposal-card").length).toBe(2);
 
       await fireEvent.click(getByTestId("filters-by-types"));
-      await advanceTime(500);
+      await runResolvedPromises();
 
       expect(queryByTestId("filter-modal")).toBeInTheDocument();
 
@@ -321,8 +313,7 @@ describe("SnsProposals", () => {
       await fireEvent.click(getByTestId("apply-filters"));
 
       // Wait for modal to close
-      await advanceTime(500);
-
+      await runResolvedPromises();
       expect(queryByTestId("filter-modal")).not.toBeInTheDocument();
 
       expect(queryAllByTestId("proposal-card").length).toBe(1);

@@ -567,7 +567,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             acceptConditions: false,
           });
           await advanceTime();
-          await vi.advanceTimersByTimeAsync(1000);
           await modal.waitForAbsent();
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
@@ -661,18 +660,15 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             .getCommitmentAmountDisplayPo()
             .isPresent()
         ).toBe(false);
-        await vi.advanceTimersToNextTimerAsync();
 
         await po.getSaleInProgressModalPo().waitFor();
 
-        /*
         expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(2);
 
         await po
           .getProjectStatusSectionPo()
           .getCommitmentAmountDisplayPo()
           .waitFor();
-        */
 
         expect(await po.getProjectStatusSectionPo().getCommitmentAmount()).toBe(
           formatTokenE8s({ value: testTicket.amount_icp_e8s })

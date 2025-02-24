@@ -7,14 +7,8 @@ const originalTimeout = setTimeout;
 // on that code. Calling `await runResolvedPromises()` after some async code
 // will make sure everything that doesn't depend on future events has already
 // executed.
-export const runResolvedPromises = async () => {
-  if (vi.isFakeTimers()) {
-    await vi.advanceTimersByTimeAsync(0);
-    await vi.advanceTimersByTimeAsync(0);
-  } else {
-    await new Promise((resolve) => originalTimeout(resolve, 0));
-  }
-};
+export const runResolvedPromises = () =>
+  new Promise((resolve) => originalTimeout(resolve, 0));
 
 // If `millis` is passed, advance time by that much.
 // Otherwise advance time enough to run all current timers.
@@ -31,5 +25,10 @@ export const advanceTime = async (millis?: number): Promise<void> => {
 };
 
 export const areFakeTimersEnabled = (): boolean => {
-  return vi.isFakeTimers();
+  try {
+    vi.getTimerCount();
+    return true;
+  } catch {
+    return false;
+  }
 };

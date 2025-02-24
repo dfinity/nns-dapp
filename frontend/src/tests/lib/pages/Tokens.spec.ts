@@ -429,7 +429,6 @@ describe("Tokens page", () => {
         columnId: "title",
       },
     ]);
-    vi.runAllTicks();
 
     expect(await po.getTokensTable().getColumnHeaderWithArrow()).toBe(
       "Projects"

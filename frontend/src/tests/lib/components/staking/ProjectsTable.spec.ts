@@ -618,7 +618,7 @@ describe("ProjectsTable", () => {
       expect(
         await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
       ).toBe(
-        "1 ICP = $10.00Token prices are in ckUSDC based on data provided by ICPSwap."
+        "1 ICP = $10.00 Token prices are in ckUSDC based on data provided by ICPSwap."
       );
     });
 

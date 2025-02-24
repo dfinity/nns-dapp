@@ -28,7 +28,7 @@ import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { advanceTime, runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
@@ -39,7 +39,6 @@ describe("Staking", () => {
   const snsCanisterId = principal(1112);
 
   beforeEach(() => {
-    vi.useFakeTimers();
     resetIdentity();
 
     page.mock({
@@ -190,7 +189,6 @@ describe("Staking", () => {
       expect(await modal.getSetDissolveDelayPo().isPresent()).toBe(true);
       expect(get(pageStore).path).toBe(AppPath.Staking);
       await modal.closeModal();
-      await advanceTime(500);
       expect(await modal.isPresent()).toBe(false);
       expect(get(pageStore)).toEqual({
         path: AppPath.Neurons,
@@ -207,7 +205,6 @@ describe("Staking", () => {
 
       await modal.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(1);
       await modal.closeModal();
-      await advanceTime(500);
       expect(await modal.isPresent()).toBe(false);
       await runResolvedPromises();
       expect(get(pageStore).path).toBe(AppPath.Staking);
@@ -316,7 +313,7 @@ describe("Staking", () => {
       expect(stakeNeuronSpy).not.toBeCalled();
       expect(get(pageStore).path).toBe(AppPath.Staking);
       await modal.stake(1);
-      await advanceTime(500);
+      await runResolvedPromises();
       expect(await modal.isPresent()).toBe(false);
       expect(get(pageStore)).toEqual({
         path: AppPath.Neurons,
@@ -344,7 +341,7 @@ describe("Staking", () => {
 
       expect(get(pageStore).path).toBe(AppPath.Staking);
       await modal.closeModal();
-      await advanceTime(500);
+      await runResolvedPromises();
       expect(await modal.isPresent()).toBe(false);
       expect(get(pageStore).path).toBe(AppPath.Staking);
     });

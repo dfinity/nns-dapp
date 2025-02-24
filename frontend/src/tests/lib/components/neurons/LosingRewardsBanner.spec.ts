@@ -198,13 +198,14 @@ describe("LosingRewardsBanner", () => {
     ).toHaveLength(1);
 
     await po.getLosingRewardNeuronsModalPo().clickConfirmFollowing();
-    await advanceTime(500);
+    await runResolvedPromises();
 
     expect(
       await po
         .getLosingRewardNeuronsModalPo()
         .getNnsLosingRewardsNeuronCardPos()
     ).toHaveLength(0);
+    await advanceTime(500);
     expect(spyRefreshVotingPower).toBeCalledTimes(1);
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);
   });

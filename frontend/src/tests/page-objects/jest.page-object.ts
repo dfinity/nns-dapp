@@ -88,38 +88,19 @@ export class JestPageObjectElement implements PageObjectElement {
 
   waitFor(): Promise<void> {
     return waitFor(async () => {
-      if (vi.isFakeTimers()) {
-        await vi.advanceTimersToNextTimerAsync();
-      }
       expect(await this.isPresent()).toBe(true);
     });
   }
 
   waitForAbsent(): Promise<void> {
     return waitFor(async () => {
-      if (vi.isFakeTimers()) {
-        await vi.advanceTimersToNextTimerAsync();
-      }
-      expect(await this.isPresent()).toBe(false);
+      return expect(await this.isPresent()).toBe(false);
     });
   }
 
   // Resolves to null if the element is not present.
   async getText(): Promise<string | null> {
-    let element = this.getElement();
-    if (isNullish(element)) {
-      return element;
-    }
-    let hasPre = false;
-    while (element) {
-      if (element.tagName.toLowerCase() === "pre") {
-        hasPre = true;
-        break;
-      }
-      element = element.parentElement;
-    }
-    const text = this.getElement().textContent;
-    return hasPre ? text : text.replace(/[ \n]+/g, " ");
+    return this.getElement() && this.getElement().textContent;
   }
 
   // Resolves to null if the element is not present.
@@ -163,7 +144,7 @@ export class JestPageObjectElement implements PageObjectElement {
     const userEventToUse = areFakeTimersEnabled()
       ? userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       : userEvent;
-    return userEventToUse.selectOptions(this.getElement(), `${text}<!---->`);
+    return userEventToUse.selectOptions(this.getElement(), text);
   }
 
   async isVisible(): Promise<boolean> {

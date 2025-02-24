@@ -197,7 +197,7 @@ describe("CkBTCInfoCard", () => {
       const po = await renderComponent(props);
 
       expect(await po.getText()).toContain(
-        "incoming Bitcoin transactions require confirmations."
+        "incoming Bitcoin transactions require  confirmations."
       );
     });
   });

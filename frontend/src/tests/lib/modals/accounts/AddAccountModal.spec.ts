@@ -9,7 +9,6 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { Component } from "svelte";
-import {advanceTime} from "$tests/utils/timers.test-utils";
 
 describe("AddAccountModal", () => {
   const mockLedgerIdentity = new MockLedgerIdentity();
@@ -72,9 +71,6 @@ describe("AddAccountModal", () => {
       accountCard.parentElement &&
       (await fireEvent.click(accountCard.parentElement));
 
-    if (vi.isFakeTimers()) {
-      await advanceTime(500);
-    }
     await waitFor(() =>
       expect(queryByText(en.accounts.attach_hardware_enter_name)).not.toBeNull()
     );
@@ -174,9 +170,6 @@ describe("AddAccountModal", () => {
     const back = getByTestId(testId) as HTMLButtonElement;
     fireEvent.click(back);
 
-    if (vi.isFakeTimers()) {
-      await advanceTime(500);
-    }
     await waitFor(() =>
       expect(getByText(title, { exact: false })).toBeInTheDocument()
     );
@@ -193,18 +186,12 @@ describe("AddAccountModal", () => {
       'button[type="submit"]'
     ) as HTMLButtonElement;
 
-    if (vi.isFakeTimers()) {
-      await advanceTime(500);
-    }
     await waitFor(() => {
       expect(button?.getAttribute("disabled")).toBeNull();
     });
 
     fireEvent.click(button);
 
-    if (vi.isFakeTimers()) {
-      await advanceTime(500);
-    }
     await waitFor(() =>
       expect(
         queryByText(en.accounts.connect_hardware_wallet, { exact: false })
@@ -213,13 +200,11 @@ describe("AddAccountModal", () => {
   };
 
   it("should navigate back and forth between steps", async () => {
-    vi.useFakeTimers();
     const renderResult = await renderModal({ component: AddAccountModal });
 
     await shouldNavigateSubaccountStep(renderResult);
 
     const { getByTestId, getByText } = renderResult;
-    await advanceTime(500);
     await goBack({
       getByTestId,
       getByText,

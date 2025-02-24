@@ -26,7 +26,7 @@ import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { advanceTime, runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -60,7 +60,6 @@ describe("Accounts", () => {
   };
 
   beforeEach(() => {
-    vi.useFakeTimers();
     resetIdentity();
 
     subaccountBalance = subaccountBalanceDefault;
@@ -300,12 +299,13 @@ describe("Accounts", () => {
 
         const modalPo = po.getReceiveModalPo();
         expect(await modalPo.isPresent()).toBe(true);
-        await advanceTime(500);
 
         subaccountBalance = 220000000n;
         await modalPo.clickFinish();
 
-        await advanceTime(500);
+        await runResolvedPromises();
+        // The modal needs another tick to be removed from the DOM
+        await runResolvedPromises();
 
         expect(await modalPo.isPresent()).toBe(false);
         expect(await tablePo.getRowData(subaccountName)).toEqual({
@@ -339,7 +339,7 @@ describe("Accounts", () => {
           amount,
         });
 
-        await advanceTime(500);
+        await runResolvedPromises();
 
         expect(await tablePo.getRowData("Main")).toEqual({
           balance: "1.14 ICP",
@@ -385,7 +385,7 @@ describe("Accounts", () => {
           amount,
         });
 
-        await advanceTime(500);
+        await runResolvedPromises();
 
         expect(await tablePo.getRowData(subaccountName)).toEqual({
           balance: "1.20 ICP",
