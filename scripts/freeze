@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+  Freezes a canister by setting a very high freezing threshold.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+clap.define long=network desc="dfx network to use" variable="DFX_NETWORK" default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+export DFX_NETWORK
+
+MAX_FREEZING_THRESHOLD=18446744073709551615
+
+CANISTER="$1"
+
+CURRENT_CONTROLLER="$(dfx canister info "$CANISTER" | grep '^Controllers:' | awk '{print $2}')"
+
+dfx canister update-settings "$CANISTER" --freezing-threshold "$MAX_FREEZING_THRESHOLD" --confirm-very-long-freezing-threshold --impersonate "$CURRENT_CONTROLLER"
+
+echo "Freezing threshold was set to $MAX_FREEZING_THRESHOLD seconds."
