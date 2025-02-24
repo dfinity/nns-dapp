@@ -98,6 +98,8 @@ describe("SelectAccountDropdown", () => {
         props: testProps,
       });
 
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       await waitFor(() =>
         expect(testProps.selectedAccount).toEqual(mockMainAccount)
       );
