@@ -183,8 +183,7 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.getElement()?.tagName ?? "";
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  scrollTo(x: number, y: number): Promise<void> {
+  scrollTo(_x: number, _y: number): Promise<void> {
     throw new Error("Not implemented");
   }
 }
