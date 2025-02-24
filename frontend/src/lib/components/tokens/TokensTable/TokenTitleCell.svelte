@@ -20,11 +20,13 @@
     ledgerCanisterId: rowData?.universeId,
     importedTokens: $importedTokensStore.importedTokens,
   });
+  let shouldShowHashInsteadOfTitle = false;
+  $: shouldShowHashInsteadOfTitle = isUserTokenFailed(rowData) && importedToken;
 </script>
 
 <div class="title-logo-wrapper">
   <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
-  {#if isUserTokenFailed(rowData)}
+  {#if shouldShowHashInsteadOfTitle}
     <Hash text={`${rowData.universeId.toText()}`} tagName="span" tooltipTop />
   {:else}
     <div class="title-wrapper">
@@ -39,9 +41,15 @@
   {#if importedToken}
     <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
   {/if}
+
   {#if isUserTokenFailed(rowData)}
     <div data-tid="failed-token-info" class="failed-token-info">
-      <Tooltip id="failed-token-info" text={$i18n.import_token.failed_tooltip}>
+      <Tooltip
+        id="failed-token-info"
+        text={importedToken
+          ? $i18n.import_token.failed_tooltip
+          : $i18n.tokens.ledger_canister_error_tooltip}
+      >
         <IconError size="20px" />
       </Tooltip>
     </div>
