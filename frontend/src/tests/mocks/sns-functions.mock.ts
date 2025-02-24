@@ -41,6 +41,7 @@ export const genericNervousSystemFunctionMock: SnsNervousSystemFunction = {
         validator_canister_id: [],
         target_canister_id: [],
         validator_method_name: [],
+        topic: [],
         target_method_name: [],
       },
     },
