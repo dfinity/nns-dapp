@@ -15,7 +15,11 @@ export class SelectAccountDropdownPo extends BasePageObject {
     return DropdownPo.under(this.root);
   }
 
-  select(option: string): Promise<void> {
+  selectAccountName(option: string): Promise<void> {
+    return this.getDropdown().select(option);
+  }
+
+  selectAccountId(option: string): Promise<void> {
     return this.getDropdown().selectOptionValue(option);
   }
 

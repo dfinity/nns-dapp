@@ -21,7 +21,7 @@ export class TransactionFromAccountPo extends BasePageObject {
   }
 
   async selectAccount(accountName: string): Promise<void> {
-    await this.getSelectAccountDropdownPo().select(accountName);
+    await this.getSelectAccountDropdownPo().selectAccountName(accountName);
   }
 
   getAccounts(): Promise<string[]> {

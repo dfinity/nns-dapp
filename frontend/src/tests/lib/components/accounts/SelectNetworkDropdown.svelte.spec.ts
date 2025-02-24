@@ -1,3 +1,4 @@
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import SelectNetworkDropdown from "$lib/components/accounts/SelectNetworkDropdown.svelte";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
@@ -37,14 +38,14 @@ describe("SelectNetworkDropdown", () => {
       props: testProps,
     });
 
-    const updateSelectedNetwork = () => {
-      selectedNetwork.set(testProps.selectedNetwork);
-    };
-
     if (selectedNetwork) {
-      // TODO: I don't understand what's update here? Therefore not sure how to migrate it to Svelte v5
-      // component.$$.update = updateSelectedNetwork;
-      updateSelectedNetwork();
+      $effect.root(() => {
+        $effect(() => {
+          selectedNetwork.set(testProps.selectedNetwork);
+        });
+      });
+
+      selectedNetwork.set(testProps.selectedNetwork);
     }
 
     selectedNetwork?.subscribe((network) => {
