@@ -10,7 +10,11 @@ export class DropdownPo extends BasePageObject {
   }
 
   select(option: string): Promise<void> {
-    return this.root.querySelector("select").selectOption(option);
+    return this.root.querySelector("select").selectOptionText(option);
+  }
+
+  selectOptionValue(option: string): Promise<void> {
+    return this.root.querySelector("select").selectOptionValue(option);
   }
 
   async getOptions(): Promise<string[]> {

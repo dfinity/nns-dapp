@@ -158,12 +158,20 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.input(text);
   }
 
-  async selectOption(text: string): Promise<void> {
+  private async selectOption(text: string): Promise<void> {
     await this.waitFor();
     const userEventToUse = areFakeTimersEnabled()
       ? userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
       : userEvent;
-    return userEventToUse.selectOptions(this.getElement(), `${text}<!---->`);
+    return userEventToUse.selectOptions(this.getElement(), text);
+  }
+
+  async selectOptionText(text: string): Promise<void> {
+    return this.selectOption(`${text}<!---->`);
+  }
+
+  async selectOptionValue(value: string): Promise<void> {
+    return this.selectOption(value);
   }
 
   async isVisible(): Promise<boolean> {

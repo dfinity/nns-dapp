@@ -49,7 +49,7 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { advanceTime, runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AuthClient } from "@dfinity/auth-client";
 import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
 import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
@@ -422,6 +422,7 @@ describe("Tokens route", () => {
         });
 
         it("users can send ckBTC tokens", async () => {
+          vi.useFakeTimers();
           const po = await renderPage();
 
           const tokensPagePo = po.getTokensPagePo();
@@ -463,10 +464,13 @@ describe("Tokens route", () => {
             projectName: "ckBTC",
             balance: "2.45 ckBTC",
           });
+
+          await advanceTime(500);
           expect(await po.getCkBTCTransactionModalPo().isPresent()).toBe(false);
         });
 
         it("users can send ckETH tokens", async () => {
+          vi.useFakeTimers();
           const po = await renderPage();
 
           const tokensPagePo = po.getTokensPagePo();
@@ -510,6 +514,7 @@ describe("Tokens route", () => {
             projectName: "ckETH",
             balance: "2.14 ckETH",
           });
+          await advanceTime(500);
           expect(await po.getIcrcTokenTransactionModal().isPresent()).toBe(
             false
           );
