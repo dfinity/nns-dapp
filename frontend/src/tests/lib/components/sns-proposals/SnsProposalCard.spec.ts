@@ -98,7 +98,7 @@ describe("SnsProposalCard", () => {
       },
     });
 
-    expect(queryByTestId("countdown").textContent).toBe("1 hour remaining");
+    expect(queryByTestId("countdown").textContent.replace(/[\n ]+/g, " ")).toBe("1 hour remaining");
   });
 
   it("should not render deadline if closed", () => {

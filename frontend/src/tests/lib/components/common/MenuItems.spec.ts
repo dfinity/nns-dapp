@@ -12,10 +12,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  advanceTime,
-  runResolvedPromises,
-} from "$tests/utils/timers.test-utils";
+import { advanceTime } from "$tests/utils/timers.test-utils";
 import {
   layoutMenuOpen,
   menuCollapsed,
@@ -107,7 +104,7 @@ describe("MenuItems", () => {
     expect(await po.hasFooter()).toBe(false);
 
     menuStore.toggle();
-    await runResolvedPromises();
+    await advanceTime(500);
 
     expect(get(menuCollapsed)).toBe(false);
     expect(await po.hasFooter()).toBe(true);
@@ -127,7 +124,7 @@ describe("MenuItems", () => {
     expect(await po.hasFooter()).toBe(false);
 
     layoutMenuOpen.set(true);
-    await runResolvedPromises();
+    await advanceTime(500);
 
     expect(get(menuCollapsed)).toBe(true);
     expect(await po.hasFooter()).toBe(true);
