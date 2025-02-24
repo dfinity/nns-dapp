@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-13_03-06-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-20_10-16-disable-best-effort-messaging/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -42,7 +42,18 @@ pub struct CachedUpgradeSteps {
     pub requested_timestamp_seconds: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Topic {
+    DappCanisterManagement,
+    DaoCommunitySettings,
+    ApplicationBusinessLogic,
+    CriticalDappOperations,
+    TreasuryAssetManagement,
+    Governance,
+    SnsFrameworkManagement,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GenericNervousSystemFunction {
+    pub topic: Option<Topic>,
     pub validator_canister_id: Option<Principal>,
     pub target_canister_id: Option<Principal>,
     pub validator_method_name: Option<String>,
@@ -795,6 +806,22 @@ pub struct ListProposalsResponse {
     pub proposals: Vec<ProposalData>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ListTopicsRequest {}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct TopicInfo {
+    pub native_functions: Option<Vec<NervousSystemFunction>>,
+    pub topic: Option<Topic>,
+    pub is_critical: Option<bool>,
+    pub name: Option<String>,
+    pub description: Option<String>,
+    pub custom_functions: Option<Vec<NervousSystemFunction>>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ListTopicsResponse {
+    pub uncategorized_functions: Option<Vec<NervousSystemFunction>>,
+    pub topics: Option<Vec<TopicInfo>>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct StakeMaturity {
     pub percentage_to_stake: Option<u32>,
 }
@@ -946,6 +973,9 @@ impl Service {
     }
     pub async fn list_proposals(&self, arg0: ListProposals) -> CallResult<(ListProposalsResponse,)> {
         ic_cdk::call(self.0, "list_proposals", (arg0,)).await
+    }
+    pub async fn list_topics(&self, arg0: ListTopicsRequest) -> CallResult<(ListTopicsResponse,)> {
+        ic_cdk::call(self.0, "list_topics", (arg0,)).await
     }
     pub async fn manage_neuron(&self, arg0: ManageNeuron) -> CallResult<(ManageNeuronResponse,)> {
         ic_cdk::call(self.0, "manage_neuron", (arg0,)).await
