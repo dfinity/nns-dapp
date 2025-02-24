@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-13_03-06-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-20_10-16-disable-best-effort-messaging/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -227,6 +227,7 @@ type GenericNervousSystemFunction = record {
   target_canister_id : opt principal;
   validator_method_name : opt text;
   target_method_name : opt text;
+  topic: opt Topic;
 };
 
 type GetMaturityModulationResponse = record {
@@ -840,6 +841,31 @@ type GetUpgradeJournalResponse = record {
   upgrade_journal_entry_count: opt nat64;
 };
 
+type Topic = variant {
+  DaoCommunitySettings;
+  SnsFrameworkManagement;
+  DappCanisterManagement;
+  ApplicationBusinessLogic;
+  Governance;
+  TreasuryAssetManagement;
+  CriticalDappOperations;
+};
+
+type TopicInfo = record {
+  topic : opt Topic;
+  name : opt text;
+  description : opt text;
+  native_functions : opt vec NervousSystemFunction;
+  custom_functions : opt vec NervousSystemFunction;
+  is_critical : opt bool;
+};
+
+type ListTopicsRequest = record {};
+type ListTopicsResponse = record {
+  topics: opt vec TopicInfo;
+  uncategorized_functions: opt vec NervousSystemFunction
+};
+
 service : (Governance) -> {
   claim_swap_neurons : (ClaimSwapNeuronsRequest) -> (ClaimSwapNeuronsResponse);
   fail_stuck_upgrade_in_progress : (record {}) -> (record {});
@@ -858,6 +884,7 @@ service : (Governance) -> {
   list_nervous_system_functions : () -> (ListNervousSystemFunctionsResponse) query;
   list_neurons : (ListNeurons) -> (ListNeuronsResponse) query;
   list_proposals : (ListProposals) -> (ListProposalsResponse) query;
+  list_topics : (ListTopicsRequest) -> (ListTopicsResponse) query;
   manage_neuron : (ManageNeuron) -> (ManageNeuronResponse);
   set_mode : (SetMode) -> (record {});
   reset_timers : (record {}) -> (record {});
