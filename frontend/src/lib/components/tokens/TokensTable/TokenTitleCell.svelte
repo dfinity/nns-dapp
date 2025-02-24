@@ -20,11 +20,13 @@
     ledgerCanisterId: rowData?.universeId,
     importedTokens: $importedTokensStore.importedTokens,
   });
+  let shouldShowHashInsteadOfTitle = false;
+  $: shouldShowHashInsteadOfTitle = isUserTokenFailed(rowData) && importedToken;
 </script>
 
 <div class="title-logo-wrapper">
   <Logo src={rowData.logo} alt={rowData.title} size="medium" framed />
-  {#if isUserTokenFailed(rowData) && importedToken}
+  {#if shouldShowHashInsteadOfTitle}
     <Hash text={`${rowData.universeId.toText()}`} tagName="span" tooltipTop />
   {:else}
     <div class="title-wrapper">
