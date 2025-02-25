@@ -330,19 +330,9 @@ describe("CkBTCWallet", () => {
     });
 
     it("should reload transactions after transfer tokens", async () => {
-      console.log('dskloetx test 1');
-      vi.mocked(icrcIndexApi.getTransactions).mockImplementation(async () => {
-        console.log('dskloetx icrcIndexApi.getTransactions', new Error().stack);
-        return { transactions: [], };
-      });
-      console.log('dskloetx test 2');
-
       const { walletPo, sendModalPo } = await renderWalletAndModal();
-      console.log('dskloetx test 3');
-      //vi.runAllTimers();
 
       expect(icrcIndexApi.getTransactions).toBeCalledTimes(1);
-      console.log('dskloetx test 4');
 
       // Check original sum
       expect(await walletPo.getWalletPageHeadingPo().getTitle()).toBe(

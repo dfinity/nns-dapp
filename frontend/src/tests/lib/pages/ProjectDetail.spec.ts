@@ -18,6 +18,7 @@ import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { page } from "$mocks/$app/stores";
 import * as fakeLocationApi from "$tests/fakes/location-api.fake";
 import {
+  mockIdentity,
   mockPrincipal,
   resetIdentity,
   setNoIdentity,
@@ -567,7 +568,6 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             acceptConditions: false,
           });
           await advanceTime();
-          await vi.advanceTimersByTimeAsync(1000);
           await modal.waitForAbsent();
           expect(await projectDetail.getCommitmentAmount()).toBe(
             formattedAmountICP
@@ -634,26 +634,23 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
           ],
           has_created_neuron_recipes: [],
         };
-        vi.spyOn(snsApi, "querySnsSwapCommitment")
-          // Query call
-          .mockResolvedValueOnce({
-            rootCanisterId,
-            myCommitment: initialCommitment,
-          } as SnsSwapCommitment)
-          // Update call
-          .mockResolvedValueOnce({
-            rootCanisterId,
-            myCommitment: initialCommitment,
-          } as SnsSwapCommitment)
-          .mockResolvedValue({
-            rootCanisterId,
-            myCommitment: finalCommitment,
-          } as SnsSwapCommitment);
+
+        const resolveQuerySnsSwapCommitment: Array<
+          (commitment: SnsSwapCommitment) => void
+        > = [];
+        vi.spyOn(snsApi, "querySnsSwapCommitment").mockImplementation(
+          async () => {
+            return new Promise<SnsSwapCommitment>((resolve) => {
+              resolveQuerySnsSwapCommitment.push(resolve);
+            });
+          }
+        );
         vi.spyOn(snsSaleApi, "getOpenTicket").mockResolvedValue(testTicket);
 
         expect(snsApi.querySnsSwapCommitment).not.toBeCalled();
 
         const po = renderComponent(props);
+        await runResolvedPromises();
 
         expect(
           await po
@@ -661,18 +658,54 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
             .getCommitmentAmountDisplayPo()
             .isPresent()
         ).toBe(false);
-        await vi.advanceTimersToNextTimerAsync();
 
-        await po.getSaleInProgressModalPo().waitFor();
+        expect(await po.getSaleInProgressModalPo().isPresent()).toBe(false);
 
-        /*
+        const expectedQueryCommitmentParams = {
+          rootCanisterId: rootCanisterId.toText(),
+          identity: mockIdentity,
+        };
+        expect(snsApi.querySnsSwapCommitment).toBeCalledWith({
+          ...expectedQueryCommitmentParams,
+          certified: false,
+        });
+        expect(snsApi.querySnsSwapCommitment).toBeCalledWith({
+          ...expectedQueryCommitmentParams,
+          certified: true,
+        });
         expect(snsApi.querySnsSwapCommitment).toBeCalledTimes(2);
 
-        await po
-          .getProjectStatusSectionPo()
-          .getCommitmentAmountDisplayPo()
-          .waitFor();
-        */
+        expect(resolveQuerySnsSwapCommitment).toHaveLength(2);
+        for (const resolve of resolveQuerySnsSwapCommitment) {
+          resolve({
+            rootCanisterId,
+            myCommitment: initialCommitment,
+          } as SnsSwapCommitment);
+        }
+        await runResolvedPromises();
+
+        expect(await po.getSaleInProgressModalPo().isPresent()).toBe(true);
+
+        expect(
+          await po
+            .getProjectStatusSectionPo()
+            .getCommitmentAmountDisplayPo()
+            .isPresent()
+        ).toBe(false);
+
+        expect(resolveQuerySnsSwapCommitment).toHaveLength(3);
+        resolveQuerySnsSwapCommitment[2]({
+          rootCanisterId,
+          myCommitment: finalCommitment,
+        } as SnsSwapCommitment);
+        await runResolvedPromises();
+
+        expect(
+          await po
+            .getProjectStatusSectionPo()
+            .getCommitmentAmountDisplayPo()
+            .isPresent()
+        ).toBe(true);
 
         expect(await po.getProjectStatusSectionPo().getCommitmentAmount()).toBe(
           formatTokenE8s({ value: testTicket.amount_icp_e8s })
