@@ -1,12 +1,19 @@
 <script lang="ts">
   import {
+    FailedTokenAmount,
     formatTokenV2,
     UnavailableTokenAmount,
   } from "$lib/utils/token.utils";
   import { Copy } from "@dfinity/gix-components";
-  import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
-  export let amount: TokenAmount | TokenAmountV2 | UnavailableTokenAmount;
+  type Amount =
+    | TokenAmount
+    | TokenAmountV2
+    | UnavailableTokenAmount
+    | FailedTokenAmount;
+
+  export let amount: Amount;
   export let label: string | undefined = undefined;
   export let inline = false;
   export let singleLine = false;
@@ -16,6 +23,11 @@
   export let size: "inherit" | "huge" | undefined = undefined;
   export let sign: "+" | "-" | "" = "";
   export let detailed: boolean | "height_decimals" = false;
+
+  const isValidAmount = (
+    amount: Amount
+  ): amount is TokenAmount | TokenAmountV2 =>
+    amount instanceof TokenAmount || amount instanceof TokenAmountV2;
 </script>
 
 <div
@@ -33,14 +45,14 @@
     data-tid="token-value"
     class="value"
     class:tabular-num={detailed === "height_decimals"}
-    >{#if amount instanceof UnavailableTokenAmount}
+    >{#if !isValidAmount(amount)}
       -/-
     {:else}
       {`${sign}${formatTokenV2({ value: amount, detailed })}`}
     {/if}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span
-  >{#if copy && !(amount instanceof UnavailableTokenAmount)}
+  >{#if copy && isValidAmount(amount)}
     {" "}
     <Copy value={formatTokenV2({ value: amount, detailed: true })} />
   {/if}

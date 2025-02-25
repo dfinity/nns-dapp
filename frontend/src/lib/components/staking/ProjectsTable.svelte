@@ -10,6 +10,7 @@
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
+  import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
   import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -93,6 +94,7 @@
     nnsNeurons: $neuronsStore?.neurons,
     snsNeurons: $snsNeuronsStore,
     icpSwapUsdPrices: $icpSwapUsdPricesStore,
+    failedActionableSnsesStore: $failedActionableSnsesStore,
   });
 
   let sortedTableProjects: TableProject[];
