@@ -1,7 +1,7 @@
 import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
 import {
-    FailedTokenAmount,
-    UnavailableTokenAmount,
+  FailedTokenAmount,
+  UnavailableTokenAmount,
 } from "$lib/utils/token.utils";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
@@ -133,10 +133,10 @@ describe("AmountDisplay", () => {
   });
 
   it("should never render a copy button for failed amount", async () => {
-      const po = renderComponent({
-        amount: new FailedTokenAmount(ICPToken),
-        copy: true,
-      });
-      expect(await po.getCopyButtonPo().isPresent()).toBe(false);
+    const po = renderComponent({
+      amount: new FailedTokenAmount(ICPToken),
+      copy: true,
     });
+    expect(await po.getCopyButtonPo().isPresent()).toBe(false);
+  });
 });
