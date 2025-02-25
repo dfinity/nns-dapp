@@ -81,4 +81,33 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
   await expect(page).toHaveScreenshot(`final_assets_mobile.png`);
+
+  step("Signed out");
+
+  await appPo.getAccountMenuPo().openMenu();
+  await appPo.getAccountMenuPo().clickLogout();
+
+  await portfolioPo.getPortfolioPagePo().getLoginCard().waitFor();
+  await expect(page).toHaveTitle("Portfolio / NNS Dapp");
+
+  await page.setViewportSize(VIEWPORT_SIZES.desktop);
+
+  await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
+  await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
+
+  // The governance metrics are only updated once a day so for the first 24h
+  // after a snapshot is created, the metrics might be different than what
+  // we expectand we need to replace them with the expected value.
+  if ((await appPo.getMenuItemsPo().getTvlMetric()) === "$99") {
+    await replaceContent({
+      page,
+      selectors: ['[data-tid="tvl-metric"]'],
+      pattern: /\$[0-9’]+/,
+      replacements: ["$4’500’001’000"],
+    });
+  }
+  await expect(page).toHaveScreenshot(`initial_desktop.png`);
+
+  await page.setViewportSize(VIEWPORT_SIZES.mobile);
+  await expect(page).toHaveScreenshot(`initial_mobile.png`);
 });
