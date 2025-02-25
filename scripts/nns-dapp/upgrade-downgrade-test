@@ -22,6 +22,8 @@ clap.define long=github_step_summary desc="File to append stats to" variable=GIT
 # Source the output file ----------------------------------------------------------
 source "$(clap.build)"
 
+set -x
+
 # Check if the WASM file exists:
 if ! [ -f "$WASM" ]; then
   echo "WASM file $WASM does not exist" >&2
