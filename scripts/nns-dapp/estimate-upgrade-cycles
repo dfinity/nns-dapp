@@ -20,7 +20,7 @@ source "$(clap.build)"
 : "Collect data from the local run, and from mainnet to get counts for a realistic state size."
 for network in mainnet local; do
   : "## $network stats"
-  dfx canister call nns-dapp get_stats --network $network | idl2json >,counts-$network.json
+  dfx canister call nns-dapp get_stats --identity anonymous --network $network | idl2json >,counts-$network.json
   : "## $network post_upgrade instruction counts"
   jq '[.performance_counts | map (.instruction_count = (.instruction_count | tonumber)) | foreach .[] as $record ( {this: 0}; {last: .this, this: $record.instruction_count}; {key: $record.name, value: {increase: (.this - .last), cumulative: .this}} )] | from_entries' ,counts-$network.json >,postupgrade-$network.json
 done

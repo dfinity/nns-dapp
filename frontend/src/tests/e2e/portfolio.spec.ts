@@ -23,6 +23,8 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
 
+  await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
+
   // The governance metrics are only updated once a day so for the first 24h
   // after a snapshot is created, the metrics might be different than what
   // we expectand we need to replace them with the expected value.
