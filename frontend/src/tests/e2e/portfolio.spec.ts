@@ -57,6 +57,8 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await appPo.waitForNotBusy();
 
   step("Stake neuron (for voting)");
+  // Scroll to top to make the header visible
+  await appPo.scrollToTop();
   await appPo.goToStaking();
   const stake = 15;
   await appPo

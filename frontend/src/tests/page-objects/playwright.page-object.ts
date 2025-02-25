@@ -164,4 +164,11 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   async getTagName(): Promise<string> {
     throw new Error("Not implement");
   }
+
+  async scrollTo(x: number, y: number): Promise<void> {
+    return this.locator.evaluate(
+      (node: HTMLElement, { x, y }) => node.scrollTo(x, y),
+      { x, y }
+    );
+  }
 }
