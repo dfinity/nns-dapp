@@ -18,33 +18,6 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   const portfolioPo = appPo.getPortfolioPo();
 
   await page.goto("/");
-  await portfolioPo.getPortfolioPagePo().getLoginCard().waitFor();
-  await expect(page).toHaveTitle("Portfolio / NNS Dapp");
-
-  await page.setViewportSize(VIEWPORT_SIZES.desktop);
-
-  await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
-  await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
-
-  // TODO: Wait for exchange rate, tokens and staking projects to be loaded
-  // before taking a screenshot, instead of waiting a fixed amount of time.
-  await new Promise((resolve) => setTimeout(resolve, 6000));
-
-  // The governance metrics are only updated once a day so for the first 24h
-  // after a snapshot is created, the metrics might be different than what
-  // we expectand we need to replace them with the expected value.
-  if ((await appPo.getMenuItemsPo().getTvlMetric()) === "$99") {
-    await replaceContent({
-      page,
-      selectors: ['[data-tid="tvl-metric"]'],
-      pattern: /\$[0-9’]+/,
-      replacements: ["$4’500’001’000"],
-    });
-  }
-  await expect(page).toHaveScreenshot(`initial_desktop.png`);
-
-  await page.setViewportSize(VIEWPORT_SIZES.mobile);
-  await expect(page).toHaveScreenshot(`initial_mobile.png`);
 
   step("New user is signed in");
   await signInWithNewUser({ page, context: browser.contexts()[0] });
@@ -83,4 +56,33 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
   await expect(page).toHaveScreenshot(`final_assets_mobile.png`);
+
+  step("Signed out");
+
+  await appPo.getAccountMenuPo().openMenu();
+  await appPo.getAccountMenuPo().clickLogout();
+
+  await portfolioPo.getPortfolioPagePo().getLoginCard().waitFor();
+  await expect(page).toHaveTitle("Portfolio / NNS Dapp");
+
+  await page.setViewportSize(VIEWPORT_SIZES.desktop);
+
+  await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
+  await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
+
+  // The governance metrics are only updated once a day so for the first 24h
+  // after a snapshot is created, the metrics might be different than what
+  // we expectand we need to replace them with the expected value.
+  if ((await appPo.getMenuItemsPo().getTvlMetric()) === "$99") {
+    await replaceContent({
+      page,
+      selectors: ['[data-tid="tvl-metric"]'],
+      pattern: /\$[0-9’]+/,
+      replacements: ["$4’500’001’000"],
+    });
+  }
+  await expect(page).toHaveScreenshot(`initial_desktop.png`);
+
+  await page.setViewportSize(VIEWPORT_SIZES.mobile);
+  await expect(page).toHaveScreenshot(`initial_mobile.png`);
 });
