@@ -24,6 +24,11 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
 
   await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
+  await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
+
+  // TODO: Wait for exchange rate, tokens and staking projects to be loaded
+  // before taking a screenshot, instead of waiting a fixed amount of time.
+  await new Promise((resolve) => setTimeout(resolve, 6000));
 
   // The governance metrics are only updated once a day so for the first 24h
   // after a snapshot is created, the metrics might be different than what
