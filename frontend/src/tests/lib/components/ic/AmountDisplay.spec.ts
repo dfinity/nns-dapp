@@ -1,5 +1,8 @@
 import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import {
+    FailedTokenAmount,
+    UnavailableTokenAmount,
+} from "$lib/utils/token.utils";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -21,12 +24,12 @@ describe("AmountDisplay", () => {
     return AmountDisplayPo.under(new JestPageObjectElement(container));
   };
 
-  it("should render an token amount", async () => {
+  it("should render a token amount", async () => {
     const po = renderComponent(props);
     expect(await po.getAmount()).toEqual("1'234'567.89");
   });
 
-  it("should render an token symbol", async () => {
+  it("should render a token symbol", async () => {
     const po = renderComponent(props);
     expect(await po.getText()).toEqual("1'234'567.89 ICP");
   });
@@ -110,6 +113,17 @@ describe("AmountDisplay", () => {
     expect(await po.getText()).toBe("-/- TOKEN");
   });
 
+  it("should render failed token amount", async () => {
+    const token = {
+      ...mockSnsToken,
+      symbol: "TOKEN",
+    };
+    const po = renderComponent({
+      amount: new FailedTokenAmount(token),
+    });
+    expect(await po.getText()).toBe("-/- TOKEN");
+  });
+
   it("should never render a copy button for unavailable amount", async () => {
     const po = renderComponent({
       amount: new UnavailableTokenAmount(ICPToken),
@@ -117,4 +131,12 @@ describe("AmountDisplay", () => {
     });
     expect(await po.getCopyButtonPo().isPresent()).toBe(false);
   });
+
+  it("should never render a copy button for failed amount", async () => {
+      const po = renderComponent({
+        amount: new FailedTokenAmount(ICPToken),
+        copy: true,
+      });
+      expect(await po.getCopyButtonPo().isPresent()).toBe(false);
+    });
 });
