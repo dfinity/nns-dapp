@@ -12,7 +12,10 @@ import {
   getTotalStakeInUsd,
   sortTableProjects,
 } from "$lib/utils/staking.utils";
-import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import {
+  FailedTokenAmount,
+  UnavailableTokenAmount,
+} from "$lib/utils/token.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
@@ -617,6 +620,34 @@ describe("staking.utils", () => {
           availableMaturity: undefined,
           stakedMaturity: undefined,
           isStakeLoading: true,
+        },
+      ]);
+    });
+
+    it("should have FailedToken when failed actionable sns", () => {
+      const tableProjects = getTableProjects({
+        universes: [nnsUniverse, snsUniverse],
+        isSignedIn: true,
+        nnsNeurons: [],
+        snsNeurons: {
+          [universeId2]: undefined,
+        },
+        icpSwapUsdPrices: undefined,
+        failedActionableSnsesStore: [universeId2],
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedNnsTableProject,
+        },
+        {
+          ...defaultExpectedSnsTableProject,
+          neuronCount: undefined,
+          stake: new FailedTokenAmount(snsToken),
+          stakeInUsd: undefined,
+          availableMaturity: undefined,
+          stakedMaturity: undefined,
+          isStakeLoading: false,
         },
       ]);
     });
