@@ -336,6 +336,19 @@ describe("icrc-accounts-services", () => {
       ]);
     });
 
+    it("should not display a toast on canister ouf of cycles", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
+        new Error("IC0207")
+      );
+      expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
+      expect(get(toastsStore)).toEqual([]);
+
+      await loadAccounts({ ledgerCanisterId });
+
+      expect(ledgerApi.queryIcrcBalance).toBeCalledTimes(2);
+      expect(get(toastsStore)).toEqual([]);
+    });
+
     it("doesn't load imported token if in failed imported tokens store", async () => {
       importedTokensStore.set({
         importedTokens: [
