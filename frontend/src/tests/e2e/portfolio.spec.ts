@@ -37,6 +37,7 @@ test("Visual test Landing Page", async ({ page, browser }) => {
       replacements: ["$4’500’001’000"],
     });
   }
+
   await expect(page).toHaveScreenshot(`initial_desktop.png`);
 
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
