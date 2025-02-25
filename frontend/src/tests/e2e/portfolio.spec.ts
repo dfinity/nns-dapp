@@ -28,7 +28,7 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   // TODO: Wait for exchange rate, tokens and staking projects to be loaded
   // before taking a screenshot, instead of waiting a fixed amount of time.
-  await new Promise((resolve) => setTimeout(resolve, 6000));
+  await new Promise((resolve) => setTimeout(resolve, 20000));
 
   // The governance metrics are only updated once a day so for the first 24h
   // after a snapshot is created, the metrics might be different than what
