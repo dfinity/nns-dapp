@@ -14,8 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Loads Plausible analytics
-
 #### Changed
 
 #### Deprecated
