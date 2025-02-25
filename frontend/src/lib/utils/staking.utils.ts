@@ -105,14 +105,14 @@ const getNeuronAggregateInfo = ({
   token,
   nnsNeurons,
   snsNeurons,
-  failedActionableSnsesStore,
+  failedActionableSnses,
 }: {
   isSignedIn: boolean;
   universe: Universe;
   token: Token;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
-  failedActionableSnsesStore: FailedActionableSnsesStoreData;
+  failedActionableSnses: FailedActionableSnsesStoreData;
 }): {
   neuronCount: number | undefined;
   stake: TokenAmountV2 | UnavailableTokenAmount | FailedTokenAmount;
@@ -131,7 +131,7 @@ const getNeuronAggregateInfo = ({
     };
   }
 
-  if (failedActionableSnsesStore.includes(universe.canisterId)) {
+  if (failedActionableSnses.includes(universe.canisterId)) {
     return {
       neuronCount: undefined,
       stake: new FailedTokenAmount(token),
@@ -165,14 +165,14 @@ export const getTableProjects = ({
   nnsNeurons,
   snsNeurons,
   icpSwapUsdPrices,
-  failedActionableSnsesStore = [],
+  failedActionableSnses = [],
 }: {
   universes: Universe[];
   isSignedIn: boolean;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
-  failedActionableSnsesStore?: FailedActionableSnsesStoreData;
+  failedActionableSnses?: FailedActionableSnsesStoreData;
 }): TableProject[] => {
   return universes.map((universe) => {
     const token =
@@ -192,7 +192,7 @@ export const getTableProjects = ({
       token,
       nnsNeurons,
       snsNeurons,
-      failedActionableSnsesStore,
+      failedActionableSnses,
     });
     const rowHref =
       nonNullish(neuronCount) && neuronCount > 0

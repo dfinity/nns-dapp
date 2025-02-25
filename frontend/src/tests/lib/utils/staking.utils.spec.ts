@@ -633,7 +633,7 @@ describe("staking.utils", () => {
           [universeId2]: undefined,
         },
         icpSwapUsdPrices: undefined,
-        failedActionableSnsesStore: [universeId2],
+        failedActionableSnses: [universeId2],
       });
 
       expect(tableProjects).toEqual([
