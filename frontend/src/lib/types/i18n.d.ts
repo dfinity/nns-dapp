@@ -312,7 +312,6 @@ interface I18nStaking {
   title: string;
   text: string;
   nervous_systems: string;
-  actionable_proposal_error_table_tooltip: string;
 }
 
 interface I18nNeurons {
