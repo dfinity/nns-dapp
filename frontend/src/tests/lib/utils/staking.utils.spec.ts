@@ -135,6 +135,7 @@ describe("staking.utils", () => {
           [universeId2]: { neurons: [] },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -160,6 +161,7 @@ describe("staking.utils", () => {
           [snsUniverseId]: { neurons: [] },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -194,6 +196,7 @@ describe("staking.utils", () => {
           [universeId2]: { neurons: [] },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -219,6 +222,7 @@ describe("staking.utils", () => {
         ],
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -260,6 +264,7 @@ describe("staking.utils", () => {
         nnsNeurons: [neuron1, neuron2],
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -300,6 +305,7 @@ describe("staking.utils", () => {
         nnsNeurons: [neuron1, neuron2],
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -328,6 +334,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -369,6 +376,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -407,6 +415,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -444,6 +453,7 @@ describe("staking.utils", () => {
         icpSwapUsdPrices: {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -483,6 +493,7 @@ describe("staking.utils", () => {
         icpSwapUsdPrices: {
           [snsUniverse.summary.ledgerCanisterId.toText()]: tokenPrice,
         },
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -510,6 +521,7 @@ describe("staking.utils", () => {
         ],
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -542,6 +554,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -569,6 +582,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -600,6 +614,7 @@ describe("staking.utils", () => {
           [universeId2]: undefined,
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
