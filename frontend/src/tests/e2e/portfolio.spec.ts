@@ -78,7 +78,6 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
   await appPo.toggleSidebar();
   await expect(page).toHaveScreenshot(`final_assets_desktop.png`);
-  await appPo.toggleSidebar();
 
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
   await expect(page).toHaveScreenshot(`final_assets_mobile.png`);
