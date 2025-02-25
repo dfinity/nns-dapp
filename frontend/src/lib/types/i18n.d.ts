@@ -137,6 +137,7 @@ interface I18nError {
   refresh_voting_power: string;
   unknown_topic_title: string;
   unknown_proposal_status_title: string;
+  canister_tooltip: string;
 }
 
 interface I18nWarning {
@@ -311,6 +312,7 @@ interface I18nStaking {
   title: string;
   text: string;
   nervous_systems: string;
+  actionable_proposal_error_table_tooltip: string;
 }
 
 interface I18nNeurons {
