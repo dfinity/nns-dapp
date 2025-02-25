@@ -3,8 +3,11 @@
   import type { TableProject } from "$lib/types/staking";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let rowData: TableProject;
+
+  const dispatch = createEventDispatcher();
 </script>
 
 <div data-tid="project-neurons-cell-component">
@@ -12,8 +15,12 @@
     {#if rowData.neuronCount > 0}
       {rowData.neuronCount}
     {:else}
-      <!-- There is a click handler on the entire row so we don't need a specific click handler on the button. -->
-      <button data-tid="stake-button" class="stake-button"
+      <!-- Use preventDefault because of a click handler on the entire row. -->
+      <button
+        data-tid="stake-button"
+        class="stake-button"
+        on:click|stopPropagation|preventDefault={() =>
+          dispatch("nnsAction", { rowData })}
         >{replacePlaceholders($i18n.neurons.stake_token, {
           $token: rowData.tokenSymbol,
         })}</button

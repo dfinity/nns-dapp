@@ -30,7 +30,6 @@ import {
   TokenAmountV2,
   asNonNullish,
   isNullish,
-  nonNullish,
   type Token,
 } from "@dfinity/utils";
 
@@ -173,10 +172,7 @@ export const getTableProjects = ({
       nnsNeurons,
       snsNeurons,
     });
-    const rowHref =
-      nonNullish(neuronCount) && neuronCount > 0
-        ? buildNeuronsUrl({ universe: universe.canisterId })
-        : undefined;
+    const rowHref = buildNeuronsUrl({ universe: universe.canisterId });
     const universeId = universe.canisterId;
     const ledgerCanisterId = getLedgerCanisterIdFromUniverse(universe);
     const tokenPrice =
