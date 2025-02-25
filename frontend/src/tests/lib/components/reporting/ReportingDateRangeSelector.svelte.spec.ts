@@ -7,14 +7,13 @@ import { tick } from "svelte";
 
 describe("ReportingDateRangeSelector", () => {
   const renderComponent = (
-    {
-      period,
-    }: {
+    props
+    : {
       period?: ReportingPeriod;
     } = { period: "all" }
   ) => {
     const { container, component } = render(ReportingDateRangeSelector, {
-      period,
+      props,
     });
 
     const po = ReportingDateRangeSelectorPo.under(

@@ -31,7 +31,8 @@ export interface PageObjectElement {
   input(value: string): Promise<void>;
   isChecked(): Promise<boolean>;
   typeText(text: string): Promise<void>;
-  selectOption(option: string): Promise<void>;
+  selectOptionText(option: string): Promise<void>;
+  selectOptionValue(option: string): Promise<void>;
   getValue(): Promise<string>;
   isVisible(): Promise<boolean>;
   blur(): Promise<void>;

@@ -9,9 +9,11 @@ export const heightTransition = (
   }
 ) => {
   // Prevent "TypeError: Cannot set properties of undefined (setting 'onfinish')" in vitest mode
+  /*
   if (process.env.NODE_ENV === "test") {
     return {};
   }
+  */
 
   const height = element.offsetHeight;
   return {

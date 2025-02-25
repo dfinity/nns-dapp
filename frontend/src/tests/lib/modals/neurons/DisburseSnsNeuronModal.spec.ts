@@ -16,6 +16,7 @@ import {
 import { mockSnsNeuron, mockSnsNeuronId } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
@@ -130,24 +131,19 @@ describe("DisburseSnsNeuronModal", () => {
     const reloadNeuron = vi.fn().mockResolvedValue(null);
     await renderDisburseModal(mockSnsNeuron, reloadNeuron);
 
-    await waitFor(() => expect(loadSnsAccounts).toBeCalled());
+    await runResolvedPromises();
+    expect(loadSnsAccounts).toBeCalledTimes(1);
   });
 
   it("should not trigger the project account load if already available", async () => {
+    // Here we don't reset icrcAccountsStore.
+
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
     const reloadNeuron = vi.fn().mockResolvedValue(null);
-    const { queryByTestId } = await renderDisburseModal(
-      mockSnsNeuron,
-      reloadNeuron
-    );
+    await renderDisburseModal(mockSnsNeuron, reloadNeuron);
 
-    await waitFor(() =>
-      expect(queryByTestId("disburse-neuron-button")).not.toBeNull()
-    );
-
-    await fireEvent.click(queryByTestId("disburse-neuron-button") as Element);
-
-    await waitFor(() => expect(loadSnsAccounts).not.toBeCalled());
+    await runResolvedPromises();
+    expect(loadSnsAccounts).toBeCalledTimes(0);
   });
 });

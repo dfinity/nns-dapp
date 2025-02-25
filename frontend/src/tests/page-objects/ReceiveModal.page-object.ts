@@ -43,6 +43,6 @@ export class ReceiveModalPo extends ModalPo {
   }
 
   select(accountIdentifier: string) {
-    return this.getSelectAccountDropdownPo().select(accountIdentifier);
+    return this.getSelectAccountDropdownPo().selectAccountId(accountIdentifier);
   }
 }

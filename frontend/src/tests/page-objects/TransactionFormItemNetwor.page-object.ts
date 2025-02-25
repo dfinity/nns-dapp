@@ -16,6 +16,6 @@ export class TransactionFormItemNetworkPo extends BasePageObject {
   }
 
   async selectNetwork(network: string) {
-    return this.getDropdownPo().select(network);
+    return this.getDropdownPo().selectOptionValue(network);
   }
 }

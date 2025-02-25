@@ -9,6 +9,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { Component } from "svelte";
+import {advanceTime} from "$tests/utils/timers.test-utils";
 
 describe("AddAccountModal", () => {
   const mockLedgerIdentity = new MockLedgerIdentity();
@@ -200,11 +201,13 @@ describe("AddAccountModal", () => {
   };
 
   it("should navigate back and forth between steps", async () => {
+    vi.useFakeTimers();
     const renderResult = await renderModal({ component: AddAccountModal });
 
     await shouldNavigateSubaccountStep(renderResult);
 
     const { getByTestId, getByText } = renderResult;
+    await advanceTime(500);
     await goBack({
       getByTestId,
       getByText,

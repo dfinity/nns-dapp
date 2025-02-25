@@ -1,3 +1,4 @@
+import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
 import ProposalNavigation from "$lib/components/proposal-detail/ProposalNavigation.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import type { ProposalsNavigationId } from "$lib/types/proposals";
@@ -33,7 +34,7 @@ describe("ProposalNavigation", () => {
         });
 
         expect(await po.getLogoSource()).toEqual(
-          "/src/lib/assets/icp-rounded.svg"
+          IC_LOGO_ROUNDED
         );
       });
 

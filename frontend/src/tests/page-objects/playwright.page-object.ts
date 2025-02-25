@@ -137,7 +137,11 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.fill(text);
   }
 
-  async selectOption(text: string): Promise<void> {
+  async selectOptionText(text: string): Promise<void> {
+    await this.locator.selectOption(text);
+  }
+
+  async selectOptionValue(text: string): Promise<void> {
     await this.locator.selectOption(text);
   }
 
