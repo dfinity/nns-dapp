@@ -15,5 +15,4 @@ export const initAnalytics = () => {
   });
 
   tracker.enableAutoPageviews();
-  tracker.enableAutoOutboundTracking();
 };
