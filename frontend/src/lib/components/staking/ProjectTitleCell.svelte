@@ -45,7 +45,7 @@
     }
 
     .failed-project-info {
-      color: var(--orange);
+      color: var(--warning-emphasis);
       line-height: 0;
     }
   }
