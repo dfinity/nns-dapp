@@ -112,7 +112,9 @@ export const replaceContent = async ({
   replacements: string[];
 }): Promise<void> => {
   await Promise.all(
-    selectors.map((selector) => page.locator(selector).first().waitFor())
+    selectors.map((selector) =>
+      page.locator(selector).first().waitFor({ state: "attached" })
+    )
   );
   const replacementCount = await page.evaluate(
     ({ selectors, pattern, replacements }) => {
