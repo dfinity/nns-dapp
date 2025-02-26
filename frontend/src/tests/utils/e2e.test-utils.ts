@@ -111,6 +111,9 @@ export const replaceContent = async ({
   pattern: RegExp;
   replacements: string[];
 }): Promise<void> => {
+  await Promise.all(
+    selectors.map((selector) => page.locator(selector).waitFor())
+  );
   const replacementCount = await page.evaluate(
     ({ selectors, pattern, replacements }) => {
       let replacementCount = 0;
