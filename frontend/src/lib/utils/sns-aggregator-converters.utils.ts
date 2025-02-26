@@ -83,6 +83,7 @@ const convertFunctionType = (
       target_method_name: toNullable(
         GenericNervousSystemFunction.target_method_name
       ),
+      topic: toNullable(GenericNervousSystemFunction.topic),
     },
   };
 };

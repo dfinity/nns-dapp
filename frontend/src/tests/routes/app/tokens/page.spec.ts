@@ -37,6 +37,7 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkBTCMinterInfo } from "$tests/mocks/ckbtc-minter.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
@@ -60,7 +61,9 @@ import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
+// TODO(yhabib): this doesn't exist anymore
 vi.mock("$lib/api/sns-ledger.api");
+
 vi.mock("$lib/api/icrc-ledger.api");
 vi.mock("$lib/api/ckbtc-minter.api");
 
@@ -698,6 +701,67 @@ describe("Tokens route", () => {
             ]);
           });
         });
+      });
+    });
+
+    describe("failed ledger canister", () => {
+      beforeEach(() => {
+        resetIdentity();
+        overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
+
+        vi.spyOn(console, "error").mockReturnValue();
+        vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
+          async ({ canisterId }) => {
+            const balancesMap = {
+              [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
+              [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
+              [importedToken1Id.toText()]: 10n,
+              [CKETH_UNIVERSE_CANISTER_ID.toText()]: 0n,
+              [ledgerCanisterIdPacman.toText()]: 0n,
+            };
+
+            if (canisterId.toText() === ledgerCanisterIdTetris.toText()) {
+              throw new Error(
+                `IC0207: Out of cycles for ${canisterId.toText()}`
+              );
+            }
+            return balancesMap[canisterId.toText()];
+          }
+        );
+
+        importedTokensStore.set({
+          importedTokens: [importedToken1Data],
+          certified: true,
+        });
+      });
+
+      it("should render failed token as the last in the table", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const tokenNames = await tokensPagePo.getTokenNames();
+
+        expect(tokenNames).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckUSDC",
+          "ZTOKEN1",
+          "ckETH",
+          "Pacman",
+          "Tetris",
+        ]);
+      });
+
+      it("should display failed token UI", async () => {
+        const po = await renderPage();
+        const tokensPagePo = po.getTokensPagePo();
+        const failedTokenRow = await tokensPagePo
+          .getTokensTable()
+          .getRowByName("Tetris");
+
+        expect(await failedTokenRow.hasUnavailableBalance()).toEqual(true);
+        expect(
+          await failedTokenRow.getFailedTokenTooltipPo().getTooltipText()
+        ).toEqual(en.tokens.ledger_canister_error_tooltip);
       });
     });
 

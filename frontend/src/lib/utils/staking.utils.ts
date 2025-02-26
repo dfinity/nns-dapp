@@ -1,5 +1,6 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
+import type { FailedActionableSnsesStoreData } from "$lib/stores/actionable-sns-proposals.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import type { TableProject } from "$lib/types/staking";
 import type { Universe } from "$lib/types/universe";
@@ -21,7 +22,11 @@ import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
-import { UnavailableTokenAmount, getUsdValue } from "$lib/utils/token.utils";
+import {
+  FailedTokenAmount,
+  UnavailableTokenAmount,
+  getUsdValue,
+} from "$lib/utils/token.utils";
 import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -99,15 +104,17 @@ const getNeuronAggregateInfo = ({
   token,
   nnsNeurons,
   snsNeurons,
+  failedActionableSnses,
 }: {
   isSignedIn: boolean;
   universe: Universe;
   token: Token;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
+  failedActionableSnses: FailedActionableSnsesStoreData;
 }): {
   neuronCount: number | undefined;
-  stake: TokenAmountV2 | UnavailableTokenAmount;
+  stake: TokenAmountV2 | UnavailableTokenAmount | FailedTokenAmount;
   availableMaturity: bigint | undefined;
   stakedMaturity: bigint | undefined;
   isStakeLoading: boolean;
@@ -122,6 +129,17 @@ const getNeuronAggregateInfo = ({
       isStakeLoading: false,
     };
   }
+
+  if (failedActionableSnses.includes(universe.canisterId)) {
+    return {
+      neuronCount: undefined,
+      stake: new FailedTokenAmount(token),
+      availableMaturity: undefined,
+      stakedMaturity: undefined,
+      isStakeLoading: false,
+    };
+  }
+
   const { neuronCount, stake, availableMaturity, stakedMaturity } =
     universe.canisterId === OWN_CANISTER_ID_TEXT
       ? getNnsNeuronAggregateInfo(nnsNeurons)
@@ -146,12 +164,14 @@ export const getTableProjects = ({
   nnsNeurons,
   snsNeurons,
   icpSwapUsdPrices,
+  failedActionableSnses = [],
 }: {
   universes: Universe[];
   isSignedIn: boolean;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
+  failedActionableSnses?: FailedActionableSnsesStoreData;
 }): TableProject[] => {
   return universes.map((universe) => {
     const token =
@@ -171,6 +191,7 @@ export const getTableProjects = ({
       token,
       nnsNeurons,
       snsNeurons,
+      failedActionableSnses,
     });
     const rowHref = buildNeuronsUrl({ universe: universe.canisterId });
     const universeId = universe.canisterId;

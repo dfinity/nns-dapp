@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+print_help() {
+  cat <<-EOF
+
+  Unfreezes a canister by setting a normal freezing threshold and making sure
+  the canister has cycles.
+	EOF
+}
+
+# Source the clap.bash file ---------------------------------------------------
+source "$SOURCE_DIR/clap.bash"
+clap.define long=freezing-threshold desc="Passed to dfx canister update-settings" variable=DFX_FREEZING_THRESHOLD default="2592000"
+clap.define long=cycles desc="Target cycles balance of canister" variable=DFX_CYCLES default="1000000000000"
+clap.define short=i long=identity desc="The dfx identity to use" variable=DFX_IDENTITY default="snsdemo8"
+clap.define long=network desc="dfx network to use" variable="DFX_NETWORK" default="local"
+# Source the output file ----------------------------------------------------------
+source "$(clap.build)"
+
+export DFX_NETWORK
+export DFX_IDENTITY
+
+CANISTER="$1"
+
+CURRENT_CONTROLLER="$(dfx canister info "$CANISTER" | grep '^Controllers:' | awk '{print $2}')"
+
+dfx canister update-settings "$CANISTER" --freezing-threshold "$DFX_FREEZING_THRESHOLD" --impersonate "$CURRENT_CONTROLLER"
+
+echo "Freezing threshold was set to $DFX_FREEZING_THRESHOLD seconds."
+
+CURRENT_CYCLES=$(dfx canister status "$CANISTER" | grep 'Balance:' | awk '{ print $2 }' | sed -e 's/_//g')
+
+if [[ "$CURRENT_CYCLES" -ge "$DFX_CYCLES" ]]; then
+  exit 0
+fi
+
+CYCLES_TO_ADD=$((DFX_CYCLES - CURRENT_CYCLES))
+CYCLES_PER_E8=$(dfx canister call nns-cycles-minting get_icp_xdr_conversion_rate | idl2json | jq -r '.data.xdr_permyriad_per_icp')
+E8S_TO_ADD=$((CYCLES_TO_ADD / CYCLES_PER_E8))
+
+dfx ledger top-up "$CANISTER" --e8s "$E8S_TO_ADD"

@@ -190,6 +190,7 @@ export const loadAccounts = async ({
       // Do not remove for successful query calls in query-and-update strategy
       const isQueryCallOfAQueryAndUpdateCall =
         strategy === "query_and_update" && certified === false;
+      // TODO(yhabib): reuse isLastCall instead of custom logic
       if (!isQueryCallOfAQueryAndUpdateCall) {
         outOfCyclesCanistersStore.delete(ledgerCanisterId.toString());
       }
@@ -205,29 +206,31 @@ export const loadAccounts = async ({
     onError: ({ error: err, certified }) => {
       console.error(err);
 
+      // TODO(yhabib): reuse isLastCall
       // Ignore error on query call only if there will be an update call
       if (certified !== true && strategy !== "query") {
         return;
-      }
-
-      if (isCanisterOutOfCyclesError(err)) {
-        outOfCyclesCanistersStore.add(ledgerCanisterId.toString());
       }
 
       // hide unproven data
       icrcAccountsStore.resetUniverse(ledgerCanisterId);
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
 
-      if (
-        isImportedToken({
-          ledgerCanisterId,
-          importedTokens: get(importedTokensStore)?.importedTokens,
-        })
-      ) {
-        // Do not display error toasts for imported tokens.
-        // Failed imported tokens will be shown with a warning icon in the UI.
+      const isCanisterOufOfCycles = isCanisterOutOfCyclesError(err);
+      const isAnImportedToken = isImportedToken({
+        ledgerCanisterId,
+        importedTokens: get(importedTokensStore)?.importedTokens,
+      });
+
+      if (isCanisterOufOfCycles) {
+        outOfCyclesCanistersStore.add(ledgerCanisterId.toString());
+      }
+
+      if (isAnImportedToken) {
         failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
-      } else {
+      }
+
+      if (!isCanisterOufOfCycles && !isAnImportedToken) {
         toastsError(
           toToastError({
             err,

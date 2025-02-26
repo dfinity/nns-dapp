@@ -24,11 +24,21 @@ export type CachedSnsMetadataDto = {
   description: string | null;
 };
 
+type Topic =
+  | { DappCanisterManagement: null }
+  | { DaoCommunitySettings: null }
+  | { ApplicationBusinessLogic: null }
+  | { CriticalDappOperations: null }
+  | { TreasuryAssetManagement: null }
+  | { Governance: null }
+  | { SnsFrameworkManagement: null };
+
 interface GenericNervousSystemFunctionDto {
   validator_canister_id: string | null;
   target_canister_id: string | null;
   validator_method_name: string | null;
   target_method_name: string | null;
+  topic: Topic | null;
 }
 
 export type CachedFunctionTypeDto =
