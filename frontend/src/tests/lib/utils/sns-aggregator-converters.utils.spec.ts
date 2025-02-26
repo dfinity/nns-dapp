@@ -667,12 +667,18 @@ describe("sns aggregator converters utils", () => {
   });
 
   describe("convertNervousFunction", () => {
-    it("converts nervous function to ic-js type", () => {
+    const baseNsFunction = {
+      id: 0,
+      name: "All Topics",
+      description: "Catch-all w.r.t to following for all types of proposals.",
+    };
+
+    it("converts native nervous function to ic-js type", () => {
       const nsFunction = {
-        id: 0,
-        name: "All Topics",
-        description: "Catch-all w.r.t to following for all types of proposals.",
-        function_type: { NativeNervousSystemFunction: {} },
+        ...baseNsFunction,
+        function_type: {
+          NativeNervousSystemFunction: {},
+        },
       };
 
       expect(convertNervousFunction(nsFunction)).toEqual({
@@ -682,6 +688,51 @@ describe("sns aggregator converters utils", () => {
           "Catch-all w.r.t to following for all types of proposals.",
         ],
         function_type: [{ NativeNervousSystemFunction: {} }],
+      });
+    });
+
+    it("converts generic nervous function to ic-js type", () => {
+      const canisterIdString = "aaaaa-aa";
+      const canisterId = Principal.fromText(canisterIdString);
+      const method = "method";
+      const targetMethod = "target_method_name";
+
+      const nsFunction = {
+        ...baseNsFunction,
+        function_type: {
+          GenericNervousSystemFunction: {
+            validator_canister_id: canisterIdString,
+            target_canister_id: canisterIdString,
+            validator_method_name: method,
+            target_method_name: targetMethod,
+            topic: {
+              DappCanisterManagement: null,
+            },
+          },
+        },
+      };
+
+      expect(convertNervousFunction(nsFunction)).toEqual({
+        id: 0n,
+        name: "All Topics",
+        description: [
+          "Catch-all w.r.t to following for all types of proposals.",
+        ],
+        function_type: [
+          {
+            GenericNervousSystemFunction: {
+              validator_canister_id: [canisterId],
+              target_canister_id: [canisterId],
+              validator_method_name: [method],
+              target_method_name: [targetMethod],
+              topic: [
+                {
+                  DappCanisterManagement: null,
+                },
+              ],
+            },
+          },
+        ],
       });
     });
 

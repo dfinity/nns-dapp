@@ -53,7 +53,7 @@ describe("analytics service", () => {
     });
   });
 
-  it("should enable auto page views and outbound tracking", async () => {
+  it("should enable auto page views", async () => {
     vi.doMock("$lib/utils/env-vars.utils", () => ({
       getEnvVars: getEnvVarsFactory("some-domain"),
     }));
@@ -63,11 +63,9 @@ describe("analytics service", () => {
     const tracker = Plausible();
 
     expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(0);
-    expect(tracker.enableAutoOutboundTracking).toHaveBeenCalledTimes(0);
 
     initAnalytics();
 
     expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(1);
-    expect(tracker.enableAutoOutboundTracking).toHaveBeenCalledTimes(1);
   });
 });

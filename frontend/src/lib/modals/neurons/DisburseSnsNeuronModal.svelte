@@ -109,7 +109,12 @@
   };
 </script>
 
-<WizardModal bind:currentStep on:nnsClose {steps}>
+<WizardModal
+  bind:currentStep
+  on:nnsClose
+  {steps}
+  testId="disburse-sns-neuron-modal-component"
+>
   <svelte:fragment slot="title"
     ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
     ></svelte:fragment

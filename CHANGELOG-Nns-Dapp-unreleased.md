@@ -14,11 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Loads Plausible analytics
+* Warning indicators for failed actionable SNS proposals.
 
 #### Changed
 
 * Hide the mobile header when scrolling.
+* Make navigation from the staking neurons page possible even without neurons.
 
 #### Deprecated
 
