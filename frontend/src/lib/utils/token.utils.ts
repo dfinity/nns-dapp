@@ -305,6 +305,14 @@ export function toTokenAmountV2(
   });
 }
 
+export class FailedTokenAmount {
+  public token: Token;
+
+  constructor(token: Token) {
+    this.token = token;
+  }
+}
+
 export class UnavailableTokenAmount {
   public token: Token;
 

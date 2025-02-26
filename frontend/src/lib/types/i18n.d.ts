@@ -1209,6 +1209,7 @@ interface I18nTokens {
   update_imported_token_success: string;
   ledger_canister: string;
   index_canister: string;
+  ledger_canister_error_tooltip: string;
 }
 
 interface I18nImport_token {
