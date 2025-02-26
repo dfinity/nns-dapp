@@ -1,4 +1,5 @@
 import { NnsNeuronsMissingRewardsBadgePo } from "$tests/page-objects/NnsNeuronsMissingRewardsBadge.page-object";
+import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -15,5 +16,9 @@ export class ProjectTitleCellPo extends BasePageObject {
 
   getNnsNeuronsMissingRewardsBadgePo(): NnsNeuronsMissingRewardsBadgePo {
     return NnsNeuronsMissingRewardsBadgePo.under(this.root);
+  }
+
+  getFailedProjectTooltipPo(): TooltipPo {
+    return TooltipPo.under(this.root.byTestId("failed-project-info"));
   }
 }

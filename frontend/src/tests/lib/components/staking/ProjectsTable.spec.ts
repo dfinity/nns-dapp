@@ -3,6 +3,7 @@ import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -10,6 +11,7 @@ import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -175,6 +177,36 @@ describe("ProjectsTable", () => {
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getProjectMaturityCellPo().getText()).toBe("");
     expect(await rowPos[1].getProjectMaturityCellPo().getText()).toBe("");
+  });
+
+  it("should render failed project UI in the table", async () => {
+    failedActionableSnsesStore.add(snsCanisterId.toText());
+
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getProjectTitle()).toBe("Internet Computer");
+    expect(
+      await rowPos[0]
+        .getProjectTitleCellPo()
+        .getFailedProjectTooltipPo()
+        .isPresent()
+    ).toBe(false);
+
+    expect(await rowPos[1].getProjectTitle()).toBe(snsTitle);
+    expect(
+      await rowPos[1]
+        .getProjectTitleCellPo()
+        .getFailedProjectTooltipPo()
+        .isPresent()
+    ).toBe(true);
+    expect(
+      await rowPos[1]
+        .getProjectTitleCellPo()
+        .getFailedProjectTooltipPo()
+        .getTooltipText()
+    ).toEqual(en.error.canister_tooltip);
   });
 
   describe("with neurons", () => {

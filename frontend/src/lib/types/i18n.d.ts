@@ -137,6 +137,7 @@ interface I18nError {
   refresh_voting_power: string;
   unknown_topic_title: string;
   unknown_proposal_status_title: string;
+  canister_tooltip: string;
 }
 
 interface I18nWarning {
