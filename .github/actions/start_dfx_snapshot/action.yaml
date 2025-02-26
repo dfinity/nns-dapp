@@ -76,7 +76,7 @@ runs:
         # uses to determine the version will be replaced by the snapshot.
         export DFX_VERSION="$(dfx --version | sed 's/dfx //')"
         scripts/dfx-snapshot-install --snapshot state.tar.xz
-        dfx start --background &> '${{ inputs.logfile }}'
+        dfx start --pocketic --background &> '${{ inputs.logfile }}'
         dfx identity use snsdemo8
     - name: Wait before installing canisters
       if: ${{ inputs.nns_dapp_wasm }} || ${{ inputs.sns_aggregator_wasm }}
