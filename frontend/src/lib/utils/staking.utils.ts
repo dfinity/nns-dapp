@@ -171,7 +171,7 @@ export const getTableProjects = ({
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
-  failedActionableSnses?: FailedActionableSnsesStoreData;
+  failedActionableSnses: FailedActionableSnsesStoreData;
 }): TableProject[] => {
   return universes.map((universe) => {
     const token =
