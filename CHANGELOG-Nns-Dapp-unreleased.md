@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Hide the mobile header when scrolling.
 * Make navigation from the staking neurons page possible even without neurons.
 
 #### Deprecated

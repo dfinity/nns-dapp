@@ -182,4 +182,8 @@ export class JestPageObjectElement implements PageObjectElement {
     await this.waitFor();
     return this.getElement()?.tagName ?? "";
   }
+
+  scrollTo(_x: number, _y: number): Promise<void> {
+    throw new Error("Not implemented");
+  }
 }

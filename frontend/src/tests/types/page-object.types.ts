@@ -39,4 +39,5 @@ export interface PageObjectElement {
   addEventListener(eventType: string, fn: (e: Event) => void): Promise<void>;
   getDocumentBody(): Promise<PageObjectElement>;
   getTagName(): Promise<string>;
+  scrollTo(x: number, y: number): Promise<void>;
 }
