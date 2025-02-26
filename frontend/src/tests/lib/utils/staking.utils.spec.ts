@@ -12,7 +12,10 @@ import {
   getTotalStakeInUsd,
   sortTableProjects,
 } from "$lib/utils/staking.utils";
-import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import {
+  FailedTokenAmount,
+  UnavailableTokenAmount,
+} from "$lib/utils/token.utils";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import {
@@ -132,6 +135,7 @@ describe("staking.utils", () => {
           [universeId2]: { neurons: [] },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -157,6 +161,7 @@ describe("staking.utils", () => {
           [snsUniverseId]: { neurons: [] },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -191,6 +196,7 @@ describe("staking.utils", () => {
           [universeId2]: { neurons: [] },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -216,6 +222,7 @@ describe("staking.utils", () => {
         ],
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -257,6 +264,7 @@ describe("staking.utils", () => {
         nnsNeurons: [neuron1, neuron2],
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -297,6 +305,7 @@ describe("staking.utils", () => {
         nnsNeurons: [neuron1, neuron2],
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -325,6 +334,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -366,6 +376,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -404,6 +415,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -441,6 +453,7 @@ describe("staking.utils", () => {
         icpSwapUsdPrices: {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -480,6 +493,7 @@ describe("staking.utils", () => {
         icpSwapUsdPrices: {
           [snsUniverse.summary.ledgerCanisterId.toText()]: tokenPrice,
         },
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -507,6 +521,7 @@ describe("staking.utils", () => {
         ],
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -539,6 +554,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -566,6 +582,7 @@ describe("staking.utils", () => {
           },
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -597,6 +614,7 @@ describe("staking.utils", () => {
           [universeId2]: undefined,
         },
         icpSwapUsdPrices: undefined,
+        failedActionableSnses: [],
       });
 
       expect(tableProjects).toEqual([
@@ -617,6 +635,34 @@ describe("staking.utils", () => {
           availableMaturity: undefined,
           stakedMaturity: undefined,
           isStakeLoading: true,
+        },
+      ]);
+    });
+
+    it("should have FailedToken when failed actionable sns", () => {
+      const tableProjects = getTableProjects({
+        universes: [nnsUniverse, snsUniverse],
+        isSignedIn: true,
+        nnsNeurons: [],
+        snsNeurons: {
+          [universeId2]: undefined,
+        },
+        icpSwapUsdPrices: undefined,
+        failedActionableSnses: [universeId2],
+      });
+
+      expect(tableProjects).toEqual([
+        {
+          ...defaultExpectedNnsTableProject,
+        },
+        {
+          ...defaultExpectedSnsTableProject,
+          neuronCount: undefined,
+          stake: new FailedTokenAmount(snsToken),
+          stakeInUsd: undefined,
+          availableMaturity: undefined,
+          stakedMaturity: undefined,
+          isStakeLoading: false,
         },
       ]);
     });
