@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Warning indicators for failed actionable SNS proposals.
+
 #### Changed
 
 #### Deprecated
