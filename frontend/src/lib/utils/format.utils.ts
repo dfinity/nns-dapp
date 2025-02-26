@@ -34,29 +34,26 @@ export const formatNumber = (
  * - 1'000'000 ≤ X < 1'000'000'000: Display millions with "M" and 2 decimal points (e.g., $1.50M)
  * - 1'000'000'000 ≤ X: Display billions with "B" and 2 decimal points (e.g., $1.50B)
  */
-export const formatCurrencyNumber = (
-  value: number,
-  currencySymbol: string = "$"
-): string => {
+export const formatCurrencyNumber = (value: number): string => {
   // For values less than 1'000
   if (value < 1000) {
-    return `${currencySymbol}${formatNumber(value, { minFraction: 2, maxFraction: 2 })}`;
+    return `${formatNumber(value, { minFraction: 2, maxFraction: 2 })}`;
   }
 
   // For values between 1'000 and 1'000'000
   if (value < 1000000) {
-    return `${currencySymbol}${formatNumber(value, { minFraction: 0, maxFraction: 0 })}`;
+    return `${formatNumber(value, { minFraction: 0, maxFraction: 0 })}`;
   }
 
   // For values between 1'000'000 and 1'000'000'000
   if (value < 1000000000) {
     const millions = value / 1000000;
-    return `${currencySymbol}${formatNumber(millions, { minFraction: 2, maxFraction: 2 })}M`;
+    return `${formatNumber(millions, { minFraction: 2, maxFraction: 2 })}M`;
   }
 
   // For values greater than or equal to 1'000'000'000
   const billions = value / 1000000000;
-  return `${currencySymbol}${formatNumber(billions, { minFraction: 2, maxFraction: 2 })}B`;
+  return `${formatNumber(billions, { minFraction: 2, maxFraction: 2 })}B`;
 };
 
 /**
