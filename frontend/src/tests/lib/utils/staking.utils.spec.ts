@@ -55,7 +55,7 @@ describe("staking.utils", () => {
     const snsHref = `/neurons/?u=${universeId2}`;
 
     const defaultExpectedNnsTableProject = {
-      rowHref: undefined,
+      rowHref: nnsHref,
       domKey: OWN_CANISTER_ID_TEXT,
       universeId: OWN_CANISTER_ID_TEXT,
       title: "Internet Computer",
@@ -73,7 +73,7 @@ describe("staking.utils", () => {
     };
 
     const defaultExpectedSnsTableProject = {
-      rowHref: undefined,
+      rowHref: snsHref,
       domKey: universeId2,
       universeId: universeId2,
       title: "title2",
@@ -167,6 +167,7 @@ describe("staking.utils", () => {
       expect(tableProjects).toEqual([
         {
           ...defaultExpectedSnsTableProject,
+          rowHref: `/neurons/?u=${snsUniverseId}`,
           domKey: snsUniverseId,
           universeId: snsUniverseId,
         },
@@ -589,6 +590,7 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedNnsTableProject,
           neuronCount: undefined,
+          rowHref: nnsHref,
           stake: new UnavailableTokenAmount(ICPToken),
           stakeInUsd: undefined,
           availableMaturity: undefined,
@@ -597,6 +599,7 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
+          rowHref: snsHref,
           stake: new UnavailableTokenAmount(snsToken),
           stakeInUsd: undefined,
           availableMaturity: undefined,
@@ -621,6 +624,7 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedNnsTableProject,
           neuronCount: undefined,
+          rowHref: nnsHref,
           stake: new UnavailableTokenAmount(ICPToken),
           stakeInUsd: undefined,
           availableMaturity: undefined,
@@ -630,6 +634,7 @@ describe("staking.utils", () => {
         {
           ...defaultExpectedSnsTableProject,
           neuronCount: undefined,
+          rowHref: snsHref,
           stake: new UnavailableTokenAmount(snsToken),
           stakeInUsd: undefined,
           availableMaturity: undefined,

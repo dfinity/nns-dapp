@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Make navigation from the staking neurons page possible even without neurons.
+
 #### Deprecated
 
 #### Removed
