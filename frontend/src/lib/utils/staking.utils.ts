@@ -164,7 +164,7 @@ export const getTableProjects = ({
   nnsNeurons,
   snsNeurons,
   icpSwapUsdPrices,
-  failedActionableSnses = [],
+  failedActionableSnses,
 }: {
   universes: Universe[];
   isSignedIn: boolean;
