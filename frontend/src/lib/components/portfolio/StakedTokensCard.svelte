@@ -19,10 +19,6 @@
   export let numberOfTopHeldTokens: number;
 
   const href = AppPath.Staking;
-  let usdAmountFormatted: string;
-  $: usdAmountFormatted = $authSignedInStore
-    ? formatNumber(usdAmount)
-    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
   let numberOfTopStakedTokens: number;
   $: numberOfTopStakedTokens = topStakedTokens.length;

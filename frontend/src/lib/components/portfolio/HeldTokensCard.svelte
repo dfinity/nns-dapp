@@ -19,11 +19,6 @@
 
   const href = AppPath.Tokens;
 
-  let usdAmountFormatted: string;
-  $: usdAmountFormatted = $authSignedInStore
-    ? formatNumber(usdAmount)
-    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
-
   let numberOfTopHeldTokens: number;
   $: numberOfTopHeldTokens = topHeldTokens.length;
 
