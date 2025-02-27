@@ -154,6 +154,14 @@
           }
         },
         {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 5001,
           "name": "Generic Function to Dissolve NTN Neurons owned by TRAX DAO",
           "description": "Start dissolving NTN DAO neurons held by our DAO.",
@@ -1499,7 +1507,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101684767241781197,
+    "icrc1_total_supply": 101710343006318872,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3553,7 +3561,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100828684607448,
+    "icrc1_total_supply": 100839716476686,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4191,6 +4199,19 @@
               "target_method_name": "icrc55_command"
             }
           }
+        },
+        {
+          "id": 3001,
+          "name": "deploy_icrc1_tokens",
+          "description": "Deploys ICRC1 token",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "target_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "validator_method_name": "validate_deploy_icrc1_tokens",
+              "target_method_name": "deploy_icrc1_tokens"
+            }
+          }
         }
       ]
     },
@@ -4328,7 +4349,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995547878980,
+    "icrc1_total_supply": 995546022980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7260,7 +7281,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19210160617827341,
+    "icrc1_total_supply": 19211019454772525,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9269,7 +9290,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25263530620218008,
+    "icrc1_total_supply": 25263630971631947,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10652,7 +10673,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10061308010783163,
+    "icrc1_total_supply": 10061950255929066,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11905,7 +11926,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103698930135332773,
+    "icrc1_total_supply": 103700039004221360,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -13175,7 +13196,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98575272870065160,
+    "icrc1_total_supply": 98591507216660090,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14350,7 +14371,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99923830701642494,
+    "icrc1_total_supply": 99923831050074040,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15534,7 +15555,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100103778176827562,
+    "icrc1_total_supply": 100103938582754872,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
