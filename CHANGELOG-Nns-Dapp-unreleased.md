@@ -20,6 +20,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Hide the mobile header when scrolling.
 * Make navigation from the staking neurons page possible even without neurons.
+* Improve readability of monetary values by simplifying large numbers
 
 #### Deprecated
 
