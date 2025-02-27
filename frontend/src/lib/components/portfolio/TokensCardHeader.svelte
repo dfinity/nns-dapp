@@ -1,7 +1,7 @@
 <script lang="ts">
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
 
   export let usdAmount: number;
@@ -11,7 +11,7 @@
 
   let usdAmountFormatted: string;
   $: usdAmountFormatted = $authSignedInStore
-    ? formatNumber(usdAmount)
+    ? formatCurrencyNumber(usdAmount)
     : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 </script>
 
