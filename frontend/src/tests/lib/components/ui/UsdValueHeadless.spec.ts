@@ -61,7 +61,7 @@ describe("UsdValueHeadless", () => {
       hasUnpricedTokens: false,
     });
 
-    expect(await po.getUsdAmountFormatted()).toBe("1’000.00");
+    expect(await po.getUsdAmountFormatted()).toBe("1’000");
     expect(await po.getIcpAmountFormatted()).toBe("10.00");
     expect(await po.getHasError()).toBe("false");
     expect(await po.getHasPricesAndUnpricedTokens()).toBe("false");
@@ -89,7 +89,7 @@ describe("UsdValueHeadless", () => {
       hasUnpricedTokens: true,
     });
 
-    expect(await po.getUsdAmountFormatted()).toBe("1’000.00");
+    expect(await po.getUsdAmountFormatted()).toBe("1’000");
     expect(await po.getIcpAmountFormatted()).toBe("10.00");
     expect(await po.getHasError()).toBe("false");
     expect(await po.getHasPricesAndUnpricedTokens()).toBe("true");
@@ -103,12 +103,12 @@ describe("UsdValueHeadless", () => {
       hasUnpricedTokens: false,
     });
 
-    expect(await po.getUsdAmountFormatted()).toBe("1’000.00");
+    expect(await po.getUsdAmountFormatted()).toBe("1’000");
     expect(await po.getIcpAmountFormatted()).toBe("10.00");
 
     setIcpPrice(200);
 
-    expect(await po.getUsdAmountFormatted()).toBe("1’000.00");
+    expect(await po.getUsdAmountFormatted()).toBe("1’000");
     expect(await po.getIcpAmountFormatted()).toBe("5.00");
   });
 });
