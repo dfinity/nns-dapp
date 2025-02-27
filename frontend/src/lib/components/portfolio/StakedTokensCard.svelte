@@ -39,7 +39,6 @@
     <TokensCardHeader
       {href}
       {usdAmount}
-      {usdAmountFormatted}
       title={$i18n.portfolio.staked_tokens_card_title}
       linkText={$i18n.portfolio.staked_tokens_card_link}
     >
