@@ -1,11 +1,18 @@
 <script lang="ts">
+  import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { formatNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
 
   export let usdAmount: number;
-  export let usdAmountFormatted: string;
   export let href: string;
   export let title: string;
   export let linkText: string;
+
+  let usdAmountFormatted: string;
+  $: usdAmountFormatted = $authSignedInStore
+    ? formatNumber(usdAmount)
+    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 </script>
 
 <div class="header">

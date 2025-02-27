@@ -19,11 +19,6 @@
 
   const href = AppPath.Tokens;
 
-  let usdAmountFormatted: string;
-  $: usdAmountFormatted = $authSignedInStore
-    ? formatNumber(usdAmount)
-    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
-
   let numberOfTopHeldTokens: number;
   $: numberOfTopHeldTokens = topHeldTokens.length;
 
@@ -43,7 +38,6 @@
     <TokensCardHeader
       {href}
       {usdAmount}
-      {usdAmountFormatted}
       title={$i18n.portfolio.held_tokens_card_title}
       linkText={$i18n.portfolio.held_tokens_card_link}
     >
