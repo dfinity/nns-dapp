@@ -35,13 +35,6 @@
       (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
   );
 
-  let settingsButton: HTMLButtonElement | undefined;
-  let settingsPopupVisible = false;
-
-  const openSettings = () => {
-    settingsPopupVisible = true;
-  };
-
   let shouldHideZeroBalances: boolean;
   $: shouldHideZeroBalances = $hideZeroBalancesStore === "hide";
 
