@@ -367,4 +367,4 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/needs_success
         with:
-          needs: "${{ toJson(needs) }}"
+          needs: '${{ toJson(needs) }}'
