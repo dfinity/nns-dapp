@@ -187,7 +187,7 @@ describe("StakedTokensCard", () => {
         usdAmount: 5000,
       });
 
-      expect(await po.getAmount()).toBe("$5’000.00");
+      expect(await po.getAmount()).toBe("$5’000");
     });
 
     it("should show all the projects with their maturity, staked in usd and staked in native currency", async () => {
