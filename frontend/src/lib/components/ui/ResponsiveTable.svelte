@@ -305,14 +305,6 @@
           }
         }
       }
-
-      .header-icon {
-        // Prevents the element taking up more height than the icon by adding
-        // space for descenders.
-        line-height: 0;
-
-        color: var(--primary);
-      }
     }
 
     [role="rowgroup"],
