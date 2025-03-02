@@ -66,7 +66,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           base: main
-          reviewers: mstrasinskis, dskloetd, yhabib
+          reviewers: mstrasinskis, yhabib
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: ./rust-toolchain.toml
           commit-message: Update rust version

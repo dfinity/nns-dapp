@@ -4,6 +4,7 @@
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
+  import { i18n } from "$lib/stores/i18n";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import ResponsiveTableSortModal from "$lib/modals/common/ResponsiveTableSortModal.svelte";
@@ -17,7 +18,12 @@
     sortTableData,
   } from "$lib/utils/responsive-table.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import { IconSort, IconSouth } from "@dfinity/gix-components";
+  import {
+    IconSettings,
+    IconSort,
+    IconSouth,
+    Popover,
+  } from "@dfinity/gix-components";
   import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
@@ -28,6 +34,7 @@
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
   export let disableMobileSorting = false;
+  export let displayTableSettings = false;
 
   let nonLastColumns: ResponsiveTableColumn<RowDataType>[];
   let lastColumn: ResponsiveTableColumn<RowDataType> | undefined;
@@ -87,6 +94,11 @@
   let tableStyle: string;
   $: tableStyle = getTableStyle(columns);
 
+  let settingsButton: HTMLButtonElement | undefined;
+  let settingsPopupVisible = false;
+  const openSettings = () => (settingsPopupVisible = true);
+
+  // TODO(mstr): Update/remove this comment after sorting redesign is done.
   // In mobile view, we only show the first column header and it should never be
   // sortable by clicking on it. So depending on whether the first column is
   // sortable we have or don't have separate first column headers for desktop
@@ -137,7 +149,15 @@
                 data-tid="open-sort-modal"
                 class="mobile-only icon-only"
                 on:click={openSortModal}><IconSort /></button
-              >{/if}<slot name="header-icon" />
+              >{/if}{#if displayTableSettings}
+              <button
+                data-tid="settings-button"
+                class="settings-button icon-only"
+                aria-label={$i18n.tokens.settings_button}
+                bind:this={settingsButton}
+                on:click={openSettings}><IconSettings /></button
+              >
+            {/if}
           </span>
         {/if}
       </div>
@@ -164,6 +184,15 @@
     {/if}
   </div>
 
+  <Popover
+    bind:visible={settingsPopupVisible}
+    anchor={settingsButton}
+    direction="rtl"
+    invisibleBackdrop
+  >
+    <slot name="settings-popover" />
+  </Popover>
+
   {#if showSortModal}
     <ResponsiveTableSortModal
       {columns}
@@ -174,6 +203,7 @@
 </TestIdWrapper>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/effect";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "../../themes/mixins/grid-table";
 
@@ -257,14 +287,23 @@
             }
           }
         }
-      }
 
-      .header-icon {
-        // Prevents the element taking up more height than the icon by adding
-        // space for descenders.
-        line-height: 0;
+        .settings-button {
+          --content-color: var(--text-description);
 
-        color: var(--primary);
+          @include effect.ripple-effect(
+            --primary-tint,
+            var(--primary-contrast)
+          );
+
+          &:focus {
+            background: var(--primary-tint);
+            @include effect.ripple-effect(
+              --primary-tint,
+              var(--primary-contrast)
+            );
+          }
+        }
       }
     }
 
