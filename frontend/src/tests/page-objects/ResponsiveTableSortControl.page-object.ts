@@ -30,7 +30,7 @@ export class ResponsiveTableSortControlPo extends BasePageObject {
 
   async isSortDirectionButtonReversed(): Promise<boolean> {
     return (await this.getSortDirectionButtonIconPo().getClasses()).includes(
-      "icon-north"
+      "reversed"
     );
   }
 
