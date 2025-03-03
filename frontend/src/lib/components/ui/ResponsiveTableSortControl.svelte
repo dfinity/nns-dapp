@@ -7,15 +7,10 @@
   } from "$lib/types/responsive-table";
   import { selectPrimaryOrder } from "$lib/utils/responsive-table.utils";
   import { IconSouth, ChipGroup, type ChipData } from "@dfinity/gix-components";
-  import { assertNonNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   export let columns: ResponsiveTableColumn<RowDataType>[];
   export let order: ResponsiveTableOrder;
-
-  const orderBy = async (selectedColumnId: string) => {
-    assertNonNullish(selectedColumnId);
-    order = selectPrimaryOrder({ order, selectedColumnId });
-  };
 
   let chips: ChipData[] = [];
   $: chips = columns
@@ -29,6 +24,8 @@
   let isReversed: boolean;
   $: isReversed = order[0]?.reversed ?? false;
 
+  const orderBy = async (selectedColumnId: string) =>
+    (order = selectPrimaryOrder({ order, selectedColumnId }));
   const onNnsSelect = ({ detail: selectedId }: CustomEvent<string>) =>
     orderBy(selectedId);
   const reverseOrder = () => orderBy(order[0].columnId);
@@ -45,13 +42,12 @@
       data-tid="sort-direction-button"
       on:click={reverseOrder}
     >
-      {#if isReversed}
-        {$i18n.responsive_table.ascending_order}
-        <div class="icon icon-north"><IconSouth size="20px" /></div>
-      {:else}
-        {$i18n.responsive_table.descending_order}
-        <div class="icon"><IconSouth size="20px" /></div>
-      {/if}
+      {isReversed
+        ? $i18n.responsive_table.ascending_order
+        : $i18n.responsive_table.descending_order}
+      <div class="icon" class:reversed={isReversed}
+        ><IconSouth size="20px" /></div
+      >
     </button>
   </div>
 
@@ -93,7 +89,7 @@
     display: flex;
     color: var(--primary);
 
-    &.icon-north {
+    &.reversed {
       transform: rotate(180deg);
     }
   }
