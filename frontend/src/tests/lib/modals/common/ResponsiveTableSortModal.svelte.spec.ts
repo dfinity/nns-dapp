@@ -10,6 +10,7 @@ import { ResponsiveTableSortModalPo } from "$tests/page-objects/ResponsiveTableS
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
+import type { ComponentType, SvelteComponent } from "svelte";
 import { get, writable, type Writable } from "svelte/store";
 
 describe("ResponsiveTableSortModal", () => {
@@ -24,7 +25,9 @@ describe("ResponsiveTableSortModal", () => {
     {
       id: "name",
       title: "Name",
-      cellComponent: TestTableNameCell,
+      cellComponent: TestTableAgeCell as unknown as ComponentType<
+        SvelteComponent<{ rowData: TestRowData }>
+      >,
       alignment: "left",
       templateColumns: ["1fr", "max-content"],
       comparator: createAscendingComparator((rowData) => rowData.name),
@@ -32,7 +35,9 @@ describe("ResponsiveTableSortModal", () => {
     {
       id: "age",
       title: "Age",
-      cellComponent: TestTableAgeCell,
+      cellComponent: TestTableNameCell as unknown as ComponentType<
+        SvelteComponent<{ rowData: TestRowData }>
+      >,
       alignment: "left",
       templateColumns: ["1fr"],
       comparator: createAscendingComparator((rowData) => rowData.age),
@@ -52,14 +57,16 @@ describe("ResponsiveTableSortModal", () => {
     orderStore?: Writable<ResponsiveTableOrder>;
     onClose?: () => void;
   }) => {
-    const { container, component } = render(ResponsiveTableSortModal, {
-      props: {
-        columns,
-        order,
-      },
+    const testProps = $state({
+      columns,
+      order,
+    });
+
+    const { container } = render(ResponsiveTableSortModal, {
+      props: testProps,
       events: {
         nnsClose: () => {
-          orderStore?.set(component.$$.ctx[component.$$.props["order"]]);
+          orderStore?.set(testProps.order);
           onClose?.();
         },
       },
