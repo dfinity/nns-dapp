@@ -3,18 +3,26 @@
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
+  import OpenProjectsCard from "$lib/components/portfolio/OpenProjectsCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { snsProjectsActivePadStore } from "$lib/derived/sns/sns-projects.derived";
+  import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import {
     getTopHeldTokens,
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
+  import {
+    comparesByDecentralizationSaleOpenTimestampDesc,
+    filterProjectsStatus,
+  } from "$lib/utils/projects.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
   export let userTokens: UserToken[] = [];
@@ -108,10 +116,29 @@
     projects: tableProjects,
     isSignedIn: $authSignedInStore,
   });
+
+  let projects: SnsSummaryWrapper[];
+  $: projects = filterProjectsStatus({
+    swapLifecycle: SnsSwapLifecycle.Open,
+    projects: $snsProjectsActivePadStore,
+  })
+    .sort(comparesByDecentralizationSaleOpenTimestampDesc)
+    .map((project) => project.summary);
+
+  $: console.log($snsProjectsActivePadStore);
+  $: console.log(projects);
 </script>
 
 <main data-tid="portfolio-page-component">
   <div class="top" class:signed-in={$authSignedInStore}>
+  <div
+    class="top"
+    class:single-card={$authSignedInStore}
+    class:launchpad={projects.length > 0}
+  >
+    {#if !$authSignedInStore}
+      <LoginCard />
+    {/if}
     <TotalAssetsCard
       usdAmount={totalUsdAmount}
       hasUnpricedTokens={hasUnpricedTokensOrStake}
@@ -121,8 +148,12 @@
       <div class="login-card">
         <LoginCard />
       </div>
+
+    {#if projects.length > 0}
+      <OpenProjectsCard summary={projects[0]} />
     {/if}
   </div>
+
   <div class="content">
     {#if heldTokensCard === "skeleton"}
       <SkeletonTokensCard testId="held-tokens-skeleton-card" />
@@ -182,12 +213,17 @@
         grid-template-columns: 1fr 2fr;
 
         .login-card {
+        > :global(article:first-of-type) {
           order: 0;
         }
 
         // Case: signed in
         &.signed-in {
           grid-template-columns: 1fr;
+        }
+
+        &.launchpad {
+          grid-template-columns: 1fr 1fr 1fr;
         }
       }
     }
