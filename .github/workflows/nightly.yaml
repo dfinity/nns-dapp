@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   tag-main:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,7 +51,7 @@ jobs:
   nightly-passes:
     needs: ["tag-main"]
     if: ${{ always() }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/needs_success

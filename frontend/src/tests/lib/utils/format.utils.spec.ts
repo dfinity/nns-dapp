@@ -1,4 +1,5 @@
 import {
+  formatCurrencyNumber,
   formatNumber,
   formatPercentage,
   shortenWithMiddleEllipsis,
@@ -86,5 +87,35 @@ describe("format.utils", () => {
     expect(shortenWithMiddleEllipsis("1234567890123456", 6)).toEqual(
       "123456...123456"
     );
+  });
+
+  describe("formatCurrencyNumber", () => {
+    it("formats values less than 1,000 with 2 decimal points", () => {
+      expect(formatCurrencyNumber(0)).toBe("0.00");
+      expect(formatCurrencyNumber(0.001)).toBe("0.00");
+      expect(formatCurrencyNumber(0.009)).toBe("0.01");
+      expect(formatCurrencyNumber(1)).toBe("1.00");
+      expect(formatCurrencyNumber(9.9)).toBe("9.90");
+      expect(formatCurrencyNumber(999.99)).toBe("999.99");
+    });
+
+    it("formats values between 1,000 and 1,000,000 with 0 decimal points", () => {
+      expect(formatCurrencyNumber(1000)).toBe("1’000");
+      expect(formatCurrencyNumber(1000.4)).toBe("1’000");
+      expect(formatCurrencyNumber(1996.6)).toBe("1’997");
+      expect(formatCurrencyNumber(999999)).toBe("999’999");
+    });
+
+    it("formats values between 1,000,000 and 1,000,000,000 with M suffix and 2 decimal points", () => {
+      expect(formatCurrencyNumber(1000000)).toBe("1.00M");
+      expect(formatCurrencyNumber(1550000)).toBe("1.55M");
+      expect(formatCurrencyNumber(24800000)).toBe("24.80M");
+    });
+
+    it("formats values greater than or equal to 1,000,000,000 with B suffix and 2 decimal points", () => {
+      expect(formatCurrencyNumber(1000000000)).toBe("1.00B");
+      expect(formatCurrencyNumber(9990000000)).toBe("9.99B");
+      expect(formatCurrencyNumber(24800000000)).toBe("24.80B");
+    });
   });
 });

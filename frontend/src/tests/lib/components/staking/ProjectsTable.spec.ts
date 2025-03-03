@@ -3,6 +3,7 @@ import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
+import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -10,6 +11,7 @@ import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -177,6 +179,36 @@ describe("ProjectsTable", () => {
     expect(await rowPos[1].getProjectMaturityCellPo().getText()).toBe("");
   });
 
+  it("should render failed project UI in the table", async () => {
+    failedActionableSnsesStore.add(snsCanisterId.toText());
+
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getProjectTitle()).toBe("Internet Computer");
+    expect(
+      await rowPos[0]
+        .getProjectTitleCellPo()
+        .getFailedProjectTooltipPo()
+        .isPresent()
+    ).toBe(false);
+
+    expect(await rowPos[1].getProjectTitle()).toBe(snsTitle);
+    expect(
+      await rowPos[1]
+        .getProjectTitleCellPo()
+        .getFailedProjectTooltipPo()
+        .isPresent()
+    ).toBe(true);
+    expect(
+      await rowPos[1]
+        .getProjectTitleCellPo()
+        .getFailedProjectTooltipPo()
+        .getTooltipText()
+    ).toEqual(en.error.canister_tooltip);
+  });
+
   describe("with neurons", () => {
     const nnsNeuronStake = 100_000_000n;
     const nnsAvailableMaturity = 30_000_000n;
@@ -321,11 +353,15 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[0].getHref()).toBe(null);
-      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(false);
+      expect(await rowPos[0].getHref()).toBe(
+        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
+      );
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
       expect(await rowPos[1].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[1].getHref()).toBe(null);
-      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(false);
+      expect(await rowPos[1].getHref()).toBe(
+        `/neurons/?u=${snsCanisterId.toText()}`
+      );
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
     });
 
     it("should not render SNS neurons count when not loaded", async () => {
@@ -333,11 +369,15 @@ describe("ProjectsTable", () => {
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[0].getHref()).toBe(null);
-      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(false);
+      expect(await rowPos[0].getHref()).toBe(
+        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
+      );
+      expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
       expect(await rowPos[1].getNeuronCount()).toBe("-/-");
-      expect(await rowPos[1].getHref()).toBe(null);
-      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(false);
+      expect(await rowPos[1].getHref()).toBe(
+        `/neurons/?u=${snsCanisterId.toText()}`
+      );
+      expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
     });
 
     it("should render stake button with zero neurons", async () => {
@@ -356,7 +396,10 @@ describe("ProjectsTable", () => {
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getStakeButtonPo().isPresent()).toBe(true);
       expect(await rowPos[0].getNeuronCount()).toBe("Stake ICP");
-      expect(await rowPos[0].getHref()).toBe(null);
+      expect(await rowPos[0].getHref()).toBe(
+        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
+      );
+
       expect(await rowPos[0].hasGoToNeuronsTableAction()).toBe(true);
 
       expect(onNnsStakeTokens).not.toBeCalled();
@@ -370,7 +413,9 @@ describe("ProjectsTable", () => {
 
       expect(await rowPos[1].getStakeButtonPo().isPresent()).toBe(true);
       expect(await rowPos[1].getNeuronCount()).toBe("Stake TOK");
-      expect(await rowPos[1].getHref()).toBe(null);
+      expect(await rowPos[0].getHref()).toBe(
+        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
+      );
       expect(await rowPos[1].hasGoToNeuronsTableAction()).toBe(true);
 
       await rowPos[1].getStakeButtonPo().click();
@@ -382,7 +427,10 @@ describe("ProjectsTable", () => {
       });
     });
 
-    it("should dispatch nnsStakeTokens on row click with zero neurons", async () => {
+    it("should dispatch nnsStakeTokens only on stake button click with zero neurons", async () => {
+      // To ignore "Error: Not implemented: navigation (except hash changes)" that comes after the test run.
+      vi.spyOn(console, "error").mockReturnValue();
+
       neuronsStore.setNeurons({
         neurons: [],
         certified: true,
@@ -398,7 +446,13 @@ describe("ProjectsTable", () => {
       expect(rowPos).toHaveLength(2);
 
       expect(onNnsStakeTokens).not.toBeCalled();
+      expect(await rowPos[0].getHref()).toBe(
+        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
+      );
       await rowPos[0].click();
+      expect(onNnsStakeTokens).not.toBeCalled();
+
+      await rowPos[0].getStakeButtonPo().click();
       expect(onNnsStakeTokens).toBeCalledTimes(1);
       expect(onNnsStakeTokens).toBeCalledWith({
         detail: {
@@ -406,16 +460,26 @@ describe("ProjectsTable", () => {
         },
       });
 
+      expect(await rowPos[1].getHref()).toBe(
+        `/neurons/?u=${snsCanisterId.toText()}`
+      );
       await rowPos[1].click();
+      expect(onNnsStakeTokens).toBeCalledTimes(1);
+
+      await rowPos[1].getStakeButtonPo().click();
       expect(onNnsStakeTokens).toBeCalledTimes(2);
       expect(onNnsStakeTokens).toBeCalledWith({
         detail: {
           universeId: snsCanisterId.toText(),
         },
       });
+      expect(console.error).toBeCalledTimes(0);
     });
 
     it("should not dispatch nnsStakeTokens on row click when not signed in", async () => {
+      // To ignore "Error: Not implemented: navigation (except hash changes)" that comes after the test run.
+      vi.spyOn(console, "error").mockReturnValue();
+
       setNoIdentity();
       neuronsStore.setNeurons({
         neurons: [],
@@ -432,25 +496,42 @@ describe("ProjectsTable", () => {
       expect(rowPos).toHaveLength(2);
 
       expect(onNnsStakeTokens).not.toBeCalled();
+      expect(await rowPos[0].getHref()).toBe(
+        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
+      );
       await rowPos[0].click();
       expect(onNnsStakeTokens).not.toBeCalled();
 
+      expect(await rowPos[1].getHref()).toBe(
+        `/neurons/?u=${snsCanisterId.toText()}`
+      );
       await rowPos[1].click();
       expect(onNnsStakeTokens).not.toBeCalled();
+      expect(console.error).toBeCalledTimes(0);
     });
 
     it("should not dispatch nnsStakeTokens on row click when neurons not loaded", async () => {
+      // To ignore "Error: Not implemented: navigation (except hash changes)" that comes after the test run.
+      vi.spyOn(console, "error").mockReturnValue();
+
       const onNnsStakeTokens = vi.fn();
       const po = renderComponent({ onNnsStakeTokens });
       const rowPos = await po.getProjectsTableRowPos();
       expect(rowPos).toHaveLength(2);
 
       expect(onNnsStakeTokens).not.toBeCalled();
+      expect(await rowPos[0].getHref()).toBe(
+        `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
+      );
       await rowPos[0].click();
       expect(onNnsStakeTokens).not.toBeCalled();
 
+      expect(await rowPos[1].getHref()).toBe(
+        `/neurons/?u=${snsCanisterId.toText()}`
+      );
       await rowPos[1].click();
       expect(onNnsStakeTokens).not.toBeCalled();
+      expect(console.error).toBeCalledTimes(0);
     });
 
     it("should display stake in USD", async () => {

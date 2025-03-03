@@ -15,6 +15,7 @@
   export let userTokensData: Array<UserToken>;
   export let firstColumnHeader: string;
   export let order: TokensTableOrder = [];
+  export let displayTableSettings = false;
 
   let enableSorting: boolean;
   $: enableSorting = order.length > 0;
@@ -62,8 +63,9 @@
   {columns}
   bind:order
   disableMobileSorting
+  {displayTableSettings}
   on:nnsAction
 >
   <slot name="last-row" slot="last-row" />
-  <slot name="header-icon" slot="header-icon" />
+  <slot name="settings-popover" slot="settings-popover" />
 </ResponsiveTable>

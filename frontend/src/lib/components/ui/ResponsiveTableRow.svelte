@@ -78,7 +78,11 @@
       {#if nonNullish(column.cellComponent)}
         <span class="middle-cell-label">{column.title}</span>
         <div class="cell-body">
-          <svelte:component this={column.cellComponent} {rowData} />
+          <svelte:component
+            this={column.cellComponent}
+            on:nnsAction
+            {rowData}
+          />
         </div>
       {/if}
     </div>

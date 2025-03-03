@@ -1437,7 +1437,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 5409964721936268,
+    "icrc1_total_supply": 5413485600546028,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1824,7 +1824,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999792780000,
+    "icrc1_total_supply": 99999792060000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2226,7 +2226,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041681841547654797,
+    "icrc1_total_supply": 1041668936704746391,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2871,7 +2871,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11660397603481324,
+    "icrc1_total_supply": 11661325973174482,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4247,6 +4247,19 @@
               "target_method_name": "set_canister_ids"
             }
           }
+        },
+        {
+          "id": 2000,
+          "name": "Set Converter Settings",
+          "description": "Updates the converter settings through SNS governance",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "kw5rk-raaaa-aaaai-qpfoa-cai",
+              "target_canister_id": "kw5rk-raaaa-aaaai-qpfoa-cai",
+              "validator_method_name": "validate_set_settings",
+              "target_method_name": "set_settings"
+            }
+          }
         }
       ]
     },
@@ -4376,7 +4389,7 @@
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2323890163812797836,
+    "icrc1_total_supply": 2321410134977968632,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4936,7 +4949,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999799870000,
+    "icrc1_total_supply": 1999999785640000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -8275,7 +8288,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100120635209219944,
+    "icrc1_total_supply": 100127553223237441,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

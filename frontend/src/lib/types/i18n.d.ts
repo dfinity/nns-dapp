@@ -137,6 +137,7 @@ interface I18nError {
   refresh_voting_power: string;
   unknown_topic_title: string;
   unknown_proposal_status_title: string;
+  canister_tooltip: string;
 }
 
 interface I18nWarning {
@@ -1209,6 +1210,7 @@ interface I18nTokens {
   update_imported_token_success: string;
   ledger_canister: string;
   index_canister: string;
+  ledger_canister_error_tooltip: string;
 }
 
 interface I18nImport_token {

@@ -289,4 +289,13 @@ export class AppPo extends BasePageObject {
   async toggleSidebar(): Promise<void> {
     await this.getButton("menu-collapse").click();
   }
+
+  async scrollToTop(): Promise<void> {
+    const scrollableContainerSelectors =
+      ".scrollable-content, .scrollable-island, .scrollable-content-end";
+    for (const container of await this.root.querySelectorAll(
+      scrollableContainerSelectors
+    ))
+      await container.scrollTo(0, 0);
+  }
 }

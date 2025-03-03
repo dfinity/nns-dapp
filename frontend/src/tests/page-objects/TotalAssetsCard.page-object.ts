@@ -37,4 +37,8 @@ export class TotalAssetsCardPo extends BasePageObject {
   async hasError(): Promise<boolean> {
     return this.getIcpExchangeRatePo().hasError();
   }
+
+  async waitForLoaded(): Promise<void> {
+    await this.waitForAbsent("spinner");
+  }
 }

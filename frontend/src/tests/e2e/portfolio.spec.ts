@@ -1,6 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  replaceContent,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 const VIEWPORT_SIZES = {
@@ -18,6 +22,21 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await expect(page).toHaveTitle("Portfolio / NNS Dapp");
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
+
+  await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
+  await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
+
+  // The governance metrics are only updated once a day so for the first 24h
+  // after a snapshot is created, the metrics might be different than what
+  // we expectand we need to replace them with the expected value.
+  if ((await appPo.getMenuItemsPo().getTvlMetric()) === "$99") {
+    await replaceContent({
+      page,
+      selectors: ['[data-tid="tvl-metric"]'],
+      pattern: /\$[0-9’]+/,
+      replacements: ["$4’500’001’000"],
+    });
+  }
   await expect(page).toHaveScreenshot(`initial_desktop.png`);
 
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
@@ -41,6 +60,8 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await appPo.waitForNotBusy();
 
   step("Stake neuron (for voting)");
+  // Scroll to top to make the header visible
+  await appPo.scrollToTop();
   await appPo.goToStaking();
   const stake = 15;
   await appPo

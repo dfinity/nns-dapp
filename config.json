@@ -18,7 +18,8 @@
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        }
+        },
+        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
       }
     },
     "beta": {
@@ -28,7 +29,8 @@
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        }
+        },
+        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
       }
     },
     "devenv_llorenc": {
@@ -93,8 +95,7 @@
           "ENABLE_USD_VALUES_FOR_NEURONS": true,
           "ENABLE_PORTFOLIO_PAGE": true,
           "ENABLE_IMPORT_TOKEN_BY_URL": true
-        },
-        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
+        }
       }
     },
     "build": {
@@ -108,9 +109,9 @@
         "DIDC_VERSION": "didc 0.4.0",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2025-02-12",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2025-02-13_03-06-base",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-02-13_03-06-base"
+        "SNSDEMO_RELEASE": "release-2025-02-26.1",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2025-02-20_10-16-disable-best-effort-messaging",
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-02-20_10-16-disable-best-effort-messaging"
       },
       "packtool": ""
     }

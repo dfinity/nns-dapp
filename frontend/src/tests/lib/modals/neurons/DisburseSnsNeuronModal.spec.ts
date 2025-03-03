@@ -15,11 +15,14 @@ import {
 } from "$tests/mocks/sns-accounts.mock";
 import { mockSnsNeuron, mockSnsNeuronId } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { DisburseSnsNeuronModalPo } from "$tests/page-objects/DisburseSnsNeuronModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import type { RenderResult } from "@testing-library/svelte";
+import type { SvelteComponent } from "svelte";
 
 vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/services/sns-accounts.services");
@@ -30,10 +33,11 @@ describe("DisburseSnsNeuronModal", () => {
   const rootCanisterId = principal(1);
   const ledgerCanisterId = principal(2);
   const principalString = rootCanisterId.toText();
+
   const renderDisburseModal = async (
     neuron: SnsNeuron,
     reloadNeuron: () => Promise<void> = () => Promise.resolve()
-  ): Promise<RenderResult<Component>> => {
+  ): Promise<RenderResult<SvelteComponent>> => {
     return renderModal({
       component: DisburseSnsNeuronModal,
       props: {
@@ -42,6 +46,18 @@ describe("DisburseSnsNeuronModal", () => {
         reloadNeuron: reloadNeuron,
       },
     });
+  };
+
+  const renderComponent = async ({
+    neuron,
+    reloadNeuron,
+  }: {
+    neuron: SnsNeuron;
+    reloadNeuron?: () => Promise<void>;
+  }): Promise<DisburseSnsNeuronModalPo> => {
+    const { container } = await renderDisburseModal(neuron, reloadNeuron);
+
+    return DisburseSnsNeuronModalPo.under(new JestPageObjectElement(container));
   };
 
   beforeEach(() => {
@@ -69,33 +85,31 @@ describe("DisburseSnsNeuronModal", () => {
   it("should display modal", async () => {
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const { container } = await renderDisburseModal(mockSnsNeuron);
+    const po = await renderComponent({ neuron: mockSnsNeuron });
 
-    expect(container.querySelector("div.modal")).not.toBeNull();
+    expect(await po.isPresent()).toBe(true);
   });
 
   it("should render a confirmation screen", async () => {
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const { queryByTestId } = await renderDisburseModal(mockSnsNeuron);
+    const po = await renderComponent({ neuron: mockSnsNeuron });
 
-    await waitFor(() =>
-      expect(queryByTestId("confirm-disburse-screen")).not.toBeNull()
-    );
+    expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(true);
   });
 
   it("should call disburse service", async () => {
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const { queryByTestId } = await renderDisburseModal(mockSnsNeuron);
+    const po = await renderComponent({ neuron: mockSnsNeuron });
 
-    expect(queryByTestId("confirm-disburse-screen")).not.toBeNull();
+    expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(true);
 
-    const confirmButton = queryByTestId("disburse-neuron-button");
-    expect(confirmButton).not.toBeNull();
+    expect(snsGovernanceApi.disburse).toBeCalledTimes(0);
 
-    confirmButton && (await fireEvent.click(confirmButton));
-    await waitFor(() => expect(snsGovernanceApi.disburse).toBeCalledTimes(1));
+    await po.getConfirmDisburseNeuronPo().clickConfirm();
+
+    expect(snsGovernanceApi.disburse).toBeCalledTimes(1);
     expect(snsGovernanceApi.disburse).toBeCalledWith({
       rootCanisterId: mockSnsMainAccount.principal,
       identity: testIdentity,
@@ -107,19 +121,15 @@ describe("DisburseSnsNeuronModal", () => {
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
     const reloadNeuron = vi.fn().mockResolvedValue(null);
-    const { queryByTestId } = await renderDisburseModal(
-      mockSnsNeuron,
-      reloadNeuron
-    );
+    const po = await renderComponent({ neuron: mockSnsNeuron, reloadNeuron });
 
-    expect(queryByTestId("confirm-disburse-screen")).not.toBeNull();
+    expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(true);
 
-    const confirmButton = queryByTestId("disburse-neuron-button");
-    expect(confirmButton).not.toBeNull();
+    expect(reloadNeuron).toBeCalledTimes(0);
 
-    confirmButton && (await fireEvent.click(confirmButton));
+    await po.getConfirmDisburseNeuronPo().clickConfirm();
 
-    await waitFor(() => expect(reloadNeuron).toBeCalled());
+    expect(reloadNeuron).toBeCalledTimes(1);
   });
 
   it("should trigger the project account load", async () => {
@@ -127,27 +137,26 @@ describe("DisburseSnsNeuronModal", () => {
 
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
-    const reloadNeuron = vi.fn().mockResolvedValue(null);
-    await renderDisburseModal(mockSnsNeuron, reloadNeuron);
+    expect(loadSnsAccounts).toBeCalledTimes(0);
 
-    await waitFor(() => expect(loadSnsAccounts).toBeCalled());
+    const reloadNeuron = vi.fn().mockResolvedValue(null);
+    await renderComponent({ neuron: mockSnsNeuron, reloadNeuron });
+
+    await runResolvedPromises();
+    expect(loadSnsAccounts).toBeCalledTimes(1);
   });
 
   it("should not trigger the project account load if already available", async () => {
+    // Here we don't reset icrcAccountsStore.
+
     page.mock({ data: { universe: principalString, neuron: "12344" } });
 
+    expect(loadSnsAccounts).toBeCalledTimes(0);
+
     const reloadNeuron = vi.fn().mockResolvedValue(null);
-    const { queryByTestId } = await renderDisburseModal(
-      mockSnsNeuron,
-      reloadNeuron
-    );
+    await renderComponent({ neuron: mockSnsNeuron, reloadNeuron });
 
-    await waitFor(() =>
-      expect(queryByTestId("disburse-neuron-button")).not.toBeNull()
-    );
-
-    await fireEvent.click(queryByTestId("disburse-neuron-button") as Element);
-
-    await waitFor(() => expect(loadSnsAccounts).not.toBeCalled());
+    await runResolvedPromises();
+    expect(loadSnsAccounts).toBeCalledTimes(0);
   });
 });

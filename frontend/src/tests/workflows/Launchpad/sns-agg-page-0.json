@@ -290,7 +290,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999962501694000,
+    "icrc1_total_supply": 799999960556694000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -660,6 +660,32 @@
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "register_external_achievement_validate",
               "target_method_name": "register_external_achievement"
+            }
+          }
+        },
+        {
+          "id": 1013,
+          "name": "Register a bot",
+          "description": "This will register a new bot to extend the capabilities of OpenChat",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+              "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+              "validator_method_name": "register_bot_validate",
+              "target_method_name": "register_bot"
+            }
+          }
+        },
+        {
+          "id": 1014,
+          "name": "Remove a bot",
+          "description": "This will remove an existing bot from OpenChat",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+              "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+              "validator_method_name": "remove_bot_validate",
+              "target_method_name": "remove_bot"
             }
           }
         },
@@ -1178,7 +1204,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10137943716727414,
+    "icrc1_total_supply": 10139082203164335,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1916,7 +1942,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 615104054883909,
+    "icrc1_total_supply": 615345512302664,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2321,7 +2347,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 103859093052309536,
+    "icrc1_total_supply": 103933472757360937,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2978,7 +3004,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 930004323352565846,
+    "icrc1_total_supply": 930234781188688883,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

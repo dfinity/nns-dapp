@@ -12,7 +12,7 @@ concurrency:
 jobs:
   tag_tip:
     if: github.event.pull_request.merged
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Tag main as tip

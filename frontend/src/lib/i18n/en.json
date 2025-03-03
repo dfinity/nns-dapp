@@ -132,7 +132,8 @@
     "index_canister_validation": "An error occurred while validating the index canister ID. It appears that $indexCanister might not be a valid index canister ID.",
     "refresh_voting_power": "An error occurred while confirming following.",
     "unknown_topic_title": "Unknown Topic ($topicId)",
-    "unknown_proposal_status_title": "Unknown Proposal Status ($statusId)"
+    "unknown_proposal_status_title": "Unknown Proposal Status ($statusId)",
+    "canister_tooltip": "The canister is not responding. This may be because it ran out of cycles. Please check back later."
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
@@ -1144,7 +1145,8 @@
     "remove_imported_token_success": "The token has been successfully removed!",
     "update_imported_token_success": "The token has been successfully updated!",
     "ledger_canister": "Ledger Canister",
-    "index_canister": "Index Canister"
+    "index_canister": "Index Canister",
+    "ledger_canister_error_tooltip": "The ledger canister is not responding. This may be because it ran out of cycles. Please check back later."
   },
   "import_token": {
     "import_token": "Import Token",

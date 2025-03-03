@@ -11,6 +11,7 @@ import {
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { getAnonymousIdentity } from "$lib/services/auth.services";
+import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -271,121 +272,161 @@ describe("Portfolio route", () => {
       });
     });
 
-    it("should render the Portfolio page with the provided data", async () => {
-      setAccountsForTesting({
-        main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
+    describe("should render the Portfolio page with the provided data", async () => {
+      beforeEach(() => {
+        setAccountsForTesting({
+          main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
+        });
+
+        setIcpSwapUsdPrices({
+          [CKBTC_UNIVERSE_CANISTER_ID.toText()]: 100_000,
+          [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: 100_000,
+          [CKETH_UNIVERSE_CANISTER_ID.toText()]: 10_000,
+          [LEDGER_CANISTER_ID.toText()]: 10,
+          [importedToken1Id.toText()]: 10,
+          [tetrisSNS.ledgerCanisterId.toText()]: 10,
+        });
+
+        const nnsNeuronWithStake = {
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            cachedNeuronStake: nnsNeuronStake,
+          },
+        };
+        neuronsStore.setNeurons({
+          neurons: [nnsNeuronWithStake],
+          certified: true,
+        });
+
+        const snsNeuronWithStake = createMockSnsNeuron({
+          stake: tetrisSnsNeuronStake,
+        });
+        snsNeuronsStore.setNeurons({
+          rootCanisterId: tetrisSNS.rootCanisterId,
+          neurons: [snsNeuronWithStake],
+          certified: true,
+        });
       });
-      setIcpSwapUsdPrices({
-        [CKBTC_UNIVERSE_CANISTER_ID.toText()]: 100_000,
-        [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: 100_000,
-        [CKETH_UNIVERSE_CANISTER_ID.toText()]: 10_000,
-        [LEDGER_CANISTER_ID.toText()]: 10,
-        [importedToken1Id.toText()]: 10,
-        [tetrisSNS.ledgerCanisterId.toText()]: 10,
+
+      it("should render the Portfolio page with the provided data", async () => {
+        const po = await renderPage();
+        const portfolioPagePo = po.getPortfolioPagePo();
+
+        // 1BTC -> $100_000
+        // 1BTCTest -> $100_000
+        // 100ICP -> $1000
+        // 0.1ETH -> $1000
+        // 1USDC -> $1
+        // 100ZTOKEN1 -> $1000
+        // 2Tetris -> $20
+        // 1ICP Neuron -> 10$
+        // 20Tetris Neuron -> 200$
+        // --------------------
+        // Total: $203’231
+        expect(
+          await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
+        ).toBe("$203’231");
+        // $1 -> 0.1ICP
+        expect(
+          await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
+        ).toBe("20’323.10 ICP");
+
+        const heldTokensCardPo = portfolioPagePo.getHeldTokensCardPo();
+        const heldTokensTitles = await heldTokensCardPo.getHeldTokensTitles();
+        const heldTokensBalanceInUsdBalance =
+          await heldTokensCardPo.getHeldTokensBalanceInUsd();
+        const heldTokensBalanceInNativeBalance =
+          await heldTokensCardPo.getHeldTokensBalanceInNativeCurrency();
+
+        expect(heldTokensTitles.length).toBe(4);
+        expect(heldTokensTitles).toEqual([
+          "Internet Computer",
+          "ckBTC",
+          "ckTESTBTC",
+          "ckETH",
+        ]);
+
+        expect(heldTokensBalanceInUsdBalance.length).toBe(4);
+        expect(heldTokensBalanceInUsdBalance).toEqual([
+          "$1’000.00",
+          "$100’000.00",
+          "$100’000.00",
+          "$1’000.00",
+        ]);
+
+        expect(heldTokensBalanceInNativeBalance.length).toBe(4);
+        expect(heldTokensBalanceInNativeBalance).toEqual([
+          "100.00 ICP",
+          "1.00 ckBTC",
+          "1.00 ckTESTBTC",
+          "0.10 ckETH",
+        ]);
+
+        expect(await heldTokensCardPo.getInfoRow().isVisible()).toBe(false);
+
+        const stakedTokensCardPo = portfolioPagePo.getStakedTokensCardPo();
+        const stakedTokensTitles =
+          await stakedTokensCardPo.getStakedTokensTitle();
+        const stakedTokensMaturities =
+          await stakedTokensCardPo.getStakedTokensMaturity();
+        const stakedTokensStakeInUsd =
+          await stakedTokensCardPo.getStakedTokensStakeInUsd();
+        const stakedTokensStakeInNativeCurrency =
+          await stakedTokensCardPo.getStakedTokensStakeInNativeCurrency();
+
+        expect(stakedTokensTitles.length).toBe(2);
+        expect(stakedTokensTitles).toEqual(["Internet Computer", "Tetris"]);
+
+        expect(stakedTokensMaturities.length).toBe(2);
+        expect(stakedTokensMaturities).toEqual(["0", "2.00"]);
+
+        expect(stakedTokensStakeInUsd.length).toBe(2);
+        expect(stakedTokensStakeInUsd).toEqual(["$10.00", "$200.00"]);
+
+        expect(stakedTokensStakeInNativeCurrency.length).toBe(2);
+        expect(stakedTokensStakeInNativeCurrency).toEqual([
+          "1.00 ICP",
+          "20.00 TST",
+        ]);
+
+        expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
 
-      const nnsNeuronWithStake = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockNeuron.fullNeuron,
-          cachedNeuronStake: nnsNeuronStake,
-        },
-      };
-      neuronsStore.setNeurons({
-        neurons: [nnsNeuronWithStake],
-        certified: true,
+      it("should not show failed SNS", async () => {
+        failedActionableSnsesStore.add(tetrisSNS.rootCanisterId.toText());
+
+        const po = await renderPage();
+        const portfolioPagePo = po.getPortfolioPagePo();
+
+        // 1BTC -> $100_000
+        // 1BTCTest -> $100_000
+        // 100ICP -> $1000
+        // 0.1ETH -> $1000
+        // 1USDC -> $1
+        // 100ZTOKEN1 -> $1000
+        // 2Tetris -> $20
+        // 1ICP Neuron -> 10$
+        // 20Tetris Neuron -> 200$ FAILED proposal
+        // --------------------
+        // Total: $203’031
+        expect(
+          await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
+        ).toBe("$203’031");
+        // $1 -> 0.1ICP
+        expect(
+          await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
+        ).toBe("20’303.10 ICP");
+
+        const stakedTokensCardPo = portfolioPagePo.getStakedTokensCardPo();
+        const stakedTokensTitles =
+          await stakedTokensCardPo.getStakedTokensTitle();
+
+        expect(stakedTokensTitles.length).toBe(1);
+        expect(stakedTokensTitles).not.toContain(["Tetris"]);
+
+        expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
-
-      const snsNeuronWithStake = createMockSnsNeuron({
-        stake: tetrisSnsNeuronStake,
-      });
-      snsNeuronsStore.setNeurons({
-        rootCanisterId: tetrisSNS.rootCanisterId,
-        neurons: [snsNeuronWithStake],
-        certified: true,
-      });
-
-      const po = await renderPage();
-      const portfolioPagePo = po.getPortfolioPagePo();
-
-      // 1BTC -> $100_000
-      // 1BTCTest -> $100_000
-      // 100ICP -> $1000
-      // 0.1ETH -> $1000
-      // 1USDC -> $1
-      // 100ZTOKEN1 -> $1000
-      // 2Tetris -> $20
-      // 1ICP Neuron -> 10$
-      // 20Tetris Neuron -> 200$
-      // --------------------
-      // Total: $203’231.00
-      expect(
-        await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
-      ).toBe("$203’231.00");
-      // $1 -> 0.1ICP
-      expect(
-        await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
-      ).toBe("20’323.10 ICP");
-
-      const heldTokensCardPo = portfolioPagePo.getHeldTokensCardPo();
-      const heldTokensTitles = await heldTokensCardPo.getHeldTokensTitles();
-      const heldTokensBalanceInUsdBalance =
-        await heldTokensCardPo.getHeldTokensBalanceInUsd();
-      const heldTokensBalanceInNativeBalance =
-        await heldTokensCardPo.getHeldTokensBalanceInNativeCurrency();
-
-      expect(heldTokensTitles.length).toBe(4);
-      expect(heldTokensTitles).toEqual([
-        "Internet Computer",
-        "ckBTC",
-        "ckTESTBTC",
-        "ckETH",
-      ]);
-
-      expect(heldTokensBalanceInUsdBalance.length).toBe(4);
-      expect(heldTokensBalanceInUsdBalance).toEqual([
-        "$1’000.00",
-        "$100’000.00",
-        "$100’000.00",
-        "$1’000.00",
-      ]);
-
-      expect(heldTokensBalanceInNativeBalance.length).toBe(4);
-      expect(heldTokensBalanceInNativeBalance).toEqual([
-        "100.00 ICP",
-        "1.00 ckBTC",
-        "1.00 ckTESTBTC",
-        "0.10 ckETH",
-      ]);
-
-      expect(await heldTokensCardPo.getInfoRow().isVisible()).toBe(false);
-
-      const stakedTokensCardPo = portfolioPagePo.getStakedTokensCardPo();
-      const stakedTokensTitles =
-        await stakedTokensCardPo.getStakedTokensTitle();
-      const stakedTokensMaturities =
-        await stakedTokensCardPo.getStakedTokensMaturity();
-      const stakedTokensStakeInUsd =
-        await stakedTokensCardPo.getStakedTokensStakeInUsd();
-      const stakedTokensStakeInNativeCurrency =
-        await stakedTokensCardPo.getStakedTokensStakeInNativeCurrency();
-
-      expect(stakedTokensTitles.length).toBe(2);
-      expect(stakedTokensTitles).toEqual(["Internet Computer", "Tetris"]);
-
-      expect(stakedTokensMaturities.length).toBe(2);
-      expect(stakedTokensMaturities).toEqual(["0", "2.00"]);
-
-      expect(stakedTokensStakeInUsd.length).toBe(2);
-      expect(stakedTokensStakeInUsd).toEqual(["$10.00", "$200.00"]);
-
-      expect(stakedTokensStakeInNativeCurrency.length).toBe(2);
-      expect(stakedTokensStakeInNativeCurrency).toEqual([
-        "1.00 ICP",
-        "20.00 TST",
-      ]);
-
-      expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
     });
   });
 });

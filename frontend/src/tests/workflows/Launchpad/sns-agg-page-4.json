@@ -4010,7 +4010,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100004615078011667,
+    "icrc1_total_supply": 100008575221334341,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4844,11 +4844,11 @@
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
-      "neuron_minimum_stake_e8s": 300000000,
+      "neuron_minimum_stake_e8s": 600000000,
       "max_neuron_age_for_age_bonus": 36288000,
-      "initial_voting_period_seconds": 172800,
+      "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 86400,
-      "reject_cost_e8s": 500000000000,
+      "reject_cost_e8s": 42069000000,
       "max_proposals_to_keep_per_action": 100,
       "wait_for_quiet_deadline_increase_seconds": 86400,
       "max_number_of_neurons": 200000,
@@ -4960,7 +4960,7 @@
       ]
     ],
     "icrc1_fee": [500000000],
-    "icrc1_total_supply": 4197482927002230,
+    "icrc1_total_supply": 4199745497059576,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5616,7 +5616,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 213412031289160000,
+    "icrc1_total_supply": 213431861744259141,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -5959,7 +5959,7 @@
         "hmh62-uiaaa-aaaai-actxq-cai",
         "ewirk-vqaaa-aaaaj-qa57q-cai"
       ],
-      "archives": []
+      "archives": ["nzncd-niaaa-aaaaq-aaepa-cai"]
     },
     "meta": {
       "url": "https://fuelev.ai/",
@@ -6135,7 +6135,7 @@
     },
     "swap_state": {
       "swap": {
-        "lifecycle": 2,
+        "lifecycle": 3,
         "init": {
           "nns_proposal_id": 134995,
           "sns_root_canister_id": "nllv2-byaaa-aaaaq-aaema-cai",
@@ -6894,8 +6894,8 @@
         "decentralization_sale_open_timestamp_seconds": 1738221300
       },
       "derived": {
-        "buyer_total_icp_e8s": 18805377659615,
-        "sns_tokens_per_icp": 1329.407
+        "buyer_total_icp_e8s": 20539941559379,
+        "sns_tokens_per_icp": 1217.1407
       }
     },
     "icrc1_metadata": [
@@ -6937,7 +6937,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000000000000000,
+    "icrc1_total_supply": 99999999201600000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7697,18 +7697,1815 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 1329.406982421875,
-      "buyer_total_icp_e8s": 18805377659615,
-      "cf_participant_count": 0,
-      "neurons_fund_participation_icp_e8s": 8411188833192,
-      "direct_participation_icp_e8s": 10394188826423,
-      "direct_participant_count": 344,
-      "cf_neuron_count": 0
+      "sns_tokens_per_icp": 1217.1407470703125,
+      "buyer_total_icp_e8s": 20539941559379,
+      "cf_participant_count": 64,
+      "neurons_fund_participation_icp_e8s": 8816968789320,
+      "direct_participation_icp_e8s": 11722972770059,
+      "direct_participant_count": 372,
+      "cf_neuron_count": 91
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1738221300,
-      "lifecycle": 2,
-      "decentralization_swap_termination_timestamp_seconds": null
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1739517303
+    }
+  },
+  {
+    "index": 46,
+    "canister_ids": {
+      "root_canister_id": "n6mex-aqaaa-aaaaq-aaepq-cai",
+      "governance_canister_id": "icx6s-lyaaa-aaaaq-aaeqa-cai",
+      "index_canister_id": "iluvo-5qaaa-aaaaq-aaerq-cai",
+      "swap_canister_id": "imvt2-qiaaa-aaaaq-aaera-cai",
+      "ledger_canister_id": "ifwyg-gaaaa-aaaaq-aaeqq-cai"
+    },
+    "list_sns_canisters": {
+      "root": "n6mex-aqaaa-aaaaq-aaepq-cai",
+      "swap": "imvt2-qiaaa-aaaaq-aaera-cai",
+      "ledger": "ifwyg-gaaaa-aaaaq-aaeqq-cai",
+      "index": "iluvo-5qaaa-aaaaq-aaerq-cai",
+      "governance": "icx6s-lyaaa-aaaaq-aaeqa-cai",
+      "dapps": [
+        "sf467-nyaaa-aaaae-qajpq-cai",
+        "xzhe2-gqaaa-aaaae-qajqa-cai",
+        "x6gco-liaaa-aaaae-qajqq-cai",
+        "wpm4r-taaaa-aaaae-qajva-cai"
+      ],
+      "archives": ["i6ted-4yaaa-aaaaq-aaesa-cai"]
+    },
+    "meta": {
+      "url": "https://icexplorer.io",
+      "name": "IC Explorer",
+      "description": "IC Explorer is an ICP explorer hosted on the Internet Computer that aspires to become the leading on-chain AI data factory in the blockchain ecosystem. We are integrating data from the ICP blockchain, other Web3, and Web2 sources to create a unified, highly scalable analytics platform. This fusion of diverse datasets allows users to seamlessly access, analyze, and query blockchain data in real time.\n",
+      "logo": "/v1/sns/root/n6mex-aqaaa-aaaaq-aaepq-cai/logo.png"
+    },
+    "parameters": {
+      "reserved_ids": [],
+      "functions": [
+        {
+          "id": 0,
+          "name": "All non-critical topics",
+          "description": "Catch-all w.r.t to following for non-critical proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 1,
+          "name": "Motion",
+          "description": "Side-effect-less proposals to set general governance direction.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 2,
+          "name": "Manage nervous system parameters",
+          "description": "Proposal to change the core parameters of SNS governance.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 3,
+          "name": "Upgrade SNS controlled canister",
+          "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 4,
+          "name": "Add nervous system function",
+          "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 5,
+          "name": "Remove nervous system function",
+          "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 6,
+          "name": "Execute nervous system function",
+          "description": "Proposal to execute a user-defined nervous system function, previously added by an AddNervousSystemFunction proposal. A canister call will be made when executed.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 7,
+          "name": "Upgrade SNS to next version",
+          "description": "Proposal to upgrade the WASM of a core SNS canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 8,
+          "name": "Manage SNS metadata",
+          "description": "Proposal to change the metadata associated with an SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 9,
+          "name": "Transfer SNS treasury funds",
+          "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 10,
+          "name": "Register dapp canisters",
+          "description": "Proposal to register a dapp canister with the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 11,
+          "name": "Deregister Dapp Canisters",
+          "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 12,
+          "name": "Mint SNS tokens",
+          "description": "Proposal to mint SNS tokens to a specified recipient.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 13,
+          "name": "Manage ledger parameters",
+          "description": "Proposal to change some parameters in the ledger canister.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 14,
+          "name": "Manage dapp canister settings",
+          "description": "Proposal to change canister settings for some dapp canisters.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        }
+      ]
+    },
+    "nervous_system_parameters": {
+      "default_followees": {
+        "followees": []
+      },
+      "max_dissolve_delay_seconds": 189361152,
+      "max_dissolve_delay_bonus_percentage": 100,
+      "max_followees_per_function": 15,
+      "neuron_claimer_permissions": {
+        "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      },
+      "neuron_minimum_stake_e8s": 20000000000,
+      "max_neuron_age_for_age_bonus": 47340288,
+      "initial_voting_period_seconds": 345600,
+      "neuron_minimum_dissolve_delay_to_vote_seconds": 2630016,
+      "reject_cost_e8s": 1000000000000,
+      "max_proposals_to_keep_per_action": 100,
+      "wait_for_quiet_deadline_increase_seconds": 86400,
+      "max_number_of_neurons": 200000,
+      "transaction_fee_e8s": 100000,
+      "max_number_of_proposals_with_ballots": 700,
+      "max_age_bonus_percentage": 25,
+      "neuron_grantable_permissions": {
+        "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      },
+      "voting_rewards_parameters": {
+        "final_reward_rate_basis_points": 50,
+        "initial_reward_rate_basis_points": 100,
+        "reward_rate_transition_duration_seconds": 157788000,
+        "round_duration_seconds": 86400
+      },
+      "maturity_modulation_disabled": false,
+      "max_number_of_principals_per_neuron": 5
+    },
+    "swap_state": {
+      "swap": {
+        "lifecycle": 3,
+        "init": {
+          "nns_proposal_id": 135281,
+          "sns_root_canister_id": "n6mex-aqaaa-aaaaq-aaepq-cai",
+          "neurons_fund_participation": true,
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 10520064,
+            "count": 4
+          },
+          "fallback_controller_principal_ids": [
+            "veab3-45yfd-pm37n-tiqkb-ntu3p-hgitu-qgduf-xcgap-s43l7-dla3c-qqe"
+          ],
+          "max_icp_e8s": null,
+          "neuron_minimum_stake_e8s": 20000000000,
+          "confirmation_text": "I confirm my understanding of the responsibilities and risks associated with participating in this token swap.\n",
+          "swap_start_timestamp_seconds": 1739815200,
+          "swap_due_timestamp_seconds": 1740679200,
+          "min_participants": 100,
+          "sns_token_e8s": 40000000000000000,
+          "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+          "transaction_fee_e8s": 100000,
+          "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+          "sns_ledger_canister_id": "ifwyg-gaaaa-aaaaq-aaeqq-cai",
+          "neurons_fund_participation_constraints": {
+            "coefficient_intervals": [
+              {
+                "slope_numerator": 0,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 0,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1228730141155
+              },
+              {
+                "slope_numerator": 137975170551598,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1228730141155,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1234307003143
+              },
+              {
+                "slope_numerator": 248726310053051,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1234307003143,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1379953906317
+              },
+              {
+                "slope_numerator": 256101632671328,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1379953906317,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1379970506778
+              },
+              {
+                "slope_numerator": 263475644233903,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1379970506778,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1380110251020
+              },
+              {
+                "slope_numerator": 270838632490663,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1380110251020,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1380110711582
+              },
+              {
+                "slope_numerator": 278201584456584,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1380110711582,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1380110742481
+              },
+              {
+                "slope_numerator": 285564533987716,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1380110742481,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1380110787441
+              },
+              {
+                "slope_numerator": 292927479976153,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1380110787441,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1380110798722
+              },
+              {
+                "slope_numerator": 300290425075691,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1380110798722,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1381870395312
+              },
+              {
+                "slope_numerator": 307516576873598,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1381870395312,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1381870412970
+              },
+              {
+                "slope_numerator": 314742727317147,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1381870412970,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1381870682112
+              },
+              {
+                "slope_numerator": 321968857117947,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1381870682112,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1381870702576
+              },
+              {
+                "slope_numerator": 329194985349207,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1381870702576,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1381870722379
+              },
+              {
+                "slope_numerator": 336421112061570,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1381870722379,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1381870731786
+              },
+              {
+                "slope_numerator": 343647238052450,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1381870731786,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1381870959506
+              },
+              {
+                "slope_numerator": 350873346577643,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1381870959506,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1381870971224
+              },
+              {
+                "slope_numerator": 358099454204138,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1381870971224,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1519999185216
+              },
+              {
+                "slope_numerator": 360418587422564,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1519999185216,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1520239199919
+              },
+              {
+                "slope_numerator": 362734087526085,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1520239199919,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1634022768642
+              },
+              {
+                "slope_numerator": 363944500720228,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1634022768642,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 1683912837837
+              },
+              {
+                "slope_numerator": 364898135709464,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 1683912837837,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 2107320487608
+              },
+              {
+                "slope_numerator": 365123297667501,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2107320487608,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 2191053334914
+              },
+              {
+                "slope_numerator": 365305482037922,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2191053334914,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 2461000746198
+              },
+              {
+                "slope_numerator": 365406538578297,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2461000746198,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 2780660688250
+              },
+              {
+                "slope_numerator": 365463828115303,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2780660688250,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 2888287189691
+              },
+              {
+                "slope_numerator": 365512253332149,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2888287189691,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 2917968253928
+              },
+              {
+                "slope_numerator": 365558563087309,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 2917968253928,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3123152731868
+              },
+              {
+                "slope_numerator": 365593176778822,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3123152731868,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3144853149287
+              },
+              {
+                "slope_numerator": 365626796659118,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3144853149287,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3181761431181
+              },
+              {
+                "slope_numerator": 365658812676380,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3181761431181,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3270003693898
+              },
+              {
+                "slope_numerator": 365687390131557,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3270003693898,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3351009970657
+              },
+              {
+                "slope_numerator": 365713234856921,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3351009970657,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3397927852421
+              },
+              {
+                "slope_numerator": 365737655957272,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3397927852421,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3412110081177
+              },
+              {
+                "slope_numerator": 365761667541889,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3412110081177,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3428402925761
+              },
+              {
+                "slope_numerator": 365785219982119,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3428402925761,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3458458909311
+              },
+              {
+                "slope_numerator": 365807955915897,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3458458909311,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3562239429069
+              },
+              {
+                "slope_numerator": 365828152251484,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3562239429069,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3630825707683
+              },
+              {
+                "slope_numerator": 365846922871097,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3630825707683,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3631383786706
+              },
+              {
+                "slope_numerator": 365865682682615,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3631383786706,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3685454089258
+              },
+              {
+                "slope_numerator": 365883449299767,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3685454089258,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3775556895796
+              },
+              {
+                "slope_numerator": 365899769585475,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3775556895796,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3808907963827
+              },
+              {
+                "slope_numerator": 365915611153017,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3808907963827,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3824655981745
+              },
+              {
+                "slope_numerator": 365931236123893,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3824655981745,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 3905914181586
+              },
+              {
+                "slope_numerator": 365945830345832,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 3905914181586,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4081375523002
+              },
+              {
+                "slope_numerator": 365958605171677,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4081375523002,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4098010841519
+              },
+              {
+                "slope_numerator": 365971231130581,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4098010841519,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4134008082530
+              },
+              {
+                "slope_numerator": 365983546904156,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4134008082530,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4227200711147
+              },
+              {
+                "slope_numerator": 365995128833565,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4227200711147,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4233354930626
+              },
+              {
+                "slope_numerator": 366006665526914,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4233354930626,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4328800111952
+              },
+              {
+                "slope_numerator": 366017546102030,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4328800111952,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4334350715286
+              },
+              {
+                "slope_numerator": 366028390986949,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4334350715286,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4415387764810
+              },
+              {
+                "slope_numerator": 366038742610696,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4415387764810,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4518402740030
+              },
+              {
+                "slope_numerator": 366048534978528,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4518402740030,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4604973286528
+              },
+              {
+                "slope_numerator": 366057908213360,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4604973286528,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4725577870667
+              },
+              {
+                "slope_numerator": 366066763821557,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4725577870667,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4751399583292
+              },
+              {
+                "slope_numerator": 366075517569751,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4751399583292,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4753257710112
+              },
+              {
+                "slope_numerator": 366084264101867,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4753257710112,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4883664636303
+              },
+              {
+                "slope_numerator": 366092539778547,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4883664636303,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4925271681861
+              },
+              {
+                "slope_numerator": 366100678923735,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4925271681861,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4930967309201
+              },
+              {
+                "slope_numerator": 366108799856840,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4930967309201,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4963486818503
+              },
+              {
+                "slope_numerator": 366116818940080,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4963486818503,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 4987379219864
+              },
+              {
+                "slope_numerator": 366124765449413,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 4987379219864,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 5085500447446
+              },
+              {
+                "slope_numerator": 366132432774020,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5085500447446,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 5133010965598
+              },
+              {
+                "slope_numerator": 366139975132824,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5133010965598,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 5145289815632
+              },
+              {
+                "slope_numerator": 366147486216328,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5145289815632,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 5248008858478
+              },
+              {
+                "slope_numerator": 366154751175849,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5248008858478,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 5681865559346
+              },
+              {
+                "slope_numerator": 366161233801263,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5681865559346,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 5833196363348
+              },
+              {
+                "slope_numerator": 366167524078450,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5833196363348,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 5925720548347
+              },
+              {
+                "slope_numerator": 366173713828673,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5925720548347,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 5930942812928
+              },
+              {
+                "slope_numerator": 366179898147198,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 5930942812928,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 6028325680179
+              },
+              {
+                "slope_numerator": 366185983463672,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6028325680179,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 6198124721722
+              },
+              {
+                "slope_numerator": 366191905963294,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6198124721722,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 6351169349064
+              },
+              {
+                "slope_numerator": 366197691505962,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6351169349064,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 6454301566667
+              },
+              {
+                "slope_numerator": 366203389563827,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6454301566667,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 6573810721138
+              },
+              {
+                "slope_numerator": 366208990742139,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6573810721138,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 6668923444892
+              },
+              {
+                "slope_numerator": 366214518065064,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6668923444892,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 6725632557587
+              },
+              {
+                "slope_numerator": 366220002654664,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6725632557587,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 6943054192456
+              },
+              {
+                "slope_numerator": 366225331829481,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 6943054192456,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 7408119135792
+              },
+              {
+                "slope_numerator": 366230368038537,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7408119135792,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 7670797654230
+              },
+              {
+                "slope_numerator": 366235259043474,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7670797654230,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 7732702369594
+              },
+              {
+                "slope_numerator": 366240117699785,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7732702369594,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 7825943078085
+              },
+              {
+                "slope_numerator": 366244928894444,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7825943078085,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 7922945272245
+              },
+              {
+                "slope_numerator": 366249692261742,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 7922945272245,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 8323214715600
+              },
+              {
+                "slope_numerator": 366254273592014,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 8323214715600,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 8426846964283
+              },
+              {
+                "slope_numerator": 366258811475638,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 8426846964283,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 8499606147278
+              },
+              {
+                "slope_numerator": 366263319689592,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 8499606147278,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 8525034681494
+              },
+              {
+                "slope_numerator": 366267817692063,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 8525034681494,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 8557404412530
+              },
+              {
+                "slope_numerator": 366272302811739,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 8557404412530,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 8749437104135
+              },
+              {
+                "slope_numerator": 366276714090376,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 8749437104135,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 8878679920083
+              },
+              {
+                "slope_numerator": 366281078049266,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 8878679920083,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 9470726275683
+              },
+              {
+                "slope_numerator": 366285246999645,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 9470726275683,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 9671502950431
+              },
+              {
+                "slope_numerator": 366289357050863,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 9671502950431,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 9892464437886
+              },
+              {
+                "slope_numerator": 366293406025998,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 9892464437886,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 9900244458101
+              },
+              {
+                "slope_numerator": 366297452918668,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 9900244458101,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 10699613706401
+              },
+              {
+                "slope_numerator": 366301307868791,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 10699613706401,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 11122733855983
+              },
+              {
+                "slope_numerator": 366305076720048,
+                "intercept_icp_e8s": 0,
+                "from_direct_participation_icp_e8s": 11122733855983,
+                "slope_denominator": 366784665681131,
+                "to_direct_participation_icp_e8s": 18446744073709551615
+              }
+            ],
+            "max_neurons_fund_participation_icp_e8s": 10124522014496,
+            "min_direct_participation_threshold_icp_e8s": 3000000000000,
+            "ideal_matched_participation_function": {
+              "serialized_representation": "{\"t_1\":\"11796.533392053855107112523200\",\"t_2\":\"35389.600176161565321337569600\",\"t_3\":\"58982.666960269275535562616000\",\"t_4\":\"235930.66784107710214225046400\",\"cap\":\"117965.33392053855107112523200\"}"
+            }
+          },
+          "neurons_fund_participants": null,
+          "should_auto_finalize": true,
+          "max_participant_icp_e8s": 5000000000000,
+          "sns_governance_canister_id": "icx6s-lyaaa-aaaaq-aaeqa-cai",
+          "min_direct_participation_icp_e8s": 3000000000000,
+          "restricted_countries": {
+            "iso_codes": [
+              "AF",
+              "BY",
+              "BA",
+              "BI",
+              "CD",
+              "CF",
+              "CN",
+              "CU",
+              "IR",
+              "IQ",
+              "KP",
+              "LB",
+              "LY",
+              "ML",
+              "ME",
+              "MM",
+              "NI",
+              "RU",
+              "RS",
+              "SO",
+              "SD",
+              "SY",
+              "UA",
+              "US",
+              "VE",
+              "YE",
+              "ZW"
+            ]
+          },
+          "min_icp_e8s": null,
+          "max_direct_participation_icp_e8s": 12000000000000
+        },
+        "params": {
+          "min_participant_icp_e8s": 100000000,
+          "neuron_basket_construction_parameters": {
+            "dissolve_delay_interval_seconds": 10520064,
+            "count": 4
+          },
+          "max_icp_e8s": 22124522014496,
+          "swap_due_timestamp_seconds": 1740679200,
+          "min_participants": 100,
+          "sns_token_e8s": 40000000000000000,
+          "sale_delay_seconds": null,
+          "max_participant_icp_e8s": 5000000000000,
+          "min_direct_participation_icp_e8s": 3000000000000,
+          "min_icp_e8s": 3000000000000,
+          "max_direct_participation_icp_e8s": 12000000000000
+        },
+        "open_sns_token_swap_proposal_id": 135281,
+        "decentralization_sale_open_timestamp_seconds": 1739815200
+      },
+      "derived": {
+        "buyer_total_icp_e8s": 22124522014492,
+        "sns_tokens_per_icp": 1807.9486
+      }
+    },
+    "icrc1_metadata": [
+      [
+        "icrc1:logo",
+        {
+          "Text": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHAAAABwCAYAAADG4PRLAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAeHSURBVHgB7Z09c9xEGMf/dpImBeOKMhafIE5Hl/MnwNBQxu6oIGkYKJjYwwdITMVAYZuOKklFeZeOzh6GmpNrZsAwQ5qYKM9z2nV0su60kvbZXZ32N/NY55dkzvr52XftrqGHZFm2QZeEYktdN9U1UT+yoaLIRSlSinOKM369trZ2hh6yhh6ghO1Q3KUYIRcnwZmKlxQTkpoicIIVSNJGdLmPXJyUsDpY5oTiBcmcILIczjSKxxTTLDymFE8oEkTmoZsyohhn/WFMsYOhQzdhl+I06y9Til0MDfqld7Iwi8m2TDNPIp02YrK8YfIYeUtyFUkptl22XtfhgCxvnDyhl2OsrjwmoeBsPMocNXbEM1Bl3RHedbKHQkpxQNl4DEHEMrCUdQmGR0LBmchdjw0IIZKBqvgYqrgqUgjVjdYzkOQ9oMsporwiCQV3l6z3Ha0KpDfILcxjXB9IjuT35Jm6R9awVoSq+u4hIibsU3F6AAtYEcjNZrrsItKEY5K4h450FhjldaKzxE4CozwrdJLYuhGjKuNdRLqyq9oPrWglUMnbR8QWD9u2ThsXoaov8wwRCXapOD1p8g8aCVQjLNxJj/08GXix1b0mIzbGAtV4XhxhkSdFLvHC5Ieb1IFcRieISJMgv9dGGGWgmm0+QsQl2yYr4WoFxpkFb6QwKEpNitBYdPohgUFRujQDVfZNEfHJ0qK0LgPHiPhmaRYuFKgaLgkivhktmwheloFWJx5t8M1PwO8pRHmd0ejyqwzpJUJi4VhppcAQs+/z74EffgE++VZOIsv79TXwG73Y/vMyJInJooXDizIwqOxjeT+/zF//80pGopb3b5Z/nl4GJ/GLqi9eE6jK2wSBUJSnsS2xLE8TmMQttcZ2jqoMrDTtgyp5GlsSF8nTBCbxWsk4J1D1+0YIgGXyNF0l1snTBCRxVF4kXM7AIFaVmcjTtJVoKk8TkMQ5R2WBH8EzTeRpmkpsKk8TiMQHxU+uBKoKMoFH2sjTmEpsK08TgMSk2JgpZqDXR4a7yNPUSewqTxOAxJF+URR4H56wIU+zSKIteRrPEq+quplA1fr0spWHTXmaskTb8jQeJW7p1qjOwBE8ICFPoyWepjLyNB4lzqo8LdB58SkpT0PeROVpPEmclZjrxU9c4ULe7dvAl18Bd+7ACR4kzpLOucBVlKdxLHFWD67ThyjPIo4lJpyBCRwwBHkahxK3WKB4Bg5JnsaRRPkMHKI8jQOJmyxwE0IMWZ5GWOIsA0WeNIry3iEoUUZglHcdKYnWBUZ5ixGQuGFVYJRXj2WJG9Z2aoryzLEp0cl+obZgcdLy/qOB7xev3kCc7OpDJ6wJ/O4z4FNvU8J2YHlf/32JPy5lpy+SG2sYv38Dyc3uG2WxQKNnsU3os8Q+yiMurApk+iixp/KYC5E6sE8SeyyPmQlMIUAfJPZcHjMTeA4hQpa4AvKYVCwDNSFKXBF5zLm4QCYkiSskjzljgU4OPgxB4orJY1InGajxKXEF5YFPHV1XOwE5O37Uh8RVlAflTPcDhYeh53EpcUXlMTOBN4ufuIQlMpIzGLfoXn5Iv+F7wvfUgzxmdud0Bj6HByQzcSbvFs1e3ADd3JvYuiVzcz3JYyb8YSbQdT1YREKilqczj2c9JSR6lHemd/UtjoW+gCdsSizL09iW6FEec1XxFAVO4BEbEhfJ09iS6Fkec1XlXQlUWxqm8EgXiXXyNF0lBiAvLW4/WZ5OOoFn2kg0ladpKzEAecxcVVcW+BQB0ERiU3maphIDkcfMOZoTqFqjEwSAicS28jSmEgOSNymfKVE1I3+AQFgmsas8TZ3EgOQxh+UvXBOoKkgvfcIqqiTakqdZJDEwedx4uTbgsmhNzCECoijRtjxNWWJg8pjKknHhu8uybIrAdu39cUwiR7JjmxdvgL2//scTMhqQPM6+D6q+sUxgPKUsHPZI4HHVN+rOjaC/+TD2Dx0wC7OPqVsXGkyLdMBsL/vmUoGqRRpUg2ZgHNedJWhy+FU8N9APKfJjd9JlP1S7tF6Nzuwh4poDk5M8jZ6NiEWpcw4XtTrLGHd0YlHqjBQNjmBt1FONhyCL0/gQ5EaPl6n/+BEiUuw1kcc0fj5Qlc2xf2ifg6rB6jpaD/ZRccoTi8Ec09NzWN4+WtBptJYkHqN0EEWkMSckbxct6TzcHiV2opM8xsp8SZTYis7yGCubHKg3Ehs25hzakMdY26VCVcJRYj3cYLF2Spz1KWc1EXyE2Nkvw530R6ZDZKaIrBlQIzY8GZwgwqQwmFlog8hGP+qN3kMcAGf4HtyTkMeIr9pRx2c/xvCyMUU+NDaBICIZWESV+bws4ATDQWfdBMI4XTc3gLpxgryVOYEjxDOwCNcDaoUVz/CnWB1Sio/pd9t2Kc87XD/yAuKsv5xmeR0/bOgm7FCMs/4wzgoHEUcUdFP4hOanWZhZOaXYz9TRp6EQzOL/Mln+F86jOvxYi5fzfZE/pcVPxE5CrduCFVgky1uvIxV3ISeUhb1U1+emC4t80guBVWT5wZUJcpmb6vVGKYpc4N3+4KmKc3VlYWkfhJV5C8gw0HluZ17zAAAAAElFTkSuQmCC"
+        }
+      ],
+      [
+        "icrc1:decimals",
+        {
+          "Nat": [8]
+        }
+      ],
+      [
+        "icrc1:name",
+        {
+          "Text": "ICExplorer"
+        }
+      ],
+      [
+        "icrc1:symbol",
+        {
+          "Text": "ICE"
+        }
+      ],
+      [
+        "icrc1:fee",
+        {
+          "Nat": [100000]
+        }
+      ],
+      [
+        "icrc1:max_memo_length",
+        {
+          "Nat": [32]
+        }
+      ]
+    ],
+    "icrc1_fee": [100000],
+    "icrc1_total_supply": 99999999692700000,
+    "swap_params": {
+      "params": {
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 10520064,
+          "count": 4
+        },
+        "max_icp_e8s": 22124522014496,
+        "swap_due_timestamp_seconds": 1740679200,
+        "min_participants": 100,
+        "sns_token_e8s": 40000000000000000,
+        "sale_delay_seconds": null,
+        "max_participant_icp_e8s": 5000000000000,
+        "min_direct_participation_icp_e8s": 3000000000000,
+        "min_icp_e8s": 3000000000000,
+        "max_direct_participation_icp_e8s": 12000000000000
+      }
+    },
+    "init": {
+      "init": {
+        "nns_proposal_id": 135281,
+        "sns_root_canister_id": "n6mex-aqaaa-aaaaq-aaepq-cai",
+        "neurons_fund_participation": true,
+        "min_participant_icp_e8s": 100000000,
+        "neuron_basket_construction_parameters": {
+          "dissolve_delay_interval_seconds": 10520064,
+          "count": 4
+        },
+        "fallback_controller_principal_ids": [
+          "veab3-45yfd-pm37n-tiqkb-ntu3p-hgitu-qgduf-xcgap-s43l7-dla3c-qqe"
+        ],
+        "max_icp_e8s": null,
+        "neuron_minimum_stake_e8s": 20000000000,
+        "confirmation_text": "I confirm my understanding of the responsibilities and risks associated with participating in this token swap.\n",
+        "swap_start_timestamp_seconds": 1739815200,
+        "swap_due_timestamp_seconds": 1740679200,
+        "min_participants": 100,
+        "sns_token_e8s": 40000000000000000,
+        "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+        "transaction_fee_e8s": 100000,
+        "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        "sns_ledger_canister_id": "ifwyg-gaaaa-aaaaq-aaeqq-cai",
+        "neurons_fund_participation_constraints": {
+          "coefficient_intervals": [
+            {
+              "slope_numerator": 0,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 0,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1228730141155
+            },
+            {
+              "slope_numerator": 137975170551598,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1228730141155,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1234307003143
+            },
+            {
+              "slope_numerator": 248726310053051,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1234307003143,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1379953906317
+            },
+            {
+              "slope_numerator": 256101632671328,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1379953906317,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1379970506778
+            },
+            {
+              "slope_numerator": 263475644233903,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1379970506778,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1380110251020
+            },
+            {
+              "slope_numerator": 270838632490663,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1380110251020,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1380110711582
+            },
+            {
+              "slope_numerator": 278201584456584,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1380110711582,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1380110742481
+            },
+            {
+              "slope_numerator": 285564533987716,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1380110742481,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1380110787441
+            },
+            {
+              "slope_numerator": 292927479976153,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1380110787441,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1380110798722
+            },
+            {
+              "slope_numerator": 300290425075691,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1380110798722,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1381870395312
+            },
+            {
+              "slope_numerator": 307516576873598,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1381870395312,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1381870412970
+            },
+            {
+              "slope_numerator": 314742727317147,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1381870412970,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1381870682112
+            },
+            {
+              "slope_numerator": 321968857117947,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1381870682112,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1381870702576
+            },
+            {
+              "slope_numerator": 329194985349207,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1381870702576,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1381870722379
+            },
+            {
+              "slope_numerator": 336421112061570,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1381870722379,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1381870731786
+            },
+            {
+              "slope_numerator": 343647238052450,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1381870731786,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1381870959506
+            },
+            {
+              "slope_numerator": 350873346577643,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1381870959506,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1381870971224
+            },
+            {
+              "slope_numerator": 358099454204138,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1381870971224,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1519999185216
+            },
+            {
+              "slope_numerator": 360418587422564,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1519999185216,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1520239199919
+            },
+            {
+              "slope_numerator": 362734087526085,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1520239199919,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1634022768642
+            },
+            {
+              "slope_numerator": 363944500720228,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1634022768642,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 1683912837837
+            },
+            {
+              "slope_numerator": 364898135709464,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 1683912837837,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 2107320487608
+            },
+            {
+              "slope_numerator": 365123297667501,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2107320487608,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 2191053334914
+            },
+            {
+              "slope_numerator": 365305482037922,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2191053334914,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 2461000746198
+            },
+            {
+              "slope_numerator": 365406538578297,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2461000746198,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 2780660688250
+            },
+            {
+              "slope_numerator": 365463828115303,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2780660688250,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 2888287189691
+            },
+            {
+              "slope_numerator": 365512253332149,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2888287189691,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 2917968253928
+            },
+            {
+              "slope_numerator": 365558563087309,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 2917968253928,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3123152731868
+            },
+            {
+              "slope_numerator": 365593176778822,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3123152731868,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3144853149287
+            },
+            {
+              "slope_numerator": 365626796659118,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3144853149287,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3181761431181
+            },
+            {
+              "slope_numerator": 365658812676380,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3181761431181,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3270003693898
+            },
+            {
+              "slope_numerator": 365687390131557,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3270003693898,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3351009970657
+            },
+            {
+              "slope_numerator": 365713234856921,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3351009970657,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3397927852421
+            },
+            {
+              "slope_numerator": 365737655957272,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3397927852421,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3412110081177
+            },
+            {
+              "slope_numerator": 365761667541889,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3412110081177,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3428402925761
+            },
+            {
+              "slope_numerator": 365785219982119,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3428402925761,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3458458909311
+            },
+            {
+              "slope_numerator": 365807955915897,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3458458909311,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3562239429069
+            },
+            {
+              "slope_numerator": 365828152251484,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3562239429069,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3630825707683
+            },
+            {
+              "slope_numerator": 365846922871097,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3630825707683,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3631383786706
+            },
+            {
+              "slope_numerator": 365865682682615,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3631383786706,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3685454089258
+            },
+            {
+              "slope_numerator": 365883449299767,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3685454089258,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3775556895796
+            },
+            {
+              "slope_numerator": 365899769585475,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3775556895796,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3808907963827
+            },
+            {
+              "slope_numerator": 365915611153017,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3808907963827,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3824655981745
+            },
+            {
+              "slope_numerator": 365931236123893,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3824655981745,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 3905914181586
+            },
+            {
+              "slope_numerator": 365945830345832,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 3905914181586,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4081375523002
+            },
+            {
+              "slope_numerator": 365958605171677,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4081375523002,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4098010841519
+            },
+            {
+              "slope_numerator": 365971231130581,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4098010841519,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4134008082530
+            },
+            {
+              "slope_numerator": 365983546904156,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4134008082530,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4227200711147
+            },
+            {
+              "slope_numerator": 365995128833565,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4227200711147,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4233354930626
+            },
+            {
+              "slope_numerator": 366006665526914,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4233354930626,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4328800111952
+            },
+            {
+              "slope_numerator": 366017546102030,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4328800111952,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4334350715286
+            },
+            {
+              "slope_numerator": 366028390986949,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4334350715286,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4415387764810
+            },
+            {
+              "slope_numerator": 366038742610696,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4415387764810,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4518402740030
+            },
+            {
+              "slope_numerator": 366048534978528,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4518402740030,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4604973286528
+            },
+            {
+              "slope_numerator": 366057908213360,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4604973286528,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4725577870667
+            },
+            {
+              "slope_numerator": 366066763821557,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4725577870667,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4751399583292
+            },
+            {
+              "slope_numerator": 366075517569751,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4751399583292,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4753257710112
+            },
+            {
+              "slope_numerator": 366084264101867,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4753257710112,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4883664636303
+            },
+            {
+              "slope_numerator": 366092539778547,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4883664636303,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4925271681861
+            },
+            {
+              "slope_numerator": 366100678923735,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4925271681861,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4930967309201
+            },
+            {
+              "slope_numerator": 366108799856840,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4930967309201,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4963486818503
+            },
+            {
+              "slope_numerator": 366116818940080,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4963486818503,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 4987379219864
+            },
+            {
+              "slope_numerator": 366124765449413,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 4987379219864,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 5085500447446
+            },
+            {
+              "slope_numerator": 366132432774020,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5085500447446,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 5133010965598
+            },
+            {
+              "slope_numerator": 366139975132824,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5133010965598,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 5145289815632
+            },
+            {
+              "slope_numerator": 366147486216328,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5145289815632,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 5248008858478
+            },
+            {
+              "slope_numerator": 366154751175849,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5248008858478,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 5681865559346
+            },
+            {
+              "slope_numerator": 366161233801263,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5681865559346,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 5833196363348
+            },
+            {
+              "slope_numerator": 366167524078450,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5833196363348,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 5925720548347
+            },
+            {
+              "slope_numerator": 366173713828673,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5925720548347,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 5930942812928
+            },
+            {
+              "slope_numerator": 366179898147198,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 5930942812928,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 6028325680179
+            },
+            {
+              "slope_numerator": 366185983463672,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6028325680179,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 6198124721722
+            },
+            {
+              "slope_numerator": 366191905963294,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6198124721722,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 6351169349064
+            },
+            {
+              "slope_numerator": 366197691505962,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6351169349064,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 6454301566667
+            },
+            {
+              "slope_numerator": 366203389563827,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6454301566667,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 6573810721138
+            },
+            {
+              "slope_numerator": 366208990742139,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6573810721138,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 6668923444892
+            },
+            {
+              "slope_numerator": 366214518065064,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6668923444892,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 6725632557587
+            },
+            {
+              "slope_numerator": 366220002654664,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6725632557587,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 6943054192456
+            },
+            {
+              "slope_numerator": 366225331829481,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 6943054192456,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 7408119135792
+            },
+            {
+              "slope_numerator": 366230368038537,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7408119135792,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 7670797654230
+            },
+            {
+              "slope_numerator": 366235259043474,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7670797654230,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 7732702369594
+            },
+            {
+              "slope_numerator": 366240117699785,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7732702369594,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 7825943078085
+            },
+            {
+              "slope_numerator": 366244928894444,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7825943078085,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 7922945272245
+            },
+            {
+              "slope_numerator": 366249692261742,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 7922945272245,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 8323214715600
+            },
+            {
+              "slope_numerator": 366254273592014,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 8323214715600,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 8426846964283
+            },
+            {
+              "slope_numerator": 366258811475638,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 8426846964283,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 8499606147278
+            },
+            {
+              "slope_numerator": 366263319689592,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 8499606147278,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 8525034681494
+            },
+            {
+              "slope_numerator": 366267817692063,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 8525034681494,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 8557404412530
+            },
+            {
+              "slope_numerator": 366272302811739,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 8557404412530,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 8749437104135
+            },
+            {
+              "slope_numerator": 366276714090376,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 8749437104135,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 8878679920083
+            },
+            {
+              "slope_numerator": 366281078049266,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 8878679920083,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 9470726275683
+            },
+            {
+              "slope_numerator": 366285246999645,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 9470726275683,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 9671502950431
+            },
+            {
+              "slope_numerator": 366289357050863,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 9671502950431,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 9892464437886
+            },
+            {
+              "slope_numerator": 366293406025998,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 9892464437886,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 9900244458101
+            },
+            {
+              "slope_numerator": 366297452918668,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 9900244458101,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 10699613706401
+            },
+            {
+              "slope_numerator": 366301307868791,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 10699613706401,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 11122733855983
+            },
+            {
+              "slope_numerator": 366305076720048,
+              "intercept_icp_e8s": 0,
+              "from_direct_participation_icp_e8s": 11122733855983,
+              "slope_denominator": 366784665681131,
+              "to_direct_participation_icp_e8s": 18446744073709551615
+            }
+          ],
+          "max_neurons_fund_participation_icp_e8s": 10124522014496,
+          "min_direct_participation_threshold_icp_e8s": 3000000000000,
+          "ideal_matched_participation_function": {
+            "serialized_representation": "{\"t_1\":\"11796.533392053855107112523200\",\"t_2\":\"35389.600176161565321337569600\",\"t_3\":\"58982.666960269275535562616000\",\"t_4\":\"235930.66784107710214225046400\",\"cap\":\"117965.33392053855107112523200\"}"
+          }
+        },
+        "neurons_fund_participants": null,
+        "should_auto_finalize": true,
+        "max_participant_icp_e8s": 5000000000000,
+        "sns_governance_canister_id": "icx6s-lyaaa-aaaaq-aaeqa-cai",
+        "min_direct_participation_icp_e8s": 3000000000000,
+        "restricted_countries": {
+          "iso_codes": [
+            "AF",
+            "BY",
+            "BA",
+            "BI",
+            "CD",
+            "CF",
+            "CN",
+            "CU",
+            "IR",
+            "IQ",
+            "KP",
+            "LB",
+            "LY",
+            "ML",
+            "ME",
+            "MM",
+            "NI",
+            "RU",
+            "RS",
+            "SO",
+            "SD",
+            "SY",
+            "UA",
+            "US",
+            "VE",
+            "YE",
+            "ZW"
+          ]
+        },
+        "min_icp_e8s": null,
+        "max_direct_participation_icp_e8s": 12000000000000
+      }
+    },
+    "derived_state": {
+      "sns_tokens_per_icp": 1807.9486083984375,
+      "buyer_total_icp_e8s": 22124522014492,
+      "cf_participant_count": 68,
+      "neurons_fund_participation_icp_e8s": 10124522014492,
+      "direct_participation_icp_e8s": 12000000000000,
+      "direct_participant_count": 368,
+      "cf_neuron_count": 96
+    },
+    "lifecycle": {
+      "decentralization_sale_open_timestamp_seconds": 1739815200,
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1740559691
     }
   }
 ]

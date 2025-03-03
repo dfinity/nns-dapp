@@ -28,6 +28,35 @@ export const formatNumber = (
 };
 
 /**
+ * Formats a number according to the following rules:
+ * - X < 1'000: Display 2 decimal points (e.g., $420.69)
+ * - 1'000 ≤ X < 1'000'000: Display whole number with 0 decimal points (e.g., $1'996)
+ * - 1'000'000 ≤ X < 1'000'000'000: Display millions with "M" and 2 decimal points (e.g., $1.50M)
+ * - 1'000'000'000 ≤ X: Display billions with "B" and 2 decimal points (e.g., $1.50B)
+ */
+export const formatCurrencyNumber = (value: number): string => {
+  // For values less than 1'000
+  if (value < 1_000) {
+    return `${formatNumber(value, { minFraction: 2, maxFraction: 2 })}`;
+  }
+
+  // For values between 1'000 and 1'000'000
+  if (value < 1_000_000) {
+    return `${formatNumber(value, { minFraction: 0, maxFraction: 0 })}`;
+  }
+
+  // For values between 1'000'000 and 1'000'000'000
+  if (value < 1_000_000_000) {
+    const millions = value / 1_000_000;
+    return `${formatNumber(millions, { minFraction: 2, maxFraction: 2 })}M`;
+  }
+
+  // For values greater than or equal to 1'000'000'000
+  const billions = value / 1_000_000_000;
+  return `${formatNumber(billions, { minFraction: 2, maxFraction: 2 })}B`;
+};
+
+/**
  * Default format: 0.150123 -> "15.012%"
  */
 export const formatPercentage = (

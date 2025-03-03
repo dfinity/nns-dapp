@@ -172,7 +172,7 @@ describe("Staking", () => {
       expect(rows).toHaveLength(1);
 
       expect(await po.getNnsStakeNeuronModalPo().isPresent()).toBe(false);
-      await rows[0].click();
+      await rows[0].getStakeButtonPo().click();
       expect(await po.getNnsStakeNeuronModalPo().isPresent()).toBe(true);
     });
 
@@ -180,7 +180,7 @@ describe("Staking", () => {
       const po = renderComponent();
 
       const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
-      await rows[0].click();
+      await rows[0].getStakeButtonPo().click();
       const modal = po.getNnsStakeNeuronModalPo();
 
       await modal.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(1);
@@ -200,7 +200,7 @@ describe("Staking", () => {
       const po = renderComponent();
 
       const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
-      await rows[0].click();
+      await rows[0].getStakeButtonPo().click();
       const modal = po.getNnsStakeNeuronModalPo();
 
       await modal.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(1);
@@ -263,7 +263,7 @@ describe("Staking", () => {
       expect(rows).toHaveLength(2);
 
       expect(await po.getSnsStakeNeuronModalPo().isPresent()).toBe(false);
-      await rows[1].click();
+      await rows[1].getStakeButtonPo().click();
       await runResolvedPromises();
       expect(await po.getSnsStakeNeuronModalPo().isPresent()).toBe(true);
     });
@@ -274,7 +274,7 @@ describe("Staking", () => {
       const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
 
       expect(queryIcrcBalanceSpy).not.toBeCalled();
-      await rows[1].click();
+      await rows[1].getStakeButtonPo().click();
       await runResolvedPromises();
       expect(
         await po
@@ -307,7 +307,7 @@ describe("Staking", () => {
       const po = renderComponent();
 
       const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
-      await rows[1].click();
+      await rows[1].getStakeButtonPo().click();
       const modal = po.getSnsStakeNeuronModalPo();
 
       expect(stakeNeuronSpy).not.toBeCalled();
@@ -336,7 +336,7 @@ describe("Staking", () => {
       const po = renderComponent();
 
       const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
-      await rows[1].click();
+      await rows[1].getStakeButtonPo().click();
       const modal = po.getSnsStakeNeuronModalPo();
 
       expect(get(pageStore).path).toBe(AppPath.Staking);
@@ -350,7 +350,7 @@ describe("Staking", () => {
       const po = renderComponent();
 
       const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
-      await rows[1].click();
+      await rows[1].getStakeButtonPo().click();
       const modal = po.getSnsStakeNeuronModalPo();
 
       expect(
@@ -380,7 +380,7 @@ describe("Staking", () => {
       const po = renderComponent();
 
       const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
-      await rows[1].click();
+      await rows[1].getStakeButtonPo().click();
       const modal = po.getSnsStakeNeuronModalPo();
       const form = modal.getTransactionFormPo();
 
