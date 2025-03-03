@@ -1,22 +1,30 @@
+<script lang="ts" context="module">
+  import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
+  type RowDataType = ResponsiveTableRowData;
+</script>
+
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import { i18n } from "$lib/stores/i18n";
   import type {
     ResponsiveTableColumn,
     ResponsiveTableOrder,
-    ResponsiveTableRowData,
   } from "$lib/types/responsive-table";
   import { selectPrimaryOrder } from "$lib/utils/responsive-table.utils";
-  import { IconSouth, ChipGroup, type ChipData } from "@dfinity/gix-components";
+  import {
+    IconSouth,
+    ChipGroup,
+    type ChipGroupItem,
+  } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   export let columns: ResponsiveTableColumn<RowDataType>[];
   export let order: ResponsiveTableOrder;
 
-  let chips: ChipData[] = [];
+  let chips: ChipGroupItem[] = [];
   $: chips = columns
     .filter(({ comparator }) => nonNullish(comparator))
     .map(({ id, title }) => ({
-      id: id,
+      id: id ?? title,
       label: title,
       selected: order[0]?.columnId === id,
     }));
