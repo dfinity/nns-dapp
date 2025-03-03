@@ -1198,6 +1198,9 @@
     "staked_tokens_card_list_second_column": "Maturity",
     "staked_tokens_card_list_third_column": "Staked",
     "staked_tokens_card_info_row": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
-    "total_assets_title": "Total Holdings"
+    "total_assets_title": "Total Holdings",
+    "project_status_open": "Ongoing",
+    "project_status_adopted": "Upcoming",
+    "project_status_proposal": "Open"
   }
 }
