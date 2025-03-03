@@ -14,12 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Warning indicators for failed actionable SNS proposals.
-
 #### Changed
 
-* Hide the mobile header when scrolling.
-* Make navigation from the staking neurons page possible even without neurons.
 * Improve readability of monetary values by simplifying large numbers
 
 #### Deprecated
@@ -27,8 +23,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-* Rendering of `RemoveNodeOperatorsPayload` proposals.
 
 #### Security
 
