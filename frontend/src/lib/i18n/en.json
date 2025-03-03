@@ -875,6 +875,9 @@
   },
   "responsive_table": {
     "sort_by": "Sort by",
+    "sorting": "Sorting",
+    "descending_order": "High to Low",
+    "ascending_order": "Low to Hight",
     "tap_to_reverse": "Tap to reverse"
   },
   "time": {
