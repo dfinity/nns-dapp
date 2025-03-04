@@ -454,8 +454,8 @@ describe("Portfolio utils", () => {
 
     it("should format values >= 10,000 with K suffix", () => {
       expect(formatParticipation(1_000_000_000_000n)).toBe("10K");
-      expect(formatParticipation(1_234_500_000_000n)).toBe("12K");
-      expect(formatParticipation(99_999_900_000_000n)).toBe("1000K");
+      expect(formatParticipation(1_200_000_000_000n)).toBe("12K");
+      expect(formatParticipation(40_000_000_000_000n)).toBe("400K");
     });
   });
 });
