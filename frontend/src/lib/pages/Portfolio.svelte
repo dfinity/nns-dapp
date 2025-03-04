@@ -135,14 +135,15 @@
     class:single-card={$authSignedInStore}
     class:launchpad={projects.length > 0}
   >
-    {#if !$authSignedInStore}
-      <LoginCard />
-    {/if}
     <TotalAssetsCard
       usdAmount={totalUsdAmount}
       hasUnpricedTokens={hasUnpricedTokensOrStake}
       isLoading={isSomethingLoading}
     />
+
+    {#if !$authSignedInStore}
+      <LoginCard />
+    {/if}
 
     {#if projects.length > 0}
       <OpenProjectsCard summary={projects[0]} />
@@ -200,10 +201,14 @@
       grid-template-columns: 1fr;
       gap: var(--padding-2x);
 
+      :global([data-tid="portfolio-login-card"]) {
+        order: -1;
+      }
+
       @include media.min-width(large) {
         grid-template-columns: 1fr 2fr;
 
-        > :global(article:first-of-type) {
+        :global([data-tid="portfolio-login-card"]) {
           order: 0;
         }
 
