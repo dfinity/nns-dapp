@@ -23,7 +23,7 @@
     IconRocketLaunch,
     Tag,
   } from "@dfinity/gix-components";
-  import { isNullish, secondsToDuration, type Token } from "@dfinity/utils";
+  import { secondsToDuration, type Token } from "@dfinity/utils";
 
   export let summary: SnsSummaryWrapper;
   let swap: SnsSummarySwap;
@@ -64,26 +64,25 @@
 
   let minCommitmentIcp;
   $: minCommitmentIcp = formatParticipation(
-    summary.getMinParticipantIcpE8s(),
+    summary.getMinIcpE8s(),
     summary.token
   );
 
   let maxCommitmentIcp;
   $: maxCommitmentIcp = formatParticipation(
-    summary.getMaxParticipantIcpE8s(),
+    summary.getMaxIcpE8s(),
     summary.token
   );
   let maxNfParticipation: bigint | undefined;
-  $: maxNfParticipation = getMaxNeuronsFundParticipation(summary);
+  $: maxNfParticipation = getMaxNeuronsFundParticipation(summary) ?? 1n;
 
   let nfCommitment: bigint | undefined;
   $: nfCommitment = getNeuronsFundParticipation(summary);
 
   let nfCommitmentPercentage;
   // what about projectCommitments.nfCommitmentE8s?
-  $: nfCommitmentPercentage = isNullish(maxNfParticipation)
-    ? formatPercentage(0, { minFraction: 0, maxFraction: 2 })
-    : formatPercentage(
+  $: nfCommitmentPercentage = projectCommitments.isNFParticipating
+    ? formatPercentage(
         ulpsToNumber({
           ulps: nfCommitment ?? 0n,
           token: summary.token,
@@ -93,7 +92,8 @@
             token: summary.token,
           }),
         { minFraction: 2, maxFraction: 2 }
-      );
+      )
+    : null;
 
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
