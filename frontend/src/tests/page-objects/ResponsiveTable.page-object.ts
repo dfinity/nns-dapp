@@ -1,9 +1,9 @@
+import { ResponsiveTableSortControlPo } from "$lib/components/ui/ResponsiveTableSortControl.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import { ResponsiveTableSortModalPo } from "$tests/page-objects/ResponsiveTableSortModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ResponsiveTableSortControlPo } from "./ResponsiveTableSortControl.page-object";
 
 export class ResponsiveTablePo extends BasePageObject {
   private static readonly RESPONSIVE_TABLE_TID = "responsive-table-component";

@@ -5,7 +5,7 @@
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import { i18n } from "$lib/stores/i18n";
-  import ResponsiveTableSortControl from "./ResponsiveTableSortControl.svelte";
+  import ResponsiveTableSortControl from "$lib/components/ui/ResponsiveTableSortControl.svelte";
 
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
