@@ -61,16 +61,12 @@ RUN curl --fail https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 # https://blog.rust-lang.org/2025/03/02/Rustup-1.28.0.html
 # Parse version and manage toolchain
 RUN rust_version=$(grep 'channel' rust-toolchain.toml | awk -F'"' '{print $2}') && \
-    components=$(grep 'components' rust-toolchain.toml | awk -F'= ' '{print $2}') && \
     targets=$(grep 'targets' rust-toolchain.toml | tr -d '[]," ' | awk -F'=' '{print $2}') && \
-    { \
-        echo "Installing Rust $rust_version"; \
-        rustup toolchain install "$rust_version"; \
-        # rustup component add --toolchain "$rust_version" $components; \
-        echo "Installing targets $targets"; \
-        rustup target add $targets --toolchain "$rust_version";  \
-        rustup default "$rust_version"; \
-    }
+    rustup toolchain install "$rust_version"; \
+    # New changes also don't install targets
+    rustup target add $targets --toolchain "$rust_version";  \
+    rustup default "$rust_version"; \
+
 RUN cargo --version
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependencies, we pretend that our project is a simple, empty
