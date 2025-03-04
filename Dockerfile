@@ -62,10 +62,10 @@ RUN curl --fail https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
 # Parse version and manage toolchain
 RUN rust_version=$(grep 'channel' rust-toolchain.toml | awk -F'"' '{print $2}') && \
     targets=$(grep 'targets' rust-toolchain.toml | tr -d '[]," ' | awk -F'=' '{print $2}') && \
-    rustup toolchain install "$rust_version"; \
+    rustup toolchain install "$rust_version" && \
     # New changes also don't install targets
-    rustup target add $targets --toolchain "$rust_version";  \
-    rustup default "$rust_version"; \
+    rustup target add $targets --toolchain "$rust_version" &&  \
+    rustup default "$rust_version"
 
 RUN cargo --version
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
