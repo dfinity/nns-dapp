@@ -1,5 +1,7 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import Logo from "$lib/components/ui/Logo.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import {
     getMaxNeuronsFundParticipation,
@@ -22,8 +24,6 @@
     Tag,
   } from "@dfinity/gix-components";
   import { isNullish, secondsToDuration, type Token } from "@dfinity/utils";
-  import Logo from "../ui/Logo.svelte";
-  import TooltipIcon from "../ui/TooltipIcon.svelte";
 
   export let summary: SnsSummaryWrapper;
   let swap: SnsSummarySwap;
