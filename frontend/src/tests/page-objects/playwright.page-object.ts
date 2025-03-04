@@ -84,6 +84,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.textContent();
   }
 
+  async getTextWithCollapsedWhitespaces(): Promise<string> {
+    throw new Error("Not implement");
+  }
+
   getAttribute(attribute: string): Promise<string | null> {
     return this.locator.getAttribute(attribute);
   }

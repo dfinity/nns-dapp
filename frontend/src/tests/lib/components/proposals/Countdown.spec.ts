@@ -35,6 +35,8 @@ describe("Countdown", () => {
       en.proposal_detail.remaining
     }`;
 
-    expect(queryByTestId("countdown")?.textContent).toEqual(text);
+    expect(
+      queryByTestId("countdown")?.textContent.replace(/\s+/g, " ")
+    ).toEqual(text);
   });
 });
