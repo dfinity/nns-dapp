@@ -136,9 +136,6 @@
     class:single-card={$authSignedInStore}
     class:launchpad={projects.length > 0}
   >
-    {#if !$authSignedInStore}
-      <LoginCard />
-    {/if}
     <TotalAssetsCard
       usdAmount={totalUsdAmount}
       hasUnpricedTokens={hasUnpricedTokensOrStake}
@@ -148,6 +145,10 @@
       <div class="login-card">
         <LoginCard />
       </div>
+
+    {#if !$authSignedInStore}
+      <LoginCard />
+    {/if}
 
     {#if projects.length > 0}
       <OpenProjectsCard summary={projects[0]} />
