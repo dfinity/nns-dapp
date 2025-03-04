@@ -3,6 +3,7 @@ import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.pag
 import { ResponsiveTableSortModalPo } from "$tests/page-objects/ResponsiveTableSortModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ResponsiveTableSortControlPo } from "./ResponsiveTableSortControl.page-object";
 
 export class ResponsiveTablePo extends BasePageObject {
   private static readonly RESPONSIVE_TABLE_TID = "responsive-table-component";
@@ -13,8 +14,21 @@ export class ResponsiveTablePo extends BasePageObject {
     );
   }
 
+  // // TODO(mstr) @obsolete
   getOpenSortModalButtonPo(): ButtonPo {
     return this.getButton("open-sort-modal");
+  }
+
+  getOpenSettingsButtonPo(): ButtonPo {
+    return this.getButton("settings-button");
+  }
+
+  getSettingsPopoverPo(): PageObjectElement {
+    return this.root.byTestId("settings-popover");
+  }
+
+  getResponsiveTableSortControlPo(): ResponsiveTableSortControlPo {
+    return ResponsiveTableSortControlPo.under(this.getSettingsPopoverPo());
   }
 
   getResponsiveTableSortModalPo(): ResponsiveTableSortModalPo {
@@ -109,6 +123,16 @@ export class ResponsiveTablePo extends BasePageObject {
     }
   }
 
+  async openSettings(): Promise<void> {
+    await this.getOpenSettingsButtonPo().click();
+    await this.getSettingsPopoverPo().waitFor();
+  }
+
+  async sortFromSettingsByLabel(columnLabel: string): Promise<void> {
+    await this.getResponsiveTableSortControlPo().clickSortChip(columnLabel);
+  }
+
+  // // TODO(mstr) @obsolete
   async openSortModal(): Promise<void> {
     await this.waitFor("open-sort-modal");
     await this.getOpenSortModalButtonPo().click();

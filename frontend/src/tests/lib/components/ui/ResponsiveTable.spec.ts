@@ -90,7 +90,7 @@ describe("ResponsiveTable", () => {
     order?: ResponsiveTableOrder;
     gridRowsPerTableRow?: number;
     getRowStyle?: (rowData: ResponsiveTableRowData) => string;
-    disableMobileSorting?: boolean;
+    displayTableSettings?: boolean;
   }
 
   const renderComponent = ({
@@ -326,7 +326,35 @@ describe("ResponsiveTable", () => {
     expect(await po.getColumnHeaderWithArrow()).toBe("Age reversed");
   });
 
-  it("should have mobile sorting modal", async () => {
+  it("should support sorting from settings popover", async () => {
+    const po = renderComponent({
+      columns,
+      tableData,
+      order: [{ columnId: "name" }],
+      displayTableSettings: true,
+    });
+    let rows = await po.getRows();
+    expect(rows).toHaveLength(3);
+
+    expect(await rows[0].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
+    expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
+    expect(await rows[2].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
+
+    expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(true);
+    expect(await po.getSettingsPopoverPo().isPresent()).toBe(false);
+
+    await po.openSettings();
+    expect(await po.getSettingsPopoverPo().isPresent()).toBe(true);
+
+    await po.sortFromSettingsByLabel("Age");
+    rows = await po.getRows();
+    expect(await rows[0].getCells()).toEqual(["Anya", "", "Age 19", "Anya"]);
+    expect(await rows[1].getCells()).toEqual(["Anton", "", "Age 31", "Anton"]);
+    expect(await rows[2].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
+  });
+
+  // @obsolete
+  it.skip("should have mobile sorting modal", async () => {
     const po = renderComponent({
       columns,
       tableData,
@@ -344,23 +372,7 @@ describe("ResponsiveTable", () => {
     expect(await sortModal.getOptionWithArrow()).toBe("Age");
   });
 
-  it("should disable mobile sorting", async () => {
-    const po = renderComponent({
-      columns,
-      tableData,
-      order: [{ columnId: "name" }],
-      disableMobileSorting: true,
-    });
-    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(false);
-
-    // Desktop sorting should still work.
-    expect(await po.getColumnHeaderWithArrow()).toBe("Name");
-
-    await po.clickColumnHeader("Age");
-    expect(await po.getColumnHeaderWithArrow()).toBe("Age");
-  });
-
-  it("should not have a sorting button if no columns are sortable", async () => {
+  it("should not have a settings button by default", async () => {
     const po = renderComponent({
       columns: columns.map((column) => ({
         ...column,
@@ -368,7 +380,7 @@ describe("ResponsiveTable", () => {
       })),
       tableData,
     });
-    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(false);
+    expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(false);
   });
 
   it("should render column styles depending on the number of columns", async () => {

@@ -1,6 +1,7 @@
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
+// TODO(mstr) - Remove after the sorting redesign is implemented
 export class ResponsiveTableSortModalPo extends ModalPo {
   private static TID = "responsive-table-sort-modal-component";
 

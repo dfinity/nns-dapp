@@ -27,6 +27,7 @@
     await waitForMilliseconds(250);
     dispatch("nnsClose");
   };
+  // TODO(mstr): Remove this component after sorting redesign is done.
 </script>
 
 <Modal testId="responsive-table-sort-modal-component" on:nnsClose>

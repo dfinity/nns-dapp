@@ -62,7 +62,6 @@
   tableData={userTokensData}
   {columns}
   bind:order
-  disableMobileSorting
   {displayTableSettings}
   on:nnsAction
 >
