@@ -47,7 +47,6 @@ describe("ResponsiveTableSortControl", () => {
     columns: ResponsiveTableColumn<TestRowData>[];
     orderStore?: Writable<ResponsiveTableOrder>;
   }) => {
-    orderStore?.set(order);
     const { container } = render(ResponsiveTableSortControlTest, {
       props: {
         columns,
