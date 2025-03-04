@@ -9,13 +9,13 @@ import {
   compareByProjectTitle,
   compareIcpFirst,
 } from "$lib/utils/staking.utils";
+import { ulpsToNumber } from "$lib/utils/token.utils";
 import {
   compareTokensByImportance,
   compareTokensIcpFirst,
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
 import { ICPToken } from "@dfinity/utils";
-import { ulpsToNumber } from "./token.utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
