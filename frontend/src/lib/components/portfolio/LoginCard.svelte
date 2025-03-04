@@ -31,6 +31,8 @@
     gap: var(--padding-2x);
     padding: var(--padding-2x);
     background-color: var(--card-background-tint);
+    height: 100%;
+    box-sizing: border-box;
 
     @include media.min-width(medium) {
       grid-template-areas:
