@@ -56,7 +56,7 @@ ENV RUSTUP_HOME=/opt/rustup \
     CARGO_HOME=/opt/cargo \
     PATH=/opt/cargo/bin:$PATH
 
-RUN curl --fail https://sh.rustup.rs -sSf | sh -s -- -y --no-modify-path
+RUN curl --fail https://raw.githubusercontent.com/rust-lang/rustup/refs/tags/1.28.0/rustup-init.sh -sSf | sh -s -- -y --no-modify-path
 
 # https://blog.rust-lang.org/2025/03/02/Rustup-1.28.0.html
 # Parse version and manage toolchain
