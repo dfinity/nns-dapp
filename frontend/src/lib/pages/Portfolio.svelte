@@ -3,7 +3,7 @@
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
-  import OpenProjectsCard from "$lib/components/portfolio/OpenProjectsCard.svelte";
+  import OpenProjectCard from "$lib/components/portfolio/OpenProjectCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
@@ -133,7 +133,7 @@
   <div class="top" class:signed-in={$authSignedInStore}>
   <div
     class="top"
-    class:single-card={$authSignedInStore}
+    class:signed-in={$authSignedInStore}
     class:launchpad={projects.length > 0}
   >
     <TotalAssetsCard
@@ -151,7 +151,7 @@
     {/if}
 
     {#if projects.length > 0}
-      <OpenProjectsCard summary={projects[0]} />
+      <OpenProjectCard summary={projects[0]} />
     {/if}
   </div>
 
@@ -221,9 +221,18 @@
         // Case: signed in
         &.signed-in {
           grid-template-columns: 1fr;
+        // Case: signed in, no projects
+        &.signed-in:not(.launchpad) {
+          grid-template-columns: 3fr;
         }
 
-        &.launchpad {
+        // Case: signed in, with projects
+        &.signed-in.launchpad {
+          grid-template-columns: 2fr 1fr;
+        }
+
+        // Case: not signed in, with projects
+        &:not(.signed-in).launchpad {
           grid-template-columns: 1fr 1fr 1fr;
         }
       }
