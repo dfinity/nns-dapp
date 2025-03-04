@@ -29,7 +29,6 @@
   export let gridRowsPerTableRow = 1;
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
-  // TODO(mstr): Remove this property after sorting redesign is done.
   export let displayTableSettings = false;
 
   let nonLastColumns: ResponsiveTableColumn<RowDataType>[];
