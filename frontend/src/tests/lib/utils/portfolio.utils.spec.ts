@@ -4,6 +4,7 @@ import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken } from "$lib/types/tokens-page";
 import {
+  formatParticipation,
   getTopHeldTokens,
   getTopStakedTokens,
   shouldShowInfoRow,
@@ -434,6 +435,27 @@ describe("Portfolio utils", () => {
           otherCardNumberOfTokens: 3,
         })
       ).toBe(false);
+    });
+  });
+
+  describe("formatParticipation", () => {
+    it("should return integer values as strings without decimal places", () => {
+      expect(formatParticipation(0n)).toBe("0");
+      expect(formatParticipation(100_000_000n)).toBe("1");
+      expect(formatParticipation(10_000_000_000n)).toBe("100");
+      expect(formatParticipation(999_000_000_000n)).toBe("9990");
+    });
+
+    it("should format decimal values less than 10,000 with 2 decimal places", () => {
+      expect(formatParticipation(12_345_000_000n)).toBe("123.45");
+      expect(formatParticipation(10_000_000n)).toBe("0.10");
+      expect(formatParticipation(999_999_000_000n)).toBe("9999.99");
+    });
+
+    it("should format values >= 10,000 with K suffix", () => {
+      expect(formatParticipation(1_000_000_000_000n)).toBe("10K");
+      expect(formatParticipation(1_234_500_000_000n)).toBe("12K");
+      expect(formatParticipation(99_999_900_000_000n)).toBe("1000K");
     });
   });
 });
