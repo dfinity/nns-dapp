@@ -125,11 +125,15 @@
     <p class="description">{summary.metadata.description}</p>
 
     <div class="commitment-section">
-      <h4 class="section-title">COMMITMENT</h4>
+      <h4 class="section-title">
+        {$i18n.portfolio.open_project_card_title}
+      </h4>
 
       <div class="stats">
         <div class="stat-item">
-          <span class="stat-label">Funded of Min</span>
+          <span class="stat-label">
+            {$i18n.portfolio.open_project_card_min_fund}
+          </span>
           <span class="stat-value funding-percentage"
             >{currentCommitmentPercentage}</span
           >
@@ -138,14 +142,18 @@
         <div class="vertical-divider"></div>
 
         <div class="stat-item">
-          <span class="stat-label">Min ICP</span>
+          <span class="stat-label">
+            {$i18n.portfolio.open_project_card_min_icp}
+          </span>
           <span class="stat-value">
             {minCommitmentIcp}
           </span>
         </div>
 
         <div class="stat-item">
-          <span class="stat-label">Max ICP</span>
+          <span class="stat-label">
+            {$i18n.portfolio.open_project_card_max_icp}
+          </span>
           <span class="stat-value">
             {maxCommitmentIcp}
           </span>
@@ -153,7 +161,7 @@
 
         <div class="stat-item">
           <div class="stat-label"
-            >Neuron Fund
+            >{$i18n.portfolio.open_project_card_nf}
             <TooltipIcon
               text={$i18n.header.account_id_tooltip}
               tooltipId="main-icp-account-id-tooltip"
@@ -176,7 +184,7 @@
         })}
       </div>
       <a {href} class="link" aria-label="something">
-        <span>View</span>
+        <span>{$i18n.portfolio.open_project_card_link}</span>
         <IconRight />
       </a>
     </div>
