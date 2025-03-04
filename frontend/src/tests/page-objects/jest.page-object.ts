@@ -103,6 +103,10 @@ export class JestPageObjectElement implements PageObjectElement {
     return this.getElement() && this.getElement().textContent;
   }
 
+  async getTextWithCollapsedWhitespaces(): Promise<string | null> {
+    return this.getElement()?.textContent?.replace(/\s+/g, " ");
+  }
+
   // Resolves to null if the element is not present.
   async getAttribute(attribute: string): Promise<string | null> {
     return this.getElement() && this.getElement().getAttribute(attribute);
