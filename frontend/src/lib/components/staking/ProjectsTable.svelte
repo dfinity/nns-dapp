@@ -139,6 +139,7 @@
     {columns}
     on:nnsAction={handleAction}
     bind:order={$projectsTableOrderStore}
+    displayTableSettings
   ></ResponsiveTable>
 </div>
 

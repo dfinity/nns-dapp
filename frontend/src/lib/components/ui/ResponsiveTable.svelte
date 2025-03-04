@@ -5,9 +5,10 @@
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import { i18n } from "$lib/stores/i18n";
+  import ResponsiveTableSortControl from "$lib/components/ui/ResponsiveTableSortControl.svelte";
+
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
-  import ResponsiveTableSortModal from "$lib/modals/common/ResponsiveTableSortModal.svelte";
   import type {
     ResponsiveTableColumn,
     ResponsiveTableOrder,
@@ -18,12 +19,7 @@
     sortTableData,
   } from "$lib/utils/responsive-table.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import {
-    IconSettings,
-    IconSort,
-    IconSouth,
-    Popover,
-  } from "@dfinity/gix-components";
+  import { IconSettings, IconSouth, Popover } from "@dfinity/gix-components";
   import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
@@ -33,7 +29,6 @@
   export let gridRowsPerTableRow = 1;
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
-  export let disableMobileSorting = false;
   export let displayTableSettings = false;
 
   let nonLastColumns: ResponsiveTableColumn<RowDataType>[];
@@ -41,9 +36,6 @@
 
   $: nonLastColumns = columns.slice(0, -1);
   $: lastColumn = columns.at(-1);
-
-  let isSortingEnabled: boolean;
-  $: isSortingEnabled = columns.some((column) => nonNullish(column.comparator));
 
   let sortedTableData: RowDataType[];
   $: sortedTableData = sortTableData({
@@ -55,16 +47,6 @@
   const orderBy = (column: ResponsiveTableColumn<RowDataType>) => {
     assertNonNullish(column.id);
     order = selectPrimaryOrder({ order, selectedColumnId: column.id });
-  };
-
-  let showSortModal = false;
-
-  const openSortModal = () => {
-    showSortModal = true;
-  };
-
-  const closeSortModal = () => {
-    showSortModal = false;
   };
 
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
@@ -97,6 +79,7 @@
   let settingsButton: HTMLButtonElement | undefined;
   let settingsPopupVisible = false;
   const openSettings = () => (settingsPopupVisible = true);
+  const closeSettings = () => (settingsPopupVisible = false);
 
   // TODO(mstr): Update/remove this comment after sorting redesign is done.
   // In mobile view, we only show the first column header and it should never be
@@ -145,11 +128,7 @@
             role="columnheader"
             style="--column-span: {lastColumn.templateColumns.length}"
             class="desktop-align-{lastColumn.alignment} header-icon"
-            >{#if isSortingEnabled && !disableMobileSorting}<button
-                data-tid="open-sort-modal"
-                class="mobile-only icon-only"
-                on:click={openSortModal}><IconSort /></button
-              >{/if}{#if displayTableSettings}
+            >{#if displayTableSettings}
               <button
                 data-tid="settings-button"
                 class="settings-button icon-only"
@@ -189,17 +168,15 @@
     anchor={settingsButton}
     direction="rtl"
     invisibleBackdrop
+    testId="settings-popover"
   >
     <slot name="settings-popover" />
-  </Popover>
-
-  {#if showSortModal}
-    <ResponsiveTableSortModal
+    <ResponsiveTableSortControl
       {columns}
       bind:order
-      on:nnsClose={closeSortModal}
+      on:nnsClose={closeSettings}
     />
-  {/if}
+  </Popover>
 </TestIdWrapper>
 
 <style lang="scss">
