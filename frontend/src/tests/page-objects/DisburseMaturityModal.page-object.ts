@@ -47,7 +47,9 @@ export class DisburseMaturityModalPo extends ModalPo {
 
   async getConfirmTokens(): Promise<string> {
     return (
-      await this.getNeuronConfirmActionScreenPo().getText("confirm-tokens")
+      await this.getNeuronConfirmActionScreenPo().getTextWithCollapsedWhitespaces(
+        "confirm-tokens"
+      )
     ).trim();
   }
 

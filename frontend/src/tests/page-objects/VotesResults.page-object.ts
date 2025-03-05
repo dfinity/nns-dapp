@@ -58,7 +58,9 @@ export class VotesResultPo extends BasePageObject {
   }
 
   async getExpirationDateText(): Promise<string> {
-    return assertNonNullish(this.root.byTestId("remain").getText());
+    return assertNonNullish(
+      this.root.byTestId("remain")?.getTextWithCollapsedWhitespaces()
+    );
   }
 
   async expandMajorityDescriptions(): Promise<void> {

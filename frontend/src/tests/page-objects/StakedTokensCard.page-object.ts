@@ -38,7 +38,7 @@ class StakedTokensCardRowPo extends BasePageObject {
   }
 
   getStakedTokenStakeInNativeCurrency(): Promise<string> {
-    return this.getText("stake-in-native");
+    return this.getTextWithCollapsedWhitespaces("stake-in-native");
   }
 }
 
