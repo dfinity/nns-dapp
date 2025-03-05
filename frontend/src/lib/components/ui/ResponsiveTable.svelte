@@ -99,7 +99,6 @@
   const openSettings = () => (settingsPopupVisible = true);
   const closeSettings = () => (settingsPopupVisible = false);
 
-  // TODO(mstr): Update/remove this comment after sorting redesign is done.
   // In mobile view, we only show the first column header and it should never be
   // sortable by clicking on it. So depending on whether the first column is
   // sortable we have or don't have separate first column headers for desktop
