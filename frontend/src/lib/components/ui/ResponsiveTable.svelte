@@ -8,7 +8,6 @@
   import ResponsiveTableSortControl from "$lib/components/ui/ResponsiveTableSortControl.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
-  import ResponsiveTableSortModal from "$lib/modals/common/ResponsiveTableSortModal.svelte";
   import type {
     ResponsiveTableColumn,
     ResponsiveTableOrder,
@@ -55,16 +54,6 @@
   const orderBy = (column: ResponsiveTableColumn<RowDataType>) => {
     assertNonNullish(column.id);
     order = selectPrimaryOrder({ order, selectedColumnId: column.id });
-  };
-
-  let showSortModal = false;
-
-  const openSortModal = () => {
-    showSortModal = true;
-  };
-
-  const closeSortModal = () => {
-    showSortModal = false;
   };
 
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
@@ -152,10 +141,6 @@
                 aria-label={$i18n.tokens.settings_button}
                 bind:this={settingsButton}
                 on:click={openSettings}><IconSettings /></button
-              >{:else if isSortingEnabled}<button
-                data-tid="open-sort-modal"
-                class="mobile-only icon-only"
-                on:click={openSortModal}><IconSort /></button
               >{/if}
           </span>
         {/if}
@@ -197,14 +182,6 @@
       on:nnsClose={closeSettings}
     />
   </Popover>
-
-  {#if showSortModal}
-    <ResponsiveTableSortModal
-      {columns}
-      bind:order
-      on:nnsClose={closeSortModal}
-    />
-  {/if}
 </TestIdWrapper>
 
 <style lang="scss">
