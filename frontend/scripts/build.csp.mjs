@@ -200,7 +200,6 @@ const cspConnectSrc = () => {
     // We still allow users to access the app with the old URL
     "https://nns.ic0.app",
     // Location services
-    "https://api.geoiplookup.net",
     "https://api.iplocation.net",
     "https://api.ip.sb",
     "'self'",

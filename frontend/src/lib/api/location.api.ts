@@ -1,18 +1,5 @@
 import type { CountryCode } from "$lib/types/location";
 
-// https://geoiplookup.net/
-const getLocationFromGeoIP = async (): Promise<CountryCode> => {
-  const URL = "https://api.geoiplookup.net/?json=true";
-  const response = await fetch(URL);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch user location from GeoIP");
-  }
-
-  const data = await response.json();
-  return data.countrycode;
-};
-
 // https://api.iplocation.net/
 const getLocationFromIpLocation = async (): Promise<CountryCode> => {
   const BASE_URL = "https://api.iplocation.net";
