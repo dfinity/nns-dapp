@@ -16,6 +16,7 @@ import {
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
 import { ICPToken } from "@dfinity/utils";
+import type { FullProjectCommitmentSplit } from "./projects.utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
@@ -127,4 +128,22 @@ export const formatParticipation = (ulps: bigint) => {
     return Number.isInteger(value) ? value.toString() : value.toFixed(2);
 
   return `${(value / 1_000).toFixed(0)}K`;
+};
+
+export const getMinCommitmentPercentage = (
+  projectCommitments: FullProjectCommitmentSplit
+) => {
+  if (!projectCommitments) return 0;
+  if (!projectCommitments.minDirectCommitmentE8s) return 0;
+
+  return (
+    ulpsToNumber({
+      ulps: projectCommitments.directCommitmentE8s,
+      token: ICPToken,
+    }) /
+    ulpsToNumber({
+      ulps: projectCommitments.minDirectCommitmentE8s,
+      token: ICPToken,
+    })
+  );
 };
