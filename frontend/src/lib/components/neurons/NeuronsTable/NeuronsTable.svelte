@@ -112,4 +112,5 @@
   tableData={neuronsSortedById}
   bind:order={$neuronsTableOrderStore}
   {getRowStyle}
+  displayTableSettings
 ></ResponsiveTable>

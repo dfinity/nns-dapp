@@ -461,11 +461,4 @@ describe("Tokens page", () => {
       },
     ]);
   });
-
-  it("should disable sorting on mobile", async () => {
-    const po = renderPage(userTokensPageMock);
-    expect(
-      await po.getTokensTable().getOpenSortModalButtonPo().isPresent()
-    ).toBe(false);
-  });
 });

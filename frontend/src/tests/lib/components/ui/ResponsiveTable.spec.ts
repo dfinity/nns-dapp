@@ -326,24 +326,6 @@ describe("ResponsiveTable", () => {
     expect(await po.getColumnHeaderWithArrow()).toBe("Age reversed");
   });
 
-  it("should have mobile sorting modal", async () => {
-    const po = renderComponent({
-      columns,
-      tableData,
-      order: [{ columnId: "name" }],
-    });
-    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(true);
-    const sortModal = po.getResponsiveTableSortModalPo();
-    expect(await sortModal.isPresent()).toBe(false);
-    await po.openSortModal();
-    expect(await sortModal.isPresent()).toBe(true);
-    expect(await sortModal.getOptionWithArrow()).toBe("Name");
-    await sortModal.clickOption("Age");
-    await sortModal.waitForClosed();
-    await po.openSortModal();
-    expect(await sortModal.getOptionWithArrow()).toBe("Age");
-  });
-
   it("should support sorting from settings popover", async () => {
     const po = renderComponent({
       columns,
@@ -371,17 +353,6 @@ describe("ResponsiveTable", () => {
     expect(await rows[2].getCells()).toEqual(["Alice", "", "Age 45", "Alice"]);
   });
 
-  it("should not have a sorting button if no columns are sortable", async () => {
-    const po = renderComponent({
-      columns: columns.map((column) => ({
-        ...column,
-        comparator: undefined,
-      })),
-      tableData,
-    });
-    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(false);
-  });
-
   it("should not have a settings button by default", async () => {
     const po = renderComponent({
       columns,
@@ -389,17 +360,6 @@ describe("ResponsiveTable", () => {
       tableData,
     });
     expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(false);
-  });
-
-  it("should not have a mobile sort button when settings button is displayed", async () => {
-    const po = renderComponent({
-      columns,
-      order: [{ columnId: "name" }],
-      tableData,
-      displayTableSettings: true,
-    });
-    expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(true);
-    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(false);
   });
 
   it("should render column styles depending on the number of columns", async () => {
