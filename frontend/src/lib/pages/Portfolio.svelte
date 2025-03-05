@@ -10,8 +10,8 @@
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import {
-    getTopHeldTokens,
-    getTopStakedTokens,
+      getTopHeldTokens,
+      getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
@@ -118,7 +118,9 @@
       isLoading={isSomethingLoading}
     />
     {#if !$authSignedInStore}
-      <LoginCard />
+      <div class="login-card">
+        <LoginCard />
+      </div>
     {/if}
   </div>
   <div class="content">
@@ -172,16 +174,17 @@
       grid-template-columns: 1fr;
       gap: var(--padding-2x);
 
-      :global([data-tid="portfolio-login-card"]) {
+      .login-card {
         order: -1;
       }
 
       @include media.min-width(large) {
         grid-template-columns: 1fr 2fr;
 
-        :global([data-tid="portfolio-login-card"]) {
+        .login-card {
           order: 0;
         }
+
         // Case: signed in
         &.signed-in {
           grid-template-columns: 1fr;
