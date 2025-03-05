@@ -1,6 +1,7 @@
 import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
 import {
   createDescendingComparator,
   mergeComparators,
@@ -16,7 +17,6 @@ import {
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
 import { ICPToken } from "@dfinity/utils";
-import type { FullProjectCommitmentSplit } from "./projects.utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
