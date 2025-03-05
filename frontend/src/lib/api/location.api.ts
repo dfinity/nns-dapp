@@ -19,7 +19,7 @@ const getLocationFromIpLocation = async (): Promise<CountryCode> => {
   return data.country_code2;
 };
 
-// https://api.ip.sb/geoip/
+// https://api.ip.sb/geoip
 const getLocationFromIpSb = async (): Promise<CountryCode> => {
   const URL = "https://api.ip.sb/geoip";
   const response = await fetch(URL);
