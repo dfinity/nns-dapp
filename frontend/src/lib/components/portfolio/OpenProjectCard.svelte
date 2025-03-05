@@ -11,6 +11,7 @@
   import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { formatPercentage } from "$lib/utils/format.utils";
+  import { formatParticipation } from "$lib/utils/portfolio.utils";
   import {
     durationTillSwapDeadline,
     getProjectCommitmentSplit,
@@ -23,20 +24,11 @@
     IconRocketLaunch,
     Tag,
   } from "@dfinity/gix-components";
-  import { secondsToDuration, type Token } from "@dfinity/utils";
+  import { secondsToDuration } from "@dfinity/utils";
 
   export let summary: SnsSummaryWrapper;
   let swap: SnsSummarySwap;
   $: ({ swap } = summary);
-
-  // Todo: What can I reuse?
-  // what is ULPS? maybe build token and then get ULPS thento number?
-  // new util function for these numbers
-  const formatParticipation = (ulps: bigint, token: Token) => {
-    const value = ulpsToNumber({ ulps, token });
-    if (value < 10_000) return value.toString();
-    return `${(value / 1_000).toFixed(2)}K`;
-  };
 
   // Now all projects are new
   let projectCommitments: FullProjectCommitmentSplit;
@@ -63,16 +55,11 @@
         );
 
   let minCommitmentIcp;
-  $: minCommitmentIcp = formatParticipation(
-    summary.getMinIcpE8s(),
-    summary.token
-  );
+  $: minCommitmentIcp = formatParticipation(summary.getMinIcpE8s());
 
   let maxCommitmentIcp;
-  $: maxCommitmentIcp = formatParticipation(
-    summary.getMaxIcpE8s(),
-    summary.token
-  );
+  $: maxCommitmentIcp = formatParticipation(summary.getMaxIcpE8s());
+
   let maxNfParticipation: bigint | undefined;
   $: maxNfParticipation = getMaxNeuronsFundParticipation(summary) ?? 1n;
 
