@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add the ability to sort the tokens table on mobile.
+
 #### Changed
 
 * Improve readability of monetary values by simplifying large numbers
