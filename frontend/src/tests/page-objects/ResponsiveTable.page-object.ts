@@ -1,6 +1,7 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import { ResponsiveTableSortControlPo } from "$tests/page-objects/ResponsiveTableSortControl.page-object";
+import { ResponsiveTableSortModalPo } from "$tests/page-objects/ResponsiveTableSortModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -13,8 +14,16 @@ export class ResponsiveTablePo extends BasePageObject {
     );
   }
 
+  getOpenSortModalButtonPo(): ButtonPo {
+    return this.getButton("open-sort-modal");
+  }
+
   getOpenSettingsButtonPo(): ButtonPo {
     return this.getButton("settings-button");
+  }
+
+  getResponsiveTableSortModalPo(): ResponsiveTableSortModalPo {
+    return ResponsiveTableSortModalPo.under(this.root);
   }
 
   getSettingsPopoverPo(): PageObjectElement {
@@ -111,6 +120,12 @@ export class ResponsiveTablePo extends BasePageObject {
         return `${await el.getText()}${direction}`;
       }
     }
+  }
+
+  async openSortModal(): Promise<void> {
+    await this.waitFor("open-sort-modal");
+    await this.getOpenSortModalButtonPo().click();
+    await this.getResponsiveTableSortModalPo().waitFor();
   }
 
   async openSettings(): Promise<void> {

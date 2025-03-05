@@ -14,9 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Add the ability to sort the tokens table on mobile.
+
 #### Changed
 
 * Improve readability of monetary values by simplifying large numbers
+* Improved error handling by disabling neuron navigation when SNS governance canister is unavailable
 
 #### Deprecated
 

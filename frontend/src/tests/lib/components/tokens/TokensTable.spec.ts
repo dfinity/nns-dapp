@@ -633,7 +633,7 @@ describe("TokensTable", () => {
       ]);
     });
 
-    it("should change order from settings popup", async () => {
+    it("should change order from settings popover", async () => {
       const tokensTableOrderStore: Writable<TokensTableOrder> = writable([
         {
           columnId: "balance",
