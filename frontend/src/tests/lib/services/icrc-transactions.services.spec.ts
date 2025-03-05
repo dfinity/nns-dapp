@@ -192,6 +192,22 @@ describe("icrc-transactions services", () => {
       });
     });
 
+    it("swallows error if canister out-of-cycles", async () => {
+      vi.spyOn(indexApi, "getTransactions").mockRejectedValue(
+        new Error("IC0207")
+      );
+
+      expect(get(toastsStore)).toHaveLength(0);
+
+      await loadIcrcAccountNextTransactions({
+        account: mockCkBTCMainAccount,
+        indexCanisterId,
+        ledgerCanisterId,
+      });
+
+      expect(get(toastsStore)).toHaveLength(0);
+    });
+
     it("toasts error if api fails", async () => {
       vi.spyOn(indexApi, "getTransactions").mockRejectedValue(
         new Error("Something happened")
