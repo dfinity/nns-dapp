@@ -95,9 +95,9 @@
   $: tableStyle = getTableStyle(columns);
 
   let settingsButton: HTMLButtonElement | undefined;
-  let settingsPopupVisible = false;
-  const openSettings = () => (settingsPopupVisible = true);
-  const closeSettings = () => (settingsPopupVisible = false);
+  let settingsPopoverVisible = false;
+  const openSettings = () => (settingsPopoverVisible = true);
+  const closeSettings = () => (settingsPopoverVisible = false);
 
   // In mobile view, we only show the first column header and it should never be
   // sortable by clicking on it. So depending on whether the first column is
@@ -184,7 +184,7 @@
   </div>
 
   <Popover
-    bind:visible={settingsPopupVisible}
+    bind:visible={settingsPopoverVisible}
     anchor={settingsButton}
     direction="rtl"
     invisibleBackdrop
