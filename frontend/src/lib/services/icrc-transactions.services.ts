@@ -51,8 +51,8 @@ export const loadIcrcAccountTransactions = async ({
   } catch (err) {
     console.error(err);
 
-    const isCanisterOufOfCycles = isCanisterOutOfCyclesError(err);
-    if (isCanisterOufOfCycles) return;
+    const isCanisterOutOfCycles = isCanisterOutOfCyclesError(err);
+    if (isCanisterOutOfCycles) return;
 
     toastsError(
       toToastError({ fallbackErrorLabelKey: "error.fetch_transactions", err })

@@ -20,10 +20,13 @@ vi.mock("$lib/api/icrc-index.api");
 describe("icrc-transactions services", () => {
   const indexCanisterId = principal(0);
   const ledgerCanisterId = principal(1);
+  let consoleErrorSpy;
 
   beforeEach(() => {
     resetIdentity();
-    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
   });
 
   describe("loadIcrcAccountTransactions", () => {
@@ -193,9 +196,8 @@ describe("icrc-transactions services", () => {
     });
 
     it("swallows error if canister out-of-cycles", async () => {
-      vi.spyOn(indexApi, "getTransactions").mockRejectedValue(
-        new Error("IC0207")
-      );
+      const error = new Error("IC0207");
+      vi.spyOn(indexApi, "getTransactions").mockRejectedValue(error);
 
       expect(get(toastsStore)).toHaveLength(0);
 
@@ -205,6 +207,7 @@ describe("icrc-transactions services", () => {
         ledgerCanisterId,
       });
 
+      expect(consoleErrorSpy).toHaveBeenCalledWith(error);
       expect(get(toastsStore)).toHaveLength(0);
     });
 
