@@ -9,11 +9,13 @@ import {
   compareByProjectTitle,
   compareIcpFirst,
 } from "$lib/utils/staking.utils";
+import { ulpsToNumber } from "$lib/utils/token.utils";
 import {
   compareTokensByImportance,
   compareTokensIcpFirst,
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
+import { ICPToken } from "@dfinity/utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
@@ -117,4 +119,12 @@ export const shouldShowInfoRow = ({
     (otherCardNumberOfTokens === 0 && currentCardNumberOfTokens < 4) ||
     (currentCardNumberOfTokens < 3 && otherCardNumberOfTokens < 3)
   );
+};
+
+export const formatParticipation = (ulps: bigint) => {
+  const value = ulpsToNumber({ ulps, token: ICPToken });
+  if (value < 10_000)
+    return Number.isInteger(value) ? value.toString() : value.toFixed(2);
+
+  return `${(value / 1_000).toFixed(0)}K`;
 };
