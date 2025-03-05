@@ -21,6 +21,7 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { IconHeldTokens, IconPlus, Tooltip } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let userTokensData: UserToken[];
 
@@ -93,6 +94,7 @@
   >
     <div slot="settings-popover">
       <HideZeroBalancesToggle />
+      <Separator spacing="medium" />
     </div>
 
     <div slot="last-row" class="last-row">
