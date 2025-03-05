@@ -202,6 +202,7 @@ const cspConnectSrc = () => {
     // Location services
     "https://api.geoiplookup.net",
     "https://api.iplocation.net",
+    "https://api.ip.sb",
     "'self'",
     "${{HOST}}",
     "${{SNS_AGGREGATOR_URL}}",
