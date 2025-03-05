@@ -34,7 +34,7 @@ const getLocationFromIpLocation = async (): Promise<CountryCode> => {
 
 // https://api.ip.sb/geoip/
 const getLocationFromIpSb = async (): Promise<CountryCode> => {
-  const URL = "https://api.ip.sb/geoip/";
+  const URL = "https://api.ip.sb/geoip";
   const response = await fetch(URL);
 
   if (!response.ok) {
