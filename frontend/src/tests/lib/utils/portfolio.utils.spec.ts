@@ -5,10 +5,12 @@ import type { TableProject } from "$lib/types/staking";
 import type { UserToken } from "$lib/types/tokens-page";
 import {
   formatParticipation,
+  getMinCommitmentPercentage,
   getTopHeldTokens,
   getTopStakedTokens,
   shouldShowInfoRow,
 } from "$lib/utils/portfolio.utils";
+import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
@@ -456,6 +458,73 @@ describe("Portfolio utils", () => {
       expect(formatParticipation(1_000_000_000_000n)).toBe("10K");
       expect(formatParticipation(1_200_000_000_000n)).toBe("12K");
       expect(formatParticipation(40_000_000_000_000n)).toBe("400K");
+    });
+  });
+
+  describe("getMinCommitmentPercentage", () => {
+    const baseProjectCommitmentProps = {
+      totalCommitmentE8s: 1n,
+      nfCommitmentE8s: 1n,
+      maxDirectCommitmentE8s: 1n,
+      isNFParticipating: true,
+    };
+
+    it("should return 0 when projectCommitments is null or undefined", () => {
+      expect(getMinCommitmentPercentage(null)).toBe(0);
+      expect(getMinCommitmentPercentage(undefined)).toBe(0);
+    });
+
+    it("should return 0 when minDirectCommitmentE8s is null or undefined", () => {
+      const projectCommitments: FullProjectCommitmentSplit = {
+        ...baseProjectCommitmentProps,
+        directCommitmentE8s: 500_000_000n,
+        minDirectCommitmentE8s: null,
+      };
+      expect(getMinCommitmentPercentage(projectCommitments)).toBe(0);
+
+      const projectCommitments2: FullProjectCommitmentSplit = {
+        ...baseProjectCommitmentProps,
+        directCommitmentE8s: 500_000_000n,
+        minDirectCommitmentE8s: undefined,
+      };
+      expect(getMinCommitmentPercentage(projectCommitments2)).toBe(0);
+    });
+
+    it("should calculate the correct percentage ratio", () => {
+      const zeroCommitment: FullProjectCommitmentSplit = {
+        ...baseProjectCommitmentProps,
+        directCommitmentE8s: 0n,
+        minDirectCommitmentE8s: 500_000_000n,
+      };
+      expect(getMinCommitmentPercentage(zeroCommitment)).toBe(0);
+
+      const equalCommitments: FullProjectCommitmentSplit = {
+        ...baseProjectCommitmentProps,
+        directCommitmentE8s: 500_000_000n,
+        minDirectCommitmentE8s: 500_000_000n,
+      };
+      expect(getMinCommitmentPercentage(equalCommitments)).toBe(1);
+
+      const halfCommitment: FullProjectCommitmentSplit = {
+        ...baseProjectCommitmentProps,
+        directCommitmentE8s: 500_000_000n,
+        minDirectCommitmentE8s: 1_000_000_000n,
+      };
+      expect(getMinCommitmentPercentage(halfCommitment)).toBe(0.5);
+
+      const doubleCommitment: FullProjectCommitmentSplit = {
+        ...baseProjectCommitmentProps,
+        directCommitmentE8s: 1_000_000_000n,
+        minDirectCommitmentE8s: 500_000_000n,
+      };
+      expect(getMinCommitmentPercentage(doubleCommitment)).toBe(2);
+
+      const decimalResult: FullProjectCommitmentSplit = {
+        ...baseProjectCommitmentProps,
+        directCommitmentE8s: 123_456_789n,
+        minDirectCommitmentE8s: 500_000_000n,
+      };
+      expect(getMinCommitmentPercentage(decimalResult)).toBeCloseTo(0.2469, 4);
     });
   });
 });

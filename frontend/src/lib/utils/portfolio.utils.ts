@@ -1,6 +1,7 @@
 import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
 import {
   createDescendingComparator,
   mergeComparators,
@@ -127,4 +128,22 @@ export const formatParticipation = (ulps: bigint) => {
     return Number.isInteger(value) ? value.toString() : value.toFixed(2);
 
   return `${(value / 1_000).toFixed(0)}K`;
+};
+
+export const getMinCommitmentPercentage = (
+  projectCommitments: FullProjectCommitmentSplit
+) => {
+  if (!projectCommitments) return 0;
+  if (!projectCommitments.minDirectCommitmentE8s) return 0;
+
+  return (
+    ulpsToNumber({
+      ulps: projectCommitments.directCommitmentE8s,
+      token: ICPToken,
+    }) /
+    ulpsToNumber({
+      ulps: projectCommitments.minDirectCommitmentE8s,
+      token: ICPToken,
+    })
+  );
 };
