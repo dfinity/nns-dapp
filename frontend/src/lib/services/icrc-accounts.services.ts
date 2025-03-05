@@ -216,13 +216,13 @@ export const loadAccounts = async ({
       icrcAccountsStore.resetUniverse(ledgerCanisterId);
       icrcTransactionsStore.resetUniverse(ledgerCanisterId);
 
-      const isCanisterOufOfCycles = isCanisterOutOfCyclesError(err);
+      const isCanisterOutOfCycles = isCanisterOutOfCyclesError(err);
       const isAnImportedToken = isImportedToken({
         ledgerCanisterId,
         importedTokens: get(importedTokensStore)?.importedTokens,
       });
 
-      if (isCanisterOufOfCycles) {
+      if (isCanisterOutOfCycles) {
         outOfCyclesCanistersStore.add(ledgerCanisterId.toString());
       }
 
@@ -230,7 +230,7 @@ export const loadAccounts = async ({
         failedImportedTokenLedgerIdsStore.add(ledgerCanisterId.toText());
       }
 
-      if (!isCanisterOufOfCycles && !isAnImportedToken) {
+      if (!isCanisterOutOfCycles && !isAnImportedToken) {
         toastsError(
           toToastError({
             err,
