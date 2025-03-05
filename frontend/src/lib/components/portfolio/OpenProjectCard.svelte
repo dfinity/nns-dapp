@@ -24,7 +24,7 @@
     IconRocketLaunch,
     Tag,
   } from "@dfinity/gix-components";
-  import { secondsToDuration } from "@dfinity/utils";
+  import { nonNullish, secondsToDuration } from "@dfinity/utils";
 
   export let summary: SnsSummaryWrapper;
   let swap: SnsSummarySwap;
@@ -54,11 +54,11 @@
           { minFraction: 2, maxFraction: 2 }
         );
 
-  let minCommitmentIcp;
-  $: minCommitmentIcp = formatParticipation(summary.getMinIcpE8s());
+  let formattedMinCommitmentIcp;
+  $: formattedMinCommitmentIcp = formatParticipation(summary.getMinIcpE8s());
 
-  let maxCommitmentIcp;
-  $: maxCommitmentIcp = formatParticipation(summary.getMaxIcpE8s());
+  let formattedMaxCommitmentIcp;
+  $: formattedMaxCommitmentIcp = formatParticipation(summary.getMaxIcpE8s());
 
   let maxNfParticipation: bigint | undefined;
   $: maxNfParticipation = getMaxNeuronsFundParticipation(summary) ?? 1n;
@@ -67,7 +67,6 @@
   $: nfCommitment = getNeuronsFundParticipation(summary);
 
   let nfCommitmentPercentage;
-  // what about projectCommitments.nfCommitmentE8s?
   $: nfCommitmentPercentage = projectCommitments.isNFParticipating
     ? formatPercentage(
         ulpsToNumber({
@@ -86,7 +85,6 @@
   $: durationTillDeadline = durationTillSwapDeadline(swap);
 
   let href: string;
-  // TODO(yhabib): extract into util. 2 usecases
   $: href = `${AppPath.Project}/?project=${summary.rootCanisterId.toText()}`;
 </script>
 
@@ -133,7 +131,7 @@
             {$i18n.portfolio.open_project_card_min_icp}
           </span>
           <span class="stat-value">
-            {minCommitmentIcp}
+            {formattedMinCommitmentIcp}
           </span>
         </div>
 
@@ -142,20 +140,22 @@
             {$i18n.portfolio.open_project_card_max_icp}
           </span>
           <span class="stat-value">
-            {maxCommitmentIcp}
+            {formattedMaxCommitmentIcp}
           </span>
         </div>
 
-        <div class="stat-item">
-          <div class="stat-label"
-            >{$i18n.portfolio.open_project_card_nf}
-            <TooltipIcon
-              text={$i18n.header.account_id_tooltip}
-              tooltipId="main-icp-account-id-tooltip"
-            />
+        {#if nonNullish(nfCommitmentPercentage)}
+          <div class="stat-item">
+            <div class="stat-label"
+              >{$i18n.portfolio.open_project_card_nf}
+              <TooltipIcon
+                text={$i18n.header.account_id_tooltip}
+                tooltipId="main-icp-account-id-tooltip"
+              />
+            </div>
+            <div class="stat-value">{nfCommitmentPercentage}</div>
           </div>
-          <div class="stat-value">{nfCommitmentPercentage}</div>
-        </div>
+        {/if}
       </div>
     </div>
 
