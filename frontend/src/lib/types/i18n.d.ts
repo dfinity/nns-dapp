@@ -911,11 +911,9 @@ interface I18nSns_neurons {
 }
 
 interface I18nResponsive_table {
-  sort_by: string;
   sorting: string;
   descending_order: string;
   ascending_order: string;
-  tap_to_reverse: string;
 }
 
 interface I18nTime {
