@@ -18,6 +18,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Improve readability of monetary values by simplifying large numbers
 * Improved error handling by disabling neuron navigation when SNS governance canister is unavailable
+* Enhanced geolocation reliability for SNS swap participation checks by replacing fallback service
+
 
 #### Deprecated
 
