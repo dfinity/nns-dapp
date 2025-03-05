@@ -18,12 +18,7 @@
     sortTableData,
   } from "$lib/utils/responsive-table.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import {
-    IconSettings,
-    IconSort,
-    IconSouth,
-    Popover,
-  } from "@dfinity/gix-components";
+  import { IconSettings, IconSouth, Popover } from "@dfinity/gix-components";
   import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
@@ -40,9 +35,6 @@
 
   $: nonLastColumns = columns.slice(0, -1);
   $: lastColumn = columns.at(-1);
-
-  let isSortingEnabled: boolean;
-  $: isSortingEnabled = columns.some((column) => nonNullish(column.comparator));
 
   let sortedTableData: RowDataType[];
   $: sortedTableData = sortTableData({
