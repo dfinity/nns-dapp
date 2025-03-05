@@ -34,18 +34,21 @@ describe("TokensTable", () => {
     onAction,
     orderStore,
     order,
+    displayTableSettings,
   }: {
     userTokensData: Array<UserTokenData | UserTokenLoading>;
     firstColumnHeader?: string;
     onAction?: Mock;
     orderStore?: Writable<TokensTableOrder>;
     order?: TokensTableOrder;
+    displayTableSettings?: boolean;
   }) => {
     const { container, component } = render(TokensTable, {
       props: {
         userTokensData,
         firstColumnHeader,
         order: order ?? get(orderStore),
+        displayTableSettings,
       },
       events: {
         nnsAction: onAction,
@@ -627,6 +630,70 @@ describe("TokensTable", () => {
         "Internet Computer",
         "B",
         "A",
+      ]);
+    });
+
+    it("should change order from settings popover", async () => {
+      const tokensTableOrderStore: Writable<TokensTableOrder> = writable([
+        {
+          columnId: "balance",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+      const firstColumnHeader = "Projects";
+      const po = renderTable({
+        firstColumnHeader,
+        userTokensData: [tokenIcp, tokenA],
+        orderStore: tokensTableOrderStore,
+        displayTableSettings: true,
+      });
+
+      expect(get(tokensTableOrderStore)).toEqual([
+        {
+          columnId: "balance",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+
+      expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(true);
+      await po.openSettings();
+      await po.sortFromSettingsByLabel("Projects");
+      expect(get(tokensTableOrderStore)).toEqual([
+        {
+          columnId: "title",
+        },
+        {
+          columnId: "balance",
+        },
+      ]);
+
+      await po.sortFromSettingsByLabel("Balance");
+      expect(get(tokensTableOrderStore)).toEqual([
+        {
+          columnId: "balance",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+
+      await po
+        .getResponsiveTableSortControlPo()
+        .getSortDirectionButtonPo()
+        .click();
+
+      expect(get(tokensTableOrderStore)).toEqual([
+        {
+          columnId: "balance",
+          reversed: true,
+        },
+        {
+          columnId: "title",
+        },
       ]);
     });
   });

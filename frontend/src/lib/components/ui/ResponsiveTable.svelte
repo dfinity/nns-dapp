@@ -5,6 +5,7 @@
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
   import { i18n } from "$lib/stores/i18n";
+  import ResponsiveTableSortControl from "$lib/components/ui/ResponsiveTableSortControl.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import ResponsiveTableSortModal from "$lib/modals/common/ResponsiveTableSortModal.svelte";
@@ -33,7 +34,6 @@
   export let gridRowsPerTableRow = 1;
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
-  export let disableMobileSorting = false;
   export let displayTableSettings = false;
 
   let nonLastColumns: ResponsiveTableColumn<RowDataType>[];
@@ -95,10 +95,10 @@
   $: tableStyle = getTableStyle(columns);
 
   let settingsButton: HTMLButtonElement | undefined;
-  let settingsPopupVisible = false;
-  const openSettings = () => (settingsPopupVisible = true);
+  let settingsPopoverVisible = false;
+  const openSettings = () => (settingsPopoverVisible = true);
+  const closeSettings = () => (settingsPopoverVisible = false);
 
-  // TODO(mstr): Update/remove this comment after sorting redesign is done.
   // In mobile view, we only show the first column header and it should never be
   // sortable by clicking on it. So depending on whether the first column is
   // sortable we have or don't have separate first column headers for desktop
@@ -145,19 +145,18 @@
             role="columnheader"
             style="--column-span: {lastColumn.templateColumns.length}"
             class="desktop-align-{lastColumn.alignment} header-icon"
-            >{#if isSortingEnabled && !disableMobileSorting}<button
-                data-tid="open-sort-modal"
-                class="mobile-only icon-only"
-                on:click={openSortModal}><IconSort /></button
-              >{/if}{#if displayTableSettings}
+            >{#if displayTableSettings}
               <button
                 data-tid="settings-button"
                 class="settings-button icon-only"
                 aria-label={$i18n.tokens.settings_button}
                 bind:this={settingsButton}
                 on:click={openSettings}><IconSettings /></button
-              >
-            {/if}
+              >{:else if isSortingEnabled}<button
+                data-tid="open-sort-modal"
+                class="mobile-only icon-only"
+                on:click={openSortModal}><IconSort /></button
+              >{/if}
           </span>
         {/if}
       </div>
@@ -185,12 +184,18 @@
   </div>
 
   <Popover
-    bind:visible={settingsPopupVisible}
+    bind:visible={settingsPopoverVisible}
     anchor={settingsButton}
     direction="rtl"
     invisibleBackdrop
+    testId="settings-popover"
   >
     <slot name="settings-popover" />
+    <ResponsiveTableSortControl
+      {columns}
+      bind:order
+      on:nnsClose={closeSettings}
+    />
   </Popover>
 
   {#if showSortModal}
