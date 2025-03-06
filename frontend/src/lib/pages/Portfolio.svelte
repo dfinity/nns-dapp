@@ -130,7 +130,6 @@
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div class="top" class:signed-in={$authSignedInStore}>
   <div
     class="top"
     class:signed-in={$authSignedInStore}
@@ -145,11 +144,7 @@
       <div class="login-card">
         <LoginCard />
       </div>
-
-    {#if !$authSignedInStore}
-      <LoginCard />
     {/if}
-
     {#if projects.length > 0}
       <OpenProjectCard summary={projects[0]} />
     {/if}
@@ -214,14 +209,16 @@
         grid-template-columns: 1fr 2fr;
 
         .login-card {
-        > :global(article:first-of-type) {
           order: 0;
+          height: 100%;
         }
 
         // Case: signed in
         &.signed-in {
           grid-template-columns: 1fr;
+        }
         // Case: signed in, no projects
+
         &.signed-in:not(.launchpad) {
           grid-template-columns: 3fr;
         }
