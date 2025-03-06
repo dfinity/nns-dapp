@@ -85,7 +85,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   async getTextWithCollapsedWhitespaces(): Promise<string> {
-    throw new Error("Not implement");
+    throw new Error("Not implemented");
   }
 
   getAttribute(attribute: string): Promise<string | null> {
