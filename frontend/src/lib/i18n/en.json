@@ -299,7 +299,11 @@
   "staking": {
     "title": "Stake and earn voting rewards",
     "text": "Earn voting rewards by staking your tokens in neurons. Neurons allow you to participate in governance of the Internet Computer, and DAOs deployed on the Internet Computer.",
-    "nervous_systems": "Nervous Systems"
+    "nervous_systems": "Nervous Systems",
+    "hide_no_neurons_header": "Neurons",
+    "hide_no_neurons_toggle_label": "Hide without neurons",
+    "hide_no_neurons_table_hint": "Projects with no neurons are hidden.",
+    "show_all": "Show all"
   },
   "neurons": {
     "title": "Neurons",
