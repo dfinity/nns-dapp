@@ -1,6 +1,7 @@
 import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
 import {
   createDescendingComparator,
   mergeComparators,
@@ -9,11 +10,13 @@ import {
   compareByProjectTitle,
   compareIcpFirst,
 } from "$lib/utils/staking.utils";
+import { ulpsToNumber } from "$lib/utils/token.utils";
 import {
   compareTokensByImportance,
   compareTokensIcpFirst,
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
+import { ICPToken } from "@dfinity/utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
@@ -116,5 +119,30 @@ export const shouldShowInfoRow = ({
     otherCardNumberOfTokens > currentCardNumberOfTokens ||
     (otherCardNumberOfTokens === 0 && currentCardNumberOfTokens < 4) ||
     (currentCardNumberOfTokens < 3 && otherCardNumberOfTokens < 3)
+  );
+};
+
+export const formatParticipation = (ulps: bigint) => {
+  const value = ulpsToNumber({ ulps, token: ICPToken });
+  if (value < 10_000)
+    return Number.isInteger(value) ? value.toString() : value.toFixed(2);
+
+  return `${(value / 1_000).toFixed(0)}K`;
+};
+
+export const getMinCommitmentPercentage = (
+  projectCommitments: FullProjectCommitmentSplit
+) => {
+  if (projectCommitments.minDirectCommitmentE8s === 0n) return 0;
+
+  return (
+    ulpsToNumber({
+      ulps: projectCommitments.directCommitmentE8s,
+      token: ICPToken,
+    }) /
+    ulpsToNumber({
+      ulps: projectCommitments.minDirectCommitmentE8s,
+      token: ICPToken,
+    })
   );
 };

@@ -160,6 +160,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 2761,
           "name": "transferPosition",
           "description": null,
@@ -320,7 +328,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98286626989714528,
+    "icrc1_total_supply": 98308100654611060,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -553,6 +561,14 @@
           "id": 15,
           "name": "Advance SNS target version",
           "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -851,7 +867,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100797037227777693,
+    "icrc1_total_supply": 100821386157243669,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1390,6 +1406,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1002,
           "name": "transfer DKP",
           "description": "transfer DKP from Catalyze",
@@ -1554,7 +1578,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50475803952114556,
+    "icrc1_total_supply": 50484428595239168,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1951,7 +1975,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961431612538197,
+    "icrc1_total_supply": 9961442488028159,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2352,7 +2376,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10108171394521426,
+    "icrc1_total_supply": 10145361589980068,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2588,6 +2612,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "setMaxToken",
           "description": null,
@@ -2762,7 +2794,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12682883481094229,
+    "icrc1_total_supply": 12696262891706046,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3694,6 +3726,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1001,
           "name": "Manage NNS neuron",
           "description": "Proposal to manage an ICP neuron under control of the Gold DAO.",
@@ -4199,7 +4239,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99554795171642850,
+    "icrc1_total_supply": 99523246799243148,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

@@ -4,7 +4,10 @@ import { getIcrcAccountIdentity } from "$lib/services/icrc-accounts.services";
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import { toToastError } from "$lib/utils/error.utils";
+import {
+  isCanisterOutOfCyclesError,
+  toToastError,
+} from "$lib/utils/error.utils";
 import { getOldestTxIdFromStore } from "$lib/utils/icrc-transactions.utils";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
@@ -27,6 +30,7 @@ export const loadIcrcAccountTransactions = async ({
     const identity = await getIcrcAccountIdentity(account);
     const snsAccount = decodeIcrcAccount(account.identifier);
     const maxResults = DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT;
+
     const { transactions, oldestTxId } = await getTransactions({
       identity,
       account: snsAccount,
@@ -34,6 +38,7 @@ export const loadIcrcAccountTransactions = async ({
       indexCanisterId,
       start,
     });
+
     // If API returns less than the maxResults, we reached the end of the list.
     const completed = transactions.length < maxResults;
     icrcTransactionsStore.addTransactions({
@@ -44,6 +49,11 @@ export const loadIcrcAccountTransactions = async ({
       completed,
     });
   } catch (err) {
+    console.error(err);
+
+    const isCanisterOutOfCycles = isCanisterOutOfCyclesError(err);
+    if (isCanisterOutOfCycles) return;
+
     toastsError(
       toToastError({ fallbackErrorLabelKey: "error.fetch_transactions", err })
     );

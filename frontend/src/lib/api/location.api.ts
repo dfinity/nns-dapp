@@ -1,18 +1,5 @@
 import type { CountryCode } from "$lib/types/location";
 
-// https://geoiplookup.net/
-const getLocationFromGeoIP = async (): Promise<CountryCode> => {
-  const URL = "https://api.geoiplookup.net/?json=true";
-  const response = await fetch(URL);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch user location from GeoIP");
-  }
-
-  const data = await response.json();
-  return data.countrycode;
-};
-
 // https://api.iplocation.net/
 const getLocationFromIpLocation = async (): Promise<CountryCode> => {
   const BASE_URL = "https://api.iplocation.net";
@@ -32,6 +19,19 @@ const getLocationFromIpLocation = async (): Promise<CountryCode> => {
   return data.country_code2;
 };
 
+// https://api.ip.sb/geoip
+const getLocationFromIpSb = async (): Promise<CountryCode> => {
+  const URL = "https://api.ip.sb/geoip";
+  const response = await fetch(URL);
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user location from Ip Sb Service");
+  }
+
+  const data = await response.json();
+  return data.country_code;
+};
+
 /**
  * Fetches the user's country location two different services.
  *
@@ -39,8 +39,8 @@ const getLocationFromIpLocation = async (): Promise<CountryCode> => {
  */
 export const queryUserCountryLocation = async (): Promise<CountryCode> => {
   try {
-    return await getLocationFromGeoIP();
-  } catch (_) {
     return await getLocationFromIpLocation();
+  } catch (_) {
+    return await getLocationFromIpSb();
   }
 };

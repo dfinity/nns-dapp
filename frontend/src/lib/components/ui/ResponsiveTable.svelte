@@ -4,9 +4,10 @@
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
+  import { i18n } from "$lib/stores/i18n";
+  import ResponsiveTableSortControl from "$lib/components/ui/ResponsiveTableSortControl.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
-  import ResponsiveTableSortModal from "$lib/modals/common/ResponsiveTableSortModal.svelte";
   import type {
     ResponsiveTableColumn,
     ResponsiveTableOrder,
@@ -17,7 +18,7 @@
     sortTableData,
   } from "$lib/utils/responsive-table.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import { IconSort, IconSouth } from "@dfinity/gix-components";
+  import { IconSettings, IconSouth, Popover } from "@dfinity/gix-components";
   import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
@@ -27,16 +28,13 @@
   export let gridRowsPerTableRow = 1;
   export let getRowStyle: (rowData: RowDataType) => string | undefined = (_) =>
     undefined;
-  export let disableMobileSorting = false;
+  export let displayTableSettings = false;
 
   let nonLastColumns: ResponsiveTableColumn<RowDataType>[];
   let lastColumn: ResponsiveTableColumn<RowDataType> | undefined;
 
   $: nonLastColumns = columns.slice(0, -1);
   $: lastColumn = columns.at(-1);
-
-  let isSortingEnabled: boolean;
-  $: isSortingEnabled = columns.some((column) => nonNullish(column.comparator));
 
   let sortedTableData: RowDataType[];
   $: sortedTableData = sortTableData({
@@ -48,16 +46,6 @@
   const orderBy = (column: ResponsiveTableColumn<RowDataType>) => {
     assertNonNullish(column.id);
     order = selectPrimaryOrder({ order, selectedColumnId: column.id });
-  };
-
-  let showSortModal = false;
-
-  const openSortModal = () => {
-    showSortModal = true;
-  };
-
-  const closeSortModal = () => {
-    showSortModal = false;
   };
 
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
@@ -86,6 +74,11 @@
 
   let tableStyle: string;
   $: tableStyle = getTableStyle(columns);
+
+  let settingsButton: HTMLButtonElement | undefined;
+  let settingsPopoverVisible = false;
+  const openSettings = () => (settingsPopoverVisible = true);
+  const closeSettings = () => (settingsPopoverVisible = false);
 
   // In mobile view, we only show the first column header and it should never be
   // sortable by clicking on it. So depending on whether the first column is
@@ -133,11 +126,14 @@
             role="columnheader"
             style="--column-span: {lastColumn.templateColumns.length}"
             class="desktop-align-{lastColumn.alignment} header-icon"
-            >{#if isSortingEnabled && !disableMobileSorting}<button
-                data-tid="open-sort-modal"
-                class="mobile-only icon-only"
-                on:click={openSortModal}><IconSort /></button
-              >{/if}<slot name="header-icon" />
+            >{#if displayTableSettings}
+              <button
+                data-tid="settings-button"
+                class="settings-button icon-only"
+                aria-label={$i18n.tokens.settings_button}
+                bind:this={settingsButton}
+                on:click={openSettings}><IconSettings /></button
+              >{/if}
           </span>
         {/if}
       </div>
@@ -164,16 +160,24 @@
     {/if}
   </div>
 
-  {#if showSortModal}
-    <ResponsiveTableSortModal
+  <Popover
+    bind:visible={settingsPopoverVisible}
+    anchor={settingsButton}
+    direction="rtl"
+    invisibleBackdrop
+    testId="settings-popover"
+  >
+    <slot name="settings-popover" />
+    <ResponsiveTableSortControl
       {columns}
       bind:order
-      on:nnsClose={closeSortModal}
+      on:nnsClose={closeSettings}
     />
-  {/if}
+  </Popover>
 </TestIdWrapper>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/effect";
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "../../themes/mixins/grid-table";
 
@@ -257,14 +261,23 @@
             }
           }
         }
-      }
 
-      .header-icon {
-        // Prevents the element taking up more height than the icon by adding
-        // space for descenders.
-        line-height: 0;
+        .settings-button {
+          --content-color: var(--text-description);
 
-        color: var(--primary);
+          @include effect.ripple-effect(
+            --primary-tint,
+            var(--primary-contrast)
+          );
+
+          &:focus {
+            background: var(--primary-tint);
+            @include effect.ripple-effect(
+              --primary-tint,
+              var(--primary-contrast)
+            );
+          }
+        }
       }
     }
 

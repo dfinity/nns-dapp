@@ -323,10 +323,10 @@ describe("Portfolio route", () => {
         // 1ICP Neuron -> 10$
         // 20Tetris Neuron -> 200$
         // --------------------
-        // Total: $203’231.00
+        // Total: $203’231
         expect(
           await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
-        ).toBe("$203’231.00");
+        ).toBe("$203’231");
         // $1 -> 0.1ICP
         expect(
           await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
@@ -409,10 +409,10 @@ describe("Portfolio route", () => {
         // 1ICP Neuron -> 10$
         // 20Tetris Neuron -> 200$ FAILED proposal
         // --------------------
-        // Total: $203’031.00
+        // Total: $203’031
         expect(
           await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
-        ).toBe("$203’031.00");
+        ).toBe("$203’031");
         // $1 -> 0.1ICP
         expect(
           await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()

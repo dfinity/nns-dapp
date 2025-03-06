@@ -193,7 +193,10 @@ export const getTableProjects = ({
       snsNeurons,
       failedActionableSnses,
     });
-    const rowHref = buildNeuronsUrl({ universe: universe.canisterId });
+    const rowHref =
+      stake instanceof FailedTokenAmount
+        ? undefined
+        : buildNeuronsUrl({ universe: universe.canisterId });
     const universeId = universe.canisterId;
     const ledgerCanisterId = getLedgerCanisterIdFromUniverse(universe);
     const tokenPrice =

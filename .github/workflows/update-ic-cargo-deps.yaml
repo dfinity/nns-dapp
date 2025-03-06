@@ -33,7 +33,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           base: main
-          reviewers: mstrasinskis, dskloetd, nns-team, yhabib
+          reviewers: mstrasinskis, nns-team, yhabib
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: |
             Cargo.lock
