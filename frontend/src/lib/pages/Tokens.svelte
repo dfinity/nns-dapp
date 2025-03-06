@@ -19,14 +19,9 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import {
-    IconHeldTokens,
-    IconPlus,
-    IconSettings,
-    Popover,
-    Tooltip,
-  } from "@dfinity/gix-components";
+  import { IconHeldTokens, IconPlus, Tooltip } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let userTokensData: UserToken[];
 
@@ -40,13 +35,6 @@
       token.balance.toUlps() > 0n &&
       (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
   );
-
-  let settingsButton: HTMLButtonElement | undefined;
-  let settingsPopupVisible = false;
-
-  const openSettings = () => {
-    settingsPopupVisible = true;
-  };
 
   let shouldHideZeroBalances: boolean;
   $: shouldHideZeroBalances = $hideZeroBalancesStore === "hide";
@@ -102,16 +90,13 @@
     on:nnsAction
     firstColumnHeader={$i18n.tokens.projects_header}
     bind:order={$tokensTableOrderStore}
+    displayTableSettings
   >
-    <div slot="header-icon">
-      <button
-        data-tid="settings-button"
-        class="settings-button icon-only"
-        aria-label={$i18n.tokens.settings_button}
-        bind:this={settingsButton}
-        on:click={openSettings}><IconSettings /></button
-      >
+    <div slot="settings-popover">
+      <HideZeroBalancesToggle />
+      <Separator spacing="medium" />
     </div>
+
     <div slot="last-row" class="last-row">
       {#if shouldHideZeroBalances}
         <div class="show-all-button-container">
@@ -148,14 +133,6 @@
       {/if}
     </div>
   </TokensTable>
-  <Popover
-    bind:visible={settingsPopupVisible}
-    anchor={settingsButton}
-    direction="rtl"
-    invisibleBackdrop
-  >
-    <HideZeroBalancesToggle />
-  </Popover>
 
   {#if showImportTokenModal || ($ENABLE_IMPORT_TOKEN_BY_URL && nonNullish($pageStore.importTokenLedgerId))}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
@@ -170,17 +147,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-  }
-
-  .settings-button {
-    --content-color: var(--text-description);
-
-    @include effect.ripple-effect(--primary-tint, var(--primary-contrast));
-
-    &:focus {
-      background: var(--primary-tint);
-      @include effect.ripple-effect(--primary-tint, var(--primary-contrast));
-    }
   }
 
   [slot="last-row"] {

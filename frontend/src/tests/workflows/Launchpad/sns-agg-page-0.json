@@ -157,6 +157,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -290,7 +298,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999961788494000,
+    "icrc1_total_supply": 799999959159194000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -403,7 +411,9 @@
       "logo": "/v1/sns/root/3e3x2-xyaaa-aaaaq-aaalq-cai/logo.png"
     },
     "parameters": {
-      "reserved_ids": [1005, 1006, 1007, 5000, 100000, 100001, 100002, 100003],
+      "reserved_ids": [
+        1005, 1006, 1007, 1013, 5000, 100000, 100001, 100002, 100003
+      ],
       "functions": [
         {
           "id": 0,
@@ -529,6 +539,14 @@
           "id": 15,
           "name": "Advance SNS target version",
           "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -664,19 +682,6 @@
           }
         },
         {
-          "id": 1013,
-          "name": "Register a bot",
-          "description": "This will register a new bot to extend the capabilities of OpenChat",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
-              "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
-              "validator_method_name": "register_bot_validate",
-              "target_method_name": "register_bot"
-            }
-          }
-        },
-        {
           "id": 1014,
           "name": "Remove a bot",
           "description": "This will remove an existing bot from OpenChat",
@@ -686,6 +691,19 @@
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "remove_bot_validate",
               "target_method_name": "remove_bot"
+            }
+          }
+        },
+        {
+          "id": 1015,
+          "name": "Publish a bot",
+          "description": "This will publish a registered bot allowing it to be found and installed in OpenChat communities, groups and directly with users",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+              "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+              "validator_method_name": "publish_bot_validate",
+              "target_method_name": "publish_bot"
             }
           }
         },
@@ -1204,7 +1222,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10138772094353321,
+    "icrc1_total_supply": 10139330032107344,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1712,6 +1730,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "grant_permission",
           "description": "grant permission to asset canister",
@@ -1942,7 +1968,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 615238863829524,
+    "icrc1_total_supply": 615354863820963,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2347,7 +2373,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 103933067152001330,
+    "icrc1_total_supply": 104166688469288135,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3004,7 +3030,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 930089250127903416,
+    "icrc1_total_supply": 930416304377985932,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

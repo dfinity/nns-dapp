@@ -19,10 +19,6 @@
   export let numberOfTopHeldTokens: number;
 
   const href = AppPath.Staking;
-  let usdAmountFormatted: string;
-  $: usdAmountFormatted = $authSignedInStore
-    ? formatNumber(usdAmount)
-    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
   let numberOfTopStakedTokens: number;
   $: numberOfTopStakedTokens = topStakedTokens.length;
@@ -43,7 +39,6 @@
     <TokensCardHeader
       {href}
       {usdAmount}
-      {usdAmountFormatted}
       title={$i18n.portfolio.staked_tokens_card_title}
       linkText={$i18n.portfolio.staked_tokens_card_link}
     >

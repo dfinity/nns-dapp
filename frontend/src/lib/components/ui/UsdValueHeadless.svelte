@@ -2,7 +2,7 @@
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { formatCurrencyNumber, formatNumber } from "$lib/utils/format.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let usdAmount: number | undefined;
@@ -20,7 +20,9 @@
 
   let usdAmountFormatted: string;
   $: usdAmountFormatted =
-    nonNullish(usdAmount) && hasPrices ? formatNumber(usdAmount) : absentValue;
+    nonNullish(usdAmount) && hasPrices
+      ? formatCurrencyNumber(usdAmount)
+      : absentValue;
 
   let icpPrice: number | undefined;
   $: icpPrice =

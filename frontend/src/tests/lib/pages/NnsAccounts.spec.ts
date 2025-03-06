@@ -162,9 +162,6 @@ describe("NnsAccounts", () => {
       expect(await po.getTokensTablePo().getColumnHeaderWithArrow()).toBe(
         undefined
       );
-      expect(
-        await po.getTokensTablePo().getOpenSortModalButtonPo().isPresent()
-      ).toBe(false);
     });
   });
 

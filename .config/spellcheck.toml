@@ -1,4 +1,4 @@
 [Hunspell]
-lang = "en_GB"
+lang = "en_US"
 search_dirs = [".", ".config"]
-extra_dictionaries = [ "spellcheck.dic", "en_US.dic" ]
+extra_dictionaries = [ "spellcheck.dic" ]

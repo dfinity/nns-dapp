@@ -824,6 +824,35 @@ describe("ProjectsTable", () => {
       ]);
     });
 
+    it("should support changing order from settings popover", async () => {
+      const po = renderComponent();
+      expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
+
+      expect(get(projectsTableOrderStore)).toEqual([
+        {
+          columnId: "stake",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+
+      await po.openSettings();
+      await po.sortFromSettingsByLabel("Neurons");
+
+      expect(get(projectsTableOrderStore)).toEqual([
+        {
+          columnId: "neurons",
+        },
+        {
+          columnId: "stake",
+        },
+        {
+          columnId: "title",
+        },
+      ]);
+    });
+
     describe("Nns neurons missing rewards badge", () => {
       it("should render the badge in Nns row", async () => {
         overrideFeatureFlagsStore.setFlag(
@@ -999,8 +1028,8 @@ describe("ProjectsTable", () => {
     ]);
   });
 
-  it("should not disable sorting on mobile", async () => {
+  it("should display settings button", async () => {
     const po = renderComponent();
-    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(true);
+    expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(true);
   });
 });
