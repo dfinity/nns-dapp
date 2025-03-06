@@ -77,7 +77,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   getValue(): Promise<string> {
-    throw new Error("Not implement");
+    throw new Error("Not implemented");
   }
 
   getText(): Promise<string> {
@@ -146,11 +146,11 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   async isVisible(): Promise<boolean> {
-    throw new Error("Not implement");
+    throw new Error("Not implemented");
   }
 
   async blur(): Promise<void> {
-    throw new Error("Not implement");
+    throw new Error("Not implemented");
   }
 
   async innerHtmlForDebugging(): Promise<string> {
@@ -158,7 +158,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   async addEventListener(): Promise<void> {
-    throw new Error("Not implement");
+    throw new Error("Not implemented");
   }
 
   async getDocumentBody(): Promise<PlaywrightPageObjectElement> {
@@ -166,7 +166,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   async getTagName(): Promise<string> {
-    throw new Error("Not implement");
+    throw new Error("Not implemented");
   }
 
   async scrollTo(x: number, y: number): Promise<void> {
