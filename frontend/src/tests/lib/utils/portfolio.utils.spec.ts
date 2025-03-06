@@ -469,28 +469,14 @@ describe("Portfolio utils", () => {
       isNFParticipating: true,
     };
 
-    it("should return 0 when projectCommitments is null or undefined", () => {
-      expect(getMinCommitmentPercentage(null)).toBe(0);
-      expect(getMinCommitmentPercentage(undefined)).toBe(0);
-    });
-
-    it("should return 0 when minDirectCommitmentE8s is null or undefined", () => {
-      const projectCommitments: FullProjectCommitmentSplit = {
-        ...baseProjectCommitmentProps,
-        directCommitmentE8s: 500_000_000n,
-        minDirectCommitmentE8s: null,
-      };
-      expect(getMinCommitmentPercentage(projectCommitments)).toBe(0);
-
-      const projectCommitments2: FullProjectCommitmentSplit = {
-        ...baseProjectCommitmentProps,
-        directCommitmentE8s: 500_000_000n,
-        minDirectCommitmentE8s: undefined,
-      };
-      expect(getMinCommitmentPercentage(projectCommitments2)).toBe(0);
-    });
-
     it("should calculate the correct percentage ratio", () => {
+      const zeroMinDirectCommitment: FullProjectCommitmentSplit = {
+        ...baseProjectCommitmentProps,
+        directCommitmentE8s: 500_000_000n,
+        minDirectCommitmentE8s: 0n,
+      };
+      expect(getMinCommitmentPercentage(zeroMinDirectCommitment)).toBe(0);
+
       const zeroCommitment: FullProjectCommitmentSplit = {
         ...baseProjectCommitmentProps,
         directCommitmentE8s: 0n,

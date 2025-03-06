@@ -133,8 +133,7 @@ export const formatParticipation = (ulps: bigint) => {
 export const getMinCommitmentPercentage = (
   projectCommitments: FullProjectCommitmentSplit
 ) => {
-  if (!projectCommitments) return 0;
-  if (!projectCommitments.minDirectCommitmentE8s) return 0;
+  if (projectCommitments.minDirectCommitmentE8s === 0n) return 0;
 
   return (
     ulpsToNumber({
