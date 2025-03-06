@@ -124,9 +124,10 @@
   })
     .sort(comparesByDecentralizationSaleOpenTimestampDesc)
     .map((project) => project.summary);
+  // .filter((project) => project.getLifecycle() === SnsSwapLifecycle.Aborted);
 
-  $: console.log($snsProjectsActivePadStore);
-  $: console.log(projects);
+  let hideTotalAssetsCards = false;
+  $: hideTotalAssetsCards = !$authSignedInStore && projects.length > 0;
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -135,11 +136,14 @@
     class:signed-in={$authSignedInStore}
     class:launchpad={projects.length > 0}
   >
-    <TotalAssetsCard
-      usdAmount={totalUsdAmount}
-      hasUnpricedTokens={hasUnpricedTokensOrStake}
-      isLoading={isSomethingLoading}
-    />
+    {#if !hideTotalAssetsCards}
+      <TotalAssetsCard
+        usdAmount={totalUsdAmount}
+        hasUnpricedTokens={hasUnpricedTokensOrStake}
+        isLoading={isSomethingLoading}
+      />
+    {/if}
+
     {#if !$authSignedInStore}
       <div class="login-card">
         <LoginCard />
@@ -213,12 +217,22 @@
           height: 100%;
         }
 
+        // Case: not signed in, with projects
+        &:not(.signed-in).launchpad {
+          grid-template-columns: 2fr 1fr;
+        }
+
+        // Case: not signed in, with no projects
+        &:not(.signed-in):not(.launchpad) {
+          grid-template-columns: 1fr 2fr;
+        }
+
         // Case: signed in
         &.signed-in {
           grid-template-columns: 1fr;
         }
-        // Case: signed in, no projects
 
+        // Case: signed in, no projects
         &.signed-in:not(.launchpad) {
           grid-template-columns: 3fr;
         }
@@ -226,11 +240,6 @@
         // Case: signed in, with projects
         &.signed-in.launchpad {
           grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: not signed in, with projects
-        &:not(.signed-in).launchpad {
-          grid-template-columns: 1fr 1fr 1fr;
         }
       }
     }
