@@ -23,7 +23,7 @@ export class UsdValueBannerPo extends BasePageObject {
   }
 
   getSecondaryAmount(): Promise<string> {
-    return this.getText("secondary-amount");
+    return this.getTextWithCollapsedWhitespaces("secondary-amount");
   }
 
   getIcpPrice(): Promise<string> {
