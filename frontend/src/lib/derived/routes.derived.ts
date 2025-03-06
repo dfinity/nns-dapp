@@ -56,3 +56,10 @@ export const neuronsPageOrigin = derived(referrerPathStore, (paths) => {
 
   return AppPath.Staking;
 });
+
+export const projectPageOrigin = derived(referrerPathStore, (paths) => {
+  const lastPath = paths.at(-1);
+  if (lastPath === AppPath.Portfolio) return lastPath;
+
+  return AppPath.Launchpad;
+});
