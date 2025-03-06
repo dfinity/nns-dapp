@@ -24,13 +24,15 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .wrap {
     container-type: inline-size;
-    background-color: var(--card-background-tint);
-    box-sizing: border-box;
     height: 100%;
+    --icon-size-small: 80px;
+    --icon-size-large: 144px;
 
     .wrapper {
+      background-color: var(--card-background-tint);
       box-sizing: border-box;
       height: 100%;
 
@@ -91,12 +93,12 @@
 
       .icon {
         grid-area: icon;
-        width: 80px;
-        height: 80px;
+        width: var(--icon-size-small);
+        height: var(--icon-size-small);
 
         @include media.min-width(medium) {
-          width: 144px;
-          height: 144px;
+          width: var(--icon-size-large);
+          height: var(--icon-size-large);
         }
       }
 
@@ -116,16 +118,17 @@
 
       // Progressive enhancement
       @include media.min-width(large) {
-        @container (max-width: 460px) {
+        @container (max-width: 430px) {
           & {
             grid-template-areas:
               "icon content"
               "action action";
             gap: var(--padding-2x);
+            padding: var(--padding-2x);
 
             .icon {
-              width: 80px;
-              height: 80px;
+              width: var(--icon-size-small);
+              height: var(--icon-size-small);
             }
 
             .action :global(button) {
