@@ -6,7 +6,7 @@
 
 <style lang="scss">
   article {
-    height: auto;
+    height: 100%;
     box-sizing: border-box;
     background: var(--card-background);
     /* Designs use a different shadow */
