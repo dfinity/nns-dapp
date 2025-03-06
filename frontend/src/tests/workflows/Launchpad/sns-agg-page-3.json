@@ -1124,11 +1124,7 @@
       "ledger": "k45jy-aiaaa-aaaaq-aadcq-cai",
       "index": "ks7eq-3yaaa-aaaaq-aaddq-cai",
       "governance": "k34pm-nqaaa-aaaaq-aadca-cai",
-      "dapps": [
-        "2uktw-yiaaa-aaaah-adwxq-cai",
-        "2tlvc-vqaaa-aaaah-adwxa-cai",
-        "oeee4-qaaaa-aaaak-qaaeq-cai"
-      ],
+      "dapps": ["oeee4-qaaaa-aaaak-qaaeq-cai", "hhce5-bqaaa-aaaak-qtt3q-cai"],
       "archives": ["j6iuh-qyaaa-aaaaq-aadjq-cai"]
     },
     "meta": {
@@ -1264,6 +1260,14 @@
           "id": 15,
           "name": "Advance SNS target version",
           "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1437,7 +1441,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 5413485600546028,
+    "icrc1_total_supply": 5415414164368389,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1824,7 +1828,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999792060000,
+    "icrc1_total_supply": 99999791290000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2226,7 +2230,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041668936704746391,
+    "icrc1_total_supply": 1041665916874930305,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2871,7 +2875,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11661325973174482,
+    "icrc1_total_supply": 11661576193764921,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4389,7 +4393,7 @@
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2321410134977968632,
+    "icrc1_total_supply": 2319947556644943879,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4609,6 +4613,14 @@
           "id": 15,
           "name": "Advance SNS target version",
           "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -4949,7 +4961,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999785640000,
+    "icrc1_total_supply": 1999999785530000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -7355,6 +7367,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1234,
           "name": "Update kong frontend",
           "description": "Update the asset canister",
@@ -8288,7 +8308,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100127553223237441,
+    "icrc1_total_supply": 100129794520116241,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
