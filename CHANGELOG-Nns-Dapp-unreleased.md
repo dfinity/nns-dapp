@@ -14,21 +14,21 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Warning indicators for failed actionable SNS proposals.
+* Add the ability to sort the tokens table on mobile.
 
 #### Changed
 
-* Hide the mobile header when scrolling.
-* Make navigation from the staking neurons page possible even without neurons.
 * Improve readability of monetary values by simplifying large numbers
+* Improved error handling by disabling neuron navigation when SNS governance canister is unavailable
+* Enhanced geolocation reliability for SNS swap participation checks by replacing fallback service
+* Replaced the table sorting modal with the table settings menu.
+
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-* Rendering of `RemoveNodeOperatorsPayload` proposals.
 
 #### Security
 

@@ -662,6 +662,7 @@ describe("staking.utils", () => {
         },
         {
           ...defaultExpectedSnsTableProject,
+          rowHref: undefined,
           neuronCount: undefined,
           stake: new FailedTokenAmount(snsToken),
           stakeInUsd: undefined,

@@ -25,6 +25,7 @@ export interface PageObjectElement {
   waitFor(): Promise<void>;
   waitForAbsent(timeout?: number): Promise<void>;
   getText(): Promise<string | null>;
+  getTextWithCollapsedWhitespaces(): Promise<string | null>;
   getAttribute(attribute: string): Promise<string | null>;
   getClasses(): Promise<string[] | null>;
   click(): Promise<void>;

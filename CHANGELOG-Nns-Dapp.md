@@ -11,6 +11,25 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 135595
+
+### Application
+
+#### Added
+
+* Warning indicators for failed actionable SNS proposals.
+
+#### Changed
+
+* Hide the mobile header when scrolling.
+* Make navigation from the staking neurons page possible even without neurons.
+
+#### Fixed
+
+* Rendering of `RemoveNodeOperatorsPayload` proposals.
+
+### Operations
+
 ## Proposal 135420
 
 ### Application

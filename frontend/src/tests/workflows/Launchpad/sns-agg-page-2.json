@@ -1507,7 +1507,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101710343006318872,
+    "icrc1_total_supply": 101781134855868198,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2928,6 +2928,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 5000,
           "name": "Transfer SNS Treasury ckBTC",
           "description": "Transfer ckBTC from the SNS treasury",
@@ -3561,7 +3569,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100839716476686,
+    "icrc1_total_supply": 100838247496286,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4110,6 +4118,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 2000,
           "name": "set_canister_ids",
           "description": "Set the ledger and index canister ids of the old and new Sneed tokens.",
@@ -4349,7 +4365,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995546022980,
+    "icrc1_total_supply": 995544834980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7281,7 +7297,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19211019454772525,
+    "icrc1_total_supply": 19214111692741945,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9290,7 +9306,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25263630971631947,
+    "icrc1_total_supply": 25353115952772746,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10673,7 +10689,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10061950255929066,
+    "icrc1_total_supply": 10062428682801496,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11363,6 +11379,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "Commit proposed assets for upgrading the frontend canister",
           "description": "Commit proposed assets for upgrading the frontend canister.",
@@ -11926,7 +11950,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103700039004221360,
+    "icrc1_total_supply": 103721640343604666,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -12324,6 +12348,14 @@
           "id": 15,
           "name": "Advance SNS target version",
           "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -13196,7 +13228,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98591507216660090,
+    "icrc1_total_supply": 98598324029191884,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14371,7 +14403,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99923831050074040,
+    "icrc1_total_supply": 99923831182748886,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15555,7 +15587,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100103938582754872,
+    "icrc1_total_supply": 100249782697220568,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

@@ -36,6 +36,12 @@ export class SimpleBasePageObject {
     return this.getElement(tid).getText();
   }
 
+  async getTextWithCollapsedWhitespaces(
+    tid: string | undefined = undefined
+  ): Promise<string> {
+    return (await this.getText(tid)).replace(/\s+/g, " ");
+  }
+
   getStyle(): Promise<string> {
     return this.root.getAttribute("style");
   }

@@ -468,11 +468,51 @@ describe("NeuronsTable", () => {
     ]);
   });
 
-  it("should not disable sorting on mobile", async () => {
+  it("should display setting button", async () => {
     const po = renderComponent({
       neurons: [neuron1, neuron2, neuron3, neuron4],
     });
-    expect(await po.getOpenSortModalButtonPo().isPresent()).toBe(true);
+    expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(true);
+  });
+
+  it("should change order from settings popover", async () => {
+    const po = renderComponent({
+      neurons: [neuron1, neuron2, neuron3, neuron4],
+    });
+
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "stake" },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    await po.openSettings();
+    await po.sortFromSettingsByLabel("Stake");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "stake", reversed: true },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    await po.sortFromSettingsByLabel("Maturity");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "maturity" },
+      { columnId: "stake", reversed: true },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    await po.sortFromSettingsByLabel("Dissolve Delay");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "dissolveDelay" },
+      { columnId: "maturity" },
+      { columnId: "stake", reversed: true },
+    ]);
+
+    await po.sortFromSettingsByLabel("State");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "state" },
+      { columnId: "dissolveDelay" },
+      { columnId: "maturity" },
+      { columnId: "stake", reversed: true },
+    ]);
   });
 
   it("should render dissolve delay", async () => {
