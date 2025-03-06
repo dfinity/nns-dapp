@@ -2,11 +2,11 @@ import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { writableStored } from "$lib/stores/writable-stored";
 import type { Writable } from "svelte/store";
 
-export type HideZeroNeuronsMode = "show" | "hide";
+export type HideZeroNeuronsModeData = "show" | "hide";
 
-export type HideZeroNeuronsStore = Writable<HideZeroNeuronsMode>;
+export type HideZeroNeuronsStore = Writable<HideZeroNeuronsModeData>;
 
-export const hideZeroNeuronsStore = writableStored<HideZeroNeuronsMode>({
+export const hideZeroNeuronsStore = writableStored<HideZeroNeuronsModeData>({
   key: StoreLocalStorageKey.HideZeroNeurons,
   defaultValue: "show",
 });
