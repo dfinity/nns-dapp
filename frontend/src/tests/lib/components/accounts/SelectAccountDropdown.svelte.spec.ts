@@ -1,6 +1,7 @@
 import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import type { Account } from "$lib/types/account";
 import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
 import {
   mockHardwareWalletAccount,
@@ -73,31 +74,32 @@ describe("SelectAccountDropdown", () => {
     });
 
     it("should reset selected accounts on selectable list of accounts change", async () => {
-      const { component } = render(SelectAccountDropdown, {
-        props: {
-          ...props,
-          selectedAccount: mockHardwareWalletAccount,
-        },
+      let testProps = $state({
+        ...props,
+        selectedAccount: mockHardwareWalletAccount,
+        filterAccounts: (_account: Account): boolean => true,
+      });
+
+      render(SelectAccountDropdown, {
+        props: testProps,
       });
 
       // We are interested in the bind value(s) not the one of the HTML element. It's the bind value that kept the wrong value in memory when we developed related fix.
       // In addition, the select binds `selectedAccountIdentifier` and we also want to ensure that the side effect resolve the `selectedAccount` when the code reset it.
-      expect(component.$$.ctx[component.$$.props["selectedAccount"]]).toEqual(
-        mockHardwareWalletAccount
-      );
+      expect(testProps.selectedAccount).toEqual(mockHardwareWalletAccount);
 
-      const { component: component2 } = render(SelectAccountDropdown, {
-        props: {
-          ...props,
-          selectedAccount: mockHardwareWalletAccount,
-          filterAccounts: (account) => !isAccountHardwareWallet(account),
-        },
+      testProps = {
+        ...props,
+        selectedAccount: mockHardwareWalletAccount,
+        filterAccounts: (account: Account) => !isAccountHardwareWallet(account),
+      };
+
+      render(SelectAccountDropdown, {
+        props: testProps,
       });
 
       await waitFor(() =>
-        expect(
-          component2.$$.ctx[component2.$$.props["selectedAccount"]]
-        ).toEqual(mockMainAccount)
+        expect(testProps.selectedAccount).toEqual(mockMainAccount)
       );
     });
 

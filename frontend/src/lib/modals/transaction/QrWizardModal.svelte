@@ -94,7 +94,9 @@
     return { result, identifier, token, amount };
   };
 
-  export const scanQrCode = async ({
+  // Using const to export a function is incompatible with Svelte v5
+  // svelte-ignore unused-export-let
+  export let scanQrCode = async ({
     requiredToken,
   }: {
     requiredToken: Token;
