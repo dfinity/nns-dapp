@@ -84,6 +84,14 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
+      height: 100%;
+
+      @include media.min-width(large) {
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--padding);
+      }
 
       .totals {
         display: flex;
