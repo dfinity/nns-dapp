@@ -1,5 +1,7 @@
 //! Data types for storing upstream SNS data.
-use super::ic_sns_governance::{GetMetadataResponse, ListNervousSystemFunctionsResponse, NervousSystemParameters};
+use super::ic_sns_governance::{
+    GetMetadataResponse, ListNervousSystemFunctionsResponse, ListTopicsResponse, NervousSystemParameters,
+};
 use super::ic_sns_ledger::Value as Icrc1Value;
 use super::ic_sns_root::ListSnsCanistersResponse;
 use super::ic_sns_swap::{GetSaleParametersResponse, GetStateResponse};
@@ -62,4 +64,6 @@ pub struct UpstreamData {
     pub derived_state: Option<GetDerivedStateResponse>,
     /// The lifecycle of the swap
     pub lifecycle: Option<GetLifecycleResponse>,
+    /// The topics and the corresponding proposal types of this SNS.
+    pub topics: Option<ListTopicsResponse>,
 }
