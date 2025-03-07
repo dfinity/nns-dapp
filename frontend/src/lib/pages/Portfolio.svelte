@@ -1,9 +1,9 @@
 <script lang="ts">
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
+  import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
-  import OpenProjectCard from "$lib/components/portfolio/OpenProjectCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
@@ -150,7 +150,7 @@
       </div>
     {/if}
     {#if projects.length > 0}
-      <OpenProjectCard summary={projects[0]} />
+      <LaunchProjectCard summary={projects[0]} />
     {/if}
   </div>
 

@@ -1,6 +1,12 @@
 import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  getMaxNeuronsFundParticipation,
+  getNeuronsFundParticipation,
+} from "$lib/getters/sns-summary";
+import type { SnsSummary } from "$lib/types/sns";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
 import {
   createDescendingComparator,
   mergeComparators,
@@ -15,7 +21,7 @@ import {
   compareTokensIcpFirst,
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
-import { ICPToken } from "@dfinity/utils";
+import { ICPToken, isNullish } from "@dfinity/utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
@@ -127,4 +133,42 @@ export const formatParticipation = (ulps: bigint) => {
     return Number.isInteger(value) ? value.toString() : value.toFixed(2);
 
   return `${(value / 1_000).toFixed(0)}K`;
+};
+
+export const getMinCommitmentPercentage = (
+  projectCommitment: FullProjectCommitmentSplit
+) => {
+  if (projectCommitment.minDirectCommitmentE8s === 0n) return 0;
+
+  return (
+    ulpsToNumber({
+      ulps: projectCommitment.directCommitmentE8s,
+      token: ICPToken,
+    }) /
+    ulpsToNumber({
+      ulps: projectCommitment.minDirectCommitmentE8s,
+      token: ICPToken,
+    })
+  );
+};
+
+export const getNFCommitmentPercentage = (
+  summary: SnsSummary
+): number | null => {
+  const maxNfParticipation = getMaxNeuronsFundParticipation(summary);
+  const nfCommitment = getNeuronsFundParticipation(summary);
+
+  if (isNullish(maxNfParticipation) || isNullish(nfCommitment)) return null;
+  if (maxNfParticipation === 0n) return null;
+
+  return (
+    ulpsToNumber({
+      ulps: nfCommitment,
+      token: summary.token,
+    }) /
+    ulpsToNumber({
+      ulps: maxNfParticipation,
+      token: summary.token,
+    })
+  );
 };
