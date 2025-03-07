@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_wasm --out ic_sns_wasm.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-27_03-09-disable-best-effort-messaging/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-06_03-10-disable-best-effort-messaging/rs/nns/sns-wasm/canister/sns-wasm.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -95,10 +95,6 @@ pub struct DeveloperDistribution {
     pub developer_neurons: Vec<NeuronDistribution>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct AirdropDistribution {
-    pub airdrop_neurons: Vec<NeuronDistribution>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SwapDistribution {
     pub total_e8s: u64,
     pub initial_swap_amount_e8s: u64,
@@ -107,7 +103,6 @@ pub struct SwapDistribution {
 pub struct FractionalDeveloperVotingPower {
     pub treasury_distribution: Option<TreasuryDistribution>,
     pub developer_distribution: Option<DeveloperDistribution>,
-    pub airdrop_distribution: Option<AirdropDistribution>,
     pub swap_distribution: Option<SwapDistribution>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
