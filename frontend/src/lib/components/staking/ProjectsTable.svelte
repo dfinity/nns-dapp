@@ -155,11 +155,13 @@
     {columns}
     on:nnsAction={handleAction}
     bind:order={$projectsTableOrderStore}
-    displayTableSettings={$authSignedInStore}
+    displayTableSettings
   >
     <div slot="settings-popover">
-      <HideZeroNeuronsToggle />
-      <Separator spacing="medium" />
+      {#if $authSignedInStore}
+        <HideZeroNeuronsToggle />
+        <Separator spacing="medium" />
+      {/if}
     </div>
 
     <div
