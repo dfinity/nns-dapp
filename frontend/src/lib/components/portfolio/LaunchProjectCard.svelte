@@ -49,11 +49,16 @@
   let formattedMaxCommitmentIcp: string;
   $: formattedMaxCommitmentIcp = formatParticipation(summary.getMaxIcpE8s());
 
-  let nfCommitmentPercentage;
-  $: nfCommitmentPercentage = projectCommitment.isNFParticipating
-    ? getNeuronsFundParticipation(summary)
-    : null;
-  $: nfCommitmentPercentage = 100000n;
+  let nfCommitment: bigint | undefined;
+  $: nfCommitment = getNeuronsFundParticipation(summary);
+
+  let formattedNfCommitmentPercentage: string | null;
+  $: formattedNfCommitmentPercentage =
+    nonNullish(nfCommitment) && projectCommitment.isNFParticipating
+      ? formatParticipation(nfCommitment)
+      : null;
+
+  console.log(nfCommitment);
 
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
@@ -118,7 +123,7 @@
           </span>
         </div>
 
-        {#if nonNullish(nfCommitmentPercentage)}
+        {#if nonNullish(nfCommitment)}
           <div class="stat-item">
             <div class="stat-label"
               >{$i18n.portfolio.open_project_card_nf}
@@ -127,9 +132,7 @@
                 tooltipId="main-icp-account-id-tooltip"
               />
             </div>
-            <div class="stat-value"
-              >{formatPercentage(nfCommitmentPercentage)}</div
-            >
+            <div class="stat-value">{formattedNfCommitmentPercentage}</div>
           </div>
         {/if}
       </div>
@@ -157,6 +160,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/text";
 
   .wrapper {
     display: flex;
@@ -194,6 +198,8 @@
       margin: 0;
       color: var(--color-text-secondary);
       flex-grow: 1;
+
+      @include text.clamp(2);
     }
 
     .commitment-section {
