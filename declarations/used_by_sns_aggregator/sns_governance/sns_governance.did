@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-27_03-09-disable-best-effort-messaging/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-06_03-10-disable-best-effort-messaging/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -7,6 +7,7 @@ type Account = record {
 type Action = variant {
   ManageNervousSystemParameters : NervousSystemParameters;
   AddGenericNervousSystemFunction : NervousSystemFunction;
+  SetTopicsForCustomProposals : SetTopicsForCustomProposals;
   ManageDappCanisterSettings : ManageDappCanisterSettings;
   RemoveGenericNervousSystemFunction : nat64;
   UpgradeSnsToNextVersion : record {};
@@ -393,6 +394,10 @@ type SnsVersion = record {
 
 type AdvanceSnsTargetVersion = record {
   new_target : opt SnsVersion;
+};
+
+type SetTopicsForCustomProposals = record {
+  custom_function_id_to_topic : vec record { nat64; Topic };
 };
 
 type ManageLedgerParameters = record {
