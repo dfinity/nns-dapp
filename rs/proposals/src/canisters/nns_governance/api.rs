@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-27_03-09-disable-best-effort-messaging/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-06_03-10-disable-best-effort-messaging/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -49,6 +49,16 @@ pub struct Split {
 pub struct Follow {
     pub topic: i32,
     pub followees: Vec<NeuronId>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct Account {
+    pub owner: Option<Principal>,
+    pub subaccount: Option<serde_bytes::ByteBuf>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct DisburseMaturity {
+    pub to_account: Option<Account>,
+    pub percentage_to_disburse: u32,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RefreshVotingPower {}
@@ -155,6 +165,7 @@ pub enum Command {
     Spawn(Spawn),
     Split(Split),
     Follow(Follow),
+    DisburseMaturity(DisburseMaturity),
     RefreshVotingPower(RefreshVotingPower),
     ClaimOrRefresh(ClaimOrRefresh),
     Configure(Configure),
@@ -997,6 +1008,7 @@ pub enum ManageNeuronCommandRequest {
     Spawn(Spawn),
     Split(Split),
     Follow(Follow),
+    DisburseMaturity(DisburseMaturity),
     RefreshVotingPower(RefreshVotingPower),
     ClaimOrRefresh(ClaimOrRefresh),
     Configure(Configure),
@@ -1017,6 +1029,10 @@ pub struct ManageNeuronRequest {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SpawnResponse {
     pub created_neuron_id: Option<NeuronId>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct DisburseMaturityResponse {
+    pub amount_disbursed_e8s: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RefreshVotingPowerResponse {}
@@ -1056,6 +1072,7 @@ pub enum Command1 {
     Spawn(SpawnResponse),
     Split(SpawnResponse),
     Follow(EmptyRecord),
+    DisburseMaturity(DisburseMaturityResponse),
     RefreshVotingPower(RefreshVotingPowerResponse),
     ClaimOrRefresh(ClaimOrRefreshResponse),
     Configure(EmptyRecord),
