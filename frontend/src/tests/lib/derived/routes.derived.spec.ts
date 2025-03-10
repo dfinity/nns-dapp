@@ -3,6 +3,7 @@ import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
 import {
   accountsPageOrigin,
   neuronsPageOrigin,
+  projectPageOrigin,
   walletPageOrigin,
 } from "$lib/derived/routes.derived";
 import { referrerPathStore } from "$lib/stores/routes.store";
@@ -94,6 +95,27 @@ describe("routes.derived", () => {
       referrerPathStore.pushPath(AppPath.Settings);
 
       expect(get(neuronsPageOrigin)).toBe(AppPath.Staking);
+    });
+  });
+
+  describe("projectPageOrigin.derived", () => {
+    it("should return to Portfolio page when it was the last page visited", () => {
+      referrerPathStore.pushPath(AppPath.Portfolio);
+
+      expect(get(projectPageOrigin)).toBe(AppPath.Portfolio);
+    });
+
+    it("should return to Launchpad page when it was the last page visited", () => {
+      referrerPathStore.pushPath(AppPath.Launchpad);
+
+      expect(get(projectPageOrigin)).toBe(AppPath.Launchpad);
+    });
+
+    it("should return Launchpad as default", () => {
+      referrerPathStore.pushPath(AppPath.Portfolio);
+      referrerPathStore.pushPath(AppPath.Settings);
+
+      expect(get(projectPageOrigin)).toBe(AppPath.Launchpad);
     });
   });
 });

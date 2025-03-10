@@ -56,3 +56,18 @@ export const neuronsPageOrigin = derived(referrerPathStore, (paths) => {
 
   return AppPath.Staking;
 });
+
+/**
+ * Derives the origin page (Portfolio or Launchpad) to return from Project page.
+ * Looks at last entry to handle navigation flows:
+ * Portfolio -> Project -> (back) -> Portfolio
+ * Launchpad -> Project -> (back) -> Launchpad
+ *
+ * Returns AppPath.Launchpad as default if no matching page is found.
+ */
+export const projectPageOrigin = derived(referrerPathStore, (paths) => {
+  const lastPath = paths.at(-1);
+  if (lastPath === AppPath.Portfolio) return lastPath;
+
+  return AppPath.Launchpad;
+});
