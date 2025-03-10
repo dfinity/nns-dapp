@@ -90,7 +90,7 @@ describe("SelectNetworkDropdown", () => {
     });
 
     expect(get(selectedNetwork)).toBe(undefined);
-    await po.select("Internet Computer");
+    await po.select(TransactionNetwork.ICP);
     expect(get(selectedNetwork)).toBe(TransactionNetwork.ICP);
   });
 
