@@ -58,16 +58,14 @@
       ? formatParticipation(nfCommitment)
       : null;
 
-  console.log(nfCommitment);
-
-  let durationTillDeadline: bigint | undefined;
-  $: durationTillDeadline = durationTillSwapDeadline(swap);
+  let durationTillDeadline: bigint;
+  $: durationTillDeadline = durationTillSwapDeadline(swap) ?? 0n;
 
   let href: string;
   $: href = `${AppPath.Project}/?project=${summary.rootCanisterId.toText()}`;
 </script>
 
-<Card testId="open-projects-card">
+<Card testId="launch-project-card">
   <div class="wrapper">
     <div class="header">
       <div class="title-wrapper">
@@ -98,7 +96,9 @@
           <span class="stat-label">
             {$i18n.portfolio.open_project_card_min_fund}
           </span>
-          <span class="stat-value funding-percentage"
+          <span
+            class="stat-value funding-percentage"
+            data-tid="min-funding-percentage"
             >{formattedCurrentCommitmentPercentage}</span
           >
         </div>
@@ -109,7 +109,7 @@
           <span class="stat-label">
             {$i18n.portfolio.open_project_card_min_icp}
           </span>
-          <span class="stat-value">
+          <span class="stat-value" data-tid="min-icp-commitment">
             {formattedMinCommitmentIcp}
           </span>
         </div>
@@ -118,7 +118,7 @@
           <span class="stat-label">
             {$i18n.portfolio.open_project_card_max_icp}
           </span>
-          <span class="stat-value">
+          <span class="stat-value" data-tid="max-icp-commitment">
             {formattedMaxCommitmentIcp}
           </span>
         </div>
@@ -132,7 +132,9 @@
                 tooltipId="main-icp-account-id-tooltip"
               />
             </div>
-            <div class="stat-value">{formattedNfCommitmentPercentage}</div>
+            <div class="stat-value" data-tid="nf-icp-commitment"
+              >{formattedNfCommitmentPercentage}</div
+            >
           </div>
         {/if}
       </div>
@@ -144,12 +146,14 @@
           <IconClockNoFill />
         </span>
 
-        {secondsToDuration({
-          seconds: durationTillDeadline ?? 0n,
-          i18n: $i18n.time,
-        })}
+        <span data-tid="duration">
+          {secondsToDuration({
+            seconds: durationTillDeadline,
+            i18n: $i18n.time,
+          })}
+        </span>
       </div>
-      <a {href} class="link" aria-label="something">
+      <a {href} class="link" aria-label="something" data-tid="project-link">
         <span>{$i18n.portfolio.open_project_card_link}</span>
         <IconRight />
       </a>
