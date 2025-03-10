@@ -17,8 +17,8 @@ export class LaunchProjectCardPo extends BasePageObject {
     return this.getText("project-description");
   }
 
-  getMinFundingPercentage(): Promise<string> {
-    return this.getText("min-funding-percentage");
+  getDirectCommitment(): Promise<string> {
+    return this.getText("direct-commitment");
   }
 
   getMinIcp(): Promise<string> {
