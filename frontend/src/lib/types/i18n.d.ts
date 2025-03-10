@@ -312,6 +312,10 @@ interface I18nStaking {
   title: string;
   text: string;
   nervous_systems: string;
+  hide_no_neurons_header: string;
+  hide_no_neurons_toggle_label: string;
+  hide_no_neurons_table_hint: string;
+  show_all: string;
 }
 
 interface I18nNeurons {
