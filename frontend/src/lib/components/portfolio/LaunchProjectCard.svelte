@@ -96,8 +96,8 @@
             {$i18n.portfolio.open_project_current_commitment}
           </span>
           <span
-            class="stat-value current-commitment"
-            data-tid="current-commitment">{formattedDirectCommitment}</span
+            class="stat-value direct-commitment"
+            data-tid="direct-commitment">{formattedDirectCommitment}</span
           >
         </div>
 
@@ -238,7 +238,7 @@
           font-weight: var(--font-weight-bold);
         }
 
-        .funding-percentage {
+        .direct-commitment {
           @include fonts.h2(true);
           line-height: 1;
         }
