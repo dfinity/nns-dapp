@@ -56,17 +56,8 @@ ENV RUSTUP_HOME=/opt/rustup \
     CARGO_HOME=/opt/cargo \
     PATH=/opt/cargo/bin:$PATH
 
-RUN curl --fail https://raw.githubusercontent.com/rust-lang/rustup/refs/tags/1.28.0/rustup-init.sh -sSf | sh -s -- -y --no-modify-path
-
-# https://blog.rust-lang.org/2025/03/02/Rustup-1.28.0.html
-# Parse version and manage toolchain
-RUN rust_version=$(grep 'channel' rust-toolchain.toml | awk -F'"' '{print $2}') && \
-    targets=$(grep 'targets' rust-toolchain.toml | tr -d '[]," ' | awk -F'=' '{print $2}') && \
-    rustup toolchain install "$rust_version" && \
-    # New changes also don't install targets
-    rustup target add $targets --toolchain "$rust_version" &&  \
-    rustup default "$rust_version"
-
+RUN curl --fail https://raw.githubusercontent.com/rust-lang/rustup/refs/tags/1.28.1/rustup-init.sh -sSf \
+    | sh -s -- -y --no-modify-path
 RUN cargo --version
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
 # to build only the dependencies, we pretend that our project is a simple, empty

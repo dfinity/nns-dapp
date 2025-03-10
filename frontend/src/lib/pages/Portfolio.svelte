@@ -111,15 +111,17 @@
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div class="top" class:single-card={$authSignedInStore}>
-    {#if !$authSignedInStore}
-      <LoginCard />
-    {/if}
+  <div class="top" class:signed-in={$authSignedInStore}>
     <TotalAssetsCard
       usdAmount={totalUsdAmount}
       hasUnpricedTokens={hasUnpricedTokensOrStake}
       isLoading={isSomethingLoading}
     />
+    {#if !$authSignedInStore}
+      <div class="login-card">
+        <LoginCard />
+      </div>
+    {/if}
   </div>
   <div class="content">
     {#if heldTokensCard === "skeleton"}
@@ -172,14 +174,19 @@
       grid-template-columns: 1fr;
       gap: var(--padding-2x);
 
+      .login-card {
+        order: -1;
+      }
+
       @include media.min-width(large) {
         grid-template-columns: 1fr 2fr;
 
-        > :global(article:first-of-type) {
-          order: 1;
+        .login-card {
+          order: 0;
         }
 
-        &.single-card {
+        // Case: signed in
+        &.signed-in {
           grid-template-columns: 1fr;
         }
       }
