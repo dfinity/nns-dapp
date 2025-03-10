@@ -35,7 +35,8 @@
     {:else}
       <div class="mobile-only">
         1 {$i18n.core.icp} = ${icpPriceFormatted}
-      </div><div>
+      </div>
+      <div>
         {$i18n.accounts.token_price_source}
       </div>
     {/if}
