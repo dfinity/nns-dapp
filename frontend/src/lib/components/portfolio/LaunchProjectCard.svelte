@@ -7,23 +7,21 @@
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
-  import { formatPercentage } from "$lib/utils/format.utils";
-  import {
-    formatParticipation,
-    getMinCommitmentPercentage,
-  } from "$lib/utils/portfolio.utils";
+  import { formatCurrencyNumber } from "$lib/utils/format.utils";
+  import { formatParticipation } from "$lib/utils/portfolio.utils";
   import {
     durationTillSwapDeadline,
     getProjectCommitmentSplit,
     type FullProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
+  import { ulpsToNumber } from "$lib/utils/token.utils";
   import {
     IconClockNoFill,
     IconRight,
     IconRocketLaunch,
     Tag,
   } from "@dfinity/gix-components";
-  import { nonNullish, secondsToDuration } from "@dfinity/utils";
+  import { ICPToken, nonNullish, secondsToDuration } from "@dfinity/utils";
 
   export let summary: SnsSummaryWrapper;
   let swap: SnsSummarySwap;
@@ -34,14 +32,13 @@
     summary
   ) as FullProjectCommitmentSplit;
 
-  let currentCommitmentPercentage: number;
-  $: currentCommitmentPercentage =
-    getMinCommitmentPercentage(projectCommitment);
-
-  let formattedCurrentCommitmentPercentage: string;
-  $: formattedCurrentCommitmentPercentage = formatPercentage(
-    currentCommitmentPercentage
-  );
+  let directCommitment: number;
+  $: directCommitment = ulpsToNumber({
+    ulps: projectCommitment.directCommitmentE8s,
+    token: ICPToken,
+  });
+  let formattedDirectCommitment: string;
+  $: formattedDirectCommitment = formatCurrencyNumber(directCommitment);
 
   let formattedMinCommitmentIcp: string;
   $: formattedMinCommitmentIcp = formatParticipation(summary.getMinIcpE8s());
@@ -76,7 +73,7 @@
             size="medium"
           />
         </div>
-        <h3>{summary.metadata.name}</h3>
+        <h3 data-tid="project-name">{summary.metadata.name}</h3>
       </div>
       <Tag size="medium">
         <span>{$i18n.portfolio.project_status_adopted}</span>
@@ -84,7 +81,9 @@
       </Tag>
     </div>
 
-    <p class="description">{summary.metadata.description}</p>
+    <p class="description" data-tid="project-description"
+      >{summary.metadata.description}</p
+    >
 
     <div class="commitment-section">
       <h4 class="section-title">
@@ -94,12 +93,11 @@
       <div class="stats">
         <div class="stat-item">
           <span class="stat-label">
-            {$i18n.portfolio.open_project_card_min_fund}
+            {$i18n.portfolio.open_project_current_commitment}
           </span>
           <span
-            class="stat-value funding-percentage"
-            data-tid="min-funding-percentage"
-            >{formattedCurrentCommitmentPercentage}</span
+            class="stat-value current-commitment"
+            data-tid="current-commitment">{formattedDirectCommitment}</span
           >
         </div>
 

@@ -1267,7 +1267,7 @@ interface I18nPortfolio {
   project_status_adopted: string;
   project_status_proposal: string;
   open_project_card_title: string;
-  open_project_card_min_fund: string;
+  open_project_current_commitment: string;
   open_project_card_min_icp: string;
   open_project_card_max_icp: string;
   open_project_card_nf: string;

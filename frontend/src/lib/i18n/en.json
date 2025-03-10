@@ -1201,7 +1201,7 @@
     "project_status_adopted": "Upcoming",
     "project_status_proposal": "Open",
     "open_project_card_title": "COMMITMENT",
-    "open_project_card_min_fund": "Funded of Min",
+    "open_project_current_commitment": "ICP raised",
     "open_project_card_min_icp": "Min ICP",
     "open_project_card_max_icp": "Max ICP",
     "open_project_card_nf": "Neuron Fund",
