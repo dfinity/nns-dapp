@@ -84,7 +84,7 @@ describe("DisburseNnsNeuronModal", () => {
       await po
         .getNnsDestinationAddressPo()
         .getSelectDestinationAddressPo()
-        .selectAccount("Main");
+        .selectAccount(mockMainAccount.identifier);
       await po.getNnsDestinationAddressPo().clickContinue();
       expect(await po.getConfirmDisburseNeuronPo().isPresent()).toBe(true);
     });
