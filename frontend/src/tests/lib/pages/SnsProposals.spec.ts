@@ -313,8 +313,9 @@ describe("SnsProposals", () => {
       await fireEvent.click(getByTestId("apply-filters"));
 
       // Wait for modal to close
-      await runResolvedPromises();
-      expect(queryByTestId("filter-modal")).not.toBeInTheDocument();
+      await waitFor(() =>
+        expect(queryByTestId("filter-modal")).not.toBeInTheDocument()
+      );
 
       expect(queryAllByTestId("proposal-card").length).toBe(1);
     });

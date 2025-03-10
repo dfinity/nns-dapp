@@ -101,7 +101,9 @@ describe("AccountMenu", () => {
       //wait for goto to be triggered
       await runResolvedPromises();
 
-      expect(await accountMenuPo.isOpen()).toBe(false);
+      await vi.waitFor(async () =>
+        expect(await accountMenuPo.isOpen()).toBe(false)
+      );
     });
 
     it("should render account details component", async () => {
@@ -129,7 +131,9 @@ describe("AccountMenu", () => {
       //wait for goto to be triggered
       await runResolvedPromises();
 
-      expect(await accountMenuPo.isOpen()).toBe(false);
+      await vi.waitFor(async () =>
+        expect(await accountMenuPo.isOpen()).toBe(false)
+      );
     });
 
     describe("export feature flag", () => {
@@ -156,7 +160,9 @@ describe("AccountMenu", () => {
         //wait for goto to be triggered
         await runResolvedPromises();
 
-        expect(await accountMenuPo.isOpen()).toBe(false);
+        await vi.waitFor(async () =>
+          expect(await accountMenuPo.isOpen()).toBe(false)
+        );
       });
     });
   });

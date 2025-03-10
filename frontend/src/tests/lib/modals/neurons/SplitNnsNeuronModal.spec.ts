@@ -12,13 +12,13 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { fireEvent } from "@testing-library/dom";
 import type { RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 describe("SplitNeuronModal", () => {
   let startBusySpy;
   const renderSplitNeuronModal = async (
     neuron: NeuronInfo
-  ): Promise<RenderResult<SvelteComponent>> => {
+  ): Promise<RenderResult<Component>> => {
     return renderModal({
       component: SplitNeuronModal,
       props: { neuron },

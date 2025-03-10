@@ -70,7 +70,7 @@ describe("NnsDestinationAddress", () => {
     await po
       .getSelectDestinationAddressPo()
       .getDropdownPo()
-      .select(mockSubAccount2.name);
+      .select(mockSubAccount2.identifier);
 
     expect(onAccountSelectedSpy).not.toBeCalled();
     await po.clickContinue();

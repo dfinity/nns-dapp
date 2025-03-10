@@ -422,7 +422,7 @@ describe("NnsStakeNeuronModal", () => {
       await po
         .getNnsStakeNeuronPo()
         .getTransactionFromAccountPo()
-        .selectAccount(mockHardwareWalletAccount.name);
+        .selectAccount(mockHardwareWalletAccount.identifier);
       await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(22);
       await po.getNnsStakeNeuronPo().clickCreate();
       await runResolvedPromises();
