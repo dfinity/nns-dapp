@@ -117,6 +117,7 @@
     "git checkout Release-2001-02-29: Was already done. Skipping.",
     "Post proposal on Slack: Was already: \u001b[35mhttps://dfinity.slack.com/archives/C02P68W6MQA/p1695977290251409\u001b[0m",
     "Schedule voting: Was already done. Skipping.",
+    "Forum post: Was already done. Skipping.",
     "Mainnet WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
     "Smoke test: Was already done. Skipping.",
     "git checkout release-candidate --: Was already done. Skipping.",
