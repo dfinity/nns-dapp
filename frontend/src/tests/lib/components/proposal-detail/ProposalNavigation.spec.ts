@@ -5,6 +5,7 @@ import { page } from "$mocks/$app/stores";
 import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
+import ICPLogo from "/src/lib/assets/icp-rounded.svg";
 
 describe("ProposalNavigation", () => {
   const toNavigationId = (proposalId: bigint): ProposalsNavigationId => ({
@@ -32,9 +33,7 @@ describe("ProposalNavigation", () => {
           selectProposal: vi.fn(),
         });
 
-        expect(await po.getLogoSource()).toEqual(
-          "/src/lib/assets/icp-rounded.svg"
-        );
+        expect(await po.getLogoSource()).toEqual(ICPLogo);
       });
 
       it("should render proposal status", async () => {
