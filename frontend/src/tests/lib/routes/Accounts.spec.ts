@@ -307,7 +307,9 @@ describe("Accounts", () => {
         // The modal needs another tick to be removed from the DOM
         await runResolvedPromises();
 
-        expect(await modalPo.isPresent()).toBe(false);
+        await vi.waitFor(async () =>
+          expect(await modalPo.isPresent()).toBe(false)
+        );
         expect(await tablePo.getRowData(subaccountName)).toEqual({
           balance: "2.20 ICP",
           projectName: subaccountName,
@@ -345,7 +347,9 @@ describe("Accounts", () => {
           balance: "1.14 ICP",
           projectName: "Main",
         });
-        expect(await modalPo.isPresent()).toBe(false);
+        await vi.waitFor(async () =>
+          expect(await modalPo.isPresent()).toBe(false)
+        );
         expect(icpLedgerApi.sendICP).toHaveBeenCalledTimes(1);
         expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
           identity: mockIdentity,
@@ -391,7 +395,9 @@ describe("Accounts", () => {
           balance: "1.20 ICP",
           projectName: subaccountName,
         });
-        expect(await modalPo.isPresent()).toBe(false);
+        await vi.waitFor(async () =>
+          expect(await modalPo.isPresent()).toBe(false)
+        );
         expect(icpLedgerApi.sendICP).toHaveBeenCalledTimes(1);
         expect(icpLedgerApi.sendICP).toHaveBeenCalledWith({
           identity: mockIdentity,
