@@ -9,19 +9,19 @@
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { formatPercentage } from "$lib/utils/format.utils";
   import {
-      formatParticipation,
-      getMinCommitmentPercentage,
+    formatParticipation,
+    getMinCommitmentPercentage,
   } from "$lib/utils/portfolio.utils";
   import {
-      durationTillSwapDeadline,
-      getProjectCommitmentSplit,
-      type FullProjectCommitmentSplit,
+    durationTillSwapDeadline,
+    getProjectCommitmentSplit,
+    type FullProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
   import {
-      IconClockNoFill,
-      IconRight,
-      IconRocketLaunch,
-      Tag,
+    IconClockNoFill,
+    IconRight,
+    IconRocketLaunch,
+    Tag,
   } from "@dfinity/gix-components";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
 
@@ -58,8 +58,6 @@
       ? formatParticipation(nfCommitment)
       : null;
 
-  console.log(nfCommitment);
-
   let durationTillDeadline: bigint | undefined;
   $: durationTillDeadline = durationTillSwapDeadline(swap);
 
@@ -67,7 +65,7 @@
   $: href = `${AppPath.Project}/?project=${summary.rootCanisterId.toText()}`;
 </script>
 
-<Card testId="open-projects-card">
+<Card testId="launch-project-card">
   <div class="wrapper">
     <div class="header">
       <div class="title-wrapper">
