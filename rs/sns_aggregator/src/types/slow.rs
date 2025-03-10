@@ -1,5 +1,7 @@
 //! Slowly changing information about an SNS
-use crate::types::ic_sns_governance::{ListNervousSystemFunctionsResponse, NervousSystemParameters};
+use crate::types::ic_sns_governance::{
+    ListNervousSystemFunctionsResponse, ListTopicsResponse, NervousSystemParameters,
+};
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{
     DerivedState, GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse, GetSaleParametersResponse,
@@ -45,6 +47,8 @@ pub struct SlowSnsData {
     pub derived_state: Option<GetDerivedStateResponse>,
     /// The lifecycle of the swap
     pub lifecycle: Option<GetLifecycleResponse>,
+    /// The topics and the corresponding proposal types of this SNS.
+    pub topics: Option<ListTopicsResponse>,
 }
 
 impl From<&UpstreamData> for SlowSnsData {
@@ -64,6 +68,7 @@ impl From<&UpstreamData> for SlowSnsData {
             init,
             derived_state,
             lifecycle,
+            topics,
         } = upstream;
         SlowSnsData {
             index: *index,
@@ -81,6 +86,7 @@ impl From<&UpstreamData> for SlowSnsData {
             init: init.clone(),
             derived_state: derived_state.clone(),
             lifecycle: lifecycle.clone(),
+            topics: topics.clone(),
         }
     }
 }
