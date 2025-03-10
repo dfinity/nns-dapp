@@ -305,12 +305,8 @@ npm_audit() {
 }
 
 cargo_audit() {
-  output=$(cargo audit --json | jq -r '[.vulnerabilities.list[] | .advisory.id] | sort | join(",")')
-  # Calculation of the output could provide a new line break at the end.
-  if [[ -n "$output" ]]; then
-    echo -n "$output"
-  else
-    echo -n "no vulnerabilities"
+  if cargo audit --json | jq -r '[.vulnerabilities.list[] | .advisory.id] | sort | join(",")'; then
+    echo "no vulnerabilities"
   fi
 }
 
