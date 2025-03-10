@@ -128,9 +128,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.96"
+version = "1.0.97"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b964d184e89d9b6b67dd2715bc8e74cf3107fb2b529990c90cf517326150bf4"
+checksum = "dcfed56ad506cb2c684a14971b8861fdc3baaaae314b9e5f9bb532cbe3ba7a4f"
 
 [[package]]
 name = "arbitrary"
@@ -183,7 +183,7 @@ checksum = "965c2d33e53cb6b267e148a4cb0760bc01f4904c1cd4bb4002a085bb016d1490"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
  "synstructure",
 ]
 
@@ -195,18 +195,18 @@ checksum = "7b18050c2cd6fe86c3a76584ef5e0baf286d038cda203eb6223df2cc413565f7"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
 name = "async-trait"
-version = "0.1.86"
+version = "0.1.87"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "644dd749086bf3771a2fbc5f256fdb982d53f011c7d5d560304eafeecebce79d"
+checksum = "d556ec1359574147ec0c4fc5eb525f3f23263a592b1a9c07e0a75b427de55c97"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -375,7 +375,7 @@ dependencies = [
  "proc-macro-crate",
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -489,9 +489,9 @@ checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
 
 [[package]]
 name = "bytes"
-version = "1.10.0"
+version = "1.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f61dac84819c6588b558454b194026eb1f09c293b9036ae9b159e74e73ab6cf9"
+checksum = "d71b6127be86fdcfddb610f7182ac57211d4b18a3e9c82eb2d17662f2227ad6a"
 
 [[package]]
 name = "cached"
@@ -546,7 +546,7 @@ dependencies = [
  "lazy_static",
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -682,7 +682,7 @@ dependencies = [
  "heck 0.5.0",
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -887,13 +887,13 @@ checksum = "f46882e17999c6cc590af592290432be3bce0428cb0d5f8b6715e4dc7b383eb3"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
 name = "cycles-minting-canister"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -1023,13 +1023,13 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustc_version",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
 name = "dfn_candid"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "dfn_core",
@@ -1041,7 +1041,7 @@ dependencies = [
 [[package]]
 name = "dfn_core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-base-types",
  "on_wire",
@@ -1050,7 +1050,7 @@ dependencies = [
 [[package]]
 name = "dfn_http"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "dfn_candid",
@@ -1062,7 +1062,7 @@ dependencies = [
 [[package]]
 name = "dfn_http_metrics"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "dfn_candid",
  "dfn_core",
@@ -1075,7 +1075,7 @@ dependencies = [
 [[package]]
 name = "dfn_protobuf"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "on_wire",
  "prost",
@@ -1128,7 +1128,7 @@ checksum = "97369cbbc041bc366949bc74d34658d6cda5621039731c6310521892a3a20ae0"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -1139,9 +1139,9 @@ checksum = "1435fa1053d8b2fbbe9be7e97eca7f33d37b28409959813daefc1446a14247f1"
 
 [[package]]
 name = "dyn-clone"
-version = "1.0.18"
+version = "1.0.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "feeef44e73baff3a26d371801df019877a9866a8c493d315ab00177843314f35"
+checksum = "1c7a8fb8a9fbf66c1f703fe16184d10ca0ee9d23be5b4436400408ba54a95005"
 
 [[package]]
 name = "ecdsa"
@@ -1186,9 +1186,9 @@ dependencies = [
 
 [[package]]
 name = "either"
-version = "1.14.0"
+version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b7914353092ddf589ad78f25c5c1c21b7f80b0ff8621e7c814c3485b5306da9d"
+checksum = "48c757948c5ede0e46177b7add2e67155f70e33c07fea8284df6576da70b3719"
 
 [[package]]
 name = "elliptic-curve"
@@ -1259,7 +1259,7 @@ checksum = "37909eebbb50d72f9059c3b6d82c0463f2ff062c9e95845c43a6c9c0355411be"
 [[package]]
 name = "fe-derive"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "hex",
  "num-bigint-dig",
@@ -1402,7 +1402,7 @@ checksum = "162ee34ebcb7c64a8abebc059ce0fee27c2262618d7b60ed8faf72fef13c3650"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -1619,7 +1619,7 @@ dependencies = [
 [[package]]
 name = "ic-base-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "byte-unit",
  "bytes",
@@ -1649,7 +1649,7 @@ dependencies = [
 [[package]]
 name = "ic-btc-replica-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-btc-interface",
@@ -1662,7 +1662,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-client-sender"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-base-types",
  "ic-ed25519",
@@ -1675,7 +1675,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-log"
 version = "0.2.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "serde",
 ]
@@ -1683,7 +1683,7 @@ dependencies = [
 [[package]]
 name = "ic-canister-profiler"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-metrics-encoder",
  "ic0 0.18.11",
@@ -1692,7 +1692,7 @@ dependencies = [
 [[package]]
 name = "ic-canisters-http-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "dfn_candid",
@@ -1724,7 +1724,7 @@ dependencies = [
  "quote",
  "serde",
  "serde_tokenstream",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -1777,7 +1777,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-basic-sig-der-utils"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "hex",
  "ic-types",
@@ -1787,7 +1787,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-basic-sig-ed25519"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "base64 0.13.1",
  "curve25519-dalek",
@@ -1809,7 +1809,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-bls12-381-type"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "hex",
  "ic_bls12_381",
@@ -1827,7 +1827,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-hmac"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-crypto-internal-sha2",
 ]
@@ -1835,7 +1835,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-multi-sig-bls12381"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "base64 0.13.1",
  "hex",
@@ -1854,7 +1854,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-seed"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "hex",
  "ic-crypto-sha2",
@@ -1867,7 +1867,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-sha2"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "sha2",
 ]
@@ -1875,7 +1875,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-threshold-sig-bls12381"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "base64 0.13.1",
  "cached",
@@ -1901,7 +1901,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-threshold-sig-canister-threshold-sig"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "curve25519-dalek",
  "fe-derive",
@@ -1931,7 +1931,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-internal-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "arrayvec 0.7.6",
  "hex",
@@ -1941,14 +1941,14 @@ dependencies = [
  "serde_cbor",
  "strum 0.26.3",
  "strum_macros 0.26.4",
- "thiserror 2.0.11",
+ "thiserror 2.0.12",
  "zeroize",
 ]
 
 [[package]]
 name = "ic-crypto-node-key-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "hex",
  "ic-base-types",
@@ -1966,7 +1966,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-secrets-containers"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "serde",
  "zeroize",
@@ -1975,7 +1975,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-sha2"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-crypto-internal-sha2",
 ]
@@ -1983,7 +1983,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-tls-cert-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "hex",
  "ic-crypto-internal-basic-sig-ed25519",
@@ -1996,20 +1996,20 @@ dependencies = [
 [[package]]
 name = "ic-crypto-tree-hash"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-crypto-internal-types",
  "ic-crypto-sha2",
  "ic-protobuf",
  "serde",
  "serde_bytes",
- "thiserror 2.0.11",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
 name = "ic-crypto-utils-basic-sig"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-base-types",
  "ic-ed25519",
@@ -2019,7 +2019,7 @@ dependencies = [
 [[package]]
 name = "ic-crypto-utils-ni-dkg"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-crypto-internal-types",
  "ic-protobuf",
@@ -2029,7 +2029,7 @@ dependencies = [
 [[package]]
 name = "ic-dummy-getrandom-for-wasm"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "getrandom 0.2.15",
 ]
@@ -2037,24 +2037,22 @@ dependencies = [
 [[package]]
 name = "ic-ed25519"
 version = "0.2.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "curve25519-dalek",
  "ed25519-dalek",
  "hkdf",
  "pem",
  "rand 0.8.5",
- "thiserror 2.0.11",
+ "thiserror 2.0.12",
  "zeroize",
 ]
 
 [[package]]
 name = "ic-error-types"
-version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+version = "0.1.0"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
- "ic-protobuf",
- "ic-utils",
  "serde",
  "strum 0.26.3",
  "strum_macros 0.26.4",
@@ -2063,7 +2061,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ciborium",
@@ -2079,13 +2077,13 @@ dependencies = [
  "num-traits",
  "serde",
  "serde_bytes",
- "thiserror 2.0.11",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
 name = "ic-icrc1-index-ng"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ciborium",
@@ -2113,7 +2111,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-ledger"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2145,7 +2143,7 @@ dependencies = [
 [[package]]
 name = "ic-icrc1-tokens-u64"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-ledger-core",
@@ -2158,7 +2156,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-canister-core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2176,7 +2174,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-core"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-ledger-hash-of",
@@ -2190,7 +2188,7 @@ dependencies = [
 [[package]]
 name = "ic-ledger-hash-of"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "hex",
@@ -2200,7 +2198,7 @@ dependencies = [
 [[package]]
 name = "ic-limits"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 
 [[package]]
 name = "ic-management-canister-types"
@@ -2216,7 +2214,7 @@ dependencies = [
 [[package]]
 name = "ic-management-canister-types-private"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2242,7 +2240,7 @@ checksum = "8b5c7628eac357aecda461130f8074468be5aa4d258a002032d82d817f79f1f8"
 [[package]]
 name = "ic-nervous-system-canisters"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2259,7 +2257,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-clients"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2282,12 +2280,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-collections-union-multi-map"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 
 [[package]]
 name = "ic-nervous-system-common"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -2322,12 +2320,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-common-build-metadata"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 
 [[package]]
 name = "ic-nervous-system-common-test-keys"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-base-types",
  "ic-canister-client-sender",
@@ -2340,12 +2338,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-common-validation"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 
 [[package]]
 name = "ic-nervous-system-governance"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-base-types",
  "ic-stable-structures",
@@ -2357,7 +2355,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-initial-supply"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2371,7 +2369,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-linear-map"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "rust_decimal",
 ]
@@ -2379,12 +2377,12 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-lock"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 
 [[package]]
 name = "ic-nervous-system-long-message"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -2395,7 +2393,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-proto"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "comparable",
@@ -2408,7 +2406,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-proxied-canister-calls-tracker"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-base-types",
 ]
@@ -2416,7 +2414,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-root"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "dfn_core",
@@ -2432,7 +2430,7 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-runtime"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2445,17 +2443,17 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-string"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 
 [[package]]
 name = "ic-nervous-system-temporary"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 
 [[package]]
 name = "ic-nervous-system-time-helpers"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-cdk",
 ]
@@ -2463,19 +2461,31 @@ dependencies = [
 [[package]]
 name = "ic-nervous-system-timer-task"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
+ "futures",
  "ic-cdk",
- "ic-cdk-timers",
+ "ic-metrics-encoder",
+ "ic-nervous-system-time-helpers",
+ "ic-nervous-system-timers",
  "serde",
+]
+
+[[package]]
+name = "ic-nervous-system-timers"
+version = "0.9.0"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
+dependencies = [
+ "ic-cdk-timers",
+ "slotmap",
 ]
 
 [[package]]
 name = "ic-nervous-system-timestamp"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "time",
 ]
@@ -2483,7 +2493,7 @@ dependencies = [
 [[package]]
 name = "ic-neurons-fund"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-nervous-system-common",
  "lazy_static",
@@ -2496,12 +2506,12 @@ dependencies = [
 [[package]]
 name = "ic-nns-common"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "comparable",
- "dfn_core",
  "ic-base-types",
+ "ic-cdk",
  "ic-crypto-sha2",
  "ic-nervous-system-common",
  "ic-nns-constants",
@@ -2512,7 +2522,6 @@ dependencies = [
  "ic-types",
  "lazy_static",
  "num-traits",
- "on_wire",
  "prost",
  "serde",
  "serde_bytes",
@@ -2522,7 +2531,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-constants"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-base-types",
  "maplit",
@@ -2531,7 +2540,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2567,6 +2576,7 @@ dependencies = [
  "ic-nervous-system-temporary",
  "ic-nervous-system-time-helpers",
  "ic-nervous-system-timer-task",
+ "ic-nervous-system-timers",
  "ic-neurons-fund",
  "ic-nns-common",
  "ic-nns-constants",
@@ -2607,7 +2617,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "bytes",
  "candid",
@@ -2636,7 +2646,7 @@ dependencies = [
 [[package]]
 name = "ic-nns-governance-init"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "csv",
  "ic-base-types",
@@ -2653,12 +2663,12 @@ dependencies = [
 [[package]]
 name = "ic-nns-gtc-accounts"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 
 [[package]]
 name = "ic-nns-handler-root-interface"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2672,32 +2682,34 @@ dependencies = [
 [[package]]
 name = "ic-protobuf"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "bincode",
  "candid",
  "erased-serde",
+ "ic-error-types",
  "prost",
  "serde",
  "serde_json",
  "slog",
+ "strum 0.26.3",
 ]
 
 [[package]]
 name = "ic-registry-canister-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-base-types",
  "serde",
- "thiserror 2.0.11",
+ "thiserror 2.0.12",
 ]
 
 [[package]]
 name = "ic-registry-keys"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2709,7 +2721,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-node-provider-rewards"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-base-types",
  "ic-protobuf",
@@ -2718,7 +2730,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-routing-table"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2729,7 +2741,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-subnet-features"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-management-canister-types-private",
@@ -2740,7 +2752,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-subnet-type"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-protobuf",
@@ -2752,7 +2764,7 @@ dependencies = [
 [[package]]
 name = "ic-registry-transport"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "ic-base-types",
@@ -2764,7 +2776,7 @@ dependencies = [
 [[package]]
 name = "ic-secp256k1"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "hmac",
  "k256",
@@ -2781,7 +2793,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "base64 0.13.1",
@@ -2847,7 +2859,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-api"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "bytes",
  "candid",
@@ -2872,7 +2884,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-proposal-criticality"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-nervous-system-proto",
 ]
@@ -2880,7 +2892,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-proposals-amount-total-limit"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-sns-governance-token-valuation",
  "num-traits",
@@ -2891,7 +2903,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-governance-token-valuation"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -2913,7 +2925,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-init"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "base64 0.13.1",
  "candid",
@@ -2941,7 +2953,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-root"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "build-info",
@@ -2972,7 +2984,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-swap"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "build-info",
@@ -3012,7 +3024,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-swap-proto-library"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "comparable",
@@ -3027,7 +3039,7 @@ dependencies = [
 [[package]]
 name = "ic-sns-wasm"
 version = "1.0.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -3071,7 +3083,7 @@ dependencies = [
 [[package]]
 name = "ic-types"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "base64 0.13.1",
  "bincode",
@@ -3101,14 +3113,14 @@ dependencies = [
  "serde_with",
  "strum 0.26.3",
  "strum_macros 0.26.4",
- "thiserror 2.0.11",
+ "thiserror 2.0.12",
  "thousands",
 ]
 
 [[package]]
 name = "ic-utils"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "hex",
  "scoped_threadpool",
@@ -3119,7 +3131,7 @@ dependencies = [
 [[package]]
 name = "ic-validate-eq"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "ic-validate-eq-derive",
 ]
@@ -3127,7 +3139,7 @@ dependencies = [
 [[package]]
 name = "ic-validate-eq-derive"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3205,7 +3217,7 @@ dependencies = [
 [[package]]
 name = "icp-ledger"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "comparable",
@@ -3235,7 +3247,7 @@ dependencies = [
 [[package]]
 name = "icrc-cbor"
 version = "0.1.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "minicbor",
@@ -3246,7 +3258,7 @@ dependencies = [
 [[package]]
 name = "icrc-ledger-client"
 version = "0.1.2"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "async-trait",
  "candid",
@@ -3257,7 +3269,7 @@ dependencies = [
 [[package]]
 name = "icrc-ledger-types"
 version = "0.1.8"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "base32",
  "candid",
@@ -3392,7 +3404,7 @@ checksum = "1ec89e9337638ecdc08744df490b221a7399bf8d164eb52a665454e60e075ad6"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -3521,9 +3533,9 @@ dependencies = [
 
 [[package]]
 name = "itoa"
-version = "1.0.14"
+version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d75a2a4b1b190afb6f5425f10f6a8f959d2ea0b9c2b1d79553551850539e4674"
+checksum = "4a5f13b858c8d314ee3e8f639011f7ccefe71f97f96e50151fb991f267928e2c"
 
 [[package]]
 name = "js-sys"
@@ -3664,9 +3676,9 @@ dependencies = [
 
 [[package]]
 name = "linux-raw-sys"
-version = "0.4.15"
+version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
+checksum = "6db9c683daf087dc577b7506e9695b3d556a9f3849903fa28186283afd6809e9"
 
 [[package]]
 name = "litemap"
@@ -3710,7 +3722,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "regex-syntax 0.6.29",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -3836,7 +3848,7 @@ dependencies = [
  "cfg-if",
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -3994,7 +4006,7 @@ dependencies = [
 [[package]]
 name = "on_wire"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 
 [[package]]
 name = "once_cell"
@@ -4083,7 +4095,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8b7cafe60d6cf8e62e1b9b2ea516a089c008945bb5a275416789e7db0bc199dc"
 dependencies = [
  "memchr",
- "thiserror 2.0.11",
+ "thiserror 2.0.12",
  "ucd-trie",
 ]
 
@@ -4107,7 +4119,7 @@ dependencies = [
  "pest_meta",
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -4144,7 +4156,7 @@ dependencies = [
 [[package]]
 name = "phantom_newtype"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "candid",
  "num-traits",
@@ -4191,9 +4203,9 @@ dependencies = [
 
 [[package]]
 name = "pkg-config"
-version = "0.3.31"
+version = "0.3.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "953ec861398dccce10c670dfeaf3ec4911ca479e9c02154b3a215178c5f566f2"
+checksum = "7edddbd0b52d732b21ad9a5fab5c704c14cd949e5e9a1ec5929a24fded1b904c"
 
 [[package]]
 name = "powerfmt"
@@ -4265,12 +4277,12 @@ dependencies = [
 
 [[package]]
 name = "prettyplease"
-version = "0.2.29"
+version = "0.2.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6924ced06e1f7dfe3fa48d57b9f74f55d8915f5036121bef647ef4b204895fac"
+checksum = "f1ccf34da56fc294e7d4ccf69a85992b7dfb826b7cf57bac6a70bba3494cc08a"
 dependencies = [
  "proc-macro2",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -4294,9 +4306,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro-crate"
-version = "3.2.0"
+version = "3.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ecf48c7ca261d60b74ab1a7b20da18bede46776b2e55535cb958eb595c5fa7b"
+checksum = "edce586971a4dfaa28950c6f18ed55e0406c1ab88bbce2c6f6293a7aaba73d35"
 dependencies = [
  "toml_edit",
 ]
@@ -4333,9 +4345,9 @@ checksum = "dc375e1527247fe1a97d8b7156678dfe7c1af2fc075c9a4db3690ecd2a148068"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.93"
+version = "1.0.94"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "60946a68e5f9d28b0dc1c21bb8a97ee7d018a8b322fa57838ba31cc878e22d99"
+checksum = "a31971752e70b8b2686d7e46ec17fb38dad4051d94024c88df49b667caea9c84"
 dependencies = [
  "unicode-ident",
 ]
@@ -4428,7 +4440,7 @@ dependencies = [
  "prost",
  "prost-types",
  "regex",
- "syn 2.0.98",
+ "syn 2.0.99",
  "tempfile",
 ]
 
@@ -4442,7 +4454,7 @@ dependencies = [
  "itertools 0.14.0",
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -4491,9 +4503,9 @@ checksum = "a1d01941d82fa2ab50be1e79e6714289dd7cde78eba4c074bc5a4374f650dfe0"
 
 [[package]]
 name = "quote"
-version = "1.0.38"
+version = "1.0.39"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e4dccaaaf89514f546c693ddc140f729f958c247918a13380cccc6078391acc"
+checksum = "c1f1914ce909e1658d9907913b4b91947430c7d9be598b15a1912935b8c04801"
 dependencies = [
  "proc-macro2",
 ]
@@ -4523,7 +4535,7 @@ checksum = "3779b94aeb87e8bd4e834cee3650289ee9e0d5677f976ecdb6d219e5f4f6cd94"
 dependencies = [
  "rand_chacha 0.9.0",
  "rand_core 0.9.3",
- "zerocopy 0.8.21",
+ "zerocopy 0.8.23",
 ]
 
 [[package]]
@@ -4575,9 +4587,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.5.9"
+version = "0.5.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82b568323e98e49e2a0899dcee453dd679fae22d69adf9b11dd508d1549b7e2f"
+checksum = "0b8c0c260b63a8219631167be35e6a988e9554dbd323f8bd08439c8ed1302bd1"
 dependencies = [
  "bitflags",
 ]
@@ -4631,7 +4643,7 @@ checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 [[package]]
 name = "registry-canister"
 version = "0.9.0"
-source = "git+https://github.com/dfinity/ic?rev=release-2025-02-27_03-09-disable-best-effort-messaging#35c29d9f4e93f691111471c7059b9abb371dfbe1"
+source = "git+https://github.com/dfinity/ic?rev=release-2025-03-06_03-10-disable-best-effort-messaging#9769228872b351a7443d7e867d67afd65d96212b"
 dependencies = [
  "build-info",
  "build-info-build",
@@ -4784,9 +4796,9 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.38.44"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fdb5bc1ae2baa591800df16c9ca78619bf65c0488b41b96ccec5d11220d8c154"
+checksum = "dade4812df5c384711475be5fcd8c162555352945401aed22a35bffeab61f657"
 dependencies = [
  "bitflags",
  "errno",
@@ -4797,9 +4809,9 @@ dependencies = [
 
 [[package]]
 name = "rustversion"
-version = "1.0.19"
+version = "1.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7c45b9784283f1b2e7fb61b42047c2fd678ef0960d4f6f1eba131594cc369d4"
+checksum = "eded382c5f5f786b989652c49544c4877d9f015cc22e145a5ea8ea66c2921cd2"
 
 [[package]]
 name = "rusty-fork"
@@ -4815,9 +4827,9 @@ dependencies = [
 
 [[package]]
 name = "ryu"
-version = "1.0.19"
+version = "1.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6ea1a2d0a644769cc99faa24c3ad26b379b786fe7c36fd3c546254801650e6dd"
+checksum = "28d3b2b1366ec20994f1fd18c3c594f05c5dd4bc44d8bb0c1c632c8d6829481f"
 
 [[package]]
 name = "same-file"
@@ -4862,9 +4874,9 @@ dependencies = [
 
 [[package]]
 name = "semver"
-version = "1.0.25"
+version = "1.0.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f79dfe2d285b0488816f30e700a7438c5a73d816b5b7d3ac72fbc48b0d185e03"
+checksum = "56e6fa9c48d24d85fb3de5ad847117517440f6beceb7798af16b4a87d616b8d0"
 dependencies = [
  "serde",
 ]
@@ -4880,9 +4892,9 @@ dependencies = [
 
 [[package]]
 name = "serde_bytes"
-version = "0.11.15"
+version = "0.11.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "387cc504cb06bb40a96c8e04e951fe01854cf6bc921053c954e4a606d9675c6a"
+checksum = "364fec0df39c49a083c9a8a18a23a6bcfd9af130fe9fe321d18520a0d113e09e"
 dependencies = [
  "serde",
 ]
@@ -4905,14 +4917,14 @@ checksum = "f09503e191f4e797cb8aac08e9a4a4695c5edf6a2e70e376d961ddd5c969f82b"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
 name = "serde_json"
-version = "1.0.139"
+version = "1.0.140"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "44f86c3acccc9c65b153fe1b85a3be07fe5515274ec9f0653b4a0875731c72a6"
+checksum = "20068b6e96dc6c9bd23e01df8827e6c7e1f2fddd43c21810382803c136b99373"
 dependencies = [
  "itoa",
  "memchr",
@@ -4929,7 +4941,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -5017,7 +5029,7 @@ checksum = "297f631f50729c8c99b84667867963997ec0b50f32b2a7dbcab828ef0541e8bb"
 dependencies = [
  "num-bigint",
  "num-traits",
- "thiserror 2.0.11",
+ "thiserror 2.0.12",
  "time",
 ]
 
@@ -5180,7 +5192,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustversion",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -5193,7 +5205,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rustversion",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -5215,9 +5227,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.98"
+version = "2.0.99"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "36147f1a48ae0ec2b5b3bc5b537d267457555a10dc06f3dbc8cb11ba3006d3b1"
+checksum = "e02e925281e18ffd9d640e234264753c43edc62d64b2d4cf898f1bc5e75f3fc2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -5232,7 +5244,7 @@ checksum = "c8af7666ab7b6390ab78131fb5b0fce11d6b7a6951602017c35fa82800708971"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -5254,9 +5266,9 @@ dependencies = [
 
 [[package]]
 name = "tempfile"
-version = "3.17.1"
+version = "3.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22e5a0acb1f3f55f65cc4a866c361b2fb2a0ff6366785ae6fbb5f85df07ba230"
+checksum = "2c317e0a526ee6120d8dabad239c8dadca62b24b6f168914bbbc8e2fb1f0e567"
 dependencies = [
  "cfg-if",
  "fastrand",
@@ -5303,11 +5315,11 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "2.0.11"
+version = "2.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d452f284b73e6d76dd36758a0c8684b1d5be31f92b89d07fd5822175732206fc"
+checksum = "567b8a2dae586314f7be2a752ec7474332959c6460e02bde30d702a66d488708"
 dependencies = [
- "thiserror-impl 2.0.11",
+ "thiserror-impl 2.0.12",
 ]
 
 [[package]]
@@ -5318,18 +5330,18 @@ checksum = "4fee6c4efc90059e10f81e6d42c60a18f76588c3d74cb83a0b242a2b6c7504c1"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "2.0.11"
+version = "2.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "26afc1baea8a989337eeb52b6e72a039780ce45c3edfcc9c5b9d112feeb173c2"
+checksum = "7f7cf42b4507d8ea322120659672cf1b9dbb93f8f2d4ecfd6e51350ff5b17a1d"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -5340,9 +5352,9 @@ checksum = "3bf63baf9f5039dadc247375c29eb13706706cfde997d0330d05aa63a77d8820"
 
 [[package]]
 name = "time"
-version = "0.3.37"
+version = "0.3.39"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "35e7868883861bd0e56d9ac6efcaaca0d6d5d82a2a7ec8209ff492c07cf37b21"
+checksum = "dad298b01a40a23aac4580b67e3dbedb7cc8402f3592d7f49469de2ea4aecdd8"
 dependencies = [
  "deranged",
  "itoa",
@@ -5355,15 +5367,15 @@ dependencies = [
 
 [[package]]
 name = "time-core"
-version = "0.1.2"
+version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef927ca75afb808a4d64dd374f00a2adf8d0fcff8e7b184af886c3c87ec4a3f3"
+checksum = "765c97a5b985b7c11d7bc27fa927dc4fe6af3a6dfb021d28deb60d3bf51e76ef"
 
 [[package]]
 name = "time-macros"
-version = "0.2.19"
+version = "0.2.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2834e6017e3e5e4b9834939793b282bc03b37a3336245fa820e35e233e2a85de"
+checksum = "e8093bc3e81c3bc5f7879de09619d06c9a5a5e45ca44dfeeb7225bae38005c5c"
 dependencies = [
  "num-conv",
  "time-core",
@@ -5390,9 +5402,9 @@ dependencies = [
 
 [[package]]
 name = "tinyvec"
-version = "1.8.1"
+version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "022db8904dfa342efe721985167e9fcd16c29b226db4397ed752a761cfce81e8"
+checksum = "09b3661f17e86524eccd4371ab0429194e0d7c008abb45f7a7495b1719463c71"
 dependencies = [
  "tinyvec_macros",
 ]
@@ -5405,9 +5417,9 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "tokio"
-version = "1.43.0"
+version = "1.44.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3d61fa4ffa3de412bfea335c6ecff681de2b609ba3c77ef3e00e521813a9ed9e"
+checksum = "9975ea0f48b5aa3972bf2d888c238182458437cc2a19374b81b25cdf1023fb3a"
 dependencies = [
  "backtrace",
  "bytes",
@@ -5429,7 +5441,7 @@ checksum = "6e06d43f1345a3bcd39f6a56dbb7dcab2ba47e68e8ac134855e7e2bdbaf8cab8"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -5475,9 +5487,9 @@ checksum = "eaea85b334db583fe3274d12b4cd1880032beab409c0d774be044d4480ab9a94"
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.17"
+version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00e2473a93778eb0bad35909dff6a10d28e63f792f16ed15e404fca9d5eeedbe"
+checksum = "5a5f39404a5da50712a4c1eecf25e90dd62b613502b7e925fd4e4d19b5c96512"
 
 [[package]]
 name = "unicode-segmentation"
@@ -5635,7 +5647,7 @@ dependencies = [
  "log",
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
  "wasm-bindgen-shared",
 ]
 
@@ -5657,7 +5669,7 @@ checksum = "8ae87ea40c9f689fc23f209965b6fb8a99ad69aeeb0231408be24920604395de"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -5880,12 +5892,11 @@ dependencies = [
 
 [[package]]
 name = "xattr"
-version = "1.4.0"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e105d177a3871454f754b33bb0ee637ecaaac997446375fd3e5d43a2ed00c909"
+checksum = "0d65cbf2f12c15564212d48f4e3dfb87923d25d611f2aed18f4cb23f0413d89e"
 dependencies = [
  "libc",
- "linux-raw-sys",
  "rustix",
 ]
 
@@ -5930,7 +5941,7 @@ checksum = "2380878cad4ac9aac1e2435f3eb4020e8374b5f13c296cb75b4620ff8e229154"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
  "synstructure",
 ]
 
@@ -5946,11 +5957,11 @@ dependencies = [
 
 [[package]]
 name = "zerocopy"
-version = "0.8.21"
+version = "0.8.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcf01143b2dd5d134f11f545cf9f1431b13b749695cb33bcce051e7568f99478"
+checksum = "fd97444d05a4328b90e75e503a34bad781f14e28a823ad3557f0750df1ebcbc6"
 dependencies = [
- "zerocopy-derive 0.8.21",
+ "zerocopy-derive 0.8.23",
 ]
 
 [[package]]
@@ -5961,18 +5972,18 @@ checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.8.21"
+version = "0.8.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "712c8386f4f4299382c9abee219bee7084f78fb939d88b6840fcc1320d5f6da2"
+checksum = "6352c01d0edd5db859a63e2605f4ea3183ddbd15e2c4a9e7d32184df75e4f154"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -5992,7 +6003,7 @@ checksum = "d71e5d6e06ab090c67b5e44993ec16b72dcbaabc526db883a360057678b48502"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
  "synstructure",
 ]
 
@@ -6013,7 +6024,7 @@ checksum = "ce36e65b0d2999d2aafac989fb249189a141aee1f53c612c1f37d72631959f69"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
 
 [[package]]
@@ -6035,5 +6046,5 @@ checksum = "6eafa6dfb17584ea3e2bd6e76e0cc15ad7af12b09abdd1ca55961bed9b1063c6"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.98",
+ "syn 2.0.99",
 ]
