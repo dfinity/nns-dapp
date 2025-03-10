@@ -189,7 +189,7 @@ describe("Staking", () => {
       expect(await modal.getSetDissolveDelayPo().isPresent()).toBe(true);
       expect(get(pageStore).path).toBe(AppPath.Staking);
       await modal.closeModal();
-      expect(await modal.isPresent()).toBe(false);
+      await vi.waitFor(async () => expect(await modal.isPresent()).toBe(false));
       expect(get(pageStore)).toEqual({
         path: AppPath.Neurons,
         universe: OWN_CANISTER_ID_TEXT,
@@ -205,7 +205,7 @@ describe("Staking", () => {
 
       await modal.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(1);
       await modal.closeModal();
-      expect(await modal.isPresent()).toBe(false);
+      await vi.waitFor(async () => expect(await modal.isPresent()).toBe(false));
       await runResolvedPromises();
       expect(get(pageStore).path).toBe(AppPath.Staking);
     });
@@ -314,7 +314,7 @@ describe("Staking", () => {
       expect(get(pageStore).path).toBe(AppPath.Staking);
       await modal.stake(1);
       await runResolvedPromises();
-      expect(await modal.isPresent()).toBe(false);
+      await vi.waitFor(async () => expect(await modal.isPresent()).toBe(false));
       expect(get(pageStore)).toEqual({
         path: AppPath.Neurons,
         universe: snsCanisterId.toText(),
@@ -342,7 +342,7 @@ describe("Staking", () => {
       expect(get(pageStore).path).toBe(AppPath.Staking);
       await modal.closeModal();
       await runResolvedPromises();
-      expect(await modal.isPresent()).toBe(false);
+      await vi.waitFor(async () => expect(await modal.isPresent()).toBe(false));
       expect(get(pageStore).path).toBe(AppPath.Staking);
     });
 
