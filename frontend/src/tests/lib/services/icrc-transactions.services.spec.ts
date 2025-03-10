@@ -12,6 +12,7 @@ import {
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { QueryCallRejectedError, ReplicaRejectCode } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { get } from "svelte/store";
 
@@ -196,7 +197,17 @@ describe("icrc-transactions services", () => {
     });
 
     it("swallows error if canister out-of-cycles", async () => {
-      const error = new Error("IC0207");
+      const error = new QueryCallRejectedError(
+        indexCanisterId,
+        "getTransactions",
+        {
+          error_code: "IC0207",
+          // @ts-expect-error: We can't use the enum from agent-js as it was exported as a const.
+          status: "rejected",
+          reject_message: "Canister out of cycles",
+          reject_code: ReplicaRejectCode.CanisterError,
+        }
+      );
       vi.spyOn(indexApi, "getTransactions").mockRejectedValue(error);
 
       expect(get(toastsStore)).toHaveLength(0);
