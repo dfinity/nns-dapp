@@ -292,7 +292,7 @@ describe("icrc-accounts-services", () => {
           ok: false,
           status: 500,
           statusText: "",
-          body: { certificate: new ArrayBuffer() },
+          body: { certificate: new ArrayBuffer(0) },
           headers: [],
         },
         ReplicaRejectCode.CanisterError,
