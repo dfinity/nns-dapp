@@ -377,7 +377,7 @@ describe("icrc-accounts-services", () => {
       ]);
     });
 
-    it("should not display a toast on canister ouf of cycles", async () => {
+    it("should not display a toast message if the canister is out-of-cycles", async () => {
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
         new QueryCallRejectedError(CKBTC_LEDGER_CANISTER_ID, "methodName", {
           error_code: "IC0207",
