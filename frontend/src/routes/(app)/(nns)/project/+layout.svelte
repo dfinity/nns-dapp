@@ -2,9 +2,9 @@
   import { goto } from "$app/navigation";
   import Content from "$lib/components/layout/Content.svelte";
   import Layout from "$lib/components/layout/Layout.svelte";
-  import { AppPath } from "$lib/constants/routes.constants";
+  import { projectPageOrigin } from "$lib/derived/routes.derived";
 
-  const back = (): Promise<void> => goto(AppPath.Launchpad);
+  const back = (): Promise<void> => goto($projectPageOrigin);
 </script>
 
 <Layout>
