@@ -310,7 +310,7 @@ cargo_audit() {
   if [[ -n "$output" ]]; then
     echo "$output"
   else
-    echo -n "no vulnerabilities"
+    echo "no vulnerabilities"
   fi
 }
 
