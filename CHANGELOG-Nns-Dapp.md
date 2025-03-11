@@ -15,6 +15,10 @@ here after a successful release.
 
 ### Application
 
+#### Fixed
+
+* Updated the Voting page to support SNS topics to fix the issue of proposals failing to load.
+
 ### Operations
 
 ## Proposal 135695
