@@ -3,7 +3,6 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { getNeuronsFundParticipation } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
