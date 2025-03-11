@@ -11,8 +11,8 @@
   };
 </script>
 
-<div class="popup-content" data-tid="hide-zero-neurons-toggle-component">
-  <div class="popup-header">
+<div class="content" data-tid="hide-zero-neurons-toggle-component">
+  <div class="header">
     {$i18n.staking.hide_no_neurons_header}
   </div>
   <div class="toggle-label">
@@ -26,14 +26,13 @@
 </div>
 
 <style lang="scss">
-  .popup-content {
+  .content {
     display: flex;
     flex-direction: column;
-    width: calc(30 * var(--padding));
     gap: var(--padding-0_5x);
   }
 
-  .popup-header {
+  .header {
     font-size: var(--font-size-small);
     color: var(--text-description);
   }
