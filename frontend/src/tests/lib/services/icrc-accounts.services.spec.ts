@@ -32,6 +32,12 @@ import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import {
+  QueryCallRejectedError,
+  ReplicaRejectCode,
+  UpdateCallRejectedError,
+  requestIdOf,
+} from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
@@ -250,7 +256,17 @@ describe("icrc-accounts-services", () => {
     });
 
     it("should track canister if query call fails if outOfCyclesError", async () => {
-      const outOfCyclesError = new Error("IC0207");
+      const outOfCyclesError = new QueryCallRejectedError(
+        CKBTC_LEDGER_CANISTER_ID,
+        "methodName",
+        {
+          error_code: "IC0207",
+          // @ts-expect-error: We can't use the enum from agent-js as it was exported as a const.
+          status: "rejected",
+          reject_message: "Canister out of cycles",
+          reject_code: ReplicaRejectCode.CanisterError,
+        }
+      );
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
         outOfCyclesError
       );
@@ -268,7 +284,22 @@ describe("icrc-accounts-services", () => {
     });
 
     it("should track canister if update call fails if outOfCyclesError", async () => {
-      const outOfCyclesError = new Error("IC0207");
+      const outOfCyclesError = new UpdateCallRejectedError(
+        CKBTC_LEDGER_CANISTER_ID,
+        "methodName",
+        requestIdOf({ a: 1 }),
+        {
+          ok: false,
+          status: 500,
+          statusText: "",
+          body: { certificate: new ArrayBuffer() },
+          headers: [],
+        },
+        ReplicaRejectCode.CanisterError,
+        "error",
+        "IC0207"
+      );
+
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
         outOfCyclesError
       );
@@ -286,7 +317,17 @@ describe("icrc-accounts-services", () => {
     });
 
     it("should not track canister if query fails and update succeeds if outOfCyclesError", async () => {
-      const outOfCyclesError = new Error("IC0207");
+      const outOfCyclesError = new QueryCallRejectedError(
+        CKBTC_LEDGER_CANISTER_ID,
+        "methodName",
+        {
+          error_code: "IC0207",
+          // @ts-expect-error: We can't use the enum from agent-js as it was exported as a const.
+          status: "rejected",
+          reject_message: "Canister out of cycles",
+          reject_code: ReplicaRejectCode.CanisterError,
+        }
+      );
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockImplementation(
         async ({ certified }) => {
           if (certified) {
@@ -338,7 +379,13 @@ describe("icrc-accounts-services", () => {
 
     it("should not display a toast on canister ouf of cycles", async () => {
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(
-        new Error("IC0207")
+        new QueryCallRejectedError(CKBTC_LEDGER_CANISTER_ID, "methodName", {
+          error_code: "IC0207",
+          // @ts-expect-error: We can't use the enum from agent-js as it was exported as a const.
+          status: "rejected",
+          reject_message: "Canister out of cycles",
+          reject_code: ReplicaRejectCode.CanisterError,
+        })
       );
       expect(ledgerApi.queryIcrcBalance).not.toBeCalled();
       expect(get(toastsStore)).toEqual([]);
