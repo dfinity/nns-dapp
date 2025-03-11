@@ -79,7 +79,7 @@
         <h3 data-tid="project-name">{summary.metadata.name}</h3>
       </div>
       <Tag size="medium">
-        <span>{$i18n.portfolio.project_status_adopted}</span>
+        <span>{$i18n.portfolio.project_status_open}</span>
         <IconRocketLaunch size="14px" />
       </Tag>
     </div>

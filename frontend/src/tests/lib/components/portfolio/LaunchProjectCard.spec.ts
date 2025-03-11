@@ -81,6 +81,10 @@ describe("LaunchProjectCard", () => {
   });
 
   it("should display time remaining until deadline", async () => {
+    const mockDate = new Date("2025-03-11T00:00:00Z");
+    vi.useFakeTimers();
+    vi.setSystemTime(mockDate);
+
     const swapDueTimestampSeconds = BigInt(Date.now()) / 1000n + 86400n; // 1 day from now
     const summary = createSummary({
       swapDueTimestampSeconds,
