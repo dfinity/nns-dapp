@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-27_03-09-disable-best-effort-messaging/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-06_03-10-disable-best-effort-messaging/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -311,6 +311,10 @@ pub struct ManageDappCanisterSettings {
     pub compute_allocation: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct SetTopicsForCustomProposals {
+    pub custom_function_id_to_topic: Vec<(u64, Topic)>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterDappCanisters {
     pub canister_ids: Vec<Principal>,
 }
@@ -381,6 +385,7 @@ pub enum Action {
     AddGenericNervousSystemFunction(NervousSystemFunction),
     ManageDappCanisterSettings(ManageDappCanisterSettings),
     RemoveGenericNervousSystemFunction(u64),
+    SetTopicsForCustomProposals(SetTopicsForCustomProposals),
     UpgradeSnsToNextVersion(EmptyRecord),
     RegisterDappCanisters(RegisterDappCanisters),
     TransferSnsTreasuryFunds(TransferSnsTreasuryFunds),
