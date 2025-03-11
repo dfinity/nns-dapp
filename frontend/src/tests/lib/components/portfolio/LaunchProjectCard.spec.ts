@@ -108,7 +108,7 @@ describe("LaunchProjectCard", () => {
     expect(await linkPo.getHref()).toBe(expectedHref);
   });
 
-  it("should display tooltip when NF is parcipagint", async () => {
+  it("should display tooltip when NF is participating", async () => {
     const summary = createSummary({
       neuronsFundIsParticipating: [true],
       directCommitment: 1_000_000_000_000n,
@@ -121,7 +121,7 @@ describe("LaunchProjectCard", () => {
     expect(await po.getNFTooltipPo().isPresent()).toBe(true);
   });
 
-  it("should not display tooltip when NF is not parcipagint", async () => {
+  it("should not display tooltip when NF is not participating", async () => {
     const summary = createSummary({
       neuronsFundIsParticipating: [false],
     });

@@ -144,7 +144,7 @@
     <div class="footer">
       <div class="time-remaining">
         <span class="icon">
-          <IconClockNoFill />
+          <IconClockNoFill size="20px" />
         </span>
 
         <span data-tid="time-remaining">
@@ -262,8 +262,6 @@
         gap: var(--padding);
 
         .icon {
-          width: 20px;
-          height: 20px;
           color: var(--text-description);
         }
       }
