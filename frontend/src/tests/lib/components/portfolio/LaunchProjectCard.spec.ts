@@ -3,6 +3,7 @@ import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { createSummary } from "$tests/mocks/sns-projects.mock";
 import { LaunchProjectCardPo } from "$tests/page-objects/LaunchProjectCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { Principal } from "@dfinity/principal";
 import { render } from "@testing-library/svelte";
 
 describe("LaunchProjectCard", () => {
@@ -31,23 +32,30 @@ describe("LaunchProjectCard", () => {
     );
   });
 
-  it.only("should display direct funding", async () => {
+  it("should display direct funding", async () => {
     const summary = createSummary({
-      directCommitment: 100_000_000n,
+      neuronsFundIsParticipating: [false],
+      minDirectParticipation: 50_000_000n,
+      maxDirectParticipation: 150_000_000_000n,
+      directCommitment: 1_000_000_000_000n,
     });
-    console.log(summary);
 
     const po = renderComponent(summary);
 
-    expect(await po.getDirectCommitment()).toBe("100");
+    expect(await po.getDirectCommitment()).toBe("10’000");
   });
 
   it("should display min and max ICP amounts", async () => {
-    const summary = createSummary({});
+    const summary = createSummary({
+      neuronsFundIsParticipating: [false],
+      directCommitment: 1_000_000_000_000n,
+      minDirectParticipation: 50_000_000_000n,
+      maxDirectParticipation: 15_000_000_000_000n,
+    });
     const po = renderComponent(summary);
 
-    expect(await po.getMinIcp()).toBe("1'000 ICP");
-    expect(await po.getMaxIcp()).toBe("5'000 ICP");
+    expect(await po.getMinIcp()).toBe("500");
+    expect(await po.getMaxIcp()).toBe("150K");
   });
 
   it("should not display NF participation when it doesn't exist", async () => {
@@ -59,89 +67,62 @@ describe("LaunchProjectCard", () => {
   });
 
   it("should display NF participation when it exists", async () => {
-    const summary = createSummary({});
+    const summary = createSummary({
+      neuronsFundIsParticipating: [true],
+      directCommitment: 1_000_000_000_000n,
+      minDirectParticipation: 50_000_000_000n,
+      maxDirectParticipation: 15_000_000_000_000n,
+      neuronsFundCommitment: 50_000_000_000n,
+    });
     const po = renderComponent(summary);
 
     expect(await po.hasNfParticipation()).toBe(true);
-    expect(await po.getNfParticipation()).toBe("500 ICP");
+    expect(await po.getNfParticipation()).toBe("500");
   });
 
   it("should display time remaining until deadline", async () => {
-    const summary = createSummary({});
+    const swapDueTimestampSeconds = BigInt(Date.now()) / 1000n + 86400n; // 1 day from now
+    const summary = createSummary({
+      swapDueTimestampSeconds,
+    });
+
     const po = renderComponent(summary);
-    const deadline = BigInt(Date.now()) / 1000n + 86400n; // 1 day from now
-    // const po = renderComponent({
-    //   swap: {
-    //     deadline,
-    //   },
-    // });
 
     const timeRemaining = await po.getTimeRemaining();
-    // We can't exactly test the string since it depends on the current time
-    // but we can check it contains some duration text
-    expect(timeRemaining).toContain("day");
+    expect(timeRemaining).toEqual("1 day");
   });
 
-  // it("should have proper link to project page", async () => {
-  //   const  po = renderComponent();
+  it("should have proper link to project page", async () => {
+    const rootCanisterId = Principal.fromText("aaaaa-aa");
+    const summary = createSummary({
+      rootCanisterId,
+    });
+    const po = renderComponent(summary);
+    const expectedHref = `/project/?project=${rootCanisterId.toText()}`;
+    const linkPo = po.getLinkPo();
 
-  //   const expectedHref = `${AppPath.Project}/?project=${summary.rootCanisterId.toText()}`;
-  //   expect(await po.getLinkHref()).toBe(expectedHref);
-  //   expect(await po.getLinkText()).toContain("View project");
-  // });
+    expect(await linkPo.getHref()).toBe(expectedHref);
+  });
 
-  // it("should display tooltip for NF participation when it exists", async () => {
-  //   const po = renderComponent({
-  //     getNeuronsFundParticipation: () => 500_00000000n,
-  //     getProjectCommitmentSplit: () => ({
-  //       isNFParticipating: true,
-  //       current: 30_00,
-  //       min: 30_00,
-  //       max: 100_00,
-  //     }),
-  //   });
+  it("should display tooltip when NF is parcipagint", async () => {
+    const summary = createSummary({
+      neuronsFundIsParticipating: [true],
+      directCommitment: 1_000_000_000_000n,
+      minDirectParticipation: 50_000_000_000n,
+      maxDirectParticipation: 15_000_000_000_000n,
+      neuronsFundCommitment: 50_000_000_000n,
+    });
+    const po = renderComponent(summary);
 
-  //   expect(await po.getNfTooltip().isPresent()).toBe(true);
-  // });
+    expect(await po.getNFTooltipPo().isPresent()).toBe(true);
+  });
 
-  // it("should display custom funding percentage when provided", async () => {
-  //   const po = renderComponent({
-  //     getProjectCommitmentSplit: () => ({
-  //       isNFParticipating: false,
-  //       current: 75_00,
-  //       min: 30_00,
-  //       max: 100_00,
-  //     }),
-  //   });
+  it("should not display tooltip when NF is not parcipagint", async () => {
+    const summary = createSummary({
+      neuronsFundIsParticipating: [false],
+    });
+    const po = renderComponent(summary);
 
-  //   expect(await po.getMinFundingPercentage()).toBe("75%");
-  // });
-
-  // it("should display custom ICP amounts when provided", async () => {
-  //   const po = renderComponent({
-  //     getMinIcpE8s: () => 2500_00000000n,
-  //     getMaxIcpE8s: () => 10000_00000000n,
-  //   });
-
-  //   expect(await po.getMinIcp()).toBe("2'500 ICP");
-  //   expect(await po.getMaxIcp()).toBe("10'000 ICP");
-  // });
-
-  // // Testing edge cases
-  // it("should handle zero values correctly", async () => {
-  //   const po = renderComponent({
-  //     getMinIcpE8s: () => 0n,
-  //     getMaxIcpE8s: () => 0n,
-  //     getProjectCommitmentSplit: () => ({
-  //       isNFParticipating: false,
-  //       current: 0,
-  //       min: 0,
-  //       max: 100_00,
-  //     }),
-  //   });
-
-  //   expect(await po.getMinFundingPercentage()).toBe("0%");
-  //   expect(await po.getMinIcp()).toBe("0 ICP");
-  //   expect(await po.getMaxIcp()).toBe("0 ICP");
-  // });
+    expect(await po.getNFTooltipPo().isPresent()).toBe(false);
+  });
 });

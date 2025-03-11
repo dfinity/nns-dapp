@@ -3,7 +3,6 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { getNeuronsFundParticipation } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
@@ -37,23 +36,27 @@
     ulps: projectCommitment.directCommitmentE8s,
     token: ICPToken,
   });
+
   let formattedDirectCommitment: string;
   $: formattedDirectCommitment = formatCurrencyNumber(directCommitment);
 
   let formattedMinCommitmentIcp: string;
-  $: formattedMinCommitmentIcp = formatParticipation(summary.getMinIcpE8s());
+  $: formattedMinCommitmentIcp = formatParticipation(
+    projectCommitment.minDirectCommitmentE8s
+  );
 
   let formattedMaxCommitmentIcp: string;
-  $: formattedMaxCommitmentIcp = formatParticipation(summary.getMaxIcpE8s());
+  $: formattedMaxCommitmentIcp = formatParticipation(
+    projectCommitment.maxDirectCommitmentE8s
+  );
 
   let nfCommitment: bigint | undefined;
-  $: nfCommitment = getNeuronsFundParticipation(summary);
+  $: nfCommitment = projectCommitment.nfCommitmentE8s;
 
   let formattedNfCommitmentPercentage: string | null;
-  $: formattedNfCommitmentPercentage =
-    nonNullish(nfCommitment) && projectCommitment.isNFParticipating
-      ? formatParticipation(nfCommitment)
-      : null;
+  $: formattedNfCommitmentPercentage = nonNullish(nfCommitment)
+    ? formatParticipation(nfCommitment)
+    : null;
 
   let durationTillDeadline: bigint;
   $: durationTillDeadline = durationTillSwapDeadline(swap) ?? 0n;
@@ -107,7 +110,7 @@
           <span class="stat-label">
             {$i18n.portfolio.open_project_card_min_icp}
           </span>
-          <span class="stat-value" data-tid="min-icp-commitment">
+          <span class="stat-value" data-tid="min-direct-commitment">
             {formattedMinCommitmentIcp}
           </span>
         </div>
@@ -116,13 +119,13 @@
           <span class="stat-label">
             {$i18n.portfolio.open_project_card_max_icp}
           </span>
-          <span class="stat-value" data-tid="max-icp-commitment">
+          <span class="stat-value" data-tid="max-direct-commitment">
             {formattedMaxCommitmentIcp}
           </span>
         </div>
 
-        {#if nonNullish(nfCommitment)}
-          <div class="stat-item">
+        {#if nonNullish(formattedNfCommitmentPercentage)}
+          <div class="stat-item" data-tid="nf-commitment-field">
             <div class="stat-label"
               >{$i18n.portfolio.open_project_card_nf}
               <TooltipIcon
@@ -130,7 +133,7 @@
                 tooltipId="main-icp-account-id-tooltip"
               />
             </div>
-            <div class="stat-value" data-tid="nf-icp-commitment"
+            <div class="stat-value" data-tid="nf-commitment"
               >{formattedNfCommitmentPercentage}</div
             >
           </div>
@@ -144,7 +147,7 @@
           <IconClockNoFill />
         </span>
 
-        <span data-tid="duration">
+        <span data-tid="time-remaining">
           {secondsToDuration({
             seconds: durationTillDeadline,
             i18n: $i18n.time,
