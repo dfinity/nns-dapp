@@ -17,6 +17,7 @@ import {
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
 import { ICPToken } from "@dfinity/utils";
+import { formatNumber } from "./format.utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
@@ -124,10 +125,17 @@ export const shouldShowInfoRow = ({
 
 export const formatParticipation = (ulps: bigint) => {
   const value = ulpsToNumber({ ulps, token: ICPToken });
-  if (value < 10_000)
-    return Number.isInteger(value) ? value.toString() : value.toFixed(2);
+  if (value < 1_000) {
+    return formatNumber(value, { minFraction: 0, maxFraction: 2 });
+  }
 
-  return `${(value / 1_000).toFixed(0)}K`;
+  if (value < 1_000_000) {
+    const thousands = value / 1_000;
+    return `${formatNumber(thousands, { minFraction: 0, maxFraction: 2 })}k`;
+  }
+
+  const millions = value / 1_000_000;
+  return `${formatNumber(millions, { minFraction: 0, maxFraction: 2 })}M`;
 };
 
 export const getMinCommitmentPercentage = (
