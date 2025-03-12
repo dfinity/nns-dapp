@@ -8,5 +8,5 @@ export type HideZeroNeuronsStore = Writable<HideZeroNeuronsModeData>;
 
 export const hideZeroNeuronsStore = writableStored<HideZeroNeuronsModeData>({
   key: StoreLocalStorageKey.HideZeroNeurons,
-  defaultValue: "hide",
+  defaultValue: "show",
 });

@@ -84,7 +84,7 @@ sha256sum nns-dapp.wasm.gz
 
 You may also want to verify the canister arguments.  In the proposal they are
 binary, which is not very readable. Docker provides both binary and text formats
-and you can verify that the text format corresponds to the binary \`arg_hex\`
+and you can verify that the text format corresponds to the binary \`arg_hash\`
 field in the proposal.
 
 \`\`\`
@@ -111,7 +111,7 @@ sha256sum nns-dapp.wasm.gz
 
 You may also want to verify the canister arguments.  In the proposal they are
 binary, which is not very readable. Docker provides both binary and text formats
-and you can verify that the text format corresponds to the binary \`arg_hex\`
+and you can verify that the text format corresponds to the binary \`arg_hash\`
 field in the proposal.
 
 \`\`\`
