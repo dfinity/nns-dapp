@@ -1200,6 +1200,13 @@
     "staked_tokens_card_list_second_column": "Maturity",
     "staked_tokens_card_list_third_column": "Staked",
     "staked_tokens_card_info_row": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
-    "total_assets_title": "Total Holdings"
+    "total_assets_title": "Total Holdings",
+    "project_status_open": "Ongoing",
+    "open_project_card_title": "COMMITMENT",
+    "open_project_current_commitment": "ICP raised",
+    "open_project_card_min_icp": "Min ICP",
+    "open_project_card_max_icp": "Max ICP",
+    "open_project_card_nf": "Neuron Fund",
+    "open_project_card_link": "View"
   }
 }
