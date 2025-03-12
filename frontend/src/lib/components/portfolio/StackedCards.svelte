@@ -79,11 +79,9 @@
     width: 100%;
     align-items: center;
     position: relative;
-
     .cards-wrapper {
       position: relative;
       width: 100%;
-
       .card-wrapper {
         opacity: 0;
         transition: opacity 0.5s ease-in-out;
@@ -92,7 +90,6 @@
         top: 0;
         left: 0;
         width: 100%;
-
         &.active {
           position: relative;
           opacity: 1;
@@ -101,7 +98,6 @@
         }
       }
     }
-
     .dots-container {
       display: flex;
       justify-content: center;
@@ -111,25 +107,21 @@
       position: absolute;
       z-index: 10;
       bottom: 0;
-
       .dot {
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background-color: var(--background-color, #ffffff);
-        border: 2px solid var(--button-secondary-color, #3b00b9);
+        border: 2px solid var(--button-secondary-color);
         cursor: pointer;
         padding: 0;
         margin: 0;
         transition: all 0.3s ease;
-
         &:hover {
           transform: scale(1.2);
         }
-
         &.active {
-          background-color: var(--button-secondary-color, #3b00b9);
-          border-color: var(--button-secondary-color, #3b00b9);
+          background-color: var(--button-secondary-color);
+          border-color: var(--button-secondary-color);
         }
       }
     }
