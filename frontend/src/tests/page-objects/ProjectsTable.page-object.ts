@@ -1,3 +1,6 @@
+import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { HideZeroNeuronsTogglePo } from "$tests/page-objects/HideZeroNeuronsToggle.page-object";
 import { ProjectsTableRowPo } from "$tests/page-objects/ProjectsTableRow.page-object";
 import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
@@ -30,5 +33,21 @@ export class ProjectsTablePo extends ResponsiveTablePo {
       );
     }
     return rows[index];
+  }
+
+  getSettingsButtonPo(): ButtonPo {
+    return this.getButton("settings-button");
+  }
+
+  getShowAllButtonPo(): ButtonPo {
+    return this.getButton("show-all-button");
+  }
+
+  getHideZeroNeuronsTogglePo(): HideZeroNeuronsTogglePo {
+    return HideZeroNeuronsTogglePo.under(this.root);
+  }
+
+  getBackdropPo(): BackdropPo {
+    return BackdropPo.under(this.root);
   }
 }
