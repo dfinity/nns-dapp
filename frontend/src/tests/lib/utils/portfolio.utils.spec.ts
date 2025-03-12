@@ -441,23 +441,37 @@ describe("Portfolio utils", () => {
   });
 
   describe("formatParticipation", () => {
-    it("should return integer values as strings without decimal places", () => {
+    it("should format values < 1,000 as plain numbers", () => {
       expect(formatParticipation(0n)).toBe("0");
       expect(formatParticipation(100_000_000n)).toBe("1");
-      expect(formatParticipation(10_000_000_000n)).toBe("100");
-      expect(formatParticipation(999_000_000_000n)).toBe("9990");
+      expect(formatParticipation(105_000_000n)).toBe("1.05");
+      expect(formatParticipation(150_000_000n)).toBe("1.5");
+      expect(formatParticipation(99_900_000_000n)).toBe("999");
     });
 
-    it("should format decimal values less than 10,000 with 2 decimal places", () => {
-      expect(formatParticipation(12_345_000_000n)).toBe("123.45");
-      expect(formatParticipation(10_000_000n)).toBe("0.10");
-      expect(formatParticipation(999_999_000_000n)).toBe("9999.99");
+    it("should format values between 1,000 and 999,999 with decimal k suffix", () => {
+      expect(formatParticipation(100_001_000_000n)).toBe("1k");
+      expect(formatParticipation(105_000_000_000n)).toBe("1.05k");
+      expect(formatParticipation(110_000_000_000n)).toBe("1.1k");
+      expect(formatParticipation(990_000_000_000n)).toBe("9.9k");
+
+      expect(formatParticipation(1_000_001_000_000n)).toBe("10k");
+      expect(formatParticipation(1_050_001_000_000n)).toBe("10.5k");
+      expect(formatParticipation(1_055_001_000_000n)).toBe("10.55k");
+      expect(formatParticipation(9_990_001_000_000n)).toBe("99.9k");
+
+      expect(formatParticipation(10_000_000_000_000n)).toBe("100k");
+      expect(formatParticipation(10_500_000_000_000n)).toBe("105k");
+      expect(formatParticipation(10_505_000_000_000n)).toBe("105.05k");
+      expect(formatParticipation(10_550_000_000_000n)).toBe("105.5k");
+      expect(formatParticipation(99_900_000_000_000n)).toBe("999k");
     });
 
-    it("should format values >= 10,000 with K suffix", () => {
-      expect(formatParticipation(1_000_000_000_000n)).toBe("10K");
-      expect(formatParticipation(1_200_000_000_000n)).toBe("12K");
-      expect(formatParticipation(40_000_000_000_000n)).toBe("400K");
+    it("should format values >= 1,000,000 with M suffix", () => {
+      expect(formatParticipation(100_000_000_000_000n)).toBe("1M");
+      expect(formatParticipation(100_005_000_000_000n)).toBe("1M");
+      expect(formatParticipation(105_000_000_000_000n)).toBe("1.05M");
+      expect(formatParticipation(150_000_000_000_000n)).toBe("1.5M");
     });
   });
 
