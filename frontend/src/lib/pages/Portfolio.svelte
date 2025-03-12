@@ -1,10 +1,10 @@
 <script lang="ts">
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
-  import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
+  import StackedCards from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -123,8 +123,9 @@
     projects: $snsProjectsActivePadStore,
   })
     .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-    .map((project) => project.summary);
-  // .filter((project) => project.getLifecycle() === SnsSwapLifecycle.Aborted);
+    .reverse()
+    .map((project) => project.summary)
+    .filter((project) => project.getLifecycle() === SnsSwapLifecycle.Open);
 
   let hideTotalAssetsCards = false;
   $: hideTotalAssetsCards = !$authSignedInStore && projects.length > 0;
@@ -150,7 +151,7 @@
       </div>
     {/if}
     {#if projects.length > 0}
-      <LaunchProjectCard summary={projects[0]} />
+      <StackedCards {projects} />
     {/if}
   </div>
 
