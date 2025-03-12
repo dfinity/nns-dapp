@@ -71,7 +71,9 @@
         grid-template-areas:
           "icon content"
           "icon action";
+        grid-template-rows: auto 1fr;
         gap: var(--padding-3x);
+        /* row-gap: 0; */
         padding: var(--padding-3x) var(--padding-4x);
       }
 
@@ -104,7 +106,7 @@
 
       .action {
         grid-area: action;
-        align-self: flex-end;
+        flex-grow: 1;
         :global(button) {
           width: 100%;
         }
