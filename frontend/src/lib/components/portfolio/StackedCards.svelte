@@ -18,6 +18,7 @@
 
   const setCard = (index: number) => {
     activeIndex = index;
+
     resetTimer();
   };
 
@@ -38,6 +39,7 @@
       clearInterval(timer);
     }
   });
+  $: console.log("activeIndex", activeIndex);
 </script>
 
 <div class="stacked-cards" data-tid="stacked-cards-component">
@@ -47,7 +49,7 @@
         <div
           class="card-wrapper"
           class:active={i === activeIndex}
-          data-tid="project-card-wrapper-{i}"
+          data-tid="project-card-wrapper"
         >
           <svelte:component this={card.component} {...card.props} />
         </div>
@@ -62,7 +64,7 @@
             class:active={i === activeIndex}
             on:click={() => setCard(i)}
             aria-label={`Switch to project ${i + 1}`}
-            data-tid="dot-button-{i}"
+            data-tid="dot-button"
           ></button>
         {/each}
       </div>

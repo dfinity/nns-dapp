@@ -1,5 +1,36 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ButtonPo } from "./Button.page-object";
+
+class ProjectCardWrapperPo extends BasePageObject {
+  private static readonly TID = "project-card-wrapper";
+
+  static async allUnder(
+    element: PageObjectElement
+  ): Promise<ProjectCardWrapperPo[]> {
+    const cards = await element.allByTestId(ProjectCardWrapperPo.TID);
+    return cards.map((el) => new ProjectCardWrapperPo(el));
+  }
+
+  async isActive(): Promise<boolean> {
+    const classNames = await this.root.getClasses();
+    return classNames.includes("active");
+  }
+}
+
+class DotButtonPo extends ButtonPo {
+  private static readonly TID = "dot-button";
+
+  static async allUnder(element: PageObjectElement): Promise<DotButtonPo[]> {
+    const dots = await element.allByTestId(DotButtonPo.TID);
+    return dots.map((el) => new DotButtonPo(el));
+  }
+
+  async isActive(): Promise<boolean> {
+    const classNames = await this.root.getClasses();
+    return classNames.includes("active");
+  }
+}
 
 export class StackedCardsPo extends BasePageObject {
   private static readonly TID = "stacked-cards-component";
@@ -8,48 +39,21 @@ export class StackedCardsPo extends BasePageObject {
     return new StackedCardsPo(element.byTestId(StackedCardsPo.TID));
   }
 
-  getDotsContainer(): PageObjectElement {
-    return this.root("dots-container");
-  }
-
-  async getCardWrappers(): Promise<PageObjectElement[]> {
-    const cardWrapperPattern = /project-card-wrapper-\d+/;
-    return this.getAllByTestIdPattern(cardWrapperPattern);
-  }
-
-  async getDots(): Promise<PageObjectElement[]> {
-    const dotPattern = /dot-button-\d+/;
-    return this.getAllByTestIdPattern(dotPattern);
+  async getCardWrappers(): Promise<ProjectCardWrapperPo[]> {
+    return ProjectCardWrapperPo.allUnder(this.root);
   }
 
   async getActiveCardIndex(): Promise<number> {
     const cardWrappers = await this.getCardWrappers();
-    for (let i = 0; i < cardWrappers.length; i++) {
-      const hasActiveClass = await cardWrappers[i].hasClass("active");
-      if (hasActiveClass) {
-        return i;
-      }
-    }
-    return -1; // No active card found
+    return cardWrappers.findIndex((wrapper) => wrapper.isActive());
+  }
+
+  async getDots(): Promise<DotButtonPo[]> {
+    return DotButtonPo.allUnder(this.root);
   }
 
   async getActiveDotIndex(): Promise<number> {
     const dots = await this.getDots();
-    for (let i = 0; i < dots.length; i++) {
-      const hasActiveClass = await dots[i].hasClass("active");
-      if (hasActiveClass) {
-        return i;
-      }
-    }
-    return -1; // No active dot found
-  }
-
-  async clickDot(index: number): Promise<void> {
-    const dots = await this.getDots();
-    if (index >= 0 && index < dots.length) {
-      await dots[index].click();
-    } else {
-      throw new Error(`Dot index ${index} out of bounds`);
-    }
+    return dots.findIndex((dot) => dot.isActive());
   }
 }
