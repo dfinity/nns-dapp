@@ -1,6 +1,6 @@
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ButtonPo } from "./Button.page-object";
 
 class ProjectCardWrapperPo extends BasePageObject {
   private static readonly TID = "project-card-wrapper";
