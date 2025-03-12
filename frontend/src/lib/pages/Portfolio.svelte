@@ -1,5 +1,6 @@
 <script lang="ts">
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
+  import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
@@ -127,6 +128,12 @@
     .map((project) => project.summary)
     .filter((project) => project.getLifecycle() === SnsSwapLifecycle.Open);
 
+  let cards;
+  $: cards = projects.map((project) => ({
+    component: LaunchProjectCard,
+    props: { summary: project },
+  }));
+
   let hideTotalAssetsCards = false;
   $: hideTotalAssetsCards = !$authSignedInStore && projects.length > 0;
 </script>
@@ -146,7 +153,7 @@
     {/if}
 
     {#if projects.length > 0}
-      <SmartStack {projects} />
+      <SmartStack {cards} />
     {/if}
 
     {#if !$authSignedInStore}
