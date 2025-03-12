@@ -18,7 +18,6 @@
 
   const setCard = (index: number) => {
     activeIndex = index;
-
     resetTimer();
   };
 
@@ -39,7 +38,6 @@
       clearInterval(timer);
     }
   });
-  $: console.log("activeIndex", activeIndex);
 </script>
 
 <div class="stacked-cards" data-tid="stacked-cards-component">
@@ -63,6 +61,7 @@
             class="dot"
             class:active={i === activeIndex}
             on:click={() => setCard(i)}
+            disabled={i === activeIndex}
             aria-label={`Switch to project ${i + 1}`}
             data-tid="dot-button"
           ></button>
@@ -81,9 +80,11 @@
     width: 100%;
     align-items: center;
     position: relative;
+
     .cards-wrapper {
       position: relative;
       width: 100%;
+
       .card-wrapper {
         opacity: 0;
         transition: opacity 0.5s ease-in-out;
@@ -92,6 +93,7 @@
         top: 0;
         left: 0;
         width: 100%;
+
         &.active {
           position: relative;
           opacity: 1;
@@ -100,30 +102,29 @@
         }
       }
     }
+
     .dots-container {
       display: flex;
       justify-content: center;
-      gap: var(--padding);
-      padding: var(--padding) 0;
-      margin-top: var(--padding);
+      gap: var(--padding-1_5x);
       position: absolute;
       z-index: 10;
-      bottom: 0;
+      bottom: var(--padding-1_5x);
+
       .dot {
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        border: 2px solid var(--button-secondary-color);
-        cursor: pointer;
+        background-color: rgba(#3d4d99, 0.35);
         padding: 0;
         margin: 0;
         transition: all 0.3s ease;
+
         &:hover {
           transform: scale(1.2);
         }
         &.active {
-          background-color: var(--button-secondary-color);
-          border-color: var(--button-secondary-color);
+          background-color: rgba(#3d4d99, 0.75);
         }
       }
     }

@@ -28,6 +28,7 @@ class DotButtonPo extends ButtonPo {
 
   async isActive(): Promise<boolean> {
     const classNames = await this.root.getClasses();
+
     return classNames.includes("active");
   }
 }
@@ -45,7 +46,13 @@ export class StackedCardsPo extends BasePageObject {
 
   async getActiveCardIndex(): Promise<number> {
     const cardWrappers = await this.getCardWrappers();
-    return cardWrappers.findIndex((wrapper) => wrapper.isActive());
+
+    for (const wrapper of cardWrappers) {
+      if (await wrapper.isActive()) {
+        return cardWrappers.indexOf(wrapper);
+      }
+    }
+    return -1;
   }
 
   async getDots(): Promise<DotButtonPo[]> {
@@ -54,6 +61,11 @@ export class StackedCardsPo extends BasePageObject {
 
   async getActiveDotIndex(): Promise<number> {
     const dots = await this.getDots();
-    return dots.findIndex((dot) => dot.isActive());
+    for (const dot of dots) {
+      if (await dot.isActive()) {
+        return dots.indexOf(dot);
+      }
+    }
+    return -1;
   }
 }
