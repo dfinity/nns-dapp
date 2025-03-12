@@ -783,6 +783,90 @@ describe("ProjectsTable", () => {
       expect(await po.getColumnHeaderWithArrow()).toBe("Stake");
     });
 
+    it("should show settings button", async () => {
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake, snsNeuronWithStake, snsNeuronWithStake],
+        certified: true,
+      });
+      const po = renderComponent();
+      expect(await po.getSettingsButtonPo().isPresent()).toBe(true);
+    });
+
+    it("should open settings popup when clicking on settings button", async () => {
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake, snsNeuronWithStake, snsNeuronWithStake],
+        certified: true,
+      });
+      const po = renderComponent();
+
+      expect(await po.getHideZeroNeuronsTogglePo().isPresent()).toBe(false);
+      expect(await po.getBackdropPo().isPresent()).toBe(false);
+      await po.getSettingsButtonPo().click();
+      expect(await po.getHideZeroNeuronsTogglePo().isPresent()).toBe(true);
+      expect(await po.getBackdropPo().isPresent()).toBe(true);
+    });
+
+    it("should close settings popup when clicking on backdrop", async () => {
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake, snsNeuronWithStake, snsNeuronWithStake],
+        certified: true,
+      });
+      const po = renderComponent();
+
+      await po.getSettingsButtonPo().click();
+      expect(await po.getHideZeroNeuronsTogglePo().isPresent()).toBe(true);
+      expect(await po.getBackdropPo().isPresent()).toBe(true);
+
+      await po.getBackdropPo().click();
+      await runResolvedPromises();
+
+      expect(await po.getHideZeroNeuronsTogglePo().isPresent()).toBe(false);
+      expect(await po.getBackdropPo().isPresent()).toBe(false);
+    });
+
+    it("should change projects with zero neurons visibility", async () => {
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithoutStake],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithoutStake],
+        certified: true,
+      });
+      const po = renderComponent();
+      let rowPos = await po.getProjectsTableRowPos();
+
+      expect(rowPos.length).toBe(2);
+      expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
+      expect(await rowPos[0].getProjectTitle()).toBe("Internet Computer");
+      expect(await rowPos[0].getNeuronCount()).toBe("Stake ICP");
+      expect(await rowPos[1].getProjectTitle()).toBe("SNS-1");
+      expect(await rowPos[1].getNeuronCount()).toBe("Stake TOK");
+
+      await po.getSettingsButtonPo().click();
+      await po.getHideZeroNeuronsTogglePo().getTogglePo().toggle();
+      await runResolvedPromises();
+
+      rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos.length).toBe(0);
+      expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
+
+      await po.getShowAllButtonPo().click();
+      await runResolvedPromises();
+
+      rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos.length).toBe(2);
+      expect(await po.getShowAllButtonPo().isPresent()).toBe(false);
+      expect(await rowPos[0].getProjectTitle()).toBe("Internet Computer");
+      expect(await rowPos[0].getNeuronCount()).toBe("Stake ICP");
+      expect(await rowPos[1].getProjectTitle()).toBe("SNS-1");
+      expect(await rowPos[1].getNeuronCount()).toBe("Stake TOK");
+    });
+
     it("should change order based on order store", async () => {
       const po = renderComponent();
       expect(await po.getColumnHeaderWithArrow()).toBe("Stake");

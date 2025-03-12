@@ -28,6 +28,9 @@
   import { IconNeuronsPage } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
+  import HideZeroNeuronsToggle from "$lib/components/staking/HideZeroNeuronsToggle.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
 
   $: if ($authSignedInStore && $ENABLE_USD_VALUES_FOR_NEURONS) {
     loadIcpSwapTickers();
@@ -97,8 +100,17 @@
     failedActionableSnses: $failedActionableSnsesStore,
   });
 
+  let shouldHideProjectsWithoutNeurons: boolean;
+  $: shouldHideProjectsWithoutNeurons =
+    $authSignedInStore && $hideZeroNeuronsStore === "hide";
+
+  let visibleTableProjects: TableProject[] = [];
+  $: visibleTableProjects = shouldHideProjectsWithoutNeurons
+    ? tableProjects.filter(({ neuronCount }) => neuronCount ?? 0 > 0)
+    : tableProjects;
+
   let sortedTableProjects: TableProject[];
-  $: sortedTableProjects = sortTableProjects(tableProjects);
+  $: sortedTableProjects = sortTableProjects(visibleTableProjects);
 
   let hasAnyNeurons: boolean;
   $: hasAnyNeurons = tableProjects.some(
@@ -125,6 +137,10 @@
   }) => {
     dispatcher("nnsStakeTokens", { universeId: rowData.universeId });
   };
+
+  const showAll = () => {
+    hideZeroNeuronsStore.set("show");
+  };
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
@@ -140,7 +156,33 @@
     on:nnsAction={handleAction}
     bind:order={$projectsTableOrderStore}
     displayTableSettings
-  ></ResponsiveTable>
+  >
+    <div slot="settings-popover">
+      {#if $authSignedInStore}
+        <HideZeroNeuronsToggle />
+        <Separator spacing="medium" />
+      {/if}
+    </div>
+
+    <div
+      slot="last-row"
+      class="last-row"
+      class:hidden={!shouldHideProjectsWithoutNeurons}
+    >
+      {#if shouldHideProjectsWithoutNeurons}
+        <div class="show-all-button-container">
+          {$i18n.staking.hide_no_neurons_table_hint}
+          <button
+            data-tid="show-all-button"
+            class="ghost show-all"
+            on:click={showAll}
+          >
+            {$i18n.staking.show_all}</button
+          >
+        </div>
+      {/if}
+    </div>
+  </ResponsiveTable>
 </div>
 
 <style lang="scss">
@@ -148,5 +190,28 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
+  }
+
+  .last-row {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+    padding: var(--padding-2x);
+    gap: var(--padding);
+    background: var(--table-row-background);
+    border-top: 1px solid var(--elements-divider);
+
+    &.hidden {
+      display: none;
+    }
+  }
+  .show-all-button-container {
+    color: var(--text-description);
+    background: var(--table-row-background);
+
+    button.show-all {
+      text-decoration: underline;
+    }
   }
 </style>

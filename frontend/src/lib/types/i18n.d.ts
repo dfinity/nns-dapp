@@ -312,6 +312,10 @@ interface I18nStaking {
   title: string;
   text: string;
   nervous_systems: string;
+  hide_no_neurons_header: string;
+  hide_no_neurons_toggle_label: string;
+  hide_no_neurons_table_hint: string;
+  show_all: string;
 }
 
 interface I18nNeurons {
@@ -1263,6 +1267,13 @@ interface I18nPortfolio {
   staked_tokens_card_list_third_column: string;
   staked_tokens_card_info_row: string;
   total_assets_title: string;
+  project_status_open: string;
+  open_project_card_title: string;
+  open_project_current_commitment: string;
+  open_project_card_min_icp: string;
+  open_project_card_max_icp: string;
+  open_project_card_nf: string;
+  open_project_card_link: string;
 }
 
 interface I18nNeuron_state {
