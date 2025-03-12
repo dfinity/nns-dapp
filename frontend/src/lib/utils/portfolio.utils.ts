@@ -1,9 +1,4 @@
 import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import {
-  getMaxNeuronsFundParticipation,
-  getNeuronsFundParticipation,
-} from "$lib/getters/sns-summary";
-import type { SnsSummary } from "$lib/types/sns";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import { formatNumber } from "$lib/utils/format.utils";
@@ -22,7 +17,7 @@ import {
   compareTokensIcpFirst,
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
-import { ICPToken, isNullish } from "@dfinity/utils";
+import { ICPToken } from "@dfinity/utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
