@@ -4,7 +4,7 @@
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
-  import StackedCards from "$lib/components/portfolio/StackedCards.svelte";
+  import SmartStack from "$lib/components/portfolio/SmartStack.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -145,13 +145,14 @@
       />
     {/if}
 
+    {#if projects.length > 0}
+      <SmartStack {projects} />
+    {/if}
+
     {#if !$authSignedInStore}
       <div class="login-card">
         <LoginCard />
       </div>
-    {/if}
-    {#if projects.length > 0}
-      <StackedCards {projects} />
     {/if}
   </div>
 
@@ -220,7 +221,7 @@
 
         // Case: not signed in, with projects
         &:not(.signed-in).launchpad {
-          grid-template-columns: 2fr 1fr;
+          grid-template-columns: 1fr 2fr;
         }
 
         // Case: not signed in, with no projects
