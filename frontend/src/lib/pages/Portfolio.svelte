@@ -14,12 +14,12 @@
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import {
-      getTopHeldTokens,
-      getTopStakedTokens,
+    getTopHeldTokens,
+    getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
   import {
-      comparesByDecentralizationSaleOpenTimestampDesc,
-      filterProjectsStatus,
+    comparesByDecentralizationSaleOpenTimestampDesc,
+    filterProjectsStatus,
   } from "$lib/utils/projects.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
@@ -127,7 +127,6 @@
     .reverse()
     .map((project) => project.summary);
   $: console.log(projects);
-
 
   let cards;
   $: cards = projects.map((project) => ({
