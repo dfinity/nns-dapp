@@ -57,7 +57,6 @@
   $: formattedNfCommitmentPercentage = nonNullish(nfCommitment)
     ? formatParticipation(nfCommitment)
     : null;
-  $: nfCommitmentPercentage = 100000n;
 
   let durationTillDeadline: bigint;
   $: durationTillDeadline = durationTillSwapDeadline(swap) ?? 0n;
