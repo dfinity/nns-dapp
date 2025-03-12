@@ -11,8 +11,6 @@ import {
   isAccepted,
   lastProposalId,
   mapProposalInfo,
-  proposalActionFields,
-  proposalOnlyActionKey,
   snsDecisionStatus,
   snsNeuronToVotingNeuron,
   snsProposalAcceptingVotes,
@@ -37,7 +35,6 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsVote,
-  type SnsAction,
   type SnsNervousSystemFunction,
   type SnsNeuron,
   type SnsPercentage,
@@ -298,7 +295,6 @@ describe("sns-proposals utils", () => {
       expect(mappedProposal.title).toBe(proposal.title);
       expect(mappedProposal.url).toBe(proposal.url);
       expect(mappedProposal.summary).toBe(proposal.summary);
-      expect(mappedProposal.actionData).toBe(proposal.action[0]);
       expect(mappedProposal.current_deadline_timestamp_seconds).toBe(
         current_deadline_timestamp_seconds
       );
@@ -373,112 +369,6 @@ describe("sns-proposals utils", () => {
 
     it("returns empty array when array is empty", () => {
       expect(sortSnsProposalsById([])).toEqual([]);
-    });
-  });
-
-  describe("proposalOnlyActionKey", () => {
-    it("should find fist action key", () => {
-      const firstKey = "UpgradeSnsToNextVersion";
-      const proposal: SnsProposalData = {
-        ...mockSnsProposal,
-        proposal: [
-          {
-            ...mockSnsProposal.proposal[0],
-            action: [{ [firstKey]: {} }],
-          },
-        ],
-      };
-      expect(proposalOnlyActionKey(proposal)).toEqual(firstKey);
-    });
-
-    it("should return undefined if no action or no proposal", () => {
-      const proposalWithoutAction: SnsProposalData = {
-        ...mockSnsProposal,
-        proposal: [
-          {
-            ...mockSnsProposal.proposal[0],
-            action: [],
-          },
-        ],
-      };
-      expect(proposalOnlyActionKey(proposalWithoutAction)).toBeUndefined();
-
-      const proposalWithoutProposal: SnsProposalData = {
-        ...mockSnsProposal,
-        proposal: [],
-      };
-      expect(proposalOnlyActionKey(proposalWithoutProposal)).toBeUndefined();
-    });
-  });
-
-  describe("proposalActionFields", () => {
-    it("should return the properties of the action in a list", () => {
-      const action = {
-        Motion: {
-          motion_text: "Test motion",
-        },
-      };
-      const proposal: SnsProposalData = {
-        ...mockSnsProposal,
-        proposal: [
-          {
-            ...mockSnsProposal.proposal[0],
-            action: [action],
-          },
-        ],
-      };
-      const fields = proposalActionFields(proposal);
-
-      expect(fields).toEqual([["motion_text", "Test motion"]]);
-    });
-
-    it("should include undefined action fields", () => {
-      // TODO: Convert action types to use `undefined | T` instead of `[] | [T]`.
-      // That will mean that subaccount below shuold be rendered as `undefined` instead of not being present in the final array.
-      const action: SnsAction = {
-        ManageSnsMetadata: {
-          url: ["www.internetcomputer.org"],
-          logo: [],
-          name: [],
-          description: [],
-        },
-      };
-      const proposal: SnsProposalData = {
-        ...mockSnsProposal,
-        proposal: [
-          {
-            ...mockSnsProposal.proposal[0],
-            action: [action],
-          },
-        ],
-      };
-      const fields = proposalActionFields(proposal);
-
-      expect(fields).toEqual([
-        ["url", ["www.internetcomputer.org"]],
-        ["logo", []],
-        ["name", []],
-        ["description", []],
-      ]);
-    });
-
-    it("should return empty array if no action or no proposal", () => {
-      const proposalWithoutAction: SnsProposalData = {
-        ...mockSnsProposal,
-        proposal: [
-          {
-            ...mockSnsProposal.proposal[0],
-            action: [],
-          },
-        ],
-      };
-      expect(proposalActionFields(proposalWithoutAction)).toHaveLength(0);
-
-      const proposalWithoutProposal: SnsProposalData = {
-        ...mockSnsProposal,
-        proposal: [],
-      };
-      expect(proposalActionFields(proposalWithoutProposal)).toHaveLength(0);
     });
   });
 
