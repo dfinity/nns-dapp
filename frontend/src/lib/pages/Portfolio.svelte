@@ -5,7 +5,9 @@
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
-  import StackedCards from "$lib/components/portfolio/StackedCards.svelte";
+  import StackedCards, {
+    type CardItem,
+  } from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -128,7 +130,7 @@
     .map((project) => project.summary);
   $: console.log(projects);
 
-  let cards;
+  let cards: CardItem[];
   $: cards = projects.map((project) => ({
     component: LaunchProjectCard,
     props: { summary: project },
