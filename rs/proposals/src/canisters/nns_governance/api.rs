@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-27_03-09-disable-best-effort-messaging/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-13_03-12-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -49,6 +49,16 @@ pub struct Split {
 pub struct Follow {
     pub topic: i32,
     pub followees: Vec<NeuronId>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct Account {
+    pub owner: Option<Principal>,
+    pub subaccount: Option<serde_bytes::ByteBuf>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct DisburseMaturity {
+    pub to_account: Option<Account>,
+    pub percentage_to_disburse: u32,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RefreshVotingPower {}
@@ -155,6 +165,7 @@ pub enum Command {
     Spawn(Spawn),
     Split(Split),
     Follow(Follow),
+    DisburseMaturity(DisburseMaturity),
     RefreshVotingPower(RefreshVotingPower),
     ClaimOrRefresh(ClaimOrRefresh),
     Configure(Configure),
@@ -400,6 +411,7 @@ pub struct RewardNodeProviders {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct VotingPowerEconomics {
     pub start_reducing_voting_power_after_seconds: Option<u64>,
+    pub neuron_minimum_dissolve_delay_to_vote_seconds: Option<u64>,
     pub clear_following_after_seconds: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -598,21 +610,6 @@ pub struct FollowersMap {
     pub followers_map: Vec<(u64, Followers)>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub enum Progress {
-    LastNeuronId(NeuronId),
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct Migration {
-    pub status: Option<i32>,
-    pub failure_reason: Option<String>,
-    pub progress: Option<Progress>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct Migrations {
-    pub neuron_indexes_migration: Option<Migration>,
-    pub copy_inactive_neurons_to_stable_memory_migration: Option<Migration>,
-}
-#[derive(Serialize, CandidType, Deserialize)]
 pub struct GovernanceError {
     pub error_message: String,
     pub error_type: i32,
@@ -798,7 +795,6 @@ pub struct Governance {
     pub to_claim_transfers: Vec<NeuronStakeTransfer>,
     pub short_voting_period_seconds: u64,
     pub topic_followee_index: Vec<(i32, FollowersMap)>,
-    pub migrations: Option<Migrations>,
     pub proposals: Vec<(u64, ProposalData)>,
     pub xdr_conversion_rate: Option<XdrConversionRate>,
     pub in_flight_commands: Vec<(u64, NeuronInFlightCommand)>,
@@ -997,6 +993,7 @@ pub enum ManageNeuronCommandRequest {
     Spawn(Spawn),
     Split(Split),
     Follow(Follow),
+    DisburseMaturity(DisburseMaturity),
     RefreshVotingPower(RefreshVotingPower),
     ClaimOrRefresh(ClaimOrRefresh),
     Configure(Configure),
@@ -1017,6 +1014,10 @@ pub struct ManageNeuronRequest {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SpawnResponse {
     pub created_neuron_id: Option<NeuronId>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct DisburseMaturityResponse {
+    pub amount_disbursed_e8s: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct RefreshVotingPowerResponse {}
@@ -1056,6 +1057,7 @@ pub enum Command1 {
     Spawn(SpawnResponse),
     Split(SpawnResponse),
     Follow(EmptyRecord),
+    DisburseMaturity(DisburseMaturityResponse),
     RefreshVotingPower(RefreshVotingPowerResponse),
     ClaimOrRefresh(ClaimOrRefreshResponse),
     Configure(EmptyRecord),
