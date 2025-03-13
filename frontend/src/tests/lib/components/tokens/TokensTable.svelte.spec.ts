@@ -43,26 +43,30 @@ describe("TokensTable", () => {
     order?: TokensTableOrder;
     displayTableSettings?: boolean;
   }) => {
-    const { container, component } = render(TokensTable, {
-      props: {
-        userTokensData,
-        firstColumnHeader,
-        order: order ?? get(orderStore),
-        displayTableSettings,
-      },
+    const testProps = $state({
+      userTokensData,
+      firstColumnHeader,
+      order: order ?? get(orderStore),
+      displayTableSettings,
+    });
+
+    const { container } = render(TokensTable, {
+      props: testProps,
       events: {
         nnsAction: onAction,
       },
     });
 
     if (orderStore) {
-      component.$$.update = () => {
-        orderStore.set(component.$$.ctx[component.$$.props["order"]]);
-      };
+      $effect.root(() => {
+        $effect(() => {
+          orderStore.set(testProps.order);
+        });
+      });
     }
 
     orderStore?.subscribe((order) => {
-      component.$set({ order });
+      testProps.order = order;
     });
 
     return TokensTablePo.under(new JestPageObjectElement(container));

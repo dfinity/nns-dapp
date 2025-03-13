@@ -7,7 +7,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { selectPercentage } from "$tests/utils/neurons-modal.test-utils";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 describe("SnsStakeMaturityModal", () => {
   const reloadNeuron = vi.fn();
@@ -19,7 +19,7 @@ describe("SnsStakeMaturityModal", () => {
   });
 
   const renderSnsStakeMaturityModal = async (): Promise<
-    RenderResult<SvelteComponent>
+    RenderResult<Component>
   > => {
     return renderModal({
       component: SnsStakeMaturityModal,
@@ -45,7 +45,7 @@ describe("SnsStakeMaturityModal", () => {
   });
 
   it("should call stakeMaturity service on confirm click", async () => {
-    const renderResult: RenderResult<SvelteComponent> =
+    const renderResult: RenderResult<Component> =
       await renderSnsStakeMaturityModal();
 
     await selectPercentage(renderResult);
@@ -64,7 +64,7 @@ describe("SnsStakeMaturityModal", () => {
   });
 
   it("should go back in modal on cancel click", async () => {
-    const renderResult: RenderResult<SvelteComponent> =
+    const renderResult: RenderResult<Component> =
       await renderSnsStakeMaturityModal();
 
     await selectPercentage(renderResult);

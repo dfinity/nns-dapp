@@ -96,7 +96,7 @@ describe("NnsProposalProposerActionsEntry", () => {
     await po.getJsonPreviewPo().clickExpand();
 
     expect(await po.getJsonPreviewPo().getTreeText()).toEqual(
-      `nodeProvider id "aaaaa-aa"  amountE8s 10000000  rewardMode  RewardToNeuron dissolveDelaySeconds 1000`
+      `nodeProvider id "aaaaa-aa"amountE8s 10000000 rewardMode  RewardToNeuron dissolveDelaySeconds 1000`
     );
   });
 
