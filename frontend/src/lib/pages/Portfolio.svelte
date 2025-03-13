@@ -11,7 +11,6 @@
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { snsProjectsActivePadStore } from "$lib/derived/sns/sns-projects.derived";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
@@ -19,17 +18,13 @@
     getTopHeldTokens,
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
-  import {
-    comparesByDecentralizationSaleOpenTimestampDesc,
-    filterProjectsStatus,
-  } from "$lib/utils/projects.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
+  export let snsSummaries: SnsSummaryWrapper[];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
@@ -120,31 +115,21 @@
     isSignedIn: $authSignedInStore,
   });
 
-  let projects: SnsSummaryWrapper[];
-  $: projects = filterProjectsStatus({
-    swapLifecycle: SnsSwapLifecycle.Open,
-    projects: $snsProjectsActivePadStore,
-  })
-    .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-    .reverse()
-    .map((project) => project.summary);
-  $: console.log(projects);
-
   let cards: CardItem[];
-  $: cards = projects.map((project) => ({
+  $: cards = snsSummaries.map((summary) => ({
     component: LaunchProjectCard,
-    props: { summary: project },
+    props: { summary },
   }));
 
   let hideTotalAssetsCards = false;
-  $: hideTotalAssetsCards = !$authSignedInStore && projects.length > 0;
+  $: hideTotalAssetsCards = !$authSignedInStore && cards.length > 0;
 </script>
 
 <main data-tid="portfolio-page-component">
   <div
     class="top"
     class:signed-in={$authSignedInStore}
-    class:launchpad={projects.length > 0}
+    class:launchpad={cards.length > 0}
   >
     {#if !hideTotalAssetsCards}
       <TotalAssetsCard
@@ -154,7 +139,7 @@
       />
     {/if}
 
-    {#if projects.length > 0}
+    {#if cards.length > 0}
       <StackedCards {cards} />
     {/if}
 
