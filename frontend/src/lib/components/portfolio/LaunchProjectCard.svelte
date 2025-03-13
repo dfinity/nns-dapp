@@ -129,7 +129,7 @@
             <div class="stat-label"
               >{$i18n.portfolio.open_project_card_nf}
               <TooltipIcon
-                text={$i18n.header.account_id_tooltip}
+                text={$i18n.portfolio.open_project_card_neuron_fund_tooltip}
                 tooltipId="main-icp-account-id-tooltip"
               />
             </div>
