@@ -9,7 +9,7 @@
 </script>
 
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
+  import { onDestroy } from "svelte";
 
   export let cards: CardItem[] = [];
   let activeIndex = 0;
@@ -32,9 +32,9 @@
     }
   };
 
-  onMount(() => {
+  $: if (cards) {
     resetTimer();
-  });
+  }
 
   onDestroy(() => {
     if (intervalId) clearInterval(intervalId);
