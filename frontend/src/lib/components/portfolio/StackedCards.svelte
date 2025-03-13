@@ -13,7 +13,7 @@
 
   export let cards: CardItem[] = [];
   let activeIndex = 0;
-  let timer: number;
+  let intervalId: number;
 
   const nextCard = () => {
     activeIndex = (activeIndex + 1) % cards.length;
@@ -25,10 +25,10 @@
   };
 
   const resetTimer = () => {
-    if (timer) clearInterval(timer);
+    if (intervalId) clearInterval(intervalId);
 
     if (cards.length > 1) {
-      timer = window.setInterval(nextCard, 5000);
+      intervalId = window.setInterval(nextCard, 5000);
     }
   };
 
@@ -37,9 +37,7 @@
   });
 
   onDestroy(() => {
-    if (timer) {
-      clearInterval(timer);
-    }
+    if (intervalId) clearInterval(intervalId);
   });
 </script>
 
@@ -65,7 +63,7 @@
             class:active={i === activeIndex}
             on:click={() => setCard(i)}
             disabled={i === activeIndex}
-            aria-label={`Switch to project ${i + 1}`}
+            aria-label={`Display ${i + 1} card`}
             data-tid="dot-button"
           ></button>
         {/each}
@@ -90,7 +88,7 @@
 
       .card-wrapper {
         opacity: 0;
-        transition: opacity 0.5s ease-in-out;
+        transition: opacity var(--animation-time-long) ease-in-out;
         pointer-events: none;
         position: absolute;
         top: 0;
@@ -101,7 +99,6 @@
           position: relative;
           opacity: 1;
           pointer-events: all;
-          z-index: 1;
         }
       }
     }
@@ -111,13 +108,13 @@
       justify-content: center;
       gap: var(--padding-1_5x);
       position: absolute;
-      z-index: 10;
       bottom: var(--padding-1_5x);
 
       .dot {
-        width: 12px;
-        height: 12px;
+        width: var(--padding-1_5x);
+        height: var(--padding-1_5x);
         border-radius: 50%;
+        // TODO(yhabib): Reconciliate colors with GIX
         background-color: rgba(#3d4d99, 0.35);
         padding: 0;
         margin: 0;
