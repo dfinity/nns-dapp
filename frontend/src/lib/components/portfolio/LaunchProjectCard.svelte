@@ -155,7 +155,7 @@
         </span>
       </div>
       <a {href} class="link" aria-label="something" data-tid="project-link">
-        <span>{$i18n.portfolio.open_project_card_link}</span>
+        <span class="text">{$i18n.portfolio.open_project_card_link} </span>
         <IconRight />
       </a>
     </div>
@@ -173,28 +173,32 @@
     box-sizing: border-box;
     height: 100%;
     background-color: var(--card-background-tint);
+    min-height: 240px;
 
     gap: var(--padding-2x);
     padding: var(--padding-2x);
+    padding-bottom: var(--padding-3x);
 
     @include media.min-width(medium) {
       padding: var(--padding-3x);
+      padding-bottom: var(--padding-4x);
     }
 
     .header {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
+      gap: var(--padding-0_5x);
 
       .title-wrapper {
         display: flex;
         align-items: center;
-
         gap: var(--padding);
 
         h3 {
           margin: 0;
           padding: 0;
+          @include text.truncate;
         }
       }
     }
@@ -269,9 +273,30 @@
       .link {
         display: flex;
         align-items: center;
+        justify-content: center;
+
         color: var(--button-secondary-color);
         font-weight: var(--font-weight-bold);
         text-decoration: none;
+
+        width: 35px;
+        height: 35px;
+        border: solid var(--button-border-size) var(--primary);
+        border-radius: 50%;
+        box-sizing: border-box;
+
+        @include media.min-width(medium) {
+          width: auto;
+          height: auto;
+          border: none;
+        }
+
+        .text {
+          display: none;
+          @include media.min-width(medium) {
+            display: inline;
+          }
+        }
       }
     }
   }
