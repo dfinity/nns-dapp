@@ -18,7 +18,6 @@ import {
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
 import { ICPToken } from "@dfinity/utils";
-import { formatNumber } from "./format.utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
