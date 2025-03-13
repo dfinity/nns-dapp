@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Added the option to hide projects in the neurons table that have no neurons.
+* Added ongoing SNS launch previews to Portfolio page.
 
 #### Changed
 
