@@ -118,7 +118,7 @@
         background-color: rgba(#3d4d99, 0.35);
         padding: 0;
         margin: 0;
-        transition: all 0.3s ease;
+        transition: all var(--animation-time-normal) ease;
 
         &:hover {
           transform: scale(1.2);
