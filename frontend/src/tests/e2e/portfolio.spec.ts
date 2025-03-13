@@ -1,9 +1,9 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
-  replaceContent,
-  signInWithNewUser,
-  step,
+    replaceContent,
+    signInWithNewUser,
+    step,
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
@@ -30,7 +30,7 @@ test("Visual test Landing Page", async ({ page, browser }) => {
     page,
     selectors: ['[data-tid="time-remaining"]'],
     pattern: /.*/,
-    replacements: ["3 days"],
+    replacements: ["3 days. 14 hours"],
   });
 
   // The governance metrics are only updated once a day so for the first 24h
@@ -81,6 +81,13 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   await portfolioPo.getPortfolioPagePo().getHeldTokensCardPo().waitFor();
   await portfolioPo.getPortfolioPagePo().getStakedTokensCardPo().waitFor();
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="time-remaining"]'],
+    pattern: /.*/,
+    replacements: ["3 days. 14 hours"],
+  });
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
   await appPo.toggleSidebar();
