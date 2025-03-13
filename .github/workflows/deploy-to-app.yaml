@@ -91,7 +91,7 @@ jobs:
             echo "==== $canister ===="
             set -x
             dfx canister id --network app "$canister"
-            dfx canister info --network app "$canister"
+            dfx canister info --network app --identity anonymous "$canister"
             dfx canister status --network app "$canister"
             set +x
           done
