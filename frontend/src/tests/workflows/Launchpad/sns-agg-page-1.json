@@ -192,6 +192,19 @@
               "target_method_name": "commit_proposed_batch"
             }
           }
+        },
+        {
+          "id": 1694553093583,
+          "name": "Transfer nICP",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -328,7 +341,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98308100654611060,
+    "icrc1_total_supply": 98308333271050311,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -867,7 +880,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100821386157243669,
+    "icrc1_total_supply": 100826008832588101,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1578,7 +1591,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50484428595239168,
+    "icrc1_total_supply": 50494089327984320,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1801,6 +1814,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "commit_proposed_batch",
           "description": null,
@@ -1975,7 +1996,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961442488028159,
+    "icrc1_total_supply": 9961442476228159,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2376,7 +2397,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10145361589980068,
+    "icrc1_total_supply": 10145571467684495,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2794,7 +2815,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12696262891706046,
+    "icrc1_total_supply": 12697375600140660,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3584,7 +3605,8 @@
         "oo6x4-xiaaa-aaaap-abrza-cai",
         "atslz-hiaaa-aaaam-acq6q-cai",
         "6c7su-kiaaa-aaaar-qaira-cai",
-        "54vkq-taaaa-aaaap-ahqra-cai"
+        "54vkq-taaaa-aaaap-ahqra-cai",
+        "2x4tj-3iaaa-aaaar-qapuq-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -3808,6 +3830,32 @@
               "target_canister_id": "j4jiq-sqaaa-aaaap-ab23a-cai",
               "validator_method_name": "manage_cycle_management_account_validate",
               "target_method_name": "manage_cycle_management_account"
+            }
+          }
+        },
+        {
+          "id": 1007,
+          "name": "Add a swap client to buyback burn canister.",
+          "description": "Proposal to add another swap client to the buyback and burn canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "atslz-hiaaa-aaaam-acq6q-cai",
+              "target_canister_id": "atslz-hiaaa-aaaam-acq6q-cai",
+              "validator_method_name": "add_swap_clients_validate",
+              "target_method_name": "add_swap_clients"
+            }
+          }
+        },
+        {
+          "id": 1008,
+          "name": "Set buybackburn canister of Gold DAO.",
+          "description": "Proposal to define the buyback and burn canister on the gldt_swap canister. The gldt_swap canister will send the fees accumulating in GLDT to this canister to then buyback and burn GOLDAO tokens.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "6f6ua-hqaaa-aaaar-qairq-cai",
+              "target_canister_id": "6f6ua-hqaaa-aaaar-qairq-cai",
+              "validator_method_name": "set_buy_back_canister_validate",
+              "target_method_name": "set_buy_back_canister"
             }
           }
         },
@@ -4239,7 +4287,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99523246799243148,
+    "icrc1_total_supply": 99507497251192463,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
