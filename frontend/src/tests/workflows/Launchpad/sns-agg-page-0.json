@@ -165,6 +165,19 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 2000,
+          "name": "Transfer nICP",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -298,7 +311,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999959159194000,
+    "icrc1_total_supply": 799999957696094000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1096,6 +1109,19 @@
               "target_method_name": "manage_neuron"
             }
           }
+        },
+        {
+          "id": 102001,
+          "name": "Transfer nICP",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -1222,7 +1248,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10139330032107344,
+    "icrc1_total_supply": 10140235580441918,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1968,7 +1994,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 615354863820963,
+    "icrc1_total_supply": 615469150882045,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2373,7 +2399,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104166688469288135,
+    "icrc1_total_supply": 104205152402988605,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2880,6 +2906,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "burn",
           "description": null,
@@ -3030,7 +3064,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 930416304377985932,
+    "icrc1_total_supply": 930428425507754608,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
