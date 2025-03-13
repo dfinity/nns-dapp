@@ -1274,6 +1274,7 @@ interface I18nPortfolio {
   open_project_card_max_icp: string;
   open_project_card_nf: string;
   open_project_card_link: string;
+  open_project_card_neuron_fund_tooltip: string;
 }
 
 interface I18nNeuron_state {
