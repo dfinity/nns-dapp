@@ -266,6 +266,7 @@
         gap: var(--padding);
 
         .icon {
+          display: flex;
           color: var(--text-description);
         }
       }
