@@ -22,12 +22,8 @@
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-  import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import type { UserToken } from "$lib/types/tokens-page";
-  import {
-    comparesByDecentralizationSaleOpenTimestampDesc,
-    filterProjectsStatus,
-  } from "$lib/utils/projects.utils";
+  import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
 
@@ -60,15 +56,6 @@
   $: if ($authSignedInStore) {
     userTokens = $tokensListUserStore;
   }
-
-  let snsSummaries: SnsSummaryWrapper[];
-  $: snsSummaries = filterProjectsStatus({
-    swapLifecycle: SnsSwapLifecycle.Open,
-    projects: $snsProjectsActivePadStore,
-  })
-    .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-    .reverse()
-    .map((project) => project.summary);
 </script>
 
 <TestIdWrapper testId="portfolio-route-component"
@@ -82,6 +69,9 @@
       icpSwapUsdPrices: $icpSwapUsdPricesStore,
       failedActionableSnses: $failedActionableSnsesStore,
     })}
-    {snsSummaries}
+    snsProjects={filterProjectsStatus({
+      swapLifecycle: SnsSwapLifecycle.Open,
+      projects: $snsProjectsActivePadStore,
+    })}
   /></TestIdWrapper
 >

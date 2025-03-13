@@ -1,10 +1,15 @@
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
+import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import Portfolio from "$lib/pages/Portfolio.svelte";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsFullProject,
+  mockToken,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
   ckBTCTokenBase,
@@ -24,11 +29,17 @@ describe("Portfolio page", () => {
   const renderPage = ({
     userTokens = [],
     tableProjects = [],
-  }: { userTokens?: UserToken[]; tableProjects?: TableProject[] } = {}) => {
+    snsProjects = [],
+  }: {
+    userTokens?: UserToken[];
+    tableProjects?: TableProject[];
+    snsProjects?: SnsFullProject[];
+  } = {}) => {
     const { container } = render(Portfolio, {
       props: {
         userTokens,
         tableProjects,
+        snsProjects,
       },
     });
 
@@ -122,6 +133,48 @@ describe("Portfolio page", () => {
       expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
       expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(false);
       expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(false);
+    });
+  });
+
+  describe("OpenLaunches", () => {
+    const mockSnsProjects: SnsFullProject[] = [
+      mockSnsFullProject,
+      { ...mockSnsFullProject, rootCanisterId: principal(2) },
+    ];
+
+    beforeEach(() => {
+      resetIdentity();
+    });
+
+    it("should display StackedCards when snsProjects is not empty", async () => {
+      const po = renderPage({ snsProjects: mockSnsProjects });
+      const stackedCardsPo = po.getStackedCardsPo();
+      const cardWrappers = await stackedCardsPo.getCardWrappers();
+
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(cardWrappers.length).toBe(2);
+    });
+
+    it("should not display StackedCards when snsProjects is empty", async () => {
+      const po = renderPage();
+      const stackedCardsPo = po.getStackedCardsPo();
+
+      expect(await stackedCardsPo.isPresent()).toBe(false);
+    });
+
+    it("should hide TotalAssetsCard when not signed in and there are sns projects", async () => {
+      setNoIdentity();
+      const po = renderPage({ snsProjects: mockSnsProjects });
+      const stackedCardsPo = po.getStackedCardsPo();
+
+      expect(await po.getTotalAssetsCardPo().isPresent()).toBe(false);
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+    });
+
+    it("should show TotalAssetsCard when signed in, even with sns projects", async () => {
+      const po = renderPage({ snsProjects: mockSnsProjects });
+
+      expect(await po.getTotalAssetsCardPo().isPresent()).toBe(true);
     });
   });
 

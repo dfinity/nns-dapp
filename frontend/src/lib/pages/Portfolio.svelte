@@ -6,25 +6,27 @@
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StackedCards, {
-    type CardItem,
+      type CardItem,
   } from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
+  import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import type { SnsSummary } from "$lib/types/sns";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import {
-    getTopHeldTokens,
-    getTopStakedTokens,
+      getTopHeldTokens,
+      getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
+  import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
-  export let snsSummaries: SnsSummaryWrapper[];
+  export let snsProjects: SnsFullProject[];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
@@ -114,6 +116,12 @@
     projects: tableProjects,
     isSignedIn: $authSignedInStore,
   });
+
+  let snsSummaries: SnsSummary[];
+  $: snsSummaries = snsProjects
+    .sort(comparesByDecentralizationSaleOpenTimestampDesc)
+    .reverse()
+    .map((project) => project.summary);
 
   let cards: CardItem[];
   $: cards = snsSummaries.map((summary) => ({
