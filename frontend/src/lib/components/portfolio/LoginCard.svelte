@@ -39,6 +39,7 @@
         "icon content"
         "icon action";
       gap: var(--padding-3x);
+      grid-template-rows: auto 1fr;
       padding: var(--padding-3x) var(--padding-4x);
     }
 
