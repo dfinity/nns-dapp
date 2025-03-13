@@ -55,7 +55,7 @@ describe("LaunchProjectCard", () => {
     const po = renderComponent(summary);
 
     expect(await po.getMinIcp()).toBe("500");
-    expect(await po.getMaxIcp()).toBe("150K");
+    expect(await po.getMaxIcp()).toBe("150k");
   });
 
   it("should not display NF participation when it doesn't exist", async () => {
