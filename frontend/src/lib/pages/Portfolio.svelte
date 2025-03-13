@@ -123,21 +123,21 @@
     .reverse()
     .map((project) => project.summary);
 
-  let cards: CardItem[];
-  $: cards = snsSummaries.map((summary) => ({
+  let launchpadCards: CardItem[];
+  $: launchpadCards = snsSummaries.map((summary) => ({
     component: LaunchProjectCard,
     props: { summary },
   }));
 
   let hideTotalAssetsCards = false;
-  $: hideTotalAssetsCards = !$authSignedInStore && cards.length > 0;
+  $: hideTotalAssetsCards = !$authSignedInStore && launchpadCards.length > 0;
 </script>
 
 <main data-tid="portfolio-page-component">
   <div
     class="top"
     class:signed-in={$authSignedInStore}
-    class:launchpad={cards.length > 0}
+    class:launchpad={launchpadCards.length > 0}
   >
     {#if !hideTotalAssetsCards}
       <TotalAssetsCard
@@ -147,8 +147,8 @@
       />
     {/if}
 
-    {#if cards.length > 0}
-      <StackedCards {cards} />
+    {#if launchpadCards.length > 0}
+      <StackedCards cards={launchpadCards} />
     {/if}
 
     {#if !$authSignedInStore}
