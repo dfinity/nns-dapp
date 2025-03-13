@@ -6,7 +6,7 @@
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StackedCards, {
-      type CardItem,
+    type CardItem,
   } from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
@@ -16,8 +16,8 @@
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import {
-      getTopHeldTokens,
-      getTopStakedTokens,
+    getTopHeldTokens,
+    getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
   import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
@@ -229,11 +229,6 @@
         // Case: not signed in, with no projects
         &:not(.signed-in):not(.launchpad) {
           grid-template-columns: 1fr 2fr;
-        }
-
-        // Case: signed in
-        &.signed-in {
-          grid-template-columns: 1fr;
         }
 
         // Case: signed in, no projects
