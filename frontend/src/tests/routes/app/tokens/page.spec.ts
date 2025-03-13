@@ -467,7 +467,11 @@ describe("Tokens route", () => {
             projectName: "ckBTC",
             balance: "2.45 ckBTC",
           });
-          expect(await po.getCkBTCTransactionModalPo().isPresent()).toBe(false);
+          await vi.waitFor(async () =>
+            expect(await po.getCkBTCTransactionModalPo().isPresent()).toBe(
+              false
+            )
+          );
         });
 
         it("users can send ckETH tokens", async () => {
@@ -514,8 +518,10 @@ describe("Tokens route", () => {
             projectName: "ckETH",
             balance: "2.14 ckETH",
           });
-          expect(await po.getIcrcTokenTransactionModal().isPresent()).toBe(
-            false
+          await vi.waitFor(async () =>
+            expect(await po.getIcrcTokenTransactionModal().isPresent()).toBe(
+              false
+            )
           );
         });
       });
