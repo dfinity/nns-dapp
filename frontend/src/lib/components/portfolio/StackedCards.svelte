@@ -1,12 +1,15 @@
-<script lang="ts">
+<script lang="ts" context="module">
   import type { ComponentType, SvelteComponent } from "svelte";
-  import { onDestroy, onMount } from "svelte";
-
   type AnyComponent = ComponentType<SvelteComponent>;
-  type CardItem = {
+
+  export type CardItem = {
     component: AnyComponent;
     props?: Record<string, unknown>;
   };
+</script>
+
+<script lang="ts">
+  import { onDestroy, onMount } from "svelte";
 
   export let cards: CardItem[] = [];
   let activeIndex = 0;
