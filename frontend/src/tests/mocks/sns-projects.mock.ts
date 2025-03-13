@@ -344,6 +344,7 @@ type SnsSummaryParams = {
   nnsProposalId?: bigint;
   rootCanisterId?: Principal;
   projectName?: string;
+  projectDescription?: string;
   logo?: string;
 };
 
@@ -370,6 +371,7 @@ export const createSummary = ({
   nnsProposalId,
   rootCanisterId,
   projectName,
+  projectDescription,
   logo,
 }: SnsSummaryParams): SnsSummaryWrapper => {
   const init: SnsSwapInit = {
@@ -420,6 +422,7 @@ export const createSummary = ({
     ...mockMetadata,
     name: projectName ?? mockMetadata.name,
     logo: logo ?? mockMetadata.logo,
+    description: projectDescription ?? mockMetadata.description,
   };
   const summary = summaryForLifecycle(lifecycle);
   return summary.override({

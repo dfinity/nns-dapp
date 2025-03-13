@@ -51,6 +51,7 @@ import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { QueryCallRejectedError, ReplicaRejectCode } from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
 import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
@@ -727,9 +728,13 @@ describe("Tokens route", () => {
             };
 
             if (canisterId.toText() === ledgerCanisterIdTetris.toText()) {
-              throw new Error(
-                `IC0207: Out of cycles for ${canisterId.toText()}`
-              );
+              throw new QueryCallRejectedError(canisterId, "getTransactions", {
+                error_code: "IC0207",
+                // @ts-expect-error: We can't use the enum from agent-js as it was exported as a const.
+                status: "rejected",
+                reject_message: "Canister out of cycles",
+                reject_code: ReplicaRejectCode.CanisterError,
+              });
             }
             return balancesMap[canisterId.toText()];
           }

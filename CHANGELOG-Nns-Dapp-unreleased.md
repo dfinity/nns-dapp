@@ -14,15 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Add the ability to sort the tokens table on mobile.
+* Added the option to hide projects in the neurons table that have no neurons.
 
 #### Changed
-
-* Improve readability of monetary values by simplifying large numbers
-* Improved error handling by disabling neuron navigation when SNS governance canister is unavailable
-* Enhanced geolocation reliability for SNS swap participation checks by replacing fallback service
-* Replaced the table sorting modal with the table settings menu.
-
 
 #### Deprecated
 
