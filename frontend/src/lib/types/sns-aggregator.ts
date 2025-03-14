@@ -217,6 +217,20 @@ export type CachedSnsTokenMetadataDto = [
   ),
 ][];
 
+export type TopicInfoDto = {
+  topic: Topic;
+  name: string;
+  description: string;
+  native_functions: CachedNervousFunctionDto[];
+  custom_functions: CachedNervousFunctionDto[];
+  is_critical: boolean;
+};
+
+export type CachedListTopicsResponseDto = {
+  topics: TopicInfoDto[];
+  uncategorized_functions: CachedNervousFunctionDto[];
+};
+
 // Export for testing purposes
 export type CachedSnsDto = {
   index: number;
@@ -240,4 +254,5 @@ export type CachedSnsDto = {
   swap_params: CachedSwapParamsResponseDto;
   init: CachedInitResponseDto;
   lifecycle: CachedLifecycleResponseDto | null;
+  topics: CachedListTopicsResponseDto;
 };
