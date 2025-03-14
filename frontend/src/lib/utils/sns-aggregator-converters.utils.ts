@@ -11,6 +11,7 @@ import type {
   CachedDefaultFolloweesDto,
   CachedFunctionTypeDto,
   CachedLifecycleResponseDto,
+  CachedListTopicsResponseDto,
   CachedNervousFunctionDto,
   CachedNervousSystemParametersDto,
   CachedNeuronsFundParticipationConstraints,
@@ -22,6 +23,7 @@ import type {
   CachedSwapInitParamsDto,
   CachedSwapParamsDto,
   CachedVotingRewardsParametersDto,
+  TopicInfoDto,
 } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
@@ -40,6 +42,11 @@ import type {
   SnsSwapInit,
   SnsVotingRewardsParameters,
 } from "@dfinity/sns";
+import type {
+  ListTopicsResponse,
+  Topic,
+  TopicInfo,
+} from "@dfinity/sns/dist/candid/sns_governance";
 import {
   candidNumberArrayToBigInt,
   isNullish,
@@ -543,3 +550,53 @@ export const convertDtoToSnsSummary = ({
     ? new SnsSummaryWrapper(partialSummary)
     : undefined;
 };
+
+export const convertDtoToTopic = (topic: string): Topic => {
+  switch (topic) {
+    case "DappCanisterManagement":
+      return { DappCanisterManagement: null };
+    case "DaoCommunitySettings":
+      return { DaoCommunitySettings: null };
+    case "ApplicationBusinessLogic":
+      return { ApplicationBusinessLogic: null };
+    case "CriticalDappOperations":
+      return { CriticalDappOperations: null };
+    case "TreasuryAssetManagement":
+      return { TreasuryAssetManagement: null };
+    case "Governance":
+      return { Governance: null };
+    case "SnsFrameworkManagement":
+      return { SnsFrameworkManagement: null };
+    default:
+      // TODO(mstr): Evaluate returning null / {UnknownTopic: null} instead of throwing an error.
+      throw new Error(`Unknown topic: ${topic}`);
+  }
+};
+
+export const convertDtoTopicInfo = ({
+  topic,
+  name,
+  description,
+  native_functions,
+  custom_functions,
+  is_critical,
+}: TopicInfoDto): TopicInfo => {
+  return {
+    topic: toNullable(convertDtoToTopic(topic)),
+    name: toNullable(name),
+    description: toNullable(description),
+    native_functions: toNullable(native_functions.map(convertNervousFunction)),
+    custom_functions: toNullable(custom_functions.map(convertNervousFunction)),
+    is_critical: toNullable(is_critical),
+  };
+};
+
+export const convertDtoToListTopicsResponse = ({
+  topics,
+  uncategorized_functions,
+}: CachedListTopicsResponseDto): ListTopicsResponse => ({
+  topics: toNullable(topics.map(convertDtoTopicInfo)),
+  uncategorized_functions: toNullable(
+    uncategorized_functions.map(convertNervousFunction)
+  ),
+});

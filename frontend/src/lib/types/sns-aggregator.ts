@@ -218,7 +218,7 @@ export type CachedSnsTokenMetadataDto = [
 ][];
 
 export type TopicInfoDto = {
-  topic: Topic;
+  topic: string;
   name: string;
   description: string;
   native_functions: CachedNervousFunctionDto[];
