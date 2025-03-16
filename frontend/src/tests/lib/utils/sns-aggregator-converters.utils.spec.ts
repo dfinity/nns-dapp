@@ -19,6 +19,10 @@ import {
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
+import type {
+  ListTopicsResponse,
+  TopicInfo,
+} from "@dfinity/sns/dist/candid/sns_governance";
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {
@@ -989,118 +993,136 @@ describe("sns aggregator converters utils", () => {
 
     describe("convertDtoTopicInfo", () => {
       it("converts aggregator topic info to ic-js types", () => {
-        expect(convertDtoTopicInfo(topicInfo)).toEqual({
+        const expectedTopicInfo: TopicInfo = {
           native_functions: [
+            [
+              {
+                id: 13n,
+                name: "Native Function",
+                description: ["Description 1"],
+                function_type: [{ NativeNervousSystemFunction: {} }],
+              },
+            ],
+          ],
+          topic: [
             {
-              id: 13n,
-              name: "Native Function",
-              description: ["Description 1"],
-              function_type: [{ NativeNervousSystemFunction: {} }],
+              DaoCommunitySettings: null,
             },
           ],
-          topic: {
-            DaoCommunitySettings: null,
-          },
-          is_critical: false,
-          name: "DAO community settings",
+          is_critical: [false],
+          name: ["DAO community settings"],
           description: ["Desctiption 2"],
           custom_functions: [
-            {
-              id: 1001n,
-              name: "Custom Function",
-              description: ["Description 3"],
-              function_type: [
-                {
-                  GenericNervousSystemFunction: {
-                    validator_canister_id: [canisterId],
-                    target_canister_id: [canisterId],
-                    validator_method_name: [method],
-                    target_method_name: [targetMethod],
-                    topic: [
-                      {
-                        DappCanisterManagement: null,
-                      },
-                    ],
+            [
+              {
+                id: 1001n,
+                name: "Custom Function",
+                description: ["Description 3"],
+                function_type: [
+                  {
+                    GenericNervousSystemFunction: {
+                      validator_canister_id: [canisterId],
+                      target_canister_id: [canisterId],
+                      validator_method_name: [method],
+                      target_method_name: [targetMethod],
+                      topic: [
+                        {
+                          DappCanisterManagement: null,
+                        },
+                      ],
+                    },
                   },
-                },
-              ],
-            },
+                ],
+              },
+            ],
           ],
-        });
+        };
+        expect(convertDtoTopicInfo(topicInfo)).toEqual(expectedTopicInfo);
       });
     });
 
     describe("convertDtoToListTopicsResponse", () => {
       it("converts list topics response to ic-js type", () => {
+        const expectedTopicsResponse: ListTopicsResponse = {
+          topics: [
+            [
+              {
+                native_functions: [
+                  [
+                    {
+                      id: 13n,
+                      name: "Native Function",
+                      description: ["Description 1"],
+                      function_type: [{ NativeNervousSystemFunction: {} }],
+                    },
+                  ],
+                ],
+                topic: [
+                  {
+                    DaoCommunitySettings: null,
+                  },
+                ],
+                is_critical: [false],
+                name: ["DAO community settings"],
+                description: ["Desctiption 2"],
+                custom_functions: [
+                  [
+                    {
+                      id: 1001n,
+                      name: "Custom Function",
+                      description: ["Description 3"],
+                      function_type: [
+                        {
+                          GenericNervousSystemFunction: {
+                            validator_canister_id: [canisterId],
+                            target_canister_id: [canisterId],
+                            validator_method_name: [method],
+                            target_method_name: [targetMethod],
+                            topic: [
+                              {
+                                DappCanisterManagement: null,
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                ],
+              },
+            ],
+          ],
+          uncategorized_functions: [
+            [
+              {
+                id: 1001n,
+                name: "Custom Function",
+                description: ["Description 3"],
+                function_type: [
+                  {
+                    GenericNervousSystemFunction: {
+                      validator_canister_id: [canisterId],
+                      target_canister_id: [canisterId],
+                      validator_method_name: [method],
+                      target_method_name: [targetMethod],
+                      topic: [
+                        {
+                          DappCanisterManagement: null,
+                        },
+                      ],
+                    },
+                  },
+                ],
+              },
+            ],
+          ],
+        };
         expect(
           convertDtoToListTopicsResponse({
             topics: [topicInfo],
             uncategorized_functions: [customFunction],
           })
-        ).toEqual({
-          topics: [
-            {
-              native_functions: [
-                {
-                  id: 13n,
-                  name: "Native Function",
-                  description: ["Description 1"],
-                  function_type: [{ NativeNervousSystemFunction: {} }],
-                },
-              ],
-              topic: {
-                DaoCommunitySettings: null,
-              },
-              is_critical: false,
-              name: "DAO community settings",
-              description: ["Desctiption 2"],
-              custom_functions: [
-                {
-                  id: 1001n,
-                  name: "Custom Function",
-                  description: ["Description 3"],
-                  function_type: [
-                    {
-                      GenericNervousSystemFunction: {
-                        validator_canister_id: [canisterId],
-                        target_canister_id: [canisterId],
-                        validator_method_name: [method],
-                        target_method_name: [targetMethod],
-                        topic: [
-                          {
-                            DappCanisterManagement: null,
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-          uncategorized_functions: [
-            {
-              id: 1001n,
-              name: "Custom Function",
-              description: ["Description 3"],
-              function_type: [
-                {
-                  GenericNervousSystemFunction: {
-                    validator_canister_id: [canisterId],
-                    target_canister_id: [canisterId],
-                    validator_method_name: [method],
-                    target_method_name: [targetMethod],
-                    topic: [
-                      {
-                        DappCanisterManagement: null,
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          ],
-        });
+        ).toEqual(expectedTopicsResponse);
       });
     });
   });
