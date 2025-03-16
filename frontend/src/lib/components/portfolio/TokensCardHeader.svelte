@@ -79,10 +79,12 @@
       height: 35px;
       border-radius: 50%;
       min-height: auto;
+      padding: 0;
 
       @include media.min-width(medium) {
         width: auto;
         height: auto;
+        padding: var(--padding) var(--padding-2x);
         border-radius: var(--border-radius);
         min-height: var(--button-min-height);
       }
