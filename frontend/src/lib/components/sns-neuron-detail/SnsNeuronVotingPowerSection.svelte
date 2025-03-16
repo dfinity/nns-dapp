@@ -8,21 +8,21 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import {
-      ageMultiplier,
-      dissolveDelayMultiplier,
-      formattedStakedMaturity,
-      getSnsNeuronStake,
-      neuronDashboardUrl,
-      snsNeuronVotingPower,
+    ageMultiplier,
+    dissolveDelayMultiplier,
+    formattedStakedMaturity,
+    getSnsNeuronStake,
+    neuronDashboardUrl,
+    snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { Html, KeyValuePairInfo, Section } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
-      fromDefinedNullable,
-      secondsToDuration,
-      type Token,
+    fromDefinedNullable,
+    secondsToDuration,
+    type Token,
   } from "@dfinity/utils";
 
   export let parameters: SnsNervousSystemParameters;
