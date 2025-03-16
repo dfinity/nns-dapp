@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Added the option to hide projects in the neurons table that have no neurons.
 * Added ongoing SNS launch previews to Portfolio page.
+* Added visual feedback while loading exchange rates in canister top-up form.
 
 #### Changed
 
