@@ -19,13 +19,19 @@
   } from "$lib/services/accounts-balances.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
+  import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import {
+    openSnsProposalsStore,
+    snsProposalsStoreIsLoading,
+  } from "$lib/stores/sns.store";
   import type { UserToken } from "$lib/types/tokens-page";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { onMount } from "svelte";
 
   resetBalanceLoading();
   loadIcpSwapTickers();
@@ -56,6 +62,11 @@
   $: if ($authSignedInStore) {
     userTokens = $tokensListUserStore;
   }
+
+  onMount(() => {
+    if ($snsProposalsStoreIsLoading)
+      loadProposalsSnsCF({ omitLargeFields: false });
+  });
 </script>
 
 <TestIdWrapper testId="portfolio-route-component"
@@ -73,5 +84,6 @@
       swapLifecycle: SnsSwapLifecycle.Open,
       projects: $snsProjectsActivePadStore,
     })}
+    openSnsProposals={$openSnsProposalsStore}
   /></TestIdWrapper
 >

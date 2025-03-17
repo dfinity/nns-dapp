@@ -146,3 +146,6 @@ export const formatDateCompact = (date: Date): string => {
 
   return `${year}${month}${day}`;
 };
+
+export const durationUntilDeadline = (deadline: bigint): bigint =>
+  deadline - BigInt(nowInSeconds());
