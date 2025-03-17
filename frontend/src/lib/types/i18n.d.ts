@@ -1268,6 +1268,7 @@ interface I18nPortfolio {
   staked_tokens_card_info_row: string;
   total_assets_title: string;
   project_status_open: string;
+  project_status_proposal: string;
   open_project_card_title: string;
   open_project_current_commitment: string;
   open_project_card_min_icp: string;
@@ -1275,6 +1276,8 @@ interface I18nPortfolio {
   open_project_card_nf: string;
   open_project_card_link: string;
   open_project_card_neuron_fund_tooltip: string;
+  open_proposal_card_title: string;
+  open_proposal_card_link: string;
 }
 
 interface I18nNeuron_state {
