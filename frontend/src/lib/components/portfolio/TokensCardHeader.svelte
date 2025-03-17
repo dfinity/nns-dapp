@@ -27,7 +27,7 @@
       </p>
     </div>
   </div>
-  <a {href} class="button link" aria-label={linkText}>
+  <a {href} class="button secondary link" aria-label={linkText}>
     <span class="icon">
       <IconRight />
     </span>
@@ -78,23 +78,15 @@
       width: 35px;
       height: 35px;
       border-radius: 50%;
+      min-height: auto;
+      padding: 0;
 
-      // TODO: This is necessary because using the button mixins from GIX generates warnings about unused styles.
-      // The styles in question relate to the disabled attribute, which does not apply to the anchor element.
-      // This is a temporary fix until those mixins are updated to include the disabled state as an additional mixin.
-      color: var(--button-secondary-color);
-      border: solid var(--button-border-size) var(--primary);
       @include media.min-width(medium) {
         width: auto;
         height: auto;
         padding: var(--padding) var(--padding-2x);
         border-radius: var(--border-radius);
-        position: relative;
         min-height: var(--button-min-height);
-        font-weight: var(--font-weight-bold);
-        &:focus {
-          filter: contrast(1.25);
-        }
       }
 
       .icon {
