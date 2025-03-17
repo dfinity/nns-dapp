@@ -340,6 +340,10 @@ describe("sns aggregator converters utils", () => {
         decentralization_sale_open_timestamp_seconds: 1690786778,
         lifecycle: 2,
       },
+      topics: {
+        topics: [],
+        uncategorized_functions: [],
+      },
     };
 
     it("returns sns summary from aggregator data", () => {
