@@ -1,24 +1,32 @@
 <script lang="ts">
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
+  import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
+  import StackedCards, {
+    type CardItem,
+  } from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import type { SnsSummary } from "$lib/types/sns";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import {
     getTopHeldTokens,
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
+  import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
+  export let snsProjects: SnsFullProject[];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
@@ -108,21 +116,48 @@
     projects: tableProjects,
     isSignedIn: $authSignedInStore,
   });
+
+  let snsSummaries: SnsSummary[];
+  $: snsSummaries = snsProjects
+    .sort(comparesByDecentralizationSaleOpenTimestampDesc)
+    .reverse()
+    .map((project) => project.summary);
+
+  let launchpadCards: CardItem[];
+  $: launchpadCards = snsSummaries.map((summary) => ({
+    component: LaunchProjectCard,
+    props: { summary },
+  }));
+
+  let hideTotalAssetsCards = false;
+  $: hideTotalAssetsCards = !$authSignedInStore && launchpadCards.length > 0;
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div class="top" class:signed-in={$authSignedInStore}>
-    <TotalAssetsCard
-      usdAmount={totalUsdAmount}
-      hasUnpricedTokens={hasUnpricedTokensOrStake}
-      isLoading={isSomethingLoading}
-    />
+  <div
+    class="top"
+    class:signed-in={$authSignedInStore}
+    class:launchpad={launchpadCards.length > 0}
+  >
+    {#if !hideTotalAssetsCards}
+      <TotalAssetsCard
+        usdAmount={totalUsdAmount}
+        hasUnpricedTokens={hasUnpricedTokensOrStake}
+        isLoading={isSomethingLoading}
+      />
+    {/if}
+
+    {#if launchpadCards.length > 0}
+      <StackedCards cards={launchpadCards} />
+    {/if}
+
     {#if !$authSignedInStore}
       <div class="login-card">
         <LoginCard />
       </div>
     {/if}
   </div>
+
   <div class="content">
     {#if heldTokensCard === "skeleton"}
       <SkeletonTokensCard testId="held-tokens-skeleton-card" />
@@ -183,11 +218,27 @@
 
         .login-card {
           order: 0;
+          height: 100%;
         }
 
-        // Case: signed in
-        &.signed-in {
-          grid-template-columns: 1fr;
+        // Case: not signed in, with projects
+        &:not(.signed-in).launchpad {
+          grid-template-columns: 1fr 2fr;
+        }
+
+        // Case: not signed in, with no projects
+        &:not(.signed-in):not(.launchpad) {
+          grid-template-columns: 1fr 2fr;
+        }
+
+        // Case: signed in, no projects
+        &.signed-in:not(.launchpad) {
+          grid-template-columns: 3fr;
+        }
+
+        // Case: signed in, with projects
+        &.signed-in.launchpad {
+          grid-template-columns: 2fr 1fr;
         }
       }
     }

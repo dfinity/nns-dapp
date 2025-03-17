@@ -1124,7 +1124,11 @@
       "ledger": "k45jy-aiaaa-aaaaq-aadcq-cai",
       "index": "ks7eq-3yaaa-aaaaq-aaddq-cai",
       "governance": "k34pm-nqaaa-aaaaq-aadca-cai",
-      "dapps": ["oeee4-qaaaa-aaaak-qaaeq-cai", "hhce5-bqaaa-aaaak-qtt3q-cai"],
+      "dapps": [
+        "oeee4-qaaaa-aaaak-qaaeq-cai",
+        "hhce5-bqaaa-aaaak-qtt3q-cai",
+        "lzhom-nqaaa-aaaap-ahmpq-cai"
+      ],
       "archives": ["j6iuh-qyaaa-aaaaq-aadjq-cai"]
     },
     "meta": {
@@ -1284,6 +1288,19 @@
               "target_method_name": "transferPosition"
             }
           }
+        },
+        {
+          "id": 1001,
+          "name": "Transfer BAD.OT",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "y3qt2-4iaaa-aaaar-qaifa-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -1441,7 +1458,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 5415414164368389,
+    "icrc1_total_supply": 5419992788688322,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1828,7 +1845,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999791290000,
+    "icrc1_total_supply": 99999790690000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2056,6 +2073,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 2001,
           "name": "Upgrade OGY dashboard frontend.",
           "description": "Proposal to upgrade the OGY dashboard frontend to new version.",
@@ -2230,7 +2255,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041665916874930305,
+    "icrc1_total_supply": 1041662853327580114,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2486,6 +2511,14 @@
           "id": 15,
           "name": "Advance SNS target version",
           "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2875,7 +2908,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11661576193764921,
+    "icrc1_total_supply": 11661641861736960,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4240,6 +4273,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "Add a new custom SNS function set_canister_ids",
           "description": "Add a new custom SNS function to the old DOGMI SNS Token Swap Canister",
@@ -4277,7 +4318,7 @@
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
-      "neuron_minimum_stake_e8s": 10000000000,
+      "neuron_minimum_stake_e8s": 1000000000000,
       "max_neuron_age_for_age_bonus": 31557600,
       "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 2630016,
@@ -4393,7 +4434,7 @@
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2319947556644943879,
+    "icrc1_total_supply": 2320148951606413147,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4961,7 +5002,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999785530000,
+    "icrc1_total_supply": 1999999785450000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -8308,7 +8349,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100129794520116241,
+    "icrc1_total_supply": 100136409354431083,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

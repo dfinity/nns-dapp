@@ -1,5 +1,6 @@
 import { HeldTokensCardPo } from "$tests/page-objects/HeldTokensCard.page-object";
 import { NoStakedTokensCardPo } from "$tests/page-objects/NoStakedTokensCard.page-object";
+import { StackedCardsPo } from "$tests/page-objects/StackedCards.page-object";
 import { StakedTokensCardPo } from "$tests/page-objects/StakedTokensCard.page-object";
 import { TotalAssetsCardPo } from "$tests/page-objects/TotalAssetsCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -42,5 +43,9 @@ export class PortfolioPagePo extends BasePageObject {
 
   getStakedTokensSkeletonCard(): PageObjectElement {
     return this.getElement("staked-tokens-skeleton-card");
+  }
+
+  getStackedCardsPo(): StackedCardsPo {
+    return StackedCardsPo.under(this.root);
   }
 }

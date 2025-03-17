@@ -26,6 +26,13 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
   await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
 
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="time-remaining"]'],
+    pattern: /.*/,
+    replacements: ["3 days. 14 hours"],
+  });
+
   // The governance metrics are only updated once a day so for the first 24h
   // after a snapshot is created, the metrics might be different than what
   // we expectand we need to replace them with the expected value.
@@ -74,6 +81,13 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   await portfolioPo.getPortfolioPagePo().getHeldTokensCardPo().waitFor();
   await portfolioPo.getPortfolioPagePo().getStakedTokensCardPo().waitFor();
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="time-remaining"]'],
+    pattern: /.*/,
+    replacements: ["3 days. 14 hours"],
+  });
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
   await appPo.toggleSidebar();

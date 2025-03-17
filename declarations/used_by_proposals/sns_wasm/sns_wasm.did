@@ -1,4 +1,4 @@
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-02-27_03-09-disable-best-effort-messaging/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-13_03-12-base/rs/nns/sns-wasm/canister/sns-wasm.did>
 type AddWasmRequest = record {
   hash : blob;
   wasm : opt SnsWasm;
@@ -6,10 +6,6 @@ type AddWasmRequest = record {
 
 type AddWasmResponse = record {
   result : opt Result;
-};
-
-type AirdropDistribution = record {
-  airdrop_neurons : vec NeuronDistribution;
 };
 
 type Canister = record {
@@ -56,7 +52,6 @@ type DeveloperDistribution = record {
 type FractionalDeveloperVotingPower = record {
   treasury_distribution : opt TreasuryDistribution;
   developer_distribution : opt DeveloperDistribution;
-  airdrop_distribution : opt AirdropDistribution;
   swap_distribution : opt SwapDistribution;
 };
 
