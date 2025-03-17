@@ -6,6 +6,8 @@
     convertIcpToTCycles,
     convertTCyclesToIcpNumber,
   } from "$lib/utils/token.utils";
+  import { Spinner } from "@dfinity/gix-components";
+  import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher, onMount } from "svelte";
 
   export let amount: number | undefined = undefined;
@@ -77,7 +79,13 @@
       disabled={icpToCyclesExchangeRate === undefined}
     >
       <svelte:fragment slot="label">{$i18n.core.icp}</svelte:fragment>
+      <svelte:fragment slot="inner-end">
+        {#if isNullish(icpToCyclesExchangeRate)}
+          <Spinner inline size="small" />
+        {/if}
+      </svelte:fragment>
     </Input>
+
     <Input
       placeholderLabelKey="canisters.t_cycles"
       inputType="icp"
@@ -89,6 +97,12 @@
     >
       <svelte:fragment slot="label">
         {$i18n.canisters.t_cycles}
+      </svelte:fragment>
+
+      <svelte:fragment slot="inner-end">
+        {#if isNullish(icpToCyclesExchangeRate)}
+          <Spinner inline size="small" />
+        {/if}
       </svelte:fragment>
     </Input>
   </div>

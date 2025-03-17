@@ -111,7 +111,7 @@
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2025-03-05",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2025-03-13_03-12-base",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2025-03-14_03-10-base",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-03-06_03-10-disable-best-effort-messaging"
       },
       "packtool": ""
