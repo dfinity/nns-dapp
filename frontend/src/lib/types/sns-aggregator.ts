@@ -254,5 +254,6 @@ export type CachedSnsDto = {
   swap_params: CachedSwapParamsResponseDto;
   init: CachedInitResponseDto;
   lifecycle: CachedLifecycleResponseDto | null;
-  topics: CachedListTopicsResponseDto;
+  // TODO(mstr): Make it not optional after all the canisters are upgraded.
+  topics?: CachedListTopicsResponseDto;
 };
