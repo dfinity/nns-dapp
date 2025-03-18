@@ -1,10 +1,14 @@
-import type {
-  CachedNervousFunctionDto,
-  CachedNervousSystemParametersDto,
-  CachedNeuronIdDto,
-  CachedSnsDto,
-  CachedSnsTokenMetadataDto,
-  TopicInfoDto,
+import {
+  isUnknownTopic,
+  type CachedNervousFunctionDto,
+  type CachedNervousSystemParametersDto,
+  type CachedNeuronIdDto,
+  type CachedSnsDto,
+  type CachedSnsTokenMetadataDto,
+  type ListTopicsResponseWithUnknown,
+  type TopicInfoDto,
+  type TopicInfoWithUnknown,
+  type UnknownTopic,
 } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
@@ -19,10 +23,7 @@ import {
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
-import type {
-  ListTopicsResponse,
-  TopicInfo,
-} from "@dfinity/sns/dist/candid/sns_governance";
+import type { TopicInfo } from "@dfinity/sns/dist/candid/sns_governance";
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {
@@ -932,7 +933,6 @@ describe("sns aggregator converters utils", () => {
         },
       },
     };
-
     const topicInfo: TopicInfoDto = {
       native_functions: [
         {
@@ -967,10 +967,37 @@ describe("sns aggregator converters utils", () => {
         },
       ],
     };
+    const unknownTopicInfo: TopicInfoDto = {
+      native_functions: [],
+      topic: "Unknown Topic",
+      is_critical: true,
+      name: "Unknown topic name",
+      description: "Unknown topic desctiption",
+      custom_functions: [],
+    };
+
+    describe("isUnknownTopic", () => {
+      it("returns true if topic is unknown", () => {
+        const topic: UnknownTopic = { UnknownTopic: null };
+        expect(isUnknownTopic(topic)).toBe(true);
+      });
+
+      it("returns false if topic is known", () => {
+        expect(
+          isUnknownTopic({
+            DappCanisterManagement: null,
+          })
+        ).toBe(false);
+      });
+    });
 
     // ic-js type: https://github.com/dfinity/ic-js/blob/1a4d3f02d4cfebf47c199a4fdc376e2f62a84746/packages/sns/candid/sns_governance_test.did#L867C1-L875C3
     describe("convertDtoToTopic", () => {
       it("converts aggregator topic to ic-js types", () => {
+        const spyOnConsoleError = vi
+          .spyOn(console, "error")
+          .mockImplementation(() => undefined);
+
         expect(convertDtoToTopic("DappCanisterManagement")).toEqual({
           DappCanisterManagement: null,
         });
@@ -992,6 +1019,24 @@ describe("sns aggregator converters utils", () => {
         expect(convertDtoToTopic("SnsFrameworkManagement")).toEqual({
           SnsFrameworkManagement: null,
         });
+
+        expect(spyOnConsoleError).not.toHaveBeenCalled();
+      });
+
+      it("returns UnknownTopic if topic is unknown", () => {
+        const spyOnConsoleError = vi
+          .spyOn(console, "error")
+          .mockImplementation(() => undefined);
+
+        expect(convertDtoToTopic("An Unknown Topic")).toEqual({
+          UnknownTopic: null,
+        });
+
+        expect(spyOnConsoleError).toHaveBeenCalledTimes(1);
+        expect(spyOnConsoleError).toHaveBeenCalledWith(
+          "Unknown topic:",
+          "An Unknown Topic"
+        );
       });
     });
 
@@ -1043,11 +1088,36 @@ describe("sns aggregator converters utils", () => {
         };
         expect(convertDtoTopicInfo(topicInfo)).toEqual(expectedTopicInfo);
       });
+
+      it("supports unknown topics", () => {
+        const spyOnConsoleError = vi
+          .spyOn(console, "error")
+          .mockImplementation(() => undefined);
+        const expectedUnknownTopicInfo: TopicInfoWithUnknown = {
+          native_functions: [[]],
+          topic: [
+            {
+              UnknownTopic: null,
+            },
+          ],
+          is_critical: [true],
+          name: ["Unknown topic name"],
+          description: ["Unknown topic desctiption"],
+          custom_functions: [[]],
+        };
+        expect(convertDtoTopicInfo(unknownTopicInfo)).toEqual(
+          expectedUnknownTopicInfo
+        );
+        expect(spyOnConsoleError).toHaveBeenCalledTimes(1);
+      });
     });
 
     describe("convertDtoToListTopicsResponse", () => {
       it("converts list topics response to ic-js type", () => {
-        const expectedTopicsResponse: ListTopicsResponse = {
+        const spyOnConsoleError = vi
+          .spyOn(console, "error")
+          .mockImplementation(() => undefined);
+        const expectedTopicsResponse: ListTopicsResponseWithUnknown = {
           topics: [
             [
               {
@@ -1094,6 +1164,19 @@ describe("sns aggregator converters utils", () => {
                   ],
                 ],
               },
+              // Unknown TopicInfo
+              {
+                native_functions: [[]],
+                topic: [
+                  {
+                    UnknownTopic: null,
+                  },
+                ],
+                is_critical: [true],
+                name: ["Unknown topic name"],
+                description: ["Unknown topic desctiption"],
+                custom_functions: [[]],
+              },
             ],
           ],
           uncategorized_functions: [
@@ -1123,10 +1206,11 @@ describe("sns aggregator converters utils", () => {
         };
         expect(
           convertDtoToListTopicsResponse({
-            topics: [topicInfo],
+            topics: [topicInfo, unknownTopicInfo],
             uncategorized_functions: [customFunction],
           })
         ).toEqual(expectedTopicsResponse);
+        expect(spyOnConsoleError).toHaveBeenCalledTimes(1);
       });
     });
   });
