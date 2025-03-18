@@ -1,4 +1,8 @@
 import type { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
+import type {
+  ListTopicsResponse,
+  TopicInfo,
+} from "@dfinity/sns/dist/candid/sns_governance";
 
 type CanisterIds = {
   root_canister_id: string;
@@ -217,6 +221,38 @@ export type CachedSnsTokenMetadataDto = [
   ),
 ][];
 
+export type TopicInfoDto = {
+  topic: string;
+  name: string;
+  description: string;
+  native_functions: CachedNervousFunctionDto[];
+  custom_functions: CachedNervousFunctionDto[];
+  is_critical: boolean;
+};
+
+export type CachedListTopicsResponseDto = {
+  topics: TopicInfoDto[];
+  uncategorized_functions: CachedNervousFunctionDto[];
+};
+
+export type UnknownTopic = {
+  UnknownTopic: null;
+};
+
+export const isUnknownTopic = (
+  topic: Topic | UnknownTopic
+): topic is UnknownTopic => "UnknownTopic" in topic;
+
+// Same as TopicInfo but with the topic field being either a Topic or UnknownTopic
+export interface TopicInfoWithUnknown extends Omit<TopicInfo, "topic"> {
+  topic: [] | [Topic | UnknownTopic];
+}
+
+export interface ListTopicsResponseWithUnknown
+  extends Omit<ListTopicsResponse, "topics"> {
+  topics: [] | [Array<TopicInfoWithUnknown>];
+}
+
 // Export for testing purposes
 export type CachedSnsDto = {
   index: number;
@@ -240,4 +276,6 @@ export type CachedSnsDto = {
   swap_params: CachedSwapParamsResponseDto;
   init: CachedInitResponseDto;
   lifecycle: CachedLifecycleResponseDto | null;
+  // TODO(mstr): Make it not optional after all the canisters are upgraded.
+  topics?: CachedListTopicsResponseDto;
 };
