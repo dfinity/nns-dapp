@@ -7,23 +7,26 @@ import type {
   SnsSummaryMetadata,
   SnsSummarySwap,
 } from "$lib/types/sns";
-import type {
-  CachedDefaultFolloweesDto,
-  CachedFunctionTypeDto,
-  CachedLifecycleResponseDto,
-  CachedListTopicsResponseDto,
-  CachedNervousFunctionDto,
-  CachedNervousSystemParametersDto,
-  CachedNeuronsFundParticipationConstraints,
-  CachedSnsDto,
-  CachedSnsMetadataDto,
-  CachedSnsSwapDerivedDto,
-  CachedSnsSwapDto,
-  CachedSnsTokenMetadataDto,
-  CachedSwapInitParamsDto,
-  CachedSwapParamsDto,
-  CachedVotingRewardsParametersDto,
-  TopicInfoDto,
+import {
+  type CachedDefaultFolloweesDto,
+  type CachedFunctionTypeDto,
+  type CachedLifecycleResponseDto,
+  type CachedListTopicsResponseDto,
+  type CachedNervousFunctionDto,
+  type CachedNervousSystemParametersDto,
+  type CachedNeuronsFundParticipationConstraints,
+  type CachedSnsDto,
+  type CachedSnsMetadataDto,
+  type CachedSnsSwapDerivedDto,
+  type CachedSnsSwapDto,
+  type CachedSnsTokenMetadataDto,
+  type CachedSwapInitParamsDto,
+  type CachedSwapParamsDto,
+  type CachedVotingRewardsParametersDto,
+  type ListTopicsResponseWithUnknown,
+  type TopicInfoDto,
+  type TopicInfoWithUnknown,
+  type UnknownTopic,
 } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
@@ -42,11 +45,7 @@ import type {
   SnsSwapInit,
   SnsVotingRewardsParameters,
 } from "@dfinity/sns";
-import type {
-  ListTopicsResponse,
-  Topic,
-  TopicInfo,
-} from "@dfinity/sns/dist/candid/sns_governance";
+import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import {
   candidNumberArrayToBigInt,
   isNullish,
@@ -551,7 +550,7 @@ export const convertDtoToSnsSummary = ({
     : undefined;
 };
 
-export const convertDtoToTopic = (topic: string): Topic => {
+export const convertDtoToTopic = (topic: string): Topic | UnknownTopic => {
   switch (topic) {
     case "DappCanisterManagement":
       return { DappCanisterManagement: null };
@@ -567,10 +566,10 @@ export const convertDtoToTopic = (topic: string): Topic => {
       return { Governance: null };
     case "SnsFrameworkManagement":
       return { SnsFrameworkManagement: null };
-    default:
-      // TODO(mstr): Evaluate returning null / {UnknownTopic: null} instead of throwing an error.
-      throw new Error(`Unknown topic: ${topic}`);
   }
+
+  console.error("Unknown topic:", topic);
+  return { UnknownTopic: null };
 };
 
 export const convertDtoTopicInfo = ({
@@ -580,21 +579,19 @@ export const convertDtoTopicInfo = ({
   native_functions,
   custom_functions,
   is_critical,
-}: TopicInfoDto): TopicInfo => {
-  return {
-    topic: toNullable(convertDtoToTopic(topic)),
-    name: toNullable(name),
-    description: toNullable(description),
-    native_functions: toNullable(native_functions.map(convertNervousFunction)),
-    custom_functions: toNullable(custom_functions.map(convertNervousFunction)),
-    is_critical: toNullable(is_critical),
-  };
-};
+}: TopicInfoDto): TopicInfoWithUnknown => ({
+  topic: toNullable(convertDtoToTopic(topic)),
+  name: toNullable(name),
+  description: toNullable(description),
+  native_functions: toNullable(native_functions.map(convertNervousFunction)),
+  custom_functions: toNullable(custom_functions.map(convertNervousFunction)),
+  is_critical: toNullable(is_critical),
+});
 
 export const convertDtoToListTopicsResponse = ({
   topics,
   uncategorized_functions,
-}: CachedListTopicsResponseDto): ListTopicsResponse => ({
+}: CachedListTopicsResponseDto): ListTopicsResponseWithUnknown => ({
   topics: toNullable(topics.map(convertDtoTopicInfo)),
   uncategorized_functions: toNullable(
     uncategorized_functions.map(convertNervousFunction)

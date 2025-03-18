@@ -1,4 +1,8 @@
 import type { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
+import type {
+  ListTopicsResponse,
+  TopicInfo,
+} from "@dfinity/sns/dist/candid/sns_governance";
 
 type CanisterIds = {
   root_canister_id: string;
@@ -230,6 +234,24 @@ export type CachedListTopicsResponseDto = {
   topics: TopicInfoDto[];
   uncategorized_functions: CachedNervousFunctionDto[];
 };
+
+export type UnknownTopic = {
+  UnknownTopic: null;
+};
+
+export const isUnknownTopic = (
+  topic: Topic | UnknownTopic
+): topic is UnknownTopic => "UnknownTopic" in topic;
+
+// Same as TopicInfo but with the topic field being either a Topic or UnknownTopic
+export interface TopicInfoWithUnknown extends Omit<TopicInfo, "topic"> {
+  topic: [] | [Topic | UnknownTopic];
+}
+
+export interface ListTopicsResponseWithUnknown
+  extends Omit<ListTopicsResponse, "topics"> {
+  topics: [] | [Array<TopicInfoWithUnknown>];
+}
 
 // Export for testing purposes
 export type CachedSnsDto = {
