@@ -1,11 +1,8 @@
 <script lang="ts">
   import SelectAccountDropdown from "$lib/components/accounts/SelectAccountDropdown.svelte";
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import { KeyValuePair } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import { nonNullish, TokenAmountV2, type Token } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
   export let canSelectSource: boolean;
@@ -67,6 +64,7 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "@dfinity/gix-components/dist/styles/mixins/text";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
@@ -92,5 +90,6 @@
   .account-name {
     word-break: break-all;
     @include text.clamp(2);
+    @include fonts.small(true);
   }
 </style>

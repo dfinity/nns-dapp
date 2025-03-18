@@ -24,7 +24,7 @@
   const setMax = () => dispatch("nnsMax");
 </script>
 
-<InputWithError
+<Input
   testId="amount-input-component"
   placeholderLabelKey="core.amount"
   name="amount"

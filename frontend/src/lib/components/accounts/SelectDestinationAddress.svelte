@@ -62,6 +62,7 @@
 <div data-tid="select-destination">
   <div class="title">
     <p class="label">{$i18n.accounts.destination}</p>
+
     {#if showToggle}
       <div class="toggle">
         <p>{$i18n.accounts.select}</p>
