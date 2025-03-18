@@ -206,7 +206,7 @@
     .description {
       margin: 0;
       color: var(--color-text-secondary);
-      flex-grow: 1;
+      height: calc(2 * var(--line-height-standard) * 1rem);
 
       @include text.clamp(2);
     }
