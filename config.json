@@ -94,7 +94,8 @@
           "ENABLE_USD_VALUES": true,
           "ENABLE_USD_VALUES_FOR_NEURONS": true,
           "ENABLE_PORTFOLIO_PAGE": true,
-          "ENABLE_IMPORT_TOKEN_BY_URL": true
+          "ENABLE_IMPORT_TOKEN_BY_URL": true,
+          "ENABLE_SNS_TOPICS": false
         }
       }
     },
@@ -110,7 +111,7 @@
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2025-03-05",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2025-02-27_03-09-disable-best-effort-messaging",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2025-03-14_03-10-base",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-03-06_03-10-disable-best-effort-messaging"
       },
       "packtool": ""
