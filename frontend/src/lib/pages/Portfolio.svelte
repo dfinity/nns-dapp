@@ -161,7 +161,7 @@
       />
     {/if}
 
-    {#if launchpadCards.length > 0}
+    {#if cards.length > 0}
       <StackedCards {cards} />
     {/if}
 
