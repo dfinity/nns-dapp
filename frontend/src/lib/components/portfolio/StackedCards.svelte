@@ -27,7 +27,7 @@
     if (intervalId) clearInterval(intervalId);
 
     if (cards.length > 1) {
-      intervalId = window.setInterval(nextCard, 500000000000000);
+      intervalId = window.setInterval(nextCard, 5000);
     }
   };
 

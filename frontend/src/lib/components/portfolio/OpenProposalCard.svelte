@@ -3,7 +3,7 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { durationUntilDeadline } from "$lib/utils/date.utils";
+  import { nowInSeconds } from "$lib/utils/date.utils";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
   import {
     IconClockNoFill,
@@ -21,9 +21,8 @@
   $: console.log(proposal);
 
   let durationTillDeadline: bigint;
-  $: durationTillDeadline = durationUntilDeadline(
-    proposalInfo.deadlineTimestampSeconds ?? 0n
-  );
+  $: durationTillDeadline =
+    proposalInfo?.deadlineTimestampSeconds ?? 0n - BigInt(nowInSeconds());
 
   let href: string;
   $: href = nonNullish(proposalInfo.id)
