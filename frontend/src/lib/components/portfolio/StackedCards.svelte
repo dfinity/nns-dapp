@@ -106,13 +106,13 @@
     .dots-container {
       display: flex;
       justify-content: center;
-      gap: var(--padding-1_5x);
+      gap: var(--padding-2x);
       position: absolute;
       bottom: var(--padding-1_5x);
 
       .dot {
-        width: var(--padding-1_5x);
-        height: var(--padding-1_5x);
+        width: 10px;
+        height: 10px;
         border-radius: 50%;
         // TODO(yhabib): Reconciliate colors with GIX
         background-color: rgba(#3d4d99, 0.35);
