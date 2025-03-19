@@ -56,7 +56,7 @@ describe("sns-topics utils", () => {
     description: ["Unknown topic desctiption"],
     custom_functions: [[genericNsFunction]],
   };
-  const completelyIUnknownTopicInfo: TopicInfoWithUnknown = {
+  const completelyUnknownTopicInfo: TopicInfoWithUnknown = {
     native_functions: [[nativeNsFunction]],
     topic: [
       {
@@ -69,7 +69,7 @@ describe("sns-topics utils", () => {
     custom_functions: [[]],
   };
   const listTopics: ListTopicsResponseWithUnknown = {
-    topics: [[knownTopicInfo, completelyIUnknownTopicInfo]],
+    topics: [[knownTopicInfo, completelyUnknownTopicInfo]],
     uncategorized_functions: [],
   };
 
@@ -108,7 +108,7 @@ describe("sns-topics utils", () => {
     });
 
     it('should return "UnknownTopic" key for unknown topics', () => {
-      expect(getSnsTopicInfoKey(completelyIUnknownTopicInfo)).toBe(
+      expect(getSnsTopicInfoKey(completelyUnknownTopicInfo)).toBe(
         "UnknownTopic"
       );
     });
