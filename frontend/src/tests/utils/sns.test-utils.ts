@@ -3,6 +3,7 @@ import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
+  CachedListTopicsResponseDto,
   CachedNervousSystemParametersDto,
   CachedSnsDto,
 } from "$lib/types/sns-aggregator";
@@ -35,6 +36,7 @@ export const setSnsProjects = (
     maxDissolveDelayBonusPercentage?: number;
     maxAgeBonusPercentage?: number;
     neuronMinimumStakeE8s?: bigint;
+    topics?: CachedListTopicsResponseDto;
   }[]
 ) => {
   const aggregatorProjects = params.map((params, index) => {
@@ -62,6 +64,7 @@ export const setSnsProjects = (
       maxDissolveDelayBonusPercentage: params.maxDissolveDelayBonusPercentage,
       maxAgeBonusPercentage: params.maxAgeBonusPercentage,
       neuronMinimumStakeE8s: params.neuronMinimumStakeE8s,
+      topics: params.topics,
     });
   });
   snsLifecycleStore.reset();
