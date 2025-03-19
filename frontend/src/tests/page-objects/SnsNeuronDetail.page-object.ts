@@ -11,6 +11,8 @@ import { SnsNeuronVotingPowerSectionPo } from "$tests/page-objects/SnsNeuronVoti
 import { SummaryPo } from "$tests/page-objects/Summary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { FollowSnsNeuronsByTopicModalPo } from "./FollowSnsNeuronsByTopicModal.page-object";
+import { FollowSnsNeuronsModalPo } from "./FollowSnsNeuronsModal.page-object";
 
 export class SnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "sns-neuron-detail-component";
@@ -72,6 +74,14 @@ export class SnsNeuronDetailPo extends BasePageObject {
 
   getAddSnsHotkeyModalPo(): AddSnsHotkeyModalPo {
     return AddSnsHotkeyModalPo.under(this.root);
+  }
+
+  getFollowSnsNeuronsModalPo(): FollowSnsNeuronsModalPo {
+    return FollowSnsNeuronsModalPo.under(this.root);
+  }
+
+  getFollowSnsNeuronsByTopicModalPo(): FollowSnsNeuronsByTopicModalPo {
+    return FollowSnsNeuronsByTopicModalPo.under(this.root);
   }
 
   async addHotkey(principal: string): Promise<void> {
