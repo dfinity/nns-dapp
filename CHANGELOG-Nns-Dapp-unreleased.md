@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Simplified error message display for better readability in form inputs.
 * Added USD equivalent values to amount inputs.
 * Added frontend validation staking ICP.
+* Added client-side validation for staking ICP.
 
 #### Changed
 
