@@ -1,9 +1,9 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
+import type { RootCanisterIdText } from "$lib/types/sns";
 import type { ListTopicsResponseWithUnknown } from "$lib/types/sns-aggregator";
 import { convertDtoToListTopicsResponse } from "$lib/utils/sns-aggregator-converters.utils";
 import { isNullish } from "@dfinity/utils";
 import { type Readable } from "svelte/store";
-import type { RootCanisterIdText } from "../types/sns";
 
 export interface SnsParametersStore {
   [rootCanisterId: RootCanisterIdText]:
