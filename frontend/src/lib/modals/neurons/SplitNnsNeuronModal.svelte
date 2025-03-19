@@ -89,7 +89,6 @@
         token: ICPToken,
       })}
     />
-    />
 
     <div class="toolbar">
       <button class="secondary" on:click={close}>
