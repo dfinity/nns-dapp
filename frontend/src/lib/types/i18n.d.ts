@@ -41,6 +41,7 @@ interface I18nCore {
   add: string;
   not_applicable: string;
   transaction_fee: string;
+  balance: string;
 }
 
 interface I18nError {
