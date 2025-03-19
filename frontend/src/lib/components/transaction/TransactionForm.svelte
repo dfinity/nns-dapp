@@ -31,7 +31,6 @@
     type Token,
   } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import TransactionFiatValue from "./TransactionFiatValue.svelte";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -137,6 +136,8 @@
   // TODO: if network changes, reset destination address or display error?
   let balance;
   $: balance = selectedAccount?.balanceUlps;
+  // TODO(GIX-1332): if destination address is selected, select corresponding network
+  // TODO: if network changes, reset destination address or display error?
 </script>
 
 <form on:submit|preventDefault={goNext} data-tid="transaction-step-1">
@@ -208,14 +209,11 @@
   }
 
   .amount {
-    margin-top: var(--padding);
-    --input-error-wrapper-padding: 0 0 var(--padding-2x);
     display: flex;
     flex-direction: column;
     gap: var(--padding);
 
-    .bottom {
-      padding: var(--padding-2x);
-    }
+    margin-top: var(--padding);
+    --input-error-wrapper-padding: 0 0 var(--padding-2x);
   }
 </style>

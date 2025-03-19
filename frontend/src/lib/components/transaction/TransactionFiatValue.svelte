@@ -40,16 +40,18 @@
   <span class="fiat">
     ${usdValueFormatted}
   </span>
-  <span class="balance">
-    Balance:
-    <AmountDisplay
-      singleLine
-      amount={TokenAmountV2.fromUlps({
-        amount: balance ?? BigInt(0),
-        token,
-      })}
-    />
-  </span>
+  {#if nonNullish(balance)}
+    <span class="balance">
+      Balance:
+      <AmountDisplay
+        singleLine
+        amount={TokenAmountV2.fromUlps({
+          amount: balance,
+          token,
+        })}
+      />
+    </span>
+  {/if}
 </div>
 
 <style lang="scss">
