@@ -13,7 +13,10 @@ export interface SnsParametersStore {
 
 /**
  * A store that contains the sns nervous system topics for each project.
- * Contains undefined if the topics are not supported by an Sns.
+/**
+ * A store containing SNS topics for each project.
+ * Returns undefined for projects where topics are not supported.
+ */
  */
 export const snsTopicsStore: Readable<SnsParametersStore> =
   snsAggregatorDerived((sns) =>
