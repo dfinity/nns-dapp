@@ -1,7 +1,6 @@
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UnknownTopic } from "$lib/types/sns-aggregator";
-import type { UnionToIntersection } from "$lib/utils/dev.utils";
 import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
@@ -108,4 +107,7 @@ export interface SnsTicket {
   ticket?: SnsSwapTicket;
 }
 
-export type SnsTopicKey = keyof UnionToIntersection<Topic | UnknownTopic>;
+// "DappCanisterManagement" | "DaoCommunitySettings" | ...
+export type SnsTopicKey = keyof {
+  [K in Topic | UnknownTopic as keyof K]: true;
+};

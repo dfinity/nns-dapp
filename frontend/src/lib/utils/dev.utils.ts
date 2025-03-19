@@ -39,20 +39,3 @@ export const digestText = async (text: string): Promise<string> => {
     .join("");
   return hashHex;
 };
-
-/**
- * Convert a union type to an intersection type.
- *
- * @example
- * type Topic =
- * | { DappCanisterManagement: null }
- * | { DaoCommunitySettings: null };
- *
- * // "DappCanisterManagement" | "DaoCommunitySettings"
- * type TopicKeys = keyof UnionToIntersection<Topic>;
- */
-export type UnionToIntersection<U> = (
-  U extends unknown ? (k: U) => void : never
-) extends (k: infer I) => void
-  ? I
-  : never;
