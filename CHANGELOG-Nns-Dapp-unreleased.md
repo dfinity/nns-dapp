@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Simplified SNS neuron display by making voting power details expandable on demand
 * Added visual feedback while loading exchange rates in canister top-up form.
 * Simplified error message display for better readability in form inputs.
+* Added USD equivalent values to ICP amount inputs.
 
 #### Changed
 
