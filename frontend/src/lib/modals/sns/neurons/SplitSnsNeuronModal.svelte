@@ -94,20 +94,13 @@
   >
   <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
-
     <AmountInput bind:amount on:nnsMax={onMax} {max} />
-
-    <div>
-      <p class="label">{$i18n.neurons.transaction_fee}</p>
-      <p>
-        <Value>
-          {formatTokenE8s({
-            value: transactionFee,
-          })}
-        </Value>
-        {token.symbol}
-      </p>
-    </div>
+    <TransactionFormFee
+      transactionFee={TokenAmount.fromE8s({
+        amount: transactionFee,
+        token,
+      })}
+    />
 
     <div class="toolbar">
       <button class="secondary" on:click={close}>
