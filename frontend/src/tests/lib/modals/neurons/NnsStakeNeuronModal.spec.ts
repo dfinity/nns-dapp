@@ -29,6 +29,7 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsStakeNeuronModalPo } from "$tests/page-objects/NnsStakeNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -323,6 +324,25 @@ describe("NnsStakeNeuronModal", () => {
 
       await runResolvedPromises();
       expect(onClose).toBeCalledTimes(1);
+    });
+
+    it("should display the amount in fiat value", async () => {
+      setIcpPrice(10);
+
+      const po = await renderComponent({});
+      const amountInputPo = po.getNnsStakeNeuronPo().getAmountInputPo();
+
+      expect(await amountInputPo.getAmount()).toBe("");
+      expect(
+        await amountInputPo.getAmountInputFiatValuePo().getFiatValue()
+      ).toBe("$0.00");
+
+      await amountInputPo.enterAmount(100);
+
+      expect(await amountInputPo.getAmount()).toEqual("100");
+      expect(
+        await amountInputPo.getAmountInputFiatValuePo().getFiatValue()
+      ).toBe("$1’000.00");
     });
 
     describe("public neuron checkbox", () => {

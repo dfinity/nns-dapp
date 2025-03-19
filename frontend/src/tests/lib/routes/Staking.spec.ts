@@ -27,6 +27,10 @@ import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import {
+  setIcpPrice,
+  setIcpSwapUsdPrices,
+} from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
@@ -208,6 +212,28 @@ describe("Staking", () => {
       await vi.waitFor(async () => expect(await modal.isPresent()).toBe(false));
       await runResolvedPromises();
       expect(get(pageStore).path).toBe(AppPath.Staking);
+    });
+
+    it("should display the amount in fiat value", async () => {
+      setIcpPrice(10);
+
+      const po = renderComponent();
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      await rows[0].getStakeButtonPo().click();
+      const modal = po.getNnsStakeNeuronModalPo();
+      const amountInputPo = modal.getNnsStakeNeuronPo().getAmountInputPo();
+
+      expect(await amountInputPo.getAmount()).toBe("");
+      expect(
+        await amountInputPo.getAmountInputFiatValuePo().getFiatValue()
+      ).toBe("$0.00");
+
+      await amountInputPo.enterAmount(200);
+
+      expect(await amountInputPo.getAmount()).toEqual("200");
+      expect(
+        await amountInputPo.getAmountInputFiatValuePo().getFiatValue()
+      ).toBe("$2’000.00");
     });
   });
 
@@ -394,6 +420,30 @@ describe("Staking", () => {
       await form.enterAmount(snsMinimumStake);
       expect(await form.getAmountInputPo().hasError()).toBe(false);
       expect(await form.isContinueButtonEnabled()).toBe(true);
+    });
+
+    it("should display the amount in fiat value", async () => {
+      setIcpSwapUsdPrices({
+        [snsCanisterId.toText()]: 10,
+      });
+
+      const po = renderComponent();
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      await rows[1].getStakeButtonPo().click();
+      const modal = po.getSnsStakeNeuronModalPo();
+      const amountInputPo = modal.getTransactionFormPo().getAmountInputPo();
+
+      expect(await amountInputPo.getAmount()).toBe("");
+      expect(
+        await amountInputPo.getAmountInputFiatValuePo().getFiatValue()
+      ).toBe("$0.00");
+
+      await amountInputPo.enterAmount(200);
+
+      expect(await amountInputPo.getAmount()).toEqual("200");
+      expect(
+        await amountInputPo.getAmountInputFiatValuePo().getFiatValue()
+      ).toBe("$2’000.00");
     });
   });
 
