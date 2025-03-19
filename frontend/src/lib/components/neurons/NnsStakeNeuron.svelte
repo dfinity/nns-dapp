@@ -90,11 +90,7 @@
 
   <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />
 
-  <TransactionFormFee transactionFee={$mainTransactionFeeStoreAsToken}>
-    <svelte:fragment slot="label"
-      >{$i18n.neurons.transaction_fee}</svelte:fragment
-    >
-  </TransactionFormFee>
+  <TransactionFormFee transactionFee={$mainTransactionFeeStoreAsToken} />
 
   <Separator spacing="small" />
 

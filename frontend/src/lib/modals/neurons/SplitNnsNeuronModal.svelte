@@ -1,5 +1,6 @@
 <script lang="ts">
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
+  import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { mainTransactionFeeE8sStore } from "$lib/derived/main-transaction-fee.derived";
@@ -12,13 +13,10 @@
     isValidInputAmount,
     neuronStake,
   } from "$lib/utils/neuron.utils";
-  import {
-    formattedTransactionFeeICP,
-    ulpsToNumber,
-  } from "$lib/utils/token.utils";
-  import { Modal, Value, busy } from "@dfinity/gix-components";
+  import { ulpsToNumber } from "$lib/utils/token.utils";
+  import { Modal, busy } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+  import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
@@ -84,16 +82,13 @@
   >
   <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
-
-    <AmountInput bind:amount on:nnsMax={onMax} {max} />
-
-    <div>
-      <p class="label">{$i18n.neurons.transaction_fee}</p>
-      <p>
-        <Value>{formattedTransactionFeeICP($mainTransactionFeeE8sStore)}</Value>
-        ICP
-      </p>
-    </div>
+    <AmountInput bind:amount on:nnsMax={onMax} {max} token={ICPToken} />
+    <TransactionFormFee
+      transactionFee={TokenAmount.fromE8s({
+        amount: BigInt($mainTransactionFeeE8sStore),
+        token: ICPToken,
+      })}
+    />
 
     <div class="toolbar">
       <button class="secondary" on:click={close}>
