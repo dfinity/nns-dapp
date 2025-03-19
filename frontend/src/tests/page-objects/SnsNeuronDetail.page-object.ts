@@ -1,4 +1,6 @@
 import { AddSnsHotkeyModalPo } from "$tests/page-objects/AddSnsHotkeyModal.page-object";
+import { FollowSnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowSnsNeuronsByTopicModal.page-object";
+import { FollowSnsNeuronsModalPo } from "$tests/page-objects/FollowSnsNeuronsModal.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { SnsIncreaseStakeNeuronModalPo } from "$tests/page-objects/SnsIncreaseStakeNeuronModal.page-object";
 import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvancedSection.page-object";
@@ -11,8 +13,6 @@ import { SnsNeuronVotingPowerSectionPo } from "$tests/page-objects/SnsNeuronVoti
 import { SummaryPo } from "$tests/page-objects/Summary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { FollowSnsNeuronsByTopicModalPo } from "./FollowSnsNeuronsByTopicModal.page-object";
-import { FollowSnsNeuronsModalPo } from "./FollowSnsNeuronsModal.page-object";
 
 export class SnsNeuronDetailPo extends BasePageObject {
   private static readonly TID = "sns-neuron-detail-component";
