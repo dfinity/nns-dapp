@@ -53,7 +53,7 @@ describe("sns-topics utils", () => {
     ],
     is_critical: [true],
     name: ["Unknown topic name"],
-    description: ["Unknown topic desctiption"],
+    description: ["Unknown topic description"],
     custom_functions: [[genericNsFunction]],
   };
   const completelyUnknownTopicInfo: TopicInfoWithUnknown = {
@@ -65,7 +65,7 @@ describe("sns-topics utils", () => {
     ],
     is_critical: [true],
     name: ["Unknown topic name"],
-    description: ["Unknown topic desctiption"],
+    description: ["Unknown topic description"],
     custom_functions: [[]],
   };
   const listTopics: ListTopicsResponseWithUnknown = {
