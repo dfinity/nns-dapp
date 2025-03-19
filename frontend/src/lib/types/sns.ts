@@ -1,5 +1,7 @@
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type { UnknownTopic } from "$lib/types/sns-aggregator";
+import type { UnionToIntersection } from "$lib/utils/dev.utils";
 import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
@@ -11,6 +13,7 @@ import type {
   SnsSwapInit,
   SnsSwapTicket,
 } from "@dfinity/sns";
+import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import type { FinalizeSwapResponse } from "@dfinity/sns/dist/candid/sns_swap";
 
 export type RootCanisterId = Principal;
@@ -104,3 +107,5 @@ export interface SnsTicket {
   rootCanisterId: Principal;
   ticket?: SnsSwapTicket;
 }
+
+export type SnsTopicKey = keyof UnionToIntersection<Topic | UnknownTopic>;
