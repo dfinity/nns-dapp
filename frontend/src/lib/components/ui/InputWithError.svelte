@@ -1,6 +1,5 @@
 <script lang="ts">
   import Input from "$lib/components/ui/Input.svelte";
-  import { IconInfo } from "@dfinity/gix-components";
 
   // Same props as Input
   export let name: string;
@@ -50,7 +49,6 @@
 
   {#if errorMessage || warningMessage}
     <p class="error-message" data-tid="input-error-message">
-      <IconInfo />
       <span>
         {errorMessage ?? warningMessage}
       </span>
@@ -84,13 +82,5 @@
     gap: var(--padding-0_5x);
 
     color: var(--negative-emphasis);
-
-    span {
-      color: var(--background-contrast);
-    }
-
-    @include media.min-width(medium) {
-      padding: 0 var(--padding-2x);
-    }
   }
 </style>
