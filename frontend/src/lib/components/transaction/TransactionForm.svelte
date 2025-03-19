@@ -104,9 +104,6 @@
       });
       errorMessage = validateAmount({ amount, selectedAccount });
     } catch (error: unknown) {
-      // errorMessage = "Insufficient Balance";
-      // return;
-
       if (error instanceof NotEnoughAmountError) {
         errorMessage = $i18n.error.insufficient_funds;
         return;

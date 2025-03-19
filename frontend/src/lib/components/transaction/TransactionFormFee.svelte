@@ -37,7 +37,7 @@
 
 <div data-tid="transaction-form-fee">
   <p class="fee label no-margin">
-    <slot name="label">{$i18n.accounts.transaction_fee}</slot>
+    <slot name="label">{$i18n.core.transaction_fee}</slot>
   </p>
 
   <p class="value">

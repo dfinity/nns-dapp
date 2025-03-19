@@ -36,7 +36,8 @@
     "collapse_all": "Collapse All",
     "or": "or",
     "add": "Add",
-    "not_applicable": "N/A"
+    "not_applicable": "N/A",
+    "transaction_fee": "Transaction Fee"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -248,7 +249,6 @@
     "to_address": "To Address",
     "hardware_wallet_text": "Ledger device",
     "token_transaction_fee": "$tokenSymbol Ledger Fee",
-    "transaction_fee": "Transaction Fee",
     "review_transaction": "Review Transaction",
     "you_are_sending": "You are sending",
     "current_balance": "Current balance",
