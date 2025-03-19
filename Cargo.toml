@@ -7,7 +7,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "2.0.107"
+version = "2.0.108"
 
 [workspace.dependencies]
 ic-cdk = "0.17.1"
@@ -15,23 +15,23 @@ ic-cdk-macros = "0.17.0"
 ic-cdk-timers = "0.11.0"
 ic-management-canister-types = "0.1.0"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-06_03-10-disable-best-effort-messaging" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-14_03-10-base" }
 
 [profile.release]
 lto = false
