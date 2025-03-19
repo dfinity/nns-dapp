@@ -40,8 +40,6 @@ interface I18nCore {
   or: string;
   add: string;
   not_applicable: string;
-  transaction_fee: string;
-  balance: string;
 }
 
 interface I18nError {
@@ -260,6 +258,7 @@ interface I18nAccounts {
   to_address: string;
   hardware_wallet_text: string;
   token_transaction_fee: string;
+  transaction_fee: string;
   review_transaction: string;
   you_are_sending: string;
   current_balance: string;
