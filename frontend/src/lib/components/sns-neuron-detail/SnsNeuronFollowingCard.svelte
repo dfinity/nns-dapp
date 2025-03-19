@@ -23,6 +23,8 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
+  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
+  import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -60,6 +62,12 @@
     nonNullish(neuron) &&
     neuron.followees.length > 0 &&
     isNullish($nsFunctions);
+
+  let isFollowByTopic: boolean;
+  $: isFollowByTopic =
+    $ENABLE_SNS_TOPICS &&
+    nonNullish(rootCanisterId) &&
+    nonNullish($snsTopicsStore[rootCanisterId?.toText()]);
 </script>
 
 <CardInfo noMargin testId="sns-neuron-following-card-component">
@@ -87,7 +95,7 @@
   <!-- TS doesn't understand that neuron is defined if allowedToManageFollows is true -->
   {#if allowedToManageFollows && nonNullish(neuron) && nonNullish(rootCanisterId)}
     <div class="actions">
-      <FollowSnsNeuronsButton />
+      <FollowSnsNeuronsButton {isFollowByTopic} />
     </div>
   {/if}
 </CardInfo>
