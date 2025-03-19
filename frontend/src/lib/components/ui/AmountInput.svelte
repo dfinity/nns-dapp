@@ -31,7 +31,7 @@
   bind:value={inputAmount}
   {max}
   inputType="currency"
-  decimals={Math.min(token?.decimals, ICP_DISPLAYED_DECIMALS_DETAILED)}
+  decimals={Math.min(token.decimals, ICP_DISPLAYED_DECIMALS_DETAILED)}
   {errorMessage}
   on:nnsInput={onInput}
 >

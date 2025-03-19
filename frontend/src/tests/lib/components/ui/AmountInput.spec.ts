@@ -4,12 +4,15 @@ import en from "$tests/mocks/i18n.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { AmountInputPo } from "$tests/page-objects/AmountInput.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
+import { ICPToken, type Token } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/svelte";
 
 describe("AmountInput", () => {
-  const props = { amount: 10.25, max: 11 };
+  const props = { amount: 10.25, max: 11, token: ICPToken };
 
+  // TODO(yhabib): Clean up tests and re-use renderCompont
   it("should render an input", () => {
     const { container } = render(AmountInput, { props });
 
@@ -41,13 +44,15 @@ describe("AmountInput", () => {
       fireEvent.click(button);
     }));
 
-  const renderComponent = (props) => {
+  const renderComponent = (props: { token: Token }) => {
     const { container } = render(AmountInput, props);
     return AmountInputPo.under(new JestPageObjectElement(container));
   };
 
   it("should allow at most 8 decimals", async () => {
-    const po = renderComponent({});
+    const po = renderComponent({
+      token: ICPToken,
+    });
 
     // 8 decimals works
     await po.getTextInput().typeText("0.12345678");
@@ -82,5 +87,20 @@ describe("AmountInput", () => {
     // typing one more decimal does not change the input
     await po.getTextInput().typeText("0.123456789");
     expect(await po.getAmount()).toBe("0.12345678");
+  });
+
+  it("should display amount in fiat value", async () => {
+    setIcpPrice(10);
+    const po = renderComponent({ token: ICPToken });
+
+    expect(await po.getAmount()).toEqual("");
+    expect(await po.getAmountInputFiatValuePo().getFiatValue()).toBe("$0.00");
+
+    await po.enterAmount(100);
+
+    expect(await po.getAmount()).toEqual("100");
+    expect(await po.getAmountInputFiatValuePo().getFiatValue()).toBe(
+      "$1’000.00"
+    );
   });
 });
