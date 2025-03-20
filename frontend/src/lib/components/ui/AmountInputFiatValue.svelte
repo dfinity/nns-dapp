@@ -1,6 +1,7 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import IcpExchangeRateInfoTooltip from "$lib/components/ui/IcpExchangeRateInfoTooltip.svelte";
+  import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { i18n } from "$lib/stores/i18n";
@@ -9,16 +10,30 @@
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
   import type { Principal } from "@dfinity/principal";
   import {
-    isNullish,
-    nonNullish,
-    TokenAmountV2,
-    type Token,
+      isNullish,
+      nonNullish,
+      TokenAmountV2,
+      type Token,
   } from "@dfinity/utils";
 
   export let amount: number = 0;
   export let balance: bigint | undefined = undefined;
   export let token: Token;
   export let errorState: boolean = false;
+
+  const safeTokenAmount = (
+    amount: number,
+    token: Token
+  ): TokenAmountV2 | undefined => {
+    try {
+      if (isNaN(amount) || !isFinite(amount)) {
+        return;
+      }
+      return TokenAmountV2.fromNumber({ amount, token });
+    } catch (_) {
+      return;
+    }
+  };
 
   let ledgerCanisterId: Principal | undefined;
   $: ledgerCanisterId = getLedgerCanisterIdFromUniverse($selectedUniverseStore);
@@ -31,14 +46,19 @@
       ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
       : undefined;
 
-  let tokens: TokenAmountV2;
-  $: tokens = TokenAmountV2.fromNumber({ amount, token });
+  let tokens: TokenAmountV2 | undefined;
+  $: tokens = safeTokenAmount(amount, token);
 
-  let usdValue: number;
-  $: usdValue = getUsdValue({ amount: tokens, tokenPrice }) ?? 0;
+  let usdValue: number | undefined;
+  $: usdValue =
+    nonNullish(tokens) && nonNullish(tokenPrice)
+      ? getUsdValue({ amount: tokens, tokenPrice })
+      : undefined;
 
   let usdValueFormatted: string;
-  $: usdValueFormatted = formatNumber(usdValue);
+  $: usdValueFormatted = nonNullish(usdValue)
+    ? formatNumber(usdValue)
+    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
   let hasError: boolean;
   $: hasError = $icpSwapUsdPricesStore === "error" || isNullish(tokenPrice);
@@ -74,6 +94,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   .wrapper {
     display: flex;
     flex-direction: column;
