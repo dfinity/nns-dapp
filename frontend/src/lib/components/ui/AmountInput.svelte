@@ -34,7 +34,6 @@
   decimals={Math.min(token.decimals, ICP_DISPLAYED_DECIMALS_DETAILED)}
   {errorMessage}
   on:nnsInput={onInput}
-  {errorMessage}
 >
   <span class="label" slot="label">{$i18n.core.amount}</span>
 
