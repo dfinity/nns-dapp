@@ -126,7 +126,7 @@
     dispatcher("nnsNext");
   };
 
-  let balance;
+  let balance: bigint | undefined;
   $: balance = selectedAccount?.balanceUlps;
 
   // TODO(GIX-1332): if destination address is selected, select corresponding network

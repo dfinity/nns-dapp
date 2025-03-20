@@ -74,7 +74,7 @@
 
   const close = () => dispatcher("nnsClose");
 
-  let balance;
+  let balance: bigint | undefined;
   $: balance = account?.balanceUlps;
 </script>
 
