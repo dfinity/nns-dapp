@@ -99,7 +99,7 @@ describe("AmountInputFiatValue", () => {
     );
   });
 
-  it.only("should show tooltip message with an error if tokenPrice is not available", async () => {
+  it("should show tooltip message with an error if tokenPrice is not available", async () => {
     setIcpPrice(0);
     const po = renderComponent({
       amount: 5,

@@ -67,8 +67,8 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .select-account {
     display: flex;
@@ -92,6 +92,5 @@
   .account-name {
     word-break: break-all;
     @include text.clamp(2);
-    @include fonts.small(true);
   }
 </style>
