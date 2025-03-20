@@ -432,9 +432,9 @@ jobs:
           }
       - name: Expect the upstream data to be retained over the upgrade
         run: |
-          ./scripts/sns/aggregator/get_stable_data
+          ./scripts/sns/aggregator/stream_slow_data
           expect=12
-          actual="$(jq '.sns_cache.upstream_data | length' stable_data.json)"
+          actual="$(jq 'length' slow.json)"
           (( expect == actual ))  || {
             echo ERROR: Expected to have $expect SNS in the aggregator upstream data but found $actual.
           }
