@@ -535,4 +535,17 @@ describe("CkBTCTransactionModal", () => {
       "$1’000.00"
     );
   });
+
+  it("should display the balance in amount input", async () => {
+    const po = await renderModalToPo();
+    const formPo = po.getTransactionFormPo();
+    const amountInputPo = formPo.getAmountInputPo();
+
+    expect(
+      await amountInputPo.getAmountInputFiatValuePo().getBalancePo().isPresent()
+    ).toBe(true);
+    expect(
+      await amountInputPo.getAmountInputFiatValuePo().getBalancePo().getAmount()
+    ).toBe("4'445'566.99");
+  });
 });

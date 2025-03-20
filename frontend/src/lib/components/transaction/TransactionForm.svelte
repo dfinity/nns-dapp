@@ -126,6 +126,9 @@
     dispatcher("nnsNext");
   };
 
+  let balance: bigint | undefined;
+  $: balance = selectedAccount?.balanceUlps;
+
   // TODO(GIX-1332): if destination address is selected, select corresponding network
   // TODO: if network changes, reset destination address or display error?
 </script>
@@ -135,7 +138,6 @@
     bind:selectedAccount
     {canSelectSource}
     {rootCanisterId}
-    {token}
     filterAccounts={filterSourceAccounts}
   />
 
@@ -161,7 +163,14 @@
   {/if}
 
   <div class="amount">
-    <AmountInput bind:amount on:nnsMax={addMax} {max} {errorMessage} {token} />
+    <AmountInput
+      bind:amount
+      on:nnsMax={addMax}
+      {max}
+      {errorMessage}
+      {token}
+      {balance}
+    />
 
     {#if showLedgerFee}
       <TransactionFormFee {transactionFee} />
