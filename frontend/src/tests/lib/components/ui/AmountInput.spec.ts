@@ -12,7 +12,7 @@ import { fireEvent } from "@testing-library/svelte";
 describe("AmountInput", () => {
   const props = { amount: 10.25, max: 11, token: ICPToken };
 
-  // TODO(yhabib): Clean up tests and re-use renderCompont
+  // TODO(yhabib): Clean up tests and re-use renderComponent
   it("should render an input", () => {
     const { container } = render(AmountInput, { props });
 
