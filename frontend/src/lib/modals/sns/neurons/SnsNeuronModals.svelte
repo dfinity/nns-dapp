@@ -123,7 +123,7 @@
   {/if}
 
   {#if type === "follow-by-topic" && nonNullish(rootCanisterId)}
-    <FollowSnsNeuronsByTopicModal on:nnsClose={close} />
+    <FollowSnsNeuronsByTopicModal {rootCanisterId} on:nnsClose={close} />
   {/if}
 
   {#if type === "stake-maturity" && nonNullish(rootCanisterId) && nonNullish(neuronId)}
