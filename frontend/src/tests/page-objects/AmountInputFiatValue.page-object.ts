@@ -1,6 +1,7 @@
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { TooltipIconPo } from "./TooltipIcon.page-object";
 
 export class AmountInputFiatValuePo extends BasePageObject {
   private static readonly TID = "amount-input-fiat-value-component";
@@ -26,5 +27,9 @@ export class AmountInputFiatValuePo extends BasePageObject {
   async hasError(): Promise<boolean> {
     const classes = await this.root.getClasses();
     return classes.includes("has-error");
+  }
+
+  getTooltipIconPo(): TooltipIconPo {
+    return TooltipIconPo.under(this.root);
   }
 }

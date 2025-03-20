@@ -1,4 +1,6 @@
 import AmountInputFiatValue from "$lib/components/ui/AmountInputFiatValue.svelte";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import en from "$tests/mocks/i18n.mock";
 import { AmountInputFiatValuePo } from "$tests/page-objects/AmountInputFiatValue.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
@@ -81,6 +83,49 @@ describe("AmountInputFiatValue", () => {
     });
 
     expect(await po.hasError()).toBe(false);
+  });
+
+  it("should show tooltip message with the source of the conversion", async () => {
+    setIcpPrice(10);
+    const po = renderComponent({
+      amount: 5,
+      token: ICPToken,
+      balance: BigInt(1000000000),
+      errorState: true,
+    });
+
+    expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
+      en.accounts.token_price_source
+    );
+  });
+
+  it.only("should show tooltip message with an error if tokenPrice is not available", async () => {
+    setIcpPrice(0);
+    const po = renderComponent({
+      amount: 5,
+      token: ICPToken,
+      balance: BigInt(1000000000),
+      errorState: false,
+    });
+
+    expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
+      en.accounts.token_price_error
+    );
+  });
+
+  it("should show tooltip message with an error if icp-swap is not responding", async () => {
+    icpSwapTickersStore.set("error");
+
+    const po = renderComponent({
+      amount: 5,
+      token: ICPToken,
+      balance: BigInt(1000000000),
+      errorState: false,
+    });
+
+    expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
+      en.accounts.token_price_error
+    );
   });
 
   it("should update USD value when amount changes", async () => {
