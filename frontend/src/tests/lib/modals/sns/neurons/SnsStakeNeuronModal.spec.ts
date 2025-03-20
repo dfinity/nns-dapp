@@ -148,4 +148,16 @@ describe("SnsStakeNeuronModal", () => {
       "$10’000.00"
     );
   });
+
+  it("should display the balance in amount input", async () => {
+    const po = await renderComponent();
+    const amountInputPo = po.getTransactionFormPo().getAmountInputPo();
+
+    expect(
+      await amountInputPo.getAmountInputFiatValuePo().getBalancePo().isPresent()
+    ).toBe(true);
+    expect(
+      await amountInputPo.getAmountInputFiatValuePo().getBalancePo().getAmount()
+    ).toBe("8'901'567.12");
+  });
 });

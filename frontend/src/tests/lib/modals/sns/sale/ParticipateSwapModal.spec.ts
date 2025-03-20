@@ -268,6 +268,24 @@ describe("ParticipateSwapModal", () => {
       ).toBe("$2’000.00");
     });
 
+    it("should display the balance in amount input", async () => {
+      const po = await renderSwapModalPo();
+      const amountInputPo = po.getTransactionFormPo().getAmountInputPo();
+
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
+          .isPresent()
+      ).toBe(true);
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
+          .getAmount()
+      ).toBe("1'234'567.89");
+    });
+
     describe("when user has non-zero swap commitment", () => {
       it("should move to the last step, enable button when accepting terms and call participate in swap service", async () => {
         const po = await renderEnter10ICPAndNext({

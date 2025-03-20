@@ -345,6 +345,24 @@ describe("NnsStakeNeuronModal", () => {
       ).toBe("$1’000.00");
     });
 
+    it("should display the balance in amount input", async () => {
+      const po = await renderComponent({});
+      const amountInputPo = po.getNnsStakeNeuronPo().getAmountInputPo();
+
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
+          .isPresent()
+      ).toBe(true);
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
+          .getAmount()
+      ).toBe("1'234'567.89");
+    });
+
     describe("public neuron checkbox", () => {
       it("should create a private neuron when checkbox is unchecked", async () => {
         const po = await renderComponent({});

@@ -235,6 +235,27 @@ describe("Staking", () => {
         await amountInputPo.getAmountInputFiatValuePo().getFiatValue()
       ).toBe("$2’000.00");
     });
+
+    it("should display the balance in amount input", async () => {
+      const po = renderComponent();
+      const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
+      await rows[0].getStakeButtonPo().click();
+      const modal = po.getNnsStakeNeuronModalPo();
+      const amountInputPo = modal.getNnsStakeNeuronPo().getAmountInputPo();
+
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
+          .isPresent()
+      ).toBe(true);
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
+          .getAmount()
+      ).toBe("1'234'567.89");
+    });
   });
 
   describe("Stake SNS token button", () => {
@@ -302,16 +323,35 @@ describe("Staking", () => {
       expect(queryIcrcBalanceSpy).not.toBeCalled();
       await rows[1].getStakeButtonPo().click();
       await runResolvedPromises();
+
+      const modal = po.getSnsStakeNeuronModalPo();
+      const amountInputPo = modal.getTransactionFormPo().getAmountInputPo();
+
       expect(
         await po
           .getSnsStakeNeuronModalPo()
           .getTransactionFormPo()
           .getTransactionFromAccountPo()
           .getAmountDisplayPo()
+          .isPresent()
+      ).toBe(false);
+
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
+          .isPresent()
+      ).toBe(true);
+
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
           .getAmount()
       ).toBe(snsAccountBalanceFormatted);
 
       expect(queryIcrcBalanceSpy).toBeCalledTimes(2);
+
       const expectedQueryBalanceParams = {
         account: {
           owner: mockIdentity.getPrincipal(),
