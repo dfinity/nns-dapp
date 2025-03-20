@@ -12,9 +12,6 @@ mod upstream;
 
 mod fast_scheduler;
 
-use std::collections::VecDeque;
-use std::time::Duration;
-
 use assets::{insert_favicon, insert_home_page, AssetHashes, HttpRequest, HttpResponse};
 use candid::{candid_method, export_service, CandidType, Principal};
 use fast_scheduler::FastScheduler;
@@ -24,6 +21,8 @@ use ic_cdk::api::management_canister::main::CanisterIdRecord;
 use ic_cdk_timers::{clear_timer, set_timer, set_timer_interval};
 use serde::Deserialize;
 use state::{Config, StableState, STATE};
+use std::collections::VecDeque;
+use std::time::Duration;
 use types::Icrc1Value;
 
 const IC_00: CanisterId = CanisterId::ic_00();
@@ -133,6 +132,39 @@ fn tail_log(limit: Option<u16>) -> String {
             .collect::<Vec<_>>()
             .join("\n")
     })
+}
+
+/// Generated with the help of `didc bind` from `sns_aggregator.did`.
+#[derive(CandidType, Deserialize)]
+pub struct ListSnsesRequest {}
+
+/// Generated with the help of `didc bind` from `sns_aggregator.did`.
+#[derive(CandidType, Deserialize)]
+pub struct ListSnsesResponse {
+    num_snses: Option<candid::Nat>,
+    sns_root_canister_ids: Option<Vec<Principal>>,
+}
+
+#[ic_cdk_macros::query]
+fn list_snses(_request: ListSnsesRequest) -> ListSnsesResponse {
+    let sns_root_canister_ids = STATE.with(|state| {
+        state
+            .stable
+            .borrow()
+            .sns_cache
+            .borrow()
+            .all_sns
+            .iter()
+            .filter_map(|(_, deployed_sns)| deployed_sns.root_canister_id)
+            .collect::<Vec<_>>()
+    });
+
+    let num_snses = candid::Nat::from(sns_root_canister_ids.len());
+
+    ListSnsesResponse {
+        num_snses: Some(num_snses),
+        sns_root_canister_ids: Some(sns_root_canister_ids),
+    }
 }
 
 /// Web server

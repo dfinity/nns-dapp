@@ -35,6 +35,13 @@ type DefiniteCanisterSettingsArgs = record {
   compute_allocation : nat;
 };
 
+type ListSnsesRequest = record {};
+
+type ListSnsesResponse = record {
+  num_snses : opt nat;
+  sns_root_canister_ids : opt vec principal;
+};
+
 service : (opt Config) -> {
   get_canister_status : () -> (CanisterStatusResultV2);
   get_canister_config : () -> (Config) query;
@@ -43,4 +50,5 @@ service : (opt Config) -> {
   reconfigure : (opt Config) -> ();
   stable_data : () -> (text) query;
   tail_log : (opt nat16) -> (text) query;
+  list_snses : (ListSnsesRequest) -> (ListSnsesResponse) query;
 }
