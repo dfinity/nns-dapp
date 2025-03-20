@@ -202,6 +202,10 @@
   }
 
   .amount {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+
     margin-top: var(--padding);
     --input-error-wrapper-padding: 0 0 var(--padding-2x);
   }

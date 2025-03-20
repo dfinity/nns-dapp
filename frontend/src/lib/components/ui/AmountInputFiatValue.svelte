@@ -1,5 +1,6 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import IcpExchangeRateInfoTooltip from "$lib/components/ui/IcpExchangeRateInfoTooltip.svelte";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { i18n } from "$lib/stores/i18n";
@@ -7,7 +8,12 @@
   import { getUsdValue } from "$lib/utils/token.utils";
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
   import type { Principal } from "@dfinity/principal";
-  import { nonNullish, TokenAmountV2, type Token } from "@dfinity/utils";
+  import {
+    isNullish,
+    nonNullish,
+    TokenAmountV2,
+    type Token,
+  } from "@dfinity/utils";
 
   export let amount: number = 0;
   export let balance: bigint | undefined = undefined;
@@ -33,6 +39,9 @@
 
   let usdValueFormatted: string;
   $: usdValueFormatted = formatNumber(usdValue);
+
+  let hasError: boolean;
+  $: hasError = $icpSwapUsdPricesStore === "error" || isNullish(tokenPrice);
 </script>
 
 <div
@@ -40,9 +49,12 @@
   class:has-error={errorState}
   data-tid="amount-input-fiat-value-component"
 >
-  <span class="fiat" data-tid="fiat-value">
-    ${usdValueFormatted}
-  </span>
+  <div class="fiat">
+    <span data-tid="fiat-value">
+      ${usdValueFormatted}
+    </span>
+    <IcpExchangeRateInfoTooltip {hasError} />
+  </div>
   {#if nonNullish(balance)}
     <span class="balance" data-tid="balance">
       <span>
@@ -66,23 +78,29 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding);
+
     @include media.min-width(medium) {
       flex-direction: row;
       justify-content: space-between;
     }
 
     .fiat {
-      color: var(--text-description);
       @include fonts.standard(true);
+
+      display: flex;
+      align-items: center;
+      gap: var(--padding-0_5x);
+      color: var(--text-description);
     }
 
     .balance {
+      @include fonts.standard(true);
+
       margin: 0;
       padding: 0;
       color: var(--text-description);
       --amount-color: var(--text-description);
       --amount-weight: var(--font-weight-bold);
-      @include fonts.standard(true);
     }
   }
 
