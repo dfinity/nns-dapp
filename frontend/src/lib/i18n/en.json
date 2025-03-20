@@ -208,7 +208,7 @@
   },
   "accounts": {
     "main": "Main",
-    "balance": "Available Balance",
+    "balance": "Balance",
     "send": "Send",
     "buy_icp": "Buy ICP",
     "buy_icp_banxa": "Buy ICP with Banxa",
