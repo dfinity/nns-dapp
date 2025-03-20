@@ -10,10 +10,10 @@
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
   import type { Principal } from "@dfinity/principal";
   import {
-      isNullish,
-      nonNullish,
-      TokenAmountV2,
-      type Token,
+    isNullish,
+    nonNullish,
+    TokenAmountV2,
+    type Token,
   } from "@dfinity/utils";
 
   export let amount: number = 0;
