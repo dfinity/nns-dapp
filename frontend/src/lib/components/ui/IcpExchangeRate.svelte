@@ -9,6 +9,7 @@
   export let icpPrice: number | undefined;
   export let hasError: boolean;
   export let absentValue: string = PRICE_NOT_AVAILABLE_PLACEHOLDER;
+  export let inline: boolean = false;
 
   let icpPriceFormatted: string;
   $: icpPriceFormatted = nonNullish(icpPrice)
@@ -21,14 +22,17 @@
   data-tid="icp-exchange-rate-component"
   class:has-error={hasError}
 >
-  <img
-    src={IC_LOGO_ROUNDED}
-    alt={$i18n.auth.ic_logo}
-    class="icp-icon desktop-only"
-  />
-  <span class="desktop-only">
-    1 {$i18n.core.icp} = $<span data-tid="icp-price">{icpPriceFormatted}</span>
-  </span>
+  {#if !inline}
+    <img
+      src={IC_LOGO_ROUNDED}
+      alt={$i18n.auth.ic_logo}
+      class="icp-icon desktop-only"
+    />
+    <span class="desktop-only">
+      1 {$i18n.core.icp} = $<span data-tid="icp-price">{icpPriceFormatted}</span
+      >
+    </span>
+  {/if}
   <TooltipIcon>
     {#if hasError}
       {$i18n.accounts.token_price_error}

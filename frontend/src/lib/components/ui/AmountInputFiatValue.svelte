@@ -8,11 +8,15 @@
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish, TokenAmountV2, type Token } from "@dfinity/utils";
+  import IcpExchangeRate from "./IcpExchangeRate.svelte";
 
   export let amount: number = 0;
   export let balance: bigint | undefined = undefined;
   export let token: Token;
   export let errorState: boolean = false;
+
+  let hasError: boolean;
+  $: hasError = $icpSwapUsdPricesStore === "error";
 
   let ledgerCanisterId: Principal | undefined;
   $: ledgerCanisterId = getLedgerCanisterIdFromUniverse($selectedUniverseStore);
@@ -40,8 +44,11 @@
   class:has-error={errorState}
   data-tid="amount-input-fiat-value-component"
 >
-  <span class="fiat" data-tid="fiat-value">
-    ${usdValueFormatted}
+  <span class="fiat">
+    <span data-tid="fiat-value">
+      ${usdValueFormatted}
+    </span>
+    <IcpExchangeRate icpPrice={tokenPrice} {hasError} inline={true} />
   </span>
   {#if nonNullish(balance)}
     <span class="balance" data-tid="balance">
@@ -72,17 +79,22 @@
     }
 
     .fiat {
-      color: var(--text-description);
       @include fonts.standard(true);
+
+      display: inline-flex;
+      align-items: center;
+      gap: var(--padding-0_5x);
+      color: var(--text-description);
     }
 
     .balance {
+      @include fonts.standard(true);
+
       margin: 0;
       padding: 0;
       color: var(--text-description);
       --amount-color: var(--text-description);
       --amount-weight: var(--font-weight-bold);
-      @include fonts.standard(true);
     }
   }
 
