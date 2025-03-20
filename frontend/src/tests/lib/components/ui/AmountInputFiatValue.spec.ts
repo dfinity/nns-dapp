@@ -37,6 +37,13 @@ describe("AmountInputFiatValue", () => {
     });
 
     expect(await po.getFiatValue()).toBe("$50’000.00");
+
+    const updatedPo = renderComponent({
+      amount: 0.2,
+      token: ICPToken,
+    });
+
+    expect(await updatedPo.getFiatValue()).toBe("$2.00");
   });
 
   it("should not display balance when balance prop is not provided", async () => {
@@ -161,5 +168,22 @@ describe("AmountInputFiatValue", () => {
     });
 
     expect(await updatedPo.getFiatValue()).toBe("$100.00");
+  });
+
+  it("should render a placeholder text if the input(amount) is not valid", async () => {
+    setIcpPrice(10);
+    const po = renderComponent({
+      amount: 5,
+      token: ICPToken,
+    });
+
+    expect(await po.getFiatValue()).toBe("$50.00");
+
+    const updatedPo = renderComponent({
+      amount: Number.POSITIVE_INFINITY,
+      token: ICPToken,
+    });
+
+    expect(await updatedPo.getFiatValue()).toBe("$-/-");
   });
 });
