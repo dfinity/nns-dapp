@@ -69,7 +69,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "@dfinity/gix-components/dist/styles/mixins/text";
-  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .select-account {
     display: flex;
