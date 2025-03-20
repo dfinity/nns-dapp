@@ -95,7 +95,7 @@
   >
   <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
-    <AmountInput bind:amount on:nnsMax={onMax} {max} />
+    <AmountInput bind:amount on:nnsMax={onMax} {max} {token} />
     <TransactionFormFee
       transactionFee={TokenAmount.fromE8s({
         amount: transactionFee,

@@ -26,6 +26,7 @@ import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { TokenAmountV2, nonNullish } from "@dfinity/utils";
@@ -511,5 +512,27 @@ describe("CkBTCTransactionModal", () => {
     await po.getTransactionFormPo().enterAddress(mockBTCAddressTestnet);
 
     await testMax(po);
+  });
+
+  it("should display the amount in fiat value", async () => {
+    setIcpSwapUsdPrices({
+      [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: 10,
+    });
+
+    const po = await renderModalToPo();
+    const formPo = po.getTransactionFormPo();
+    const amountInputPo = formPo.getAmountInputPo();
+
+    expect(await amountInputPo.getAmount()).toBe("");
+    expect(await amountInputPo.getAmountInputFiatValuePo().getFiatValue()).toBe(
+      "$0.00"
+    );
+
+    await amountInputPo.enterAmount(100);
+
+    expect(await amountInputPo.getAmount()).toEqual("100");
+    expect(await amountInputPo.getAmountInputFiatValuePo().getFiatValue()).toBe(
+      "$1’000.00"
+    );
   });
 });

@@ -88,7 +88,7 @@
     token={ICPToken}
   />
 
-  <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />
+  <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} token={ICPToken} />
 
   <TransactionFormFee transactionFee={$mainTransactionFeeStoreAsToken} />
 
