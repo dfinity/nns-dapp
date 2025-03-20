@@ -191,7 +191,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
 
     let lifecycle_response: Option<GetLifecycleResponse> = get_lifecycle(swap_canister_id)
         .await
-        .map_err(|err| crate::state::log(format!("Call to Swap.get_lifecycle failed: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Call to Governance.get_lifecycle failed: {err:?}")))
         .ok()
         .or(existing_data.lifecycle);
 
