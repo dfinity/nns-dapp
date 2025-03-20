@@ -1,7 +1,7 @@
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { TooltipIconPo } from "$tests/page-objects/TooltipIcon.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { TooltipIconPo } from "./TooltipIcon.page-object";
 
 export class AmountInputFiatValuePo extends BasePageObject {
   private static readonly TID = "amount-input-fiat-value-component";
