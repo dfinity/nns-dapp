@@ -78,7 +78,7 @@
       on:blur={() => (isChanging = undefined)}
       disabled={icpToCyclesExchangeRate === undefined}
     >
-      <svelte:fragment slot="label">{$i18n.core.icp}</svelte:fragment>
+      <span class="label" slot="label">{$i18n.core.icp}</span>
       <svelte:fragment slot="inner-end">
         {#if isNullish(icpToCyclesExchangeRate)}
           <Spinner inline size="small" />
@@ -95,9 +95,9 @@
       on:blur={() => (isChanging = undefined)}
       disabled={icpToCyclesExchangeRate === undefined}
     >
-      <svelte:fragment slot="label">
+      <span class="label" slot="label">
         {$i18n.canisters.t_cycles}
-      </svelte:fragment>
+      </span>
 
       <svelte:fragment slot="inner-end">
         {#if isNullish(icpToCyclesExchangeRate)}
@@ -131,10 +131,17 @@
 </form>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   .inputs {
     display: grid;
     grid-template-columns: repeat(2, 50%);
     gap: var(--padding-2x);
     width: calc(100% - var(--padding-2x));
+  }
+
+  .label {
+    @include fonts.small();
+    color: var(--text-description);
   }
 </style>

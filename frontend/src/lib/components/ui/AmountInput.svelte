@@ -55,4 +55,9 @@
   .bottom {
     padding: var(--padding-2x);
   }
+
+  .label {
+    @include fonts.small();
+    color: var(--text-description);
+  }
 </style>

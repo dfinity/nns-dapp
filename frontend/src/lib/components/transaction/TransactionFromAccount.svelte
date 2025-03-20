@@ -57,6 +57,7 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .select-account {
     display: flex;
@@ -70,6 +71,11 @@
 
   .account-identifier {
     word-break: break-all;
+  }
+
+  .label {
+    @include fonts.small();
+    color: var(--text-description);
   }
 
   .account-name {
