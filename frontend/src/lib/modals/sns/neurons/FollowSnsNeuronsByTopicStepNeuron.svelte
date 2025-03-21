@@ -6,7 +6,7 @@
 
   const dispatch = createEventDispatcher();
 
-  let followeeHex = "";
+  export let followeeHex = "";
 </script>
 
 <form on:submit|preventDefault={() => dispatch("nnsConfirm", { followeeHex })}>

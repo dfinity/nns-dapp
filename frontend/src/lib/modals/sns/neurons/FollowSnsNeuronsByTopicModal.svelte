@@ -53,6 +53,7 @@
     : fromDefinedNullable(listTopics?.topics);
 
   let selectedTopics: SnsTopicKey[] = [];
+  let followeeNeuronIdHex: string = "";
 
   const onConfirm = async ({
     detail: { followeeHex },
@@ -91,6 +92,7 @@
   {/if}
   {#if currentStep?.name === STEP_NEURON}
     <FollowSnsNeuronsByTopicStepNeuron
+      bind:followeeHex={followeeNeuronIdHex}
       on:nnsBack={back}
       on:nnsConfirm={onConfirm}
     />
