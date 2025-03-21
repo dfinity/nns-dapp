@@ -752,14 +752,6 @@ export const isValidInputAmount = (
   max: number
 ): amount is number => amount !== undefined && amount > 0 && amount <= max;
 
-// export const isValidInputAmount = (params: {
-//   amount?: number;
-//   max: number;
-// }): params is { amount: number; max: number } =>
-//   params.amount !== undefined &&
-//   params.amount > 0 &&
-//   params.amount <= params.max;
-
 export const isEnoughToStakeNeuron = ({
   stakeE8s,
   feeE8s = 0n,
