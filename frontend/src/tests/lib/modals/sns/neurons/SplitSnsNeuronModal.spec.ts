@@ -65,7 +65,7 @@ describe("SplitSnsNeuronModal", () => {
     expect(errorMessage).not.toBeNull();
   });
 
-  it("should have not disabled button and no error message if value is valid", async () => {
+  it("should enable button and display no error message when input is valid", async () => {
     const value = 10;
     const stake = 10_000_000_000n;
     const { queryByTestId } = await renderSplitNeuronModal(stake);
