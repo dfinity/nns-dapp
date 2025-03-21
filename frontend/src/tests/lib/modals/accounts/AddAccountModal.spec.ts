@@ -6,6 +6,7 @@ import { addSubAccount } from "$lib/services/icp-accounts.services";
 import en from "$tests/mocks/i18n.mock";
 import { MockLedgerIdentity } from "$tests/mocks/ledger.identity.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { SvelteComponent } from "svelte";
@@ -203,6 +204,8 @@ describe("AddAccountModal", () => {
     const renderResult = await renderModal({ component: AddAccountModal });
 
     await shouldNavigateSubaccountStep(renderResult);
+    // Wait for the step content to be fully rendered
+    await runResolvedPromises();
 
     const { getByTestId, getByText } = renderResult;
     await goBack({
