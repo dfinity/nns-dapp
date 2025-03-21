@@ -7,7 +7,7 @@
   import { splitNeuron } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import {
     isNeuronControlledByHardwareWallet,
     isValidInputAmount,
@@ -41,17 +41,15 @@
   let validForm: boolean;
   $: validForm = isValidInputAmount(amount, max);
 
+  let errorMessage: string | undefined;
+  $: errorMessage = validForm ? undefined : $i18n.error.amount_not_valid;
+
   const onMax = () => (amount = max);
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
   const split = async () => {
-    if (!isValidInputAmount(amount, max)) {
-      toastsError({
-        labelKey: "error.amount_not_valid",
-      });
-      return;
-    }
+    if (!isValidInputAmount(amount, max)) return;
 
     const hwControlled = isNeuronControlledByHardwareWallet({
       neuron,
@@ -82,7 +80,13 @@
   >
   <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
-    <AmountInput bind:amount on:nnsMax={onMax} {max} token={ICPToken} />
+    <AmountInput
+      bind:amount
+      on:nnsMax={onMax}
+      token={ICPToken}
+      {max}
+      {errorMessage}
+    />
     <TransactionFormFee
       transactionFee={TokenAmount.fromE8s({
         amount: BigInt($mainTransactionFeeE8sStore),
