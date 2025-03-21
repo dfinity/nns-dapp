@@ -16,7 +16,7 @@
   import type { Principal } from "@dfinity/principal";
   import { fromDefinedNullable, isNullish } from "@dfinity/utils";
   import type { SnsTopicKey } from "$lib/types/sns";
-  import { startBusy, stopBusy } from "../../../stores/busy.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
 
   export let rootCanisterId: Principal;
 
