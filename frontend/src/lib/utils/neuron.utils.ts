@@ -747,13 +747,18 @@ export const ballotsWithDefinedProposal = ({
     ({ proposalId }: BallotInfo) => proposalId !== undefined
   );
 
-export const isValidInputAmount = ({
-  amount,
-  max,
-}: {
-  amount?: number;
-  max: number;
-}): boolean => amount !== undefined && amount > 0 && amount <= max;
+export const isValidInputAmount = (
+  amount: number | undefined,
+  max: number
+): amount is number => amount !== undefined && amount > 0 && amount <= max;
+
+// export const isValidInputAmount = (params: {
+//   amount?: number;
+//   max: number;
+// }): params is { amount: number; max: number } =>
+//   params.amount !== undefined &&
+//   params.amount > 0 &&
+//   params.amount <= params.max;
 
 export const isEnoughToStakeNeuron = ({
   stakeE8s,

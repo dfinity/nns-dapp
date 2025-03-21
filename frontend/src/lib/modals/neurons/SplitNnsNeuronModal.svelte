@@ -39,20 +39,20 @@
         });
 
   let validForm: boolean;
-  $: validForm = isValidInputAmount({ amount, max });
+  $: validForm = isValidInputAmount(amount, max);
 
   const onMax = () => (amount = max);
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
   const split = async () => {
-    // TS is not smart enought to understand that `validForm` also covers `amount === undefined`
-    if (!validForm || amount === undefined) {
+    if (!isValidInputAmount(amount, max)) {
       toastsError({
         labelKey: "error.amount_not_valid",
       });
       return;
     }
+
     const hwControlled = isNeuronControlledByHardwareWallet({
       neuron,
       accounts: $icpAccountsStore,
