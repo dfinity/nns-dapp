@@ -4,7 +4,7 @@ use std::str::FromStr;
 use crate::convert_canister_id;
 use crate::fast_scheduler::FastScheduler;
 use crate::state::{State, STATE};
-use crate::types::ic_sns_governance::NervousSystemParameters;
+use crate::types::ic_sns_governance::{self as sns_gov, ListTopicsRequest, NervousSystemParameters};
 use crate::types::ic_sns_swap::{
     GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse, GetSaleParametersResponse,
 };
@@ -191,7 +191,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
 
     let lifecycle_response: Option<GetLifecycleResponse> = get_lifecycle(swap_canister_id)
         .await
-        .map_err(|err| crate::state::log(format!("Call to Swap.get_lifecycle failed: {err:?}")))
+        .map_err(|err| crate::state::log(format!("Call to Governance.get_lifecycle failed: {err:?}")))
         .ok()
         .or(existing_data.lifecycle);
 
@@ -205,6 +205,13 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             })
             .ok()
             .or(existing_data.nervous_system_parameters);
+
+    let list_topics_response = sns_gov::Service(governance_canister_id)
+        .list_topics(ListTopicsRequest {})
+        .await
+        .map_err(|err| crate::state::log(format!("Call to Swap.list_topics failed: {err:?}")))
+        .map(|response: (_,)| response.0)
+        .ok();
 
     crate::state::log("Yay, got an SNS status".to_string());
     // If the SNS sale will open, collect data when it does.
@@ -225,6 +232,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         init: init_response,
         derived_state: derived_state_response,
         lifecycle: lifecycle_response,
+        topics: list_topics_response,
     };
     State::insert_sns(index, &slow_data)
         .map_err(|err| crate::state::log(format!("Failed to create certified assets: {err:?}")))

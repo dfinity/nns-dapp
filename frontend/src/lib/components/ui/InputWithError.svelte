@@ -45,6 +45,7 @@
     <slot name="label" slot="label" />
     <slot name="end" slot="end" />
     <slot name="inner-end" slot="inner-end" />
+    <slot name="bottom" slot="bottom" />
   </Input>
 
   {#if errorMessage || warningMessage}

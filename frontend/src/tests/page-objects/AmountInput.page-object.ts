@@ -1,3 +1,4 @@
+import { AmountInputFiatValuePo } from "$tests/page-objects/AmountInputFiatValue.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -26,5 +27,9 @@ export class AmountInputPo extends BasePageObject {
 
   clickMaxButton(): Promise<void> {
     return this.click("max-button");
+  }
+
+  getAmountInputFiatValuePo(): AmountInputFiatValuePo {
+    return AmountInputFiatValuePo.under(this.root);
   }
 }

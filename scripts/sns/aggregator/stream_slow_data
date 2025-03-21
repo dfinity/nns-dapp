@@ -1,0 +1,34 @@
+#!/bin/bash
+
+BASE_URL="https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/list/page"
+OUTPUT_FILE="slow.json"
+echo "[]" >"$OUTPUT_FILE"
+PAGE=1
+
+while :; do
+  echo "Fetching page $PAGE ..."
+  RESPONSE=$(curl -s "$BASE_URL/$PAGE/slow.json")
+
+  # Check if the response is empty or invalid JSON
+  if [[ -z "$RESPONSE" ]] || ! echo "$RESPONSE" | jq . &>/dev/null; then
+    echo "Invalid or empty response. Stopping."
+    break
+  fi
+
+  # Count the number of objects in the JSON array
+  COUNT=$(echo "$RESPONSE" | jq 'length')
+
+  # If no objects are returned, assume no more pages exist
+  if [[ "$COUNT" -eq 0 ]]; then
+    echo "No more data found. Stopping."
+    break
+  fi
+
+  # Merge JSON data into the output file
+  jq -s 'add' <(cat "$OUTPUT_FILE") <(echo "$RESPONSE") >temp.json && mv temp.json "$OUTPUT_FILE"
+
+  PAGE=$((PAGE + 1))
+
+done
+
+echo "Aggregated JSON data saved to $OUTPUT_FILE"

@@ -75,7 +75,7 @@
     }
 
     &.singleLine span:first-of-type {
-      font-weight: normal;
+      font-weight: var(--amount-weight, normal);
       font-size: var(--font-size-h5);
     }
 

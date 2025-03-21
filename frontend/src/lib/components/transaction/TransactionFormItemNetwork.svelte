@@ -32,6 +32,8 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   .placeholder {
     :global(select) {
       color: var(--disable-contrast);
@@ -39,7 +41,10 @@
   }
 
   .label {
+    @include fonts.small();
+
     padding: var(--padding-0_5x) 0;
+    color: var(--text-description);
   }
 
   p {

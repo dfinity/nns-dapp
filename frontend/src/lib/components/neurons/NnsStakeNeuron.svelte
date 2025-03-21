@@ -73,6 +73,9 @@
   const stakeMaximum = () => (amount = max);
 
   const close = () => dispatcher("nnsClose");
+
+  let balance: bigint | undefined;
+  $: balance = account?.balanceUlps;
 </script>
 
 <form
@@ -85,10 +88,15 @@
     bind:selectedAccount={account}
     canSelectSource={true}
     rootCanisterId={OWN_CANISTER_ID}
-    token={ICPToken}
   />
 
-  <AmountInput bind:amount on:nnsMax={stakeMaximum} {max} />
+  <AmountInput
+    bind:amount
+    on:nnsMax={stakeMaximum}
+    token={ICPToken}
+    {max}
+    {balance}
+  />
 
   <TransactionFormFee transactionFee={$mainTransactionFeeStoreAsToken} />
 

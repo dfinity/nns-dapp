@@ -52,8 +52,8 @@ describe("sns-topics utils", () => {
       },
     ],
     is_critical: [true],
-    name: ["Unknown topic name"],
-    description: ["Unknown topic description"],
+    name: ["Known topic name"],
+    description: ["Known topic description"],
     custom_functions: [[genericNsFunction]],
   };
   const completelyUnknownTopicInfo: TopicInfoWithUnknown = {
