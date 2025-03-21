@@ -88,6 +88,14 @@
     }
   })();
 
+  let disableButton: boolean;
+  $: disableButton =
+    isNullish(amount) ||
+    isNullish(account) ||
+    nonNullish(errorMessage) ||
+    amount <= 0 ||
+    $busy;
+
   const stakeMaximum = () => (amount = max);
   const close = () => dispatcher("nnsClose");
 
@@ -113,6 +121,7 @@
     token={ICPToken}
     {max}
     {balance}
+    {errorMessage}
   />
 
   <TransactionFormFee transactionFee={$mainTransactionFeeStoreAsToken} />
