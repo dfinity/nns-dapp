@@ -50,7 +50,7 @@
         Number(E8S_PER_ICP);
 
   let validForm: boolean;
-  $: validForm = isValidInputAmount({ amount, max });
+  $: validForm = isValidInputAmount(amount, max);
 
   const onMax = () => (amount = max);
 
@@ -58,8 +58,7 @@
   const close = () => dispatcher("nnsClose");
 
   const split = async () => {
-    // TS is not smart enough to understand that `validForm` also covers `amount === undefined`
-    if (!validForm || amount === undefined) {
+    if (!isValidInputAmount(amount, max)) {
       toastsError({
         labelKey: "error.amount_not_valid",
       });
