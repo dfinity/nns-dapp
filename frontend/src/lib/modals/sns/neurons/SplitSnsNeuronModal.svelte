@@ -15,6 +15,7 @@
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     fromDefinedNullable,
+    isNullish,
     TokenAmount,
     TokenAmountV2,
     type Token,
@@ -53,7 +54,8 @@
   $: validForm = isValidInputAmount(amount, max);
 
   let errorMessage: string | undefined;
-  $: errorMessage = validForm ? undefined : $i18n.error.amount_not_valid;
+  $: errorMessage =
+    isNullish(amount) || validForm ? undefined : $i18n.error.amount_not_valid;
 
   const onMax = () => (amount = max);
 
