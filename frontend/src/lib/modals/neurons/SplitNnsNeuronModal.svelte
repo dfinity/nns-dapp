@@ -14,9 +14,14 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { ulpsToNumber } from "$lib/utils/token.utils";
-  import { Modal, busy } from "@dfinity/gix-components";
+  import { busy, Modal } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import {
+    ICPToken,
+    isNullish,
+    TokenAmount,
+    TokenAmountV2,
+  } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
@@ -42,7 +47,8 @@
   $: validForm = isValidInputAmount(amount, max);
 
   let errorMessage: string | undefined;
-  $: errorMessage = validForm ? undefined : $i18n.error.amount_not_valid;
+  $: errorMessage =
+    isNullish(amount) || validForm ? undefined : $i18n.error.amount_not_valid;
 
   const onMax = () => (amount = max);
 

@@ -43,7 +43,14 @@ describe("SplitNeuronModal", () => {
     expect(splitButton?.getAttribute("disabled")).not.toBeNull();
   });
 
-  it("should have disabled button if value is 0", async () => {
+  it("should not display error message by default", async () => {
+    const { queryByTestId } = await renderSplitNeuronModal(mockNeuron);
+
+    const errorMessage = queryByTestId("input-error-message");
+    expect(errorMessage).toBeNull();
+  });
+
+  it("should have disabled button and error message if value is 0", async () => {
     const { queryByTestId } = await renderSplitNeuronModal(mockNeuron);
 
     const inputElement = queryByTestId("input-ui-element");
@@ -54,6 +61,9 @@ describe("SplitNeuronModal", () => {
 
     const splitButton = queryByTestId("split-neuron-button");
     expect(splitButton?.getAttribute("disabled")).not.toBeNull();
+
+    const errorMessage = queryByTestId("input-error-message");
+    expect(errorMessage).not.toBeNull();
   });
 
   it("should start busy screen with message if controlled by HW", async () => {
@@ -102,6 +112,9 @@ describe("SplitNeuronModal", () => {
     expect(splitButton).not.toBeNull();
     expect(splitButton?.getAttribute("disabled")).toBeNull();
 
+    const errorMessage = queryByTestId("input-error-message");
+    expect(errorMessage).toBeNull();
+
     splitButton && (await fireEvent.click(splitButton));
 
     expect(splitNeuron).toHaveBeenCalled();
@@ -109,5 +122,31 @@ describe("SplitNeuronModal", () => {
     expect(startBusySpy).toHaveBeenCalledWith({
       initiator: "split-neuron",
     });
+  });
+
+  it("should have disabled button and error message if value is bigger than max", async () => {
+    const value = 10;
+    const mockNeuronWithSmallerStake = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: 1n,
+      },
+    };
+    const { queryByTestId } = await renderSplitNeuronModal(
+      mockNeuronWithSmallerStake
+    );
+
+    const inputElement = queryByTestId("input-ui-element");
+    expect(inputElement).not.toBeNull();
+
+    inputElement &&
+      (await fireEvent.input(inputElement, { target: { value } }));
+
+    const splitButton = queryByTestId("split-neuron-button");
+    expect(splitButton?.getAttribute("disabled")).not.toBeNull();
+
+    const errorMessage = queryByTestId("input-error-message");
+    expect(errorMessage).not.toBeNull();
   });
 });
