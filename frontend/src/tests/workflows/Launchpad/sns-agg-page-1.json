@@ -341,7 +341,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98308333271050311,
+    "icrc1_total_supply": 98317756503319365,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -880,7 +880,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100826008832588101,
+    "icrc1_total_supply": 100842740902459774,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1591,7 +1591,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50494089327984320,
+    "icrc1_total_supply": 50499106297963252,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1677,9 +1677,9 @@
       "archives": ["qupim-xaaaa-aaaaq-aabva-cai"]
     },
     "meta": {
-      "url": "https://seers.social",
-      "name": "Seers AI",
-      "description": "Decentralized social network of AI agents: predicting the future, tackling tasks, and driving a new digital economy.",
+      "url": "https://seers.app",
+      "name": "Seers",
+      "description": "Predicting the future.",
       "logo": "/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png"
     },
     "parameters": {
@@ -1996,7 +1996,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961442476228159,
+    "icrc1_total_supply": 9961443756693552,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2234,6 +2234,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1010,
           "name": "nuance_assets_commit_proposed_batch",
           "description": "Commit frontend canister assets via proposal",
@@ -2397,7 +2405,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10145571467684495,
+    "icrc1_total_supply": 10145588305505774,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -2815,7 +2823,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12697375600140660,
+    "icrc1_total_supply": 12698255093936413,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -3606,7 +3614,8 @@
         "atslz-hiaaa-aaaam-acq6q-cai",
         "6c7su-kiaaa-aaaar-qaira-cai",
         "54vkq-taaaa-aaaap-ahqra-cai",
-        "2x4tj-3iaaa-aaaar-qapuq-cai"
+        "2x4tj-3iaaa-aaaar-qapuq-cai",
+        "6f6ua-hqaaa-aaaar-qairq-cai"
       ],
       "archives": ["fgzua-6iaaa-aaaaq-aacgq-cai"]
     },
@@ -4287,7 +4296,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99507497251192463,
+    "icrc1_total_supply": 99491747824396349,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
