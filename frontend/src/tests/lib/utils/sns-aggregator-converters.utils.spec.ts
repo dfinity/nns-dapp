@@ -947,7 +947,7 @@ describe("sns aggregator converters utils", () => {
       topic: "DaoCommunitySettings",
       is_critical: false,
       name: "DAO community settings",
-      description: "Desctiption 2",
+      description: "Description 2",
       custom_functions: [
         {
           id: 1001,
@@ -972,7 +972,7 @@ describe("sns aggregator converters utils", () => {
       topic: "Unknown Topic",
       is_critical: true,
       name: "Unknown topic name",
-      description: "Unknown topic desctiption",
+      description: "Unknown topic description",
       custom_functions: [],
     };
 
@@ -1060,7 +1060,7 @@ describe("sns aggregator converters utils", () => {
           ],
           is_critical: [false],
           name: ["DAO community settings"],
-          description: ["Desctiption 2"],
+          description: ["Description 2"],
           custom_functions: [
             [
               {
@@ -1102,7 +1102,7 @@ describe("sns aggregator converters utils", () => {
           ],
           is_critical: [true],
           name: ["Unknown topic name"],
-          description: ["Unknown topic desctiption"],
+          description: ["Unknown topic description"],
           custom_functions: [[]],
         };
         expect(convertDtoTopicInfo(unknownTopicInfo)).toEqual(
@@ -1138,7 +1138,7 @@ describe("sns aggregator converters utils", () => {
                 ],
                 is_critical: [false],
                 name: ["DAO community settings"],
-                description: ["Desctiption 2"],
+                description: ["Description 2"],
                 custom_functions: [
                   [
                     {
@@ -1174,7 +1174,7 @@ describe("sns aggregator converters utils", () => {
                 ],
                 is_critical: [true],
                 name: ["Unknown topic name"],
-                description: ["Unknown topic desctiption"],
+                description: ["Unknown topic description"],
                 custom_functions: [[]],
               },
             ],
