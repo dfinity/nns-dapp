@@ -22,7 +22,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import type { RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/services/sns-accounts.services");
@@ -37,7 +37,7 @@ describe("DisburseSnsNeuronModal", () => {
   const renderDisburseModal = async (
     neuron: SnsNeuron,
     reloadNeuron: () => Promise<void> = () => Promise.resolve()
-  ): Promise<RenderResult<SvelteComponent>> => {
+  ): Promise<RenderResult<Component>> => {
     return renderModal({
       component: DisburseSnsNeuronModal,
       props: {

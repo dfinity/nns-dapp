@@ -11,6 +11,7 @@ import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-obje
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { nonNullish } from "@dfinity/utils";
+import type { ComponentType, SvelteComponent } from "svelte";
 
 describe("ResponsiveTable", () => {
   type TestRowData = {
@@ -24,7 +25,9 @@ describe("ResponsiveTable", () => {
     {
       id: "name",
       title: "Name",
-      cellComponent: TestTableNameCell,
+      cellComponent: TestTableNameCell as unknown as ComponentType<
+        SvelteComponent<{ rowData: TestRowData }>
+      >,
       alignment: "left",
       templateColumns: ["1fr", "max-content"],
       comparator: createAscendingComparator((rowData) => rowData.name),
@@ -38,7 +41,9 @@ describe("ResponsiveTable", () => {
     {
       id: "age",
       title: "Age",
-      cellComponent: TestTableAgeCell,
+      cellComponent: TestTableAgeCell as unknown as ComponentType<
+        SvelteComponent<{ rowData: TestRowData }>
+      >,
       alignment: "left",
       templateColumns: ["1fr"],
       comparator: createAscendingComparator((rowData) => rowData.age),
@@ -47,7 +52,9 @@ describe("ResponsiveTable", () => {
       title: "Actions",
       // Normally each column would have a different cell component but for
       // testing we reuse the name cell component.
-      cellComponent: TestTableNameCell,
+      cellComponent: TestTableNameCell as unknown as ComponentType<
+        SvelteComponent<{ rowData: TestRowData }>
+      >,
       alignment: "right",
       templateColumns: ["max-content"],
     },
