@@ -1,0 +1,111 @@
+<script lang="ts">
+  import {
+    Checkbox,
+    Collapsible,
+    IconErrorOutline,
+    IconExpandMore,
+  } from "@dfinity/gix-components";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
+  import { fromDefinedNullable } from "@dfinity/utils";
+  import type { SnsTopicKey } from "$lib/types/sns";
+  import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
+  import { createEventDispatcher } from "svelte";
+
+  export let topicInfo: TopicInfoWithUnknown;
+  export let checked: boolean = false;
+
+  const dispatch = createEventDispatcher();
+
+  let topicKey: SnsTopicKey;
+  $: topicKey = getSnsTopicInfoKey(topicInfo);
+  let name: string;
+  $: name = fromDefinedNullable(topicInfo.name);
+  let description: string;
+  $: description = fromDefinedNullable(topicInfo.description);
+
+  const onChange = () => {
+    // Checkbox doesn't support two-way binding
+    checked = !checked;
+    dispatch("nnsChange", { topicKey, checked });
+  };
+
+  let toggleContent: () => void;
+  let expanded: boolean;
+</script>
+
+<div class="topic-item">
+  <Collapsible
+    expandButton={false}
+    externalToggle={true}
+    bind:toggleContent
+    bind:expanded
+    wrapHeight
+  >
+    <div slot="header" class="header" class:expanded>
+      <Checkbox
+        inputId={topicKey}
+        text="block"
+        {checked}
+        on:nnsChange={onChange}
+        preventDefault
+        stopPropagation
+        --checkbox-label-order="1"
+        --checkbox-padding="var(--padding) 0"
+      >
+        <span>{name}</span>
+      </Checkbox>
+
+      <!-- TODO: display following status -->
+      <div class="icon">
+        <IconErrorOutline />
+      </div>
+
+      <button
+        class="expand-button"
+        class:expanded
+        on:click|stopPropagation={toggleContent}
+      >
+        <IconExpandMore />
+      </button>
+    </div>
+    <div class="expandable-content">
+      <p class="description">
+        {description}
+      </p>
+    </div>
+  </Collapsible>
+</div>
+
+<style lang="scss">
+  .header {
+    display: grid;
+    grid-template-columns: auto min-content min-content;
+    gap: var(--padding);
+    align-items: center;
+
+    // stretching to the full Collapsible header width
+    flex: 1 1 100%;
+  }
+
+  .expand-button {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+
+    transition: transform ease-out var(--animation-time-normal);
+    &.expanded {
+      transform: rotate(-180deg);
+    }
+  }
+
+  .expandable-content {
+    // Aligning with the checkbox label
+    margin-left: calc(20px + var(--padding));
+
+    .description {
+      margin: 0 0 var(--padding-3x);
+    }
+  }
+</style>
