@@ -17,6 +17,7 @@ import {
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import {
   mockAccountDetails,
   mockAccountsStoreData,
@@ -160,6 +161,52 @@ describe("NnsStakeNeuronModal", () => {
         loadNeuron: true,
         asPublicNeuron: false,
       });
+    });
+
+    it("should show an error if amount is less than min stake", async () => {
+      const po = await renderComponent({});
+
+      expect(
+        await po.getNnsStakeNeuronPo().getCreateButtonPo().isDisabled()
+      ).toBe(true);
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        false
+      );
+
+      await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(0.1);
+
+      expect(
+        await po.getNnsStakeNeuronPo().getCreateButtonPo().isDisabled()
+      ).toBe(true);
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        true
+      );
+      expect(
+        await po.getNnsStakeNeuronPo().getAmountInputPo().getErrorMessage()
+      ).toBe(en.error.amount_not_enough_stake_neuron);
+    });
+
+    it("should show an error if amount is more than min balance", async () => {
+      const po = await renderComponent({});
+
+      expect(
+        await po.getNnsStakeNeuronPo().getCreateButtonPo().isDisabled()
+      ).toBe(true);
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        false
+      );
+
+      await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(100000000);
+
+      expect(
+        await po.getNnsStakeNeuronPo().getCreateButtonPo().isDisabled()
+      ).toBe(true);
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        true
+      );
+      expect(
+        await po.getNnsStakeNeuronPo().getAmountInputPo().getErrorMessage()
+      ).toBe(en.error.insufficient_funds);
     });
 
     it("should move to update dissolve delay after creating a neuron", async () => {

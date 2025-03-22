@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Added visual feedback while loading exchange rates in canister top-up form.
 * Simplified error message display for better readability in form inputs.
 * Added USD equivalent values to amount inputs.
+* Added client-side validation for staking ICP.
 
 #### Changed
 

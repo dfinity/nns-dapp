@@ -16,9 +16,10 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
-  import { getMaxTransactionAmount } from "$lib/utils/token.utils";
-  import { Checkbox, busy } from "@dfinity/gix-components";
-  import { ICPToken, isNullish } from "@dfinity/utils";
+  import { isEnoughToStakeNeuron } from "$lib/utils/neuron.utils";
+  import { getMaxTransactionAmount, numberToE8s } from "$lib/utils/token.utils";
+  import { busy, Checkbox } from "@dfinity/gix-components";
+  import { ICPToken, isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let account: Account | undefined;
@@ -70,8 +71,32 @@
     token: ICPToken,
   });
 
-  const stakeMaximum = () => (amount = max);
+  let errorMessage: string | undefined = undefined;
+  $: (() => {
+    if (isNullish(amount) || isNullish(account)) {
+      errorMessage = undefined;
+      return;
+    }
 
+    if (amount > max) {
+      errorMessage = $i18n.error.insufficient_funds;
+      return;
+    }
+    if (!isEnoughToStakeNeuron({ stakeE8s: numberToE8s(amount) })) {
+      errorMessage = $i18n.error.amount_not_enough_stake_neuron;
+      return;
+    }
+  })();
+
+  let disableButton: boolean;
+  $: disableButton =
+    isNullish(amount) ||
+    isNullish(account) ||
+    nonNullish(errorMessage) ||
+    amount <= 0 ||
+    $busy;
+
+  const stakeMaximum = () => (amount = max);
   const close = () => dispatcher("nnsClose");
 
   let balance: bigint | undefined;
@@ -96,6 +121,7 @@
     token={ICPToken}
     {max}
     {balance}
+    {errorMessage}
   />
 
   <TransactionFormFee transactionFee={$mainTransactionFeeStoreAsToken} />
@@ -130,10 +156,7 @@
       class="primary"
       type="submit"
       data-tid="create-neuron-button"
-      disabled={amount === undefined ||
-        amount <= 0 ||
-        $busy ||
-        isNullish(account)}
+      disabled={disableButton}
     >
       {$i18n.neurons.create}
     </button>
