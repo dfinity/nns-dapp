@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-06_03-10-disable-best-effort-messaging/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-20_03-11-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -414,6 +414,7 @@ pub struct WaitForQuietState {
 pub struct ProposalData {
     pub id: Option<ProposalId>,
     pub payload_text_rendering: Option<String>,
+    pub topic: Option<Topic>,
     pub action: u64,
     pub failure_reason: Option<GovernanceError>,
     pub action_auxiliary: Option<ActionAuxiliary>,

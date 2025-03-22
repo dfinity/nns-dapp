@@ -12,4 +12,8 @@ export class TransactionFormFeePo extends BasePageObject {
   getAmountDisplayPo(): AmountDisplayPo {
     return AmountDisplayPo.under(this.root);
   }
+
+  getUsdAmountDisplay(): Promise<string> {
+    return this.getText("transaction-form-fee-usd-value");
+  }
 }

@@ -427,7 +427,11 @@ describe("ResponsiveTable", () => {
     ];
 
     const rows = await po.getRows();
+    const rowStyles = await rows[0].getCellStyles();
     expect(rows).toHaveLength(3);
-    expect(await rows[0].getCellStyles()).toEqual(expectedStyles);
+    for (let i = 0; i < rowStyles.length; i++) {
+      // Remove whitespace between semicolons to make the comparison easier.
+      expect(rowStyles[i].replace(/;\s/g, ";")).toEqual(expectedStyles[i]);
+    }
   });
 });

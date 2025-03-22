@@ -91,10 +91,18 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   .title {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .label {
+      @include fonts.small();
+      color: var(--text-description);
+    }
+
     .toggle {
       display: flex;
       flex-direction: row;

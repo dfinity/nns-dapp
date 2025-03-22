@@ -9,6 +9,7 @@ import {
 import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
@@ -29,7 +30,11 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle, type SnsNeuronId } from "@dfinity/sns";
+import {
+  SnsNeuronPermissionType,
+  SnsSwapLifecycle,
+  type SnsNeuronId,
+} from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -380,6 +385,103 @@ describe("SnsNeuronDetail", () => {
         ...expectedParams,
         certified: true,
       });
+    });
+  });
+
+  describe("follow by Topic", () => {
+    beforeEach(() => {
+      page.mock({
+        data: { universe: rootCanisterId.toText() },
+        routeId: AppPath.Neuron,
+      });
+      fakeSnsGovernanceApi.addNeuronWith({
+        rootCanisterId,
+        id: [validNeuronId],
+        cached_neuron_stake_e8s: numberToE8s(neuronStake),
+        permissions: [
+          {
+            principal: [mockIdentity.getPrincipal()],
+            permission_type: Int32Array.from([
+              // Following requires vote permission
+              SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
+            ]),
+          },
+        ],
+      });
+      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+    });
+
+    it("should open follow by type modal by default", async () => {
+      const po = await renderComponent({
+        neuronId: validNeuronIdAsHexString,
+      });
+
+      expect(
+        await po.getFollowingCardPo().getFollowSnsNeuronsButtonPo().isPresent()
+      ).toBe(true);
+
+      expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
+      await po.getFollowingCardPo().getFollowSnsNeuronsButtonPo().click();
+
+      expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(true);
+    });
+
+    it("should open follow by type modal w/o the feature flag", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", false);
+      setSnsProjects([
+        {
+          rootCanisterId,
+          topics: {
+            topics: [],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+      const po = await renderComponent({
+        neuronId: validNeuronIdAsHexString,
+      });
+
+      expect(await po.getFollowSnsNeuronsByTopicModalPo().isPresent()).toBe(
+        false
+      );
+      expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
+      await po.getFollowingCardPo().getFollowSnsNeuronsButtonPo().click();
+
+      expect(await po.getFollowSnsNeuronsByTopicModalPo().isPresent()).toBe(
+        false
+      );
+      expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(true);
+    });
+
+    it("should open and close follow by topic modal", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId,
+          topics: {
+            topics: [],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+      const po = await renderComponent({
+        neuronId: validNeuronIdAsHexString,
+      });
+
+      expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
+      expect(await po.getFollowSnsNeuronsByTopicModalPo().isPresent()).toBe(
+        false
+      );
+
+      await po.getFollowingCardPo().getFollowSnsNeuronsButtonPo().click();
+
+      expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
+      expect(await po.getFollowSnsNeuronsByTopicModalPo().isPresent()).toBe(
+        true
+      );
+
+      await po.getFollowSnsNeuronsByTopicModalPo().clickCloseButton();
+      expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
+      await po.getFollowSnsNeuronsByTopicModalPo().waitForClosed();
     });
   });
 });

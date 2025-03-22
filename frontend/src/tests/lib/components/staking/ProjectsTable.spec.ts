@@ -45,6 +45,7 @@ describe("ProjectsTable", () => {
   };
 
   beforeEach(() => {
+    vi.useFakeTimers();
     resetIdentity();
 
     page.mock({
@@ -821,7 +822,7 @@ describe("ProjectsTable", () => {
       expect(await po.getBackdropPo().isPresent()).toBe(true);
 
       await po.getBackdropPo().click();
-      await runResolvedPromises();
+      vi.advanceTimersByTime(500);
 
       expect(await po.getHideZeroNeuronsTogglePo().isPresent()).toBe(false);
       expect(await po.getBackdropPo().isPresent()).toBe(false);
@@ -849,7 +850,7 @@ describe("ProjectsTable", () => {
 
       await po.getSettingsButtonPo().click();
       await po.getHideZeroNeuronsTogglePo().getTogglePo().toggle();
-      await runResolvedPromises();
+      vi.advanceTimersByTime(500);
 
       rowPos = await po.getProjectsTableRowPos();
       expect(rowPos.length).toBe(0);

@@ -1,5 +1,6 @@
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type {
+  CachedListTopicsResponseDto,
   CachedNervousFunctionDto,
   CachedNervousSystemParametersDto,
   CachedSnsDto,
@@ -92,6 +93,7 @@ export const aggregatorSnsMockWith = ({
   maxDissolveDelayBonusPercentage,
   maxAgeBonusPercentage,
   neuronMinimumStakeE8s,
+  topics,
 }: {
   rootCanisterId?: string;
   governanceCanisterId?: string;
@@ -116,6 +118,7 @@ export const aggregatorSnsMockWith = ({
   maxDissolveDelayBonusPercentage?: number;
   maxAgeBonusPercentage?: number;
   neuronMinimumStakeE8s?: bigint;
+  topics?: CachedListTopicsResponseDto;
 }): CachedSnsDto => ({
   index: index ?? aggregatorSnsMockDto.index,
   ...aggregatorSnsMockDto,
@@ -234,4 +237,5 @@ export const aggregatorSnsMockWith = ({
     ...aggregatorSnsMockDto.lifecycle,
     lifecycle: lifecycle ?? aggregatorSnsMockDto.lifecycle.lifecycle,
   },
+  topics,
 });

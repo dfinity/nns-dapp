@@ -4,6 +4,7 @@ export type SnsNeuronModalType =
   | "disburse"
   | "dissolve"
   | "follow"
+  | "follow-by-topic"
   | "add-hotkey"
   | "stake-maturity"
   | "disburse-maturity"

@@ -1,4 +1,6 @@
 import { AddSnsHotkeyModalPo } from "$tests/page-objects/AddSnsHotkeyModal.page-object";
+import { FollowSnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowSnsNeuronsByTopicModal.page-object";
+import { FollowSnsNeuronsModalPo } from "$tests/page-objects/FollowSnsNeuronsModal.page-object";
 import { SkeletonCardPo } from "$tests/page-objects/SkeletonCard.page-object";
 import { SnsIncreaseStakeNeuronModalPo } from "$tests/page-objects/SnsIncreaseStakeNeuronModal.page-object";
 import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvancedSection.page-object";
@@ -72,6 +74,14 @@ export class SnsNeuronDetailPo extends BasePageObject {
 
   getAddSnsHotkeyModalPo(): AddSnsHotkeyModalPo {
     return AddSnsHotkeyModalPo.under(this.root);
+  }
+
+  getFollowSnsNeuronsModalPo(): FollowSnsNeuronsModalPo {
+    return FollowSnsNeuronsModalPo.under(this.root);
+  }
+
+  getFollowSnsNeuronsByTopicModalPo(): FollowSnsNeuronsByTopicModalPo {
+    return FollowSnsNeuronsByTopicModalPo.under(this.root);
   }
 
   async addHotkey(principal: string): Promise<void> {

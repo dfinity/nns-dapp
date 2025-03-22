@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-06_03-10-disable-best-effort-messaging/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-20_03-11-base/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -228,7 +228,7 @@ type GenericNervousSystemFunction = record {
   target_canister_id : opt principal;
   validator_method_name : opt text;
   target_method_name : opt text;
-  topic: opt Topic;
+  topic : opt Topic;
 };
 
 type GetMaturityModulationResponse = record {
@@ -612,6 +612,7 @@ type ProposalData = record {
   minimum_yes_proportion_of_exercised : opt Percentage;
   is_eligible_for_rewards : bool;
   executed_timestamp_seconds : nat64;
+  topic : opt Topic;
 };
 
 type ProposalId = record {

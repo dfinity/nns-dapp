@@ -343,7 +343,6 @@ interface I18nNeurons {
   confirm_dissolve_delay: string;
   follow_neurons_screen: string;
   stake_icp: string;
-  transaction_fee: string;
   may_take_while: string;
   create: string;
   community_fund: string;

@@ -1,5 +1,6 @@
 <script lang="ts">
   import CurrentBalance from "$lib/components/accounts/CurrentBalance.svelte";
+  import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { splitNeuron } from "$lib/services/sns-neurons.services";
@@ -8,13 +9,13 @@
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { isValidInputAmount } from "$lib/utils/neuron.utils";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
-  import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { busy, Modal, Value } from "@dfinity/gix-components";
+  import { busy, Modal } from "@dfinity/gix-components";
   import type { E8s } from "@dfinity/nns";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     fromDefinedNullable,
+    TokenAmount,
     TokenAmountV2,
     type Token,
   } from "@dfinity/utils";
@@ -94,20 +95,13 @@
   >
   <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
-
-    <AmountInput bind:amount on:nnsMax={onMax} {max} />
-
-    <div>
-      <p class="label">{$i18n.neurons.transaction_fee}</p>
-      <p>
-        <Value>
-          {formatTokenE8s({
-            value: transactionFee,
-          })}
-        </Value>
-        {token.symbol}
-      </p>
-    </div>
+    <AmountInput bind:amount on:nnsMax={onMax} {max} {token} />
+    <TransactionFormFee
+      transactionFee={TokenAmount.fromE8s({
+        amount: transactionFee,
+        token,
+      })}
+    />
 
     <div class="toolbar">
       <button class="secondary" on:click={close}>

@@ -32,6 +32,7 @@ import { ParticipateSwapModalPo } from "$tests/page-objects/ParticipateSwapModal
 import type { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -244,6 +245,45 @@ describe("ParticipateSwapModal", () => {
       expect(await form.getAmountInputPo().getErrorMessage()).toBe(
         "Sorry, the amount is too small. You need a minimum of 1.00000278 ICP to participate in this swap."
       );
+    });
+
+    it("should display the amount in fiat value", async () => {
+      setIcpSwapUsdPrices({
+        [rootCanisterIdMock.toText()]: 100,
+      });
+
+      const po = await renderSwapModalPo();
+      const amountInputPo = po.getTransactionFormPo().getAmountInputPo();
+
+      expect(await amountInputPo.getAmount()).toBe("");
+      expect(
+        await amountInputPo.getAmountInputFiatValuePo().getFiatValue()
+      ).toBe("$0.00");
+
+      await amountInputPo.enterAmount(200);
+
+      expect(await amountInputPo.getAmount()).toEqual("200");
+      expect(
+        await amountInputPo.getAmountInputFiatValuePo().getFiatValue()
+      ).toBe("$2’000.00");
+    });
+
+    it("should display the balance in amount input", async () => {
+      const po = await renderSwapModalPo();
+      const amountInputPo = po.getTransactionFormPo().getAmountInputPo();
+
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
+          .isPresent()
+      ).toBe(true);
+      expect(
+        await amountInputPo
+          .getAmountInputFiatValuePo()
+          .getBalancePo()
+          .getAmount()
+      ).toBe("1'234'567.89");
     });
 
     describe("when user has non-zero swap commitment", () => {

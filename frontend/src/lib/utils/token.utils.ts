@@ -349,7 +349,7 @@ export const getUsdValue = ({
   amount,
   tokenPrice,
 }: {
-  amount: TokenAmountV2;
+  amount: TokenAmountV2 | TokenAmount;
   tokenPrice?: number;
 }): number | undefined => {
   const amountE8s = Number(amount.toE8s());

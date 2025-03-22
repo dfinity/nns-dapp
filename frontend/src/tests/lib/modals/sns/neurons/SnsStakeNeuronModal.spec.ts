@@ -12,6 +12,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { SnsStakeNeuronModalPo } from "$tests/page-objects/SnsStakeNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Principal } from "@dfinity/principal";
@@ -125,5 +126,38 @@ describe("SnsStakeNeuronModal", () => {
     ).toBe(
       "Sorry, the amount is too small. You need to stake a minimum of 1 POP."
     );
+  });
+
+  it("should display the amount in fiat value", async () => {
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId.toText()]: 100,
+    });
+
+    const po = await renderComponent();
+    const amountInputPo = po.getTransactionFormPo().getAmountInputPo();
+
+    expect(await amountInputPo.getAmount()).toBe("");
+    expect(await amountInputPo.getAmountInputFiatValuePo().getFiatValue()).toBe(
+      "$0.00"
+    );
+
+    await amountInputPo.enterAmount(100);
+
+    expect(await amountInputPo.getAmount()).toEqual("100");
+    expect(await amountInputPo.getAmountInputFiatValuePo().getFiatValue()).toBe(
+      "$10’000.00"
+    );
+  });
+
+  it("should display the balance in amount input", async () => {
+    const po = await renderComponent();
+    const amountInputPo = po.getTransactionFormPo().getAmountInputPo();
+
+    expect(
+      await amountInputPo.getAmountInputFiatValuePo().getBalancePo().isPresent()
+    ).toBe(true);
+    expect(
+      await amountInputPo.getAmountInputFiatValuePo().getBalancePo().getAmount()
+    ).toBe("8'901'567.12");
   });
 });
