@@ -1249,15 +1249,24 @@ describe("neuron-utils", () => {
 
   describe("isValidInputAmount", () => {
     it("return false if amount is undefined", () => {
-      expect(isValidInputAmount({ amount: undefined, max: 10 })).toBe(false);
+      const amount = undefined;
+      const max = 10;
+
+      expect(isValidInputAmount(amount, max)).toBe(false);
     });
 
     it("return true if amount is lower than max", () => {
-      expect(isValidInputAmount({ amount: 3, max: 10 })).toBe(true);
+      const amount = 3;
+      const max = 10;
+
+      expect(isValidInputAmount(amount, max)).toBe(true);
     });
 
     it("return false if amount is higher than max", () => {
-      expect(isValidInputAmount({ amount: 40, max: 10 })).toBe(false);
+      const amount = 40;
+      const max = 10;
+
+      expect(isValidInputAmount(amount, max)).toBe(false);
     });
   });
 
