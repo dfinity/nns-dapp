@@ -41,11 +41,7 @@
   </p>
 
   <p class="value">
-    <AmountDisplay
-      amount={transactionFee}
-      singleLine
-      detailed="height_decimals"
-    />
+    <AmountDisplay amount={transactionFee} singleLine />
     <span class="usd-value" data-tid="transaction-form-fee-usd-value">
       {usdValueDisplay}
     </span>
