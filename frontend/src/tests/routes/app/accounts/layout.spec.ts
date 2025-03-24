@@ -76,7 +76,7 @@ describe("Accounts layout", () => {
     expect(get(pageStore).path).toEqual(AppPath.Tokens);
   });
 
-  it("back button should navigate to tokens page when coming from Portfolio page", async () => {
+  it("back button should navigate to portfolio page when coming from portfolio page", async () => {
     referrerPathStore.pushPath(AppPath.Portfolio);
     page.mock({
       routeId: AppPath.Accounts,
