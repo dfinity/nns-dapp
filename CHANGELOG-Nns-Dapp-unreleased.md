@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Replaces the toaster error with an input error message for the split neuron modal flow.
+
 #### Deprecated
 
 #### Removed
