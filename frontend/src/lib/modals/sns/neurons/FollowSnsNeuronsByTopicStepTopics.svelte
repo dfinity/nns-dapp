@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { createEventDispatcher } from "svelte";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
-  import FollowSnsNeuronsByTopicStepTopicsItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopicsItem.svelte";
+  import FollowSnsNeuronsByTopicStepTopicsItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import type { SnsTopicKey } from "$lib/types/sns";

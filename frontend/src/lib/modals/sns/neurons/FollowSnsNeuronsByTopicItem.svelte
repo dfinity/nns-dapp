@@ -33,8 +33,9 @@
   let expanded: boolean;
 </script>
 
-<div class="topic-item">
+<div class="topic-item" data-tid="follow-sns-neurons-by-topic-item-component">
   <Collapsible
+    testId="topic-collapsible"
     expandButton={false}
     externalToggle={true}
     bind:toggleContent
@@ -56,11 +57,12 @@
       </Checkbox>
 
       <!-- TODO: display following status -->
-      <div class="icon">
+      <div class="icon" data-tid="topic-following-status">
         <IconErrorOutline />
       </div>
 
       <button
+        data-tid="expand-button"
         class="expand-button"
         class:expanded
         on:click|stopPropagation={toggleContent}
