@@ -16,7 +16,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Move the balance or maximum amount from the transaction address to the amount inputs below.
 * Replaces the toaster error with an input error message for the split neuron modal flow.
 
 #### Deprecated
