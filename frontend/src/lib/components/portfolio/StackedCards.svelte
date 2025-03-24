@@ -1,9 +1,8 @@
 <script lang="ts" context="module">
-  import type { ComponentType, SvelteComponent } from "svelte";
-  type AnyComponent = ComponentType<SvelteComponent>;
+  import type { Component } from "svelte";
 
   export type CardItem = {
-    component: AnyComponent;
+    component: Component;
     props?: Record<string, unknown>;
   };
 </script>
