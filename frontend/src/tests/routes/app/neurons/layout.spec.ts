@@ -42,8 +42,7 @@ describe("Neurons layout", () => {
     expect(get(pageStore).path).toBe(AppPath.Staking);
   });
 
-  it.only("should navigate back to Portfolio page if previous page was Portfolio page", async () => {
-    // overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", true);
+  it("should navigate back to Portfolio page if previous page was Portfolio page", async () => {
     page.mock({
       routeId: AppPath.Neurons,
     });
