@@ -9,6 +9,7 @@ import TestTableNameCell from "$tests/lib/components/ui/TestTableNameCell.svelte
 import { ResponsiveTableSortControlPo } from "$tests/page-objects/ResponsiveTableSortControl.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import type { ComponentType, SvelteComponent } from "svelte";
 import { get, writable, type Writable } from "svelte/store";
 
 describe("ResponsiveTableSortControl", () => {
@@ -23,7 +24,9 @@ describe("ResponsiveTableSortControl", () => {
     {
       id: "name",
       title: "Name",
-      cellComponent: TestTableNameCell,
+      cellComponent: TestTableAgeCell as unknown as ComponentType<
+        SvelteComponent<{ rowData: TestRowData }>
+      >,
       alignment: "left",
       templateColumns: ["1fr", "max-content"],
       comparator: createAscendingComparator((rowData) => rowData.name),
@@ -31,7 +34,9 @@ describe("ResponsiveTableSortControl", () => {
     {
       id: "age",
       title: "Age",
-      cellComponent: TestTableAgeCell,
+      cellComponent: TestTableNameCell as unknown as ComponentType<
+        SvelteComponent<{ rowData: TestRowData }>
+      >,
       alignment: "left",
       templateColumns: ["1fr"],
       comparator: createAscendingComparator((rowData) => rowData.age),

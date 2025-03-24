@@ -23,6 +23,7 @@
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
+  import type { Component } from "svelte";
 
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
@@ -124,8 +125,9 @@
     .map((project) => project.summary);
 
   let launchpadCards: CardItem[];
-  $: launchpadCards = snsSummaries.map((summary) => ({
-    component: LaunchProjectCard,
+  $: launchpadCards = snsSummaries.map<CardItem>((summary) => ({
+    // TODO: Svelte v5 migration - fix type
+    component: LaunchProjectCard as unknown as Component,
     props: { summary },
   }));
 

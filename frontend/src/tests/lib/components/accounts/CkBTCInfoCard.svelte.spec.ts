@@ -255,12 +255,18 @@ describe("CkBTCInfoCard", () => {
         mockBTCAddressTestnet
       );
 
-      const { container, component } = render(CkBTCInfoCard, { props });
+      const testProps = $state({
+        ...props,
+      });
+
+      const { container } = render(CkBTCInfoCard, {
+        props: testProps,
+      });
       await runResolvedPromises();
       const po = CkBTCInfoCardPo.under(new JestPageObjectElement(container));
 
       expect(await po.hasAddress()).toBe(false);
-      component.$set({ account: mockCkBTCMainAccount });
+      testProps.account = mockCkBTCMainAccount;
 
       await runResolvedPromises();
       expect(await po.hasAddress()).toBe(true);

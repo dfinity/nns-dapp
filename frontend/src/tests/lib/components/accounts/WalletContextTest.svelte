@@ -3,13 +3,13 @@
   import type { Account } from "$lib/types/account";
   import {
     WALLET_CONTEXT_KEY,
-    WalletContext,
-    WalletStore,
+    type WalletContext,
+    type WalletStore,
   } from "$lib/types/wallet.context";
-  import { SvelteComponent, setContext } from "svelte";
+  import { type Component, setContext } from "svelte";
   import { writable } from "svelte/store";
 
-  export let testComponent: typeof SvelteComponent;
+  export let testComponent: Component;
   export let account: Account | undefined;
 
   export const walletStore = writable<WalletStore>({

@@ -2,13 +2,13 @@ import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
 import { icpAccountDetailsStore } from "$lib/stores/icp-account-details.store";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { SvelteComponent } from "svelte";
+import type { Component } from "svelte";
 
 export const testAccountsModal = async ({
   result,
   testId,
 }: {
-  result: RenderResult<SvelteComponent>;
+  result: RenderResult<Component>;
   testId: string;
 }) => {
   const { container, getByTestId } = result;

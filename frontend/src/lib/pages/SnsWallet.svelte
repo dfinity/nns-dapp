@@ -30,9 +30,11 @@
     : undefined;
 
   let transactions: IcrcWalletTransactionsList;
-  let wallet: IcrcWalletPage;
 
-  const reloadAccount = async () => await wallet.reloadAccount?.();
+  // TODO: Svelte v5 migration - marked as potentially undefined because of SnsWallet.spec.ts
+  let wallet: IcrcWalletPage | undefined;
+
+  const reloadAccount = async () => await wallet?.reloadAccount?.();
   const reloadTransactions = () => transactions?.reloadTransactions?.();
 </script>
 

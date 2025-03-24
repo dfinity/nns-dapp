@@ -2,18 +2,19 @@ import { nonNullish } from "@dfinity/utils";
 import {
   render as svelteRender,
   type RenderResult,
-  type SvelteComponentOptions,
 } from "@testing-library/svelte";
-import type { ComponentProps, SvelteComponent } from "svelte";
+import type { Component, ComponentProps } from "svelte";
 
-// TestingLibrary internal type
-type ComponentType<C> = C extends SvelteComponent
-  ? new (...args: unknown[]) => C
-  : C;
+// prettier-ignore
+// @ts-expect-error Testing-library type not exposed
+import type { MountOptions } from "@testing-library/svelte/types/component-types";
+// prettier-ignore
+// @ts-expect-error Testing-library type not exposed
+import type { ComponentType } from "@testing-library/svelte/types/component-types";
 
 // Adapted from Svelte render to work around the surprising behavior that render
 // reuses the same container element between different calls from the same test.
-export const render = <C extends SvelteComponent>(
+export const render = <C extends Component>(
   cmp: ComponentType<C>,
   componentOptions?:
     | {
@@ -32,24 +33,25 @@ export const render = <C extends SvelteComponent>(
       : componentOptions
     : {};
 
+  const mountOptions: Partial<MountOptions<ComponentProps<C>>> =
+    nonNullish(componentOptions) && "events" in componentOptions
+      ? {
+          // TODO: remove once events are migrated to callback props
+          events: componentOptions?.events,
+        }
+      : {};
+
   const { component, ...rest } = svelteRender(
     cmp,
-    { props } as SvelteComponentOptions<C>,
+    {
+      props: props ?? {},
+      ...mountOptions,
+    },
     {
       ...renderOptions,
       baseElement: container,
     }
   );
-
-  const allEvents = Object.entries(
-    nonNullish(componentOptions) && "events" in componentOptions
-      ? (componentOptions.events ?? {})
-      : {}
-  );
-
-  allEvents.forEach(([event, fn]) => {
-    component.$on(event, fn);
-  });
 
   return { component, ...rest };
 };
