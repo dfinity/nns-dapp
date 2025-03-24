@@ -5,7 +5,7 @@
 </script>
 
 <Card {testId}>
-  <span class="wrapper">
+  <div class="wrapper">
     <div class="header">
       <div class="header-wrapper">
         <div class="icon skeleton"></div>
@@ -17,12 +17,12 @@
       <div class="link skeleton"></div>
     </div>
 
-    <span class="body">
-      <span class="header">
+    <div class="body">
+      <div class="header">
         <span class="skeleton"></span>
         <span class="skeleton justify-end"></span>
         <span class="skeleton justify-end tablet-up"></span>
-      </span>
+      </div>
 
       <div class="list">
         {#each Array(4) as _, i (i)}
@@ -37,8 +37,8 @@
           </div>
         {/each}
       </div>
-    </span>
-  </span>
+    </div>
+  </div>
 </Card>
 
 <style lang="scss">
