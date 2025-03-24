@@ -11,6 +11,23 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 135924
+
+### Application
+
+#### Added
+
+* Simplified SNS neuron display by making voting power details expandable on demand
+* Added visual feedback while loading exchange rates in canister top-up form.
+* Simplified error message display for better readability in form inputs.
+* Added USD equivalent values to amount inputs.
+
+#### Changed
+
+* Move the balance or maximum amount from the transaction address to the amount inputs below.
+
+### Operations
+
 ## Proposal 135845
 
 ### Application
