@@ -26,25 +26,39 @@
   <Collapsible testId="topic-collapsible" wrapHeight>
     <div slot="header" class="header" data-tid="topic-name">{name} </div>
     <div class="expandable-content">
-      <p class="description" data-tid="topic-description">
-        {description}
-      </p>
+      <div>
+        <p class="description" data-tid="topic-description">
+          {description}
+        </p>
 
-      <div class="functions">
-        {#each nsFunctions as nsFunction (nsFunction.id.toString())}
-          <Tooltip testId="tooltip" text={fromNullable(nsFunction.description)}>
-            <Tag testId="ns-function-name">{nsFunction.name}</Tag>
-          </Tooltip>
-        {/each}
+        <div class="functions">
+          {#each nsFunctions as nsFunction (nsFunction.id.toString())}
+            <Tooltip
+              testId="tooltip"
+              text={fromNullable(nsFunction.description)}
+            >
+              <Tag testId="ns-function-name">{nsFunction.name}</Tag>
+            </Tooltip>
+          {/each}
+        </div>
       </div>
     </div>
   </Collapsible>
 </div>
 
 <style lang="scss">
+  .header {
+    padding: var(--padding) 0;
+  }
+
+  .description {
+    margin: 0 0 var(--padding-2x);
+  }
+
   .functions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--padding);
+    gap: var(--padding-0_5x);
+    margin-bottom: var(--padding-2x);
   }
 </style>

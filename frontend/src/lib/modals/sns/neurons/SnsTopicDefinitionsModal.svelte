@@ -40,7 +40,9 @@
     >{$i18n.follow_sns_topics.topic_definitions_title}</svelte:fragment
   >
 
-  <p class="description">{$i18n.follow_sns_topics.topics_description}</p>
+  <p class="description"
+    >{$i18n.follow_sns_topics.topic_definitions_description}</p
+  >
 
   <Separator spacing="medium" />
 
@@ -75,7 +77,21 @@
       data-tid="cancel-button"
       on:click={close}
     >
-      {$i18n.core.cancel}
+      {$i18n.core.close}
     </button>
   </div>
 </Modal>
+
+<style lang="scss">
+  .headline {
+    margin: 0;
+  }
+
+  .topic-group {
+    margin-bottom: var(--padding-3x);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
+</style>
