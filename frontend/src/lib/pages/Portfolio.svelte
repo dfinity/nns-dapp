@@ -133,7 +133,6 @@
 
   let hideTotalAssetsCards = false;
   $: hideTotalAssetsCards = !$authSignedInStore && launchpadCards.length > 0;
-  $: console.log(topHeldTokens);
 </script>
 
 <main data-tid="portfolio-page-component">
