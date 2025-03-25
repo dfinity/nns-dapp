@@ -311,7 +311,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999957696094000,
+    "icrc1_total_supply": 799999956021794000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1248,7 +1248,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10140235580441918,
+    "icrc1_total_supply": 10140890248354532,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1994,7 +1994,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 615469150882045,
+    "icrc1_total_supply": 615596358405328,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2223,6 +2223,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "grant_permission",
           "description": "grant permission to asset canister",
@@ -2399,7 +2407,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104205152402988605,
+    "icrc1_total_supply": 104276379410013119,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3064,7 +3072,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 930428425507754608,
+    "icrc1_total_supply": 930596077503274176,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

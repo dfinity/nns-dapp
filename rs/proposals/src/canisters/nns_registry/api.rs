@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-14_03-10-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-20_03-11-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -244,6 +244,19 @@ pub struct ApiBoundaryNodeIdRecord {
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum GetApiBoundaryNodeIdsResponse {
     Ok(Vec<ApiBoundaryNodeIdRecord>),
+    Err(String),
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GetChunkRequest {
+    pub content_sha256: Option<serde_bytes::ByteBuf>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct Chunk {
+    pub content: Option<serde_bytes::ByteBuf>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum GetChunkResponse {
+    Ok(Chunk),
     Err(String),
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -533,6 +546,9 @@ impl Service {
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "get_build_metadata", ()).await
+    }
+    pub async fn get_chunk(&self, arg0: GetChunkRequest) -> CallResult<(GetChunkResponse,)> {
+        ic_cdk::call(self.0, "get_chunk", (arg0,)).await
     }
     pub async fn get_node_operators_and_dcs_of_node_provider(
         &self,

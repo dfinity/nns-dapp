@@ -18,10 +18,9 @@ import {
   isSnsGenericNervousSystemFunction,
   isSnsNativeNervousSystemFunction,
 } from "$lib/utils/sns.utils";
-import { basisPointsToPercent, keyOfOptional } from "$lib/utils/utils";
+import { basisPointsToPercent } from "$lib/utils/utils";
 import { Vote } from "@dfinity/nns";
 import type {
-  SnsAction,
   SnsBallot,
   SnsNervousSystemFunction,
   SnsNeuron,
@@ -70,7 +69,6 @@ export type SnsProposalDataMap = {
   title: string;
   url?: string;
   summary: string;
-  actionData?: SnsAction;
 
   // TODO: Should come from backend
   status: SnsProposalDecisionStatus;
@@ -119,8 +117,6 @@ export const mapProposalInfo = ({
   } = proposalData;
 
   const proposalInfo = fromNullable(proposal);
-  const actionData =
-    proposalInfo !== undefined ? fromNullable(proposalInfo.action) : undefined;
 
   const nsFunction = nsFunctions?.find(({ id }) => id === action);
 
@@ -160,7 +156,6 @@ export const mapProposalInfo = ({
     title: proposalInfo?.title ?? "",
     url: proposalInfo?.url,
     summary: proposalInfo?.summary ?? "",
-    actionData,
 
     // TODO: Ideally this should come from the backend and we didn't need to calculate it
     status: decisionStatus,
@@ -344,80 +339,6 @@ export const sortSnsProposalsById = <P extends SnsProposalData>(
     : [...proposals].sort(({ id: idA }, { id: idB }) =>
         (fromNullable(idA)?.id ?? 0n) > (fromNullable(idB)?.id ?? 0n) ? -1 : 1
       );
-
-const getAction = (proposal: SnsProposalData): SnsAction | undefined =>
-  fromNullable(fromNullable(proposal?.proposal)?.action ?? []);
-
-/**
- * Returns the key of the action in the proposal.
- *
- * An `action` is a variant of the `SnsAction` type.
- * Reference: https://github.com/dfinity/ic-js/blob/8e9695411cab2c9480224baa968743466342ab13/packages/sns/candid/sns_governance.did#L3
- *
- * They variant follows this convetion: { [actionKey: string]: <action data> }
- * Therefore, this function returns the `actionKey`.
- *
- * @param {SnsProposalData} proposal
- * @returns {string} `actionKey` of the action
- */
-export const proposalOnlyActionKey = (
-  proposal: SnsProposalData
-): string | undefined => {
-  const actionKeys = Object.keys(getAction(proposal) ?? {});
-  // Edge case: Variant of SnsAction has always one key only.
-  // We can't test this because an `SnsProposalData` with two action keys is not a valid type.
-  if (actionKeys.length > 1) {
-    throw new Error("Actions have only have one key.");
-  }
-  return actionKeys[0];
-};
-
-/**
- * Returns a list of tuples with the properties of the action.
- *
- * From the proposal data:
- *  {
- *   id: ...
- *   ...
- *   proposal: [{
- *     title: "title",
- *     summary: "summary",
- *     url: "...",
- *     action: [{
- *       Motion: {
- *         motion_text: "Test motion"
- *       }
- *     }]
- *   }]
- *  }
- * It returns: [["motion_text", "Test motion"]]
- *
- * @param {SnsProposalData} proposal
- * @returns {[string, unknown][]}
- */
-export const proposalActionFields = (
-  proposal: SnsProposalData
-): [string, unknown][] => {
-  const key = proposalOnlyActionKey(proposal);
-  if (key === undefined) {
-    return [];
-  }
-  // TODO: Convert action types to use `undefined | T` instead of `[] | [T]`.
-  const actionData = keyOfOptional({ obj: getAction(proposal), key }) ?? {};
-  return Object.entries(actionData).filter(([, value]) => {
-    switch (typeof value) {
-      case "object":
-        return (value && Object.keys(value).length > 0) || Array.isArray(value);
-      case "undefined":
-      case "string":
-      case "bigint":
-      case "boolean":
-      case "number":
-        return true;
-    }
-    return false;
-  });
-};
 
 export const snsProposalIdString = (proposal: SnsProposalData): string =>
   fromDefinedNullable(proposal.id).id.toString();

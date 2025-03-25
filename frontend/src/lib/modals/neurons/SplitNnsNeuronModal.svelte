@@ -7,16 +7,21 @@
   import { splitNeuron } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import {
     isNeuronControlledByHardwareWallet,
     isValidInputAmount,
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { ulpsToNumber } from "$lib/utils/token.utils";
-  import { Modal, busy } from "@dfinity/gix-components";
+  import { busy, Modal } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import {
+    ICPToken,
+    isNullish,
+    TokenAmount,
+    TokenAmountV2,
+  } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
@@ -39,20 +44,19 @@
         });
 
   let validForm: boolean;
-  $: validForm = isValidInputAmount({ amount, max });
+  $: validForm = isValidInputAmount(amount, max);
+
+  let errorMessage: string | undefined;
+  $: errorMessage =
+    isNullish(amount) || validForm ? undefined : $i18n.error.amount_not_valid;
 
   const onMax = () => (amount = max);
 
   const dispatcher = createEventDispatcher();
   const close = () => dispatcher("nnsClose");
   const split = async () => {
-    // TS is not smart enought to understand that `validForm` also covers `amount === undefined`
-    if (!validForm || amount === undefined) {
-      toastsError({
-        labelKey: "error.amount_not_valid",
-      });
-      return;
-    }
+    if (!isValidInputAmount(amount, max)) return;
+
     const hwControlled = isNeuronControlledByHardwareWallet({
       neuron,
       accounts: $icpAccountsStore,
@@ -82,7 +86,13 @@
   >
   <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
-    <AmountInput bind:amount on:nnsMax={onMax} {max} token={ICPToken} />
+    <AmountInput
+      bind:amount
+      on:nnsMax={onMax}
+      token={ICPToken}
+      {max}
+      {errorMessage}
+    />
     <TransactionFormFee
       transactionFee={TokenAmount.fromE8s({
         amount: BigInt($mainTransactionFeeE8sStore),

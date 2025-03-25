@@ -425,7 +425,7 @@ describe("Staking", () => {
           .getTransactionFormFeePo()
           .getAmountDisplayPo()
           .getAmount()
-      ).toBe("0.00123000");
+      ).toBe("0.00123");
 
       await modal.getTransactionFormPo().enterAmount(1);
       expect(await modal.getTransactionFormPo().isContinueButtonEnabled()).toBe(

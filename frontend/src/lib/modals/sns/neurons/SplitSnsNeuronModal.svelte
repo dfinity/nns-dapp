@@ -6,7 +6,7 @@
   import { splitNeuron } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import { isValidInputAmount } from "$lib/utils/neuron.utils";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
   import { busy, Modal } from "@dfinity/gix-components";
@@ -15,6 +15,7 @@
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     fromDefinedNullable,
+    isNullish,
     TokenAmount,
     TokenAmountV2,
     type Token,
@@ -50,7 +51,11 @@
         Number(E8S_PER_ICP);
 
   let validForm: boolean;
-  $: validForm = isValidInputAmount({ amount, max });
+  $: validForm = isValidInputAmount(amount, max);
+
+  let errorMessage: string | undefined;
+  $: errorMessage =
+    isNullish(amount) || validForm ? undefined : $i18n.error.amount_not_valid;
 
   const onMax = () => (amount = max);
 
@@ -58,13 +63,7 @@
   const close = () => dispatcher("nnsClose");
 
   const split = async () => {
-    // TS is not smart enough to understand that `validForm` also covers `amount === undefined`
-    if (!validForm || amount === undefined) {
-      toastsError({
-        labelKey: "error.amount_not_valid",
-      });
-      return;
-    }
+    if (!isValidInputAmount(amount, max)) return;
 
     startBusy({ initiator: "split-sns-neuron" });
 
@@ -95,7 +94,7 @@
   >
   <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
-    <AmountInput bind:amount on:nnsMax={onMax} {max} {token} />
+    <AmountInput bind:amount on:nnsMax={onMax} {max} {token} {errorMessage} />
     <TransactionFormFee
       transactionFee={TokenAmount.fromE8s({
         amount: transactionFee,

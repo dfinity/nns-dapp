@@ -5,6 +5,7 @@ import QrWizardModal from "$lib/modals/transaction/QrWizardModal.svelte";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { mockedConstants } from "$tests/utils/mockable-constants.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { WizardSteps } from "@dfinity/gix-components";
 import { ICPToken } from "@dfinity/utils";
 import { fireEvent, render } from "@testing-library/svelte";
 
@@ -18,60 +19,76 @@ describe("QrWizardModal", () => {
     mockedConstants.ENABLE_QR_CODE_READER = true;
   });
 
-  const getCurrentStep = (component) => {
-    return component.$$.ctx[component.$$.props["currentStep"]];
+  const getCurrentStep = (props) => {
+    return props.currentStep;
   };
 
-  const scanQrCode = ({ component, requiredToken }) => {
-    return component.$$.ctx[component.$$.props["scanQrCode"]]({
+  const scanQrCode = ({ props, requiredToken }) => {
+    return props.scanQrCode({
       requiredToken,
     });
   };
 
-  const goToNextStep = (component) => {
-    return component.$$.ctx[component.$$.props["modal"]].next();
+  const goToNextStep = (props) => {
+    return props.modal.next();
   };
 
-  const goToPreviousStep = (component) => {
-    return component.$$.ctx[component.$$.props["modal"]].back();
+  const goToPreviousStep = (props) => {
+    return props.modal.back();
+  };
+
+  const props = {
+    modal: undefined,
+    currentStep: undefined,
+    scanQrCode: undefined,
   };
 
   it("moves to QRCode step when scanQrCode is called", async () => {
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
       },
     ];
 
-    const { component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    render(QrWizardModal, { props: testProps });
+
+    expect(getCurrentStep(testProps).name).toEqual("step1");
 
     scanQrCode({
-      component,
+      props: testProps,
       requiredToken: ICPToken,
     });
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
   });
 
   it("scanQrCode() returns identifier", async () => {
     const identifier =
       "97731a95e48d63106ede6e6a7c4937475f0a2a1ef0f42f46956a3e06f8e32ba7";
 
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
       },
     ];
 
-    const { getByTestId, component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
+
+    const { getByTestId } = render(QrWizardModal, { props: testProps });
 
     const qrPromise = scanQrCode({
-      component,
+      props: testProps,
       requiredToken: ICPToken,
     });
     const qrPromiseResolved = vi.fn();
@@ -79,7 +96,7 @@ describe("QrWizardModal", () => {
 
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
 
     expect(qrPromiseResolved).not.toBeCalled();
 
@@ -93,7 +110,7 @@ describe("QrWizardModal", () => {
     expect(qrPromiseResolved).toBeCalled();
     expect(await qrPromise).toEqual({ result: "success", identifier });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    expect(getCurrentStep(testProps).name).toEqual("step1");
   });
 
   it("scanQrCode() accepts token prefix for ICP", async () => {
@@ -101,17 +118,22 @@ describe("QrWizardModal", () => {
       "97731a95e48d63106ede6e6a7c4937475f0a2a1ef0f42f46956a3e06f8e32ba7";
     const paymentUri = `icp:${identifier}`;
 
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
       },
     ];
 
-    const { getByTestId, component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
+
+    const { getByTestId } = render(QrWizardModal, { props: testProps });
 
     const qrPromise = scanQrCode({
-      component,
+      props: testProps,
       requiredToken: ICPToken,
     });
     const qrPromiseResolved = vi.fn();
@@ -119,7 +141,7 @@ describe("QrWizardModal", () => {
 
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
 
     expect(qrPromiseResolved).not.toBeCalled();
 
@@ -137,7 +159,7 @@ describe("QrWizardModal", () => {
       token: "icp",
     });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    expect(getCurrentStep(testProps).name).toEqual("step1");
   });
 
   it("scanQrCode() accepts token prefix for non-ICP token", async () => {
@@ -146,17 +168,22 @@ describe("QrWizardModal", () => {
     const tokenSymbol = "abc";
     const paymentUri = `${tokenSymbol}:${identifier}`;
 
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
       },
     ];
 
-    const { getByTestId, component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
+
+    const { getByTestId } = render(QrWizardModal, { props: testProps });
 
     const qrPromise = scanQrCode({
-      component,
+      props: testProps,
       requiredToken: {
         ...mockSnsToken,
         symbol: tokenSymbol,
@@ -167,7 +194,7 @@ describe("QrWizardModal", () => {
 
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
 
     expect(qrPromiseResolved).not.toBeCalled();
 
@@ -185,7 +212,7 @@ describe("QrWizardModal", () => {
       token: tokenSymbol,
     });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    expect(getCurrentStep(testProps).name).toEqual("step1");
   });
 
   it("scanQrCode() rejects different token prefix", async () => {
@@ -193,17 +220,22 @@ describe("QrWizardModal", () => {
       "97731a95e48d63106ede6e6a7c4937475f0a2a1ef0f42f46956a3e06f8e32ba7";
     const paymentUri = `abc:${identifier}`;
 
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
       },
     ];
 
-    const { getByTestId, component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
+
+    const { getByTestId } = render(QrWizardModal, { props: testProps });
 
     const qrPromise = scanQrCode({
-      component,
+      props: testProps,
       requiredToken: ICPToken,
     });
     const qrPromiseResolved = vi.fn();
@@ -211,7 +243,7 @@ describe("QrWizardModal", () => {
 
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
 
     expect(qrPromiseResolved).not.toBeCalled();
 
@@ -225,7 +257,7 @@ describe("QrWizardModal", () => {
     expect(qrPromiseResolved).toBeCalled();
     expect(await qrPromise).toEqual({ result: "token_incompatible" });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    expect(getCurrentStep(testProps).name).toEqual("step1");
   });
 
   it("scanQrCode() accepts 'dfinity' token prefix for ICP", async () => {
@@ -233,17 +265,22 @@ describe("QrWizardModal", () => {
       "97731a95e48d63106ede6e6a7c4937475f0a2a1ef0f42f46956a3e06f8e32ba7";
     const paymentUri = `dfinity:${identifier}`;
 
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
       },
     ];
 
-    const { getByTestId, component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
+
+    const { getByTestId } = render(QrWizardModal, { props: testProps });
 
     const qrPromise = scanQrCode({
-      component,
+      props: testProps,
       requiredToken: ICPToken,
     });
     const qrPromiseResolved = vi.fn();
@@ -251,7 +288,7 @@ describe("QrWizardModal", () => {
 
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
 
     expect(qrPromiseResolved).not.toBeCalled();
 
@@ -269,7 +306,7 @@ describe("QrWizardModal", () => {
       token: "dfinity",
     });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    expect(getCurrentStep(testProps).name).toEqual("step1");
   });
 
   it("scanQrCode() accepts 'dfinity' prefix for DFINITY token", async () => {
@@ -278,17 +315,22 @@ describe("QrWizardModal", () => {
     const tokenSymbol = "dfinity";
     const paymentUri = `${tokenSymbol}:${identifier}`;
 
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
       },
     ];
 
-    const { getByTestId, component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
+
+    const { getByTestId } = render(QrWizardModal, { props: testProps });
 
     const qrPromise = scanQrCode({
-      component,
+      props: testProps,
       requiredToken: {
         ...mockSnsToken,
         symbol: tokenSymbol,
@@ -299,7 +341,7 @@ describe("QrWizardModal", () => {
 
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
 
     expect(qrPromiseResolved).not.toBeCalled();
 
@@ -317,7 +359,7 @@ describe("QrWizardModal", () => {
       token: tokenSymbol,
     });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    expect(getCurrentStep(testProps).name).toEqual("step1");
   });
 
   it("scanQrCode() rejects 'dfinity' prefix for other token", async () => {
@@ -325,17 +367,22 @@ describe("QrWizardModal", () => {
       "97731a95e48d63106ede6e6a7c4937475f0a2a1ef0f42f46956a3e06f8e32ba7";
     const paymentUri = `dfinity:${identifier}`;
 
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
       },
     ];
 
-    const { getByTestId, component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
+
+    const { getByTestId } = render(QrWizardModal, { props: testProps });
 
     const qrPromise = scanQrCode({
-      component,
+      props: testProps,
       requiredToken: {
         ...mockSnsToken,
         symbol: "abc",
@@ -346,7 +393,7 @@ describe("QrWizardModal", () => {
 
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
 
     expect(qrPromiseResolved).not.toBeCalled();
 
@@ -360,21 +407,26 @@ describe("QrWizardModal", () => {
     expect(qrPromiseResolved).toBeCalled();
     expect(await qrPromise).toEqual({ result: "token_incompatible" });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    expect(getCurrentStep(testProps).name).toEqual("step1");
   });
 
   it("resolves scanQrCode() to 'canceled' when canceled", async () => {
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
       },
     ];
 
-    const { getByTestId, component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
+
+    const { getByTestId } = render(QrWizardModal, { props: testProps });
 
     const qrPromise = scanQrCode({
-      component,
+      props: testProps,
       requiredToken: ICPToken,
     });
     const qrPromiseResolved = vi.fn();
@@ -382,7 +434,7 @@ describe("QrWizardModal", () => {
 
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
 
     const cancelButton = getByTestId("transaction-qrcode-button-cancel");
     expect(cancelButton).toBeInTheDocument();
@@ -396,7 +448,7 @@ describe("QrWizardModal", () => {
   });
 
   it("can go to next step and back", async () => {
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
@@ -407,21 +459,26 @@ describe("QrWizardModal", () => {
       },
     ];
 
-    const { component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    render(QrWizardModal, { props: testProps });
 
-    goToNextStep(component);
+    expect(getCurrentStep(testProps).name).toEqual("step1");
+
+    goToNextStep(testProps);
     await runResolvedPromises();
-    expect(getCurrentStep(component).name).toEqual("step2");
+    expect(getCurrentStep(testProps).name).toEqual("step2");
 
-    goToPreviousStep(component);
+    goToPreviousStep(testProps);
     await runResolvedPromises();
-    expect(getCurrentStep(component).name).toEqual("step1");
+    expect(getCurrentStep(testProps).name).toEqual("step1");
   });
 
   it("scanQrCode returns to original step when canceled", async () => {
-    const steps = [
+    const steps: WizardSteps = [
       {
         title: "Step 1",
         name: "step1",
@@ -436,26 +493,31 @@ describe("QrWizardModal", () => {
       },
     ];
 
-    const { getByTestId, component } = render(QrWizardModal, { steps });
+    const testProps = $state({
+      steps,
+      ...props,
+    });
 
-    expect(getCurrentStep(component).name).toEqual("step1");
+    const { getByTestId } = render(QrWizardModal, { props: testProps });
 
-    goToNextStep(component);
+    expect(getCurrentStep(testProps).name).toEqual("step1");
+
+    goToNextStep(testProps);
     await runResolvedPromises();
-    expect(getCurrentStep(component).name).toEqual("step2");
+    expect(getCurrentStep(testProps).name).toEqual("step2");
 
     scanQrCode({
-      component,
+      props: testProps,
       requiredToken: ICPToken,
     });
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("QRCode");
+    expect(getCurrentStep(testProps).name).toEqual("QRCode");
 
     const cancelButton = getByTestId("transaction-qrcode-button-cancel");
     fireEvent.click(cancelButton);
     await runResolvedPromises();
 
-    expect(getCurrentStep(component).name).toEqual("step2");
+    expect(getCurrentStep(testProps).name).toEqual("step2");
   });
 });

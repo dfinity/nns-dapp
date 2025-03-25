@@ -14,7 +14,7 @@ import { render } from "@testing-library/svelte";
 
 const defaultComponentProps = {
   neuronState: NeuronState.Locked,
-  neuronDissolveDelaySeconds: 0,
+  neuronDissolveDelaySeconds: 0n,
   neuronStake: TokenAmountV2.fromUlps({
     amount: 200_000_000n,
     token: ICPToken,
@@ -27,9 +27,6 @@ const defaultComponentProps = {
 };
 
 describe("SetDissolveDelay", () => {
-  const getDelayInSeconds = (component) =>
-    component.$$.ctx[component.$$.props["delayInSeconds"]];
-
   const renderComponent = (props = {}) => {
     const { container } = render(SetDissolveDelay, {
       props: {
@@ -262,16 +259,18 @@ describe("SetDissolveDelay", () => {
   });
 
   it("should update prop on text input", async () => {
-    const { container, component } = render(SetDissolveDelay, {
-      props: defaultComponentProps,
+    const testProps = $state(defaultComponentProps);
+
+    const { container } = render(SetDissolveDelay, {
+      props: testProps,
     });
     const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
 
     await po.enterDays(100);
-    expect(getDelayInSeconds(component)).toBe(100 * SECONDS_IN_DAY);
+    expect(testProps.delayInSeconds).toBe(100 * SECONDS_IN_DAY);
 
     await po.enterDays(200);
-    expect(getDelayInSeconds(component)).toBe(200 * SECONDS_IN_DAY);
+    expect(testProps.delayInSeconds).toBe(200 * SECONDS_IN_DAY);
   });
 
   it("should disable input when maximum is already selected", async () => {
@@ -319,28 +318,30 @@ describe("SetDissolveDelay", () => {
       const minProjectDelayInSeconds = minProjectDelayInDays * SECONDS_IN_DAY;
       const maxDelayInSeconds = maxDelayInDays * SECONDS_IN_DAY;
 
-      const { container, component } = render(SetDissolveDelay, {
-        props: {
-          ...defaultComponentProps,
-          delayInSeconds: 0,
-          minProjectDelayInSeconds,
-          maxDelayInSeconds,
-        },
+      const testProps = $state({
+        ...defaultComponentProps,
+        delayInSeconds: 0,
+        minProjectDelayInSeconds,
+        maxDelayInSeconds,
+      });
+
+      const { container } = render(SetDissolveDelay, {
+        props: testProps,
       });
       const po = SetDissolveDelayPo.under(new JestPageObjectElement(container));
 
-      expect(getDelayInSeconds(component)).toBe(0);
+      expect(testProps.delayInSeconds).toBe(0);
 
       // Clicking "Min" can increase the delay to the minimum.
       await po.clickMin();
-      expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
+      expect(testProps.delayInSeconds).toBe(minProjectDelayInSeconds);
       expect(await po.getDays()).toBe(minProjectDelayInDays);
       expect(await po.getProgressBarSeconds()).toBe(
         minProjectDelayInDays * SECONDS_IN_DAY
       );
 
       await po.clickMax();
-      expect(getDelayInSeconds(component)).toBe(maxDelayInSeconds);
+      expect(testProps.delayInSeconds).toBe(maxDelayInSeconds);
       expect(await po.getDays()).toBe(maxDelayInDays);
       expect(await po.getProgressBarSeconds()).toBe(
         maxDelayInDays * SECONDS_IN_DAY
@@ -348,7 +349,7 @@ describe("SetDissolveDelay", () => {
 
       // Clicking "Min" can decrease the delay to the minimum.
       await po.clickMin();
-      expect(getDelayInSeconds(component)).toBe(minProjectDelayInSeconds);
+      expect(testProps.delayInSeconds).toBe(minProjectDelayInSeconds);
       expect(await po.getDays()).toBe(minProjectDelayInDays);
       expect(await po.getProgressBarSeconds()).toBe(
         minProjectDelayInDays * SECONDS_IN_DAY

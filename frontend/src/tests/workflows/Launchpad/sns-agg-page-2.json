@@ -162,6 +162,14 @@
           }
         },
         {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 5001,
           "name": "Generic Function to Dissolve NTN Neurons owned by TRAX DAO",
           "description": "Start dissolving NTN DAO neurons held by our DAO.",
@@ -1507,7 +1515,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101812645120511906,
+    "icrc1_total_supply": 101857006994406579,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3595,7 +3603,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100861160009334,
+    "icrc1_total_supply": 100872137777446,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4391,7 +4399,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995543232980,
+    "icrc1_total_supply": 995532273980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7331,7 +7339,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19214682328772962,
+    "icrc1_total_supply": 19221418792994708,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9348,7 +9356,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25357087679101024,
+    "icrc1_total_supply": 25365145840291647,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10739,7 +10747,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10063718434257772,
+    "icrc1_total_supply": 10064722073986858,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -12000,7 +12008,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103768038671397888,
+    "icrc1_total_supply": 103780236829715129,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -13278,7 +13286,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98608464352452252,
+    "icrc1_total_supply": 98614846198103291,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14461,7 +14469,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99923831236508134,
+    "icrc1_total_supply": 99924175542989898,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15092,6 +15100,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -15645,7 +15661,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100261245976130877,
+    "icrc1_total_supply": 100313646935104853,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

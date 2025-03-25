@@ -6,10 +6,10 @@
   } from "$lib/types/nns-neuron-detail.context";
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { SvelteComponent, setContext } from "svelte";
+  import { type Component, setContext } from "svelte";
   import { writable } from "svelte/store";
 
-  export let testComponent: typeof SvelteComponent;
+  export let testComponent: Component;
   export let neuron: NeuronInfo | undefined;
   export let moreProps: Record<string, unknown> = {};
 

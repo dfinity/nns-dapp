@@ -20,8 +20,7 @@ describe("TransactionFormFee", () => {
     });
     const po = renderComponent({ transactionFee });
 
-    // TODO(yhabib): Fix the implementation to not show so many decimals
-    expect(await po.getAmountDisplayPo().getText()).toBe("0.10000000 ICP");
+    expect(await po.getAmountDisplayPo().getText()).toBe("0.10 ICP");
   });
 
   it("should display the USD value without 'less than' sign when above or equal to $0.01", async () => {
