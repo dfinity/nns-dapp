@@ -72,7 +72,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@dfinity/agent": "^2.3.0",
+    "@dfinity/agent": "^2.4.0",
     "@dfinity/auth-client": "^2.3.0",
     "@dfinity/candid": "^2.3.0",
     "@dfinity/ckbtc": "next",
