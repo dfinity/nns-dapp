@@ -39,7 +39,8 @@
     type Token,
   } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import FollowSnsNeuronsByTopicModal from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicModal.svelte";
+  import FollowSnsNeuronsByTopicModal from "$lib/modals/sns/neurons/SnsTopicDefinitionsModal.svelte";
+  import SnsTopicDefinitionsModal from "$lib/modals/sns/neurons/SnsTopicDefinitionsModal.svelte";
 
   // Modal events
 
@@ -123,7 +124,11 @@
   {/if}
 
   {#if type === "follow-by-topic" && nonNullish(rootCanisterId)}
-    <FollowSnsNeuronsByTopicModal on:nnsClose={close} />
+    <FollowSnsNeuronsByTopicModal {rootCanisterId} on:nnsClose={close} />
+  {/if}
+
+  {#if type === "sns-topic-definitions" && nonNullish(rootCanisterId)}
+    <SnsTopicDefinitionsModal {rootCanisterId} on:nnsClose={close} />
   {/if}
 
   {#if type === "stake-maturity" && nonNullish(rootCanisterId) && nonNullish(neuronId)}
