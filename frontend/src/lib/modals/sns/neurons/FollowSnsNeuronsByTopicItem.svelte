@@ -68,7 +68,7 @@
         data-tid="expand-button"
         class="expand-button"
         class:expanded
-        on:click|stopPropagation={toggleContent}
+        on:click={toggleContent}
       >
         <IconExpandMore />
       </button>
