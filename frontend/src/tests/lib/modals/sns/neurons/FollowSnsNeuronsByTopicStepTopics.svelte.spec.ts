@@ -3,7 +3,6 @@ import type { SnsTopicKey } from "$lib/types/sns";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { FollowSnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepTopics.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("FollowSnsNeuronsByTopicStepTopics", () => {
@@ -68,42 +67,36 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     custom_functions: [[]],
   };
 
-  const renderComponent = ({
-    props,
-    nnsClose,
-    nnsNext,
-  }: {
-    props: {
-      selectedTopics: SnsTopicKey[];
-      topicInfos: TopicInfoWithUnknown[];
-    };
-    nnsClose?: () => void;
-    nnsNext?: () => void;
+  const renderComponent = (props: {
+    selectedTopics: SnsTopicKey[];
+    topicInfos: TopicInfoWithUnknown[];
+    onNnsClose: () => void;
+    onNnsNext: () => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicStepTopics, {
       props,
-      events: {
-        ...(nonNullish(nnsClose) && { nnsClose: nnsClose }),
-        ...(nonNullish(nnsNext) && { nnsNext: nnsNext }),
-      },
     });
 
     return FollowSnsNeuronsByTopicStepTopicsPo.under(
       new JestPageObjectElement(container)
     );
   };
+  const defaultProps = {
+    selectedTopics: [],
+    topicInfos: [],
+    onNnsClose: vi.fn(),
+    onNnsNext: vi.fn(),
+  };
 
   it("displays critical and non-critical topics", async () => {
     const po = renderComponent({
-      props: {
-        topicInfos: [
-          criticalTopicInfo1,
-          topicInfo1,
-          criticalTopicInfo2,
-          topicInfo2,
-        ],
-        selectedTopics: [],
-      },
+      ...defaultProps,
+      topicInfos: [
+        criticalTopicInfo1,
+        topicInfo1,
+        criticalTopicInfo2,
+        topicInfo2,
+      ],
     });
 
     expect(await po.getCriticalTopicItemNames()).toEqual([
@@ -126,6 +119,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
 
   it("binds topic selection", async () => {
     const props = $state({
+      ...defaultProps,
       topicInfos: [
         criticalTopicInfo1,
         criticalTopicInfo2,
@@ -134,9 +128,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
       ],
       selectedTopics: [topicKey1, criticalTopicKey1],
     });
-    const po = renderComponent({
-      props,
-    });
+    const po = renderComponent(props);
 
     expect(await po.getTopicSelectionByName(criticalTopicName1)).toEqual(true);
     expect(await po.getTopicSelectionByName(criticalTopicName2)).toEqual(false);
@@ -173,19 +165,19 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   });
 
   it("emits events", async () => {
-    const nnsClose = vi.fn();
-    const nnsNext = vi.fn();
+    const onNnsClose = vi.fn();
+    const onNnsNext = vi.fn();
     const po = renderComponent({
-      props: { topicInfos: [], selectedTopics: [] },
-      nnsClose,
-      nnsNext,
+      ...defaultProps,
+      onNnsClose,
+      onNnsNext,
     });
 
     expect(await po.getCancelButtonPo().isPresent()).toBe(true);
     expect(await po.getNextButtonPo().isPresent()).toBe(true);
     await po.clickCancelButton();
-    expect(nnsClose).toBeCalledTimes(1);
+    expect(onNnsClose).toBeCalledTimes(1);
     await po.clickNextButton();
-    expect(nnsNext).toBeCalledTimes(1);
+    expect(onNnsNext).toBeCalledTimes(1);
   });
 });

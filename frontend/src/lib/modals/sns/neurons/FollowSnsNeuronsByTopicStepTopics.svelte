@@ -1,19 +1,18 @@
 <script lang="ts">
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { createEventDispatcher } from "svelte";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import FollowSnsNeuronsByTopicStepTopicsItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import type { SnsTopicKey } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
-  import TestIdWrapper from "../../../components/common/TestIdWrapper.svelte";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let topicInfos: TopicInfoWithUnknown[];
   export let selectedTopics: SnsTopicKey[] = [];
-
-  const dispatch = createEventDispatcher();
+  export let onNnsClose: () => void;
+  export let onNnsNext: () => void;
 
   let criticalTopicInfos: TopicInfoWithUnknown[];
   $: criticalTopicInfos = topicInfos.filter((topicInfo) =>
@@ -81,7 +80,7 @@
       class="secondary"
       type="button"
       data-tid="cancel-button"
-      on:click={() => dispatch("nnsClose")}
+      on:click={onNnsClose}
     >
       {$i18n.core.cancel}
     </button>
@@ -90,7 +89,7 @@
       data-tid="next-button"
       class="primary"
       disabled={selectedTopics.length === 0}
-      on:click={() => dispatch("nnsNext")}
+      on:click={onNnsNext}
     >
       {$i18n.core.next}
     </button>

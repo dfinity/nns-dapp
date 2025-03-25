@@ -82,8 +82,8 @@
     <FollowSnsNeuronsByTopicStepTopics
       {topicInfos}
       bind:selectedTopics
-      on:nnsClose={close}
-      on:nnsNext={next}
+      onNnsClose={close}
+      onNnsNext={next}
     />
   {/if}
   {#if currentStep?.name === STEP_NEURON}
