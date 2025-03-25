@@ -50,7 +50,6 @@
         {checked}
         on:nnsChange={onChange}
         preventDefault
-        stopPropagation
         --checkbox-label-order="1"
         --checkbox-padding="var(--padding) 0"
       >
