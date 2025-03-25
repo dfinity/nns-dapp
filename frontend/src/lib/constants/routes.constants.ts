@@ -13,7 +13,8 @@ export enum AppPath {
   Settings = "/settings",
   Tokens = "/tokens",
   Reporting = "/reporting",
-  Portfolio = "/portfolio",
+  // We point to the home page to prevent different tracking for both pages
+  Portfolio = "/",
 }
 
 // SvelteKit uses the group defined in src/routes/(app)/ as part of the routeId. It also prefixes it with /.
