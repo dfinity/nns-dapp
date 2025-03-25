@@ -1,16 +1,19 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { createEventDispatcher } from "svelte";
   import Input from "$lib/components/ui/Input.svelte";
   import { Html } from "@dfinity/gix-components";
 
-  const dispatch = createEventDispatcher();
-
   export let followeeHex = "";
+  export let onNnsBack: () => void;
+  export let onNnsConfirm: (followeeHex: string) => void;
 </script>
 
-<form on:submit|preventDefault={() => dispatch("nnsConfirm", { followeeHex })}>
+<form
+  data-tid="follow-sns-neurons-by-topic-step-neuron-component"
+  on:submit|preventDefault={() => onNnsConfirm(followeeHex)}
+>
   <Input
+    testId="new-followee-id"
     inputType="text"
     autocomplete="off"
     placeholderLabelKey="new_followee.placeholder"
@@ -28,9 +31,10 @@
 
   <div class="toolbar">
     <button
+      data-tid="back-button"
       class="secondary"
       type="button"
-      on:click={() => dispatch("nnsBack")}
+      on:click={onNnsBack}
     >
       {$i18n.core.back}
     </button>
@@ -44,6 +48,3 @@
     </button>
   </div>
 </form>
-
-<style lang="scss">
-</style>

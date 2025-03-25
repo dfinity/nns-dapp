@@ -55,11 +55,7 @@
   let selectedTopics: SnsTopicKey[] = [];
   let followeeNeuronIdHex: string = "";
 
-  const onConfirm = async ({
-    detail: { followeeHex },
-  }: {
-    detail: { followeeHex: string };
-  }) => {
+  const onConfirm = async (followeeHex: string) => {
     startBusy({ initiator: "add-followee-by-topic" });
 
     // TODO: replace with the actual api call
@@ -93,8 +89,8 @@
   {#if currentStep?.name === STEP_NEURON}
     <FollowSnsNeuronsByTopicStepNeuron
       bind:followeeHex={followeeNeuronIdHex}
-      on:nnsBack={back}
-      on:nnsConfirm={onConfirm}
+      onNnsBack={back}
+      onNnsConfirm={onConfirm}
     />
   {/if}
 </WizardModal>
