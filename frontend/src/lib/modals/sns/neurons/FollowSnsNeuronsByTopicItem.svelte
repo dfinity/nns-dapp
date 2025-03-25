@@ -53,7 +53,7 @@
         --checkbox-label-order="1"
         --checkbox-padding="var(--padding) 0"
       >
-        <span>{name}</span>
+        <span data-tid="topic-name">{name}</span>
       </Checkbox>
 
       <!-- TODO: display following status -->
@@ -71,7 +71,7 @@
       </button>
     </div>
     <div class="expandable-content">
-      <p class="description">
+      <p class="description" data-tid="topic-description">
         {description}
       </p>
     </div>

@@ -42,7 +42,10 @@
 
 <Separator spacing="medium" />
 
-<div class="topic-group">
+<div
+  class="topic-group"
+  data-tid="follow-sns-neurons-by-topic-step-topics-component"
+>
   <h5 class="headline description"
     >{$i18n.follow_sns_topics.topics_critical_label}
     <TooltipIcon>{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
@@ -85,7 +88,6 @@
   <button
     data-tid="next-button"
     class="primary"
-    type="submit"
     disabled={selectedTopics.length === 0}
     on:click={() => dispatch("nnsNext")}
   >

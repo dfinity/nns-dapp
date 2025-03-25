@@ -13,6 +13,14 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
     );
   }
 
+  static async allUnder(
+    element: PageObjectElement
+  ): Promise<FollowSnsNeuronsByTopicItemPo[]> {
+    return (await element.allByTestId(FollowSnsNeuronsByTopicItemPo.TID)).map(
+      (element) => FollowSnsNeuronsByTopicItemPo.under(element)
+    );
+  }
+
   getCollapsiblePo(): CollapsiblePo {
     return CollapsiblePo.under({
       element: this.root,
@@ -33,5 +41,13 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
 
   getCheckboxPo(): CheckboxPo {
     return CheckboxPo.under({ element: this.root });
+  }
+
+  getTopicName(): Promise<string> {
+    return this.root.byTestId("topic-name").getText();
+  }
+
+  getTopicDescription(): Promise<string> {
+    return this.root.byTestId("topic-description").getText();
   }
 }
