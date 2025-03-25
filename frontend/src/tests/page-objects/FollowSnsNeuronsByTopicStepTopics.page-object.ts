@@ -15,27 +15,66 @@ export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
     );
   }
 
-  getFollowSnsNeuronsByTopicItemPos(): Promise<
+  getCriticalFollowSnsNeuronsByTopicItemPos(): Promise<
     FollowSnsNeuronsByTopicItemPo[]
   > {
-    return FollowSnsNeuronsByTopicItemPo.allUnder(this.root);
+    const groupElementPo = this.root.byTestId("critical-topic-group");
+    return FollowSnsNeuronsByTopicItemPo.allUnder(groupElementPo);
   }
 
-  async getFollowSnsNeuronsByTopicItemNames(): Promise<string[]> {
-    const itemPos = await this.getFollowSnsNeuronsByTopicItemPos();
+  getNonCriticalFollowSnsNeuronsByTopicItemPos(): Promise<
+    FollowSnsNeuronsByTopicItemPo[]
+  > {
+    const groupElementPo = this.root.byTestId("non-critical-topic-group");
+    return FollowSnsNeuronsByTopicItemPo.allUnder(groupElementPo);
+  }
+
+  async getCriticalTopicItemNames(): Promise<string[]> {
+    const itemPos = await this.getCriticalFollowSnsNeuronsByTopicItemPos();
     return Promise.all(itemPos.map((itemPo) => itemPo.getTopicName()));
   }
 
-  async getFollowSnsNeuronsByTopicItemDescriptions(): Promise<string[]> {
-    const itemPos = await this.getFollowSnsNeuronsByTopicItemPos();
+  async getNonCriticalTopicItemNames(): Promise<string[]> {
+    const itemPos = await this.getNonCriticalFollowSnsNeuronsByTopicItemPos();
+    return Promise.all(itemPos.map((itemPo) => itemPo.getTopicName()));
+  }
+
+  async getCriticalTopicItemDescriptions(): Promise<string[]> {
+    const itemPos = await this.getCriticalFollowSnsNeuronsByTopicItemPos();
     return Promise.all(itemPos.map((itemPo) => itemPo.getTopicDescription()));
   }
 
-  async getFollowSnsNeuronsByTopicItemSelections(): Promise<boolean[]> {
-    const itemPos = await this.getFollowSnsNeuronsByTopicItemPos();
-    return Promise.all(
-      itemPos.map((itemPo) => itemPo.getCheckboxPo().isChecked())
-    );
+  async getNonCriticalTopicItemDescriptions(): Promise<string[]> {
+    const itemPos = await this.getNonCriticalFollowSnsNeuronsByTopicItemPos();
+    return Promise.all(itemPos.map((itemPo) => itemPo.getTopicDescription()));
+  }
+
+  async getTopicItemPosByName(
+    topicName: string
+  ): Promise<FollowSnsNeuronsByTopicItemPo> {
+    const itemPos = [
+      ...(await this.getCriticalFollowSnsNeuronsByTopicItemPos()),
+      ...(await this.getNonCriticalFollowSnsNeuronsByTopicItemPos()),
+    ];
+    for (const itemPo of itemPos) {
+      const name = await itemPo.getTopicName();
+      if (name === topicName) {
+        return itemPo;
+      }
+    }
+    throw new Error(`Topic with name ${topicName} not found`);
+  }
+
+  async clickTopicItemByName(topicName: string): Promise<void> {
+    return (await this.getTopicItemPosByName(topicName))
+      .getCheckboxPo()
+      .click();
+  }
+
+  async getTopicSelectionByName(topicName: string): Promise<boolean> {
+    return (await this.getTopicItemPosByName(topicName))
+      .getCheckboxPo()
+      .isChecked();
   }
 
   getCancelButtonPo(): ButtonPo {

@@ -8,6 +8,7 @@
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import type { SnsTopicKey } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
+  import TestIdWrapper from "../../../components/common/TestIdWrapper.svelte";
 
   export let topicInfos: TopicInfoWithUnknown[];
   export let selectedTopics: SnsTopicKey[] = [];
@@ -38,62 +39,63 @@
     selectedTopics.includes(getSnsTopicInfoKey(topicInfo));
 </script>
 
-<p class="description">{$i18n.follow_sns_topics.topics_description}</p>
+<TestIdWrapper testId="follow-sns-neurons-by-topic-step-topics-component">
+  <p class="description">{$i18n.follow_sns_topics.topics_description}</p>
 
-<Separator spacing="medium" />
+  <Separator spacing="medium" />
 
-<div
-  class="topic-group"
-  data-tid="follow-sns-neurons-by-topic-step-topics-component"
->
-  <h5 class="headline description"
-    >{$i18n.follow_sns_topics.topics_critical_label}
-    <TooltipIcon>{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
-    ></h5
-  >
-  {#each criticalTopicInfos as topicInfo}
-    <FollowSnsNeuronsByTopicStepTopicsItem
-      {topicInfo}
-      checked={isTopicInfoSelected(topicInfo)}
-      on:nnsChange={onTopicSelectionChange}
-    />
-  {/each}
-</div>
+  <div class="topic-group" data-tid="critical-topic-group">
+    <h5 class="headline description"
+      >{$i18n.follow_sns_topics.topics_critical_label}
+      <TooltipIcon
+        >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
+      ></h5
+    >
+    {#each criticalTopicInfos as topicInfo}
+      <FollowSnsNeuronsByTopicStepTopicsItem
+        {topicInfo}
+        checked={isTopicInfoSelected(topicInfo)}
+        on:nnsChange={onTopicSelectionChange}
+      />
+    {/each}
+  </div>
 
-<div class="topic-group">
-  <h5 class="headline description"
-    >{$i18n.follow_sns_topics.topics_non_critical_label}
-    <TooltipIcon>{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
-    ></h5
-  >
-  {#each nonCriticalTopicInfos as topicInfo}
-    <FollowSnsNeuronsByTopicStepTopicsItem
-      {topicInfo}
-      checked={isTopicInfoSelected(topicInfo)}
-      on:nnsChange={onTopicSelectionChange}
-    />
-  {/each}
-</div>
+  <div class="topic-group" data-tid="non-critical-topic-group">
+    <h5 class="headline description"
+      >{$i18n.follow_sns_topics.topics_non_critical_label}
+      <TooltipIcon
+        >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
+      ></h5
+    >
+    {#each nonCriticalTopicInfos as topicInfo}
+      <FollowSnsNeuronsByTopicStepTopicsItem
+        {topicInfo}
+        checked={isTopicInfoSelected(topicInfo)}
+        on:nnsChange={onTopicSelectionChange}
+      />
+    {/each}
+  </div>
 
-<div class="toolbar">
-  <button
-    class="secondary"
-    type="button"
-    data-tid="cancel-button"
-    on:click={() => dispatch("nnsClose")}
-  >
-    {$i18n.core.cancel}
-  </button>
+  <div class="toolbar">
+    <button
+      class="secondary"
+      type="button"
+      data-tid="cancel-button"
+      on:click={() => dispatch("nnsClose")}
+    >
+      {$i18n.core.cancel}
+    </button>
 
-  <button
-    data-tid="next-button"
-    class="primary"
-    disabled={selectedTopics.length === 0}
-    on:click={() => dispatch("nnsNext")}
-  >
-    {$i18n.core.next}
-  </button>
-</div>
+    <button
+      data-tid="next-button"
+      class="primary"
+      disabled={selectedTopics.length === 0}
+      on:click={() => dispatch("nnsNext")}
+    >
+      {$i18n.core.next}
+    </button>
+  </div>
+</TestIdWrapper>
 
 <style lang="scss">
   .topic-group {
