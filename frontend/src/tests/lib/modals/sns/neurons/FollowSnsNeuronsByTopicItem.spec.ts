@@ -4,7 +4,6 @@ import { FollowSnsNeuronsByTopicItemPo } from "$tests/page-objects/FollowSnsNeur
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
 
 describe("FollowSnsNeuronsByTopicItem", () => {
   const nativeNsFunction: SnsNervousSystemFunction = {
@@ -27,31 +26,28 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     custom_functions: [[]],
   };
 
-  const renderComponent = ({
-    props,
-    nnsChange,
-  }: {
-    props: {
-      topicInfo: TopicInfoWithUnknown;
-      checked: boolean;
-    };
-    nnsChange?: () => void;
+  const renderComponent = (props: {
+    topicInfo: TopicInfoWithUnknown;
+    checked: boolean;
+    onNnsChange?: () => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicItem, {
       props,
-      events: {
-        ...(nonNullish(nnsChange) && { nnsChange: nnsChange }),
-      },
     });
 
     return FollowSnsNeuronsByTopicItemPo.under(
       new JestPageObjectElement(container)
     );
   };
+  const defaultProps = {
+    topicInfo,
+    checked: false,
+    onNnsChange: vi.fn(),
+  };
 
   it("should expand and collapse", async () => {
     const po = renderComponent({
-      props: { topicInfo, checked: false },
+      ...defaultProps,
     });
 
     expect(await po.getCollapsiblePo().isExpanded()).toBe(false);
@@ -62,36 +58,25 @@ describe("FollowSnsNeuronsByTopicItem", () => {
   });
 
   it("should dispatch on nnsChange on check", async () => {
-    const nnsChange = vi.fn();
+    const onNnsChange = vi.fn();
     const po = renderComponent({
-      props: { topicInfo, checked: false },
-      nnsChange,
+      ...defaultProps,
+      onNnsChange,
     });
 
     expect(await po.getCheckboxPo().isChecked()).toBe(false);
 
     await po.getCheckboxPo().click();
     expect(await po.getCheckboxPo().isChecked()).toBe(true);
-    expect(nnsChange).toBeCalledTimes(1);
-    expect(nnsChange).toBeCalledWith(
-      expect.objectContaining({
-        detail: {
-          checked: true,
-          topicKey,
-        },
-      })
-    );
+    expect(onNnsChange).toBeCalledTimes(1);
+    expect(onNnsChange).toBeCalledWith({
+      checked: true,
+      topicKey,
+    });
 
     await po.getCheckboxPo().click();
     expect(await po.getCheckboxPo().isChecked()).toBe(false);
-    expect(nnsChange).toBeCalledTimes(2);
-    expect(nnsChange).toBeCalledWith(
-      expect.objectContaining({
-        detail: {
-          checked: false,
-          topicKey,
-        },
-      })
-    );
+    expect(onNnsChange).toBeCalledTimes(2);
+    expect(onNnsChange).toBeCalledWith({ checked: false, topicKey });
   });
 });

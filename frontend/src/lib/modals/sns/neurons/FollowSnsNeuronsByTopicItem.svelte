@@ -9,12 +9,13 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import type { SnsTopicKey } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
-  import { createEventDispatcher } from "svelte";
 
   export let topicInfo: TopicInfoWithUnknown;
   export let checked: boolean = false;
-
-  const dispatch = createEventDispatcher();
+  export let onNnsChange: (args: {
+    topicKey: SnsTopicKey;
+    checked: boolean;
+  }) => void;
 
   let topicKey: SnsTopicKey;
   $: topicKey = getSnsTopicInfoKey(topicInfo);
@@ -26,7 +27,7 @@
   const onChange = () => {
     // Checkbox doesn't support two-way binding
     checked = !checked;
-    dispatch("nnsChange", { topicKey, checked });
+    onNnsChange({ topicKey, checked });
   };
 
   let toggleContent: () => void;

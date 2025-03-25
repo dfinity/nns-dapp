@@ -24,9 +24,11 @@
   );
 
   const onTopicSelectionChange = ({
-    detail: { topicKey, checked },
+    topicKey,
+    checked,
   }: {
-    detail: { topicKey: SnsTopicKey; checked: boolean };
+    topicKey: SnsTopicKey;
+    checked: boolean;
   }) => {
     if (checked) {
       selectedTopics = [...selectedTopics, topicKey];
@@ -54,7 +56,7 @@
       <FollowSnsNeuronsByTopicStepTopicsItem
         {topicInfo}
         checked={isTopicInfoSelected(topicInfo)}
-        on:nnsChange={onTopicSelectionChange}
+        onNnsChange={onTopicSelectionChange}
       />
     {/each}
   </div>
@@ -70,7 +72,7 @@
       <FollowSnsNeuronsByTopicStepTopicsItem
         {topicInfo}
         checked={isTopicInfoSelected(topicInfo)}
-        on:nnsChange={onTopicSelectionChange}
+        onNnsChange={onTopicSelectionChange}
       />
     {/each}
   </div>
