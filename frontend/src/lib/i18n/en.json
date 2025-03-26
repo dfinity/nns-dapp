@@ -711,6 +711,7 @@
     "add_maturity_success": "Maturity successfully added",
     "update_neuron_success": "Neuron successfully updated.",
     "following_title": "Voting Delegation",
+    "following_description_to_be_removed": "Following allows you to delegate your votes to another neuron holder. You still earn rewards if you delegate your voting rights. You can change your following at any time.",
     "following_description": "To maximize your rewards, make sure you vote on every proposal or delegate your voting by following other neurons. You can change your following at any time. Note, that it is sufficient to follow a single neuron per topic, and your voting is fully delegated only if following is set for every topic.",
     "following_note": "*SNS topics were introduced on 04.03.2025. Proposal types are grouped into topics, unique for each SNS. Find more info below.",
     "following_link": "View topic definitions",

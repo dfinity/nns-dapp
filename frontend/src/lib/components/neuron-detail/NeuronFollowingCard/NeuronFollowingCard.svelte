@@ -41,10 +41,10 @@
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
     <svelte:fragment slot="info">
       <div class="key-value-pair-info-wrapper">
-        <span>
-          {$i18n.neuron_detail.following_description}
-        </span>
         {#if $ENABLE_SNS_TOPICS}
+          <span>
+            {$i18n.neuron_detail.following_description}
+          </span>
           <span class="note">
             {$i18n.neuron_detail.following_note}
           </span>
@@ -52,6 +52,10 @@
             <span>{$i18n.neuron_detail.following_link} </span>
             <IconRight />
           </a>
+        {:else}
+          <span>
+            {$i18n.neuron_detail.following_description_to_be_removed}
+          </span>
         {/if}
       </div>
     </svelte:fragment>
