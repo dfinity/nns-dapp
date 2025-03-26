@@ -163,18 +163,14 @@
       />
     {/if}
 
-    {#if cards.length > 0}
-      <StackedCards {cards} />
-    {/if}
-
     {#if !$authSignedInStore}
       <div class="login-card">
         <LoginCard />
       </div>
     {/if}
 
-    {#if launchpadCards.length > 0}
-      <StackedCards cards={launchpadCards} />
+    {#if cards.length > 0}
+      <StackedCards {cards} />
     {/if}
   </div>
 
