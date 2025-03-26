@@ -46,11 +46,6 @@ describe("SnsTopicDefinitionsTopic", () => {
       new JestPageObjectElement(container)
     );
   };
-  const defaultProps = {
-    topicInfo,
-    checked: false,
-    onNnsChange: vi.fn(),
-  };
 
   it("displays topic info", async () => {
     const po = renderComponent({ topicInfo });

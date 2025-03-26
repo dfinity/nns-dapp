@@ -2,18 +2,12 @@
   import { Collapsible, Tag, Tooltip } from "@dfinity/gix-components";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
-  import type { SnsTopicKey } from "$lib/types/sns";
-  import {
-    getAllSnsNSFunctions,
-    getSnsTopicInfoKey,
-  } from "$lib/utils/sns-topics.utils";
+  import { getAllSnsNSFunctions } from "$lib/utils/sns-topics.utils";
   import type { NervousSystemFunction } from "@dfinity/sns/dist/candid/sns_governance";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let topicInfo: TopicInfoWithUnknown;
 
-  let topicKey: SnsTopicKey;
-  $: topicKey = getSnsTopicInfoKey(topicInfo);
   let name: string;
   $: name = fromDefinedNullable(topicInfo.name);
   let description: string;
