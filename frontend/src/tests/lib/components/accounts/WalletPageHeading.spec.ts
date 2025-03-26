@@ -176,7 +176,7 @@ describe("WalletPageHeading", () => {
     expect(await po.hasBalanceInUsd()).toBe(true);
     expect(await po.getBalanceInUsd()).toBe("$30.00");
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      "Token prices are in ckUSDC based on data provided by ICPSwap."
+      en.accounts.token_price_source
     );
   });
 
