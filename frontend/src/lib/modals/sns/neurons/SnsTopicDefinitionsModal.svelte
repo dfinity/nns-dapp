@@ -74,7 +74,7 @@
     <button
       class="secondary"
       type="button"
-      data-tid="cancel-button"
+      data-tid="close-button"
       on:click={close}
     >
       {$i18n.core.close}
