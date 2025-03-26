@@ -62,7 +62,7 @@
     <h5 class="headline description"
       >{$i18n.follow_sns_topics.topics_non_critical_label}
       <TooltipIcon
-        >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
+        >{$i18n.follow_sns_topics.topics_non_critical_tooltip}</TooltipIcon
       ></h5
     >
     {#each nonCriticalTopicInfos as topicInfo}
