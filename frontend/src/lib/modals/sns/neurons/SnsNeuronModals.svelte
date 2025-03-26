@@ -124,7 +124,7 @@
   {/if}
 
   {#if type === "follow-by-topic" && nonNullish(rootCanisterId)}
-    <FollowSnsNeuronsByTopicModal {rootCanisterId} on:nnsClose={close} />
+    <FollowSnsNeuronsByTopicModal on:nnsClose={close} />
   {/if}
 
   {#if type === "sns-topic-definitions" && nonNullish(rootCanisterId)}
