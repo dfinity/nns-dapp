@@ -39,7 +39,7 @@
     type Token,
   } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import FollowSnsNeuronsByTopicModal from "$lib/modals/sns/neurons/SnsTopicDefinitionsModal.svelte";
+  import FollowSnsNeuronsByTopicModal from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicModal.svelte";
   import SnsTopicDefinitionsModal from "$lib/modals/sns/neurons/SnsTopicDefinitionsModal.svelte";
 
   // Modal events
