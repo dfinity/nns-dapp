@@ -149,14 +149,14 @@
       />
     {/if}
 
-    {#if launchpadCards.length > 0}
-      <StackedCards cards={launchpadCards} />
-    {/if}
-
     {#if !$authSignedInStore}
       <div class="login-card">
         <LoginCard />
       </div>
+    {/if}
+
+    {#if launchpadCards.length > 0}
+      <StackedCards cards={launchpadCards} />
     {/if}
   </div>
 
@@ -225,7 +225,7 @@
 
         // Case: not signed in, with projects
         &:not(.signed-in).launchpad {
-          grid-template-columns: 1fr 2fr;
+          grid-template-columns: 2fr 1fr;
         }
 
         // Case: not signed in, with no projects

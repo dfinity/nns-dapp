@@ -28,10 +28,13 @@ export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
       routeId
     );
 
+  const pathWithoutGroups = routeIdWithoutGroups(routeId);
+  const normalizedPath =
+    pathWithoutGroups === "/"
+      ? pathWithoutGroups
+      : pathWithoutGroups.replace(/\/$/, "");
   const index = Object.values(AppPath).indexOf(
-    routeIdWithoutGroups(routeId)
-      // Remove trailing slash if present
-      .replace(/\/$/, "") as unknown as AppPath
+    normalizedPath as unknown as AppPath
   );
 
   const key = Object.keys(AppPath)[index];

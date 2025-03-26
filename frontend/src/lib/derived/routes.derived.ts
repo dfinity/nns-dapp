@@ -18,6 +18,7 @@ export const accountsPageOrigin: Readable<AppPath> = derived(
       .reverse()
       .slice(0, 3)
       .find((path) => path === AppPath.Portfolio || path === AppPath.Tokens);
+
     return lastPath ?? AppPath.Tokens;
   }
 );

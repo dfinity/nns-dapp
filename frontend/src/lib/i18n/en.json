@@ -290,7 +290,7 @@
     "transaction_time_seconds": "Seconds",
     "token_price_error": "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment.",
     "unpriced_tokens_warning": "Value may be inaccurate as some prices could not be fetched.",
-    "token_price_source": "Token prices are in ckUSDC based on data provided by ICPSwap."
+    "token_price_source": "Token prices are based on data provided by ICPSwap."
   },
   "neuron_types": {
     "seed": "Seed",
@@ -861,7 +861,7 @@
     "max_user_commitment_reached": "Maximum commitment reached",
     "not_eligible_to_participate": "You are not eligible to participate in this swap.",
     "getting_sns_open_ticket": "We're connecting with the SNS swap. This might take more than a minute.",
-    "current_nf_commitment_description": "The Neurons' Fund commitment increases based on direct participation. The exact amount is computed at the end of the swap. <a href=\"https://internetcomputer.org/docs/current/tokenomics/nns/neurons-fund\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
+    "current_nf_commitment_description": "The Neurons' Fund commitment increases based on direct participation. The exact amount is computed at the end of the swap. <a href=\"https://learn.internetcomputer.org/hc/en-us/articles/34084179554196-Neurons-Fund-NF\" rel=\"noopener noreferrer\" aria-label=\"more info about neurons' fund\" target=\"_blank\">Learn more</a>.",
     "sign_in": "Sign in to participate"
   },
   "sns_sale": {
