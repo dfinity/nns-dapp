@@ -8,6 +8,7 @@
     getSnsTopicInfoKey,
   } from "$lib/utils/sns-topics.utils";
   import type { NervousSystemFunction } from "@dfinity/sns/dist/candid/sns_governance";
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let topicInfo: TopicInfoWithUnknown;
 
@@ -33,12 +34,11 @@
 
         <div class="functions">
           {#each nsFunctions as nsFunction (nsFunction.id.toString())}
-            <Tooltip
-              testId="tooltip"
-              text={fromNullable(nsFunction.description)}
-            >
-              <Tag testId="ns-function-name">{nsFunction.name}</Tag>
-            </Tooltip>
+            <TestIdWrapper testId="ns-function">
+              <Tooltip text={fromNullable(nsFunction.description)}>
+                <Tag testId="ns-function-name">{nsFunction.name}</Tag>
+              </Tooltip>
+            </TestIdWrapper>
           {/each}
         </div>
       </div>
