@@ -7,7 +7,9 @@
     createSnsNsFunctionsProjectStore,
     type SnsNervousSystemFunctionsProjectStore,
   } from "$lib/derived/sns-ns-functions-project.derived";
+  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
@@ -18,13 +20,11 @@
     hasPermissionToVote,
     type SnsFolloweesByNeuron,
   } from "$lib/utils/sns-neuron.utils";
-  import { KeyValuePairInfo } from "@dfinity/gix-components";
+  import { IconRight, KeyValuePairInfo } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
-  import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -73,9 +73,26 @@
 <CardInfo noMargin testId="sns-neuron-following-card-component">
   <KeyValuePairInfo testId="sns-neuron-following">
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
-    <svelte:fragment slot="info"
-      >{$i18n.neuron_detail.following_description}</svelte:fragment
-    >
+    <svelte:fragment slot="info">
+      <div class="key-value-pair-info-wrapper">
+        {#if $ENABLE_SNS_TOPICS}
+          <span>
+            {$i18n.neuron_detail.following_description}
+          </span>
+          <span class="note">
+            {$i18n.neuron_detail.following_note}
+          </span>
+          <a href="/#" class="link">
+            <span>{$i18n.neuron_detail.following_link} </span>
+            <IconRight />
+          </a>
+        {:else}
+          <span>
+            {$i18n.neuron_detail.following_description_to_be_removed}
+          </span>
+        {/if}
+      </div>
+    </svelte:fragment>
   </KeyValuePairInfo>
 
   {#if followees.length > 0}
@@ -101,6 +118,8 @@
 </CardInfo>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   h3 {
     line-height: var(--line-height-standard);
   }
@@ -113,5 +132,26 @@
     display: flex;
     justify-content: flex-start;
     padding-top: var(--padding);
+  }
+
+  .key-value-pair-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--padding);
+
+    .note {
+      @include fonts.small(true);
+    }
+
+    .link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--button-secondary-color);
+      font-weight: var(--font-weight-bold);
+      text-decoration: none;
+    }
   }
 </style>

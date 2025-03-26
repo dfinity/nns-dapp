@@ -38,9 +38,9 @@
 <CardInfo noMargin testId="neuron-following-card-component">
   <KeyValuePairInfo testId="neuron-following">
     <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
-    <svelte:fragment slot="info"
-      >{$i18n.neuron_detail.following_description}</svelte:fragment
-    >
+    <svelte:fragment slot="info">
+      {$i18n.neuron_detail.following_description_to_be_removed}
+    </svelte:fragment>
   </KeyValuePairInfo>
 
   {#if followees.length > 0 && nonNullish(neuron)}
