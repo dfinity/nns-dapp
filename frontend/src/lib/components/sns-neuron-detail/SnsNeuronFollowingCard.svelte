@@ -7,6 +7,7 @@
     createSnsNsFunctionsProjectStore,
     type SnsNervousSystemFunctionsProjectStore,
   } from "$lib/derived/sns-ns-functions-project.derived";
+  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
@@ -24,8 +25,6 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
-  import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
