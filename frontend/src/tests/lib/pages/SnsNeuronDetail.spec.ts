@@ -483,5 +483,9 @@ describe("SnsNeuronDetail", () => {
       expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
       await po.getFollowSnsNeuronsByTopicModalPo().waitForClosed();
     });
+
+    it("should set follow by topics", async () => {
+      // TODO: Implement this test after second step is done.
+    });
   });
 });
