@@ -1,5 +1,8 @@
 import { AppPath } from "$lib/constants/routes.constants";
-import { accountsPathStore } from "$lib/derived/paths.derived";
+import {
+  accountsPathStore,
+  proposalsPathStore,
+} from "$lib/derived/paths.derived";
 import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
 import { referrerPathStore } from "$lib/stores/routes.store";
 import { derived, type Readable } from "svelte/store";
@@ -72,3 +75,22 @@ export const projectPageOrigin = derived(referrerPathStore, (paths) => {
 
   return AppPath.Launchpad;
 });
+
+/**
+ * Derives the origin page (Portfolio, Launchpad or Proposals) to return from SNS Proposals page.
+ * Looks at last entry to handle navigation flows:
+ * Portfolio -> NNS Proposal for a new SNS -> (back) -> Portfolio
+ * Launchpad -> NNS Proposal for a new SNS -> (back) -> Launchpad
+ *
+ * Returns proposalsPath as default if no matching page is found.
+ */
+export const snsProposalsPageOrigin = derived(
+  [referrerPathStore, proposalsPathStore],
+  ([paths, proposalsPath]) => {
+    const lastPath = paths.at(-1);
+    if (lastPath === AppPath.Portfolio) return lastPath;
+    if (lastPath === AppPath.Launchpad) return lastPath;
+
+    return proposalsPath;
+  }
+);

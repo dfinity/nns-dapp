@@ -1,9 +1,11 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath, UNIVERSE_PARAM } from "$lib/constants/routes.constants";
+import { proposalsPathStore } from "$lib/derived/paths.derived";
 import {
   accountsPageOrigin,
   neuronsPageOrigin,
   projectPageOrigin,
+  snsProposalsPageOrigin,
   walletPageOrigin,
 } from "$lib/derived/routes.derived";
 import { referrerPathStore } from "$lib/stores/routes.store";
@@ -116,6 +118,41 @@ describe("routes.derived", () => {
       referrerPathStore.pushPath(AppPath.Settings);
 
       expect(get(projectPageOrigin)).toBe(AppPath.Launchpad);
+    });
+  });
+
+  describe("snsProposalsPageOrigin.derived", () => {
+    it("should return Portfolio when it was the last page visited", () => {
+      referrerPathStore.pushPath(AppPath.Portfolio);
+
+      expect(get(snsProposalsPageOrigin)).toBe(AppPath.Portfolio);
+    });
+
+    it("should return Launchpad when it was the last page visited", () => {
+      referrerPathStore.pushPath(AppPath.Launchpad);
+
+      expect(get(snsProposalsPageOrigin)).toBe(AppPath.Launchpad);
+    });
+
+    it("should return to proposalsPath as default when no matching page was found", () => {
+      referrerPathStore.pushPath(AppPath.Settings);
+
+      const expectedProposalsPath = get(proposalsPathStore);
+      expect(get(snsProposalsPageOrigin)).toBe(expectedProposalsPath);
+    });
+
+    it("should prioritize Portfolio over other paths", () => {
+      referrerPathStore.pushPath(AppPath.Launchpad);
+      referrerPathStore.pushPath(AppPath.Portfolio);
+
+      expect(get(snsProposalsPageOrigin)).toBe(AppPath.Portfolio);
+    });
+
+    it("should prioritize Launchpad when Portfolio wasn't visited", () => {
+      referrerPathStore.pushPath(AppPath.Settings);
+      referrerPathStore.pushPath(AppPath.Launchpad);
+
+      expect(get(snsProposalsPageOrigin)).toBe(AppPath.Launchpad);
     });
   });
 });
