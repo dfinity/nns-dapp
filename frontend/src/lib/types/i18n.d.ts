@@ -407,6 +407,15 @@ interface I18nNeurons {
   create_as_public_neuron_failure: string;
 }
 
+interface I18nFollow_sns_topics {
+  topic_definitions_description: string;
+  topic_definitions_title: string;
+  topics_critical_label: string;
+  topics_critical_tooltip: string;
+  topics_non_critical_label: string;
+  topics_non_critical_tooltip: string;
+}
+
 interface I18nMissing_rewards {
   description: string;
   confirming: string;
@@ -1518,6 +1527,7 @@ interface I18n {
   neuron_types: I18nNeuron_types;
   staking: I18nStaking;
   neurons: I18nNeurons;
+  follow_sns_topics: I18nFollow_sns_topics;
   missing_rewards: I18nMissing_rewards;
   missing_rewards_banner: I18nMissing_rewards_banner;
   missing_rewards_modal: I18nMissing_rewards_modal;

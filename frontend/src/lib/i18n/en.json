@@ -393,6 +393,14 @@
     "create_as_public_tooltip": "Public neurons reveal more information about themselves including how they vote on proposals.",
     "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
   },
+  "follow_sns_topics": {
+    "topic_definitions_description": "Proposal types are grouped into topics, unique for each SNS. You can review the topic definitions for this SNS here.",
+    "topic_definitions_title": "Topic Definition List",
+    "topics_critical_label": "Critical topics",
+    "topics_critical_tooltip": "TBD",
+    "topics_non_critical_label": "Non-critical topics",
+    "topics_non_critical_tooltip": "TBD"
+  },
   "missing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
     "confirming": "Confirming following. This may take a moment.",
