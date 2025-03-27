@@ -23,4 +23,8 @@ export class SnsNeuronFollowingCardPo extends BasePageObject {
   getFollowSnsNeuronsButtonPo(): ButtonPo {
     return this.getButton("sns-follow-neurons-button");
   }
+
+  getSnsTopicDefinitionsButtonPo(): ButtonPo {
+    return this.getButton("sns-topic-definitions-button");
+  }
 }

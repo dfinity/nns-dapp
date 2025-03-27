@@ -10,6 +10,7 @@ import { SnsNeuronMaturitySectionPo } from "$tests/page-objects/SnsNeuronMaturit
 import { SnsNeuronPageHeaderPo } from "$tests/page-objects/SnsNeuronPageHeader.page-object";
 import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading.page-object";
 import { SnsNeuronVotingPowerSectionPo } from "$tests/page-objects/SnsNeuronVotingPowerSection.page-object";
+import { SnsTopicDefinitionsModalPo } from "$tests/page-objects/SnsTopicDefinitionsModal.page-object";
 import { SummaryPo } from "$tests/page-objects/Summary.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
@@ -78,6 +79,10 @@ export class SnsNeuronDetailPo extends BasePageObject {
 
   getFollowSnsNeuronsModalPo(): FollowSnsNeuronsModalPo {
     return FollowSnsNeuronsModalPo.under(this.root);
+  }
+
+  getSnsTopicDefinitionsModalPo(): SnsTopicDefinitionsModalPo {
+    return SnsTopicDefinitionsModalPo.under(this.root);
   }
 
   getFollowSnsNeuronsByTopicModalPo(): FollowSnsNeuronsByTopicModalPo {

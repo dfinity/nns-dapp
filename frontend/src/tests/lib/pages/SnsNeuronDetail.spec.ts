@@ -483,5 +483,28 @@ describe("SnsNeuronDetail", () => {
       expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
       await po.getFollowSnsNeuronsByTopicModalPo().waitForClosed();
     });
+
+    it("should open topic definitions modal", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId,
+          topics: {
+            topics: [],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+      const po = await renderComponent({
+        neuronId: validNeuronIdAsHexString,
+      });
+
+      expect(await po.getSnsTopicDefinitionsModalPo().isPresent()).toBe(false);
+
+      await po.getFollowingCardPo().getSnsTopicDefinitionsButtonPo().click();
+      expect(await po.getSnsTopicDefinitionsModalPo().isPresent()).toBe(true);
+
+      await po.getSnsTopicDefinitionsModalPo().clickCloseButton();
+      expect(await po.getSnsTopicDefinitionsModalPo().isPresent()).toBe(false);
+    });
   });
 });
