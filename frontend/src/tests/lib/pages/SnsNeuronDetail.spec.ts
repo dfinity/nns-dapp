@@ -504,7 +504,7 @@ describe("SnsNeuronDetail", () => {
       expect(await po.getSnsTopicDefinitionsModalPo().isPresent()).toBe(true);
 
       await po.getSnsTopicDefinitionsModalPo().clickCloseButton();
-      expect(await po.getSnsTopicDefinitionsModalPo().isPresent()).toBe(false);
+      await po.getSnsTopicDefinitionsModalPo().waitForClosed();
     });
   });
 });
