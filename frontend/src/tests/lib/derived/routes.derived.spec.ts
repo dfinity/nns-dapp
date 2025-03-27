@@ -5,7 +5,7 @@ import {
   accountsPageOrigin,
   neuronsPageOrigin,
   projectPageOrigin,
-  snsProposalsPageOrigin,
+  proposalsPageOrigin,
   walletPageOrigin,
 } from "$lib/derived/routes.derived";
 import { referrerPathStore } from "$lib/stores/routes.store";
@@ -121,38 +121,38 @@ describe("routes.derived", () => {
     });
   });
 
-  describe("snsProposalsPageOrigin.derived", () => {
+  describe("proposalsPageOrigin.derived", () => {
     it("should return Portfolio when it was the last page visited", () => {
       referrerPathStore.pushPath(AppPath.Portfolio);
 
-      expect(get(snsProposalsPageOrigin)).toBe(AppPath.Portfolio);
+      expect(get(proposalsPageOrigin)).toBe(AppPath.Portfolio);
     });
 
     it("should return Launchpad when it was the last page visited", () => {
       referrerPathStore.pushPath(AppPath.Launchpad);
 
-      expect(get(snsProposalsPageOrigin)).toBe(AppPath.Launchpad);
+      expect(get(proposalsPageOrigin)).toBe(AppPath.Launchpad);
     });
 
     it("should return to proposalsPath as default when no matching page was found", () => {
       referrerPathStore.pushPath(AppPath.Settings);
 
       const expectedProposalsPath = get(proposalsPathStore);
-      expect(get(snsProposalsPageOrigin)).toBe(expectedProposalsPath);
+      expect(get(proposalsPageOrigin)).toBe(expectedProposalsPath);
     });
 
     it("should prioritize Portfolio over other paths", () => {
       referrerPathStore.pushPath(AppPath.Launchpad);
       referrerPathStore.pushPath(AppPath.Portfolio);
 
-      expect(get(snsProposalsPageOrigin)).toBe(AppPath.Portfolio);
+      expect(get(proposalsPageOrigin)).toBe(AppPath.Portfolio);
     });
 
     it("should prioritize Launchpad when Portfolio wasn't visited", () => {
       referrerPathStore.pushPath(AppPath.Settings);
       referrerPathStore.pushPath(AppPath.Launchpad);
 
-      expect(get(snsProposalsPageOrigin)).toBe(AppPath.Launchpad);
+      expect(get(proposalsPageOrigin)).toBe(AppPath.Launchpad);
     });
   });
 });

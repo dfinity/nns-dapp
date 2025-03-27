@@ -84,7 +84,7 @@ export const projectPageOrigin = derived(referrerPathStore, (paths) => {
  *
  * Returns proposalsPath as default if no matching page is found.
  */
-export const snsProposalsPageOrigin = derived(
+export const proposalsPageOrigin = derived(
   [referrerPathStore, proposalsPathStore],
   ([paths, proposalsPath]) => {
     const lastPath = paths.at(-1);
