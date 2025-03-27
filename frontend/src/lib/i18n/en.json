@@ -399,7 +399,8 @@
     "topics_critical_label": "Critical topics",
     "topics_critical_tooltip": "TBD",
     "topics_non_critical_label": "Non-critical topics",
-    "topics_non_critical_tooltip": "TBD"
+    "topics_non_critical_tooltip": "TBD",
+    "neuron_title": "Enter Neuron to Follow"
   },
   "missing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
