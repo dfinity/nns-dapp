@@ -1515,7 +1515,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101857006994406579,
+    "icrc1_total_supply": 101915169030751991,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3603,7 +3603,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100872137777446,
+    "icrc1_total_supply": 100875355729756,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4399,7 +4399,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995532273980,
+    "icrc1_total_supply": 995531043980,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -7339,7 +7339,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19221418792994708,
+    "icrc1_total_supply": 19222459374809801,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9356,7 +9356,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25365145840291647,
+    "icrc1_total_supply": 25372110834179271,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -10747,7 +10747,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10064722073986858,
+    "icrc1_total_supply": 10065121340205416,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11295,7 +11295,8 @@
         "qc6wh-6yaaa-aaaap-anuza-cai",
         "ocqzv-tyaaa-aaaar-qal4a-cai",
         "2rgax-kyaaa-aaaap-anvba-cai",
-        "e7tgb-6aaaa-aaaap-akqfa-cai"
+        "e7tgb-6aaaa-aaaap-akqfa-cai",
+        "7i4z4-fyaaa-aaaap-anzsa-cai"
       ],
       "archives": ["apf7i-uiaaa-aaaaq-aac2q-cai"]
     },
@@ -11703,6 +11704,19 @@
               "target_method_name": "admin_remove_managers"
             }
           }
+        },
+        {
+          "id": 2000,
+          "name": "`transferPosition` function",
+          "description": "It is used to transfer position in ICPSwap.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "7i4z4-fyaaa-aaaap-anzsa-cai",
+              "target_canister_id": "5fq4w-lyaaa-aaaag-qjqta-cai",
+              "validator_method_name": "validate_transfer_position",
+              "target_method_name": "transferPosition"
+            }
+          }
         }
       ]
     },
@@ -12008,7 +12022,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103780236829715129,
+    "icrc1_total_supply": 103931640955298359,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -13286,7 +13300,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98614846198103291,
+    "icrc1_total_supply": 98578021249035489,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14469,7 +14483,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99924175542989898,
+    "icrc1_total_supply": 99924701223801390,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15661,7 +15675,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100313646935104853,
+    "icrc1_total_supply": 100323475873715530,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
