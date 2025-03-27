@@ -12,6 +12,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import SnsTopicDefinitionsTopic from "$lib/modals/sns/neurons/SnsTopicDefinitionsTopic.svelte";
+  import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
 
   export let rootCanisterId: Principal;
 
@@ -53,7 +54,7 @@
         >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
       ></h5
     >
-    {#each criticalTopicInfos as topicInfo}
+    {#each criticalTopicInfos as topicInfo (getSnsTopicInfoKey(topicInfo))}
       <SnsTopicDefinitionsTopic {topicInfo} />
     {/each}
   </div>
