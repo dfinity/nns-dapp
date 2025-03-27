@@ -29,7 +29,7 @@ describe("FollowSnsNeuronsByTopicItem", () => {
   const renderComponent = (props: {
     topicInfo: TopicInfoWithUnknown;
     checked: boolean;
-    onNnsChange?: () => void;
+    onNnsChange: () => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicItem, {
       props,

@@ -1,8 +1,8 @@
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
+import { CollapsiblePo } from "$tests/page-objects/Collapsible.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BasePageObject } from "./base.page-object";
-import { ButtonPo } from "./Button.page-object";
-import { CheckboxPo } from "./Checkbox.page-object";
-import { CollapsiblePo } from "./Collapsible.page-object";
 
 export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
   private static readonly TID = "follow-sns-neurons-by-topic-item-component";

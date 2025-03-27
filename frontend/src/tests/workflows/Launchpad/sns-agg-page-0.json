@@ -178,6 +178,58 @@
               "target_method_name": "icrc1_transfer"
             }
           }
+        },
+        {
+          "id": 2001,
+          "name": "Approve NTN",
+          "description": "Approve tokens from the SNS treasury via icrc2_approve",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "f54if-eqaaa-aaaaq-aacea-cai",
+              "validator_method_name": "validate_icrc2_approve",
+              "target_method_name": "icrc2_approve"
+            }
+          }
+        },
+        {
+          "id": 2002,
+          "name": "Register NFIDW manage neuron function",
+          "description": "Register manage neuron method for NFIDW",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "mpg2i-yyaaa-aaaaq-aaeka-cai",
+              "validator_method_name": "validate_manage_neuron",
+              "target_method_name": "manage_neuron"
+            }
+          }
+        },
+        {
+          "id": 2003,
+          "name": "Approve GHOST",
+          "description": "Approve GHOST from the SNS treasury via icrc2_approve",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "4c4fd-caaaa-aaaaq-aaa3a-cai",
+              "validator_method_name": "validate_icrc2_approve",
+              "target_method_name": "icrc2_approve"
+            }
+          }
+        },
+        {
+          "id": 2004,
+          "name": "Register NTN manage neuron function",
+          "description": "Register manage neuron method for NTN",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "eqsml-lyaaa-aaaaq-aacdq-cai",
+              "validator_method_name": "validate_manage_neuron",
+              "target_method_name": "manage_neuron"
+            }
+          }
         }
       ]
     },
@@ -311,7 +363,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999956021794000,
+    "icrc1_total_supply": 799999952790694000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1248,7 +1300,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10140890248354532,
+    "icrc1_total_supply": 10141499519154076,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1994,7 +2046,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 615596358405328,
+    "icrc1_total_supply": 616896826161130,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2407,7 +2459,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104276379410013119,
+    "icrc1_total_supply": 104325945607010472,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3072,7 +3124,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 930596077503274176,
+    "icrc1_total_supply": 930649850744203440,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

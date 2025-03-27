@@ -756,7 +756,10 @@ interface I18nNeuron_detail {
   add_maturity_success: string;
   update_neuron_success: string;
   following_title: string;
+  following_description_to_be_removed: string;
   following_description: string;
+  following_note: string;
+  following_link: string;
   follow_neurons: string;
   no_ballots: string;
   split_neuron_confirm: string;
