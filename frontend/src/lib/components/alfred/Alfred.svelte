@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { filterAlfredItems, type AlfredItem } from "$lib/stores/alfred";
+  import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
   import {
     IconAccountsPage,
     IconCanistersPage,
