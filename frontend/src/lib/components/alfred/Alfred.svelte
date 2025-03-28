@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
+  import { themeStore } from "@dfinity/gix-components";
   import { tick } from "svelte";
   import { fade } from "svelte/transition";
 
@@ -14,6 +15,7 @@
   const filteredItems = $derived(
     filterAlfredItems(alfredQuery, {
       isSignedIn: $authSignedInStore,
+      theme: $themeStore,
     })
   );
 
@@ -147,7 +149,7 @@
                   aria-current={index === selectedIndex ? "true" : undefined}
                 >
                   <div class="item-icon">
-                    {item.icon}
+                    <item.icon />
                   </div>
                   <div class="item-content">
                     <div class="item-title">{item.title}</div>
@@ -164,6 +166,8 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   .alfred-overlay {
     position: fixed;
     top: 0;
@@ -182,7 +186,8 @@
   .alfred-menu {
     width: 600px;
     max-width: 90%;
-    background-color: var(--background-primary, white);
+
+    background: var(--background-shade);
     border-radius: var(--border-radius-2x, 8px);
     overflow: hidden;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -193,83 +198,66 @@
     display: flex;
     padding: var(--padding-2x) var(--padding-3x);
     border-bottom: 1px solid var(--background-secondary, rgba(0, 0, 0, 0.1));
-    background-color: var(--background-primary, white);
 
     input {
       width: 100%;
       padding: var(--padding-1_5x);
       border: none;
-      background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
-      border-radius: var(--border-radius, 4px);
-      font-size: 16px;
-      color: var(--text-primary, rgba(0, 0, 0, 0.8));
+      background: var(--overlay-content-background);
+      border-radius: var(--border-radius);
+      color: var(--text-color);
       transition: all 0.2s ease;
       box-shadow: inset 0 0 0 1px
         var(--background-secondary, rgba(0, 0, 0, 0.1));
-
-      &:focus {
-        outline: none;
-        box-shadow: inset 0 0 0 2px var(--primary-color, #3b82f6);
-      }
-
-      &::placeholder {
-        color: var(--text-secondary, rgba(0, 0, 0, 0.5));
-        opacity: 0.7;
-      }
     }
   }
 
   .alfred-results {
     max-height: 400px;
     overflow-y: auto;
-    padding: 8px 16px;
-
-    &::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--text-secondary, rgba(0, 0, 0, 0.2));
-      border-radius: 20px;
-    }
+    padding: 8px;
+    background: var(--overlay-content-background);
+    color: var(--overlay-content-background-contrast);
 
     ul {
       list-style: none;
       margin: 0;
       padding: 0;
+
+      li {
+        padding: 0;
+        margin: 0;
+
+        .alfred-item-button {
+          width: 100%;
+          background: none;
+          border: none;
+          text-align: left;
+          font-family: inherit;
+          display: flex;
+          align-items: center;
+          gap: var(--padding-2x);
+          padding: var(--padding-1_5x) var(--padding-2x);
+          transition: all 0.15s ease;
+          border-radius: var(--border-radius);
+
+          &:hover {
+            background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
+          }
+        }
+      }
     }
 
-    li {
-      padding: 12px 16px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      transition: all 0.15s ease;
-      margin: 3px 0;
-      border-radius: var(--border-radius, 4px);
-      position: relative;
-      border-left: 3px solid transparent;
+    li.selected .alfred-item-button {
+      background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
+      border-left-color: var(--primary-color, #3b82f6);
 
-      &:hover {
-        background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
+      .item-title {
+        color: var(--primary-color, #3b82f6);
       }
 
-      &.selected {
-        background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
-        border-left-color: var(--primary-color, #3b82f6);
-
-        .item-title {
-          color: var(--primary-color, #3b82f6);
-        }
-
-        .item-icon {
-          color: var(--primary-color, #3b82f6);
-        }
+      .item-icon {
+        color: var(--primary-color, #3b82f6);
       }
     }
 
@@ -279,7 +267,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-secondary, rgba(0, 0, 0, 0.5));
+      color: var(--text-color);
       flex-shrink: 0;
       border-radius: 8px;
       background: var(--background-secondary, rgba(0, 0, 0, 0.05));
@@ -300,21 +288,21 @@
     .item-title {
       font-weight: 600;
       margin-bottom: 4px;
-      font-size: 16px;
-      color: var(--text-primary, rgba(0, 0, 0, 0.8));
+
+      color: var(--text-color);
     }
 
     .item-description {
-      font-size: 14px;
-      color: var(--text-secondary, rgba(0, 0, 0, 0.6));
+      color: var(--text-description);
       transition: all 0.15s ease;
+      @include fonts.small();
     }
   }
 
   .alfred-no-results {
     padding: 24px 16px;
     text-align: center;
-    color: var(--text-secondary, rgba(0, 0, 0, 0.5));
+    color: var(--text-description);
     font-style: italic;
   }
 </style>
