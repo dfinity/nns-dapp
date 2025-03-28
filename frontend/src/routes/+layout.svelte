@@ -1,12 +1,11 @@
 <script lang="ts">
+  import Alfred from "$lib/components/alfred/Alfred.svelte";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { initAnalytics } from "$lib/services/analytics.services";
   import {
     initAuthWorker,
     type AuthWorker,
   } from "$lib/services/worker-auth.services";
-  import Alfred from "$lib/components/alfred/Alfred.svelte";
-  import KeyboardHandler from "$lib/components/alfred/KeyboardHandler.svelte";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
   import { toastsClean } from "$lib/stores/toasts.store";
   import { onMount } from "svelte";
@@ -49,7 +48,6 @@
   $: syncAuth($authStore);
 </script>
 
-<KeyboardHandler />
 <Alfred />
 <slot />
 

@@ -1,12 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import {
-    alfredQuery,
-    alfredVisible,
-    filterAlfredItems,
-    hideAlfred,
-    type AlfredItem,
-  } from "$lib/stores/alfred";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { filterAlfredItems, type AlfredItem } from "$lib/stores/alfred";
   import {
     IconAccountsPage,
     IconCanistersPage,
@@ -17,17 +12,10 @@
     IconNeuronsPage,
     IconSettings,
   } from "@dfinity/gix-components";
-  import { onDestroy, onMount, tick } from "svelte";
+  import { onDestroy, onMount, tick, type Component } from "svelte";
   import { fade } from "svelte/transition";
 
-  let searchInput: HTMLInputElement;
-  let selectedIndex = 0;
-  let filteredItems: AlfredItem[] = [];
-  let isProcessingKey = false; // To prevent duplicate key events
-  let resultsContainer: HTMLDivElement;
-
-  // Map of icon names to their components
-  const iconMap: Record<string, any> = {
+  const iconMap: Record<string, Component> = {
     home: IconHome,
     wallet: IconHeldTokens,
     brain: IconNeuronsPage,
@@ -36,37 +24,51 @@
     settings: IconSettings,
     logOut: IconLogout,
     logIn: IconLogin,
-    theme: IconSettings, // Using settings icon as fallback for theme toggle
+    theme: IconSettings,
   };
 
-  // Subscribe to query changes to update filtered items
+  let searchInput: HTMLInputElement;
+  let selectedIndex = 0;
+  let filteredItems: AlfredItem[] = [];
+  let isProcessingKey = false;
+  let resultsContainer: HTMLDivElement;
+
+  let alfredVisible = false;
+  let alfredQuery = "";
+
+  const toggleAlfred = () => {
+    alfredVisible = !alfredVisible;
+    alfredQuery = "";
+  };
+
+  const hideAlfred = () => {
+    alfredVisible = false;
+    alfredQuery = "";
+  };
+
   $: {
-    filteredItems = filterAlfredItems($alfredQuery);
+    const context = { isSignedIn: $authSignedInStore };
+    filteredItems = filterAlfredItems(alfredQuery, context);
     selectedIndex = 0; // Reset selection when query changes
   }
 
-  // Reset scroll and focus input when Alfred becomes visible
-  $: if ($alfredVisible) {
+  $: if (alfredVisible) {
     initializeAlfred();
   }
 
-  // When selected index changes due to keyboard navigation, scroll to keep it visible
-  $: if ($alfredVisible && filteredItems.length > 0 && isProcessingKey) {
+  $: if (alfredVisible && filteredItems.length > 0 && isProcessingKey) {
     scrollToSelectedItem();
   }
 
-  // Initialize Alfred when it opens
   const initializeAlfred = async () => {
     await tick();
-    // Focus the search input
     searchInput?.focus();
-    // Reset scroll position
+
     if (resultsContainer) {
       resultsContainer.scrollTop = 0;
     }
   };
 
-  // Scroll to the currently selected item
   const scrollToSelectedItem = async () => {
     await tick(); // Wait for DOM update
     const selectedItem = document.getElementById(
@@ -112,13 +114,11 @@
       return itemBottom - containerBottom; // Will be positive
     }
 
-    // No scrolling needed if fully visible
     return null;
   };
 
-  // Handle keyboard navigation
   const handleKeydown = async (event: KeyboardEvent) => {
-    if (!$alfredVisible || isProcessingKey) return;
+    if (!alfredVisible || isProcessingKey) return;
 
     isProcessingKey = true;
 
@@ -138,16 +138,15 @@
         break;
       case "ArrowUp":
         event.preventDefault();
-        if (filteredItems.length > 0) {
+        if (filteredItems.length > 0)
           selectedIndex =
             selectedIndex <= 0 ? filteredItems.length - 1 : selectedIndex - 1;
-        }
+
         break;
       case "Enter":
         event.preventDefault();
-        if (filteredItems.length > 0) {
-          selectItem(filteredItems[selectedIndex]);
-        }
+        if (filteredItems.length > 0) selectItem(filteredItems[selectedIndex]);
+
         break;
     }
 
@@ -170,7 +169,6 @@
     }, 50);
   };
 
-  // Handle selecting an item
   const selectItem = (item: AlfredItem) => {
     if (item.type === "page" && item.path) {
       goto(item.path);
@@ -181,27 +179,34 @@
     }
   };
 
-  // Handle clicks outside the menu to close it
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
     const alfredMenu = document.getElementById("alfred-menu");
 
-    if (alfredMenu && !alfredMenu.contains(target)) {
-      hideAlfred();
+    if (alfredMenu && !alfredMenu.contains(target)) toggleAlfred();
+  };
+
+  const toggleAlfredVisibility = (event: KeyboardEvent) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+      event.preventDefault();
+      toggleAlfred();
     }
   };
 
-  // Set up keyboard and outside click handlers
   onMount(() => {
+    document.addEventListener("keydown", toggleAlfredVisibility);
     document.addEventListener("mousedown", handleClickOutside);
   });
 
   onDestroy(() => {
+    document.removeEventListener("keydown", toggleAlfredVisibility);
     document.removeEventListener("mousedown", handleClickOutside);
   });
+
+  $: console.log(filteredItems);
 </script>
 
-{#if $alfredVisible}
+{#if alfredVisible}
   <div
     class="alfred-overlay"
     transition:fade={{ duration: 150 }}
@@ -213,7 +218,7 @@
         <input
           type="text"
           bind:this={searchInput}
-          bind:value={$alfredQuery}
+          bind:value={alfredQuery}
           placeholder="Search for pages or actions..."
           autocomplete="off"
           spellcheck="false"
