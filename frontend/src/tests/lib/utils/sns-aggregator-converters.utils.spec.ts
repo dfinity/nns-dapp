@@ -14,12 +14,12 @@ import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
   convertDtoToListTopicsResponse,
   convertDtoToSnsSummary,
-  convertDtoToTopic,
   convertDtoTopicInfo,
   convertIcrc1Metadata,
   convertNervousFunction,
   convertNervousSystemParameters,
 } from "$lib/utils/sns-aggregator-converters.utils";
+import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
@@ -992,31 +992,31 @@ describe("sns aggregator converters utils", () => {
     });
 
     // ic-js type: https://github.com/dfinity/ic-js/blob/1a4d3f02d4cfebf47c199a4fdc376e2f62a84746/packages/sns/candid/sns_governance_test.did#L867C1-L875C3
-    describe("convertDtoToTopic", () => {
+    describe("snsTopicKeyToTopic", () => {
       it("converts aggregator topic to ic-js types", () => {
         const spyOnConsoleError = vi
           .spyOn(console, "error")
           .mockImplementation(() => undefined);
 
-        expect(convertDtoToTopic("DappCanisterManagement")).toEqual({
+        expect(snsTopicKeyToTopic("DappCanisterManagement")).toEqual({
           DappCanisterManagement: null,
         });
-        expect(convertDtoToTopic("DaoCommunitySettings")).toEqual({
+        expect(snsTopicKeyToTopic("DaoCommunitySettings")).toEqual({
           DaoCommunitySettings: null,
         });
-        expect(convertDtoToTopic("ApplicationBusinessLogic")).toEqual({
+        expect(snsTopicKeyToTopic("ApplicationBusinessLogic")).toEqual({
           ApplicationBusinessLogic: null,
         });
-        expect(convertDtoToTopic("CriticalDappOperations")).toEqual({
+        expect(snsTopicKeyToTopic("CriticalDappOperations")).toEqual({
           CriticalDappOperations: null,
         });
-        expect(convertDtoToTopic("TreasuryAssetManagement")).toEqual({
+        expect(snsTopicKeyToTopic("TreasuryAssetManagement")).toEqual({
           TreasuryAssetManagement: null,
         });
-        expect(convertDtoToTopic("Governance")).toEqual({
+        expect(snsTopicKeyToTopic("Governance")).toEqual({
           Governance: null,
         });
-        expect(convertDtoToTopic("SnsFrameworkManagement")).toEqual({
+        expect(snsTopicKeyToTopic("SnsFrameworkManagement")).toEqual({
           SnsFrameworkManagement: null,
         });
 
@@ -1028,7 +1028,7 @@ describe("sns aggregator converters utils", () => {
           .spyOn(console, "error")
           .mockImplementation(() => undefined);
 
-        expect(convertDtoToTopic("An Unknown Topic")).toEqual({
+        expect(snsTopicKeyToTopic("An Unknown Topic")).toEqual({
           UnknownTopic: null,
         });
 

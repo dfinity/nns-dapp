@@ -8,7 +8,9 @@ import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromNullable } from "@dfinity/utils";
 
-export const getSnsTopicKey = (topic: Topic | UnknownTopic): SnsTopicKey => {
+export const snsTopicToTopicKey = (
+  topic: Topic | UnknownTopic
+): SnsTopicKey => {
   // We can't ensure that all the topicKeys are present in this list.
   const topicKeys: SnsTopicKey[] = [
     "DappCanisterManagement",
@@ -29,10 +31,34 @@ export const getSnsTopicKey = (topic: Topic | UnknownTopic): SnsTopicKey => {
   return "UnknownTopic";
 };
 
+export const snsTopicKeyToTopic = (
+  topic: SnsTopicKey
+): Topic | UnknownTopic => {
+  switch (topic) {
+    case "DappCanisterManagement":
+      return { DappCanisterManagement: null };
+    case "DaoCommunitySettings":
+      return { DaoCommunitySettings: null };
+    case "ApplicationBusinessLogic":
+      return { ApplicationBusinessLogic: null };
+    case "CriticalDappOperations":
+      return { CriticalDappOperations: null };
+    case "TreasuryAssetManagement":
+      return { TreasuryAssetManagement: null };
+    case "Governance":
+      return { Governance: null };
+    case "SnsFrameworkManagement":
+      return { SnsFrameworkManagement: null };
+  }
+
+  console.error("Unknown topic:", topic);
+  return { UnknownTopic: null };
+};
+
 export const getSnsTopicInfoKey = (
   topicInfo: TopicInfoWithUnknown
 ): SnsTopicKey =>
-  getSnsTopicKey(fromNullable(topicInfo.topic) as Topic | UnknownTopic);
+  snsTopicToTopicKey(fromNullable(topicInfo.topic) as Topic | UnknownTopic);
 
 // Returns all available SNS topics keys
 export const getSnsTopicKeys = (
