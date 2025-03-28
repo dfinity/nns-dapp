@@ -1,5 +1,16 @@
 import { login, logout } from "$lib/services/auth.services";
-import { Theme, themeStore } from "@dfinity/gix-components";
+import {
+  IconAccountsPage,
+  IconCanistersPage,
+  IconHome,
+  IconLogin,
+  IconLogout,
+  IconNeuronsPage,
+  IconSettings,
+  Theme,
+  themeStore,
+} from "@dfinity/gix-components";
+import type { Component } from "svelte";
 
 export interface AlfredItem {
   id: string;
@@ -8,7 +19,7 @@ export interface AlfredItem {
   description: string;
   path?: string;
   action?: () => void;
-  icon?: string;
+  icon: Component;
   contextFilter?: (context: { isSignedIn: boolean }) => boolean;
 }
 
@@ -26,7 +37,7 @@ const alfredItems: AlfredItem[] = [
     title: "Home",
     description: "View your investment portfolio",
     path: "/",
-    icon: "wallet",
+    icon: IconHome,
   },
   {
     id: "neurons",
@@ -34,7 +45,7 @@ const alfredItems: AlfredItem[] = [
     title: "Neurons",
     description: "Manage your neurons",
     path: "/neurons",
-    icon: "brain",
+    icon: IconNeuronsPage,
   },
   {
     id: "canisters",
@@ -42,7 +53,7 @@ const alfredItems: AlfredItem[] = [
     title: "Canisters",
     description: "Manage your canisters",
     path: "/canisters",
-    icon: "box",
+    icon: IconCanistersPage,
   },
   {
     id: "accounts",
@@ -50,7 +61,7 @@ const alfredItems: AlfredItem[] = [
     title: "Accounts",
     description: "Manage your accounts",
     path: "/accounts",
-    icon: "creditCard",
+    icon: IconAccountsPage,
   },
   {
     id: "settings",
@@ -58,14 +69,14 @@ const alfredItems: AlfredItem[] = [
     title: "Settings",
     description: "Adjust your preferences",
     path: "/settings",
-    icon: "settings",
+    icon: IconSettings,
   },
   {
     id: "toggle-theme",
     type: "action",
     title: "Toggle Theme",
     description: "Switch between light and dark mode",
-    icon: "theme",
+    icon: IconSettings,
     action: toggleTheme,
   },
   {
@@ -73,7 +84,7 @@ const alfredItems: AlfredItem[] = [
     type: "action",
     title: "Log In",
     description: "Log in to your account",
-    icon: "logIn",
+    icon: IconLogin,
     action: login,
     contextFilter: (context) => !context.isSignedIn,
   },
@@ -82,7 +93,7 @@ const alfredItems: AlfredItem[] = [
     type: "action",
     title: "Log Out",
     description: "Log out of your account",
-    icon: "logOut",
+    icon: IconLogout,
     action: logout.bind(null, {}),
     contextFilter: (context) => context.isSignedIn,
   },
