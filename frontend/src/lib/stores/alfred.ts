@@ -1,6 +1,5 @@
 import { login, logout } from "$lib/services/auth.services";
 import { Theme, themeStore } from "@dfinity/gix-components";
-import { writable } from "svelte/store";
 
 export interface AlfredItem {
   id: string;
@@ -10,10 +9,8 @@ export interface AlfredItem {
   path?: string;
   action?: () => void;
   icon?: string;
+  contextFilter?: (context: { isSignedIn: boolean }) => boolean;
 }
-
-export const alfredVisible = writable(false);
-export const alfredQuery = writable("");
 
 const toggleTheme = () =>
   themeStore.select(
@@ -22,11 +19,11 @@ const toggleTheme = () =>
       : Theme.LIGHT
   );
 
-export const alfredItems: AlfredItem[] = [
+const alfredItems: AlfredItem[] = [
   {
     id: "home",
     type: "page",
-    title: "Portfolio",
+    title: "Home",
     description: "View your investment portfolio",
     path: "/",
     icon: "wallet",
@@ -78,6 +75,7 @@ export const alfredItems: AlfredItem[] = [
     description: "Log in to your account",
     icon: "logIn",
     action: login,
+    contextFilter: (context) => !context.isSignedIn,
   },
   {
     id: "log-out",
@@ -86,28 +84,22 @@ export const alfredItems: AlfredItem[] = [
     description: "Log out of your account",
     icon: "logOut",
     action: logout.bind(null, {}),
+    contextFilter: (context) => context.isSignedIn,
   },
 ];
 
-// Function to toggle the Alfred menu visibility
-export const toggleAlfred = () => {
-  alfredVisible.update((value) => !value);
-  alfredQuery.set("");
-};
+export const filterAlfredItems = (
+  query: string,
+  context: { isSignedIn: boolean }
+): AlfredItem[] => {
+  const items = alfredItems.filter(
+    ({ contextFilter }) => contextFilter?.(context) ?? true
+  );
 
-// Function to hide the Alfred menu
-export const hideAlfred = () => {
-  alfredVisible.set(false);
-  alfredQuery.set("");
-};
-
-// Function to filter Alfred items based on query
-export const filterAlfredItems = (query: string): AlfredItem[] => {
-  if (!query.trim()) return alfredItems;
+  if (!query.trim()) return items;
 
   const lowercaseQuery = query.toLowerCase().trim();
-
-  return alfredItems.filter(
+  return items.filter(
     (item) =>
       item.title.toLowerCase().includes(lowercaseQuery) ||
       item.description.toLowerCase().includes(lowercaseQuery)
