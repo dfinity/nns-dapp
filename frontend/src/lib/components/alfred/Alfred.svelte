@@ -12,7 +12,7 @@
     IconNeuronsPage,
     IconSettings,
   } from "@dfinity/gix-components";
-  import { onDestroy, onMount, tick, type Component } from "svelte";
+  import { tick, type Component } from "svelte";
   import { fade } from "svelte/transition";
 
   const iconMap: Record<string, Component> = {
@@ -27,105 +27,46 @@
     theme: IconSettings,
   };
 
-  let searchInput: HTMLInputElement;
-  let selectedIndex = 0;
-  let filteredItems: AlfredItem[] = [];
-  let isProcessingKey = false;
-  let resultsContainer: HTMLDivElement;
+  let alfredVisible = $state(false);
+  let alfredQuery = $state("");
+  let selectedIndex = $state(0);
 
-  let alfredVisible = false;
-  let alfredQuery = "";
+  let searchInput = $state<HTMLInputElement>();
+  let resultsContainer = $state<HTMLDivElement>();
+  let isProcessingKey = $state(false);
 
-  const toggleAlfred = () => {
+  let filteredItems = $derived(
+    filterAlfredItems(alfredQuery, {
+      isSignedIn: $authSignedInStore,
+    })
+  );
+
+  function toggleAlfred() {
     alfredVisible = !alfredVisible;
     alfredQuery = "";
-  };
+    selectedIndex = 0;
 
-  const hideAlfred = () => {
+    if (alfredVisible) initializeAlfred();
+  }
+
+  function hideAlfred() {
     alfredVisible = false;
     alfredQuery = "";
-  };
-
-  $: {
-    const context = { isSignedIn: $authSignedInStore };
-    filteredItems = filterAlfredItems(alfredQuery, context);
-    selectedIndex = 0; // Reset selection when query changes
   }
 
-  $: if (alfredVisible) {
-    initializeAlfred();
-  }
-
-  $: if (alfredVisible && filteredItems.length > 0 && isProcessingKey) {
-    scrollToSelectedItem();
-  }
-
-  const initializeAlfred = async () => {
-    await tick();
-    searchInput?.focus();
-
-    if (resultsContainer) {
-      resultsContainer.scrollTop = 0;
-    }
-  };
-
-  const scrollToSelectedItem = async () => {
-    await tick(); // Wait for DOM update
-    const selectedItem = document.getElementById(
-      `alfred-item-${selectedIndex}`
-    );
-
-    if (selectedItem && resultsContainer) {
-      // Get item position relative to the scroll container
-      const containerTop = resultsContainer.scrollTop;
-      const containerBottom = containerTop + resultsContainer.clientHeight;
-      const itemTop = selectedItem.offsetTop;
-      const itemBottom = itemTop + selectedItem.offsetHeight;
-
-      // Scroll if item is outside visible area
-      if (itemTop < containerTop) {
-        // Item is above visible area, scroll up
-        resultsContainer.scrollTop = itemTop;
-      } else if (itemBottom > containerBottom) {
-        // Item is below visible area, scroll down
-        resultsContainer.scrollTop = itemBottom - resultsContainer.clientHeight;
-      }
-    }
-  };
-
-  // Calculate how much scrolling is needed to make an item visible
-  const calculateScrollNeeded = (
-    selectedItem: HTMLElement | null
-  ): number | null => {
-    if (!selectedItem || !resultsContainer) return null;
-
-    // Get positions
-    const containerTop = resultsContainer.scrollTop;
-    const containerBottom = containerTop + resultsContainer.clientHeight;
-    const itemTop = selectedItem.offsetTop;
-    const itemBottom = itemTop + selectedItem.offsetHeight;
-
-    // Determine if and how much to scroll
-    if (itemTop < containerTop) {
-      // Item is above visible area - scroll up exactly as needed
-      return itemTop - containerTop; // Will be negative
-    } else if (itemBottom > containerBottom) {
-      // Item is below visible area - scroll down exactly as needed
-      return itemBottom - containerBottom; // Will be positive
+  function handleKeydown(event: KeyboardEvent) {
+    if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+      event.preventDefault();
+      toggleAlfred();
+      return;
     }
 
-    return null;
-  };
-
-  const handleKeydown = async (event: KeyboardEvent) => {
     if (!alfredVisible || isProcessingKey) return;
 
     isProcessingKey = true;
-
-    const key = event.key;
     const prevIndex = selectedIndex;
 
-    switch (key) {
+    switch (event.key) {
       case "Escape":
         event.preventDefault();
         hideAlfred();
@@ -141,35 +82,38 @@
         if (filteredItems.length > 0)
           selectedIndex =
             selectedIndex <= 0 ? filteredItems.length - 1 : selectedIndex - 1;
-
         break;
       case "Enter":
         event.preventDefault();
         if (filteredItems.length > 0) selectItem(filteredItems[selectedIndex]);
-
         break;
     }
 
-    // If selection changed, ensure it's visible
-    if (prevIndex !== selectedIndex) {
-      await tick(); // Wait for DOM update
-      const selectedItem = document.getElementById(
-        `alfred-item-${selectedIndex}`
-      );
-      const scrollAmount = calculateScrollNeeded(selectedItem);
+    if (prevIndex !== selectedIndex) scrollToSelectedItem();
+    setTimeout(() => (isProcessingKey = false), 50);
+  }
 
-      if (scrollAmount !== null && resultsContainer) {
-        resultsContainer.scrollTop += scrollAmount;
-      }
+  async function initializeAlfred() {
+    await tick();
+    searchInput?.focus();
+    if (resultsContainer) resultsContainer.scrollTop = 0;
+  }
+
+  const scrollToSelectedItem = async () => {
+    await tick();
+    const selectedItem = document.getElementById(
+      `alfred-item-${selectedIndex}`
+    );
+
+    if (selectedItem) {
+      selectedItem.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
     }
-
-    // Reset processing flag after a short delay
-    setTimeout(() => {
-      isProcessingKey = false;
-    }, 50);
   };
 
-  const selectItem = (item: AlfredItem) => {
+  function selectItem(item: AlfredItem) {
     if (item.type === "page" && item.path) {
       goto(item.path);
       hideAlfred();
@@ -177,40 +121,29 @@
       item.action();
       hideAlfred();
     }
-  };
+  }
 
-  const handleClickOutside = (event: MouseEvent) => {
+  function handleClickOutside(event: MouseEvent) {
     const target = event.target as HTMLElement;
     const alfredMenu = document.getElementById("alfred-menu");
 
-    if (alfredMenu && !alfredMenu.contains(target)) toggleAlfred();
-  };
+    if (!alfredVisible) return;
+    if (alfredMenu && !alfredMenu.contains(target)) hideAlfred();
+  }
 
-  const toggleAlfredVisibility = (event: KeyboardEvent) => {
-    if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-      event.preventDefault();
-      toggleAlfred();
-    }
-  };
-
-  onMount(() => {
-    document.addEventListener("keydown", toggleAlfredVisibility);
-    document.addEventListener("mousedown", handleClickOutside);
+  $effect(() => {
+    const context = { isSignedIn: $authSignedInStore };
+    filteredItems = filterAlfredItems(alfredQuery, context);
+    selectedIndex = 0;
   });
-
-  onDestroy(() => {
-    document.removeEventListener("keydown", toggleAlfredVisibility);
-    document.removeEventListener("mousedown", handleClickOutside);
-  });
-
-  $: console.log(filteredItems);
 </script>
+
+<svelte:window on:keydown={handleKeydown} on:mousedown={handleClickOutside} />
 
 {#if alfredVisible}
   <div
     class="alfred-overlay"
     transition:fade={{ duration: 150 }}
-    on:keydown|stopPropagation={handleKeydown}
     aria-hidden="true"
   >
     <div class="alfred-menu" id="alfred-menu">
