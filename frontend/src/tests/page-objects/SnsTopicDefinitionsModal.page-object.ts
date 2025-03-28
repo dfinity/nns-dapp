@@ -1,9 +1,9 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { SnsTopicDefinitionsTopicPo } from "$tests/page-objects/SnsTopicDefinitionsTopic.page-object";
-import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class SnsTopicDefinitionsModalPo extends BasePageObject {
+export class SnsTopicDefinitionsModalPo extends ModalPo {
   private static readonly TID = "sns-topic-definitions-modal-component";
 
   static under(element: PageObjectElement): SnsTopicDefinitionsModalPo {

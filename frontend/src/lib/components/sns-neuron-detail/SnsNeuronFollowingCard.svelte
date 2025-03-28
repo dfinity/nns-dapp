@@ -25,6 +25,7 @@
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
+  import { openSnsNeuronModal } from "$lib/utils/modals.utils";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -82,10 +83,17 @@
           <span class="note">
             {$i18n.neuron_detail.following_note}
           </span>
-          <a href="/#" class="link">
+          <button
+            data-tid="sns-topic-definitions-button"
+            class="ghost with-icon sns-topic-definitions-button"
+            on:click={() =>
+              openSnsNeuronModal({
+                type: "sns-topic-definitions",
+              })}
+          >
             <span>{$i18n.neuron_detail.following_link} </span>
             <IconRight />
-          </a>
+          </button>
         {:else}
           <span>
             {$i18n.neuron_detail.following_description_to_be_removed}
@@ -144,14 +152,10 @@
       @include fonts.small(true);
     }
 
-    .link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      color: var(--button-secondary-color);
+    .sns-topic-definitions-button {
+      padding: var(--padding) 0;
+      color: var(--primary);
       font-weight: var(--font-weight-bold);
-      text-decoration: none;
     }
   }
 </style>
