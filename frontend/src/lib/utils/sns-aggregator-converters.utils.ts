@@ -26,10 +26,10 @@ import type {
   ListTopicsResponseWithUnknown,
   TopicInfoDto,
   TopicInfoWithUnknown,
-  UnknownTopic,
 } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
+import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { isPngAsset } from "$lib/utils/utils";
 import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
@@ -45,7 +45,6 @@ import type {
   SnsSwapInit,
   SnsVotingRewardsParameters,
 } from "@dfinity/sns";
-import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import {
   candidNumberArrayToBigInt,
   isNullish,
@@ -550,28 +549,6 @@ export const convertDtoToSnsSummary = ({
     : undefined;
 };
 
-export const convertDtoToTopic = (topic: string): Topic | UnknownTopic => {
-  switch (topic) {
-    case "DappCanisterManagement":
-      return { DappCanisterManagement: null };
-    case "DaoCommunitySettings":
-      return { DaoCommunitySettings: null };
-    case "ApplicationBusinessLogic":
-      return { ApplicationBusinessLogic: null };
-    case "CriticalDappOperations":
-      return { CriticalDappOperations: null };
-    case "TreasuryAssetManagement":
-      return { TreasuryAssetManagement: null };
-    case "Governance":
-      return { Governance: null };
-    case "SnsFrameworkManagement":
-      return { SnsFrameworkManagement: null };
-  }
-
-  console.error("Unknown topic:", topic);
-  return { UnknownTopic: null };
-};
-
 export const convertDtoTopicInfo = ({
   topic,
   name,
@@ -580,7 +557,7 @@ export const convertDtoTopicInfo = ({
   custom_functions,
   is_critical,
 }: TopicInfoDto): TopicInfoWithUnknown => ({
-  topic: toNullable(convertDtoToTopic(topic)),
+  topic: toNullable(snsTopicKeyToTopic(topic)),
   name: toNullable(name),
   description: toNullable(description),
   native_functions: toNullable(native_functions.map(convertNervousFunction)),
