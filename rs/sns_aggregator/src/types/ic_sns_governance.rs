@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/rosetta-release-2.1.3/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-27_03-14-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -481,6 +481,20 @@ pub struct RegisterVote {
     pub proposal: Option<ProposalId>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Followee {
+    pub alias: Option<String>,
+    pub neuron_id: Option<NeuronId>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct FolloweesForTopic {
+    pub topic: Option<Topic>,
+    pub followees: Vec<Followee>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct SetFollowing {
+    pub topic_following: Vec<FolloweesForTopic>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FinalizeDisburseMaturity {
     pub amount_to_be_disbursed_e8s: u64,
     pub to_account: Option<Account>,
@@ -529,6 +543,7 @@ pub enum Command2 {
     DisburseMaturity(DisburseMaturity),
     Configure(Configure),
     RegisterVote(RegisterVote),
+    SetFollowing(SetFollowing),
     SyncCommand(EmptyRecord),
     MakeProposal(Proposal),
     FinalizeDisburseMaturity(FinalizeDisburseMaturity),
@@ -547,6 +562,10 @@ pub struct NeuronInFlightCommand {
 pub struct NeuronPermission {
     pub principal: Option<Principal>,
     pub permission_type: Vec<i32>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct NeuronTopicFolloweesInner {
+    pub topic_id_to_followees: Vec<(u64, FolloweesForTopic)>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum DissolveState {
@@ -568,6 +587,7 @@ pub struct Neuron {
     pub maturity_e8s_equivalent: u64,
     pub cached_neuron_stake_e8s: u64,
     pub created_timestamp_seconds: u64,
+    pub topic_followees: Option<NeuronTopicFolloweesInner>,
     pub source_nns_neuron_id: Option<u64>,
     pub auto_stake_maturity: Option<bool>,
     pub aging_since_timestamp_seconds: u64,
@@ -839,6 +859,7 @@ pub enum Command {
     ClaimOrRefresh(ClaimOrRefresh),
     Configure(Configure),
     RegisterVote(RegisterVote),
+    SetFollowing(SetFollowing),
     MakeProposal(Proposal),
     StakeMaturity(StakeMaturity),
     RemoveNeuronPermissions(RemoveNeuronPermissions),
@@ -887,6 +908,7 @@ pub enum Command1 {
     ClaimOrRefresh(ClaimOrRefreshResponse),
     Configure(EmptyRecord),
     RegisterVote(EmptyRecord),
+    SetFollowing(EmptyRecord),
     MakeProposal(GetProposal),
     RemoveNeuronPermission(EmptyRecord),
     StakeMaturity(StakeMaturityResponse),
