@@ -2,59 +2,44 @@
   import { goto } from "$app/navigation";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
-  import {
-    IconAccountsPage,
-    IconCanistersPage,
-    IconHeldTokens,
-    IconHome,
-    IconLogin,
-    IconLogout,
-    IconNeuronsPage,
-    IconSettings,
-  } from "@dfinity/gix-components";
-  import { tick, type Component } from "svelte";
+  import { tick } from "svelte";
   import { fade } from "svelte/transition";
-
-  const iconMap: Record<string, Component> = {
-    home: IconHome,
-    wallet: IconHeldTokens,
-    brain: IconNeuronsPage,
-    box: IconCanistersPage,
-    creditCard: IconAccountsPage,
-    settings: IconSettings,
-    logOut: IconLogout,
-    logIn: IconLogin,
-    theme: IconSettings,
-  };
 
   let alfredVisible = $state(false);
   let alfredQuery = $state("");
   let selectedIndex = $state(0);
-
-  let searchInput = $state<HTMLInputElement>();
-  let resultsContainer = $state<HTMLDivElement>();
   let isProcessingKey = $state(false);
+  let searchInput = $state<HTMLInputElement>();
 
-  let filteredItems = $derived(
+  const filteredItems = $derived(
     filterAlfredItems(alfredQuery, {
       isSignedIn: $authSignedInStore,
     })
   );
 
-  function toggleAlfred() {
+  $effect(() => {
+    if (filteredItems.length > 0) selectedIndex = 0;
+  });
+
+  const toggleAlfred = () => {
     alfredVisible = !alfredVisible;
     alfredQuery = "";
     selectedIndex = 0;
 
     if (alfredVisible) initializeAlfred();
-  }
+  };
 
-  function hideAlfred() {
+  const hideAlfred = () => {
     alfredVisible = false;
     alfredQuery = "";
-  }
+  };
 
-  function handleKeydown(event: KeyboardEvent) {
+  const initializeAlfred = async () => {
+    await tick();
+    searchInput?.focus();
+  };
+
+  const onkeydown = (event: KeyboardEvent) => {
     if ((event.metaKey || event.ctrlKey) && event.key === "k") {
       event.preventDefault();
       toggleAlfred();
@@ -91,13 +76,7 @@
 
     if (prevIndex !== selectedIndex) scrollToSelectedItem();
     setTimeout(() => (isProcessingKey = false), 50);
-  }
-
-  async function initializeAlfred() {
-    await tick();
-    searchInput?.focus();
-    if (resultsContainer) resultsContainer.scrollTop = 0;
-  }
+  };
 
   const scrollToSelectedItem = async () => {
     await tick();
@@ -113,7 +92,7 @@
     }
   };
 
-  function selectItem(item: AlfredItem) {
+  const selectItem = (item: AlfredItem) => {
     if (item.type === "page" && item.path) {
       goto(item.path);
       hideAlfred();
@@ -121,24 +100,18 @@
       item.action();
       hideAlfred();
     }
-  }
+  };
 
-  function handleClickOutside(event: MouseEvent) {
+  const onmousedown = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
     const alfredMenu = document.getElementById("alfred-menu");
 
     if (!alfredVisible) return;
     if (alfredMenu && !alfredMenu.contains(target)) hideAlfred();
-  }
-
-  $effect(() => {
-    const context = { isSignedIn: $authSignedInStore };
-    filteredItems = filterAlfredItems(alfredQuery, context);
-    selectedIndex = 0;
-  });
+  };
 </script>
 
-<svelte:window on:keydown={handleKeydown} on:mousedown={handleClickOutside} />
+<svelte:window {onkeydown} {onmousedown} />
 
 {#if alfredVisible}
   <div
@@ -158,7 +131,7 @@
         />
       </div>
 
-      <div class="alfred-results" bind:this={resultsContainer}>
+      <div class="alfred-results">
         {#if filteredItems.length === 0}
           <div class="alfred-no-results">No results found</div>
         {:else}
@@ -167,17 +140,20 @@
               <li
                 id={`alfred-item-${index}`}
                 class:selected={index === selectedIndex}
-                on:click={() => selectItem(item)}
               >
-                {#if item.icon && iconMap[item.icon]}
+                <button
+                  class="alfred-item-button"
+                  onclick={() => selectItem(item)}
+                  aria-current={index === selectedIndex ? "true" : undefined}
+                >
                   <div class="item-icon">
-                    <svelte:component this={iconMap[item.icon]} />
+                    {item.icon}
                   </div>
-                {/if}
-                <div class="item-content">
-                  <div class="item-title">{item.title}</div>
-                  <div class="item-description">{item.description}</div>
-                </div>
+                  <div class="item-content">
+                    <div class="item-title">{item.title}</div>
+                    <div class="item-description">{item.description}</div>
+                  </div>
+                </button>
               </li>
             {/each}
           </ul>
