@@ -1,14 +1,19 @@
 import { login, logout } from "$lib/services/auth.services";
 import {
-  IconAccountsPage,
-  IconCanistersPage,
+  IconDarkMode,
   IconHome,
+  IconLaunchpad,
+  IconLedger,
+  IconLightMode,
   IconLogin,
   IconLogout,
-  IconNeuronsPage,
+  IconNeurons,
   IconSettings,
+  IconTokens,
+  IconVote,
   Theme,
   themeStore,
+  type ThemeStoreData,
 } from "@dfinity/gix-components";
 import type { Component } from "svelte";
 
@@ -20,15 +25,11 @@ export interface AlfredItem {
   path?: string;
   action?: () => void;
   icon: Component;
-  contextFilter?: (context: { isSignedIn: boolean }) => boolean;
+  contextFilter?: (context: {
+    isSignedIn: boolean;
+    theme: ThemeStoreData;
+  }) => boolean;
 }
-
-const toggleTheme = () =>
-  themeStore.select(
-    document.querySelector("html")?.getAttribute("theme") === "light"
-      ? Theme.DARK
-      : Theme.LIGHT
-  );
 
 const alfredItems: AlfredItem[] = [
   {
@@ -40,12 +41,36 @@ const alfredItems: AlfredItem[] = [
     icon: IconHome,
   },
   {
+    id: "tokens",
+    type: "page",
+    title: "Tokens",
+    description: "Manage your tokens and accounts",
+    path: "/accounts",
+    icon: IconTokens,
+  },
+  {
     id: "neurons",
     type: "page",
     title: "Neurons",
     description: "Manage your neurons",
     path: "/neurons",
-    icon: IconNeuronsPage,
+    icon: IconNeurons,
+  },
+  {
+    id: "voting",
+    type: "page",
+    title: "Voting",
+    description: "Democracy",
+    path: "/proposals",
+    icon: IconVote,
+  },
+  {
+    id: "launchpad",
+    type: "page",
+    title: "Launchpad",
+    description: "SNS world",
+    path: "/launchpad",
+    icon: IconLaunchpad,
   },
   {
     id: "canisters",
@@ -53,15 +78,25 @@ const alfredItems: AlfredItem[] = [
     title: "Canisters",
     description: "Manage your canisters",
     path: "/canisters",
-    icon: IconCanistersPage,
+    icon: IconLedger,
   },
   {
-    id: "accounts",
-    type: "page",
-    title: "Accounts",
-    description: "Manage your accounts",
-    path: "/accounts",
-    icon: IconAccountsPage,
+    id: "dark-theme",
+    type: "action",
+    title: "Dark Theme",
+    description: "Set dark theme",
+    icon: IconDarkMode,
+    action: () => themeStore.select(Theme.DARK),
+    contextFilter: (context) => context.theme === Theme.LIGHT,
+  },
+  {
+    id: "light-theme",
+    type: "action",
+    title: "Light Theme",
+    description: "Set light theme",
+    icon: IconLightMode,
+    action: () => themeStore.select(Theme.LIGHT),
+    contextFilter: (context) => context.theme === Theme.DARK,
   },
   {
     id: "settings",
@@ -70,14 +105,6 @@ const alfredItems: AlfredItem[] = [
     description: "Adjust your preferences",
     path: "/settings",
     icon: IconSettings,
-  },
-  {
-    id: "toggle-theme",
-    type: "action",
-    title: "Toggle Theme",
-    description: "Switch between light and dark mode",
-    icon: IconSettings,
-    action: toggleTheme,
   },
   {
     id: "log-in",
@@ -101,7 +128,7 @@ const alfredItems: AlfredItem[] = [
 
 export const filterAlfredItems = (
   query: string,
-  context: { isSignedIn: boolean }
+  context: { isSignedIn: boolean; theme: ThemeStoreData }
 ): AlfredItem[] => {
   const items = alfredItems.filter(
     ({ contextFilter }) => contextFilter?.(context) ?? true
