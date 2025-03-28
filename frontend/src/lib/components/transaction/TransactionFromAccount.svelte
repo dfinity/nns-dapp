@@ -43,9 +43,7 @@
         {/if}
       </svelte:fragment>
     </KeyValuePair>
-  {/if}
-
-  {#if canSelectSource}
+  {:else if canSelectSource}
     <span class="label">{$i18n.accounts.source}</span>
   {:else}
     <span class="label account-name"
