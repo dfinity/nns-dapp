@@ -81,7 +81,7 @@ describe("UsdValueBanner", () => {
     setIcpPrice(icpPrice);
 
     const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
-    const message = `1 ICP = $10.00 ${en.accounts.token_price_source}`;
+    const message = `1 ICP = $10.00${en.accounts.token_price_source}`;
 
     expect(await po.getIcpExchangeRatePo().getTooltipText()).toEqual(message);
   });
