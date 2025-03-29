@@ -6,6 +6,7 @@ import type {
   SnsSummary,
   SnsSummaryMetadata,
   SnsSummarySwap,
+  SnsTopicKey,
 } from "$lib/types/sns";
 import type {
   CachedDefaultFolloweesDto,
@@ -557,7 +558,7 @@ export const convertDtoTopicInfo = ({
   custom_functions,
   is_critical,
 }: TopicInfoDto): TopicInfoWithUnknown => ({
-  topic: toNullable(snsTopicKeyToTopic(topic)),
+  topic: toNullable(snsTopicKeyToTopic(topic as SnsTopicKey)),
   name: toNullable(name),
   description: toNullable(description),
   native_functions: toNullable(native_functions.map(convertNervousFunction)),
