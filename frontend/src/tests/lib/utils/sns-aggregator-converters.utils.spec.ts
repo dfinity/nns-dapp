@@ -14,7 +14,6 @@ import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
   convertDtoToListTopicsResponse,
   convertDtoToSnsSummary,
-  convertDtoToTopic,
   convertDtoTopicInfo,
   convertIcrc1Metadata,
   convertNervousFunction,
@@ -988,55 +987,6 @@ describe("sns aggregator converters utils", () => {
             DappCanisterManagement: null,
           })
         ).toBe(false);
-      });
-    });
-
-    // ic-js type: https://github.com/dfinity/ic-js/blob/1a4d3f02d4cfebf47c199a4fdc376e2f62a84746/packages/sns/candid/sns_governance_test.did#L867C1-L875C3
-    describe("convertDtoToTopic", () => {
-      it("converts aggregator topic to ic-js types", () => {
-        const spyOnConsoleError = vi
-          .spyOn(console, "error")
-          .mockImplementation(() => undefined);
-
-        expect(convertDtoToTopic("DappCanisterManagement")).toEqual({
-          DappCanisterManagement: null,
-        });
-        expect(convertDtoToTopic("DaoCommunitySettings")).toEqual({
-          DaoCommunitySettings: null,
-        });
-        expect(convertDtoToTopic("ApplicationBusinessLogic")).toEqual({
-          ApplicationBusinessLogic: null,
-        });
-        expect(convertDtoToTopic("CriticalDappOperations")).toEqual({
-          CriticalDappOperations: null,
-        });
-        expect(convertDtoToTopic("TreasuryAssetManagement")).toEqual({
-          TreasuryAssetManagement: null,
-        });
-        expect(convertDtoToTopic("Governance")).toEqual({
-          Governance: null,
-        });
-        expect(convertDtoToTopic("SnsFrameworkManagement")).toEqual({
-          SnsFrameworkManagement: null,
-        });
-
-        expect(spyOnConsoleError).not.toHaveBeenCalled();
-      });
-
-      it("returns UnknownTopic if topic is unknown", () => {
-        const spyOnConsoleError = vi
-          .spyOn(console, "error")
-          .mockImplementation(() => undefined);
-
-        expect(convertDtoToTopic("An Unknown Topic")).toEqual({
-          UnknownTopic: null,
-        });
-
-        expect(spyOnConsoleError).toHaveBeenCalledTimes(1);
-        expect(spyOnConsoleError).toHaveBeenCalledWith(
-          "Unknown topic:",
-          "An Unknown Topic"
-        );
       });
     });
 

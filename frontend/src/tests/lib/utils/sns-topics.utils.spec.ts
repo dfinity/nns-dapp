@@ -1,3 +1,4 @@
+import type { SnsTopicKey } from "$lib/types/sns";
 import type {
   ListTopicsResponseWithUnknown,
   TopicInfoWithUnknown,
@@ -5,9 +6,10 @@ import type {
 import {
   getAllSnsNSFunctions,
   getSnsTopicInfoKey,
-  getSnsTopicKey,
   getSnsTopicKeys,
   getTopicInfoBySnsTopicKey,
+  snsTopicKeyToTopic,
+  snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
@@ -73,32 +75,81 @@ describe("sns-topics utils", () => {
     uncategorized_functions: [],
   };
 
-  describe("getSnsTopicKey", () => {
+  // ic-js type: https://github.com/dfinity/ic-js/blob/1a4d3f02d4cfebf47c199a4fdc376e2f62a84746/packages/sns/candid/sns_governance_test.did#L867C1-L875C3
+  describe("snsTopicKeyToTopic", () => {
+    it("converts aggregator topic to ic-js types", () => {
+      const spyOnConsoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+
+      expect(snsTopicKeyToTopic("DappCanisterManagement")).toEqual({
+        DappCanisterManagement: null,
+      });
+      expect(snsTopicKeyToTopic("DaoCommunitySettings")).toEqual({
+        DaoCommunitySettings: null,
+      });
+      expect(snsTopicKeyToTopic("ApplicationBusinessLogic")).toEqual({
+        ApplicationBusinessLogic: null,
+      });
+      expect(snsTopicKeyToTopic("CriticalDappOperations")).toEqual({
+        CriticalDappOperations: null,
+      });
+      expect(snsTopicKeyToTopic("TreasuryAssetManagement")).toEqual({
+        TreasuryAssetManagement: null,
+      });
+      expect(snsTopicKeyToTopic("Governance")).toEqual({
+        Governance: null,
+      });
+      expect(snsTopicKeyToTopic("SnsFrameworkManagement")).toEqual({
+        SnsFrameworkManagement: null,
+      });
+
+      expect(spyOnConsoleError).not.toHaveBeenCalled();
+    });
+
+    it("returns UnknownTopic if topic is unknown", () => {
+      const spyOnConsoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => undefined);
+
+      expect(snsTopicKeyToTopic("An Unknown Topic" as SnsTopicKey)).toEqual({
+        UnknownTopic: null,
+      });
+
+      expect(spyOnConsoleError).toHaveBeenCalledTimes(1);
+      expect(spyOnConsoleError).toHaveBeenCalledWith(
+        "Unknown topic:",
+        "An Unknown Topic"
+      );
+    });
+  });
+
+  describe("snsTopicToTopicKey", () => {
     it("should return topic key", () => {
-      expect(getSnsTopicKey({ DappCanisterManagement: null })).toBe(
+      expect(snsTopicToTopicKey({ DappCanisterManagement: null })).toBe(
         "DappCanisterManagement"
       );
-      expect(getSnsTopicKey({ DaoCommunitySettings: null })).toBe(
+      expect(snsTopicToTopicKey({ DaoCommunitySettings: null })).toBe(
         "DaoCommunitySettings"
       );
-      expect(getSnsTopicKey({ ApplicationBusinessLogic: null })).toBe(
+      expect(snsTopicToTopicKey({ ApplicationBusinessLogic: null })).toBe(
         "ApplicationBusinessLogic"
       );
-      expect(getSnsTopicKey({ CriticalDappOperations: null })).toBe(
+      expect(snsTopicToTopicKey({ CriticalDappOperations: null })).toBe(
         "CriticalDappOperations"
       );
-      expect(getSnsTopicKey({ TreasuryAssetManagement: null })).toBe(
+      expect(snsTopicToTopicKey({ TreasuryAssetManagement: null })).toBe(
         "TreasuryAssetManagement"
       );
-      expect(getSnsTopicKey({ Governance: null })).toBe("Governance");
-      expect(getSnsTopicKey({ SnsFrameworkManagement: null })).toBe(
+      expect(snsTopicToTopicKey({ Governance: null })).toBe("Governance");
+      expect(snsTopicToTopicKey({ SnsFrameworkManagement: null })).toBe(
         "SnsFrameworkManagement"
       );
-      expect(getSnsTopicKey({ UnknownTopic: null })).toBe("UnknownTopic");
+      expect(snsTopicToTopicKey({ UnknownTopic: null })).toBe("UnknownTopic");
     });
 
     it("should return UnknownTopic if topic is unknown", () => {
-      expect(getSnsTopicKey({} as Topic)).toBe("UnknownTopic");
+      expect(snsTopicToTopicKey({} as Topic)).toBe("UnknownTopic");
     });
   });
 
