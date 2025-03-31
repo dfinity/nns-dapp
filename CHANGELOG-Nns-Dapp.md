@@ -11,6 +11,17 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 136003
+
+### Application
+
+#### Changed
+
+* Replaces the toaster error with an input error message for the split neuron modal flow.
+* Added client-side validation for staking ICP.
+
+### Operations
+
 ## Proposal 135924
 
 ### Application
