@@ -1,4 +1,3 @@
-import type { SnsTopicKey } from "$lib/types/sns";
 import type {
   ListTopicsResponseWithUnknown,
   TopicInfoWithUnknown,
@@ -8,7 +7,6 @@ import {
   getSnsTopicInfoKey,
   getSnsTopicKeys,
   getTopicInfoBySnsTopicKey,
-  snsTopicKeyToTopic,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
 import { Principal } from "@dfinity/principal";
@@ -74,55 +72,6 @@ describe("sns-topics utils", () => {
     topics: [[knownTopicInfo, completelyUnknownTopicInfo]],
     uncategorized_functions: [],
   };
-
-  // ic-js type: https://github.com/dfinity/ic-js/blob/1a4d3f02d4cfebf47c199a4fdc376e2f62a84746/packages/sns/candid/sns_governance_test.did#L867C1-L875C3
-  describe("snsTopicKeyToTopic", () => {
-    it("converts aggregator topic to ic-js types", () => {
-      const spyOnConsoleError = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => undefined);
-
-      expect(snsTopicKeyToTopic("DappCanisterManagement")).toEqual({
-        DappCanisterManagement: null,
-      });
-      expect(snsTopicKeyToTopic("DaoCommunitySettings")).toEqual({
-        DaoCommunitySettings: null,
-      });
-      expect(snsTopicKeyToTopic("ApplicationBusinessLogic")).toEqual({
-        ApplicationBusinessLogic: null,
-      });
-      expect(snsTopicKeyToTopic("CriticalDappOperations")).toEqual({
-        CriticalDappOperations: null,
-      });
-      expect(snsTopicKeyToTopic("TreasuryAssetManagement")).toEqual({
-        TreasuryAssetManagement: null,
-      });
-      expect(snsTopicKeyToTopic("Governance")).toEqual({
-        Governance: null,
-      });
-      expect(snsTopicKeyToTopic("SnsFrameworkManagement")).toEqual({
-        SnsFrameworkManagement: null,
-      });
-
-      expect(spyOnConsoleError).not.toHaveBeenCalled();
-    });
-
-    it("returns UnknownTopic if topic is unknown", () => {
-      const spyOnConsoleError = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => undefined);
-
-      expect(snsTopicKeyToTopic("An Unknown Topic" as SnsTopicKey)).toEqual({
-        UnknownTopic: null,
-      });
-
-      expect(spyOnConsoleError).toHaveBeenCalledTimes(1);
-      expect(spyOnConsoleError).toHaveBeenCalledWith(
-        "Unknown topic:",
-        "An Unknown Topic"
-      );
-    });
-  });
 
   describe("snsTopicToTopicKey", () => {
     it("should return topic key", () => {
