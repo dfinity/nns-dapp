@@ -4,9 +4,11 @@ import {
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
+import type { SnsTopicFollowee, SnsTopicKey } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";
+import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { NeuronState, type NeuronId } from "@dfinity/nns";
@@ -19,6 +21,7 @@ import {
 import type {
   DisburseMaturityInProgress,
   NeuronPermission,
+  Topic,
 } from "@dfinity/sns/dist/candid/sns_governance";
 import {
   arrayOfNumberToUint8Array,
@@ -58,6 +61,7 @@ export const createMockSnsNeuron = ({
   createdTimestampSeconds = BigInt(nowInSeconds() - SECONDS_IN_DAY),
   sourceNnsNeuronId,
   activeDisbursementsE8s = [],
+  topicFollowees,
 }: {
   stake?: bigint;
   id?: number[];
@@ -77,6 +81,9 @@ export const createMockSnsNeuron = ({
   // Having a sourceNnsNeuronId makes the neuron a CF neuron.
   sourceNnsNeuronId?: NeuronId;
   activeDisbursementsE8s?: bigint[];
+  topicFollowees?: {
+    [key in SnsTopicKey]?: SnsTopicFollowee[];
+  };
 }): SnsNeuron => {
   if (isNullish(state) && nonNullish(dissolveDelaySeconds)) {
     state = NeuronState.Locked;
@@ -124,6 +131,24 @@ export const createMockSnsNeuron = ({
       ...mockActiveDisbursement,
       amount_e8s: amountE8s,
     })),
+    topic_followees: isNullish(topicFollowees)
+      ? []
+      : [
+          {
+            topic_id_to_followees: Object.entries(topicFollowees).map(
+              ([topic, followees]) => [
+                0n,
+                {
+                  topic: [snsTopicKeyToTopic(topic as SnsTopicKey) as Topic],
+                  followees: followees.map(({ neuronId, alias }) => ({
+                    neuron_id: [neuronId],
+                    alias: alias === undefined ? [] : [alias],
+                  })),
+                },
+              ]
+            ),
+          },
+        ],
   };
 };
 
