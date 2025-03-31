@@ -14,14 +14,31 @@
   } from "$lib/types/sns-aggregator";
   import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
   import type { Principal } from "@dfinity/principal";
-  import { fromDefinedNullable, isNullish } from "@dfinity/utils";
+  import {
+    arrayOfNumberToUint8Array,
+    fromDefinedNullable,
+    hexStringToUint8Array,
+    isNullish,
+  } from "@dfinity/utils";
   import type { SnsTopicKey } from "$lib/types/sns";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import {
+    getSnsNeuronIdentity,
+    setFollowing,
+  } from "$lib/services/sns-neurons.services";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import {
+    getSnsTopicFollowings,
+    insertIntoSnsTopicFollowings,
+  } from "$lib/utils/sns-topics.utils";
+  import { hexStringToBytes } from "$lib/utils/utils";
+  import { querySnsNeuron } from "$lib/api/sns-governance.api";
 
   export let rootCanisterId: Principal;
 
   // WIP: reflect the neuron followees
-  // export let neuron: SnsNeuron;
+  export let neuron: SnsNeuron;
   // export let neuronId: SnsNeuronId;
   // const neuronFollowees = neuron.topic_followees
 
@@ -55,15 +72,64 @@
   let selectedTopics: SnsTopicKey[] = [];
   let followeeNeuronIdHex: string = "";
 
+  // Validate the followee neuron id by fetching it.
+  const validateNeuronId = async (neuronId: SnsNeuronId) => {
+    const identity = await getSnsNeuronIdentity();
+    return (
+      (await querySnsNeuron({
+        identity,
+        rootCanisterId,
+        neuronId,
+        certified: false,
+      })) !== undefined
+    );
+  };
+
   const onConfirm = async (followeeHex: string) => {
+    const followeeNeuronId: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
+    };
+
+    if (await !validateNeuronId(followeeNeuronId)) {
+      toastsError({
+        labelKey: "new_followee.followee_does_not_exist",
+        substitutions: {
+          $neuronId: followeeHex,
+        },
+      });
+      return;
+    }
+
     startBusy({ initiator: "add-followee-by-topic" });
 
-    // TODO: replace with the actual api call
-    console.error("TBD: follow SNS neurons by topic", {
-      selectedTopics,
-      followeeHex,
-    });
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const followings = insertIntoSnsTopicFollowings({
+        followings: getSnsTopicFollowings(neuron),
+        topicsToFollow: selectedTopics,
+        neuronId: fromDefinedNullable(neuron.id),
+      });
+
+      const { success } = await setFollowing({
+        rootCanisterId,
+        neuronId: neuron.id,
+        followings,
+        neuron,
+      });
+      if (success) {
+        toastsSuccess({
+          labelKey: $i18n.follow_sns_topics.success,
+        });
+        close();
+      }
+    } catch (error) {
+      console.error("Failed to follow SNS neurons by topic", error);
+      toastsError({
+        labelKey: "new_followee.followee_does_not_exist",
+        substitutions: {
+          $neuronId: followeeHex,
+        },
+      });
+    }
 
     stopBusy("add-followee-by-topic");
   };

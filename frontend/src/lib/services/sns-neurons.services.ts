@@ -35,7 +35,7 @@ import {
 } from "$lib/stores/sns-neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
-import type { SnsTopicKey } from "$lib/types/sns";
+import type { SnsTopicFollowing } from "$lib/types/sns";
 import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
@@ -49,22 +49,14 @@ import {
   nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import {
-  getSnsTopicFollowingMap,
-  snsTopicKeyToTopic,
-  snsTopicToTopicKey,
-} from "$lib/utils/sns-topics.utils";
+import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type {
-  SnsNeuron,
-  SnsNeuronId,
-  SnsSetFollowingParams,
-} from "@dfinity/sns";
+import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
 import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import {
   arrayOfNumberToUint8Array,
@@ -662,83 +654,26 @@ export const addFollowee = async ({
  */
 export const setFollowing = async ({
   rootCanisterId,
+  neuronId,
+  followings,
   neuron,
-  followeeHex,
-  topicsToFollow,
 }: {
   rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+  followings: SnsTopicFollowing[];
   neuron: SnsNeuron;
-  followeeHex: string;
-  topicsToFollow: Array<SnsTopicKey>;
 }): Promise<{ success: boolean }> => {
   const identity = await getSnsNeuronIdentity();
-  const followeeNeuronId: SnsNeuronId = {
-    id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
-  };
-
-  const map = getSnsTopicFollowingMap(neuron);
-  const currentlyFollowing = (
-    fromNullable(neuron.topic_followees) ?? {
-      topic_id_to_followees: [],
-    }
-  ).topic_id_to_followees;
-
-  // Collect currently followees by topic.
-  type ApiFollowee =
-    SnsSetFollowingParams["topicFollowing"][number]["followees"][number];
-  const topicKeyToFolloweesMap: Map<SnsTopicKey, ApiFollowee[]> = new Map();
-  for (const [_, followees] of currentlyFollowing) {
-    const topic = fromDefinedNullable(followees.topic);
-    const topicKey = snsTopicToTopicKey(topic);
-    const apiFollowees = followees.followees.map(({ neuron_id, alias }) => ({
-      neuronId: fromDefinedNullable(neuron_id),
-      alias: fromNullable(alias),
-    }));
-    topicKeyToFolloweesMap.set(topicKey, apiFollowees);
-  }
-
-  // Add new followee.
-  for (const topicKey of topicsToFollow) {
-    const followees = topicKeyToFolloweesMap.get(topicKey) ?? [];
-    followees.push({
-      neuronId: followeeNeuronId,
-      // The `alias` is optional and not yet implemented in the UI
-      // (api restriction: there should be no different aliases for the same neuron id).
-      // alias: "Thomas A. Anderson",
-    });
-    topicKeyToFolloweesMap.set(topicKey, followees);
-  }
-
-  console.log("🍏0", topicKeyToFolloweesMap);
 
   try {
-    // Validate the followee neuron id by fetching it.
-    const followeeNeuron = await querySnsNeuron({
-      identity,
-      rootCanisterId,
-      neuronId: followeeNeuronId,
-      certified: false,
-    });
-    // TODO(mstr): Improve error handling
-    if (followeeNeuron === undefined) {
-      toastsError({
-        labelKey: "new_followee.followee_does_not_exist",
-        substitutions: {
-          $neuronId: followeeHex,
-        },
-      });
-      return { success: false };
-    }
+    const topicFollowing = followings.map(({ topic, followees }) => ({
+      topic: snsTopicKeyToTopic(topic) as Topic,
+      followees,
+    }));
 
-    const topicFollowing = Array.from(topicKeyToFolloweesMap.entries()).map(
-      ([topicKey, followees]) => ({
-        topic: snsTopicKeyToTopic(topicKey) as Topic,
-        followees,
-      })
-    );
     await setFollowingApi({
       identity,
-      neuronId: fromNullable(neuron.id) as SnsNeuronId,
+      neuronId: fromDefinedNullable(neuron.id),
       rootCanisterId,
       topicFollowing,
     });
