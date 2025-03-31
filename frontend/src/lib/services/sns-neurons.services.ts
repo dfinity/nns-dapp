@@ -656,12 +656,10 @@ export const setFollowing = async ({
   rootCanisterId,
   neuronId,
   followings,
-  neuron,
 }: {
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
   followings: SnsTopicFollowing[];
-  neuron: SnsNeuron;
 }): Promise<{ success: boolean }> => {
   const identity = await getSnsNeuronIdentity();
 
@@ -670,10 +668,9 @@ export const setFollowing = async ({
       topic: snsTopicKeyToTopic(topic) as Topic,
       followees,
     }));
-
     await setFollowingApi({
       identity,
-      neuronId: fromDefinedNullable(neuron.id),
+      neuronId,
       rootCanisterId,
       topicFollowing,
     });
