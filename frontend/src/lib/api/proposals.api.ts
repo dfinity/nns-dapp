@@ -22,6 +22,7 @@ export const queryProposals = async ({
   includeRewardStatus = [],
   includeStatus = [],
   certified,
+  omitLargeFields = true,
 }: {
   beforeProposal: ProposalId | undefined;
   identity: Identity;
@@ -29,6 +30,7 @@ export const queryProposals = async ({
   includeRewardStatus?: ProposalRewardStatus[];
   includeStatus?: ProposalStatus[];
   certified: boolean;
+  omitLargeFields?: boolean;
 }): Promise<ProposalInfo[]> => {
   logWithTimestamp(
     `Querying Proposals (${
@@ -57,7 +59,7 @@ export const queryProposals = async ({
       includeAllManageNeuronProposals: false,
       // This flag solves the issue whe the proposal payload being too large.
       // (e.g. IC0504: Error from Canister rrkah-fqaaa-aaaaa-aaaaq-cai: Canister violated contract: ic0.msg_reply_data_append: application payload size (3661753) cannot be larger than 3145728.)
-      omitLargeFields: true,
+      omitLargeFields,
     },
     certified,
   });

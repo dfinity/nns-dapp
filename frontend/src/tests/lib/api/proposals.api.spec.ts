@@ -102,6 +102,31 @@ describe("proposals-api", () => {
         },
       });
     });
+
+    it("should call with no omitLargeFields", async () => {
+      await queryProposals({
+        beforeProposal: mockProposals[mockProposals.length - 1].id,
+        includeTopics: [],
+        includeStatus: defaultIncludeStatus,
+        includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
+        identity: mockIdentity,
+        certified: true,
+        omitLargeFields: false,
+      });
+
+      expect(spyListProposals).toHaveBeenCalledWith({
+        certified: true,
+        request: {
+          beforeProposal: mockProposals[mockProposals.length - 1].id,
+          excludeTopic: [],
+          includeRewardStatus: [ProposalRewardStatus.AcceptVotes],
+          includeStatus: defaultIncludeStatus,
+          includeAllManageNeuronProposals: false,
+          limit: 100,
+          omitLargeFields: false,
+        },
+      });
+    });
   });
 
   describe("load", () => {
