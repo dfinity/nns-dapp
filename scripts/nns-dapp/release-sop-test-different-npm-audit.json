@@ -1,7 +1,5 @@
 {
-  "args": [
-    "--new"
-  ],
+  "args": ["--new"],
   "behavior": [
     {
       "command": "date +%Y-%m-%d",
@@ -95,7 +93,7 @@
     "Security test: npm audit: \u001b[32mhttps://github.com/advisories/XXXX-xxxx-xxxx-xxxx\u001b[0m",
     "Values don't match!",
     "Security test: npm audit: https://github.com/advisories/XXXX-xxxx-xxxx-xxxx",
-    "Expected npm audit: https://github.com/advisories/GHSA-968p-4wvh-cqc8 https://github.com/advisories/GHSA-67mh-4wv8-2f99"
+    "Expected npm audit: found 0 vulnerabilities"
   ],
   "expectedExitCode": 1
 }
