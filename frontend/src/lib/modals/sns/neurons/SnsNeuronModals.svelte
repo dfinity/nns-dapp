@@ -122,8 +122,12 @@
     <FollowSnsNeuronsModal {neuron} on:nnsClose={close} {rootCanisterId} />
   {/if}
 
-  {#if type === "follow-by-topic" && nonNullish(rootCanisterId)}
-    <FollowSnsNeuronsByTopicModal {rootCanisterId} on:nnsClose={close} />
+  {#if type === "follow-by-topic" && nonNullish(rootCanisterId) && nonNullish(neuron)}
+    <FollowSnsNeuronsByTopicModal
+      {neuron}
+      {rootCanisterId}
+      on:nnsClose={close}
+    />
   {/if}
 
   {#if type === "stake-maturity" && nonNullish(rootCanisterId) && nonNullish(neuronId)}

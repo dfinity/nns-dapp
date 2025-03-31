@@ -5,6 +5,7 @@ import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
   SnsGetLifecycleResponse,
+  SnsNeuronId,
   SnsNeuronRecipe,
   SnsParams,
   SnsSwapBuyerState,
@@ -111,3 +112,14 @@ export interface SnsTicket {
 export type SnsTopicKey = keyof {
   [K in Topic | UnknownTopic as keyof K]: true;
 };
+
+export type SnsTopicFollowee = {
+  neuronId: SnsNeuronId;
+  alias?: string;
+};
+
+export type SnsTopicFollowing = {
+  topic: SnsTopicKey;
+  followees: Array<SnsTopicFollowee>;
+};
+

@@ -17,7 +17,6 @@
   import {
     arrayOfNumberToUint8Array,
     fromDefinedNullable,
-    hexStringToUint8Array,
     isNullish,
   } from "@dfinity/utils";
   import type { SnsTopicKey } from "$lib/types/sns";
@@ -36,11 +35,7 @@
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
 
   export let rootCanisterId: Principal;
-
-  // WIP: reflect the neuron followees
   export let neuron: SnsNeuron;
-  // export let neuronId: SnsNeuronId;
-  // const neuronFollowees = neuron.topic_followees
 
   const dispatcher = createEventDispatcher();
   const STEP_TOPICS = "topics";
@@ -92,7 +87,7 @@
 
     if (await !validateNeuronId(followeeNeuronId)) {
       toastsError({
-        labelKey: "new_followee.followee_does_not_exist",
+        labelKey: "follow_sns_topics.followee_does_not_exist",
         substitutions: {
           $neuronId: followeeHex,
         },
@@ -108,12 +103,10 @@
         topicsToFollow: selectedTopics,
         neuronId: fromDefinedNullable(neuron.id),
       });
-
       const { success } = await setFollowing({
         rootCanisterId,
         neuronId: neuron.id,
         followings,
-        neuron,
       });
       if (success) {
         toastsSuccess({
