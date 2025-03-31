@@ -13,6 +13,7 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
+import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 
 export const querySnsNeurons = async ({
   identity,
@@ -414,6 +415,39 @@ export const setFollowees = async ({
   });
 
   logWithTimestamp(`Setting sns neuron followee call complete.`);
+};
+
+export const setFollowing = async ({
+  neuronId,
+  rootCanisterId,
+  identity,
+  topicFollowing,
+}: {
+  neuronId: SnsNeuronId;
+  rootCanisterId: Principal;
+  identity: Identity;
+  topicFollowing: Array<{
+    topic: Topic;
+    followees: Array<{
+      neuronId: SnsNeuronId;
+      alias?: string;
+    }>;
+  }>;
+}): Promise<void> => {
+  logWithTimestamp(`Set following: call...`);
+
+  const { setFollowing } = await wrapper({
+    identity,
+    rootCanisterId: rootCanisterId.toText(),
+    certified: true,
+  });
+
+  await setFollowing({
+    neuronId,
+    topicFollowing,
+  });
+
+  logWithTimestamp(`Set following: complete`);
 };
 
 export const stakeMaturity = async ({
