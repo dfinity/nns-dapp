@@ -128,4 +128,15 @@
       z-index: 1;
     }
   }
+
+  .center-marker {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 3px;
+    height: var(--padding);
+    background-color: var(--card-background);
+    transform: translateX(-50%);
+    z-index: 1;
+  }
 </style>
