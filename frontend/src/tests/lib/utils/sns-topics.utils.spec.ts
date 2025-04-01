@@ -4,16 +4,26 @@ import type {
 } from "$lib/types/sns-aggregator";
 import {
   getAllSnsNSFunctions,
+  getSnsTopicFollowings,
   getSnsTopicInfoKey,
   getSnsTopicKeys,
   getTopicInfoBySnsTopicKey,
+  insertIntoSnsTopicFollowings,
+  removeFromSnsTopicFollowings,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
+import { createMockSnsNeuron } from "../../mocks/sns-neurons.mock";
 
 describe("sns-topics utils", () => {
+  const neuronId1 = {
+    id: Uint8Array.from([1, 2, 3]),
+  };
+  const neuronId2 = {
+    id: Uint8Array.from([4, 5, 6]),
+  };
   const canisterIdString = "aaaaa-aa";
   const canisterId = Principal.fromText(canisterIdString);
   const method = "method";
@@ -148,6 +158,255 @@ describe("sns-topics utils", () => {
       expect(getAllSnsNSFunctions(knownTopicInfo)).toEqual([
         nativeNsFunction,
         genericNsFunction,
+      ]);
+    });
+  });
+
+  describe("getSnsTopicFollowings", () => {
+    it("should return empty map if the topic_followees is not available/supported", () => {
+      expect(
+        getSnsTopicFollowings(
+          createMockSnsNeuron({
+            topicFollowees: {},
+          })
+        )
+      ).toEqual([]);
+      expect(
+        getSnsTopicFollowings({
+          ...createMockSnsNeuron({}),
+        })
+      ).toEqual([]);
+    });
+
+    it("should return a followee list", () => {
+      expect(
+        getSnsTopicFollowings(
+          createMockSnsNeuron({
+            topicFollowees: {
+              DappCanisterManagement: [
+                {
+                  neuronId: neuronId1,
+                  alias: "alias",
+                },
+              ],
+              DaoCommunitySettings: [
+                {
+                  neuronId: neuronId1,
+                  alias: "alias",
+                },
+                {
+                  neuronId: neuronId2,
+                },
+              ],
+            },
+          })
+        )
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId1, alias: "alias" }],
+        },
+        {
+          topic: "DaoCommunitySettings",
+          followees: [
+            { neuronId: neuronId1, alias: "alias" },
+            {
+              neuronId: neuronId2,
+            },
+          ],
+        },
+      ]);
+    });
+  });
+
+  describe("insertIntoTopicFollowingMap", () => {
+    it("should return empty list if the topic_followees is not available/supported", () => {
+      expect(
+        getSnsTopicFollowings(
+          createMockSnsNeuron({
+            topicFollowees: {},
+          })
+        )
+      ).toEqual([]);
+
+      expect(
+        getSnsTopicFollowings({
+          ...createMockSnsNeuron({}),
+          topic_followees: undefined,
+        })
+      ).toEqual([]);
+    });
+
+    it("should return following list", () => {
+      expect(
+        getSnsTopicFollowings(
+          createMockSnsNeuron({
+            topicFollowees: {
+              DappCanisterManagement: [
+                {
+                  neuronId: neuronId1,
+                  alias: "alias",
+                },
+              ],
+              DaoCommunitySettings: [
+                {
+                  neuronId: neuronId1,
+                  alias: "alias",
+                },
+                {
+                  neuronId: neuronId2,
+                },
+              ],
+            },
+          })
+        )
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId1, alias: "alias" }],
+        },
+        {
+          topic: "DaoCommunitySettings",
+          followees: [
+            { neuronId: neuronId1, alias: "alias" },
+            { neuronId: neuronId2 },
+          ],
+        },
+      ]);
+    });
+  });
+
+  describe("insertIntoSnsTopicFollowings", () => {
+    it("should add new topic to follow", () => {
+      expect(
+        insertIntoSnsTopicFollowings({
+          followings: [
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1, alias: "alias" }],
+            },
+          ],
+          topicsToFollow: ["DaoCommunitySettings"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId1, alias: "alias" }],
+        },
+        {
+          topic: "DaoCommunitySettings",
+          followees: [{ neuronId: neuronId2 }],
+        },
+      ]);
+    });
+
+    it("should add new following to existent topics", () => {
+      expect(
+        insertIntoSnsTopicFollowings({
+          followings: [
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1, alias: "alias" }],
+            },
+          ],
+          topicsToFollow: ["DappCanisterManagement"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [
+            { neuronId: neuronId1, alias: "alias" },
+            { neuronId: neuronId2 },
+          ],
+        },
+      ]);
+    });
+
+    it("should prevent adding duplications", () => {
+      expect(
+        insertIntoSnsTopicFollowings({
+          followings: [
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId2 }],
+            },
+          ],
+          topicsToFollow: ["DappCanisterManagement"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId2 }],
+        },
+      ]);
+    });
+  });
+
+  describe("removeFromSnsTopicFollowings", () => {
+    it("should remove neuron from the topic followees", () => {
+      expect(
+        removeFromSnsTopicFollowings({
+          followings: [
+            {
+              topic: "DappCanisterManagement",
+              followees: [
+                { neuronId: neuronId1, alias: "alias" },
+                { neuronId: neuronId2 },
+              ],
+            },
+          ],
+          neuronId: neuronId1,
+        })
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId2 }],
+        },
+      ]);
+    });
+
+    it("should remove topic entry when the only followee", () => {
+      expect(
+        removeFromSnsTopicFollowings({
+          followings: [
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1, alias: "alias" }],
+            },
+            {
+              topic: "DaoCommunitySettings",
+              followees: [{ neuronId: neuronId2 }],
+            },
+          ],
+          neuronId: neuronId1,
+        })
+      ).toEqual([
+        {
+          topic: "DaoCommunitySettings",
+          followees: [{ neuronId: neuronId2 }],
+        },
+      ]);
+    });
+
+    it("should remove nothing when not exists", () => {
+      expect(
+        removeFromSnsTopicFollowings({
+          followings: [
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1, alias: "alias" }],
+            },
+          ],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId1, alias: "alias" }],
+        },
       ]);
     });
   });
