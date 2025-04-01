@@ -105,7 +105,7 @@
       });
       const { success } = await setFollowing({
         rootCanisterId,
-        neuronId: neuron.id,
+        neuronId: fromDefinedNullable(neuron.id),
         followings,
       });
       if (success) {
