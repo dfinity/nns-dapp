@@ -39,6 +39,7 @@
   import { Island } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import type { FolloweesForTopic } from "@dfinity/sns/dist/candid/sns_governance";
   import {
     isNullish,
     nonNullish,
@@ -107,7 +108,40 @@
           mutableSnsNeuronStore.update({
             mutation: (store) => ({
               ...store,
-              neuron: snsNeuron,
+              neuron: {
+                ...snsNeuron,
+                // Mock the followees for the neuron before the api is able to save them.
+                topic_followees: [
+                  {
+                    topic_id_to_followees: [
+                      [
+                        0n,
+                        {
+                          topic: [{ DappCanisterManagement: null }],
+                          followees: [
+                            {
+                              neuron_id: snsNeuron.id,
+                              alias: [],
+                            },
+                          ],
+                        },
+                      ],
+                      [
+                        0n,
+                        {
+                          topic: [{ CriticalDappOperations: null }],
+                          followees: [
+                            {
+                              neuron_id: snsNeuron.id,
+                              alias: [],
+                            },
+                          ],
+                        },
+                      ],
+                    ],
+                  },
+                ],
+              },
             }),
             certified,
           });
