@@ -32,13 +32,10 @@
     setFollowing,
   } from "$lib/services/sns-neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import {
-    getSnsTopicFollowings,
-    insertIntoSnsTopicFollowings,
-  } from "$lib/utils/sns-topics.utils";
+  import { getSnsTopicFollowings } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
-  import { subaccountToHexString } from "../../../utils/sns-neuron.utils";
+  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -70,8 +67,8 @@
     ? []
     : fromDefinedNullable(listTopics?.topics);
 
-  let neuronFollowings: SnsTopicFollowing[] = [];
-  $: neuronFollowings = getSnsTopicFollowings(neuron);
+  let followings: SnsTopicFollowing[] = [];
+  $: followings = getSnsTopicFollowings(neuron);
 
   let selectedTopics: SnsTopicKey[] = [];
   let followeeNeuronIdHex: string = "";
@@ -109,10 +106,10 @@
     try {
       // Combine the neuron’s followees with the new followee for selected topics
       // (if the neuron is already following the followee, do not add it again).
-      const followings: SnsTopicFollowing[] = selectedTopics
+      const requestFollowings: SnsTopicFollowing[] = selectedTopics
         .map((topicKey) => {
           const followings: SnsTopicFollowee[] =
-            neuronFollowings.find((following) => following.topic === topicKey)
+            followings.find((following) => following.topic === topicKey)
               ?.followees ?? [];
           const isAlreadyFollowed = followings.find(
             (followee) =>
@@ -134,7 +131,7 @@
       const { success } = await setFollowing({
         rootCanisterId,
         neuronId: fromDefinedNullable(neuron.id),
-        followings,
+        followings: requestFollowings,
       });
       if (success) {
         toastsSuccess({
