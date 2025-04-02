@@ -108,10 +108,10 @@
       // (if the neuron is already following the followee, do not add it again).
       const requestFollowings: SnsTopicFollowing[] = selectedTopics
         .map((topicKey) => {
-          const followings: SnsTopicFollowee[] =
+          const topicFollowees: SnsTopicFollowee[] =
             followings.find((following) => following.topic === topicKey)
               ?.followees ?? [];
-          const isAlreadyFollowed = followings.find(
+          const isAlreadyFollowed = topicFollowees.find(
             (followee) =>
               subaccountToHexString(followee.neuronId.id) === followeeHex
           );
@@ -120,7 +120,7 @@
             : {
                 topic: topicKey,
                 followees: [
-                  ...followings,
+                  ...topicFollowees,
                   {
                     neuronId: followeeNeuronId,
                   },
