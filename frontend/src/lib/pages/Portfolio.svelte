@@ -137,7 +137,8 @@
   $: console.log(openSnsProposals);
   let openProposalCards: CardItem[];
   $: openProposalCards = openSnsProposals.map((proposalInfo) => ({
-    component: OpenProposalCard,
+    // TODO: Svelte v5 migration - fix type
+    component: OpenProposalCard as unknown as Component,
     props: { proposalInfo },
   }));
 

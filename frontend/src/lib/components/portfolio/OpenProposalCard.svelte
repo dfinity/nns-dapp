@@ -1,5 +1,6 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import VotesResult from "$lib/components/portfolio/VotesResult.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import { i18n } from "$lib/stores/i18n";
@@ -12,26 +13,68 @@
     Tag,
   } from "@dfinity/gix-components";
   import type { Proposal, ProposalId, ProposalInfo } from "@dfinity/nns";
-  import { nonNullish, secondsToDuration } from "@dfinity/utils";
-  import VotesResult from "./VotesResult.svelte";
+  import { isNullish, nonNullish, secondsToDuration } from "@dfinity/utils";
 
-  export let proposalInfo: ProposalInfo;
-  let proposal: Proposal;
-  $: proposal = proposalInfo.proposal;
-  $: console.log(proposal);
+  type Props = {
+    proposalInfo: ProposalInfo;
+  };
+  let { proposalInfo }: Props = $props();
 
-  let durationTillDeadline: bigint;
-  $: durationTillDeadline =
-    proposalInfo?.deadlineTimestampSeconds ?? 0n - BigInt(nowInSeconds());
+  const mapProposalInfoToCard = (
+    proposalInfo: ProposalInfo
+  ):
+    | undefined
+    | {
+        title: string;
+        durationTillDeadline: bigint;
+        href: string;
+        logo: string | undefined;
+        name: string | undefined;
+      } => {
+    const proposal = proposalInfo?.proposal;
+    const action = proposal?.action;
 
-  let href: string;
-  $: href = nonNullish(proposalInfo.id)
-    ? buildProposalUrl({
-        universe: $pageStore.universe,
-        proposalId: proposalInfo.id as ProposalId,
-        actionable: false,
-      })
-    : "#";
+    if (isNullish(action) || isNullish(proposal)) return undefined;
+    if (!("CreateServiceNervousSystem" in action)) return undefined;
+
+    const title = proposal.title;
+    const { id, deadlineTimestampSeconds } = proposalInfo;
+    const durationTillDeadline = deadlineTimestampSeconds
+      ? deadlineTimestampSeconds - BigInt(nowInSeconds())
+      : 0n;
+    const href = buildProposalUrl({
+      universe: $pageStore.universe,
+      proposalId: id as ProposalId,
+      actionable: false,
+    });
+
+    const logo: string | undefined =
+      action.CreateServiceNervousSystem?.logo?.base64Encoding;
+    const name: string | undefined = action.CreateServiceNervousSystem?.name;
+
+    return { durationTillDeadline, href, logo, name, title };
+  };
+
+  let proposal: Proposal | undefined = $derived(proposalInfo?.proposal);
+  $effect(() => {
+    console.log(proposal);
+  });
+
+  let durationTillDeadline: bigint | undefined = $derived(
+    nonNullish(proposalInfo?.deadlineTimestampSeconds)
+      ? proposalInfo.deadlineTimestampSeconds - BigInt(nowInSeconds())
+      : 0n
+  );
+
+  let href: string = $derived(
+    nonNullish(proposalInfo.id)
+      ? buildProposalUrl({
+          universe: $pageStore.universe,
+          proposalId: proposalInfo.id as ProposalId,
+          actionable: false,
+        })
+      : "#"
+  );
 </script>
 
 <Card testId="launch-project-card">
@@ -40,9 +83,9 @@
       <div class="title-wrapper">
         <div>
           <Logo
-            src={proposal.action?.CreateServiceNervousSystem?.logo
+            src={proposal?.action?.CreateServiceNervousSystem?.logo
               ?.base64Encoding}
-            alt={proposal.action?.CreateServiceNervousSystem?.name}
+            alt={proposal.action?.createservicenervoussystem?.name}
             size="medium"
           />
         </div>
@@ -133,7 +176,7 @@
         align-items: center;
         gap: var(--padding);
 
-        h4 {
+        h5 {
           margin: 0;
           padding: 0;
           @include text.truncate;
@@ -142,7 +185,11 @@
     }
 
     .content {
-      /* flex-grow: 1; */
+      h3 {
+        margin: 0;
+        padding: 0;
+        /* @include text.truncate; */
+      }
 
       .description {
         margin: 0;

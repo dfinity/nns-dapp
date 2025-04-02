@@ -17,7 +17,10 @@
   <div class="yes yes-percent">
     <span class="caption">Adopt</span>
     <span class="percentage" data-tid="adopt-percentage"
-      >{formatPercentage(yesProportion)}</span
+      >{formatPercentage(yesProportion, {
+        minFraction: 2,
+        maxFraction: 2,
+      })}</span
     >
   </div>
   <div class="no no-percent">
