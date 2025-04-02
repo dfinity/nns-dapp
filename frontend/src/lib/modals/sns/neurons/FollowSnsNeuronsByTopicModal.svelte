@@ -18,8 +18,13 @@
     arrayOfNumberToUint8Array,
     fromDefinedNullable,
     isNullish,
+    nonNullish,
   } from "@dfinity/utils";
-  import type { SnsTopicKey } from "$lib/types/sns";
+  import type {
+    SnsTopicFollowee,
+    SnsTopicFollowing,
+    SnsTopicKey,
+  } from "$lib/types/sns";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import {
@@ -33,6 +38,7 @@
   } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
+  import { subaccountToHexString } from "../../../utils/sns-neuron.utils";
 
   export let rootCanisterId: Principal;
   export let neuron: SnsNeuron;
@@ -63,6 +69,9 @@
   $: topicInfos = isNullish(listTopics)
     ? []
     : fromDefinedNullable(listTopics?.topics);
+
+  let neuronFollowings: SnsTopicFollowing[] = [];
+  $: neuronFollowings = getSnsTopicFollowings(neuron);
 
   let selectedTopics: SnsTopicKey[] = [];
   let followeeNeuronIdHex: string = "";
@@ -98,11 +107,30 @@
     startBusy({ initiator: "add-followee-by-topic" });
 
     try {
-      const followings = insertIntoSnsTopicFollowings({
-        followings: getSnsTopicFollowings(neuron),
-        topicsToFollow: selectedTopics,
-        neuronId: fromDefinedNullable(neuron.id),
-      });
+      // Combine the neuron’s followees with the new followee for selected topics
+      // (if the neuron is already following the followee, do not add it again).
+      const followings: SnsTopicFollowing[] = selectedTopics
+        .map((topicKey) => {
+          const followings: SnsTopicFollowee[] =
+            neuronFollowings.find((following) => following.topic === topicKey)
+              ?.followees ?? [];
+          const isAlreadyFollowed = followings.find(
+            (followee) =>
+              subaccountToHexString(followee.neuronId.id) === followeeHex
+          );
+          return isAlreadyFollowed
+            ? null
+            : {
+                topic: topicKey,
+                followees: [
+                  ...followings,
+                  {
+                    neuronId: followeeNeuronId,
+                  },
+                ],
+              };
+        })
+        .filter(nonNullish);
       const { success } = await setFollowing({
         rootCanisterId,
         neuronId: fromDefinedNullable(neuron.id),
