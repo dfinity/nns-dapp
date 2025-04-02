@@ -132,6 +132,9 @@ describe("Portfolio route", () => {
       await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
     expect(await portfolioPagePo.getLoginCard().isPresent()).toBe(true);
+    expect(await portfolioPagePo.getTotalAssetsCardPo().isPresent()).toBe(
+      false
+    );
 
     expect(titles.length).toBe(4);
     expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH", "ckUSDC"]);
