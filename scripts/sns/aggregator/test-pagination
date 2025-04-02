@@ -59,8 +59,9 @@ sns_from_wasm_canister() {
     actual="$(jq length "$PAGE_FILE")"
     sns_count=$((sns_count + actual))
     ((expect == actual)) || {
-      echo "ERROR: Expected to have $expect SNS in the aggregator page $page but found $actual."
+      echo "ERROR1: Expected to have $expect SNS in the aggregator page $page but found $actual."
       echo "Data is in: $PAGE_FILE"
+      cat "$PAGE_FILE"
       exit 1
     } >&2
     page_size="$actual"
@@ -68,8 +69,9 @@ sns_from_wasm_canister() {
     expect="$(seq "$((PAGE_SIZE * page))" "$((sns_count - 1))")"
     actual="$(jq '.[]|.index' "$PAGE_FILE")"
     [[ "$expect" == "$actual" ]] || {
-      echo "ERROR: Expected to have $expect SNS in the aggregator page $page but found $actual."
+      echo "ERROR2: Expected to have $expect SNS in the aggregator page $page but found $actual."
       echo "Data is in: $PAGE_FILE"
+      cat "$PAGE_FILE"
       exit 1
     } >&2
     # Clean up
