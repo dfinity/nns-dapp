@@ -1,6 +1,7 @@
 import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import { formatNumber } from "$lib/utils/format.utils";
 import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
 import {
@@ -17,7 +18,8 @@ import {
   compareTokensIcpFirst,
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
-import { ICPToken } from "@dfinity/utils";
+import type { ProposalId, ProposalInfo } from "@dfinity/nns";
+import { ICPToken, isNullish } from "@dfinity/utils";
 
 const MAX_NUMBER_OF_ITEMS = 4;
 
@@ -153,4 +155,39 @@ export const getMinCommitmentPercentage = (
       token: ICPToken,
     })
   );
+};
+
+export const mapProposalInfoToCard = (
+  proposalInfo: ProposalInfo
+):
+  | undefined
+  | {
+      durationTillDeadline: bigint;
+      id: ProposalId;
+      title: string | undefined;
+      logo: string | undefined;
+      name: string | undefined;
+    } => {
+  const proposal = proposalInfo?.proposal;
+  const action = proposal?.action;
+
+  if (isNullish(action) || isNullish(proposal)) return undefined;
+  if (!("CreateServiceNervousSystem" in action)) return undefined;
+
+  const title = proposal.title;
+  const { id, deadlineTimestampSeconds } = proposalInfo;
+  const durationTillDeadline = deadlineTimestampSeconds
+    ? deadlineTimestampSeconds - BigInt(nowInSeconds())
+    : 0n;
+  const logo: string | undefined =
+    action.CreateServiceNervousSystem?.logo?.base64Encoding;
+  const name: string | undefined = action.CreateServiceNervousSystem?.name;
+
+  return {
+    durationTillDeadline,
+    logo,
+    name,
+    title,
+    id: id as ProposalId,
+  };
 };

@@ -4,144 +4,96 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { nowInSeconds } from "$lib/utils/date.utils";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
+  import { mapProposalInfoToCard } from "$lib/utils/portfolio.utils";
   import {
     IconClockNoFill,
     IconRight,
     IconVote,
     Tag,
   } from "@dfinity/gix-components";
-  import type { Proposal, ProposalId, ProposalInfo } from "@dfinity/nns";
-  import { isNullish, nonNullish, secondsToDuration } from "@dfinity/utils";
+  import type { ProposalInfo } from "@dfinity/nns";
+  import { nonNullish, secondsToDuration } from "@dfinity/utils";
 
   type Props = {
     proposalInfo: ProposalInfo;
   };
   let { proposalInfo }: Props = $props();
 
-  const mapProposalInfoToCard = (
-    proposalInfo: ProposalInfo
-  ):
-    | undefined
-    | {
-        title: string;
-        durationTillDeadline: bigint;
-        href: string;
-        logo: string | undefined;
-        name: string | undefined;
-      } => {
-    const proposal = proposalInfo?.proposal;
-    const action = proposal?.action;
-
-    if (isNullish(action) || isNullish(proposal)) return undefined;
-    if (!("CreateServiceNervousSystem" in action)) return undefined;
-
-    const title = proposal.title;
-    const { id, deadlineTimestampSeconds } = proposalInfo;
-    const durationTillDeadline = deadlineTimestampSeconds
-      ? deadlineTimestampSeconds - BigInt(nowInSeconds())
-      : 0n;
-    const href = buildProposalUrl({
-      universe: $pageStore.universe,
-      proposalId: id as ProposalId,
-      actionable: false,
-    });
-
-    const logo: string | undefined =
-      action.CreateServiceNervousSystem?.logo?.base64Encoding;
-    const name: string | undefined = action.CreateServiceNervousSystem?.name;
-
-    return { durationTillDeadline, href, logo, name, title };
-  };
-
-  let proposal: Proposal | undefined = $derived(proposalInfo?.proposal);
-  $effect(() => {
-    console.log(proposal);
-  });
-
-  let durationTillDeadline: bigint | undefined = $derived(
-    nonNullish(proposalInfo?.deadlineTimestampSeconds)
-      ? proposalInfo.deadlineTimestampSeconds - BigInt(nowInSeconds())
-      : 0n
-  );
-
-  let href: string = $derived(
-    nonNullish(proposalInfo.id)
+  let proposal = $derived(mapProposalInfoToCard(proposalInfo));
+  let href = $derived(
+    nonNullish(proposal)
       ? buildProposalUrl({
           universe: $pageStore.universe,
-          proposalId: proposalInfo.id as ProposalId,
+          proposalId: proposal.id,
           actionable: false,
         })
       : "#"
   );
 </script>
 
-<Card testId="launch-project-card">
-  <div class="wrapper">
-    <div class="header">
-      <div class="title-wrapper">
-        <div>
-          <Logo
-            src={proposal?.action?.CreateServiceNervousSystem?.logo
-              ?.base64Encoding}
-            alt={proposal.action?.createservicenervoussystem?.name}
-            size="medium"
-          />
+{#if nonNullish(proposal)}
+  <Card testId="launch-project-card">
+    <div class="wrapper">
+      <div class="header">
+        <div class="title-wrapper">
+          <div>
+            {#if nonNullish(proposal?.logo) && nonNullish(proposal?.name)}
+              <Logo src={proposal?.logo} alt={proposal?.name} size="medium" />
+            {/if}
+          </div>
+          <h5 data-tid="project-name">{proposal.name}</h5>
         </div>
-        <h5 data-tid="project-name"
-          >{proposal.action?.CreateServiceNervousSystem?.name}</h5
-        >
+        <Tag size="medium">
+          <span>{$i18n.portfolio.project_status_proposal}</span>
+          <IconVote size="14px" />
+        </Tag>
       </div>
-      <Tag size="medium">
-        <span>{$i18n.portfolio.project_status_proposal}</span>
-        <IconVote size="14px" />
-      </Tag>
-    </div>
 
-    <div class="content">
-      <h3 class="title" data-tid="proposal-title"
-        >{$i18n.portfolio.open_proposal_card_title}</h3
-      >
-
-      <blockquote>
-        <p class="description" data-tid="proposal-description"
-          >{proposal.title}</p
+      <div class="content">
+        <h3 class="title" data-tid="proposal-title"
+          >{$i18n.portfolio.open_proposal_card_title}</h3
         >
-      </blockquote>
-    </div>
 
-    <VotesResult
-      yes={Number(proposalInfo.latestTally?.yes)}
-      no={Number(proposalInfo.latestTally?.no)}
-      total={Number(proposalInfo.latestTally?.total)}
-    />
-
-    <div class="footer">
-      <div class="time-remaining">
-        <span class="icon">
-          <IconClockNoFill size="20px" />
-        </span>
-
-        <span data-tid="time-remaining">
-          {secondsToDuration({
-            seconds: durationTillDeadline,
-            i18n: $i18n.time,
-          })}
-        </span>
+        <blockquote>
+          <p class="description" data-tid="proposal-description"
+            >{proposal.title}</p
+          >
+        </blockquote>
       </div>
-      <a
-        {href}
-        class="link"
-        aria-label={$i18n.portfolio.open_proposal_card_link}
-        data-tid="proposal-link"
-      >
-        <span class="text">{$i18n.portfolio.open_proposal_card_link} </span>
-        <IconRight />
-      </a>
+
+      <VotesResult
+        yes={Number(proposalInfo.latestTally?.yes)}
+        no={Number(proposalInfo.latestTally?.no)}
+        total={Number(proposalInfo.latestTally?.total)}
+      />
+
+      <div class="footer">
+        <div class="time-remaining">
+          <span class="icon">
+            <IconClockNoFill size="20px" />
+          </span>
+
+          <span data-tid="time-remaining">
+            {secondsToDuration({
+              seconds: proposal.durationTillDeadline,
+              i18n: $i18n.time,
+            })}
+          </span>
+        </div>
+        <a
+          {href}
+          class="link"
+          aria-label={$i18n.portfolio.open_proposal_card_link}
+          data-tid="proposal-link"
+        >
+          <span class="text">{$i18n.portfolio.open_proposal_card_link} </span>
+          <IconRight />
+        </a>
+      </div>
     </div>
-  </div>
-</Card>
+  </Card>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
