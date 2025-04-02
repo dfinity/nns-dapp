@@ -20,11 +20,12 @@
   };
   let { proposalInfo }: Props = $props();
 
-  let proposal = $derived(mapProposalInfoToCard(proposalInfo));
-  let href = $derived(
+  const proposal = $derived(mapProposalInfoToCard(proposalInfo));
+  const universe = $derived($pageStore.universe);
+  const href = $derived(
     nonNullish(proposal)
       ? buildProposalUrl({
-          universe: $pageStore.universe,
+          universe,
           proposalId: proposal.id,
           actionable: false,
         })
