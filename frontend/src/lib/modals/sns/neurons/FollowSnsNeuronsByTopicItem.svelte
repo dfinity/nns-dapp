@@ -7,14 +7,21 @@
   } from "@dfinity/gix-components";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { fromDefinedNullable } from "@dfinity/utils";
-  import type { SnsTopicKey } from "$lib/types/sns";
+  import type { SnsTopicFollowee, SnsTopicKey } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
+  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
+  import type { SnsNeuronId } from "@dfinity/sns";
 
   export let topicInfo: TopicInfoWithUnknown;
+  export let followees: SnsTopicFollowee[];
   export let checked: boolean = false;
   export let onNnsChange: (args: {
     topicKey: SnsTopicKey;
     checked: boolean;
+  }) => void;
+  export let onNnsRemove: (args: {
+    topicKey: SnsTopicKey;
+    neuronId: SnsNeuronId;
   }) => void;
 
   let topicKey: SnsTopicKey;
@@ -77,8 +84,28 @@
       <p class="description" data-tid="topic-description">
         {description}
       </p>
-    </div>
-  </Collapsible>
+
+      <div class="followees">
+        {#if followees.length > 0}
+          <h5 class="headline description"> Followees</h5>
+          <ul>
+            {#each followees as followee}
+              <li data-tid="topic-followee">
+                {subaccountToHexString(followee.neuronId.id)}
+                <button
+                  on:click={() =>
+                    onNnsRemove({
+                      topicKey,
+                      neuronId: followee.neuronId,
+                    })}>X</button
+                >
+              </li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
+    </div></Collapsible
+  >
 </div>
 
 <style lang="scss">

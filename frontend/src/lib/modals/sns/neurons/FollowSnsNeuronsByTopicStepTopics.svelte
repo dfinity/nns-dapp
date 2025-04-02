@@ -1,18 +1,30 @@
 <script lang="ts">
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
+  import type {
+    TopicInfoWithUnknown,
+    UnknownTopic,
+  } from "$lib/types/sns-aggregator";
   import FollowSnsNeuronsByTopicStepTopicsItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
-  import type { SnsTopicKey } from "$lib/types/sns";
-  import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
+  import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+  import {
+    getSnsTopicInfoKey,
+    snsTopicToTopicKey,
+  } from "$lib/utils/sns-topics.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import type { SnsNeuronId } from "@dfinity/sns";
 
   export let topicInfos: TopicInfoWithUnknown[];
   export let selectedTopics: SnsTopicKey[] = [];
+  export let followings: SnsTopicFollowing[] = [];
   export let onNnsClose: () => void;
   export let onNnsNext: () => void;
+  export let onNnsRemove: (args: {
+    topicKey: SnsTopicKey;
+    neuronId: SnsNeuronId;
+  }) => void;
 
   let criticalTopicInfos: TopicInfoWithUnknown[];
   $: criticalTopicInfos = topicInfos.filter((topicInfo) =>
@@ -38,6 +50,12 @@
   };
   const isTopicInfoSelected = (topicInfo: TopicInfoWithUnknown) =>
     selectedTopics.includes(getSnsTopicInfoKey(topicInfo));
+  const getTopicFollowees = (topicInfo: TopicInfoWithUnknown) =>
+    followings.find(
+      (following) =>
+        snsTopicToTopicKey(fromDefinedNullable(topicInfo.topic)) ===
+        following.topic
+    )?.followees ?? [];
 </script>
 
 <TestIdWrapper testId="follow-sns-neurons-by-topic-step-topics-component">
@@ -55,8 +73,10 @@
     {#each criticalTopicInfos as topicInfo}
       <FollowSnsNeuronsByTopicStepTopicsItem
         {topicInfo}
+        followees={getTopicFollowees(topicInfo)}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
+        {onNnsRemove}
       />
     {/each}
   </div>
@@ -71,8 +91,10 @@
     {#each nonCriticalTopicInfos as topicInfo}
       <FollowSnsNeuronsByTopicStepTopicsItem
         {topicInfo}
+        followees={getTopicFollowees(topicInfo)}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
+        {onNnsRemove}
       />
     {/each}
   </div>

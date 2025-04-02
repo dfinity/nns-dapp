@@ -151,6 +151,15 @@
 
     stopBusy("add-followee-by-topic");
   };
+  const onNnsRemove = ({
+    topicKey,
+    neuronId,
+  }: {
+    topicKey: SnsTopicKey;
+    neuronId: SnsNeuronId;
+  }) => {
+    console.log("remove", topicKey, subaccountToHexString(neuronId.id));
+  };
 </script>
 
 <WizardModal
@@ -165,9 +174,11 @@
   {#if currentStep?.name === STEP_TOPICS}
     <FollowSnsNeuronsByTopicStepTopics
       {topicInfos}
+      {followings}
       bind:selectedTopics
       onNnsClose={close}
       onNnsNext={next}
+      {onNnsRemove}
     />
   {/if}
   {#if currentStep?.name === STEP_NEURON}
