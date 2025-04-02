@@ -132,7 +132,7 @@
   }));
 
   let hideTotalAssetsCards = false;
-  $: hideTotalAssetsCards = !$authSignedInStore && launchpadCards.length > 0;
+  $: hideTotalAssetsCards = !$authSignedInStore;
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -230,7 +230,7 @@
 
         // Case: not signed in, with no projects
         &:not(.signed-in):not(.launchpad) {
-          grid-template-columns: 1fr 2fr;
+          grid-template-columns: 1fr;
         }
 
         // Case: signed in, no projects
