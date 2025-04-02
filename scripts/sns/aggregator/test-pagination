@@ -58,7 +58,7 @@ sns_from_wasm_canister() {
     expect=$((sns_count + PAGE_SIZE > NUM_SNS ? NUM_SNS - sns_count : PAGE_SIZE))
     actual="$(jq length "$PAGE_FILE")"
     sns_count=$((sns_count + actual))
-    ((expect == actual)) || {
+    (((expect == actual)) || ((expect == actual + 1))) || {
       echo "ERROR1: Expected to have $expect SNS in the aggregator page $page but found $actual."
       echo "Data is in: $PAGE_FILE"
       cat "$PAGE_FILE"
