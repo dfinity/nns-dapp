@@ -32,7 +32,7 @@ test("Test SNS participation", async ({ page, context }) => {
     .getLaunchpadPo()
     .getOpenProjectsPo()
     .getProjectCardPos();
-  expect(openProjects.length).toBe(1);
+  expect(openProjects.length).toBe(2);
 
   step("D002: User can see the list of successful sales");
   await appPo.getLaunchpadPo().getCommittedProjectsPo().waitForContentLoaded();
