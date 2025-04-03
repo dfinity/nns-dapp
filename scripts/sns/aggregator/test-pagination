@@ -55,9 +55,9 @@ sns_from_wasm_canister() {
       exit 1
     } >&2
 
-    echo "\n\n\n========================================="
+    printf "\n\n\n=========================================\n"
     cat "$PAGE_FILE"
-    echo "=========================================\n\n\n"
+    printf "\n\n\n=========================================\n"
 
     # Verify that the expected number of SNSs is present.
     expect=$((sns_count + PAGE_SIZE > NUM_SNS ? NUM_SNS - sns_count : PAGE_SIZE))
