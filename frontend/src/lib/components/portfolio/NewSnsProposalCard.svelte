@@ -18,7 +18,7 @@
   type Props = {
     proposalInfo: ProposalInfo;
   };
-  let { proposalInfo }: Props = $props();
+  const { proposalInfo }: Props = $props();
 
   const proposal = $derived(mapProposalInfoToCard(proposalInfo));
   const universe = $derived($pageStore.universe);

@@ -2,15 +2,16 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatPercentage } from "$lib/utils/format.utils";
 
-  export let yes: number;
-  export let no: number;
-  export let total: number;
+  type Props = {
+    yes: number;
+    no: number;
+    total: number;
+  };
 
-  let yesProportion: number;
-  $: yesProportion = total ? yes / total : 0;
+  const { yes, no, total }: Props = $props();
 
-  let noProportion: number;
-  $: noProportion = total ? no / total : 0;
+  const yesProportion: number = $derived(total ? yes / total : 0);
+  const noProportion: number = $derived(total ? no / total : 0);
 </script>
 
 <div class="votes-info">

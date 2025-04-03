@@ -2,9 +2,9 @@
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
+  import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
-  import OpenProposalCard from "$lib/components/portfolio/OpenProposalCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StackedCards, {
     type CardItem,
@@ -138,7 +138,7 @@
   let openProposalCards: CardItem[];
   $: openProposalCards = openSnsProposals.map((proposalInfo) => ({
     // TODO: Svelte v5 migration - fix type
-    component: OpenProposalCard as unknown as Component,
+    component: NewSnsProposalCard as unknown as Component,
     props: { proposalInfo },
   }));
 
