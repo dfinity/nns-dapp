@@ -145,9 +145,6 @@
   let cards: CardItem[] = [];
   $: cards = [...launchpadCards, ...openProposalCards];
   $: console.log(cards);
-
-  let hideTotalAssetsCards = false;
-  $: hideTotalAssetsCards = !$authSignedInStore && launchpadCards.length > 0;
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -166,12 +163,6 @@
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
       />
-    {/if}
-
-    {#if !$authSignedInStore}
-      <div class="login-card">
-        <LoginCard />
-      </div>
     {/if}
 
     {#if cards.length > 0}
