@@ -130,6 +130,9 @@
     component: LaunchProjectCard as unknown as Component,
     props: { summary },
   }));
+
+  let hideTotalAssetsCards = false;
+  $: hideTotalAssetsCards = !$authSignedInStore && launchpadCards.length > 0;
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -138,16 +141,18 @@
     class:signed-in={$authSignedInStore}
     class:launchpad={launchpadCards.length > 0}
   >
-    {#if !$authSignedInStore}
-      <div class="login-card">
-        <LoginCard />
-      </div>
-    {:else}
+    {#if !hideTotalAssetsCards}
       <TotalAssetsCard
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
       />
+    {/if}
+
+    {#if !$authSignedInStore}
+      <div class="login-card">
+        <LoginCard />
+      </div>
     {/if}
 
     {#if launchpadCards.length > 0}
@@ -206,10 +211,15 @@
       grid-template-columns: 1fr;
       gap: var(--padding-2x);
 
+      .login-card {
+        order: -1;
+      }
+
       @include media.min-width(large) {
         grid-template-columns: 1fr 2fr;
 
         .login-card {
+          order: 0;
           height: 100%;
         }
 
@@ -220,7 +230,7 @@
 
         // Case: not signed in, with no projects
         &:not(.signed-in):not(.launchpad) {
-          grid-template-columns: 1fr;
+          grid-template-columns: 1fr 2fr;
         }
 
         // Case: signed in, no projects
