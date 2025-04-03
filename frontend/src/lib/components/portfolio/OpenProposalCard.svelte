@@ -52,23 +52,20 @@
       </div>
 
       <div class="content">
-        <h3 class="title" data-tid="proposal-title"
-          >{$i18n.portfolio.open_proposal_card_title}</h3
-        >
-
-        <blockquote>
+        <div class="description-wrapper">
+          <h3 class="title" data-tid="proposal-title"
+            >{$i18n.portfolio.open_proposal_card_title}</h3
+          >
           <p class="description" data-tid="proposal-description"
             >{proposal.title}</p
           >
-        </blockquote>
+        </div>
+        <VotesResult
+          yes={Number(proposalInfo.latestTally?.yes)}
+          no={Number(proposalInfo.latestTally?.no)}
+          total={Number(proposalInfo.latestTally?.total)}
+        />
       </div>
-
-      <VotesResult
-        yes={Number(proposalInfo.latestTally?.yes)}
-        no={Number(proposalInfo.latestTally?.no)}
-        total={Number(proposalInfo.latestTally?.total)}
-      />
-
       <div class="footer">
         <div class="time-remaining">
           <span class="icon">
@@ -111,11 +108,14 @@
 
     gap: var(--padding-2x);
     padding: var(--padding-2x);
-    padding-bottom: var(--padding-3x);
+    /* Required to give space to the StackedCards dots */
+    padding-bottom: 34px;
 
     @include media.min-width(medium) {
       padding: var(--padding-3x);
-      padding-bottom: var(--padding-4x);
+
+      /* Required to give space to the StackedCards dots */
+      padding-bottom: 34px;
     }
 
     .header {
@@ -138,18 +138,29 @@
     }
 
     .content {
-      h3 {
-        margin: 0;
-        padding: 0;
-        /* @include text.truncate; */
-      }
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding-2x);
+      height: 124px;
 
-      .description {
-        margin: 0;
-        color: var(--color-text-secondary);
-        flex-grow: 1;
+      .description-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: var(--padding-0_5x);
 
-        @include text.clamp(2);
+        h3 {
+          margin: 0;
+          padding: 0;
+        }
+
+        .description {
+          margin: 0;
+          padding: 0;
+          color: var(--color-text-secondary);
+          max-width: 95%;
+
+          @include text.truncate;
+        }
       }
     }
 
