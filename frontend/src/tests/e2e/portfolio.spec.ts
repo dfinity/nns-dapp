@@ -14,8 +14,12 @@ const VIEWPORT_SIZES = {
 
 test("Visual test Landing Page", async ({ page, browser }) => {
   await page.addInitScript(() => {
-    // @ts-expect-error disable animations based on setInterval for the stackedCards
-    window.setInterval = () => 999;
+    // @ts-expect-error: Overrides setinterval for tests
+    window.setInterval = (_: TimerHandler, timeout: number) => {
+      const noop = () => {};
+      const id = setTimeout(noop, timeout);
+      return id;
+    };
   });
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
