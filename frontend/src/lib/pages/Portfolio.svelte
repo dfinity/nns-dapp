@@ -5,7 +5,6 @@
   import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
-  import OpenProposalCard from "$lib/components/portfolio/OpenProposalCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StackedCards, {
     type CardItem,
