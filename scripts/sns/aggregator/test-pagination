@@ -39,6 +39,9 @@ sns_from_wasm_canister() {
 }
 [[ "" != "${NUM_SNS:-}" ]] || NUM_SNS="$(sns_from_wasm_canister || sns_from_latest)"
 
+echo "sns_from_wasm_canister = $(sns_from_wasm_canister)"
+echo "sns_from_latest $(sns_from_latest)"
+
 (
   printf "\n\n\n=========================================\n"
   printf "%s\n" "Test that:" \
