@@ -47,7 +47,7 @@ sns_from_wasm_canister() {
   PAGE_SIZE=10
   NUM_PAGES="$(((NUM_SNS / PAGE_SIZE) + 1))"
   for ((page = 0, sns_count = 0; ; page++)); do
-    echo "Testing page #${page}/${NUM_PAGES}..."
+    echo "Testing page #${page}/${NUM_PAGES} PAGE_SIZE=${PAGE_SIZE} NUM_SNS=${NUM_SNS} sns_count=${sns_count}..."
     # Get the page
     PAGE_FILE="$(mktemp aggregator-last-page-XXXXX.json)"
     curl -sSLf "${AGGREGATOR_CANISTER_URL}/v1/sns/list/page/${page}/slow.json" -o "$PAGE_FILE" || {
