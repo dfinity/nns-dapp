@@ -59,9 +59,7 @@
       "progressbar progressbar";
     grid-template-columns: 1fr 1fr;
 
-    @include media.min-width(small) {
-      row-gap: var(--padding-0_5x);
-    }
+    row-gap: var(--padding-0_5x);
 
     .yes-percent {
       grid-area: yes-percent;
