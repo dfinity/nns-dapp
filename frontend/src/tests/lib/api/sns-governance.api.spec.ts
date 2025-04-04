@@ -15,6 +15,7 @@ import {
   registerVote,
   removeNeuronPermissions,
   setFollowees,
+  setFollowing,
   splitNeuron,
   stakeMaturity,
   startDissolving,
@@ -74,6 +75,7 @@ describe("sns-api", () => {
   const refreshNeuronSpy = vi.fn();
   const claimNeuronSpy = vi.fn();
   const setTopicFolloweesSpy = vi.fn();
+  const setFollowingSpy = vi.fn();
   const stakeMaturitySpy = vi.fn();
   const registerVoteSpy = vi.fn();
   const autoStakeMaturitySpy = vi.fn();
@@ -101,6 +103,7 @@ describe("sns-api", () => {
     refreshNeuronSpy.mockResolvedValue(undefined);
     claimNeuronSpy.mockResolvedValue(undefined);
     setTopicFolloweesSpy.mockResolvedValue(undefined);
+    setFollowingSpy.mockResolvedValue(undefined);
     stakeMaturitySpy.mockResolvedValue(undefined);
     registerVoteSpy.mockResolvedValue(undefined);
     autoStakeMaturitySpy.mockResolvedValue(undefined);
@@ -141,6 +144,7 @@ describe("sns-api", () => {
       claimNeuron: claimNeuronSpy,
       listNervousSystemFunctions: getFunctionsSpy,
       setTopicFollowees: setTopicFolloweesSpy,
+      setFollowing: setFollowingSpy,
       stakeMaturity: stakeMaturitySpy,
       registerVote: registerVoteSpy,
       autoStakeMaturity: autoStakeMaturitySpy,
@@ -335,7 +339,7 @@ describe("sns-api", () => {
     expect(claimNeuronSpy).toBeCalled();
   });
 
-  it("should setFollowees for a topic", async () => {
+  it("should setFollowees for a ns-function", async () => {
     const followee1: SnsNeuronId = { id: arrayOfNumberToUint8Array([1, 2, 3]) };
     const followee2: SnsNeuronId = { id: arrayOfNumberToUint8Array([1, 2, 4]) };
     await setFollowees({
@@ -347,6 +351,39 @@ describe("sns-api", () => {
     });
 
     expect(setTopicFolloweesSpy).toBeCalled();
+  });
+
+  it("should setFollowing for topics", async () => {
+    const neuronId: SnsNeuronId = { id: arrayOfNumberToUint8Array([1, 2, 3]) };
+
+    expect(setFollowingSpy).toHaveBeenCalledTimes(0);
+
+    await setFollowing({
+      identity: mockIdentity,
+      rootCanisterId: rootCanisterIdMock,
+      neuronId: mockSnsNeuron.id[0],
+      topicFollowing: [
+        {
+          topic: {
+            DappCanisterManagement: null,
+          },
+          followees: [{ neuronId }],
+        },
+      ],
+    });
+
+    expect(setFollowingSpy).toHaveBeenCalledTimes(1);
+    expect(setFollowingSpy).toHaveBeenCalledWith({
+      neuronId: mockSnsNeuron.id[0],
+      topicFollowing: [
+        {
+          topic: {
+            DappCanisterManagement: null,
+          },
+          followees: [{ neuronId }],
+        },
+      ],
+    });
   });
 
   it("should get proposals", async () => {
