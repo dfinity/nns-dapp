@@ -54,7 +54,7 @@
       <div class="content">
         <div class="description-wrapper">
           <h3 class="title" data-tid="proposal-title"
-            >{$i18n.portfolio.open_proposal_card_title}</h3
+            >{$i18n.portfolio.new_sns_proposal_card_title}</h3
           >
           <p class="description" data-tid="proposal-description"
             >{proposal.title}</p
@@ -82,10 +82,12 @@
         <a
           {href}
           class="link"
-          aria-label={$i18n.portfolio.open_proposal_card_link}
+          aria-label={$i18n.portfolio.new_sns_proposal_card_link}
           data-tid="proposal-link"
         >
-          <span class="text">{$i18n.portfolio.open_proposal_card_link} </span>
+          <span class="text"
+            >{$i18n.portfolio.new_sns_proposal_card_link}
+          </span>
           <IconRight />
         </a>
       </div>
