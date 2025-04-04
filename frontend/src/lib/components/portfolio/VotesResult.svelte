@@ -75,11 +75,6 @@
       align-items: end;
     }
 
-    .progressbar-container {
-      grid-area: progressbar;
-      position: relative;
-    }
-
     .percentage {
       @include fonts.h2(true);
     }
@@ -91,51 +86,43 @@
     .yes .percentage {
       color: var(--positive-emphasis);
     }
+
     .no .percentage {
       color: var(--negative-emphasis);
     }
   }
 
-  .progressbar-container .majority {
-    position: absolute;
-    background: var(--card-background);
-    width: calc(var(--padding) / 4);
-    height: var(--padding-1_5x);
+  .progressbar-container {
+    grid-area: progressbar;
+    position: relative;
 
-    .majority-icon {
+    .progressbar {
+      display: flex;
+      justify-content: space-between;
+      height: var(--padding);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      background: var(--elements-divider);
+
+      .yes {
+        background: var(--positive-emphasis);
+        transition: width ease-out var(--animation-time-normal);
+      }
+      .no {
+        background: var(--negative-emphasis);
+        transition: width ease-out var(--animation-time-normal);
+      }
+    }
+
+    .center-marker {
       position: absolute;
-      top: calc(-1 * var(--padding-1_5x));
+      top: 0;
       left: 50%;
+      width: 3px;
+      height: var(--padding);
+      background-color: var(--card-background);
       transform: translateX(-50%);
+      z-index: 1;
     }
-  }
-
-  .progressbar {
-    display: flex;
-    justify-content: space-between;
-    height: var(--padding);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    background: var(--elements-divider);
-
-    .yes {
-      background: var(--positive-emphasis);
-      transition: width ease-out var(--animation-time-normal);
-    }
-    .no {
-      background: var(--negative-emphasis);
-      transition: width ease-out var(--animation-time-normal);
-    }
-  }
-
-  .center-marker {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 3px;
-    height: var(--padding);
-    background-color: var(--card-background);
-    transform: translateX(-50%);
-    z-index: 1;
   }
 </style>
