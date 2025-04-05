@@ -27,7 +27,10 @@
   <div class="no no-percent">
     <span class="caption">{$i18n.portfolio.new_sns_proposal_card_reject}</span>
     <span class="percentage" data-tid="reject-percentage"
-      >{formatPercentage(noProportion)}</span
+      >{formatPercentage(noProportion, {
+        minFraction: 2,
+        maxFraction: 2,
+      })}</span
     >
   </div>
   <div class="progressbar-container">

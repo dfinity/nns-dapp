@@ -34,7 +34,7 @@
 </script>
 
 {#if nonNullish(proposal)}
-  <Card testId="launch-project-card">
+  <Card testId="new-sns-proposal-card">
     <div class="wrapper">
       <div class="header">
         <div class="title-wrapper">
@@ -53,12 +53,8 @@
 
       <div class="content">
         <div class="description-wrapper">
-          <h3 class="title" data-tid="proposal-title"
-            >{$i18n.portfolio.new_sns_proposal_card_title}</h3
-          >
-          <p class="description" data-tid="proposal-description"
-            >{proposal.title}</p
-          >
+          <h3 class="title">{$i18n.portfolio.new_sns_proposal_card_title}</h3>
+          <p class="description" data-tid="proposal-title">{proposal.title}</p>
         </div>
         <VotesResult
           yes={Number(proposalInfo.latestTally?.yes)}
