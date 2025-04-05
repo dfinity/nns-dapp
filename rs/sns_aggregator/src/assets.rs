@@ -129,7 +129,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
     if request_path.ends_with('/') {
         return Some("text/html");
     }
-    request_path.split('.').last().and_then(|suffix| match suffix {
+    request_path.split('.').next_back().and_then(|suffix| match suffix {
         "css" => Some("text/css"),
         "html" => Some("text/html"),
         "xml" => Some("application/xml"),
@@ -210,7 +210,7 @@ pub fn insert_asset<S: Into<String> + Clone>(path: S, asset: Asset) {
         let path = path.into();
 
         let index = "index.html";
-        if path.split('/').last() == Some(index) {
+        if path.split('/').next_back() == Some(index) {
             // Add the directory, with trailing slash, as an alternative path.
             // Note: Without the trailing slash the location of "." is the parent, so breaks resource links.
             let prefix_len = path.len() - index.len();

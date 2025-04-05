@@ -118,13 +118,13 @@ impl FastScheduler {
                         Err(err) => crate::state::log(format!(
                             "Failed to get derived state; derived state is NOT updated: {err:?}"
                         )),
-                    };
+                    }
                     match swap_state_maybe {
                         Ok(swap_state) => entry.swap_state = swap_state,
                         Err(err) => {
                             crate::state::log(format!("Failed to get swap state; swap state is NOT updated: {err:?}"));
                         }
-                    };
+                    }
                     match lifecycle_maybe {
                         Ok(lifecycle) => entry.lifecycle = Some(lifecycle),
                         Err(err) => crate::state::log(format!(
