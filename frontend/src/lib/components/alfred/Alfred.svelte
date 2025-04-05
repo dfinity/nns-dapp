@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { authStore } from "$lib/stores/auth.store";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
   import { Backdrop, Input, themeStore } from "@dfinity/gix-components";
   import { tick } from "svelte";
@@ -11,6 +12,8 @@
   let selectedIndex = $state(0);
   let isProcessingKey = $state(false);
   let searchInput = $state<HTMLInputElement>();
+
+  const principalId = $derived($authStore.identity?.getPrincipal().toText());
 
   const filteredItems = $derived(
     filterAlfredItems(alfredQuery, {
@@ -99,9 +102,14 @@
   const selectItem = (item: AlfredItem) => {
     if (item.type === "page" && item.path) {
       goto(item.path);
+
       hideAlfred();
     } else if (item.type === "action" && item.action) {
-      item.action();
+      const context = {
+        copyToClipboardValue: principalId,
+      };
+      item.action(context);
+
       hideAlfred();
     }
   };
