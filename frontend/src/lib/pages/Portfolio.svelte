@@ -2,6 +2,7 @@
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
+  import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
@@ -22,12 +23,14 @@
   import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
+  import type { ProposalInfo } from "@dfinity/nns";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
   import type { Component } from "svelte";
 
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
   export let snsProjects: SnsFullProject[];
+  export let openSnsProposals: ProposalInfo[] = [];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
@@ -130,6 +133,16 @@
     component: LaunchProjectCard as unknown as Component,
     props: { summary },
   }));
+
+  let openProposalCards: CardItem[];
+  $: openProposalCards = openSnsProposals.map((proposalInfo) => ({
+    // TODO: Svelte v5 migration - fix type
+    component: NewSnsProposalCard as unknown as Component,
+    props: { proposalInfo },
+  }));
+
+  let cards: CardItem[] = [];
+  $: cards = [...launchpadCards, ...openProposalCards];
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -150,8 +163,8 @@
       />
     {/if}
 
-    {#if launchpadCards.length > 0}
-      <StackedCards cards={launchpadCards} />
+    {#if cards.length > 0}
+      <StackedCards {cards} />
     {/if}
   </div>
 
