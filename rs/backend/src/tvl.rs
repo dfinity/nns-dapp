@@ -161,7 +161,7 @@ pub async fn update_locked_icp_e8s() {
                     err
                 );
             }
-        };
+        }
     });
 }
 
