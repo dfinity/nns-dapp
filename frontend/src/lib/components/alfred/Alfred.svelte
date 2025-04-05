@@ -2,7 +2,7 @@
   import { goto } from "$app/navigation";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
-  import { themeStore } from "@dfinity/gix-components";
+  import { Backdrop, Input, themeStore } from "@dfinity/gix-components";
   import { tick } from "svelte";
   import { fade } from "svelte/transition";
 
@@ -38,6 +38,8 @@
 
   const initializeAlfred = async () => {
     await tick();
+
+    console.log(searchInput);
     searchInput?.focus();
   };
 
@@ -106,7 +108,7 @@
 
   const onmousedown = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
-    const alfredMenu = document.getElementById("alfred-menu");
+    const alfredMenu = document.getElementById("menu");
 
     if (!alfredVisible) return;
     if (alfredMenu && !alfredMenu.contains(target)) hideAlfred();
@@ -116,50 +118,51 @@
 <svelte:window {onkeydown} {onmousedown} />
 
 {#if alfredVisible}
-  <div
-    class="alfred-overlay"
-    transition:fade={{ duration: 150 }}
-    aria-hidden="true"
-  >
-    <div class="alfred-menu" id="alfred-menu">
-      <div class="alfred-search">
-        <input
-          type="text"
-          bind:this={searchInput}
-          bind:value={alfredQuery}
-          placeholder="Search for pages or actions..."
-          autocomplete="off"
-          spellcheck="false"
-        />
-      </div>
+  <div class="overlay" transition:fade={{ duration: 150 }} aria-hidden="true">
+    <Backdrop on:nnsClose={hideAlfred} />
 
-      <div class="alfred-results">
-        {#if filteredItems.length === 0}
-          <div class="alfred-no-results">No results found</div>
-        {:else}
-          <ul>
-            {#each filteredItems as item, index}
-              <li
-                id={`alfred-item-${index}`}
-                class:selected={index === selectedIndex}
-              >
-                <button
-                  class="alfred-item-button"
-                  onclick={() => selectItem(item)}
-                  aria-current={index === selectedIndex ? "true" : undefined}
+    <div class="wrapper">
+      <div class="menu">
+        <div class="search">
+          <Input
+            inputType="text"
+            name="alfred-search"
+            placeholder="Search for pages or actions..."
+            autocomplete="off"
+            spellcheck={false}
+            bind:value={alfredQuery}
+            bind:inputElement={searchInput}
+          />
+        </div>
+
+        <div class="results">
+          {#if filteredItems.length === 0}
+            <div class="no-results">No results found</div>
+          {:else}
+            <ul>
+              {#each filteredItems as item, index}
+                <li
+                  id={`alfred-item-${index}`}
+                  class:selected={index === selectedIndex}
                 >
-                  <div class="item-icon">
-                    <item.icon />
-                  </div>
-                  <div class="item-content">
-                    <div class="item-title">{item.title}</div>
-                    <div class="item-description">{item.description}</div>
-                  </div>
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
+                  <button
+                    class="item-button"
+                    onclick={() => selectItem(item)}
+                    aria-current={index === selectedIndex ? "true" : undefined}
+                  >
+                    <div class="item-icon">
+                      <item.icon size="20" />
+                    </div>
+                    <div class="item-content">
+                      <div class="item-title">{item.title}</div>
+                      <div class="item-description">{item.description}</div>
+                    </div>
+                  </button>
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        </div>
       </div>
     </div>
   </div>
@@ -167,142 +170,137 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+  @use "@dfinity/gix-components/dist/styles/mixins/overlay";
+  @use "@dfinity/gix-components/dist/styles/mixins/display";
+  @use "@dfinity/gix-components/dist/styles/mixins/interaction";
 
-  .alfred-overlay {
+  .overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding-top: 15vh;
-    z-index: 1000;
-    backdrop-filter: blur(3px);
-  }
+    @include display.inset;
 
-  .alfred-menu {
-    width: 600px;
-    max-width: 90%;
+    z-index: calc(var(--modal-z-index) + 1);
 
-    background: var(--background-shade);
-    border-radius: var(--border-radius-2x, 8px);
-    overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--background-secondary, rgba(0, 0, 0, 0.1));
-  }
+    @include interaction.initial;
 
-  .alfred-search {
-    display: flex;
-    padding: var(--padding-2x) var(--padding-3x);
-    border-bottom: 1px solid var(--background-secondary, rgba(0, 0, 0, 0.1));
+    .wrapper {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      padding-top: 15vh;
+      transform: translate(-50%, 0);
 
-    input {
-      width: 100%;
-      padding: var(--padding-1_5x);
-      border: none;
-      background: var(--overlay-content-background);
-      border-radius: var(--border-radius);
-      color: var(--text-color);
-      transition: all 0.2s ease;
-      box-shadow: inset 0 0 0 1px
-        var(--background-secondary, rgba(0, 0, 0, 0.1));
-    }
-  }
+      .menu {
+        width: 600px;
+        max-width: 90%;
+        margin: 0 auto;
 
-  .alfred-results {
-    max-height: 400px;
-    overflow-y: auto;
-    padding: 8px;
-    background: var(--overlay-content-background);
-    color: var(--overlay-content-background-contrast);
+        border-radius: var(--border-radius-2x);
+        overflow: hidden;
 
-    ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
+        @include overlay.colors;
+      }
 
-      li {
-        padding: 0;
-        margin: 0;
+      .search {
+        display: flex;
+        padding: var(--padding-2x) var(--padding-3x);
 
-        .alfred-item-button {
-          width: 100%;
-          background: none;
-          border: none;
-          text-align: left;
-          font-family: inherit;
+        --input-width: 100%;
+      }
+
+      .results {
+        max-height: 400px;
+        overflow-y: auto;
+
+        padding: var(--padding);
+        background: var(--overlay-content-background);
+        color: var(--overlay-content-background-contrast);
+
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+
+          li {
+            padding: 0;
+            margin: 0;
+
+            .item-button {
+              width: 100%;
+              background: none;
+              border: none;
+              text-align: left;
+              font-family: inherit;
+              display: flex;
+              align-items: center;
+              gap: var(--padding-2x);
+              padding: var(--padding-1_5x) var(--padding-2x);
+              transition: all 0.15s ease;
+              border-radius: var(--border-radius);
+
+              &:hover {
+                background-color: var(
+                  --background-secondary,
+                  rgba(0, 0, 0, 0.05)
+                );
+              }
+            }
+          }
+        }
+
+        li.selected .item-button {
+          background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
+          border-left-color: var(--primary);
+
+          .item-title,
+          .item-icon {
+            color: var(--primary);
+          }
+        }
+
+        .item-icon {
+          width: var(--padding-4x);
+          height: var(--padding-4x);
+
           display: flex;
           align-items: center;
-          gap: var(--padding-2x);
-          padding: var(--padding-1_5x) var(--padding-2x);
+          justify-content: center;
+          color: var(--text-color);
+          flex-shrink: 0;
+          border-radius: var(--padding);
+          background: var(--background-secondary, rgba(0, 0, 0, 0.05));
           transition: all 0.15s ease;
-          border-radius: var(--border-radius);
 
-          &:hover {
-            background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
+          :global(svg) {
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        .item-content {
+          display: flex;
+          flex-direction: column;
+          flex-grow: 1;
+          gap: var(--padding-0_5x);
+
+          .item-title {
+            font-weight: var(--font-weight-bold);
+            color: var(--text-color);
+          }
+
+          .item-description {
+            color: var(--text-description);
+            transition: all 0.15s ease;
+            @include fonts.small();
           }
         }
       }
-    }
 
-    li.selected .alfred-item-button {
-      background-color: var(--background-secondary, rgba(0, 0, 0, 0.05));
-      border-left-color: var(--primary-color, #3b82f6);
-
-      .item-title {
-        color: var(--primary-color, #3b82f6);
-      }
-
-      .item-icon {
-        color: var(--primary-color, #3b82f6);
+      .no-results {
+        padding: 24px 16px;
+        text-align: center;
+        color: var(--text-description);
+        font-style: italic;
       }
     }
-
-    .item-icon {
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-color);
-      flex-shrink: 0;
-      border-radius: 8px;
-      background: var(--background-secondary, rgba(0, 0, 0, 0.05));
-      transition: all 0.15s ease;
-
-      :global(svg) {
-        width: 20px;
-        height: 20px;
-      }
-    }
-
-    .item-content {
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-
-    .item-title {
-      font-weight: 600;
-      margin-bottom: 4px;
-
-      color: var(--text-color);
-    }
-
-    .item-description {
-      color: var(--text-description);
-      transition: all 0.15s ease;
-      @include fonts.small();
-    }
-  }
-
-  .alfred-no-results {
-    padding: 24px 16px;
-    text-align: center;
-    color: var(--text-description);
-    font-style: italic;
   }
 </style>
