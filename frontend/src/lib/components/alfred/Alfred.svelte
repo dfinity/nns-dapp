@@ -4,6 +4,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
   import { Backdrop, Input, themeStore } from "@dfinity/gix-components";
+  import { debounce } from "@dfinity/utils";
   import { tick } from "svelte";
   import { fade } from "svelte/transition";
 
@@ -14,13 +15,16 @@
   let searchInput = $state<HTMLInputElement>();
 
   const principalId = $derived($authStore.identity?.getPrincipal().toText());
-
   const filteredItems = $derived(
     filterAlfredItems(alfredQuery, {
       isSignedIn: $authSignedInStore,
       theme: $themeStore,
     })
   );
+
+  const processKeyWithDebounce = debounce(() => {
+    isProcessingKey = false;
+  }, 50);
 
   $effect(() => {
     if (filteredItems.length > 0) selectedIndex = 0;
@@ -45,16 +49,7 @@
     searchInput?.focus();
   };
 
-  const onkeydown = (event: KeyboardEvent) => {
-    if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-      event.preventDefault();
-      toggleAlfred();
-      return;
-    }
-
-    if (!alfredVisible || isProcessingKey) return;
-
-    isProcessingKey = true;
+  const handleKeyNavigation = (event: KeyboardEvent): void => {
     const prevIndex = selectedIndex;
 
     switch (event.key) {
@@ -81,7 +76,6 @@
     }
 
     if (prevIndex !== selectedIndex) scrollToSelectedItem();
-    setTimeout(() => (isProcessingKey = false), 50);
   };
 
   const scrollToSelectedItem = async () => {
@@ -111,6 +105,20 @@
 
       hideAlfred();
     }
+  };
+
+  const onkeydown = (event: KeyboardEvent) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+      event.preventDefault();
+      toggleAlfred();
+      return;
+    }
+
+    if (!alfredVisible || isProcessingKey) return;
+
+    isProcessingKey = true;
+    handleKeyNavigation(event);
+    processKeyWithDebounce();
   };
 
   const onmousedown = (event: MouseEvent) => {
