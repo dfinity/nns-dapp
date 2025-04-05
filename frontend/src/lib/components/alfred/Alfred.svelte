@@ -42,7 +42,6 @@
   const initializeAlfred = async () => {
     await tick();
 
-    console.log(searchInput);
     searchInput?.focus();
   };
 
@@ -143,7 +142,7 @@
           />
         </div>
 
-        <div class="results">
+        <div class="results" role="listbox" aria-label="Search results">
           {#if filteredItems.length === 0}
             <div class="no-results">No results found</div>
           {:else}
@@ -152,6 +151,8 @@
                 <li
                   id={`alfred-item-${index}`}
                   class:selected={index === selectedIndex}
+                  role="option"
+                  aria-selected={index === selectedIndex ? "true" : "false"}
                 >
                   <button
                     class="item-button"
