@@ -1,6 +1,8 @@
 import { login, logout } from "$lib/services/auth.services";
 import {
+  IconCopy,
   IconDarkMode,
+  IconDocument,
   IconHome,
   IconLaunchpad,
   IconLedger,
@@ -23,7 +25,7 @@ export interface AlfredItem {
   title: string;
   description: string;
   path?: string;
-  action?: () => void;
+  action?: (payload: { copyToClipboardValue?: string }) => void;
   icon: Component;
   contextFilter?: (context: {
     isSignedIn: boolean;
@@ -73,12 +75,38 @@ const alfredItems: AlfredItem[] = [
     icon: IconLaunchpad,
   },
   {
+    id: "reporting",
+    type: "page",
+    title: "Reporting",
+    description: "Generate a csv from your transactions and neurons",
+    path: "/reporting",
+    icon: IconDocument,
+  },
+  {
     id: "canisters",
     type: "page",
     title: "Canisters",
     description: "Manage your canisters",
     path: "/canisters",
     icon: IconLedger,
+  },
+  {
+    id: "settings",
+    type: "page",
+    title: "Settings",
+    description: "Adjust your preferences",
+    path: "/settings",
+    icon: IconSettings,
+  },
+  {
+    id: "principalId",
+    type: "action",
+    title: "Copy principal ID",
+    description: "Copy principal ID to the clipboard",
+    icon: IconCopy,
+    action: ({ copyToClipboardValue }) =>
+      copyToClipboardValue && copyToClipboard(copyToClipboardValue),
+    contextFilter: (context) => context.isSignedIn,
   },
   {
     id: "dark-theme",
@@ -99,14 +127,6 @@ const alfredItems: AlfredItem[] = [
     contextFilter: (context) => context.theme === Theme.DARK,
   },
   {
-    id: "settings",
-    type: "page",
-    title: "Settings",
-    description: "Adjust your preferences",
-    path: "/settings",
-    icon: IconSettings,
-  },
-  {
     id: "log-in",
     type: "action",
     title: "Log In",
@@ -125,6 +145,9 @@ const alfredItems: AlfredItem[] = [
     contextFilter: (context) => context.isSignedIn,
   },
 ];
+
+const copyToClipboard = async (value: string) =>
+  await navigator.clipboard.writeText(value);
 
 export const filterAlfredItems = (
   query: string,
