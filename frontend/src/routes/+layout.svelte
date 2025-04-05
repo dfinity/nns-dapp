@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Alfred from "$lib/components/alfred/Alfred.svelte";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { initAnalytics } from "$lib/services/analytics.services";
   import {
@@ -47,6 +48,7 @@
   $: syncAuth($authStore);
 </script>
 
+<Alfred />
 <slot />
 
 <style lang="scss" global>
