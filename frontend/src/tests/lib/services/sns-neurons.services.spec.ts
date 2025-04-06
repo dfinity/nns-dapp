@@ -16,6 +16,7 @@ import {
 } from "$lib/services/sns-neurons.services";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import type { SnsTopicFollowing } from "$lib/types/sns";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   getSnsNeuronIdAsHexString,
@@ -64,6 +65,7 @@ const {
   stakeNeuron,
   loadSnsNeurons,
   addFollowee,
+  setFollowing,
 } = services;
 
 vi.mock("$lib/services/sns-accounts.services", () => {
@@ -852,6 +854,76 @@ describe("sns-neurons-services", () => {
           text: `Neuron with id ${neuronIdHext} does not exist.`,
         },
       ]);
+    });
+  });
+
+  describe("setFollowing ", () => {
+    it("should call sns api setFollowing", async () => {
+      const followee1: SnsNeuronId = {
+        id: arrayOfNumberToUint8Array([1, 2, 3]),
+      };
+      const followee2: SnsNeuronId = {
+        id: arrayOfNumberToUint8Array([1, 2, 4]),
+      };
+      const rootCanisterId = mockPrincipal;
+      const setFollowingSpy = vi
+        .spyOn(governanceApi, "setFollowing")
+        .mockImplementation(() => Promise.resolve());
+      const following1: SnsTopicFollowing = {
+        topic: "DappCanisterManagement",
+        followees: [
+          {
+            neuronId: { id: followee1.id },
+          },
+          {
+            neuronId: { id: followee2.id },
+            alias: "followee2",
+          },
+        ],
+      };
+      const following2: SnsTopicFollowing = {
+        topic: "CriticalDappOperations",
+        followees: [
+          {
+            neuronId: { id: followee1.id },
+          },
+        ],
+      };
+
+      await setFollowing({
+        rootCanisterId,
+        neuronId: neuron.id[0],
+        followings: [following1, following2],
+      });
+
+      expect(setFollowingSpy).toBeCalledTimes(1);
+      expect(setFollowingSpy).toBeCalledWith({
+        neuronId: fromNullable(neuron.id),
+        identity: mockIdentity,
+        rootCanisterId,
+        topicFollowing: [
+          {
+            topic: { DappCanisterManagement: null },
+            followees: [
+              {
+                neuronId: { ...followee1 },
+              },
+              {
+                neuronId: { ...followee2 },
+                alias: "followee2",
+              },
+            ],
+          },
+          {
+            topic: { CriticalDappOperations: null },
+            followees: [
+              {
+                neuronId: { id: followee1.id },
+              },
+            ],
+          },
+        ],
+      });
     });
   });
 
