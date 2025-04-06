@@ -12,24 +12,30 @@
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuronId } from "@dfinity/sns";
 
-  export let topicInfo: TopicInfoWithUnknown;
-  export let followees: SnsTopicFollowee[];
-  export let checked: boolean = false;
-  export let onNnsChange: (args: {
-    topicKey: SnsTopicKey;
+  interface Props {
+    topicInfo: TopicInfoWithUnknown;
+    followees: SnsTopicFollowee[];
     checked: boolean;
-  }) => void;
-  export let onNnsRemove: (args: {
-    topicKey: SnsTopicKey;
-    neuronId: SnsNeuronId;
-  }) => void;
+    onNnsChange: (args: { topicKey: SnsTopicKey; checked: boolean }) => void;
+    onNnsRemove: (args: {
+      topicKey: SnsTopicKey;
+      neuronId: SnsNeuronId;
+    }) => void;
+  }
 
-  let topicKey: SnsTopicKey;
-  $: topicKey = getSnsTopicInfoKey(topicInfo);
-  let name: string;
-  $: name = fromDefinedNullable(topicInfo.name);
-  let description: string;
-  $: description = fromDefinedNullable(topicInfo.description);
+  let {
+    topicInfo,
+    followees,
+    checked = false,
+    onNnsChange,
+    onNnsRemove,
+  }: Props = $props();
+
+  let topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
+  let name: string = $derived(fromDefinedNullable(topicInfo.name));
+  let description: string = $derived(
+    fromDefinedNullable(topicInfo.description)
+  );
 
   const onChange = () => {
     // Checkbox doesn't support two-way binding
@@ -37,8 +43,8 @@
     onNnsChange({ topicKey, checked });
   };
 
-  let toggleContent: () => void;
-  let expanded: boolean;
+  let toggleContent: () => void = $state(() => {});
+  let expanded: boolean = $state(false);
 
   // TODO(sns-topics): Add "stopPropagation" prop to the gix/Checkbox component
   // to avoid collapsable toggling
@@ -75,7 +81,7 @@
         data-tid="expand-button"
         class="expand-button"
         class:expanded
-        on:click={toggleContent}
+        onclick={toggleContent}
       >
         <IconExpandMore />
       </button>
@@ -93,7 +99,7 @@
               <li data-tid="topic-followee">
                 {subaccountToHexString(followee.neuronId.id)}
                 <button
-                  on:click={() =>
+                  onclick={() =>
                     onNnsRemove({
                       topicKey,
                       neuronId: followee.neuronId,
