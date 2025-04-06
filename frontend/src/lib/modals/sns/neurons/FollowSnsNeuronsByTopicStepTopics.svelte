@@ -1,10 +1,7 @@
 <script lang="ts">
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type {
-    TopicInfoWithUnknown,
-    UnknownTopic,
-  } from "$lib/types/sns-aggregator";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import FollowSnsNeuronsByTopicStepTopicsItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";

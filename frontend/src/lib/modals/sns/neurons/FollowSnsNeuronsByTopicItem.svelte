@@ -9,8 +9,9 @@
   import { fromDefinedNullable } from "@dfinity/utils";
   import type { SnsTopicFollowee, SnsTopicKey } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
-  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuronId } from "@dfinity/sns";
+  import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
+  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 
   interface Props {
     topicInfo: TopicInfoWithUnknown;
@@ -94,17 +95,15 @@
       <div class="followees">
         {#if followees.length > 0}
           <h5 class="headline description"> Followees</h5>
-          <ul>
-            {#each followees as followee}
-              <li data-tid="topic-followee">
-                {subaccountToHexString(followee.neuronId.id)}
-                <button
-                  onclick={() =>
-                    onNnsRemove({
-                      topicKey,
-                      neuronId: followee.neuronId,
-                    })}>X</button
-                >
+          <ul class="followee-list">
+            {#each followees as followee (subaccountToHexString(followee.neuronId.id))}
+              <li
+                ><FollowSnsNeuronsByTopicFollowee
+                  {followee}
+                  onRemoveClick={() => {
+                    // TODO: remove
+                  }}
+                />
               </li>
             {/each}
           </ul>
@@ -145,5 +144,14 @@
     .description {
       margin: 0 0 var(--padding-3x);
     }
+  }
+
+  .followee-list {
+    padding: 0;
+    list-style-type: none;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--padding-0_5x);
   }
 </style>
