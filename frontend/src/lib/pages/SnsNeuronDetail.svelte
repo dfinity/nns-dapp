@@ -39,7 +39,6 @@
   import { Island } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import type { FolloweesForTopic } from "@dfinity/sns/dist/candid/sns_governance";
   import {
     isNullish,
     nonNullish,
@@ -115,7 +114,7 @@
                   {
                     topic_id_to_followees: [
                       [
-                        0n,
+                        0,
                         {
                           topic: [{ DappCanisterManagement: null }],
                           followees: [
@@ -127,7 +126,7 @@
                         },
                       ],
                       [
-                        0n,
+                        0,
                         {
                           topic: [{ CriticalDappOperations: null }],
                           followees: [

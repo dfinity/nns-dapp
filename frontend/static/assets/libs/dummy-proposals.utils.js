@@ -242,17 +242,19 @@ const makeMotionDummyProposalRequest = ({ title, url, summary, neuronId }) => ({
   action: {
     Motion: {
       motionText:
-          "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
+        "We think that it is too expensive to run canisters on the IC. The long term goal of the IC should be to reduce the cycles cost of all operations by a factor of 10! Please pass this motion",
     },
   },
 });
 
+const SECONDS_IN_HALF_YEAR = 60n * 60n * 24n * 30n * 6n;
+const SECONDS_IN_MONTH = 60n * 60n * 24n * 30n;
 const makeNetworkEconomicsDummyProposalRequest = ({
-                                                    title,
-                                                    url,
-                                                    summary,
-                                                    neuronId,
-                                                  }) => ({
+  title,
+  url,
+  summary,
+  neuronId,
+}) => ({
   neuronId,
   title,
   url,
@@ -267,16 +269,45 @@ const makeNetworkEconomicsDummyProposalRequest = ({
       neuronSpawnDissolveDelaySeconds: BigInt(3600 * 24 * 7),
       minimumIcpXdrRate: 1n,
       maximumNodeProviderRewards: 10_000_000_000n,
+      neuronsFundEconomics: [
+        {
+          minimumIcpXdrRate: {
+            basisPoints: 123n,
+          },
+          maxTheoreticalNeuronsFundParticipationAmountXdr: {
+            humanReadable: "456",
+          },
+          neuronsFundMatchedFundingCurveCoefficients: {
+            contributionThresholdXdr: {
+              humanReadable: "789",
+            },
+            oneThirdParticipationMilestoneXdr: {
+              humanReadable: "123",
+            },
+            fullParticipationMilestoneXdr: {
+              humanReadable: "456",
+            },
+          },
+          maximumIcpXdrRate: {
+            basisPoints: 456n,
+          },
+        },
+      ],
+      votingPowerEconomics: {
+        startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+        neuronMinimumDissolveDelayToVoteSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+        clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
+      },
     },
   },
 });
 
 const makeRewardNodeProviderDummyProposal = ({
-                                               title,
-                                               url,
-                                               summary,
-                                               neuronId,
-                                             }) => ({
+  title,
+  url,
+  summary,
+  neuronId,
+}) => ({
   neuronId,
   title,
   url,
@@ -296,13 +327,13 @@ const makeRewardNodeProviderDummyProposal = ({
 });
 
 const makeExecuteNnsFunctionDummyProposalRequest = ({
-                                                      title,
-                                                      url,
-                                                      summary,
-                                                      neuronId,
-                                                      nnsFunction,
-                                                      payload,
-                                                    }) => ({
+  title,
+  url,
+  summary,
+  neuronId,
+  nnsFunction,
+  payload,
+}) => ({
   neuronId,
   title,
   url,
@@ -406,15 +437,16 @@ adstas patrios, nescio quam coepit!
 [quicquam paternis]: http://visasit.com/dumque
 [vultu]: http://lentas-petitur.com/`;
 
-const url = "https://forum.dfinity.org/t/announcing-juno-build-on-the-ic-using-frontend-code-only"
+const url =
+  "https://forum.dfinity.org/t/announcing-juno-build-on-the-ic-using-frontend-code-only";
 
 export const makeDummyProposals = async ({
- neuronId,
- canister,
- swapCanisterId,
+  neuronId,
+  canister,
+  swapCanisterId,
 }) => {
   try {
-    console.log("Making dummy proposals...")
+    console.log("Making dummy proposals...");
 
     // Used only on testnet
     const requests = [
@@ -427,7 +459,8 @@ export const makeDummyProposals = async ({
           summary: DEMO_SUMMARY,
         }),
         log: "Motion Proposal...",
-      }, {
+      },
+      {
         request: makeNetworkEconomicsDummyProposalRequest({
           neuronId,
           title: "Increase minimum neuron stake",
@@ -435,7 +468,8 @@ export const makeDummyProposals = async ({
           summary: "Increase minimum neuron stake",
         }),
         log: "Netowrk Economics Proposal...",
-      }, {
+      },
+      {
         request: makeRewardNodeProviderDummyProposal({
           neuronId,
           url,
@@ -443,7 +477,8 @@ export const makeDummyProposals = async ({
           summary: "Reward for Node Provider 'ABC'",
         }),
         log: "Rewards Node Provide Proposal...",
-      }, {
+      },
+      {
         request: makeExecuteNnsFunctionDummyProposalRequest({
           neuronId,
           title: "Add node(s) to subnet 10",
@@ -453,7 +488,8 @@ export const makeDummyProposals = async ({
           payload: addNodeToSubnetPayload,
         }),
         log: "Execute NNS Function Proposal...",
-      }, {
+      },
+      {
         request: makeExecuteNnsFunctionDummyProposalRequest({
           neuronId,
           title: "Update configuration of subnet: tdb26-",
@@ -464,7 +500,8 @@ export const makeDummyProposals = async ({
           payload: updateSubnetConfigPayload,
         }),
         log: "Execute NNS Function Proposal...",
-      }, {
+      },
+      {
         request: makeExecuteNnsFunctionDummyProposalRequest({
           neuronId,
           title:
@@ -476,7 +513,8 @@ export const makeDummyProposals = async ({
           payload: updateSubnetPayload,
         }),
         log: "Execute NNS Function Proposal...",
-      }, {
+      },
+      {
         request: makeExecuteNnsFunctionDummyProposalRequest({
           neuronId,
           title: "Initialize datacenter records",
@@ -498,11 +536,13 @@ export const makeDummyProposals = async ({
     responses.forEach((response, index) => {
       if (response.status === "rejected") {
         console.error(`Failed to make proposal "${requests[index].log}":`);
-        console.log(response.reason?.detail ?? response.reason)
+        console.log(response.reason?.detail ?? response.reason);
       }
     });
     // Log success rate
-    const successCount = responses.filter((response) => response.status === "fulfilled").length;
+    const successCount = responses.filter(
+      (response) => response.status === "fulfilled"
+    ).length;
     console.log(
       "Finished making dummy proposals: ",
       successCount,
@@ -511,7 +551,9 @@ export const makeDummyProposals = async ({
     );
 
     if (successCount !== requests.length) {
-      throw new Error(`Only ${successCount} of ${requests.length} proposals were created.`);
+      throw new Error(
+        `Only ${successCount} of ${requests.length} proposals were created.`
+      );
     }
   } catch (e) {
     console.error(e);
