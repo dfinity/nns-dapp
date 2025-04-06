@@ -132,6 +132,9 @@
         neuronId: fromDefinedNullable(neuron.id),
         followings: requestFollowings,
       });
+
+      // TODO: reload the neuron
+
       if (success) {
         toastsSuccess({
           labelKey: $i18n.follow_sns_topics.success,

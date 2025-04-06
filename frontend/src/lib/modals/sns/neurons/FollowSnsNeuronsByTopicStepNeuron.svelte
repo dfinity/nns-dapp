@@ -13,8 +13,8 @@
 
 <form
   data-tid="follow-sns-neurons-by-topic-step-neuron-component"
-  onsubmit={({ preventDefault }) => {
-    preventDefault();
+  onsubmit={(event) => {
+    event.preventDefault();
     onNnsConfirm(followeeHex);
   }}
 >
