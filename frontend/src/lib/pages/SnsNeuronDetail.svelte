@@ -104,43 +104,12 @@
           certified: boolean;
           neuron: SnsNeuron;
         }) => {
+          console.log("🍎 Neuron loaded", snsNeuron);
+
           mutableSnsNeuronStore.update({
             mutation: (store) => ({
               ...store,
-              neuron: {
-                ...snsNeuron,
-                // Mock the followees for the neuron before the api is able to save them.
-                topic_followees: [
-                  {
-                    topic_id_to_followees: [
-                      [
-                        0,
-                        {
-                          topic: [{ DappCanisterManagement: null }],
-                          followees: [
-                            {
-                              neuron_id: snsNeuron.id,
-                              alias: [],
-                            },
-                          ],
-                        },
-                      ],
-                      [
-                        0,
-                        {
-                          topic: [{ CriticalDappOperations: null }],
-                          followees: [
-                            {
-                              neuron_id: snsNeuron.id,
-                              alias: [],
-                            },
-                          ],
-                        },
-                      ],
-                    ],
-                  },
-                ],
-              },
+              neuron: snsNeuron,
             }),
             certified,
           });
