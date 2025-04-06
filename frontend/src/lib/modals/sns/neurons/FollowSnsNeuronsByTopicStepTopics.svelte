@@ -15,24 +15,33 @@
   } from "$lib/utils/sns-topics.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import type { SnsNeuronId } from "@dfinity/sns";
+  interface Props {
+    topicInfos: TopicInfoWithUnknown[];
+    selectedTopics: SnsTopicKey[];
+    followings: SnsTopicFollowing[];
+    onNnsClose: () => void;
+    onNnsNext: () => void;
+    onNnsRemove: (args: {
+      topicKey: SnsTopicKey;
+      neuronId: SnsNeuronId;
+    }) => void;
+  }
+  let {
+    topicInfos,
+    selectedTopics = $bindable(),
+    followings,
+    onNnsClose,
+    onNnsNext,
+    onNnsRemove,
+  }: Props = $props();
 
-  export let topicInfos: TopicInfoWithUnknown[];
-  export let selectedTopics: SnsTopicKey[] = [];
-  export let followings: SnsTopicFollowing[] = [];
-  export let onNnsClose: () => void;
-  export let onNnsNext: () => void;
-  export let onNnsRemove: (args: {
-    topicKey: SnsTopicKey;
-    neuronId: SnsNeuronId;
-  }) => void;
-
-  let criticalTopicInfos: TopicInfoWithUnknown[];
-  $: criticalTopicInfos = topicInfos.filter((topicInfo) =>
-    fromDefinedNullable(topicInfo.is_critical)
+  let criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
+    topicInfos.filter((topicInfo) => fromDefinedNullable(topicInfo.is_critical))
   );
-  let nonCriticalTopicInfos: TopicInfoWithUnknown[];
-  $: nonCriticalTopicInfos = topicInfos.filter(
-    (topicInfo) => !fromDefinedNullable(topicInfo.is_critical)
+  let nonCriticalTopicInfos: TopicInfoWithUnknown[] = $derived(
+    topicInfos.filter(
+      (topicInfo) => !fromDefinedNullable(topicInfo.is_critical)
+    )
   );
 
   const onTopicSelectionChange = ({
@@ -104,7 +113,7 @@
       class="secondary"
       type="button"
       data-tid="cancel-button"
-      on:click={onNnsClose}
+      onclick={onNnsClose}
     >
       {$i18n.core.cancel}
     </button>
@@ -113,7 +122,7 @@
       data-tid="next-button"
       class="primary"
       disabled={selectedTopics.length === 0}
-      on:click={onNnsNext}
+      onclick={onNnsNext}
     >
       {$i18n.core.next}
     </button>

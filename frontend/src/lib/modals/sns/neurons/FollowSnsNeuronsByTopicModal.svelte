@@ -37,8 +37,11 @@
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 
-  export let rootCanisterId: Principal;
-  export let neuron: SnsNeuron;
+  interface Props {
+    rootCanisterId: Principal;
+    neuron: SnsNeuron;
+  }
+  let { rootCanisterId, neuron }: Props = $props();
 
   const dispatcher = createEventDispatcher();
   const STEP_TOPICS = "topics";
@@ -53,25 +56,21 @@
       title: $i18n.follow_sns_topics.neuron_title,
     },
   ];
-  let currentStep: WizardStep | undefined = undefined;
-  let modal: WizardModal;
+  let currentStep: WizardStep | undefined = $state();
+  let modal: WizardModal | undefined = $state();
   const next = () => modal?.next();
   const back = () => modal?.back();
   const close = () => dispatcher("nnsClose");
 
-  let listTopics: ListTopicsResponseWithUnknown | undefined;
-  $: listTopics = $snsTopicsStore[rootCanisterId.toText()];
-
-  let topicInfos: TopicInfoWithUnknown[];
-  $: topicInfos = isNullish(listTopics)
-    ? []
-    : fromDefinedNullable(listTopics?.topics);
-
-  let followings: SnsTopicFollowing[] = [];
-  $: followings = getSnsTopicFollowings(neuron);
-
-  let selectedTopics: SnsTopicKey[] = [];
-  let followeeNeuronIdHex: string = "";
+  let listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
+    $snsTopicsStore[rootCanisterId.toText()]
+  );
+  let topicInfos: TopicInfoWithUnknown[] = $derived(
+    isNullish(listTopics) ? [] : fromDefinedNullable(listTopics?.topics)
+  );
+  let followings: SnsTopicFollowing[] = $derived(getSnsTopicFollowings(neuron));
+  let selectedTopics: SnsTopicKey[] = $state([]);
+  let followeeNeuronIdHex: string = $state("");
 
   // Validate the followee neuron id by fetching it.
   const validateNeuronId = async (neuronId: SnsNeuronId) => {
@@ -91,7 +90,7 @@
       id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
     };
 
-    if (await !validateNeuronId(followeeNeuronId)) {
+    if (!(await validateNeuronId(followeeNeuronId))) {
       toastsError({
         labelKey: "follow_sns_topics.followee_does_not_exist",
         substitutions: {

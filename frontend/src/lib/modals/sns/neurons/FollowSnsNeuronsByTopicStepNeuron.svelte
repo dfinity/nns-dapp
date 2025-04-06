@@ -3,14 +3,20 @@
   import Input from "$lib/components/ui/Input.svelte";
   import { Html } from "@dfinity/gix-components";
 
-  export let followeeHex = "";
-  export let onNnsBack: () => void;
-  export let onNnsConfirm: (followeeHex: string) => void;
+  interface Props {
+    followeeHex: string;
+    onNnsBack: () => void;
+    onNnsConfirm: (followeeHex: string) => void;
+  }
+  let { followeeHex = $bindable(), onNnsBack, onNnsConfirm }: Props = $props();
 </script>
 
 <form
   data-tid="follow-sns-neurons-by-topic-step-neuron-component"
-  on:submit|preventDefault={() => onNnsConfirm(followeeHex)}
+  onsubmit={({ preventDefault }) => {
+    preventDefault();
+    onNnsConfirm(followeeHex);
+  }}
 >
   <Input
     testId="new-followee-id"
@@ -34,7 +40,7 @@
       data-tid="back-button"
       class="secondary"
       type="button"
-      on:click={onNnsBack}
+      onclick={onNnsBack}
     >
       {$i18n.core.back}
     </button>
