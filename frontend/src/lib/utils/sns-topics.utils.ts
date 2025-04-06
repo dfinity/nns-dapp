@@ -8,13 +8,13 @@ import type {
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsNeuronId,
+  SnsTopic,
 } from "@dfinity/sns";
-import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 import { subaccountToHexString } from "./sns-neuron.utils";
 
 export const snsTopicToTopicKey = (
-  topic: Topic | UnknownTopic
+  topic: SnsTopic | UnknownTopic
 ): SnsTopicKey => {
   // We can't ensure that all the topicKeys are present in this list.
   const topicKeys: SnsTopicKey[] = [
@@ -38,7 +38,7 @@ export const snsTopicToTopicKey = (
 
 export const snsTopicKeyToTopic = (
   topic: SnsTopicKey
-): Topic | UnknownTopic => {
+): SnsTopic | UnknownTopic => {
   switch (topic) {
     case "DappCanisterManagement":
       return { DappCanisterManagement: null };
@@ -63,7 +63,7 @@ export const snsTopicKeyToTopic = (
 export const getSnsTopicInfoKey = (
   topicInfo: TopicInfoWithUnknown
 ): SnsTopicKey =>
-  snsTopicToTopicKey(fromNullable(topicInfo.topic) as Topic | UnknownTopic);
+  snsTopicToTopicKey(fromNullable(topicInfo.topic) as SnsTopic | UnknownTopic);
 
 // Returns all available SNS topics keys
 export const getSnsTopicKeys = (

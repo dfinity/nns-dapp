@@ -12,8 +12,8 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
   SnsSwapTicket,
+  SnsTopic,
 } from "@dfinity/sns";
-import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import type { FinalizeSwapResponse } from "@dfinity/sns/dist/candid/sns_swap";
 
 export type RootCanisterId = Principal;
@@ -110,7 +110,7 @@ export interface SnsTicket {
 
 // "DappCanisterManagement" | "DaoCommunitySettings" | ...
 export type SnsTopicKey = keyof {
-  [K in Topic | UnknownTopic as keyof K]: true;
+  [K in SnsTopic | UnknownTopic as keyof K]: true;
 };
 
 export type SnsTopicFollowee = {
@@ -122,4 +122,3 @@ export type SnsTopicFollowing = {
   topic: SnsTopicKey;
   followees: Array<SnsTopicFollowee>;
 };
-

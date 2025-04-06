@@ -56,8 +56,7 @@ import type { Identity } from "@dfinity/agent";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsNeuron, SnsNeuronId, SnsTopic } from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
   assertNonNullish,
@@ -665,7 +664,7 @@ export const setFollowing = async ({
 
   try {
     const topicFollowing = followings.map(({ topic, followees }) => ({
-      topic: snsTopicKeyToTopic(topic) as Topic,
+      topic: snsTopicKeyToTopic(topic) as SnsTopic,
       followees,
     }));
     await setFollowingApi({

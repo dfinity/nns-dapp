@@ -17,12 +17,11 @@ import {
   SnsNeuronPermissionType,
   type SnsNervousSystemParameters,
   type SnsNeuron,
+  type SnsTopic,
 } from "@dfinity/sns";
 import type {
   DisburseMaturityInProgress,
-  FolloweesForTopic,
   NeuronPermission,
-  Topic,
 } from "@dfinity/sns/dist/candid/sns_governance";
 import {
   arrayOfNumberToUint8Array,
@@ -132,27 +131,25 @@ export const createMockSnsNeuron = ({
       ...mockActiveDisbursement,
       amount_e8s: amountE8s,
     })),
-    ...((isNullish(topicFollowees)
-      ? {}
-      : {
-          topic_followees: [
-            {
-              topic_id_to_followees: Object.entries(topicFollowees).map(
-                ([topic, followees]) => [
-                  // The topic number-based IDs are not used in the nns-dapp
-                  0n,
-                  {
-                    topic: [snsTopicKeyToTopic(topic as SnsTopicKey) as Topic],
-                    followees: followees.map(({ neuronId, alias }) => ({
-                      neuron_id: [neuronId],
-                      alias: alias === undefined ? [] : [alias],
-                    })),
-                  },
-                ]
-              ),
-            },
-          ],
-        }) as [{ topic_id_to_followees: Array<[bigint, FolloweesForTopic]> }]),
+    topic_followees: isNullish(topicFollowees)
+      ? []
+      : [
+          {
+            topic_id_to_followees: Object.entries(topicFollowees).map(
+              ([topic, followees]) => [
+                // The topic number-based IDs are not used in the nns-dapp
+                0,
+                {
+                  topic: [snsTopicKeyToTopic(topic as SnsTopicKey) as SnsTopic],
+                  followees: followees.map(({ neuronId, alias }) => ({
+                    neuron_id: [neuronId],
+                    alias: alias === undefined ? [] : [alias],
+                  })),
+                },
+              ]
+            ),
+          },
+        ],
   };
 };
 

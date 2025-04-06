@@ -13,8 +13,7 @@ import {
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
 import { Principal } from "@dfinity/principal";
-import type { SnsNervousSystemFunction } from "@dfinity/sns";
-import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsNervousSystemFunction, SnsTopic } from "@dfinity/sns";
 import { createMockSnsNeuron } from "../../mocks/sns-neurons.mock";
 
 describe("sns-topics utils", () => {
@@ -71,7 +70,7 @@ describe("sns-topics utils", () => {
     topic: [
       {
         CompletelyUnknownTopic: null,
-      } as unknown as Topic,
+      } as unknown as SnsTopic,
     ],
     is_critical: [true],
     name: ["Unknown topic name"],
@@ -108,7 +107,7 @@ describe("sns-topics utils", () => {
     });
 
     it("should return UnknownTopic if topic is unknown", () => {
-      expect(snsTopicToTopicKey({} as Topic)).toBe("UnknownTopic");
+      expect(snsTopicToTopicKey({} as SnsTopic)).toBe("UnknownTopic");
     });
   });
 

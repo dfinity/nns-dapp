@@ -21,8 +21,7 @@ import {
 } from "$lib/utils/sns-aggregator-converters.utils";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
-import type { SnsNervousSystemParameters } from "@dfinity/sns";
-import type { TopicInfo } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsNervousSystemParameters, SnsTopicInfo } from "@dfinity/sns";
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {
@@ -992,7 +991,7 @@ describe("sns aggregator converters utils", () => {
 
     describe("convertDtoTopicInfo", () => {
       it("converts aggregator topic info to ic-js types", () => {
-        const expectedTopicInfo: TopicInfo = {
+        const expectedTopicInfo: SnsTopicInfo = {
           native_functions: [
             [
               {
