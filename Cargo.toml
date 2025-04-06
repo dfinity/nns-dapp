@@ -15,23 +15,23 @@ ic-cdk-macros = "0.17.0"
 ic-cdk-timers = "0.11.0"
 ic-management-canister-types = "0.1.0"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-dfn_candid = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-dfn_core = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-base-types = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
-on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2025-03-27_03-14-base" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+dfn_candid = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+dfn_core = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-base-types = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+registry-canister = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+icp-ledger = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
+on_wire = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.0" }
 
 [profile.release]
 lto = false
