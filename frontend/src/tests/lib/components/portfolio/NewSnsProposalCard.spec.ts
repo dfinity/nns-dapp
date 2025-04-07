@@ -50,7 +50,7 @@ describe("NewSnsProposalCard", () => {
     ).CreateServiceNervousSystem.name;
     const expectedProposalTitle = mockProposal.proposal.title;
 
-    expect(await po.getProjectName()).toBe(expectedProjectName);
+    expect(await po.getTitle()).toBe(expectedProjectName);
     expect(await po.getProposalTitle()).toBe(expectedProposalTitle);
   });
 

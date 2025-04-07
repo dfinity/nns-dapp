@@ -9,7 +9,7 @@ export class NewSnsProposalCardPo extends BasePageObject {
     return new NewSnsProposalCardPo(element.byTestId(NewSnsProposalCardPo.TID));
   }
 
-  getProjectName(): Promise<string> {
+  getTitle(): Promise<string> {
     return this.getText("project-name");
   }
 
