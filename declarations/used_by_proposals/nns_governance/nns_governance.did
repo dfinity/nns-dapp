@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-27_03-14-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/rosetta-icrc-release-1.2.0/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record {
   hash : blob;
 };
@@ -282,14 +282,6 @@ type Followees = record {
   followees : vec NeuronId;
 };
 
-type Followers = record {
-  followers : vec NeuronId;
-};
-
-type FollowersMap = record {
-  followers_map : vec record { nat64; Followers };
-};
-
 type GetNeuronsFundAuditInfoRequest = record {
   nns_proposal_id : opt ProposalId;
 };
@@ -318,7 +310,6 @@ type Governance = record {
   latest_reward_event : opt RewardEvent;
   to_claim_transfers : vec NeuronStakeTransfer;
   short_voting_period_seconds : nat64;
-  topic_followee_index : vec record { int32; FollowersMap };
   proposals : vec record { nat64; ProposalData };
   xdr_conversion_rate : opt XdrConversionRate;
   in_flight_commands : vec record { nat64; NeuronInFlightCommand };
