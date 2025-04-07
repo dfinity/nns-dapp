@@ -1,7 +1,6 @@
 import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_MONTH,
-  SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import type { NetworkEconomics } from "@dfinity/nns";
 
@@ -38,7 +37,6 @@ export const mockNetworkEconomics: NetworkEconomics = {
   },
   votingPowerEconomics: {
     startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
-    neuronMinimumDissolveDelayToVoteSeconds: BigInt(SECONDS_IN_YEAR),
     clearFollowingAfterSeconds: BigInt(SECONDS_IN_MONTH),
   },
 };
