@@ -131,12 +131,10 @@ describe("Portfolio route", () => {
     const nativeBalances =
       await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
-    expect(
-      await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
-    ).toBe("$-/-");
-    expect(
-      await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
-    ).toBe("-/- ICP");
+    expect(await portfolioPagePo.getLoginCard().isPresent()).toBe(true);
+    expect(await portfolioPagePo.getTotalAssetsCardPo().isPresent()).toBe(
+      false
+    );
 
     expect(titles.length).toBe(4);
     expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH", "ckUSDC"]);
