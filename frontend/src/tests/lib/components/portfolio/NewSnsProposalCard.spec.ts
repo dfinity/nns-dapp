@@ -54,7 +54,7 @@ describe("NewSnsProposalCard", () => {
     expect(await po.getProposalTitle()).toBe(expectedProposalTitle);
   });
 
-  it("should display percengate of yes/no", async () => {
+  it("should display percentage of yes/no", async () => {
     const po = renderComponent({
       ...mockProposal,
       latestTally: {
