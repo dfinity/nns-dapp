@@ -172,6 +172,7 @@
           "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "Governance",
               "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
               "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
               "validator_method_name": "validate_icrc1_transfer",
@@ -185,6 +186,7 @@
           "description": "Approve tokens from the SNS treasury via icrc2_approve",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
               "target_canister_id": "f54if-eqaaa-aaaaq-aacea-cai",
               "validator_method_name": "validate_icrc2_approve",
@@ -198,6 +200,7 @@
           "description": "Register manage neuron method for NFIDW",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
               "target_canister_id": "mpg2i-yyaaa-aaaaq-aaeka-cai",
               "validator_method_name": "validate_manage_neuron",
@@ -211,6 +214,7 @@
           "description": "Approve GHOST from the SNS treasury via icrc2_approve",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
               "target_canister_id": "4c4fd-caaaa-aaaaq-aaa3a-cai",
               "validator_method_name": "validate_icrc2_approve",
@@ -224,6 +228,7 @@
           "description": "Register manage neuron method for NTN",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
               "target_canister_id": "eqsml-lyaaa-aaaaq-aacdq-cai",
               "validator_method_name": "validate_manage_neuron",
@@ -240,6 +245,7 @@
       "max_dissolve_delay_seconds": 252460800,
       "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": true,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8]
       },
@@ -291,7 +297,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "zfcdd-tqaaa-aaaaq-aaaga-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": null,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "zqfso-syaaa-aaaaq-aaafq-cai",
@@ -363,7 +368,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999952790694000,
+    "icrc1_total_supply": 799999950031294000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -405,7 +410,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "zfcdd-tqaaa-aaaaq-aaaga-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": null,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "zqfso-syaaa-aaaaq-aaafq-cai",
@@ -428,6 +432,265 @@
       "decentralization_sale_open_timestamp_seconds": null,
       "lifecycle": 3,
       "decentralization_swap_termination_timestamp_seconds": null
+    },
+    "topics": {
+      "uncategorized_functions": [],
+      "topics": [
+        {
+          "native_functions": [
+            {
+              "id": 2,
+              "name": "Manage nervous system parameters",
+              "description": "Proposal to change the core parameters of SNS governance.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 13,
+              "name": "Manage ledger parameters",
+              "description": "Proposal to change some parameters in the ledger canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 8,
+              "name": "Manage SNS metadata",
+              "description": "Proposal to change the metadata associated with an SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DaoCommunitySettings",
+          "is_critical": false,
+          "name": "DAO community settings",
+          "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 7,
+              "name": "Upgrade SNS to next version",
+              "description": "Proposal to upgrade the WASM of a core SNS canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 15,
+              "name": "Advance SNS target version",
+              "description": "Proposal to advance the target version of this SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "SnsFrameworkManagement",
+          "is_critical": false,
+          "name": "SNS framework management",
+          "description": "Proposals to upgrade and manage the SNS DAO framework.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 3,
+              "name": "Upgrade SNS controlled canister",
+              "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 10,
+              "name": "Register dapp canisters",
+              "description": "Proposal to register a dapp canister with the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 14,
+              "name": "Manage dapp canister settings",
+              "description": "Proposal to change canister settings for some dapp canisters.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DappCanisterManagement",
+          "is_critical": false,
+          "name": "Dapp canister management",
+          "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [],
+          "topic": "ApplicationBusinessLogic",
+          "is_critical": false,
+          "name": "Application Business Logic",
+          "description": "Proposals that are custom to what the governed dapp requires.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 1,
+              "name": "Motion",
+              "description": "Side-effect-less proposals to set general governance direction.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "Governance",
+          "is_critical": false,
+          "name": "Governance",
+          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "custom_functions": [
+            {
+              "id": 2000,
+              "name": "Transfer nICP",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "native_functions": [
+            {
+              "id": 9,
+              "name": "Transfer SNS treasury funds",
+              "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 12,
+              "name": "Mint SNS tokens",
+              "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "TreasuryAssetManagement",
+          "is_critical": true,
+          "name": "Treasury & asset management",
+          "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
+          "custom_functions": [
+            {
+              "id": 2001,
+              "name": "Approve NTN",
+              "description": "Approve tokens from the SNS treasury via icrc2_approve",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "f54if-eqaaa-aaaaq-aacea-cai",
+                  "validator_method_name": "validate_icrc2_approve",
+                  "target_method_name": "icrc2_approve"
+                }
+              }
+            },
+            {
+              "id": 2002,
+              "name": "Register NFIDW manage neuron function",
+              "description": "Register manage neuron method for NFIDW",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "mpg2i-yyaaa-aaaaq-aaeka-cai",
+                  "validator_method_name": "validate_manage_neuron",
+                  "target_method_name": "manage_neuron"
+                }
+              }
+            },
+            {
+              "id": 2003,
+              "name": "Approve GHOST",
+              "description": "Approve GHOST from the SNS treasury via icrc2_approve",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "4c4fd-caaaa-aaaaq-aaa3a-cai",
+                  "validator_method_name": "validate_icrc2_approve",
+                  "target_method_name": "icrc2_approve"
+                }
+              }
+            },
+            {
+              "id": 2004,
+              "name": "Register NTN manage neuron function",
+              "description": "Register manage neuron method for NTN",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "eqsml-lyaaa-aaaaq-aacdq-cai",
+                  "validator_method_name": "validate_manage_neuron",
+                  "target_method_name": "manage_neuron"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "native_functions": [
+            {
+              "id": 11,
+              "name": "Deregister Dapp Canisters",
+              "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 4,
+              "name": "Add nervous system function",
+              "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 5,
+              "name": "Remove nervous system function",
+              "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "CriticalDappOperations",
+          "is_critical": true,
+          "name": "Critical Dapp Operations",
+          "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
+          "custom_functions": []
+        }
+      ]
     }
   },
   {
@@ -622,6 +885,7 @@
           "description": "This will upload the given WASM to the user_index and trigger a rolling upgrade of local_user_index canisters on each subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "upgrade_local_user_index_canister_wasm_validate",
@@ -635,6 +899,7 @@
           "description": "This will upload the given WASM to the user_index which will in turn call c2c_upgrade_user_canister_wasm on the local_user_index on each subnet. These will each trigger a rolling upgrade of user canisters on their subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "upgrade_user_canister_wasm_validate",
@@ -648,6 +913,7 @@
           "description": "This will add a reference to an uninstalled local_user_index canister on a new subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "add_local_user_index_canister_validate",
@@ -661,6 +927,7 @@
           "description": "This will mark the local_user_index with the given canister_id as full so that no more users will be created on this subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "mark_local_user_index_full_validate",
@@ -674,6 +941,7 @@
           "description": "During a rolling user canister upgrade this controls how many user canisters can be upgraded concurrently. Setting a value of zero stops the upgrade altogether. Setting this value too high will slow down subnets during user upgrade.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "set_max_concurrent_user_canister_upgrades_validate",
@@ -687,6 +955,7 @@
           "description": "The user with the given user id will be given the role of platform moderator. These users have the authority to suspend users and freeze groups.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "Governance",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "add_platform_moderator_validate",
@@ -700,6 +969,7 @@
           "description": "The user with the given user id will have the role of platform moderator rescinded.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "Governance",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "remove_platform_moderator_validate",
@@ -713,6 +983,7 @@
           "description": "The user with the given user id will be given the role of platform operator. These users have the authority to call endpoints which affect rolling canister deployments such as setting the concurrency level.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "Governance",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "add_platform_operator_validate",
@@ -726,6 +997,7 @@
           "description": "The user with the given user id will have the role of platform operator rescinded.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "Governance",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "remove_platform_operator_validate",
@@ -739,6 +1011,7 @@
           "description": "This will register a new external achievement which users can complete to earn CHIT",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "register_external_achievement_validate",
@@ -752,6 +1025,7 @@
           "description": "This will remove an existing bot from OpenChat",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "remove_bot_validate",
@@ -765,6 +1039,7 @@
           "description": "This will publish a registered bot allowing it to be found and installed in OpenChat communities, groups and directly with users",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
               "validator_method_name": "publish_bot_validate",
@@ -778,6 +1053,7 @@
           "description": "This will upload the given WASM to the group_index and trigger a rolling upgrade of local_group_index canisters on each subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "upgrade_local_group_index_canister_wasm_validate",
@@ -791,6 +1067,7 @@
           "description": "This will upload the given WASM to the group_index which will in turn call c2c_upgrade_group_canister_wasm on the local_group_index on each subnet. These will each trigger a rolling upgrade of group canisters on their subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "upgrade_group_canister_wasm_validate",
@@ -804,6 +1081,7 @@
           "description": "This will add a reference to an uninstalled local_group_index canister on a new subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "add_local_group_index_canister_validate",
@@ -817,6 +1095,7 @@
           "description": "This will mark the local_group_index with the given canister_id as full so that no more groups will be created on this subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "mark_local_group_index_full_validate",
@@ -830,6 +1109,7 @@
           "description": "During a rolling group canister upgrade this controls how many group canisters can be upgraded concurrently. Setting a value of zero stops the upgrade altogether. Setting this value too high will slow down subnets during group upgrade.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "set_max_concurrent_group_canister_upgrades_validate",
@@ -843,6 +1123,7 @@
           "description": "This will upload the given WASM to the group_index which will in turn call c2c_upgrade_community_canister_wasm on the local_group_index on each subnet. These will each trigger a rolling upgrade of community canisters on their subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "upgrade_community_canister_wasm_validate",
@@ -856,6 +1137,7 @@
           "description": "This proposal will mark the given public community as 'verified' (blue tick) if it passes. The proposal summary should be used to provide evidence that the given community legitimately represents the given name. Additionally, if a different name is provided for this community and this name is already used by an existing public community or group which isn't itself 'verified' then this proposal will rename that community/group by adding a random suffix like _436 and the given community will take on the given name. This is to address the scenario where a public community or group has been created for a name which it doesn't legitimately represent.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "set_community_verification_validate",
@@ -869,6 +1151,7 @@
           "description": "This proposal will mark the given public group as 'verified' (blue tick) if it passes. The proposal summary should be used to provide evidence that the given group legitimately represents the given name. Additionally, if a different name is provided for this group and this name is already used by an existing public group or community which isn't itself 'verified' then this proposal will rename that group/community by adding a random suffix like _436 and the given group will take on the given name. This is to address the scenario where a public group or community has been created for a name which it doesn't legitimately represent.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "set_group_verification_validate",
@@ -882,6 +1165,7 @@
           "description": "Revoke the verified status (blue tick) of the given community. This would be used if the given community no longer legitimately represents its name. The proposal summary should be used to provide evidence.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "revoke_community_verification_validate",
@@ -895,6 +1179,7 @@
           "description": "Revoke the verified status (blue tick) of the given group. This would be used if the given group no longer legitimately represents its name. The proposal summary should be used to provide evidence.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
               "validator_method_name": "revoke_group_verification_validate",
@@ -908,6 +1193,7 @@
           "description": "This will upload the given WASM to the notifications_index and trigger a rolling upgrade of notifications_canisters on each subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4glvk-ryaaa-aaaaf-aaaia-cai",
               "target_canister_id": "4glvk-ryaaa-aaaaf-aaaia-cai",
               "validator_method_name": "upgrade_notifications_canister_wasm_validate",
@@ -921,6 +1207,7 @@
           "description": "This will add a reference to an uninstalled notifications canister on a new subnet.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "4glvk-ryaaa-aaaaf-aaaia-cai",
               "target_canister_id": "4glvk-ryaaa-aaaaf-aaaia-cai",
               "validator_method_name": "add_notifications_canister_validate",
@@ -934,6 +1221,7 @@
           "description": "This will create a new proposals group with the given details and sync it with proposals from the given SNS governance canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
               "target_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
               "validator_method_name": "add_governance_canister_validate",
@@ -947,6 +1235,7 @@
           "description": "This will remove a proposals group linked to the given SNS governance canister id.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
               "target_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
               "validator_method_name": "remove_governance_canister_validate",
@@ -960,6 +1249,7 @@
           "description": "For each given user, the proposals_bot will call into the group canister corresponding to the given governance canister, to set the user's role within the group to admin.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
               "target_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
               "validator_method_name": "appoint_admins_validate",
@@ -973,6 +1263,7 @@
           "description": "Import the specified proposals group into the specified community.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
               "target_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
               "validator_method_name": "import_proposals_group_into_community_validate",
@@ -986,6 +1277,7 @@
           "description": "This will add a reference to an uninstalled storage_bucket canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
               "target_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
               "validator_method_name": "add_bucket_canister_validate",
@@ -999,6 +1291,7 @@
           "description": "This will mark the storage_bucket with the given canister_id as full so that no more files will be uploaded to this bucket.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
               "target_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
               "validator_method_name": "set_bucket_full_validate",
@@ -1012,6 +1305,7 @@
           "description": "This will upload the given WASM to the storage_index canister and trigger a rolling upgrade of the storage_bucket canisters.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
               "target_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
               "validator_method_name": "upgrade_bucket_canister_wasm_validate",
@@ -1025,6 +1319,7 @@
           "description": "The cycles_dispenser will keep the added canister topped up with cycles.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "gonut-hqaaa-aaaaf-aby7a-cai",
               "target_canister_id": "gonut-hqaaa-aaaaf-aby7a-cai",
               "validator_method_name": "add_canister_validate",
@@ -1038,6 +1333,7 @@
           "description": "This will update the configuration of the cycles_dispenser canister such as max_top_up_amount and min_cycles_balance.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "gonut-hqaaa-aaaaf-aby7a-cai",
               "target_canister_id": "gonut-hqaaa-aaaaf-aby7a-cai",
               "validator_method_name": "update_config_validate",
@@ -1051,6 +1347,7 @@
           "description": "This will add the specified token to the Registry, enabling users to send it within OpenChat messages.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
               "target_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
               "validator_method_name": "add_token_validate",
@@ -1064,6 +1361,7 @@
           "description": "This will update the specified token's details in the Registry, updating the value of each field provided in the payload.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
               "target_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
               "validator_method_name": "update_token_validate",
@@ -1077,6 +1375,7 @@
           "description": "This will instruct the Registry to expand OpenChat onto a new subnet, allowing it to scale to many more users, groups and communities",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
               "target_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
               "validator_method_name": "expand_onto_subnet_validate",
@@ -1090,6 +1389,7 @@
           "description": "This will instruct the NeuronController canister to stake a new neuron with 1 ICP.\n\nSubsequent 'ManageNnsNeuron' and 'TransferFromTreasury' proposals can be made to update the neuron's configuration and increase its stake.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "tktqu-nyaaa-aaaar-qackq-cai",
               "target_canister_id": "tktqu-nyaaa-aaaar-qackq-cai",
               "validator_method_name": "stake_nns_neuron_validate",
@@ -1103,6 +1403,7 @@
           "description": "This will instruct the NeuronController canister to call 'manage_neuron' on the NNS governance canister to manage one of the neurons it controls.\n\nThis can be used to configure the neuron, set up following, spawn a new neuron, etc.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "tktqu-nyaaa-aaaar-qackq-cai",
               "target_canister_id": "tktqu-nyaaa-aaaar-qackq-cai",
               "validator_method_name": "manage_nns_neuron_validate",
@@ -1116,6 +1417,7 @@
           "description": "This will instruct the OpenChatInstaller canister to upgrade the specified canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "jodzs-iqaaa-aaaar-qamqa-cai",
               "target_canister_id": "jodzs-iqaaa-aaaar-qamqa-cai",
               "validator_method_name": "upgrade_canister_validate",
@@ -1129,6 +1431,7 @@
           "description": null,
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "w7lbn-qyaaa-aaaar-qacuq-cai",
               "target_canister_id": "w7lbn-qyaaa-aaaar-qacuq-cai",
               "validator_method_name": "sns_validate_trade_tokens",
@@ -1142,6 +1445,7 @@
           "description": null,
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "w7lbn-qyaaa-aaaar-qacuq-cai",
               "target_canister_id": "w7lbn-qyaaa-aaaar-qacuq-cai",
               "validator_method_name": "sns_validate_void_position",
@@ -1155,6 +1459,7 @@
           "description": "This will enable the OpenChat SNS Governance canister to manage NNS neurons, allowing it to perform actions such as voting on NNS proposals",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "wkype-7qaaa-aaaar-ajfyq-cai",
               "target_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
               "validator_method_name": "nns_governance_manage_neuron_validate",
@@ -1168,6 +1473,7 @@
           "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "Governance",
               "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
               "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
               "validator_method_name": "validate_icrc1_transfer",
@@ -1184,6 +1490,7 @@
       "max_dissolve_delay_seconds": 31536000,
       "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": true,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -1234,7 +1541,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "2ouva-viaaa-aaaaq-aaamq-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": null,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "2jvtu-yqaaa-aaaaq-aaama-cai",
@@ -1300,7 +1606,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10141499519154076,
+    "icrc1_total_supply": 10142045454880235,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1341,7 +1647,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "2ouva-viaaa-aaaaq-aaamq-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": null,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "2jvtu-yqaaa-aaaaq-aaama-cai",
@@ -1364,6 +1669,800 @@
       "decentralization_sale_open_timestamp_seconds": 1677826762,
       "lifecycle": 3,
       "decentralization_swap_termination_timestamp_seconds": null
+    },
+    "topics": {
+      "uncategorized_functions": [
+        {
+          "id": 4000,
+          "name": "Add SNS proposals group",
+          "description": "This will create a new proposals group with the given details and sync it with proposals from the given SNS governance canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
+              "target_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
+              "validator_method_name": "add_governance_canister_validate",
+              "target_method_name": "add_governance_canister"
+            }
+          }
+        },
+        {
+          "id": 4001,
+          "name": "Remove SNS proposals group",
+          "description": "This will remove a proposals group linked to the given SNS governance canister id.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
+              "target_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
+              "validator_method_name": "remove_governance_canister_validate",
+              "target_method_name": "remove_governance_canister"
+            }
+          }
+        },
+        {
+          "id": 101000,
+          "name": "Call trade_tokens on the CHAT/CYCLES trading pair canister at the CYCLES-TRANSFER-STATION.",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "w7lbn-qyaaa-aaaar-qacuq-cai",
+              "target_canister_id": "w7lbn-qyaaa-aaaar-qacuq-cai",
+              "validator_method_name": "sns_validate_trade_tokens",
+              "target_method_name": "trade_tokens"
+            }
+          }
+        },
+        {
+          "id": 101001,
+          "name": "Cancel an open position/order on the CHAT/CYCLES trading pair canister at the CYCLES-TRANSFER-STATION.",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "w7lbn-qyaaa-aaaar-qacuq-cai",
+              "target_canister_id": "w7lbn-qyaaa-aaaar-qacuq-cai",
+              "validator_method_name": "sns_validate_void_position",
+              "target_method_name": "void_position"
+            }
+          }
+        }
+      ],
+      "topics": [
+        {
+          "native_functions": [
+            {
+              "id": 2,
+              "name": "Manage nervous system parameters",
+              "description": "Proposal to change the core parameters of SNS governance.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 13,
+              "name": "Manage ledger parameters",
+              "description": "Proposal to change some parameters in the ledger canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 8,
+              "name": "Manage SNS metadata",
+              "description": "Proposal to change the metadata associated with an SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DaoCommunitySettings",
+          "is_critical": false,
+          "name": "DAO community settings",
+          "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 7,
+              "name": "Upgrade SNS to next version",
+              "description": "Proposal to upgrade the WASM of a core SNS canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 15,
+              "name": "Advance SNS target version",
+              "description": "Proposal to advance the target version of this SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "SnsFrameworkManagement",
+          "is_critical": false,
+          "name": "SNS framework management",
+          "description": "Proposals to upgrade and manage the SNS DAO framework.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 3,
+              "name": "Upgrade SNS controlled canister",
+              "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 10,
+              "name": "Register dapp canisters",
+              "description": "Proposal to register a dapp canister with the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 14,
+              "name": "Manage dapp canister settings",
+              "description": "Proposal to change canister settings for some dapp canisters.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DappCanisterManagement",
+          "is_critical": false,
+          "name": "Dapp canister management",
+          "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
+          "custom_functions": [
+            {
+              "id": 1000,
+              "name": "Upgrade local_user_index canisters",
+              "description": "This will upload the given WASM to the user_index and trigger a rolling upgrade of local_user_index canisters on each subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "upgrade_local_user_index_canister_wasm_validate",
+                  "target_method_name": "upgrade_local_user_index_canister_wasm"
+                }
+              }
+            },
+            {
+              "id": 1001,
+              "name": "Upgrade user canisters",
+              "description": "This will upload the given WASM to the user_index which will in turn call c2c_upgrade_user_canister_wasm on the local_user_index on each subnet. These will each trigger a rolling upgrade of user canisters on their subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "upgrade_user_canister_wasm_validate",
+                  "target_method_name": "upgrade_user_canister_wasm"
+                }
+              }
+            },
+            {
+              "id": 1002,
+              "name": "Add new local_user_index canister",
+              "description": "This will add a reference to an uninstalled local_user_index canister on a new subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "add_local_user_index_canister_validate",
+                  "target_method_name": "add_local_user_index_canister"
+                }
+              }
+            },
+            {
+              "id": 1003,
+              "name": "Mark local_user_index full",
+              "description": "This will mark the local_user_index with the given canister_id as full so that no more users will be created on this subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "mark_local_user_index_full_validate",
+                  "target_method_name": "mark_local_user_index_full"
+                }
+              }
+            },
+            {
+              "id": 1004,
+              "name": "Set max concurrent user canister upgrades",
+              "description": "During a rolling user canister upgrade this controls how many user canisters can be upgraded concurrently. Setting a value of zero stops the upgrade altogether. Setting this value too high will slow down subnets during user upgrade.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "set_max_concurrent_user_canister_upgrades_validate",
+                  "target_method_name": "set_max_concurrent_user_canister_upgrades"
+                }
+              }
+            },
+            {
+              "id": 2000,
+              "name": "Upgrade local_group_index canisters",
+              "description": "This will upload the given WASM to the group_index and trigger a rolling upgrade of local_group_index canisters on each subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "upgrade_local_group_index_canister_wasm_validate",
+                  "target_method_name": "upgrade_local_group_index_canister_wasm"
+                }
+              }
+            },
+            {
+              "id": 2001,
+              "name": "Upgrade group canisters",
+              "description": "This will upload the given WASM to the group_index which will in turn call c2c_upgrade_group_canister_wasm on the local_group_index on each subnet. These will each trigger a rolling upgrade of group canisters on their subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "upgrade_group_canister_wasm_validate",
+                  "target_method_name": "upgrade_group_canister_wasm"
+                }
+              }
+            },
+            {
+              "id": 2002,
+              "name": "Add new local_group_index",
+              "description": "This will add a reference to an uninstalled local_group_index canister on a new subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "add_local_group_index_canister_validate",
+                  "target_method_name": "add_local_group_index_canister"
+                }
+              }
+            },
+            {
+              "id": 2003,
+              "name": "Mark local_group_index full",
+              "description": "This will mark the local_group_index with the given canister_id as full so that no more groups will be created on this subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "mark_local_group_index_full_validate",
+                  "target_method_name": "mark_local_group_index_full"
+                }
+              }
+            },
+            {
+              "id": 2004,
+              "name": "Set max concurrent group canister upgrades",
+              "description": "During a rolling group canister upgrade this controls how many group canisters can be upgraded concurrently. Setting a value of zero stops the upgrade altogether. Setting this value too high will slow down subnets during group upgrade.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "set_max_concurrent_group_canister_upgrades_validate",
+                  "target_method_name": "set_max_concurrent_group_canister_upgrades"
+                }
+              }
+            },
+            {
+              "id": 2005,
+              "name": "Upgrade community canisters",
+              "description": "This will upload the given WASM to the group_index which will in turn call c2c_upgrade_community_canister_wasm on the local_group_index on each subnet. These will each trigger a rolling upgrade of community canisters on their subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "upgrade_community_canister_wasm_validate",
+                  "target_method_name": "upgrade_community_canister_wasm"
+                }
+              }
+            },
+            {
+              "id": 3000,
+              "name": "Upgrade notifications canisters",
+              "description": "This will upload the given WASM to the notifications_index and trigger a rolling upgrade of notifications_canisters on each subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4glvk-ryaaa-aaaaf-aaaia-cai",
+                  "target_canister_id": "4glvk-ryaaa-aaaaf-aaaia-cai",
+                  "validator_method_name": "upgrade_notifications_canister_wasm_validate",
+                  "target_method_name": "upgrade_notifications_canister_wasm"
+                }
+              }
+            },
+            {
+              "id": 3001,
+              "name": "Add notifications canister",
+              "description": "This will add a reference to an uninstalled notifications canister on a new subnet.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "4glvk-ryaaa-aaaaf-aaaia-cai",
+                  "target_canister_id": "4glvk-ryaaa-aaaaf-aaaia-cai",
+                  "validator_method_name": "add_notifications_canister_validate",
+                  "target_method_name": "add_notifications_canister"
+                }
+              }
+            },
+            {
+              "id": 5001,
+              "name": "Add new storage_bucket canister",
+              "description": "This will add a reference to an uninstalled storage_bucket canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
+                  "target_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
+                  "validator_method_name": "add_bucket_canister_validate",
+                  "target_method_name": "add_bucket_canister"
+                }
+              }
+            },
+            {
+              "id": 5002,
+              "name": "Mark storage_bucket full",
+              "description": "This will mark the storage_bucket with the given canister_id as full so that no more files will be uploaded to this bucket.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
+                  "target_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
+                  "validator_method_name": "set_bucket_full_validate",
+                  "target_method_name": "set_bucket_full"
+                }
+              }
+            },
+            {
+              "id": 5003,
+              "name": "Upgrade storage_bucket canisters",
+              "description": "This will upload the given WASM to the storage_index canister and trigger a rolling upgrade of the storage_bucket canisters.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
+                  "target_canister_id": "rturd-qaaaa-aaaaf-aabaq-cai",
+                  "validator_method_name": "upgrade_bucket_canister_wasm_validate",
+                  "target_method_name": "upgrade_bucket_canister_wasm"
+                }
+              }
+            },
+            {
+              "id": 6000,
+              "name": "Add canister to cycles_dispenser",
+              "description": "The cycles_dispenser will keep the added canister topped up with cycles.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "gonut-hqaaa-aaaaf-aby7a-cai",
+                  "target_canister_id": "gonut-hqaaa-aaaaf-aby7a-cai",
+                  "validator_method_name": "add_canister_validate",
+                  "target_method_name": "add_canister"
+                }
+              }
+            },
+            {
+              "id": 7002,
+              "name": "Expand OpenChat onto a new subnet",
+              "description": "This will instruct the Registry to expand OpenChat onto a new subnet, allowing it to scale to many more users, groups and communities",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+                  "target_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+                  "validator_method_name": "expand_onto_subnet_validate",
+                  "target_method_name": "expand_onto_subnet"
+                }
+              }
+            },
+            {
+              "id": 9000,
+              "name": "Upgrade canister",
+              "description": "This will instruct the OpenChatInstaller canister to upgrade the specified canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "jodzs-iqaaa-aaaar-qamqa-cai",
+                  "target_canister_id": "jodzs-iqaaa-aaaar-qamqa-cai",
+                  "validator_method_name": "upgrade_canister_validate",
+                  "target_method_name": "upgrade_canister"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "native_functions": [],
+          "topic": "ApplicationBusinessLogic",
+          "is_critical": false,
+          "name": "Application Business Logic",
+          "description": "Proposals that are custom to what the governed dapp requires.",
+          "custom_functions": [
+            {
+              "id": 1012,
+              "name": "Register an external achievement",
+              "description": "This will register a new external achievement which users can complete to earn CHIT",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "register_external_achievement_validate",
+                  "target_method_name": "register_external_achievement"
+                }
+              }
+            },
+            {
+              "id": 1014,
+              "name": "Remove a bot",
+              "description": "This will remove an existing bot from OpenChat",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "remove_bot_validate",
+                  "target_method_name": "remove_bot"
+                }
+              }
+            },
+            {
+              "id": 1015,
+              "name": "Publish a bot",
+              "description": "This will publish a registered bot allowing it to be found and installed in OpenChat communities, groups and directly with users",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "publish_bot_validate",
+                  "target_method_name": "publish_bot"
+                }
+              }
+            },
+            {
+              "id": 2006,
+              "name": "Set community verification",
+              "description": "This proposal will mark the given public community as 'verified' (blue tick) if it passes. The proposal summary should be used to provide evidence that the given community legitimately represents the given name. Additionally, if a different name is provided for this community and this name is already used by an existing public community or group which isn't itself 'verified' then this proposal will rename that community/group by adding a random suffix like _436 and the given community will take on the given name. This is to address the scenario where a public community or group has been created for a name which it doesn't legitimately represent.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "set_community_verification_validate",
+                  "target_method_name": "set_community_verification"
+                }
+              }
+            },
+            {
+              "id": 2007,
+              "name": "Set group verification",
+              "description": "This proposal will mark the given public group as 'verified' (blue tick) if it passes. The proposal summary should be used to provide evidence that the given group legitimately represents the given name. Additionally, if a different name is provided for this group and this name is already used by an existing public group or community which isn't itself 'verified' then this proposal will rename that group/community by adding a random suffix like _436 and the given group will take on the given name. This is to address the scenario where a public group or community has been created for a name which it doesn't legitimately represent.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "set_group_verification_validate",
+                  "target_method_name": "set_group_verification"
+                }
+              }
+            },
+            {
+              "id": 2008,
+              "name": "Revoke community verification",
+              "description": "Revoke the verified status (blue tick) of the given community. This would be used if the given community no longer legitimately represents its name. The proposal summary should be used to provide evidence.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "revoke_community_verification_validate",
+                  "target_method_name": "revoke_community_verification"
+                }
+              }
+            },
+            {
+              "id": 2009,
+              "name": "Revoke group verification",
+              "description": "Revoke the verified status (blue tick) of the given group. This would be used if the given group no longer legitimately represents its name. The proposal summary should be used to provide evidence.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "target_canister_id": "4ijyc-kiaaa-aaaaf-aaaja-cai",
+                  "validator_method_name": "revoke_group_verification_validate",
+                  "target_method_name": "revoke_group_verification"
+                }
+              }
+            },
+            {
+              "id": 4002,
+              "name": "Appoint admins in proposals group",
+              "description": "For each given user, the proposals_bot will call into the group canister corresponding to the given governance canister, to set the user's role within the group to admin.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
+                  "target_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
+                  "validator_method_name": "appoint_admins_validate",
+                  "target_method_name": "appoint_admins"
+                }
+              }
+            },
+            {
+              "id": 4003,
+              "name": "Import proposals group into community",
+              "description": "Import the specified proposals group into the specified community.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
+                  "target_canister_id": "iywa7-ayaaa-aaaaf-aemga-cai",
+                  "validator_method_name": "import_proposals_group_into_community_validate",
+                  "target_method_name": "import_proposals_group_into_community"
+                }
+              }
+            },
+            {
+              "id": 6001,
+              "name": "Update cycles_dispenser config",
+              "description": "This will update the configuration of the cycles_dispenser canister such as max_top_up_amount and min_cycles_balance.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "gonut-hqaaa-aaaaf-aby7a-cai",
+                  "target_canister_id": "gonut-hqaaa-aaaaf-aby7a-cai",
+                  "validator_method_name": "update_config_validate",
+                  "target_method_name": "update_config"
+                }
+              }
+            },
+            {
+              "id": 7000,
+              "name": "Add token to Registry",
+              "description": "This will add the specified token to the Registry, enabling users to send it within OpenChat messages.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+                  "target_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+                  "validator_method_name": "add_token_validate",
+                  "target_method_name": "add_token"
+                }
+              }
+            },
+            {
+              "id": 7001,
+              "name": "Update token details in the Registry",
+              "description": "This will update the specified token's details in the Registry, updating the value of each field provided in the payload.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+                  "target_canister_id": "cpi5u-yiaaa-aaaar-aqw5a-cai",
+                  "validator_method_name": "update_token_validate",
+                  "target_method_name": "update_token"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "native_functions": [
+            {
+              "id": 1,
+              "name": "Motion",
+              "description": "Side-effect-less proposals to set general governance direction.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "Governance",
+          "is_critical": false,
+          "name": "Governance",
+          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "custom_functions": [
+            {
+              "id": 1008,
+              "name": "Add a platform moderator",
+              "description": "The user with the given user id will be given the role of platform moderator. These users have the authority to suspend users and freeze groups.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "add_platform_moderator_validate",
+                  "target_method_name": "add_platform_moderator"
+                }
+              }
+            },
+            {
+              "id": 1009,
+              "name": "Remove a platform moderator",
+              "description": "The user with the given user id will have the role of platform moderator rescinded.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "remove_platform_moderator_validate",
+                  "target_method_name": "remove_platform_moderator"
+                }
+              }
+            },
+            {
+              "id": 1010,
+              "name": "Add a platform operator",
+              "description": "The user with the given user id will be given the role of platform operator. These users have the authority to call endpoints which affect rolling canister deployments such as setting the concurrency level.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "add_platform_operator_validate",
+                  "target_method_name": "add_platform_operator"
+                }
+              }
+            },
+            {
+              "id": 1011,
+              "name": "Remove a platform operator",
+              "description": "The user with the given user id will have the role of platform operator rescinded.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "target_canister_id": "4bkt6-4aaaa-aaaaf-aaaiq-cai",
+                  "validator_method_name": "remove_platform_operator_validate",
+                  "target_method_name": "remove_platform_operator"
+                }
+              }
+            },
+            {
+              "id": 102001,
+              "name": "Transfer nICP",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "native_functions": [
+            {
+              "id": 9,
+              "name": "Transfer SNS treasury funds",
+              "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 12,
+              "name": "Mint SNS tokens",
+              "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "TreasuryAssetManagement",
+          "is_critical": true,
+          "name": "Treasury & asset management",
+          "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
+          "custom_functions": [
+            {
+              "id": 8000,
+              "name": "Stake NNS neuron",
+              "description": "This will instruct the NeuronController canister to stake a new neuron with 1 ICP.\n\nSubsequent 'ManageNnsNeuron' and 'TransferFromTreasury' proposals can be made to update the neuron's configuration and increase its stake.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "tktqu-nyaaa-aaaar-qackq-cai",
+                  "target_canister_id": "tktqu-nyaaa-aaaar-qackq-cai",
+                  "validator_method_name": "stake_nns_neuron_validate",
+                  "target_method_name": "stake_nns_neuron"
+                }
+              }
+            },
+            {
+              "id": 8001,
+              "name": "Manage NNS neuron",
+              "description": "This will instruct the NeuronController canister to call 'manage_neuron' on the NNS governance canister to manage one of the neurons it controls.\n\nThis can be used to configure the neuron, set up following, spawn a new neuron, etc.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "tktqu-nyaaa-aaaar-qackq-cai",
+                  "target_canister_id": "tktqu-nyaaa-aaaar-qackq-cai",
+                  "validator_method_name": "manage_nns_neuron_validate",
+                  "target_method_name": "manage_nns_neuron"
+                }
+              }
+            },
+            {
+              "id": 102000,
+              "name": "Call manage_neuron on the NNS Governance canister",
+              "description": "This will enable the OpenChat SNS Governance canister to manage NNS neurons, allowing it to perform actions such as voting on NNS proposals",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "wkype-7qaaa-aaaar-ajfyq-cai",
+                  "target_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+                  "validator_method_name": "nns_governance_manage_neuron_validate",
+                  "target_method_name": "manage_neuron"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "native_functions": [
+            {
+              "id": 11,
+              "name": "Deregister Dapp Canisters",
+              "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 4,
+              "name": "Add nervous system function",
+              "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 5,
+              "name": "Remove nervous system function",
+              "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "CriticalDappOperations",
+          "is_critical": true,
+          "name": "Critical Dapp Operations",
+          "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
+          "custom_functions": []
+        }
+      ]
     }
   },
   {
@@ -1498,6 +2597,7 @@
       "max_dissolve_delay_seconds": 31557600,
       "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": null,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -1548,7 +2648,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "7ajy4-sqaaa-aaaaq-aaaqa-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": null,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "24scz-zyaaa-aaaaq-aaapq-cai",
@@ -1619,7 +2718,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "7ajy4-sqaaa-aaaaq-aaaqa-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": null,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "24scz-zyaaa-aaaaq-aaapq-cai",
@@ -1642,7 +2740,8 @@
       "decentralization_sale_open_timestamp_seconds": null,
       "lifecycle": 4,
       "decentralization_swap_termination_timestamp_seconds": null
-    }
+    },
+    "topics": null
   },
   {
     "index": 3,
@@ -1821,6 +2920,7 @@
           "description": "grant permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "validator_method_name": "validate_grant_permission",
@@ -1834,6 +2934,7 @@
           "description": "revoke permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "validator_method_name": "validate_revoke_permission",
@@ -1847,6 +2948,7 @@
           "description": "commit the batch that proposed by community who has Prepare permisson",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -1860,6 +2962,7 @@
           "description": "grant permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
               "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
               "validator_method_name": "validate_grant_permission",
@@ -1873,6 +2976,7 @@
           "description": "commit the batch that proposed by community who has Prepare permission",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
               "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -1886,6 +2990,7 @@
           "description": "commit the batch that proposed by community who has Prepare permission",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
               "target_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -1899,6 +3004,7 @@
           "description": null,
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "y2hpc-naaaa-aaaar-qadua-cai",
               "target_canister_id": "y2hpc-naaaa-aaaar-qadua-cai",
               "validator_method_name": "sns_validate_trade_tokens",
@@ -1912,6 +3018,7 @@
           "description": null,
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "wwikr-gqaaa-aaaar-qacva-cai",
               "target_canister_id": "wwikr-gqaaa-aaaar-qacva-cai",
               "validator_method_name": "sns_validate_cycles_out",
@@ -1928,6 +3035,7 @@
       "max_dissolve_delay_seconds": 31557600,
       "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": true,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -1978,7 +3086,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "73mez-iiaaa-aaaaq-aaasq-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": null,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "74ncn-fqaaa-aaaaq-aaasa-cai",
@@ -2046,7 +3153,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 616896826161130,
+    "icrc1_total_supply": 617048317235719,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2087,7 +3194,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "73mez-iiaaa-aaaaq-aaasq-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": null,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "74ncn-fqaaa-aaaaq-aaasa-cai",
@@ -2112,6 +3218,306 @@
       "decentralization_sale_open_timestamp_seconds": 1686150901,
       "lifecycle": 3,
       "decentralization_swap_termination_timestamp_seconds": null
+    },
+    "topics": {
+      "uncategorized_functions": [
+        {
+          "id": 1000,
+          "name": "grant_permission",
+          "description": "grant permission to asset canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+              "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+              "validator_method_name": "validate_grant_permission",
+              "target_method_name": "grant_permission"
+            }
+          }
+        },
+        {
+          "id": 1001,
+          "name": "revoke_permission",
+          "description": "revoke permission to asset canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+              "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+              "validator_method_name": "validate_revoke_permission",
+              "target_method_name": "revoke_permission"
+            }
+          }
+        },
+        {
+          "id": 1003,
+          "name": "commit_proposed_batch",
+          "description": "commit the batch that proposed by community who has Prepare permisson",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+              "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 1004,
+          "name": "grant_permission",
+          "description": "grant permission to asset canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+              "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+              "validator_method_name": "validate_grant_permission",
+              "target_method_name": "grant_permission"
+            }
+          }
+        },
+        {
+          "id": 1005,
+          "name": "commit_proposed_batch",
+          "description": "commit the batch that proposed by community who has Prepare permission",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+              "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 1006,
+          "name": "commit_proposed_batch_of_kinic_ui",
+          "description": "commit the batch that proposed by community who has Prepare permission",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
+              "target_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 101000,
+          "name": "Call `trade_tokens` on the KINIC trading pair canister at the CYCLES-TRANSFER-STATION.",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "y2hpc-naaaa-aaaar-qadua-cai",
+              "target_canister_id": "y2hpc-naaaa-aaaar-qadua-cai",
+              "validator_method_name": "sns_validate_trade_tokens",
+              "target_method_name": "trade_tokens"
+            }
+          }
+        },
+        {
+          "id": 101001,
+          "name": "Call the `cycles_out` method on the CYCLES-TRANSFER-STATION CYCLES-BANK.",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "wwikr-gqaaa-aaaar-qacva-cai",
+              "target_canister_id": "wwikr-gqaaa-aaaar-qacva-cai",
+              "validator_method_name": "sns_validate_cycles_out",
+              "target_method_name": "cycles_out"
+            }
+          }
+        }
+      ],
+      "topics": [
+        {
+          "native_functions": [
+            {
+              "id": 2,
+              "name": "Manage nervous system parameters",
+              "description": "Proposal to change the core parameters of SNS governance.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 13,
+              "name": "Manage ledger parameters",
+              "description": "Proposal to change some parameters in the ledger canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 8,
+              "name": "Manage SNS metadata",
+              "description": "Proposal to change the metadata associated with an SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DaoCommunitySettings",
+          "is_critical": false,
+          "name": "DAO community settings",
+          "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 7,
+              "name": "Upgrade SNS to next version",
+              "description": "Proposal to upgrade the WASM of a core SNS canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 15,
+              "name": "Advance SNS target version",
+              "description": "Proposal to advance the target version of this SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "SnsFrameworkManagement",
+          "is_critical": false,
+          "name": "SNS framework management",
+          "description": "Proposals to upgrade and manage the SNS DAO framework.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 3,
+              "name": "Upgrade SNS controlled canister",
+              "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 10,
+              "name": "Register dapp canisters",
+              "description": "Proposal to register a dapp canister with the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 14,
+              "name": "Manage dapp canister settings",
+              "description": "Proposal to change canister settings for some dapp canisters.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DappCanisterManagement",
+          "is_critical": false,
+          "name": "Dapp canister management",
+          "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [],
+          "topic": "ApplicationBusinessLogic",
+          "is_critical": false,
+          "name": "Application Business Logic",
+          "description": "Proposals that are custom to what the governed dapp requires.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 1,
+              "name": "Motion",
+              "description": "Side-effect-less proposals to set general governance direction.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "Governance",
+          "is_critical": false,
+          "name": "Governance",
+          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 9,
+              "name": "Transfer SNS treasury funds",
+              "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 12,
+              "name": "Mint SNS tokens",
+              "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "TreasuryAssetManagement",
+          "is_critical": true,
+          "name": "Treasury & asset management",
+          "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 11,
+              "name": "Deregister Dapp Canisters",
+              "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 4,
+              "name": "Add nervous system function",
+              "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 5,
+              "name": "Remove nervous system function",
+              "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "CriticalDappOperations",
+          "is_critical": true,
+          "name": "Critical Dapp Operations",
+          "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
+          "custom_functions": []
+        }
+      ]
     }
   },
   {
@@ -2288,6 +3694,7 @@
           "description": "grant permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
               "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
               "validator_method_name": "validate_grant_permission",
@@ -2301,6 +3708,7 @@
           "description": "revoke permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
               "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
               "validator_method_name": "validate_revoke_permission",
@@ -2314,6 +3722,7 @@
           "description": "Generic proposal to reset indiviudal user canisters",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "rimrc-piaaa-aaaao-aaljq-cai",
               "target_canister_id": "rimrc-piaaa-aaaao-aaljq-cai",
               "validator_method_name": "validate_reset_user_individual_canisters",
@@ -2327,6 +3736,7 @@
           "description": "Generic proposal to execute commands from platform orchestrator",
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": null,
               "validator_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
               "target_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
               "validator_method_name": "validate_platform_orchestrator_generic_function",
@@ -2343,6 +3753,7 @@
       "max_dissolve_delay_seconds": 126230400,
       "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": true,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -2393,7 +3804,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "6rdgd-kyaaa-aaaaq-aaavq-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": null,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "6wcax-haaaa-aaaaq-aaava-cai",
@@ -2459,7 +3869,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104325945607010472,
+    "icrc1_total_supply": 104406051205658613,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2500,7 +3910,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "6rdgd-kyaaa-aaaaq-aaavq-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": null,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "6wcax-haaaa-aaaaq-aaava-cai",
@@ -2523,6 +3932,250 @@
       "decentralization_sale_open_timestamp_seconds": 1687832383,
       "lifecycle": 3,
       "decentralization_swap_termination_timestamp_seconds": null
+    },
+    "topics": {
+      "uncategorized_functions": [
+        {
+          "id": 1000,
+          "name": "grant_permission",
+          "description": "grant permission to asset canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
+              "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
+              "validator_method_name": "validate_grant_permission",
+              "target_method_name": "grant_permission"
+            }
+          }
+        },
+        {
+          "id": 1001,
+          "name": "revoke_permission",
+          "description": "revoke permission to asset canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
+              "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
+              "validator_method_name": "validate_revoke_permission",
+              "target_method_name": "revoke_permission"
+            }
+          }
+        },
+        {
+          "id": 4001,
+          "name": "Reset Individual User Canisters",
+          "description": "Generic proposal to reset indiviudal user canisters",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "rimrc-piaaa-aaaao-aaljq-cai",
+              "target_canister_id": "rimrc-piaaa-aaaao-aaljq-cai",
+              "validator_method_name": "validate_reset_user_individual_canisters",
+              "target_method_name": "reset_user_individual_canisters"
+            }
+          }
+        },
+        {
+          "id": 4002,
+          "name": "Generic Function Platform Orchestrator ",
+          "description": "Generic proposal to execute commands from platform orchestrator",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": null,
+              "validator_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
+              "target_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
+              "validator_method_name": "validate_platform_orchestrator_generic_function",
+              "target_method_name": "platform_orchestrator_generic_function"
+            }
+          }
+        }
+      ],
+      "topics": [
+        {
+          "native_functions": [
+            {
+              "id": 2,
+              "name": "Manage nervous system parameters",
+              "description": "Proposal to change the core parameters of SNS governance.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 13,
+              "name": "Manage ledger parameters",
+              "description": "Proposal to change some parameters in the ledger canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 8,
+              "name": "Manage SNS metadata",
+              "description": "Proposal to change the metadata associated with an SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DaoCommunitySettings",
+          "is_critical": false,
+          "name": "DAO community settings",
+          "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 7,
+              "name": "Upgrade SNS to next version",
+              "description": "Proposal to upgrade the WASM of a core SNS canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 15,
+              "name": "Advance SNS target version",
+              "description": "Proposal to advance the target version of this SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "SnsFrameworkManagement",
+          "is_critical": false,
+          "name": "SNS framework management",
+          "description": "Proposals to upgrade and manage the SNS DAO framework.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 3,
+              "name": "Upgrade SNS controlled canister",
+              "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 10,
+              "name": "Register dapp canisters",
+              "description": "Proposal to register a dapp canister with the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 14,
+              "name": "Manage dapp canister settings",
+              "description": "Proposal to change canister settings for some dapp canisters.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DappCanisterManagement",
+          "is_critical": false,
+          "name": "Dapp canister management",
+          "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [],
+          "topic": "ApplicationBusinessLogic",
+          "is_critical": false,
+          "name": "Application Business Logic",
+          "description": "Proposals that are custom to what the governed dapp requires.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 1,
+              "name": "Motion",
+              "description": "Side-effect-less proposals to set general governance direction.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "Governance",
+          "is_critical": false,
+          "name": "Governance",
+          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 9,
+              "name": "Transfer SNS treasury funds",
+              "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 12,
+              "name": "Mint SNS tokens",
+              "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "TreasuryAssetManagement",
+          "is_critical": true,
+          "name": "Treasury & asset management",
+          "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 11,
+              "name": "Deregister Dapp Canisters",
+              "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 4,
+              "name": "Add nervous system function",
+              "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 5,
+              "name": "Remove nervous system function",
+              "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "CriticalDappOperations",
+          "is_critical": true,
+          "name": "Critical Dapp Operations",
+          "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
+          "custom_functions": []
+        }
+      ]
     }
   },
   {
@@ -2657,6 +4310,7 @@
       "max_dissolve_delay_seconds": 31536000,
       "max_dissolve_delay_bonus_percentage": 25,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": null,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -2707,7 +4361,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "4q2s2-oqaaa-aaaaq-aaaya-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": null,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "6nh4s-5yaaa-aaaaq-aaaxq-cai",
@@ -2778,7 +4431,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "4q2s2-oqaaa-aaaaq-aaaya-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": null,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "6nh4s-5yaaa-aaaaq-aaaxq-cai",
@@ -2801,7 +4453,8 @@
       "decentralization_sale_open_timestamp_seconds": null,
       "lifecycle": 4,
       "decentralization_swap_termination_timestamp_seconds": null
-    }
+    },
+    "topics": null
   },
   {
     "index": 6,
@@ -2979,6 +4632,7 @@
           "description": null,
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "Governance",
               "validator_canister_id": "p3sub-gqaaa-aaaal-acwza-cai",
               "target_canister_id": "p3sub-gqaaa-aaaal-acwza-cai",
               "validator_method_name": "validate_burn",
@@ -2992,6 +4646,7 @@
           "description": null,
           "function_type": {
             "GenericNervousSystemFunction": {
+              "topic": "Governance",
               "validator_canister_id": "3eiym-hqaaa-aaaal-adqia-cai",
               "target_canister_id": "dwahc-eyaaa-aaaag-qcgnq-cai",
               "validator_method_name": "validate_transfer_position",
@@ -3008,6 +4663,7 @@
       "max_dissolve_delay_seconds": 31536000,
       "max_dissolve_delay_bonus_percentage": 25,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": true,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -3058,7 +4714,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "4c4fd-caaaa-aaaaq-aaa3a-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": null,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "4l7o7-uiaaa-aaaaq-aaa2q-cai",
@@ -3124,7 +4779,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 930649850744203440,
+    "icrc1_total_supply": 930803060013034927,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3165,7 +4820,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "4c4fd-caaaa-aaaaq-aaa3a-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": null,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "4l7o7-uiaaa-aaaaq-aaa2q-cai",
@@ -3188,6 +4842,222 @@
       "decentralization_sale_open_timestamp_seconds": 1690203041,
       "lifecycle": 3,
       "decentralization_swap_termination_timestamp_seconds": null
+    },
+    "topics": {
+      "uncategorized_functions": [],
+      "topics": [
+        {
+          "native_functions": [
+            {
+              "id": 2,
+              "name": "Manage nervous system parameters",
+              "description": "Proposal to change the core parameters of SNS governance.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 13,
+              "name": "Manage ledger parameters",
+              "description": "Proposal to change some parameters in the ledger canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 8,
+              "name": "Manage SNS metadata",
+              "description": "Proposal to change the metadata associated with an SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DaoCommunitySettings",
+          "is_critical": false,
+          "name": "DAO community settings",
+          "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 7,
+              "name": "Upgrade SNS to next version",
+              "description": "Proposal to upgrade the WASM of a core SNS canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 15,
+              "name": "Advance SNS target version",
+              "description": "Proposal to advance the target version of this SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "SnsFrameworkManagement",
+          "is_critical": false,
+          "name": "SNS framework management",
+          "description": "Proposals to upgrade and manage the SNS DAO framework.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 3,
+              "name": "Upgrade SNS controlled canister",
+              "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 10,
+              "name": "Register dapp canisters",
+              "description": "Proposal to register a dapp canister with the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 14,
+              "name": "Manage dapp canister settings",
+              "description": "Proposal to change canister settings for some dapp canisters.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DappCanisterManagement",
+          "is_critical": false,
+          "name": "Dapp canister management",
+          "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [],
+          "topic": "ApplicationBusinessLogic",
+          "is_critical": false,
+          "name": "Application Business Logic",
+          "description": "Proposals that are custom to what the governed dapp requires.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 1,
+              "name": "Motion",
+              "description": "Side-effect-less proposals to set general governance direction.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "Governance",
+          "is_critical": false,
+          "name": "Governance",
+          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "custom_functions": [
+            {
+              "id": 1000,
+              "name": "burn",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "p3sub-gqaaa-aaaal-acwza-cai",
+                  "target_canister_id": "p3sub-gqaaa-aaaal-acwza-cai",
+                  "validator_method_name": "validate_burn",
+                  "target_method_name": "burn"
+                }
+              }
+            },
+            {
+              "id": 2000,
+              "name": "transferGovernancePosition",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "3eiym-hqaaa-aaaal-adqia-cai",
+                  "target_canister_id": "dwahc-eyaaa-aaaag-qcgnq-cai",
+                  "validator_method_name": "validate_transfer_position",
+                  "target_method_name": "transferPosition"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "native_functions": [
+            {
+              "id": 9,
+              "name": "Transfer SNS treasury funds",
+              "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 12,
+              "name": "Mint SNS tokens",
+              "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "TreasuryAssetManagement",
+          "is_critical": true,
+          "name": "Treasury & asset management",
+          "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 11,
+              "name": "Deregister Dapp Canisters",
+              "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 4,
+              "name": "Add nervous system function",
+              "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 5,
+              "name": "Remove nervous system function",
+              "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "CriticalDappOperations",
+          "is_critical": true,
+          "name": "Critical Dapp Operations",
+          "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
+          "custom_functions": []
+        }
+      ]
     }
   },
   {
@@ -3322,6 +5192,7 @@
       "max_dissolve_delay_seconds": 63113852,
       "max_dissolve_delay_bonus_percentage": 150,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": null,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -3373,7 +5244,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "5bqmf-wyaaa-aaaaq-aaa5q-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": null,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "5grkr-3aaaa-aaaaq-aaa5a-cai",
@@ -3477,7 +5347,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "5bqmf-wyaaa-aaaaq-aaa5q-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": null,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "5grkr-3aaaa-aaaaq-aaa5a-cai",
@@ -3502,7 +5371,8 @@
       "decentralization_sale_open_timestamp_seconds": 1690786778,
       "lifecycle": 4,
       "decentralization_swap_termination_timestamp_seconds": null
-    }
+    },
+    "topics": null
   },
   {
     "index": 8,
@@ -3636,6 +5506,7 @@
       "max_dissolve_delay_seconds": 31557600,
       "max_dissolve_delay_bonus_percentage": 200,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": null,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -3684,7 +5555,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "wedc6-xiaaa-aaaaq-aabaq-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": null,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "wdcek-2qaaa-aaaaq-aabaa-cai",
@@ -3753,7 +5623,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "wedc6-xiaaa-aaaaq-aabaq-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": null,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "wdcek-2qaaa-aaaaq-aabaa-cai",
@@ -3776,7 +5645,8 @@
       "decentralization_sale_open_timestamp_seconds": null,
       "lifecycle": 4,
       "decentralization_swap_termination_timestamp_seconds": null
-    }
+    },
+    "topics": null
   },
   {
     "index": 9,
@@ -3910,6 +5780,7 @@
       "max_dissolve_delay_seconds": 31557600,
       "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
+      "automatically_advance_target_version": null,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -3962,7 +5833,6 @@
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
           "sns_ledger_canister_id": "wrett-waaaa-aaaaq-aabda-cai",
           "neurons_fund_participation_constraints": null,
-          "neurons_fund_participants": null,
           "should_auto_finalize": true,
           "max_participant_icp_e8s": null,
           "sns_governance_canister_id": "wyhyp-aiaaa-aaaaq-aabcq-cai",
@@ -4037,7 +5907,6 @@
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
         "sns_ledger_canister_id": "wrett-waaaa-aaaaq-aabda-cai",
         "neurons_fund_participation_constraints": null,
-        "neurons_fund_participants": null,
         "should_auto_finalize": true,
         "max_participant_icp_e8s": null,
         "sns_governance_canister_id": "wyhyp-aiaaa-aaaaq-aabcq-cai",
@@ -4062,6 +5931,7 @@
       "decentralization_sale_open_timestamp_seconds": null,
       "lifecycle": 4,
       "decentralization_swap_termination_timestamp_seconds": null
-    }
+    },
+    "topics": null
   }
 ]
