@@ -19,19 +19,29 @@ import {
 } from "@dfinity/gix-components";
 import type { Component } from "svelte";
 
-export interface AlfredItem {
+interface AlfredItemBase {
   id: string;
   type: "page" | "action";
   title: string;
   description: string;
-  path?: string;
-  action?: (payload: { copyToClipboardValue?: string }) => void;
   icon: Component;
   contextFilter?: (context: {
     isSignedIn: boolean;
     theme: ThemeStoreData;
   }) => boolean;
 }
+
+interface AlfredItemPage extends AlfredItemBase {
+  type: "page";
+  path: string;
+}
+
+interface AlfredItemAction extends AlfredItemBase {
+  type: "action";
+  action: (payload: { copyToClipboardValue?: string }) => void;
+}
+
+export type AlfredItem = AlfredItemPage | AlfredItemAction;
 
 const alfredItems: AlfredItem[] = [
   {

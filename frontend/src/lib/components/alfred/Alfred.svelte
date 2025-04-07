@@ -286,11 +286,6 @@
           border-radius: var(--padding);
           background: var(--background-secondary, rgba(0, 0, 0, 0.05));
           transition: all 0.15s ease;
-
-          :global(svg) {
-            width: 20px;
-            height: 20px;
-          }
         }
 
         .item-content {
