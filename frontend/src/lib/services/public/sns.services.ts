@@ -51,11 +51,7 @@ export const loadSnsProjects = async (): Promise<void> => {
   }
 };
 
-export const loadProposalsSnsCF = async ({
-  omitLargeFields = true,
-}: {
-  omitLargeFields?: boolean;
-} = {}): Promise<void> => {
+export const loadProposalsSnsCF = async (): Promise<void> => {
   snsProposalsStore.reset();
 
   return queryAndUpdate<ProposalInfo[], unknown>({
@@ -68,7 +64,6 @@ export const loadProposalsSnsCF = async ({
         includeTopics: [Topic.SnsAndCommunityFund],
         includeStatus: [ProposalStatus.Open],
         certified,
-        omitLargeFields,
       }),
     onLoad: ({ response: proposals, certified }) =>
       snsProposalsStore.setProposals({
