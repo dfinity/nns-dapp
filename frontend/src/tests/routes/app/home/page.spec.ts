@@ -1,5 +1,6 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import HomeRoute from "$routes/(app)/(home)/+page.svelte";
 import { setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -11,6 +12,7 @@ describe("Home page", () => {
     setNoIdentity();
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkBTCToken);
+    vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([]);
   });
 
   it("should render sign-in button", () => {
