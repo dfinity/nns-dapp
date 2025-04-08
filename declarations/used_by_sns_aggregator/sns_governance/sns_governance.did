@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-27_03-14-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/rosetta-icrc-release-1.2.0/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -520,7 +520,7 @@ type Neuron = record {
   disburse_maturity_in_progress : vec DisburseMaturityInProgress;
   followees : vec record { nat64; Followees };
   topic_followees : opt record {
-    topic_id_to_followees : vec record { nat64; FolloweesForTopic };
+    topic_id_to_followees : vec record { int32; FolloweesForTopic };
   };
   neuron_fees_e8s : nat64;
 };
