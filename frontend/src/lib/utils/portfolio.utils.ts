@@ -5,6 +5,7 @@ import { nowInSeconds } from "$lib/utils/date.utils";
 import { formatNumber } from "$lib/utils/format.utils";
 import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
 import {
+  createAscendingComparator,
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
@@ -191,3 +192,8 @@ export const mapProposalInfoToCard = (
     id: id as ProposalId,
   };
 };
+
+export const compareProposalInfoByDeadlineTimestampSeconds =
+  createAscendingComparator(
+    (proposal: ProposalInfo) => proposal.deadlineTimestampSeconds
+  );

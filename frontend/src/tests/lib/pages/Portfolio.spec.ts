@@ -154,7 +154,7 @@ describe("Portfolio page", () => {
           url: "url",
           action: {
             CreateServiceNervousSystem: {
-              name: "TestDAO",
+              name: "TestDAO1",
               governanceParameters: {},
               fallbackControllerPrincipalIds: [],
               logo: {},
@@ -167,6 +167,29 @@ describe("Portfolio page", () => {
             },
           },
         },
+        deadlineTimestampSeconds: 168_0000_000n,
+      },
+      {
+        proposal: {
+          title: "Proposal to create new SNS",
+          summary: "",
+          url: "url",
+          action: {
+            CreateServiceNervousSystem: {
+              name: "TestDAO2",
+              governanceParameters: {},
+              fallbackControllerPrincipalIds: [],
+              logo: {},
+              url: "url",
+              ledgerParameters: {},
+              description: "",
+              dappCanisters: [],
+              swapParameters: {},
+              initialTokenDistribution: {},
+            },
+          },
+        },
+        deadlineTimestampSeconds: 68_0000_000n,
       },
     ] as ProposalInfo[];
 
@@ -196,7 +219,25 @@ describe("Portfolio page", () => {
       const cardWrappers = await stackedCardsPo.getCardWrappers();
 
       expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(1);
+      expect(cardWrappers.length).toBe(2);
+    });
+
+    it("should sort openSnsProposal", async () => {
+      const po = renderPage({ openSnsProposals: mockSnsProposals });
+      const stackedCardsPo = po.getStackedCardsPo();
+      const cardWrappers = await stackedCardsPo.getCardWrappers();
+      const dotsPo = await stackedCardsPo.getDots();
+
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(cardWrappers.length).toBe(2);
+
+      let activeCard = await stackedCardsPo.getActiveCardPo();
+      expect(await activeCard.getTitle()).toBe("TestDAO2");
+
+      await dotsPo[1].click();
+
+      activeCard = await stackedCardsPo.getActiveCardPo();
+      expect(await activeCard.getTitle()).toBe("TestDAO1");
     });
 
     it("should show all cards when snsProjects and openSnsProposals are not empty", async () => {
@@ -208,13 +249,13 @@ describe("Portfolio page", () => {
       const cardWrappers = await stackedCardsPo.getCardWrappers();
 
       expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(3);
+      expect(cardWrappers.length).toBe(4);
     });
 
     it("should show first on going swaps and then proposals", async () => {
       const po = renderPage({
         snsProjects: mockSnsProjects.slice(0, 1),
-        openSnsProposals: mockSnsProposals,
+        openSnsProposals: mockSnsProposals.slice(0, 1),
       });
       const stackedCardsPo = po.getStackedCardsPo();
       const cardWrappers = await stackedCardsPo.getCardWrappers();
@@ -229,7 +270,7 @@ describe("Portfolio page", () => {
       await dotsPo[1].click();
 
       activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO");
+      expect(await activeCard.getTitle()).toBe("TestDAO1");
     });
 
     it("should hide TotalAssetsCard when not signed in and there are sns projects", async () => {
