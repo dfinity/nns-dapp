@@ -107,13 +107,13 @@
     gap: var(--padding-2x);
     padding: var(--padding-2x);
     /* Required to give space to the StackedCards dots */
-    padding-bottom: 34px;
+    padding-bottom: var(--card-stacked-dots-space);
 
     @include media.min-width(medium) {
       padding: var(--padding-3x);
 
       /* Required to give space to the StackedCards dots */
-      padding-bottom: 34px;
+      padding-bottom: var(--card-stacked-dots-space);
     }
 
     .header {
