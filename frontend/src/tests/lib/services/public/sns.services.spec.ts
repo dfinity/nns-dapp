@@ -254,7 +254,7 @@ describe("SNS public services", () => {
         .mockResolvedValue([]);
     });
 
-    it("should request proposals omiting large fields by default", async () => {
+    it("should request proposals omitting large fields by default", async () => {
       await loadProposalsSnsCF();
 
       expect(queryProposalsSpy).toHaveBeenCalledTimes(1);
@@ -264,7 +264,7 @@ describe("SNS public services", () => {
       });
     });
 
-    it("should request proposals not omiting large fields when requested", async () => {
+    it("should request proposals not omitting large fields when requested", async () => {
       await loadProposalsSnsCF({
         omitLargeFields: false,
       });
