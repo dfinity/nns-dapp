@@ -31,7 +31,7 @@
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
   export let snsProjects: SnsFullProject[];
-  export let openSnsProposals: ProposalInfo[] = [];
+  export let openSnsProposals: ProposalInfo[];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
