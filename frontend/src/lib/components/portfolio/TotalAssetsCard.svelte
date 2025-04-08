@@ -6,10 +6,19 @@
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
   import { Spinner } from "@dfinity/gix-components";
+  type Props = {
+    usdAmount: number | undefined;
+    hasUnpricedTokens: boolean;
+    isLoading: boolean;
+    isFullWidth: boolean;
+  };
 
-  export let usdAmount: number | undefined;
-  export let hasUnpricedTokens: boolean = false;
-  export let isLoading: boolean = false;
+  const {
+    usdAmount,
+    hasUnpricedTokens = false,
+    isLoading = false,
+    isFullWidth = true,
+  }: Props = $props();
 </script>
 
 <UsdValueHeadless
@@ -22,7 +31,7 @@
   let:hasPricesAndUnpricedTokens
 >
   <Card testId="total-assets-card-component">
-    <div class="wrapper">
+    <div class="wrapper" class:full-width={isFullWidth}>
       <h3>{$i18n.portfolio.total_assets_title}</h3>
       <div class="pricing">
         <div class="totals">
@@ -115,6 +124,15 @@
 
         .secondary-amount {
           color: var(--text-description);
+        }
+      }
+    }
+
+    &.full-width {
+      .pricing {
+        @include media.min-width(large) {
+          flex-direction: row;
+          align-items: flex-end;
         }
       }
     }

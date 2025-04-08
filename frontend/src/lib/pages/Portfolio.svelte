@@ -163,6 +163,7 @@
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
+        isFullWidth={launchpadCards.length === 0}
       />
     {/if}
 
