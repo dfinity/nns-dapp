@@ -14,6 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Added ongoing SNS project proposals to Portfolio page.
+
+
 #### Changed
 
 #### Deprecated
