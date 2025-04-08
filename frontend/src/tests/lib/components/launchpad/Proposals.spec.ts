@@ -30,6 +30,7 @@ describe("Proposals", () => {
       identity: new AnonymousIdentity(),
       includeTopics: [Topic.SnsAndCommunityFund],
       includeStatus: [ProposalStatus.Open],
+      omitLargeFields: true,
     });
   });
 
