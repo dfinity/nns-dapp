@@ -31,7 +31,6 @@
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { onMount } from "svelte";
 
   resetBalanceLoading();
   loadIcpSwapTickers();
@@ -63,10 +62,9 @@
     userTokens = $tokensListUserStore;
   }
 
-  onMount(() => {
-    if ($snsProposalsStoreIsLoading)
-      loadProposalsSnsCF({ omitLargeFields: false });
-  });
+  $: if ($snsProposalsStoreIsLoading) {
+    loadProposalsSnsCF({ omitLargeFields: false });
+  }
 </script>
 
 <TestIdWrapper testId="portfolio-route-component"
