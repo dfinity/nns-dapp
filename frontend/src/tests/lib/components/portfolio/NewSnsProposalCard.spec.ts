@@ -58,15 +58,15 @@ describe("NewSnsProposalCard", () => {
     const po = renderComponent({
       ...mockProposal,
       latestTally: {
-        yes: 100000n,
-        no: 100000n,
-        total: 200000n,
+        yes: 100_000_000n,
+        no: 200_000_000n,
+        total: 300_000_000n,
         timestampSeconds: 10000000n,
       },
     });
 
-    expect(await po.getAdoptPercentage()).toBe("50.00%");
-    expect(await po.getRejectPercentage()).toBe("50.00%");
+    expect(await po.getAdoptPercentage()).toBe("33.33%");
+    expect(await po.getRejectPercentage()).toBe("66.67%");
   });
 
   it("should display time remaining until deadline", async () => {
