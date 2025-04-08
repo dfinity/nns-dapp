@@ -1,8 +1,8 @@
-import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { BasePortfolioCardPo } from "$tests/page-objects/BasePortfolioCard.page-object";
 import { LinkPo } from "$tests/page-objects/Link.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class NewSnsProposalCardPo extends BasePageObject {
+export class NewSnsProposalCardPo extends BasePortfolioCardPo {
   private static readonly TID = "new-sns-proposal-card";
 
   static under(element: PageObjectElement): NewSnsProposalCardPo {
