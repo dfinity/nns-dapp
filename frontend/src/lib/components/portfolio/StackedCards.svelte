@@ -27,7 +27,7 @@
     if (intervalId) clearInterval(intervalId);
 
     if (cards.length > 1) {
-      intervalId = window.setInterval(nextCard, 500000);
+      intervalId = window.setInterval(nextCard, 5000);
     }
   };
 
@@ -114,8 +114,8 @@
       bottom: var(--padding-1_5x);
 
       .dot {
-        width: var(--padding-1_5x);
-        height: var(--padding-1_5x);
+        width: 10px;
+        height: 10px;
         border-radius: 50%;
         // TODO(yhabib): Reconciliate colors with GIX
         background-color: rgba(#3d4d99, 0.35);
