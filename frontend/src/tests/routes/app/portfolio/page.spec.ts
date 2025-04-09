@@ -1,9 +1,8 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
-
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
+import * as proposalsApi from "$lib/api/proposals.api";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
@@ -38,8 +37,10 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { AnonymousIdentity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -72,7 +73,6 @@ describe("Portfolio route", () => {
 
   beforeEach(() => {
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
-
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
       async ({ canisterId }) => {
         const tokenMap = {
@@ -85,6 +85,7 @@ describe("Portfolio route", () => {
         return tokenMap[canisterId.toText()];
       }
     );
+    vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([]);
 
     setCkETHCanisters();
     setCkUSDCCanisters();
@@ -118,6 +119,19 @@ describe("Portfolio route", () => {
       canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
       certified: false,
       identity,
+    });
+  });
+
+  it("should load sns proposals", async () => {
+    await renderPage();
+    expect(proposalsApi.queryProposals).toBeCalledTimes(1);
+    expect(proposalsApi.queryProposals).toHaveBeenCalledWith({
+      certified: false,
+      identity: new AnonymousIdentity(),
+      beforeProposal: undefined,
+      includeStatus: [1],
+      includeTopics: [14],
+      omitLargeFields: false,
     });
   });
 
