@@ -167,7 +167,7 @@ describe("Portfolio page", () => {
             },
           },
         },
-        deadlineTimestampSeconds: 168_0000_000n,
+        deadlineTimestampSeconds: 168_000_000n,
       },
       {
         proposal: {
@@ -189,7 +189,7 @@ describe("Portfolio page", () => {
             },
           },
         },
-        deadlineTimestampSeconds: 68_0000_000n,
+        deadlineTimestampSeconds: 68_000_000n,
       },
     ] as ProposalInfo[];
 
