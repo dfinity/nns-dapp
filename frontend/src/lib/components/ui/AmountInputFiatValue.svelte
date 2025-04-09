@@ -3,12 +3,13 @@
   import IcpExchangeRateInfoTooltip from "$lib/components/ui/IcpExchangeRateInfoTooltip.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
-  import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
+  import { tokensByLedgerCanisterIdStore } from "$lib/derived/tokens.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { getUsdValue } from "$lib/utils/token.utils";
-  import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
-  import type { Principal } from "@dfinity/principal";
+  import {
+    getLedgerCanisterIdFromToken,
+    getUsdValue,
+  } from "$lib/utils/token.utils";
   import {
     isNullish,
     nonNullish,
@@ -35,15 +36,18 @@
     }
   };
 
-  let ledgerCanisterId: Principal | undefined;
-  $: ledgerCanisterId = getLedgerCanisterIdFromUniverse($selectedUniverseStore);
+  let ledgerCanisterId: string | undefined;
+  ledgerCanisterId = getLedgerCanisterIdFromToken(
+    token,
+    $tokensByLedgerCanisterIdStore
+  );
 
   let tokenPrice: number | undefined;
   $: tokenPrice =
     nonNullish(ledgerCanisterId) &&
     nonNullish($icpSwapUsdPricesStore) &&
     $icpSwapUsdPricesStore !== "error"
-      ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
+      ? $icpSwapUsdPricesStore[ledgerCanisterId]
       : undefined;
 
   let tokens: TokenAmountV2 | undefined;

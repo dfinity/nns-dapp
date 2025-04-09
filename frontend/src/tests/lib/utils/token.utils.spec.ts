@@ -12,6 +12,7 @@ import {
   formatTokenE8s,
   formatTokenV2,
   formattedTransactionFeeICP,
+  getLedgerCanisterIdFromToken,
   getMaxTransactionAmount,
   getTotalBalanceInUsd,
   getUsdValue,
@@ -28,7 +29,12 @@ import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { createUserToken, icpTokenBase } from "$tests/mocks/tokens-page.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { Principal } from "@dfinity/principal";
-import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmount,
+  TokenAmountV2,
+  type Token,
+} from "@dfinity/utils";
 
 describe("token-utils", () => {
   it("should format token", () => {
@@ -944,6 +950,49 @@ describe("token-utils", () => {
       });
       const tokenPrice = undefined;
       expect(getUsdValue({ amount, tokenPrice })).toBe(0);
+    });
+  });
+
+  describe("getLedgerCanisterIdFromToken", () => {
+    const mockLedgerCanisterId1 = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+    const mockLedgerCanisterId2 = "rdmx6-jaaaa-aaaaa-aaadq-cai";
+
+    const token1: Token = {
+      symbol: "ICP",
+      name: "Internet Computer",
+      decimals: 8,
+    };
+
+    const token2: Token = {
+      symbol: "SNS1",
+      name: "Service Nervous System 1",
+      decimals: 8,
+    };
+
+    const tokensByLedgerCanisterId: Record<string, Token> = {
+      [mockLedgerCanisterId1]: token1,
+      [mockLedgerCanisterId2]: token2,
+    };
+
+    it("should return the ledger canister ID for a given token", () => {
+      expect(
+        getLedgerCanisterIdFromToken(token1, tokensByLedgerCanisterId)
+      ).toBe(mockLedgerCanisterId1);
+      expect(
+        getLedgerCanisterIdFromToken(token2, tokensByLedgerCanisterId)
+      ).toBe(mockLedgerCanisterId2);
+    });
+
+    it("should return undefined when token is not found", () => {
+      const unknownToken: Token = {
+        symbol: "UNKNOWN",
+        name: "Unknown Token",
+        decimals: 8,
+      };
+
+      expect(
+        getLedgerCanisterIdFromToken(unknownToken, tokensByLedgerCanisterId)
+      ).toBeUndefined();
     });
   });
 });
