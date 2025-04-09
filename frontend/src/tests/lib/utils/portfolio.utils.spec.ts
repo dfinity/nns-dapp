@@ -3,11 +3,13 @@ import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.co
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken } from "$lib/types/tokens-page";
+import * as dateUtils from "$lib/utils/date.utils";
 import {
   formatParticipation,
   getMinCommitmentPercentage,
   getTopHeldTokens,
   getTopStakedTokens,
+  mapProposalInfoToCard,
   shouldShowInfoRow,
 } from "$lib/utils/portfolio.utils";
 import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
@@ -18,6 +20,7 @@ import {
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
+import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 
 describe("Portfolio utils", () => {
@@ -525,6 +528,118 @@ describe("Portfolio utils", () => {
         minDirectCommitmentE8s: 500_000_000n,
       };
       expect(getMinCommitmentPercentage(decimalResult)).toBeCloseTo(0.2469, 4);
+    });
+  });
+
+  describe("mapProposalInfoToCard", () => {
+    beforeEach(() => {
+      vi.spyOn(dateUtils, "nowInSeconds").mockReturnValue(1000);
+    });
+
+    it("should return undefined when proposal is missing", () => {
+      const proposalInfo = {} as ProposalInfo;
+      expect(mapProposalInfoToCard(proposalInfo)).toBeUndefined();
+    });
+
+    it("should return undefined when action is missing", () => {
+      const proposalInfo = {
+        proposal: {},
+      } as ProposalInfo;
+      expect(mapProposalInfoToCard(proposalInfo)).toBeUndefined();
+    });
+
+    it("should return undefined when action is not CreateServiceNervousSystem", () => {
+      const proposalInfo = {
+        proposal: {
+          action: {
+            ManageNeuron: {
+              id: undefined,
+              command: undefined,
+              neuronIdOrSubaccount: undefined,
+            },
+          },
+        },
+      } as ProposalInfo;
+      expect(mapProposalInfoToCard(proposalInfo)).toBeUndefined();
+    });
+
+    it("should correctly map a valid CreateServiceNervousSystem proposal", () => {
+      const proposalInfo = {
+        id: 12345n,
+        deadlineTimestampSeconds: 2000n,
+        proposal: {
+          title: "Test SNS Proposal",
+          action: {
+            CreateServiceNervousSystem: {
+              name: "Test SNS",
+              logo: {
+                base64Encoding: "data:image/png;base64,testImageData",
+              },
+            },
+          },
+        },
+      } as ProposalInfo;
+
+      const result = mapProposalInfoToCard(proposalInfo);
+
+      expect(result).toEqual({
+        durationTillDeadline: 1000n, // 2000 - 1000 (mocked nowInSeconds)
+        id: 12345n,
+        title: "Test SNS Proposal",
+        logo: "data:image/png;base64,testImageData",
+        name: "Test SNS",
+      });
+    });
+
+    it("should handle missing optional fields", () => {
+      const proposalInfo = {
+        id: 12345n,
+        deadlineTimestampSeconds: 2000n,
+        proposal: {
+          action: {
+            CreateServiceNervousSystem: {
+              name: "Test SNS",
+              // no logo provided
+            },
+          },
+          // no title provided
+        },
+      } as ProposalInfo;
+
+      const result = mapProposalInfoToCard(proposalInfo);
+
+      expect(result).toEqual({
+        durationTillDeadline: 1000n,
+        id: 12345n,
+        title: undefined,
+        logo: undefined,
+        name: "Test SNS",
+      });
+    });
+
+    it("should handle missing deadlineTimestampSeconds", () => {
+      const proposalInfo = {
+        id: 12345n,
+        // no deadlineTimestampSeconds
+        proposal: {
+          title: "Test SNS Proposal",
+          action: {
+            CreateServiceNervousSystem: {
+              name: "Test SNS",
+            },
+          },
+        },
+      } as ProposalInfo;
+
+      const result = mapProposalInfoToCard(proposalInfo);
+
+      expect(result).toEqual({
+        durationTillDeadline: 0n,
+        id: 12345n,
+        title: "Test SNS Proposal",
+        logo: undefined,
+        name: "Test SNS",
+      });
     });
   });
 });

@@ -1,4 +1,7 @@
+import type { BasePortfolioCardPo } from "$tests/page-objects/BasePortfolioCard.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { LaunchProjectCardPo } from "$tests/page-objects/LaunchProjectCard.page-object";
+import { NewSnsProposalCardPo } from "$tests/page-objects/NewSnsProposalCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -67,5 +70,19 @@ export class StackedCardsPo extends BasePageObject {
       }
     }
     return -1;
+  }
+
+  async getActiveCardPo(): Promise<BasePortfolioCardPo> {
+    const activeIndex = await this.getActiveCardIndex();
+    const cardWrappers = await this.getCardWrappers();
+    let activeCard: BasePortfolioCardPo;
+
+    activeCard = LaunchProjectCardPo.under(cardWrappers[activeIndex].root);
+    if (await activeCard.isPresent()) return activeCard;
+
+    activeCard = NewSnsProposalCardPo.under(cardWrappers[activeIndex].root);
+    if (await activeCard.isPresent()) return activeCard;
+
+    return null;
   }
 }

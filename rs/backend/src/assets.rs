@@ -281,7 +281,7 @@ fn content_type_of(request_path: &str) -> Option<&'static str> {
         return Some("application/octet-stream");
     }
 
-    request_path.split('.').last().and_then(|suffix| match suffix {
+    request_path.split('.').next_back().and_then(|suffix| match suffix {
         "css" => Some("text/css"),
         "html" => Some("text/html"),
         "xml" => Some("application/xml"),
