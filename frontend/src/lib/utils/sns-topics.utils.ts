@@ -162,3 +162,61 @@ export const removeFromSnsTopicFollowings = ({
     })
     .filter(({ followees }) => followees.length > 0);
 };
+
+export const isSnsNeuronsAlreadyFollowing = ({
+  followings,
+  neuronId,
+  topicKey,
+}: {
+  followings: SnsTopicFollowing[];
+  neuronId: SnsNeuronId;
+  topicKey: SnsTopicKey;
+}): boolean => {
+  const topicFollowees = followings.find(
+    (following) => following.topic === topicKey
+  )?.followees;
+  if (!topicFollowees) {
+    return false;
+  }
+  return topicFollowees.some(
+    (followee) =>
+      subaccountToHexString(followee.neuronId.id) ===
+      subaccountToHexString(neuronId.id)
+  );
+};
+
+// Adds a neuron to the list of followees for the given topics
+// (the result contains only the provided topics).
+export const addSnsNeuronToFollowingsByTopics = ({
+  followings,
+  topics,
+  neuronId,
+}: {
+  followings: SnsTopicFollowing[];
+  topics: SnsTopicKey[];
+  neuronId: SnsNeuronId;
+}): SnsTopicFollowing[] =>
+  topics
+    // Filter out topics that are already followed by the neuron to avoid duplications.
+    .filter(
+      (topicKey) =>
+        !isSnsNeuronsAlreadyFollowing({
+          followings,
+          neuronId,
+          topicKey,
+        })
+    )
+    .map((topicKey) => {
+      const topicFollowees = followings.find(
+        (following) => following.topic === topicKey
+      )?.followees;
+      return {
+        topic: topicKey,
+        followees: [
+          ...(topicFollowees ?? []),
+          {
+            neuronId,
+          },
+        ],
+      };
+    });

@@ -3,12 +3,14 @@ import type {
   TopicInfoWithUnknown,
 } from "$lib/types/sns-aggregator";
 import {
+  addSnsNeuronToFollowingsByTopics,
   getAllSnsNSFunctions,
   getSnsTopicFollowings,
   getSnsTopicInfoKey,
   getSnsTopicKeys,
   getTopicInfoBySnsTopicKey,
   insertIntoSnsTopicFollowings,
+  isSnsNeuronsAlreadyFollowing,
   removeFromSnsTopicFollowings,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
@@ -185,13 +187,11 @@ describe("sns-topics utils", () => {
               DappCanisterManagement: [
                 {
                   neuronId: neuronId1,
-                  alias: "alias",
                 },
               ],
               DaoCommunitySettings: [
                 {
                   neuronId: neuronId1,
-                  alias: "alias",
                 },
                 {
                   neuronId: neuronId2,
@@ -203,12 +203,12 @@ describe("sns-topics utils", () => {
       ).toEqual([
         {
           topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId1, alias: "alias" }],
+          followees: [{ neuronId: neuronId1 }],
         },
         {
           topic: "DaoCommunitySettings",
           followees: [
-            { neuronId: neuronId1, alias: "alias" },
+            { neuronId: neuronId1 },
             {
               neuronId: neuronId2,
             },
@@ -244,13 +244,11 @@ describe("sns-topics utils", () => {
               DappCanisterManagement: [
                 {
                   neuronId: neuronId1,
-                  alias: "alias",
                 },
               ],
               DaoCommunitySettings: [
                 {
                   neuronId: neuronId1,
-                  alias: "alias",
                 },
                 {
                   neuronId: neuronId2,
@@ -262,14 +260,11 @@ describe("sns-topics utils", () => {
       ).toEqual([
         {
           topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId1, alias: "alias" }],
+          followees: [{ neuronId: neuronId1 }],
         },
         {
           topic: "DaoCommunitySettings",
-          followees: [
-            { neuronId: neuronId1, alias: "alias" },
-            { neuronId: neuronId2 },
-          ],
+          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
         },
       ]);
     });
@@ -282,7 +277,7 @@ describe("sns-topics utils", () => {
           followings: [
             {
               topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId1, alias: "alias" }],
+              followees: [{ neuronId: neuronId1 }],
             },
           ],
           topicsToFollow: ["DaoCommunitySettings"],
@@ -291,7 +286,7 @@ describe("sns-topics utils", () => {
       ).toEqual([
         {
           topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId1, alias: "alias" }],
+          followees: [{ neuronId: neuronId1 }],
         },
         {
           topic: "DaoCommunitySettings",
@@ -306,7 +301,7 @@ describe("sns-topics utils", () => {
           followings: [
             {
               topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId1, alias: "alias" }],
+              followees: [{ neuronId: neuronId1 }],
             },
           ],
           topicsToFollow: ["DappCanisterManagement"],
@@ -315,10 +310,7 @@ describe("sns-topics utils", () => {
       ).toEqual([
         {
           topic: "DappCanisterManagement",
-          followees: [
-            { neuronId: neuronId1, alias: "alias" },
-            { neuronId: neuronId2 },
-          ],
+          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
         },
       ]);
     });
@@ -351,10 +343,7 @@ describe("sns-topics utils", () => {
           followings: [
             {
               topic: "DappCanisterManagement",
-              followees: [
-                { neuronId: neuronId1, alias: "alias" },
-                { neuronId: neuronId2 },
-              ],
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
             },
           ],
           neuronId: neuronId1,
@@ -373,7 +362,7 @@ describe("sns-topics utils", () => {
           followings: [
             {
               topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId1, alias: "alias" }],
+              followees: [{ neuronId: neuronId1 }],
             },
             {
               topic: "DaoCommunitySettings",
@@ -396,7 +385,7 @@ describe("sns-topics utils", () => {
           followings: [
             {
               topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId1, alias: "alias" }],
+              followees: [{ neuronId: neuronId1 }],
             },
           ],
           neuronId: neuronId2,
@@ -404,7 +393,122 @@ describe("sns-topics utils", () => {
       ).toEqual([
         {
           topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId1, alias: "alias" }],
+          followees: [{ neuronId: neuronId1 }],
+        },
+      ]);
+    });
+  });
+
+  describe("isSnsNeuronsAlreadyFollowing", () => {
+    it("should return true", () => {
+      expect(
+        isSnsNeuronsAlreadyFollowing({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+          ],
+          topicKey: "DappCanisterManagement",
+          neuronId: neuronId2,
+        })
+      ).toEqual(true);
+    });
+
+    it("should return false", () => {
+      expect(
+        isSnsNeuronsAlreadyFollowing({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+          ],
+          topicKey: "CriticalDappOperations",
+          neuronId: neuronId2,
+        })
+      ).toEqual(false);
+
+      expect(
+        isSnsNeuronsAlreadyFollowing({
+          followings: [
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+          ],
+          topicKey: "CriticalDappOperations",
+          neuronId: neuronId2,
+        })
+      ).toEqual(false);
+
+      expect(
+        isSnsNeuronsAlreadyFollowing({
+          followings: [],
+          topicKey: "CriticalDappOperations",
+          neuronId: neuronId2,
+        })
+      ).toEqual(false);
+    });
+  });
+
+  describe("addSnsNeuronToFollowingsByTopics", () => {
+    it("Should insert neuron ID into existing topics", () => {
+      expect(
+        addSnsNeuronToFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }],
+            },
+          ],
+          topics: ["DappCanisterManagement", "CriticalDappOperations"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+        },
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+        },
+      ]);
+    });
+
+    it("should insert neuron ID into non-existing topics", () => {
+      expect(
+        addSnsNeuronToFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }],
+            },
+          ],
+          topics: ["DappCanisterManagement", "CriticalDappOperations"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId2 }],
+        },
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
         },
       ]);
     });
