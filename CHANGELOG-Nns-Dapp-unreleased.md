@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 * Ongoing proposals for SNS projects on Portfolio page.
 * Added command palette for faster app navigation.
 
+* Command palette for faster app navigation.
 
 #### Changed
 
