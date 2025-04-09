@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import { i18n } from "$lib/stores/i18n";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
   import { Backdrop, Input, themeStore } from "@dfinity/gix-components";
   import { debounce } from "@dfinity/utils";
@@ -133,7 +134,12 @@
 <svelte:window {onkeydown} {onmousedown} />
 
 {#if alfredVisible}
-  <div class="overlay" transition:fade={{ duration: 150 }} aria-hidden="true">
+  <div
+    class="overlay"
+    transition:fade={{ duration: 150 }}
+    aria-hidden="true"
+    data-tid="alfred-component"
+  >
     <Backdrop on:nnsClose={hideAlfred} />
 
     <div class="wrapper">
@@ -152,7 +158,7 @@
 
         <div class="results" role="listbox" aria-label="Search results">
           {#if filteredItems.length === 0}
-            <div class="no-results">No results found</div>
+            <div class="no-results">{$i18n.alfred.no_results}</div>
           {:else}
             <ul>
               {#each filteredItems as item, index}

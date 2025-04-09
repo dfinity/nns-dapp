@@ -161,6 +161,10 @@ interface I18nNavigation {
   portfolio: string;
 }
 
+interface I18nAlfred {
+  no_results: string;
+}
+
 interface I18nHeader {
   menu: string;
   logout: string;
@@ -1525,6 +1529,7 @@ interface I18n {
   error: I18nError;
   warning: I18nWarning;
   navigation: I18nNavigation;
+  alfred: I18nAlfred;
   header: I18nHeader;
   reporting: I18nReporting;
   auth: I18nAuth;
