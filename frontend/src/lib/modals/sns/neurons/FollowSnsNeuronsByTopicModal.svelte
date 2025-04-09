@@ -30,10 +30,10 @@
   import {
     addSnsNeuronToFollowingsByTopics,
     getSnsTopicFollowings,
+    removeSnsNeuronFromFollowingsByTopics,
   } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
-  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 
   interface Props {
     rootCanisterId: Principal;
@@ -121,6 +121,7 @@
       }
     } catch (error) {
       console.error("Failed to follow SNS neurons by topic", error);
+      // TODO: provide new error message
       toastsError({
         labelKey: "new_followee.followee_does_not_exist",
         substitutions: {
@@ -131,14 +132,41 @@
 
     stopBusy("add-followee-by-topic");
   };
-  const onNnsRemove = ({
+  const onNnsRemove = async ({
     topicKey,
     neuronId,
   }: {
     topicKey: SnsTopicKey;
     neuronId: SnsNeuronId;
   }) => {
-    console.log("remove", topicKey, subaccountToHexString(neuronId.id));
+    startBusy({ initiator: "add-followee-by-topic" });
+
+    try {
+      const { success } = await setFollowing({
+        rootCanisterId,
+        neuronId: fromDefinedNullable(neuron.id),
+        followings: removeSnsNeuronFromFollowingsByTopics({
+          followings,
+          topics: [topicKey],
+          neuronId,
+        }),
+      });
+
+      if (success) {
+        toastsSuccess({
+          labelKey: $i18n.follow_sns_topics.removed,
+        });
+        await reloadNeuron();
+      }
+    } catch (error) {
+      console.error("Failed to remove SNS followee by topic", error);
+      // TODO: provide new error message
+      toastsError({
+        labelKey: "new_followee.followee_does_not_exist",
+      });
+    }
+
+    stopBusy("add-followee-by-topic");
   };
 </script>
 
