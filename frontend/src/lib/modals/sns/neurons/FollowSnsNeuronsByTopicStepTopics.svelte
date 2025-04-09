@@ -2,7 +2,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
-  import FollowSnsNeuronsByTopicStepTopicsItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
+  import FollowSnsNeuronsByTopicItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
   import { fromDefinedNullable } from "@dfinity/utils";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
@@ -77,7 +77,7 @@
       ></h5
     >
     {#each criticalTopicInfos as topicInfo}
-      <FollowSnsNeuronsByTopicStepTopicsItem
+      <FollowSnsNeuronsByTopicItem
         {topicInfo}
         followees={getTopicFollowees(topicInfo)}
         checked={isTopicInfoSelected(topicInfo)}
@@ -95,7 +95,7 @@
       ></h5
     >
     {#each nonCriticalTopicInfos as topicInfo}
-      <FollowSnsNeuronsByTopicStepTopicsItem
+      <FollowSnsNeuronsByTopicItem
         {topicInfo}
         followees={getTopicFollowees(topicInfo)}
         checked={isTopicInfoSelected(topicInfo)}

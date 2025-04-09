@@ -101,7 +101,10 @@
                 ><FollowSnsNeuronsByTopicFollowee
                   {followee}
                   onRemoveClick={() => {
-                    // TODO: remove
+                    onNnsRemove({
+                      topicKey,
+                      neuronId: followee.neuronId,
+                    });
                   }}
                 />
               </li>
