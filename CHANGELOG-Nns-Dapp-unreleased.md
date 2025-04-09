@@ -16,8 +16,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Updates styles for modal buttons
-
 #### Deprecated
 
 #### Removed
