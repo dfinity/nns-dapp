@@ -18,13 +18,8 @@
     arrayOfNumberToUint8Array,
     fromDefinedNullable,
     isNullish,
-    nonNullish,
   } from "@dfinity/utils";
-  import type {
-    SnsTopicFollowee,
-    SnsTopicFollowing,
-    SnsTopicKey,
-  } from "$lib/types/sns";
+  import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import {
@@ -32,7 +27,10 @@
     setFollowing,
   } from "$lib/services/sns-neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import { getSnsTopicFollowings } from "$lib/utils/sns-topics.utils";
+  import {
+    addSnsNeuronToFollowingsByTopics,
+    getSnsTopicFollowings,
+  } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
@@ -103,37 +101,15 @@
     startBusy({ initiator: "add-followee-by-topic" });
 
     try {
-      // Combine the neuron’s followees with the new followee for selected topics
-      // (if the neuron is already following the followee, do not add it again).
-      const requestFollowings: SnsTopicFollowing[] = selectedTopics
-        .map((topicKey) => {
-          const topicFollowees: SnsTopicFollowee[] =
-            followings.find((following) => following.topic === topicKey)
-              ?.followees ?? [];
-          const isAlreadyFollowed = topicFollowees.find(
-            (followee) =>
-              subaccountToHexString(followee.neuronId.id) === followeeHex
-          );
-          return isAlreadyFollowed
-            ? null
-            : {
-                topic: topicKey,
-                followees: [
-                  ...topicFollowees,
-                  {
-                    neuronId: followeeNeuronId,
-                  },
-                ],
-              };
-        })
-        .filter(nonNullish);
       const { success } = await setFollowing({
         rootCanisterId,
         neuronId: fromDefinedNullable(neuron.id),
-        followings: requestFollowings,
+        followings: addSnsNeuronToFollowingsByTopics({
+          topics: selectedTopics,
+          neuronId: followeeNeuronId,
+          followings,
+        }),
       });
-
-      // TODO: reload the neuron
 
       if (success) {
         toastsSuccess({
