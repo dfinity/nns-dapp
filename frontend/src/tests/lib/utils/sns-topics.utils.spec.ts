@@ -12,6 +12,7 @@ import {
   insertIntoSnsTopicFollowings,
   isSnsNeuronsAlreadyFollowing,
   removeFromSnsTopicFollowings,
+  removeSnsNeuronFromFollowingsByTopics,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
 import { Principal } from "@dfinity/principal";
@@ -509,6 +510,86 @@ describe("sns-topics utils", () => {
         {
           topic: "CriticalDappOperations",
           followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+        },
+      ]);
+    });
+  });
+
+  describe("removeSnsNeuronFromFollowingsByTopics", () => {
+    it("Should remove neuron ID", () => {
+      expect(
+        removeSnsNeuronFromFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+          ],
+          topics: ["DappCanisterManagement", "CriticalDappOperations"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId1 }],
+        },
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId1 }],
+        },
+      ]);
+
+      expect(
+        removeSnsNeuronFromFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId2 }],
+            },
+          ],
+          topics: ["CriticalDappOperations"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId1 }],
+        },
+      ]);
+    });
+
+    it("should not exclude empty followees", () => {
+      expect(
+        removeSnsNeuronFromFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }],
+            },
+          ],
+          topics: ["DappCanisterManagement", "CriticalDappOperations"],
+          neuronId: neuronId1,
+        })
+      ).toEqual([
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId2 }],
+        },
+        {
+          topic: "DappCanisterManagement",
+          followees: [],
         },
       ]);
     });

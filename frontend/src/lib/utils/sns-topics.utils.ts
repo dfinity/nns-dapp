@@ -220,3 +220,26 @@ export const addSnsNeuronToFollowingsByTopics = ({
         ],
       };
     });
+
+// Removes a neuron from the followees list for the given topics
+// (Returns only the topics where the neuron was actually removed).
+export const removeSnsNeuronFromFollowingsByTopics = ({
+  followings,
+  topics,
+  neuronId,
+}: {
+  followings: SnsTopicFollowing[];
+  topics: SnsTopicKey[];
+  neuronId: SnsNeuronId;
+}): SnsTopicFollowing[] =>
+  followings
+    // Filter out topics that are not in the provided list.
+    .filter((following) => topics.includes(following.topic))
+    .map((following) => ({
+      ...following,
+      followees: following.followees.filter(
+        (followee) =>
+          subaccountToHexString(followee.neuronId.id) !==
+          subaccountToHexString(neuronId.id)
+      ),
+    }));
