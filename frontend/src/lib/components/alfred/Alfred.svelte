@@ -23,7 +23,6 @@
     })
   );
 
-
   const processKeyWithDebounce = debounce(() => {
     isProcessingKey = false;
   }, 50);
