@@ -127,6 +127,7 @@
       {neuron}
       {rootCanisterId}
       on:nnsClose={close}
+      {reloadNeuron}
     />
   {/if}
 

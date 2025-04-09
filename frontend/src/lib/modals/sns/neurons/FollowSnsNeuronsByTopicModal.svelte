@@ -38,8 +38,9 @@
   interface Props {
     rootCanisterId: Principal;
     neuron: SnsNeuron;
+    reloadNeuron: () => Promise<void>;
   }
-  let { rootCanisterId, neuron }: Props = $props();
+  let { rootCanisterId, neuron, reloadNeuron }: Props = $props();
 
   const dispatcher = createEventDispatcher();
   const STEP_TOPICS = "topics";
@@ -115,6 +116,7 @@
         toastsSuccess({
           labelKey: $i18n.follow_sns_topics.success,
         });
+        await reloadNeuron();
         close();
       }
     } catch (error) {
