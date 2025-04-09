@@ -23,6 +23,7 @@
     })
   );
 
+
   const processKeyWithDebounce = debounce(() => {
     isProcessingKey = false;
   }, 50);
@@ -151,6 +152,7 @@
             placeholder="Search for pages or actions..."
             autocomplete="off"
             spellcheck={false}
+            testId="alfred-input"
             bind:value={alfredQuery}
             bind:inputElement={searchInput}
           />
@@ -167,17 +169,21 @@
                   class:selected={index === selectedIndex}
                   role="option"
                   aria-selected={index === selectedIndex ? "true" : "false"}
+                  data-tid="alfred-result"
                 >
                   <button
                     class="item-button"
                     onclick={() => selectItem(item)}
                     aria-current={index === selectedIndex ? "true" : undefined}
+                    data-tid="alfred-result-button"
                   >
                     <div class="item-icon">
                       <item.icon size="20" />
                     </div>
                     <div class="item-content">
-                      <div class="item-title">{item.title}</div>
+                      <div class="item-title" data-tid="alfred-result-title"
+                        >{item.title}</div
+                      >
                       <div class="item-description">{item.description}</div>
                     </div>
                   </button>
