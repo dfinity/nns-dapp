@@ -85,11 +85,14 @@
   };
 
   const onConfirm = async (followeeHex: string) => {
-    const followeeNeuronId: SnsNeuronId = {
+    const neuronId: SnsNeuronId = {
       id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
     };
 
-    if (!(await validateNeuronId(followeeNeuronId))) {
+    startBusy({ initiator: "add-followee-by-topic" });
+
+    if (!(await validateNeuronId(neuronId))) {
+      stopBusy("add-followee-by-topic");
       toastsError({
         labelKey: "follow_sns_topics.followee_does_not_exist",
         substitutions: {
@@ -99,15 +102,13 @@
       return;
     }
 
-    startBusy({ initiator: "add-followee-by-topic" });
-
     try {
       const { success } = await setFollowing({
         rootCanisterId,
         neuronId: fromDefinedNullable(neuron.id),
         followings: addSnsNeuronToFollowingsByTopics({
           topics: selectedTopics,
-          neuronId: followeeNeuronId,
+          neuronId: neuronId,
           followings,
         }),
       });
@@ -132,6 +133,7 @@
 
     stopBusy("add-followee-by-topic");
   };
+
   const onNnsRemove = async ({
     topicKey,
     neuronId,
