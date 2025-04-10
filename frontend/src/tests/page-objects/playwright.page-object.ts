@@ -129,6 +129,10 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
     return this.locator.click({ position: { x: 5, y: 5 } });
   }
 
+  keyDown(_: string, __: ["meta", "ctrl"]): Promise<void> {
+    throw new Error("Not implemented");
+  }
+
   input(value: string): Promise<void> {
     return this.locator.evaluate((node: HTMLInputElement, value: string) => {
       node.value = value;
