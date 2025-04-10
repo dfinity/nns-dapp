@@ -31,23 +31,20 @@
     if (filteredItems.length > 0) selectedIndex = 0;
   });
 
-  const toggleAlfred = () => {
+  const toggleAlfred = async () => {
     alfredVisible = !alfredVisible;
     alfredQuery = "";
     selectedIndex = 0;
 
-    if (alfredVisible) initializeAlfred();
+    if (alfredVisible) {
+      await tick();
+      searchInput?.focus();
+    }
   };
 
   const hideAlfred = () => {
     alfredVisible = false;
     alfredQuery = "";
-  };
-
-  const initializeAlfred = async () => {
-    await tick();
-
-    searchInput?.focus();
   };
 
   const handleKeyNavigation = (event: KeyboardEvent): void => {
