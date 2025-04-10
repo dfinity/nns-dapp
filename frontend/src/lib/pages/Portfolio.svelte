@@ -17,6 +17,7 @@
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import {
+    compareProposalInfoByDeadlineTimestampSeconds,
     getTopHeldTokens,
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
@@ -30,7 +31,7 @@
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
   export let snsProjects: SnsFullProject[];
-  export let openSnsProposals: ProposalInfo[] = [];
+  export let openSnsProposals: ProposalInfo[];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
@@ -135,11 +136,13 @@
   }));
 
   let openProposalCards: CardItem[];
-  $: openProposalCards = openSnsProposals.map((proposalInfo) => ({
-    // TODO: Svelte v5 migration - fix type
-    component: NewSnsProposalCard as unknown as Component,
-    props: { proposalInfo },
-  }));
+  $: openProposalCards = openSnsProposals
+    .sort(compareProposalInfoByDeadlineTimestampSeconds)
+    .map((proposalInfo) => ({
+      // TODO: Svelte v5 migration - fix type
+      component: NewSnsProposalCard as unknown as Component,
+      props: { proposalInfo },
+    }));
 
   let cards: CardItem[] = [];
   $: cards = [...launchpadCards, ...openProposalCards];

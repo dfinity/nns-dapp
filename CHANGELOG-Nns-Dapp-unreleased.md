@@ -14,9 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-#### Changed
+* Ongoing proposals for SNS projects on Portfolio page.
 
-* Updates styles for modal buttons
+#### Changed
 
 #### Deprecated
 
