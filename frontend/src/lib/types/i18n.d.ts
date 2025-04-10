@@ -163,6 +163,32 @@ interface I18nNavigation {
 
 interface I18nAlfred {
   no_results: string;
+  home_title: string;
+  home_description: string;
+  tokens_title: string;
+  tokens_description: string;
+  neurons_title: string;
+  neurons_description: string;
+  voting_title: string;
+  voting_description: string;
+  launchpad_title: string;
+  launchpad_description: string;
+  reporting_title: string;
+  reporting_description: string;
+  canisters_title: string;
+  canisters_description: string;
+  settings_title: string;
+  settings_description: string;
+  principalId_title: string;
+  principalId_description: string;
+  dark_theme_title: string;
+  dark_theme_description: string;
+  light_theme_title: string;
+  light_theme_description: string;
+  log_in_title: string;
+  log_in_description: string;
+  log_out_title: string;
+  log_out_description: string;
 }
 
 interface I18nHeader {

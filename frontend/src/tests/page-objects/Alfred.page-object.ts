@@ -10,11 +10,11 @@ class AlfredResultPo extends BasePageObject {
   }
 
   async select(): Promise<void> {
-    await this.getElement("alfred-result-button").click();
+    await this.click("alfred-result-button");
   }
 
   async getTitle(): Promise<string> {
-    return this.getElement("alfred-result-title").getText();
+    return this.getText("alfred-result-title");
   }
 }
 
