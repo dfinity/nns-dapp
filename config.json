@@ -111,7 +111,7 @@
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "2025-04-09-3",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2025-03-27_03-14-base",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2025-04-10_03-16-base",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-03-27_03-14-base"
       },
       "packtool": ""
