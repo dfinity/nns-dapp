@@ -4,6 +4,7 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
 import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import {
@@ -957,19 +958,21 @@ describe("token-utils", () => {
     const mockLedgerCanisterId1 = "ryjl3-tyaaa-aaaaa-aaaba-cai";
     const mockLedgerCanisterId2 = "rdmx6-jaaaa-aaaaa-aaadq-cai";
 
-    const token1: Token = {
+    const token1: IcrcTokenMetadata = {
       symbol: "ICP",
       name: "Internet Computer",
       decimals: 8,
+      fee: 0n,
     };
 
-    const token2: Token = {
+    const token2: IcrcTokenMetadata = {
       symbol: "SNS1",
       name: "Service Nervous System 1",
       decimals: 8,
+      fee: 0n,
     };
 
-    const tokensByLedgerCanisterId: Record<string, Token> = {
+    const tokensByLedgerCanisterId: Record<string, IcrcTokenMetadata> = {
       [mockLedgerCanisterId1]: token1,
       [mockLedgerCanisterId2]: token2,
     };

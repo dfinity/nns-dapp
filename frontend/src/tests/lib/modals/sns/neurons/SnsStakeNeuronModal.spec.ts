@@ -43,6 +43,7 @@ describe("SnsStakeNeuronModal", () => {
       {
         rootCanisterId: mockPrincipal,
         ledgerCanisterId,
+        tokenMetadata: token,
       },
     ]);
     icrcAccountsStore.set({
