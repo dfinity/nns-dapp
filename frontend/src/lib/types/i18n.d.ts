@@ -419,9 +419,11 @@ interface I18nFollow_sns_topics {
   neuron_label: string;
   neuron_description: string;
   neuron_follow: string;
-  followee_does_not_exist: string;
-  success: string;
-  removed: string;
+  error_neuron_not_exist: string;
+  success_set_following: string;
+  success_removed_following: string;
+  error_set_following: string;
+  error_remove_following: string;
 }
 
 interface I18nMissing_rewards {

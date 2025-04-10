@@ -94,7 +94,7 @@
     if (!(await validateNeuronId(neuronId))) {
       stopBusy("add-followee-by-topic");
       toastsError({
-        labelKey: "follow_sns_topics.followee_does_not_exist",
+        labelKey: "follow_sns_topics.error_neuron_not_exist",
         substitutions: {
           $neuronId: followeeHex,
         },
@@ -115,19 +115,15 @@
 
       if (success) {
         toastsSuccess({
-          labelKey: $i18n.follow_sns_topics.success,
+          labelKey: $i18n.follow_sns_topics.success_set_following,
         });
         await reloadNeuron();
         close();
       }
     } catch (error) {
       console.error("Failed to follow SNS neurons by topic", error);
-      // TODO: provide new error message
       toastsError({
-        labelKey: "new_followee.followee_does_not_exist",
-        substitutions: {
-          $neuronId: followeeHex,
-        },
+        labelKey: "new_followee.error_set_following",
       });
     }
 
@@ -156,15 +152,14 @@
 
       if (success) {
         toastsSuccess({
-          labelKey: $i18n.follow_sns_topics.removed,
+          labelKey: $i18n.follow_sns_topics.error_remove_following,
         });
         await reloadNeuron();
       }
     } catch (error) {
       console.error("Failed to remove SNS followee by topic", error);
-      // TODO: provide new error message
       toastsError({
-        labelKey: "new_followee.followee_does_not_exist",
+        labelKey: "new_followee.error_remove_following",
       });
     }
 
