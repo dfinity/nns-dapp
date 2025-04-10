@@ -464,7 +464,7 @@ describe("Staking", () => {
 
     it("should display the amount in fiat value", async () => {
       setIcpSwapUsdPrices({
-        [snsCanisterId.toText()]: 10,
+        [snsLedgerId.toText()]: 10,
       });
 
       const po = renderComponent();

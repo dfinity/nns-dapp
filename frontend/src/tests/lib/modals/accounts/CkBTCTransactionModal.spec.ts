@@ -10,6 +10,7 @@ import { convertCkBTCToBtcIcrc2 } from "$lib/services/ckbtc-convert.services";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
+import { tokensStore } from "$lib/stores/tokens.store";
 import type { Account } from "$lib/types/account";
 import { TransactionNetwork } from "$lib/types/transaction";
 import { ulpsToNumber } from "$lib/utils/token.utils";
@@ -116,6 +117,14 @@ describe("CkBTCTransactionModal", () => {
       minter_fee: 123n,
       bitcoin_fee: 456n,
     });
+
+    const ckBtcData = {
+      canisterId: CKTESTBTC_UNIVERSE_CANISTER_ID,
+      token: mockCkBTCToken,
+      certified: true,
+    };
+
+    tokensStore.setToken(ckBtcData);
   });
 
   it("should show ckBTC label in modal title", async () => {

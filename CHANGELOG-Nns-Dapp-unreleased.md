@@ -24,6 +24,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Token conversion rates when opening a transactions from the tokens page.
+
 #### Security
 
 #### Not Published
