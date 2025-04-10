@@ -407,7 +407,7 @@ jobs:
             scripts/sns/aggregator/get_log
           }
       - name: Test the paginated endpoint
-        run: scripts/sns/aggregator/test-pagination --num 12
+        run: scripts/sns/aggregator/test-pagination --num 13
       - name: Get logs
         run: |
           scripts/sns/aggregator/get_log > ,logs
@@ -420,7 +420,7 @@ jobs:
       - name: Upgrade the aggregator to self with a slow refresh rate
         run: dfx canister install --mode upgrade --wasm sns_aggregator_dev.wasm.gz --upgrade-unchanged sns_aggregator '(opt record { update_interval_ms = 1_000_000_000; fast_interval_ms = 1_000_000_000; })' --yes
       - name: Expect the paginated data to be retained over the upgrade
-        run: scripts/sns/aggregator/test-pagination --num 12
+        run: scripts/sns/aggregator/test-pagination --num 13
       - name: Expect the latest data to be retained over the upgrade
         run: |
           AGGREGATOR_CANISTER_ID="$(dfx canister id sns_aggregator)"
