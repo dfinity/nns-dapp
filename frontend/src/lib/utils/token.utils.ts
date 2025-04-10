@@ -10,7 +10,6 @@ import {
   TokenAmount,
   TokenAmountV2,
   isNullish,
-  nonNullish,
   type Token,
 } from "@dfinity/utils";
 
@@ -367,10 +366,7 @@ export const getUsdValue = ({
 export const getLedgerCanisterIdFromToken = (
   token: Token,
   tokensByLedgerCanisterId: Record<string, IcrcTokenMetadata>
-): string | undefined => {
-  const ledgerCanisterIdText = Object.entries(tokensByLedgerCanisterId).find(
+): string | undefined =>
+  Object.entries(tokensByLedgerCanisterId).find(
     ([_, storeToken]) => storeToken.symbol === token.symbol
   )?.[0];
-
-  return nonNullish(ledgerCanisterIdText) ? ledgerCanisterIdText : undefined;
-};
