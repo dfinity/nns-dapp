@@ -105,7 +105,7 @@ export const getSnsTopicFollowings = (
   }));
 };
 
-export const isSnsNeuronsAlreadyFollowing = ({
+export const isSnsNeuronsFollowing = ({
   followings,
   neuronId,
   topicKey,
@@ -142,7 +142,7 @@ export const addSnsNeuronToFollowingsByTopics = ({
     // Filter out topics that are already followed by the neuron to avoid duplications.
     .filter(
       (topicKey) =>
-        !isSnsNeuronsAlreadyFollowing({
+        !isSnsNeuronsFollowing({
           followings,
           neuronId,
           topicKey,

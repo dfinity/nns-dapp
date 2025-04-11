@@ -10,7 +10,7 @@ import {
   getSnsTopicInfoKey,
   getSnsTopicKeys,
   getTopicInfoBySnsTopicKey,
-  isSnsNeuronsAlreadyFollowing,
+  isSnsNeuronsFollowing,
   removeSnsNeuronFromFollowingsByTopics,
   snsTopicKeyToTopic,
   snsTopicToTopicKey,
@@ -320,10 +320,10 @@ describe("sns-topics utils", () => {
     });
   });
 
-  describe("isSnsNeuronsAlreadyFollowing", () => {
+  describe("isSnsNeuronsFollowing", () => {
     it("should return true", () => {
       expect(
-        isSnsNeuronsAlreadyFollowing({
+        isSnsNeuronsFollowing({
           followings: [
             {
               topic: "CriticalDappOperations",
@@ -342,7 +342,7 @@ describe("sns-topics utils", () => {
 
     it("should return false", () => {
       expect(
-        isSnsNeuronsAlreadyFollowing({
+        isSnsNeuronsFollowing({
           followings: [
             {
               topic: "CriticalDappOperations",
@@ -359,7 +359,7 @@ describe("sns-topics utils", () => {
       ).toEqual(false);
 
       expect(
-        isSnsNeuronsAlreadyFollowing({
+        isSnsNeuronsFollowing({
           followings: [
             {
               topic: "DappCanisterManagement",
@@ -372,7 +372,7 @@ describe("sns-topics utils", () => {
       ).toEqual(false);
 
       expect(
-        isSnsNeuronsAlreadyFollowing({
+        isSnsNeuronsFollowing({
           followings: [],
           topicKey: "CriticalDappOperations",
           neuronId: neuronId2,
