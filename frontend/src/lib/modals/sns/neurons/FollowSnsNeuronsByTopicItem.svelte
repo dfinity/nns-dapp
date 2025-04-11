@@ -24,8 +24,13 @@
     }) => void;
   };
 
-  const { topicInfo, followees, onNnsChange, onNnsRemove }: Props = $props();
-  let { checked = false }: Props = $props();
+  let {
+    topicInfo,
+    followees,
+    checked = false,
+    onNnsChange,
+    onNnsRemove,
+  }: Props = $props();
 
   let topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
   let name: string = $derived(fromDefinedNullable(topicInfo.name));
