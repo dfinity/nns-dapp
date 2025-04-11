@@ -2,10 +2,10 @@ import type {
   CachedNervousFunctionDto,
   TopicInfoDto,
 } from "$lib/types/sns-aggregator";
-import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsTopic } from "@dfinity/sns";
 
 export const topicTypeMock = "DaoCommunitySettings";
-export const topicMock: Topic = {
+export const topicMock: SnsTopic = {
   [topicTypeMock]: null,
 };
 

@@ -7,22 +7,36 @@
   } from "@dfinity/gix-components";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { fromDefinedNullable } from "@dfinity/utils";
-  import type { SnsTopicKey } from "$lib/types/sns";
+  import type { SnsTopicFollowee, SnsTopicKey } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
+  import type { SnsNeuronId } from "@dfinity/sns";
+  import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
+  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 
-  export let topicInfo: TopicInfoWithUnknown;
-  export let checked: boolean = false;
-  export let onNnsChange: (args: {
-    topicKey: SnsTopicKey;
+  interface Props {
+    topicInfo: TopicInfoWithUnknown;
+    followees: SnsTopicFollowee[];
     checked: boolean;
-  }) => void;
+    onNnsChange: (args: { topicKey: SnsTopicKey; checked: boolean }) => void;
+    onNnsRemove: (args: {
+      topicKey: SnsTopicKey;
+      neuronId: SnsNeuronId;
+    }) => void;
+  }
 
-  let topicKey: SnsTopicKey;
-  $: topicKey = getSnsTopicInfoKey(topicInfo);
-  let name: string;
-  $: name = fromDefinedNullable(topicInfo.name);
-  let description: string;
-  $: description = fromDefinedNullable(topicInfo.description);
+  let {
+    topicInfo,
+    followees,
+    checked = false,
+    onNnsChange,
+    onNnsRemove,
+  }: Props = $props();
+
+  let topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
+  let name: string = $derived(fromDefinedNullable(topicInfo.name));
+  let description: string = $derived(
+    fromDefinedNullable(topicInfo.description)
+  );
 
   const onChange = () => {
     // Checkbox doesn't support two-way binding
@@ -30,8 +44,8 @@
     onNnsChange({ topicKey, checked });
   };
 
-  let toggleContent: () => void;
-  let expanded: boolean;
+  let toggleContent: () => void = $state(() => {});
+  let expanded: boolean = $state(false);
 
   // TODO(sns-topics): Add "stopPropagation" prop to the gix/Checkbox component
   // to avoid collapsable toggling
@@ -68,7 +82,7 @@
         data-tid="expand-button"
         class="expand-button"
         class:expanded
-        on:click={toggleContent}
+        onclick={toggleContent}
       >
         <IconExpandMore />
       </button>
@@ -77,8 +91,29 @@
       <p class="description" data-tid="topic-description">
         {description}
       </p>
-    </div>
-  </Collapsible>
+
+      <div class="followees">
+        {#if followees.length > 0}
+          <h5 class="headline description"> Followees</h5>
+          <ul class="followee-list">
+            {#each followees as followee (subaccountToHexString(followee.neuronId.id))}
+              <li
+                ><FollowSnsNeuronsByTopicFollowee
+                  {followee}
+                  onRemoveClick={() => {
+                    onNnsRemove({
+                      topicKey,
+                      neuronId: followee.neuronId,
+                    });
+                  }}
+                />
+              </li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
+    </div></Collapsible
+  >
 </div>
 
 <style lang="scss">
@@ -112,5 +147,14 @@
     .description {
       margin: 0 0 var(--padding-3x);
     }
+  }
+
+  .followee-list {
+    padding: 0;
+    list-style-type: none;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--padding-0_5x);
   }
 </style>

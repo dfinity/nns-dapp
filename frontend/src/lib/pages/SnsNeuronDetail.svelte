@@ -104,6 +104,8 @@
           certified: boolean;
           neuron: SnsNeuron;
         }) => {
+          console.log("🍎 Neuron loaded", snsNeuron);
+
           mutableSnsNeuronStore.update({
             mutation: (store) => ({
               ...store,

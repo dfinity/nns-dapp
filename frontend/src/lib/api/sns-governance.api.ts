@@ -11,9 +11,9 @@ import type {
   SnsNeuronId,
   SnsNeuronPermissionType,
   SnsProposalId,
+  SnsTopic,
   SnsVote,
 } from "@dfinity/sns";
-import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 
 export const querySnsNeurons = async ({
   identity,
@@ -427,7 +427,7 @@ export const setFollowing = async ({
   rootCanisterId: Principal;
   identity: Identity;
   topicFollowing: Array<{
-    topic: Topic;
+    topic: SnsTopic;
     followees: Array<{
       neuronId: SnsNeuronId;
       alias?: string;
