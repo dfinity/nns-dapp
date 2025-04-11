@@ -18,6 +18,7 @@
   import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import {
@@ -46,7 +47,6 @@
   import { nonNullish } from "@dfinity/utils";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
-  import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
 
   export let neuronIdText: string | undefined | null;
 
@@ -175,11 +175,11 @@
           <Separator spacing="none" />
           <NnsNeuronVotingPowerSection {neuron} />
           <Separator spacing="none" />
+          <NeuronFollowingCard {neuron} />
+          <Separator spacing="none" />
           <NnsNeuronMaturitySection {neuron} />
           <Separator spacing="none" />
           <NnsNeuronAdvancedSection {neuron} />
-          <Separator spacing="none" />
-          <NeuronFollowingCard {neuron} />
           <Separator spacing="none" />
           <NnsNeuronHotkeysCard {neuron} />
           <Separator spacing="none" />

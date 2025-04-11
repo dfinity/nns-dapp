@@ -2,6 +2,7 @@
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
+  import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
@@ -16,18 +17,21 @@
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
   import {
+    compareProposalInfoByDeadlineTimestampSeconds,
     getTopHeldTokens,
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
   import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
+  import type { ProposalInfo } from "@dfinity/nns";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
   import type { Component } from "svelte";
 
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
   export let snsProjects: SnsFullProject[];
+  export let openSnsProposals: ProposalInfo[];
 
   let totalTokensBalanceInUsd: number;
   $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
@@ -131,8 +135,17 @@
     props: { summary },
   }));
 
-  let hideTotalAssetsCards = false;
-  $: hideTotalAssetsCards = !$authSignedInStore && launchpadCards.length > 0;
+  let openProposalCards: CardItem[];
+  $: openProposalCards = openSnsProposals
+    .sort(compareProposalInfoByDeadlineTimestampSeconds)
+    .map((proposalInfo) => ({
+      // TODO: Svelte v5 migration - fix type
+      component: NewSnsProposalCard as unknown as Component,
+      props: { proposalInfo },
+    }));
+
+  let cards: CardItem[] = [];
+  $: cards = [...launchpadCards, ...openProposalCards];
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -141,7 +154,11 @@
     class:signed-in={$authSignedInStore}
     class:launchpad={launchpadCards.length > 0}
   >
-    {#if !hideTotalAssetsCards}
+    {#if !$authSignedInStore}
+      <div class="login-card">
+        <LoginCard />
+      </div>
+    {:else}
       <TotalAssetsCard
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
@@ -149,14 +166,8 @@
       />
     {/if}
 
-    {#if !$authSignedInStore}
-      <div class="login-card">
-        <LoginCard />
-      </div>
-    {/if}
-
-    {#if launchpadCards.length > 0}
-      <StackedCards cards={launchpadCards} />
+    {#if cards.length > 0}
+      <StackedCards {cards} />
     {/if}
   </div>
 
@@ -211,15 +222,10 @@
       grid-template-columns: 1fr;
       gap: var(--padding-2x);
 
-      .login-card {
-        order: -1;
-      }
-
       @include media.min-width(large) {
         grid-template-columns: 1fr 2fr;
 
         .login-card {
-          order: 0;
           height: 100%;
         }
 
@@ -230,7 +236,7 @@
 
         // Case: not signed in, with no projects
         &:not(.signed-in):not(.launchpad) {
-          grid-template-columns: 1fr 2fr;
+          grid-template-columns: 1fr;
         }
 
         // Case: signed in, no projects

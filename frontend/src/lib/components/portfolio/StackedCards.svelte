@@ -74,6 +74,10 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
+  :root {
+    --card-stacked-dots-space: 34px;
+  }
+
   .stacked-cards {
     display: flex;
     flex-direction: column;

@@ -103,6 +103,7 @@ export const createMockSnsNeuron = ({
     maturity_e8s_equivalent: maturity,
     cached_neuron_stake_e8s: stake,
     created_timestamp_seconds: createdTimestampSeconds,
+    topic_followees: [],
     staked_maturity_e8s_equivalent: [stakedMaturity],
     auto_stake_maturity: [],
     aging_since_timestamp_seconds: ageSinceTimestampSeconds,

@@ -18,6 +18,7 @@ export const mockSnsProposal: SnsProposalData = {
     },
   ],
   payload_text_rendering: ["Payload text rendering"],
+  topic: [],
   action: 2n,
   failure_reason: [],
   ballots: [],

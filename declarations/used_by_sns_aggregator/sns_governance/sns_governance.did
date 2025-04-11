@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/rosetta-release-2.1.3/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-27_03-14-base/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -98,6 +98,7 @@ type ClaimedSwapNeurons = record {
 type Command = variant {
   Split : Split;
   Follow : Follow;
+  SetFollowing : SetFollowing;
   DisburseMaturity : DisburseMaturity;
   ClaimOrRefresh : ClaimOrRefresh;
   Configure : Configure;
@@ -114,6 +115,7 @@ type Command_1 = variant {
   Error : GovernanceError;
   Split : SplitResponse;
   Follow : record {};
+  SetFollowing : record {};
   DisburseMaturity : DisburseMaturityResponse;
   ClaimOrRefresh : ClaimOrRefreshResponse;
   Configure : record {};
@@ -129,6 +131,7 @@ type Command_1 = variant {
 type Command_2 = variant {
   Split : Split;
   Follow : Follow;
+  SetFollowing : SetFollowing;
   DisburseMaturity : DisburseMaturity;
   Configure : Configure;
   RegisterVote : RegisterVote;
@@ -212,6 +215,10 @@ type FinalizeDisburseMaturity = record {
 type Follow = record {
   function_id : nat64;
   followees : vec NeuronId;
+};
+
+type SetFollowing = record {
+  topic_following : vec FolloweesForTopic;
 };
 
 type Followees = record {
@@ -492,6 +499,11 @@ type NervousSystemParameters = record {
   automatically_advance_target_version : opt bool;
 };
 
+type FolloweesForTopic = record {
+  followees : vec Followee;
+  topic : opt Topic;
+};
+
 type Neuron = record {
   id : opt NeuronId;
   staked_maturity_e8s_equivalent : opt nat64;
@@ -507,11 +519,19 @@ type Neuron = record {
   vesting_period_seconds : opt nat64;
   disburse_maturity_in_progress : vec DisburseMaturityInProgress;
   followees : vec record { nat64; Followees };
+  topic_followees : opt record {
+    topic_id_to_followees : vec record { nat64; FolloweesForTopic };
+  };
   neuron_fees_e8s : nat64;
 };
 
 type NeuronId = record {
   id : blob;
+};
+
+type Followee = record {
+  neuron_id : opt NeuronId;
+  alias : opt text;
 };
 
 type NeuronIds = record {
@@ -521,16 +541,6 @@ type NeuronIds = record {
 type NeuronInFlightCommand = record {
   command : opt Command_2;
   timestamp : nat64;
-};
-
-type NeuronParameters = record {
-  controller : opt principal;
-  dissolve_delay_seconds : opt nat64;
-  source_nns_neuron_id : opt nat64;
-  stake_e8s : opt nat64;
-  followees : vec NeuronId;
-  hotkey : opt principal;
-  neuron_id : opt NeuronId;
 };
 
 type NeuronPermission = record {

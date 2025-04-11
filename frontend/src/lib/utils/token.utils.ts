@@ -3,6 +3,7 @@ import {
   ICP_DISPLAYED_DECIMALS,
   ICP_DISPLAYED_HEIGHT_DECIMALS,
 } from "$lib/constants/icp.constants";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UserToken } from "$lib/types/tokens-page";
 import {
   ICPToken,
@@ -361,3 +362,11 @@ export const getUsdValue = ({
   }
   return (amountE8s * tokenPrice) / 100_000_000;
 };
+
+export const getLedgerCanisterIdFromToken = (
+  token: Token,
+  tokensByLedgerCanisterId: Record<string, IcrcTokenMetadata>
+): string | undefined =>
+  Object.entries(tokensByLedgerCanisterId).find(
+    ([_, storeToken]) => storeToken.symbol === token.symbol
+  )?.[0];

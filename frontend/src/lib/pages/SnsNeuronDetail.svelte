@@ -210,6 +210,8 @@
             {token}
           />
           <Separator spacing="none" />
+          <SnsNeuronFollowingCard />
+          <Separator spacing="none" />
           <SnsNeuronMaturitySection
             neuron={$selectedSnsNeuronStore.neuron}
             fee={transactionFee}
@@ -223,8 +225,6 @@
             {token}
             {transactionFee}
           />
-          <Separator spacing="none" />
-          <SnsNeuronFollowingCard />
           <Separator spacing="none" />
           <SnsNeuronHotkeysCard {parameters} />
           {#if IS_TESTNET}

@@ -4,6 +4,7 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
+import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
 import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import {
@@ -12,6 +13,7 @@ import {
   formatTokenE8s,
   formatTokenV2,
   formattedTransactionFeeICP,
+  getLedgerCanisterIdFromToken,
   getMaxTransactionAmount,
   getTotalBalanceInUsd,
   getUsdValue,
@@ -28,7 +30,12 @@ import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { createUserToken, icpTokenBase } from "$tests/mocks/tokens-page.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { Principal } from "@dfinity/principal";
-import { ICPToken, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmount,
+  TokenAmountV2,
+  type Token,
+} from "@dfinity/utils";
 
 describe("token-utils", () => {
   it("should format token", () => {
@@ -944,6 +951,51 @@ describe("token-utils", () => {
       });
       const tokenPrice = undefined;
       expect(getUsdValue({ amount, tokenPrice })).toBe(0);
+    });
+  });
+
+  describe("getLedgerCanisterIdFromToken", () => {
+    const mockLedgerCanisterId1 = "ryjl3-tyaaa-aaaaa-aaaba-cai";
+    const mockLedgerCanisterId2 = "rdmx6-jaaaa-aaaaa-aaadq-cai";
+
+    const token1: IcrcTokenMetadata = {
+      symbol: "ICP",
+      name: "Internet Computer",
+      decimals: 8,
+      fee: 0n,
+    };
+
+    const token2: IcrcTokenMetadata = {
+      symbol: "SNS1",
+      name: "Service Nervous System 1",
+      decimals: 8,
+      fee: 0n,
+    };
+
+    const tokensByLedgerCanisterId: Record<string, IcrcTokenMetadata> = {
+      [mockLedgerCanisterId1]: token1,
+      [mockLedgerCanisterId2]: token2,
+    };
+
+    it("should return the ledger canister ID for a given token", () => {
+      expect(
+        getLedgerCanisterIdFromToken(token1, tokensByLedgerCanisterId)
+      ).toBe(mockLedgerCanisterId1);
+      expect(
+        getLedgerCanisterIdFromToken(token2, tokensByLedgerCanisterId)
+      ).toBe(mockLedgerCanisterId2);
+    });
+
+    it("should return undefined when token is not found", () => {
+      const unknownToken: Token = {
+        symbol: "UNKNOWN",
+        name: "Unknown Token",
+        decimals: 8,
+      };
+
+      expect(
+        getLedgerCanisterIdFromToken(unknownToken, tokensByLedgerCanisterId)
+      ).toBeUndefined();
     });
   });
 });

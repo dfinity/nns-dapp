@@ -161,6 +161,36 @@ interface I18nNavigation {
   portfolio: string;
 }
 
+interface I18nAlfred {
+  no_results: string;
+  home_title: string;
+  home_description: string;
+  tokens_title: string;
+  tokens_description: string;
+  neurons_title: string;
+  neurons_description: string;
+  voting_title: string;
+  voting_description: string;
+  launchpad_title: string;
+  launchpad_description: string;
+  reporting_title: string;
+  reporting_description: string;
+  canisters_title: string;
+  canisters_description: string;
+  settings_title: string;
+  settings_description: string;
+  principalId_title: string;
+  principalId_description: string;
+  dark_theme_title: string;
+  dark_theme_description: string;
+  light_theme_title: string;
+  light_theme_description: string;
+  log_in_title: string;
+  log_in_description: string;
+  log_out_title: string;
+  log_out_description: string;
+}
+
 interface I18nHeader {
   menu: string;
   logout: string;
@@ -408,6 +438,8 @@ interface I18nNeurons {
 }
 
 interface I18nFollow_sns_topics {
+  topic_definitions_description: string;
+  topic_definitions_title: string;
   topics_title: string;
   topics_description: string;
   topics_critical_label: string;
@@ -1289,6 +1321,7 @@ interface I18nPortfolio {
   staked_tokens_card_info_row: string;
   total_assets_title: string;
   project_status_open: string;
+  project_status_proposal: string;
   open_project_card_title: string;
   open_project_current_commitment: string;
   open_project_card_min_icp: string;
@@ -1296,6 +1329,10 @@ interface I18nPortfolio {
   open_project_card_nf: string;
   open_project_card_link: string;
   open_project_card_neuron_fund_tooltip: string;
+  new_sns_proposal_card_title: string;
+  new_sns_proposal_card_link: string;
+  new_sns_proposal_card_adopt: string;
+  new_sns_proposal_card_reject: string;
 }
 
 interface I18nNeuron_state {
@@ -1530,6 +1567,7 @@ interface I18n {
   error: I18nError;
   warning: I18nWarning;
   navigation: I18nNavigation;
+  alfred: I18nAlfred;
   header: I18nHeader;
   reporting: I18nReporting;
   auth: I18nAuth;
