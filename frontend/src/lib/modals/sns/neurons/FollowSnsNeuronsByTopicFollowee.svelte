@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconClose, Tag } from "@dfinity/gix-components";
+  import { IconClose } from "@dfinity/gix-components";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
@@ -17,33 +17,38 @@
   );
 </script>
 
-<div data-tid="follow-sns-neurons-by-topic-followee-component">
-  <Tag>
-    <Hash text={neuronIdHex} id={neuronIdHex} tagName="span" showCopy />
-    <button
-      class="remove-button text"
-      aria-label={$i18n.core.remove}
-      onclick={onRemoveClick}><IconClose /></button
-    >
-  </Tag>
+<div
+  class="container"
+  data-tid="follow-sns-neurons-by-topic-followee-component"
+>
+  <Hash text={neuronIdHex} id={neuronIdHex} tagName="span" showCopy />
+  <button
+    class="remove-button icon-only"
+    aria-label={$i18n.core.remove}
+    onclick={onRemoveClick}><IconClose /></button
+  >
 </div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  div {
-    @include fonts.standard(true);
+  .container {
+    @include fonts.small(true);
+
     display: flex;
     align-items: center;
+    padding-left: var(--padding);
+    border-radius: var(--border-radius-0_5x);
+    background-color: var(--tag-background);
+    color: var(--tag-text);
   }
 
   .remove-button {
     display: flex;
     align-items: center;
+    // TODO(sns-topics): Add --Copy-color to the gix/Copy and use --icon-color for both buttons.
     color: var(--primary);
-
-    &:hover {
-      color: var(--negative-emphasis);
-    }
+    // Decrease the gap between copy and remove buttons.
+    padding-left: 0;
   }
 </style>
