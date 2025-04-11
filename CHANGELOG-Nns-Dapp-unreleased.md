@@ -14,16 +14,18 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-#### Changed
+* Ongoing proposals for SNS projects on Portfolio page.
+* Command palette for faster app navigation.
 
-* Replaces the toaster error with an input error message for the split neuron modal flow.
-* Added client-side validation for staking ICP.
+#### Changed
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
+
+* Token conversion rates when opening a transactions from the tokens page.
 
 #### Security
 

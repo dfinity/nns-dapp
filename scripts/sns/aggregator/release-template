@@ -62,4 +62,4 @@ sha256sum sns_aggregator.wasm.gz
 EOF
 
 ARG_DID="./release/sns_aggregator_arg.did"
-echo '(record{})' >"$ARG_DID"
+echo '(null : null)' >"$ARG_DID"

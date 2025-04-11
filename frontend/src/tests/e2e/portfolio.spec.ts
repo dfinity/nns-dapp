@@ -13,6 +13,14 @@ const VIEWPORT_SIZES = {
 } as const;
 
 test("Visual test Landing Page", async ({ page, browser }) => {
+  await page.addInitScript(() => {
+    // @ts-expect-error: Overrides setinterval for tests
+    window.setInterval = (_: TimerHandler, timeout: number) => {
+      const noop = () => {};
+      const id = setTimeout(noop, timeout);
+      return id;
+    };
+  });
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
   const portfolioPo = appPo.getPortfolioPo();

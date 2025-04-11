@@ -22,6 +22,7 @@ import {
 import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
+import type { ProposalInfo } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -30,16 +31,19 @@ describe("Portfolio page", () => {
     userTokens = [],
     tableProjects = [],
     snsProjects = [],
+    openSnsProposals = [],
   }: {
     userTokens?: UserToken[];
     tableProjects?: TableProject[];
     snsProjects?: SnsFullProject[];
+    openSnsProposals?: ProposalInfo[];
   } = {}) => {
     const { container } = render(Portfolio, {
       props: {
         userTokens,
         tableProjects,
         snsProjects,
+        openSnsProposals,
       },
     });
 
@@ -136,14 +140,68 @@ describe("Portfolio page", () => {
     });
   });
 
-  describe("OpenLaunches", () => {
+  describe("StackedCards", () => {
     const mockSnsProjects: SnsFullProject[] = [
       mockSnsFullProject,
       { ...mockSnsFullProject, rootCanisterId: principal(2) },
     ];
 
+    const mockSnsProposals = [
+      {
+        proposal: {
+          title: "Proposal to create new SNS",
+          summary: "",
+          url: "url",
+          action: {
+            CreateServiceNervousSystem: {
+              name: "TestDAO1",
+              governanceParameters: {},
+              fallbackControllerPrincipalIds: [],
+              logo: {},
+              url: "url",
+              ledgerParameters: {},
+              description: "",
+              dappCanisters: [],
+              swapParameters: {},
+              initialTokenDistribution: {},
+            },
+          },
+        },
+        deadlineTimestampSeconds: 168_000_000n,
+      },
+      {
+        proposal: {
+          title: "Proposal to create new SNS",
+          summary: "",
+          url: "url",
+          action: {
+            CreateServiceNervousSystem: {
+              name: "TestDAO2",
+              governanceParameters: {},
+              fallbackControllerPrincipalIds: [],
+              logo: {},
+              url: "url",
+              ledgerParameters: {},
+              description: "",
+              dappCanisters: [],
+              swapParameters: {},
+              initialTokenDistribution: {},
+            },
+          },
+        },
+        deadlineTimestampSeconds: 68_000_000n,
+      },
+    ] as ProposalInfo[];
+
     beforeEach(() => {
       resetIdentity();
+    });
+
+    it("should not display StackedCards if no snsProjects nor proposals for new sns", async () => {
+      const po = renderPage();
+      const stackedCardsPo = po.getStackedCardsPo();
+
+      expect(await stackedCardsPo.isPresent()).toBe(false);
     });
 
     it("should display StackedCards when snsProjects is not empty", async () => {
@@ -155,11 +213,64 @@ describe("Portfolio page", () => {
       expect(cardWrappers.length).toBe(2);
     });
 
-    it("should not display StackedCards when snsProjects is empty", async () => {
-      const po = renderPage();
+    it("should display StackedCards when openSnsProposals is not empty", async () => {
+      const po = renderPage({ openSnsProposals: mockSnsProposals });
       const stackedCardsPo = po.getStackedCardsPo();
+      const cardWrappers = await stackedCardsPo.getCardWrappers();
 
-      expect(await stackedCardsPo.isPresent()).toBe(false);
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(cardWrappers.length).toBe(2);
+    });
+
+    it("should sort openSnsProposal", async () => {
+      const po = renderPage({ openSnsProposals: mockSnsProposals });
+      const stackedCardsPo = po.getStackedCardsPo();
+      const cardWrappers = await stackedCardsPo.getCardWrappers();
+      const dotsPo = await stackedCardsPo.getDots();
+
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(cardWrappers.length).toBe(2);
+
+      let activeCard = await stackedCardsPo.getActiveCardPo();
+      expect(await activeCard.getTitle()).toBe("TestDAO2");
+
+      await dotsPo[1].click();
+
+      activeCard = await stackedCardsPo.getActiveCardPo();
+      expect(await activeCard.getTitle()).toBe("TestDAO1");
+    });
+
+    it("should show all cards when snsProjects and openSnsProposals are not empty", async () => {
+      const po = renderPage({
+        snsProjects: mockSnsProjects,
+        openSnsProposals: mockSnsProposals,
+      });
+      const stackedCardsPo = po.getStackedCardsPo();
+      const cardWrappers = await stackedCardsPo.getCardWrappers();
+
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(cardWrappers.length).toBe(4);
+    });
+
+    it("should show first on going swaps and then proposals", async () => {
+      const po = renderPage({
+        snsProjects: mockSnsProjects.slice(0, 1),
+        openSnsProposals: mockSnsProposals.slice(0, 1),
+      });
+      const stackedCardsPo = po.getStackedCardsPo();
+      const cardWrappers = await stackedCardsPo.getCardWrappers();
+      const dotsPo = await stackedCardsPo.getDots();
+
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(cardWrappers.length).toBe(2);
+
+      let activeCard = await stackedCardsPo.getActiveCardPo();
+      expect(await activeCard.getTitle()).toBe("Tetris");
+
+      await dotsPo[1].click();
+
+      activeCard = await stackedCardsPo.getActiveCardPo();
+      expect(await activeCard.getTitle()).toBe("TestDAO1");
     });
 
     it("should hide TotalAssetsCard when not signed in and there are sns projects", async () => {

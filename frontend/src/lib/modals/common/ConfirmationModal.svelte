@@ -14,7 +14,7 @@
     <article data-tid="confirmation-modal-content">
       <slot />
     </article>
-    <div class="footer">
+    <div class="toolbar">
       <button
         data-tid="confirm-no"
         disabled={$busy}
@@ -41,11 +41,5 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-4x);
-
-    .footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: var(--padding-2x);
-    }
   }
 </style>

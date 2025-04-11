@@ -9,10 +9,21 @@ import { mock } from "vitest-mock-extended";
 
 describe("canisters-worker-api", () => {
   const response: CanisterStatusResponse = {
+    memory_metrics: {
+      wasm_binary_size: 2_000_900n,
+      wasm_chunk_store_size: 2_100_800n,
+      canister_history_size: 2_200_700n,
+      stable_memory_size: 2_300_600n,
+      snapshots_size: 2_400_500n,
+      wasm_memory_size: 2_500_400n,
+      global_memory_size: 2_600_300n,
+      custom_sections_size: 2_700_200n,
+    },
     status: { running: null },
     memory_size: 1_000n,
     cycles: 10_000n,
     settings: {
+      wasm_memory_threshold: 1_000_000_000n,
       controllers: [],
       reserved_cycles_limit: 1_000_000_000n,
       freezing_threshold: 0n,

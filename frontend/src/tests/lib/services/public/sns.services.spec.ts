@@ -1,5 +1,6 @@
 import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-service";
 import * as agent from "$lib/api/agent.api";
+import * as proposalsApi from "$lib/api/proposals.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import {
   clearWrapperCache,
@@ -10,6 +11,7 @@ import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import { snsTotalTokenSupplyStore } from "$lib/derived/sns-total-token-supply.derived";
 import {
   getLoadedSnsAggregatorData,
+  loadProposalsSnsCF,
   loadSnsProjects,
 } from "$lib/services/public/sns.services";
 import {
@@ -32,7 +34,7 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
+import { AnonymousIdentity, type HttpAgent } from "@dfinity/agent";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
@@ -233,6 +235,45 @@ describe("SNS public services", () => {
       expect(wrappers.has(committedSns2.canister_ids.root_canister_id)).toBe(
         true
       );
+    });
+  });
+
+  describe("loadProposalsSnsCF", () => {
+    let queryProposalsSpy;
+    const baseRequestPayload = {
+      beforeProposal: undefined,
+      identity: new AnonymousIdentity(),
+      includeStatus: [1],
+      includeTopics: [14],
+      certified: false,
+    };
+
+    beforeEach(() => {
+      queryProposalsSpy = vi
+        .spyOn(proposalsApi, "queryProposals")
+        .mockResolvedValue([]);
+    });
+
+    it("should request proposals omitting large fields by default", async () => {
+      await loadProposalsSnsCF();
+
+      expect(queryProposalsSpy).toHaveBeenCalledTimes(1);
+      expect(queryProposalsSpy).toHaveBeenCalledWith({
+        omitLargeFields: true,
+        ...baseRequestPayload,
+      });
+    });
+
+    it("should request proposals not omitting large fields when requested", async () => {
+      await loadProposalsSnsCF({
+        omitLargeFields: false,
+      });
+
+      expect(queryProposalsSpy).toHaveBeenCalledTimes(1);
+      expect(queryProposalsSpy).toHaveBeenCalledWith({
+        omitLargeFields: false,
+        ...baseRequestPayload,
+      });
     });
   });
 });

@@ -84,60 +84,62 @@
       </Tag>
     </div>
 
-    <p class="description" data-tid="project-description"
-      >{summary.metadata.description}</p
-    >
+    <div class="content">
+      <p class="description" data-tid="project-description"
+        >{summary.metadata.description}</p
+      >
 
-    <div class="commitment-section">
-      <h4 class="section-title">
-        {$i18n.portfolio.open_project_card_title}
-      </h4>
+      <div class="commitment-section">
+        <h4 class="section-title">
+          {$i18n.portfolio.open_project_card_title}
+        </h4>
 
-      <div class="stats">
-        <div class="stat-item">
-          <span class="stat-label">
-            {$i18n.portfolio.open_project_current_commitment}
-          </span>
-          <span
-            class="stat-value direct-commitment"
-            data-tid="direct-commitment">{formattedDirectCommitment}</span
-          >
-        </div>
-
-        <div class="vertical-divider"></div>
-
-        <div class="stat-item">
-          <span class="stat-label">
-            {$i18n.portfolio.open_project_card_min_icp}
-          </span>
-          <span class="stat-value" data-tid="min-direct-commitment">
-            {formattedMinCommitmentIcp}
-          </span>
-        </div>
-
-        <div class="stat-item">
-          <span class="stat-label">
-            {$i18n.portfolio.open_project_card_max_icp}
-          </span>
-          <span class="stat-value" data-tid="max-direct-commitment">
-            {formattedMaxCommitmentIcp}
-          </span>
-        </div>
-
-        {#if nonNullish(formattedNfCommitmentPercentage)}
-          <div class="stat-item" data-tid="nf-commitment-field">
-            <div class="stat-label"
-              >{$i18n.portfolio.open_project_card_nf}
-              <TooltipIcon
-                text={$i18n.portfolio.open_project_card_neuron_fund_tooltip}
-                tooltipId="main-icp-account-id-tooltip"
-              />
-            </div>
-            <div class="stat-value" data-tid="nf-commitment"
-              >{formattedNfCommitmentPercentage}</div
+        <div class="stats">
+          <div class="stat-item">
+            <span class="stat-label">
+              {$i18n.portfolio.open_project_current_commitment}
+            </span>
+            <span
+              class="stat-value direct-commitment"
+              data-tid="direct-commitment">{formattedDirectCommitment}</span
             >
           </div>
-        {/if}
+
+          <div class="vertical-divider"></div>
+
+          <div class="stat-item">
+            <span class="stat-label">
+              {$i18n.portfolio.open_project_card_min_icp}
+            </span>
+            <span class="stat-value" data-tid="min-direct-commitment">
+              {formattedMinCommitmentIcp}
+            </span>
+          </div>
+
+          <div class="stat-item">
+            <span class="stat-label">
+              {$i18n.portfolio.open_project_card_max_icp}
+            </span>
+            <span class="stat-value" data-tid="max-direct-commitment">
+              {formattedMaxCommitmentIcp}
+            </span>
+          </div>
+
+          {#if nonNullish(formattedNfCommitmentPercentage)}
+            <div class="stat-item" data-tid="nf-commitment-field">
+              <div class="stat-label"
+                >{$i18n.portfolio.open_project_card_nf}
+                <TooltipIcon
+                  text={$i18n.portfolio.open_project_card_neuron_fund_tooltip}
+                  tooltipId="main-icp-account-id-tooltip"
+                />
+              </div>
+              <div class="stat-value" data-tid="nf-commitment"
+                >{formattedNfCommitmentPercentage}</div
+              >
+            </div>
+          {/if}
+        </div>
       </div>
     </div>
 
@@ -177,11 +179,14 @@
 
     gap: var(--padding-2x);
     padding: var(--padding-2x);
-    padding-bottom: var(--padding-3x);
+    /* Required to give space to the StackedCards dots */
+    padding-bottom: var(--card-stacked-dots-space);
 
     @include media.min-width(medium) {
       padding: var(--padding-3x);
-      padding-bottom: var(--padding-4x);
+
+      /* Required to give space to the StackedCards dots */
+      padding-bottom: var(--card-stacked-dots-space);
     }
 
     .header {
@@ -203,58 +208,64 @@
       }
     }
 
-    .description {
-      margin: 0;
-      color: var(--color-text-secondary);
-      height: calc(2 * var(--line-height-standard) * 1rem);
-
-      @include text.clamp(2);
-    }
-
-    .commitment-section {
+    .content {
       display: flex;
       flex-direction: column;
-      gap: var(--padding-0_5x);
-    }
-
-    .section-title {
-      color: var(--text-description);
-      @include fonts.small(true);
-    }
-
-    .stats {
-      display: flex;
       gap: var(--padding-2x);
+      height: 124px;
 
-      .stat-item {
+      .description {
+        margin: 0;
+        color: var(--color-text-secondary);
+        height: calc(2 * var(--line-height-standard) * 1rem);
+
+        @include text.clamp(2);
+      }
+
+      .commitment-section {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         gap: var(--padding-0_5x);
-
-        .stat-label {
-          display: flex;
-          align-items: center;
-          height: 16px;
-          gap: var(--padding-0_5x);
-          @include fonts.small(false);
-        }
-
-        .stat-value {
-          font-size: var(--font-size-standard);
-          font-weight: var(--font-weight-bold);
-        }
-
-        .direct-commitment {
-          @include fonts.h2(true);
-          line-height: 1;
-        }
       }
-      .vertical-divider {
-        border-right: 1px solid var(--elements-divider);
+
+      .section-title {
+        color: var(--text-description);
+        @include fonts.small(true);
+      }
+
+      .stats {
+        display: flex;
+        gap: var(--padding-2x);
+
+        .stat-item {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          gap: var(--padding-0_5x);
+
+          .stat-label {
+            display: flex;
+            align-items: center;
+            height: 16px;
+            gap: var(--padding-0_5x);
+            @include fonts.small(false);
+          }
+
+          .stat-value {
+            font-size: var(--font-size-standard);
+            font-weight: var(--font-weight-bold);
+          }
+
+          .direct-commitment {
+            @include fonts.h2(true);
+            line-height: 1;
+          }
+        }
+        .vertical-divider {
+          border-right: 1px solid var(--elements-divider);
+        }
       }
     }
-
     .footer {
       display: flex;
       justify-content: space-between;
