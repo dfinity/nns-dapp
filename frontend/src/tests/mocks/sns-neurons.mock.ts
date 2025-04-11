@@ -4,9 +4,11 @@ import {
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import type { ProjectNeuronStore } from "$lib/stores/sns-neurons.store";
+import type { SnsTopicFollowee, SnsTopicKey } from "$lib/types/sns";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";
+import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { NeuronState, type NeuronId } from "@dfinity/nns";
@@ -15,6 +17,7 @@ import {
   SnsNeuronPermissionType,
   type SnsNervousSystemParameters,
   type SnsNeuron,
+  type SnsTopic,
 } from "@dfinity/sns";
 import type {
   DisburseMaturityInProgress,
@@ -58,6 +61,7 @@ export const createMockSnsNeuron = ({
   createdTimestampSeconds = BigInt(nowInSeconds() - SECONDS_IN_DAY),
   sourceNnsNeuronId,
   activeDisbursementsE8s = [],
+  topicFollowees,
 }: {
   stake?: bigint;
   id?: number[];
@@ -77,6 +81,9 @@ export const createMockSnsNeuron = ({
   // Having a sourceNnsNeuronId makes the neuron a CF neuron.
   sourceNnsNeuronId?: NeuronId;
   activeDisbursementsE8s?: bigint[];
+  topicFollowees?: {
+    [key in SnsTopicKey]?: SnsTopicFollowee[];
+  };
 }): SnsNeuron => {
   if (isNullish(state) && nonNullish(dissolveDelaySeconds)) {
     state = NeuronState.Locked;
@@ -96,7 +103,6 @@ export const createMockSnsNeuron = ({
     maturity_e8s_equivalent: maturity,
     cached_neuron_stake_e8s: stake,
     created_timestamp_seconds: createdTimestampSeconds,
-    topic_followees: [],
     staked_maturity_e8s_equivalent: [stakedMaturity],
     auto_stake_maturity: [],
     aging_since_timestamp_seconds: ageSinceTimestampSeconds,
@@ -125,6 +131,25 @@ export const createMockSnsNeuron = ({
       ...mockActiveDisbursement,
       amount_e8s: amountE8s,
     })),
+    topic_followees: isNullish(topicFollowees)
+      ? []
+      : [
+          {
+            topic_id_to_followees: Object.entries(topicFollowees).map(
+              ([topic, followees]) => [
+                // The topic number-based IDs are not used in the nns-dapp
+                0,
+                {
+                  topic: [snsTopicKeyToTopic(topic as SnsTopicKey) as SnsTopic],
+                  followees: followees.map(({ neuronId, alias }) => ({
+                    neuron_id: [neuronId],
+                    alias: alias === undefined ? [] : [alias],
+                  })),
+                },
+              ]
+            ),
+          },
+        ],
   };
 };
 
