@@ -23,6 +23,7 @@
 >
   <Hash text={neuronIdHex} id={neuronIdHex} tagName="span" showCopy />
   <button
+    data-tid="remove-button"
     class="remove-button icon-only"
     aria-label={$i18n.core.remove}
     onclick={onRemoveClick}><IconClose /></button
