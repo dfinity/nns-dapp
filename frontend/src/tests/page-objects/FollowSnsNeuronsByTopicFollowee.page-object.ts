@@ -1,6 +1,6 @@
+import { HashPo } from "$tests/page-objects//Hash.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { HashPo } from "./Hash.page-object";
 
 export class FollowSnsNeuronsByTopicFolloweePo extends BasePageObject {
   private static readonly TID =
