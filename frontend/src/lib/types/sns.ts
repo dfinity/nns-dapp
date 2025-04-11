@@ -5,7 +5,6 @@ import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
   SnsGetLifecycleResponse,
-  SnsNeuronId,
   SnsNeuronRecipe,
   SnsParams,
   SnsSwapBuyerState,
