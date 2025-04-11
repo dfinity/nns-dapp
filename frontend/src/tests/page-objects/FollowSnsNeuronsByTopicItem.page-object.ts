@@ -1,7 +1,7 @@
-import { FollowSnsNeuronsByTopicFolloweePo } from "$tests/page-objects//FollowSnsNeuronsByTopicFollowee.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { CollapsiblePo } from "$tests/page-objects/Collapsible.page-object";
+import { FollowSnsNeuronsByTopicFolloweePo } from "$tests/page-objects/FollowSnsNeuronsByTopicFollowee.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
