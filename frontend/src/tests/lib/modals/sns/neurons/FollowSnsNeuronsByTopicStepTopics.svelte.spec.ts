@@ -1,8 +1,9 @@
 import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
-import type { SnsTopicKey } from "$lib/types/sns";
+import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { FollowSnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepTopics.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import type { SnsNeuronId } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("FollowSnsNeuronsByTopicStepTopics", () => {
@@ -70,8 +71,13 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   const renderComponent = (props: {
     selectedTopics: SnsTopicKey[];
     topicInfos: TopicInfoWithUnknown[];
+    followings: SnsTopicFollowing[];
     onNnsClose: () => void;
     onNnsNext: () => void;
+    onNnsRemove: (args: {
+      topicKey: SnsTopicKey;
+      neuronId: SnsNeuronId;
+    }) => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicStepTopics, {
       props,
@@ -84,8 +90,10 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   const defaultProps = {
     selectedTopics: [],
     topicInfos: [],
+    followings: [],
     onNnsClose: vi.fn(),
     onNnsNext: vi.fn(),
+    onNnsRemove: vi.fn(),
   };
 
   it("displays critical and non-critical topics", async () => {
