@@ -13,7 +13,7 @@
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 
-  interface Props {
+  type Props = {
     topicInfo: TopicInfoWithUnknown;
     followees: SnsTopicFollowee[];
     checked: boolean;
@@ -22,7 +22,7 @@
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
-  }
+  };
 
   let {
     topicInfo,

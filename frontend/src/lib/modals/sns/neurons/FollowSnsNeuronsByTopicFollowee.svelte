@@ -5,16 +5,13 @@
   import { i18n } from "$lib/stores/i18n";
   import type { SnsTopicFollowee } from "$lib/types/sns";
 
-  interface Props {
+  type Props = {
     followee: SnsTopicFollowee;
     onRemoveClick: () => void;
-  }
+  };
+  const { followee, onRemoveClick }: Props = $props();
 
-  let { followee, onRemoveClick }: Props = $props();
-
-  let neuronIdHex: string = $derived(
-    subaccountToHexString(followee.neuronId.id)
-  );
+  let neuronIdHex = $derived(subaccountToHexString(followee.neuronId.id));
 </script>
 
 <div
@@ -23,6 +20,7 @@
 >
   <Hash text={neuronIdHex} id={neuronIdHex} tagName="span" showCopy />
   <button
+    data-tid="remove-button"
     class="remove-button icon-only"
     aria-label={$i18n.core.remove}
     onclick={onRemoveClick}><IconClose /></button

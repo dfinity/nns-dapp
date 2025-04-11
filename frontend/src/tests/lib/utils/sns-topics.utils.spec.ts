@@ -17,9 +17,9 @@ import {
   snsTopicKeyToTopic,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction, SnsTopic } from "@dfinity/sns";
-import { createMockSnsNeuron } from "../../mocks/sns-neurons.mock";
 
 describe("sns-topics utils", () => {
   const neuronId1 = {
