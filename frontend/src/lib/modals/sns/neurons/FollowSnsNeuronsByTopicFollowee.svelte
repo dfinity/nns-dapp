@@ -9,7 +9,7 @@
     followee: SnsTopicFollowee;
     onRemoveClick: () => void;
   };
-  let { followee, onRemoveClick }: Props = $props();
+  const { followee, onRemoveClick }: Props = $props();
 
   let neuronIdHex = $derived(subaccountToHexString(followee.neuronId.id));
 </script>
