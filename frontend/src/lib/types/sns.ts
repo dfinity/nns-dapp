@@ -5,6 +5,7 @@ import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
   SnsGetLifecycleResponse,
+  SnsNeuronId,
   SnsNeuronRecipe,
   SnsParams,
   SnsSwapBuyerState,
@@ -110,4 +111,14 @@ export interface SnsTicket {
 // "DappCanisterManagement" | "DaoCommunitySettings" | ...
 export type SnsTopicKey = keyof {
   [K in SnsTopic | UnknownTopic as keyof K]: true;
+};
+
+export type SnsTopicFollowee = {
+  neuronId: SnsNeuronId;
+  alias?: string;
+};
+
+export type SnsTopicFollowing = {
+  topic: SnsTopicKey;
+  followees: Array<SnsTopicFollowee>;
 };

@@ -10,6 +10,7 @@ import {
   querySnsNeurons,
   removeNeuronPermissions,
   setFollowees,
+  setFollowing as setFollowingApi,
   splitNeuron as splitNeuronApi,
   stakeMaturity as stakeMaturityApi,
   startDissolving as startDissolvingApi,
@@ -34,6 +35,7 @@ import {
 } from "$lib/stores/sns-neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import type { Account } from "$lib/types/account";
+import type { SnsTopicFollowing } from "$lib/types/sns";
 import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
@@ -47,13 +49,14 @@ import {
   nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
+import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
-import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+import type { SnsNeuron, SnsNeuronId, SnsTopic } from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
   assertNonNullish,
@@ -633,6 +636,42 @@ export const addFollowee = async ({
       neuronId: fromNullable(neuron.id) as SnsNeuronId,
       functionId,
       followees: newFollowees,
+    });
+
+    return { success: true };
+  } catch (error: unknown) {
+    toastsError({
+      labelKey: "error__sns.sns_add_followee",
+      err: error,
+    });
+    return { success: false };
+  }
+};
+
+/**
+ * Makes a call to set the followees for a neuron for a specific topics.
+ */
+export const setFollowing = async ({
+  rootCanisterId,
+  neuronId,
+  followings,
+}: {
+  rootCanisterId: Principal;
+  neuronId: SnsNeuronId;
+  followings: SnsTopicFollowing[];
+}): Promise<{ success: boolean }> => {
+  const identity = await getSnsNeuronIdentity();
+
+  try {
+    const topicFollowing = followings.map(({ topic, followees }) => ({
+      topic: snsTopicKeyToTopic(topic) as SnsTopic,
+      followees,
+    }));
+    await setFollowingApi({
+      identity,
+      neuronId,
+      rootCanisterId,
+      topicFollowing,
     });
 
     return { success: true };
