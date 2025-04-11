@@ -1,3 +1,4 @@
+import { FollowSnsNeuronsByTopicFolloweePo } from "$tests/page-objects//FollowSnsNeuronsByTopicFollowee.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { CollapsiblePo } from "$tests/page-objects/Collapsible.page-object";
@@ -49,5 +50,17 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
 
   getTopicDescription(): Promise<string> {
     return this.root.byTestId("topic-description").getText();
+  }
+
+  getFolloweesPo(): Promise<FollowSnsNeuronsByTopicFolloweePo[]> {
+    return FollowSnsNeuronsByTopicFolloweePo.allUnder(this.root);
+  }
+
+  async getFolloweesNeuronIds(): Promise<string[]> {
+    return Promise.all(
+      (await this.getFolloweesPo()).map(
+        async (followee) => await followee.getNeuronHashPo().getFullText()
+      )
+    );
   }
 }

@@ -1,9 +1,10 @@
 import FollowSnsNeuronsByTopicItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
+import type { SnsTopicFollowee } from "$lib/types/sns";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { FollowSnsNeuronsByTopicItemPo } from "$tests/page-objects/FollowSnsNeuronsByTopicItem.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import type { SnsNervousSystemFunction } from "@dfinity/sns";
+import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
 
 describe("FollowSnsNeuronsByTopicItem", () => {
   const nativeNsFunction: SnsNervousSystemFunction = {
@@ -25,11 +26,15 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     description: ["Known topic description"],
     custom_functions: [[]],
   };
+  const neuronId1: SnsNeuronId = { id: Uint8Array.from([1, 2, 3]) };
+  const neuronId2: SnsNeuronId = { id: Uint8Array.from([4, 5, 6]) };
 
   const renderComponent = (props: {
     topicInfo: TopicInfoWithUnknown;
     checked: boolean;
+    followees: SnsTopicFollowee[];
     onNnsChange: () => void;
+    onNnsRemove: () => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicItem, {
       props,
@@ -41,8 +46,10 @@ describe("FollowSnsNeuronsByTopicItem", () => {
   };
   const defaultProps = {
     topicInfo,
+    followees: [],
     checked: false,
     onNnsChange: vi.fn(),
+    onNnsRemove: vi.fn(),
   };
 
   it("should expand and collapse", async () => {
@@ -78,5 +85,53 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     expect(await po.getCheckboxPo().isChecked()).toBe(false);
     expect(onNnsChange).toBeCalledTimes(2);
     expect(onNnsChange).toBeCalledWith({ checked: false, topicKey });
+  });
+
+  it("displays followees", async () => {
+    const po = renderComponent({
+      ...defaultProps,
+      followees: [
+        {
+          neuronId: neuronId1,
+        },
+        {
+          neuronId: neuronId2,
+        },
+      ],
+    });
+
+    expect(await po.getFolloweesNeuronIds()).toEqual(["010203", "040506"]);
+  });
+
+  it("triggers onRemove", async () => {
+    const onNnsRemove = vi.fn();
+    const po = renderComponent({
+      ...defaultProps,
+      followees: [
+        {
+          neuronId: neuronId1,
+        },
+        {
+          neuronId: neuronId2,
+        },
+      ],
+      onNnsRemove,
+    });
+
+    const followeePos = await po.getFolloweesPo();
+
+    await followeePos[0].clickRemoveButton();
+    expect(onNnsRemove).toBeCalledTimes(1);
+    expect(onNnsRemove).toBeCalledWith({
+      neuronId: neuronId1,
+      topicKey,
+    });
+
+    await followeePos[1].clickRemoveButton();
+    expect(onNnsRemove).toBeCalledTimes(2);
+    expect(onNnsRemove).toBeCalledWith({
+      neuronId: neuronId2,
+      topicKey,
+    });
   });
 });
