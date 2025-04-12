@@ -35,12 +35,12 @@
   import { hexStringToBytes } from "$lib/utils/utils";
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
 
-  interface Props {
+  type Props = {
     rootCanisterId: Principal;
     neuron: SnsNeuron;
     reloadNeuron: () => Promise<void>;
-  }
-  let { rootCanisterId, neuron, reloadNeuron }: Props = $props();
+  };
+  const { rootCanisterId, neuron, reloadNeuron }: Props = $props();
 
   const dispatcher = createEventDispatcher();
   const STEP_TOPICS = "topics";
