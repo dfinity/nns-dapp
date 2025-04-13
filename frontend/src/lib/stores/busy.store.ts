@@ -22,6 +22,7 @@ export type BusyStateInitiatorType =
   | "dissolve-action"
   | "add-followee"
   | "add-followee-by-topic"
+  | "remove-followee-by-topic"
   | "remove-followee"
   | "add-hotkey-neuron"
   | "remove-hotkey-neuron"

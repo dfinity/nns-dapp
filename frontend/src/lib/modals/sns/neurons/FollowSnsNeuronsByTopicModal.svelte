@@ -93,7 +93,10 @@
       id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
     };
 
-    startBusy({ initiator: "add-followee-by-topic" });
+    startBusy({
+      initiator: "add-followee-by-topic",
+      labelKey: "follow_sns_topics.busy_updating",
+    });
 
     if (!(await validateNeuronId(neuronId))) {
       stopBusy("add-followee-by-topic");
@@ -141,7 +144,10 @@
     topicKey: SnsTopicKey;
     neuronId: SnsNeuronId;
   }) => {
-    startBusy({ initiator: "add-followee-by-topic" });
+    startBusy({
+      initiator: "remove-followee-by-topic",
+      labelKey: "follow_sns_topics.busy_removing",
+    });
 
     try {
       const { success } = await setFollowing({
@@ -156,7 +162,7 @@
 
       if (success) {
         toastsSuccess({
-          labelKey: $i18n.follow_sns_topics.error_remove_following,
+          labelKey: $i18n.follow_sns_topics.success_removed_following,
         });
         await reloadNeuron();
       }
@@ -167,7 +173,7 @@
       });
     }
 
-    stopBusy("add-followee-by-topic");
+    stopBusy("remove-followee-by-topic");
   };
 </script>
 
