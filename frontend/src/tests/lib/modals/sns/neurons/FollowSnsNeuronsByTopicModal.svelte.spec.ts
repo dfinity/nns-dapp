@@ -1,7 +1,7 @@
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import FollowSnsNeuronsByTopicModal from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicModal.svelte";
 import type { SnsTopicKey } from "$lib/types/sns";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
@@ -9,10 +9,16 @@ import { FollowSnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowSnsNeu
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { busyStore, toastsStore } from "@dfinity/gix-components";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-import { arrayOfNumberToUint8Array, fromNullable } from "@dfinity/utils";
+import {
+  arrayOfNumberToUint8Array,
+  fromNullable,
+  nonNullish,
+} from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("FollowSnsNeuronsByTopicModal", () => {
   const rootCanisterId = principal(1);
@@ -38,13 +44,19 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     },
   });
 
-  const renderComponent = (props: {
-    rootCanisterId: Principal;
-    neuron: SnsNeuron;
-    reloadNeuron: () => Promise<void>;
-  }) => {
+  const renderComponent = (
+    props: {
+      rootCanisterId: Principal;
+      neuron: SnsNeuron;
+      reloadNeuron: () => Promise<void>;
+    },
+    onNnsClose?: () => void
+  ) => {
     const { container } = render(FollowSnsNeuronsByTopicModal, {
       props,
+      events: {
+        ...(nonNullish(onNnsClose) && { nnsClose: onNnsClose }),
+      },
     });
 
     return FollowSnsNeuronsByTopicModalPo.under(
@@ -58,6 +70,8 @@ describe("FollowSnsNeuronsByTopicModal", () => {
   };
 
   beforeEach(() => {
+    resetIdentity();
+
     setSnsProjects([
       {
         rootCanisterId,
@@ -115,37 +129,75 @@ describe("FollowSnsNeuronsByTopicModal", () => {
   });
 
   it("updates following for selected topics", async () => {
+    const newFolloweeNeuronIdHex = "040506";
+    const newFolloweeNeuronId: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array([4, 5, 6]),
+    };
+    let resolveQuerySnsNeuron;
+    const querySnsNeuronSpy = vi
+      .spyOn(snsGovernanceApi, "querySnsNeuron")
+      .mockImplementation(
+        () => new Promise((resolve) => (resolveQuerySnsNeuron = resolve))
+      );
+    let resolveSetFollowing;
     const setFollowingSpy = vi
       .spyOn(snsGovernanceApi, "setFollowing")
-      .mockImplementation(() => Promise.resolve());
+      .mockImplementation(
+        () => new Promise((resolve) => (resolveSetFollowing = resolve))
+      );
     const reloadNeuronSpy = vi.fn();
-    const po = renderComponent({
-      ...defaultProps,
-      reloadNeuron: reloadNeuronSpy,
-    });
+    const onNnsCloseSpy = vi.fn();
+    const po = renderComponent(
+      {
+        ...defaultProps,
+        reloadNeuron: reloadNeuronSpy,
+      },
+      onNnsCloseSpy
+    );
 
-    // Select critical topic
+    // Select a topic
     const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
     expect(await topicsStepPo.isPresent()).toEqual(true);
     expect(await topicsStepPo.getNextButtonPo().isDisabled()).toEqual(true);
     await topicsStepPo.clickTopicItemByName(criticalTopicName2);
     expect(await topicsStepPo.getNextButtonPo().isDisabled()).toEqual(false);
-
-    // Goto neuron step
     await topicsStepPo.clickNextButton();
+
+    // Type neuron id
     const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
     expect(await neuronStepPo.isPresent()).toEqual(true);
-    expect(
-      await po.getFollowSnsNeuronsByTopicStepTopicsPo().isPresent()
-    ).toEqual(false);
+    expect(await topicsStepPo.isPresent()).toEqual(false);
     expect(await neuronStepPo.getConfirmButtonPo().isDisabled()).toEqual(true);
-    await neuronStepPo.getNeuronIdInputPo().typeText("040506");
+    await neuronStepPo.getNeuronIdInputPo().typeText(newFolloweeNeuronIdHex);
     expect(await neuronStepPo.getConfirmButtonPo().isDisabled()).toEqual(false);
 
-    // Confirm setting following
-    await neuronStepPo.getConfirmButtonPo().click();
+    // Confirmation
+    await neuronStepPo.clickConfirmButton();
     await runResolvedPromises();
 
+    // Expect busy to be shown
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "add-followee-by-topic",
+        text: undefined,
+      },
+    ]);
+    expect(get(toastsStore)).toEqual([]);
+
+    // Neuron id validation request
+    expect(querySnsNeuronSpy).toBeCalledTimes(1);
+    expect(querySnsNeuronSpy).toBeCalledWith({
+      identity: mockIdentity,
+      rootCanisterId,
+      certified: false,
+      neuronId: newFolloweeNeuronId,
+    });
+    expect(setFollowingSpy).toBeCalledTimes(0);
+
+    resolveQuerySnsNeuron(neuron);
+    await runResolvedPromises();
+
+    // Set following request
     expect(setFollowingSpy).toBeCalledTimes(1);
     expect(setFollowingSpy).toBeCalledWith({
       neuronId: fromNullable(neuron.id),
@@ -154,14 +206,25 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       topicFollowing: [
         {
           topic: { [criticalTopicKey2]: null },
-          followees: [
-            {
-              id: arrayOfNumberToUint8Array([4, 5, 6]),
-            } as SnsNeuronId,
-          ],
+          followees: [{ neuronId: newFolloweeNeuronId }],
         },
       ],
     });
+
+    expect(reloadNeuronSpy).toBeCalledTimes(0);
+    expect(onNnsCloseSpy).toBeCalledTimes(0);
+    resolveSetFollowing();
+    await runResolvedPromises();
+
+    // After successful set following
     expect(reloadNeuronSpy).toBeCalledTimes(1);
+    expect(onNnsCloseSpy).toBeCalledTimes(1);
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "success",
+        text: "The voting delegation was successfully added.",
+      },
+    ]);
   });
 });
