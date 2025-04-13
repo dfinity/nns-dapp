@@ -73,15 +73,19 @@
 
   // Validate the followee neuron id by fetching it.
   const validateNeuronId = async (neuronId: SnsNeuronId) => {
-    const identity = await getSnsNeuronIdentity();
-    return (
-      (await querySnsNeuron({
-        identity,
-        rootCanisterId,
-        neuronId,
-        certified: false,
-      })) !== undefined
-    );
+    try {
+      const identity = await getSnsNeuronIdentity();
+      return (
+        (await querySnsNeuron({
+          identity,
+          rootCanisterId,
+          neuronId,
+          certified: false,
+        })) !== undefined
+      );
+    } catch (_) {
+      return false;
+    }
   };
 
   const onConfirm = async (followeeHex: string) => {
