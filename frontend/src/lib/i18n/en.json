@@ -436,9 +436,11 @@
     "neuron_label": "Neuron to Follow",
     "neuron_description": "*Developer neurons are not stored in a central place as of now. You can often find them on the <a href=\"https://forum.dfinity.org/\" rel=\"noopener noreferrer\" aria-label=\"DFINITY forum\" target=\"_blank\">DFINITY forum</a> in the founding team’s announcement, or on their <a href=\"https://x.com/home\" rel=\"noopener noreferrer\" aria-label=\"X\" target=\"_blank\">X</a> account. Alternatively, you can review voting power distributions of all neurons on <a href=\"https://snsgeek.app/sns\" rel=\"noopener noreferrer\" aria-label=\"snsgeek\" target=\"_blank\">snsGeek</a>, and select a neuron from their list.",
     "neuron_follow": "Follow Neuron",
+    "busy_updating": "Updating neuron followings",
+    "busy_removing": "Removing neuron following",
     "error_neuron_not_exist": "Neuron with id $neuronId does not exist.",
-    "success_set_following": "The voting delegation was successfully added.",
-    "success_removed_following": "The voting delegation was successfully removed.",
+    "success_set_following": "The neuron following was successfully added.",
+    "success_removed_following": "The neuron following was successfully removed.",
     "error_set_following": "There was an error while adding the voting delegation.",
     "error_remove_following": "There was an error while removing the voting delegation."
   },
