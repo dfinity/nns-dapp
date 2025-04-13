@@ -227,4 +227,146 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       },
     ]);
   });
+
+  it("handles set following error", async () => {
+    const testError = new Error("Test Error");
+    const spyConsoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    const newFolloweeNeuronIdHex = "040506";
+    vi.spyOn(snsGovernanceApi, "querySnsNeuron").mockResolvedValue(neuron);
+    let rejectSetFollowing;
+    const setFollowingSpy = vi
+      .spyOn(snsGovernanceApi, "setFollowing")
+      .mockImplementation(
+        () => new Promise((_, reject) => (rejectSetFollowing = reject))
+      );
+    const reloadNeuronSpy = vi.fn();
+    const onNnsCloseSpy = vi.fn();
+    const po = renderComponent(
+      {
+        ...defaultProps,
+        reloadNeuron: reloadNeuronSpy,
+      },
+      onNnsCloseSpy
+    );
+
+    const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
+    await topicsStepPo.clickTopicItemByName(criticalTopicName2);
+    await topicsStepPo.clickNextButton();
+    const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
+    await neuronStepPo.getNeuronIdInputPo().typeText(newFolloweeNeuronIdHex);
+    await neuronStepPo.clickConfirmButton();
+    await runResolvedPromises();
+
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "add-followee-by-topic",
+        text: undefined,
+      },
+    ]);
+    expect(get(toastsStore)).toEqual([]);
+    expect(spyConsoleError).toBeCalledTimes(0);
+    expect(setFollowingSpy).toBeCalledTimes(1);
+
+    // Reject set following
+    rejectSetFollowing(testError);
+    await runResolvedPromises();
+
+    expect(spyConsoleError).toBeCalledTimes(1);
+    expect(spyConsoleError).toBeCalledWith(testError);
+    expect(reloadNeuronSpy).toBeCalledTimes(0);
+    expect(onNnsCloseSpy).toBeCalledTimes(0);
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "error",
+        text: "There was an error while adding a followee. Test Error",
+      },
+    ]);
+  });
+
+  it("handles provided invalid neuron id", async () => {
+    const newFolloweeNeuronIdHex = "040506";
+    let rejectQuerySnsNeuron;
+    vi.spyOn(snsGovernanceApi, "querySnsNeuron").mockImplementation(
+      () => new Promise((_, reject) => (rejectQuerySnsNeuron = reject))
+    );
+    const setFollowingSpy = vi
+      .spyOn(snsGovernanceApi, "setFollowing")
+      .mockResolvedValue();
+    const reloadNeuronSpy = vi.fn();
+    const onNnsCloseSpy = vi.fn();
+    const po = renderComponent(
+      {
+        ...defaultProps,
+        reloadNeuron: reloadNeuronSpy,
+      },
+      onNnsCloseSpy
+    );
+
+    const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
+    await topicsStepPo.clickTopicItemByName(criticalTopicName2);
+    await topicsStepPo.clickNextButton();
+    const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
+    await neuronStepPo.getNeuronIdInputPo().typeText(newFolloweeNeuronIdHex);
+
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toEqual([]);
+    await neuronStepPo.clickConfirmButton();
+
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "add-followee-by-topic",
+        text: undefined,
+      },
+    ]);
+    expect(get(toastsStore)).toEqual([]);
+
+    rejectQuerySnsNeuron();
+    await runResolvedPromises();
+
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "error",
+        text: "Neuron with id 040506 does not exist.",
+      },
+    ]);
+
+    expect(setFollowingSpy).toBeCalledTimes(0);
+    expect(reloadNeuronSpy).toBeCalledTimes(0);
+    expect(onNnsCloseSpy).toBeCalledTimes(0);
+  });
+
+  it("preserves user entered data between step navigation", async () => {
+    const po = renderComponent({
+      ...defaultProps,
+    });
+
+    const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
+    await topicsStepPo.clickTopicItemByName(criticalTopicName2);
+    await topicsStepPo.clickTopicItemByName(topicName1);
+    await topicsStepPo.clickNextButton();
+
+    const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
+    await neuronStepPo.getNeuronIdInputPo().typeText("1234");
+    await neuronStepPo.clickBackButton();
+
+    expect(
+      await topicsStepPo.getTopicSelectionByName(criticalTopicName1)
+    ).toEqual(false);
+    expect(
+      await topicsStepPo.getTopicSelectionByName(criticalTopicName2)
+    ).toEqual(true);
+    expect(await topicsStepPo.getTopicSelectionByName(topicName1)).toEqual(
+      true
+    );
+    expect(await topicsStepPo.getTopicSelectionByName(topicName2)).toEqual(
+      false
+    );
+    await topicsStepPo.clickNextButton();
+    expect(await neuronStepPo.getNeuronIdValue()).toEqual("1234");
+    expect(await neuronStepPo.getConfirmButtonPo().isDisabled()).toEqual(false);
+  });
 });
