@@ -18,7 +18,7 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
     element: PageObjectElement
   ): Promise<FollowSnsNeuronsByTopicItemPo[]> {
     return (await element.allByTestId(FollowSnsNeuronsByTopicItemPo.TID)).map(
-      (element) => FollowSnsNeuronsByTopicItemPo.under(element)
+      (element) => new FollowSnsNeuronsByTopicItemPo(element)
     );
   }
 

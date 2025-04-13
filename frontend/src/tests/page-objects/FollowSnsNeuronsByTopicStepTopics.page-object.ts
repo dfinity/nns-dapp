@@ -1,7 +1,8 @@
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import type { FollowSnsNeuronsByTopicFolloweePo } from "$tests/page-objects/FollowSnsNeuronsByTopicFollowee.page-object";
+import { FollowSnsNeuronsByTopicItemPo } from "$tests/page-objects/FollowSnsNeuronsByTopicItem.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BasePageObject } from "./base.page-object";
-import { ButtonPo } from "./Button.page-object";
-import { FollowSnsNeuronsByTopicItemPo } from "./FollowSnsNeuronsByTopicItem.page-object";
 
 export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
   private static readonly TID =
@@ -75,6 +76,12 @@ export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
     return (await this.getTopicItemPosByName(topicName))
       .getCheckboxPo()
       .isChecked();
+  }
+
+  async getTopicFolloweePos(
+    topicName: string
+  ): Promise<FollowSnsNeuronsByTopicFolloweePo[]> {
+    return (await this.getTopicItemPosByName(topicName)).getFolloweesPo();
   }
 
   getCancelButtonPo(): ButtonPo {
