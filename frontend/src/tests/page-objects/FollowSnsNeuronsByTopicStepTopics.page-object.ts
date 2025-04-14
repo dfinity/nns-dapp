@@ -19,7 +19,7 @@ export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
   getCriticalFollowSnsNeuronsByTopicItemPos(): Promise<
     FollowSnsNeuronsByTopicItemPo[]
   > {
-    const groupElementPo = this.root.byTestId("critical-topic-group");
+    const groupElementPo = this.getElement("critical-topic-group");
     return FollowSnsNeuronsByTopicItemPo.allUnder(groupElementPo);
   }
 
