@@ -14,9 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Ongoing proposals for SNS projects on Portfolio page.
-* Command palette for faster app navigation.
-
 #### Changed
 
 #### Deprecated
@@ -24,8 +21,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-* Token conversion rates when opening a transactions from the tokens page.
 
 #### Security
 

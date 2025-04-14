@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 136220
+
+### Application
+
+#### Added
+
+* Ongoing proposals for SNS projects on Portfolio page.
+* Command palette for faster app navigation.
+
+#### Fixed
+
+* Token conversion rates when opening a transactions from the tokens page.
+
+### Operations
+
 ## Proposal 136068
 
 ### Application
