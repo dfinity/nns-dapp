@@ -31,7 +31,11 @@
   let:hasPricesAndUnpricedTokens
 >
   <Card testId="total-assets-card-component">
-    <div class="wrapper" class:full-width={isFullWidth}>
+    <div
+      class="wrapper"
+      class:full-width={isFullWidth}
+      data-tid="total-assets-card-component-wrapper"
+    >
       <h3>{$i18n.portfolio.total_assets_title}</h3>
       <div class="pricing">
         <div class="totals">

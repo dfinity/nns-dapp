@@ -176,18 +176,18 @@ describe("TotalAssetsCard", () => {
   it("should apply full-width class when isFullWidth is true", async () => {
     const isFullWidth = true;
     const usdAmount = 50;
-    
+
     const po = renderComponent({ usdAmount, isFullWidth });
-    
-    expect(await po.hasFullWidthClass()).toBe(true);
+
+    expect(await po.isFullWidth()).toBe(true);
   });
 
   it("should not apply full-width class when isFullWidth is false", async () => {
     const isFullWidth = false;
     const usdAmount = 50;
-    
+
     const po = renderComponent({ usdAmount, isFullWidth });
-    
-    expect(await po.hasFullWidthClass()).toBe(false);
+
+    expect(await po.isFullWidth()).toBe(false);
   });
 });
