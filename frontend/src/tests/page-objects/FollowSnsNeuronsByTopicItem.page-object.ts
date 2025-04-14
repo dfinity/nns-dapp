@@ -18,7 +18,7 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
     element: PageObjectElement
   ): Promise<FollowSnsNeuronsByTopicItemPo[]> {
     return (await element.allByTestId(FollowSnsNeuronsByTopicItemPo.TID)).map(
-      (element) => FollowSnsNeuronsByTopicItemPo.under(element)
+      (element) => new FollowSnsNeuronsByTopicItemPo(element)
     );
   }
 
@@ -45,15 +45,25 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
   }
 
   getTopicName(): Promise<string> {
-    return this.root.byTestId("topic-name").getText();
+    return this.getText("topic-name");
   }
 
   getTopicDescription(): Promise<string> {
-    return this.root.byTestId("topic-description").getText();
+    return this.getText("topic-description");
+  }
+
+  getStatusIcon(): PageObjectElement {
+    return this.getElement("topic-following-status");
   }
 
   getFolloweesPo(): Promise<FollowSnsNeuronsByTopicFolloweePo[]> {
     return FollowSnsNeuronsByTopicFolloweePo.allUnder(this.root);
+  }
+
+  async hasFollowingStatusIcon(): Promise<boolean> {
+    return (await this.getStatusIcon().getClasses()).includes(
+      "isFollowingByTopic"
+    );
   }
 
   async getFolloweesNeuronIds(): Promise<string[]> {
