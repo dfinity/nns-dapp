@@ -1,3 +1,4 @@
+import { FollowSnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepTopics.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -14,5 +15,9 @@ export class FollowSnsNeuronsByTopicModalPo extends ModalPo {
 
   clickCloseButton(): Promise<void> {
     return this.click("close-button");
+  }
+
+  getFollowSnsNeuronsByTopicStepTopicsPo(): FollowSnsNeuronsByTopicStepTopicsPo {
+    return FollowSnsNeuronsByTopicStepTopicsPo.under(this.root);
   }
 }
