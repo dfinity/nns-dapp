@@ -439,11 +439,11 @@
     "neuron_follow": "Follow Neuron",
     "busy_updating": "Updating neuron followings",
     "busy_removing": "Removing neuron following",
+    "busy_legacy_removing": "Removing neuron following",
     "error_neuron_not_exist": "Neuron with id $neuronId does not exist.",
     "success_set_following": "The neuron following was successfully added.",
-    "success_removed_following": "The neuron following was successfully removed.",
     "error_set_following": "There was an error while adding the voting delegation.",
-    "error_remove_following": "There was an error while removing the voting delegation."
+    "error_remove_following": "There was an error while removing the neuron followee."
   },
   "missing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",

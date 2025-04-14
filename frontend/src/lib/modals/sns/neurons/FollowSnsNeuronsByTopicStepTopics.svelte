@@ -12,7 +12,11 @@
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemFunction,
+    SnsNeuron,
+    SnsNeuronId,
+  } from "@dfinity/sns";
   interface Props {
     neuron: SnsNeuron;
     topicInfos: TopicInfoWithUnknown[];
@@ -24,6 +28,10 @@
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
+    onNnsLegacyRemove: (args: {
+      nsFunction: SnsNervousSystemFunction;
+      followee: SnsNeuronId;
+    }) => void;
   }
   let {
     neuron,
@@ -33,6 +41,7 @@
     onNnsClose,
     onNnsNext,
     onNnsRemove,
+    onNnsLegacyRemove,
   }: Props = $props();
 
   let criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
@@ -90,6 +99,7 @@
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {onNnsRemove}
+        {onNnsLegacyRemove}
       />
     {/each}
   </div>
@@ -112,6 +122,7 @@
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {onNnsRemove}
+        {onNnsLegacyRemove}
       />
     {/each}
   </div>

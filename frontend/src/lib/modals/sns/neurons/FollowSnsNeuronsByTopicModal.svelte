@@ -21,9 +21,14 @@
   } from "@dfinity/utils";
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemFunction,
+    SnsNeuron,
+    SnsNeuronId,
+  } from "@dfinity/sns";
   import {
     getSnsNeuronIdentity,
+    removeFollowee,
     setFollowing,
   } from "$lib/services/sns-neurons.services";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
@@ -161,9 +166,6 @@
       });
 
       if (success) {
-        toastsSuccess({
-          labelKey: $i18n.follow_sns_topics.success_removed_following,
-        });
         await reloadNeuron();
       }
     } catch (error) {
@@ -174,6 +176,39 @@
     }
 
     stopBusy("remove-followee-by-topic");
+  };
+
+  const onNnsLegacyRemove = async ({
+    nsFunction,
+    followee,
+  }: {
+    nsFunction: SnsNervousSystemFunction;
+    followee: SnsNeuronId;
+  }) => {
+    startBusy({
+      initiator: "remove-sns-followee",
+      labelKey: "follow_sns_topics.busy_legacy_removing",
+    });
+
+    try {
+      const { success } = await removeFollowee({
+        rootCanisterId,
+        neuron,
+        followee,
+        functionId: nsFunction.id,
+      });
+
+      if (success) {
+        await reloadNeuron();
+      }
+    } catch (error) {
+      console.error("Failed to remove SNS followee", error);
+      toastsError({
+        labelKey: "new_followee.error_remove_following",
+      });
+    }
+
+    stopBusy("remove-sns-followee");
   };
 </script>
 
@@ -195,6 +230,7 @@
       onNnsClose={close}
       onNnsNext={next}
       {onNnsRemove}
+      {onNnsLegacyRemove}
     />
   {/if}
   {#if currentStep?.name === STEP_NEURON}
