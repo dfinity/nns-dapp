@@ -22,7 +22,7 @@
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
     followings: SnsTopicFollowing[];
-    onNnsClose: () => void;
+    closeModal: () => void;
     onNnsNext: () => void;
     onNnsRemove: (args: {
       topicKey: SnsTopicKey;
@@ -38,7 +38,7 @@
     topicInfos,
     selectedTopics = $bindable(),
     followings,
-    onNnsClose,
+    closeModal,
     onNnsNext,
     onNnsRemove,
     onNnsLegacyRemove,
@@ -132,7 +132,7 @@
       class="secondary"
       type="button"
       data-tid="cancel-button"
-      onclick={onNnsClose}
+      onclick={closeModal}
     >
       {$i18n.core.cancel}
     </button>

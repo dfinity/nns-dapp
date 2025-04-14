@@ -72,7 +72,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     selectedTopics: SnsTopicKey[];
     topicInfos: TopicInfoWithUnknown[];
     followings: SnsTopicFollowing[];
-    onNnsClose: () => void;
+    closeModal: () => void;
     onNnsNext: () => void;
     onNnsRemove: (args: {
       topicKey: SnsTopicKey;
@@ -91,7 +91,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     selectedTopics: [],
     topicInfos: [],
     followings: [],
-    onNnsClose: vi.fn(),
+    closeModal: vi.fn(),
     onNnsNext: vi.fn(),
     onNnsRemove: vi.fn(),
   };
@@ -221,18 +221,18 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   });
 
   it("emits events", async () => {
-    const onNnsClose = vi.fn();
+    const closeModal = vi.fn();
     const onNnsNext = vi.fn();
     const po = renderComponent({
       ...defaultProps,
-      onNnsClose,
+      closeModal,
       onNnsNext,
     });
 
     expect(await po.getCancelButtonPo().isPresent()).toBe(true);
     expect(await po.getNextButtonPo().isPresent()).toBe(true);
     await po.clickCancelButton();
-    expect(onNnsClose).toBeCalledTimes(1);
+    expect(closeModal).toBeCalledTimes(1);
     await po.clickNextButton();
     expect(onNnsNext).toBeCalledTimes(1);
   });

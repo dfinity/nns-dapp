@@ -56,12 +56,12 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       neuron: SnsNeuron;
       reloadNeuron: () => Promise<void>;
     },
-    onNnsClose?: () => void
+    closeModal?: () => void
   ) => {
     const { container } = render(FollowSnsNeuronsByTopicModal, {
       props,
       events: {
-        ...(nonNullish(onNnsClose) && { nnsClose: onNnsClose }),
+        ...(nonNullish(closeModal) && { nnsClose: closeModal }),
       },
     });
 
@@ -152,13 +152,13 @@ describe("FollowSnsNeuronsByTopicModal", () => {
         () => new Promise((resolve) => (resolveSetFollowing = resolve))
       );
     const reloadNeuronSpy = vi.fn();
-    const onNnsCloseSpy = vi.fn();
+    const closeModalSpy = vi.fn();
     const po = renderComponent(
       {
         ...defaultProps,
         reloadNeuron: reloadNeuronSpy,
       },
-      onNnsCloseSpy
+      closeModalSpy
     );
 
     // Select a topic
@@ -218,13 +218,13 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     });
 
     expect(reloadNeuronSpy).toBeCalledTimes(0);
-    expect(onNnsCloseSpy).toBeCalledTimes(0);
+    expect(closeModalSpy).toBeCalledTimes(0);
     resolveSetFollowing();
     await runResolvedPromises();
 
     // After successful set following
     expect(reloadNeuronSpy).toBeCalledTimes(1);
-    expect(onNnsCloseSpy).toBeCalledTimes(1);
+    expect(closeModalSpy).toBeCalledTimes(1);
     expect(get(busyStore)).toEqual([]);
     expect(get(toastsStore)).toMatchObject([
       {
@@ -248,13 +248,13 @@ describe("FollowSnsNeuronsByTopicModal", () => {
         () => new Promise((_, reject) => (rejectSetFollowing = reject))
       );
     const reloadNeuronSpy = vi.fn();
-    const onNnsCloseSpy = vi.fn();
+    const closeModalSpy = vi.fn();
     const po = renderComponent(
       {
         ...defaultProps,
         reloadNeuron: reloadNeuronSpy,
       },
-      onNnsCloseSpy
+      closeModalSpy
     );
 
     const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
@@ -282,7 +282,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     expect(spyConsoleError).toBeCalledTimes(1);
     expect(spyConsoleError).toBeCalledWith(testError);
     expect(reloadNeuronSpy).toBeCalledTimes(0);
-    expect(onNnsCloseSpy).toBeCalledTimes(0);
+    expect(closeModalSpy).toBeCalledTimes(0);
     expect(get(busyStore)).toEqual([]);
     expect(get(toastsStore)).toMatchObject([
       {
@@ -302,13 +302,13 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       .spyOn(snsGovernanceApi, "setFollowing")
       .mockResolvedValue();
     const reloadNeuronSpy = vi.fn();
-    const onNnsCloseSpy = vi.fn();
+    const closeModalSpy = vi.fn();
     const po = renderComponent(
       {
         ...defaultProps,
         reloadNeuron: reloadNeuronSpy,
       },
-      onNnsCloseSpy
+      closeModalSpy
     );
 
     const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
@@ -342,7 +342,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
 
     expect(setFollowingSpy).toBeCalledTimes(0);
     expect(reloadNeuronSpy).toBeCalledTimes(0);
-    expect(onNnsCloseSpy).toBeCalledTimes(0);
+    expect(closeModalSpy).toBeCalledTimes(0);
   });
 
   it("preserves user entered data between step navigation", async () => {
@@ -384,13 +384,13 @@ describe("FollowSnsNeuronsByTopicModal", () => {
         () => new Promise((resolve) => (resolveSetFollowing = resolve))
       );
     const reloadNeuronSpy = vi.fn();
-    const onNnsCloseSpy = vi.fn();
+    const closeModalSpy = vi.fn();
     const po = renderComponent(
       {
         ...defaultProps,
         reloadNeuron: reloadNeuronSpy,
       },
-      onNnsCloseSpy
+      closeModalSpy
     );
     const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
     const followeePos =
@@ -440,7 +440,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       },
     ]);
     // Shouldn't close the modal
-    expect(onNnsCloseSpy).toBeCalledTimes(0);
+    expect(closeModalSpy).toBeCalledTimes(0);
   });
 
   it("handles remove followee errors", async () => {
@@ -455,13 +455,13 @@ describe("FollowSnsNeuronsByTopicModal", () => {
         () => new Promise((_, reject) => (rejectSetFollowing = reject))
       );
     const reloadNeuronSpy = vi.fn();
-    const onNnsCloseSpy = vi.fn();
+    const closeModalSpy = vi.fn();
     const po = renderComponent(
       {
         ...defaultProps,
         reloadNeuron: reloadNeuronSpy,
       },
-      onNnsCloseSpy
+      closeModalSpy
     );
     const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
     const followeePos =
@@ -501,6 +501,6 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     expect(spyConsoleError).toBeCalledTimes(1);
     expect(spyConsoleError).toBeCalledWith(testError);
     // Shouldn't close the modal
-    expect(onNnsCloseSpy).toBeCalledTimes(0);
+    expect(closeModalSpy).toBeCalledTimes(0);
   });
 });

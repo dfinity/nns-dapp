@@ -64,7 +64,7 @@
   let modal: WizardModal | undefined = $state();
   const next = () => modal?.next();
   const back = () => modal?.back();
-  const close = () => dispatcher("nnsClose");
+  const closeModal = () => dispatcher("nnsClose");
 
   let listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
     $snsTopicsStore[rootCanisterId.toText()]
@@ -130,7 +130,7 @@
           labelKey: $i18n.follow_sns_topics.success_set_following,
         });
         await reloadNeuron();
-        close();
+        closeModal();
       }
     } catch (error) {
       console.error("Failed to follow SNS neurons by topic", error);
@@ -227,7 +227,7 @@
       {followings}
       {neuron}
       bind:selectedTopics
-      onNnsClose={close}
+      {closeModal}
       onNnsNext={next}
       onNnsRemove={removeTopicFollowing}
       onNnsLegacyRemove={removeLegacyFollowing}
