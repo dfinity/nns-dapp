@@ -330,7 +330,7 @@ describe("sns-topics utils", () => {
   });
 
   describe("addSnsNeuronToFollowingsByTopics", () => {
-    it("Should insert neuron ID into existing topics", () => {
+    it("should insert neuron ID into existing topics", () => {
       expect(
         addSnsNeuronToFollowingsByTopics({
           followings: [
