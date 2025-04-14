@@ -23,7 +23,7 @@
     selectedTopics: SnsTopicKey[];
     followings: SnsTopicFollowing[];
     closeModal: () => void;
-    onNnsNext: () => void;
+    openNextStep: () => void;
     removeFollowing: (args: {
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
@@ -39,7 +39,7 @@
     selectedTopics = $bindable(),
     followings,
     closeModal,
-    onNnsNext,
+    openNextStep,
     removeFollowing,
     removeLegacyFollowing,
   }: Props = $props();
@@ -141,7 +141,7 @@
       data-tid="next-button"
       class="primary"
       disabled={selectedTopics.length === 0}
-      onclick={onNnsNext}
+      onclick={openNextStep}
     >
       {$i18n.core.next}
     </button>

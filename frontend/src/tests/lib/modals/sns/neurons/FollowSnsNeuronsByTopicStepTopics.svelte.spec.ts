@@ -73,7 +73,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     topicInfos: TopicInfoWithUnknown[];
     followings: SnsTopicFollowing[];
     closeModal: () => void;
-    onNnsNext: () => void;
+    openNextStep: () => void;
     removeFollowing: (args: {
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
@@ -92,7 +92,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     topicInfos: [],
     followings: [],
     closeModal: vi.fn(),
-    onNnsNext: vi.fn(),
+    openNextStep: vi.fn(),
     removeFollowing: vi.fn(),
   };
 
@@ -222,11 +222,11 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
 
   it("emits events", async () => {
     const closeModal = vi.fn();
-    const onNnsNext = vi.fn();
+    const openNextStep = vi.fn();
     const po = renderComponent({
       ...defaultProps,
       closeModal,
-      onNnsNext,
+      openNextStep,
     });
 
     expect(await po.getCancelButtonPo().isPresent()).toBe(true);
@@ -234,6 +234,6 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     await po.clickCancelButton();
     expect(closeModal).toBeCalledTimes(1);
     await po.clickNextButton();
-    expect(onNnsNext).toBeCalledTimes(1);
+    expect(openNextStep).toBeCalledTimes(1);
   });
 });

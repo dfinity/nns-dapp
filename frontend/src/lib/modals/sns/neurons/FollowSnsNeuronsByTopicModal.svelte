@@ -62,7 +62,7 @@
   ];
   let currentStep: WizardStep | undefined = $state();
   let modal: WizardModal | undefined = $state();
-  const next = () => modal?.next();
+  const openNextStep = () => modal?.next();
   const back = () => modal?.back();
   const closeModal = () => dispatcher("nnsClose");
 
@@ -228,7 +228,7 @@
       {neuron}
       bind:selectedTopics
       {closeModal}
-      onNnsNext={next}
+      {openNextStep}
       {removeFollowing}
       {removeLegacyFollowing}
     />
