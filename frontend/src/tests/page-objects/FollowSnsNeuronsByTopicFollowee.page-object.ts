@@ -17,7 +17,7 @@ export class FollowSnsNeuronsByTopicFolloweePo extends BasePageObject {
   ): Promise<FollowSnsNeuronsByTopicFolloweePo[]> {
     return (
       await element.allByTestId(FollowSnsNeuronsByTopicFolloweePo.TID)
-    ).map((element) => FollowSnsNeuronsByTopicFolloweePo.under(element));
+    ).map((element) => new FollowSnsNeuronsByTopicFolloweePo(element));
   }
 
   getNeuronHashPo(): HashPo {
