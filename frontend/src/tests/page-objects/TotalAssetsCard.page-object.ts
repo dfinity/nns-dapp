@@ -38,6 +38,10 @@ export class TotalAssetsCardPo extends BasePageObject {
     return this.getIcpExchangeRatePo().hasError();
   }
 
+  async hasFullWidthClass(): Promise<boolean> {
+    return this.root.querySelector(".wrapper").hasClass("full-width");
+  }
+
   async waitForLoaded(): Promise<void> {
     await this.waitForAbsent("spinner");
   }

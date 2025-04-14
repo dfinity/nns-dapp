@@ -10,15 +10,18 @@ describe("TotalAssetsCard", () => {
     usdAmount,
     hasUnpricedTokens,
     isLoading,
+    isFullWidth,
   }: {
     usdAmount: number;
     hasUnpricedTokens?: boolean;
     isLoading?: boolean;
+    isFullWidth?: boolean;
   }) => {
     const { container } = render(TotalAssetsCard, {
       usdAmount,
       hasUnpricedTokens,
       isLoading,
+      isFullWidth,
     });
     return TotalAssetsCardPo.under(new JestPageObjectElement(container));
   };
@@ -168,5 +171,23 @@ describe("TotalAssetsCard", () => {
     });
 
     expect(await po.hasSpinner()).toEqual(false);
+  });
+
+  it("should apply full-width class when isFullWidth is true", async () => {
+    const isFullWidth = true;
+    const usdAmount = 50;
+    
+    const po = renderComponent({ usdAmount, isFullWidth });
+    
+    expect(await po.hasFullWidthClass()).toBe(true);
+  });
+
+  it("should not apply full-width class when isFullWidth is false", async () => {
+    const isFullWidth = false;
+    const usdAmount = 50;
+    
+    const po = renderComponent({ usdAmount, isFullWidth });
+    
+    expect(await po.hasFullWidthClass()).toBe(false);
   });
 });
