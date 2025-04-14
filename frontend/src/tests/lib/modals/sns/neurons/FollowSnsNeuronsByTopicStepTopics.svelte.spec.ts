@@ -125,54 +125,6 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     ]);
   });
 
-  it("displays status icon", async () => {
-    const testFollowee = {
-      neuronId: {
-        id: Uint8Array.from([0, 1, 2]),
-      },
-    };
-    const po = renderComponent({
-      ...defaultProps,
-      topicInfos: [
-        criticalTopicInfo1,
-        topicInfo1,
-        criticalTopicInfo2,
-        topicInfo2,
-      ],
-      followings: [
-        {
-          topic: criticalTopicKey1,
-          followees: [testFollowee],
-        },
-        {
-          topic: topicKey1,
-          followees: [testFollowee],
-        },
-      ],
-    });
-
-    expect(
-      await (
-        await po.getTopicItemPosByName(criticalTopicName1)
-      ).hasFollowingStatusIcon()
-    ).toEqual(true);
-    expect(
-      await (
-        await po.getTopicItemPosByName(criticalTopicName2)
-      ).hasFollowingStatusIcon()
-    ).toEqual(false);
-    expect(
-      await (
-        await po.getTopicItemPosByName(topicName1)
-      ).hasFollowingStatusIcon()
-    ).toEqual(true);
-    expect(
-      await (
-        await po.getTopicItemPosByName(topicName2)
-      ).hasFollowingStatusIcon()
-    ).toEqual(false);
-  });
-
   it("binds topic selection", async () => {
     const props = $state({
       ...defaultProps,
