@@ -17,6 +17,8 @@
   import type { SnsNeuronId } from "@dfinity/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
+  import FollowSnsNeuronsByTopicLegacyFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicLegacyFollowee.svelte";
+  import { i18n } from "$lib/stores/i18n";
 
   type Props = {
     topicInfo: TopicInfoWithUnknown;
@@ -109,12 +111,14 @@
 
       <div class="followees">
         {#if followees.length > 0}
-          <h5 class="headline description"> Followees</h5>
+          <h5 class="followee-header"
+            >{$i18n.follow_sns_topics.topics_following}</h5
+          >
           <ul class="followee-list">
             {#each followees as followee (subaccountToHexString(followee.neuronId.id))}
               <li
                 ><FollowSnsNeuronsByTopicFollowee
-                  {followee}
+                  neuronId={followee.neuronId}
                   onRemoveClick={() => {
                     onNnsRemove({
                       topicKey,
@@ -126,12 +130,38 @@
             {/each}
           </ul>
         {/if}
+
+        {#if legacyFollowees.length > 0}
+          <h5 class="followee-header"
+            >{$i18n.follow_sns_topics.topics_following}</h5
+          >
+          <p class="description legacy-description"
+            >{$i18n.follow_sns_topics.topics_legacy_following_description}</p
+          >
+          <ul class="followee-list">
+            {#each legacyFollowees as followees (followees.nsFunction.id)}
+              {#each followees.followees as neuronId (subaccountToHexString(neuronId.id))}
+                <li>
+                  <FollowSnsNeuronsByTopicLegacyFollowee
+                    nsFunction={followees.nsFunction}
+                    {neuronId}
+                    onRemoveClick={() => {
+                      // TBD
+                    }}
+                  />
+                </li>
+              {/each}
+            {/each}
+          </ul>
+        {/if}
       </div>
     </div></Collapsible
   >
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   .header {
     display: grid;
     grid-template-columns: auto min-content min-content;
@@ -158,10 +188,16 @@
   .expandable-content {
     // Aligning with the checkbox label
     margin-left: calc(20px + var(--padding));
+  }
 
-    .description {
-      margin: 0 0 var(--padding-3x);
-    }
+  .followee-header {
+    margin-top: var(--padding-3x);
+    color: var(--description-color);
+  }
+
+  .legacy-description {
+    @include fonts.small();
+    margin-bottom: var(--padding);
   }
 
   .followee-list {
@@ -170,7 +206,7 @@
 
     display: flex;
     flex-wrap: wrap;
-    gap: var(--padding-0_5x);
+    gap: var(--padding);
   }
 
   .icon {
