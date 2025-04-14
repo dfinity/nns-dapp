@@ -425,10 +425,12 @@
   "follow_sns_topics": {
     "topic_definitions_description": "Proposal types are grouped into topics, unique for each SNS. You can review the topic definitions for this SNS here.",
     "topic_definitions_title": "Topic Definition List",
+    "topics_description": "Delegate your voting by following other neurons to maximize your voting rewards. Your voting is fully delegated only if following is set for every topic. Alternatively, you can vote manually.",
     "topics_critical_label": "Critical topics",
-    "topics_critical_tooltip": "TBD",
+    "topics_critical_tooltip": "Critical topics include proposals that are vital to the management of a given SNS DAO, so they require 67% \"yes\" votes to be adopted. They include treasury management and critical dapp operations.",
     "topics_non_critical_label": "Non-critical topics",
-    "topics_non_critical_tooltip": "TBD"
+    "topics_non_critical_tooltip": "Non-critical topics include proposals that manage the day-to-day operations of a given SNS DAO, including code upgrades or SNS parameter management.",
+    "topics_following": "CURRENTLY FOLLOWING"
   },
   "missing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
