@@ -6,9 +6,11 @@
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
+  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
   import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
   import SnsFilterTopicsModal from "$lib/modals/sns/proposals/SnsFilterTopicsModal.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
+  import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     snsFiltersStore,
@@ -32,11 +34,14 @@
   const filtersStore = $derived<ProjectFiltersStoreData | undefined>(
     $snsFiltersStore[rootCanisterId.toText()]
   );
-
   const openFilters = (filtersModal: Filters) => {
     modal = filtersModal;
   };
   const closeModal = () => (modal = undefined);
+
+  const isFilterByTopicVisible = $derived(
+    $ENABLE_SNS_TOPICS && $snsTopicsStore[rootCanisterId.toText()]
+  );
 </script>
 
 <TestIdWrapper testId="sns-proposals-filters-component">
@@ -47,24 +52,27 @@
 
     {#if !$actionableProposalsActiveStore}
       <FiltersWrapper>
-        <FiltersButton
-          testId="filters-by-types"
-          totalFilters={filtersStore?.types.length ?? 0}
-          activeFilters={filtersStore?.types.filter(({ checked }) => checked)
-            .length ?? 0}
-          on:nnsFilter={() => openFilters("types")}
-        >
-          {$i18n.voting.types}
-        </FiltersButton>
-        <FiltersButton
-          testId="filters-by-topics"
-          totalFilters={filtersStore?.topics.length ?? 0}
-          activeFilters={filtersStore?.topics.filter(({ checked }) => checked)
-            .length ?? 0}
-          on:nnsFilter={() => openFilters("topics")}
-        >
-          {$i18n.voting.topics}
-        </FiltersButton>
+        {#if isFilterByTopicVisible}
+          <FiltersButton
+            testId="filters-by-topics"
+            totalFilters={filtersStore?.topics.length ?? 0}
+            activeFilters={filtersStore?.topics.filter(({ checked }) => checked)
+              .length ?? 0}
+            on:nnsFilter={() => openFilters("topics")}
+          >
+            {$i18n.voting.topics}
+          </FiltersButton>
+        {:else}
+          <FiltersButton
+            testId="filters-by-types"
+            totalFilters={filtersStore?.types.length ?? 0}
+            activeFilters={filtersStore?.types.filter(({ checked }) => checked)
+              .length ?? 0}
+            on:nnsFilter={() => openFilters("types")}
+          >
+            {$i18n.voting.types}
+          </FiltersButton>
+        {/if}
         <FiltersButton
           testId="filters-by-status"
           totalFilters={filtersStore?.decisionStatus.length ?? 0}
