@@ -3,15 +3,15 @@
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { SnsTopicFollowee } from "$lib/types/sns";
+  import type { SnsNeuronId } from "@dfinity/sns";
 
   type Props = {
-    followee: SnsTopicFollowee;
+    neuronId: SnsNeuronId;
     onRemoveClick: () => void;
   };
-  const { followee, onRemoveClick }: Props = $props();
+  const { neuronId, onRemoveClick }: Props = $props();
 
-  let neuronIdHex = $derived(subaccountToHexString(followee.neuronId.id));
+  let neuronIdHex = $derived(subaccountToHexString(neuronId.id));
 </script>
 
 <div
