@@ -226,4 +226,13 @@
       color: var(--positive-emphasis);
     }
   }
+
+  .followee-list {
+    padding: 0;
+    list-style-type: none;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--padding-0_5x);
+  }
 </style>
