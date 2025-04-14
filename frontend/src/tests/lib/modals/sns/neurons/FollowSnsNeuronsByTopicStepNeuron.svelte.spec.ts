@@ -6,7 +6,7 @@ import { render } from "@testing-library/svelte";
 describe("FollowSnsNeuronsByTopicStepNeuron", () => {
   const renderComponent = (props: {
     followeeHex: string;
-    onNnsBack: () => void;
+    openPrevStep: () => void;
     onNnsConfirm: (followeeHex: string) => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicStepNeuron, {
@@ -21,7 +21,7 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
   it("binds neuron hex field", async () => {
     const props = $state({
       followeeHex: "1234",
-      onNnsBack: vi.fn(),
+      openPrevStep: vi.fn(),
       onNnsConfirm: vi.fn(),
     });
     const po = renderComponent(props);
@@ -39,7 +39,7 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
   it("disables confirm button", async () => {
     const po = renderComponent({
       followeeHex: "",
-      onNnsBack: vi.fn(),
+      openPrevStep: vi.fn(),
       onNnsConfirm: vi.fn(),
     });
     expect(await po.getConfirmButtonPo().isDisabled()).toBe(true);
@@ -51,16 +51,16 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
     expect(await po.getConfirmButtonPo().isDisabled()).toBe(true);
   });
 
-  it("emits events", async () => {
+  it("calls callbacks", async () => {
     const props = $state({
       followeeHex: "1234",
-      onNnsBack: vi.fn(),
+      openPrevStep: vi.fn(),
       onNnsConfirm: vi.fn(),
     });
     const po = renderComponent(props);
 
     await po.clickBackButton();
-    expect(props.onNnsBack).toHaveBeenCalledTimes(1);
+    expect(props.openPrevStep).toHaveBeenCalledTimes(1);
 
     await po.clickConfirmButton();
     expect(props.onNnsConfirm).toHaveBeenCalledTimes(1);

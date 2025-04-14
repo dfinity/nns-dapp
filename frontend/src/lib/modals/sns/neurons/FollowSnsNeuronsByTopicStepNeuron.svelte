@@ -5,10 +5,14 @@
 
   interface Props {
     followeeHex: string;
-    onNnsBack: () => void;
+    openPrevStep: () => void;
     onNnsConfirm: (followeeHex: string) => void;
   }
-  let { followeeHex = $bindable(), onNnsBack, onNnsConfirm }: Props = $props();
+  let {
+    followeeHex = $bindable(),
+    openPrevStep,
+    onNnsConfirm,
+  }: Props = $props();
 </script>
 
 <form
@@ -40,7 +44,7 @@
       data-tid="back-button"
       class="secondary"
       type="button"
-      onclick={onNnsBack}
+      onclick={openPrevStep}
     >
       {$i18n.core.back}
     </button>

@@ -220,7 +220,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     );
   });
 
-  it("emits events", async () => {
+  it("calls callbacks", async () => {
     const closeModal = vi.fn();
     const openNextStep = vi.fn();
     const po = renderComponent({

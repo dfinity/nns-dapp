@@ -26,13 +26,13 @@ describe("ConfirmSnsDissolveDelay", () => {
 
   const renderComponent = ({
     props,
-    onNnsBack = null,
+    openPrevStep = null,
     onNnsConfirm = null,
   }) => {
     const { container } = render(ConfirmSnsDissolveDelay, {
       props,
       events: {
-        ...(nonNullish(onNnsBack) && { nnsBack: onNnsBack }),
+        ...(nonNullish(openPrevStep) && { nnsBack: openPrevStep }),
         ...(nonNullish(onNnsConfirm) && { nnsConfirm: onNnsConfirm }),
       },
     });
@@ -125,7 +125,7 @@ describe("ConfirmSnsDissolveDelay", () => {
   });
 
   it("edit button dispatches nnsBack", async () => {
-    const onNnsBack = vi.fn();
+    const openPrevStep = vi.fn();
     const onNnsConfirm = vi.fn();
     const po = renderComponent({
       props: {
@@ -134,19 +134,19 @@ describe("ConfirmSnsDissolveDelay", () => {
         neuron,
         token: mockSnsToken,
       },
-      onNnsBack,
+      openPrevStep,
       onNnsConfirm,
     });
 
-    expect(onNnsBack).toBeCalledTimes(0);
+    expect(openPrevStep).toBeCalledTimes(0);
     await po.getEditButtonPo().click();
-    expect(onNnsBack).toBeCalledTimes(1);
+    expect(openPrevStep).toBeCalledTimes(1);
 
     expect(onNnsConfirm).toBeCalledTimes(0);
   });
 
   it("confirm button dispatches nnsConfirm", async () => {
-    const onNnsBack = vi.fn();
+    const openPrevStep = vi.fn();
     const onNnsConfirm = vi.fn();
     const po = renderComponent({
       props: {
@@ -155,13 +155,13 @@ describe("ConfirmSnsDissolveDelay", () => {
         neuron,
         token: mockSnsToken,
       },
-      onNnsBack,
+      openPrevStep,
       onNnsConfirm,
     });
     expect(onNnsConfirm).toBeCalledTimes(0);
     await po.getConfirmButtonPo().click();
     expect(onNnsConfirm).toBeCalledTimes(1);
 
-    expect(onNnsBack).toBeCalledTimes(0);
+    expect(openPrevStep).toBeCalledTimes(0);
   });
 });

@@ -63,7 +63,7 @@
   let currentStep: WizardStep | undefined = $state();
   let modal: WizardModal | undefined = $state();
   const openNextStep = () => modal?.next();
-  const back = () => modal?.back();
+  const openPrevStep = () => modal?.back();
   const closeModal = () => dispatcher("nnsClose");
 
   let listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
@@ -236,7 +236,7 @@
   {#if currentStep?.name === STEP_NEURON}
     <FollowSnsNeuronsByTopicStepNeuron
       bind:followeeHex={followeeNeuronIdHex}
-      onNnsBack={back}
+      {openPrevStep}
       onNnsConfirm={addTopicFollowings}
     />
   {/if}
