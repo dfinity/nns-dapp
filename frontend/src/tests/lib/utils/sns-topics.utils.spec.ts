@@ -269,7 +269,7 @@ describe("sns-topics utils", () => {
   });
 
   describe("isSnsNeuronsFollowing", () => {
-    it("should return true", () => {
+    it("returns true when the specified neuron ID is listed as a followee for the given topic", () => {
       expect(
         isSnsNeuronsFollowing({
           followings: [
@@ -288,7 +288,7 @@ describe("sns-topics utils", () => {
       ).toEqual(true);
     });
 
-    it("should return false", () => {
+    it("returns false when the specified neuron ID is not listed as a followee for the given topic", () => {
       expect(
         isSnsNeuronsFollowing({
           followings: [
