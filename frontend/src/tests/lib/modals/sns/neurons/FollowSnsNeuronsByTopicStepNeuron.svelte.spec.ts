@@ -7,7 +7,7 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
   const renderComponent = (props: {
     followeeHex: string;
     openPrevStep: () => void;
-    onNnsConfirm: (followeeHex: string) => void;
+    addFollowing: (followeeHex: string) => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicStepNeuron, {
       props,
@@ -22,7 +22,7 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
     const props = $state({
       followeeHex: "1234",
       openPrevStep: vi.fn(),
-      onNnsConfirm: vi.fn(),
+      addFollowing: vi.fn(),
     });
     const po = renderComponent(props);
 
@@ -40,7 +40,7 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
     const po = renderComponent({
       followeeHex: "",
       openPrevStep: vi.fn(),
-      onNnsConfirm: vi.fn(),
+      addFollowing: vi.fn(),
     });
     expect(await po.getConfirmButtonPo().isDisabled()).toBe(true);
 
@@ -55,7 +55,7 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
     const props = $state({
       followeeHex: "1234",
       openPrevStep: vi.fn(),
-      onNnsConfirm: vi.fn(),
+      addFollowing: vi.fn(),
     });
     const po = renderComponent(props);
 
@@ -63,12 +63,12 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
     expect(props.openPrevStep).toHaveBeenCalledTimes(1);
 
     await po.clickConfirmButton();
-    expect(props.onNnsConfirm).toHaveBeenCalledTimes(1);
-    expect(props.onNnsConfirm).toHaveBeenCalledWith("1234");
+    expect(props.addFollowing).toHaveBeenCalledTimes(1);
+    expect(props.addFollowing).toHaveBeenCalledWith("1234");
 
     props.followeeHex = "5678";
     await po.clickConfirmButton();
-    expect(props.onNnsConfirm).toHaveBeenCalledTimes(2);
-    expect(props.onNnsConfirm).toHaveBeenCalledWith("5678");
+    expect(props.addFollowing).toHaveBeenCalledTimes(2);
+    expect(props.addFollowing).toHaveBeenCalledWith("5678");
   });
 });

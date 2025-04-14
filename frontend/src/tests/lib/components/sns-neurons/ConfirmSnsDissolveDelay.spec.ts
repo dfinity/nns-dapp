@@ -27,13 +27,13 @@ describe("ConfirmSnsDissolveDelay", () => {
   const renderComponent = ({
     props,
     openPrevStep = null,
-    onNnsConfirm = null,
+    addFollowing = null,
   }) => {
     const { container } = render(ConfirmSnsDissolveDelay, {
       props,
       events: {
         ...(nonNullish(openPrevStep) && { nnsBack: openPrevStep }),
-        ...(nonNullish(onNnsConfirm) && { nnsConfirm: onNnsConfirm }),
+        ...(nonNullish(addFollowing) && { nnsConfirm: addFollowing }),
       },
     });
 
@@ -126,7 +126,7 @@ describe("ConfirmSnsDissolveDelay", () => {
 
   it("edit button dispatches nnsBack", async () => {
     const openPrevStep = vi.fn();
-    const onNnsConfirm = vi.fn();
+    const addFollowing = vi.fn();
     const po = renderComponent({
       props: {
         rootCanisterId: mockPrincipal,
@@ -135,19 +135,19 @@ describe("ConfirmSnsDissolveDelay", () => {
         token: mockSnsToken,
       },
       openPrevStep,
-      onNnsConfirm,
+      addFollowing,
     });
 
     expect(openPrevStep).toBeCalledTimes(0);
     await po.getEditButtonPo().click();
     expect(openPrevStep).toBeCalledTimes(1);
 
-    expect(onNnsConfirm).toBeCalledTimes(0);
+    expect(addFollowing).toBeCalledTimes(0);
   });
 
   it("confirm button dispatches nnsConfirm", async () => {
     const openPrevStep = vi.fn();
-    const onNnsConfirm = vi.fn();
+    const addFollowing = vi.fn();
     const po = renderComponent({
       props: {
         rootCanisterId: mockPrincipal,
@@ -156,11 +156,11 @@ describe("ConfirmSnsDissolveDelay", () => {
         token: mockSnsToken,
       },
       openPrevStep,
-      onNnsConfirm,
+      addFollowing,
     });
-    expect(onNnsConfirm).toBeCalledTimes(0);
+    expect(addFollowing).toBeCalledTimes(0);
     await po.getConfirmButtonPo().click();
-    expect(onNnsConfirm).toBeCalledTimes(1);
+    expect(addFollowing).toBeCalledTimes(1);
 
     expect(openPrevStep).toBeCalledTimes(0);
   });

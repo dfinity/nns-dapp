@@ -6,12 +6,12 @@
   interface Props {
     followeeHex: string;
     openPrevStep: () => void;
-    onNnsConfirm: (followeeHex: string) => void;
+    addFollowing: (followeeHex: string) => void;
   }
   let {
     followeeHex = $bindable(),
     openPrevStep,
-    onNnsConfirm,
+    addFollowing,
   }: Props = $props();
 </script>
 
@@ -19,7 +19,7 @@
   data-tid="follow-sns-neurons-by-topic-step-neuron-component"
   onsubmit={(event) => {
     event.preventDefault();
-    onNnsConfirm(followeeHex);
+    addFollowing(followeeHex);
   }}
 >
   <Input
