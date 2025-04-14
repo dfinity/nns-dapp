@@ -8,7 +8,11 @@
   } from "@dfinity/gix-components";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { fromDefinedNullable } from "@dfinity/utils";
-  import type { SnsTopicFollowee, SnsTopicKey } from "$lib/types/sns";
+  import type {
+    SnsLegacyFollowings,
+    SnsTopicFollowee,
+    SnsTopicKey,
+  } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
   import type { SnsNeuronId } from "@dfinity/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
@@ -17,6 +21,7 @@
   type Props = {
     topicInfo: TopicInfoWithUnknown;
     followees: SnsTopicFollowee[];
+    legacyFollowees: SnsLegacyFollowings[];
     checked: boolean;
     onNnsChange: (args: { topicKey: SnsTopicKey; checked: boolean }) => void;
     onNnsRemove: (args: {
@@ -28,6 +33,7 @@
   let {
     topicInfo,
     followees,
+    legacyFollowees,
     checked = false,
     onNnsChange,
     onNnsRemove,

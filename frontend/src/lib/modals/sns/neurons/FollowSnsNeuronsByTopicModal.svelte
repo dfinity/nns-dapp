@@ -190,6 +190,7 @@
     <FollowSnsNeuronsByTopicStepTopics
       {topicInfos}
       {followings}
+      {neuron}
       bind:selectedTopics
       onNnsClose={close}
       onNnsNext={next}

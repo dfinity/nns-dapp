@@ -8,11 +8,13 @@
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
   import {
     getSnsTopicInfoKey,
+    getTopicLegacyFollowees,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import type { SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   interface Props {
+    neuron: SnsNeuron;
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
     followings: SnsTopicFollowing[];
@@ -24,6 +26,7 @@
     }) => void;
   }
   let {
+    neuron,
     topicInfos,
     selectedTopics = $bindable(),
     followings,
@@ -80,6 +83,10 @@
       <FollowSnsNeuronsByTopicItem
         {topicInfo}
         followees={getTopicFollowees(topicInfo)}
+        legacyFollowees={getTopicLegacyFollowees({
+          neuron,
+          topicInfo,
+        })}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {onNnsRemove}
@@ -98,6 +105,10 @@
       <FollowSnsNeuronsByTopicItem
         {topicInfo}
         followees={getTopicFollowees(topicInfo)}
+        legacyFollowees={getTopicLegacyFollowees({
+          neuron,
+          topicInfo,
+        })}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {onNnsRemove}
