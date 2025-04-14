@@ -53,7 +53,7 @@
 
   let toggleContent: () => void = $state(() => {});
   let expanded: boolean = $state(false);
-  let isFollowing = $derived(followees.length > 0);
+  let isTopicFollowing = $derived(followees.length > 0);
 
   // TODO(sns-topics): Add "stopPropagation" prop to the gix/Checkbox component
   // to avoid collapsable toggling
@@ -81,8 +81,12 @@
         <span data-tid="topic-name">{name}</span>
       </Checkbox>
 
-      <div class="icon" data-tid="topic-following-status" class:isFollowing>
-        {#if isFollowing}
+      <div
+        class="icon"
+        data-tid="topic-following-status"
+        class:isTopicFollowing
+      >
+        {#if isTopicFollowing}
           <IconCheckCircleFill />
         {:else}
           <IconErrorOutline />
