@@ -7,6 +7,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
+  import SnsFilterTopicsModal from "$lib/modals/sns/proposals/SnsFilterTopicsModal.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -23,6 +24,18 @@
   );
 
   const openFilters = (filtersModal: Filters) => (modal = filtersModal);
+  type Filters = "types" | "status" | "topics";
+
+  let modal = $state<Filters | undefined>();
+
+  const rootCanisterId = $derived($selectedUniverseIdStore);
+  const filtersStore = $derived<ProjectFiltersStoreData | undefined>(
+    $snsFiltersStore[rootCanisterId.toText()]
+  );
+
+  const openFilters = (filtersModal: Filters) => {
+    modal = filtersModal;
+  };
   const closeModal = () => (modal = undefined);
 </script>
 
@@ -44,6 +57,15 @@
           {$i18n.voting.types}
         </FiltersButton>
         <FiltersButton
+          testId="filters-by-topics"
+          totalFilters={filtersStore?.topics.length ?? 0}
+          activeFilters={filtersStore?.topics.filter(({ checked }) => checked)
+            .length ?? 0}
+          on:nnsFilter={() => openFilters("topics")}
+        >
+          {$i18n.voting.topics}
+        </FiltersButton>
+        <FiltersButton
           testId="filters-by-status"
           totalFilters={filtersStore?.decisionStatus.length ?? 0}
           activeFilters={filtersStore?.decisionStatus.filter(
@@ -61,6 +83,15 @@
       filters={filtersStore?.types}
       {rootCanisterId}
       {closeModal}
+      on:nnsClose={closeModal}
+    />
+  {/if}
+
+  {#if modal === "topics"}
+    <SnsFilterTopicsModal
+      filters={filtersStore?.topics}
+      {closeModal}
+      {rootCanisterId}
     />
   {/if}
 
@@ -69,6 +100,7 @@
       filters={filtersStore?.decisionStatus}
       {rootCanisterId}
       {closeModal}
+      on:nnsClose={closeModal}
     />
   {/if}
 </TestIdWrapper>

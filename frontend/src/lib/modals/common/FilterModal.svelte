@@ -69,6 +69,9 @@
 
     return false;
   };
+  $: {
+    console.log(filters);
+  }
 </script>
 
 {#if !loading}
@@ -104,6 +107,10 @@
           >
           {#if displaySeparator(category, filters, index)}
             <Separator testId={`separator-${id}`} spacing="medium" />
+          {/if}
+
+          {#if index < filters.length - 1 && isCritical !== filters[index + 1].isCritical}
+            <Separator testId={`separator-critical-${id}`} spacing="medium" />
           {/if}
         {/each}
       </div>

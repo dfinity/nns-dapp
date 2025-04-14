@@ -46,6 +46,12 @@ export const snsFilteredProposalsStore = derived<
                     : `${proposal.action}`
                 );
 
+            const proposalTopicMatch =
+              projectSelectedFilters.topics.length === 0 ||
+              projectSelectedFilters.topics
+                .map(({ value }) => value)
+                .includes(proposal.topic);
+
             return statusMatch && nervousFunctionsMatch;
           }
         );
