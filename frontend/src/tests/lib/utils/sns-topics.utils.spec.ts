@@ -384,7 +384,7 @@ describe("sns-topics utils", () => {
   });
 
   describe("removeSnsNeuronFromFollowingsByTopics", () => {
-    it("Should remove neuron ID", () => {
+    it("should remove neuron ID", () => {
       expect(
         removeSnsNeuronFromFollowingsByTopics({
           followings: [
