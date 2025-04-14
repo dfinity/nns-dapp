@@ -10,9 +10,7 @@ import {
   getSnsTopicInfoKey,
   getSnsTopicKeys,
   getTopicInfoBySnsTopicKey,
-  insertIntoSnsTopicFollowings,
-  isSnsNeuronsAlreadyFollowing,
-  removeFromSnsTopicFollowings,
+  isSnsNeuronsFollowing,
   removeSnsNeuronFromFollowingsByTopics,
   snsTopicKeyToTopic,
   snsTopicToTopicKey,
@@ -270,191 +268,10 @@ describe("sns-topics utils", () => {
     });
   });
 
-  describe("insertIntoTopicFollowingMap", () => {
-    it("should return empty list if the topic_followees is not available/supported", () => {
+  describe("isSnsNeuronsFollowing", () => {
+    it("returns true when the specified neuron ID is listed as a followee for the given topic", () => {
       expect(
-        getSnsTopicFollowings(
-          createMockSnsNeuron({
-            topicFollowees: {},
-          })
-        )
-      ).toEqual([]);
-
-      expect(
-        getSnsTopicFollowings({
-          ...createMockSnsNeuron({}),
-          topic_followees: undefined,
-        })
-      ).toEqual([]);
-    });
-
-    it("should return following list", () => {
-      expect(
-        getSnsTopicFollowings(
-          createMockSnsNeuron({
-            topicFollowees: {
-              DappCanisterManagement: [
-                {
-                  neuronId: neuronId1,
-                },
-              ],
-              DaoCommunitySettings: [
-                {
-                  neuronId: neuronId1,
-                },
-                {
-                  neuronId: neuronId2,
-                },
-              ],
-            },
-          })
-        )
-      ).toEqual([
-        {
-          topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId1 }],
-        },
-        {
-          topic: "DaoCommunitySettings",
-          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
-        },
-      ]);
-    });
-  });
-
-  describe("insertIntoSnsTopicFollowings", () => {
-    it("should add new topic to follow", () => {
-      expect(
-        insertIntoSnsTopicFollowings({
-          followings: [
-            {
-              topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId1 }],
-            },
-          ],
-          topicsToFollow: ["DaoCommunitySettings"],
-          neuronId: neuronId2,
-        })
-      ).toEqual([
-        {
-          topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId1 }],
-        },
-        {
-          topic: "DaoCommunitySettings",
-          followees: [{ neuronId: neuronId2 }],
-        },
-      ]);
-    });
-
-    it("should add new following to existent topics", () => {
-      expect(
-        insertIntoSnsTopicFollowings({
-          followings: [
-            {
-              topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId1 }],
-            },
-          ],
-          topicsToFollow: ["DappCanisterManagement"],
-          neuronId: neuronId2,
-        })
-      ).toEqual([
-        {
-          topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
-        },
-      ]);
-    });
-
-    it("should prevent adding duplications", () => {
-      expect(
-        insertIntoSnsTopicFollowings({
-          followings: [
-            {
-              topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId2 }],
-            },
-          ],
-          topicsToFollow: ["DappCanisterManagement"],
-          neuronId: neuronId2,
-        })
-      ).toEqual([
-        {
-          topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId2 }],
-        },
-      ]);
-    });
-  });
-
-  describe("removeFromSnsTopicFollowings", () => {
-    it("should remove neuron from the topic followees", () => {
-      expect(
-        removeFromSnsTopicFollowings({
-          followings: [
-            {
-              topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
-            },
-          ],
-          neuronId: neuronId1,
-        })
-      ).toEqual([
-        {
-          topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId2 }],
-        },
-      ]);
-    });
-
-    it("should remove topic entry when the only followee", () => {
-      expect(
-        removeFromSnsTopicFollowings({
-          followings: [
-            {
-              topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId1 }],
-            },
-            {
-              topic: "DaoCommunitySettings",
-              followees: [{ neuronId: neuronId2 }],
-            },
-          ],
-          neuronId: neuronId1,
-        })
-      ).toEqual([
-        {
-          topic: "DaoCommunitySettings",
-          followees: [{ neuronId: neuronId2 }],
-        },
-      ]);
-    });
-
-    it("should remove nothing when not exists", () => {
-      expect(
-        removeFromSnsTopicFollowings({
-          followings: [
-            {
-              topic: "DappCanisterManagement",
-              followees: [{ neuronId: neuronId1 }],
-            },
-          ],
-          neuronId: neuronId2,
-        })
-      ).toEqual([
-        {
-          topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId1 }],
-        },
-      ]);
-    });
-  });
-
-  describe("isSnsNeuronsAlreadyFollowing", () => {
-    it("should return true", () => {
-      expect(
-        isSnsNeuronsAlreadyFollowing({
+        isSnsNeuronsFollowing({
           followings: [
             {
               topic: "CriticalDappOperations",
@@ -471,9 +288,9 @@ describe("sns-topics utils", () => {
       ).toEqual(true);
     });
 
-    it("should return false", () => {
+    it("returns false when the specified neuron ID is not listed as a followee for the given topic", () => {
       expect(
-        isSnsNeuronsAlreadyFollowing({
+        isSnsNeuronsFollowing({
           followings: [
             {
               topic: "CriticalDappOperations",
@@ -490,7 +307,7 @@ describe("sns-topics utils", () => {
       ).toEqual(false);
 
       expect(
-        isSnsNeuronsAlreadyFollowing({
+        isSnsNeuronsFollowing({
           followings: [
             {
               topic: "DappCanisterManagement",
@@ -503,7 +320,7 @@ describe("sns-topics utils", () => {
       ).toEqual(false);
 
       expect(
-        isSnsNeuronsAlreadyFollowing({
+        isSnsNeuronsFollowing({
           followings: [],
           topicKey: "CriticalDappOperations",
           neuronId: neuronId2,
@@ -513,7 +330,7 @@ describe("sns-topics utils", () => {
   });
 
   describe("addSnsNeuronToFollowingsByTopics", () => {
-    it("Should insert neuron ID into existing topics", () => {
+    it("should insert neuron ID into existing topics", () => {
       expect(
         addSnsNeuronToFollowingsByTopics({
           followings: [
@@ -567,7 +384,7 @@ describe("sns-topics utils", () => {
   });
 
   describe("removeSnsNeuronFromFollowingsByTopics", () => {
-    it("Should remove neuron ID", () => {
+    it("should remove neuron ID", () => {
       expect(
         removeSnsNeuronFromFollowingsByTopics({
           followings: [

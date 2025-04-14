@@ -8,6 +8,7 @@ import type {
   TopicInfoWithUnknown,
   UnknownTopic,
 } from "$lib/types/sns-aggregator";
+import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type {
   SnsNervousSystemFunction,
   SnsNeuron,
@@ -15,7 +16,6 @@ import type {
   SnsTopic,
 } from "@dfinity/sns";
 import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
-import { subaccountToHexString } from "./sns-neuron.utils";
 
 export const snsTopicToTopicKey = (
   topic: SnsTopic | UnknownTopic
@@ -109,65 +109,7 @@ export const getSnsTopicFollowings = (
   }));
 };
 
-export const insertIntoSnsTopicFollowings = ({
-  followings,
-  topicsToFollow,
-  neuronId,
-}: {
-  followings: SnsTopicFollowing[];
-  topicsToFollow: SnsTopicKey[];
-  neuronId: SnsNeuronId;
-}): SnsTopicFollowing[] => {
-  const result: SnsTopicFollowing[] = [...followings];
-
-  for (const topicKey of topicsToFollow) {
-    const existing = result.find((entry) => entry.topic === topicKey);
-
-    if (existing) {
-      const alreadyFollowing = existing.followees.some(
-        (f) =>
-          subaccountToHexString(f.neuronId.id) ===
-          subaccountToHexString(neuronId.id)
-      );
-
-      if (!alreadyFollowing) {
-        existing.followees = [...existing.followees, { neuronId }];
-      }
-    } else {
-      result.push({
-        topic: topicKey,
-        followees: [{ neuronId }],
-      });
-    }
-  }
-
-  return result;
-};
-
-export const removeFromSnsTopicFollowings = ({
-  followings,
-  neuronId,
-}: {
-  followings: SnsTopicFollowing[];
-  neuronId: SnsNeuronId;
-}): SnsTopicFollowing[] => {
-  return followings
-    .map(({ topic, followees }) => {
-      const filteredFollowees = followees.filter(
-        (f) =>
-          subaccountToHexString(f.neuronId.id) !==
-          subaccountToHexString(neuronId.id)
-      );
-
-      return {
-        topic,
-        followees: filteredFollowees,
-      };
-    })
-    .filter(({ followees }) => followees.length > 0);
-};
-
-export const isSnsNeuronsAlreadyFollowing = ({
+export const isSnsNeuronsFollowing = ({
   followings,
   neuronId,
   topicKey,
@@ -204,7 +146,7 @@ export const addSnsNeuronToFollowingsByTopics = ({
     // Filter out topics that are already followed by the neuron to avoid duplications.
     .filter(
       (topicKey) =>
-        !isSnsNeuronsAlreadyFollowing({
+        !isSnsNeuronsFollowing({
           followings,
           neuronId,
           topicKey,
