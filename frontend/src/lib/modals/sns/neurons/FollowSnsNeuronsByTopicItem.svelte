@@ -178,7 +178,7 @@
     align-items: center;
     color: var(--tertiary);
 
-    &.isFollowing {
+    &.isTopicFollowing {
       color: var(--positive-emphasis);
     }
   }
