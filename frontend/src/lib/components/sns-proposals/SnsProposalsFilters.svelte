@@ -7,28 +7,27 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
   import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
+  import SnsFilterTopicsModal from "$lib/modals/sns/proposals/SnsFilterTopicsModal.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import {
     snsFiltersStore,
     type ProjectFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
-  import type { Principal } from "@dfinity/principal";
 
-  let modal: "types" | "status" | undefined = undefined;
+  type Filters = "types" | "status" | "topics";
 
-  let rootCanisterId: Principal;
-  $: rootCanisterId = $selectedUniverseIdStore;
-  let filtersStore: ProjectFiltersStoreData | undefined;
-  $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
+  let modal = $state<Filters | undefined>();
 
-  const openFilters = (filtersModal: "types" | "status") => {
+  const rootCanisterId = $derived($selectedUniverseIdStore);
+  const filtersStore = $derived<ProjectFiltersStoreData | undefined>(
+    $snsFiltersStore[rootCanisterId.toText()]
+  );
+
+  const openFilters = (filtersModal: Filters) => {
     modal = filtersModal;
   };
-
-  const close = () => {
-    modal = undefined;
-  };
+  const closeModal = () => (modal = undefined);
 </script>
 
 <TestIdWrapper testId="sns-proposals-filters-component">
@@ -49,6 +48,15 @@
           {$i18n.voting.types}
         </FiltersButton>
         <FiltersButton
+          testId="filters-by-topics"
+          totalFilters={filtersStore?.topics.length ?? 0}
+          activeFilters={filtersStore?.topics.filter(({ checked }) => checked)
+            .length ?? 0}
+          on:nnsFilter={() => openFilters("topics")}
+        >
+          {$i18n.voting.topics}
+        </FiltersButton>
+        <FiltersButton
           testId="filters-by-status"
           totalFilters={filtersStore?.decisionStatus.length ?? 0}
           activeFilters={filtersStore?.decisionStatus.filter(
@@ -65,7 +73,15 @@
     <SnsFilterTypesModal
       filters={filtersStore?.types}
       {rootCanisterId}
-      on:nnsClose={close}
+      on:nnsClose={closeModal}
+    />
+  {/if}
+
+  {#if modal === "topics"}
+    <SnsFilterTopicsModal
+      filters={filtersStore?.topics}
+      {closeModal}
+      {rootCanisterId}
     />
   {/if}
 
@@ -73,7 +89,7 @@
     <SnsFilterStatusModal
       filters={filtersStore?.decisionStatus}
       {rootCanisterId}
-      on:nnsClose={close}
+      on:nnsClose={closeModal}
     />
   {/if}
 </TestIdWrapper>

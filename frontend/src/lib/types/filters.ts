@@ -7,10 +7,18 @@ export type SnsProposalTypeFilterId =
   | typeof ALL_SNS_GENERIC_PROPOSAL_TYPES_ID;
 
 export type NnsProposalFilterCategory = "topics" | "status" | "uncategorized";
+export type SnsFilterCategory = "topics" | "types";
+
+export type ALL_SNS_GENERIC_PROPOSAL_TOPICS_ID = "all_sns_generic_topics";
+
+export type SnsProposalTopicFilterId =
+  | string
+  | ALL_SNS_GENERIC_PROPOSAL_TOPICS_ID;
 
 export type Filter<T> = {
   name: string;
   value: T;
   id: string;
   checked: boolean;
+  isCritical?: boolean;
 };
