@@ -93,7 +93,7 @@
     }
   };
 
-  const onConfirm = async (followeeHex: string) => {
+  const addTopicFollowings = async (followeeHex: string) => {
     const neuronId: SnsNeuronId = {
       id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
     };
@@ -142,7 +142,7 @@
     stopBusy("add-followee-by-topic");
   };
 
-  const onNnsRemove = async ({
+  const removeTopicFollowing = async ({
     topicKey,
     neuronId,
   }: {
@@ -178,7 +178,7 @@
     stopBusy("remove-followee-by-topic");
   };
 
-  const onNnsLegacyRemove = async ({
+  const removeLegacyFollowing = async ({
     nsFunction,
     followee,
   }: {
@@ -229,15 +229,15 @@
       bind:selectedTopics
       onNnsClose={close}
       onNnsNext={next}
-      {onNnsRemove}
-      {onNnsLegacyRemove}
+      onNnsRemove={removeTopicFollowing}
+      onNnsLegacyRemove={removeLegacyFollowing}
     />
   {/if}
   {#if currentStep?.name === STEP_NEURON}
     <FollowSnsNeuronsByTopicStepNeuron
       bind:followeeHex={followeeNeuronIdHex}
       onNnsBack={back}
-      onNnsConfirm={onConfirm}
+      onNnsConfirm={addTopicFollowings}
     />
   {/if}
 </WizardModal>
