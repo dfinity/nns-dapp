@@ -28,7 +28,7 @@
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
-    onNnsLegacyRemove: (args: {
+    removeLegacyFollowing: (args: {
       nsFunction: SnsNervousSystemFunction;
       followee: SnsNeuronId;
     }) => void;
@@ -41,7 +41,7 @@
     closeModal,
     onNnsNext,
     onNnsRemove,
-    onNnsLegacyRemove,
+    removeLegacyFollowing,
   }: Props = $props();
 
   let criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
@@ -99,7 +99,7 @@
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {onNnsRemove}
-        {onNnsLegacyRemove}
+        {removeLegacyFollowing}
       />
     {/each}
   </div>
@@ -122,7 +122,7 @@
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {onNnsRemove}
-        {onNnsLegacyRemove}
+        {removeLegacyFollowing}
       />
     {/each}
   </div>

@@ -30,7 +30,7 @@
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
-    onNnsLegacyRemove: (args: {
+    removeLegacyFollowing: (args: {
       nsFunction: SnsNervousSystemFunction;
       followee: SnsNeuronId;
     }) => void;
@@ -43,7 +43,7 @@
     checked = false,
     onNnsChange,
     onNnsRemove,
-    onNnsLegacyRemove,
+    removeLegacyFollowing,
   }: Props = $props();
 
   let topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
@@ -151,7 +151,7 @@
                     nsFunction={followees.nsFunction}
                     {neuronId}
                     onRemoveClick={() => {
-                      onNnsLegacyRemove({
+                      removeLegacyFollowing({
                         nsFunction: followees.nsFunction,
                         followee: neuronId,
                       });

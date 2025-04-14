@@ -230,7 +230,7 @@
       {closeModal}
       onNnsNext={next}
       onNnsRemove={removeTopicFollowing}
-      onNnsLegacyRemove={removeLegacyFollowing}
+      {removeLegacyFollowing}
     />
   {/if}
   {#if currentStep?.name === STEP_NEURON}
