@@ -153,23 +153,19 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
 
     expect(
       await (
-        await po.getTopicItemPosByName(criticalTopicName1)
+        await po.getTopicItemPoByName(criticalTopicName1)
       ).hasFollowingStatusIcon()
     ).toEqual(true);
     expect(
       await (
-        await po.getTopicItemPosByName(criticalTopicName2)
+        await po.getTopicItemPoByName(criticalTopicName2)
       ).hasFollowingStatusIcon()
     ).toEqual(false);
     expect(
-      await (
-        await po.getTopicItemPosByName(topicName1)
-      ).hasFollowingStatusIcon()
+      await (await po.getTopicItemPoByName(topicName1)).hasFollowingStatusIcon()
     ).toEqual(true);
     expect(
-      await (
-        await po.getTopicItemPosByName(topicName2)
-      ).hasFollowingStatusIcon()
+      await (await po.getTopicItemPoByName(topicName2)).hasFollowingStatusIcon()
     ).toEqual(false);
   });
 

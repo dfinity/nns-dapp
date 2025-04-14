@@ -50,7 +50,7 @@ export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
     return Promise.all(itemPos.map((itemPo) => itemPo.getTopicDescription()));
   }
 
-  async getTopicItemPosByName(
+  async getTopicItemPoByName(
     topicName: string
   ): Promise<FollowSnsNeuronsByTopicItemPo> {
     const itemPos = [
@@ -67,13 +67,11 @@ export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
   }
 
   async clickTopicItemByName(topicName: string): Promise<void> {
-    return (await this.getTopicItemPosByName(topicName))
-      .getCheckboxPo()
-      .click();
+    return (await this.getTopicItemPoByName(topicName)).getCheckboxPo().click();
   }
 
   async getTopicSelectionByName(topicName: string): Promise<boolean> {
-    return (await this.getTopicItemPosByName(topicName))
+    return (await this.getTopicItemPoByName(topicName))
       .getCheckboxPo()
       .isChecked();
   }
@@ -81,7 +79,7 @@ export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
   async getTopicFolloweePos(
     topicName: string
   ): Promise<FollowSnsNeuronsByTopicFolloweePo[]> {
-    return (await this.getTopicItemPosByName(topicName)).getFolloweesPo();
+    return (await this.getTopicItemPoByName(topicName)).getFolloweesPo();
   }
 
   getCancelButtonPo(): ButtonPo {
