@@ -4,17 +4,28 @@ import type {
   TopicInfoWithUnknown,
 } from "$lib/types/sns-aggregator";
 import {
+  addSnsNeuronToFollowingsByTopics,
   getAllSnsNSFunctions,
+  getSnsTopicFollowings,
   getSnsTopicInfoKey,
   getSnsTopicKeys,
   getTopicInfoBySnsTopicKey,
+  isSnsNeuronsFollowing,
+  removeSnsNeuronFromFollowingsByTopics,
   snsTopicKeyToTopic,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemFunction, SnsTopic } from "@dfinity/sns";
 
 describe("sns-topics utils", () => {
+  const neuronId1 = {
+    id: Uint8Array.from([1, 2, 3]),
+  };
+  const neuronId2 = {
+    id: Uint8Array.from([4, 5, 6]),
+  };
   const canisterIdString = "aaaaa-aa";
   const canisterId = Principal.fromText(canisterIdString);
   const method = "method";
@@ -198,6 +209,256 @@ describe("sns-topics utils", () => {
       expect(getAllSnsNSFunctions(knownTopicInfo)).toEqual([
         nativeNsFunction,
         genericNsFunction,
+      ]);
+    });
+  });
+
+  describe("getSnsTopicFollowings", () => {
+    it("should return empty map if the topic_followees is not available/supported", () => {
+      expect(
+        getSnsTopicFollowings(
+          createMockSnsNeuron({
+            topicFollowees: {},
+          })
+        )
+      ).toEqual([]);
+      expect(
+        getSnsTopicFollowings({
+          ...createMockSnsNeuron({}),
+        })
+      ).toEqual([]);
+    });
+
+    it("should return a followee list", () => {
+      expect(
+        getSnsTopicFollowings(
+          createMockSnsNeuron({
+            topicFollowees: {
+              DappCanisterManagement: [
+                {
+                  neuronId: neuronId1,
+                },
+              ],
+              DaoCommunitySettings: [
+                {
+                  neuronId: neuronId1,
+                },
+                {
+                  neuronId: neuronId2,
+                },
+              ],
+            },
+          })
+        )
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId1 }],
+        },
+        {
+          topic: "DaoCommunitySettings",
+          followees: [
+            { neuronId: neuronId1 },
+            {
+              neuronId: neuronId2,
+            },
+          ],
+        },
+      ]);
+    });
+  });
+
+  describe("isSnsNeuronsFollowing", () => {
+    it("returns true when the specified neuron ID is listed as a followee for the given topic", () => {
+      expect(
+        isSnsNeuronsFollowing({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+          ],
+          topicKey: "DappCanisterManagement",
+          neuronId: neuronId2,
+        })
+      ).toEqual(true);
+    });
+
+    it("returns false when the specified neuron ID is not listed as a followee for the given topic", () => {
+      expect(
+        isSnsNeuronsFollowing({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+          ],
+          topicKey: "CriticalDappOperations",
+          neuronId: neuronId2,
+        })
+      ).toEqual(false);
+
+      expect(
+        isSnsNeuronsFollowing({
+          followings: [
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+          ],
+          topicKey: "CriticalDappOperations",
+          neuronId: neuronId2,
+        })
+      ).toEqual(false);
+
+      expect(
+        isSnsNeuronsFollowing({
+          followings: [],
+          topicKey: "CriticalDappOperations",
+          neuronId: neuronId2,
+        })
+      ).toEqual(false);
+    });
+  });
+
+  describe("addSnsNeuronToFollowingsByTopics", () => {
+    it("should insert neuron ID into existing topics", () => {
+      expect(
+        addSnsNeuronToFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }],
+            },
+          ],
+          topics: ["DappCanisterManagement", "CriticalDappOperations"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+        },
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+        },
+      ]);
+    });
+
+    it("should insert neuron ID into non-existing topics", () => {
+      expect(
+        addSnsNeuronToFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }],
+            },
+          ],
+          topics: ["DappCanisterManagement", "CriticalDappOperations"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId2 }],
+        },
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+        },
+      ]);
+    });
+  });
+
+  describe("removeSnsNeuronFromFollowingsByTopics", () => {
+    it("should remove neuron ID", () => {
+      expect(
+        removeSnsNeuronFromFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+          ],
+          topics: ["DappCanisterManagement", "CriticalDappOperations"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId1 }],
+        },
+        {
+          topic: "DappCanisterManagement",
+          followees: [{ neuronId: neuronId1 }],
+        },
+      ]);
+
+      expect(
+        removeSnsNeuronFromFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId2 }],
+            },
+          ],
+          topics: ["CriticalDappOperations"],
+          neuronId: neuronId2,
+        })
+      ).toEqual([
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId1 }],
+        },
+      ]);
+    });
+
+    it("should not exclude empty followees", () => {
+      expect(
+        removeSnsNeuronFromFollowingsByTopics({
+          followings: [
+            {
+              topic: "CriticalDappOperations",
+              followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
+            },
+            {
+              topic: "DappCanisterManagement",
+              followees: [{ neuronId: neuronId1 }],
+            },
+          ],
+          topics: ["DappCanisterManagement", "CriticalDappOperations"],
+          neuronId: neuronId1,
+        })
+      ).toEqual([
+        {
+          topic: "CriticalDappOperations",
+          followees: [{ neuronId: neuronId2 }],
+        },
+        {
+          topic: "DappCanisterManagement",
+          followees: [],
+        },
       ]);
     });
   });
