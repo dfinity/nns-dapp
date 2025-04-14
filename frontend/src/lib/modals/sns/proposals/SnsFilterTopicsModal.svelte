@@ -25,8 +25,8 @@
   );
 
   const filter = () => {
-    snsFiltersStore.setCheckTypes({
-      checkedTypes: selectedFilters,
+    snsFiltersStore.setCheckTopics({
+      checkedTopics: selectedFilters,
       rootCanisterId,
     });
 
