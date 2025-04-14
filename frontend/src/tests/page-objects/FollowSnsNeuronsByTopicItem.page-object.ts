@@ -45,15 +45,15 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
   }
 
   getTopicName(): Promise<string> {
-    return this.root.byTestId("topic-name").getText();
+    return this.getText("topic-name");
   }
 
   getTopicDescription(): Promise<string> {
-    return this.root.byTestId("topic-description").getText();
+    return this.getText("topic-description");
   }
 
   getStatusIcon(): PageObjectElement {
-    return this.root.byTestId("topic-following-status");
+    return this.getElement("topic-following-status");
   }
 
   getFolloweesPo(): Promise<FollowSnsNeuronsByTopicFolloweePo[]> {
