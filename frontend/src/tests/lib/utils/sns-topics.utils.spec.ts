@@ -268,58 +268,6 @@ describe("sns-topics utils", () => {
     });
   });
 
-  describe("insertIntoTopicFollowingMap", () => {
-    it("should return empty list if the topic_followees is not available/supported", () => {
-      expect(
-        getSnsTopicFollowings(
-          createMockSnsNeuron({
-            topicFollowees: {},
-          })
-        )
-      ).toEqual([]);
-
-      expect(
-        getSnsTopicFollowings({
-          ...createMockSnsNeuron({}),
-          topic_followees: undefined,
-        })
-      ).toEqual([]);
-    });
-
-    it("should return following list", () => {
-      expect(
-        getSnsTopicFollowings(
-          createMockSnsNeuron({
-            topicFollowees: {
-              DappCanisterManagement: [
-                {
-                  neuronId: neuronId1,
-                },
-              ],
-              DaoCommunitySettings: [
-                {
-                  neuronId: neuronId1,
-                },
-                {
-                  neuronId: neuronId2,
-                },
-              ],
-            },
-          })
-        )
-      ).toEqual([
-        {
-          topic: "DappCanisterManagement",
-          followees: [{ neuronId: neuronId1 }],
-        },
-        {
-          topic: "DaoCommunitySettings",
-          followees: [{ neuronId: neuronId1 }, { neuronId: neuronId2 }],
-        },
-      ]);
-    });
-  });
-
   describe("isSnsNeuronsFollowing", () => {
     it("should return true", () => {
       expect(
