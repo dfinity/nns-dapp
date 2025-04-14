@@ -142,7 +142,7 @@
     stopBusy("add-followee-by-topic");
   };
 
-  const removeTopicFollowing = async ({
+  const removeFollowing = async ({
     topicKey,
     neuronId,
   }: {
@@ -229,7 +229,7 @@
       bind:selectedTopics
       {closeModal}
       onNnsNext={next}
-      onNnsRemove={removeTopicFollowing}
+      {removeFollowing}
       {removeLegacyFollowing}
     />
   {/if}

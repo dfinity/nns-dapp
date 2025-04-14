@@ -74,7 +74,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     followings: SnsTopicFollowing[];
     closeModal: () => void;
     onNnsNext: () => void;
-    onNnsRemove: (args: {
+    removeFollowing: (args: {
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
@@ -93,7 +93,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     followings: [],
     closeModal: vi.fn(),
     onNnsNext: vi.fn(),
-    onNnsRemove: vi.fn(),
+    removeFollowing: vi.fn(),
   };
 
   it("displays critical and non-critical topics", async () => {

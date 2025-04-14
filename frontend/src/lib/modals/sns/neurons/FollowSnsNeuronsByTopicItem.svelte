@@ -26,7 +26,7 @@
     legacyFollowees: SnsLegacyFollowings[];
     checked: boolean;
     onNnsChange: (args: { topicKey: SnsTopicKey; checked: boolean }) => void;
-    onNnsRemove: (args: {
+    removeFollowing: (args: {
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
@@ -42,7 +42,7 @@
     legacyFollowees,
     checked = false,
     onNnsChange,
-    onNnsRemove,
+    removeFollowing,
     removeLegacyFollowing,
   }: Props = $props();
 
@@ -125,7 +125,7 @@
                 ><FollowSnsNeuronsByTopicFollowee
                   neuronId={followee.neuronId}
                   onRemoveClick={() => {
-                    onNnsRemove({
+                    removeFollowing({
                       topicKey,
                       neuronId: followee.neuronId,
                     });

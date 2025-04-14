@@ -24,7 +24,7 @@
     followings: SnsTopicFollowing[];
     closeModal: () => void;
     onNnsNext: () => void;
-    onNnsRemove: (args: {
+    removeFollowing: (args: {
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
@@ -40,7 +40,7 @@
     followings,
     closeModal,
     onNnsNext,
-    onNnsRemove,
+    removeFollowing,
     removeLegacyFollowing,
   }: Props = $props();
 
@@ -98,7 +98,7 @@
         })}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
-        {onNnsRemove}
+        {removeFollowing}
         {removeLegacyFollowing}
       />
     {/each}
@@ -121,7 +121,7 @@
         })}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
-        {onNnsRemove}
+        {removeFollowing}
         {removeLegacyFollowing}
       />
     {/each}
