@@ -48,7 +48,7 @@
 
   let toggleContent: () => void = $state(() => {});
   let expanded: boolean = $state(false);
-  let isFollowingByTopic = $derived(followees.length > 0);
+  const isFollowingByTopic = $derived(followees.length > 0);
 
   // TODO(sns-topics): Add "stopPropagation" prop to the gix/Checkbox component
   // to avoid collapsable toggling
