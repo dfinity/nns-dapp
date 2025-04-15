@@ -13,6 +13,6 @@ export class FollowSnsNeuronsByTopicModalPo extends ModalPo {
   }
 
   clickCloseButton(): Promise<void> {
-    return this.click("close-button");
+    return this.clickCloseButton();
   }
 }
