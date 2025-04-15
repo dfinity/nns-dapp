@@ -34,7 +34,7 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     checked: boolean;
     followees: SnsTopicFollowee[];
     onNnsChange: () => void;
-    onNnsRemove: () => void;
+    removeFollowing: () => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicItem, {
       props,
@@ -49,7 +49,7 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     followees: [],
     checked: false,
     onNnsChange: vi.fn(),
-    onNnsRemove: vi.fn(),
+    removeFollowing: vi.fn(),
   };
 
   it("should expand and collapse", async () => {
@@ -104,7 +104,7 @@ describe("FollowSnsNeuronsByTopicItem", () => {
   });
 
   it("triggers onRemove", async () => {
-    const onNnsRemove = vi.fn();
+    const removeFollowing = vi.fn();
     const po = renderComponent({
       ...defaultProps,
       followees: [
@@ -115,21 +115,21 @@ describe("FollowSnsNeuronsByTopicItem", () => {
           neuronId: neuronId2,
         },
       ],
-      onNnsRemove,
+      removeFollowing,
     });
 
     const followeePos = await po.getFolloweesPo();
 
     await followeePos[0].clickRemoveButton();
-    expect(onNnsRemove).toBeCalledTimes(1);
-    expect(onNnsRemove).toBeCalledWith({
+    expect(removeFollowing).toBeCalledTimes(1);
+    expect(removeFollowing).toBeCalledWith({
       neuronId: neuronId1,
       topicKey,
     });
 
     await followeePos[1].clickRemoveButton();
-    expect(onNnsRemove).toBeCalledTimes(2);
-    expect(onNnsRemove).toBeCalledWith({
+    expect(removeFollowing).toBeCalledTimes(2);
+    expect(removeFollowing).toBeCalledWith({
       neuronId: neuronId2,
       topicKey,
     });

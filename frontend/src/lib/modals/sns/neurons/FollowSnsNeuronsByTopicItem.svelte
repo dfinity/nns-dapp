@@ -2,6 +2,7 @@
   import {
     Checkbox,
     Collapsible,
+    IconCheckCircleFill,
     IconErrorOutline,
     IconExpandMore,
   } from "@dfinity/gix-components";
@@ -12,13 +13,14 @@
   import type { SnsNeuronId } from "@dfinity/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
+  import { i18n } from "$lib/stores/i18n";
 
   type Props = {
     topicInfo: TopicInfoWithUnknown;
     followees: SnsTopicFollowee[];
     checked: boolean;
     onNnsChange: (args: { topicKey: SnsTopicKey; checked: boolean }) => void;
-    onNnsRemove: (args: {
+    removeFollowing: (args: {
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
@@ -29,7 +31,7 @@
     followees,
     checked = false,
     onNnsChange,
-    onNnsRemove,
+    removeFollowing,
   }: Props = $props();
 
   let topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
@@ -46,6 +48,7 @@
 
   let toggleContent: () => void = $state(() => {});
   let expanded: boolean = $state(false);
+  const isFollowingByTopic = $derived(followees.length > 0);
 
   // TODO(sns-topics): Add "stopPropagation" prop to the gix/Checkbox component
   // to avoid collapsable toggling
@@ -73,9 +76,16 @@
         <span data-tid="topic-name">{name}</span>
       </Checkbox>
 
-      <!-- TODO: display following status -->
-      <div class="icon" data-tid="topic-following-status">
-        <IconErrorOutline />
+      <div
+        class="icon"
+        data-tid="topic-following-status"
+        class:isFollowingByTopic
+      >
+        {#if isFollowingByTopic}
+          <IconCheckCircleFill />
+        {:else}
+          <IconErrorOutline />
+        {/if}
       </div>
 
       <button
@@ -94,14 +104,16 @@
 
       <div class="followees">
         {#if followees.length > 0}
-          <h5 class="headline description"> Followees</h5>
+          <h5 class="followee-header"
+            >{$i18n.follow_sns_topics.topics_following}</h5
+          >
           <ul class="followee-list">
             {#each followees as followee (subaccountToHexString(followee.neuronId.id))}
               <li
                 ><FollowSnsNeuronsByTopicFollowee
-                  {followee}
+                  neuronId={followee.neuronId}
                   onRemoveClick={() => {
-                    onNnsRemove({
+                    removeFollowing({
                       topicKey,
                       neuronId: followee.neuronId,
                     });
@@ -117,6 +129,8 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
   .header {
     display: grid;
     grid-template-columns: auto min-content min-content;
@@ -143,9 +157,29 @@
   .expandable-content {
     // Aligning with the checkbox label
     margin-left: calc(20px + var(--padding));
+  }
 
-    .description {
-      margin: 0 0 var(--padding-3x);
+  .followee-header {
+    margin-top: var(--padding-3x);
+    color: var(--description-color);
+  }
+
+  .followee-list {
+    padding: 0;
+    list-style-type: none;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--padding);
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    color: var(--tertiary);
+
+    &.isFollowingByTopic {
+      color: var(--positive-emphasis);
     }
   }
 
