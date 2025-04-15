@@ -3,11 +3,11 @@
   import Input from "$lib/components/ui/Input.svelte";
   import { Html } from "@dfinity/gix-components";
 
-  interface Props {
+  type Props = {
     followeeHex: string;
     openPrevStep: () => void;
     addFollowing: (followeeHex: string) => void;
-  }
+  };
   let {
     followeeHex = $bindable(),
     openPrevStep,

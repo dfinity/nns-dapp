@@ -1,7 +1,7 @@
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BasePageObject } from "./base.page-object";
-import { ButtonPo } from "./Button.page-object";
-import { TextInputPo } from "./TextInput.page-object";
 
 export class FollowSnsNeuronsByTopicStepNeuronPo extends BasePageObject {
   private static readonly TID =

@@ -55,12 +55,13 @@
   const onChange = () => {
     // Checkbox doesn't support two-way binding
     checked = !checked;
+
     onNnsChange({ topicKey, checked });
   };
 
   let toggleContent: () => void = $state(() => {});
   let expanded: boolean = $state(false);
-  const isTopicFollowing = $derived(followees.length > 0);
+  const isFollowingByTopic = $derived(followees.length > 0);
 
   // TODO(sns-topics): Add "stopPropagation" prop to the gix/Checkbox component
   // to avoid collapsable toggling
@@ -91,9 +92,9 @@
       <div
         class="icon"
         data-tid="topic-following-status"
-        class:isTopicFollowing
+        class:isFollowingByTopic
       >
-        {#if isTopicFollowing}
+        {#if isFollowingByTopic}
           <IconCheckCircleFill />
         {:else}
           <IconErrorOutline />
@@ -222,7 +223,7 @@
     align-items: center;
     color: var(--tertiary);
 
-    &.isTopicFollowing {
+    &.isFollowingByTopic {
       color: var(--positive-emphasis);
     }
   }

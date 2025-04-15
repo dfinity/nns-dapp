@@ -1,6 +1,7 @@
 import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
 import { FollowSnsNeuronsByTopicStepNeuronPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepNeuron.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("FollowSnsNeuronsByTopicStepNeuron", () => {
@@ -33,6 +34,7 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
     expect(props.followeeHex).toEqual("");
 
     props.followeeHex = "ABC";
+    await runResolvedPromises();
     expect(await po.getNeuronIdValue()).toEqual("ABC");
   });
 

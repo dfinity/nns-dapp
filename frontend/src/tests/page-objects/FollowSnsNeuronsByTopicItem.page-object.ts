@@ -61,7 +61,9 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
   }
 
   async hasFollowingStatusIcon(): Promise<boolean> {
-    return (await this.getStatusIcon().getClasses()).includes("isFollowing");
+    return (await this.getStatusIcon().getClasses()).includes(
+      "isFollowingByTopic"
+    );
   }
 
   async getFolloweesNeuronIds(): Promise<string[]> {

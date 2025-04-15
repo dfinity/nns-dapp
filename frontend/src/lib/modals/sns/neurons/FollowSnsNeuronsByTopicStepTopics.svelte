@@ -1,23 +1,24 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
-  import FollowSnsNeuronsByTopicItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
-  import { fromDefinedNullable } from "@dfinity/utils";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import FollowSnsNeuronsByTopicItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import {
     getSnsTopicInfoKey,
     getTopicLegacyFollowees,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import type {
     SnsNervousSystemFunction,
     SnsNeuron,
     SnsNeuronId,
   } from "@dfinity/sns";
-  interface Props {
+  import { fromDefinedNullable } from "@dfinity/utils";
+
+  type Props = {
     neuron: SnsNeuron;
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
@@ -32,7 +33,7 @@
       nsFunction: SnsNervousSystemFunction;
       followee: SnsNeuronId;
     }) => void;
-  }
+  };
   let {
     neuron,
     topicInfos,
@@ -44,10 +45,10 @@
     removeLegacyFollowing,
   }: Props = $props();
 
-  let criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
+  const criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
     topicInfos.filter((topicInfo) => fromDefinedNullable(topicInfo.is_critical))
   );
-  let nonCriticalTopicInfos: TopicInfoWithUnknown[] = $derived(
+  const nonCriticalTopicInfos: TopicInfoWithUnknown[] = $derived(
     topicInfos.filter(
       (topicInfo) => !fromDefinedNullable(topicInfo.is_critical)
     )
