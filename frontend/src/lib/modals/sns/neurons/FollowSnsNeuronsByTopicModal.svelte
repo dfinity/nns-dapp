@@ -5,11 +5,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
 
-  const dispatcher = createEventDispatcher();
-
-  const close = () => dispatcher("nnsClose");
   const STEP_TOPICS = "topics";
   const STEP_NEURON = "neurons";
   const steps: WizardSteps = [
