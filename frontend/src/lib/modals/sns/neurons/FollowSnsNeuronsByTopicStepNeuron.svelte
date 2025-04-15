@@ -3,11 +3,11 @@
   import Input from "$lib/components/ui/Input.svelte";
   import { Html } from "@dfinity/gix-components";
 
-  interface Props {
+  type Props = {
     followeeHex: string;
     openPrevStep: () => void;
     addFollowing: (followeeHex: string) => void;
-  }
+  };
   let {
     followeeHex = $bindable(),
     openPrevStep,
@@ -31,7 +31,8 @@
     bind:value={followeeHex}
   >
     <svelte:fragment slot="label"
-      >{$i18n.follow_sns_topics.neuron_label}</svelte:fragment
+      ><h5 class="label">{$i18n.follow_sns_topics.neuron_label}</h5
+      ></svelte:fragment
     >
   </Input>
 
@@ -58,3 +59,15 @@
     </button>
   </div>
 </form>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  .label {
+    margin: 0;
+  }
+
+  .description {
+    @include fonts.small(true);
+  }
+</style>
