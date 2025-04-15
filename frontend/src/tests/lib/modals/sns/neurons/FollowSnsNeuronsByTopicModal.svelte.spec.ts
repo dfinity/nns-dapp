@@ -7,9 +7,9 @@ import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
 import { FollowSnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowSnsNeuronsByTopicModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
 describe("FollowSnsNeuronsByTopicModal", () => {
@@ -42,19 +42,14 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     },
   });
 
-  const renderComponent = (
-    props: {
-      rootCanisterId: Principal;
-      neuron: SnsNeuron;
-      reloadNeuron: () => Promise<void>;
-    },
-    closeModal?: () => void
-  ) => {
+  const renderComponent = (props: {
+    rootCanisterId: Principal;
+    neuron: SnsNeuron;
+    reloadNeuron: () => Promise<void>;
+    closeModal: () => undefined;
+  }) => {
     const { container } = render(FollowSnsNeuronsByTopicModal, {
       props,
-      events: {
-        ...(nonNullish(closeModal) && { nnsClose: closeModal }),
-      },
     });
 
     return FollowSnsNeuronsByTopicModalPo.under(
@@ -65,6 +60,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     rootCanisterId,
     neuron,
     reloadNeuron: vi.fn(),
+    closeModal: vi.fn(),
   };
 
   beforeEach(() => {
@@ -124,6 +120,19 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       topicName1,
       topicName2,
     ]);
+  });
+
+  it('calls close modal on "Cancel" click', async () => {
+    const closeModal = vi.fn();
+    const po = renderComponent({
+      ...defaultProps,
+      closeModal,
+    });
+
+    po.getFollowSnsNeuronsByTopicStepTopicsPo().clickCancelButton();
+
+    await runResolvedPromises();
+    expect(closeModal).toHaveBeenCalledTimes(1);
   });
 
   it("preserves user entered data between step navigation", async () => {

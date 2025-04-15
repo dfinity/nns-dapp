@@ -5,7 +5,6 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
   import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
   import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
   import type {
@@ -22,11 +21,11 @@
   type Props = {
     rootCanisterId: Principal;
     neuron: SnsNeuron;
+    closeModal: () => undefined;
     reloadNeuron: () => Promise<void>;
   };
-  const { rootCanisterId, neuron, reloadNeuron }: Props = $props();
+  const { rootCanisterId, neuron, closeModal, reloadNeuron }: Props = $props();
 
-  const dispatcher = createEventDispatcher();
   const STEP_TOPICS = "topics";
   const STEP_NEURON = "neurons";
   const steps: WizardSteps = [
@@ -43,7 +42,6 @@
   let modal: WizardModal | undefined = $state();
   const openNextStep = () => modal?.next();
   const openPrevStep = () => modal?.back();
-  const closeModal = () => dispatcher("nnsClose");
 
   const listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
     $snsTopicsStore[rootCanisterId.toText()]
