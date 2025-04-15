@@ -431,6 +431,10 @@
     "topics_non_critical_label": "Non-critical topics",
     "topics_non_critical_tooltip": "Non-critical topics include proposals that manage the day-to-day operations of a given SNS DAO, including code upgrades or SNS parameter management.",
     "topics_following": "CURRENTLY FOLLOWING"
+    "topics_non_critical_tooltip": "TBD",
+    "neuron_label": "Neuron to Follow",
+    "neuron_description": "*Developer neurons are not stored in a central place as of now. You can often find them on the <a href=\"https://forum.dfinity.org/\" rel=\"noopener noreferrer\" aria-label=\"DFINITY forum\" target=\"_blank\">DFINITY forum</a> in the founding team’s announcement, or on their <a href=\"https://x.com/home\" rel=\"noopener noreferrer\" aria-label=\"X\" target=\"_blank\">X</a> account. Alternatively, you can review voting power distributions of all neurons on <a href=\"https://snsgeek.app/sns\" rel=\"noopener noreferrer\" aria-label=\"snsgeek\" target=\"_blank\">snsGeek</a>, and select a neuron from their list.",
+    "neuron_follow": "Follow Neuron"
   },
   "missing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
