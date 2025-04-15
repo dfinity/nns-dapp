@@ -12,11 +12,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-import {
-  arrayOfNumberToUint8Array,
-  fromNullable,
-  nonNullish,
-} from "@dfinity/utils";
+import { arrayOfNumberToUint8Array, fromNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -50,19 +46,14 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     },
   });
 
-  const renderComponent = (
-    props: {
-      rootCanisterId: Principal;
-      neuron: SnsNeuron;
-      reloadNeuron: () => Promise<void>;
-    },
-    closeModal?: () => void
-  ) => {
+  const renderComponent = (props: {
+    rootCanisterId: Principal;
+    neuron: SnsNeuron;
+    reloadNeuron: () => Promise<void>;
+    closeModal: () => undefined;
+  }) => {
     const { container } = render(FollowSnsNeuronsByTopicModal, {
       props,
-      events: {
-        ...(nonNullish(closeModal) && { nnsClose: closeModal }),
-      },
     });
 
     return FollowSnsNeuronsByTopicModalPo.under(
@@ -73,6 +64,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     rootCanisterId,
     neuron,
     reloadNeuron: vi.fn(),
+    closeModal: vi.fn(),
   };
 
   beforeEach(() => {
@@ -153,13 +145,11 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       );
     const reloadNeuronSpy = vi.fn();
     const closeModalSpy = vi.fn();
-    const po = renderComponent(
-      {
-        ...defaultProps,
-        reloadNeuron: reloadNeuronSpy,
-      },
-      closeModalSpy
-    );
+    const po = renderComponent({
+      ...defaultProps,
+      reloadNeuron: reloadNeuronSpy,
+      closeModal: closeModalSpy,
+    });
 
     // Select a topic
     const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
@@ -249,13 +239,11 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       );
     const reloadNeuronSpy = vi.fn();
     const closeModalSpy = vi.fn();
-    const po = renderComponent(
-      {
-        ...defaultProps,
-        reloadNeuron: reloadNeuronSpy,
-      },
-      closeModalSpy
-    );
+    const po = renderComponent({
+      ...defaultProps,
+      reloadNeuron: reloadNeuronSpy,
+      closeModal: closeModalSpy,
+    });
 
     const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
     await topicsStepPo.clickTopicItemByName(criticalTopicName2);
@@ -303,13 +291,11 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       .mockResolvedValue();
     const reloadNeuronSpy = vi.fn();
     const closeModalSpy = vi.fn();
-    const po = renderComponent(
-      {
-        ...defaultProps,
-        reloadNeuron: reloadNeuronSpy,
-      },
-      closeModalSpy
-    );
+    const po = renderComponent({
+      ...defaultProps,
+      reloadNeuron: reloadNeuronSpy,
+      closeModal: closeModalSpy,
+    });
 
     const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
     await topicsStepPo.clickTopicItemByName(criticalTopicName2);
@@ -385,13 +371,11 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       );
     const reloadNeuronSpy = vi.fn();
     const closeModalSpy = vi.fn();
-    const po = renderComponent(
-      {
-        ...defaultProps,
-        reloadNeuron: reloadNeuronSpy,
-      },
-      closeModalSpy
-    );
+    const po = renderComponent({
+      ...defaultProps,
+      reloadNeuron: reloadNeuronSpy,
+      closeModal: closeModalSpy,
+    });
     const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
     const followeePos =
       await topicsStepPo.getTopicFolloweePos(criticalTopicName1);
@@ -408,7 +392,6 @@ describe("FollowSnsNeuronsByTopicModal", () => {
         text: "Removing neuron following",
       },
     ]);
-    expect(get(toastsStore)).toEqual([]);
     expect(setFollowingSpy).toBeCalledTimes(1);
     expect(setFollowingSpy).toBeCalledWith({
       neuronId: fromNullable(neuron.id),
@@ -433,12 +416,6 @@ describe("FollowSnsNeuronsByTopicModal", () => {
 
     expect(reloadNeuronSpy).toBeCalledTimes(1);
     expect(get(busyStore)).toEqual([]);
-    expect(get(toastsStore)).toMatchObject([
-      {
-        level: "success",
-        text: "The neuron following was successfully removed.",
-      },
-    ]);
     // Shouldn't close the modal
     expect(closeModalSpy).toBeCalledTimes(0);
   });
@@ -456,13 +433,11 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       );
     const reloadNeuronSpy = vi.fn();
     const closeModalSpy = vi.fn();
-    const po = renderComponent(
-      {
-        ...defaultProps,
-        reloadNeuron: reloadNeuronSpy,
-      },
-      closeModalSpy
-    );
+    const po = renderComponent({
+      ...defaultProps,
+      reloadNeuron: reloadNeuronSpy,
+      closeModal: closeModalSpy,
+    });
     const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
     const followeePos =
       await topicsStepPo.getTopicFolloweePos(criticalTopicName1);

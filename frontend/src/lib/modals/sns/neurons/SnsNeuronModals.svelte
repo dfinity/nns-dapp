@@ -127,7 +127,7 @@
     <FollowSnsNeuronsByTopicModal
       {neuron}
       {rootCanisterId}
-      on:nnsClose={close}
+      closeModal={close}
       {reloadNeuron}
     />
   {/if}

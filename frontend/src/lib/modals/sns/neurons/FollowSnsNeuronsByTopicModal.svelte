@@ -1,53 +1,52 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import {
-    WizardModal,
-    type WizardStep,
-    type WizardSteps,
-  } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
-  import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
-  import type {
-    ListTopicsResponseWithUnknown,
-    TopicInfoWithUnknown,
-  } from "$lib/types/sns-aggregator";
+  import { querySnsNeuron } from "$lib/api/sns-governance.api";
   import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
-  import type { Principal } from "@dfinity/principal";
-  import {
-    arrayOfNumberToUint8Array,
-    fromDefinedNullable,
-    isNullish,
-  } from "@dfinity/utils";
-  import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuron,
-    SnsNeuronId,
-  } from "@dfinity/sns";
+  import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
+  import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
   import {
     getSnsNeuronIdentity,
     removeFollowee,
     setFollowing,
   } from "$lib/services/sns-neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+  import type {
+    ListTopicsResponseWithUnknown,
+    TopicInfoWithUnknown,
+  } from "$lib/types/sns-aggregator";
   import {
     addSnsNeuronToFollowingsByTopics,
     getSnsTopicFollowings,
     removeSnsNeuronFromFollowingsByTopics,
   } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
-  import { querySnsNeuron } from "$lib/api/sns-governance.api";
+  import {
+    WizardModal,
+    type WizardStep,
+    type WizardSteps,
+  } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import type {
+    SnsNervousSystemFunction,
+    SnsNeuron,
+    SnsNeuronId,
+  } from "@dfinity/sns";
+  import {
+    arrayOfNumberToUint8Array,
+    fromDefinedNullable,
+    isNullish,
+  } from "@dfinity/utils";
 
   type Props = {
     rootCanisterId: Principal;
     neuron: SnsNeuron;
+    closeModal: () => undefined;
     reloadNeuron: () => Promise<void>;
   };
-  const { rootCanisterId, neuron, reloadNeuron }: Props = $props();
+  const { rootCanisterId, neuron, closeModal, reloadNeuron }: Props = $props();
 
-  const dispatcher = createEventDispatcher();
   const STEP_TOPICS = "topics";
   const STEP_NEURON = "neurons";
   const steps: WizardSteps = [
@@ -64,7 +63,6 @@
   let modal: WizardModal | undefined = $state();
   const openNextStep = () => modal?.next();
   const openPrevStep = () => modal?.back();
-  const closeModal = () => dispatcher("nnsClose");
 
   const listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
     $snsTopicsStore[rootCanisterId.toText()]
@@ -95,7 +93,7 @@
     }
   };
 
-  const addTopicFollowings = async (followeeHex: string) => {
+  const addFollowing = async (followeeHex: string) => {
     const neuronId: SnsNeuronId = {
       id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
     };
@@ -239,7 +237,7 @@
     <FollowSnsNeuronsByTopicStepNeuron
       bind:followeeHex={followeeNeuronIdHex}
       {openPrevStep}
-      addFollowing={addTopicFollowings}
+      {addFollowing}
     />
   {/if}
 </WizardModal>
