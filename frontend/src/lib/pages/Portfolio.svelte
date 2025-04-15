@@ -152,7 +152,7 @@
   <div
     class="top"
     class:signed-in={$authSignedInStore}
-    class:launchpad={launchpadCards.length > 0}
+    class:launchpad={cards.length > 0}
   >
     {#if !$authSignedInStore}
       <div class="login-card">
@@ -163,6 +163,7 @@
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
+        isFullWidth={cards.length === 0}
       />
     {/if}
 
