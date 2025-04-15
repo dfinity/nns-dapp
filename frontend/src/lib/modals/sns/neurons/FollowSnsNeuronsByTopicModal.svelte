@@ -1,31 +1,122 @@
 <script lang="ts">
-  import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { Modal } from "@dfinity/gix-components";
+  import {
+    WizardModal,
+    type WizardStep,
+    type WizardSteps,
+  } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
+  import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
+  import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
+  import type {
+    ListTopicsResponseWithUnknown,
+    TopicInfoWithUnknown,
+  } from "$lib/types/sns-aggregator";
+  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
+  import type { Principal } from "@dfinity/principal";
+  import {
+    arrayOfNumberToUint8Array,
+    fromDefinedNullable,
+    isNullish,
+  } from "@dfinity/utils";
+  import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import type {
+    SnsNervousSystemFunction,
+    SnsNeuron,
+    SnsNeuronId,
+  } from "@dfinity/sns";
+  import {
+    getSnsNeuronIdentity,
+    removeFollowee,
+    setFollowing,
+  } from "$lib/services/sns-neurons.services";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import {
+    addSnsNeuronToFollowingsByTopics,
+    getSnsTopicFollowings,
+    removeSnsNeuronFromFollowingsByTopics,
+  } from "$lib/utils/sns-topics.utils";
+  import { hexStringToBytes } from "$lib/utils/utils";
+  import { querySnsNeuron } from "$lib/api/sns-governance.api";
+
+  type Props = {
+    rootCanisterId: Principal;
+    neuron: SnsNeuron;
+    reloadNeuron: () => Promise<void>;
+  };
+  const { rootCanisterId, neuron, reloadNeuron }: Props = $props();
 
   const dispatcher = createEventDispatcher();
+  const STEP_TOPICS = "topics";
+  const STEP_NEURON = "neurons";
+  const steps: WizardSteps = [
+    {
+      name: STEP_TOPICS,
+      title: $i18n.follow_sns_topics.topics_title,
+    },
+    {
+      name: STEP_NEURON,
+      title: $i18n.follow_sns_topics.neuron_title,
+    },
+  ];
+  let currentStep: WizardStep | undefined = $state();
+  let modal: WizardModal | undefined = $state();
+  const openNextStep = () => modal?.next();
+  const openPrevStep = () => modal?.back();
+  const closeModal = () => dispatcher("nnsClose");
 
-  const close = () => dispatcher("nnsClose");
+  const listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
+    $snsTopicsStore[rootCanisterId.toText()]
+  );
+  const topicInfos: TopicInfoWithUnknown[] = $derived(
+    isNullish(listTopics) ? [] : fromDefinedNullable(listTopics?.topics)
+  );
+  const followings: SnsTopicFollowing[] = $derived(
+    getSnsTopicFollowings(neuron)
+  );
+  let selectedTopics: SnsTopicKey[] = $state([]);
+  let followeeNeuronIdHex: string = $state("");
+
+  const addFollowing = async (followeeHex: string) => {
+    console.error("TBD addFollowing", followeeHex);
+  };
+
+  const removeFollowing = async ({
+    topicKey,
+    neuronId,
+  }: {
+    topicKey: SnsTopicKey;
+    neuronId: SnsNeuronId;
+  }) => {
+    console.error("TBD removeFollowing", topicKey, neuronId);
+  };
 </script>
 
-<Modal
-  on:nnsClose
+<WizardModal
   testId="follow-sns-neurons-by-topic-modal"
-  --modal-content-overflow-y="scroll"
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  on:nnsClose
 >
-  <svelte:fragment slot="title"
-    >{$i18n.neurons.follow_neurons_screen}</svelte:fragment
-  >
-  <p class="description">{$i18n.follow_neurons.description}</p>
+  <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
 
-  <Separator spacing="medium" />
-
-  TBD
-
-  <div class="toolbar">
-    <button data-tid="close-button" class="secondary" on:click={close}>
-      {$i18n.core.close}
-    </button>
-  </div>
-</Modal>
+  {#if currentStep?.name === STEP_TOPICS}
+    <FollowSnsNeuronsByTopicStepTopics
+      {topicInfos}
+      {followings}
+      bind:selectedTopics
+      {closeModal}
+      {openNextStep}
+      {removeFollowing}
+    />
+  {/if}
+  {#if currentStep?.name === STEP_NEURON}
+    <FollowSnsNeuronsByTopicStepNeuron
+      bind:followeeHex={followeeNeuronIdHex}
+      {openPrevStep}
+      {addFollowing}
+    />
+  {/if}
+</WizardModal>
