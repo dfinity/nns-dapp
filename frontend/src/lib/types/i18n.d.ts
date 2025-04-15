@@ -454,9 +454,9 @@ interface I18nFollow_sns_topics {
   neuron_follow: string;
   busy_updating: string;
   busy_removing: string;
+  busy_legacy_removing: string;
   error_neuron_not_exist: string;
   success_set_following: string;
-  success_removed_following: string;
   error_set_following: string;
   error_remove_following: string;
 }
