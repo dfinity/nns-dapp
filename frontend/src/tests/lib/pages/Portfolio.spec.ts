@@ -204,6 +204,24 @@ describe("Portfolio page", () => {
       expect(await stackedCardsPo.isPresent()).toBe(false);
     });
 
+    it("should show a full width TotalAssetsCard when no stacked cards", async () => {
+      const po = renderPage();
+      const totalAssetsCardPo = po.getTotalAssetsCardPo();
+
+      expect(await totalAssetsCardPo.isPresent()).toBe(true);
+      expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
+    });
+
+    it("should show a not full width TotalAssetsCard when stacked cards is not empty", async () => {
+      const po = renderPage({ openSnsProposals: mockSnsProposals });
+      const totalAssetsCardPo = po.getTotalAssetsCardPo();
+      const stackedCardsPo = po.getStackedCardsPo();
+
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(await totalAssetsCardPo.isPresent()).toBe(true);
+      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
+    });
+
     it("should display StackedCards when snsProjects is not empty", async () => {
       const po = renderPage({ snsProjects: mockSnsProjects });
       const stackedCardsPo = po.getStackedCardsPo();
