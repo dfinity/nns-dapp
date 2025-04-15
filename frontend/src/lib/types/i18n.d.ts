@@ -446,6 +446,9 @@ interface I18nFollow_sns_topics {
   topics_non_critical_label: string;
   topics_non_critical_tooltip: string;
   neuron_title: string;
+  neuron_label: string;
+  neuron_description: string;
+  neuron_follow: string;
 }
 
 interface I18nMissing_rewards {
