@@ -33,7 +33,7 @@
     removeFollowing,
   }: Props = $props();
 
-  let criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
+  const criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
     topicInfos.filter((topicInfo) => fromDefinedNullable(topicInfo.is_critical))
   );
   const nonCriticalTopicInfos: TopicInfoWithUnknown[] = $derived(
