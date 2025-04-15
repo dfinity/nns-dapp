@@ -36,7 +36,7 @@
   let criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
     topicInfos.filter((topicInfo) => fromDefinedNullable(topicInfo.is_critical))
   );
-  let nonCriticalTopicInfos: TopicInfoWithUnknown[] = $derived(
+  const nonCriticalTopicInfos: TopicInfoWithUnknown[] = $derived(
     topicInfos.filter(
       (topicInfo) => !fromDefinedNullable(topicInfo.is_critical)
     )
