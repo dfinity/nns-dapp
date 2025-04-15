@@ -14,31 +14,10 @@
   } from "$lib/types/sns-aggregator";
   import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
   import type { Principal } from "@dfinity/principal";
-  import {
-    arrayOfNumberToUint8Array,
-    fromDefinedNullable,
-    isNullish,
-  } from "@dfinity/utils";
+  import { fromDefinedNullable, isNullish } from "@dfinity/utils";
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuron,
-    SnsNeuronId,
-  } from "@dfinity/sns";
-  import {
-    getSnsNeuronIdentity,
-    removeFollowee,
-    setFollowing,
-  } from "$lib/services/sns-neurons.services";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import {
-    addSnsNeuronToFollowingsByTopics,
-    getSnsTopicFollowings,
-    removeSnsNeuronFromFollowingsByTopics,
-  } from "$lib/utils/sns-topics.utils";
-  import { hexStringToBytes } from "$lib/utils/utils";
-  import { querySnsNeuron } from "$lib/api/sns-governance.api";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import { getSnsTopicFollowings } from "$lib/utils/sns-topics.utils";
 
   type Props = {
     rootCanisterId: Principal;
@@ -80,6 +59,7 @@
 
   const addFollowing = async (followeeHex: string) => {
     console.error("TBD addFollowing", followeeHex);
+    await reloadNeuron();
   };
 
   const removeFollowing = async ({
@@ -90,6 +70,7 @@
     neuronId: SnsNeuronId;
   }) => {
     console.error("TBD removeFollowing", topicKey, neuronId);
+    await reloadNeuron();
   };
 </script>
 

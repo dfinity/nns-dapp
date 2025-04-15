@@ -479,7 +479,7 @@ describe("SnsNeuronDetail", () => {
         true
       );
 
-      await po.getFollowSnsNeuronsByTopicModalPo().clickCloseButton();
+      await po.getFollowSnsNeuronsByTopicModalPo().closeModal();
       expect(await po.getFollowSnsNeuronsModalPo().isPresent()).toBe(false);
       await po.getFollowSnsNeuronsByTopicModalPo().waitForClosed();
     });
