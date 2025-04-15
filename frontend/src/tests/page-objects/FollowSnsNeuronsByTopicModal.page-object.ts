@@ -11,8 +11,4 @@ export class FollowSnsNeuronsByTopicModalPo extends ModalPo {
       element.byTestId(FollowSnsNeuronsByTopicModalPo.TID)
     );
   }
-
-  clickCloseButton(): Promise<void> {
-    return this.click("close-button");
-  }
 }
