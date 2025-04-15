@@ -8,8 +8,6 @@
     onRemoveClick: () => void;
   };
   const { nsFunction, neuronId, onRemoveClick }: Props = $props();
-
-  let neuronIdHex = $derived(subaccountToHexString(neuronId.id));
 </script>
 
 <div

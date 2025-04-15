@@ -66,13 +66,15 @@
   const openPrevStep = () => modal?.back();
   const closeModal = () => dispatcher("nnsClose");
 
-  let listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
+  const listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
     $snsTopicsStore[rootCanisterId.toText()]
   );
-  let topicInfos: TopicInfoWithUnknown[] = $derived(
+  const topicInfos: TopicInfoWithUnknown[] = $derived(
     isNullish(listTopics) ? [] : fromDefinedNullable(listTopics?.topics)
   );
-  let followings: SnsTopicFollowing[] = $derived(getSnsTopicFollowings(neuron));
+  const followings: SnsTopicFollowing[] = $derived(
+    getSnsTopicFollowings(neuron)
+  );
   let selectedTopics: SnsTopicKey[] = $state([]);
   let followeeNeuronIdHex: string = $state("");
 
@@ -237,7 +239,7 @@
     <FollowSnsNeuronsByTopicStepNeuron
       bind:followeeHex={followeeNeuronIdHex}
       {openPrevStep}
-      onNnsConfirm={addTopicFollowings}
+      addFollowing={addTopicFollowings}
     />
   {/if}
 </WizardModal>
