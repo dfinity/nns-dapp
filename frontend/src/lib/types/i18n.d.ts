@@ -440,10 +440,12 @@ interface I18nNeurons {
 interface I18nFollow_sns_topics {
   topic_definitions_description: string;
   topic_definitions_title: string;
+  topics_description: string;
   topics_critical_label: string;
   topics_critical_tooltip: string;
   topics_non_critical_label: string;
   topics_non_critical_tooltip: string;
+  topics_following: string;
   neuron_label: string;
   neuron_description: string;
   neuron_follow: string;
