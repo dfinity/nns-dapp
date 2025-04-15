@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-27_03-14-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-04-11_13-20-base/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -372,10 +372,16 @@ type ListProposals = record {
   limit : nat32;
   exclude_type : vec nat64;
   include_status : vec int32;
+  include_topics : opt vec TopicSelector;
+};
+
+type TopicSelector = record {
+  topic : opt Topic;
 };
 
 type ListProposalsResponse = record {
   include_ballots_by_caller : opt bool;
+  include_topic_filtering : opt bool;
   proposals : vec ProposalData;
 };
 
@@ -520,7 +526,7 @@ type Neuron = record {
   disburse_maturity_in_progress : vec DisburseMaturityInProgress;
   followees : vec record { nat64; Followees };
   topic_followees : opt record {
-    topic_id_to_followees : vec record { nat64; FolloweesForTopic };
+    topic_id_to_followees : vec record { int32; FolloweesForTopic };
   };
   neuron_fees_e8s : nat64;
 };
