@@ -210,6 +210,7 @@ describe("actionable-sns-proposals.services", () => {
         .mockImplementation(async () => ({
           proposals: [],
           include_ballots_by_caller: [true] as [boolean],
+          include_topic_filtering: [],
         }));
       spyConsoleError = silentConsoleErrors();
 
@@ -253,6 +254,7 @@ describe("actionable-sns-proposals.services", () => {
         .mockImplementation(async () => ({
           proposals: [],
           include_ballots_by_caller: [true] as [boolean],
+          include_topic_filtering: [],
         }));
       failedActionableSnsesStore.add(rootCanisterId1.toText());
 
