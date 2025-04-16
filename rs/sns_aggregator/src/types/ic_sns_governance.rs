@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-27_03-14-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-04-11_13-20-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -565,7 +565,7 @@ pub struct NeuronPermission {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct NeuronTopicFolloweesInner {
-    pub topic_id_to_followees: Vec<(u64, FolloweesForTopic)>,
+    pub topic_id_to_followees: Vec<(i32, FolloweesForTopic)>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum DissolveState {
@@ -819,17 +819,23 @@ pub struct ListNeuronsResponse {
     pub neurons: Vec<Neuron>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct TopicSelector {
+    pub topic: Option<Topic>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListProposals {
     pub include_reward_status: Vec<i32>,
     pub before_proposal: Option<ProposalId>,
     pub limit: u32,
     pub exclude_type: Vec<u64>,
+    pub include_topics: Option<Vec<TopicSelector>>,
     pub include_status: Vec<i32>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListProposalsResponse {
     pub include_ballots_by_caller: Option<bool>,
     pub proposals: Vec<ProposalData>,
+    pub include_topic_filtering: Option<bool>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ListTopicsRequest {}
