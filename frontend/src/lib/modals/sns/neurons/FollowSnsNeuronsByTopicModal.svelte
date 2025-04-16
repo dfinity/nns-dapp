@@ -67,7 +67,7 @@
   let followeeNeuronIdHex = $state<string>("");
 
   const addFollowing = async (followeeHex: string) => {
-    const neuronId: SnsNeuronId = {
+    const followeeNeuronId: SnsNeuronId = {
       id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
     };
 
@@ -82,7 +82,7 @@
         neuronId: fromDefinedNullable(neuron.id),
         followings: addSnsNeuronToFollowingsByTopics({
           topics: selectedTopics,
-          neuronId: neuronId,
+          neuronId: followeeNeuronId,
           followings,
         }),
       });
