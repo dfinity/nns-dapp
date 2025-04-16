@@ -5,7 +5,7 @@
   import { setFollowing } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
   import type {
     ListTopicsResponseWithUnknown,
