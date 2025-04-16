@@ -1517,7 +1517,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 101940330388530615,
+    "icrc1_total_supply": 101940491688607881,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3836,7 +3836,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100874893554725,
+    "icrc1_total_supply": 100873417058380,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5052,7 +5052,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995529935980,
+    "icrc1_total_supply": 995507279652,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8390,7 +8390,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19222757065314338,
+    "icrc1_total_supply": 19224881052452782,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11966,7 +11966,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25373305169870022,
+    "icrc1_total_supply": 25374895800613874,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -13560,7 +13560,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10065542249060900,
+    "icrc1_total_supply": 10067172456843856,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14689,7 +14689,7 @@
           "description": "Commit proposed assets for upgrading the frontend canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "c63a7-6yaaa-aaaap-ab3gq-cai",
               "target_canister_id": "c63a7-6yaaa-aaaap-ab3gq-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -14703,7 +14703,7 @@
           "description": "It is used to transfer PANDA tokens to DAO treasury.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
               "target_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
               "validator_method_name": "validate_admin_collect_tokens",
@@ -14717,7 +14717,7 @@
           "description": "It is used to transfer ICP tokens to DAO treasury.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
               "target_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
               "validator_method_name": "validate2_admin_collect_icp",
@@ -14731,7 +14731,7 @@
           "description": "Commit proposed assets for upgrading the ic_message_frontend canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "2fvu6-tqaaa-aaaap-akksa-cai",
               "target_canister_id": "2fvu6-tqaaa-aaaap-akksa-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -14745,7 +14745,7 @@
           "description": "It is used to add more COSE, Profile, and Channel service canisters to the messaging cluster.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "validator_method_name": "validate_admin_add_canister",
@@ -14759,7 +14759,7 @@
           "description": "It is used to update the price for registering a username and creating a channel.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "validator_method_name": "validate_admin_update_price",
@@ -14773,7 +14773,7 @@
           "description": "It is used to collect tokens to a account.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "validator_method_name": "validate_admin_collect_token",
@@ -14787,7 +14787,7 @@
           "description": "It is used to update the price for registering a username and creating a channel.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "validator_method_name": "validate2_admin_update_price",
@@ -14801,7 +14801,7 @@
           "description": "It is used to add more IC-OSS canisters to ic_message_profile service.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
               "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
               "validator_method_name": "validate_admin_add_canister",
@@ -14815,7 +14815,7 @@
           "description": "It is used to add more IC-OSS canisters to ic_message_channel service.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
               "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
               "validator_method_name": "validate_admin_add_canister",
@@ -14829,7 +14829,7 @@
           "description": "It is used to add more IC-OSS canisters to ic_message_channel_02 service.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
               "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
               "validator_method_name": "validate_admin_add_canister",
@@ -14843,7 +14843,7 @@
           "description": "It is used to add more IC-OSS canisters to ic_message_channel_03 service.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
               "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
               "validator_method_name": "validate_admin_add_canister",
@@ -14857,7 +14857,7 @@
           "description": "It is used to remove managers from the ic_message canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
               "validator_method_name": "validate2_admin_remove_managers",
@@ -14871,7 +14871,7 @@
           "description": "It is used to remove managers from the ic_message_profile canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
               "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
               "validator_method_name": "validate2_admin_remove_managers",
@@ -14885,7 +14885,7 @@
           "description": "It is used to remove managers from the ic_message_channel canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
               "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
               "validator_method_name": "validate2_admin_remove_managers",
@@ -14899,7 +14899,7 @@
           "description": "It is used to remove managers from the ic_message_channel_02 canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
               "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
               "validator_method_name": "validate2_admin_remove_managers",
@@ -14913,7 +14913,7 @@
           "description": "It is used to remove managers from the ic_message_channel_03 canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
               "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
               "validator_method_name": "validate2_admin_remove_managers",
@@ -14927,7 +14927,7 @@
           "description": "It is used to update bucket canister settings from the ic_oss_cluster canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
               "target_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
               "validator_method_name": "validate_admin_update_bucket_canister_settings",
@@ -14941,7 +14941,7 @@
           "description": "It is used to upgrade bucket canister WASM from the ic_oss_cluster canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
               "target_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
               "validator_method_name": "validate2_admin_deploy_bucket",
@@ -14955,7 +14955,7 @@
           "description": "It is used to remove managers from the ic_cose_canister canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DaoCommunitySettings",
               "validator_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
               "target_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
               "validator_method_name": "validate2_admin_remove_managers",
@@ -15281,7 +15281,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103952810953312108,
+    "icrc1_total_supply": 103971694380398866,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -15519,288 +15519,7 @@
       "decentralization_swap_termination_timestamp_seconds": 1712145601
     },
     "topics": {
-      "uncategorized_functions": [
-        {
-          "id": 1000,
-          "name": "Commit proposed assets for upgrading the frontend canister",
-          "description": "Commit proposed assets for upgrading the frontend canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "c63a7-6yaaa-aaaap-ab3gq-cai",
-              "target_canister_id": "c63a7-6yaaa-aaaap-ab3gq-cai",
-              "validator_method_name": "validate_commit_proposed_batch",
-              "target_method_name": "commit_proposed_batch"
-            }
-          }
-        },
-        {
-          "id": 1005,
-          "name": "`admin_collect_tokens` function",
-          "description": "It is used to transfer PANDA tokens to DAO treasury.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
-              "target_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
-              "validator_method_name": "validate_admin_collect_tokens",
-              "target_method_name": "admin_collect_tokens"
-            }
-          }
-        },
-        {
-          "id": 1006,
-          "name": "`admin_collect_tokens` function",
-          "description": "It is used to transfer ICP tokens to DAO treasury.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
-              "target_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
-              "validator_method_name": "validate2_admin_collect_icp",
-              "target_method_name": "admin_collect_icp"
-            }
-          }
-        },
-        {
-          "id": 1100,
-          "name": "Commit proposed assets for upgrading the ic_message_frontend canister",
-          "description": "Commit proposed assets for upgrading the ic_message_frontend canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "2fvu6-tqaaa-aaaap-akksa-cai",
-              "target_canister_id": "2fvu6-tqaaa-aaaap-akksa-cai",
-              "validator_method_name": "validate_commit_proposed_batch",
-              "target_method_name": "commit_proposed_batch"
-            }
-          }
-        },
-        {
-          "id": 1101,
-          "name": "`admin_add_canister` function",
-          "description": "It is used to add more COSE, Profile, and Channel service canisters to the messaging cluster.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "validator_method_name": "validate_admin_add_canister",
-              "target_method_name": "admin_add_canister"
-            }
-          }
-        },
-        {
-          "id": 1102,
-          "name": "`admin_update_price` function",
-          "description": "It is used to update the price for registering a username and creating a channel.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "validator_method_name": "validate_admin_update_price",
-              "target_method_name": "admin_update_price"
-            }
-          }
-        },
-        {
-          "id": 1103,
-          "name": "`admin_collect_token` function",
-          "description": "It is used to collect tokens to a account.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "validator_method_name": "validate_admin_collect_token",
-              "target_method_name": "admin_collect_token"
-            }
-          }
-        },
-        {
-          "id": 1104,
-          "name": "`admin_update_price` function",
-          "description": "It is used to update the price for registering a username and creating a channel.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "validator_method_name": "validate2_admin_update_price",
-              "target_method_name": "admin_update_price"
-            }
-          }
-        },
-        {
-          "id": 1105,
-          "name": "`admin_add_canister` function",
-          "description": "It is used to add more IC-OSS canisters to ic_message_profile service.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
-              "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
-              "validator_method_name": "validate_admin_add_canister",
-              "target_method_name": "admin_add_canister"
-            }
-          }
-        },
-        {
-          "id": 1106,
-          "name": "`admin_add_canister` function",
-          "description": "It is used to add more IC-OSS canisters to ic_message_channel service.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
-              "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
-              "validator_method_name": "validate_admin_add_canister",
-              "target_method_name": "admin_add_canister"
-            }
-          }
-        },
-        {
-          "id": 1107,
-          "name": "`admin_add_canister` function",
-          "description": "It is used to add more IC-OSS canisters to ic_message_channel_02 service.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
-              "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
-              "validator_method_name": "validate_admin_add_canister",
-              "target_method_name": "admin_add_canister"
-            }
-          }
-        },
-        {
-          "id": 1108,
-          "name": "`admin_add_canister` function",
-          "description": "It is used to add more IC-OSS canisters to ic_message_channel_03 service.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
-              "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
-              "validator_method_name": "validate_admin_add_canister",
-              "target_method_name": "admin_add_canister"
-            }
-          }
-        },
-        {
-          "id": 1109,
-          "name": "`admin_remove_managers` function",
-          "description": "It is used to remove managers from the ic_message canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
-              "validator_method_name": "validate2_admin_remove_managers",
-              "target_method_name": "admin_remove_managers"
-            }
-          }
-        },
-        {
-          "id": 1110,
-          "name": "`admin_remove_managers` function",
-          "description": "It is used to remove managers from the ic_message_profile canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
-              "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
-              "validator_method_name": "validate2_admin_remove_managers",
-              "target_method_name": "admin_remove_managers"
-            }
-          }
-        },
-        {
-          "id": 1111,
-          "name": "`admin_remove_managers` function",
-          "description": "It is used to remove managers from the ic_message_channel canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
-              "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
-              "validator_method_name": "validate2_admin_remove_managers",
-              "target_method_name": "admin_remove_managers"
-            }
-          }
-        },
-        {
-          "id": 1112,
-          "name": "`admin_remove_managers` function",
-          "description": "It is used to remove managers from the ic_message_channel_02 canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
-              "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
-              "validator_method_name": "validate2_admin_remove_managers",
-              "target_method_name": "admin_remove_managers"
-            }
-          }
-        },
-        {
-          "id": 1113,
-          "name": "`admin_remove_managers` function",
-          "description": "It is used to remove managers from the ic_message_channel_03 canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
-              "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
-              "validator_method_name": "validate2_admin_remove_managers",
-              "target_method_name": "admin_remove_managers"
-            }
-          }
-        },
-        {
-          "id": 1114,
-          "name": "`admin_update_bucket_canister_settings` function",
-          "description": "It is used to update bucket canister settings from the ic_oss_cluster canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
-              "target_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
-              "validator_method_name": "validate_admin_update_bucket_canister_settings",
-              "target_method_name": "admin_update_bucket_canister_settings"
-            }
-          }
-        },
-        {
-          "id": 1115,
-          "name": "`admin_deploy_bucket` function",
-          "description": "It is used to upgrade bucket canister WASM from the ic_oss_cluster canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
-              "target_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
-              "validator_method_name": "validate2_admin_deploy_bucket",
-              "target_method_name": "admin_deploy_bucket"
-            }
-          }
-        },
-        {
-          "id": 1116,
-          "name": "`admin_remove_managers` function",
-          "description": "It is used to remove managers from the ic_cose_canister canister.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
-              "target_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
-              "validator_method_name": "validate2_admin_remove_managers",
-              "target_method_name": "admin_remove_managers"
-            }
-          }
-        }
-      ],
+      "uncategorized_functions": [],
       "topics": [
         {
           "native_functions": [
@@ -15833,7 +15552,176 @@
           "is_critical": false,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1005,
+              "name": "`admin_collect_tokens` function",
+              "description": "It is used to transfer PANDA tokens to DAO treasury.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
+                  "target_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
+                  "validator_method_name": "validate_admin_collect_tokens",
+                  "target_method_name": "admin_collect_tokens"
+                }
+              }
+            },
+            {
+              "id": 1006,
+              "name": "`admin_collect_tokens` function",
+              "description": "It is used to transfer ICP tokens to DAO treasury.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
+                  "target_canister_id": "a7cug-2qaaa-aaaap-ab3la-cai",
+                  "validator_method_name": "validate2_admin_collect_icp",
+                  "target_method_name": "admin_collect_icp"
+                }
+              }
+            },
+            {
+              "id": 1102,
+              "name": "`admin_update_price` function",
+              "description": "It is used to update the price for registering a username and creating a channel.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate_admin_update_price",
+                  "target_method_name": "admin_update_price"
+                }
+              }
+            },
+            {
+              "id": 1103,
+              "name": "`admin_collect_token` function",
+              "description": "It is used to collect tokens to a account.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate_admin_collect_token",
+                  "target_method_name": "admin_collect_token"
+                }
+              }
+            },
+            {
+              "id": 1104,
+              "name": "`admin_update_price` function",
+              "description": "It is used to update the price for registering a username and creating a channel.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate2_admin_update_price",
+                  "target_method_name": "admin_update_price"
+                }
+              }
+            },
+            {
+              "id": 1108,
+              "name": "`admin_add_canister` function",
+              "description": "It is used to add more IC-OSS canisters to ic_message_channel_03 service.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "validator_method_name": "validate_admin_add_canister",
+                  "target_method_name": "admin_add_canister"
+                }
+              }
+            },
+            {
+              "id": 1109,
+              "name": "`admin_remove_managers` function",
+              "description": "It is used to remove managers from the ic_message canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate2_admin_remove_managers",
+                  "target_method_name": "admin_remove_managers"
+                }
+              }
+            },
+            {
+              "id": 1110,
+              "name": "`admin_remove_managers` function",
+              "description": "It is used to remove managers from the ic_message_profile canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "validator_method_name": "validate2_admin_remove_managers",
+                  "target_method_name": "admin_remove_managers"
+                }
+              }
+            },
+            {
+              "id": 1111,
+              "name": "`admin_remove_managers` function",
+              "description": "It is used to remove managers from the ic_message_channel canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "validator_method_name": "validate2_admin_remove_managers",
+                  "target_method_name": "admin_remove_managers"
+                }
+              }
+            },
+            {
+              "id": 1112,
+              "name": "`admin_remove_managers` function",
+              "description": "It is used to remove managers from the ic_message_channel_02 canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "validator_method_name": "validate2_admin_remove_managers",
+                  "target_method_name": "admin_remove_managers"
+                }
+              }
+            },
+            {
+              "id": 1113,
+              "name": "`admin_remove_managers` function",
+              "description": "It is used to remove managers from the ic_message_channel_03 canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "target_canister_id": "4jxyd-pqaaa-aaaah-qdqtq-cai",
+                  "validator_method_name": "validate2_admin_remove_managers",
+                  "target_method_name": "admin_remove_managers"
+                }
+              }
+            },
+            {
+              "id": 1116,
+              "name": "`admin_remove_managers` function",
+              "description": "It is used to remove managers from the ic_cose_canister canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DaoCommunitySettings",
+                  "validator_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
+                  "target_canister_id": "n3bau-gaaaa-aaaaj-qa4oq-cai",
+                  "validator_method_name": "validate2_admin_remove_managers",
+                  "target_method_name": "admin_remove_managers"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
@@ -15900,6 +15788,118 @@
           "name": "Application Business Logic",
           "description": "Proposals that are custom to what the governed dapp requires.",
           "custom_functions": [
+            {
+              "id": 1000,
+              "name": "Commit proposed assets for upgrading the frontend canister",
+              "description": "Commit proposed assets for upgrading the frontend canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "c63a7-6yaaa-aaaap-ab3gq-cai",
+                  "target_canister_id": "c63a7-6yaaa-aaaap-ab3gq-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            },
+            {
+              "id": 1100,
+              "name": "Commit proposed assets for upgrading the ic_message_frontend canister",
+              "description": "Commit proposed assets for upgrading the ic_message_frontend canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "2fvu6-tqaaa-aaaap-akksa-cai",
+                  "target_canister_id": "2fvu6-tqaaa-aaaap-akksa-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            },
+            {
+              "id": 1101,
+              "name": "`admin_add_canister` function",
+              "description": "It is used to add more COSE, Profile, and Channel service canisters to the messaging cluster.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "target_canister_id": "nscli-qiaaa-aaaaj-qa4pa-cai",
+                  "validator_method_name": "validate_admin_add_canister",
+                  "target_method_name": "admin_add_canister"
+                }
+              }
+            },
+            {
+              "id": 1105,
+              "name": "`admin_add_canister` function",
+              "description": "It is used to add more IC-OSS canisters to ic_message_profile service.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "target_canister_id": "ijyxz-wyaaa-aaaaj-qa4qa-cai",
+                  "validator_method_name": "validate_admin_add_canister",
+                  "target_method_name": "admin_add_canister"
+                }
+              }
+            },
+            {
+              "id": 1106,
+              "name": "`admin_add_canister` function",
+              "description": "It is used to add more IC-OSS canisters to ic_message_channel service.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "target_canister_id": "nvdn4-5qaaa-aaaaj-qa4pq-cai",
+                  "validator_method_name": "validate_admin_add_canister",
+                  "target_method_name": "admin_add_canister"
+                }
+              }
+            },
+            {
+              "id": 1107,
+              "name": "`admin_add_canister` function",
+              "description": "It is used to add more IC-OSS canisters to ic_message_channel_02 service.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "target_canister_id": "zof5a-5yaaa-aaaai-acr2q-cai",
+                  "validator_method_name": "validate_admin_add_canister",
+                  "target_method_name": "admin_add_canister"
+                }
+              }
+            },
+            {
+              "id": 1114,
+              "name": "`admin_update_bucket_canister_settings` function",
+              "description": "It is used to update bucket canister settings from the ic_oss_cluster canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+                  "target_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+                  "validator_method_name": "validate_admin_update_bucket_canister_settings",
+                  "target_method_name": "admin_update_bucket_canister_settings"
+                }
+              }
+            },
+            {
+              "id": 1115,
+              "name": "`admin_deploy_bucket` function",
+              "description": "It is used to upgrade bucket canister WASM from the ic_oss_cluster canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+                  "target_canister_id": "5szpn-tiaaa-aaaaj-qncoq-cai",
+                  "validator_method_name": "validate2_admin_deploy_bucket",
+                  "target_method_name": "admin_deploy_bucket"
+                }
+              }
+            },
             {
               "id": 2000,
               "name": "`transferPosition` function",
@@ -17066,7 +17066,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98603974808872996,
+    "icrc1_total_supply": 98611686677144860,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -18788,7 +18788,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99924756967916897,
+    "icrc1_total_supply": 99924951685908843,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -20166,7 +20166,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100343169634236744,
+    "icrc1_total_supply": 100349118568671165,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
