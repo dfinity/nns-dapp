@@ -175,6 +175,12 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     const newFolloweeNeuronId: SnsNeuronId = {
       id: arrayOfNumberToUint8Array([4, 5, 6]),
     };
+    let resolveQuerySnsNeuron;
+    const querySnsNeuronSpy = vi
+      .spyOn(snsGovernanceApi, "querySnsNeuron")
+      .mockImplementation(
+        () => new Promise((resolve) => (resolveQuerySnsNeuron = resolve))
+      );
     let resolveSetFollowing;
     const setFollowingSpy = vi
       .spyOn(snsGovernanceApi, "setFollowing")
@@ -217,6 +223,19 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       },
     ]);
     expect(get(toastsStore)).toEqual([]);
+
+    // Neuron id validation request
+    expect(querySnsNeuronSpy).toBeCalledTimes(1);
+    expect(querySnsNeuronSpy).toBeCalledWith({
+      identity: mockIdentity,
+      rootCanisterId,
+      certified: false,
+      neuronId: newFolloweeNeuronId,
+    });
+    expect(setFollowingSpy).toBeCalledTimes(0);
+
+    resolveQuerySnsNeuron(neuron);
+    await runResolvedPromises();
 
     // Set following request
     expect(setFollowingSpy).toBeCalledTimes(1);
@@ -303,6 +322,59 @@ describe("FollowSnsNeuronsByTopicModal", () => {
         text: "There was an error while adding a followee. Test Error",
       },
     ]);
+  });
+
+  it("handles provided invalid neuron id", async () => {
+    const invalidFolloweeNeuronIdHex = "040506";
+    let rejectQuerySnsNeuron;
+    vi.spyOn(snsGovernanceApi, "querySnsNeuron").mockImplementation(
+      () => new Promise((_, reject) => (rejectQuerySnsNeuron = reject))
+    );
+    const setFollowingSpy = vi
+      .spyOn(snsGovernanceApi, "setFollowing")
+      .mockResolvedValue();
+    const reloadNeuronSpy = vi.fn();
+    const closeModalSpy = vi.fn();
+    const po = renderComponent({
+      ...defaultProps,
+      reloadNeuron: reloadNeuronSpy,
+      closeModal: closeModalSpy,
+    });
+
+    const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
+    await topicsStepPo.clickTopicItemByName(criticalTopicName2);
+    await topicsStepPo.clickNextButton();
+    const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
+    await neuronStepPo
+      .getNeuronIdInputPo()
+      .typeText(invalidFolloweeNeuronIdHex);
+
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toEqual([]);
+    await neuronStepPo.clickConfirmButton();
+
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "add-followee-by-topic",
+        text: "Updating neuron followings",
+      },
+    ]);
+    expect(get(toastsStore)).toEqual([]);
+
+    rejectQuerySnsNeuron();
+    await runResolvedPromises();
+
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "error",
+        text: "Neuron with id 040506 does not exist.",
+      },
+    ]);
+
+    expect(setFollowingSpy).toBeCalledTimes(0);
+    expect(reloadNeuronSpy).toBeCalledTimes(0);
+    expect(closeModalSpy).toBeCalledTimes(0);
   });
 
   it("removes followee", async () => {
