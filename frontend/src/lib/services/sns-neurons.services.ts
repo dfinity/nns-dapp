@@ -676,6 +676,7 @@ export const setFollowing = async ({
 
     return { success: true };
   } catch (error: unknown) {
+    // TODO(sns-topics): Move error handling to the component layer.
     toastsError({
       labelKey: "error__sns.sns_add_followee",
       err: error,
