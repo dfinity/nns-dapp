@@ -1,6 +1,7 @@
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import FollowSnsNeuronsByTopicModal from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicModal.svelte";
 import type { SnsTopicKey } from "$lib/types/sns";
-import { resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
@@ -8,9 +9,12 @@ import { FollowSnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowSnsNeu
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { busyStore, toastsStore } from "@dfinity/gix-components";
 import type { Principal } from "@dfinity/principal";
-import type { SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+import { arrayOfNumberToUint8Array, fromNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("FollowSnsNeuronsByTopicModal", () => {
   const rootCanisterId = principal(1);
@@ -164,5 +168,140 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     await topicsStepPo.clickNextButton();
     expect(await neuronStepPo.getNeuronIdValue()).toEqual("1234");
     expect(await neuronStepPo.getConfirmButtonPo().isDisabled()).toEqual(false);
+  });
+
+  it("updates following for selected topics", async () => {
+    const newFolloweeNeuronIdHex = "040506";
+    const newFolloweeNeuronId: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array([4, 5, 6]),
+    };
+    let resolveSetFollowing;
+    const setFollowingSpy = vi
+      .spyOn(snsGovernanceApi, "setFollowing")
+      .mockImplementation(
+        () => new Promise((resolve) => (resolveSetFollowing = resolve))
+      );
+    const reloadNeuronSpy = vi.fn();
+    const closeModalSpy = vi.fn();
+    const po = renderComponent({
+      ...defaultProps,
+      reloadNeuron: reloadNeuronSpy,
+      closeModal: closeModalSpy,
+    });
+
+    // Select a topic
+    const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
+    expect(await topicsStepPo.isPresent()).toEqual(true);
+    expect(await topicsStepPo.getNextButtonPo().isDisabled()).toEqual(true);
+    await topicsStepPo.clickTopicItemByName(criticalTopicName2);
+    expect(await topicsStepPo.getNextButtonPo().isDisabled()).toEqual(false);
+    await topicsStepPo.clickNextButton();
+
+    // Type neuron id
+    const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
+    expect(await neuronStepPo.isPresent()).toEqual(true);
+    expect(await topicsStepPo.isPresent()).toEqual(false);
+    expect(await neuronStepPo.getConfirmButtonPo().isDisabled()).toEqual(true);
+    await neuronStepPo.getNeuronIdInputPo().typeText(newFolloweeNeuronIdHex);
+    expect(await neuronStepPo.getConfirmButtonPo().isDisabled()).toEqual(false);
+
+    // Confirmation
+    await neuronStepPo.clickConfirmButton();
+    await runResolvedPromises();
+
+    // Expect busy to be shown
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "add-followee-by-topic",
+        text: "Updating neuron followings",
+      },
+    ]);
+    expect(get(toastsStore)).toEqual([]);
+
+    // Set following request
+    expect(setFollowingSpy).toBeCalledTimes(1);
+    expect(setFollowingSpy).toBeCalledWith({
+      neuronId: fromNullable(neuron.id),
+      identity: mockIdentity,
+      rootCanisterId,
+      topicFollowing: [
+        {
+          topic: { [criticalTopicKey2]: null },
+          followees: [{ neuronId: newFolloweeNeuronId }],
+        },
+      ],
+    });
+
+    expect(reloadNeuronSpy).toBeCalledTimes(0);
+    expect(closeModalSpy).toBeCalledTimes(0);
+    resolveSetFollowing();
+    await runResolvedPromises();
+
+    // After successful set following
+    expect(reloadNeuronSpy).toBeCalledTimes(1);
+    expect(closeModalSpy).toBeCalledTimes(1);
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "success",
+        text: "The neuron following was successfully added.",
+      },
+    ]);
+  });
+
+  it("handles set following error", async () => {
+    const testError = new Error("Test Error");
+    const spyConsoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    const newFolloweeNeuronIdHex = "040506";
+    vi.spyOn(snsGovernanceApi, "querySnsNeuron").mockResolvedValue(neuron);
+    let rejectSetFollowing;
+    const setFollowingSpy = vi
+      .spyOn(snsGovernanceApi, "setFollowing")
+      .mockImplementation(
+        () => new Promise((_, reject) => (rejectSetFollowing = reject))
+      );
+    const reloadNeuronSpy = vi.fn();
+    const closeModalSpy = vi.fn();
+    const po = renderComponent({
+      ...defaultProps,
+      reloadNeuron: reloadNeuronSpy,
+      closeModal: closeModalSpy,
+    });
+
+    const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
+    await topicsStepPo.clickTopicItemByName(criticalTopicName2);
+    await topicsStepPo.clickNextButton();
+    const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
+    await neuronStepPo.getNeuronIdInputPo().typeText(newFolloweeNeuronIdHex);
+    await neuronStepPo.clickConfirmButton();
+    await runResolvedPromises();
+
+    expect(get(busyStore)).toEqual([
+      {
+        initiator: "add-followee-by-topic",
+        text: "Updating neuron followings",
+      },
+    ]);
+    expect(get(toastsStore)).toEqual([]);
+    expect(spyConsoleError).toBeCalledTimes(0);
+    expect(setFollowingSpy).toBeCalledTimes(1);
+
+    // Reject set following
+    rejectSetFollowing(testError);
+    await runResolvedPromises();
+
+    expect(spyConsoleError).toBeCalledTimes(1);
+    expect(spyConsoleError).toBeCalledWith(testError);
+    expect(reloadNeuronSpy).toBeCalledTimes(0);
+    expect(closeModalSpy).toBeCalledTimes(0);
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "error",
+        text: "There was an error while adding a followee. Test Error",
+      },
+    ]);
   });
 });

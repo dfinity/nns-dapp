@@ -451,6 +451,8 @@ interface I18nFollow_sns_topics {
   neuron_label: string;
   neuron_description: string;
   neuron_follow: string;
+  busy_updating: string;
+  success_set_following: string;
 }
 
 interface I18nMissing_rewards {
