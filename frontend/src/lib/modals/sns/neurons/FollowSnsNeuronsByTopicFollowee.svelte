@@ -39,6 +39,9 @@
     border-radius: var(--border-radius-0_5x);
     background-color: var(--tag-background);
     color: var(--tag-text);
+
+    // avoid unnecessary scrollbars of the collapsible container
+    overflow: hidden;
   }
 
   .remove-button {
