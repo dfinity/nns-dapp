@@ -54,13 +54,11 @@ describe("sns-proposals services", () => {
     let queryProposalsSpy;
 
     beforeEach(() => {
-      queryProposalsSpy = vi
-        .spyOn(api, "queryProposals")
-        .mockResolvedValue({
-          proposals,
-          include_ballots_by_caller: [true],
-          include_topic_filtering: [],
-        });
+      queryProposalsSpy = vi.spyOn(api, "queryProposals").mockResolvedValue({
+        proposals,
+        include_ballots_by_caller: [true],
+        include_topic_filtering: [],
+      });
     });
 
     describe("not logged in", () => {
