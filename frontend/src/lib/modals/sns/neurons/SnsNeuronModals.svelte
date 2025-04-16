@@ -123,8 +123,13 @@
     <FollowSnsNeuronsModal {neuron} on:nnsClose={close} {rootCanisterId} />
   {/if}
 
-  {#if type === "follow-by-topic" && nonNullish(rootCanisterId)}
-    <FollowSnsNeuronsByTopicModal on:nnsClose={close} />
+  {#if type === "follow-by-topic" && nonNullish(rootCanisterId) && nonNullish(neuron)}
+    <FollowSnsNeuronsByTopicModal
+      {neuron}
+      {rootCanisterId}
+      closeModal={close}
+      {reloadNeuron}
+    />
   {/if}
 
   {#if type === "sns-topic-definitions" && nonNullish(rootCanisterId)}
