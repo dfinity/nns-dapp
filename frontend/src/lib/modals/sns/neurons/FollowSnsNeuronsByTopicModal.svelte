@@ -21,7 +21,7 @@
   type Props = {
     rootCanisterId: Principal;
     neuron: SnsNeuron;
-    closeModal: () => undefined;
+    closeModal: () => void;
     reloadNeuron: () => Promise<void>;
   };
   const { rootCanisterId, neuron, closeModal, reloadNeuron }: Props = $props();
@@ -52,8 +52,8 @@
   const followings: SnsTopicFollowing[] = $derived(
     getSnsTopicFollowings(neuron)
   );
-  let selectedTopics: SnsTopicKey[] = $state([]);
-  let followeeNeuronIdHex: string = $state("");
+  let selectedTopics = $state<SnsTopicKey[]>([]);
+  let followeeNeuronIdHex = $state<string>("");
 
   const addFollowing = async (followeeHex: string) => {
     console.error("TBD addFollowing", followeeHex);

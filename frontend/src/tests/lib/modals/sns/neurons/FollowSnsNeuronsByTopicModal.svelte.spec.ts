@@ -46,7 +46,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     rootCanisterId: Principal;
     neuron: SnsNeuron;
     reloadNeuron: () => Promise<void>;
-    closeModal: () => undefined;
+    closeModal: () => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicModal, {
       props,
