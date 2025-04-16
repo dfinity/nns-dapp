@@ -344,7 +344,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98320525703136967,
+    "icrc1_total_supply": 98320682806644615,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -1126,7 +1126,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100849883017980812,
+    "icrc1_total_supply": 100851892984439717,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2209,7 +2209,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50547476573544380,
+    "icrc1_total_supply": 50547567788539267,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2846,7 +2846,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961443895571985,
+    "icrc1_total_supply": 9961443890671985,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3357,7 +3357,7 @@
       "max_dissolve_delay_seconds": 63115200,
       "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
-      "automatically_advance_target_version": null,
+      "automatically_advance_target_version": true,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
@@ -3486,7 +3486,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10172309499371986,
+    "icrc1_total_supply": 10172508332600799,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3607,14 +3607,6 @@
               "id": 15,
               "name": "Advance SNS target version",
               "description": "Proposal to advance the target version of this SNS.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 16,
-              "name": "Set topics for custom proposals",
-              "description": "Proposal to set the topics for custom SNS proposals.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -3760,6 +3752,14 @@
               "id": 5,
               "name": "Remove nervous system function",
               "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -4122,7 +4122,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12708421228681628,
+    "icrc1_total_supply": 12710913694787595,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5396,6 +5396,34 @@
           }
         },
         {
+          "id": 1009,
+          "name": "Stake new SNS neuron.",
+          "description": "This proposal stakes a new SNS neuron. The details about the neuron is in the payload and can be for example OGY or WTN (or others) combined with the amount and dissolve delay.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "54vkq-taaaa-aaaap-ahqra-cai",
+              "target_canister_id": "54vkq-taaaa-aaaap-ahqra-cai",
+              "validator_method_name": "stake_sns_neuron_validate",
+              "target_method_name": "stake_sns_neuron"
+            }
+          }
+        },
+        {
+          "id": 1010,
+          "name": "Manage Gold DAO owned SNS neuron.",
+          "description": "This proposal manages a Gold DAO controlled SNS neuron and effective calls the manage_neuron command of this SNS neuron. These neurons can be different SNS neurons, for example OGY or WTN neurons, which the Gold DAO owns.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "54vkq-taaaa-aaaap-ahqra-cai",
+              "target_canister_id": "54vkq-taaaa-aaaap-ahqra-cai",
+              "validator_method_name": "manage_sns_neuron_validate",
+              "target_method_name": "manage_sns_neuron"
+            }
+          }
+        },
+        {
           "id": 2001,
           "name": "Upgrade GLD dashboard frontend.",
           "description": "Proposal to upgrade the GLD dashboard frontend to a new version.",
@@ -5824,7 +5852,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99453716903497003,
+    "icrc1_total_supply": 99437344768671109,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
@@ -6448,7 +6476,36 @@
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1009,
+              "name": "Stake new SNS neuron.",
+              "description": "This proposal stakes a new SNS neuron. The details about the neuron is in the payload and can be for example OGY or WTN (or others) combined with the amount and dissolve delay.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "54vkq-taaaa-aaaap-ahqra-cai",
+                  "target_canister_id": "54vkq-taaaa-aaaap-ahqra-cai",
+                  "validator_method_name": "stake_sns_neuron_validate",
+                  "target_method_name": "stake_sns_neuron"
+                }
+              }
+            },
+            {
+              "id": 1010,
+              "name": "Manage Gold DAO owned SNS neuron.",
+              "description": "This proposal manages a Gold DAO controlled SNS neuron and effective calls the manage_neuron command of this SNS neuron. These neurons can be different SNS neurons, for example OGY or WTN neurons, which the Gold DAO owns.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "54vkq-taaaa-aaaap-ahqra-cai",
+                  "target_canister_id": "54vkq-taaaa-aaaap-ahqra-cai",
+                  "validator_method_name": "manage_sns_neuron_validate",
+                  "target_method_name": "manage_sns_neuron"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
