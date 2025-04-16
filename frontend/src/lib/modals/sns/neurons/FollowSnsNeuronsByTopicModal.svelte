@@ -76,29 +76,22 @@
       labelKey: "follow_sns_topics.busy_updating",
     });
 
-    try {
-      const { success } = await setFollowing({
-        rootCanisterId,
-        neuronId: fromDefinedNullable(neuron.id),
-        followings: addSnsNeuronToFollowingsByTopics({
-          topics: selectedTopics,
-          neuronId: followeeNeuronId,
-          followings,
-        }),
-      });
+    const { success } = await setFollowing({
+      rootCanisterId,
+      neuronId: fromDefinedNullable(neuron.id),
+      followings: addSnsNeuronToFollowingsByTopics({
+        topics: selectedTopics,
+        neuronId: followeeNeuronId,
+        followings,
+      }),
+    });
 
-      if (success) {
-        toastsSuccess({
-          labelKey: $i18n.follow_sns_topics.success_set_following,
-        });
-        await reloadNeuron();
-        closeModal();
-      }
-    } catch (error) {
-      console.error("Failed to follow SNS neurons by topic", error);
-      toastsError({
-        labelKey: "follow_sns_topics.error_set_following",
+    if (success) {
+      toastsSuccess({
+        labelKey: $i18n.follow_sns_topics.success_set_following,
       });
+      await reloadNeuron();
+      closeModal();
     }
 
     stopBusy("add-followee-by-topic");
