@@ -442,7 +442,6 @@
     "busy_legacy_removing": "Removing neuron following",
     "error_neuron_not_exist": "Neuron with id $neuronId does not exist.",
     "success_set_following": "The neuron following was successfully added.",
-    "error_set_following": "There was an error while adding the voting delegation.",
     "error_remove_following": "There was an error while removing the neuron followee."
   },
   "missing_rewards": {
