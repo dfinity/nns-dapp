@@ -1,11 +1,15 @@
 <script lang="ts">
+  import { querySnsNeuron } from "$lib/api/sns-governance.api";
   import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
   import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
   import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
-  import { setFollowing } from "$lib/services/sns-neurons.services";
+  import {
+    getSnsNeuronIdentity,
+    setFollowing,
+  } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
   import type {
     ListTopicsResponseWithUnknown,
@@ -66,6 +70,23 @@
   let selectedTopics = $state<SnsTopicKey[]>([]);
   let followeeNeuronIdHex = $state<string>("");
 
+  // Validate the followee neuron id by fetching it.
+  const validateNeuronId = async (neuronId: SnsNeuronId) => {
+    try {
+      const identity = await getSnsNeuronIdentity();
+      return (
+        (await querySnsNeuron({
+          identity,
+          rootCanisterId,
+          neuronId,
+          certified: false,
+        })) !== undefined
+      );
+    } catch (_) {
+      return false;
+    }
+  };
+
   const addFollowing = async (followeeHex: string) => {
     const followeeNeuronId: SnsNeuronId = {
       id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
@@ -75,6 +96,17 @@
       initiator: "add-followee-by-topic",
       labelKey: "follow_sns_topics.busy_updating",
     });
+
+    if (!(await validateNeuronId(followeeNeuronId))) {
+      stopBusy("add-followee-by-topic");
+      toastsError({
+        labelKey: "follow_sns_topics.error_neuron_not_exist",
+        substitutions: {
+          $neuronId: followeeHex,
+        },
+      });
+      return;
+    }
 
     const { success } = await setFollowing({
       rootCanisterId,
