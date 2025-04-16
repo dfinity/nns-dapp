@@ -26,14 +26,14 @@ describe("ConfirmSnsDissolveDelay", () => {
 
   const renderComponent = ({
     props,
-    openPrevStep = null,
-    addFollowing = null,
+    onNnsBack = null,
+    onNnsConfirm = null,
   }) => {
     const { container } = render(ConfirmSnsDissolveDelay, {
       props,
       events: {
-        ...(nonNullish(openPrevStep) && { nnsBack: openPrevStep }),
-        ...(nonNullish(addFollowing) && { nnsConfirm: addFollowing }),
+        ...(nonNullish(onNnsBack) && { nnsBack: onNnsBack }),
+        ...(nonNullish(onNnsConfirm) && { nnsConfirm: onNnsConfirm }),
       },
     });
 
@@ -125,8 +125,8 @@ describe("ConfirmSnsDissolveDelay", () => {
   });
 
   it("edit button dispatches nnsBack", async () => {
-    const openPrevStep = vi.fn();
-    const addFollowing = vi.fn();
+    const onNnsBack = vi.fn();
+    const onNnsConfirm = vi.fn();
     const po = renderComponent({
       props: {
         rootCanisterId: mockPrincipal,
@@ -134,20 +134,20 @@ describe("ConfirmSnsDissolveDelay", () => {
         neuron,
         token: mockSnsToken,
       },
-      openPrevStep,
-      addFollowing,
+      onNnsBack,
+      onNnsConfirm,
     });
 
-    expect(openPrevStep).toBeCalledTimes(0);
+    expect(onNnsBack).toBeCalledTimes(0);
     await po.getEditButtonPo().click();
-    expect(openPrevStep).toBeCalledTimes(1);
+    expect(onNnsBack).toBeCalledTimes(1);
 
-    expect(addFollowing).toBeCalledTimes(0);
+    expect(onNnsConfirm).toBeCalledTimes(0);
   });
 
   it("confirm button dispatches nnsConfirm", async () => {
-    const openPrevStep = vi.fn();
-    const addFollowing = vi.fn();
+    const onNnsBack = vi.fn();
+    const onNnsConfirm = vi.fn();
     const po = renderComponent({
       props: {
         rootCanisterId: mockPrincipal,
@@ -155,13 +155,13 @@ describe("ConfirmSnsDissolveDelay", () => {
         neuron,
         token: mockSnsToken,
       },
-      openPrevStep,
-      addFollowing,
+      onNnsBack,
+      onNnsConfirm,
     });
-    expect(addFollowing).toBeCalledTimes(0);
+    expect(onNnsConfirm).toBeCalledTimes(0);
     await po.getConfirmButtonPo().click();
-    expect(addFollowing).toBeCalledTimes(1);
+    expect(onNnsConfirm).toBeCalledTimes(1);
 
-    expect(openPrevStep).toBeCalledTimes(0);
+    expect(onNnsBack).toBeCalledTimes(0);
   });
 });
