@@ -97,7 +97,7 @@
     } catch (error) {
       console.error("Failed to follow SNS neurons by topic", error);
       toastsError({
-        labelKey: "new_followee.error_set_following",
+        labelKey: "follow_sns_topics.error_set_following",
       });
     }
 
