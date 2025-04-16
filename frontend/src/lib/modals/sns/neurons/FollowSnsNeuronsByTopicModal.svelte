@@ -19,6 +19,7 @@
   import {
     addSnsNeuronToFollowingsByTopics,
     getSnsTopicFollowings,
+    getTopicsLegacyFollowees,
     removeSnsNeuronFromFollowingsByTopics,
   } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";

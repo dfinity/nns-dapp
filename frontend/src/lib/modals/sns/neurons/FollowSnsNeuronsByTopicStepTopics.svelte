@@ -8,7 +8,7 @@
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import {
     getSnsTopicInfoKey,
-    getTopicLegacyFollowees,
+    getTopicsLegacyFollowees,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
   import type {
@@ -93,9 +93,9 @@
       <FollowSnsNeuronsByTopicItem
         {topicInfo}
         followees={getTopicFollowees(topicInfo)}
-        legacyFollowees={getTopicLegacyFollowees({
+        legacyFollowees={getTopicsLegacyFollowees({
           neuron,
-          topicInfo,
+          topicInfos: [topicInfo],
         })}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
@@ -116,9 +116,9 @@
       <FollowSnsNeuronsByTopicItem
         {topicInfo}
         followees={getTopicFollowees(topicInfo)}
-        legacyFollowees={getTopicLegacyFollowees({
+        legacyFollowees={getTopicsLegacyFollowees({
           neuron,
-          topicInfo,
+          topicInfos: [topicInfo],
         })}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}

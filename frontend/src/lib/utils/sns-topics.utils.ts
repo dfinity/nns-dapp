@@ -191,14 +191,14 @@ export const removeSnsNeuronFromFollowingsByTopics = ({
     }));
 
 // Returns nsFunction-based followees.
-export const getTopicLegacyFollowees = ({
+export const getTopicsLegacyFollowees = ({
   neuron,
-  topicInfo,
+  topicInfos,
 }: {
   neuron: SnsNeuron;
-  topicInfo: TopicInfoWithUnknown;
+  topicInfos: TopicInfoWithUnknown[];
 }): Array<SnsLegacyFollowings> => {
-  const topicNsFunctions = getAllSnsNSFunctions(topicInfo);
+  const topicNsFunctions = topicInfos.map(getAllSnsNSFunctions).flat();
   const topicNsFunctionIdMap: Map<bigint, SnsNervousSystemFunction> = new Map(
     topicNsFunctions.map((nsFunction) => [nsFunction.id, nsFunction])
   );
