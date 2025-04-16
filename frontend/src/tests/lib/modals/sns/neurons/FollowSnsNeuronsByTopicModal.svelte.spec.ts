@@ -325,7 +325,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
   });
 
   it("handles provided invalid neuron id", async () => {
-    const newFolloweeNeuronIdHex = "040506";
+    const invalidFolloweeNeuronIdHex = "040506";
     let rejectQuerySnsNeuron;
     vi.spyOn(snsGovernanceApi, "querySnsNeuron").mockImplementation(
       () => new Promise((_, reject) => (rejectQuerySnsNeuron = reject))
@@ -345,7 +345,9 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     await topicsStepPo.clickTopicItemByName(criticalTopicName2);
     await topicsStepPo.clickNextButton();
     const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
-    await neuronStepPo.getNeuronIdInputPo().typeText(newFolloweeNeuronIdHex);
+    await neuronStepPo
+      .getNeuronIdInputPo()
+      .typeText(invalidFolloweeNeuronIdHex);
 
     expect(get(busyStore)).toEqual([]);
     expect(get(toastsStore)).toEqual([]);

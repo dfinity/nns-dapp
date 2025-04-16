@@ -31,6 +31,7 @@
     arrayOfNumberToUint8Array,
     fromDefinedNullable,
     isNullish,
+    nonNullish,
   } from "@dfinity/utils";
 
   type Props = {
@@ -73,14 +74,13 @@
   // Validate the followee neuron id by fetching it.
   const validateNeuronId = async (neuronId: SnsNeuronId) => {
     try {
-      const identity = await getSnsNeuronIdentity();
-      return (
-        (await querySnsNeuron({
-          identity,
+      return nonNullish(
+        await querySnsNeuron({
+          identity: await getSnsNeuronIdentity(),
           rootCanisterId,
           neuronId,
           certified: false,
-        })) !== undefined
+        })
       );
     } catch (_) {
       return false;
