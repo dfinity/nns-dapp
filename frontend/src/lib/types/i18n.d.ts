@@ -453,6 +453,7 @@ interface I18nFollow_sns_topics {
   neuron_follow: string;
   busy_updating: string;
   success_set_following: string;
+  error_neuron_not_exist: string;
 }
 
 interface I18nMissing_rewards {
