@@ -1,22 +1,33 @@
 <script lang="ts">
+  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
+  import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
+  import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
+  import { setFollowing } from "$lib/services/sns-neurons.services";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
+  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+  import type {
+    ListTopicsResponseWithUnknown,
+    TopicInfoWithUnknown,
+  } from "$lib/types/sns-aggregator";
+  import {
+    addSnsNeuronToFollowingsByTopics,
+    getSnsTopicFollowings,
+  } from "$lib/utils/sns-topics.utils";
+  import { hexStringToBytes } from "$lib/utils/utils";
   import {
     WizardModal,
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
-  import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
-  import type {
-    ListTopicsResponseWithUnknown,
-    TopicInfoWithUnknown,
-  } from "$lib/types/sns-aggregator";
-  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
   import type { Principal } from "@dfinity/principal";
-  import { fromDefinedNullable, isNullish } from "@dfinity/utils";
-  import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-  import { getSnsTopicFollowings } from "$lib/utils/sns-topics.utils";
+  import {
+    arrayOfNumberToUint8Array,
+    fromDefinedNullable,
+    isNullish,
+  } from "@dfinity/utils";
 
   type Props = {
     rootCanisterId: Principal;
@@ -56,8 +67,41 @@
   let followeeNeuronIdHex = $state<string>("");
 
   const addFollowing = async (followeeHex: string) => {
-    console.error("TBD addFollowing", followeeHex);
-    await reloadNeuron();
+    const neuronId: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
+    };
+
+    startBusy({
+      initiator: "add-followee-by-topic",
+      labelKey: "follow_sns_topics.busy_updating",
+    });
+
+    try {
+      const { success } = await setFollowing({
+        rootCanisterId,
+        neuronId: fromDefinedNullable(neuron.id),
+        followings: addSnsNeuronToFollowingsByTopics({
+          topics: selectedTopics,
+          neuronId: neuronId,
+          followings,
+        }),
+      });
+
+      if (success) {
+        toastsSuccess({
+          labelKey: $i18n.follow_sns_topics.success_set_following,
+        });
+        await reloadNeuron();
+        closeModal();
+      }
+    } catch (error) {
+      console.error("Failed to follow SNS neurons by topic", error);
+      toastsError({
+        labelKey: "new_followee.error_set_following",
+      });
+    }
+
+    stopBusy("add-followee-by-topic");
   };
 
   const removeFollowing = async ({

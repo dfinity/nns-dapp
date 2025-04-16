@@ -21,6 +21,7 @@ export type BusyStateInitiatorType =
   | "split-neuron"
   | "dissolve-action"
   | "add-followee"
+  | "add-followee-by-topic"
   | "remove-followee"
   | "add-hotkey-neuron"
   | "remove-hotkey-neuron"
