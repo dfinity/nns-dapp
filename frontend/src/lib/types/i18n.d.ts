@@ -452,6 +452,7 @@ interface I18nFollow_sns_topics {
   neuron_description: string;
   neuron_follow: string;
   busy_updating: string;
+  busy_removing: string;
   success_set_following: string;
 }
 
