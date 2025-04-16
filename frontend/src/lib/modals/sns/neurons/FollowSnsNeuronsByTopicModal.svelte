@@ -14,6 +14,7 @@
   import {
     addSnsNeuronToFollowingsByTopics,
     getSnsTopicFollowings,
+    removeSnsNeuronFromFollowingsByTopics,
   } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import {
@@ -104,8 +105,26 @@
     topicKey: SnsTopicKey;
     neuronId: SnsNeuronId;
   }) => {
-    console.error("TBD removeFollowing", topicKey, neuronId);
-    await reloadNeuron();
+    startBusy({
+      initiator: "remove-followee-by-topic",
+      labelKey: "follow_sns_topics.busy_removing",
+    });
+
+    const { success } = await setFollowing({
+      rootCanisterId,
+      neuronId: fromDefinedNullable(neuron.id),
+      followings: removeSnsNeuronFromFollowingsByTopics({
+        followings,
+        topics: [topicKey],
+        neuronId,
+      }),
+    });
+
+    if (success) {
+      await reloadNeuron();
+    }
+
+    stopBusy("remove-followee-by-topic");
   };
 </script>
 
