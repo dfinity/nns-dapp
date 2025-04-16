@@ -40,7 +40,6 @@
     arrayOfNumberToUint8Array,
     fromDefinedNullable,
     isNullish,
-    nonNullish,
   } from "@dfinity/utils";
   import FollowSnsNeuronsByTopicStepLegacy from "./FollowSnsNeuronsByTopicStepLegacy.svelte";
 

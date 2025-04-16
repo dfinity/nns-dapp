@@ -352,6 +352,7 @@ describe("SnsVotingCard", () => {
       vi.spyOn(api, "queryProposals").mockResolvedValue({
         proposals: [],
         include_ballots_by_caller: [true],
+        include_topic_filtering: [],
       });
     });
 
