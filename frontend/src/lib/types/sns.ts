@@ -5,7 +5,6 @@ import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
   SnsGetLifecycleResponse,
-  SnsNervousSystemFunction,
   SnsNeuronId,
   SnsNeuronRecipe,
   SnsParams,
@@ -122,9 +121,4 @@ export type SnsTopicFollowee = {
 export type SnsTopicFollowing = {
   topic: SnsTopicKey;
   followees: Array<SnsTopicFollowee>;
-};
-
-export type SnsLegacyFollowings = {
-  nsFunction: SnsNervousSystemFunction;
-  followees: Array<SnsNeuronId>;
 };
