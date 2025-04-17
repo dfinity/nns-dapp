@@ -78,13 +78,13 @@ const loadTypesFilters = ({
 
 const loadTopicsFilters = ({
   rootCanisterId,
-  snsName,
 }: {
   rootCanisterId: Principal;
-  snsName: string;
 }) => {
   const currentTopicsFilterData =
     get(snsFiltersStore)?.[rootCanisterId.toText()]?.topics ?? [];
+
+  console.log(currentTopicsFilterData);
   const snsTopics = get(snsTopicsStore)?.[rootCanisterId.toText()];
 
   const topicsWithUnkown = fromNullable(snsTopics?.topics ?? []) ?? [];
@@ -101,7 +101,10 @@ const loadTopicsFilters = ({
       id: snsTopicToTopicKey(topic.topic),
       value: snsTopicToTopicKey(topic.topic),
       name: topic.name,
-      checked: false,
+      checked:
+        currentTopicsFilterData.find(
+          ({ id }) => id === snsTopicToTopicKey(topic.topic)
+        )?.checked ?? false,
       isCritical: topic.isCritical,
     }))
     // sort them by isCritical first and then the rest
@@ -110,12 +113,6 @@ const loadTopicsFilters = ({
       if (!a.isCritical && b.isCritical) return 1;
       return a.name.localeCompare(b.name);
     });
-
-  // const updatedTypesFilterData = generateSnsProposalTypesFilterData({
-  //   nsFunctions,
-  //   typesFilterState: currentTypesFilterData,
-  //   snsName,
-  // });
 
   snsFiltersStore.setTopics({
     rootCanisterId,

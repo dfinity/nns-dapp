@@ -152,10 +152,14 @@ export const loadSnsProposals = async ({
     snsFunctions,
   });
 
+  const includeStatus = filters?.decisionStatus.map(({ value }) => value) ?? [];
+
   // Once filtered out unkwonw topics then we know that the rest is of type known
   const includeTopics = (
     filters?.topics?.map(({ value }) => snsTopicKeyToTopic(value)) ?? []
   ).filter((topic): topic is Topic => !isUnknownTopic(topic));
+
+  console.log(includeTopics);
 
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
@@ -164,8 +168,7 @@ export const loadSnsProposals = async ({
         params: {
           limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
           beforeProposal: beforeProposalId,
-          includeStatus:
-            filters?.decisionStatus.map(({ value }) => value) ?? [],
+          includeStatus,
           excludeType,
           includeTopics,
         },
@@ -174,8 +177,9 @@ export const loadSnsProposals = async ({
         rootCanisterId,
       }),
     onLoad: ({ response, certified }) => {
-      const { proposals } = response;
+      const { proposals, ...rest } = response;
       console.log(proposals);
+      console.log(rest);
 
       snsProposalsStore.addProposals({
         rootCanisterId,
