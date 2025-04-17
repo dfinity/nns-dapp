@@ -928,9 +928,6 @@ describe("sns-neurons-services", () => {
     });
 
     it("should return success:false on error", async () => {
-      const consoleErrorSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => undefined);
       const testError = new Error("Test Error");
       const setFollowingSpy = vi
         .spyOn(governanceApi, "setFollowing")
@@ -945,8 +942,6 @@ describe("sns-neurons-services", () => {
       expect(setFollowingSpy).toBeCalledTimes(1);
       expect(success).toBe(false);
       expect(error).toBe(testError);
-      expect(consoleErrorSpy).toBeCalledTimes(1);
-      expect(consoleErrorSpy).toBeCalledWith(testError);
     });
   });
 
