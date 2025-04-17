@@ -203,10 +203,9 @@ export const getLegacyFolloweesByTopics = ({
       .flatMap(getAllSnsNSFunctions)
       .map((nsFunction) => [nsFunction.id, nsFunction])
   );
-  return neuron.followees
-    .filter(([functionId]) => topicsNsFunctionMap.has(functionId))
-    .map(([functionId, followees]) => ({
-      nsFunction: topicsNsFunctionMap.get(functionId)!,
-      followees: [...followees.followees],
-    }));
+
+  return neuron.followees.reduce((acc, [id, { followees }]) => {
+    const nsFunction = topicsNsFunctionMap.get(id);
+    return nsFunction ? [...acc, { nsFunction, followees }] : acc;
+  }, [] as SnsLegacyFollowings[]);
 };
