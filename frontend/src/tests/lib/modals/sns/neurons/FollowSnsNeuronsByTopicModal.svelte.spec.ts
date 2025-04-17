@@ -126,6 +126,50 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     ]);
   });
 
+  it('calls close modal on "Cancel" click', async () => {
+    const closeModal = vi.fn();
+    const po = renderComponent({
+      ...defaultProps,
+      closeModal,
+    });
+
+    po.getFollowSnsNeuronsByTopicStepTopicsPo().clickCancelButton();
+
+    await runResolvedPromises();
+    expect(closeModal).toHaveBeenCalledTimes(1);
+  });
+
+  it("preserves user entered data between step navigation", async () => {
+    const po = renderComponent({
+      ...defaultProps,
+    });
+
+    const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
+    await topicsStepPo.clickTopicItemByName(criticalTopicName2);
+    await topicsStepPo.clickTopicItemByName(topicName1);
+    await topicsStepPo.clickNextButton();
+
+    const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
+    await neuronStepPo.getNeuronIdInputPo().typeText("1234");
+    await neuronStepPo.clickBackButton();
+
+    expect(
+      await topicsStepPo.getTopicSelectionByName(criticalTopicName1)
+    ).toEqual(false);
+    expect(
+      await topicsStepPo.getTopicSelectionByName(criticalTopicName2)
+    ).toEqual(true);
+    expect(await topicsStepPo.getTopicSelectionByName(topicName1)).toEqual(
+      true
+    );
+    expect(await topicsStepPo.getTopicSelectionByName(topicName2)).toEqual(
+      false
+    );
+    await topicsStepPo.clickNextButton();
+    expect(await neuronStepPo.getNeuronIdValue()).toEqual("1234");
+    expect(await neuronStepPo.getConfirmButtonPo().isDisabled()).toEqual(false);
+  });
+
   it("updates following for selected topics", async () => {
     const newFolloweeNeuronIdHex = "040506";
     const newFolloweeNeuronId: SnsNeuronId = {
@@ -331,37 +375,6 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     expect(setFollowingSpy).toBeCalledTimes(0);
     expect(reloadNeuronSpy).toBeCalledTimes(0);
     expect(closeModalSpy).toBeCalledTimes(0);
-  });
-
-  it("preserves user entered data between step navigation", async () => {
-    const po = renderComponent({
-      ...defaultProps,
-    });
-
-    const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
-    await topicsStepPo.clickTopicItemByName(criticalTopicName2);
-    await topicsStepPo.clickTopicItemByName(topicName1);
-    await topicsStepPo.clickNextButton();
-
-    const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
-    await neuronStepPo.getNeuronIdInputPo().typeText("1234");
-    await neuronStepPo.clickBackButton();
-
-    expect(
-      await topicsStepPo.getTopicSelectionByName(criticalTopicName1)
-    ).toEqual(false);
-    expect(
-      await topicsStepPo.getTopicSelectionByName(criticalTopicName2)
-    ).toEqual(true);
-    expect(await topicsStepPo.getTopicSelectionByName(topicName1)).toEqual(
-      true
-    );
-    expect(await topicsStepPo.getTopicSelectionByName(topicName2)).toEqual(
-      false
-    );
-    await topicsStepPo.clickNextButton();
-    expect(await neuronStepPo.getNeuronIdValue()).toEqual("1234");
-    expect(await neuronStepPo.getConfirmButtonPo().isDisabled()).toEqual(false);
   });
 
   it("removes followee", async () => {
