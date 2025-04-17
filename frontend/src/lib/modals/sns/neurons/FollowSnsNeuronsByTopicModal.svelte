@@ -109,7 +109,7 @@
       return;
     }
 
-    const { success } = await setFollowing({
+    const { success, error } = await setFollowing({
       rootCanisterId,
       neuronId: fromDefinedNullable(neuron.id),
       followings: addSnsNeuronToFollowingsByTopics({
@@ -125,6 +125,11 @@
       });
       await reloadNeuron();
       closeModal();
+    } else {
+      toastsError({
+        labelKey: "follow_sns_topics.error_add_following",
+        err: error,
+      });
     }
 
     stopBusy("add-followee-by-topic");
@@ -142,7 +147,7 @@
       labelKey: "follow_sns_topics.busy_removing",
     });
 
-    const { success } = await setFollowing({
+    const { success, error } = await setFollowing({
       rootCanisterId,
       neuronId: fromDefinedNullable(neuron.id),
       followings: removeSnsNeuronFromFollowingsByTopics({
@@ -154,6 +159,11 @@
 
     if (success) {
       await reloadNeuron();
+    } else {
+      toastsError({
+        labelKey: "follow_sns_topics.error_remove_following",
+        err: error,
+      });
     }
 
     stopBusy("remove-followee-by-topic");
