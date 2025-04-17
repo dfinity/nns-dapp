@@ -116,10 +116,13 @@
       </p>
 
       <div class="followees">
-        {#if followees.length > 0}
+        {#if followees.length > 0 || legacyFollowees.length > 0}
           <h5 class="followee-header"
             >{$i18n.follow_sns_topics.topics_following}</h5
           >
+        {/if}
+
+        {#if followees.length > 0}
           <ul class="followee-list">
             {#each followees as followee (subaccountToHexString(followee.neuronId.id))}
               <li
@@ -138,9 +141,6 @@
         {/if}
 
         {#if legacyFollowees.length > 0}
-          <h5 class="followee-header"
-            >{$i18n.follow_sns_topics.topics_following}</h5
-          >
           <p class="description legacy-description"
             >{$i18n.follow_sns_topics.topics_legacy_following_description}</p
           >
@@ -200,13 +200,15 @@
   }
 
   .followee-header {
-    margin-top: var(--padding-3x);
+    @include fonts.small(true);
+
+    margin-top: var(--padding-2x);
     color: var(--description-color);
   }
 
   .legacy-description {
     @include fonts.small();
-    margin-bottom: var(--padding);
+    margin: var(--padding) 0;
   }
 
   .followee-list {
@@ -226,14 +228,5 @@
     &.isFollowingByTopic {
       color: var(--positive-emphasis);
     }
-  }
-
-  .followee-list {
-    padding: 0;
-    list-style-type: none;
-
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--padding-0_5x);
   }
 </style>
