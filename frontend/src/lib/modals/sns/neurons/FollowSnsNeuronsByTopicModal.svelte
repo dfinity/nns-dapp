@@ -42,16 +42,17 @@
     isNullish,
     nonNullish,
   } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
   import FollowSnsNeuronsByTopicStepLegacy from "./FollowSnsNeuronsByTopicStepLegacy.svelte";
 
   type Props = {
     rootCanisterId: Principal;
     neuron: SnsNeuron;
-    closeModal: () => void;
     reloadNeuron: () => Promise<void>;
   };
-  const { rootCanisterId, neuron, closeModal, reloadNeuron }: Props = $props();
+  const { rootCanisterId, neuron, reloadNeuron }: Props = $props();
 
+  const dispatch = createEventDispatcher();
   const STEP_TOPICS = "topics";
   const STEP_CONFIRM_OVERRIDE_LEGACY = "legacy";
   const STEP_NEURON = "neurons";
@@ -95,6 +96,9 @@
     } else {
       modal?.set(wizardStepIndex({ name: STEP_TOPICS, steps }));
     }
+  };
+  const closeModal = () => {
+    dispatch("nnsClose");
   };
 
   const listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
