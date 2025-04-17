@@ -173,7 +173,7 @@
           "description": null,
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "eefpt-6yaaa-aaaam-adbxq-cai",
               "target_canister_id": "tupjz-uyaaa-aaaag-qcjmq-cai",
               "validator_method_name": "validate_transfer_position",
@@ -187,7 +187,7 @@
           "description": null,
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "ddmi3-laaaa-aaaah-qdbqa-cai",
               "target_canister_id": "ddmi3-laaaa-aaaah-qdbqa-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -201,7 +201,7 @@
           "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "Governance",
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
               "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
               "validator_method_name": "validate_icrc1_transfer",
@@ -344,7 +344,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98320682806644615,
+    "icrc1_total_supply": 98320970200285954,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -413,36 +413,7 @@
       "decentralization_swap_termination_timestamp_seconds": null
     },
     "topics": {
-      "uncategorized_functions": [
-        {
-          "id": 2761,
-          "name": "transferPosition",
-          "description": null,
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "eefpt-6yaaa-aaaam-adbxq-cai",
-              "target_canister_id": "tupjz-uyaaa-aaaag-qcjmq-cai",
-              "validator_method_name": "validate_transfer_position",
-              "target_method_name": "transferPosition"
-            }
-          }
-        },
-        {
-          "id": 1694553093582,
-          "name": "commit_proposed_batch",
-          "description": null,
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "ddmi3-laaaa-aaaah-qdbqa-cai",
-              "target_canister_id": "ddmi3-laaaa-aaaah-qdbqa-cai",
-              "validator_method_name": "validate_commit_proposed_batch",
-              "target_method_name": "commit_proposed_batch"
-            }
-          }
-        }
-      ],
+      "uncategorized_functions": [],
       "topics": [
         {
           "native_functions": [
@@ -533,7 +504,22 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1694553093582,
+              "name": "commit_proposed_batch",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "ddmi3-laaaa-aaaah-qdbqa-cai",
+                  "target_canister_id": "ddmi3-laaaa-aaaah-qdbqa-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [],
@@ -558,22 +544,7 @@
           "is_critical": false,
           "name": "Governance",
           "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
-          "custom_functions": [
-            {
-              "id": 1694553093583,
-              "name": "Transfer nICP",
-              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "Governance",
-                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
-                  "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
-                  "validator_method_name": "validate_icrc1_transfer",
-                  "target_method_name": "icrc1_transfer"
-                }
-              }
-            }
-          ]
+          "custom_functions": []
         },
         {
           "native_functions": [
@@ -598,7 +569,36 @@
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 2761,
+              "name": "transferPosition",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "eefpt-6yaaa-aaaam-adbxq-cai",
+                  "target_canister_id": "tupjz-uyaaa-aaaag-qcjmq-cai",
+                  "validator_method_name": "validate_transfer_position",
+                  "target_method_name": "transferPosition"
+                }
+              }
+            },
+            {
+              "id": 1694553093583,
+              "name": "Transfer nICP",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
@@ -1126,7 +1126,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100851892984439717,
+    "icrc1_total_supply": 100863289187265796,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2209,7 +2209,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50547567788539267,
+    "icrc1_total_supply": 50603140055327759,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2724,14 +2724,14 @@
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
       "neuron_minimum_stake_e8s": 400000000,
-      "max_neuron_age_for_age_bonus": 7890048,
+      "max_neuron_age_for_age_bonus": 63115200,
       "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 2630016,
       "reject_cost_e8s": 100000000000,
       "max_proposals_to_keep_per_action": 100,
       "wait_for_quiet_deadline_increase_seconds": 86400,
       "max_number_of_neurons": 200000,
-      "transaction_fee_e8s": 100000,
+      "transaction_fee_e8s": 100000000,
       "max_number_of_proposals_with_ballots": 700,
       "max_age_bonus_percentage": 25,
       "neuron_grantable_permissions": {
@@ -2835,7 +2835,7 @@
       [
         "icrc1:fee",
         {
-          "Nat": [100000]
+          "Nat": [100000000]
         }
       ],
       [
@@ -2845,8 +2845,8 @@
         }
       ]
     ],
-    "icrc1_fee": [100000],
-    "icrc1_total_supply": 9961443890671985,
+    "icrc1_fee": [100000000],
+    "icrc1_total_supply": 9961421373101579,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3486,7 +3486,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10172508332600799,
+    "icrc1_total_supply": 10178738537077215,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4122,7 +4122,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12710913694787595,
+    "icrc1_total_supply": 12716201018585770,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5852,7 +5852,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99437344768671109,
+    "icrc1_total_supply": 99423313408037152,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

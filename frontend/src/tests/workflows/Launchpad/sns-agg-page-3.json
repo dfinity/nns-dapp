@@ -1475,7 +1475,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 5441748835957737,
+    "icrc1_total_supply": 5445580218373631,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1826,9 +1826,9 @@
       "archives": ["jzjst-5aaaa-aaaaq-aadja-cai"]
     },
     "meta": {
-      "url": "https://osjzm-oaaaa-aaaal-ajcoq-cai.icp0.io/",
-      "name": "ICPCC DAO LLC",
-      "description": "ICPCC DAO LLC is a community-owned and fully self-sustaining decentralized conference event series devoted to highlighting the ICP's technology and ecosystem.  This DAO is registered and legally recognized as a Non-Profit Marshall Islands DAO LLC.  According to the ICPCC Constitution, important proposals will be guided by an ICPCC Council made up of ICP ecosystem leaders elected by the DAO.  The ICPCC Council members will have no power to act on behalf of the DAO; they are simply vendors hired by the DAO to submit quality proposals for it to vote on.\n",
+      "url": "https://dragginz.io",
+      "name": "Swampies",
+      "description": "🌿 Meet the Swampies! 🐸✨ Introducing Swampies — adorable, 3D-rendered creatures straight from the mysterious wetlands of Dragginz! These quirky little inhabitants bring the swamps of the Internet Computer (IC) to life, bursting with charm and personality.  Each Swampie is a unique NFT, lovingly crafted to live and breathe within the vibrant, immersive world of Dragginz. Whether you're exploring, collecting, or just vibing in the digital marshes, these critters are your must-have companions.  💧 Exclusive to the Internet Computer 🎨 Collectible, tradable, and totally cute 🌍 Living characters in a living world  Collect them all. Build your swamp squad. Let the adventure begin.",
       "logo": "/v1/sns/root/l7ra6-uqaaa-aaaaq-aadea-cai/logo.png"
     },
     "parameters": {
@@ -1960,7 +1960,7 @@
       "default_followees": {
         "followees": []
       },
-      "max_dissolve_delay_seconds": 252460800,
+      "max_dissolve_delay_seconds": 63115200,
       "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
       "automatically_advance_target_version": null,
@@ -1973,7 +1973,7 @@
       "neuron_minimum_dissolve_delay_to_vote_seconds": 31557600,
       "reject_cost_e8s": 2000000000,
       "max_proposals_to_keep_per_action": 100,
-      "wait_for_quiet_deadline_increase_seconds": 302400,
+      "wait_for_quiet_deadline_increase_seconds": 86400,
       "max_number_of_neurons": 200000,
       "transaction_fee_e8s": 10000,
       "max_number_of_proposals_with_ballots": 700,
@@ -1982,8 +1982,8 @@
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
       "voting_rewards_parameters": {
-        "final_reward_rate_basis_points": 0,
-        "initial_reward_rate_basis_points": 0,
+        "final_reward_rate_basis_points": 100,
+        "initial_reward_rate_basis_points": 100,
         "reward_rate_transition_duration_seconds": 0,
         "round_duration_seconds": 86400
       },
@@ -2091,7 +2091,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999778540000,
+    "icrc1_total_supply": 99999754120000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2502,7 +2502,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041651341851301125,
+    "icrc1_total_supply": 1041648275949226003,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3357,7 +3357,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11666669076418308,
+    "icrc1_total_supply": 11667358422681279,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -5105,7 +5105,7 @@
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2320870895488215523,
+    "icrc1_total_supply": 2320763687875786395,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5906,7 +5906,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999784310000,
+    "icrc1_total_supply": 1999999783350000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -9483,7 +9483,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100160305606100710,
+    "icrc1_total_supply": 100168369859456544,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
