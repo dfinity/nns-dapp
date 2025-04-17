@@ -4,27 +4,32 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsNeuronId } from "@dfinity/sns";
+  import { nonNullish } from "@dfinity/utils";
 
   type Props = {
     neuronId: SnsNeuronId;
-    onRemoveClick: () => void;
+    isTagStyle?: boolean;
+    onRemoveClick?: () => void;
   };
-  const { neuronId, onRemoveClick }: Props = $props();
+  const { neuronId, isTagStyle = true, onRemoveClick }: Props = $props();
 
   const neuronIdHex = $derived(subaccountToHexString(neuronId.id));
 </script>
 
 <div
   class="container"
+  class:isTagStyle
   data-tid="follow-sns-neurons-by-topic-followee-component"
 >
   <Hash text={neuronIdHex} id={neuronIdHex} tagName="span" showCopy />
-  <button
-    data-tid="remove-button"
-    class="remove-button icon-only"
-    aria-label={$i18n.core.remove}
-    onclick={onRemoveClick}><IconClose /></button
-  >
+  {#if nonNullish(onRemoveClick)}
+    <button
+      data-tid="remove-button"
+      class="remove-button icon-only"
+      aria-label={$i18n.core.remove}
+      onclick={onRemoveClick}><IconClose /></button
+    >
+  {/if}
 </div>
 
 <style lang="scss">
@@ -35,13 +40,16 @@
 
     display: flex;
     align-items: center;
-    padding-left: var(--padding);
-    border-radius: var(--border-radius-0_5x);
-    background-color: var(--tag-background);
-    color: var(--tag-text);
 
-    // avoid unnecessary scrollbars of the collapsible container
-    overflow: hidden;
+    &.isTagStyle {
+      padding-left: var(--padding);
+      border-radius: var(--border-radius-0_5x);
+      background-color: var(--tag-background);
+      color: var(--tag-text);
+
+      // avoid unnecessary scrollbars of the collapsible container
+      overflow: hidden;
+    }
   }
 
   .remove-button {

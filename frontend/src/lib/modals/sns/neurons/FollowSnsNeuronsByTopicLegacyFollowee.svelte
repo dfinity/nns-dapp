@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   type Props = {
     nsFunction: SnsNervousSystemFunction;
     neuronId: SnsNeuronId;
-    onRemoveClick: () => void;
+    onRemoveClick?: () => void;
   };
   const { nsFunction, neuronId, onRemoveClick }: Props = $props();
 </script>
@@ -15,7 +16,11 @@
   class="container"
 >
   <div data-tid="ns-function" class="ns-function">{nsFunction.name}</div>
-  <FollowSnsNeuronsByTopicFollowee {neuronId} {onRemoveClick} />
+  <FollowSnsNeuronsByTopicFollowee
+    {neuronId}
+    {onRemoveClick}
+    isTagStyle={nonNullish(onRemoveClick)}
+  />
 </div>
 
 <style lang="scss">
