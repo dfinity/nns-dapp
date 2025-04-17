@@ -6,6 +6,7 @@ import type {
 import {
   addSnsNeuronToFollowingsByTopics,
   getAllSnsNSFunctions,
+  getLegacyFolloweesByTopics,
   getSnsTopicFollowings,
   getSnsTopicInfoKey,
   getSnsTopicKeys,
@@ -15,9 +16,16 @@ import {
   snsTopicKeyToTopic,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
-import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import {
+  createMockSnsNeuron,
+  mockSnsNeuron,
+} from "$tests/mocks/sns-neurons.mock";
 import { Principal } from "@dfinity/principal";
-import type { SnsNervousSystemFunction, SnsTopic } from "@dfinity/sns";
+import type {
+  SnsNervousSystemFunction,
+  SnsNeuron,
+  SnsTopic,
+} from "@dfinity/sns";
 
 describe("sns-topics utils", () => {
   const neuronId1 = {
@@ -30,14 +38,16 @@ describe("sns-topics utils", () => {
   const canisterId = Principal.fromText(canisterIdString);
   const method = "method";
   const targetMethod = "target_method_name";
+  const nativeNsFunctionId = 1n;
   const nativeNsFunction: SnsNervousSystemFunction = {
-    id: 1n,
+    id: nativeNsFunctionId,
     name: "Native Function",
     description: ["Description 1"],
     function_type: [{ NativeNervousSystemFunction: {} }],
   };
+  const genericNsFunctionId = 1001n;
   const genericNsFunction: SnsNervousSystemFunction = {
-    id: 1001n,
+    id: genericNsFunctionId,
     name: "Custom Function",
     description: ["Description 3"],
     function_type: [
@@ -460,6 +470,140 @@ describe("sns-topics utils", () => {
           followees: [],
         },
       ]);
+    });
+  });
+
+  describe("getLegacyFolloweesByTopics", () => {
+    const nativeNsFunctionId1 = 1n;
+    const nativeNsFunction1: SnsNervousSystemFunction = {
+      ...nativeNsFunction,
+      id: nativeNsFunctionId1,
+    };
+    const nativeNsFunctionId2 = 2n;
+    const nativeNsFunction2: SnsNervousSystemFunction = {
+      ...nativeNsFunction,
+      id: nativeNsFunctionId2,
+    };
+    const genericNsFunctionId1 = 1001n;
+    const genericNsFunction1: SnsNervousSystemFunction = {
+      ...genericNsFunction,
+      id: genericNsFunctionId1,
+    };
+    const genericNsFunctionId2 = 1002n;
+    const genericNsFunction2: SnsNervousSystemFunction = {
+      ...genericNsFunction,
+      id: genericNsFunctionId2,
+    };
+    const testTopicInfo1: TopicInfoWithUnknown = {
+      ...knownTopicInfo,
+      native_functions: [[nativeNsFunction1]],
+      custom_functions: [[genericNsFunction1]],
+    };
+    const testTopicInfo2: TopicInfoWithUnknown = {
+      ...knownTopicInfo,
+      native_functions: [[nativeNsFunction2]],
+      custom_functions: [[genericNsFunction2]],
+    };
+
+    it("returns all ns-function-based followees by topics", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [nativeNsFunctionId1, { followees: [neuronId1] }],
+          [nativeNsFunctionId2, { followees: [neuronId1, neuronId2] }],
+          [genericNsFunctionId1, { followees: [neuronId2] }],
+          [genericNsFunctionId2, { followees: [neuronId1, neuronId2] }],
+        ],
+      };
+
+      expect(
+        getLegacyFolloweesByTopics({
+          neuron: testNeuron,
+          topicInfos: [testTopicInfo1, testTopicInfo2],
+        })
+      ).toEqual([
+        {
+          nsFunction: nativeNsFunction1,
+          followees: [neuronId1],
+        },
+        {
+          nsFunction: nativeNsFunction2,
+          followees: [neuronId1, neuronId2],
+        },
+        {
+          nsFunction: genericNsFunction1,
+          followees: [neuronId2],
+        },
+        {
+          nsFunction: genericNsFunction2,
+          followees: [neuronId1, neuronId2],
+        },
+      ]);
+
+      expect(
+        getLegacyFolloweesByTopics({
+          neuron: testNeuron,
+          topicInfos: [testTopicInfo1],
+        })
+      ).toEqual([
+        {
+          nsFunction: nativeNsFunction1,
+          followees: [neuronId1],
+        },
+        {
+          nsFunction: genericNsFunction1,
+          followees: [neuronId2],
+        },
+      ]);
+
+      expect(
+        getLegacyFolloweesByTopics({
+          neuron: testNeuron,
+          topicInfos: [testTopicInfo2],
+        })
+      ).toEqual([
+        {
+          nsFunction: nativeNsFunction2,
+          followees: [neuronId1, neuronId2],
+        },
+        {
+          nsFunction: genericNsFunction2,
+          followees: [neuronId1, neuronId2],
+        },
+      ]);
+    });
+
+    it("return empty array when no followees", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [],
+      };
+
+      expect(
+        getLegacyFolloweesByTopics({
+          neuron: testNeuron,
+          topicInfos: [testTopicInfo1, testTopicInfo2],
+        })
+      ).toEqual([]);
+    });
+
+    it("return empty array when no topic infos", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [nativeNsFunctionId1, { followees: [neuronId1] }],
+          [nativeNsFunctionId2, { followees: [neuronId1, neuronId2] }],
+          [genericNsFunctionId1, { followees: [neuronId2] }],
+          [genericNsFunctionId2, { followees: [neuronId1, neuronId2] }],
+        ],
+      };
+
+      expect(
+        getLegacyFolloweesByTopics({
+          neuron: testNeuron,
+          topicInfos: [],
+        })
+      ).toEqual([]);
     });
   });
 });
