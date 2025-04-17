@@ -63,7 +63,7 @@
     {
       name: STEP_CONFIRM_OVERRIDE_LEGACY,
       // TODO: update title
-      title: $i18n.follow_sns_topics.topics_title,
+      title: $i18n.follow_sns_topics.legacy_title,
     },
     {
       name: STEP_NEURON,

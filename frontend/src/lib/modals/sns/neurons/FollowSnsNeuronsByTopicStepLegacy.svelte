@@ -8,15 +8,10 @@
     getSnsTopicInfoKey,
     getTopicsLegacyFollowees,
   } from "$lib/utils/sns-topics.utils";
+  import { Collapsible, IconErrorOutline } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
-  import { nonNullish } from "@dfinity/utils";
-  import { subaccountToHexString } from "../../../utils/sns-neuron.utils";
-  import FollowSnsNeuronsByTopicLegacyFollowee from "./FollowSnsNeuronsByTopicLegacyFollowee.svelte";
-  import {
-    IconError,
-    IconErrorOutline,
-    IconInfo,
-  } from "@dfinity/gix-components";
+  import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
+  import FollowSnsNeuronsByTopicLegacyFollowee from "$lib/modals/sns/neurons//FollowSnsNeuronsByTopicLegacyFollowee.svelte";
 
   type Props = {
     neuron: SnsNeuron;
@@ -33,52 +28,63 @@
     openPrevStep,
   }: Props = $props();
 
+  const selectedTopicInfos = $derived(
+    topicInfos.filter((topicInfo) =>
+      selectedTopics.includes(getSnsTopicInfoKey(topicInfo))
+    )
+  );
+  const topicsWithLegacyFollowees = $derived(
+    selectedTopicInfos.filter(
+      (topicInfo) =>
+        getTopicsLegacyFollowees({
+          neuron,
+          topicInfos: [topicInfo],
+        }).length > 0
+    )
+  );
   const legacyFollowees = $derived(
-    selectedTopics
-      .map((topicKey) => {
-        const topicInfo = topicInfos.find(
-          (topicInfo) => getSnsTopicInfoKey(topicInfo) === topicKey
-        );
-        return (
-          (nonNullish(topicInfo) &&
-            getTopicsLegacyFollowees({
-              neuron,
-              topicInfos: [topicInfo],
-            })) ||
-          []
-        );
+    selectedTopicInfos.flatMap((topicInfo) =>
+      getTopicsLegacyFollowees({
+        neuron,
+        topicInfos: [topicInfo],
       })
-      .flat()
+    )
   );
 </script>
 
 <TestIdWrapper testId="follow-sns-neurons-by-topic-step-topics-component">
   <div class="header">
-    <IconErrorOutline size="70px" />
-    <p class="description"
-      >You currently have legacy following active. Any changes on topic
-      following will override your current settings. Please confirm changes to
-      proceed.</p
-    >
+    <div class="icon-wrapper">
+      <IconErrorOutline size="75px" />
+    </div>
+    <p class="description">{$i18n.follow_sns_topics.legacy_description}</p>
   </div>
 
   <Separator spacing="medium" />
 
-  <h5>Current legacy following</h5>
-
-  <ul class="followee-list">
-    {#each legacyFollowees as followees (followees.nsFunction.id)}
-      {#each followees.followees as neuronId (subaccountToHexString(neuronId.id))}
-        <li>
-          <FollowSnsNeuronsByTopicLegacyFollowee
-            nsFunction={followees.nsFunction}
-            {neuronId}
-            onRemoveClick={() => {}}
-          />
-        </li>
-      {/each}
+  <h5>{$i18n.follow_sns_topics.legacy_topics_header}</h5>
+  <ul class="list topic-names">
+    {#each topicsWithLegacyFollowees as topicInfo (getSnsTopicInfoKey(topicInfo))}
+      <li>{topicInfo.name}</li>
     {/each}
   </ul>
+
+  <Collapsible testId="collapsible">
+    <h5 slot="header">{$i18n.follow_sns_topics.legacy_followees_header}</h5>
+
+    <ul class="list legacy-followings">
+      {#each legacyFollowees as followees (followees.nsFunction.id)}
+        {#each followees.followees as neuronId (subaccountToHexString(neuronId.id))}
+          <li>
+            <FollowSnsNeuronsByTopicLegacyFollowee
+              nsFunction={followees.nsFunction}
+              {neuronId}
+            />
+          </li>
+        {/each}
+      {/each}
+    </ul>
+  </Collapsible>
 
   <div class="toolbar">
     <button
@@ -105,10 +111,33 @@
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   .header {
+    margin: 0 var(--padding-4x);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--padding);
+    gap: var(--padding-2x);
+
+    .description {
+      @include fonts.standard(true);
+      text-align: center;
+    }
+  }
+
+  h5 {
+    @include fonts.standard(true);
+    color: var(--text-description);
+    margin-bottom: var(--padding-1_5x);
+  }
+
+  .icon-wrapper {
+    padding: var(--padding-3x);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    color: var(--elements-icons);
+    background-color: var(--tag-background);
   }
 
   .legacy-description {
@@ -116,12 +145,20 @@
     margin-bottom: var(--padding);
   }
 
-  .followee-list {
+  .list {
+    margin-bottom: var(--padding-3x);
     padding: 0;
     list-style-type: none;
-
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--padding);
+
+    &.topic-names {
+      flex-direction: column;
+      gap: var(--padding-1_5x);
+    }
+
+    &.legacy-followings {
+      flex-wrap: wrap;
+      gap: var(--padding);
+    }
   }
 </style>
