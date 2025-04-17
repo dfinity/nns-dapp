@@ -40,6 +40,7 @@
     arrayOfNumberToUint8Array,
     fromDefinedNullable,
     isNullish,
+    nonNullish,
   } from "@dfinity/utils";
   import FollowSnsNeuronsByTopicStepLegacy from "./FollowSnsNeuronsByTopicStepLegacy.svelte";
 
@@ -120,14 +121,13 @@
   // Validate the followee neuron id by fetching it.
   const validateNeuronId = async (neuronId: SnsNeuronId) => {
     try {
-      const identity = await getSnsNeuronIdentity();
-      return (
-        (await querySnsNeuron({
-          identity,
+      return nonNullish(
+        await querySnsNeuron({
+          identity: await getSnsNeuronIdentity(),
           rootCanisterId,
           neuronId,
           certified: false,
-        })) !== undefined
+        })
       );
     } catch (_) {
       return false;
@@ -188,25 +188,18 @@
       labelKey: "follow_sns_topics.busy_removing",
     });
 
-    try {
-      const { success } = await setFollowing({
-        rootCanisterId,
-        neuronId: fromDefinedNullable(neuron.id),
-        followings: removeSnsNeuronFromFollowingsByTopics({
-          followings,
-          topics: [topicKey],
-          neuronId,
-        }),
-      });
+    const { success } = await setFollowing({
+      rootCanisterId,
+      neuronId: fromDefinedNullable(neuron.id),
+      followings: removeSnsNeuronFromFollowingsByTopics({
+        followings,
+        topics: [topicKey],
+        neuronId,
+      }),
+    });
 
-      if (success) {
-        await reloadNeuron();
-      }
-    } catch (error) {
-      console.error("Failed to remove SNS followee by topic", error);
-      toastsError({
-        labelKey: "new_followee.error_remove_following",
-      });
+    if (success) {
+      await reloadNeuron();
     }
 
     stopBusy("remove-followee-by-topic");

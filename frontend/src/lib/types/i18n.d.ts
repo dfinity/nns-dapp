@@ -455,9 +455,9 @@ interface I18nFollow_sns_topics {
   busy_updating: string;
   busy_removing: string;
   busy_legacy_removing: string;
-  error_neuron_not_exist: string;
   success_set_following: string;
   error_remove_following: string;
+  error_neuron_not_exist: string;
 }
 
 interface I18nMissing_rewards {

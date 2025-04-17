@@ -368,7 +368,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999946283094000,
+    "icrc1_total_supply": 799999943709894000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1606,7 +1606,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10142790788902289,
+    "icrc1_total_supply": 10143777568116511,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3153,7 +3153,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 617052852297491,
+    "icrc1_total_supply": 617068988483562,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3694,7 +3694,7 @@
           "description": "grant permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "SnsFrameworkManagement",
               "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
               "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
               "validator_method_name": "validate_grant_permission",
@@ -3708,7 +3708,7 @@
           "description": "revoke permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "SnsFrameworkManagement",
               "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
               "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
               "validator_method_name": "validate_revoke_permission",
@@ -3736,7 +3736,7 @@
           "description": "Generic proposal to execute commands from platform orchestrator",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
               "target_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
               "validator_method_name": "validate_platform_orchestrator_generic_function",
@@ -3869,7 +3869,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104425286801270121,
+    "icrc1_total_supply": 104429548986412610,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3936,34 +3936,6 @@
     "topics": {
       "uncategorized_functions": [
         {
-          "id": 1000,
-          "name": "grant_permission",
-          "description": "grant permission to asset canister",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
-              "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
-              "validator_method_name": "validate_grant_permission",
-              "target_method_name": "grant_permission"
-            }
-          }
-        },
-        {
-          "id": 1001,
-          "name": "revoke_permission",
-          "description": "revoke permission to asset canister",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
-              "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
-              "validator_method_name": "validate_revoke_permission",
-              "target_method_name": "revoke_permission"
-            }
-          }
-        },
-        {
           "id": 4001,
           "name": "Reset Individual User Canisters",
           "description": "Generic proposal to reset indiviudal user canisters",
@@ -3974,20 +3946,6 @@
               "target_canister_id": "rimrc-piaaa-aaaao-aaljq-cai",
               "validator_method_name": "validate_reset_user_individual_canisters",
               "target_method_name": "reset_user_individual_canisters"
-            }
-          }
-        },
-        {
-          "id": 4002,
-          "name": "Generic Function Platform Orchestrator ",
-          "description": "Generic proposal to execute commands from platform orchestrator",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
-              "target_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
-              "validator_method_name": "validate_platform_orchestrator_generic_function",
-              "target_method_name": "platform_orchestrator_generic_function"
             }
           }
         }
@@ -4049,7 +4007,36 @@
           "is_critical": false,
           "name": "SNS framework management",
           "description": "Proposals to upgrade and manage the SNS DAO framework.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1000,
+              "name": "grant_permission",
+              "description": "grant permission to asset canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "SnsFrameworkManagement",
+                  "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
+                  "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
+                  "validator_method_name": "validate_grant_permission",
+                  "target_method_name": "grant_permission"
+                }
+              }
+            },
+            {
+              "id": 1001,
+              "name": "revoke_permission",
+              "description": "revoke permission to asset canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "SnsFrameworkManagement",
+                  "validator_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
+                  "target_canister_id": "vyatz-hqaaa-aaaam-qauea-cai",
+                  "validator_method_name": "validate_revoke_permission",
+                  "target_method_name": "revoke_permission"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
@@ -4082,7 +4069,22 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 4002,
+              "name": "Generic Function Platform Orchestrator ",
+              "description": "Generic proposal to execute commands from platform orchestrator",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
+                  "target_canister_id": "74zq4-iqaaa-aaaam-ab53a-cai",
+                  "validator_method_name": "validate_platform_orchestrator_generic_function",
+                  "target_method_name": "platform_orchestrator_generic_function"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [],
@@ -4779,7 +4781,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 930904309630017106,
+    "icrc1_total_supply": 930989394607034316,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
