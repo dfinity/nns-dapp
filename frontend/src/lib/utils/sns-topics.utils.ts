@@ -1,4 +1,8 @@
-import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+import type {
+  SnsLegacyFollowings,
+  SnsTopicFollowing,
+  SnsTopicKey,
+} from "$lib/types/sns";
 import type {
   ListTopicsResponseWithUnknown,
   TopicInfoWithUnknown,
@@ -11,7 +15,7 @@ import type {
   SnsNeuronId,
   SnsTopic,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
 
 export const snsTopicToTopicKey = (
   topic: SnsTopic | UnknownTopic
@@ -185,3 +189,29 @@ export const removeSnsNeuronFromFollowingsByTopics = ({
           subaccountToHexString(neuronId.id)
       ),
     }));
+
+// Returns nsFunction-based followees.
+export const getTopicsLegacyFollowees = ({
+  neuron,
+  topicInfos,
+}: {
+  neuron: SnsNeuron;
+  topicInfos: TopicInfoWithUnknown[];
+}): Array<SnsLegacyFollowings> => {
+  const topicNsFunctions = topicInfos.map(getAllSnsNSFunctions).flat();
+  const topicNsFunctionIdMap: Map<bigint, SnsNervousSystemFunction> = new Map(
+    topicNsFunctions.map((nsFunction) => [nsFunction.id, nsFunction])
+  );
+  return neuron.followees
+    .map(([functionId, followees]) =>
+      topicNsFunctionIdMap.has(functionId)
+        ? {
+            nsFunction: topicNsFunctionIdMap.get(
+              functionId
+            ) as SnsNervousSystemFunction,
+            followees: [...followees.followees],
+          }
+        : undefined
+    )
+    .filter(nonNullish);
+};

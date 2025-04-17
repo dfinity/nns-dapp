@@ -441,19 +441,26 @@ interface I18nFollow_sns_topics {
   topic_definitions_description: string;
   topic_definitions_title: string;
   topics_title: string;
+  legacy_title: string;
   topics_description: string;
   topics_critical_label: string;
   topics_critical_tooltip: string;
   topics_non_critical_label: string;
   topics_non_critical_tooltip: string;
   topics_following: string;
+  topics_legacy_following_description: string;
+  legacy_description: string;
+  legacy_topics_header: string;
+  legacy_followees_header: string;
   neuron_title: string;
   neuron_label: string;
   neuron_description: string;
   neuron_follow: string;
   busy_updating: string;
   busy_removing: string;
+  busy_legacy_removing: string;
   success_set_following: string;
+  error_remove_following: string;
   error_neuron_not_exist: string;
 }
 
