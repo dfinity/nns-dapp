@@ -34,15 +34,16 @@
     isNullish,
     nonNullish,
   } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   type Props = {
     rootCanisterId: Principal;
     neuron: SnsNeuron;
-    closeModal: () => void;
     reloadNeuron: () => Promise<void>;
   };
-  const { rootCanisterId, neuron, closeModal, reloadNeuron }: Props = $props();
+  const { rootCanisterId, neuron, reloadNeuron }: Props = $props();
 
+  const dispatch = createEventDispatcher();
   const STEP_TOPICS = "topics";
   const STEP_NEURON = "neurons";
   const steps: WizardSteps = [
@@ -59,6 +60,7 @@
   let modal: WizardModal | undefined = $state();
   const openNextStep = () => modal?.next();
   const openPrevStep = () => modal?.back();
+  const closeModal = () => dispatch("nnsClose");
 
   const listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
     $snsTopicsStore[rootCanisterId.toText()]
