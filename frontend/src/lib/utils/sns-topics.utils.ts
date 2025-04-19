@@ -204,8 +204,11 @@ export const getLegacyFolloweesByTopics = ({
       .map((nsFunction) => [nsFunction.id, nsFunction])
   );
 
-  return neuron.followees.reduce((acc, [id, { followees }]) => {
-    const nsFunction = topicsNsFunctionMap.get(id);
-    return nsFunction ? [...acc, { nsFunction, followees }] : acc;
-  }, [] as SnsLegacyFollowings[]);
+  return neuron.followees.reduce<SnsLegacyFollowings[]>(
+    (acc, [id, { followees }]) => {
+      const nsFunction = topicsNsFunctionMap.get(id);
+      return nsFunction ? [...acc, { nsFunction, followees }] : acc;
+    },
+    []
+  );
 };
