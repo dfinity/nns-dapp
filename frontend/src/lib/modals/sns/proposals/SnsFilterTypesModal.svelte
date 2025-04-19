@@ -4,30 +4,34 @@
   import { snsFiltersStore } from "$lib/stores/sns-filters.store";
   import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
   import type { Principal } from "@dfinity/principal";
-  import { createEventDispatcher } from "svelte";
 
-  export let rootCanisterId: Principal;
-  export let filters: Filter<SnsProposalTypeFilterId>[] = [];
+  type Props = {
+    rootCanisterId: Principal;
+    filters: Filter<SnsProposalTypeFilterId>[] | undefined;
+    closeModal: () => void;
+  };
+  const { rootCanisterId, filters = [], closeModal }: Props = $props();
 
   // This is a temporary value to be used inside the modal. It's initialized based on the prop filters;
-  let selectedFilters: Array<SnsProposalTypeFilterId> =
-    filters.filter((item) => item.checked).map(({ value }) => value) ?? [];
-  // This is a temporary value to be used inside the modal
-  let filtersValues: Filter<SnsProposalTypeFilterId>[];
-  $: filtersValues = filters.map((filter) => ({
-    ...filter,
-    checked: selectedFilters.includes(filter.value),
-  }));
+  let selectedFilters = $derived<Array<SnsProposalTypeFilterId>>(
+    filters.filter((item) => item.checked).map(({ value }) => value)
+  );
 
-  const dispatch = createEventDispatcher();
-  let filter: () => void;
-  $: filter = () => {
+  // This is a temporary value to be used inside the modal
+  let filtersValues = $derived<Filter<SnsProposalTypeFilterId>[]>(
+    filters.map((filter) => ({
+      ...filter,
+      checked: selectedFilters.includes(filter.value),
+    }))
+  );
+
+  const filter = $derived(() => {
     snsFiltersStore.setCheckTypes({
       checkedTypes: selectedFilters,
       rootCanisterId,
     });
-    dispatch("nnsClose");
-  };
+    closeModal();
+  });
 
   const onChange = ({
     detail: { filter },
@@ -44,17 +48,12 @@
     ];
   };
 
-  const clear = () => {
-    selectedFilters = [];
-  };
-
-  const selectAll = () => {
-    selectedFilters = filters.map(({ value }) => value);
-  };
+  const clear = () => (selectedFilters = []);
+  const selectAll = () => (selectedFilters = filters.map(({ value }) => value));
 </script>
 
 <FilterModal
-  on:nnsClose
+  on:nnsClose={closeModal}
   on:nnsConfirm={filter}
   on:nnsChange={onChange}
   on:nnsSelectAll={selectAll}

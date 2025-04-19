@@ -24,9 +24,11 @@ describe("SnsFilterStatusModal", () => {
       checked: false,
     },
   ];
+  const closeModal = vi.fn();
   const props = {
     rootCanisterId: mockPrincipal,
     filters,
+    closeModal,
   };
 
   it("should display modal", () => {
@@ -55,21 +57,19 @@ describe("SnsFilterStatusModal", () => {
     );
   });
 
-  it("should forward close modal event", () =>
-    new Promise<void>((done) => {
-      const { container } = render(SnsFilterStatusModal, {
-        props,
-        events: {
-          nnsClose: () => done(),
-        },
-      });
+  it("should call closeModal function", () => {
+    const { container } = render(SnsFilterStatusModal, {
+      props,
+    });
 
-      const button: HTMLButtonElement | null = container.querySelector(
-        "button:first-of-type"
-      );
+    const button: HTMLButtonElement | null = container.querySelector(
+      "button:first-of-type"
+    );
 
-      button && fireEvent.click(button);
-    }));
+    expect(closeModal).toHaveBeenCalledTimes(0);
+    button && fireEvent.click(button);
+    expect(closeModal).toHaveBeenCalledTimes(1);
+  });
 
   it("should filter filters", async () => {
     const uncheckedFilters = filters.map((filter) => ({
