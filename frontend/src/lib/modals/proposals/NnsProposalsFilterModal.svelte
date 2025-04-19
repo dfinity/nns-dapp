@@ -10,15 +10,15 @@
   } from "$lib/types/proposals";
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
   import { enumValues } from "$lib/utils/enum.utils";
-  import { keyOfOptional } from "$lib/utils/utils";
-  import type { ProposalStatus, Topic } from "@dfinity/nns";
-  import { createEventDispatcher } from "svelte";
   import {
     getProposalStatusTitle,
     getTopicTitle,
   } from "$lib/utils/neuron.utils";
-  import { isNullish } from "@dfinity/utils";
   import { sortNnsTopics } from "$lib/utils/proposals.utils";
+  import { keyOfOptional } from "$lib/utils/utils";
+  import type { ProposalStatus, Topic } from "@dfinity/nns";
+  import { isNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   export let props: ProposalsFilterModalProps | undefined;
 

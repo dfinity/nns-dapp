@@ -1,8 +1,10 @@
 <script lang="ts">
+  import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type {
     Filter,
     NnsProposalFilterCategory,
+    SnsFilterCategory,
     SnsProposalTypeFilterId,
   } from "$lib/types/filters";
   import { Checkbox, Modal, Spinner } from "@dfinity/gix-components";
@@ -10,17 +12,20 @@
   import type { SnsProposalDecisionStatus } from "@dfinity/sns";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
 
   type FiltersData =
     | SnsProposalTypeFilterId
     | Topic
     | ProposalStatus
     | SnsProposalDecisionStatus;
+
   // `undefined` means the filters are not loaded yet.
   export let filters: Filter<FiltersData>[] | undefined;
   export let visible = true;
-  export let category: undefined | NnsProposalFilterCategory = undefined;
+  export let category:
+    | undefined
+    | SnsFilterCategory
+    | NnsProposalFilterCategory = undefined;
 
   let loading: boolean;
   $: loading = isNullish(filters);
@@ -44,6 +49,9 @@
   const clearSelection = () => {
     dispatch("nnsClearSelection");
   };
+  $: {
+    console.log(filters);
+  }
 </script>
 
 {#if !loading}
@@ -67,7 +75,7 @@
 
     {#if filters}
       <div class="filters">
-        {#each filters as { id, name, checked, value } (id)}
+        {#each filters as { id, name, checked, value, isCritical }, index (id)}
           <Checkbox
             testId={`filter-modal-option-${id}`}
             inputId={id}
@@ -76,6 +84,10 @@
           >
           {#if category === "topics" && value === Topic.SnsAndCommunityFund}
             <Separator testId={`separator-${id}`} spacing="medium" />
+          {/if}
+
+          {#if index < filters.length - 1 && isCritical !== filters[index + 1].isCritical}
+            <Separator testId={`separator-critical-${id}`} spacing="medium" />
           {/if}
         {/each}
       </div>

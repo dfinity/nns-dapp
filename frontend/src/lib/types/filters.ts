@@ -1,5 +1,8 @@
+import type { SnsTopicKey } from "$lib/types/sns";
+
 // artificial proposal type id to filter by all generic SNS types
 export const ALL_SNS_GENERIC_PROPOSAL_TYPES_ID = "all_sns_generic_types";
+export type ALL_SNS_GENERIC_PROPOSAL_TOPICS_ID = "all_sns_generic_topics";
 
 // Stringified nsFunction id.
 export type SnsProposalTypeFilterId =
@@ -7,10 +10,14 @@ export type SnsProposalTypeFilterId =
   | typeof ALL_SNS_GENERIC_PROPOSAL_TYPES_ID;
 
 export type NnsProposalFilterCategory = "topics" | "status" | "uncategorized";
+export type SnsFilterCategory = "topics" | "types";
+
+export type SnsProposalTopicFilterId = SnsTopicKey;
 
 export type Filter<T> = {
   name: string;
   value: T;
   id: string;
   checked: boolean;
+  isCritical?: boolean;
 };

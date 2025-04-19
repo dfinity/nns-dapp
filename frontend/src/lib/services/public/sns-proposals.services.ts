@@ -15,12 +15,14 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import { isUnknownTopic } from "$lib/types/sns-aggregator";
 import {
   getSnsNeuronState,
   hasPermissionToVote,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
 import { toExcludeTypeParameter } from "$lib/utils/sns-proposals.utils";
+import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { NeuronState } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type {
@@ -32,6 +34,7 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
+import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import { fromDefinedNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
@@ -143,10 +146,17 @@ export const loadSnsProposals = async ({
   beforeProposalId?: SnsProposalId;
 }): Promise<void> => {
   const filters = get(snsSelectedFiltersStore)[rootCanisterId.toText()];
+
   const excludeType = toExcludeTypeParameter({
     filter: filters?.types ?? [],
     snsFunctions,
   });
+
+  // Once filtered out unkwonw topics then we know that the rest is of type known
+  const includeTopics = (
+    filters?.topics?.map(({ value }) => snsTopicKeyToTopic(value)) ?? []
+  ).filter((topic): topic is Topic => !isUnknownTopic(topic));
+
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -157,6 +167,7 @@ export const loadSnsProposals = async ({
           includeStatus:
             filters?.decisionStatus.map(({ value }) => value) ?? [],
           excludeType,
+          includeTopics,
         },
         identity,
         certified,
@@ -164,6 +175,8 @@ export const loadSnsProposals = async ({
       }),
     onLoad: ({ response, certified }) => {
       const { proposals } = response;
+      console.log(proposals);
+
       snsProposalsStore.addProposals({
         rootCanisterId,
         proposals,
