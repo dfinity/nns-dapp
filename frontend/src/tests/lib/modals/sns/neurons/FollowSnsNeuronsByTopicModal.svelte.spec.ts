@@ -485,7 +485,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     expect(get(toastsStore)).toMatchObject([
       {
         level: "error",
-        text: "There was an error while adding a followee. Test Error",
+        text: "There was an error while unfollowing the neuron. Test Error",
       },
     ]);
     expect(spyConsoleError).toBeCalledTimes(1);

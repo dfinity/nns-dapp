@@ -659,7 +659,7 @@ export const setFollowing = async ({
   rootCanisterId: Principal;
   neuronId: SnsNeuronId;
   followings: SnsTopicFollowing[];
-}): Promise<{ success: boolean }> => {
+}): Promise<{ success: boolean; error?: unknown }> => {
   const identity = await getSnsNeuronIdentity();
 
   try {
@@ -676,12 +676,7 @@ export const setFollowing = async ({
 
     return { success: true };
   } catch (error: unknown) {
-    // TODO(sns-topics): Move error handling to the component layer.
-    toastsError({
-      labelKey: "error__sns.sns_add_followee",
-      err: error,
-    });
-    return { success: false };
+    return { success: false, error };
   }
 };
 
