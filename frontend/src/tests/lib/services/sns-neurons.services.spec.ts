@@ -858,44 +858,45 @@ describe("sns-neurons-services", () => {
   });
 
   describe("setFollowing ", () => {
+    const followee1: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array([1, 2, 3]),
+    };
+    const followee2: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array([1, 2, 4]),
+    };
+    const rootCanisterId = mockPrincipal;
+    const following1: SnsTopicFollowing = {
+      topic: "DappCanisterManagement",
+      followees: [
+        {
+          neuronId: { id: followee1.id },
+        },
+        {
+          neuronId: { id: followee2.id },
+          alias: "followee2",
+        },
+      ],
+    };
+    const following2: SnsTopicFollowing = {
+      topic: "CriticalDappOperations",
+      followees: [
+        {
+          neuronId: { id: followee1.id },
+        },
+      ],
+    };
+
     it("should call sns api setFollowing", async () => {
-      const followee1: SnsNeuronId = {
-        id: arrayOfNumberToUint8Array([1, 2, 3]),
-      };
-      const followee2: SnsNeuronId = {
-        id: arrayOfNumberToUint8Array([1, 2, 4]),
-      };
-      const rootCanisterId = mockPrincipal;
       const setFollowingSpy = vi
         .spyOn(governanceApi, "setFollowing")
         .mockImplementation(() => Promise.resolve());
-      const following1: SnsTopicFollowing = {
-        topic: "DappCanisterManagement",
-        followees: [
-          {
-            neuronId: { id: followee1.id },
-          },
-          {
-            neuronId: { id: followee2.id },
-            alias: "followee2",
-          },
-        ],
-      };
-      const following2: SnsTopicFollowing = {
-        topic: "CriticalDappOperations",
-        followees: [
-          {
-            neuronId: { id: followee1.id },
-          },
-        ],
-      };
-
-      await setFollowing({
+      const { success } = await setFollowing({
         rootCanisterId,
         neuronId: neuron.id[0],
         followings: [following1, following2],
       });
 
+      expect(success).toBe(true);
       expect(setFollowingSpy).toBeCalledTimes(1);
       expect(setFollowingSpy).toBeCalledWith({
         neuronId: fromNullable(neuron.id),
@@ -924,6 +925,23 @@ describe("sns-neurons-services", () => {
           },
         ],
       });
+    });
+
+    it("should return success:false on error", async () => {
+      const testError = new Error("Test Error");
+      const setFollowingSpy = vi
+        .spyOn(governanceApi, "setFollowing")
+        .mockImplementation(() => Promise.reject(testError));
+
+      const { success, error } = await setFollowing({
+        rootCanisterId,
+        neuronId: neuron.id[0],
+        followings: [following1, following2],
+      });
+
+      expect(setFollowingSpy).toBeCalledTimes(1);
+      expect(success).toBe(false);
+      expect(error).toBe(testError);
     });
   });
 
