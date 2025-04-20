@@ -1,17 +1,44 @@
 import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
 import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
+import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { FollowSnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepTopics.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuronId } from "@dfinity/sns";
+import type {
+  SnsNervousSystemFunction,
+  SnsNeuron,
+  SnsNeuronId,
+} from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 
 describe("FollowSnsNeuronsByTopicStepTopics", () => {
+  // legacy followees
+  const legacyNsFunction1Name = "Legacy Function 1";
+  const legacyNsFunction1: SnsNervousSystemFunction = {
+    ...nervousSystemFunctionMock,
+    name: legacyNsFunction1Name,
+    id: 0n,
+  };
+  const legacyNsFunction2Name = "Legacy Function 2";
+  const legacyNsFunction2: SnsNervousSystemFunction = {
+    ...nervousSystemFunctionMock,
+    name: legacyNsFunction2Name,
+    id: 1n,
+  };
+  const legacyFolloweeNeuronId1: SnsNeuronId = {
+    ...nervousSystemFunctionMock,
+    id: [1, 2, 3, 4],
+  };
+  const legacyFolloweeNeuronId2: SnsNeuronId = {
+    id: [5, 6, 7, 8],
+  };
+  // followings by topic
   const criticalTopicKey1: SnsTopicKey = "CriticalDappOperations";
   const criticalTopicName1 = "Critical Dapp Operations";
   const criticalTopicDescription1 = "Critical topic description 1";
   const criticalTopicInfo1: TopicInfoWithUnknown = {
-    native_functions: [[]],
+    native_functions: [[legacyNsFunction1]],
     topic: [
       {
         [criticalTopicKey1]: null,
@@ -41,7 +68,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   const topicName1 = "Dao Community Settings";
   const topicDescription1 = "Topic description 1";
   const topicInfo1: TopicInfoWithUnknown = {
-    native_functions: [[]],
+    native_functions: [[legacyNsFunction2]],
     topic: [
       {
         [topicKey1]: null,
@@ -69,6 +96,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   };
 
   const renderComponent = (props: {
+    neuron: SnsNeuron;
     selectedTopics: SnsTopicKey[];
     topicInfos: TopicInfoWithUnknown[];
     followings: SnsTopicFollowing[];
@@ -77,6 +105,10 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     removeFollowing: (args: {
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
+    }) => void;
+    removeLegacyFollowing: (args: {
+      nsFunction: SnsNervousSystemFunction;
+      followee: SnsNeuronId;
     }) => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicStepTopics, {
@@ -88,12 +120,14 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     );
   };
   const defaultProps = {
+    neuron: mockSnsNeuron,
     selectedTopics: [],
     topicInfos: [],
     followings: [],
     closeModal: vi.fn(),
     openNextStep: vi.fn(),
     removeFollowing: vi.fn(),
+    removeLegacyFollowing: vi.fn(),
   };
 
   it("displays critical and non-critical topics", async () => {
@@ -231,5 +265,78 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     expect(closeModal).toBeCalledTimes(1);
     await po.clickNextButton();
     expect(openNextStep).toBeCalledTimes(1);
+  });
+
+  it("displays legacy followees", async () => {
+    const po = renderComponent({
+      ...defaultProps,
+      neuron: {
+        ...mockSnsNeuron,
+        followees: [
+          [
+            legacyNsFunction1.id,
+            {
+              followees: [
+                // legacyFollowee1
+                legacyFolloweeNeuronId1,
+              ],
+            },
+          ],
+          [
+            legacyNsFunction2.id,
+            {
+              followees: [
+                // legacyFollowee2
+                legacyFolloweeNeuronId1,
+                // legacyFollowee3
+                legacyFolloweeNeuronId2,
+              ],
+            },
+          ],
+        ],
+      },
+      topicInfos: [
+        // includes legacyNsFunction1
+        criticalTopicInfo1,
+        // includes legacyNsFunction2
+        topicInfo1,
+      ],
+    });
+
+    const legacyFolloweePos =
+      await po.getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    expect(legacyFolloweePos.length).toEqual(3);
+    const [legacyFollowee1Po, legacyFollowee2Po, legacyFollowee3Po] =
+      legacyFolloweePos;
+
+    expect(await legacyFollowee1Po.getNsFunctionName()).toEqual(
+      legacyNsFunction1Name
+    );
+    expect(
+      await legacyFollowee1Po
+        .getFollowSnsNeuronsByTopicFolloweePo()
+        .getNeuronHashPo()
+        .getFullText()
+    ).toEqual("01020304");
+
+    expect(await legacyFollowee2Po.getNsFunctionName()).toEqual(
+      legacyNsFunction2Name
+    );
+    expect(
+      await legacyFollowee2Po
+        .getFollowSnsNeuronsByTopicFolloweePo()
+        .getNeuronHashPo()
+        .getFullText()
+    ).toEqual("01020304");
+
+    expect(await legacyFollowee3Po.getNsFunctionName()).toEqual(
+      legacyNsFunction2Name
+    );
+    expect(
+      await legacyFollowee3Po
+        .getFollowSnsNeuronsByTopicFolloweePo()
+        .getNeuronHashPo()
+        .getFullText()
+    ).toEqual("05060708");
   });
 });
