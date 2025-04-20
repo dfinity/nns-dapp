@@ -34,9 +34,9 @@
     removeFollowing,
   }: Props = $props();
 
-  let topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
-  let name: string = $derived(fromDefinedNullable(topicInfo.name));
-  let description: string = $derived(
+  const topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
+  const name: string = $derived(fromDefinedNullable(topicInfo.name));
+  const description: string = $derived(
     fromDefinedNullable(topicInfo.description)
   );
 
