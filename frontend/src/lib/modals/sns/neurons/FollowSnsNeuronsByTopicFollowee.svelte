@@ -4,7 +4,6 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsNeuronId } from "@dfinity/sns";
-  import { nonNullish } from "@dfinity/utils";
 
   type Props = {
     neuronId: SnsNeuronId;
