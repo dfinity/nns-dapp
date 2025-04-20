@@ -68,7 +68,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   const topicName1 = "Dao Community Settings";
   const topicDescription1 = "Topic description 1";
   const topicInfo1: TopicInfoWithUnknown = {
-    native_functions: [[legacyNsFunction2]],
+    native_functions: [[]],
     topic: [
       {
         [topicKey1]: null,
@@ -83,7 +83,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   const topicName2 = "Application Business Logic";
   const topicDescription2 = "Topic description 2";
   const topicInfo2: TopicInfoWithUnknown = {
-    native_functions: [[]],
+    native_functions: [[legacyNsFunction2]],
     topic: [
       {
         [topicKey2]: null,
@@ -274,6 +274,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
         ...mockSnsNeuron,
         followees: [
           [
+            // Assigned to criticalTopicInfo1
             legacyNsFunction1.id,
             {
               followees: [
@@ -283,6 +284,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
             },
           ],
           [
+            // Assigned to topicInfo2
             legacyNsFunction2.id,
             {
               followees: [
@@ -296,19 +298,20 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
         ],
       },
       topicInfos: [
-        // includes legacyNsFunction1
         criticalTopicInfo1,
-        // includes legacyNsFunction2
+        criticalTopicInfo2,
         topicInfo1,
+        topicInfo2,
       ],
     });
 
-    const legacyFolloweePos =
-      await po.getFollowSnsNeuronsByTopicLegacyFolloweePos();
-    expect(legacyFolloweePos.length).toEqual(3);
-    const [legacyFollowee1Po, legacyFollowee2Po, legacyFollowee3Po] =
-      legacyFolloweePos;
+    expect(
+      (await po.getFollowSnsNeuronsByTopicLegacyFolloweePos()).length
+    ).toEqual(3);
 
+    const [legacyFollowee1Po] = await (
+      await po.getTopicItemPoByName(criticalTopicName1)
+    ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
     expect(await legacyFollowee1Po.getNsFunctionName()).toEqual(
       legacyNsFunction1Name
     );
@@ -319,6 +322,9 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
         .getFullText()
     ).toEqual("01020304");
 
+    const [legacyFollowee2Po, legacyFollowee3Po] = await (
+      await po.getTopicItemPoByName(topicName2)
+    ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
     expect(await legacyFollowee2Po.getNsFunctionName()).toEqual(
       legacyNsFunction2Name
     );
