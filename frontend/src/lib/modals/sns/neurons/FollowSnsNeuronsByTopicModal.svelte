@@ -175,7 +175,7 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  on:nnsClose={closeModal}
 >
   <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
 
