@@ -11,7 +11,7 @@
   };
   const { neuronId, onRemoveClick }: Props = $props();
 
-  let neuronIdHex = $derived(subaccountToHexString(neuronId.id));
+  const neuronIdHex = $derived(subaccountToHexString(neuronId.id));
 </script>
 
 <div
