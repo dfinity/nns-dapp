@@ -15,7 +15,7 @@ import type {
   SnsNeuronId,
   SnsTopic,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
 
 export const snsTopicToTopicKey = (
   topic: SnsTopic | UnknownTopic
@@ -207,7 +207,7 @@ export const getLegacyFolloweesByTopics = ({
   return neuron.followees.reduce<SnsLegacyFollowings[]>(
     (acc, [id, { followees }]) => {
       const nsFunction = topicsNsFunctionMap.get(id);
-      return nsFunction ? [...acc, { nsFunction, followees }] : acc;
+      return nonNullish(nsFunction) ? [...acc, { nsFunction, followees }] : acc;
     },
     []
   );
