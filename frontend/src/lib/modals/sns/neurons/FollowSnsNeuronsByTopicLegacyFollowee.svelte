@@ -9,12 +9,6 @@
     onRemoveClick: () => void;
   };
   const { nsFunction, neuronId, onRemoveClick }: Props = $props();
-
-  // Generate a unique id, because otherwise the Hash.Tooltip component uses neuronId as an element id.
-  // This is a problem because the neuronId is not unique for legacy followees.
-  const id = $derived(
-    nsFunction.id.toString() + subaccountToHexString(neuronId.id)
-  );
 </script>
 
 <div
@@ -22,7 +16,7 @@
   class="container"
 >
   <div data-tid="ns-function" class="ns-function">{nsFunction.name}</div>
-  <FollowSnsNeuronsByTopicFollowee {id} {neuronId} {onRemoveClick} />
+  <FollowSnsNeuronsByTopicFollowee {neuronId} {onRemoveClick} />
 </div>
 
 <style lang="scss">

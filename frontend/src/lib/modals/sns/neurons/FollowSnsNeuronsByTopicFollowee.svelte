@@ -4,6 +4,7 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsNeuronId } from "@dfinity/sns";
+  import { nonNullish } from "@dfinity/utils";
 
   type Props = {
     neuronId: SnsNeuronId;
@@ -18,7 +19,7 @@
   class="container"
   data-tid="follow-sns-neurons-by-topic-followee-component"
 >
-  <Hash text={neuronIdHex} id={neuronIdHex} tagName="span" showCopy />
+  <Hash text={neuronIdHex} tagName="span" showCopy />
   <button
     data-tid="remove-button"
     class="remove-button icon-only"
