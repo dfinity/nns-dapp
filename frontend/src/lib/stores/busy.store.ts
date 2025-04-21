@@ -42,6 +42,7 @@ export type BusyStateInitiatorType =
   | "dissolve-sns-action"
   | "add-sns-followee"
   | "remove-sns-followee"
+  | "remove-sns-legacy-followee"
   | "disburse-sns-neuron"
   | "dev-add-sns-neuron-permissions"
   | "dev-add-sns-neuron-maturity"
