@@ -5,6 +5,7 @@
   import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
   import {
     getSnsNeuronIdentity,
+    removeFollowee,
     setFollowing,
   } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -180,11 +181,25 @@
     nsFunction: SnsNervousSystemFunction;
     followee: SnsNeuronId;
   }) => {
-    console.error(
-      "removeLegacyFollowing is not implemented yet",
-      nsFunction,
-      followee
-    );
+    startBusy({
+      initiator: "remove-sns-legacy-followee",
+      labelKey: "follow_sns_topics.busy_removing_legacy",
+    });
+
+    const { success } = await removeFollowee({
+      rootCanisterId,
+      neuron,
+      followee,
+      functionId: nsFunction.id,
+    });
+    if (success) {
+      await reloadNeuron();
+      toastsSuccess({
+        labelKey: "follow_sns_topics.success_removing_legacy",
+      });
+    }
+
+    stopBusy("remove-sns-legacy-followee");
   };
 </script>
 
