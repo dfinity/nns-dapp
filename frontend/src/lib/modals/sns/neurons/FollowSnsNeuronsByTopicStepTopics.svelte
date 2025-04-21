@@ -7,11 +7,15 @@
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import {
-    getLegacyFolloweesByTopics,
     getSnsTopicInfoKey,
+    getLegacyFolloweesByTopics,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemFunction,
+    SnsNeuron,
+    SnsNeuronId,
+  } from "@dfinity/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
 
   type Props = {
@@ -25,6 +29,10 @@
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
+    removeLegacyFollowing: (args: {
+      nsFunction: SnsNervousSystemFunction;
+      followee: SnsNeuronId;
+    }) => void;
   };
   let {
     neuron,
@@ -34,6 +42,7 @@
     closeModal,
     openNextStep,
     removeFollowing,
+    removeLegacyFollowing,
   }: Props = $props();
 
   const criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
@@ -91,6 +100,7 @@
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {removeFollowing}
+        {removeLegacyFollowing}
       />
     {/each}
   </div>
@@ -113,6 +123,7 @@
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {removeFollowing}
+        {removeLegacyFollowing}
       />
     {/each}
   </div>

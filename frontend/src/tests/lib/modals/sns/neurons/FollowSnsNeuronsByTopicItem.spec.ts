@@ -36,6 +36,10 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     legacyFollowees: SnsLegacyFollowings[];
     onNnsChange: () => void;
     removeFollowing: () => void;
+    removeLegacyFollowing: (args: {
+      nsFunction: SnsNervousSystemFunction;
+      followee: SnsNeuronId;
+    }) => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicItem, {
       props,
@@ -52,6 +56,7 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     checked: false,
     onNnsChange: vi.fn(),
     removeFollowing: vi.fn(),
+    removeLegacyFollowing: vi.fn(),
   };
 
   it("should expand and collapse", async () => {
