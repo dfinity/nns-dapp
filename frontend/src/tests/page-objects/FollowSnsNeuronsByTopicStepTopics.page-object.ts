@@ -1,6 +1,7 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import type { FollowSnsNeuronsByTopicFolloweePo } from "$tests/page-objects/FollowSnsNeuronsByTopicFollowee.page-object";
 import { FollowSnsNeuronsByTopicItemPo } from "$tests/page-objects/FollowSnsNeuronsByTopicItem.page-object";
+import { FollowSnsNeuronsByTopicLegacyFolloweePo } from "$tests/page-objects/FollowSnsNeuronsByTopicLegacyFollowee.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -94,6 +95,12 @@ export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
       element: this.root,
       testId: "next-button",
     });
+  }
+
+  async getFollowSnsNeuronsByTopicLegacyFolloweePos(): Promise<
+    FollowSnsNeuronsByTopicLegacyFolloweePo[]
+  > {
+    return FollowSnsNeuronsByTopicLegacyFolloweePo.allUnder(this.root);
   }
 
   clickNextButton(): Promise<void> {

@@ -1,5 +1,5 @@
 import FollowSnsNeuronsByTopicItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
-import type { SnsTopicFollowee } from "$lib/types/sns";
+import type { SnsLegacyFollowings, SnsTopicFollowee } from "$lib/types/sns";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { FollowSnsNeuronsByTopicItemPo } from "$tests/page-objects/FollowSnsNeuronsByTopicItem.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -33,8 +33,13 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     topicInfo: TopicInfoWithUnknown;
     checked: boolean;
     followees: SnsTopicFollowee[];
+    legacyFollowees: SnsLegacyFollowings[];
     onNnsChange: () => void;
     removeFollowing: () => void;
+    removeLegacyFollowing: (args: {
+      nsFunction: SnsNervousSystemFunction;
+      followee: SnsNeuronId;
+    }) => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicItem, {
       props,
@@ -47,9 +52,11 @@ describe("FollowSnsNeuronsByTopicItem", () => {
   const defaultProps = {
     topicInfo,
     followees: [],
+    legacyFollowees: [],
     checked: false,
     onNnsChange: vi.fn(),
     removeFollowing: vi.fn(),
+    removeLegacyFollowing: vi.fn(),
   };
 
   it("should expand and collapse", async () => {

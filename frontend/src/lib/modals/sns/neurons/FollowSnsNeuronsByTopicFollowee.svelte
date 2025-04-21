@@ -11,14 +11,14 @@
   };
   const { neuronId, onRemoveClick }: Props = $props();
 
-  let neuronIdHex = $derived(subaccountToHexString(neuronId.id));
+  const neuronIdHex = $derived(subaccountToHexString(neuronId.id));
 </script>
 
 <div
   class="container"
   data-tid="follow-sns-neurons-by-topic-followee-component"
 >
-  <Hash text={neuronIdHex} id={neuronIdHex} tagName="span" showCopy />
+  <Hash text={neuronIdHex} tagName="span" showCopy />
   <button
     data-tid="remove-button"
     class="remove-button icon-only"
