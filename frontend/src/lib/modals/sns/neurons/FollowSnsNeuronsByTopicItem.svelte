@@ -14,7 +14,7 @@
     SnsTopicKey,
   } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
-  import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuronId } from "@dfinity/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import FollowSnsNeuronsByTopicLegacyFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicLegacyFollowee.svelte";
@@ -30,10 +30,6 @@
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
-    removeLegacyFollowing: (args: {
-      nsFunction: SnsNervousSystemFunction;
-      followee: SnsNeuronId;
-    }) => void;
   };
 
   let {
@@ -43,7 +39,6 @@
     checked = false,
     onNnsChange,
     removeFollowing,
-    removeLegacyFollowing,
   }: Props = $props();
 
   const topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
@@ -151,10 +146,7 @@
                     nsFunction={followees.nsFunction}
                     {neuronId}
                     onRemoveClick={() => {
-                      removeLegacyFollowing({
-                        nsFunction: followees.nsFunction,
-                        followee: neuronId,
-                      });
+                      // TODO(sns-topics): Remove legacy following
                     }}
                   />
                 </li>

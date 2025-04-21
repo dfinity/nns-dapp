@@ -27,11 +27,7 @@
     type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuron,
-    SnsNeuronId,
-  } from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import {
     arrayOfNumberToUint8Array,
     fromDefinedNullable,
@@ -172,20 +168,6 @@
 
     stopBusy("remove-followee-by-topic");
   };
-
-  const removeLegacyFollowing = async ({
-    nsFunction,
-    followee,
-  }: {
-    nsFunction: SnsNervousSystemFunction;
-    followee: SnsNeuronId;
-  }) => {
-    console.error(
-      "removeLegacyFollowing is not implemented yet",
-      nsFunction,
-      followee
-    );
-  };
 </script>
 
 <WizardModal
@@ -206,7 +188,6 @@
       {closeModal}
       {openNextStep}
       {removeFollowing}
-      {removeLegacyFollowing}
     />
   {/if}
   {#if currentStep?.name === STEP_NEURON}

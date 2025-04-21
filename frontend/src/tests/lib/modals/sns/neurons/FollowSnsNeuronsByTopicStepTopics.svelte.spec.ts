@@ -106,10 +106,6 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
-    removeLegacyFollowing: (args: {
-      nsFunction: SnsNervousSystemFunction;
-      followee: SnsNeuronId;
-    }) => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicStepTopics, {
       props,
@@ -127,7 +123,6 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     closeModal: vi.fn(),
     openNextStep: vi.fn(),
     removeFollowing: vi.fn(),
-    removeLegacyFollowing: vi.fn(),
   };
 
   it("displays critical and non-critical topics", async () => {
