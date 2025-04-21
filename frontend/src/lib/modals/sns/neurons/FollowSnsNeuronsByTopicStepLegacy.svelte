@@ -6,7 +6,7 @@
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import {
     getSnsTopicInfoKey,
-    getTopicsLegacyFollowees,
+    getLegacyFolloweesByTopics,
   } from "$lib/utils/sns-topics.utils";
   import { Collapsible, IconErrorOutline } from "@dfinity/gix-components";
   import type { SnsNeuron } from "@dfinity/sns";
@@ -36,7 +36,7 @@
   const topicsWithLegacyFollowees = $derived(
     selectedTopicInfos.filter(
       (topicInfo) =>
-        getTopicsLegacyFollowees({
+        getLegacyFolloweesByTopics({
           neuron,
           topicInfos: [topicInfo],
         }).length > 0
@@ -44,7 +44,7 @@
   );
   const legacyFollowees = $derived(
     selectedTopicInfos.flatMap((topicInfo) =>
-      getTopicsLegacyFollowees({
+      getLegacyFolloweesByTopics({
         neuron,
         topicInfos: [topicInfo],
       })

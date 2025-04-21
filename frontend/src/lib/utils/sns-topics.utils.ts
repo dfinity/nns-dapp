@@ -190,28 +190,25 @@ export const removeSnsNeuronFromFollowingsByTopics = ({
       ),
     }));
 
-// Returns nsFunction-based followees.
-export const getTopicsLegacyFollowees = ({
+// Returns NS-functions-based followees of the neuron for the specified topics.
+export const getLegacyFolloweesByTopics = ({
   neuron,
   topicInfos,
 }: {
   neuron: SnsNeuron;
   topicInfos: TopicInfoWithUnknown[];
 }): Array<SnsLegacyFollowings> => {
-  const topicNsFunctions = topicInfos.map(getAllSnsNSFunctions).flat();
-  const topicNsFunctionIdMap: Map<bigint, SnsNervousSystemFunction> = new Map(
-    topicNsFunctions.map((nsFunction) => [nsFunction.id, nsFunction])
+  const topicsNsFunctionMap = new Map<bigint, SnsNervousSystemFunction>(
+    topicInfos
+      .flatMap(getAllSnsNSFunctions)
+      .map((nsFunction) => [nsFunction.id, nsFunction])
   );
-  return neuron.followees
-    .map(([functionId, followees]) =>
-      topicNsFunctionIdMap.has(functionId)
-        ? {
-            nsFunction: topicNsFunctionIdMap.get(
-              functionId
-            ) as SnsNervousSystemFunction,
-            followees: [...followees.followees],
-          }
-        : undefined
-    )
-    .filter(nonNullish);
+
+  return neuron.followees.reduce<SnsLegacyFollowings[]>(
+    (acc, [id, { followees }]) => {
+      const nsFunction = topicsNsFunctionMap.get(id);
+      return nonNullish(nsFunction) ? [...acc, { nsFunction, followees }] : acc;
+    },
+    []
+  );
 };

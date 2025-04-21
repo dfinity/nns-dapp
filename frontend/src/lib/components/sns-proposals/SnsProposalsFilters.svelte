@@ -13,22 +13,17 @@
     snsFiltersStore,
     type ProjectFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
-  import type { Principal } from "@dfinity/principal";
 
-  let modal: "types" | "status" | undefined = undefined;
+  type Filters = "types" | "status";
+  let modal = $state<Filters | undefined>();
 
-  let rootCanisterId: Principal;
-  $: rootCanisterId = $selectedUniverseIdStore;
-  let filtersStore: ProjectFiltersStoreData | undefined;
-  $: filtersStore = $snsFiltersStore[rootCanisterId.toText()];
+  const rootCanisterId = $derived($selectedUniverseIdStore);
+  const filtersStore = $derived<ProjectFiltersStoreData | undefined>(
+    $snsFiltersStore[rootCanisterId.toText()]
+  );
 
-  const openFilters = (filtersModal: "types" | "status") => {
-    modal = filtersModal;
-  };
-
-  const close = () => {
-    modal = undefined;
-  };
+  const openFilters = (filtersModal: Filters) => (modal = filtersModal);
+  const closeModal = () => (modal = undefined);
 </script>
 
 <TestIdWrapper testId="sns-proposals-filters-component">
@@ -65,7 +60,7 @@
     <SnsFilterTypesModal
       filters={filtersStore?.types}
       {rootCanisterId}
-      on:nnsClose={close}
+      {closeModal}
     />
   {/if}
 
@@ -73,7 +68,7 @@
     <SnsFilterStatusModal
       filters={filtersStore?.decisionStatus}
       {rootCanisterId}
-      on:nnsClose={close}
+      {closeModal}
     />
   {/if}
 </TestIdWrapper>
