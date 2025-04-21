@@ -1,19 +1,21 @@
 <script lang="ts">
+  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
-  import FollowSnsNeuronsByTopicItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
-  import { fromDefinedNullable } from "@dfinity/utils";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import FollowSnsNeuronsByTopicItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import {
+    getLegacyFolloweesByTopics,
     getSnsTopicInfoKey,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
-  import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
-  import type { SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import { fromDefinedNullable } from "@dfinity/utils";
 
   type Props = {
+    neuron: SnsNeuron;
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
     followings: SnsTopicFollowing[];
@@ -25,6 +27,7 @@
     }) => void;
   };
   let {
+    neuron,
     topicInfos,
     selectedTopics = $bindable(),
     followings,
@@ -81,6 +84,10 @@
       <FollowSnsNeuronsByTopicItem
         {topicInfo}
         followees={getTopicFollowees(topicInfo)}
+        legacyFollowees={getLegacyFolloweesByTopics({
+          neuron,
+          topicInfos: [topicInfo],
+        })}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {removeFollowing}
@@ -99,6 +106,10 @@
       <FollowSnsNeuronsByTopicItem
         {topicInfo}
         followees={getTopicFollowees(topicInfo)}
+        legacyFollowees={getLegacyFolloweesByTopics({
+          neuron,
+          topicInfos: [topicInfo],
+        })}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {removeFollowing}

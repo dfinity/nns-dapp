@@ -183,6 +183,7 @@
     <FollowSnsNeuronsByTopicStepTopics
       {topicInfos}
       {followings}
+      {neuron}
       bind:selectedTopics
       {closeModal}
       {openNextStep}
