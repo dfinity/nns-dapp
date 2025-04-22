@@ -460,7 +460,6 @@ interface I18nFollow_sns_topics {
   busy_removing: string;
   busy_legacy_removing: string;
   success_set_following: string;
-  error_remove_following: string;
   error_neuron_not_exist: string;
   error_add_following: string;
   error_remove_following: string;

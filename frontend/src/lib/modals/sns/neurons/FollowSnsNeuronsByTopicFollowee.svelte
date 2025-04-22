@@ -21,7 +21,7 @@
   class:isTagStyle
   data-tid="follow-sns-neurons-by-topic-followee-component"
 >
-  <Hash text={neuronIdHex} id={neuronIdHex} tagName="span" showCopy />
+  <Hash text={neuronIdHex} tagName="span" showCopy />
   {#if nonNullish(onRemoveClick)}
     <button
       data-tid="remove-button"
