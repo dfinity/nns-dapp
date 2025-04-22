@@ -1,4 +1,7 @@
-import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
+import {
+  createSnsTopicsProjectStore,
+  snsTopicsStore,
+} from "$lib/derived/sns-topics.derived";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   cachedGenericNFDtoMock,
@@ -7,6 +10,8 @@ import {
 } from "$tests/mocks/sns-topics.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
+import { convertDtoTopicInfo } from "../../../lib/utils/sns-aggregator-converters.utils";
+import { principal } from "../../mocks/sns-projects.mock";
 
 describe("sns topics store", () => {
   it("should be set to an empty object", () => {
@@ -117,6 +122,72 @@ describe("sns topics store", () => {
           ],
         ],
       },
+    });
+  });
+
+  describe("createSnsTopicsProjectStore", () => {
+    it("should provide topic info for sns", () => {
+      const topicInfoDto1 = topicInfoDtoMock({
+        topic: "DaoCommunitySettings",
+        name: "Topic1",
+        description: "This is a description",
+      });
+      const topicInfoDto2 = topicInfoDtoMock({
+        topic: "Governance",
+        name: "Topic2",
+        description: "This is a description 2",
+      });
+      setSnsProjects([
+        {
+          rootCanisterId: principal(321),
+          topics: {
+            topics: [],
+            uncategorized_functions: [],
+          },
+        },
+        {
+          rootCanisterId: mockPrincipal,
+          topics: {
+            topics: [topicInfoDto1, topicInfoDto2],
+            uncategorized_functions: [],
+          },
+        },
+        {
+          rootCanisterId: principal(123),
+          topics: {
+            topics: [],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+
+      const store = createSnsTopicsProjectStore(mockPrincipal);
+      expect(get(store)).toEqual([
+        convertDtoTopicInfo(topicInfoDto1),
+        convertDtoTopicInfo(topicInfoDto2),
+      ]);
+    });
+
+    it("should return undefined when sns supports no topics", () => {
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+        },
+      ]);
+
+      const store = createSnsTopicsProjectStore(mockPrincipal);
+      expect(get(store)).toEqual(undefined);
+    });
+
+    it("should return undefined for unknown sns", () => {
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+        },
+      ]);
+
+      const store = createSnsTopicsProjectStore(principal(123));
+      expect(get(store)).toEqual(undefined);
     });
   });
 });
