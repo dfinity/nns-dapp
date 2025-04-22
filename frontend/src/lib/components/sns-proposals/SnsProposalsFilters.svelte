@@ -17,15 +17,6 @@
     type ProjectFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
 
-  type Filters = "types" | "status";
-  let modal = $state<Filters | undefined>();
-
-  const rootCanisterId = $derived($selectedUniverseIdStore);
-  const filtersStore = $derived<ProjectFiltersStoreData | undefined>(
-    $snsFiltersStore[rootCanisterId.toText()]
-  );
-
-  const openFilters = (filtersModal: Filters) => (modal = filtersModal);
   type Filters = "types" | "status" | "topics";
 
   let modal = $state<Filters | undefined>();
@@ -34,9 +25,7 @@
   const filtersStore = $derived<ProjectFiltersStoreData | undefined>(
     $snsFiltersStore[rootCanisterId.toText()]
   );
-  const openFilters = (filtersModal: Filters) => {
-    modal = filtersModal;
-  };
+  const openFilters = (filtersModal: Filters) => (modal = filtersModal);
   const closeModal = () => (modal = undefined);
 
   const isFilterByTopicVisible = $derived(
