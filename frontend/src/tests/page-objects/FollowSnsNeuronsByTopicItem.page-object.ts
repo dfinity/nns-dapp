@@ -2,6 +2,7 @@ import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { CollapsiblePo } from "$tests/page-objects/Collapsible.page-object";
 import { FollowSnsNeuronsByTopicFolloweePo } from "$tests/page-objects/FollowSnsNeuronsByTopicFollowee.page-object";
+import { FollowSnsNeuronsByTopicLegacyFolloweePo } from "$tests/page-objects/FollowSnsNeuronsByTopicLegacyFollowee.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -72,5 +73,11 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
         async (followee) => await followee.getNeuronHashPo().getFullText()
       )
     );
+  }
+
+  async getFollowSnsNeuronsByTopicLegacyFolloweePos(): Promise<
+    FollowSnsNeuronsByTopicLegacyFolloweePo[]
+  > {
+    return FollowSnsNeuronsByTopicLegacyFolloweePo.allUnder(this.root);
   }
 }

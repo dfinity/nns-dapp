@@ -8,16 +8,22 @@
   } from "@dfinity/gix-components";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { fromDefinedNullable } from "@dfinity/utils";
-  import type { SnsTopicFollowee, SnsTopicKey } from "$lib/types/sns";
+  import type {
+    SnsLegacyFollowings,
+    SnsTopicFollowee,
+    SnsTopicKey,
+  } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
   import type { SnsNeuronId } from "@dfinity/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
+  import FollowSnsNeuronsByTopicLegacyFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicLegacyFollowee.svelte";
   import { i18n } from "$lib/stores/i18n";
 
   type Props = {
     topicInfo: TopicInfoWithUnknown;
     followees: SnsTopicFollowee[];
+    legacyFollowees: SnsLegacyFollowings[];
     checked: boolean;
     onNnsChange: (args: { topicKey: SnsTopicKey; checked: boolean }) => void;
     removeFollowing: (args: {
@@ -29,14 +35,15 @@
   let {
     topicInfo,
     followees,
+    legacyFollowees,
     checked = false,
     onNnsChange,
     removeFollowing,
   }: Props = $props();
 
-  let topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
-  let name: string = $derived(fromDefinedNullable(topicInfo.name));
-  let description: string = $derived(
+  const topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
+  const name: string = $derived(fromDefinedNullable(topicInfo.name));
+  const description: string = $derived(
     fromDefinedNullable(topicInfo.description)
   );
 
@@ -103,10 +110,13 @@
       </p>
 
       <div class="followees">
-        {#if followees.length > 0}
+        {#if followees.length > 0 || legacyFollowees.length > 0}
           <h5 class="followee-header"
             >{$i18n.follow_sns_topics.topics_following}</h5
           >
+        {/if}
+
+        {#if followees.length > 0}
           <ul class="followee-list">
             {#each followees as followee (subaccountToHexString(followee.neuronId.id))}
               <li
@@ -120,6 +130,27 @@
                   }}
                 />
               </li>
+            {/each}
+          </ul>
+        {/if}
+
+        {#if legacyFollowees.length > 0}
+          <p class="description legacy-description"
+            >{$i18n.follow_sns_topics.topics_legacy_following_description}</p
+          >
+          <ul class="followee-list">
+            {#each legacyFollowees as followees (followees.nsFunction.id)}
+              {#each followees.followees as neuronId (subaccountToHexString(neuronId.id))}
+                <li>
+                  <FollowSnsNeuronsByTopicLegacyFollowee
+                    nsFunction={followees.nsFunction}
+                    {neuronId}
+                    onRemoveClick={() => {
+                      // TODO(sns-topics): Remove legacy following
+                    }}
+                  />
+                </li>
+              {/each}
             {/each}
           </ul>
         {/if}
@@ -160,8 +191,15 @@
   }
 
   .followee-header {
-    margin-top: var(--padding-3x);
+    @include fonts.small(true);
+
+    margin-top: var(--padding-2x);
     color: var(--description-color);
+  }
+
+  .legacy-description {
+    @include fonts.small();
+    margin: var(--padding) 0;
   }
 
   .followee-list {
@@ -181,14 +219,5 @@
     &.isFollowingByTopic {
       color: var(--positive-emphasis);
     }
-  }
-
-  .followee-list {
-    padding: 0;
-    list-style-type: none;
-
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--padding-0_5x);
   }
 </style>
