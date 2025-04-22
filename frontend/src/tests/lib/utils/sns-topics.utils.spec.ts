@@ -199,7 +199,7 @@ describe("sns-topics utils", () => {
       expect(
         getTopicInfoBySnsTopicKey({
           topicKey: "DaoCommunitySettings",
-          listTopics,
+          topics: [knownTopicInfo, completelyUnknownTopicInfo],
         })
       ).toEqual(knownTopicInfo);
     });
@@ -208,7 +208,7 @@ describe("sns-topics utils", () => {
       expect(
         getTopicInfoBySnsTopicKey({
           topicKey: "DappCanisterManagement",
-          listTopics,
+          topics: [knownTopicInfo, completelyUnknownTopicInfo],
         })
       ).toEqual(undefined);
     });

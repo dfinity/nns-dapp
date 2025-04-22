@@ -77,14 +77,12 @@ export const getSnsTopicKeys = (
 
 export const getTopicInfoBySnsTopicKey = ({
   topicKey,
-  listTopics,
+  topics,
 }: {
   topicKey: SnsTopicKey;
-  listTopics: ListTopicsResponseWithUnknown;
+  topics: Array<TopicInfoWithUnknown>;
 }): TopicInfoWithUnknown | undefined =>
-  (fromNullable(listTopics.topics) ?? []).find(
-    (topicInfo) => getSnsTopicInfoKey(topicInfo) === topicKey
-  );
+  topics.find((topicInfo) => getSnsTopicInfoKey(topicInfo) === topicKey);
 
 // Combines native and generic nervous system functions
 export const getAllSnsNSFunctions = (
