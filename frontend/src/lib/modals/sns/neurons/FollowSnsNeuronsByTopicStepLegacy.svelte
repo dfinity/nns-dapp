@@ -140,11 +140,6 @@
     background-color: var(--tag-background);
   }
 
-  .legacy-description {
-    @include fonts.small();
-    margin-bottom: var(--padding);
-  }
-
   .list {
     margin-bottom: var(--padding-3x);
     padding: 0;
