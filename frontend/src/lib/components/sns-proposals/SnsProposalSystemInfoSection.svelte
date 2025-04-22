@@ -51,21 +51,21 @@
   </h1>
 
   <div class="content-cell-details">
-    {#if nonNullish(topicName) && nonNullish(topicDescription)}
-      <ProposalSystemInfoEntry
-        label={$i18n.proposal_detail.topic_prefix}
-        testId="proposal-system-info-type"
-        value={topicName}
-        description={topicDescription}
-      />
-    {/if}
-
     {#if nonNullish(type)}
       <ProposalSystemInfoEntry
         label={$i18n.proposal_detail.type_prefix}
         testId="proposal-system-info-type"
         value={type}
         description={typeDescription}
+      />
+    {/if}
+
+    {#if nonNullish(topicName) && nonNullish(topicDescription)}
+      <ProposalSystemInfoEntry
+        label={$i18n.proposal_detail.topic_prefix}
+        testId="proposal-system-info-type"
+        value={topicName}
+        description={topicDescription}
       />
     {/if}
 
