@@ -31,6 +31,7 @@ import {
   createSnsProposal,
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
+import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -40,6 +41,7 @@ import {
   type SnsPercentage,
   type SnsProposalData,
   type SnsTally,
+  type SnsTopicInfo,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
@@ -245,7 +247,11 @@ describe("sns-proposals utils", () => {
           },
         ],
       };
-      const mappedProposal = mapProposalInfo({ proposalData, nsFunctions: [] });
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [],
+        topics: undefined,
+      });
       expect(mappedProposal.rewardStatus).toBe(
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES
       );
@@ -270,7 +276,11 @@ describe("sns-proposals utils", () => {
           },
         ],
       };
-      const mappedProposal = mapProposalInfo({ proposalData, nsFunctions: [] });
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [],
+        topics: undefined,
+      });
       expect(mappedProposal.id).not.toBeInstanceOf(Array);
       expect(mappedProposal.payload_text_rendering).not.toBeInstanceOf(Array);
       expect(mappedProposal.proposer).not.toBeInstanceOf(Array);
@@ -291,7 +301,11 @@ describe("sns-proposals utils", () => {
         wait_for_quiet_state: [{ current_deadline_timestamp_seconds }],
       } as SnsProposalData;
 
-      const mappedProposal = mapProposalInfo({ proposalData, nsFunctions: [] });
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [],
+        topics: undefined,
+      });
       expect(mappedProposal.title).toBe(proposal.title);
       expect(mappedProposal.url).toBe(proposal.url);
       expect(mappedProposal.summary).toBe(proposal.summary);
@@ -309,11 +323,89 @@ describe("sns-proposals utils", () => {
       const mappedProposal = mapProposalInfo({
         proposalData,
         nsFunctions: [nervousSystemFunctionMock],
+        topics: undefined,
       });
       expect(mappedProposal.type).toBe(nervousSystemFunctionMock.name);
       expect(mappedProposal.typeDescription).toBe(
         nervousSystemFunctionMock.description[0]
       );
+    });
+
+    it("should provide topic key", () => {
+      const proposalData = {
+        ...mockSnsProposal,
+        action: nervousSystemFunctionMock.id,
+        topic: [{ Governance: null }],
+      } as SnsProposalData;
+
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: [],
+      });
+      expect(mappedProposal.topicKey).toBe("Governance");
+    });
+
+    it("should provide topic info", () => {
+      const proposalData = {
+        ...mockSnsProposal,
+        action: nervousSystemFunctionMock.id,
+        topic: [{ Governance: null }],
+      } as SnsProposalData;
+
+      const topicInfo1: SnsTopicInfo = {
+        ...topicInfoMock,
+        topic: [{ DaoCommunitySettings: null }],
+      };
+      const topicInfo2: SnsTopicInfo = {
+        ...topicInfoMock,
+        topic: [{ Governance: null }],
+      };
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: [topicInfo1, topicInfo2],
+      });
+      expect(mappedProposal.topicInfo).toBe(topicInfo2);
+    });
+
+    it("should not break when topics are not available", () => {
+      const testTopicInfo: SnsTopicInfo = {
+        ...topicInfoMock,
+        topic: [{ Governance: null }],
+      };
+      const { topicKey, topicInfo } = mapProposalInfo({
+        proposalData: {
+          ...mockSnsProposal,
+          topic: undefined,
+        },
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: [testTopicInfo],
+      });
+      expect(topicKey).toBe(undefined);
+      expect(topicInfo).toBe(undefined);
+
+      const { topicKey: topicKey2, topicInfo: topicInfo2 } = mapProposalInfo({
+        proposalData: {
+          ...mockSnsProposal,
+          topic: [{ Governance: null }],
+        },
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: undefined,
+      });
+      expect(topicKey2).toBe("Governance");
+      expect(topicInfo2).toBe(undefined);
+
+      const { topicKey: topicKey3, topicInfo: topicInfo3 } = mapProposalInfo({
+        proposalData: {
+          ...mockSnsProposal,
+          topic: undefined,
+        },
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: undefined,
+      });
+      expect(topicKey3).toBe(undefined);
+      expect(topicInfo3).toBe(undefined);
     });
   });
 
