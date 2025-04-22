@@ -5,6 +5,7 @@
   import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
   import {
     getSnsNeuronIdentity,
+    removeFollowee,
     setFollowing,
   } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -27,7 +28,11 @@
     type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemFunction,
+    SnsNeuron,
+    SnsNeuronId,
+  } from "@dfinity/sns";
   import {
     arrayOfNumberToUint8Array,
     fromDefinedNullable,
@@ -168,6 +173,34 @@
 
     stopBusy("remove-followee-by-topic");
   };
+
+  const removeLegacyFollowing = async ({
+    nsFunction,
+    followee,
+  }: {
+    nsFunction: SnsNervousSystemFunction;
+    followee: SnsNeuronId;
+  }) => {
+    startBusy({
+      initiator: "remove-sns-legacy-followee",
+      labelKey: "follow_sns_topics.busy_removing_legacy",
+    });
+
+    const { success } = await removeFollowee({
+      rootCanisterId,
+      neuron,
+      followee,
+      functionId: nsFunction.id,
+    });
+    if (success) {
+      await reloadNeuron();
+      toastsSuccess({
+        labelKey: "follow_sns_topics.success_removing_legacy",
+      });
+    }
+
+    stopBusy("remove-sns-legacy-followee");
+  };
 </script>
 
 <WizardModal
@@ -188,6 +221,7 @@
       {closeModal}
       {openNextStep}
       {removeFollowing}
+      {removeLegacyFollowing}
     />
   {/if}
   {#if currentStep?.name === STEP_NEURON}
