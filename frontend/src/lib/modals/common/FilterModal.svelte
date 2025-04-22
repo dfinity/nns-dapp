@@ -69,9 +69,6 @@
 
     return false;
   };
-  $: {
-    console.log(filters);
-  }
 </script>
 
 {#if !loading}

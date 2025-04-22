@@ -160,8 +160,6 @@ export const loadSnsProposals = async ({
   const includeStatus = filters?.decisionStatus.map(({ value }) => value) ?? [];
 
   // Once filtered out unkwonw topics then we know that the rest is of type known
-  console.log(filters);
-
   // Move to Util
   const includeKnownTopics = (
     filters?.topics
