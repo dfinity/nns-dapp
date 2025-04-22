@@ -1,6 +1,7 @@
 <script lang="ts">
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
   import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
+  import FollowSnsNeuronsByTopicStepLegacy from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepLegacy.svelte";
   import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
   import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
   import {
@@ -18,9 +19,9 @@
   } from "$lib/types/sns-aggregator";
   import {
     addSnsNeuronToFollowingsByTopics,
+    getLegacyFolloweesByTopics,
     getSnsTopicFollowings,
     getSnsTopicInfoKey,
-    getLegacyFolloweesByTopics,
     removeSnsNeuronFromFollowingsByTopics,
   } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
@@ -42,7 +43,6 @@
     isNullish,
     nonNullish,
   } from "@dfinity/utils";
-  import FollowSnsNeuronsByTopicStepLegacy from "./FollowSnsNeuronsByTopicStepLegacy.svelte";
 
   type Props = {
     rootCanisterId: Principal;
@@ -223,29 +223,22 @@
     followee: SnsNeuronId;
   }) => {
     startBusy({
-      initiator: "remove-sns-followee",
-      labelKey: "follow_sns_topics.busy_legacy_removing",
+      initiator: "remove-sns-legacy-followee",
+      labelKey: "follow_sns_topics.busy_removing_legacy",
     });
-
-    try {
-      const { success } = await removeFollowee({
-        rootCanisterId,
-        neuron,
-        followee,
-        functionId: nsFunction.id,
-      });
-
-      if (success) {
-        await reloadNeuron();
-      }
-    } catch (error) {
-      console.error("Failed to remove SNS followee", error);
-      toastsError({
-        labelKey: "new_followee.error_remove_following",
+    const { success } = await removeFollowee({
+      rootCanisterId,
+      neuron,
+      followee,
+      functionId: nsFunction.id,
+    });
+    if (success) {
+      await reloadNeuron();
+      toastsSuccess({
+        labelKey: "follow_sns_topics.success_removing_legacy",
       });
     }
-
-    stopBusy("remove-sns-followee");
+    stopBusy("remove-sns-legacy-followee");
   };
 </script>
 

@@ -4,7 +4,10 @@ import type { SnsTopicKey } from "$lib/types/sns";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
+import {
+  cachedNativeNFDtoMock,
+  topicInfoDtoMock,
+} from "$tests/mocks/sns-topics.mock";
 import { FollowSnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowSnsNeuronsByTopicModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
@@ -45,6 +48,15 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       ],
     },
   });
+  // legacy followees
+  const legacyNsFunctionId = 10n;
+  const legacyFolloweeNeuronId1: SnsNeuronId = {
+    id: [1, 2, 3, 4],
+  };
+  const legacyFolloweeNeuronId2: SnsNeuronId = {
+    id: [5, 6, 7, 8],
+  };
+  const legacyFolloweeNeuronId2Hex = "05060708";
 
   const renderComponent = (props: {
     rootCanisterId: Principal;
@@ -86,6 +98,9 @@ describe("FollowSnsNeuronsByTopicModal", () => {
               name: criticalTopicName2,
               description: "",
               isCritical: true,
+              nativeFunctions: [
+                { ...cachedNativeNFDtoMock, id: Number(legacyNsFunctionId) },
+              ],
             }),
             topicInfoDtoMock({
               topic: topicKey1,
@@ -492,5 +507,147 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     expect(spyConsoleError).toBeCalledWith(testError);
     // Shouldn't close the modal
     expect(closeModalSpy).toBeCalledTimes(0);
+  });
+
+  describe("legacy followings", () => {
+    it("removes legacy following", async () => {
+      let resolveSetFollowees;
+      const setFolloweesSpy = vi
+        .spyOn(snsGovernanceApi, "setFollowees")
+        .mockImplementation(
+          () => new Promise((resolve) => (resolveSetFollowees = resolve))
+        );
+      const reloadNeuronSpy = vi.fn();
+      const closeModalSpy = vi.fn();
+      const po = renderComponent({
+        ...defaultProps,
+        neuron: {
+          ...neuron,
+          followees: [
+            // Assigned to critical topic 2
+            [
+              legacyNsFunctionId,
+              { followees: [legacyFolloweeNeuronId1, legacyFolloweeNeuronId2] },
+            ],
+          ],
+        },
+        reloadNeuron: reloadNeuronSpy,
+        closeModal: closeModalSpy,
+      });
+
+      const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
+      expect(
+        (await topicsStepPo.getFollowSnsNeuronsByTopicLegacyFolloweePos())
+          .length
+      ).toEqual(2);
+
+      const criticalItem2LegacyFollowingsPos = await (
+        await topicsStepPo.getTopicItemPoByName(criticalTopicName2)
+      ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
+      expect(criticalItem2LegacyFollowingsPos.length).toEqual(2);
+      expect(
+        await criticalItem2LegacyFollowingsPos[1]
+          .getFollowSnsNeuronsByTopicFolloweePo()
+          .getNeuronHashPo()
+          .getFullText()
+      ).toEqual(legacyFolloweeNeuronId2Hex);
+
+      await criticalItem2LegacyFollowingsPos[1]
+        .getFollowSnsNeuronsByTopicFolloweePo()
+        .clickRemoveButton();
+
+      // Expect busy to be shown
+      expect(get(busyStore)).toEqual([
+        {
+          initiator: "remove-sns-legacy-followee",
+          text: "Removing neuron legacy following",
+        },
+      ]);
+      expect(get(toastsStore)).toEqual([]);
+
+      expect(setFolloweesSpy).toBeCalledTimes(1);
+      expect(setFolloweesSpy).toBeCalledWith({
+        rootCanisterId,
+        identity: mockIdentity,
+        neuronId: fromNullable(neuron.id),
+        functionId: legacyNsFunctionId,
+        // Should not include the removed followee -> legacyFolloweeNeuronId2
+        followees: [legacyFolloweeNeuronId1],
+      });
+
+      expect(reloadNeuronSpy).toBeCalledTimes(0);
+      resolveSetFollowees();
+      await runResolvedPromises();
+
+      // After successful set following
+      expect(reloadNeuronSpy).toBeCalledTimes(1);
+      expect(closeModalSpy).toBeCalledTimes(0);
+      expect(get(busyStore)).toEqual([]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: "The neuron legacy following was successfully removed.",
+        },
+      ]);
+    });
+
+    it("displays error when failed to remove legacy following", async () => {
+      let rejectSetFollowees;
+      const setFolloweesSpy = vi
+        .spyOn(snsGovernanceApi, "setFollowees")
+        .mockImplementation(
+          () => new Promise((_, reject) => (rejectSetFollowees = reject))
+        );
+      const reloadNeuronSpy = vi.fn();
+      const closeModalSpy = vi.fn();
+      const po = renderComponent({
+        ...defaultProps,
+        neuron: {
+          ...neuron,
+          followees: [
+            // Assigned to critical topic 2
+            [
+              legacyNsFunctionId,
+              { followees: [legacyFolloweeNeuronId1, legacyFolloweeNeuronId2] },
+            ],
+          ],
+        },
+        reloadNeuron: reloadNeuronSpy,
+        closeModal: closeModalSpy,
+      });
+
+      const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
+      const criticalItem2LegacyFollowingsPos = await (
+        await topicsStepPo.getTopicItemPoByName(criticalTopicName2)
+      ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
+
+      await criticalItem2LegacyFollowingsPos[1]
+        .getFollowSnsNeuronsByTopicFolloweePo()
+        .clickRemoveButton();
+
+      // Expect busy to be shown
+      expect(get(busyStore)).toEqual([
+        {
+          initiator: "remove-sns-legacy-followee",
+          text: "Removing neuron legacy following",
+        },
+      ]);
+      expect(get(toastsStore)).toEqual([]);
+      expect(setFolloweesSpy).toBeCalledTimes(1);
+      expect(reloadNeuronSpy).toBeCalledTimes(0);
+
+      rejectSetFollowees();
+      await runResolvedPromises();
+
+      expect(reloadNeuronSpy).toBeCalledTimes(0);
+      expect(closeModalSpy).toBeCalledTimes(0);
+      expect(get(busyStore)).toEqual([]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an error while unfollowing the neuron.",
+        },
+      ]);
+    });
   });
 });

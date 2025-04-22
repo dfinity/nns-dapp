@@ -87,46 +87,46 @@
       >{$i18n.follow_sns_topics.topics_critical_label}
       <TooltipIcon
         >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
-      >
-      {#each criticalTopicInfos as topicInfo}
-        <FollowSnsNeuronsByTopicItem
-          {topicInfo}
-          followees={getTopicFollowees(topicInfo)}
-          legacyFollowees={getLegacyFolloweesByTopics({
-            neuron,
-            topicInfos: [topicInfo],
-          })}
-          checked={isTopicInfoSelected(topicInfo)}
-          onNnsChange={onTopicSelectionChange}
-          {removeFollowing}
-          {removeLegacyFollowing}
-        />
-      {/each}
-    </h5></div
-  >
+      ></h5
+    >
+    {#each criticalTopicInfos as topicInfo}
+      <FollowSnsNeuronsByTopicItem
+        {topicInfo}
+        followees={getTopicFollowees(topicInfo)}
+        legacyFollowees={getLegacyFolloweesByTopics({
+          neuron,
+          topicInfos: [topicInfo],
+        })}
+        checked={isTopicInfoSelected(topicInfo)}
+        onNnsChange={onTopicSelectionChange}
+        {removeFollowing}
+        {removeLegacyFollowing}
+      />
+    {/each}
+  </div>
 
   <div class="topic-group" data-tid="non-critical-topic-group">
     <h5 class="headline description"
       >{$i18n.follow_sns_topics.topics_non_critical_label}
       <TooltipIcon
         >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
-      >
-      {#each nonCriticalTopicInfos as topicInfo}
-        <FollowSnsNeuronsByTopicItem
-          {topicInfo}
-          followees={getTopicFollowees(topicInfo)}
-          legacyFollowees={getLegacyFolloweesByTopics({
-            neuron,
-            topicInfos: [topicInfo],
-          })}
-          checked={isTopicInfoSelected(topicInfo)}
-          onNnsChange={onTopicSelectionChange}
-          {removeFollowing}
-          {removeLegacyFollowing}
-        />
-      {/each}
-    </h5></div
-  >
+      ></h5
+    >
+    {#each nonCriticalTopicInfos as topicInfo}
+      <FollowSnsNeuronsByTopicItem
+        {topicInfo}
+        followees={getTopicFollowees(topicInfo)}
+        legacyFollowees={getLegacyFolloweesByTopics({
+          neuron,
+          topicInfos: [topicInfo],
+        })}
+        checked={isTopicInfoSelected(topicInfo)}
+        onNnsChange={onTopicSelectionChange}
+        {removeFollowing}
+        {removeLegacyFollowing}
+      />
+    {/each}
+  </div>
 
   <div class="toolbar">
     <button

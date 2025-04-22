@@ -52,7 +52,7 @@
   );
 </script>
 
-<TestIdWrapper testId="follow-sns-neurons-by-topic-step-topics-component">
+<TestIdWrapper testId="follow-sns-neurons-by-topic-step-legacy-component">
   <div class="header">
     <div class="icon-wrapper">
       <IconErrorOutline size="75px" />
@@ -65,7 +65,7 @@
   <h5>{$i18n.follow_sns_topics.legacy_topics_header}</h5>
   <ul class="list topic-names">
     {#each topicsWithLegacyFollowees as topicInfo (getSnsTopicInfoKey(topicInfo))}
-      <li>{topicInfo.name}</li>
+      <li data-tid="topic-name">{topicInfo.name}</li>
     {/each}
   </ul>
 
@@ -90,7 +90,7 @@
     <button
       class="secondary"
       type="button"
-      data-tid="cancel-button"
+      data-tid="back-button"
       onclick={openPrevStep}
     >
       {$i18n.core.back}
