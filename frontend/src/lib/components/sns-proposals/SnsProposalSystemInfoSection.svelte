@@ -63,7 +63,7 @@
     {#if nonNullish(topicName) && nonNullish(topicDescription)}
       <ProposalSystemInfoEntry
         label={$i18n.proposal_detail.topic_prefix}
-        testId="proposal-system-info-type"
+        testId="proposal-system-info-topic"
         value={topicName}
         description={topicDescription}
       />
