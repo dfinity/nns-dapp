@@ -29,6 +29,7 @@ describe("SnsProposalVotingSection", () => {
   const proposalDataMap = mapProposalInfo({
     proposalData: proposal,
     nsFunctions: [{ ...nervousSystemFunctionMock }],
+    topics: undefined,
   });
   const renderComponent = async (): Promise<VotesResultPo> => {
     const { container } = render(SnsProposalVotingSection, {
