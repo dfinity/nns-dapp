@@ -11,9 +11,15 @@ import type {
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
+import type { SnsTopicKey } from "$lib/types/sns";
+import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+import {
+  getTopicInfoBySnsTopicKey,
+  snsTopicToTopicKey,
+} from "$lib/utils/sns-topics.utils";
 import {
   isSnsGenericNervousSystemFunction,
   isSnsNativeNervousSystemFunction,
@@ -70,6 +76,10 @@ export type SnsProposalDataMap = {
   url?: string;
   summary: string;
 
+  // Old proposals may not have a topic
+  topicKey?: SnsTopicKey;
+  topicInfo?: TopicInfoWithUnknown;
+
   // TODO: Should come from backend
   status: SnsProposalDecisionStatus;
   rewardStatus: SnsProposalRewardStatus;
@@ -92,9 +102,11 @@ export type SnsProposalDataMap = {
 export const mapProposalInfo = ({
   proposalData,
   nsFunctions,
+  topics,
 }: {
   proposalData: SnsProposalData;
   nsFunctions: SnsNervousSystemFunction[] | undefined;
+  topics: TopicInfoWithUnknown[] | undefined;
 }): SnsProposalDataMap => {
   const {
     proposal,
@@ -129,6 +141,13 @@ export const mapProposalInfo = ({
     sns_status,
     sns_status_description,
   } = get(i18n);
+
+  const topic = fromNullable(proposalData?.topic);
+  const topicKey = nonNullish(topic) ? snsTopicToTopicKey(topic) : undefined;
+  const topicInfo =
+    nonNullish(topicKey) && nonNullish(topics)
+      ? getTopicInfoBySnsTopicKey({ topicKey, topics })
+      : undefined;
 
   return {
     // Mapped directly from SnsProposalData directly
@@ -169,6 +188,9 @@ export const mapProposalInfo = ({
     // Mapped from Nervous Functions
     type: nsFunction?.name,
     typeDescription: nsFunction?.description[0],
+
+    topicKey,
+    topicInfo,
 
     minimumYesProportionOfTotal: minimumYesProportionOfTotal(proposalData),
     minimumYesProportionOfExercised:
