@@ -1,6 +1,7 @@
 import { registerVote as registerSnsVoteApi } from "$lib/api/sns-governance.api";
 import { SNS_NEURON_ID_DISPLAY_LENGTH } from "$lib/constants/sns-neurons.constants";
 import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
 import { loadActionableProposalsForSns } from "$lib/services/actionable-sns-proposals.services";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import {
@@ -53,8 +54,9 @@ export const registerSnsVotes = async ({
 }): Promise<void> => {
   const nsFunctionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
   const nsFunctions: SnsNervousSystemFunction[] = get(nsFunctionsStore) ?? [];
+  const topics = get(createSnsTopicsProjectStore(universeCanisterId));
   const proposalType =
-    mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
+    mapSnsProposal({ proposalData: proposal, nsFunctions, topics }).type ?? "";
 
   await manageVotesRegistration({
     universeCanisterId,
@@ -113,8 +115,9 @@ const snsNeuronRegistrationComplete = async ({
   });
   const nsFunctionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
   const nsFunctions: SnsNervousSystemFunction[] = get(nsFunctionsStore) ?? [];
+  const topics = get(createSnsTopicsProjectStore(universeCanisterId));
   const proposalType =
-    mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
+    mapSnsProposal({ proposalData: proposal, nsFunctions, topics }).type ?? "";
 
   voteRegistrationStore.addSuccessfullyVotedNeuronId({
     proposalIdString,
@@ -193,8 +196,9 @@ const registerSnsNeuronsVote = async ({
   const proposalId = fromDefinedNullable(proposal.id);
   const nsFunctionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
   const nsFunctions: SnsNervousSystemFunction[] = get(nsFunctionsStore) ?? [];
+  const topics = get(createSnsTopicsProjectStore(universeCanisterId));
   const proposalType =
-    mapSnsProposal({ proposalData: proposal, nsFunctions }).type ?? "";
+    mapSnsProposal({ proposalData: proposal, nsFunctions, topics }).type ?? "";
   const successfulVotedNeurons: SnsNeuron[] = [];
   const onSuccessVote = async (neuron: SnsNeuron) => {
     successfulVotedNeurons.push(neuron);
