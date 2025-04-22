@@ -1,5 +1,6 @@
 import ProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
 import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
+import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { secondsToDateTime } from "$lib/utils/date.utils";
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
@@ -12,7 +13,7 @@ import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalSystemInfoSectionPo } from "$tests/page-objects/SnsProposalSystemInfoSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import { SnsProposalDecisionStatus, type SnsProposalData } from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -54,6 +55,21 @@ describe("ProposalSystemInfoSection", () => {
         proposalId: 2n,
       }),
       action: testNervousFunctionId,
+      topic: [{ Governance: null }],
+    } as SnsProposalData;
+    const topicName = "Topic name";
+    const topicDescription = "Topic description";
+    const testTopicInfo: TopicInfoWithUnknown = {
+      native_functions: [[nervousFunction]],
+      topic: [
+        {
+          Governance: null,
+        },
+      ],
+      is_critical: [false],
+      name: [topicName],
+      description: [topicDescription],
+      custom_functions: [],
     };
     const {
       rewardStatusString,
@@ -62,13 +78,13 @@ describe("ProposalSystemInfoSection", () => {
     } = mapProposalInfo({
       proposalData: openProposal,
       nsFunctions: [nervousFunction],
-      topics: undefined,
+      topics: [testTopicInfo],
     });
     const props = {
       proposalDataMap: mapProposalInfo({
         proposalData: openProposal,
         nsFunctions: [nervousFunction],
-        topics: undefined,
+        topics: [testTopicInfo],
       }),
     };
 
@@ -97,6 +113,42 @@ describe("ProposalSystemInfoSection", () => {
       const po = await renderComponent(props);
 
       expect(await po.getTypeText()).toBe(testNervousFunctionName);
+    });
+
+    it("should render topic data", async () => {
+      const po = await renderComponent(props);
+
+      expect(await po.getTopicKeyValuePairPo().isPresent()).toBe(true);
+      expect((await po.getTopicKeyValuePairPo().getValueText()).trim()).toBe(
+        topicName
+      );
+      expect((await po.getTopicKeyValuePairPo().getInfoText()).trim()).toBe(
+        topicDescription
+      );
+    });
+
+    it("should not render topic data when no topic in proposal", async () => {
+      const po = await renderComponent({
+        proposalDataMap: mapProposalInfo({
+          proposalData: { ...openProposal, topic: undefined },
+          nsFunctions: [nervousFunction],
+          topics: [testTopicInfo],
+        }),
+      });
+
+      expect(await po.getTopicKeyValuePairPo().isPresent()).toBe(false);
+    });
+
+    it("should not render topic data when no topic infos are available", async () => {
+      const po = await renderComponent({
+        proposalDataMap: mapProposalInfo({
+          proposalData: openProposal,
+          nsFunctions: [nervousFunction],
+          topics: [],
+        }),
+      });
+
+      expect(await po.getTopicKeyValuePairPo().isPresent()).toBe(false);
     });
 
     it("should render open status", async () => {
