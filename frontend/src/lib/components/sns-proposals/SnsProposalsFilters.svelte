@@ -80,7 +80,6 @@
       filters={filtersStore?.types}
       {rootCanisterId}
       {closeModal}
-      on:nnsClose={closeModal}
     />
   {/if}
 
@@ -97,7 +96,6 @@
       filters={filtersStore?.decisionStatus}
       {rootCanisterId}
       {closeModal}
-      on:nnsClose={closeModal}
     />
   {/if}
 </TestIdWrapper>

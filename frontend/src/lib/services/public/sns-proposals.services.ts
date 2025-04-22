@@ -15,6 +15,11 @@ import { authStore } from "$lib/stores/auth.store";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import {
+  ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+  type Filter,
+} from "$lib/types/filters";
+import type { SnsTopicKey } from "$lib/types/sns";
 import { isUnknownTopic } from "$lib/types/sns-aggregator";
 import {
   getSnsNeuronState,
@@ -155,11 +160,25 @@ export const loadSnsProposals = async ({
   const includeStatus = filters?.decisionStatus.map(({ value }) => value) ?? [];
 
   // Once filtered out unkwonw topics then we know that the rest is of type known
-  const includeTopics = (
-    filters?.topics?.map(({ value }) => snsTopicKeyToTopic(value)) ?? []
+  console.log(filters);
+
+  // Move to Util
+  const includeKnownTopics = (
+    filters?.topics
+      ?.filter(
+        (topic): topic is Filter<SnsTopicKey> =>
+          topic.value !== ALL_SNS_PROPOSALS_WITHOUT_TOPIC
+      )
+      .map(({ value }) => snsTopicKeyToTopic(value)) ?? []
   ).filter((topic): topic is Topic => !isUnknownTopic(topic));
 
-  console.log(includeTopics);
+  const hasCatchAllTopics = filters?.topics?.find(
+    (topic) => topic.value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC
+  );
+
+  const includeTopics = hasCatchAllTopics
+    ? [...includeKnownTopics, null]
+    : includeKnownTopics;
 
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
@@ -178,7 +197,6 @@ export const loadSnsProposals = async ({
       }),
     onLoad: ({ response, certified }) => {
       const { proposals, ...rest } = response;
-      console.log(proposals);
       console.log(rest);
 
       snsProposalsStore.addProposals({

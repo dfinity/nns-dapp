@@ -23,6 +23,10 @@
     filters.filter((item) => item.checked).map(({ value }) => value)
   );
 
+  let selectedFilters = $derived<Array<SnsProposalTopicFilterId>>(
+    filters.filter((item) => item.checked).map(({ value }) => value)
+  );
+
   const filter = () => {
     snsFiltersStore.setCheckTopics({
       checkedTopics: selectedFilters,

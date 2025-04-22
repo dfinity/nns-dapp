@@ -1,7 +1,10 @@
 import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
 import { i18n } from "$lib/stores/i18n";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
-import type { Filter } from "$lib/types/filters";
+import {
+  ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+  type Filter,
+} from "$lib/types/filters";
 import { enumValues } from "$lib/utils/enum.utils";
 import { generateSnsProposalTypesFilterData } from "$lib/utils/sns-proposals.utils";
 import { snsTopicToTopicKey } from "$lib/utils/sns-topics.utils";
@@ -81,22 +84,22 @@ const loadTopicsFilters = ({
 }: {
   rootCanisterId: Principal;
 }) => {
+  const i18nKeys = get(i18n);
+
   const currentTopicsFilterData =
     get(snsFiltersStore)?.[rootCanisterId.toText()]?.topics ?? [];
 
-  console.log(currentTopicsFilterData);
   const snsTopics = get(snsTopicsStore)?.[rootCanisterId.toText()];
 
   const topicsWithUnkown = fromNullable(snsTopics?.topics ?? []) ?? [];
-  const topics = topicsWithUnkown
+
+  const filters = topicsWithUnkown
     .filter((topic) => nonNullish(topic.topic))
     .map((t) => ({
       name: fromDefinedNullable(t.name),
       isCritical: fromDefinedNullable(t.is_critical),
       topic: fromDefinedNullable(t.topic),
-    }));
-
-  const filters = topics
+    }))
     .map((topic) => ({
       id: snsTopicToTopicKey(topic.topic),
       value: snsTopicToTopicKey(topic.topic),
@@ -108,15 +111,27 @@ const loadTopicsFilters = ({
       isCritical: topic.isCritical,
     }))
     // sort them by isCritical first and then the rest
+    // move to helper??
     .sort((a, b) => {
       if (a.isCritical && !b.isCritical) return -1;
       if (!a.isCritical && b.isCritical) return 1;
       return a.name.localeCompare(b.name);
     });
 
+  const noTopicProposalsFilter = {
+    id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+    value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+    name: i18nKeys.voting[ALL_SNS_PROPOSALS_WITHOUT_TOPIC],
+    checked:
+      currentTopicsFilterData.find(
+        ({ id }) => id === ALL_SNS_PROPOSALS_WITHOUT_TOPIC
+      )?.checked ?? false,
+    isCritical: false,
+  };
+
   snsFiltersStore.setTopics({
     rootCanisterId,
-    topics: filters,
+    topics: [...filters, noTopicProposalsFilter],
   });
 };
 
