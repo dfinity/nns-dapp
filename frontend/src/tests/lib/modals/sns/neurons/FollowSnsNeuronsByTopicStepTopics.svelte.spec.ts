@@ -267,82 +267,104 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     expect(openNextStep).toBeCalledTimes(1);
   });
 
-  it("displays legacy followees", async () => {
-    const po = renderComponent({
-      ...defaultProps,
-      neuron: {
-        ...mockSnsNeuron,
-        followees: [
-          [
-            // Assigned to criticalTopicInfo1
-            legacyNsFunction1.id,
-            {
-              followees: [
-                // legacyFollowee1
-                legacyFolloweeNeuronId1,
-              ],
-            },
+  describe("legacy followees", () => {
+    it("displays legacy followees", async () => {
+      const po = renderComponent({
+        ...defaultProps,
+        neuron: {
+          ...mockSnsNeuron,
+          followees: [
+            [
+              // Assigned to criticalTopicInfo1
+              legacyNsFunction1.id,
+              {
+                followees: [
+                  // legacyFollowee1
+                  legacyFolloweeNeuronId1,
+                ],
+              },
+            ],
+            [
+              // Assigned to topicInfo2
+              legacyNsFunction2.id,
+              {
+                followees: [
+                  // legacyFollowee2
+                  legacyFolloweeNeuronId1,
+                  // legacyFollowee3
+                  legacyFolloweeNeuronId2,
+                ],
+              },
+            ],
           ],
-          [
-            // Assigned to topicInfo2
-            legacyNsFunction2.id,
-            {
-              followees: [
-                // legacyFollowee2
-                legacyFolloweeNeuronId1,
-                // legacyFollowee3
-                legacyFolloweeNeuronId2,
-              ],
-            },
-          ],
+        },
+        topicInfos: [
+          criticalTopicInfo1,
+          criticalTopicInfo2,
+          topicInfo1,
+          topicInfo2,
         ],
-      },
-      topicInfos: [
-        criticalTopicInfo1,
-        criticalTopicInfo2,
-        topicInfo1,
-        topicInfo2,
-      ],
+      });
+
+      expect(
+        (await po.getFollowSnsNeuronsByTopicLegacyFolloweePos()).length
+      ).toEqual(3);
+
+      const [legacyFollowee1Po] = await (
+        await po.getTopicItemPoByName(criticalTopicName1)
+      ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
+      expect(await legacyFollowee1Po.getNsFunctionName()).toEqual(
+        legacyNsFunction1Name
+      );
+      expect(
+        await legacyFollowee1Po
+          .getFollowSnsNeuronsByTopicFolloweePo()
+          .getNeuronHashPo()
+          .getFullText()
+      ).toEqual("01020304");
+
+      const [legacyFollowee2Po, legacyFollowee3Po] = await (
+        await po.getTopicItemPoByName(topicName2)
+      ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
+      expect(await legacyFollowee2Po.getNsFunctionName()).toEqual(
+        legacyNsFunction2Name
+      );
+      expect(
+        await legacyFollowee2Po
+          .getFollowSnsNeuronsByTopicFolloweePo()
+          .getNeuronHashPo()
+          .getFullText()
+      ).toEqual("01020304");
+
+      expect(await legacyFollowee3Po.getNsFunctionName()).toEqual(
+        legacyNsFunction2Name
+      );
+      expect(
+        await legacyFollowee3Po
+          .getFollowSnsNeuronsByTopicFolloweePo()
+          .getNeuronHashPo()
+          .getFullText()
+      ).toEqual("05060708");
     });
 
-    expect(
-      (await po.getFollowSnsNeuronsByTopicLegacyFolloweePos()).length
-    ).toEqual(3);
+    it("doesn't displays legacy followees when empty", async () => {
+      const po = renderComponent({
+        ...defaultProps,
+        neuron: {
+          ...mockSnsNeuron,
+          followees: [],
+        },
+        topicInfos: [
+          criticalTopicInfo1,
+          criticalTopicInfo2,
+          topicInfo1,
+          topicInfo2,
+        ],
+      });
 
-    const [legacyFollowee1Po] = await (
-      await po.getTopicItemPoByName(criticalTopicName1)
-    ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
-    expect(await legacyFollowee1Po.getNsFunctionName()).toEqual(
-      legacyNsFunction1Name
-    );
-    expect(
-      await legacyFollowee1Po
-        .getFollowSnsNeuronsByTopicFolloweePo()
-        .getNeuronHashPo()
-        .getFullText()
-    ).toEqual("01020304");
-
-    const [legacyFollowee2Po, legacyFollowee3Po] = await (
-      await po.getTopicItemPoByName(topicName2)
-    ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
-    expect(await legacyFollowee2Po.getNsFunctionName()).toEqual(
-      legacyNsFunction2Name
-    );
-    expect(
-      await legacyFollowee2Po
-        .getFollowSnsNeuronsByTopicFolloweePo()
-        .getNeuronHashPo()
-        .getFullText()
-    ).toEqual("01020304");
-
-    expect(await legacyFollowee3Po.getNsFunctionName()).toEqual(
-      legacyNsFunction2Name
-    );
-    expect(
-      await legacyFollowee3Po
-        .getFollowSnsNeuronsByTopicFolloweePo()
-        .getNeuronHashPo()
-        .getFullText()
-    ).toEqual("05060708");
+      expect(
+        (await po.getFollowSnsNeuronsByTopicLegacyFolloweePos()).length
+      ).toEqual(0);
+    });
   });
 });

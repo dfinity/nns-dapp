@@ -7,8 +7,8 @@
   import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import {
-    getSnsTopicInfoKey,
     getLegacyFolloweesByTopics,
+    getSnsTopicInfoKey,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
   import type {
