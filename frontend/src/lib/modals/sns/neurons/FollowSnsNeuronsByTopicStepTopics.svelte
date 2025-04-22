@@ -9,7 +9,6 @@
   import {
     getLegacyFolloweesByTopics,
     getSnsTopicInfoKey,
-    getLegacyFolloweesByTopics,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
   import type {
