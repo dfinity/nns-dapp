@@ -80,7 +80,7 @@
               nsFunction={followees.nsFunction}
               {neuronId}
               onRemoveClick={() => {
-                // TBD
+                // TODO: call a callback
               }}
             />
           </li>
@@ -127,7 +127,7 @@
   }
 
   h5 {
-    @include fonts.standard(true);
+    @include fonts.h5(true);
     color: var(--text-description);
     margin-bottom: var(--padding-1_5x);
   }
