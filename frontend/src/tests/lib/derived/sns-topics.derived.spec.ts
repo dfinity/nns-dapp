@@ -2,7 +2,9 @@ import {
   createSnsTopicsProjectStore,
   snsTopicsStore,
 } from "$lib/derived/sns-topics.derived";
+import { convertDtoTopicInfo } from "$lib/utils/sns-aggregator-converters.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import {
   cachedGenericNFDtoMock,
   cachedNativeNFDtoMock,
@@ -10,8 +12,6 @@ import {
 } from "$tests/mocks/sns-topics.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
-import { convertDtoTopicInfo } from "../../../lib/utils/sns-aggregator-converters.utils";
-import { principal } from "../../mocks/sns-projects.mock";
 
 describe("sns topics store", () => {
   it("should be set to an empty object", () => {
