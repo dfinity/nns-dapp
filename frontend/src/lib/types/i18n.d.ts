@@ -448,6 +448,9 @@ interface I18nFollow_sns_topics {
   topics_non_critical_tooltip: string;
   topics_following: string;
   topics_legacy_following_description: string;
+  legacy_description: string;
+  legacy_topics_header: string;
+  legacy_followees_header: string;
   neuron_title: string;
   neuron_label: string;
   neuron_description: string;

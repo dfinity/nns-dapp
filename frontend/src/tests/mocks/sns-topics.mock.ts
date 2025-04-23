@@ -2,7 +2,7 @@ import type {
   CachedNervousFunctionDto,
   TopicInfoDto,
 } from "$lib/types/sns-aggregator";
-import type { SnsTopic } from "@dfinity/sns";
+import type { SnsTopic, SnsTopicInfo } from "@dfinity/sns";
 
 export const topicTypeMock = "DaoCommunitySettings";
 export const topicMock: SnsTopic = {
@@ -55,3 +55,12 @@ export const topicInfoDtoMock = ({
   custom_functions: customFunctions,
   is_critical: isCritical,
 });
+
+export const topicInfoMock: SnsTopicInfo = {
+  native_functions: [],
+  topic: [{ DaoCommunitySettings: null }],
+  is_critical: [true],
+  name: ["Topic name"],
+  description: ["Topic description"],
+  custom_functions: [],
+};
