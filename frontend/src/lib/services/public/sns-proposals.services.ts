@@ -178,8 +178,6 @@ export const loadSnsProposals = async ({
     ? [...includeKnownTopics, null]
     : includeKnownTopics;
 
-  console.log(includeTopics);
-
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -196,9 +194,7 @@ export const loadSnsProposals = async ({
         rootCanisterId,
       }),
     onLoad: ({ response, certified }) => {
-      const { proposals, ...rest } = response;
-      console.log(rest);
-
+      const { proposals } = response;
       snsProposalsStore.addProposals({
         rootCanisterId,
         proposals,
@@ -207,8 +203,6 @@ export const loadSnsProposals = async ({
       });
     },
     onError: (err) => {
-      console.log(err);
-
       toastsError({
         labelKey: "error.list_proposals",
         err,

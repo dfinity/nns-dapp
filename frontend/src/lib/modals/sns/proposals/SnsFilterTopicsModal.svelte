@@ -23,7 +23,7 @@
     filters.filter((item) => item.checked).map(({ value }) => value)
   );
 
-  let selectedFilters = $derived<Array<SnsProposalTopicFilterId>>(
+  let selectedFilters = $derived<SnsProposalTopicFilterId[]>(
     filters.filter((item) => item.checked).map(({ value }) => value)
   );
 
