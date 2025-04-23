@@ -121,7 +121,7 @@ const loadTopicsFilters = ({
   const noTopicProposalsFilter = {
     id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
     value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
-    name: i18nKeys.voting[ALL_SNS_PROPOSALS_WITHOUT_TOPIC],
+    name: i18nKeys.voting.all_sns_proposals_without_topic,
     checked:
       currentTopicsFilterData.find(
         ({ id }) => id === ALL_SNS_PROPOSALS_WITHOUT_TOPIC
@@ -167,5 +167,5 @@ export const loadSnsFilters = async ({
   // It's safe to reload types filters as the `loadTypesFilters` respects user selection,
   // and it needs to be reloaded to get nsFunctions update.
   loadTypesFilters({ rootCanisterId, nsFunctions, snsName });
-  loadTopicsFilters({ rootCanisterId, snsName });
+  loadTopicsFilters({ rootCanisterId });
 };
