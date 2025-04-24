@@ -36,6 +36,7 @@
 
 {#if !loading}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+    <!-- TODO: To fix once Modal slots are migrated in gix -->
     <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
     <!-- svelte-ignore slot_element_deprecated -->
     <slot slot="title" name="title" />
@@ -96,6 +97,7 @@
   </Modal>
 {:else}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+    <!-- TODO: To fix once Modal slots are migrated in gix -->
     <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
     <!-- svelte-ignore slot_element_deprecated -->
     <slot slot="title" name="title" />
