@@ -36,6 +36,8 @@
 
 {#if !loading}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+    <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+    <!-- svelte-ignore slot_element_deprecated -->
     <slot slot="title" name="title" />
 
     <div slot="sub-title" class="toggle-all-wrapper">
@@ -94,6 +96,8 @@
   </Modal>
 {:else}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+    <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+    <!-- svelte-ignore slot_element_deprecated -->
     <slot slot="title" name="title" />
 
     <div class="spinner-wrapper">
