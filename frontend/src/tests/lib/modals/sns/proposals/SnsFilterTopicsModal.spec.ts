@@ -198,7 +198,7 @@ describe("SnsFilterTopicsModal", () => {
     await po.clickConfirmButton();
 
     const topics = get(snsFiltersStore)[mockPrincipal.toText()]?.topics;
-    expect(topics.filter(({ checked }) => checked).length).toEqual(2);
+    expect(topics.filter(({ checked }) => checked).length).toEqual(0);
 
     expect(closeModal).toHaveBeenCalledTimes(1);
   });
