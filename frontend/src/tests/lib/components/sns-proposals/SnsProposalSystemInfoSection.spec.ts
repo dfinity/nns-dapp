@@ -62,11 +62,13 @@ describe("ProposalSystemInfoSection", () => {
     } = mapProposalInfo({
       proposalData: openProposal,
       nsFunctions: [nervousFunction],
+      topics: undefined,
     });
     const props = {
       proposalDataMap: mapProposalInfo({
         proposalData: openProposal,
         nsFunctions: [nervousFunction],
+        topics: undefined,
       }),
     };
 
@@ -147,6 +149,7 @@ describe("ProposalSystemInfoSection", () => {
       proposalDataMap: mapProposalInfo({
         proposalData: adoptedProposal,
         nsFunctions: [nervousFunction],
+        topics: undefined,
       }),
     };
     it("should render adopted status", async () => {
@@ -179,6 +182,7 @@ describe("ProposalSystemInfoSection", () => {
       proposalDataMap: mapProposalInfo({
         proposalData: executedProposal,
         nsFunctions: [nervousFunction],
+        topics: undefined,
       }),
     };
 
@@ -212,6 +216,7 @@ describe("ProposalSystemInfoSection", () => {
       proposalDataMap: mapProposalInfo({
         proposalData: failedProposal,
         nsFunctions: [nervousFunction],
+        topics: undefined,
       }),
     };
 

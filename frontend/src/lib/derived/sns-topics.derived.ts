@@ -1,9 +1,13 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
 import type { RootCanisterIdText } from "$lib/types/sns";
-import type { ListTopicsResponseWithUnknown } from "$lib/types/sns-aggregator";
+import type {
+  ListTopicsResponseWithUnknown,
+  TopicInfoWithUnknown,
+} from "$lib/types/sns-aggregator";
 import { convertDtoToListTopicsResponse } from "$lib/utils/sns-aggregator-converters.utils";
-import { isNullish } from "@dfinity/utils";
-import { type Readable } from "svelte/store";
+import type { Principal } from "@dfinity/principal";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import { derived, type Readable } from "svelte/store";
 
 export interface SnsParametersStore {
   [rootCanisterId: RootCanisterIdText]:
@@ -20,4 +24,23 @@ export const snsTopicsStore: Readable<SnsParametersStore> =
     isNullish(sns?.topics)
       ? undefined
       : convertDtoToListTopicsResponse(sns.topics)
+  );
+
+// TODO(sns-topics): Consider this to be a utility function.
+export const createSnsTopicsProjectStore = (
+  rootCanisterId: Principal | null | undefined
+): Readable<Array<TopicInfoWithUnknown> | undefined> =>
+  derived<typeof snsTopicsStore, Array<TopicInfoWithUnknown> | undefined>(
+    snsTopicsStore,
+    ($snsTopicStore) => {
+      const rootCanisterIdText = rootCanisterId?.toText();
+      if (isNullish(rootCanisterIdText)) {
+        return undefined;
+      }
+
+      const topicResponse = $snsTopicStore[rootCanisterIdText];
+      return nonNullish(topicResponse)
+        ? fromNullable(topicResponse.topics)
+        : undefined;
+    }
   );

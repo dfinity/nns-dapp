@@ -45,7 +45,9 @@
   } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { tick } from "svelte";
-  import type { Readable } from "svelte/store";
+  import { get, type Readable } from "svelte/store";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
+  import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -186,12 +188,16 @@
     functionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
   }
 
+  let topics: TopicInfoWithUnknown[] | undefined;
+  $: topics = get(createSnsTopicsProjectStore(universeCanisterId));
+
   let proposalDataMap: SnsProposalDataMap | undefined;
   $: proposalDataMap =
     nonNullish(proposal) && nonNullish($functionsStore)
       ? mapProposalInfo({
           proposalData: proposal,
           nsFunctions: $functionsStore,
+          topics,
         })
       : undefined;
 
