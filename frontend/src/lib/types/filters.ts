@@ -1,3 +1,4 @@
+import type { SnsTopicKey } from "$lib/types/sns";
 import type { ProposalStatus, Topic } from "@dfinity/nns";
 import type { SnsProposalDecisionStatus } from "@dfinity/sns";
 
