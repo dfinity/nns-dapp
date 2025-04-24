@@ -39,4 +39,8 @@ export class FilterModalPo extends ModalPo {
   clickCloseButton(): Promise<void> {
     return this.click("close");
   }
+
+  getFilterSpinnerPo(): PageObjectElement {
+    return this.getElement("spinner");
+  }
 }

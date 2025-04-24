@@ -11,6 +11,12 @@
   const { title, visible = true, filters }: Props = $props();
 </script>
 
-<FilterModal on:nnsClose on:nnsConfirm {filters} {visible}
-  ><span slot="title">{title}</span></FilterModal
+<FilterModal
+  on:nnsClose
+  on:nnsConfirm
+  on:nnsChange
+  on:nnsSelectAll
+  on:nnsClearSelection
+  {filters}
+  {visible}><span slot="title">{title}</span></FilterModal
 >
