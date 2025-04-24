@@ -442,7 +442,6 @@ interface I18nFollow_sns_topics {
   topic_definitions_title: string;
   topics_title: string;
   legacy_title: string;
-  deactivate_catch_all_title: string;
   topics_description: string;
   topics_critical_label: string;
   topics_critical_tooltip: string;

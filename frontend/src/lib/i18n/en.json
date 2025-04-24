@@ -427,7 +427,6 @@
     "topic_definitions_title": "Topic Definition List",
     "topics_title": "Delegate Voting",
     "legacy_title": "Change to Topic Following",
-    "deactivate_catch_all_title": "Deactivating Catch-All Following",
     "topics_description": "Delegate your voting by following other neurons to maximize your voting rewards. Your voting is fully delegated only if following is set for every topic. Alternatively, you can vote manually.",
     "topics_critical_label": "Critical topics",
     "topics_critical_tooltip": "Critical topics include proposals that are vital to the management of a given SNS DAO, so they require 67% \"yes\" votes to be adopted. They include treasury management and critical dapp operations.",
