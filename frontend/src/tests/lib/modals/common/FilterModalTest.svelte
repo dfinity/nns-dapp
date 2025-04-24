@@ -8,7 +8,22 @@
     filters: Filter<FiltersData>[] | undefined;
   };
 
-  const { title, visible = true, filters }: Props = $props();
+  const defaultFilters = [
+    {
+      id: "1",
+      value: 1,
+      name: "Filter 1",
+      checked: false,
+    },
+    {
+      id: "2",
+      value: 2,
+      name: "Filter 2",
+      checked: true,
+    },
+  ];
+
+  const { title, visible = true, filters = defaultFilters }: Props = $props();
 </script>
 
 <FilterModal on:nnsClose on:nnsConfirm {filters} {visible}
