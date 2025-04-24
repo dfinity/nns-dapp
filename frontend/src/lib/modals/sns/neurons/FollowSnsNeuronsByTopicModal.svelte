@@ -26,7 +26,6 @@
     getSnsTopicFollowings,
     getSnsTopicInfoKey,
     removeSnsNeuronFromFollowingsByTopics,
-    snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import {
@@ -272,46 +271,28 @@
       labelKey: "follow_sns_topics.busy_removing_legacy",
     });
 
-    // After testing, it appears that calling the `removeFollowee` API to remove multiple legacy followees
-    // (whether asynchronously or synchronously) often results in only the last followee being removed.
-    //
-    // Due to this behavior, we use the `setFollowing` API instead to clear the catch-all followees.
-    // To do this, we re-apply the current state of all topic followings, effectively removing the legacy ones.
-    //
-    // To ensure consistency, we must fetch the latest state of the neuron before proceeding.
-    await reloadNeuron();
-
-    const followingToTopicKeyMap = new Map<SnsTopicKey, SnsTopicFollowing>(
-      followings.map((following) => [following.topic, following])
-    );
-    const followingsForAllTopics: SnsTopicFollowing[] = topicInfos.map(
-      (topicInfo) => {
-        const topicKey = getSnsTopicInfoKey(topicInfo);
-
-        return {
-          topic: topicKey,
-          followees: followingToTopicKeyMap.get(topicKey)?.followees ?? [],
-        };
+    const results: { success: boolean }[] = [];
+    for (const { followees, nsFunction } of catchAllFollowees) {
+      for (const followee of followees) {
+        const result = await removeFollowee({
+          rootCanisterId,
+          neuron,
+          functionId: nsFunction.id,
+          followee,
+        });
+        // wait for a second before removing the next one
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        results.push(result);
       }
-    );
-
-    const { success, error } = await setFollowing({
-      rootCanisterId,
-      neuronId: fromDefinedNullable(neuron.id),
-      followings: followingsForAllTopics,
-    });
+    }
 
     // Reload neuron in any case to update the UI state.
+    await new Promise((resolve) => setTimeout(resolve, 5000));
     await reloadNeuron();
 
-    if (success) {
+    if (results.every(({ success }) => success)) {
       toastsSuccess({
         labelKey: "follow_sns_topics.success_removing_legacy",
-      });
-    } else {
-      toastsError({
-        labelKey: "follow_sns_topics.error_add_following",
-        err: error,
       });
     }
     stopBusy("remove-sns-legacy-followee");
