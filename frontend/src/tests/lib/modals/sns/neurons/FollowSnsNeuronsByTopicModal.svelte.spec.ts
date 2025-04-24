@@ -711,11 +711,22 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       legacyNsFunctionName
     );
 
-    // Next
+    // Next to neuron step
     await legacyStepPo.clickNextButton();
-
     expect(await topicsStepPo.isPresent()).toEqual(false);
     expect(await legacyStepPo.isPresent()).toEqual(false);
     expect(await neuronStepPo.isPresent()).toEqual(true);
+
+    // Back to legacy step
+    await neuronStepPo.clickBackButton();
+    expect(await topicsStepPo.isPresent()).toEqual(false);
+    expect(await legacyStepPo.isPresent()).toEqual(true);
+    expect(await neuronStepPo.isPresent()).toEqual(false);
+
+    // Back to topics step
+    await legacyStepPo.clickBackButton();
+    expect(await topicsStepPo.isPresent()).toEqual(true);
+    expect(await legacyStepPo.isPresent()).toEqual(false);
+    expect(await neuronStepPo.isPresent()).toEqual(false);
   });
 });
