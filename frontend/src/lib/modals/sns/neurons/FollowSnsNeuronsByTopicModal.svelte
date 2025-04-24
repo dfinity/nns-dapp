@@ -9,6 +9,7 @@
   import {
     getSnsNeuronIdentity,
     removeFollowee,
+    removeNsFunctionFollowees,
     setFollowing,
   } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -271,30 +272,21 @@
       labelKey: "follow_sns_topics.busy_removing_legacy",
     });
 
-    const results: { success: boolean }[] = [];
-    for (const { followees, nsFunction } of catchAllFollowees) {
-      for (const followee of followees) {
-        const result = await removeFollowee({
-          rootCanisterId,
-          neuron,
-          functionId: nsFunction.id,
-          followee,
-        });
-        // wait for a second before removing the next one
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        results.push(result);
-      }
-    }
+    const { success } = await removeNsFunctionFollowees({
+      rootCanisterId,
+      neuron,
+      functionId: 0n,
+    });
 
-    // Reload neuron in any case to update the UI state.
-    await new Promise((resolve) => setTimeout(resolve, 5000));
     await reloadNeuron();
 
-    if (results.every(({ success }) => success)) {
+    if (success) {
       toastsSuccess({
         labelKey: "follow_sns_topics.success_removing_legacy",
       });
+      openPrevStep();
     }
+
     stopBusy("remove-sns-legacy-followee");
   };
 </script>

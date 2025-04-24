@@ -746,6 +746,36 @@ export const removeFollowee = async ({
   }
 };
 
+export const removeNsFunctionFollowees = async ({
+  neuron,
+  functionId,
+  rootCanisterId,
+}: {
+  neuron: SnsNeuron;
+  functionId: bigint;
+  rootCanisterId: Principal;
+}): Promise<{ success: boolean }> => {
+  const identity = await getSnsNeuronIdentity();
+
+  try {
+    await setFollowees({
+      rootCanisterId,
+      identity,
+      neuronId: fromDefinedNullable(neuron.id),
+      functionId,
+      followees: [],
+    });
+
+    return { success: true };
+  } catch (error: unknown) {
+    toastsError({
+      labelKey: "error__sns.sns_remove_followee",
+      err: error,
+    });
+    return { success: false };
+  }
+};
+
 export const stakeMaturity = async ({
   neuronId,
   rootCanisterId,
