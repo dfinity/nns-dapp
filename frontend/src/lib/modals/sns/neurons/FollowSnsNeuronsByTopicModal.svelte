@@ -1,6 +1,8 @@
 <script lang="ts">
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
+  import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
+  import FollowSnsNeuronsByTopicStepDeactivateCatchAll from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepDeactivateCatchAll.svelte";
   import FollowSnsNeuronsByTopicStepLegacy from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepLegacy.svelte";
   import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
   import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
@@ -19,10 +21,12 @@
   } from "$lib/types/sns-aggregator";
   import {
     addSnsNeuronToFollowingsByTopics,
+    getLegacyFolloweesByNsFunctionIds,
     getLegacyFolloweesByTopics,
     getSnsTopicFollowings,
     getSnsTopicInfoKey,
     removeSnsNeuronFromFollowingsByTopics,
+    snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import {
@@ -43,6 +47,7 @@
     isNullish,
     nonNullish,
   } from "@dfinity/utils";
+  import { get } from "svelte/store";
 
   type Props = {
     rootCanisterId: Principal;
@@ -54,6 +59,7 @@
 
   const STEP_TOPICS = "topics";
   const STEP_CONFIRM_OVERRIDE_LEGACY = "legacy";
+  const STEP_CONFIRM_DEACTIVATING_CATCH_ALL = "catch-all";
   const STEP_NEURON = "neurons";
   const steps: WizardSteps = [
     {
@@ -62,8 +68,11 @@
     },
     {
       name: STEP_CONFIRM_OVERRIDE_LEGACY,
-      // TODO: update title
       title: $i18n.follow_sns_topics.legacy_title,
+    },
+    {
+      name: STEP_CONFIRM_DEACTIVATING_CATCH_ALL,
+      title: $i18n.follow_sns_topics.deactivate_catch_all_title,
     },
     {
       name: STEP_NEURON,
@@ -84,6 +93,10 @@
       modal?.set(wizardStepIndex({ name: STEP_NEURON, steps }));
     }
   };
+  const openDeactivateCatchAllStep = () =>
+    modal?.set(
+      wizardStepIndex({ name: STEP_CONFIRM_DEACTIVATING_CATCH_ALL, steps })
+    );
   const openPrevStep = () => {
     if (
       currentStep?.name === STEP_NEURON &&
@@ -108,6 +121,18 @@
   );
   let selectedTopics = $state<SnsTopicKey[]>([]);
   let followeeNeuronIdHex = $state<string>("");
+
+  const nsFunctions: SnsNervousSystemFunction[] = $derived(
+    get(createSnsNsFunctionsProjectStore(rootCanisterId)) ?? []
+  );
+  const catchAllFollowees = $derived(
+    getLegacyFolloweesByNsFunctionIds({
+      neuron,
+      nsFunctions,
+      // Catch-all ID is always 0n
+      nsFunctionIds: [0n],
+    })
+  );
 
   const selectedTopicsContainLegacyFollowee = $derived<boolean>(
     getLegacyFolloweesByTopics({
@@ -240,6 +265,57 @@
     }
     stopBusy("remove-sns-legacy-followee");
   };
+
+  const confirmDeactivateCatchAllFollowee = async () => {
+    startBusy({
+      initiator: "remove-sns-legacy-followee",
+      labelKey: "follow_sns_topics.busy_removing_legacy",
+    });
+
+    // After testing, it appears that calling the `removeFollowee` API to remove multiple legacy followees
+    // (whether asynchronously or synchronously) often results in only the last followee being removed.
+    //
+    // Due to this behavior, we use the `setFollowing` API instead to clear the catch-all followees.
+    // To do this, we re-apply the current state of all topic followings, effectively removing the legacy ones.
+    //
+    // To ensure consistency, we must fetch the latest state of the neuron before proceeding.
+    await reloadNeuron();
+
+    const followingToTopicKeyMap = new Map<SnsTopicKey, SnsTopicFollowing>(
+      followings.map((following) => [following.topic, following])
+    );
+    const followingsForAllTopics: SnsTopicFollowing[] = topicInfos.map(
+      (topicInfo) => {
+        const topicKey = getSnsTopicInfoKey(topicInfo);
+
+        return {
+          topic: topicKey,
+          followees: followingToTopicKeyMap.get(topicKey)?.followees ?? [],
+        };
+      }
+    );
+
+    const { success, error } = await setFollowing({
+      rootCanisterId,
+      neuronId: fromDefinedNullable(neuron.id),
+      followings: followingsForAllTopics,
+    });
+
+    // Reload neuron in any case to update the UI state.
+    await reloadNeuron();
+
+    if (success) {
+      toastsSuccess({
+        labelKey: "follow_sns_topics.success_removing_legacy",
+      });
+    } else {
+      toastsError({
+        labelKey: "follow_sns_topics.error_add_following",
+        err: error,
+      });
+    }
+    stopBusy("remove-sns-legacy-followee");
+  };
 </script>
 
 <WizardModal
@@ -257,8 +333,10 @@
       {followings}
       {neuron}
       bind:selectedTopics
+      {catchAllFollowees}
       {closeModal}
       {openNextStep}
+      {openDeactivateCatchAllStep}
       {removeFollowing}
       {removeLegacyFollowing}
     />
@@ -270,6 +348,13 @@
       bind:selectedTopics
       {openPrevStep}
       {openNextStep}
+    />
+  {/if}
+  {#if currentStep?.name === STEP_CONFIRM_DEACTIVATING_CATCH_ALL}
+    <FollowSnsNeuronsByTopicStepDeactivateCatchAll
+      {catchAllFollowees}
+      cancel={openPrevStep}
+      confirm={confirmDeactivateCatchAllFollowee}
     />
   {/if}
   {#if currentStep?.name === STEP_NEURON}
