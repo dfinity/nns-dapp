@@ -1054,12 +1054,15 @@ describe("sns-neurons-services", () => {
         ...mockSnsNeuron,
         followees: [[functionId, { followees: [followee1, followee2] }]],
       };
-      await services.removeNsFunctionFollowees({
+
+      const { success } = await services.removeNsFunctionFollowees({
         rootCanisterId,
         neuron,
         functionId,
       });
 
+      expect(success).toBe(true);
+      expect(setFolloweesSpy).toBeCalledTimes(1);
       expect(setFolloweesSpy).toBeCalledWith({
         neuronId: fromNullable(neuron.id),
         identity: mockIdentity,
@@ -1067,6 +1070,33 @@ describe("sns-neurons-services", () => {
         followees: [],
         functionId,
       });
+    });
+
+    it("should handle errors", async () => {
+      const testError = new Error("Test Error");
+      setFolloweesSpy = vi
+        .spyOn(governanceApi, "setFollowees")
+        .mockImplementation(() => Promise.reject(testError));
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [[functionId, { followees: [followee1, followee2] }]],
+      };
+
+      expect(get(toastsStore)).toMatchObject([]);
+      const { success } = await services.removeNsFunctionFollowees({
+        rootCanisterId,
+        neuron,
+        functionId,
+      });
+
+      expect(setFolloweesSpy).toBeCalledTimes(1);
+      expect(success).toBe(false);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an error while unfollowing the neuron. Test Error",
+        },
+      ]);
     });
   });
 
