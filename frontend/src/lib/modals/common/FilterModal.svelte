@@ -9,22 +9,16 @@
   import { Checkbox, Modal, Spinner } from "@dfinity/gix-components";
   import { Topic } from "@dfinity/nns";
   import { isNullish } from "@dfinity/utils";
-  import { createEventDispatcher, type Snippet } from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   type Props = {
     // `undefined` means the filters are not loaded yet.
     filters: Filter<FiltersData>[] | undefined;
-    visible: boolean;
-    category: undefined | NnsProposalFilterCategory;
-    title: Snippet;
+    visible?: boolean;
+    category?: NnsProposalFilterCategory | undefined;
   };
 
-  const {
-    filters,
-    visible = true,
-    category = undefined,
-    title,
-  }: Props = $props();
+  const { filters, visible = true, category }: Props = $props();
 
   const loading = $derived(isNullish(filters));
 
@@ -34,7 +28,6 @@
     const filter = filters?.find((f) => f.id === id);
     dispatch("nnsChange", { filter });
   };
-
   const close = () => dispatch("nnsClose");
   const filter = () => dispatch("nnsConfirm");
   const selectAll = () => dispatch("nnsSelectAll");
@@ -43,7 +36,7 @@
 
 {#if !loading}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
-    {@render title()}
+    <slot slot="title" name="title" />
 
     <div slot="sub-title" class="toggle-all-wrapper">
       <button
@@ -101,7 +94,7 @@
   </Modal>
 {:else}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
-    {@render title()}
+    <slot slot="title" name="title" />
 
     <div class="spinner-wrapper">
       <Spinner />
