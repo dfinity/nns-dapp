@@ -105,6 +105,14 @@
           {#if displaySeparator(category, filters, index)}
             <Separator testId={`separator-${id}`} spacing="medium" />
           {/if}
+
+          {#if hasSnsCriticalTopicsSeparator(category, index, filters, isCritical)}
+            <Separator testId={`separator-${id}`} spacing="medium" />
+          {/if}
+
+          {#if hasSnsProposalsWithoutTopicSeparator(category, index, filters)}
+            <Separator testId={`separator-${id}`} spacing="medium" />
+          {/if}
         {/each}
       </div>
     {:else}
