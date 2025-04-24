@@ -210,3 +210,28 @@ export const getLegacyFolloweesByTopics = ({
     []
   );
 };
+
+// Returns NS-functions-based followees of the neuron for the specified NS-function IDs.
+export const getLegacyFolloweesByNsFunctionIds = ({
+  neuron,
+  nsFunctions,
+  nsFunctionIds,
+}: {
+  neuron: SnsNeuron;
+  nsFunctions: SnsNervousSystemFunction[];
+  nsFunctionIds: bigint[];
+}): Array<SnsLegacyFollowings> => {
+  const nsFunctionMap = new Map<bigint, SnsNervousSystemFunction>(
+    nsFunctions
+      .filter((nsFunction) => nsFunctionIds.includes(nsFunction.id))
+      .map((nsFunction) => [nsFunction.id, nsFunction])
+  );
+
+  return neuron.followees.reduce<SnsLegacyFollowings[]>(
+    (acc, [id, { followees }]) => {
+      const nsFunction = nsFunctionMap.get(id);
+      return nonNullish(nsFunction) ? [...acc, { nsFunction, followees }] : acc;
+    },
+    []
+  );
+};
