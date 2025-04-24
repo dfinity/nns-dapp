@@ -11,7 +11,7 @@
   import { Checkbox, Modal, Spinner } from "@dfinity/gix-components";
   import { Topic } from "@dfinity/nns";
   import { isNullish } from "@dfinity/utils";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, type Snippet } from "svelte";
 
   type Props = {
     // `undefined` means the filters are not loaded yet.
