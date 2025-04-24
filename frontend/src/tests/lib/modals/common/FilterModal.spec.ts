@@ -2,6 +2,7 @@ import FilterModalTest from "$tests/lib/modals/common/FilterModalTest.svelte";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import { Topic } from "@dfinity/nns";
 
 describe("FilterModal", () => {
   const filters = [
@@ -109,5 +110,24 @@ describe("FilterModal", () => {
     await po.clickClearSelectionButton();
 
     expect(nnsClearSelection).toHaveBeenCalledTimes(1);
+  });
+
+  it("should render a Separator if category is topics and value is SnsAndCommunityFund", async () => {
+    const filters = [
+      {
+        id: "1",
+        name: "test",
+        value: Topic.SnsAndCommunityFund,
+        checked: false,
+      },
+    ];
+
+    const po = renderComponent({
+      filters,
+      category: "topics",
+    });
+    const separator = po.getFilterEntrySeparatorByIdPo(filters[0].id);
+
+    expect(await separator.isPresent()).toBe(true);
   });
 });

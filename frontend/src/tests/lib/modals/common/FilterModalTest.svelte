@@ -1,14 +1,19 @@
 <script lang="ts">
   import FilterModal from "$lib/modals/common/FilterModal.svelte";
-  import type { Filter, FiltersData } from "$lib/types/filters";
+  import type {
+    Filter,
+    FiltersData,
+    NnsProposalFilterCategory,
+  } from "$lib/types/filters";
 
   type Props = {
     title: string;
     visible: boolean;
     filters: Filter<FiltersData>[] | undefined;
+    category: undefined | NnsProposalFilterCategory;
   };
 
-  const { title, visible = true, filters }: Props = $props();
+  const { title, visible = true, filters, category }: Props = $props();
 </script>
 
 <FilterModal
@@ -18,5 +23,6 @@
   on:nnsSelectAll
   on:nnsClearSelection
   {filters}
-  {visible}><span slot="title">{title}</span></FilterModal
+  {visible}
+  {category}><span slot="title">{title}</span></FilterModal
 >
