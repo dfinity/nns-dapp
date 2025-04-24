@@ -1031,6 +1031,45 @@ describe("sns-neurons-services", () => {
     });
   });
 
+  describe("removeNsFunctionFollowees ", () => {
+    let setFolloweesSpy;
+
+    const followee1: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array([1, 2, 3]),
+    };
+    const followee2: SnsNeuronId = {
+      id: arrayOfNumberToUint8Array([1, 2, 4]),
+    };
+    const rootCanisterId = mockPrincipal;
+    const functionId = 0n;
+
+    beforeEach(() => {
+      setFolloweesSpy = vi
+        .spyOn(governanceApi, "setFollowees")
+        .mockImplementation(() => Promise.resolve());
+    });
+
+    it("should call sns api setFollowees with empty followee list to remove them all", async () => {
+      const neuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [[functionId, { followees: [followee1, followee2] }]],
+      };
+      await services.removeNsFunctionFollowees({
+        rootCanisterId,
+        neuron,
+        functionId,
+      });
+
+      expect(setFolloweesSpy).toBeCalledWith({
+        neuronId: fromNullable(neuron.id),
+        identity: mockIdentity,
+        rootCanisterId,
+        followees: [],
+        functionId,
+      });
+    });
+  });
+
   describe("stakeMaturity", () => {
     it("should call api.stakeMaturity", async () => {
       const neuronId = mockSnsNeuron.id[0] as SnsNeuronId;
