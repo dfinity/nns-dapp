@@ -49,10 +49,12 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     },
   });
   // legacy followees
+  const legacyNsFunctionName = "Test Motion";
   const legacyNsFunctionId = 10n;
   const legacyFolloweeNeuronId1: SnsNeuronId = {
     id: [1, 2, 3, 4],
   };
+  const legacyFolloweeNeuronId1Hex = "01020304";
   const legacyFolloweeNeuronId2: SnsNeuronId = {
     id: [5, 6, 7, 8],
   };
@@ -99,7 +101,11 @@ describe("FollowSnsNeuronsByTopicModal", () => {
               description: "",
               isCritical: true,
               nativeFunctions: [
-                { ...cachedNativeNFDtoMock, id: Number(legacyNsFunctionId) },
+                {
+                  ...cachedNativeNFDtoMock,
+                  id: Number(legacyNsFunctionId),
+                  name: legacyNsFunctionName,
+                },
               ],
             }),
             topicInfoDtoMock({
@@ -649,5 +655,78 @@ describe("FollowSnsNeuronsByTopicModal", () => {
         },
       ]);
     });
+  });
+
+  it("displays intermediate step when there is a legacy following for selected topics", async () => {
+    const po = renderComponent({
+      ...defaultProps,
+      neuron: {
+        ...neuron,
+        followees: [
+          [
+            // assigned to criticalTopic2
+            legacyNsFunctionId,
+            { followees: [legacyFolloweeNeuronId1, legacyFolloweeNeuronId2] },
+          ],
+        ],
+      },
+    });
+    const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
+    const legacyStepPo = po.getFollowSnsNeuronsByTopicStepLegacyPo();
+    const neuronStepPo = po.getFollowSnsNeuronsByTopicStepNeuronPo();
+
+    // Select a topic
+    expect(await topicsStepPo.isPresent()).toEqual(true);
+    expect(await legacyStepPo.isPresent()).toEqual(false);
+    expect(await neuronStepPo.isPresent()).toEqual(false);
+
+    await topicsStepPo.clickTopicItemByName(criticalTopicName2);
+    await topicsStepPo.clickNextButton();
+
+    expect(await topicsStepPo.isPresent()).toEqual(false);
+    expect(await legacyStepPo.isPresent()).toEqual(true);
+    expect(await neuronStepPo.isPresent()).toEqual(false);
+
+    expect(await legacyStepPo.getTopicNames()).toEqual([criticalTopicName2]);
+    const legacyFolloweePos =
+      await legacyStepPo.getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    expect(legacyFolloweePos.length).toEqual(2);
+
+    expect(
+      await legacyFolloweePos[0]
+        .getFollowSnsNeuronsByTopicFolloweePo()
+        .getNeuronHashPo()
+        .getFullText()
+    ).toEqual(legacyFolloweeNeuronId1Hex);
+    expect(
+      await legacyFolloweePos[1]
+        .getFollowSnsNeuronsByTopicFolloweePo()
+        .getNeuronHashPo()
+        .getFullText()
+    ).toEqual(legacyFolloweeNeuronId2Hex);
+    expect(await legacyFolloweePos[0].getNsFunctionName()).toEqual(
+      legacyNsFunctionName
+    );
+    expect(await legacyFolloweePos[1].getNsFunctionName()).toEqual(
+      legacyNsFunctionName
+    );
+
+    // Next to neuron step
+    await legacyStepPo.clickNextButton();
+    expect(await topicsStepPo.isPresent()).toEqual(false);
+    expect(await legacyStepPo.isPresent()).toEqual(false);
+    expect(await neuronStepPo.isPresent()).toEqual(true);
+
+    // Back to legacy step
+    await neuronStepPo.clickBackButton();
+    expect(await topicsStepPo.isPresent()).toEqual(false);
+    expect(await legacyStepPo.isPresent()).toEqual(true);
+    expect(await neuronStepPo.isPresent()).toEqual(false);
+
+    // Back to topics step
+    await legacyStepPo.clickBackButton();
+    expect(await topicsStepPo.isPresent()).toEqual(true);
+    expect(await legacyStepPo.isPresent()).toEqual(false);
+    expect(await neuronStepPo.isPresent()).toEqual(false);
   });
 });

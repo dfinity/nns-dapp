@@ -1,6 +1,7 @@
 <script lang="ts">
   import { querySnsNeuron } from "$lib/api/sns-governance.api";
   import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
+  import FollowSnsNeuronsByTopicStepLegacy from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepLegacy.svelte";
   import FollowSnsNeuronsByTopicStepNeuron from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepNeuron.svelte";
   import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
   import {
@@ -18,12 +19,15 @@
   } from "$lib/types/sns-aggregator";
   import {
     addSnsNeuronToFollowingsByTopics,
+    getLegacyFolloweesByTopics,
     getSnsTopicFollowings,
+    getSnsTopicInfoKey,
     removeSnsNeuronFromFollowingsByTopics,
   } from "$lib/utils/sns-topics.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import {
     WizardModal,
+    wizardStepIndex,
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
@@ -49,11 +53,16 @@
   const { rootCanisterId, neuron, closeModal, reloadNeuron }: Props = $props();
 
   const STEP_TOPICS = "topics";
+  const STEP_CONFIRM_OVERRIDE_LEGACY = "legacy";
   const STEP_NEURON = "neurons";
   const steps: WizardSteps = [
     {
       name: STEP_TOPICS,
       title: $i18n.follow_sns_topics.topics_title,
+    },
+    {
+      name: STEP_CONFIRM_OVERRIDE_LEGACY,
+      title: $i18n.follow_sns_topics.legacy_title,
     },
     {
       name: STEP_NEURON,
@@ -62,8 +71,30 @@
   ];
   let currentStep: WizardStep | undefined = $state();
   let modal: WizardModal | undefined = $state();
-  const openNextStep = () => modal?.next();
-  const openPrevStep = () => modal?.back();
+  const openNextStep = () => {
+    if (
+      currentStep?.name === STEP_TOPICS &&
+      selectedTopicsContainLegacyFollowee
+    ) {
+      modal?.set(
+        wizardStepIndex({ name: STEP_CONFIRM_OVERRIDE_LEGACY, steps })
+      );
+    } else {
+      modal?.set(wizardStepIndex({ name: STEP_NEURON, steps }));
+    }
+  };
+  const openPrevStep = () => {
+    if (
+      currentStep?.name === STEP_NEURON &&
+      selectedTopicsContainLegacyFollowee
+    ) {
+      modal?.set(
+        wizardStepIndex({ name: STEP_CONFIRM_OVERRIDE_LEGACY, steps })
+      );
+    } else {
+      modal?.set(wizardStepIndex({ name: STEP_TOPICS, steps }));
+    }
+  };
 
   const listTopics: ListTopicsResponseWithUnknown | undefined = $derived(
     $snsTopicsStore[rootCanisterId.toText()]
@@ -76,6 +107,15 @@
   );
   let selectedTopics = $state<SnsTopicKey[]>([]);
   let followeeNeuronIdHex = $state<string>("");
+
+  const selectedTopicsContainLegacyFollowee = $derived<boolean>(
+    getLegacyFolloweesByTopics({
+      neuron,
+      topicInfos: topicInfos.filter((topicInfo) =>
+        selectedTopics.includes(getSnsTopicInfoKey(topicInfo))
+      ),
+    }).length > 0
+  );
 
   // Validate the followee neuron id by fetching it.
   const validateNeuronId = async (neuronId: SnsNeuronId) => {
@@ -185,7 +225,6 @@
       initiator: "remove-sns-legacy-followee",
       labelKey: "follow_sns_topics.busy_removing_legacy",
     });
-
     const { success } = await removeFollowee({
       rootCanisterId,
       neuron,
@@ -198,7 +237,6 @@
         labelKey: "follow_sns_topics.success_removing_legacy",
       });
     }
-
     stopBusy("remove-sns-legacy-followee");
   };
 </script>
@@ -222,6 +260,15 @@
       {openNextStep}
       {removeFollowing}
       {removeLegacyFollowing}
+    />
+  {/if}
+  {#if currentStep?.name === STEP_CONFIRM_OVERRIDE_LEGACY}
+    <FollowSnsNeuronsByTopicStepLegacy
+      {topicInfos}
+      {neuron}
+      bind:selectedTopics
+      {openPrevStep}
+      {openNextStep}
     />
   {/if}
   {#if currentStep?.name === STEP_NEURON}
