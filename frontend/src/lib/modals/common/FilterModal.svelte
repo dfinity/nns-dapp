@@ -1,22 +1,16 @@
 <script lang="ts">
+  import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type {
     Filter,
+    FiltersData,
     NnsProposalFilterCategory,
-    SnsProposalTypeFilterId,
   } from "$lib/types/filters";
   import { Checkbox, Modal, Spinner } from "@dfinity/gix-components";
-  import { Topic, type ProposalStatus } from "@dfinity/nns";
-  import type { SnsProposalDecisionStatus } from "@dfinity/sns";
+  import { Topic } from "@dfinity/nns";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
 
-  type FiltersData =
-    | SnsProposalTypeFilterId
-    | Topic
-    | ProposalStatus
-    | SnsProposalDecisionStatus;
   // `undefined` means the filters are not loaded yet.
   export let filters: Filter<FiltersData>[] | undefined;
   export let visible = true;

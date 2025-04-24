@@ -1,4 +1,6 @@
 import type { SnsTopicKey } from "$lib/types/sns";
+import type { ProposalStatus, Topic } from "@dfinity/nns";
+import type { SnsProposalDecisionStatus } from "@dfinity/sns";
 
 // artificial proposal type id to filter by all generic SNS types
 export const ALL_SNS_GENERIC_PROPOSAL_TYPES_ID = "all_sns_generic_types";
@@ -22,3 +24,9 @@ export type Filter<T> = {
   id: string;
   checked: boolean;
 };
+
+export type FiltersData =
+  | SnsProposalTypeFilterId
+  | Topic
+  | ProposalStatus
+  | SnsProposalDecisionStatus;
