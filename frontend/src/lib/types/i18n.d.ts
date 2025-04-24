@@ -442,6 +442,7 @@ interface I18nFollow_sns_topics {
   topic_definitions_title: string;
   topics_title: string;
   legacy_title: string;
+  deactivate_catch_all_title: string;
   topics_description: string;
   topics_critical_label: string;
   topics_critical_tooltip: string;
@@ -452,6 +453,7 @@ interface I18nFollow_sns_topics {
   legacy_description: string;
   legacy_topics_header: string;
   legacy_followees_header: string;
+  catch_all_description: string;
   neuron_title: string;
   neuron_label: string;
   neuron_description: string;
