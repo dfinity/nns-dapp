@@ -78,13 +78,13 @@ describe("ProposalSystemInfoSection", () => {
     } = mapProposalInfo({
       proposalData: openProposal,
       nsFunctions: [nervousFunction],
-      topics: [testTopicInfo],
+      topics: undefined,
     });
     const props = {
       proposalDataMap: mapProposalInfo({
         proposalData: openProposal,
         nsFunctions: [nervousFunction],
-        topics: [testTopicInfo],
+        topics: undefined,
       }),
     };
 

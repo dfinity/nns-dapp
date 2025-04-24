@@ -2,7 +2,11 @@ import {
   snsFiltersStore,
   snsSelectedFiltersStore,
 } from "$lib/stores/sns-filters.store";
-import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+import type {
+  Filter,
+  SnsProposalTopicFilterId,
+  SnsProposalTypeFilterId,
+} from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { Principal } from "@dfinity/principal";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
@@ -44,9 +48,32 @@ describe("sns-filters store", () => {
       value: "2",
     },
   ];
+
   const unCheckedTypes: Filter<SnsProposalTypeFilterId>[] = types.map(
     (type) => ({
       ...type,
+      checked: false,
+    })
+  );
+
+  const topics: Filter<SnsProposalTopicFilterId>[] = [
+    {
+      id: "1",
+      name: "ApplicationBusinessLogic",
+      checked: false,
+      value: "ApplicationBusinessLogic",
+    },
+    {
+      id: "2",
+      name: "UnknownTopic",
+      checked: false,
+      value: "UnknownTopic",
+    },
+  ];
+
+  const unCheckedTopics: Filter<SnsProposalTopicFilterId>[] = topics.map(
+    (topic) => ({
+      ...topic,
       checked: false,
     })
   );
@@ -199,6 +226,68 @@ describe("sns-filters store", () => {
         projectStore6.types.filter(({ checked }) => checked).length
       ).toEqual(1);
     });
+
+    it("should setTopics in different projects", () => {
+      snsFiltersStore.setTopics({ rootCanisterId, topics: [...topics] });
+
+      const projectStore = get(snsFiltersStore)[rootCanisterId.toText()];
+      expect(projectStore.topics).toEqual(topics);
+
+      snsFiltersStore.setTopics({
+        rootCanisterId: rootCanisterId2,
+        topics: [...topics],
+      });
+      const projectStore2 = get(snsFiltersStore)[rootCanisterId2.toText()];
+      expect(projectStore2.topics).toEqual(topics);
+    });
+
+    it("setCheckTopics should check filters in different projects", () => {
+      snsFiltersStore.setTopics({
+        rootCanisterId,
+        topics: unCheckedTopics,
+      });
+      let projectStore1 = get(snsFiltersStore)[rootCanisterId.toText()];
+      expect(projectStore1.topics.filter(({ checked }) => checked).length).toBe(
+        0
+      );
+
+      const topicValues = topics.map(({ value }) => value);
+      snsFiltersStore.setCheckTopics({
+        rootCanisterId,
+        checkedTopics: topicValues,
+      });
+
+      projectStore1 = get(snsFiltersStore)[rootCanisterId.toText()];
+      expect(projectStore1.topics.filter(({ checked }) => checked).length).toBe(
+        topicValues.length
+      );
+
+      snsFiltersStore.setTopics({
+        rootCanisterId: rootCanisterId2,
+        topics: unCheckedTopics,
+      });
+      let projectStore2 = get(snsFiltersStore)[rootCanisterId2.toText()];
+      expect(
+        projectStore2.topics.filter(({ checked }) => checked).length
+      ).toEqual(0);
+
+      snsFiltersStore.setCheckTopics({
+        rootCanisterId: rootCanisterId2,
+        checkedTopics: [topicValues[0]],
+      });
+      projectStore2 = get(snsFiltersStore)[rootCanisterId2.toText()];
+      expect(
+        projectStore2.topics.filter(({ checked }) => checked).length
+      ).toEqual(1);
+      expect(projectStore2.topics.filter(({ checked }) => checked)).toEqual([
+        {
+          checked: true,
+          id: "1",
+          name: "ApplicationBusinessLogic",
+          value: "ApplicationBusinessLogic",
+        },
+      ]);
+    });
   });
 
   describe("snsSelectedFiltersStore", () => {
@@ -223,6 +312,34 @@ describe("sns-filters store", () => {
       expect(
         get(snsSelectedFiltersStore)[rootCanisterId.toText()]?.decisionStatus
       ).toHaveLength(1);
+    });
+
+    it("should return the selected topic filters", () => {
+      snsFiltersStore.setTopics({
+        rootCanisterId,
+        topics: unCheckedTopics,
+      });
+
+      let topicsFilter = get(snsSelectedFiltersStore)[rootCanisterId.toText()]
+        ?.topics;
+      expect(topicsFilter).toHaveLength(0);
+
+      snsFiltersStore.setCheckTopics({
+        rootCanisterId,
+        checkedTopics: [topics[0].value],
+      });
+
+      topicsFilter = get(snsSelectedFiltersStore)[rootCanisterId.toText()]
+        ?.topics;
+      expect(topicsFilter).toHaveLength(1);
+      expect(topicsFilter).toEqual([
+        {
+          checked: true,
+          id: "1",
+          name: "ApplicationBusinessLogic",
+          value: "ApplicationBusinessLogic",
+        },
+      ]);
     });
   });
 });

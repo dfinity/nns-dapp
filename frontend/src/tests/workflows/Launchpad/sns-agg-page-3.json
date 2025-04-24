@@ -1128,7 +1128,8 @@
         "oeee4-qaaaa-aaaak-qaaeq-cai",
         "hhce5-bqaaa-aaaak-qtt3q-cai",
         "lzhom-nqaaa-aaaap-ahmpq-cai",
-        "6fbif-qqaaa-aaaam-aeifq-cai"
+        "6fbif-qqaaa-aaaam-aeifq-cai",
+        "r5ola-uyaaa-aaaag-at3za-cai"
       ],
       "archives": ["j6iuh-qyaaa-aaaaq-aadjq-cai"]
     },
@@ -1318,6 +1319,20 @@
               "target_method_name": "transfer_to_principal"
             }
           }
+        },
+        {
+          "id": 1004,
+          "name": "Transfer MOTOKOINS",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "r5ola-uyaaa-aaaag-at3za-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -1336,11 +1351,11 @@
       "max_neuron_age_for_age_bonus": 31557600,
       "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 2592000,
-      "reject_cost_e8s": 250000000000,
+      "reject_cost_e8s": 25000000000,
       "max_proposals_to_keep_per_action": 100,
       "wait_for_quiet_deadline_increase_seconds": 86400,
       "max_number_of_neurons": 200000,
-      "transaction_fee_e8s": 100000000,
+      "transaction_fee_e8s": 10000000,
       "max_number_of_proposals_with_ballots": 700,
       "max_age_bonus_percentage": 25,
       "neuron_grantable_permissions": {
@@ -1464,7 +1479,7 @@
       [
         "icrc1:fee",
         {
-          "Nat": [100000000]
+          "Nat": [10000000]
         }
       ],
       [
@@ -1474,8 +1489,8 @@
         }
       ]
     ],
-    "icrc1_fee": [100000000],
-    "icrc1_total_supply": 5445580218373631,
+    "icrc1_fee": [10000000],
+    "icrc1_total_supply": 5447966126871127,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1754,6 +1769,20 @@
                   "target_method_name": "transfer_to_principal"
                 }
               }
+            },
+            {
+              "id": 1004,
+              "name": "Transfer MOTOKOINS",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "r5ola-uyaaa-aaaag-at3za-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
             }
           ]
         },
@@ -1953,6 +1982,22 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 15,
+          "name": "Advance SNS target version",
+          "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -1963,13 +2008,13 @@
       "max_dissolve_delay_seconds": 63115200,
       "max_dissolve_delay_bonus_percentage": 100,
       "max_followees_per_function": 15,
-      "automatically_advance_target_version": null,
+      "automatically_advance_target_version": true,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
       "neuron_minimum_stake_e8s": 1000000,
       "max_neuron_age_for_age_bonus": 63115200,
-      "initial_voting_period_seconds": 604800,
+      "initial_voting_period_seconds": 172800,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 31557600,
       "reject_cost_e8s": 2000000000,
       "max_proposals_to_keep_per_action": 100,
@@ -2091,7 +2136,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 99999754120000,
+    "icrc1_total_supply": 100000035246835,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2161,7 +2206,193 @@
       "lifecycle": 3,
       "decentralization_swap_termination_timestamp_seconds": 1716649200
     },
-    "topics": null
+    "topics": {
+      "uncategorized_functions": [],
+      "topics": [
+        {
+          "native_functions": [
+            {
+              "id": 2,
+              "name": "Manage nervous system parameters",
+              "description": "Proposal to change the core parameters of SNS governance.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 13,
+              "name": "Manage ledger parameters",
+              "description": "Proposal to change some parameters in the ledger canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 8,
+              "name": "Manage SNS metadata",
+              "description": "Proposal to change the metadata associated with an SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DaoCommunitySettings",
+          "is_critical": false,
+          "name": "DAO community settings",
+          "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 7,
+              "name": "Upgrade SNS to next version",
+              "description": "Proposal to upgrade the WASM of a core SNS canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 15,
+              "name": "Advance SNS target version",
+              "description": "Proposal to advance the target version of this SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "SnsFrameworkManagement",
+          "is_critical": false,
+          "name": "SNS framework management",
+          "description": "Proposals to upgrade and manage the SNS DAO framework.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 3,
+              "name": "Upgrade SNS controlled canister",
+              "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 10,
+              "name": "Register dapp canisters",
+              "description": "Proposal to register a dapp canister with the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 14,
+              "name": "Manage dapp canister settings",
+              "description": "Proposal to change canister settings for some dapp canisters.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "DappCanisterManagement",
+          "is_critical": false,
+          "name": "Dapp canister management",
+          "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [],
+          "topic": "ApplicationBusinessLogic",
+          "is_critical": false,
+          "name": "Application Business Logic",
+          "description": "Proposals that are custom to what the governed dapp requires.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 1,
+              "name": "Motion",
+              "description": "Side-effect-less proposals to set general governance direction.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "Governance",
+          "is_critical": false,
+          "name": "Governance",
+          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 9,
+              "name": "Transfer SNS treasury funds",
+              "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 12,
+              "name": "Mint SNS tokens",
+              "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "TreasuryAssetManagement",
+          "is_critical": true,
+          "name": "Treasury & asset management",
+          "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [
+            {
+              "id": 11,
+              "name": "Deregister Dapp Canisters",
+              "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 4,
+              "name": "Add nervous system function",
+              "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 5,
+              "name": "Remove nervous system function",
+              "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            }
+          ],
+          "topic": "CriticalDappOperations",
+          "is_critical": true,
+          "name": "Critical Dapp Operations",
+          "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
+          "custom_functions": []
+        }
+      ]
+    }
   },
   {
     "index": 33,
@@ -2502,7 +2733,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041648275949226003,
+    "icrc1_total_supply": 1041645216119945120,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3357,7 +3588,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11667358422681279,
+    "icrc1_total_supply": 11667726499463553,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -5105,7 +5336,7 @@
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2320763687875786395,
+    "icrc1_total_supply": 2321072007176228799,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5906,7 +6137,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999783350000,
+    "icrc1_total_supply": 1999999782010000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -9483,7 +9714,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100168369859456544,
+    "icrc1_total_supply": 100172193970442907,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

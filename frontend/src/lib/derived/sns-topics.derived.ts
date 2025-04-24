@@ -26,6 +26,7 @@ export const snsTopicsStore: Readable<SnsParametersStore> =
       : convertDtoToListTopicsResponse(sns.topics)
   );
 
+// TODO(sns-topics): Consider this to be a utility function.
 export const createSnsTopicsProjectStore = (
   rootCanisterId: Principal | null | undefined
 ): Readable<Array<TopicInfoWithUnknown> | undefined> =>
