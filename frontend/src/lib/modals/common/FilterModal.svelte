@@ -38,39 +38,37 @@
   const clearSelection = () => dispatch("nnsClearSelection");
 
   /**
-   * Determines if a separator should be shown after critical topics.
-   * Returns true when:
-   * - We're in the "topics" category
-   * - Current filter is critical
-   * - Not the last filter in the list
-   * - Next filter is not critical
-   * This creates a visual separation between critical and non-critical topics.
+   * Determines whether to display a separator after a filter item in a list.
+   *
+   * @param category - The current filter category
+   * @param filters - The array of all filters
+   * @param index - The index of the current filter being evaluated
+   * @returns True if a separator should be displayed after this filter, false otherwise
    */
-  const hasSnsCriticalTopicsSeparator = (
+  const displaySeparator = (
     category: Props["category"],
-    index: number,
     filters: Filter<FiltersData>[],
-    isCritical: boolean = false
-  ) =>
-    category === "topics" &&
-    isCritical &&
-    index < filters.length - 1 &&
-    !filters[index + 1].isCritical;
+    index: number
+  ) => {
+    // Only show separators if "topics" category
+    if (category !== "topics") return false;
 
-  /**
-   * Determines if a separator should be shown before the "All SNS proposals without topic" filter.
-   * Returns true when:
-   * - We're in the "topics" category
-   * - The next filter is the special "All SNS proposals without topic" filter
-   * This visually separates the special filter from regular topic filters.
-   */
-  const hasSnsProposalsWithoutTopicSeparator = (
-    category: Props["category"],
-    index: number,
-    filters: Filter<FiltersData>[]
-  ) =>
-    category === "topics" &&
-    filters?.[index + 1]?.value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC;
+    const currentEntry = filters[index];
+
+    // Always show separator after SNS and Community Fund topic
+    if (currentEntry.value === Topic.SnsAndCommunityFund) return true;
+
+    const nextEntry = filters[index + 1];
+    if (isNullish(nextEntry)) return false;
+
+    // Show separator between critical and non-critical topics
+    if (currentEntry.isCritical && !nextEntry.isCritical) return true;
+
+    // Show separator before the "All SNS proposals without topic" special filter
+    if (nextEntry.value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC) return true;
+
+    return false;
+  };
 </script>
 
 {#if !loading}
@@ -97,22 +95,14 @@
 
     {#if filters}
       <div class="filters">
-        {#each filters as { id, name, checked, value, isCritical }, index (id)}
+        {#each filters as { id, name, checked }, index (id)}
           <Checkbox
             testId={`filter-modal-option-${id}`}
             inputId={id}
             {checked}
             on:nnsChange={() => onChange(id)}>{name}</Checkbox
           >
-          {#if category === "topics" && value === Topic.SnsAndCommunityFund}
-            <Separator testId={`separator-${id}`} spacing="medium" />
-          {/if}
-
-          {#if hasSnsCriticalTopicsSeparator(category, index, filters, isCritical)}
-            <Separator testId={`separator-${id}`} spacing="medium" />
-          {/if}
-
-          {#if hasSnsProposalsWithoutTopicSeparator(category, index, filters)}
+          {#if displaySeparator(category, filters, index)}
             <Separator testId={`separator-${id}`} spacing="medium" />
           {/if}
         {/each}
