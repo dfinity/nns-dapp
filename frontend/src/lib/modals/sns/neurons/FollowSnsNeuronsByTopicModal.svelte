@@ -26,7 +26,7 @@
   } from "$lib/types/sns-aggregator";
   import {
     addSnsNeuronToFollowingsByTopics,
-    getSnsLegacyFollowingsByNsFunctionId,
+    getCatchAllSnsLegacyFollowings,
     getLegacyFolloweesByTopics,
     getSnsTopicFollowings,
     getSnsTopicInfoKey,
@@ -130,11 +130,9 @@
     get(createSnsNsFunctionsProjectStore(rootCanisterId)) ?? []
   );
   const catchAllFollowings = $derived<SnsLegacyFollowings | undefined>(
-    getSnsLegacyFollowingsByNsFunctionId({
+    getCatchAllSnsLegacyFollowings({
       neuron,
       nsFunctions,
-      // Catch-all ID is always 0n
-      nsFunctionId: 0n,
     })
   );
 
