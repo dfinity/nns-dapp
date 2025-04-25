@@ -6,11 +6,13 @@
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
   import type { SnsNeuronId } from "@dfinity/sns";
-  import { nonNullish } from "@dfinity/utils";
+  import { fromNullable, nonNullish } from "@dfinity/utils";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 
   export let proposalDataMap: SnsProposalDataMap;
 
   let type: string | undefined;
+  let topicInfo: TopicInfoWithUnknown | undefined;
   let typeDescription: string | undefined;
   let statusString: string;
   let statusDescription: string | undefined;
@@ -24,6 +26,7 @@
 
   $: ({
     type,
+    topicInfo,
     typeDescription,
     statusString,
     statusDescription,
@@ -35,6 +38,11 @@
     failed_timestamp_seconds,
     proposer,
   } = proposalDataMap);
+
+  let topicName: string | undefined;
+  $: topicName = fromNullable(topicInfo?.name ?? []);
+  let topicDescription: string | undefined;
+  $: topicDescription = fromNullable(topicInfo?.description ?? []);
 </script>
 
 <TestIdWrapper testId="proposal-system-info-details-component">
@@ -49,6 +57,15 @@
         testId="proposal-system-info-type"
         value={type}
         description={typeDescription}
+      />
+    {/if}
+
+    {#if nonNullish(topicName) && nonNullish(topicDescription)}
+      <ProposalSystemInfoEntry
+        label={$i18n.proposal_detail.topic_prefix}
+        testId="proposal-system-info-topic"
+        value={topicName}
+        description={topicDescription}
       />
     {/if}
 
