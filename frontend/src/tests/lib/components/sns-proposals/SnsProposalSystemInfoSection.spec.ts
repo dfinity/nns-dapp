@@ -13,7 +13,11 @@ import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { SnsProposalSystemInfoSectionPo } from "$tests/page-objects/SnsProposalSystemInfoSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsProposalDecisionStatus, type SnsProposalData } from "@dfinity/sns";
+import {
+  SnsProposalDecisionStatus,
+  type SnsProposalData,
+  type SnsTopic,
+} from "@dfinity/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -49,23 +53,20 @@ describe("ProposalSystemInfoSection", () => {
   });
 
   describe("open proposal", () => {
+    const testTopic: SnsTopic = { Governance: null };
     const openProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         proposalId: 2n,
       }),
       action: testNervousFunctionId,
-      topic: [{ Governance: null }],
+      topic: [testTopic],
     } as SnsProposalData;
     const topicName = "Topic name";
     const topicDescription = "Topic description";
     const testTopicInfo: TopicInfoWithUnknown = {
       native_functions: [[nervousFunction]],
-      topic: [
-        {
-          Governance: null,
-        },
-      ],
+      topic: [testTopic],
       is_critical: [false],
       name: [topicName],
       description: [topicDescription],
@@ -116,7 +117,13 @@ describe("ProposalSystemInfoSection", () => {
     });
 
     it("should render topic data", async () => {
-      const po = await renderComponent(props);
+      const po = await renderComponent({
+        proposalDataMap: mapProposalInfo({
+          proposalData: { ...openProposal, topic: [testTopic] },
+          nsFunctions: [nervousFunction],
+          topics: [testTopicInfo],
+        }),
+      });
 
       expect(await po.getTopicKeyValuePairPo().isPresent()).toBe(true);
       expect((await po.getTopicKeyValuePairPo().getValueText()).trim()).toBe(
@@ -280,7 +287,7 @@ describe("ProposalSystemInfoSection", () => {
       );
     });
 
-    it("should render fialed timestamp", async () => {
+    it("should render failed timestamp", async () => {
       const po = await renderComponent(props);
 
       expect(await po.getFailedText()).toBe(
