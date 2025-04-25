@@ -8,19 +8,20 @@
   import { IconErrorOutline } from "@dfinity/gix-components";
 
   type Props = {
-    catchAllFollowees: SnsLegacyFollowings[];
+    catchAllLegacyFollowings: SnsLegacyFollowings;
     confirm: () => void;
     cancel: () => void;
   };
-  let { catchAllFollowees, confirm, cancel }: Props = $props();
-
-  const nsFunction = $derived(catchAllFollowees[0]?.nsFunction);
-  const followees = $derived(
-    catchAllFollowees.flatMap((followee) => followee.followees)
-  );
+  const {
+    catchAllLegacyFollowings: catchAllFollowing,
+    confirm,
+    cancel,
+  }: Props = $props();
 </script>
 
-<TestIdWrapper testId="follow-sns-neurons-by-topic-step-legacy-component">
+<TestIdWrapper
+  testId="follow-sns-neurons-by-topic-step-deactivate-catch-all-component"
+>
   <div class="header">
     <div class="icon-wrapper">
       <IconErrorOutline size="75px" />
@@ -33,9 +34,12 @@
   <h5>{$i18n.follow_sns_topics.legacy_followees_header}</h5>
 
   <ul class="list legacy-followings">
-    {#each followees as neuronId (subaccountToHexString(neuronId.id))}
+    {#each catchAllFollowing.followees as neuronId (subaccountToHexString(neuronId.id))}
       <li>
-        <FollowSnsNeuronsByTopicLegacyFollowee {nsFunction} {neuronId} />
+        <FollowSnsNeuronsByTopicLegacyFollowee
+          nsFunction={catchAllFollowing.nsFunction}
+          {neuronId}
+        />
       </li>
     {/each}
   </ul>

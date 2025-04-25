@@ -325,7 +325,7 @@
   {/if}
   {#if currentStep?.name === STEP_CONFIRM_DEACTIVATING_CATCH_ALL}
     <FollowSnsNeuronsByTopicStepDeactivateCatchAll
-      {catchAllFollowees}
+      catchAllLegacyFollowings={catchAllFollowees[0]}
       cancel={openPrevStep}
       confirm={confirmDeactivateCatchAllFollowee}
     />
