@@ -7,7 +7,7 @@ import {
 } from "$lib/services/public/sns-proposals.services";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import { unsupportedFilterByTopicCanistersStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
+import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -238,7 +238,7 @@ describe("sns-proposals services", () => {
           });
 
           expect(
-            unsupportedFilterByTopicCanistersStore.has(mockPrincipal.toText())
+            unsupportedFilterByTopicSnsesStore.has(mockPrincipal.toText())
           ).toBe(true);
         });
 
@@ -256,13 +256,13 @@ describe("sns-proposals services", () => {
           });
 
           expect(
-            unsupportedFilterByTopicCanistersStore.has(mockPrincipal.toText())
+            unsupportedFilterByTopicSnsesStore.has(mockPrincipal.toText())
           ).toBe(true);
         });
 
         it("should remove canister from unsupported list when include_topic_filtering is true", async () => {
           // First add the canister to the unsupported list
-          unsupportedFilterByTopicCanistersStore.add(mockPrincipal.toText());
+          unsupportedFilterByTopicSnsesStore.add(mockPrincipal.toText());
 
           // Set up the API response with true include_topic_filtering
           vi.spyOn(api, "queryProposals").mockResolvedValue({
@@ -277,7 +277,7 @@ describe("sns-proposals services", () => {
           });
 
           expect(
-            unsupportedFilterByTopicCanistersStore.has(mockPrincipal.toText())
+            unsupportedFilterByTopicSnsesStore.has(mockPrincipal.toText())
           ).toBe(false);
         });
       });

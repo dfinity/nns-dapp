@@ -14,7 +14,7 @@ import { queryAndUpdate } from "$lib/services/utils.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import { unsupportedFilterByTopicCanistersStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
+import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
   getSnsNeuronState,
@@ -176,11 +176,11 @@ export const loadSnsProposals = async ({
       const includeTopicFiltering = fromNullable(include_topic_filtering);
 
       if (isNullish(includeTopicFiltering)) {
-        unsupportedFilterByTopicCanistersStore.add(rootCanisterId.toText());
+        unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
       } else if (includeTopicFiltering) {
-        unsupportedFilterByTopicCanistersStore.delete(rootCanisterId.toText());
+        unsupportedFilterByTopicSnsesStore.delete(rootCanisterId.toText());
       } else {
-        unsupportedFilterByTopicCanistersStore.add(rootCanisterId.toText());
+        unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
       }
     },
     onError: (err) => {
