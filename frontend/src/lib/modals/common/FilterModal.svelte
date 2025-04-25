@@ -11,37 +11,34 @@
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
-  // `undefined` means the filters are not loaded yet.
-  export let filters: Filter<FiltersData>[] | undefined;
-  export let visible = true;
-  export let category: undefined | NnsProposalFilterCategory = undefined;
+  type Props = {
+    // `undefined` means the filters are not loaded yet.
+    filters: Filter<FiltersData>[] | undefined;
+    visible?: boolean;
+    category?: NnsProposalFilterCategory | undefined;
+  };
 
-  let loading: boolean;
-  $: loading = isNullish(filters);
+  const { filters, visible = true, category }: Props = $props();
+
+  const loading = $derived(isNullish(filters));
 
   const dispatch = createEventDispatcher();
-  const close = () => dispatch("nnsClose");
 
   const onChange = (id: string) => {
     const filter = filters?.find((f) => f.id === id);
     dispatch("nnsChange", { filter });
   };
-
-  const filter = () => {
-    dispatch("nnsConfirm");
-  };
-
-  const selectAll = () => {
-    dispatch("nnsSelectAll");
-  };
-
-  const clearSelection = () => {
-    dispatch("nnsClearSelection");
-  };
+  const close = () => dispatch("nnsClose");
+  const filter = () => dispatch("nnsConfirm");
+  const selectAll = () => dispatch("nnsSelectAll");
+  const clearSelection = () => dispatch("nnsClearSelection");
 </script>
 
 {#if !loading}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+    <!-- TODO: To fix once Modal slots are migrated in gix -->
+    <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+    <!-- svelte-ignore slot_element_deprecated -->
     <slot slot="title" name="title" />
 
     <div slot="sub-title" class="toggle-all-wrapper">
@@ -49,13 +46,13 @@
         class="text"
         data-tid="filter-modal-select-all"
         aria-label={$i18n.core.filter_select_all}
-        on:click={selectAll}>{$i18n.voting.check_all}</button
+        onclick={selectAll}>{$i18n.voting.check_all}</button
       >
       <button
         class="text"
         data-tid="filter-modal-clear"
         aria-label={$i18n.core.filter_clear_all}
-        on:click={clearSelection}>{$i18n.voting.uncheck_all}</button
+        onclick={clearSelection}>{$i18n.voting.uncheck_all}</button
       >
     </div>
 
@@ -83,7 +80,7 @@
         type="button"
         aria-label={$i18n.core.filter_select_all}
         data-tid="close"
-        on:click={close}
+        onclick={close}
       >
         {$i18n.core.cancel}
       </button>
@@ -91,7 +88,7 @@
         class="primary"
         type="button"
         aria-label={$i18n.core.filter_clear_all}
-        on:click={filter}
+        onclick={filter}
         data-tid="apply-filters"
       >
         {$i18n.core.filter}
@@ -100,7 +97,11 @@
   </Modal>
 {:else}
   <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+    <!-- TODO: To fix once Modal slots are migrated in gix -->
+    <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+    <!-- svelte-ignore slot_element_deprecated -->
     <slot slot="title" name="title" />
+
     <div class="spinner-wrapper">
       <Spinner />
     </div>
