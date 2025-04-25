@@ -15,7 +15,12 @@ import type {
   SnsNeuronId,
   SnsTopic,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 
 export const snsTopicToTopicKey = (
   topic: SnsTopic | UnknownTopic
@@ -209,4 +214,29 @@ export const getLegacyFolloweesByTopics = ({
     },
     []
   );
+};
+
+export const getSnsLegacyFollowingsByNsFunctionId = ({
+  neuron,
+  nsFunctions,
+  nsFunctionId,
+}: {
+  neuron: SnsNeuron;
+  nsFunctions: SnsNervousSystemFunction[];
+  nsFunctionId: bigint;
+}): SnsLegacyFollowings | undefined => {
+  const nsFunction = nsFunctions.find(
+    (nsFunction) => nsFunction.id === nsFunctionId
+  );
+  const followees = neuron.followees.find(([id]) => id === nsFunctionId)?.[1]
+    ?.followees;
+
+  if (isNullish(nsFunction) || isNullish(followees)) {
+    return undefined;
+  }
+
+  return {
+    nsFunction,
+    followees,
+  };
 };
