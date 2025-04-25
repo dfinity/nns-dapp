@@ -20,14 +20,14 @@
     SnsNeuron,
     SnsNeuronId,
   } from "@dfinity/sns";
-  import { fromDefinedNullable } from "@dfinity/utils";
+  import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
   type Props = {
     neuron: SnsNeuron;
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
     followings: SnsTopicFollowing[];
-    catchAllFollowees: SnsLegacyFollowings[];
+    catchAllFollowings: SnsLegacyFollowings | undefined;
     closeModal: () => void;
     openNextStep: () => void;
     removeFollowing: (args: {
@@ -45,7 +45,7 @@
     topicInfos,
     selectedTopics = $bindable(),
     followings,
-    catchAllFollowees,
+    catchAllFollowings,
     closeModal,
     openNextStep,
     removeFollowing,
@@ -121,7 +121,7 @@
           >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
         ></h5
       >
-      {#if catchAllFollowees.length > 0}
+      {#if nonNullish(catchAllFollowings)}
         <button
           data-tid="deactivate-catch-all-button"
           class="ghost"

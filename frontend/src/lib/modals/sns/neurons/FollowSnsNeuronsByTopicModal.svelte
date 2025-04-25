@@ -15,14 +15,18 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-  import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+  import type {
+    SnsLegacyFollowings,
+    SnsTopicFollowing,
+    SnsTopicKey,
+  } from "$lib/types/sns";
   import type {
     ListTopicsResponseWithUnknown,
     TopicInfoWithUnknown,
   } from "$lib/types/sns-aggregator";
   import {
     addSnsNeuronToFollowingsByTopics,
-    getLegacyFolloweesByNsFunctionIds,
+    getSnsLegacyFollowingsByNsFunctionId,
     getLegacyFolloweesByTopics,
     getSnsTopicFollowings,
     getSnsTopicInfoKey,
@@ -125,12 +129,12 @@
   const nsFunctions: SnsNervousSystemFunction[] = $derived(
     get(createSnsNsFunctionsProjectStore(rootCanisterId)) ?? []
   );
-  const catchAllFollowees = $derived(
-    getLegacyFolloweesByNsFunctionIds({
+  const catchAllFollowings = $derived<SnsLegacyFollowings | undefined>(
+    getSnsLegacyFollowingsByNsFunctionId({
       neuron,
       nsFunctions,
       // Catch-all ID is always 0n
-      nsFunctionIds: [0n],
+      nsFunctionId: 0n,
     })
   );
 
@@ -306,7 +310,7 @@
       {followings}
       {neuron}
       bind:selectedTopics
-      {catchAllFollowees}
+      {catchAllFollowings}
       {closeModal}
       {openNextStep}
       {openDeactivateCatchAllStep}
@@ -323,9 +327,9 @@
       {openNextStep}
     />
   {/if}
-  {#if currentStep?.name === STEP_CONFIRM_DEACTIVATING_CATCH_ALL}
+  {#if currentStep?.name === STEP_CONFIRM_DEACTIVATING_CATCH_ALL && nonNullish(catchAllFollowings)}
     <FollowSnsNeuronsByTopicStepDeactivateCatchAll
-      catchAllLegacyFollowings={catchAllFollowees[0]}
+      {catchAllFollowings}
       cancel={openPrevStep}
       confirm={confirmDeactivateCatchAllFollowee}
     />

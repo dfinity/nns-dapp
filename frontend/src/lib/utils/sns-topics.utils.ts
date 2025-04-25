@@ -15,7 +15,12 @@ import type {
   SnsNeuronId,
   SnsTopic,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 
 export const snsTopicToTopicKey = (
   topic: SnsTopic | UnknownTopic
@@ -211,27 +216,27 @@ export const getLegacyFolloweesByTopics = ({
   );
 };
 
-// Returns NS-functions-based followees of the neuron for the specified NS-function IDs.
-export const getLegacyFolloweesByNsFunctionIds = ({
+export const getSnsLegacyFollowingsByNsFunctionId = ({
   neuron,
   nsFunctions,
-  nsFunctionIds,
+  nsFunctionId,
 }: {
   neuron: SnsNeuron;
   nsFunctions: SnsNervousSystemFunction[];
-  nsFunctionIds: bigint[];
-}): Array<SnsLegacyFollowings> => {
-  const nsFunctionMap = new Map<bigint, SnsNervousSystemFunction>(
-    nsFunctions
-      .filter((nsFunction) => nsFunctionIds.includes(nsFunction.id))
-      .map((nsFunction) => [nsFunction.id, nsFunction])
+  nsFunctionId: bigint;
+}): SnsLegacyFollowings | undefined => {
+  const nsFunction = nsFunctions.find(
+    (nsFunction) => nsFunction.id === nsFunctionId
   );
+  const followees = neuron.followees.find(([id]) => id === nsFunctionId)?.[1]
+    ?.followees;
 
-  return neuron.followees.reduce<SnsLegacyFollowings[]>(
-    (acc, [id, { followees }]) => {
-      const nsFunction = nsFunctionMap.get(id);
-      return nonNullish(nsFunction) ? [...acc, { nsFunction, followees }] : acc;
-    },
-    []
-  );
+  if (isNullish(nsFunction) || isNullish(followees)) {
+    return undefined;
+  }
+
+  return {
+    nsFunction,
+    followees,
+  };
 };
