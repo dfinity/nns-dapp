@@ -17,9 +17,6 @@
     confirm,
     cancel,
   }: Props = $props();
-
-  let a = $state(0);
-  a++;
 </script>
 
 <TestIdWrapper
