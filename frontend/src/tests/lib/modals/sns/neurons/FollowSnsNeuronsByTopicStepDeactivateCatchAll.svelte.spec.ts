@@ -1,6 +1,5 @@
-import FollowSnsNeuronsByTopicStepDeactivateCatchAll, {
-  type Props,
-} from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepDeactivateCatchAll.svelte";
+import FollowSnsNeuronsByTopicStepDeactivateCatchAll from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepDeactivateCatchAll.svelte";
+import type { SnsLegacyFollowings } from "$lib/types/sns";
 import { nativeNervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { FollowSnsNeuronsByTopicStepDeactivateCatchAllPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepDeactivateCatchAll.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -20,7 +19,11 @@ describe("FollowSnsNeuronsByTopicStepDeactivateCatchAll", () => {
     id: Uint8Array.from([4, 5, 6]),
   };
 
-  const renderComponent = (props: Props) => {
+  const renderComponent = (props: {
+    catchAllLegacyFollowings: SnsLegacyFollowings;
+    confirm: () => void;
+    cancel: () => void;
+  }) => {
     const { container } = render(
       FollowSnsNeuronsByTopicStepDeactivateCatchAll,
       {
