@@ -216,27 +216,25 @@ export const getLegacyFolloweesByTopics = ({
   );
 };
 
-export const getSnsLegacyFollowingsByNsFunctionId = ({
+// Returns the catch-all SNS followees of the neuron.
+// Because the catch-all is not part of any topic, we need to get it from nsFunctions.
+export const getCatchAllSnsLegacyFollowings = ({
   neuron,
   nsFunctions,
-  nsFunctionId,
 }: {
   neuron: SnsNeuron;
   nsFunctions: SnsNervousSystemFunction[];
-  nsFunctionId: bigint;
 }): SnsLegacyFollowings | undefined => {
+  const CATCH_ALL_ID = 0n;
   const nsFunction = nsFunctions.find(
-    (nsFunction) => nsFunction.id === nsFunctionId
+    (nsFunction) => nsFunction.id === CATCH_ALL_ID
   );
-  const followees = neuron.followees.find(([id]) => id === nsFunctionId)?.[1]
+  const followees = neuron.followees.find(([id]) => id === CATCH_ALL_ID)?.[1]
     ?.followees;
-
-  if (isNullish(nsFunction) || isNullish(followees)) {
-    return undefined;
-  }
-
-  return {
-    nsFunction,
-    followees,
-  };
+  return isNullish(nsFunction) || isNullish(followees)
+    ? undefined
+    : {
+        nsFunction,
+        followees,
+      };
 };
