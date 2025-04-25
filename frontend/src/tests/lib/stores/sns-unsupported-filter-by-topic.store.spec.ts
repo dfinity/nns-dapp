@@ -1,9 +1,9 @@
-import { unsupportedFilterByTopicCanistersStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
+import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import { get } from "svelte/store";
 
-describe("unsupportedFilterByTopicCanistersStore", () => {
+describe("unsupportedFilterByTopicSnsesStore", () => {
   it("should initialize with an empty Set", () => {
-    const store = get(unsupportedFilterByTopicCanistersStore);
+    const store = get(unsupportedFilterByTopicSnsesStore);
 
     expect(store.length).toBe(0);
   });
@@ -12,10 +12,10 @@ describe("unsupportedFilterByTopicCanistersStore", () => {
     const canisterId1 = "aaaaa-aa";
     const canisterId2 = "bbbbb-bb";
 
-    unsupportedFilterByTopicCanistersStore.add(canisterId1);
-    unsupportedFilterByTopicCanistersStore.add(canisterId2);
+    unsupportedFilterByTopicSnsesStore.add(canisterId1);
+    unsupportedFilterByTopicSnsesStore.add(canisterId2);
 
-    const store = get(unsupportedFilterByTopicCanistersStore);
+    const store = get(unsupportedFilterByTopicSnsesStore);
 
     expect(store.length).toBe(2);
     expect(store.includes(canisterId1)).toBe(true);
@@ -25,10 +25,10 @@ describe("unsupportedFilterByTopicCanistersStore", () => {
   it("should not add duplicate canister IDs", () => {
     const canisterId = "aaaaa-aa";
 
-    unsupportedFilterByTopicCanistersStore.add(canisterId);
-    unsupportedFilterByTopicCanistersStore.add(canisterId);
+    unsupportedFilterByTopicSnsesStore.add(canisterId);
+    unsupportedFilterByTopicSnsesStore.add(canisterId);
 
-    const store = get(unsupportedFilterByTopicCanistersStore);
+    const store = get(unsupportedFilterByTopicSnsesStore);
 
     expect(store.length).toBe(1);
     expect(store.includes(canisterId)).toBe(true);
@@ -38,9 +38,9 @@ describe("unsupportedFilterByTopicCanistersStore", () => {
     const canisterId = "aaaaa-aa";
     const nonExistentCanisterId = "bbbbb-bb";
 
-    unsupportedFilterByTopicCanistersStore.add(canisterId);
+    unsupportedFilterByTopicSnsesStore.add(canisterId);
 
-    const store = get(unsupportedFilterByTopicCanistersStore);
+    const store = get(unsupportedFilterByTopicSnsesStore);
 
     expect(store.includes(canisterId)).toBe(true);
     expect(store.includes(nonExistentCanisterId)).toBe(false);
@@ -50,16 +50,16 @@ describe("unsupportedFilterByTopicCanistersStore", () => {
     const canisterId1 = "aaaaa-aa";
     const canisterId2 = "bbbbb-bb";
 
-    unsupportedFilterByTopicCanistersStore.add(canisterId1);
-    unsupportedFilterByTopicCanistersStore.add(canisterId2);
+    unsupportedFilterByTopicSnsesStore.add(canisterId1);
+    unsupportedFilterByTopicSnsesStore.add(canisterId2);
 
-    let store = get(unsupportedFilterByTopicCanistersStore);
+    let store = get(unsupportedFilterByTopicSnsesStore);
 
     expect(store.length).toBe(2);
 
-    unsupportedFilterByTopicCanistersStore.delete(canisterId1);
+    unsupportedFilterByTopicSnsesStore.delete(canisterId1);
 
-    store = get(unsupportedFilterByTopicCanistersStore);
+    store = get(unsupportedFilterByTopicSnsesStore);
     expect(store.length).toBe(1);
     expect(store.includes(canisterId1)).toBe(false);
     expect(store.includes(canisterId2)).toBe(true);
@@ -69,10 +69,10 @@ describe("unsupportedFilterByTopicCanistersStore", () => {
     const canisterId = "aaaaa-aa";
     const nonExistentCanisterId = "bbbbb-bb";
 
-    unsupportedFilterByTopicCanistersStore.add(canisterId);
-    unsupportedFilterByTopicCanistersStore.delete(nonExistentCanisterId);
+    unsupportedFilterByTopicSnsesStore.add(canisterId);
+    unsupportedFilterByTopicSnsesStore.delete(nonExistentCanisterId);
 
-    const store = get(unsupportedFilterByTopicCanistersStore);
+    const store = get(unsupportedFilterByTopicSnsesStore);
 
     expect(store.length).toBe(1);
     expect(store.includes(canisterId)).toBe(true);

@@ -6,12 +6,12 @@ export type UnsupportedFilterByTopicCanistersStoreData =
 
 export interface UnsupportedFilterByTopicCanistersStore
   extends Readable<UnsupportedFilterByTopicCanistersStoreData> {
-  add: (canisterId: CanisterIdString) => void;
-  has: (canisterId: CanisterIdString) => boolean;
-  delete: (canisterId: CanisterIdString) => void;
+  add: (rootCanisterId: CanisterIdString) => void;
+  has: (rootCanisterId: CanisterIdString) => boolean;
+  delete: (rootCanisterId: CanisterIdString) => void;
 }
 
-export const initUnsupportedFilterByTopicCanistersStore =
+export const initUnsupportedFilterByTopicSnsesStore =
   (): UnsupportedFilterByTopicCanistersStore => {
     const initialUnsupportedCanisters: Array<CanisterIdString> = [];
 
@@ -22,23 +22,23 @@ export const initUnsupportedFilterByTopicCanistersStore =
 
     return {
       subscribe,
-      add: (canisterId) => {
+      add: (rootCanisterId) => {
         update((canisters) => {
-          if (canisters.includes(canisterId)) return canisters;
-          return [...canisters, canisterId];
+          if (canisters.includes(rootCanisterId)) return canisters;
+          return [...canisters, rootCanisterId];
         });
       },
-      has: (canisterId) => {
+      has: (rootCanisterId) => {
         const canisters = get({ subscribe });
-        return canisters.includes(canisterId);
+        return canisters.includes(rootCanisterId);
       },
-      delete: (canisterId) => {
+      delete: (rootCanisterId) => {
         update((canisters) => {
-          return [...canisters].filter((id) => id !== canisterId);
+          return [...canisters].filter((id) => id !== rootCanisterId);
         });
       },
     };
   };
 
-export const unsupportedFilterByTopicCanistersStore =
-  initUnsupportedFilterByTopicCanistersStore();
+export const unsupportedFilterByTopicSnsesStore =
+  initUnsupportedFilterByTopicSnsesStore();
