@@ -27,6 +27,13 @@ export class SnsProposalSystemInfoSectionPo extends BasePageObject {
     )?.trim();
   }
 
+  getTopicKeyValuePairPo(): KeyValuePairPo {
+    return KeyValuePairPo.under({
+      element: this.root,
+      testId: "proposal-system-info-topic",
+    });
+  }
+
   async getDecisionStatusText(): Promise<string> {
     return (
       await KeyValuePairPo.under({
