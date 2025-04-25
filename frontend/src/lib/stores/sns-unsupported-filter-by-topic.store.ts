@@ -1,5 +1,5 @@
 import type { CanisterIdString } from "@dfinity/nns";
-import { writable, type Readable } from "svelte/store";
+import { get, writable, type Readable } from "svelte/store";
 
 export type UnsupportedFilterByTopicCanistersStoreData =
   Array<CanisterIdString>;
@@ -29,12 +29,8 @@ export const initUnsupportedFilterByTopicCanistersStore =
         });
       },
       has: (canisterId) => {
-        let result = false;
-        update((canisters) => {
-          result = canisters.includes(canisterId);
-          return canisters;
-        });
-        return result;
+        const canisters = get({ subscribe });
+        return canisters.includes(canisterId);
       },
       delete: (canisterId) => {
         update((canisters) => {
