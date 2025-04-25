@@ -437,6 +437,7 @@
     "legacy_description": "You currently have legacy following active. Any changes on topic following will override your current settings. Please confirm changes to proceed.",
     "legacy_topics_header": "Topics with active legacy following",
     "legacy_followees_header": "Current legacy following",
+    "catch_all_description": "Legacy \"Catch-all\" followings are currently active. Confirming will deactivate them and remove associated legacy followings.",
     "neuron_title": "Enter Neuron to Follow",
     "neuron_label": "Neuron to Follow",
     "neuron_description": "*Developer neurons are not stored in a central place as of now. You can often find them on the <a href=\"https://forum.dfinity.org/\" rel=\"noopener noreferrer\" aria-label=\"DFINITY forum\" target=\"_blank\">DFINITY forum</a> in the founding team’s announcement, or on their <a href=\"https://x.com/home\" rel=\"noopener noreferrer\" aria-label=\"X\" target=\"_blank\">X</a> account. Alternatively, you can review voting power distributions of all neurons on <a href=\"https://snsgeek.app/sns\" rel=\"noopener noreferrer\" aria-label=\"snsgeek\" target=\"_blank\">snsGeek</a>, and select a neuron from their list.",

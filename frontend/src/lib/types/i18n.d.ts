@@ -452,6 +452,7 @@ interface I18nFollow_sns_topics {
   legacy_description: string;
   legacy_topics_header: string;
   legacy_followees_header: string;
+  catch_all_description: string;
   neuron_title: string;
   neuron_label: string;
   neuron_description: string;
