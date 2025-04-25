@@ -31,7 +31,6 @@ export const snsTopicToTopicKey = (
     "SnsFrameworkManagement",
     "UnknownTopic",
   ];
-
   const topicKey = Object.keys(topic).find((key) =>
     topicKeys.includes(key as SnsTopicKey)
   ) as SnsTopicKey | undefined;

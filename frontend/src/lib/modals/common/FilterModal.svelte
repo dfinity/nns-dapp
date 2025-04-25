@@ -105,14 +105,6 @@
           {#if displaySeparator(category, filters, index)}
             <Separator testId={`separator-${id}`} spacing="medium" />
           {/if}
-
-          {#if category === "topics" && index < filters.length - 1 && isCritical !== filters[index + 1].isCritical}
-            <Separator testId={`separator-critical-${id}`} spacing="medium" />
-          {/if}
-
-          {#if category === "topics" && index < filters.length - 1 && filters[index + 1].value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC}
-            <Separator testId={`separator-no-topics-${id}`} spacing="medium" />
-          {/if}
         {/each}
       </div>
     {:else}

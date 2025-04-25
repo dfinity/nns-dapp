@@ -4,8 +4,6 @@ import type { SnsProposalDecisionStatus } from "@dfinity/sns";
 
 // artificial proposal type id to filter by all generic SNS types
 export const ALL_SNS_GENERIC_PROPOSAL_TYPES_ID = "all_sns_generic_types";
-export const ALL_SNS_PROPOSALS_WITHOUT_TOPIC =
-  "all_sns_proposals_without_topic" as const;
 
 // Stringified nsFunction id.
 export type SnsProposalTypeFilterId =
