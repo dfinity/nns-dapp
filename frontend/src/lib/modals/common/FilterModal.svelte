@@ -1,10 +1,12 @@
 <script lang="ts">
   import Separator from "$lib/components/ui/Separator.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type {
-    Filter,
-    FiltersData,
-    NnsProposalFilterCategory,
+  import {
+    ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+    type Filter,
+    type FiltersData,
+    type NnsProposalFilterCategory,
+    type SnsProposalFilterCategory,
   } from "$lib/types/filters";
   import { Checkbox, Modal, Spinner } from "@dfinity/gix-components";
   import { Topic } from "@dfinity/nns";
@@ -15,11 +17,13 @@
     // `undefined` means the filters are not loaded yet.
     filters: Filter<FiltersData>[] | undefined;
     visible?: boolean;
-    category?: NnsProposalFilterCategory | undefined;
+    category?:
+      | NnsProposalFilterCategory
+      | SnsProposalFilterCategory
+      | undefined;
   };
 
   const { filters, visible = true, category }: Props = $props();
-
   const loading = $derived(isNullish(filters));
 
   const dispatch = createEventDispatcher();
@@ -32,6 +36,39 @@
   const filter = () => dispatch("nnsConfirm");
   const selectAll = () => dispatch("nnsSelectAll");
   const clearSelection = () => dispatch("nnsClearSelection");
+
+  /**
+   * Determines whether to display a separator after a filter item in a list.
+   *
+   * @param category - The current filter category
+   * @param filters - The array of all filters
+   * @param index - The index of the current filter being evaluated
+   * @returns True if a separator should be displayed after this filter, false otherwise
+   */
+  const displaySeparator = (
+    category: Props["category"],
+    filters: Filter<FiltersData>[],
+    index: number
+  ) => {
+    // Only show separators if "topics" category
+    if (category !== "topics") return false;
+
+    const currentEntry = filters[index];
+
+    // Always show separator after SNS and Community Fund topic
+    if (currentEntry.value === Topic.SnsAndCommunityFund) return true;
+
+    const nextEntry = filters[index + 1];
+    if (isNullish(nextEntry)) return false;
+
+    // Show separator between critical and non-critical topics
+    if (currentEntry.isCritical && !nextEntry.isCritical) return true;
+
+    // Show separator before the "All SNS proposals without topic" special filter
+    if (nextEntry.value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC) return true;
+
+    return false;
+  };
 </script>
 
 {#if !loading}
@@ -58,14 +95,14 @@
 
     {#if filters}
       <div class="filters">
-        {#each filters as { id, name, checked, value } (id)}
+        {#each filters as { id, name, checked }, index (id)}
           <Checkbox
             testId={`filter-modal-option-${id}`}
             inputId={id}
             {checked}
             on:nnsChange={() => onChange(id)}>{name}</Checkbox
           >
-          {#if category === "topics" && value === Topic.SnsAndCommunityFund}
+          {#if displaySeparator(category, filters, index)}
             <Separator testId={`separator-${id}`} spacing="medium" />
           {/if}
         {/each}

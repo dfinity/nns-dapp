@@ -1,3 +1,4 @@
+import { ALL_SNS_PROPOSALS_WITHOUT_TOPIC } from "$lib/types/filters";
 import FilterModalTest from "$tests/lib/modals/common/FilterModalTest.svelte";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -115,10 +116,66 @@ describe("FilterModal", () => {
   it("should render a Separator if category is topics and value is SnsAndCommunityFund", async () => {
     const filters = [
       {
-        id: "1",
+        id: "topic",
         name: "test",
         value: Topic.SnsAndCommunityFund,
         checked: false,
+      },
+    ];
+
+    const po = renderComponent({
+      filters,
+      category: "topics",
+    });
+    const separator = po.getFilterEntrySeparatorByIdPo(filters[0].id);
+
+    expect(await separator.isPresent()).toBe(true);
+  });
+
+  it("should render a Separator if category is topics and there are critical and non-critical topics", async () => {
+    const filters = [
+      {
+        id: "critical-topic",
+        name: "test",
+        value: "CRITICAL_TOPIC",
+        checked: false,
+        isCritical: true,
+      },
+
+      {
+        id: "non-critical-topic",
+        name: "test",
+        value: "NON_CRITICAL_TOPIC",
+        checked: false,
+        isCritical: false,
+      },
+    ];
+
+    const po = renderComponent({
+      filters,
+      category: "topics",
+    });
+    const separator = po.getFilterEntrySeparatorByIdPo(filters[0].id);
+
+    expect(await separator.isPresent()).toBe(true);
+  });
+
+  it("should render a Separator if category is topics and the next entry is the special filter to show proposals without a topic", async () => {
+    const filters = [
+      {
+        id: "last-known-topic",
+        name: "test",
+        value: "TOPIC",
+        checked: false,
+        isCritical: true,
+      },
+
+      {
+        id: "special-topic-filter",
+        name: "test",
+        value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+        checked: false,
+        isCritical: false,
       },
     ];
 
