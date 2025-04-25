@@ -630,7 +630,7 @@ describe("sns-topics utils", () => {
         ...mockSnsNeuron,
         followees: [
           [nativeNsFunctionId1, { followees: [neuronId1] }],
-          [catchAllNativeNsFunctionId, { followees: [neuronId1, neuronId1] }],
+          [catchAllNativeNsFunctionId, { followees: [neuronId1, neuronId2] }],
           [nativeNsFunctionId2, { followees: [neuronId2] }],
         ],
       };
@@ -644,12 +644,10 @@ describe("sns-topics utils", () => {
             nativeNsFunction2,
           ],
         })
-      ).toEqual([
-        {
-          nsFunction: catchAllNativeNsFunction,
-          followees: [neuronId1, neuronId2],
-        },
-      ]);
+      ).toEqual({
+        nsFunction: catchAllNativeNsFunction,
+        followees: [neuronId1, neuronId2],
+      });
     });
 
     it("return undefined when no catch-all followees", () => {
