@@ -7,16 +7,19 @@
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { IconErrorOutline } from "@dfinity/gix-components";
 
-  type Props = {
+  export type Props = {
     catchAllLegacyFollowings: SnsLegacyFollowings;
     confirm: () => void;
     cancel: () => void;
   };
-  let {
+  const {
     catchAllLegacyFollowings: catchAllFollowing,
     confirm,
     cancel,
   }: Props = $props();
+
+  let a = $state(0);
+  a++;
 </script>
 
 <TestIdWrapper
