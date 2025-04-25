@@ -19,4 +19,8 @@ export class KeyValuePairPo extends BasePageObject {
   getValueText(): Promise<string | null> {
     return this.root.querySelector("dd").getText();
   }
+
+  getInfoText(): Promise<string | null> {
+    return this.getText("info");
+  }
 }
