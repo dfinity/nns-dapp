@@ -14,6 +14,7 @@ import { queryAndUpdate } from "$lib/services/utils.services";
 import { authStore } from "$lib/stores/auth.store";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
+import { unsupportedFilterByTopicCanistersStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import {
   getSnsNeuronState,
@@ -32,7 +33,7 @@ import type {
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
-import { fromDefinedNullable, isNullish } from "@dfinity/utils";
+import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const registerVote = async ({
@@ -163,13 +164,24 @@ export const loadSnsProposals = async ({
         rootCanisterId,
       }),
     onLoad: ({ response, certified }) => {
-      const { proposals } = response;
+      const { proposals, include_topic_filtering } = response;
+
       snsProposalsStore.addProposals({
         rootCanisterId,
         proposals,
         certified,
         completed: proposals.length < DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
       });
+
+      const includeTopicFiltering = fromNullable(include_topic_filtering);
+
+      if (isNullish(includeTopicFiltering)) {
+        unsupportedFilterByTopicCanistersStore.add(rootCanisterId.toText());
+      } else if (includeTopicFiltering) {
+        unsupportedFilterByTopicCanistersStore.delete(rootCanisterId.toText());
+      } else {
+        unsupportedFilterByTopicCanistersStore.add(rootCanisterId.toText());
+      }
     },
     onError: (err) => {
       toastsError({

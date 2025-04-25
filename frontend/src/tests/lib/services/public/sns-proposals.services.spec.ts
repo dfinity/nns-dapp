@@ -7,6 +7,7 @@ import {
 } from "$lib/services/public/sns-proposals.services";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
+import { unsupportedFilterByTopicCanistersStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
 import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -50,6 +51,7 @@ describe("sns-proposals services", () => {
     id: [{ id: 3n }],
   };
   const proposals = [proposal1, proposal2, proposal3];
+
   describe("loadSnsProposals", () => {
     let queryProposalsSpy;
 
@@ -65,6 +67,7 @@ describe("sns-proposals services", () => {
       beforeEach(() => {
         setNoIdentity();
       });
+
       it("should call queryProposals with the default params", async () => {
         await loadSnsProposals({
           rootCanisterId: mockPrincipal,
@@ -218,6 +221,64 @@ describe("sns-proposals services", () => {
           return expect(storeData[mockPrincipal.toText()]?.completed).toEqual(
             true
           );
+        });
+      });
+
+      describe("filter by topic capability", () => {
+        it("should mark canister as unsupported when include_topic_filtering is null/undefined", async () => {
+          vi.spyOn(api, "queryProposals").mockResolvedValue({
+            proposals,
+            include_ballots_by_caller: [true],
+            include_topic_filtering: [], // Empty optional (null/undefined in Candid)
+          });
+
+          await loadSnsProposals({
+            rootCanisterId: mockPrincipal,
+            snsFunctions: [],
+          });
+
+          expect(
+            unsupportedFilterByTopicCanistersStore.has(mockPrincipal.toText())
+          ).toBe(true);
+        });
+
+        it("should mark canister as unsupported when include_topic_filtering is false", async () => {
+          // Set up the API response with false include_topic_filtering
+          vi.spyOn(api, "queryProposals").mockResolvedValue({
+            proposals,
+            include_ballots_by_caller: [true],
+            include_topic_filtering: [false], // False in optional
+          });
+
+          await loadSnsProposals({
+            rootCanisterId: mockPrincipal,
+            snsFunctions: [],
+          });
+
+          expect(
+            unsupportedFilterByTopicCanistersStore.has(mockPrincipal.toText())
+          ).toBe(true);
+        });
+
+        it("should remove canister from unsupported list when include_topic_filtering is true", async () => {
+          // First add the canister to the unsupported list
+          unsupportedFilterByTopicCanistersStore.add(mockPrincipal.toText());
+
+          // Set up the API response with true include_topic_filtering
+          vi.spyOn(api, "queryProposals").mockResolvedValue({
+            proposals,
+            include_ballots_by_caller: [true],
+            include_topic_filtering: [true], // True in optional
+          });
+
+          await loadSnsProposals({
+            rootCanisterId: mockPrincipal,
+            snsFunctions: [],
+          });
+
+          expect(
+            unsupportedFilterByTopicCanistersStore.has(mockPrincipal.toText())
+          ).toBe(false);
         });
       });
     });
