@@ -3,6 +3,8 @@ import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { enumSize } from "$lib/utils/enum.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { nativeNervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
+import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsProposalDecisionStatus,
   type SnsNervousSystemFunction,
@@ -99,6 +101,48 @@ describe("sns-filters services", () => {
           id: "1",
           name: "Motion",
           value: "1",
+        },
+      ]);
+    });
+
+    it("should update the topics in filters store", async () => {
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          topics: {
+            topics: [
+              topicInfoDtoMock({
+                topic: "DaoCommunitySettings",
+                name: "Topic1",
+                description: "This is a description",
+                isCritical: false,
+              }),
+            ],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+      expect(getFiltersStoreData()).toBe(undefined);
+
+      await loadSnsFilters({
+        rootCanisterId: mockPrincipal,
+        nsFunctions: [],
+        snsName: "sns-name",
+      });
+
+      expect(getFiltersStoreData().topics).toEqual([
+        {
+          checked: false,
+          id: "DaoCommunitySettings",
+          isCritical: false,
+          name: "Topic1",
+          value: "DaoCommunitySettings",
+        },
+        {
+          checked: false,
+          id: "all_sns_proposals_without_topic",
+          name: "Proposals without a topic",
+          value: "all_sns_proposals_without_topic",
         },
       ]);
     });

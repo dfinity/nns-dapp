@@ -1,8 +1,12 @@
+import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
 import { i18n } from "$lib/stores/i18n";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
-import type { Filter } from "$lib/types/filters";
+import { type Filter } from "$lib/types/filters";
 import { enumValues } from "$lib/utils/enum.utils";
-import { generateSnsProposalTypesFilterData } from "$lib/utils/sns-proposals.utils";
+import {
+  generateSnsProposalTopicsFilterData,
+  generateSnsProposalTypesFilterData,
+} from "$lib/utils/sns-proposals.utils";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
@@ -100,4 +104,6 @@ export const loadSnsFilters = async ({
   // It's safe to reload types filters as the `loadTypesFilters` respects user selection,
   // and it needs to be reloaded to get nsFunctions update.
   loadTypesFilters({ rootCanisterId, nsFunctions, snsName });
+
+  loadTopicsFilters(rootCanisterId);
 };
