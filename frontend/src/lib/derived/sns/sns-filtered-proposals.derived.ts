@@ -7,10 +7,15 @@ import {
   type SnsProposalsStore,
   type SnsProposalsStoreData,
 } from "$lib/stores/sns-proposals.store";
-import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import {
+  ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+  ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+} from "$lib/types/filters";
 import { snsDecisionStatus } from "$lib/utils/sns-proposals.utils";
+import { snsTopicToTopicKey } from "$lib/utils/sns-topics.utils";
 import { isSnsGenericNervousSystemTypeProposal } from "$lib/utils/sns.utils";
-import { isNullish } from "@dfinity/utils";
+import type { SnsTopic } from "@dfinity/sns";
+import { fromNullable, isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export const snsFilteredProposalsStore = derived<
@@ -46,7 +51,19 @@ export const snsFilteredProposalsStore = derived<
                     : `${proposal.action}`
                 );
 
-            return statusMatch && nervousFunctionsMatch;
+            // ISSUE: The issue is here with the conversion when the proposal has no topic.
+            const topic = fromNullable(proposal.topic);
+            const proposalTopic = isNullish(topic)
+              ? ALL_SNS_PROPOSALS_WITHOUT_TOPIC
+              : snsTopicToTopicKey(topic as SnsTopic);
+
+            const proposalTopicMatch =
+              projectSelectedFilters.topics.length === 0 ||
+              projectSelectedFilters.topics
+                .map(({ value }) => value)
+                .includes(proposalTopic);
+
+            return statusMatch && nervousFunctionsMatch && proposalTopicMatch;
           }
         );
         return {
