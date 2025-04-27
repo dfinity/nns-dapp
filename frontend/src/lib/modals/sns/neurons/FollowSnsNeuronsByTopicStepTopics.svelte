@@ -27,7 +27,7 @@
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
     followings: SnsTopicFollowing[];
-    catchAllFollowings: SnsLegacyFollowings | undefined;
+    catchAllLegacyFollowings: SnsLegacyFollowings | undefined;
     closeModal: () => void;
     openNextStep: () => void;
     removeFollowing: (args: {
@@ -45,7 +45,7 @@
     topicInfos,
     selectedTopics = $bindable(),
     followings,
-    catchAllFollowings,
+    catchAllLegacyFollowings,
     closeModal,
     openNextStep,
     removeFollowing,
@@ -121,7 +121,7 @@
           >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
         ></h5
       >
-      {#if nonNullish(catchAllFollowings)}
+      {#if nonNullish(catchAllLegacyFollowings)}
         <button
           data-tid="deactivate-catch-all-button"
           class="ghost"

@@ -129,7 +129,7 @@
   const nsFunctions: SnsNervousSystemFunction[] = $derived(
     get(createSnsNsFunctionsProjectStore(rootCanisterId)) ?? []
   );
-  const catchAllFollowings = $derived<SnsLegacyFollowings | undefined>(
+  const catchAllLegacyFollowings = $derived<SnsLegacyFollowings | undefined>(
     getCatchAllSnsLegacyFollowings({
       neuron,
       nsFunctions,
@@ -308,7 +308,7 @@
       {followings}
       {neuron}
       bind:selectedTopics
-      {catchAllFollowings}
+      {catchAllLegacyFollowings}
       {closeModal}
       {openNextStep}
       {openDeactivateCatchAllStep}
@@ -325,9 +325,9 @@
       {openNextStep}
     />
   {/if}
-  {#if currentStep?.name === STEP_CONFIRM_DEACTIVATING_CATCH_ALL && nonNullish(catchAllFollowings)}
+  {#if currentStep?.name === STEP_CONFIRM_DEACTIVATING_CATCH_ALL && nonNullish(catchAllLegacyFollowings)}
     <FollowSnsNeuronsByTopicStepDeactivateCatchAll
-      {catchAllFollowings}
+      {catchAllLegacyFollowings}
       cancel={openPrevStep}
       confirm={confirmDeactivateCatchAllFollowee}
     />
