@@ -29,9 +29,8 @@ export const snsFilteredProposalsStore = derived<
         const projectSelectedFilters = selectedFilters[rootCanisterIdText];
         // Skip the project if there are no filters for it.
         // This will cause the proposals to be `undefined` for a specific project.
-        if (isNullish(projectSelectedFilters)) {
-          return acc;
-        }
+        if (isNullish(projectSelectedFilters)) return acc;
+
         const filteredProjectProposals = projectProposals.proposals.filter(
           (proposal) => {
             const statusMatch =
@@ -51,7 +50,6 @@ export const snsFilteredProposalsStore = derived<
                     : `${proposal.action}`
                 );
 
-            // ISSUE: The issue is here with the conversion when the proposal has no topic.
             const topic = fromNullable(proposal.topic);
             const proposalTopic = isNullish(topic)
               ? ALL_SNS_PROPOSALS_WITHOUT_TOPIC
