@@ -280,12 +280,11 @@
       functionId: 0n,
     });
 
-    await reloadNeuron();
-
     if (success) {
       toastsSuccess({
         labelKey: "follow_sns_topics.success_removing_catch_all",
       });
+      await reloadNeuron();
       openPrevStep();
     }
 
