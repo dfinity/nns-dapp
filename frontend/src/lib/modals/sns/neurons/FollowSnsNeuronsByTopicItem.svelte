@@ -82,7 +82,6 @@
         text="block"
         {checked}
         on:nnsChange={onChange}
-        preventDefault
         --checkbox-label-order="1"
         --checkbox-padding="var(--padding) 0"
       >
