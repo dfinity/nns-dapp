@@ -270,8 +270,8 @@
 
   const confirmDeactivateCatchAllFollowee = async () => {
     startBusy({
-      initiator: "remove-sns-legacy-followee",
-      labelKey: "follow_sns_topics.busy_removing_legacy",
+      initiator: "remove-sns-catch-all-followee",
+      labelKey: "follow_sns_topics.busy_removing_catch_all",
     });
 
     const { success } = await removeNsFunctionFollowees({
@@ -284,12 +284,12 @@
 
     if (success) {
       toastsSuccess({
-        labelKey: "follow_sns_topics.success_removing_legacy",
+        labelKey: "follow_sns_topics.success_removing_catch_all",
       });
       openPrevStep();
     }
 
-    stopBusy("remove-sns-legacy-followee");
+    stopBusy("remove-sns-catch-all-followee");
   };
 </script>
 
