@@ -6,6 +6,7 @@ import type {
 import {
   addSnsNeuronToFollowingsByTopics,
   getAllSnsNSFunctions,
+  getCatchAllSnsLegacyFollowings,
   getLegacyFolloweesByTopics,
   getSnsTopicFollowings,
   getSnsTopicInfoKey,
@@ -604,6 +605,88 @@ describe("sns-topics utils", () => {
           topicInfos: [],
         })
       ).toEqual([]);
+    });
+  });
+
+  describe("getCatchAllSnsLegacyFollowings", () => {
+    const catchAllNativeNsFunctionId = 0n;
+    const catchAllNativeNsFunction: SnsNervousSystemFunction = {
+      ...nativeNsFunction,
+      id: catchAllNativeNsFunctionId,
+    };
+    const nativeNsFunctionId1 = 1n;
+    const nativeNsFunction1: SnsNervousSystemFunction = {
+      ...nativeNsFunction,
+      id: nativeNsFunctionId1,
+    };
+    const nativeNsFunctionId2 = 2n;
+    const nativeNsFunction2: SnsNervousSystemFunction = {
+      ...nativeNsFunction,
+      id: nativeNsFunctionId2,
+    };
+
+    it("returns catch all followings", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [nativeNsFunctionId1, { followees: [neuronId1] }],
+          [catchAllNativeNsFunctionId, { followees: [neuronId1, neuronId2] }],
+          [nativeNsFunctionId2, { followees: [neuronId2] }],
+        ],
+      };
+
+      expect(
+        getCatchAllSnsLegacyFollowings({
+          neuron: testNeuron,
+          nsFunctions: [
+            catchAllNativeNsFunction,
+            nativeNsFunction1,
+            nativeNsFunction2,
+          ],
+        })
+      ).toEqual({
+        nsFunction: catchAllNativeNsFunction,
+        followees: [neuronId1, neuronId2],
+      });
+    });
+
+    it("return undefined when no catch-all followees", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [nativeNsFunctionId1, { followees: [neuronId1] }],
+          [nativeNsFunctionId2, { followees: [neuronId2] }],
+        ],
+      };
+
+      expect(
+        getCatchAllSnsLegacyFollowings({
+          neuron: testNeuron,
+          nsFunctions: [
+            catchAllNativeNsFunction,
+            nativeNsFunction1,
+            nativeNsFunction2,
+          ],
+        })
+      ).toEqual(undefined);
+    });
+
+    it("return undefined when no catch-all ns function", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [nativeNsFunctionId1, { followees: [neuronId1] }],
+          [catchAllNativeNsFunctionId, { followees: [neuronId1, neuronId1] }],
+          [nativeNsFunctionId2, { followees: [neuronId2] }],
+        ],
+      };
+
+      expect(
+        getCatchAllSnsLegacyFollowings({
+          neuron: testNeuron,
+          nsFunctions: [nativeNsFunction1, nativeNsFunction2],
+        })
+      ).toEqual(undefined);
     });
   });
 });

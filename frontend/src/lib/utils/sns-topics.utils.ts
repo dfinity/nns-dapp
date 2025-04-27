@@ -1,3 +1,4 @@
+import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import type {
   SnsLegacyFollowings,
   SnsTopicFollowing,
@@ -15,7 +16,12 @@ import type {
   SnsNeuronId,
   SnsTopic,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 
 export const snsTopicToTopicKey = (
   topic: SnsTopic | UnknownTopic
@@ -209,4 +215,28 @@ export const getLegacyFolloweesByTopics = ({
     },
     []
   );
+};
+
+// Returns the catch-all SNS followees of the neuron.
+// Because the catch-all is not part of any topic, we need to get it from nsFunctions.
+export const getCatchAllSnsLegacyFollowings = ({
+  neuron,
+  nsFunctions,
+}: {
+  neuron: SnsNeuron;
+  nsFunctions: SnsNervousSystemFunction[];
+}): SnsLegacyFollowings | undefined => {
+  const nsFunction = nsFunctions.find(
+    (nsFunction) => nsFunction.id === ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID
+  );
+  // Find the followees in a list where each item is a tuple of `[nsFunctionId, Followee[]]`
+  const followees = neuron.followees.find(
+    ([id]) => id === ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID
+  )?.[1]?.followees;
+  return isNullish(nsFunction) || isNullish(followees)
+    ? undefined
+    : {
+        nsFunction,
+        followees,
+      };
 };
