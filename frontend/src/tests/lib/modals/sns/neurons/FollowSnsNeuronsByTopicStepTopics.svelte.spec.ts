@@ -1,5 +1,9 @@
 import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
-import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+import type {
+  SnsLegacyFollowings,
+  SnsTopicFollowing,
+  SnsTopicKey,
+} from "$lib/types/sns";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -100,6 +104,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     selectedTopics: SnsTopicKey[];
     topicInfos: TopicInfoWithUnknown[];
     followings: SnsTopicFollowing[];
+    catchAllLegacyFollowings: SnsLegacyFollowings | undefined;
     closeModal: () => void;
     openNextStep: () => void;
     removeFollowing: (args: {
@@ -110,6 +115,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
       nsFunction: SnsNervousSystemFunction;
       followee: SnsNeuronId;
     }) => void;
+    openDeactivateCatchAllStep: () => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicStepTopics, {
       props,
@@ -124,10 +130,12 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     selectedTopics: [],
     topicInfos: [],
     followings: [],
+    catchAllLegacyFollowings: undefined,
     closeModal: vi.fn(),
     openNextStep: vi.fn(),
     removeFollowing: vi.fn(),
     removeLegacyFollowing: vi.fn(),
+    openDeactivateCatchAllStep: vi.fn(),
   };
 
   it("displays critical and non-critical topics", async () => {
@@ -265,6 +273,31 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     expect(closeModal).toBeCalledTimes(1);
     await po.clickNextButton();
     expect(openNextStep).toBeCalledTimes(1);
+  });
+
+  it("displays deactivate catch-all followings when catch-all provided", async () => {
+    const spyOpenDeactivateCatchAllStep = vi.fn();
+    const po = renderComponent({
+      ...defaultProps,
+      catchAllLegacyFollowings: {
+        nsFunction: legacyNsFunction1,
+        followees: [legacyFolloweeNeuronId1],
+      },
+      openDeactivateCatchAllStep: spyOpenDeactivateCatchAllStep,
+    });
+
+    expect(await po.getDeactivateCatchAllButtonPo().isPresent()).toEqual(true);
+    await po.clickDeactivateCatchAllButton();
+    expect(spyOpenDeactivateCatchAllStep).toBeCalledTimes(1);
+  });
+
+  it("doesn't displays deactivate catch-all followings when no catch-all", async () => {
+    const po = renderComponent({
+      ...defaultProps,
+      catchAllLegacyFollowings: undefined,
+    });
+
+    expect(await po.getDeactivateCatchAllButtonPo().isPresent()).toEqual(false);
   });
 
   describe("legacy followees", () => {
