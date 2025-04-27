@@ -9,7 +9,6 @@
   import {
     getSnsNeuronIdentity,
     removeFollowee,
-    removeNsFunctionFollowees,
     setFollowing,
   } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
