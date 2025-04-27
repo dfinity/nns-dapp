@@ -729,4 +729,39 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     expect(await legacyStepPo.isPresent()).toEqual(false);
     expect(await neuronStepPo.isPresent()).toEqual(false);
   });
+
+  describe("Deactivate catch-all", () => {
+    it("navigates to the deactivate catch-all", async () => {
+      const po = renderComponent({
+        ...defaultProps,
+        neuron: {
+          ...neuron,
+          followees: [
+            [
+              // catch-all followings
+              0n,
+              { followees: [legacyFolloweeNeuronId1, legacyFolloweeNeuronId2] },
+            ],
+          ],
+        },
+      });
+      const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
+      const deactivateCatchAllStepPo =
+        po.getFollowSnsNeuronsByTopicStepDeactivateCatchAllPo();
+
+      // Select a topic
+      expect(await topicsStepPo.isPresent()).toEqual(true);
+      expect(await deactivateCatchAllStepPo.isPresent()).toEqual(false);
+
+      await topicsStepPo.clickDeactivateCatchAllButton();
+
+      expect(await topicsStepPo.isPresent()).toEqual(false);
+      expect(await deactivateCatchAllStepPo.isPresent()).toEqual(true);
+
+      await deactivateCatchAllStepPo.clickCancelButton();
+
+      expect(await topicsStepPo.isPresent()).toEqual(true);
+      expect(await deactivateCatchAllStepPo.isPresent()).toEqual(false);
+    });
+  });
 });
