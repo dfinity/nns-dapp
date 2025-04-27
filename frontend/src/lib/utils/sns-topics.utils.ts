@@ -1,3 +1,4 @@
+import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import type {
   SnsLegacyFollowings,
   SnsTopicFollowing,
@@ -225,12 +226,13 @@ export const getCatchAllSnsLegacyFollowings = ({
   neuron: SnsNeuron;
   nsFunctions: SnsNervousSystemFunction[];
 }): SnsLegacyFollowings | undefined => {
-  const CATCH_ALL_ID = 0n;
   const nsFunction = nsFunctions.find(
-    (nsFunction) => nsFunction.id === CATCH_ALL_ID
+    (nsFunction) => nsFunction.id === ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID
   );
-  const followees = neuron.followees.find(([id]) => id === CATCH_ALL_ID)?.[1]
-    ?.followees;
+  // Find the followees in a list where each item is a tuple of `[nsFunctionId, Followee[]]`
+  const followees = neuron.followees.find(
+    ([id]) => id === ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID
+  )?.[1]?.followees;
   return isNullish(nsFunction) || isNullish(followees)
     ? undefined
     : {
