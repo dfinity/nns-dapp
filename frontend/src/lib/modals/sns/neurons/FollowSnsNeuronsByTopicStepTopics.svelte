@@ -4,11 +4,15 @@
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import FollowSnsNeuronsByTopicItem from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicItem.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+  import type {
+    SnsLegacyFollowings,
+    SnsTopicFollowing,
+    SnsTopicKey,
+  } from "$lib/types/sns";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import {
-    getLegacyFolloweesByTopics,
     getSnsTopicInfoKey,
+    getLegacyFolloweesByTopics,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
   import type {
@@ -16,13 +20,14 @@
     SnsNeuron,
     SnsNeuronId,
   } from "@dfinity/sns";
-  import { fromDefinedNullable } from "@dfinity/utils";
+  import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
   type Props = {
     neuron: SnsNeuron;
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
     followings: SnsTopicFollowing[];
+    catchAllLegacyFollowings: SnsLegacyFollowings | undefined;
     closeModal: () => void;
     openNextStep: () => void;
     removeFollowing: (args: {
@@ -33,16 +38,19 @@
       nsFunction: SnsNervousSystemFunction;
       followee: SnsNeuronId;
     }) => void;
+    openDeactivateCatchAllStep: () => void;
   };
   let {
     neuron,
     topicInfos,
     selectedTopics = $bindable(),
     followings,
+    catchAllLegacyFollowings,
     closeModal,
     openNextStep,
     removeFollowing,
     removeLegacyFollowing,
+    openDeactivateCatchAllStep,
   }: Props = $props();
 
   const criticalTopicInfos: TopicInfoWithUnknown[] = $derived(
@@ -106,12 +114,21 @@
   </div>
 
   <div class="topic-group" data-tid="non-critical-topic-group">
-    <h5 class="headline description"
-      >{$i18n.follow_sns_topics.topics_non_critical_label}
-      <TooltipIcon
-        >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
-      ></h5
-    >
+    <div class="topic-group-header">
+      <h5 class="headline description"
+        >{$i18n.follow_sns_topics.topics_non_critical_label}
+        <TooltipIcon
+          >{$i18n.follow_sns_topics.topics_critical_tooltip}</TooltipIcon
+        ></h5
+      >
+      {#if nonNullish(catchAllLegacyFollowings)}
+        <button
+          data-tid="deactivate-catch-all-button"
+          class="ghost"
+          onclick={openDeactivateCatchAllStep}>{"Deactivate catch-all"}</button
+        >
+      {/if}
+    </div>
     {#each nonCriticalTopicInfos as topicInfo}
       <FollowSnsNeuronsByTopicItem
         {topicInfo}
@@ -158,6 +175,16 @@
 
     .headline {
       margin: var(--padding) 0;
+    }
+  }
+
+  .topic-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    button {
+      color: var(--primary);
     }
   }
 </style>
