@@ -80,4 +80,24 @@ export class FollowSnsNeuronsByTopicItemPo extends BasePageObject {
   > {
     return FollowSnsNeuronsByTopicLegacyFolloweePo.allUnder(this.root);
   }
+
+  async getLegacyFolloweeNeuronIds(): Promise<string[]> {
+    const pos = await this.getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    return Promise.all(
+      pos.map(
+        async (followee) =>
+          await followee
+            .getFollowSnsNeuronsByTopicFolloweePo()
+            .getNeuronHashPo()
+            .getFullText()
+      )
+    );
+  }
+
+  async getLegacyFolloweeNsFunctionNames(): Promise<string[]> {
+    const pos = await this.getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    return Promise.all(
+      pos.map(async (followee) => await followee.getNsFunctionName())
+    );
+  }
 }
