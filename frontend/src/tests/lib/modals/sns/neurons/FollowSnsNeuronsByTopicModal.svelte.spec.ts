@@ -829,7 +829,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       expect(await deactivateCatchAllStepPo.isPresent()).toEqual(false);
     });
 
-    it.only("handles removing catch-all followings error", async () => {
+    it("handles removing catch-all followings error", async () => {
       const testError = new Error("Test Error");
       const spyConsoleError = vi
         .spyOn(console, "error")
