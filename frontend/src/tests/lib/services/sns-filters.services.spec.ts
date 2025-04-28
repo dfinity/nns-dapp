@@ -14,22 +14,49 @@ describe("sns-filters services", () => {
     get(snsFiltersStore)[mockPrincipal.toText()];
 
   describe("loadSnsFilters", () => {
-    it("should load the sns decision status filters store but not Unspecified", async () => {
-      expect(getFiltersStoreData()?.decisionStatus).toBeUndefined();
-      await loadSnsFilters({
-        rootCanisterId: mockPrincipal,
-        nsFunctions: [nativeNervousSystemFunctionMock],
-        snsName: "sns-name",
+    describe("when there is no stored data", () => {
+      it("should initialize the filter store by type with default value", async () => {
+        expect(getFiltersStoreData()).toEqual(undefined);
+
+        await loadSnsFilters({
+          rootCanisterId: mockPrincipal,
+          nsFunctions: [],
+          snsName: "sns-name",
+        });
+
+        expect(getFiltersStoreData().types).toEqual([]);
       });
 
-      expect(getFiltersStoreData().decisionStatus).toHaveLength(
-        enumSize(SnsProposalDecisionStatus) - 1
-      );
-      expect(
-        getFiltersStoreData().decisionStatus.map(({ value }) => value)
-      ).not.toContainEqual(
-        SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_UNSPECIFIED
-      );
+      it("should initialize the filter store by topic with default value", async () => {
+        expect(getFiltersStoreData()).toEqual(undefined);
+
+        await loadSnsFilters({
+          rootCanisterId: mockPrincipal,
+          nsFunctions: [],
+          snsName: "sns-name",
+        });
+
+        expect(getFiltersStoreData().topics).toEqual([]);
+      });
+
+      it("should load the sns decision status filters store but not Unspecified", async () => {
+        expect(getFiltersStoreData()).toEqual(undefined);
+
+        await loadSnsFilters({
+          rootCanisterId: mockPrincipal,
+          nsFunctions: [],
+          snsName: "sns-name",
+        });
+
+        expect(getFiltersStoreData().decisionStatus.length).toBe(
+          enumSize(SnsProposalDecisionStatus) - 1
+        );
+        expect(
+          getFiltersStoreData().decisionStatus.map(({ value }) => value)
+        ).not.toContainEqual(
+          SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_UNSPECIFIED
+        );
+      });
     });
 
     it("should not change filters if they are already present", async () => {

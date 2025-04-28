@@ -14,6 +14,7 @@ import { get } from "svelte/store";
 const defaultFiltersProjectData = {
   types: [],
   decisionStatus: [],
+  topics: [],
 };
 
 // Load decision status, these are hardcoded based on enum values
@@ -85,6 +86,11 @@ export const loadSnsFilters = async ({
     snsFiltersStore.setTypes({
       rootCanisterId,
       types: defaultFiltersProjectData.types,
+    });
+
+    snsFiltersStore.setTopics({
+      rootCanisterId,
+      topics: defaultFiltersProjectData.topics,
     });
 
     // Do not re-initialise decision status and reward status to not override user selection.
