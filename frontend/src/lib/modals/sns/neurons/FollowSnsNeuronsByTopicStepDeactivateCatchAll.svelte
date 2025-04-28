@@ -8,11 +8,11 @@
   import { IconErrorOutline } from "@dfinity/gix-components";
 
   type Props = {
-    catchAllFollowings: SnsLegacyFollowings;
+    catchAllLegacyFollowings: SnsLegacyFollowings;
     confirm: () => void;
     cancel: () => void;
   };
-  const { catchAllFollowings, confirm, cancel }: Props = $props();
+  const { catchAllLegacyFollowings, confirm, cancel }: Props = $props();
 </script>
 
 <TestIdWrapper
@@ -30,10 +30,10 @@
   <h5>{$i18n.follow_sns_topics.legacy_followees_header}</h5>
 
   <ul class="list legacy-followings">
-    {#each catchAllFollowings.followees as neuronId (subaccountToHexString(neuronId.id))}
+    {#each catchAllLegacyFollowings.followees as neuronId (subaccountToHexString(neuronId.id))}
       <li>
         <FollowSnsNeuronsByTopicLegacyFollowee
-          nsFunction={catchAllFollowings.nsFunction}
+          nsFunction={catchAllLegacyFollowings.nsFunction}
           {neuronId}
         />
       </li>
