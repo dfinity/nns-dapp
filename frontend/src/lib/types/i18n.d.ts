@@ -442,6 +442,7 @@ interface I18nFollow_sns_topics {
   topic_definitions_title: string;
   topics_title: string;
   legacy_title: string;
+  deactivate_catch_all_title: string;
   topics_description: string;
   topics_critical_label: string;
   topics_critical_tooltip: string;
@@ -459,9 +460,11 @@ interface I18nFollow_sns_topics {
   neuron_follow: string;
   busy_updating: string;
   busy_removing: string;
+  busy_removing_catch_all: string;
   busy_removing_legacy: string;
   success_set_following: string;
   success_removing_legacy: string;
+  success_removing_catch_all: string;
   error_neuron_not_exist: string;
   error_add_following: string;
   error_remove_following: string;
