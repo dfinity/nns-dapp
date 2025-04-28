@@ -11,8 +11,8 @@
   } from "$lib/types/sns";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import {
-    getSnsTopicInfoKey,
     getLegacyFolloweesByTopics,
+    getSnsTopicInfoKey,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
   import type {
@@ -83,6 +83,17 @@
         snsTopicToTopicKey(fromDefinedNullable(topicInfo.topic)) ===
         following.topic
     )?.followees ?? [];
+
+  const getNonCriticalLegacyFolloweesByTopics = (
+    topicInfo: TopicInfoWithUnknown
+  ) =>
+    [
+      catchAllLegacyFollowings,
+      ...getLegacyFolloweesByTopics({
+        neuron,
+        topicInfos: [topicInfo],
+      }),
+    ].filter(nonNullish);
 </script>
 
 <TestIdWrapper testId="follow-sns-neurons-by-topic-step-topics-component">
@@ -133,10 +144,7 @@
       <FollowSnsNeuronsByTopicItem
         {topicInfo}
         followees={getTopicFollowees(topicInfo)}
-        legacyFollowees={getLegacyFolloweesByTopics({
-          neuron,
-          topicInfos: [topicInfo],
-        })}
+        legacyFollowees={getNonCriticalLegacyFolloweesByTopics(topicInfo)}
         checked={isTopicInfoSelected(topicInfo)}
         onNnsChange={onTopicSelectionChange}
         {removeFollowing}
