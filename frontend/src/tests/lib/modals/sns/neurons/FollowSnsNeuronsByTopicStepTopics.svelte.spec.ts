@@ -291,7 +291,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     expect(spyOpenDeactivateCatchAllStep).toBeCalledTimes(1);
   });
 
-  it("doesn't displays deactivate catch-all followings when no catch-all", async () => {
+  it("doesn't display deactivate catch-all followings when no catch-all", async () => {
     const po = renderComponent({
       ...defaultProps,
       catchAllLegacyFollowings: undefined,
