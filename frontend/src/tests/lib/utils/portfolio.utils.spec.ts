@@ -1,4 +1,7 @@
-import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID,
+  SEERS_ROOT_CANISTER_ID,
+} from "$lib/constants/canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
@@ -350,14 +353,19 @@ describe("Portfolio utils", () => {
         expect(result).toHaveLength(0);
       });
 
-      it("should filter CTS project", () => {
+      it("should filter abandoned project", () => {
         const mockCTSProject: TableProject = {
           ...mockTableProject,
           stakeInUsd: 1000,
           universeId: CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID,
         };
+        const mockSeersProject: TableProject = {
+          ...mockTableProject,
+          stakeInUsd: 1000,
+          universeId: SEERS_ROOT_CANISTER_ID,
+        };
 
-        const projects = [mockCTSProject, mockIcpProject];
+        const projects = [mockCTSProject, mockSeersProject, mockIcpProject];
 
         const result = getTopStakedTokens({
           projects,
@@ -366,6 +374,7 @@ describe("Portfolio utils", () => {
 
         expect(result).toHaveLength(1);
         expect(result).not.toContainEqual(mockCTSProject);
+        expect(result).not.toContainEqual(mockSeersProject);
       });
     });
   });

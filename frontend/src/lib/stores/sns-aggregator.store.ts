@@ -1,4 +1,8 @@
-import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  abandonedProjectsCanisterId,
+  CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID,
+  SEERS_ROOT_CANISTER_ID,
+} from "$lib/constants/canister-ids.constants";
 import type {
   CachedSnsDto,
   CachedSnsTokenMetadataDto,
@@ -47,32 +51,43 @@ export const snsAggregatorStore: SnsAggregatorStore = derived(
 
     if (isNullish(data)) return { data: undefined };
 
-    const cts = data.find(
-      (sns) =>
-        sns.list_sns_canisters.root === CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID
+    const abandonedProjects = data.filter((sns) =>
+      abandonedProjectsCanisterId.includes(sns.list_sns_canisters.root)
     );
-    if (isNullish(cts)) return { data };
-    const dataWithoutCts = data.filter(
+    if (abandonedProjects.length === 0) return { data };
+    const dataWithoutAbandonedProjects = data.filter(
       (sns) =>
-        sns.list_sns_canisters.root !== CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID
+        !abandonedProjectsCanisterId.includes(sns.list_sns_canisters.root)
     );
 
     return {
-      data: [...dataWithoutCts, overrideCyclesTransferStation(cts)],
+      data: [
+        ...dataWithoutAbandonedProjects,
+        ...abandonedProjects.map(overrideAbandonedProjects),
+      ],
     };
   }
 );
 
-const overrideCyclesTransferStation = (
+const overrideAbandonedProjects = (
   sns: CachedSnsDto
 ): CachedSnsDto & { isAbandoned?: boolean } => {
+  const originalData: Record<string, { name: string; symbol: string }> = {
+    [CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID]: {
+      name: "CYCLES-TRANSFER-STATION",
+      symbol: "CTS",
+    },
+    [SEERS_ROOT_CANISTER_ID]: {
+      name: "SEERS",
+      symbol: "SEER",
+    },
+  };
+  const originalProjectData = originalData[sns.list_sns_canisters.root];
   const hiddenCharacterToPushSnsToEndOfList = "\u200B";
-  const originalName = "CYCLES-TRANSFER-STATION";
-  const originalSymbol = "CTS";
   let name = sns.meta.name;
 
-  if (name !== originalName) {
-    name = `${hiddenCharacterToPushSnsToEndOfList}${name} (formerly ${originalName})`;
+  if (name !== originalProjectData.name) {
+    name = `${hiddenCharacterToPushSnsToEndOfList}${name} (formerly ${originalProjectData.name})`;
   }
 
   const newMeta = {
@@ -85,11 +100,11 @@ const overrideCyclesTransferStation = (
   >(([name, value]) => {
     if (name === "icrc1:symbol" && "Text" in value) {
       const symbol = value.Text;
-      if (symbol !== originalSymbol) {
+      if (symbol !== originalProjectData.symbol) {
         return [
           name,
           {
-            Text: `${symbol} (${originalSymbol})`,
+            Text: `${symbol} (${originalProjectData.symbol})`,
           },
         ];
       }
