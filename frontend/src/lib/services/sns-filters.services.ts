@@ -69,7 +69,6 @@ const loadTypesFilters = ({
   });
 };
 
-// TODO: Set default filters
 export const loadSnsFilters = async ({
   rootCanisterId,
   nsFunctions,
