@@ -18,6 +18,7 @@ export const shouldShowHighlightForSnsTopics: Readable<boolean> = derived(
         nonNullish(snsProjectsRecordStore?.[universeId.toText()])
       );
 
+    // add check for feature flag??
     return isSignedIn && listOfSnsTokensWithBalance.length > 0;
   }
 );

@@ -1,5 +1,7 @@
 <script lang="ts">
   import Alfred from "$lib/components/alfred/Alfred.svelte";
+  import Highlight from "$lib/components/ui/Highlight.svelte";
+  import { shouldShowHighlightForSnsTopics } from "$lib/derived/highlight.derived";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { initAnalytics } from "$lib/services/analytics.services";
   import {
@@ -49,6 +51,17 @@
 </script>
 
 <Alfred />
+
+{#if $shouldShowHighlightForSnsTopics}
+  <Highlight
+    level="info"
+    title="Follow by topic"
+    description="Welcome to your portfolio!"
+    link="Link"
+    id="topics-feature"
+  />
+{/if}
+
 <slot />
 
 <style lang="scss" global>
