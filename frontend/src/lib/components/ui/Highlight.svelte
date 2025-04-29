@@ -104,12 +104,14 @@
     border-radius: var(--border-radius);
     box-shadow: var(--strong-shadow, 8px 8px 16px 0 rgba(0, 0, 0, 0.25));
 
-    background: var(--card-background);
+    background: var(--card-background-tint);
     color: var(--content-color);
 
-    width: 320px;
+    min-width: 320px;
+    width: 90%;
     height: 204px;
 
+    top: calc(var(--header-height) + var(--padding-2x));
     right: auto;
     left: 50%;
     transform: translateX(-50%);
@@ -121,6 +123,7 @@
       bottom: 64px;
       transform: translateX(0);
       left: auto;
+      top: auto;
     }
 
     .highlight-wrapper {
