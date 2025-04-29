@@ -1,4 +1,15 @@
+<script lang="ts" module>
+  const iconMapper: Record<Props["level"], Component> = {
+    ["info"]: IconEyeOpen,
+    ["success"]: IconCheck,
+    ["warn"]: IconErrorOutline,
+    ["danger"]: IconErrorOutline,
+  };
+</script>
+
 <script lang="ts">
+  import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
+
   import { i18n } from "$lib/stores/i18n";
   import {
     IconCheck,
@@ -6,34 +17,44 @@
     IconErrorOutline,
     IconEyeOpen,
   } from "@dfinity/gix-components";
-  import type { Component } from "svelte";
+  import { onMount, type Component } from "svelte";
 
   type Props = {
     level: "info" | "success" | "warn" | "danger";
     title: string;
     description: string;
-    link: string;
+    link?: string;
+    id: string;
   };
 
-  const { level, title, description, link }: Props = $props();
+  const { level, title, description, link, id }: Props = $props();
 
   let isOpen = $state(true);
 
-  const iconMapper: Record<Props["level"], Component> = {
-    ["info"]: IconEyeOpen,
-    ["success"]: IconCheck,
-    ["warn"]: IconErrorOutline,
-    ["danger"]: IconErrorOutline,
-  };
-
   const Icon = $derived(iconMapper[level]);
+  const storageKeyPrefix = $derived(
+    StoreLocalStorageKey.HighlightClosedPrefix + id
+  );
+
   const close = () => {
     isOpen = false;
+    localStorage.setItem(storageKeyPrefix, "true");
   };
+
+  onMount(() => {
+    const isClosed = localStorage.getItem(storageKeyPrefix);
+
+    if (isClosed === "true") isOpen = false;
+  });
 </script>
 
 {#if isOpen}
-  <div class="highlight">
+  <div
+    class="highlight"
+    role="alert"
+    aria-live="polite"
+    data-tid="highlight-component"
+  >
     <div class="highlight-wrapper">
       <div class="highlight-header">
         <div class="highlight-icon {level}" aria-hidden="true">
@@ -48,11 +69,22 @@
         >
       </div>
 
-      <div class="highlight-title">{title}</div>
+      <div class="highlight-title" data-tid="highlight-title">{title}</div>
       <div class="highlight-content">
-        <p class="highlight-description">{description}</p>
+        <p class="highlight-description" data-tid="highlight-description"
+          >{description}</p
+        >
 
-        <a href={link} class="highlight-link">View more</a>
+        {#if link}
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="highlight-link"
+            data-tid="highlight-link"
+            >{$i18n.core.view_more}
+          </a>
+        {/if}
       </div>
     </div>
   </div>
@@ -73,6 +105,7 @@
     box-shadow: var(--strong-shadow, 8px 8px 16px 0 rgba(0, 0, 0, 0.25));
 
     background: var(--card-background);
+    color: var(--content-color);
 
     width: 320px;
     height: 204px;

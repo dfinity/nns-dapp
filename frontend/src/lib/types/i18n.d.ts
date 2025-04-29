@@ -40,6 +40,7 @@ interface I18nCore {
   or: string;
   add: string;
   not_applicable: string;
+  view_more: string;
 }
 
 interface I18nError {
