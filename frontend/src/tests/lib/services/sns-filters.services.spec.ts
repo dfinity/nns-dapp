@@ -132,14 +132,14 @@ describe("sns-filters services", () => {
 
       expect(getFiltersStoreData().topics).toEqual([
         {
-          checked: false,
+          checked: true,
           id: "DaoCommunitySettings",
           isCritical: false,
           name: "Topic1",
           value: "DaoCommunitySettings",
         },
         {
-          checked: false,
+          checked: true,
           id: "all_sns_proposals_without_topic",
           name: "Proposals without a topic",
           value: "all_sns_proposals_without_topic",
