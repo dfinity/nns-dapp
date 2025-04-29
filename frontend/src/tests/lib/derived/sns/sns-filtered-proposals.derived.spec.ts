@@ -1,5 +1,6 @@
 import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
@@ -327,6 +328,8 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should filter proposals by topic when topic filter is selected", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
 
@@ -390,6 +393,8 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should filter proposals without topics when 'Without Topic' filter is selected", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
 
@@ -453,6 +458,8 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should filter proposals by multiple topics", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
     const treasuryTopic = { TreasuryAssetManagement: null };
@@ -602,6 +609,8 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should combine filters for status and topic", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
 
