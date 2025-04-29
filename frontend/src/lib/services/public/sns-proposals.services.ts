@@ -11,7 +11,10 @@ import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-import { toExcludeTypeParameter } from "$lib/utils/sns-proposals.utils";
+import {
+  toExcludeTypeParameter,
+  toIncludeTopicsParameter,
+} from "$lib/utils/sns-proposals.utils";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsResponse,
@@ -68,14 +71,19 @@ export const loadSnsProposals = async ({
   snsFunctions: SnsNervousSystemFunction[];
   beforeProposalId?: SnsProposalId;
 }): Promise<void> => {
-  const { types = [], decisionStatus = [] } =
-    get(snsSelectedFiltersStore)?.[rootCanisterId.toText()] || {};
+  const {
+    types = [],
+    decisionStatus = [],
+    topics = [],
+  } = get(snsSelectedFiltersStore)?.[rootCanisterId.toText()] || {};
 
   const excludeType = toExcludeTypeParameter({
     filter: types,
     snsFunctions,
   });
   const includeStatus = decisionStatus.map(({ value }) => value);
+  const includeTopics = toIncludeTopicsParameter(topics);
+
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -85,6 +93,7 @@ export const loadSnsProposals = async ({
           beforeProposal: beforeProposalId,
           includeStatus,
           excludeType,
+          includeTopics,
         },
         identity,
         certified,

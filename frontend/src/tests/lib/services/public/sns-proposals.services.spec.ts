@@ -8,7 +8,11 @@ import {
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
-import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
+import type {
+  Filter,
+  SnsProposalTopicFilterId,
+  SnsProposalTypeFilterId,
+} from "$lib/types/filters";
 import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import {
@@ -79,6 +83,7 @@ describe("sns-proposals services", () => {
             beforeProposal: undefined,
             includeStatus: [],
             excludeType: [],
+            includeTopics: [],
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -99,6 +104,7 @@ describe("sns-proposals services", () => {
             beforeProposal: proposalId,
             includeStatus: [],
             excludeType: [],
+            includeTopics: [],
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -141,6 +147,7 @@ describe("sns-proposals services", () => {
             beforeProposal: proposalId,
             includeStatus: selectedDecisionStatus,
             excludeType: [],
+            includeTopics: [],
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -191,6 +198,61 @@ describe("sns-proposals services", () => {
             beforeProposal: proposalId,
             includeStatus: [],
             excludeType: [genericNervousSystemFunctionMock.id],
+            includeTopics: [],
+          },
+          identity: new AnonymousIdentity(),
+          certified: false,
+          rootCanisterId: mockPrincipal,
+        });
+      });
+
+      it("should call queryProposals with selected topics filters", async () => {
+        const proposalId = { id: 1n };
+        const rootCanisterId = mockPrincipal;
+        const topicsFilterState: Filter<SnsProposalTopicFilterId>[] = [
+          {
+            id: "1",
+            name: "Governance",
+            value: "Governance",
+            checked: true,
+          },
+          {
+            id: "2",
+            name: "Finance",
+            value: "TreasuryAssetManagement",
+            checked: true,
+          },
+          {
+            id: "3",
+            name: "Management",
+            value: "DappCanisterManagement",
+            checked: false,
+          },
+        ];
+
+        const expectedTopics = [
+          { Governance: null },
+          { TreasuryAssetManagement: null },
+        ];
+
+        snsFiltersStore.setTopics({
+          rootCanisterId,
+          topics: topicsFilterState,
+        });
+
+        await loadSnsProposals({
+          rootCanisterId,
+          beforeProposalId: proposalId,
+          snsFunctions: [],
+        });
+
+        expect(queryProposalsSpy).toHaveBeenCalledWith({
+          params: {
+            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            beforeProposal: proposalId,
+            includeStatus: [],
+            excludeType: [],
+            includeTopics: expectedTopics,
           },
           identity: new AnonymousIdentity(),
           certified: false,
@@ -299,6 +361,7 @@ describe("sns-proposals services", () => {
             beforeProposal: undefined,
             includeStatus: [],
             excludeType: [],
+            includeTopics: [],
           },
           identity: mockIdentity,
           certified: false,
@@ -407,6 +470,7 @@ describe("sns-proposals services", () => {
           const queryProposalSpy = vi
             .spyOn(api, "queryProposal")
             .mockResolvedValue(mockSnsProposal);
+
           snsProposalsStore.setProposals({
             rootCanisterId,
             proposals: [mockSnsProposal],
