@@ -34,7 +34,7 @@
 
   const topics = $derived(get(createSnsTopicsProjectStore(rootCanisterId)));
   const isTopicFilteringUnsupported = $derived(
-    unsupportedFilterByTopicSnsesStore.has(rootCanisterId.toText())
+    $unsupportedFilterByTopicSnsesStore.includes(rootCanisterId.toText())
   );
   const isFilterByTopicVisible = $derived(
     $ENABLE_SNS_TOPICS && nonNullish(topics) && !isTopicFilteringUnsupported
