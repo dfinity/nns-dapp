@@ -68,11 +68,14 @@ export const loadSnsProposals = async ({
   snsFunctions: SnsNervousSystemFunction[];
   beforeProposalId?: SnsProposalId;
 }): Promise<void> => {
-  const filters = get(snsSelectedFiltersStore)[rootCanisterId.toText()];
+  const { types = [], decisionStatus = [] } =
+    get(snsSelectedFiltersStore)?.[rootCanisterId.toText()] || {};
+
   const excludeType = toExcludeTypeParameter({
-    filter: filters?.types ?? [],
+    filter: types,
     snsFunctions,
   });
+  const includeStatus = decisionStatus.map(({ value }) => value);
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -80,8 +83,7 @@ export const loadSnsProposals = async ({
         params: {
           limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
           beforeProposal: beforeProposalId,
-          includeStatus:
-            filters?.decisionStatus.map(({ value }) => value) ?? [],
+          includeStatus,
           excludeType,
         },
         identity,
