@@ -8,6 +8,10 @@ import {
   type SnsProposalsStoreData,
 } from "$lib/stores/sns-proposals.store";
 import {
+  unsupportedFilterByTopicSnsesStore,
+  type UnsupportedFilterByTopicCanistersStoreData,
+} from "$lib/stores/sns-unsupported-filter-by-topic.store";
+import {
   ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
   ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
 } from "$lib/types/filters";
@@ -19,11 +23,19 @@ import { fromNullable, isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export const snsFilteredProposalsStore = derived<
-  [SnsProposalsStore, Readable<SnsFiltersStoreData>],
+  [
+    SnsProposalsStore,
+    Readable<SnsFiltersStoreData>,
+    Readable<UnsupportedFilterByTopicCanistersStoreData>,
+  ],
   SnsProposalsStoreData
 >(
-  [snsProposalsStore, snsSelectedFiltersStore],
-  ([proposalsStore, selectedFilters]) => {
+  [
+    snsProposalsStore,
+    snsSelectedFiltersStore,
+    unsupportedFilterByTopicSnsesStore,
+  ],
+  ([proposalsStore, selectedFilters, unsupportedFilterByTopicSnses]) => {
     const filteredProposals = Object.entries(proposalsStore).reduce(
       (acc, [rootCanisterIdText, projectProposals]) => {
         const projectSelectedFilters = selectedFilters[rootCanisterIdText];
@@ -61,7 +73,13 @@ export const snsFilteredProposalsStore = derived<
                 .map(({ value }) => value)
                 .includes(proposalTopic);
 
-            return statusMatch && nervousFunctionsMatch && proposalTopicMatch;
+            const isTopicFilteringUnsupported =
+              unsupportedFilterByTopicSnses.includes(rootCanisterIdText);
+
+            if (isTopicFilteringUnsupported)
+              return statusMatch && nervousFunctionsMatch;
+
+            return statusMatch && proposalTopicMatch;
           }
         );
         return {

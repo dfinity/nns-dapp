@@ -2,6 +2,7 @@ import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
+import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import {
   ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
   ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
@@ -131,8 +132,12 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should return proposals which type is checked", () => {
+    // TODO: Type filtering will be removed at some point in favor of topic filtering
+    unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+
     const nsFunctionId1 = 1n;
     const nsFunctionId2 = 2n;
+
     const proposal1 = createSnsProposal({
       proposalId: 1000n,
       action: nsFunctionId1,
@@ -195,6 +200,9 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it('should return all generic proposals when "All generic" is checked', () => {
+    // TODO: Type filtering will be removed at some point in favor of topic filtering
+    unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+
     const nativeNsFunctionId = 1n;
     const nativeTypeProposal = createSnsProposal({
       proposalId: 9001n,
@@ -524,10 +532,80 @@ describe("snsFilteredProposalsStore", () => {
     ]);
   });
 
-  it("should combine filters for status, type, and topic", () => {
+  it("should combine filters for status and type", () => {
+    // TODO: Type filtering will be removed at some point in favor of topic filtering
+    unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+
+    const nsFunctionId1 = 1n;
+    const nsFunctionId2 = 2n;
+
+    const openProposal = createSnsProposal({
+      proposalId: 101n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+      action: nsFunctionId1,
+    });
+
+    const rejectedProposal = createSnsProposal({
+      proposalId: 102n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED,
+      action: nsFunctionId2,
+    });
+
+    const proposals = [openProposal, rejectedProposal];
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals,
+      certified: true,
+      completed: true,
+    });
+
+    // Set status filter to show only OPEN proposals
+    snsFiltersStore.setDecisionStatus({
+      rootCanisterId,
+      decisionStatus: [
+        {
+          id: "1",
+          name: "Open",
+          value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          checked: true,
+        },
+        {
+          id: "2",
+          name: "Rejected",
+          value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED,
+          checked: false,
+        },
+      ],
+    });
+
+    // Set type filter to show all proposals
+    snsFiltersStore.setTypes({
+      rootCanisterId,
+      types: [
+        {
+          id: `${nsFunctionId1}`,
+          value: `${nsFunctionId1}`,
+          name: "Motion",
+          checked: true,
+        },
+        {
+          id: `${nsFunctionId2}`,
+          value: `${nsFunctionId2}`,
+          name: "Add a Node",
+          checked: true,
+        },
+      ],
+    });
+    expect(getProposals()).toHaveLength(1);
+    expect(getProposals()).toEqual([openProposal]);
+  });
+
+  it("should combine filters for status and topic", () => {
     const governanceTopic = { Governance: null };
     const dappManagementTopic = { DappCanisterManagement: null };
 
+    // TODO(yhabib): Move topic logic inside mock function
     const openProposalWithGovernanceTopic = createSnsProposal({
       proposalId: 101n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
