@@ -1,3 +1,12 @@
+<script lang="ts" module>
+  const iconMapper: Record<Props["level"], Component> = {
+    ["info"]: IconEyeOpen,
+    ["success"]: IconCheck,
+    ["warn"]: IconErrorOutline,
+    ["danger"]: IconErrorOutline,
+  };
+</script>
+
 <script lang="ts">
   import { browser } from "$app/environment";
   import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
@@ -44,6 +53,12 @@
 
     localStorage?.setItem(localStorageKey, "false");
   };
+
+  onMount(() => {
+    const isClosed = localStorage.getItem(storageKeyPrefix);
+
+    if (isClosed === "true") isOpen = false;
+  });
 </script>
 
 {#if isOpen}
