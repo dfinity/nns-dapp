@@ -16,11 +16,7 @@
   class="container"
 >
   <div data-tid="ns-function" class="ns-function">{nsFunction.name}</div>
-  <FollowSnsNeuronsByTopicFollowee
-    {neuronId}
-    {onRemoveClick}
-    isTagStyle={nonNullish(onRemoveClick)}
-  />
+  <FollowSnsNeuronsByTopicFollowee {neuronId} {onRemoveClick} />
 </div>
 
 <style lang="scss">

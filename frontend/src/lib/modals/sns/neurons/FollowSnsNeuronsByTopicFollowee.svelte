@@ -8,20 +8,18 @@
 
   type Props = {
     neuronId: SnsNeuronId;
-    isTagStyle?: boolean;
     onRemoveClick?: () => void;
   };
-  const { neuronId, isTagStyle = true, onRemoveClick }: Props = $props();
+  const { neuronId, onRemoveClick }: Props = $props();
 
   const neuronIdHex = $derived(subaccountToHexString(neuronId.id));
 </script>
 
 <div
   class="container"
-  class:isTagStyle
   data-tid="follow-sns-neurons-by-topic-followee-component"
 >
-  <Hash text={neuronIdHex} tagName="span" showCopy />
+  <Hash text={neuronIdHex} tagName="span" showCopy noHeigh={false} />
   {#if nonNullish(onRemoveClick)}
     <button
       data-tid="remove-button"
@@ -40,16 +38,13 @@
 
     display: flex;
     align-items: center;
+    padding-left: var(--padding);
+    border-radius: var(--border-radius-0_5x);
+    background-color: var(--tag-background);
+    color: var(--tag-text);
 
-    &.isTagStyle {
-      padding-left: var(--padding);
-      border-radius: var(--border-radius-0_5x);
-      background-color: var(--tag-background);
-      color: var(--tag-text);
-
-      // avoid unnecessary scrollbars of the collapsible container
-      overflow: hidden;
-    }
+    // avoid unnecessary scrollbars of the collapsible container
+    overflow: hidden;
   }
 
   .remove-button {
@@ -58,6 +53,6 @@
     // TODO(sns-topics): Add --Copy-color to the gix/Copy and use --icon-color for both buttons.
     color: var(--primary);
     // Decrease the gap between copy and remove buttons.
-    padding-left: 0;
+    padding: 0 var(--padding-0_5x) 0 0;
   }
 </style>
