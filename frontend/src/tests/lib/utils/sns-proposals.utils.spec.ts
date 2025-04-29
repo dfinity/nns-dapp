@@ -28,6 +28,7 @@ import {
   snsRewardStatus,
   sortSnsProposalsById,
   toExcludeTypeParameter,
+  toIncludeTopicsParameter,
 } from "$lib/utils/sns-proposals.utils";
 import {
   allTopicsNervousSystemFunctionMock,
@@ -1154,6 +1155,72 @@ describe("sns-proposals utils", () => {
         genericNsFunctionId1,
         genericNsFunctionId2,
       ]);
+    });
+  });
+
+  describe("toIncludeTopicsParameter", () => {
+    it("should return empty array when no filters are provided", () => {
+      expect(toIncludeTopicsParameter([])).toEqual([]);
+    });
+
+    it("should convert topic keys to topics for known topics", () => {
+      const filters: Filter<SnsProposalTopicFilterId>[] = [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance Topic",
+          checked: true,
+        },
+        {
+          id: "DaoCommunitySettings",
+          value: "DaoCommunitySettings",
+          name: "DAO Community Settings",
+          checked: true,
+        },
+      ];
+
+      const result = toIncludeTopicsParameter(filters);
+
+      expect(result).toEqual([
+        { Governance: null },
+        { DaoCommunitySettings: null },
+      ]);
+    });
+
+    it("should include null when ALL_SNS_PROPOSALS_WITHOUT_TOPIC is selected", () => {
+      const filters: Filter<SnsProposalTopicFilterId>[] = [
+        {
+          id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          name: "Proposals without a topic",
+          checked: true,
+        },
+      ];
+
+      const result = toIncludeTopicsParameter(filters);
+
+      expect(result).toEqual([null]);
+    });
+
+    it("should combine known topics and null when both regular topics and ALL_SNS_PROPOSALS_WITHOUT_TOPIC are selected", () => {
+      const filters: Filter<SnsProposalTopicFilterId>[] = [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance Topic",
+          checked: true,
+        },
+        {
+          id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          name: "Proposals without a topic",
+          checked: true,
+        },
+      ];
+
+      const result = toIncludeTopicsParameter(filters);
+
+      expect(result).toEqual([{ Governance: null }, null]);
     });
   });
 
