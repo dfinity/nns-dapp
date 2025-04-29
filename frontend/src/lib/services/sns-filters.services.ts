@@ -73,6 +73,23 @@ const loadTypesFilters = ({
   });
 };
 
+const loadTopicsFilters = (rootCanisterId: Principal) => {
+  const topics = get(createSnsTopicsProjectStore(rootCanisterId));
+  if (isNullish(topics)) return [];
+
+  const currentTopicsFilterData =
+    get(snsFiltersStore)?.[rootCanisterId.toText()]?.topics ?? [];
+  const updatedTopicsFilterData = generateSnsProposalTopicsFilterData({
+    topics,
+    filters: currentTopicsFilterData,
+  });
+
+  snsFiltersStore.setTopics({
+    rootCanisterId,
+    topics: updatedTopicsFilterData,
+  });
+};
+
 export const loadSnsFilters = async ({
   rootCanisterId,
   nsFunctions,
