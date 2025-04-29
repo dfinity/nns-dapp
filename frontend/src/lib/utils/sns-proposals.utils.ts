@@ -4,8 +4,15 @@ import {
 } from "$lib/constants/proposals.constants";
 import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
-import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
-import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import type {
+  Filter,
+  SnsProposalTopicFilterId,
+  SnsProposalTypeFilterId,
+} from "$lib/types/filters";
+import {
+  ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+  ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+} from "$lib/types/filters";
 import type {
   BasisPoints,
   UniversalProposalStatus,
@@ -535,3 +542,48 @@ export const fromPercentageBasisPoints = (
 export const isCriticalProposal = (immediateMajorityPercent: number): boolean =>
   immediateMajorityPercent !==
   basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER);
+
+export const generateSnsProposalTopicsFilterData = ({
+  topics,
+  filters,
+}: {
+  topics: TopicInfoWithUnknown[];
+  filters: Filter<SnsProposalTopicFilterId>[];
+}): Filter<SnsProposalTopicFilterId>[] => {
+  if (topics.length === 0) return [];
+
+  // TODO: Extract and reuse
+  const getCheckedState = (filterId: string) =>
+    filters.find(({ id }) => id === filterId)?.checked !== false;
+
+  const i18nKeys = get(i18n);
+
+  const existingFilters: Filter<SnsProposalTopicFilterId>[] = topics
+    .filter((topic) => nonNullish(topic.topic))
+    .map((topic) => ({
+      name: fromDefinedNullable(topic.name),
+      isCritical: fromDefinedNullable(topic.is_critical),
+      topic: snsTopicToTopicKey(fromDefinedNullable(topic.topic)),
+    }))
+    .map(({ name, isCritical, topic }) => ({
+      id: topic,
+      value: topic,
+      name,
+      isCritical,
+      checked: getCheckedState(topic),
+    }))
+    // sorts filters with critical topics first, then alphabetically within each group
+    .sort((a, b) => {
+      if (a.isCritical && !b.isCritical) return -1;
+      if (!a.isCritical && b.isCritical) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+  const allSnsProposalsWithoutTopicFilter = {
+    id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+    value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+    name: i18nKeys.voting.all_sns_proposals_without_topic,
+    checked: getCheckedState(ALL_SNS_PROPOSALS_WITHOUT_TOPIC),
+  };
+  return [...existingFilters, allSnsProposalsWithoutTopicFilter];
+};
