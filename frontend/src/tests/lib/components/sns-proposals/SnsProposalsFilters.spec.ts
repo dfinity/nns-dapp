@@ -131,7 +131,7 @@ describe("SnsProposalsFilters", () => {
     });
   });
 
-  describe.only("filter by topics is on", () => {
+  describe("filter by topics is on", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
 
