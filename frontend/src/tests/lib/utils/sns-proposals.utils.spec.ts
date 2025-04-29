@@ -904,7 +904,7 @@ describe("sns-proposals utils", () => {
           id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
           value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
           name: "All proposals without topic",
-          checked: true,
+          checked: false,
         },
       ];
 
@@ -919,13 +919,13 @@ describe("sns-proposals utils", () => {
       );
 
       expect(governanceFilter?.checked).toBe(true);
-      expect(withoutTopicFilter?.checked).toBe(true);
+      expect(withoutTopicFilter?.checked).toBe(false);
 
-      // DaoCommunitySettings was not in the existing filters, so should be unchecked
+      // DaoCommunitySettings was not in the existing filters, so it should be checked
       const daoSettingsFilter = result.find(
         ({ id }) => id === "DaoCommunitySettings"
       );
-      expect(daoSettingsFilter?.checked).toBe(false);
+      expect(daoSettingsFilter?.checked).toBe(true);
     });
 
     it("should sort topics with critical topics first, then alphabetically", () => {
@@ -975,7 +975,7 @@ describe("sns-proposals utils", () => {
       expect(result[4].id).toBe(ALL_SNS_PROPOSALS_WITHOUT_TOPIC);
     });
 
-    it("should handle topics with all properties properly", () => {
+    it("should show all proposals when default setupt of filters", () => {
       const topics: TopicInfoWithUnknown[] = [
         {
           ...topicInfoMock,
@@ -995,14 +995,14 @@ describe("sns-proposals utils", () => {
         value: "Governance",
         name: "Test Topic",
         isCritical: true,
-        checked: false,
+        checked: true,
       });
 
       expect(result[1]).toEqual({
         id: "all_sns_proposals_without_topic",
         name: "Proposals without a topic",
         value: "all_sns_proposals_without_topic",
-        checked: false,
+        checked: true,
       });
     });
   });

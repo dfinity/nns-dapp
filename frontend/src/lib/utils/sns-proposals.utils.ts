@@ -552,6 +552,10 @@ export const generateSnsProposalTopicsFilterData = ({
 }): Filter<SnsProposalTopicFilterId>[] => {
   if (topics.length === 0) return [];
 
+  // TODO: Extract and reuse
+  const getCheckedState = (filterId: string) =>
+    filters.find(({ id }) => id === filterId)?.checked !== false;
+
   const i18nKeys = get(i18n);
 
   const existingFilters: Filter<SnsProposalTopicFilterId>[] = topics
@@ -566,7 +570,7 @@ export const generateSnsProposalTopicsFilterData = ({
       value: topic,
       name,
       isCritical,
-      checked: filters.find(({ id }) => id === topic)?.checked ?? false,
+      checked: getCheckedState(topic),
     }))
     // sorts filters with critical topics first, then alphabetically within each group
     .sort((a, b) => {
@@ -579,9 +583,7 @@ export const generateSnsProposalTopicsFilterData = ({
     id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
     value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
     name: i18nKeys.voting.all_sns_proposals_without_topic,
-    checked:
-      filters.find(({ id }) => id === ALL_SNS_PROPOSALS_WITHOUT_TOPIC)
-        ?.checked ?? false,
+    checked: getCheckedState(ALL_SNS_PROPOSALS_WITHOUT_TOPIC),
   };
   return [...existingFilters, allSnsProposalsWithoutTopicFilter];
 };
