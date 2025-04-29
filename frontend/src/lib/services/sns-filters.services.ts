@@ -74,14 +74,12 @@ const loadTypesFilters = ({
 };
 
 const loadTopicsFilters = (rootCanisterId: Principal) => {
-  const topics = get(createSnsTopicsProjectStore(rootCanisterId));
-  if (isNullish(topics)) return [];
+  const topics = get(createSnsTopicsProjectStore(rootCanisterId)) ?? [];
+  const filters = get(snsFiltersStore)?.[rootCanisterId.toText()]?.topics ?? [];
 
-  const currentTopicsFilterData =
-    get(snsFiltersStore)?.[rootCanisterId.toText()]?.topics ?? [];
   const updatedTopicsFilterData = generateSnsProposalTopicsFilterData({
     topics,
-    filters: currentTopicsFilterData,
+    filters,
   });
 
   snsFiltersStore.setTopics({
