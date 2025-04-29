@@ -1,7 +1,16 @@
 import SnsProposalsFilters from "$lib/components/sns-proposals/SnsProposalsFilters.svelte";
-import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
+import { page } from "$mocks/$app/stores";
+import {
+  mockPrincipal,
+  resetIdentity,
+  setNoIdentity,
+} from "$tests/mocks/auth.store.mock";
+import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
 import { SnsProposalFiltersPo } from "$tests/page-objects/SnsProposalFilters.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
 
@@ -14,14 +23,19 @@ describe("SnsProposalsFilters", () => {
 
   beforeEach(() => {
     resetIdentity();
+
+    page.mock({ data: { universe: mockPrincipal.toText() } });
   });
 
-  it("should render filter buttons", async () => {
+  it("should render filter by status and type buttons by default", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
     const po = await renderComponent();
     await po.getActionableProposalsSegmentPo().clickAllProposals();
 
-    expect(await po.getFilterByTypesButton().isPresent()).toBe(true);
-    expect(await po.getFilterByStatusButton().isPresent()).toBe(true);
+    expect(await po.getFilterByStatusButtonPo().isPresent()).toBe(true);
+    expect(await po.getFilterByTypesButtonPo().isPresent()).toBe(true);
+    expect(await po.getFilterByTopicsButtonPo().isPresent()).toBe(false);
   });
 
   it("should open filter modal when type filter is clicked", async () => {
@@ -84,16 +98,16 @@ describe("SnsProposalsFilters", () => {
       const segmentPo = po.getActionableProposalsSegmentPo();
 
       await segmentPo.clickAllProposals();
-      expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
-      expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
+      expect(await po.getFilterByTypesButtonPo().isPresent()).toEqual(true);
+      expect(await po.getFilterByStatusButtonPo().isPresent()).toEqual(true);
 
       await segmentPo.clickActionableProposals();
-      expect(await po.getFilterByTypesButton().isPresent()).toEqual(false);
-      expect(await po.getFilterByStatusButton().isPresent()).toEqual(false);
+      expect(await po.getFilterByTypesButtonPo().isPresent()).toEqual(false);
+      expect(await po.getFilterByStatusButtonPo().isPresent()).toEqual(false);
 
       await segmentPo.clickAllProposals();
-      expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
-      expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
+      expect(await po.getFilterByTypesButtonPo().isPresent()).toEqual(true);
+      expect(await po.getFilterByStatusButtonPo().isPresent()).toEqual(true);
     });
   });
 
@@ -112,8 +126,61 @@ describe("SnsProposalsFilters", () => {
 
     it("should filters be shown", async () => {
       const po = await renderComponent();
-      expect(await po.getFilterByTypesButton().isPresent()).toEqual(true);
-      expect(await po.getFilterByStatusButton().isPresent()).toEqual(true);
+      expect(await po.getFilterByTypesButtonPo().isPresent()).toEqual(true);
+      expect(await po.getFilterByStatusButtonPo().isPresent()).toEqual(true);
+    });
+  });
+
+  describe.only("filter by topics is on", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          topics: {
+            topics: [
+              topicInfoDtoMock({
+                topic: "DaoCommunitySettings",
+                name: "Topic1",
+                description: "This is a description",
+                isCritical: false,
+              }),
+            ],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+    });
+
+    it("should render filter by topics button when sns-aggregator returns topics and project governance canister supports filtering by topic", async () => {
+      const po = await renderComponent();
+      await po.getActionableProposalsSegmentPo().clickAllProposals();
+
+      expect(await po.getFilterByStatusButtonPo().isPresent()).toBe(true);
+      expect(await po.getFilterByTypesButtonPo().isPresent()).toBe(false);
+      expect(await po.getFilterByTopicsButtonPo().isPresent()).toBe(true);
+    });
+
+    it("should not render filter by topics button when sns-aggregator returns topics but project governance canister doesn't support filtering by topic", async () => {
+      unsupportedFilterByTopicSnsesStore.add(mockPrincipal.toText());
+
+      const po = await renderComponent();
+      await po.getActionableProposalsSegmentPo().clickAllProposals();
+
+      expect(await po.getFilterByStatusButtonPo().isPresent()).toBe(true);
+      expect(await po.getFilterByTypesButtonPo().isPresent()).toBe(true);
+      expect(await po.getFilterByTopicsButtonPo().isPresent()).toBe(false);
+    });
+
+    it("should open filter modal when topic filter is clicked", async () => {
+      const po = await renderComponent();
+      await po.getActionableProposalsSegmentPo().clickAllProposals();
+      expect(await po.getFilterModalPo().isPresent()).toBe(false);
+
+      await po.clickFiltersByTopicButton();
+      await runResolvedPromises();
+      expect(await po.getFilterModalPo().isPresent()).toBe(true);
     });
   });
 });

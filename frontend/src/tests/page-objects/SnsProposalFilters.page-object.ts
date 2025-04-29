@@ -11,28 +11,36 @@ export class SnsProposalFiltersPo extends BasePageObject {
     return new SnsProposalFiltersPo(element.byTestId(SnsProposalFiltersPo.TID));
   }
 
-  getFilterByTypesButton(): ButtonPo {
+  getFilterByTypesButtonPo(): ButtonPo {
     return this.getButton("filters-by-types");
   }
 
-  getFilterByRewardsButton(): ButtonPo {
+  getFilterByRewardsButtonPo(): ButtonPo {
     return this.getButton("filters-by-rewards");
   }
 
-  getFilterByStatusButton(): ButtonPo {
+  getFilterByStatusButtonPo(): ButtonPo {
     return this.getButton("filters-by-status");
   }
 
+  getFilterByTopicsButtonPo(): ButtonPo {
+    return this.getButton("filters-by-topics");
+  }
+
   clickFiltersByTypesButton(): Promise<void> {
-    return this.getFilterByTypesButton().click();
+    return this.getFilterByTypesButtonPo().click();
   }
 
   clickFiltersByRewardsButton(): Promise<void> {
-    return this.getFilterByRewardsButton().click();
+    return this.getFilterByRewardsButtonPo().click();
   }
 
   clickFiltersByStatusButton(): Promise<void> {
-    return this.getFilterByStatusButton().click();
+    return this.getFilterByStatusButtonPo().click();
+  }
+
+  clickFiltersByTopicButton(): Promise<void> {
+    return this.getFilterByTopicsButtonPo().click();
   }
 
   getFilterModalPo(): FilterModalPo {
