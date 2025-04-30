@@ -1,3 +1,4 @@
+import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
 import {
   snsSelectedFiltersStore,
   type SnsFiltersStoreData,
@@ -7,26 +8,42 @@ import {
   type SnsProposalsStore,
   type SnsProposalsStoreData,
 } from "$lib/stores/sns-proposals.store";
-import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import {
+  unsupportedFilterByTopicSnsesStore,
+  type UnsupportedFilterByTopicCanistersStoreData,
+} from "$lib/stores/sns-unsupported-filter-by-topic.store";
+import {
+  ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+  ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+} from "$lib/types/filters";
 import { snsDecisionStatus } from "$lib/utils/sns-proposals.utils";
+import { snsTopicToTopicKey } from "$lib/utils/sns-topics.utils";
 import { isSnsGenericNervousSystemTypeProposal } from "$lib/utils/sns.utils";
-import { isNullish } from "@dfinity/utils";
-import { derived, type Readable } from "svelte/store";
+import type { SnsTopic } from "@dfinity/sns";
+import { fromNullable, isNullish } from "@dfinity/utils";
+import { derived, get, type Readable } from "svelte/store";
 
 export const snsFilteredProposalsStore = derived<
-  [SnsProposalsStore, Readable<SnsFiltersStoreData>],
+  [
+    SnsProposalsStore,
+    Readable<SnsFiltersStoreData>,
+    Readable<UnsupportedFilterByTopicCanistersStoreData>,
+  ],
   SnsProposalsStoreData
 >(
-  [snsProposalsStore, snsSelectedFiltersStore],
-  ([proposalsStore, selectedFilters]) => {
+  [
+    snsProposalsStore,
+    snsSelectedFiltersStore,
+    unsupportedFilterByTopicSnsesStore,
+  ],
+  ([proposalsStore, selectedFilters, unsupportedFilterByTopicSnses]) => {
     const filteredProposals = Object.entries(proposalsStore).reduce(
       (acc, [rootCanisterIdText, projectProposals]) => {
         const projectSelectedFilters = selectedFilters[rootCanisterIdText];
         // Skip the project if there are no filters for it.
         // This will cause the proposals to be `undefined` for a specific project.
-        if (isNullish(projectSelectedFilters)) {
-          return acc;
-        }
+        if (isNullish(projectSelectedFilters)) return acc;
+
         const filteredProjectProposals = projectProposals.proposals.filter(
           (proposal) => {
             const statusMatch =
@@ -45,6 +62,26 @@ export const snsFilteredProposalsStore = derived<
                       ALL_SNS_GENERIC_PROPOSAL_TYPES_ID
                     : `${proposal.action}`
                 );
+
+            const topic = fromNullable(proposal.topic);
+            const proposalTopic = isNullish(topic)
+              ? ALL_SNS_PROPOSALS_WITHOUT_TOPIC
+              : snsTopicToTopicKey(topic as SnsTopic);
+
+            const proposalTopicMatch =
+              projectSelectedFilters.topics.length === 0 ||
+              projectSelectedFilters.topics
+                .map(({ value }) => value)
+                .includes(proposalTopic);
+
+            const isTopicFilteringUnsupported =
+              unsupportedFilterByTopicSnses.includes(rootCanisterIdText);
+
+            const isTopicFilteringEnabled =
+              get(ENABLE_SNS_TOPICS) && !isTopicFilteringUnsupported;
+
+            if (isTopicFilteringEnabled)
+              return statusMatch && proposalTopicMatch;
 
             return statusMatch && nervousFunctionsMatch;
           }
