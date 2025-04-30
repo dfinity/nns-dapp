@@ -6,19 +6,15 @@
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
-  import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
+  import { createEnableFilteringBySnsTopicsStore } from "$lib/derived/sns-topics.derived";
   import SnsFilterStatusModal from "$lib/modals/sns/proposals/SnsFilterStatusModal.svelte";
   import SnsFilterTopicsModal from "$lib/modals/sns/proposals/SnsFilterTopicsModal.svelte";
   import SnsFilterTypesModal from "$lib/modals/sns/proposals/SnsFilterTypesModal.svelte";
-  import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     snsFiltersStore,
     type ProjectFiltersStoreData,
   } from "$lib/stores/sns-filters.store";
-  import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
-  import { nonNullish } from "@dfinity/utils";
-  import { get } from "svelte/store";
 
   type Filters = "types" | "status" | "topics";
 
@@ -32,13 +28,10 @@
   const openFilters = (filtersModal: Filters) => (modal = filtersModal);
   const closeModal = () => (modal = undefined);
 
-  const topics = $derived(get(createSnsTopicsProjectStore(rootCanisterId)));
-  const isTopicFilteringUnsupported = $derived(
-    $unsupportedFilterByTopicSnsesStore.includes(rootCanisterId.toText())
+  const enableFilteringBySnsTopicsStore = $derived(
+    createEnableFilteringBySnsTopicsStore(rootCanisterId)
   );
-  const isFilterByTopicVisible = $derived(
-    $ENABLE_SNS_TOPICS && nonNullish(topics) && !isTopicFilteringUnsupported
-  );
+  const isFilterByTopicVisible = $derived(enableFilteringBySnsTopicsStore);
 </script>
 
 <TestIdWrapper testId="sns-proposals-filters-component">
