@@ -4,6 +4,7 @@ import {
   registerVote as registerVoteApi,
 } from "$lib/api/sns-governance.api";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
+import { createEnableFilteringBySnsTopicsStore } from "$lib/derived/sns-topics.derived";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
@@ -11,7 +12,10 @@ import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-import { toExcludeTypeParameter } from "$lib/utils/sns-proposals.utils";
+import {
+  toExcludeTypeParameter,
+  toIncludeTopicsParameter,
+} from "$lib/utils/sns-proposals.utils";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsResponse,
@@ -68,11 +72,27 @@ export const loadSnsProposals = async ({
   snsFunctions: SnsNervousSystemFunction[];
   beforeProposalId?: SnsProposalId;
 }): Promise<void> => {
-  const filters = get(snsSelectedFiltersStore)[rootCanisterId.toText()];
-  const excludeType = toExcludeTypeParameter({
-    filter: filters?.types ?? [],
-    snsFunctions,
-  });
+  const {
+    types = [],
+    decisionStatus = [],
+    topics = [],
+  } = get(snsSelectedFiltersStore)?.[rootCanisterId.toText()] || {};
+
+  const includeStatus = decisionStatus.map(({ value }) => value);
+
+  const isFilteringByTopicEnabled = get(
+    createEnableFilteringBySnsTopicsStore(rootCanisterId)
+  );
+  const includeTopics = isFilteringByTopicEnabled
+    ? toIncludeTopicsParameter(topics)
+    : [];
+  const excludeType = isFilteringByTopicEnabled
+    ? []
+    : toExcludeTypeParameter({
+        filter: types,
+        snsFunctions,
+      });
+
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -80,9 +100,9 @@ export const loadSnsProposals = async ({
         params: {
           limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
           beforeProposal: beforeProposalId,
-          includeStatus:
-            filters?.decisionStatus.map(({ value }) => value) ?? [],
+          includeStatus,
           excludeType,
+          includeTopics,
         },
         identity,
         certified,
