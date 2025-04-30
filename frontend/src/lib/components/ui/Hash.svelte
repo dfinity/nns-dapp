@@ -9,6 +9,7 @@
   export let idPrefix: string = "hash";
   export let text: string;
   export let showCopy = false;
+  export let noHeigh = true;
   export let className: string | undefined = undefined;
   export let splitLength: number | undefined = undefined;
   export let tooltipTop: boolean | undefined = undefined;
@@ -40,7 +41,7 @@
     >
   </Tooltip>
   {#if showCopy}
-    <div class="copy">
+    <div class="copy" class:noHeigh>
       <Copy value={text} />
     </div>
   {/if}
@@ -54,8 +55,11 @@
     .copy {
       align-items: center;
       display: inline-flex;
-      // Make sure the icon doesn't increase the line height.
-      max-height: 0;
+
+      &.noHeigh {
+        // Make sure the icon doesn't increase the line height.
+        max-height: 0;
+      }
     }
   }
 </style>
