@@ -4,6 +4,7 @@ import {
   registerVote as registerVoteApi,
 } from "$lib/api/sns-governance.api";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
+import { createEnableFilteringBySnsTopicsStore } from "$lib/derived/sns-topics.derived";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
@@ -77,12 +78,22 @@ export const loadSnsProposals = async ({
     topics = [],
   } = get(snsSelectedFiltersStore)?.[rootCanisterId.toText()] || {};
 
-  const excludeType = toExcludeTypeParameter({
-    filter: types,
-    snsFunctions,
-  });
   const includeStatus = decisionStatus.map(({ value }) => value);
-  const includeTopics = toIncludeTopicsParameter(topics);
+
+  const isFilteringByTopicEnabled = get(
+    createEnableFilteringBySnsTopicsStore(rootCanisterId)
+  );
+  const includeTopics = isFilteringByTopicEnabled
+    ? toIncludeTopicsParameter(topics)
+    : [];
+  const excludeType = isFilteringByTopicEnabled
+    ? []
+    : toExcludeTypeParameter({
+        filter: types,
+        snsFunctions,
+      });
+
+  // console.log(isFilteringByTopicEnabled);
 
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",

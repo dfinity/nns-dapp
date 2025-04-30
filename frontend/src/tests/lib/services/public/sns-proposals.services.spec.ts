@@ -5,6 +5,7 @@ import {
   loadSnsProposals,
   registerVote,
 } from "$lib/services/public/sns-proposals.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
@@ -27,6 +28,8 @@ import {
   nativeNervousSystemFunctionMock,
 } from "$tests/mocks/sns-functions.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
+import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import {
@@ -206,7 +209,125 @@ describe("sns-proposals services", () => {
         });
       });
 
+      it("should call queryProposals with empty excludeType if Project supports topics", async () => {
+        const proposalId = { id: 1n };
+        const rootCanisterId = mockPrincipal;
+
+        // types state
+        const snsFunctions = [
+          nativeNervousSystemFunctionMock,
+          genericNervousSystemFunctionMock,
+        ];
+        const typesFilterState = [
+          {
+            id: `${nativeNervousSystemFunctionMock.id}`,
+            name: "Motion",
+            value: `${nativeNervousSystemFunctionMock.id}`,
+            checked: true,
+          },
+          {
+            id: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            name: "Motion",
+            value: ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+            checked: false,
+          },
+        ];
+        snsFiltersStore.setTypes({
+          rootCanisterId,
+          types: typesFilterState,
+        });
+        snsFiltersStore.setTypes({
+          rootCanisterId,
+          types: [...typesFilterState],
+        });
+
+        // topics state
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+        setSnsProjects([
+          {
+            rootCanisterId: mockPrincipal,
+            topics: {
+              topics: [
+                topicInfoDtoMock({
+                  topic: "DaoCommunitySettings",
+                  name: "Topic1",
+                  description: "This is a description",
+                }),
+              ],
+              uncategorized_functions: [],
+            },
+          },
+        ]);
+
+        const topicsFilterState: Filter<SnsProposalTopicFilterId>[] = [
+          {
+            id: "1",
+            name: "Governance",
+            value: "Governance",
+            checked: true,
+          },
+          {
+            id: "2",
+            name: "Finance",
+            value: "TreasuryAssetManagement",
+            checked: true,
+          },
+          {
+            id: "3",
+            name: "Management",
+            value: "DappCanisterManagement",
+            checked: false,
+          },
+        ];
+
+        const expectedTopics = [
+          { Governance: null },
+          { TreasuryAssetManagement: null },
+        ];
+
+        snsFiltersStore.setTopics({
+          rootCanisterId,
+          topics: topicsFilterState,
+        });
+
+        await loadSnsProposals({
+          rootCanisterId,
+          beforeProposalId: proposalId,
+          snsFunctions,
+        });
+
+        expect(queryProposalsSpy).toHaveBeenCalledWith({
+          params: {
+            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            beforeProposal: proposalId,
+            includeStatus: [],
+            excludeType: [],
+            includeTopics: expectedTopics,
+          },
+          identity: new AnonymousIdentity(),
+          certified: false,
+          rootCanisterId: mockPrincipal,
+        });
+      });
+
       it("should call queryProposals with selected topics filters", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+        setSnsProjects([
+          {
+            rootCanisterId: mockPrincipal,
+            topics: {
+              topics: [
+                topicInfoDtoMock({
+                  topic: "DaoCommunitySettings",
+                  name: "Topic1",
+                  description: "This is a description",
+                }),
+              ],
+              uncategorized_functions: [],
+            },
+          },
+        ]);
+
         const proposalId = { id: 1n };
         const rootCanisterId = mockPrincipal;
         const topicsFilterState: Filter<SnsProposalTopicFilterId>[] = [
@@ -291,7 +412,7 @@ describe("sns-proposals services", () => {
           vi.spyOn(api, "queryProposals").mockResolvedValue({
             proposals,
             include_ballots_by_caller: [true],
-            include_topic_filtering: [], // Empty optional (null/undefined in Candid)
+            include_topic_filtering: [],
           });
 
           await loadSnsProposals({
@@ -305,11 +426,10 @@ describe("sns-proposals services", () => {
         });
 
         it("should mark canister as unsupported when include_topic_filtering is false", async () => {
-          // Set up the API response with false include_topic_filtering
           vi.spyOn(api, "queryProposals").mockResolvedValue({
             proposals,
             include_ballots_by_caller: [true],
-            include_topic_filtering: [false], // False in optional
+            include_topic_filtering: [false],
           });
 
           await loadSnsProposals({
@@ -323,14 +443,12 @@ describe("sns-proposals services", () => {
         });
 
         it("should remove canister from unsupported list when include_topic_filtering is true", async () => {
-          // First add the canister to the unsupported list
           unsupportedFilterByTopicSnsesStore.add(mockPrincipal.toText());
 
-          // Set up the API response with true include_topic_filtering
           vi.spyOn(api, "queryProposals").mockResolvedValue({
             proposals,
             include_ballots_by_caller: [true],
-            include_topic_filtering: [true], // True in optional
+            include_topic_filtering: [true],
           });
 
           await loadSnsProposals({
