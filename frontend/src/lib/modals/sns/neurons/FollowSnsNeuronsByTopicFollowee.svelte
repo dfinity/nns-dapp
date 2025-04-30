@@ -4,10 +4,11 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsNeuronId } from "@dfinity/sns";
+  import { nonNullish } from "@dfinity/utils";
 
   type Props = {
     neuronId: SnsNeuronId;
-    onRemoveClick: () => void;
+    onRemoveClick?: () => void;
   };
   const { neuronId, onRemoveClick }: Props = $props();
 
@@ -18,13 +19,15 @@
   class="container"
   data-tid="follow-sns-neurons-by-topic-followee-component"
 >
-  <Hash text={neuronIdHex} tagName="span" showCopy />
-  <button
-    data-tid="remove-button"
-    class="remove-button icon-only"
-    aria-label={$i18n.core.remove}
-    onclick={onRemoveClick}><IconClose /></button
-  >
+  <Hash text={neuronIdHex} tagName="span" showCopy noHeigh={false} />
+  {#if nonNullish(onRemoveClick)}
+    <button
+      data-tid="remove-button"
+      class="remove-button icon-only"
+      aria-label={$i18n.core.remove}
+      onclick={onRemoveClick}><IconClose /></button
+    >
+  {/if}
 </div>
 
 <style lang="scss">
@@ -50,6 +53,6 @@
     // TODO(sns-topics): Add --Copy-color to the gix/Copy and use --icon-color for both buttons.
     color: var(--primary);
     // Decrease the gap between copy and remove buttons.
-    padding-left: 0;
+    padding: 0 var(--padding-0_5x) 0 0;
   }
 </style>
