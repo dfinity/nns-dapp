@@ -445,9 +445,11 @@
     "neuron_follow": "Follow Neuron",
     "busy_updating": "Updating neuron followings",
     "busy_removing": "Removing neuron following",
+    "busy_removing_catch_all": "Removing catch-all followings",
     "busy_removing_legacy": "Removing neuron legacy following",
     "success_set_following": "The neuron following was successfully added.",
     "success_removing_legacy": "The neuron legacy following was successfully removed.",
+    "success_removing_catch_all": "The neuron legacy \"Catch-all\" followings successfully removed.",
     "error_neuron_not_exist": "Neuron with id $neuronId does not exist.",
     "error_add_following": "There was an error while adding a followee.",
     "error_remove_following": "There was an error while unfollowing the neuron."
