@@ -19,12 +19,16 @@ import type {
   VotingNeuron,
 } from "$lib/types/proposals";
 import type { SnsTopicKey } from "$lib/types/sns";
-import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
+import {
+  isUnknownTopic,
+  type TopicInfoWithUnknown,
+} from "$lib/types/sns-aggregator";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
   getTopicInfoBySnsTopicKey,
+  snsTopicKeyToTopic,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
 import {
@@ -476,6 +480,25 @@ export const toExcludeTypeParameter = ({
       // never exclude { 0n: "All Topics"}
       .filter((id) => id !== ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID)
   );
+};
+
+/**
+ * Converts topic filter selections to the format required by the list proposals API.
+ *
+ * - Returns null for ALL_SNS_PROPOSALS_WITHOUT_TOPIC to represent the "All Topics" option in the API
+ * - Filters out undefined values (unknown topics) while preserving null values
+ * - https://github.com/dfinity/ic/blob/master/rs/sns/governance/src/gen/ic_sns_governance.pb.v1.rs#L3200
+ */
+export const toIncludeTopicsParameter = (
+  topicsFilter: Filter<SnsProposalTopicFilterId>[]
+) => {
+  return topicsFilter
+    .map(({ value }) => {
+      if (value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC) return null;
+      const topic = snsTopicKeyToTopic(value);
+      return isUnknownTopic(topic) ? undefined : topic;
+    })
+    .filter((topic) => topic !== undefined);
 };
 
 // Generate new "types" filter data, but preserve the checked state of the current filter state
