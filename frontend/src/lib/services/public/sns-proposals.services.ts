@@ -93,8 +93,6 @@ export const loadSnsProposals = async ({
         snsFunctions,
       });
 
-  // console.log(isFilteringByTopicEnabled);
-
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>

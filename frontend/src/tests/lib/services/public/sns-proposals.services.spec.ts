@@ -181,10 +181,6 @@ describe("sns-proposals services", () => {
         ];
         snsFiltersStore.setTypes({
           rootCanisterId,
-          types: typesFilterState,
-        });
-        snsFiltersStore.setTypes({
-          rootCanisterId,
           types: [...typesFilterState],
         });
 
@@ -232,10 +228,6 @@ describe("sns-proposals services", () => {
             checked: false,
           },
         ];
-        snsFiltersStore.setTypes({
-          rootCanisterId,
-          types: typesFilterState,
-        });
         snsFiltersStore.setTypes({
           rootCanisterId,
           types: [...typesFilterState],
