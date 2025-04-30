@@ -749,7 +749,6 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       const deactivateCatchAllStepPo =
         po.getFollowSnsNeuronsByTopicStepDeactivateCatchAllPo();
 
-      // Select a topic
       expect(await topicsStepPo.isPresent()).toEqual(true);
       expect(await deactivateCatchAllStepPo.isPresent()).toEqual(false);
 
@@ -762,6 +761,121 @@ describe("FollowSnsNeuronsByTopicModal", () => {
 
       expect(await topicsStepPo.isPresent()).toEqual(true);
       expect(await deactivateCatchAllStepPo.isPresent()).toEqual(false);
+    });
+
+    it("removes catch-all legacy following", async () => {
+      let resolveSetFollowees;
+      const setFolloweesSpy = vi
+        .spyOn(snsGovernanceApi, "setFollowees")
+        .mockImplementation(
+          () => new Promise((resolve) => (resolveSetFollowees = resolve))
+        );
+      const reloadNeuronSpy = vi.fn();
+      const closeModalSpy = vi.fn();
+      const po = renderComponent({
+        ...defaultProps,
+        neuron: {
+          ...neuron,
+          followees: [
+            [
+              0n,
+              { followees: [legacyFolloweeNeuronId1, legacyFolloweeNeuronId2] },
+            ],
+          ],
+        },
+        reloadNeuron: reloadNeuronSpy,
+        closeModal: closeModalSpy,
+      });
+
+      const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
+      const deactivateCatchAllStepPo =
+        po.getFollowSnsNeuronsByTopicStepDeactivateCatchAllPo();
+
+      await topicsStepPo.clickDeactivateCatchAllButton();
+      await deactivateCatchAllStepPo.clickConfirmButton();
+
+      expect(get(busyStore)).toEqual([
+        {
+          initiator: "remove-sns-catch-all-followee",
+          text: "Removing catch-all followings",
+        },
+      ]);
+      expect(get(toastsStore)).toEqual([]);
+
+      expect(setFolloweesSpy).toBeCalledTimes(1);
+      expect(setFolloweesSpy).toBeCalledWith({
+        rootCanisterId,
+        identity: mockIdentity,
+        neuronId: fromNullable(neuron.id),
+        functionId: 0n,
+        followees: [],
+      });
+
+      expect(reloadNeuronSpy).toBeCalledTimes(0);
+      resolveSetFollowees();
+      await runResolvedPromises();
+
+      expect(reloadNeuronSpy).toBeCalledTimes(1);
+      expect(closeModalSpy).toBeCalledTimes(0);
+      expect(get(busyStore)).toEqual([]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "success",
+          text: 'The neuron legacy "Catch-all" followings successfully removed.',
+        },
+      ]);
+
+      expect(await topicsStepPo.isPresent()).toEqual(true);
+      expect(await deactivateCatchAllStepPo.isPresent()).toEqual(false);
+    });
+
+    it("handles removing catch-all followings error", async () => {
+      const testError = new Error("Test Error");
+      const spyConsoleError = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      const setFolloweesSpy = vi
+        .spyOn(snsGovernanceApi, "setFollowees")
+        .mockRejectedValue(testError);
+      const reloadNeuronSpy = vi.fn();
+      const closeModalSpy = vi.fn();
+      const po = renderComponent({
+        ...defaultProps,
+        neuron: {
+          ...neuron,
+          followees: [
+            [
+              0n,
+              { followees: [legacyFolloweeNeuronId1, legacyFolloweeNeuronId2] },
+            ],
+          ],
+        },
+        reloadNeuron: reloadNeuronSpy,
+        closeModal: closeModalSpy,
+      });
+
+      const topicsStepPo = po.getFollowSnsNeuronsByTopicStepTopicsPo();
+      const deactivateCatchAllStepPo =
+        po.getFollowSnsNeuronsByTopicStepDeactivateCatchAllPo();
+
+      await topicsStepPo.clickDeactivateCatchAllButton();
+      await deactivateCatchAllStepPo.clickConfirmButton();
+      await runResolvedPromises();
+
+      expect(setFolloweesSpy).toBeCalledTimes(1);
+      expect(reloadNeuronSpy).toBeCalledTimes(0);
+      expect(closeModalSpy).toBeCalledTimes(0);
+      expect(get(busyStore)).toEqual([]);
+      expect(get(toastsStore)).toMatchObject([
+        {
+          level: "error",
+          text: "There was an error while unfollowing the neuron. Test Error",
+        },
+      ]);
+      expect(spyConsoleError).toBeCalledTimes(1);
+      expect(spyConsoleError).toBeCalledWith(testError);
+      expect(await topicsStepPo.isPresent()).toEqual(false);
+      expect(await deactivateCatchAllStepPo.isPresent()).toEqual(true);
     });
   });
 });
