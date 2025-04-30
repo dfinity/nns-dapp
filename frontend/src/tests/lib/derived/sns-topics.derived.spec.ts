@@ -1,7 +1,10 @@
 import {
   createSnsTopicsProjectStore,
+  createSnsTopicsProposalsFilteringStore,
   snsTopicsStore,
 } from "$lib/derived/sns-topics.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import { convertDtoTopicInfo } from "$lib/utils/sns-aggregator-converters.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -188,6 +191,68 @@ describe("sns topics store", () => {
 
       const store = createSnsTopicsProjectStore(principal(123));
       expect(get(store)).toEqual(undefined);
+    });
+  });
+
+  describe("createSnsTopicsProposalsFilteringStore", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          topics: {
+            topics: [
+              topicInfoDtoMock({
+                topic: "DaoCommunitySettings",
+                name: "Topic1",
+                description: "This is a description",
+              }),
+            ],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+    });
+
+    it("should return false when rootCanisterId is null", () => {
+      const store = createSnsTopicsProposalsFilteringStore(null);
+      expect(get(store)).toBe(false);
+    });
+
+    it("should return false when rootCanisterId is undefined", () => {
+      const store = createSnsTopicsProposalsFilteringStore(undefined);
+      expect(get(store)).toBe(false);
+    });
+
+    it("should return false when ENABLE_SNS_TOPICS is false", () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", false);
+
+      const store = createSnsTopicsProposalsFilteringStore(mockPrincipal);
+      expect(get(store)).toBe(false);
+    });
+
+    it("should return false when topics don't exist for the project", () => {
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+        },
+      ]);
+
+      const store = createSnsTopicsProposalsFilteringStore(mockPrincipal);
+      expect(get(store)).toBe(false);
+    });
+
+    it("should return false when the project is in the unsupportedFilterByTopicSnsesStore", () => {
+      unsupportedFilterByTopicSnsesStore.add(mockPrincipal.toText());
+
+      const store = createSnsTopicsProposalsFilteringStore(mockPrincipal);
+      expect(get(store)).toBe(false);
+    });
+
+    it("should return true when all conditions are met", () => {
+      const store = createSnsTopicsProposalsFilteringStore(mockPrincipal);
+      expect(get(store)).toBe(true);
     });
   });
 });

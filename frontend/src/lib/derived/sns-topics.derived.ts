@@ -1,4 +1,6 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
+import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
+import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
 import type { RootCanisterIdText } from "$lib/types/sns";
 import type {
   ListTopicsResponseWithUnknown,
@@ -42,5 +44,26 @@ export const createSnsTopicsProjectStore = (
       return nonNullish(topicResponse)
         ? fromNullable(topicResponse.topics)
         : undefined;
+    }
+  );
+
+export const createSnsTopicsProposalsFilteringStore = (
+  rootCanisterId: Principal | null | undefined
+): Readable<boolean> =>
+  derived(
+    [
+      createSnsTopicsProjectStore(rootCanisterId),
+      unsupportedFilterByTopicSnsesStore,
+      ENABLE_SNS_TOPICS,
+    ],
+    ([topics, $unsupportedFilterByTopicSnsesStore, $ENABLE_SNS_TOPICS]) => {
+      if (isNullish(rootCanisterId)) return false;
+
+      const isTopicFilteringUnsupported =
+        $unsupportedFilterByTopicSnsesStore.includes(rootCanisterId.toText());
+
+      return (
+        $ENABLE_SNS_TOPICS && nonNullish(topics) && !isTopicFilteringUnsupported
+      );
     }
   );
