@@ -31,7 +31,7 @@
   const enableFilteringBySnsTopicsStore = $derived(
     createEnableFilteringBySnsTopicsStore(rootCanisterId)
   );
-  const isFilterByTopicVisible = $derived(enableFilteringBySnsTopicsStore);
+  const isFilterByTopicVisible = $derived($enableFilteringBySnsTopicsStore);
 </script>
 
 <TestIdWrapper testId="sns-proposals-filters-component">
