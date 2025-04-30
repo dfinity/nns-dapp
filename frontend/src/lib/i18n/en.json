@@ -523,7 +523,8 @@
     "nns_actionable_proposal_tooltip": "You can still vote on $count NNS proposals.",
     "sns_actionable_proposal_tooltip": "You can still vote on $count $snsName proposals.",
     "total_actionable_proposal_tooltip": "You can still vote on $count proposals.",
-    "is_actionable_status_badge_tooltip": "You can still vote on this proposal."
+    "is_actionable_status_badge_tooltip": "You can still vote on this proposal.",
+    "all_sns_proposals_without_topic": "Proposals without a topic"
   },
   "actionable_proposals_sign_in": {
     "title": "You are not signed in.",

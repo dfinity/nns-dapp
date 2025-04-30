@@ -129,14 +129,14 @@
   const nsFunctions: SnsNervousSystemFunction[] = $derived(
     get(createSnsNsFunctionsProjectStore(rootCanisterId)) ?? []
   );
-  const catchAllLegacyFollowings = $derived<SnsLegacyFollowings | undefined>(
+  const catchAllLegacyFollowings: SnsLegacyFollowings | undefined = $derived(
     getCatchAllSnsLegacyFollowings({
       neuron,
       nsFunctions,
     })
   );
 
-  const selectedTopicsContainLegacyFollowee = $derived<boolean>(
+  const selectedTopicsContainLegacyFollowee: boolean = $derived(
     getLegacyFolloweesByTopics({
       neuron,
       topicInfos: topicInfos.filter((topicInfo) =>

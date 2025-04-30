@@ -4,20 +4,31 @@ import {
 } from "$lib/constants/proposals.constants";
 import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { i18n } from "$lib/stores/i18n";
-import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
-import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import type {
+  Filter,
+  SnsProposalTopicFilterId,
+  SnsProposalTypeFilterId,
+} from "$lib/types/filters";
+import {
+  ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+  ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+} from "$lib/types/filters";
 import type {
   BasisPoints,
   UniversalProposalStatus,
   VotingNeuron,
 } from "$lib/types/proposals";
 import type { SnsTopicKey } from "$lib/types/sns";
-import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
+import {
+  isUnknownTopic,
+  type TopicInfoWithUnknown,
+} from "$lib/types/sns-aggregator";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import {
   getTopicInfoBySnsTopicKey,
+  snsTopicKeyToTopic,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
 import {
@@ -471,6 +482,25 @@ export const toExcludeTypeParameter = ({
   );
 };
 
+/**
+ * Converts topic filter selections to the format required by the list proposals API.
+ *
+ * - Returns null for ALL_SNS_PROPOSALS_WITHOUT_TOPIC to represent the "All Topics" option in the API
+ * - Filters out undefined values (unknown topics) while preserving null values
+ * - https://github.com/dfinity/ic/blob/master/rs/sns/governance/src/gen/ic_sns_governance.pb.v1.rs#L3200
+ */
+export const toIncludeTopicsParameter = (
+  topicsFilter: Filter<SnsProposalTopicFilterId>[]
+) => {
+  return topicsFilter
+    .map(({ value }) => {
+      if (value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC) return null;
+      const topic = snsTopicKeyToTopic(value);
+      return isUnknownTopic(topic) ? undefined : topic;
+    })
+    .filter((topic) => topic !== undefined);
+};
+
 // Generate new "types" filter data, but preserve the checked state of the current filter state
 // `nsFunctions` can be changed on the backend, and to display recently created proposal types, new entries should be preselected.
 export const generateSnsProposalTypesFilterData = ({
@@ -535,3 +565,48 @@ export const fromPercentageBasisPoints = (
 export const isCriticalProposal = (immediateMajorityPercent: number): boolean =>
   immediateMajorityPercent !==
   basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER);
+
+export const generateSnsProposalTopicsFilterData = ({
+  topics,
+  filters,
+}: {
+  topics: TopicInfoWithUnknown[];
+  filters: Filter<SnsProposalTopicFilterId>[];
+}): Filter<SnsProposalTopicFilterId>[] => {
+  if (topics.length === 0) return [];
+
+  // TODO: Extract and reuse
+  const getCheckedState = (filterId: string) =>
+    filters.find(({ id }) => id === filterId)?.checked !== false;
+
+  const i18nKeys = get(i18n);
+
+  const existingFilters: Filter<SnsProposalTopicFilterId>[] = topics
+    .filter((topic) => nonNullish(topic.topic))
+    .map((topic) => ({
+      name: fromDefinedNullable(topic.name),
+      isCritical: fromDefinedNullable(topic.is_critical),
+      topic: snsTopicToTopicKey(fromDefinedNullable(topic.topic)),
+    }))
+    .map(({ name, isCritical, topic }) => ({
+      id: topic,
+      value: topic,
+      name,
+      isCritical,
+      checked: getCheckedState(topic),
+    }))
+    // sorts filters with critical topics first, then alphabetically within each group
+    .sort((a, b) => {
+      if (a.isCritical && !b.isCritical) return -1;
+      if (!a.isCritical && b.isCritical) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+  const allSnsProposalsWithoutTopicFilter = {
+    id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+    value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+    name: i18nKeys.voting.all_sns_proposals_without_topic,
+    checked: getCheckedState(ALL_SNS_PROPOSALS_WITHOUT_TOPIC),
+  };
+  return [...existingFilters, allSnsProposalsWithoutTopicFilter];
+};
