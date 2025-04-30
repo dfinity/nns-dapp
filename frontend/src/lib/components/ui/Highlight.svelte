@@ -53,12 +53,6 @@
 
     localStorage?.setItem(localStorageKey, "false");
   };
-
-  onMount(() => {
-    const isClosed = localStorage.getItem(storageKeyPrefix);
-
-    if (isClosed === "true") isOpen = false;
-  });
 </script>
 
 {#if isOpen}

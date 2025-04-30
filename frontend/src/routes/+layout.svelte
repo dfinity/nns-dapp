@@ -1,7 +1,7 @@
 <script lang="ts">
   import Alfred from "$lib/components/alfred/Alfred.svelte";
   import Highlight from "$lib/components/ui/Highlight.svelte";
-  import { shouldShowHighlightForSnsTopics } from "$lib/derived/highlight.derived";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { initAnalytics } from "$lib/services/analytics.services";
   import {
@@ -9,6 +9,8 @@
     type AuthWorker,
   } from "$lib/services/worker-auth.services";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
+  import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
+  import { i18n } from "$lib/stores/i18n";
   import { toastsClean } from "$lib/stores/toasts.store";
   import { onMount } from "svelte";
 
@@ -52,12 +54,12 @@
 
 <Alfred />
 
-{#if $shouldShowHighlightForSnsTopics}
+{#if $ENABLE_SNS_TOPICS && $authSignedInStore}
   <Highlight
     level="info"
-    title="Follow by topic"
-    description="Welcome to your portfolio!"
-    link="Link"
+    title={$i18n.highlight.topics_feature_title}
+    description={$i18n.highlight.topics_feature_description}
+    link="#"
     id="topics-feature"
   />
 {/if}
