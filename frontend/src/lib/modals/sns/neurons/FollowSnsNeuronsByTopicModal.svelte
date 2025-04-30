@@ -135,7 +135,7 @@
     })
   );
 
-  const selectedTopicsContainLegacyFollowee = $derived<boolean>(
+  const selectedTopicsContainLegacyFollowee: boolean = $derived(
     getLegacyFolloweesByTopics({
       neuron,
       topicInfos: topicInfos.filter((topicInfo) =>
