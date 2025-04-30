@@ -389,7 +389,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     expect(get(toastsStore)).toMatchObject([
       {
         level: "error",
-        text: "Neuron with id 040506 does not exist.",
+        text: "Neuron with ID 040506 does not exist.",
       },
     ]);
 
@@ -592,7 +592,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "success",
-          text: "The neuron legacy following was successfully removed.",
+          text: "The legacy neuron following was successfully removed.",
         },
       ]);
     });
@@ -821,7 +821,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "success",
-          text: 'The neuron legacy "Catch-all" followings successfully removed.',
+          text: 'Legacy "Catch-All" followings were successfully removed.',
         },
       ]);
 
