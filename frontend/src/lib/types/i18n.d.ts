@@ -546,6 +546,7 @@ interface I18nVoting {
   sns_actionable_proposal_tooltip: string;
   total_actionable_proposal_tooltip: string;
   is_actionable_status_badge_tooltip: string;
+  all_sns_proposals_without_topic: string;
 }
 
 interface I18nActionable_proposals_sign_in {

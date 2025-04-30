@@ -25,3 +25,11 @@ export const TVL_CANISTER_ID: Principal | undefined = nonNullish(
 // This project has been abandoned https://dfinity.slack.com/archives/C039M7YS6F6/p1733302975333649
 export const CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID =
   "ibahq-taaaa-aaaaq-aadna-cai";
+
+// This project has been abandoned https://dfinity.slack.com/archives/C03H6QEPW5D/p1745829568330499
+export const SEERS_ROOT_CANISTER_ID = "u67kc-jyaaa-aaaaq-aabpq-cai";
+
+export const abandonedProjectsCanisterId = [
+  CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID,
+  SEERS_ROOT_CANISTER_ID,
+];
