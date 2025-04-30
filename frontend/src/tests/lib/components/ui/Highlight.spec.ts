@@ -1,5 +1,3 @@
-// nns-dapp/frontend/src/tests/lib/components/ui/Highlight.spec.ts
-
 import Highlight from "$lib/components/ui/Highlight.svelte";
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { HighlightPo } from "$tests/page-objects/Highlight.page-object";
@@ -16,7 +14,7 @@ describe("Highlight", () => {
   };
 
   const getStorageKey = (id: string) =>
-    `${StoreLocalStorageKey.HighlightClosedPrefix}${id}`;
+    `${StoreLocalStorageKey.HighlightDisplay}${id}`;
 
   const renderComponent = (props = defaultProps) => {
     const { container } = render(Highlight, props);
@@ -24,7 +22,6 @@ describe("Highlight", () => {
   };
 
   beforeEach(() => {
-    // Clear localStorage before each test
     localStorage.clear();
   });
 
@@ -37,19 +34,23 @@ describe("Highlight", () => {
   });
 
   it("should hide the component when the close button is clicked", async () => {
+    vi.useFakeTimers();
+
     const po = renderComponent();
 
     expect(await po.isPresent()).toBe(true);
 
     await po.clickClose();
 
+    vi.advanceTimersByTime(1000);
+
     expect(await po.isPresent()).toBe(false);
 
-    expect(localStorage.getItem(getStorageKey(defaultProps.id))).toBe("true");
+    expect(localStorage.getItem(getStorageKey(defaultProps.id))).toBe("false");
   });
 
-  it("should not render if localStorage indicates it was closed", async () => {
-    localStorage.setItem(getStorageKey(defaultProps.id), "true");
+  it("should not render if localStorage indicates it is closed", async () => {
+    localStorage.setItem(getStorageKey(defaultProps.id), "false");
 
     const po = renderComponent();
 

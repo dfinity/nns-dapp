@@ -7,7 +7,7 @@ export enum StoreLocalStorageKey {
   JsonRepresentation = "jsonRepresentation",
   HideZeroBalances = "nnsHideZeroBalanceTokens",
   HideZeroNeurons = "nnsHideZeroNeuronProjects",
-  HighlightClosedPrefix = "nnsHighlightClosed-",
+  HighlightDisplay = "nnsHighlightDisplay-",
 }
 
 export const NOT_LOADED = Symbol("NOT_LOADED");

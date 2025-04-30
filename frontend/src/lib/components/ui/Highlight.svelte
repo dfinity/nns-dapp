@@ -1,15 +1,6 @@
-<script lang="ts" module>
-  const iconMapper: Record<Props["level"], Component> = {
-    ["info"]: IconEyeOpen,
-    ["success"]: IconCheck,
-    ["warn"]: IconErrorOutline,
-    ["danger"]: IconErrorOutline,
-  };
-</script>
-
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
-
   import { i18n } from "$lib/stores/i18n";
   import {
     IconCheck,
@@ -17,7 +8,15 @@
     IconErrorOutline,
     IconEyeOpen,
   } from "@dfinity/gix-components";
-  import { onMount, type Component } from "svelte";
+  import { type Component } from "svelte";
+  import { fade } from "svelte/transition";
+
+  const iconMapper: Record<Props["level"], Component> = {
+    ["info"]: IconEyeOpen,
+    ["success"]: IconCheck,
+    ["warn"]: IconErrorOutline,
+    ["danger"]: IconErrorOutline,
+  };
 
   type Props = {
     level: "info" | "success" | "warn" | "danger";
@@ -28,24 +27,23 @@
   };
 
   const { level, title, description, link, id }: Props = $props();
+  const localStorageKey = StoreLocalStorageKey.HighlightDisplay + id;
 
-  let isOpen = $state(true);
-
-  const Icon = $derived(iconMapper[level]);
-  const storageKeyPrefix = $derived(
-    StoreLocalStorageKey.HighlightClosedPrefix + id
+  // TODO: Extract this into a util. This is a copy of $lib/components/header/Banner
+  let isOpen = $state(
+    browser
+      ? (JSON.parse(
+          localStorage?.getItem(localStorageKey) ?? "true"
+        ) as boolean)
+      : false
   );
+  const Icon = $derived(iconMapper[level]);
 
   const close = () => {
     isOpen = false;
-    localStorage.setItem(storageKeyPrefix, "true");
+
+    localStorage?.setItem(localStorageKey, "false");
   };
-
-  onMount(() => {
-    const isClosed = localStorage.getItem(storageKeyPrefix);
-
-    if (isClosed === "true") isOpen = false;
-  });
 </script>
 
 {#if isOpen}
@@ -54,6 +52,7 @@
     role="alert"
     aria-live="polite"
     data-tid="highlight-component"
+    out:fade={{ duration: 200 }}
   >
     <div class="highlight-wrapper">
       <div class="highlight-header">
@@ -102,14 +101,13 @@
     padding: var(--padding-2x) var(--padding-3x);
 
     border-radius: var(--border-radius);
-    box-shadow: var(--strong-shadow, 8px 8px 16px 0 rgba(0, 0, 0, 0.25));
+    box-shadow: 8px 8px 16px 0 rgba(0, 0, 0, 0.25);
 
     background: var(--card-background-tint);
     color: var(--content-color);
 
-    min-width: 320px;
     width: 90%;
-    height: 204px;
+    min-height: 204px;
 
     top: calc(var(--header-height) + var(--padding-2x));
     right: auto;
