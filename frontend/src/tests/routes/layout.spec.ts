@@ -88,7 +88,7 @@ describe("Layout", () => {
     expect(await po.isPresent()).toBe(false);
   });
 
-  it.only("should show the Highlight component if the user is signed in and the feature is on", async () => {
+  it("should show the Highlight component if the user is signed in and the feature is on", async () => {
     const renderComponent = () => {
       const { container } = render(App);
       return HighlightPo.under(new JestPageObjectElement(container));
