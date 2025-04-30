@@ -275,6 +275,73 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     expect(openNextStep).toBeCalledTimes(1);
   });
 
+  it("displays legacy catch-all tags when catch-all provided", async () => {
+    const po = renderComponent({
+      ...defaultProps,
+      neuron: {
+        ...mockSnsNeuron,
+        followees: [
+          [
+            // Assigned to non-critical topicInfo2
+            legacyNsFunction2.id,
+            {
+              followees: [legacyFolloweeNeuronId1],
+            },
+          ],
+        ],
+      },
+      topicInfos: [
+        criticalTopicInfo1,
+        criticalTopicInfo2,
+        topicInfo1,
+        topicInfo2,
+      ],
+      catchAllLegacyFollowings: {
+        nsFunction: {
+          ...legacyNsFunction1,
+          id: 0n,
+          name: "Catch-all",
+        },
+        followees: [legacyFolloweeNeuronId1, legacyFolloweeNeuronId2],
+      },
+    });
+
+    const legacyPos = await po.getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    // non-critical-topic-count(2) * catch-all-count(2) + legacyNsFunction2
+    expect(legacyPos.length).toEqual(2 * 2 + 1);
+
+    const topic1FolloweePos = await (
+      await po.getTopicItemPoByName(topicName1)
+    ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    expect(topic1FolloweePos.length).toEqual(2);
+
+    expect(
+      await (
+        await po.getTopicItemPoByName(topicName1)
+      ).getLegacyFolloweeNsFunctionNames()
+    ).toEqual(["Catch-all", "Catch-all"]);
+    expect(
+      await (
+        await po.getTopicItemPoByName(topicName1)
+      ).getLegacyFolloweeNeuronIds()
+    ).toEqual(["01020304", "05060708"]);
+
+    const topic2FolloweePos = await (
+      await po.getTopicItemPoByName(topicName2)
+    ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    expect(topic2FolloweePos.length).toEqual(3);
+    expect(
+      await (
+        await po.getTopicItemPoByName(topicName2)
+      ).getLegacyFolloweeNsFunctionNames()
+    ).toEqual(["Catch-all", "Catch-all", legacyNsFunction2Name]);
+    expect(
+      await (
+        await po.getTopicItemPoByName(topicName2)
+      ).getLegacyFolloweeNeuronIds()
+    ).toEqual(["01020304", "05060708", "01020304"]);
+  });
+
   it("displays deactivate catch-all followings when catch-all provided", async () => {
     const spyOpenDeactivateCatchAllStep = vi.fn();
     const po = renderComponent({
