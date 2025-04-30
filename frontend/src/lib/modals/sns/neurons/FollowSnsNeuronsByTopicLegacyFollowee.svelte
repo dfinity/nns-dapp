@@ -5,7 +5,7 @@
   type Props = {
     nsFunction: SnsNervousSystemFunction;
     neuronId: SnsNeuronId;
-    onRemoveClick: () => void;
+    onRemoveClick?: () => void;
   };
   const { nsFunction, neuronId, onRemoveClick }: Props = $props();
 </script>

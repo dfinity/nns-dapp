@@ -79,9 +79,6 @@
             <FollowSnsNeuronsByTopicLegacyFollowee
               nsFunction={followees.nsFunction}
               {neuronId}
-              onRemoveClick={() => {
-                // TODO: call a callback
-              }}
             />
           </li>
         {/each}

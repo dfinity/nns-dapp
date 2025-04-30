@@ -39,9 +39,6 @@
         <FollowSnsNeuronsByTopicLegacyFollowee
           nsFunction={catchAllFollowing.nsFunction}
           {neuronId}
-          onRemoveClick={() => {
-            // TODO(sns-topics): Make it optional
-          }}
         />
       </li>
     {/each}
