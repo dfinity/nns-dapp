@@ -1,6 +1,6 @@
 import {
+  createEnableFilteringBySnsTopicsStore,
   createSnsTopicsProjectStore,
-  createSnsTopicsProposalsFilteringStore,
   snsTopicsStore,
 } from "$lib/derived/sns-topics.derived";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -216,19 +216,19 @@ describe("sns topics store", () => {
     });
 
     it("should return false when rootCanisterId is null", () => {
-      const store = createSnsTopicsProposalsFilteringStore(null);
+      const store = createEnableFilteringBySnsTopicsStore(null);
       expect(get(store)).toBe(false);
     });
 
     it("should return false when rootCanisterId is undefined", () => {
-      const store = createSnsTopicsProposalsFilteringStore(undefined);
+      const store = createEnableFilteringBySnsTopicsStore(undefined);
       expect(get(store)).toBe(false);
     });
 
     it("should return false when ENABLE_SNS_TOPICS is false", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", false);
 
-      const store = createSnsTopicsProposalsFilteringStore(mockPrincipal);
+      const store = createEnableFilteringBySnsTopicsStore(mockPrincipal);
       expect(get(store)).toBe(false);
     });
 
@@ -239,19 +239,19 @@ describe("sns topics store", () => {
         },
       ]);
 
-      const store = createSnsTopicsProposalsFilteringStore(mockPrincipal);
+      const store = createEnableFilteringBySnsTopicsStore(mockPrincipal);
       expect(get(store)).toBe(false);
     });
 
     it("should return false when the project is in the unsupportedFilterByTopicSnsesStore", () => {
       unsupportedFilterByTopicSnsesStore.add(mockPrincipal.toText());
 
-      const store = createSnsTopicsProposalsFilteringStore(mockPrincipal);
+      const store = createEnableFilteringBySnsTopicsStore(mockPrincipal);
       expect(get(store)).toBe(false);
     });
 
     it("should return true when all conditions are met", () => {
-      const store = createSnsTopicsProposalsFilteringStore(mockPrincipal);
+      const store = createEnableFilteringBySnsTopicsStore(mockPrincipal);
       expect(get(store)).toBe(true);
     });
   });

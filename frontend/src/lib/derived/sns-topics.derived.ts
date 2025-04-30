@@ -47,7 +47,7 @@ export const createSnsTopicsProjectStore = (
     }
   );
 
-export const createSnsTopicsProposalsFilteringStore = (
+export const createEnableFilteringBySnsTopicsStore = (
   rootCanisterId: Principal | null | undefined
 ): Readable<boolean> =>
   derived(
