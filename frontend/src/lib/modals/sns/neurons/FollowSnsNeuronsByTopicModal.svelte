@@ -9,7 +9,6 @@
   import {
     getSnsNeuronIdentity,
     removeFollowee,
-    removeNsFunctionFollowees,
     setFollowing,
   } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -269,26 +268,7 @@
   };
 
   const confirmDeactivateCatchAllFollowee = async () => {
-    startBusy({
-      initiator: "remove-sns-catch-all-followee",
-      labelKey: "follow_sns_topics.busy_removing_catch_all",
-    });
-
-    const { success } = await removeNsFunctionFollowees({
-      rootCanisterId,
-      neuron,
-      functionId: 0n,
-    });
-
-    if (success) {
-      toastsSuccess({
-        labelKey: "follow_sns_topics.success_removing_catch_all",
-      });
-      await reloadNeuron();
-      openPrevStep();
-    }
-
-    stopBusy("remove-sns-catch-all-followee");
+    // TODO(sns-topics): Implement deactivation of catch-all followee
   };
 </script>
 

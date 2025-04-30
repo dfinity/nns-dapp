@@ -23,7 +23,6 @@ export type BusyStateInitiatorType =
   | "add-followee"
   | "add-followee-by-topic"
   | "remove-followee-by-topic"
-  | "remove-sns-catch-all-followee"
   | "remove-followee"
   | "add-hotkey-neuron"
   | "remove-hotkey-neuron"
