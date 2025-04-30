@@ -69,9 +69,6 @@
     $ENABLE_SNS_TOPICS &&
     nonNullish(rootCanisterId) &&
     nonNullish($snsTopicsStore[rootCanisterId?.toText()]);
-
-  let hideFollowees: boolean;
-  $: hideFollowees = isFollowByTopic && $ENABLE_SNS_TOPICS;
 </script>
 
 <CardInfo noMargin testId="sns-neuron-following-card-component">
@@ -95,7 +92,7 @@
     </svelte:fragment>
   </KeyValuePairInfo>
 
-  {#if !hideFollowees && followees.length > 0}
+  {#if !isFollowByTopic && followees.length > 0}
     <div class="frame">
       {#each followees as followee}
         <SnsFollowee {followee} />
@@ -103,7 +100,7 @@
     </div>
   {/if}
 
-  {#if $ENABLE_SNS_TOPICS && isFollowByTopic}
+  {#if isFollowByTopic}
     <button
       data-tid="sns-topic-definitions-button"
       class="ghost with-icon sns-topic-definitions-button"
