@@ -1,8 +1,13 @@
 import { MIN_VALID_SNS_GENERIC_NERVOUS_SYSTEM_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
+import {
+  ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+  ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+} from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createSnsProposal,
@@ -15,6 +20,7 @@ describe("snsFilteredProposalsStore", () => {
   const rootCanisterId = mockPrincipal;
   const getProposals = (): SnsProposalData[] =>
     get(snsFilteredProposalsStore)[rootCanisterId.toText()]?.proposals;
+
   const snsProposal1: SnsProposalData = {
     ...mockSnsProposal,
     id: [{ id: 2n }],
@@ -127,8 +133,12 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should return proposals which type is checked", () => {
+    // TODO: Type filtering will be removed at some point in favor of topic filtering
+    unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+
     const nsFunctionId1 = 1n;
     const nsFunctionId2 = 2n;
+
     const proposal1 = createSnsProposal({
       proposalId: 1000n,
       action: nsFunctionId1,
@@ -191,6 +201,9 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it('should return all generic proposals when "All generic" is checked', () => {
+    // TODO: Type filtering will be removed at some point in favor of topic filtering
+    unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+
     const nativeNsFunctionId = 1n;
     const nativeTypeProposal = createSnsProposal({
       proposalId: 9001n,
@@ -249,5 +262,429 @@ describe("snsFilteredProposalsStore", () => {
       genericTypeProposal1,
       genericTypeProposal2,
     ]);
+  });
+
+  it("should return all proposals if no topics are selected", () => {
+    const governanceTopic = { Governance: null };
+    const dappManagementTopic = { DappCanisterManagement: null };
+
+    const proposalWithGovernanceTopic = createSnsProposal({
+      proposalId: 101n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithGovernanceTopic.topic = [governanceTopic];
+
+    const proposalWithDappTopic = createSnsProposal({
+      proposalId: 102n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithDappTopic.topic = [dappManagementTopic];
+
+    const proposalWithoutTopic = createSnsProposal({
+      proposalId: 103n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithoutTopic.topic = [];
+
+    const proposals = [
+      proposalWithGovernanceTopic,
+      proposalWithDappTopic,
+      proposalWithoutTopic,
+    ];
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals,
+      certified: true,
+      completed: true,
+    });
+
+    snsFiltersStore.setTopics({
+      rootCanisterId,
+      topics: [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance",
+          checked: false,
+        },
+        {
+          id: "DappCanisterManagement",
+          value: "DappCanisterManagement",
+          name: "Dapp Canister Management",
+          checked: false,
+        },
+        {
+          id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          name: "Without Topic",
+          checked: false,
+        },
+      ],
+    });
+
+    expect(getProposals()).toHaveLength(proposals.length);
+    expect(getProposals()).toEqual(proposals);
+  });
+
+  it("should filter proposals by topic when topic filter is selected", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
+    const governanceTopic = { Governance: null };
+    const dappManagementTopic = { DappCanisterManagement: null };
+
+    const proposalWithGovernanceTopic = createSnsProposal({
+      proposalId: 101n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithGovernanceTopic.topic = [governanceTopic];
+
+    const proposalWithDappTopic = createSnsProposal({
+      proposalId: 102n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithDappTopic.topic = [dappManagementTopic];
+
+    const proposalWithoutTopic = createSnsProposal({
+      proposalId: 103n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithoutTopic.topic = [];
+
+    const proposals = [
+      proposalWithGovernanceTopic,
+      proposalWithDappTopic,
+      proposalWithoutTopic,
+    ];
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals,
+      certified: true,
+      completed: true,
+    });
+
+    snsFiltersStore.setTopics({
+      rootCanisterId,
+      topics: [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance",
+          checked: true,
+        },
+        {
+          id: "DappCanisterManagement",
+          value: "DappCanisterManagement",
+          name: "Dapp Canister Management",
+          checked: false,
+        },
+        {
+          id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          name: "Without Topic",
+          checked: false,
+        },
+      ],
+    });
+
+    expect(getProposals()).toHaveLength(1);
+    expect(getProposals()).toEqual([proposalWithGovernanceTopic]);
+  });
+
+  it("should filter proposals without topics when 'Without Topic' filter is selected", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
+    const governanceTopic = { Governance: null };
+    const dappManagementTopic = { DappCanisterManagement: null };
+
+    const proposalWithGovernanceTopic = createSnsProposal({
+      proposalId: 101n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithGovernanceTopic.topic = [governanceTopic];
+
+    const proposalWithDappTopic = createSnsProposal({
+      proposalId: 102n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithDappTopic.topic = [dappManagementTopic];
+
+    const proposalWithoutTopic = createSnsProposal({
+      proposalId: 103n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithoutTopic.topic = [];
+
+    const proposals = [
+      proposalWithGovernanceTopic,
+      proposalWithDappTopic,
+      proposalWithoutTopic,
+    ];
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals,
+      certified: true,
+      completed: true,
+    });
+
+    snsFiltersStore.setTopics({
+      rootCanisterId,
+      topics: [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance",
+          checked: false,
+        },
+        {
+          id: "DappCanisterManagement",
+          value: "DappCanisterManagement",
+          name: "Dapp Canister Management",
+          checked: false,
+        },
+        {
+          id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          name: "Without Topic",
+          checked: true,
+        },
+      ],
+    });
+
+    expect(getProposals()).toHaveLength(1);
+    expect(getProposals()).toEqual([proposalWithoutTopic]);
+  });
+
+  it("should filter proposals by multiple topics", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
+    const governanceTopic = { Governance: null };
+    const dappManagementTopic = { DappCanisterManagement: null };
+    const treasuryTopic = { TreasuryAssetManagement: null };
+
+    const proposalWithGovernanceTopic = createSnsProposal({
+      proposalId: 101n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithGovernanceTopic.topic = [governanceTopic];
+
+    const proposalWithDappTopic = createSnsProposal({
+      proposalId: 102n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithDappTopic.topic = [dappManagementTopic];
+
+    const proposalWithTreasuryTopic = createSnsProposal({
+      proposalId: 103n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithTreasuryTopic.topic = [treasuryTopic];
+
+    const proposalWithoutTopic = createSnsProposal({
+      proposalId: 104n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    proposalWithoutTopic.topic = [];
+
+    const proposals = [
+      proposalWithGovernanceTopic,
+      proposalWithDappTopic,
+      proposalWithTreasuryTopic,
+      proposalWithoutTopic,
+    ];
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals,
+      certified: true,
+      completed: true,
+    });
+
+    snsFiltersStore.setTopics({
+      rootCanisterId,
+      topics: [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance",
+          checked: true,
+        },
+        {
+          id: "DappCanisterManagement",
+          value: "DappCanisterManagement",
+          name: "Dapp Canister Management",
+          checked: true,
+        },
+        {
+          id: "TreasuryAssetManagement",
+          value: "TreasuryAssetManagement",
+          name: "Treasury Asset Management",
+          checked: false,
+        },
+        {
+          id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          name: "Without Topic",
+          checked: false,
+        },
+      ],
+    });
+
+    expect(getProposals()).toHaveLength(2);
+    expect(getProposals()).toEqual([
+      proposalWithGovernanceTopic,
+      proposalWithDappTopic,
+    ]);
+  });
+
+  it("should combine filters for status and type", () => {
+    // TODO: Type filtering will be removed at some point in favor of topic filtering
+    unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+
+    const nsFunctionId1 = 1n;
+    const nsFunctionId2 = 2n;
+
+    const openProposal = createSnsProposal({
+      proposalId: 101n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+      action: nsFunctionId1,
+    });
+
+    const rejectedProposal = createSnsProposal({
+      proposalId: 102n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED,
+      action: nsFunctionId2,
+    });
+
+    const proposals = [openProposal, rejectedProposal];
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals,
+      certified: true,
+      completed: true,
+    });
+
+    // Set status filter to show only OPEN proposals
+    snsFiltersStore.setDecisionStatus({
+      rootCanisterId,
+      decisionStatus: [
+        {
+          id: "1",
+          name: "Open",
+          value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          checked: true,
+        },
+        {
+          id: "2",
+          name: "Rejected",
+          value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED,
+          checked: false,
+        },
+      ],
+    });
+
+    // Set type filter to show all proposals
+    snsFiltersStore.setTypes({
+      rootCanisterId,
+      types: [
+        {
+          id: `${nsFunctionId1}`,
+          value: `${nsFunctionId1}`,
+          name: "Motion",
+          checked: true,
+        },
+        {
+          id: `${nsFunctionId2}`,
+          value: `${nsFunctionId2}`,
+          name: "Add a Node",
+          checked: true,
+        },
+      ],
+    });
+    expect(getProposals()).toHaveLength(1);
+    expect(getProposals()).toEqual([openProposal]);
+  });
+
+  it("should combine filters for status and topic", () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+
+    const governanceTopic = { Governance: null };
+    const dappManagementTopic = { DappCanisterManagement: null };
+
+    // TODO(yhabib): Move topic logic inside mock function
+    const openProposalWithGovernanceTopic = createSnsProposal({
+      proposalId: 101n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    openProposalWithGovernanceTopic.topic = [governanceTopic];
+
+    const rejectedProposalWithGovernanceTopic = createSnsProposal({
+      proposalId: 102n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED,
+    });
+    rejectedProposalWithGovernanceTopic.topic = [governanceTopic];
+
+    const openProposalWithDappTopic = createSnsProposal({
+      proposalId: 103n,
+      status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+    });
+    openProposalWithDappTopic.topic = [dappManagementTopic];
+
+    const proposals = [
+      openProposalWithGovernanceTopic,
+      rejectedProposalWithGovernanceTopic,
+      openProposalWithDappTopic,
+    ];
+
+    snsProposalsStore.setProposals({
+      rootCanisterId,
+      proposals,
+      certified: true,
+      completed: true,
+    });
+
+    // Set status filter to show only OPEN proposals
+    snsFiltersStore.setDecisionStatus({
+      rootCanisterId,
+      decisionStatus: [
+        {
+          id: "1",
+          name: "Open",
+          value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+          checked: true,
+        },
+        {
+          id: "2",
+          name: "Rejected",
+          value: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_REJECTED,
+          checked: false,
+        },
+      ],
+    });
+
+    // Set topic filter to show only Governance topics
+    snsFiltersStore.setTopics({
+      rootCanisterId,
+      topics: [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance",
+          checked: true,
+        },
+        {
+          id: "DappCanisterManagement",
+          value: "DappCanisterManagement",
+          name: "Dapp Canister Management",
+          checked: false,
+        },
+      ],
+    });
+
+    expect(getProposals()).toHaveLength(1);
+    expect(getProposals()).toEqual([openProposalWithGovernanceTopic]);
   });
 });

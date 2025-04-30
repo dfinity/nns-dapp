@@ -212,6 +212,43 @@ describe("sns-aggregator store", () => {
       expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
     });
 
+    it("should override information for SNS with rootCanisterId u67kc-jyaaa-aaaaq-aabpq-cai", () => {
+      const brokenSns = withBrokenSns({
+        sns: {
+          ...mockedSns,
+          meta: {
+            ...mockedSns.meta,
+            name: "---",
+          },
+          icrc1_metadata: [...mockedSns.icrc1_metadata].map(([name, value]) => {
+            if (name === "icrc1:symbol" && "Text" in value) {
+              return [
+                name,
+                {
+                  Text: "---",
+                },
+              ];
+            }
+            return [name, value];
+          }),
+        },
+        rootCanisterId: "u67kc-jyaaa-aaaaq-aabpq-cai",
+      });
+      const data = [brokenSns];
+      snsAggregatorIncludingAbortedProjectsStore.setData(data);
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name
+      ).toBe("---");
+      expect(
+        get(snsAggregatorIncludingAbortedProjectsStore).data[0]
+          .icrc1_metadata[3][1]
+      ).toEqual({ Text: "---" });
+
+      const result = get(snsAggregatorStore).data[0];
+      expect(result.meta.name).toBe("\u200B--- (formerly SEERS)");
+      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (SEER)" });
+    });
+
     it("should send the CTS SNS to the bottom of the store", () => {
       const data = [brokenSns, ...aggregatorMockSnsesDataDto];
       snsAggregatorIncludingAbortedProjectsStore.setData(data);

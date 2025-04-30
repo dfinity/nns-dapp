@@ -129,14 +129,14 @@
   const nsFunctions: SnsNervousSystemFunction[] = $derived(
     get(createSnsNsFunctionsProjectStore(rootCanisterId)) ?? []
   );
-  const catchAllLegacyFollowings = $derived<SnsLegacyFollowings | undefined>(
+  const catchAllLegacyFollowings: SnsLegacyFollowings | undefined = $derived(
     getCatchAllSnsLegacyFollowings({
       neuron,
       nsFunctions,
     })
   );
 
-  const selectedTopicsContainLegacyFollowee = $derived<boolean>(
+  const selectedTopicsContainLegacyFollowee: boolean = $derived(
     getLegacyFolloweesByTopics({
       neuron,
       topicInfos: topicInfos.filter((topicInfo) =>
@@ -270,8 +270,8 @@
 
   const confirmDeactivateCatchAllFollowee = async () => {
     startBusy({
-      initiator: "remove-sns-legacy-followee",
-      labelKey: "follow_sns_topics.busy_removing_legacy",
+      initiator: "remove-sns-catch-all-followee",
+      labelKey: "follow_sns_topics.busy_removing_catch_all",
     });
 
     const { success } = await removeNsFunctionFollowees({
@@ -280,16 +280,15 @@
       functionId: 0n,
     });
 
-    await reloadNeuron();
-
     if (success) {
       toastsSuccess({
-        labelKey: "follow_sns_topics.success_removing_legacy",
+        labelKey: "follow_sns_topics.success_removing_catch_all",
       });
+      await reloadNeuron();
       openPrevStep();
     }
 
-    stopBusy("remove-sns-legacy-followee");
+    stopBusy("remove-sns-catch-all-followee");
   };
 </script>
 
