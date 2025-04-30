@@ -482,17 +482,23 @@ export const toExcludeTypeParameter = ({
   );
 };
 
+/**
+ * Converts topic filter selections to the format required by the list proposals API.
+ *
+ * - Returns null for ALL_SNS_PROPOSALS_WITHOUT_TOPIC to represent the "All Topics" option in the API
+ * - Filters out undefined values (unknown topics) while preserving null values
+ * - https://github.com/dfinity/ic/blob/master/rs/sns/governance/src/gen/ic_sns_governance.pb.v1.rs#L3200
+ */
 export const toIncludeTopicsParameter = (
   topicsFilter: Filter<SnsProposalTopicFilterId>[]
 ) => {
   return topicsFilter
     .map(({ value }) => {
-      // https://github.com/dfinity/ic/blob/master/rs/sns/governance/src/gen/ic_sns_governance.pb.v1.rs#L3200
       if (value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC) return null;
       const topic = snsTopicKeyToTopic(value);
       return isUnknownTopic(topic) ? undefined : topic;
     })
-    .filter(nonNullish);
+    .filter((topic) => topic !== undefined);
 };
 
 // Generate new "types" filter data, but preserve the checked state of the current filter state
