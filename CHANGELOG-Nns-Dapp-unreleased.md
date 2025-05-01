@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Topic-based filtering for SNS proposals
+- Topic-based SNS neuron voting delegation
 
 #### Changed
 
