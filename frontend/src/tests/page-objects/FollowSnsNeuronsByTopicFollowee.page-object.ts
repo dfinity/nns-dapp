@@ -24,6 +24,10 @@ export class FollowSnsNeuronsByTopicFolloweePo extends BasePageObject {
     return HashPo.under(this.root);
   }
 
+  hasRemoveButton(): Promise<boolean> {
+    return this.getButton("remove-button").isPresent();
+  }
+
   clickRemoveButton(): Promise<void> {
     return this.click("remove-button");
   }

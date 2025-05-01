@@ -73,6 +73,15 @@ describe("FollowSnsNeuronsByTopicStepDeactivateCatchAll", () => {
         .getNeuronHashPo()
         .getFullText()
     ).toBe("040506");
+
+    // Followee Tags should not have remove (X) button
+    for (const followeePo of followeePos) {
+      expect(
+        await followeePo
+          .getFollowSnsNeuronsByTopicFolloweePo()
+          .hasRemoveButton()
+      ).toBe(false);
+    }
   });
 
   it("calls callbacks when clicking the buttons", async () => {
