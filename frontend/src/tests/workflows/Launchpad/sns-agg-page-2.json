@@ -1517,7 +1517,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102077914528042021,
+    "icrc1_total_supply": 102091751789155393,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3022,7 +3022,7 @@
       "logo": "/v1/sns/root/extk7-gaaaa-aaaaq-aacda-cai/logo.png"
     },
     "parameters": {
-      "reserved_ids": [],
+      "reserved_ids": [88003],
       "functions": [
         {
           "id": 0,
@@ -3381,20 +3381,6 @@
               "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
               "validator_method_name": "validate_icrc1_transfer",
               "target_method_name": "icrc1_transfer"
-            }
-          }
-        },
-        {
-          "id": 88003,
-          "name": "Transfer position on ICP Swap",
-          "description": null,
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": "Governance",
-              "validator_canister_id": "kv5pw-kyaaa-aaaag-qcyya-cai",
-              "target_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
-              "validator_method_name": "transferPosition",
-              "target_method_name": "validate_icpswap_transfer_position"
             }
           }
         },
@@ -3864,7 +3850,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100872811424267,
+    "icrc1_total_supply": 100872942481777,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4551,20 +4537,6 @@
           "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
           "custom_functions": [
             {
-              "id": 88003,
-              "name": "Transfer position on ICP Swap",
-              "description": null,
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "Governance",
-                  "validator_canister_id": "kv5pw-kyaaa-aaaag-qcyya-cai",
-                  "target_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
-                  "validator_method_name": "transferPosition",
-                  "target_method_name": "validate_icpswap_transfer_position"
-                }
-              }
-            },
-            {
               "id": 88004,
               "name": "Transfer position on ICP Swap",
               "description": null,
@@ -5109,7 +5081,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995373058569,
+    "icrc1_total_supply": 995254384287,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8447,7 +8419,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19222510624090667,
+    "icrc1_total_supply": 19222591732187645,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -12026,7 +11998,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25601703744390988,
+    "icrc1_total_supply": 25608474701598342,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -13634,7 +13606,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10068666648202651,
+    "icrc1_total_supply": 10069553577911892,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15370,7 +15342,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 103986233747838978,
+    "icrc1_total_supply": 104110145344797883,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -17155,7 +17127,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98578351254948678,
+    "icrc1_total_supply": 98586167061352850,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -18877,7 +18849,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99928342941625677,
+    "icrc1_total_supply": 99831530333812590,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -20255,7 +20227,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100361310070263601,
+    "icrc1_total_supply": 100375449159747790,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

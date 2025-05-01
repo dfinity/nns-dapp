@@ -1129,7 +1129,9 @@
         "hhce5-bqaaa-aaaak-qtt3q-cai",
         "lzhom-nqaaa-aaaap-ahmpq-cai",
         "6fbif-qqaaa-aaaam-aeifq-cai",
-        "r5ola-uyaaa-aaaag-at3za-cai"
+        "r5ola-uyaaa-aaaag-at3za-cai",
+        "4uvvy-caaaa-aaaag-at2tq-cai",
+        "hf7lr-aqaaa-aaaal-qshma-cai"
       ],
       "archives": ["j6iuh-qyaaa-aaaaq-aadjq-cai"]
     },
@@ -1490,7 +1492,7 @@
       ]
     ],
     "icrc1_fee": [10000000],
-    "icrc1_total_supply": 5447966126871127,
+    "icrc1_total_supply": 5449480574531791,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2136,7 +2138,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100000035246835,
+    "icrc1_total_supply": 100002574698672,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2733,7 +2735,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041645216119945120,
+    "icrc1_total_supply": 1041642183626493965,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3588,7 +3590,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11667726499463553,
+    "icrc1_total_supply": 11667864706549444,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3946,14 +3948,6 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
-            },
-            {
-              "id": 16,
-              "name": "Set topics for custom proposals",
-              "description": "Proposal to set the topics for custom SNS proposals.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
             }
           ],
           "topic": "SnsFrameworkManagement",
@@ -4082,6 +4076,14 @@
               "id": 5,
               "name": "Remove nervous system function",
               "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -5336,7 +5338,7 @@
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2321072007176228799,
+    "icrc1_total_supply": 2321275389386069455,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -6137,7 +6139,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999782010000,
+    "icrc1_total_supply": 1999999780560000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -9714,7 +9716,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100172193970442907,
+    "icrc1_total_supply": 100175447908503765,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
