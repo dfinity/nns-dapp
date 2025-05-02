@@ -182,14 +182,24 @@
       return;
     }
 
+    const followingsToSet = addSnsNeuronToFollowingsByTopics({
+      topics: selectedTopics,
+      neuronId: followeeNeuronId,
+      followings,
+    });
+
+    if (followingsToSet.length === 0) {
+      stopBusy("add-followee-by-topic");
+      toastsError({
+        labelKey: "follow_sns_topics.error_already_following",
+      });
+      return;
+    }
+
     const { success, error } = await setFollowing({
       rootCanisterId,
       neuronId: fromDefinedNullable(neuron.id),
-      followings: addSnsNeuronToFollowingsByTopics({
-        topics: selectedTopics,
-        neuronId: followeeNeuronId,
-        followings,
-      }),
+      followings: followingsToSet,
     });
 
     if (success) {
