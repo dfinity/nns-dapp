@@ -469,6 +469,7 @@ interface I18nFollow_sns_topics {
   error_neuron_not_exist: string;
   error_add_following: string;
   error_remove_following: string;
+  error_already_following: string;
 }
 
 interface I18nMissing_rewards {
@@ -1349,6 +1350,11 @@ interface I18nPortfolio {
   new_sns_proposal_card_reject: string;
 }
 
+interface I18nHighlight {
+  topics_feature_title: string;
+  topics_feature_description: string;
+}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1643,6 +1649,7 @@ interface I18n {
   tokens: I18nTokens;
   import_token: I18nImport_token;
   portfolio: I18nPortfolio;
+  highlight: I18nHighlight;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

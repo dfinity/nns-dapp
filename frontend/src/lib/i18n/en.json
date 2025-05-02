@@ -434,7 +434,7 @@
     "topics_critical_tooltip": "Critical topics include proposals that are vital to the management of a given SNS DAO, so they require 67% \"yes\" votes to be adopted. These include treasury management and critical dapp operations.",
     "topics_non_critical_label": "Non-critical topics",
     "topics_non_critical_tooltip": "Non-critical topics include proposals that manage the day-to-day operations of a given SNS DAO, including code upgrades or SNS parameter management.",
-    "topics_following": "CURRENTLY FOLLOWING",
+    "topics_following": "CURRENT DELEGATES",
     "topics_legacy_following_description": "*You have legacy delegations applied to the following proposal types. When you set delegations for this topic, the current settings will be overwritten.",
     "legacy_description": "You have legacy delegations applied to some proposal types. When you set delegations for this topic, the current settings will be overwritten. Please confirm the changes to proceed.",
     "legacy_topics_header": "Topics with active legacy delegations",
@@ -453,7 +453,8 @@
     "success_removing_catch_all": "Legacy \"Catch-All\" followings were successfully removed.",
     "error_neuron_not_exist": "Neuron with ID $neuronId does not exist.",
     "error_add_following": "There was an error while adding a followee.",
-    "error_remove_following": "There was an error while unfollowing the neuron."
+    "error_remove_following": "There was an error while unfollowing the neuron.",
+    "error_already_following": "A voting delegation for the selected topic(s) and the entered neuron ID has already been set."
   },
   "missing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
@@ -1279,5 +1280,9 @@
     "new_sns_proposal_card_link": "Vote",
     "new_sns_proposal_card_adopt": "Adopt",
     "new_sns_proposal_card_reject": "Reject"
+  },
+  "highlight": {
+    "topics_feature_title": "New feature ",
+    "topics_feature_description": "You can now do SNS vote delegation based on proposal topics. Find the new feature in your SNS neuron detail view."
   }
 }
