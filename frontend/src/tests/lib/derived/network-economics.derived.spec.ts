@@ -1,6 +1,7 @@
 import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_MONTH,
+  SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import {
   clearFollowingAfterSecondsStore,
@@ -38,16 +39,33 @@ describe("network-economics-derived", () => {
     );
   });
 
-  it("should return neuron minimum dissolve delay to vote seconds", () => {
-    expect(get(neuronMinimumDissolveDelayToVoteSeconds)).toEqual(undefined);
+  describe("neuronMinimumDissolveDelayToVoteSeconds", () => {
+    it("should return default 6M if value is not provided by the API", () => {
+      networkEconomicsStore.setParameters({
+        parameters: {
+          ...mockNetworkEconomics,
 
-    networkEconomicsStore.setParameters({
-      parameters: mockNetworkEconomics,
-      certified: true,
+          votingPowerEconomics: {
+            ...mockNetworkEconomics.votingPowerEconomics,
+            neuronMinimumDissolveDelayToVoteSeconds: undefined,
+          },
+        },
+        certified: true,
+      });
+
+      expect(get(neuronMinimumDissolveDelayToVoteSeconds)).toEqual(
+        BigInt(SECONDS_IN_HALF_YEAR)
+      );
     });
+    it("should return neuron minimum dissolve delay to vote seconds", () => {
+      networkEconomicsStore.setParameters({
+        parameters: mockNetworkEconomics,
+        certified: true,
+      });
 
-    expect(get(neuronMinimumDissolveDelayToVoteSeconds)).toEqual(
-      BigInt(SECONDS_IN_YEAR)
-    );
+      expect(get(neuronMinimumDissolveDelayToVoteSeconds)).toEqual(
+        BigInt(SECONDS_IN_YEAR)
+      );
+    });
   });
 });
