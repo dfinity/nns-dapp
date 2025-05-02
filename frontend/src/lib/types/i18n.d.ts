@@ -469,6 +469,7 @@ interface I18nFollow_sns_topics {
   error_neuron_not_exist: string;
   error_add_following: string;
   error_remove_following: string;
+  error_already_following: string;
 }
 
 interface I18nMissing_rewards {
