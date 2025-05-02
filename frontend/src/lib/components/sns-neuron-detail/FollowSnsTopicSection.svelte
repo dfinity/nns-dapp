@@ -59,9 +59,9 @@
 
 <TestIdWrapper testId="follow-sns-topic-section-component">
   <FollowTopicSection
-    on:nnsOpen={openModal}
     count={followees.length}
     id={nsFunction.id.toString()}
+    openNewFolloweeModal={openModal}
   >
     <svelte:fragment slot="title">{nsFunction.name}</svelte:fragment>
     <svelte:fragment slot="subtitle"
