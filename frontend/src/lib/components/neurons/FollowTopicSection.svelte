@@ -13,12 +13,12 @@
   let testId = $state(defaultTestId);
 
   $effect(() => {
-    count;
+    if (count === 0) return;
     testId = "";
 
     setTimeout(() => {
       testId = defaultTestId;
-    });
+    }, 0);
   });
 </script>
 

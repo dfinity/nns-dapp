@@ -7,6 +7,7 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { EditFollowNeuronsPo } from "$tests/page-objects/EditFollowNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Topic } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
@@ -97,6 +98,9 @@ describe("EditFollowNeurons", () => {
 
   it("displays the followees of the user in specific topic", async () => {
     const po = renderComponent();
+
+    await runResolvedPromises();
+
     const topicSectionPo = await po.getFollowTopicSectionPo(Topic.ExchangeRate);
     expect(await topicSectionPo.getCollapsiblePo().isExpanded()).toBe(false);
     await topicSectionPo.getCollapsiblePo().expand();
