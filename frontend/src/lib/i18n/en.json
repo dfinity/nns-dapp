@@ -434,7 +434,7 @@
     "topics_critical_tooltip": "Critical topics include proposals that are vital to the management of a given SNS DAO, so they require 67% \"yes\" votes to be adopted. These include treasury management and critical dapp operations.",
     "topics_non_critical_label": "Non-critical topics",
     "topics_non_critical_tooltip": "Non-critical topics include proposals that manage the day-to-day operations of a given SNS DAO, including code upgrades or SNS parameter management.",
-    "topics_following": "CURRENTLY FOLLOWING",
+    "topics_following": "CURRENT DELEGATES",
     "topics_legacy_following_description": "*You have legacy delegations applied to the following proposal types. When you set delegations for this topic, the current settings will be overwritten.",
     "legacy_description": "You have legacy delegations applied to some proposal types. When you set delegations for this topic, the current settings will be overwritten. Please confirm the changes to proceed.",
     "legacy_topics_header": "Topics with active legacy delegations",
