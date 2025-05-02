@@ -1,4 +1,6 @@
 import type { FeatureKey } from "$lib/constants/environment.constants";
+import { HighlightPo } from "$tests/page-objects/Highlight.page-object";
+import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import { exec } from "child_process";
 
@@ -76,6 +78,9 @@ export const signInWithNewUser = async ({
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);
 
+  // Close the Highlight popup if present
+  await closeHighlight(page);
+
   await step("Running the main test");
 };
 
@@ -141,4 +146,10 @@ export const dfxCanisterId = async (canisterName: string) => {
       resolve(stdout.trim());
     });
   });
+};
+
+export const closeHighlight = async (page: Page) => {
+  await HighlightPo.under(
+    PlaywrightPageObjectElement.fromPage(page)
+  )?.clickClose();
 };
