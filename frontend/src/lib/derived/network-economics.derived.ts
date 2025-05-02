@@ -17,3 +17,12 @@ export const clearFollowingAfterSecondsStore: Readable<bigint | undefined> =
       $networkEconomicsStore.parameters?.votingPowerEconomics
         ?.clearFollowingAfterSeconds
   );
+
+export const neuronMinimumDissolveDelayToVoteSeconds: Readable<
+  bigint | undefined
+> = derived(
+  networkEconomicsStore,
+  ($networkEconomicsStore) =>
+    $networkEconomicsStore.parameters?.votingPowerEconomics
+      ?.neuronMinimumDissolveDelayToVoteSeconds
+);

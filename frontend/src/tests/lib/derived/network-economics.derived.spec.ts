@@ -24,7 +24,7 @@ describe("network-economics-derived", () => {
     );
   });
 
-  it("should return start reducing voting power", () => {
+  it("should return clear following", () => {
     expect(get(clearFollowingAfterSecondsStore)).toEqual(undefined);
 
     networkEconomicsStore.setParameters({
@@ -34,6 +34,19 @@ describe("network-economics-derived", () => {
 
     expect(get(clearFollowingAfterSecondsStore)).toEqual(
       BigInt(SECONDS_IN_MONTH)
+    );
+  });
+
+  it("should return neuron minimum dissolve delay to vote seconds", () => {
+    expect(get(neuronMinimumDissolveDelayToVoteSeconds)).toEqual(undefined);
+
+    networkEconomicsStore.setParameters({
+      parameters: mockNetworkEconomics,
+      certified: true,
+    });
+
+    expect(get(neuronMinimumDissolveDelayToVoteSeconds)).toEqual(
+      BigInt(SECONDS_IN_YEAR)
     );
   });
 });
