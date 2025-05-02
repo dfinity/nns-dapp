@@ -78,7 +78,6 @@ export const signInWithNewUser = async ({
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);
 
-  // Close the Highlight popup if present
   await closeHighlight(page);
 
   await step("Running the main test");
@@ -148,6 +147,7 @@ export const dfxCanisterId = async (canisterName: string) => {
   });
 };
 
+// Close the Highlight popup if present
 export const closeHighlight = async (page: Page) => {
   await HighlightPo.under(
     PlaywrightPageObjectElement.fromPage(page)
