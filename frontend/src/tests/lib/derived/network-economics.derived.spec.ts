@@ -4,6 +4,7 @@ import {
 } from "$lib/constants/constants";
 import {
   clearFollowingAfterSecondsStore,
+  neuronMinimumDissolveDelayToVoteSeconds,
   startReducingVotingPowerAfterSecondsStore,
 } from "$lib/derived/network-economics.derived";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
