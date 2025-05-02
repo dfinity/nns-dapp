@@ -59,7 +59,7 @@
     level="info"
     title={$i18n.highlight.topics_feature_title}
     description={$i18n.highlight.topics_feature_description}
-    link="https://internetcomputer.org/docs/building-apps/governing-apps/nns/using-the-nns-dapp/sns-topic-following"
+    link="https://internetcomputer.org/docs/building-apps/governing-apps/nns/using-the-nns-dapp/nns-dapp-sns-topic-following"
     id="topics-feature"
   />
 {/if}
