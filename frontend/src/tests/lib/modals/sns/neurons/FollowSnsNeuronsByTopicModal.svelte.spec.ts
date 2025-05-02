@@ -14,7 +14,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import type { Principal } from "@dfinity/principal";
-import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+import type { SnsNeuron, SnsNeuronId, SnsTopic } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array, fromNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -390,6 +390,67 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       {
         level: "error",
         text: "Neuron with ID 040506 does not exist.",
+      },
+    ]);
+
+    expect(setFollowingSpy).toBeCalledTimes(0);
+    expect(reloadNeuronSpy).toBeCalledTimes(0);
+    expect(closeModalSpy).toBeCalledTimes(0);
+  });
+
+  it('handles "already following" error', async () => {
+    const criticalTopic1: SnsTopic = {
+      [criticalTopicKey1]: null,
+    };
+    const testNeuron = {
+      ...neuron,
+      topic_followees: [
+        {
+          topic_id_to_followees: [
+            [
+              0,
+              {
+                topic: [criticalTopic1],
+                followees: [
+                  {
+                    neuron_id: [followeeNeuronId1],
+                    alias: [],
+                  },
+                ],
+              },
+            ],
+          ],
+        },
+      ],
+    } as SnsNeuron;
+    vi.spyOn(snsGovernanceApi, "querySnsNeuron").mockResolvedValue(testNeuron);
+    const setFollowingSpy = vi.spyOn(snsGovernanceApi, "setFollowing");
+    const reloadNeuronSpy = vi.fn();
+    const closeModalSpy = vi.fn();
+    const po = renderComponent({
+      ...defaultProps,
+      neuron: testNeuron,
+      reloadNeuron: reloadNeuronSpy,
+      closeModal: closeModalSpy,
+    });
+
+    const topicsStepPo = await po.getFollowSnsNeuronsByTopicStepTopicsPo();
+    await topicsStepPo.clickTopicItemByName(criticalTopicName1);
+    await topicsStepPo.clickNextButton();
+    const neuronStepPo = await po.getFollowSnsNeuronsByTopicStepNeuronPo();
+    await neuronStepPo.getNeuronIdInputPo().typeText("010203");
+
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toEqual([]);
+
+    await neuronStepPo.clickConfirmButton();
+    await runResolvedPromises();
+
+    expect(get(busyStore)).toEqual([]);
+    expect(get(toastsStore)).toMatchObject([
+      {
+        level: "error",
+        text: "A voting delegation for the selected topic(s) and the entered neuron ID has already been set.",
       },
     ]);
 
