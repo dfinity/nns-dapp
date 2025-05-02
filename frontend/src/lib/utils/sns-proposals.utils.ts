@@ -52,7 +52,6 @@ import {
   SnsProposalRewardStatus,
   type SnsPercentage,
 } from "@dfinity/sns";
-import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import {
   fromDefinedNullable,
   fromNullable,
@@ -493,16 +492,13 @@ export const toExcludeTypeParameter = ({
 export const toIncludeTopicsParameter = (
   topicsFilter: Filter<SnsProposalTopicFilterId>[]
 ) => {
-  return (
-    topicsFilter
-      .map(({ value }) => {
-        if (value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC) return null;
-        const topic = snsTopicKeyToTopic(value);
-        return isUnknownTopic(topic) ? undefined : topic;
-      })
-      // TODO: Remove type assertion once TS is upgraded to 5.5
-      .filter((topic): topic is Topic | null => topic !== undefined)
-  );
+  return topicsFilter
+    .map(({ value }) => {
+      if (value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC) return null;
+      const topic = snsTopicKeyToTopic(value);
+      return isUnknownTopic(topic) ? undefined : topic;
+    })
+    .filter((topic) => topic !== undefined);
 };
 
 // Generate new "types" filter data, but preserve the checked state of the current filter state
