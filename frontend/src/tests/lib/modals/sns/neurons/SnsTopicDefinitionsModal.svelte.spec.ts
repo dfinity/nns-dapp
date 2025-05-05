@@ -1,5 +1,4 @@
 import SnsTopicDefinitionsModal from "$lib/modals/sns/neurons/SnsTopicDefinitionsModal.svelte";
-import type { SnsTopicKey } from "$lib/types/sns";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
 import { SnsTopicDefinitionsModalPo } from "$tests/page-objects/SnsTopicDefinitionsModal.page-object";
@@ -9,8 +8,6 @@ import { render } from "@testing-library/svelte";
 
 describe("SnsTopicDefinitionsModal", () => {
   const rootCanisterId = principal(1);
-  const topicKey2: SnsTopicKey = "ApplicationBusinessLogic";
-  const topicName2 = "Application Business Logic";
 
   const renderComponent = ({
     onClose = () => {},
