@@ -47,5 +47,5 @@ export const icrcTokensUniversesStore: Readable<Universe[]> = derived(
       .map((canisters: IcrcCanisters) =>
         convertIcrcCanistersToUniverse({ canisters, tokensData })
       )
-      .filter((universe) => nonNullish(universe))
+      .filter(nonNullish)
 );
