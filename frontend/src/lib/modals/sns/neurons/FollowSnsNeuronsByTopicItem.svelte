@@ -19,6 +19,7 @@
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import FollowSnsNeuronsByTopicLegacyFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicLegacyFollowee.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 
   type Props = {
     topicInfo: TopicInfoWithUnknown;
@@ -149,12 +150,15 @@
                   <FollowSnsNeuronsByTopicLegacyFollowee
                     nsFunction={followees.nsFunction}
                     {neuronId}
-                    onRemoveClick={() => {
-                      removeLegacyFollowing({
-                        nsFunction: followees.nsFunction,
-                        followee: neuronId,
-                      });
-                    }}
+                    onRemoveClick={followees.nsFunction.id ===
+                    ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID
+                      ? undefined
+                      : () => {
+                          removeLegacyFollowing({
+                            nsFunction: followees.nsFunction,
+                            followee: neuronId,
+                          });
+                        }}
                   />
                 </li>
               {/each}
