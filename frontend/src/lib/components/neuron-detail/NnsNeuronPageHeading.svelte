@@ -47,6 +47,7 @@
     i18n: $i18n,
     startReducingVotingPowerAfterSeconds:
       $startReducingVotingPowerAfterSecondsStore,
+    minimumDissolveDelay: $neuronMinimumDissolveDelayToVoteSeconds,
   });
 </script>
 
