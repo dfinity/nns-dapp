@@ -51,7 +51,7 @@ export const createSnsTopicsProjectStore = (
       const topics = fromNullable(topicResponse.topics);
       if (isNullish(topics)) return undefined;
 
-      // sorts filters with critical topics first, then alphabetically within each group
+      // sorts topics with critical topics first, then alphabetically within each group
       return topics.sort((a, b) => {
         const isACritical = fromDefinedNullable(a.is_critical);
         const isBCritical = fromDefinedNullable(b.is_critical);
