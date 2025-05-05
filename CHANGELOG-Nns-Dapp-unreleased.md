@@ -25,6 +25,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- "Add Followee" button is not fully visible after adding a followee
+
 #### Security
 
 #### Not Published
