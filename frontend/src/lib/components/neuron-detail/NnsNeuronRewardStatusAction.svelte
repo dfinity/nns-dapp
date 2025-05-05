@@ -2,15 +2,20 @@
   import ConfirmFollowingActionButton from "$lib/components/neuron-detail/actions/ConfirmFollowingActionButton.svelte";
   import FollowNeuronsButton from "$lib/components/neuron-detail/actions/FollowNeuronsButton.svelte";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import {
+    clearFollowingAfterSecondsStore,
+    neuronMinimumDissolveDelayToVoteSeconds,
+    startReducingVotingPowerAfterSecondsStore,
+  } from "$lib/derived/network-economics.derived";
   import { i18n } from "$lib/stores/i18n";
   import { secondsToRoundedDuration } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
+    hasEnoughDissolveDelayToVote,
     isNeuronFollowingReset,
     isNeuronMissingReward,
-    secondsUntilMissingReward,
     isNeuronMissingRewardsSoon,
-    hasEnoughDissolveDelayToVote,
+    secondsUntilMissingReward,
   } from "$lib/utils/neuron.utils";
   import {
     IconCheckCircleFill,
@@ -19,10 +24,6 @@
   } from "@dfinity/gix-components";
   import { type NeuronInfo } from "@dfinity/nns";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
-  import {
-    clearFollowingAfterSecondsStore,
-    startReducingVotingPowerAfterSecondsStore,
-  } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
 
@@ -97,7 +98,7 @@
   };
 </script>
 
-{#if hasEnoughDissolveDelayToVote(neuron) && nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
+{#if hasEnoughDissolveDelayToVote(neuron, $neuronMinimumDissolveDelayToVoteSeconds) && nonNullish($startReducingVotingPowerAfterSecondsStore) && nonNullish($clearFollowingAfterSecondsStore)}
   <CommonItemAction
     testId="nns-neuron-reward-status-action-component"
     tooltipText={replacePlaceholders($i18n.missing_rewards.description, {

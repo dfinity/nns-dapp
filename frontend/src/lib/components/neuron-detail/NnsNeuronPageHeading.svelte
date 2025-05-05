@@ -6,6 +6,10 @@
   import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import {
+    neuronMinimumDissolveDelayToVoteSeconds,
+    startReducingVotingPowerAfterSecondsStore,
+  } from "$lib/derived/network-economics.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
@@ -19,7 +23,6 @@
   } from "$lib/utils/neuron.utils";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
 
@@ -31,7 +34,10 @@
 
   // The API might return a non-zero voting power even if the neuron can't vote.
   let canVote: boolean;
-  $: canVote = hasEnoughDissolveDelayToVote(neuron);
+  $: canVote = hasEnoughDissolveDelayToVote(
+    neuron,
+    $neuronMinimumDissolveDelayToVoteSeconds
+  );
 
   let neuronTags: NeuronTagData[];
   $: neuronTags = getNeuronTags({
