@@ -1,42 +1,34 @@
 <script lang="ts">
-  import { i18n } from "$lib/stores/i18n";
-  import { Modal } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
-  import type {
-    ListTopicsResponseWithUnknown,
-    TopicInfoWithUnknown,
-  } from "$lib/types/sns-aggregator";
-  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
-  import type { Principal } from "@dfinity/principal";
-  import { fromDefinedNullable, isNullish } from "@dfinity/utils";
   import Separator from "$lib/components/ui/Separator.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
   import SnsTopicDefinitionsTopic from "$lib/modals/sns/neurons/SnsTopicDefinitionsTopic.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
+  import { Modal } from "@dfinity/gix-components";
+  import type { Principal } from "@dfinity/principal";
+  import { fromDefinedNullable } from "@dfinity/utils";
 
-  export let rootCanisterId: Principal;
+  type Props = {
+    rootCanisterId: Principal;
+    onClose: () => void;
+  };
 
-  const dispatcher = createEventDispatcher();
-  const close = () => dispatcher("nnsClose");
+  const { rootCanisterId, onClose }: Props = $props();
 
-  let listTopics: ListTopicsResponseWithUnknown | undefined;
-  $: listTopics = $snsTopicsStore[rootCanisterId.toText()];
+  const topicsStore = $derived(createSnsTopicsProjectStore(rootCanisterId));
+  const topics = $derived($topicsStore ?? []);
 
-  let topicInfos: TopicInfoWithUnknown[];
-  $: topicInfos = isNullish(listTopics)
-    ? []
-    : fromDefinedNullable(listTopics?.topics);
-  let criticalTopicInfos: TopicInfoWithUnknown[];
-  $: criticalTopicInfos = topicInfos.filter((topicInfo) =>
-    fromDefinedNullable(topicInfo.is_critical)
+  const criticalTopicInfos = $derived(
+    topics.filter((topicInfo) => fromDefinedNullable(topicInfo.is_critical))
   );
-  let nonCriticalTopicInfos: TopicInfoWithUnknown[];
-  $: nonCriticalTopicInfos = topicInfos.filter(
-    (topicInfo) => !fromDefinedNullable(topicInfo.is_critical)
+
+  const nonCriticalTopicInfos = $derived(
+    topics.filter((topicInfo) => !fromDefinedNullable(topicInfo.is_critical))
   );
 </script>
 
-<Modal testId="sns-topic-definitions-modal-component" on:nnsClose={close}>
+<Modal testId="sns-topic-definitions-modal-component" on:nnsClose={onClose}>
   <svelte:fragment slot="title"
     >{$i18n.follow_sns_topics.topic_definitions_title}</svelte:fragment
   >
@@ -76,7 +68,7 @@
       class="secondary"
       type="button"
       data-tid="close-button"
-      on:click={close}
+      onclick={onClose}
     >
       {$i18n.core.close}
     </button>

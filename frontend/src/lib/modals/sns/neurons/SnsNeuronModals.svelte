@@ -8,6 +8,7 @@
   import AddPermissionsModal from "$lib/modals/sns/neurons/AddPermissionsModal.svelte";
   import AddSnsHotkeyModal from "$lib/modals/sns/neurons/AddSnsHotkeyModal.svelte";
   import DissolveSnsNeuronModal from "$lib/modals/sns/neurons/DissolveSnsNeuronModal.svelte";
+  import FollowSnsNeuronsByTopicModal from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicModal.svelte";
   import FollowSnsNeuronsModal from "$lib/modals/sns/neurons/FollowSnsNeuronsModal.svelte";
   import IncreaseSnsDissolveDelayModal from "$lib/modals/sns/neurons/IncreaseSnsDissolveDelayModal.svelte";
   import SnsActiveDisbursementsModal from "$lib/modals/sns/neurons/SnsActiveDisbursementsModal.svelte";
@@ -15,6 +16,7 @@
   import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturityModal.svelte";
   import SnsIncreaseStakeNeuronModal from "$lib/modals/sns/neurons/SnsIncreaseStakeNeuronModal.svelte";
   import SnsStakeMaturityModal from "$lib/modals/sns/neurons/SnsStakeMaturityModal.svelte";
+  import SnsTopicDefinitionsModal from "$lib/modals/sns/neurons/SnsTopicDefinitionsModal.svelte";
   import SplitSnsNeuronModal from "$lib/modals/sns/neurons/SplitSnsNeuronModal.svelte";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
@@ -39,8 +41,6 @@
     type Token,
   } from "@dfinity/utils";
   import { getContext } from "svelte";
-  import FollowSnsNeuronsByTopicModal from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicModal.svelte";
-  import SnsTopicDefinitionsModal from "$lib/modals/sns/neurons/SnsTopicDefinitionsModal.svelte";
 
   // Modal events
 
@@ -133,7 +133,7 @@
   {/if}
 
   {#if type === "sns-topic-definitions" && nonNullish(rootCanisterId)}
-    <SnsTopicDefinitionsModal {rootCanisterId} on:nnsClose={close} />
+    <SnsTopicDefinitionsModal {rootCanisterId} onClose={close} />
   {/if}
 
   {#if type === "stake-maturity" && nonNullish(rootCanisterId) && nonNullish(neuronId)}
