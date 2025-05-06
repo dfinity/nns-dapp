@@ -429,7 +429,7 @@
     "topics_title": "Delegate Voting",
     "legacy_title": "Change to Topic Following",
     "deactivate_catch_all_title": "Deactivating Catch-All Following",
-    "topics_description": "Delegate your voting power by following other neurons to maximize your voting rewards. Your vote is fully delegated only when a following is set for every topic. Alternatively, you can choose to vote manually.",
+    "topics_description": "As an alternative to voting manually, you can delegate your voting power to other neurons. To cover all proposals, make sure delegation is set for each topic.",
     "topics_critical_label": "Critical topics",
     "topics_critical_tooltip": "Critical topics include proposals that are vital to the management of a given SNS DAO, so they require 67% \"yes\" votes to be adopted. These include treasury management and critical dapp operations.",
     "topics_non_critical_label": "Non-critical topics",
@@ -1283,6 +1283,6 @@
   },
   "highlight": {
     "topics_feature_title": "New feature ",
-    "topics_feature_description": "You can now do SNS vote delegation based on proposal topics. Find the new feature in your SNS neuron detail view."
+    "topics_feature_description": "As an SNS DAO member, you can now delegate your voting power based on proposal topics. Find the new feature in your SNS neuron detail view."
   }
 }
