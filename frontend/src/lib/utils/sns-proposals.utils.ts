@@ -582,24 +582,17 @@ export const generateSnsProposalTopicsFilterData = ({
   const i18nKeys = get(i18n);
 
   const existingFilters: Filter<SnsProposalTopicFilterId>[] = topics
-    .filter((topic) => nonNullish(topic.topic))
-    .map((topic) => ({
-      name: fromDefinedNullable(topic.name),
-      isCritical: fromDefinedNullable(topic.is_critical),
-      topic: snsTopicToTopicKey(fromDefinedNullable(topic.topic)),
-    }))
-    .map(({ name, isCritical, topic }) => ({
-      id: topic,
-      value: topic,
-      name,
-      isCritical,
-      checked: getCheckedState(topic),
-    }))
-    // sorts filters with critical topics first, then alphabetically within each group
-    .sort((a, b) => {
-      if (a.isCritical && !b.isCritical) return -1;
-      if (!a.isCritical && b.isCritical) return 1;
-      return a.name.localeCompare(b.name);
+    .filter(({ topic }) => nonNullish(topic))
+    .map((topicInfo) => {
+      const topic = snsTopicToTopicKey(fromDefinedNullable(topicInfo.topic));
+
+      return {
+        name: fromDefinedNullable(topicInfo.name),
+        isCritical: fromDefinedNullable(topicInfo.is_critical),
+        id: topic,
+        value: topic,
+        checked: getCheckedState(topic),
+      };
     });
 
   const allSnsProposalsWithoutTopicFilter = {
