@@ -19,13 +19,12 @@ describe("SnsTopicDefinitionsModal", () => {
   const topicName2 = "Application Business Logic";
 
   const renderComponent = ({
-    onNnsClose = () => {},
+    onClose = () => {},
   }: {
-    onNnsClose?: () => void;
+    onClose?: () => void;
   } = {}) => {
     const { container } = render(SnsTopicDefinitionsModal, {
-      props: { rootCanisterId },
-      events: { nnsClose: onNnsClose },
+      props: { rootCanisterId, onClose },
     });
 
     return SnsTopicDefinitionsModalPo.under(
@@ -85,12 +84,12 @@ describe("SnsTopicDefinitionsModal", () => {
   });
 
   it("emits close event", async () => {
-    const onNnsClose = vi.fn();
+    const onClose = vi.fn();
     const po = renderComponent({
-      onNnsClose,
+      onClose,
     });
 
     await po.clickCloseButton();
-    expect(onNnsClose).toHaveBeenCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 });
