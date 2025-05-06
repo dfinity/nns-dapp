@@ -1,5 +1,5 @@
-<script lang="ts" context="module">
-  import type { Component } from "svelte";
+<script lang="ts" module>
+  import { onDestroy, type Component } from "svelte";
 
   export type CardItem = {
     component: Component;
@@ -8,11 +8,14 @@
 </script>
 
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  type Props = { cards: CardItem[] };
 
-  export let cards: CardItem[] = [];
-  let activeIndex = 0;
-  let intervalId: number;
+  const { cards = [] }: Props = $props();
+
+  const CARD_TRANSITION_DURATION = 5000;
+
+  let activeIndex = $state(0);
+  let intervalId: number | undefined;
 
   const nextCard = () => {
     activeIndex = (activeIndex + 1) % cards.length;
@@ -24,20 +27,20 @@
   };
 
   const resetTimer = () => {
-    if (intervalId) clearInterval(intervalId);
+    cleanUpInterval();
 
     if (cards.length > 1) {
-      intervalId = window.setInterval(nextCard, 5000);
+      intervalId = window.setInterval(nextCard, CARD_TRANSITION_DURATION);
     }
   };
 
-  $: if (cards) {
-    resetTimer();
-  }
-
-  onDestroy(() => {
+  const cleanUpInterval = () => {
     if (intervalId) clearInterval(intervalId);
-  });
+  };
+
+  onDestroy(cleanUpInterval);
+
+  resetTimer();
 </script>
 
 <div class="stacked-cards" data-tid="stacked-cards-component">
@@ -49,7 +52,7 @@
           class:active={i === activeIndex}
           data-tid="project-card-wrapper"
         >
-          <svelte:component this={card.component} {...card.props} />
+          <card.component {...card.props} />
         </div>
       {/each}
     </div>
@@ -60,7 +63,7 @@
           <button
             class="dot"
             class:active={i === activeIndex}
-            on:click={() => setCard(i)}
+            onclick={() => setCard(i)}
             disabled={i === activeIndex}
             aria-label={`Display ${i + 1} card`}
             data-tid="dot-button"
