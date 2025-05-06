@@ -101,6 +101,9 @@
     modal?.set(
       wizardStepIndex({ name: STEP_CONFIRM_DEACTIVATING_CATCH_ALL, steps })
     );
+  const openFirstStep = () =>
+    modal?.set(wizardStepIndex({ name: STEP_TOPICS, steps }));
+
   const openPrevStep = () => {
     if (
       currentStep?.name === STEP_NEURON &&
@@ -110,7 +113,7 @@
         wizardStepIndex({ name: STEP_CONFIRM_OVERRIDE_LEGACY, steps })
       );
     } else {
-      modal?.set(wizardStepIndex({ name: STEP_TOPICS, steps }));
+      openFirstStep();
     }
   };
 
@@ -203,11 +206,15 @@
     });
 
     if (success) {
+      await reloadNeuron();
+      // Reset forms state
+      selectedTopics = [];
+      followeeNeuronIdHex = "";
+
+      openFirstStep();
       toastsSuccess({
         labelKey: $i18n.follow_sns_topics.success_set_following,
       });
-      await reloadNeuron();
-      closeModal();
     } else {
       toastsError({
         labelKey: "follow_sns_topics.error_add_following",
@@ -295,7 +302,7 @@
         labelKey: "follow_sns_topics.success_removing_catch_all",
       });
       await reloadNeuron();
-      openPrevStep();
+      openFirstStep();
     }
 
     stopBusy("remove-sns-catch-all-followee");
@@ -330,14 +337,14 @@
       {topicInfos}
       {neuron}
       bind:selectedTopics
-      {openPrevStep}
+      openPrevStep={openFirstStep}
       {openNextStep}
     />
   {/if}
   {#if currentStep?.name === STEP_CONFIRM_DEACTIVATING_CATCH_ALL && nonNullish(catchAllLegacyFollowings)}
     <FollowSnsNeuronsByTopicStepDeactivateCatchAll
       {catchAllLegacyFollowings}
-      cancel={openPrevStep}
+      cancel={openFirstStep}
       confirm={confirmDeactivateCatchAllFollowee}
     />
   {/if}
