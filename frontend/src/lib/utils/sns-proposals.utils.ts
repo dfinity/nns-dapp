@@ -585,13 +585,16 @@ export const generateSnsProposalTopicsFilterData = ({
     .filter(({ topic }) => nonNullish(topic))
     .map((topicInfo) => {
       const topic = snsTopicToTopicKey(fromDefinedNullable(topicInfo.topic));
+      const name = fromDefinedNullable(topicInfo.name);
+      const isCritical = fromDefinedNullable(topicInfo.is_critical);
+      const checked = getCheckedState(topic);
 
       return {
-        name: fromDefinedNullable(topicInfo.name),
-        isCritical: fromDefinedNullable(topicInfo.is_critical),
+        name,
+        isCritical,
         id: topic,
         value: topic,
-        checked: getCheckedState(topic),
+        checked,
       };
     });
 
