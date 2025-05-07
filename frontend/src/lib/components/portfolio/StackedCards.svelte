@@ -1,5 +1,7 @@
 <script lang="ts" module>
   import { onDestroy, type Component } from "svelte";
+  import { elasticOut } from "svelte/easing";
+  import { fade, scale } from "svelte/transition";
 
   export type CardItem = {
     component: Component;
@@ -16,17 +18,22 @@
 
   let activeIndex = $state(0);
   let intervalId: number | undefined;
-
   let touchStartX = 0;
   let touchEndX = 0;
 
-  const nextCard = () => {
-    activeIndex = (activeIndex + 1) % cards.length;
-    resetTimer();
+  const prevCard = () => {
+    const newIndex = (activeIndex - 1 + cards.length) % cards.length;
+    setCard(newIndex);
   };
 
-  const prevCard = () => {
-    activeIndex = (activeIndex - 1 + cards.length) % cards.length;
+  const nextCard = () => {
+    const newIndex = (activeIndex + 1) % cards.length;
+    setCard(newIndex);
+  };
+
+  const setCard = (newIndex: number) => {
+    if (newIndex === activeIndex) return;
+    activeIndex = newIndex;
     resetTimer();
   };
 
@@ -66,6 +73,8 @@
   onDestroy(cleanUpInterval);
 
   resetTimer();
+
+  const card = $derived(cards[activeIndex]);
 </script>
 
 <div
@@ -76,15 +85,23 @@
 >
   {#if cards.length > 0}
     <div class="cards-wrapper">
-      {#each cards as card, i}
+      {#key activeIndex}
         <div
           class="card-wrapper"
-          class:active={i === activeIndex}
           data-tid="project-card-wrapper"
+          in:scale={{
+            start: 0.97,
+            opacity: 0.8,
+            duration: 550,
+            easing: elasticOut,
+          }}
+          out:fade={{
+            duration: 250,
+          }}
         >
-          <card.component {...card.props} />
+          <card.component {...card.props || {}} />
         </div>
-      {/each}
+      {/key}
     </div>
 
     {#if cards.length > 1}
@@ -93,7 +110,7 @@
           <button
             class="dot"
             class:active={i === activeIndex}
-            onclick={nextCard}
+            onclick={() => setCard(i)}
             disabled={i === activeIndex}
             aria-label={`Display ${i + 1} card`}
             data-tid="dot-button"
@@ -122,21 +139,13 @@
     .cards-wrapper {
       position: relative;
       width: 100%;
+      height: 270px;
 
-      .card-wrapper {
-        opacity: 0;
-        transition: opacity var(--animation-time-long) ease-in-out;
-        pointer-events: none;
+      .card-wrapper:not(:only-child) {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
-
-        &.active {
-          position: relative;
-          opacity: 1;
-          pointer-events: all;
-        }
       }
     }
 
