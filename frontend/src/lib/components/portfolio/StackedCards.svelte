@@ -1,5 +1,6 @@
 <script lang="ts" module>
   import type { Component } from "svelte";
+  import { onDestroy } from "svelte";
 
   export type CardItem = {
     component: Component;
@@ -8,8 +9,6 @@
 </script>
 
 <script lang="ts">
-  import { onDestroy } from "svelte";
-
   type Props = { cards: CardItem[] };
   const { cards = [] }: Props = $props();
 
