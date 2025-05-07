@@ -40,6 +40,7 @@
   };
 
   onDestroy(clearInterval);
+  resetTimer();
 </script>
 
 <div class="stacked-cards" data-tid="stacked-cards-component">
