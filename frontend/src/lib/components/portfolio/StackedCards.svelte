@@ -17,12 +17,16 @@
   let activeIndex = $state(0);
   let intervalId: number | undefined;
 
+  let touchStartX = 0;
+  let touchEndX = 0;
+
   const nextCard = () => {
     activeIndex = (activeIndex + 1) % cards.length;
+    resetTimer();
   };
 
-  const setCard = (index: number) => {
-    activeIndex = index;
+  const prevCard = () => {
+    activeIndex = (activeIndex - 1 + cards.length) % cards.length;
     resetTimer();
   };
 
@@ -38,12 +42,38 @@
     if (intervalId) clearInterval(intervalId);
   };
 
+  const handleTouchStart = (event: TouchEvent) => {
+    touchStartX = event.touches[0].clientX;
+    cleanUpInterval();
+  };
+
+  const handleTouchEnd = (event: TouchEvent) => {
+    touchEndX = event.changedTouches[0].clientX;
+    handleSwipe();
+    resetTimer();
+  };
+
+  const handleSwipe = () => {
+    const swipeDistance = touchEndX - touchStartX;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(swipeDistance) < minSwipeDistance) return;
+
+    if (swipeDistance > 0) prevCard();
+    else nextCard();
+  };
+
   onDestroy(cleanUpInterval);
 
   resetTimer();
 </script>
 
-<div class="stacked-cards" data-tid="stacked-cards-component">
+<div
+  class="stacked-cards"
+  data-tid="stacked-cards-component"
+  ontouchstart={handleTouchStart}
+  ontouchend={handleTouchEnd}
+>
   {#if cards.length > 0}
     <div class="cards-wrapper">
       {#each cards as card, i}
@@ -63,7 +93,7 @@
           <button
             class="dot"
             class:active={i === activeIndex}
-            onclick={() => setCard(i)}
+            onclick={nextCard}
             disabled={i === activeIndex}
             aria-label={`Display ${i + 1} card`}
             data-tid="dot-button"
@@ -87,6 +117,7 @@
     width: 100%;
     align-items: center;
     position: relative;
+    touch-action: pan-y;
 
     .cards-wrapper {
       position: relative;
