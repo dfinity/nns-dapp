@@ -1,10 +1,14 @@
 <script lang="ts">
   import Separator from "$lib/components/ui/Separator.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import {
+    neuronMinimumDissolveDelayToVoteSeconds,
+    startReducingVotingPowerAfterSecondsStore,
+  } from "$lib/derived/network-economics.derived";
+  import { sortedNeuronStore } from "$lib/derived/neurons.derived";
   import NeuronVisibilityRow from "$lib/modals/neurons/NeuronVisibilityRow.svelte";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
-  import { sortedNeuronStore } from "$lib/derived/neurons.derived";
   import {
     createNeuronVisibilityRowData,
     isNeuronControllableByUser,
@@ -14,7 +18,6 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;
   export let makePublic: boolean;
@@ -129,6 +132,8 @@
                   i18n: $i18n,
                   startReducingVotingPowerAfterSeconds:
                     $startReducingVotingPowerAfterSecondsStore,
+                  minimumDissolveDelay:
+                    $neuronMinimumDissolveDelayToVoteSeconds,
                 })}
                 checked={isNeuronSelected(n)}
                 on:nnsChange={() => handleCheckboxChange(n)}
@@ -158,6 +163,8 @@
                   i18n: $i18n,
                   startReducingVotingPowerAfterSeconds:
                     $startReducingVotingPowerAfterSecondsStore,
+                  minimumDissolveDelay:
+                    $neuronMinimumDissolveDelayToVoteSeconds,
                 })}
                 disabled
               />

@@ -48,6 +48,7 @@ export const tableNeuronsFromNeuronInfos = ({
   icpSwapUsdPrices,
   i18n,
   startReducingVotingPowerAfterSeconds,
+  minimumDissolveDelay,
 }: {
   neuronInfos: NeuronInfo[];
   identity?: Identity | undefined | null;
@@ -55,6 +56,7 @@ export const tableNeuronsFromNeuronInfos = ({
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
   i18n: I18n;
   startReducingVotingPowerAfterSeconds: bigint | undefined;
+  minimumDissolveDelay: bigint;
 }): TableNeuron[] => {
   return neuronInfos.map((neuronInfo) => {
     const { neuronId, dissolveDelaySeconds } = neuronInfo;
@@ -94,6 +96,7 @@ export const tableNeuronsFromNeuronInfos = ({
         accounts,
         i18n,
         startReducingVotingPowerAfterSeconds,
+        minimumDissolveDelay,
       }),
       isPublic: isPublicNeuron(neuronInfo),
     };
