@@ -117,6 +117,8 @@ import { get } from "svelte/store";
 describe("neuron-utils", () => {
   const enoughDissolveDelayToVote = BigInt(SECONDS_IN_HALF_YEAR);
   const nowSeconds = nowInSeconds();
+  const minimumDissolveDelay = BigInt(SECONDS_IN_HALF_YEAR);
+
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(nowSeconds * 1000);
     neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -1525,8 +1527,6 @@ describe("neuron-utils", () => {
     const ectTag = {
       text: "Early Contributor Token",
     } as NeuronTagData;
-
-    const minimumDissolveDelay = BigInt(SECONDS_IN_HALF_YEAR);
 
     it("returns 'hotkey' if neuron is controllable by hotkey and Ledger device is not the controller", () => {
       const neuron = {
@@ -3511,7 +3511,6 @@ describe("neuron-utils", () => {
   });
 
   describe("createNeuronVisibilityRowData", () => {
-    const minimumDissolveDelay = BigInt(SECONDS_IN_HALF_YEAR);
     it("should create neuron visibility row data for a public neuron", () => {
       const neuron: NeuronInfo = {
         ...mockNeuron,
@@ -3971,8 +3970,6 @@ describe("neuron-utils", () => {
     });
 
     describe("hasEnoughDissolveDelayToVote", () => {
-      const minimumDissolveDelay = BigInt(SECONDS_IN_HALF_YEAR);
-
       it("should return true", () => {
         expect(
           hasEnoughDissolveDelayToVote(
