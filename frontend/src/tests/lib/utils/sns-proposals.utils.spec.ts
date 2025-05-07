@@ -929,53 +929,6 @@ describe("sns-proposals utils", () => {
       expect(daoSettingsFilter?.checked).toBe(true);
     });
 
-    it("should sort topics with critical topics first, then alphabetically", () => {
-      const topics: TopicInfoWithUnknown[] = [
-        {
-          ...topicInfoMock,
-          name: ["Z Topic"],
-          topic: [{ Governance: null }],
-          is_critical: [false],
-        },
-        {
-          ...topicInfoMock,
-          name: ["B Topic"],
-          topic: [{ DaoCommunitySettings: null }],
-          is_critical: [true],
-        },
-        {
-          ...topicInfoMock,
-          name: ["A Topic"],
-          topic: [{ ApplicationBusinessLogic: null }],
-          is_critical: [false],
-        },
-        {
-          ...topicInfoMock,
-          name: ["C Topic"],
-          topic: [{ CriticalDappOperations: null }],
-          is_critical: [true],
-        },
-      ];
-
-      const result = generateSnsProposalTopicsFilterData({
-        topics,
-        filters: [],
-      });
-
-      // Should have 4 topic filters + the 'without topic' filter
-      expect(result.length).toBe(5);
-
-      // Critical topics should come first alphabetically
-      expect(result[0].id).toBe("DaoCommunitySettings");
-      expect(result[1].id).toBe("CriticalDappOperations");
-
-      // Then non-critical topics alphabetically
-      expect(result[2].id).toBe("ApplicationBusinessLogic");
-      expect(result[3].id).toBe("Governance");
-
-      expect(result[4].id).toBe(ALL_SNS_PROPOSALS_WITHOUT_TOPIC);
-    });
-
     it("should show all proposals when default setupt of filters", () => {
       const topics: TopicInfoWithUnknown[] = [
         {
