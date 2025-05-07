@@ -356,3 +356,13 @@
     />
   {/if}
 </WizardModal>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  // Ensure all tag backgrounds in the modal are visible in dark mode.
+  @include media.dark-theme {
+    // Same color as the checkbox background on the first step.
+    --tag-background: var(--input-background);
+  }
+</style>
