@@ -10,6 +10,8 @@
 </script>
 
 <script lang="ts">
+  import { IconLeft, IconRight } from "@dfinity/gix-components";
+
   type Props = { cards: CardItem[] };
 
   const { cards = [] }: Props = $props();
@@ -103,8 +105,17 @@
         </div>
       {/key}
     </div>
-
-    {#if cards.length > 1}
+    {#if cards.length > 4}
+      <div class="buttons-container">
+        <button onclick={prevCard} aria-label={`Prev. Card`}
+          ><IconLeft size="24" /></button
+        >
+        <span class="slider-label">{activeIndex + 1}</span>
+        <button onclick={nextCard} aria-label={`Prev. Card`}
+          ><IconRight size="24" /></button
+        >
+      </div>
+    {:else if cards.length > 1}
       <div class="dots-container" data-tid="dots-container">
         {#each cards as _, i}
           <button
@@ -147,6 +158,15 @@
         left: 0;
         width: 100%;
       }
+    }
+
+    .buttons-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--padding-2x);
+      position: absolute;
+      bottom: var(--padding-1_5x);
     }
 
     .dots-container {
