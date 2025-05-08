@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
@@ -31,6 +32,7 @@
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
   export let snsProjects: SnsFullProject[];
+  export let adoptenSnsProposals: SnsFullProject[];
   export let openSnsProposals: ProposalInfo[];
 
   let totalTokensBalanceInUsd: number;
@@ -135,6 +137,21 @@
     props: { summary },
   }));
 
+  let adoptedSnsProposalsSummaries: SnsSummary[];
+  $: adoptedSnsProposalsSummaries = adoptenSnsProposals
+    .sort(comparesByDecentralizationSaleOpenTimestampDesc)
+    .reverse()
+    .map((project) => project.summary);
+
+  let adoptedProposalCards: CardItem[];
+  $: adoptedProposalCards = adoptedSnsProposalsSummaries.map<CardItem>(
+    (summary) => ({
+      // TODO: Svelte v5 migration - fix type
+      component: AdoptedProposalCard as unknown as Component,
+      props: { summary },
+    })
+  );
+
   let openProposalCards: CardItem[];
   $: openProposalCards = openSnsProposals
     .sort(compareProposalInfoByDeadlineTimestampSeconds)
@@ -145,7 +162,7 @@
     }));
 
   let cards: CardItem[] = [];
-  $: cards = [...launchpadCards, ...openProposalCards];
+  $: cards = [...launchpadCards, ...adoptedProposalCards, ...openProposalCards];
 </script>
 
 <main data-tid="portfolio-page-component">
