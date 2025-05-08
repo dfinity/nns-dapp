@@ -95,7 +95,7 @@
           "ENABLE_USD_VALUES_FOR_NEURONS": true,
           "ENABLE_PORTFOLIO_PAGE": true,
           "ENABLE_IMPORT_TOKEN_BY_URL": true,
-          "ENABLE_SNS_TOPICS": false
+          "ENABLE_SNS_TOPICS": true
         }
       }
     },
@@ -111,7 +111,7 @@
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2025-04-30",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2025-04-24_03-18-base",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2025-05-01_03-23-base",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-04-24_03-18-base"
       },
       "packtool": ""

@@ -6,6 +6,10 @@
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+  import {
+    neuronMinimumDissolveDelayToVoteSeconds,
+    startReducingVotingPowerAfterSecondsStore,
+  } from "$lib/derived/network-economics.derived";
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
@@ -20,7 +24,6 @@
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { IconNeuronsPage, Spinner } from "@dfinity/gix-components";
   import { onMount } from "svelte";
-  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   let isLoading = false;
   $: isLoading = $neuronsStore.neurons === undefined;
@@ -38,6 +41,7 @@
     icpSwapUsdPrices: $icpSwapUsdPricesStore,
     startReducingVotingPowerAfterSeconds:
       $startReducingVotingPowerAfterSecondsStore,
+    minimumDissolveDelay: $neuronMinimumDissolveDelayToVoteSeconds,
   });
 
   let totalStakeInUsd: number;

@@ -279,7 +279,8 @@ describe("FollowSnsNeuronsByTopicModal", () => {
 
     // After successful set following
     expect(reloadNeuronSpy).toBeCalledTimes(1);
-    expect(closeModalSpy).toBeCalledTimes(1);
+    expect(closeModalSpy).toBeCalledTimes(0);
+    expect(await topicsStepPo.isPresent()).toEqual(true);
     expect(get(busyStore)).toEqual([]);
     expect(get(toastsStore)).toMatchObject([
       {

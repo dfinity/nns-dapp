@@ -17,7 +17,8 @@
       "dapps": [
         "sqbzf-5aaaa-aaaam-aavya-cai",
         "epeco-piaaa-aaaai-qatka-cai",
-        "thhc2-kiaaa-aaaao-ajnha-cai"
+        "thhc2-kiaaa-aaaao-ajnha-cai",
+        "heixj-ryaaa-aaaal-qsm5a-cai"
       ],
       "archives": ["zmbi7-fyaaa-aaaaq-aaahq-cai"]
     },
@@ -235,6 +236,20 @@
               "target_method_name": "manage_neuron"
             }
           }
+        },
+        {
+          "id": 2005,
+          "name": "Set module",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "Governance",
+              "validator_canister_id": "heixj-ryaaa-aaaal-qsm5a-cai",
+              "target_canister_id": "heixj-ryaaa-aaaal-qsm5a-cai",
+              "validator_method_name": "validate_set_module",
+              "target_method_name": "set_module"
+            }
+          }
         }
       ]
     },
@@ -368,7 +383,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999940932194000,
+    "icrc1_total_supply": 799999938310794000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -562,6 +577,20 @@
                   "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
                   "validator_method_name": "validate_icrc1_transfer",
                   "target_method_name": "icrc1_transfer"
+                }
+              }
+            },
+            {
+              "id": 2005,
+              "name": "Set module",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "heixj-ryaaa-aaaal-qsm5a-cai",
+                  "target_canister_id": "heixj-ryaaa-aaaal-qsm5a-cai",
+                  "validator_method_name": "validate_set_module",
+                  "target_method_name": "set_module"
                 }
               }
             }
@@ -1606,7 +1635,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10144744337564211,
+    "icrc1_total_supply": 10161523354564876,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3153,7 +3182,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 617256157049429,
+    "icrc1_total_supply": 617266990275133,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3870,7 +3899,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104435649597949005,
+    "icrc1_total_supply": 104444729795869290,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4663,14 +4692,14 @@
       "default_followees": {
         "followees": []
       },
-      "max_dissolve_delay_seconds": 31536000,
+      "max_dissolve_delay_seconds": 63115200,
       "max_dissolve_delay_bonus_percentage": 25,
       "max_followees_per_function": 15,
       "automatically_advance_target_version": true,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
-      "neuron_minimum_stake_e8s": 1000000000000,
+      "neuron_minimum_stake_e8s": 30000000000000000,
       "max_neuron_age_for_age_bonus": 31557600,
       "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 2592000,
@@ -4782,7 +4811,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 931008366823607718,
+    "icrc1_total_supply": 931491344627160103,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

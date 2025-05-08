@@ -52,7 +52,6 @@ import {
   SnsProposalRewardStatus,
   type SnsPercentage,
 } from "@dfinity/sns";
-import type { Topic } from "@dfinity/sns/dist/candid/sns_governance";
 import {
   fromDefinedNullable,
   fromNullable,
@@ -493,16 +492,13 @@ export const toExcludeTypeParameter = ({
 export const toIncludeTopicsParameter = (
   topicsFilter: Filter<SnsProposalTopicFilterId>[]
 ) => {
-  return (
-    topicsFilter
-      .map(({ value }) => {
-        if (value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC) return null;
-        const topic = snsTopicKeyToTopic(value);
-        return isUnknownTopic(topic) ? undefined : topic;
-      })
-      // TODO: Remove type assertion once TS is upgraded to 5.5
-      .filter((topic): topic is Topic | null => topic !== undefined)
-  );
+  return topicsFilter
+    .map(({ value }) => {
+      if (value === ALL_SNS_PROPOSALS_WITHOUT_TOPIC) return null;
+      const topic = snsTopicKeyToTopic(value);
+      return isUnknownTopic(topic) ? undefined : topic;
+    })
+    .filter((topic) => topic !== undefined);
 };
 
 // Generate new "types" filter data, but preserve the checked state of the current filter state
@@ -586,24 +582,20 @@ export const generateSnsProposalTopicsFilterData = ({
   const i18nKeys = get(i18n);
 
   const existingFilters: Filter<SnsProposalTopicFilterId>[] = topics
-    .filter((topic) => nonNullish(topic.topic))
-    .map((topic) => ({
-      name: fromDefinedNullable(topic.name),
-      isCritical: fromDefinedNullable(topic.is_critical),
-      topic: snsTopicToTopicKey(fromDefinedNullable(topic.topic)),
-    }))
-    .map(({ name, isCritical, topic }) => ({
-      id: topic,
-      value: topic,
-      name,
-      isCritical,
-      checked: getCheckedState(topic),
-    }))
-    // sorts filters with critical topics first, then alphabetically within each group
-    .sort((a, b) => {
-      if (a.isCritical && !b.isCritical) return -1;
-      if (!a.isCritical && b.isCritical) return 1;
-      return a.name.localeCompare(b.name);
+    .filter(({ topic }) => nonNullish(topic))
+    .map((topicInfo) => {
+      const topic = snsTopicToTopicKey(fromDefinedNullable(topicInfo.topic));
+      const name = fromDefinedNullable(topicInfo.name);
+      const isCritical = fromDefinedNullable(topicInfo.is_critical);
+      const checked = getCheckedState(topic);
+
+      return {
+        name,
+        isCritical,
+        id: topic,
+        value: topic,
+        checked,
+      };
     });
 
   const allSnsProposalsWithoutTopicFilter = {

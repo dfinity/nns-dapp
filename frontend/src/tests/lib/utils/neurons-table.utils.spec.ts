@@ -1,4 +1,5 @@
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import {
@@ -72,6 +73,8 @@ describe("neurons-table.utils", () => {
       isPublic: false,
     };
 
+    const minimumDissolveDelay = BigInt(SECONDS_IN_HALF_YEAR);
+
     const convert = (neuronInfos: NeuronInfo[]) =>
       tableNeuronsFromNeuronInfos({
         neuronInfos,
@@ -82,6 +85,7 @@ describe("neurons-table.utils", () => {
         },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
 
     it("should convert default neuronInfo to tableNeuron", () => {
@@ -249,6 +253,7 @@ describe("neurons-table.utils", () => {
         },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(tableNeurons).toEqual([
         {

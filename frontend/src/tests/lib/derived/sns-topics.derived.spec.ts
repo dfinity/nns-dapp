@@ -192,6 +192,44 @@ describe("sns topics store", () => {
       const store = createSnsTopicsProjectStore(principal(123));
       expect(get(store)).toEqual(undefined);
     });
+
+    it("should sort topics by criticallity and then alphabetically", () => {
+      const topicInfoDto1 = topicInfoDtoMock({
+        topic: "Governance",
+        name: "Topic2",
+        description: "This is a description 2",
+        isCritical: false,
+      });
+
+      const topicInfoDto2 = topicInfoDtoMock({
+        topic: "DaoCommunitySettings",
+        name: "Topic1",
+        description: "This is a description",
+      });
+
+      const topicInfoDto3 = topicInfoDtoMock({
+        topic: "TreasuryAssetManagement",
+        name: "Topic1",
+        description: "This is a description",
+        isCritical: true,
+      });
+      setSnsProjects([
+        {
+          rootCanisterId: mockPrincipal,
+          topics: {
+            topics: [topicInfoDto1, topicInfoDto2, topicInfoDto3],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+
+      const store = createSnsTopicsProjectStore(mockPrincipal);
+      expect(get(store)).toEqual([
+        convertDtoTopicInfo(topicInfoDto3),
+        convertDtoTopicInfo(topicInfoDto2),
+        convertDtoTopicInfo(topicInfoDto1),
+      ]);
+    });
   });
 
   describe("createSnsTopicsProposalsFilteringStore", () => {

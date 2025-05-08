@@ -8,7 +8,12 @@ import type {
 } from "$lib/types/sns-aggregator";
 import { convertDtoToListTopicsResponse } from "$lib/utils/sns-aggregator-converters.utils";
 import type { Principal } from "@dfinity/principal";
-import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 export interface SnsParametersStore {
@@ -41,9 +46,24 @@ export const createSnsTopicsProjectStore = (
       }
 
       const topicResponse = $snsTopicStore[rootCanisterIdText];
-      return nonNullish(topicResponse)
-        ? fromNullable(topicResponse.topics)
-        : undefined;
+      if (isNullish(topicResponse)) return undefined;
+
+      const topics = fromNullable(topicResponse.topics);
+      if (isNullish(topics)) return undefined;
+
+      // sorts topics with critical topics first, then alphabetically within each group
+      return topics.sort((a, b) => {
+        const isACritical = fromDefinedNullable(a.is_critical);
+        const isBCritical = fromDefinedNullable(b.is_critical);
+
+        if (isACritical && !isBCritical) return -1;
+        if (!isACritical && isBCritical) return 1;
+
+        const nameOfA = fromDefinedNullable(a.name);
+        const nameOfB = fromDefinedNullable(b.name);
+
+        return nameOfA.localeCompare(nameOfB);
+      });
     }
   );
 

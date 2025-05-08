@@ -1,26 +1,40 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Collapsible } from "@dfinity/gix-components";
-  import { createEventDispatcher } from "svelte";
 
-  export let id: string;
-  export let count: number;
-
-  const dispatcher = createEventDispatcher();
-  const open = () => {
-    dispatcher("nnsOpen");
+  type Props = {
+    id: string;
+    count: number;
+    openNewFolloweeModal: () => void;
   };
+
+  const { id, count, openNewFolloweeModal }: Props = $props();
+  const defaultTestId = "collapsible";
+  let testId = $state(defaultTestId);
+
+  $effect(() => {
+    if (count === 0) return;
+    testId = "";
+
+    setTimeout(() => {
+      testId = defaultTestId;
+    }, 0);
+  });
 </script>
 
 <article data-tid={`follow-topic-${id}-section`}>
-  <Collapsible {id} iconSize="medium" testId="collapsible">
+  <Collapsible {id} iconSize="medium" {testId}>
     <div class="wrapper" slot="header">
+      <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+      <!-- svelte-ignore slot_element_deprecated -->
       <span class="value" data-tid="topic-title"><slot name="title" /></span>
       <span class="badge" data-tid={`topic-${id}-followees-badge`}>
         {count}
       </span>
     </div>
     <div class="content" data-tid="follow-topic-section-current">
+      <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+      <!-- svelte-ignore slot_element_deprecated -->
       <p class="subtitle description"><slot name="subtitle" /></p>
 
       {#if count > 0}
@@ -33,13 +47,15 @@
       {/if}
 
       <div class="followees-wrapper">
+        <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+        <!-- svelte-ignore slot_element_deprecated -->
         <slot />
       </div>
       <div class="button-wrapper">
         <button
           class="primary"
           data-tid="open-new-followee-modal"
-          on:click={open}>{$i18n.follow_neurons.add}</button
+          onclick={openNewFolloweeModal}>{$i18n.follow_neurons.add}</button
         >
       </div>
     </div>

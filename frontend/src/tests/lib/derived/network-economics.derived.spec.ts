@@ -4,6 +4,7 @@ import {
 } from "$lib/constants/constants";
 import {
   clearFollowingAfterSecondsStore,
+  neuronMinimumDissolveDelayToVoteSeconds,
   startReducingVotingPowerAfterSecondsStore,
 } from "$lib/derived/network-economics.derived";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
@@ -24,7 +25,7 @@ describe("network-economics-derived", () => {
     );
   });
 
-  it("should return start reducing voting power", () => {
+  it("should return clear following", () => {
     expect(get(clearFollowingAfterSecondsStore)).toEqual(undefined);
 
     networkEconomicsStore.setParameters({
@@ -35,5 +36,42 @@ describe("network-economics-derived", () => {
     expect(get(clearFollowingAfterSecondsStore)).toEqual(
       BigInt(SECONDS_IN_MONTH)
     );
+  });
+
+  describe("neuronMinimumDissolveDelayToVoteSeconds", () => {
+    it("should return default 6M if value is not provided by the API", () => {
+      networkEconomicsStore.setParameters({
+        parameters: {
+          ...mockNetworkEconomics,
+
+          votingPowerEconomics: {
+            ...mockNetworkEconomics.votingPowerEconomics,
+            neuronMinimumDissolveDelayToVoteSeconds: undefined,
+          },
+        },
+        certified: true,
+      });
+
+      expect(get(neuronMinimumDissolveDelayToVoteSeconds)).toEqual(
+        BigInt(SECONDS_IN_HALF_YEAR)
+      );
+    });
+
+    it("should return neuron minimum dissolve delay to vote seconds", () => {
+      networkEconomicsStore.setParameters({
+        parameters: {
+          ...mockNetworkEconomics,
+          votingPowerEconomics: {
+            ...mockNetworkEconomics.votingPowerEconomics,
+            neuronMinimumDissolveDelayToVoteSeconds: BigInt(SECONDS_IN_MONTH),
+          },
+        },
+        certified: true,
+      });
+
+      expect(get(neuronMinimumDissolveDelayToVoteSeconds)).toEqual(
+        BigInt(SECONDS_IN_MONTH)
+      );
+    });
   });
 });

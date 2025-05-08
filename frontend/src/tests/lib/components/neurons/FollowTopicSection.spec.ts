@@ -1,7 +1,7 @@
 import FollowTopicsSection from "$lib/components/neurons/FollowTopicSection.svelte";
 import FollowTopicsSectionTest from "$tests/lib/components/neurons/FollowTopicSectionTest.svelte";
 import { render } from "$tests/utils/svelte.test-utils";
-import { fireEvent, waitFor } from "@testing-library/svelte";
+import { fireEvent } from "@testing-library/svelte";
 
 describe("FollowTopicsSection", () => {
   const title = "title";
@@ -38,16 +38,14 @@ describe("FollowTopicsSection", () => {
       props: {
         id: "3",
         count: 4,
-      },
-      events: {
-        nnsOpen: openSpy,
+        openNewFolloweeModal: openSpy,
       },
     });
 
     const button = queryByTestId("open-new-followee-modal");
     button && fireEvent.click(button);
 
-    await waitFor(() => expect(openSpy).toBeCalled());
+    expect(openSpy).toBeCalled();
   });
 
   it("should not render currently following label ", () => {
