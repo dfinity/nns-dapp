@@ -13,7 +13,15 @@
   const { cards = [] }: Props = $props();
 
   let activeIndex = $state(0);
+
   let intervalId: number | undefined;
+  let touchStartX: number = 0;
+  let touchEndX: number = 0;
+
+  const prevCard = () => {
+    const newIndex = (activeIndex - 1 + cards.length) % cards.length;
+    setCard(newIndex);
+  };
 
   const nextCard = () => {
     const newIndex = (activeIndex + 1) % cards.length;
@@ -25,6 +33,24 @@
 
     activeIndex = newIndex;
     resetTimer();
+  };
+
+  const handleTouchStart = (event: TouchEvent) => {
+    touchStartX = event.touches[0].clientX;
+    clearInterval();
+  };
+
+  const handleTouchEnd = (event: TouchEvent) => {
+    touchEndX = event.changedTouches[0].clientX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeDistance = touchEndX - touchStartX;
+    const minSwipeDistance = 50;
+    if (Math.abs(swipeDistance) < minSwipeDistance) return;
+    if (swipeDistance > 0) prevCard();
+    else nextCard();
   };
 
   const clearInterval = () => {
@@ -43,7 +69,12 @@
   resetTimer();
 </script>
 
-<div class="stacked-cards" data-tid="stacked-cards-component">
+<div
+  class="stacked-cards"
+  data-tid="stacked-cards-component"
+  ontouchstart={handleTouchStart}
+  ontouchend={handleTouchEnd}
+>
   {#if cards.length > 0}
     <div class="cards-wrapper">
       {#each cards as card, i}
@@ -87,6 +118,7 @@
     width: 100%;
     align-items: center;
     position: relative;
+    touch-action: pan-y;
 
     .cards-wrapper {
       position: relative;
