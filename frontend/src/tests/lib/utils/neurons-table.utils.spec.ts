@@ -7,6 +7,7 @@ import {
   compareByMaturity,
   compareByStake,
   compareByState,
+  compareByVoteDelegation,
   tableNeuronsFromNeuronInfos,
   tableNeuronsFromSnsNeurons,
 } from "$lib/utils/neurons-table.utils";
@@ -514,6 +515,43 @@ describe("neurons-table.utils", () => {
 
       expect(compareByMaturity(neuron1, neuron2)).toBe(0);
       expect(compareByMaturity(neuron2, neuron1)).toBe(0);
+    });
+  });
+
+  describe("compareByVoteDelegation", () => {
+    const neuronNone: TableNeuron = {
+      ...mockTableNeuron,
+      voteDelegationState: "none",
+    };
+    const neuronSome: TableNeuron = {
+      ...mockTableNeuron,
+      voteDelegationState: "some",
+    };
+    const neuronAll: TableNeuron = {
+      ...mockTableNeuron,
+      voteDelegationState: "all",
+    };
+
+    it("should sort neurons by descending vote delegation state", () => {
+      expect(compareByVoteDelegation(neuronNone, neuronAll)).toBe(1);
+      expect(compareByVoteDelegation(neuronNone, neuronSome)).toBe(1);
+      expect(compareByVoteDelegation(neuronSome, neuronAll)).toBe(1);
+      expect(compareByVoteDelegation(neuronAll, neuronSome)).toBe(-1);
+      expect(compareByVoteDelegation(neuronAll, neuronNone)).toBe(-1);
+      expect(compareByVoteDelegation(neuronSome, neuronNone)).toBe(-1);
+    });
+
+    it('should treat the absence of the vote delegation as "none" state', () => {
+      const neuronNone: TableNeuron = {
+        ...mockTableNeuron,
+        voteDelegationState: undefined,
+      };
+      expect(compareByVoteDelegation(neuronNone, neuronAll)).toBe(1);
+      expect(compareByVoteDelegation(neuronNone, neuronSome)).toBe(1);
+      expect(compareByVoteDelegation(neuronSome, neuronAll)).toBe(1);
+      expect(compareByVoteDelegation(neuronAll, neuronSome)).toBe(-1);
+      expect(compareByVoteDelegation(neuronAll, neuronNone)).toBe(-1);
+      expect(compareByVoteDelegation(neuronSome, neuronNone)).toBe(-1);
     });
   });
 

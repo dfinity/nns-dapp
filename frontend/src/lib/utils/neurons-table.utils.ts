@@ -171,6 +171,13 @@ export const compareByDissolveDelay = createDescendingComparator(
   (neuron: TableNeuron) => neuron.dissolveDelaySeconds
 );
 
+export const compareByVoteDelegation = createDescendingComparator(
+  (neuron: TableNeuron) => {
+    const state = neuron.voteDelegationState ?? "none";
+    return ["none", "some", "all"].indexOf(state);
+  }
+);
+
 export const compareByState = createDescendingComparator(
   (neuron: TableNeuron) =>
     [
@@ -182,7 +189,7 @@ export const compareByState = createDescendingComparator(
 );
 
 // Orders strings as if they are positive integers, so "9" < "10" < "11", by
-// ordering first by length and then legicographically.
+// ordering first by length and then lexicographically.
 export const compareById = mergeComparators([
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId.length),
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId),
@@ -198,4 +205,5 @@ export const comparatorsByColumnId: Partial<
   maturity: compareByMaturity,
   dissolveDelay: compareByDissolveDelay,
   state: compareByState,
+  voteDelegation: compareByVoteDelegation,
 };
