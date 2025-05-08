@@ -26,6 +26,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Fix tag background styling in the vote delegation modal (dark theme)
 - "Add Followee" button is not fully visible after adding a followee
 
 #### Security
