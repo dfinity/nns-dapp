@@ -2,8 +2,8 @@
   import DissolveDelayBonusText from "$lib/components/neuron-detail/DissolveDelayBonusText.svelte";
   import IncreaseDissolveDelayButton from "$lib/components/neuron-detail/actions/IncreaseDissolveDelayButton.svelte";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
-  import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import { neuronMinimumDissolveDelayToVoteSeconds } from "$lib/derived/network-economics.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -74,7 +74,7 @@
     >{`${stateTextMapper[neuron.state]} ${duration}`}</span
   >
   <svelte:fragment slot="subtitle">
-    {#if Number(remainingTimeSeconds) >= NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE}
+    {#if Number(remainingTimeSeconds) >= $neuronMinimumDissolveDelayToVoteSeconds}
       <DissolveDelayBonusText dissolveMultiplier={dissolveBonus} />
     {:else}
       <span data-tid="dissolve-bonus-text">
