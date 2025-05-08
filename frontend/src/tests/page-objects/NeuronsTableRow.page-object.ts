@@ -2,6 +2,7 @@ import { NeuronIdCellPo } from "$tests/page-objects/NeuronIdCell.page-object";
 import { NeuronMaturityCellPo } from "$tests/page-objects/NeuronMaturityCell.page-object";
 import { NeuronStakeCellPo } from "$tests/page-objects/NeuronStakeCell.page-object";
 import { NeuronStateCellPo } from "$tests/page-objects/NeuronStateCell.page-object";
+import NeuronVoteDelegationCellPo from "$tests/page-objects/NeuronVoteDelegationCell.page-object";
 import { ResponsiveTableRowPo } from "$tests/page-objects/ResponsiveTableRow.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -32,6 +33,10 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
 
   getNeuronStateCellPo(): NeuronStateCellPo {
     return NeuronStateCellPo.under(this.root);
+  }
+
+  getNeuronVoteDelegationCellPo(): NeuronVoteDelegationCellPo {
+    return NeuronVoteDelegationCellPo.under(this.root);
   }
 
   getNeuronId(): Promise<string> {
@@ -81,5 +86,20 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
 
   hasGoToDetailButton(): Promise<boolean> {
     return this.isPresent("go-to-neuron-detail-action");
+  }
+
+  async getVoteDelegationTooltipText(): Promise<string | undefined> {
+    if (
+      !(await this.getNeuronVoteDelegationCellPo().getTooltipPo().isPresent())
+    ) {
+      return undefined;
+    }
+    return this.getNeuronVoteDelegationCellPo().getTooltipText();
+  }
+
+  async getVoteDelegationIconType(): Promise<"all" | "some" | undefined> {
+    const { root: poRoot } = this.getNeuronVoteDelegationCellPo();
+    if (await poRoot.byTestId("icon-all").isPresent()) return "all";
+    if (await poRoot.byTestId("icon-some").isPresent()) return "some";
   }
 }
