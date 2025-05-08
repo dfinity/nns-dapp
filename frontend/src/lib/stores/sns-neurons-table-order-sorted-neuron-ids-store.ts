@@ -1,5 +1,6 @@
 import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import { pageStore } from "$lib/derived/page.derived";
+import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
 import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
 import { definedSnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
 import { authStore } from "$lib/stores/auth.store";
@@ -10,8 +11,9 @@ import {
   compareById,
   tableNeuronsFromSnsNeurons,
 } from "$lib/utils/neurons-table.utils";
+import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
-import { derived } from "svelte/store";
+import { derived, get } from "svelte/store";
 
 const snsTableNeuronsToSortStore = derived(
   [
@@ -31,6 +33,10 @@ const snsTableNeuronsToSortStore = derived(
     $icpSwapUsdPricesStore,
   ]) => {
     const summary = $snsProjectSelectedStore?.summary;
+    const topicInfos =
+      get(
+        createSnsTopicsProjectStore(Principal.fromText($pageStore.universe))
+      ) ?? [];
     const tableNeurons = nonNullish(summary)
       ? tableNeuronsFromSnsNeurons({
           universe: $pageStore.universe,
@@ -40,6 +46,7 @@ const snsTableNeuronsToSortStore = derived(
           snsNeurons: $definedSnsNeuronStore,
           icpSwapUsdPrices: $icpSwapUsdPricesStore,
           ledgerCanisterId: summary.ledgerCanisterId,
+          topicInfos,
         })
       : [];
     return tableNeurons.sort(compareById);
