@@ -3,7 +3,10 @@
   import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
-  export let rowData: TableNeuron;
+  type Props = {
+    rowData: TableNeuron;
+  };
+  const { rowData }: Props = $props();
 </script>
 
 {#if nonNullish(rowData.rowHref)}
