@@ -6,10 +6,14 @@
   import { Tooltip } from "@dfinity/gix-components";
   import { NeuronState } from "@dfinity/nns";
 
-  export let rowData: TableNeuron;
+  type Props = {
+    rowData: TableNeuron;
+  };
+  const { rowData }: Props = $props();
 
-  let stateInfo: StateInfo | undefined;
-  $: stateInfo = getStateInfo(rowData.state);
+  const stateInfo: StateInfo | undefined = $derived(
+    getStateInfo(rowData.state)
+  );
 </script>
 
 {#if stateInfo !== undefined}
