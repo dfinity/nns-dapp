@@ -7,6 +7,7 @@ import {
   compareByMaturity,
   compareByStake,
   compareByState,
+  getSnsNeuronVoteDelegationState,
   tableNeuronsFromNeuronInfos,
   tableNeuronsFromSnsNeurons,
 } from "$lib/utils/neurons-table.utils";
@@ -258,6 +259,88 @@ describe("neurons-table.utils", () => {
           tags: [{ text: "Hotkey control" }],
         },
       ]);
+    });
+  });
+
+  describe("getSnsNeuronVoteDelegationState", () => {
+    const neuronId = { id: Uint8Array.from([1, 2, 3]) };
+
+    it('should return "none" if no delegation', () => {
+      const neuron = createMockSnsNeuron({
+        topicFollowees: {},
+      });
+
+      expect(
+        getSnsNeuronVoteDelegationState({
+          topicCount: 2,
+          neuron,
+        })
+      ).toEqual("none");
+    });
+
+    it('should return "none" if no topics', () => {
+      const neuron = createMockSnsNeuron({
+        sourceNnsNeuronId: 0n,
+        topicFollowees: {
+          DaoCommunitySettings: [
+            {
+              neuronId,
+            },
+          ],
+        },
+      });
+
+      expect(
+        getSnsNeuronVoteDelegationState({
+          topicCount: 0,
+          neuron,
+        })
+      ).toEqual("none");
+    });
+
+    it('should return "all" when all topics are delegated', () => {
+      const neuron = createMockSnsNeuron({
+        sourceNnsNeuronId: 0n,
+        topicFollowees: {
+          DaoCommunitySettings: [
+            {
+              neuronId,
+            },
+          ],
+          CriticalDappOperations: [
+            {
+              neuronId,
+            },
+          ],
+        },
+      });
+
+      expect(
+        getSnsNeuronVoteDelegationState({
+          topicCount: 2,
+          neuron,
+        })
+      ).toEqual("all");
+    });
+
+    it('should return "some" when there are delegations but not for all topics', () => {
+      const neuron = createMockSnsNeuron({
+        sourceNnsNeuronId: 0n,
+        topicFollowees: {
+          DaoCommunitySettings: [
+            {
+              neuronId,
+            },
+          ],
+        },
+      });
+
+      expect(
+        getSnsNeuronVoteDelegationState({
+          topicCount: 2,
+          neuron,
+        })
+      ).toEqual("some");
     });
   });
 

@@ -28,6 +28,7 @@ import {
   getSnsNeuronState,
   getSnsNeuronTags,
 } from "$lib/utils/sns-neuron.utils";
+import { getSnsTopicFollowings } from "$lib/utils/sns-topics.utils";
 import {
   createAscendingComparator,
   createDescendingComparator,
@@ -101,6 +102,26 @@ export const tableNeuronsFromNeuronInfos = ({
       isPublic: isPublicNeuron(neuronInfo),
     };
   });
+};
+
+export const getSnsNeuronVoteDelegationState = ({
+  topicCount,
+  neuron,
+}: {
+  topicCount: number;
+  neuron: SnsNeuron;
+}): NeuronsTableVoteDelegationState => {
+  // If there are no topics, no delegation by topic is possible.
+  if (topicCount === 0) return "none";
+
+  const followedTopicCount = new Set(
+    getSnsTopicFollowings(neuron).map(({ topic }) => topic)
+  ).size;
+  return followedTopicCount === 0
+    ? "none"
+    : followedTopicCount === topicCount
+      ? "all"
+      : "some";
 };
 
 export const tableNeuronsFromSnsNeurons = ({
