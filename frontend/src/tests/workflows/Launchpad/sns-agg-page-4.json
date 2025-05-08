@@ -4018,7 +4018,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99052531735693897,
+    "icrc1_total_supply": 99052849935444904,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4714,7 +4714,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -5166,7 +5166,7 @@
       ]
     ],
     "icrc1_fee": [500000000],
-    "icrc1_total_supply": 4206181875232470,
+    "icrc1_total_supply": 4218104547683015,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5264,7 +5264,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -6019,7 +6019,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 213961125325668576,
+    "icrc1_total_supply": 213968549253407888,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -6411,7 +6411,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -7577,7 +7577,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100183590698010056,
+    "icrc1_total_supply": 100189793560959796,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9557,7 +9557,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100043228162013481,
+    "icrc1_total_supply": 100053838558890204,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -10372,7 +10372,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -11074,7 +11074,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 2101517938130212,
+    "icrc1_total_supply": 2103377954472669,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -11874,7 +11874,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99999279000000,
+    "icrc1_total_supply": 99999261000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 300000000,
@@ -11972,7 +11972,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -13451,7 +13451,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000649291995221,
+    "icrc1_total_supply": 100000813120233028,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14568,7 +14568,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
