@@ -387,6 +387,7 @@ describe("neurons-table.utils", () => {
       state: NeuronState.Locked,
       tags: [],
       isPublic: false,
+      voteDelegationState: "none",
     };
 
     const convert = (snsNeurons: SnsNeuron[]) =>
@@ -400,6 +401,7 @@ describe("neurons-table.utils", () => {
         },
         ledgerCanisterId,
         i18n: en,
+        topicInfos: [],
       });
 
     it("should convert SnsNeuron to TableNeuron", () => {
@@ -460,6 +462,7 @@ describe("neurons-table.utils", () => {
           ...expectedTableNeuron,
           availableMaturity,
           stakedMaturity,
+          voteDelegationState: "none",
         },
       ]);
     });
@@ -484,6 +487,7 @@ describe("neurons-table.utils", () => {
             "/neuron/?u=br5f7-7uaaa-aaaaa-qaaca-cai&neuron=fafafafafafafafa",
           domKey: neuronIdString2,
           neuronId: neuronIdString2,
+          voteDelegationState: "none",
         },
       ]);
     });
@@ -505,6 +509,7 @@ describe("neurons-table.utils", () => {
         {
           ...expectedTableNeuron,
           tags: [{ text: "Hotkey control" }],
+          voteDelegationState: "none",
         },
       ]);
     });
