@@ -335,11 +335,7 @@ export const mapEntries = <V1, V2>({
   obj: Record<string, V1>;
   mapFn: (entry: [string, V1]) => [string, V2] | undefined;
 }): Record<string, V2> =>
-  Object.fromEntries(
-    Object.entries(obj)
-      .map((entry) => mapFn(entry))
-      .filter((entry) => nonNullish(entry)) as Array<[string, V2]>
-  );
+  Object.fromEntries(Object.entries(obj).map(mapFn).filter(nonNullish));
 
 /**
  * Returns whether an asset is PNG or not.
