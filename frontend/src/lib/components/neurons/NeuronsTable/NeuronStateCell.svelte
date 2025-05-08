@@ -26,7 +26,7 @@
   >
     <div class="status" data-tid="neuron-state-info">
       <span class="icon">
-        <svelte:component this={stateInfo.Icon} size={ICON_SIZE_SMALL_PIXELS} />
+        <stateInfo.Icon size={ICON_SIZE_SMALL_PIXELS} />
       </span>
       {$i18n.neuron_state[stateInfo.textKey]}
     </div>
