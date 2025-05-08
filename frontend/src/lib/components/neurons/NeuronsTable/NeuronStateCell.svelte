@@ -6,10 +6,14 @@
   import { Tooltip } from "@dfinity/gix-components";
   import { NeuronState } from "@dfinity/nns";
 
-  export let rowData: TableNeuron;
+  type Props = {
+    rowData: TableNeuron;
+  };
+  const { rowData }: Props = $props();
 
-  let stateInfo: StateInfo | undefined;
-  $: stateInfo = getStateInfo(rowData.state);
+  const stateInfo: StateInfo | undefined = $derived(
+    getStateInfo(rowData.state)
+  );
 </script>
 
 {#if stateInfo !== undefined}
@@ -22,7 +26,7 @@
   >
     <div class="status" data-tid="neuron-state-info">
       <span class="icon">
-        <svelte:component this={stateInfo.Icon} size={ICON_SIZE_SMALL_PIXELS} />
+        <stateInfo.Icon size={ICON_SIZE_SMALL_PIXELS} />
       </span>
       {$i18n.neuron_state[stateInfo.textKey]}
     </div>

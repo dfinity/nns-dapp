@@ -2,6 +2,10 @@
   import Followee from "$lib/components/neuron-detail/NeuronFollowingCard/Followee.svelte";
   import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
+  import {
+    neuronMinimumDissolveDelayToVoteSeconds,
+    startReducingVotingPowerAfterSecondsStore,
+  } from "$lib/derived/network-economics.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -13,7 +17,6 @@
   import { Card, IconRight } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
-  import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
 
   export let neuron: NeuronInfo;
   export let onClick: (() => void) | undefined;
@@ -29,6 +32,7 @@
     i18n: $i18n,
     startReducingVotingPowerAfterSeconds:
       $startReducingVotingPowerAfterSecondsStore,
+    minimumDissolveDelay: $neuronMinimumDissolveDelayToVoteSeconds,
   });
 
   let followees: FolloweesNeuron[];

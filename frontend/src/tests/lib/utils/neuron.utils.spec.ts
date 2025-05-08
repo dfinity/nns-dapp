@@ -117,6 +117,8 @@ import { get } from "svelte/store";
 describe("neuron-utils", () => {
   const enoughDissolveDelayToVote = BigInt(SECONDS_IN_HALF_YEAR);
   const nowSeconds = nowInSeconds();
+  const minimumDissolveDelay = BigInt(SECONDS_IN_HALF_YEAR);
+
   beforeEach(() => {
     vi.useFakeTimers().setSystemTime(nowSeconds * 1000);
     neuronsStore.setNeurons({ neurons: [], certified: true });
@@ -1525,6 +1527,7 @@ describe("neuron-utils", () => {
     const ectTag = {
       text: "Early Contributor Token",
     } as NeuronTagData;
+
     it("returns 'hotkey' if neuron is controllable by hotkey and Ledger device is not the controller", () => {
       const neuron = {
         ...mockNeuron,
@@ -1541,6 +1544,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([hotkeyTag]);
     });
@@ -1561,6 +1565,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithoutHw,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([hotkeyTag]);
     });
@@ -1581,6 +1586,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([hwTag]);
     });
@@ -1601,6 +1607,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([]);
     });
@@ -1621,6 +1628,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([]);
     });
@@ -1640,6 +1648,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([nfTag]);
     });
@@ -1661,6 +1670,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([nfTag, hotkeyTag]);
     });
@@ -1682,6 +1692,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([nfTag, hwTag]);
     });
@@ -1702,6 +1713,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([seedTag]);
     });
@@ -1722,6 +1734,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([ectTag]);
     });
@@ -1745,6 +1758,7 @@ describe("neuron-utils", () => {
           accounts: accountsWithHW,
           i18n: en,
           startReducingVotingPowerAfterSeconds: undefined,
+          minimumDissolveDelay,
         })
       ).toEqual([seedTag, nfTag, hwTag]);
     });
@@ -1808,6 +1822,7 @@ describe("neuron-utils", () => {
               i18n: en,
               startReducingVotingPowerAfterSeconds:
                 BigInt(SECONDS_IN_HALF_YEAR),
+              minimumDissolveDelay,
             })
           ).toEqual([
             {
@@ -1875,6 +1890,7 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            minimumDissolveDelay,
           })
         ).toEqual([]);
       });
@@ -1892,6 +1908,7 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            minimumDissolveDelay,
           })
         ).toEqual([missingRewardsTag]);
       });
@@ -1912,6 +1929,7 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            minimumDissolveDelay,
           })
         ).toEqual([]);
       });
@@ -1929,6 +1947,7 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: undefined,
+            minimumDissolveDelay,
           })
         ).toEqual([]);
       });
@@ -1946,6 +1965,7 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            minimumDissolveDelay,
           })
         ).toEqual([]);
       });
@@ -1963,6 +1983,7 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            minimumDissolveDelay,
           })
         ).toEqual([missingRewardsSoonTag]);
       });
@@ -1983,6 +2004,7 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            minimumDissolveDelay,
           })
         ).toEqual([]);
       });
@@ -2000,6 +2022,7 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: undefined,
+            minimumDissolveDelay,
           })
         ).toEqual([]);
       });
@@ -2017,6 +2040,7 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            minimumDissolveDelay,
           })
         ).toEqual([]);
       });
@@ -3498,6 +3522,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result).toEqual({
         neuronId: neuron.neuronId.toString(),
@@ -3518,6 +3543,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result.tags).toEqual([{ text: "Seed" }]);
     });
@@ -3533,6 +3559,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result.tags).toEqual([{ text: "Early Contributor Token" }]);
     });
@@ -3548,6 +3575,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result.tags).toEqual([{ text: "Neurons' fund" }]);
     });
@@ -3569,6 +3597,7 @@ describe("neuron-utils", () => {
         },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result.uncontrolledNeuronDetails).toEqual({
         type: "hardwareWallet",
@@ -3593,6 +3622,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result.uncontrolledNeuronDetails).toEqual({
         type: "hotkey",
@@ -3614,6 +3644,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result.uncontrolledNeuronDetails).toBeUndefined();
     });
@@ -3635,6 +3666,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result.stake).toEqual(
         TokenAmountV2.fromUlps({
@@ -3665,6 +3697,7 @@ describe("neuron-utils", () => {
         },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result.stake).toBeUndefined();
       expect(result.uncontrolledNeuronDetails).toEqual({
@@ -3692,6 +3725,7 @@ describe("neuron-utils", () => {
         accounts: { main: mockMainAccount },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(result.stake).toBeUndefined();
     });
@@ -3938,31 +3972,44 @@ describe("neuron-utils", () => {
     describe("hasEnoughDissolveDelayToVote", () => {
       it("should return true", () => {
         expect(
-          hasEnoughDissolveDelayToVote({
-            ...mockNeuron,
-            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
-          })
+          hasEnoughDissolveDelayToVote(
+            {
+              ...mockNeuron,
+              dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
+            },
+            minimumDissolveDelay
+          )
         ).toBe(true);
         expect(
-          hasEnoughDissolveDelayToVote({
-            ...mockNeuron,
-            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR) * 100n,
-          })
+          hasEnoughDissolveDelayToVote(
+            {
+              ...mockNeuron,
+              dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR) * 100n,
+            },
+            minimumDissolveDelay
+          )
         ).toBe(true);
       });
 
       it("should return false", () => {
         expect(
-          hasEnoughDissolveDelayToVote({
-            ...mockNeuron,
-            dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR - 1),
-          })
+          hasEnoughDissolveDelayToVote(
+            {
+              ...mockNeuron,
+              dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR - 1),
+            },
+
+            minimumDissolveDelay
+          )
         ).toBe(false);
         expect(
-          hasEnoughDissolveDelayToVote({
-            ...mockNeuron,
-            dissolveDelaySeconds: 0n,
-          })
+          hasEnoughDissolveDelayToVote(
+            {
+              ...mockNeuron,
+              dissolveDelaySeconds: 0n,
+            },
+            minimumDissolveDelay
+          )
         ).toBe(false);
       });
     });

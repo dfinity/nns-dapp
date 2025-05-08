@@ -1,5 +1,6 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
   import type { Component } from "svelte";
+  import { onDestroy } from "svelte";
 
   export type CardItem = {
     component: Component;
@@ -8,39 +9,72 @@
 </script>
 
 <script lang="ts">
-  import { onDestroy } from "svelte";
+  type Props = { cards: CardItem[] };
+  const { cards = [] }: Props = $props();
 
-  export let cards: CardItem[] = [];
-  let activeIndex = 0;
-  let intervalId: number;
+  let activeIndex = $state(0);
 
-  const nextCard = () => {
-    activeIndex = (activeIndex + 1) % cards.length;
+  let intervalId: number | undefined;
+  let touchStartX: number = 0;
+  let touchEndX: number = 0;
+
+  const prevCard = () => {
+    const newIndex = (activeIndex - 1 + cards.length) % cards.length;
+    setCard(newIndex);
   };
 
-  const setCard = (index: number) => {
-    activeIndex = index;
+  const nextCard = () => {
+    const newIndex = (activeIndex + 1) % cards.length;
+    setCard(newIndex);
+  };
+
+  const setCard = (newIndex: number) => {
+    if (newIndex === activeIndex) return;
+
+    activeIndex = newIndex;
     resetTimer();
   };
 
+  const handleTouchStart = (event: TouchEvent) => {
+    touchStartX = event.touches[0].clientX;
+    clearInterval();
+  };
+
+  const handleTouchEnd = (event: TouchEvent) => {
+    touchEndX = event.changedTouches[0].clientX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const swipeDistance = touchEndX - touchStartX;
+    const minSwipeDistance = 50;
+    if (Math.abs(swipeDistance) < minSwipeDistance) return;
+    if (swipeDistance > 0) prevCard();
+    else nextCard();
+  };
+
+  const clearInterval = () => {
+    if (intervalId) window.clearInterval(intervalId);
+  };
+
   const resetTimer = () => {
-    if (intervalId) clearInterval(intervalId);
+    clearInterval();
 
     if (cards.length > 1) {
       intervalId = window.setInterval(nextCard, 5000);
     }
   };
 
-  $: if (cards) {
-    resetTimer();
-  }
-
-  onDestroy(() => {
-    if (intervalId) clearInterval(intervalId);
-  });
+  onDestroy(clearInterval);
+  resetTimer();
 </script>
 
-<div class="stacked-cards" data-tid="stacked-cards-component">
+<div
+  class="stacked-cards"
+  data-tid="stacked-cards-component"
+  ontouchstart={handleTouchStart}
+  ontouchend={handleTouchEnd}
+>
   {#if cards.length > 0}
     <div class="cards-wrapper">
       {#each cards as card, i}
@@ -49,7 +83,7 @@
           class:active={i === activeIndex}
           data-tid="project-card-wrapper"
         >
-          <svelte:component this={card.component} {...card.props} />
+          <card.component {...card.props} />
         </div>
       {/each}
     </div>
@@ -60,7 +94,7 @@
           <button
             class="dot"
             class:active={i === activeIndex}
-            on:click={() => setCard(i)}
+            onclick={() => setCard(i)}
             disabled={i === activeIndex}
             aria-label={`Display ${i + 1} card`}
             data-tid="dot-button"
@@ -84,6 +118,7 @@
     width: 100%;
     align-items: center;
     position: relative;
+    touch-action: pan-y;
 
     .cards-wrapper {
       position: relative;

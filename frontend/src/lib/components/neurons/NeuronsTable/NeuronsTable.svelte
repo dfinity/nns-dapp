@@ -18,13 +18,15 @@
   } from "$lib/utils/neurons-table.utils";
   import { NeuronState } from "@dfinity/nns";
 
-  export let neurons: TableNeuron[];
+  type Props = {
+    neurons: TableNeuron[];
+  };
+  const { neurons }: Props = $props();
 
   // Make sure there is a consistent order even if the selected sorting
   // criteria don't tiebreak all neurons.
   // Make sure to update neurons-table-order-sorted-neuron-ids-store.utils when sorting is changed
-  let neuronsSortedById: TableNeuron[];
-  $: neuronsSortedById = [...neurons].sort(compareById);
+  const neuronsSortedById = $derived([...neurons].sort(compareById));
 
   const columns = (
     [

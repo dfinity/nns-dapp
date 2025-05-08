@@ -15,7 +15,6 @@ import {
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
-  NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
@@ -479,12 +478,14 @@ export const getNeuronTags = ({
   accounts,
   i18n,
   startReducingVotingPowerAfterSeconds,
+  minimumDissolveDelay,
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
   accounts: IcpAccountsStoreData;
   i18n: I18n;
   startReducingVotingPowerAfterSeconds: bigint | undefined;
+  minimumDissolveDelay: bigint;
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
@@ -493,6 +494,8 @@ export const getNeuronTags = ({
       neuron,
       i18n,
       startReducingVotingPowerAfterSeconds,
+
+      minimumDissolveDelay,
     })
   );
 
@@ -536,10 +539,12 @@ const getNeuronTagsUnrelatedToController = ({
   neuron,
   i18n,
   startReducingVotingPowerAfterSeconds,
+  minimumDissolveDelay,
 }: {
   neuron: NeuronInfo;
   i18n: I18n;
   startReducingVotingPowerAfterSeconds: bigint | undefined;
+  minimumDissolveDelay: bigint;
 }): NeuronTagData[] => {
   const tags: NeuronTagData[] = [];
 
@@ -558,7 +563,7 @@ const getNeuronTagsUnrelatedToController = ({
   // 2. no voting power economics available
   if (
     nonNullish(startReducingVotingPowerAfterSeconds) &&
-    hasEnoughDissolveDelayToVote(neuron) &&
+    hasEnoughDissolveDelayToVote(neuron, minimumDissolveDelay) &&
     get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)
   ) {
     if (
@@ -600,6 +605,7 @@ export const createNeuronVisibilityRowData = ({
   accounts,
   i18n,
   startReducingVotingPowerAfterSeconds,
+  minimumDissolveDelay,
 }: {
   neuron: NeuronInfo;
   identity?: Identity | null;
@@ -608,6 +614,7 @@ export const createNeuronVisibilityRowData = ({
   // The function should work w/o voting power economics to not block the visibility functionality.
   // In this case only the "Missing Rewards" tag will be missing.
   startReducingVotingPowerAfterSeconds: bigint | undefined;
+  minimumDissolveDelay: bigint;
 }): NeuronVisibilityRowData => {
   return {
     neuronId: neuron.neuronId.toString(),
@@ -622,6 +629,7 @@ export const createNeuronVisibilityRowData = ({
       neuron,
       i18n,
       startReducingVotingPowerAfterSeconds,
+      minimumDissolveDelay,
     }),
     uncontrolledNeuronDetails: getNeuronVisibilityRowUncontrolledNeuronDetails({
       neuron,
@@ -1402,7 +1410,7 @@ export const isNeuronMissingRewardsSoon = ({
 /**
  * Returns `true` if the neuron's dissolve delay meets the voting requirements
  */
-export const hasEnoughDissolveDelayToVote = ({
-  dissolveDelaySeconds,
-}: NeuronInfo): boolean =>
-  dissolveDelaySeconds >= BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
+export const hasEnoughDissolveDelayToVote = (
+  { dissolveDelaySeconds }: NeuronInfo,
+  minimumDissolveDelay: bigint
+): boolean => dissolveDelaySeconds >= minimumDissolveDelay;
