@@ -16,6 +16,7 @@
   const { cards = [] }: Props = $props();
 
   let activeIndex = $state(0);
+  let previousIndex = $state<number | null>(null);
 
   let intervalId: number | undefined;
   let touchStartX: number = 0;
@@ -34,6 +35,7 @@
   const setCard = (newIndex: number) => {
     if (newIndex === activeIndex) return;
 
+    previousIndex = activeIndex;
     activeIndex = newIndex;
     resetTimer();
   };
@@ -84,7 +86,7 @@
         <div
           class="card-wrapper"
           class:active={i === activeIndex}
-          class:pulse={i === activeIndex}
+          class:exiting={i === previousIndex}
           data-tid="project-card-wrapper"
         >
           <card.component {...card.props} />
@@ -114,23 +116,31 @@
 
   :root {
     --card-stacked-dots-space: 34px;
+    --elastic-out: cubic-bezier(0.16, 1.1, 0.3, 1.2);
   }
 
-  @keyframes pulse-animation {
+  @keyframes scale-in {
     0% {
-      transform: scale(1);
-      box-shadow: 0 0 0 0 rgba(61, 77, 153, 0.2);
+      transform: scale(0.97);
+      opacity: 0.8;
     }
-    50% {
-      transform: scale(1.03);
-      box-shadow: 0 0 0 5px rgba(61, 77, 153, 0);
+    40% {
+      transform: scale(1.02);
     }
     100% {
       transform: scale(1);
-      box-shadow: 0 0 0 0 rgba(61, 77, 153, 0);
+      opacity: 1;
     }
   }
 
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
   .stacked-cards {
     display: flex;
     flex-direction: column;
@@ -145,20 +155,22 @@
 
       .card-wrapper {
         opacity: 0;
-        transition: opacity var(--animation-time-long) ease-in-out;
         pointer-events: none;
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
+        transition: opacity 250ms ease-out;
 
         &.active {
           position: relative;
           opacity: 1;
           pointer-events: all;
+          animation: scale-in 550ms var(--elastic-out) forwards;
         }
-        &.pulse {
-          animation: pulse-animation 400ms ease-out;
+
+        &.exiting {
+          animation: fade-out 250ms ease-out forwards;
         }
       }
     }
