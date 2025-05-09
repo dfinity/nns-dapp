@@ -40,10 +40,11 @@ import {
 import { getUsdValue } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, Topic } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2, isNullish, type Token } from "@dfinity/utils";
+import { enumValues } from "./enum.utils";
 
 export const tableNeuronsFromNeuronInfos = ({
   neuronInfos,
@@ -104,8 +105,39 @@ export const tableNeuronsFromNeuronInfos = ({
         minimumDissolveDelay,
       }),
       isPublic: isPublicNeuron(neuronInfo),
+      voteDelegationState: getNnsNeuronVoteDelegationState(neuronInfo),
     };
   });
+};
+
+export const getNnsNeuronVoteDelegationState = (
+  neuron: NeuronInfo
+): NeuronsTableVoteDelegationState => {
+  const followees = (neuron.fullNeuron?.followees ?? []).filter(
+    // Ignore deprecated topic
+    (followee) => followee.topic !== Topic.SnsDecentralizationSale
+  );
+  if (followees.length === 0) return "none";
+
+  const delegatedTopicMap = new Set(followees.map(({ topic }) => topic));
+  const requiredTopics = new Set(
+    delegatedTopicMap.has(Topic.Unspecified)
+      ? // Because Topic.Unspecified(0) covers all except "Governance" and "SNS & Neurons' Fund"
+        [Topic.Governance, Topic.SnsAndCommunityFund]
+      : enumValues(Topic).filter(
+          (topic) =>
+            ![
+              // Not required when it's not selected
+              Topic.Unspecified,
+              Topic.SnsDecentralizationSale,
+            ].includes(topic)
+        )
+  );
+  const followsAllRequiredTopics = Array.from(requiredTopics).every((topic) =>
+    delegatedTopicMap.has(topic)
+  );
+
+  return followsAllRequiredTopics ? "all" : "some";
 };
 
 export const getSnsNeuronVoteDelegationState = ({
