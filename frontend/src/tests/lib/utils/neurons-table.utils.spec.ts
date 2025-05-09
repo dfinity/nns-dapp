@@ -1,6 +1,7 @@
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import type { TableNeuron } from "$lib/types/neurons-table";
 import {
   compareByDissolveDelay,
   compareById,
