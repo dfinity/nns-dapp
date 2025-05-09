@@ -206,6 +206,7 @@
         padding: 0;
         display: flex;
         align-items: center;
+        cursor: pointer;
       }
 
       .current-card-index {
