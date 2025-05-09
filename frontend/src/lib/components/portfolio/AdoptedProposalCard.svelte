@@ -3,7 +3,6 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
-  import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { durationTillSwapStart } from "$lib/utils/projects.utils";
   import {
@@ -14,15 +13,15 @@
   } from "@dfinity/gix-components";
   import { secondsToDuration } from "@dfinity/utils";
 
-  export let summary: SnsSummaryWrapper;
-  let swap: SnsSummarySwap;
-  $: ({ swap } = summary);
+  type Props = {
+    summary: SnsSummaryWrapper;
+  };
 
-  let durationTillStart: bigint;
-  $: durationTillStart = durationTillSwapStart(swap) ?? 0n;
-
-  let href: string;
-  $: href = `${AppPath.Project}/?project=${summary.rootCanisterId.toText()}`;
+  const { summary }: Props = $props();
+  const durationTillStart = $derived(durationTillSwapStart(summary.swap) ?? 0n);
+  const href = $derived(
+    `${AppPath.Project}/?project=${summary.rootCanisterId.toText()}`
+  );
 </script>
 
 <Card testId="launch-project-card">
@@ -81,7 +80,6 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "@dfinity/gix-components/dist/styles/mixins/text";
-
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -89,30 +87,24 @@
     height: 100%;
     background-color: var(--card-background-tint);
     height: 270px;
-
     gap: var(--padding-2x);
     padding: var(--padding-2x);
     /* Required to give space to the StackedCards dots */
     padding-bottom: var(--card-stacked-dots-space);
-
     @include media.min-width(medium) {
       padding: var(--padding-3x);
-
       /* Required to give space to the StackedCards dots */
       padding-bottom: var(--card-stacked-dots-space);
     }
-
     .header {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: var(--padding-0_5x);
-
       .title-wrapper {
         display: flex;
         align-items: center;
         gap: var(--padding);
-
         h3 {
           margin: 0;
           padding: 0;
@@ -120,13 +112,11 @@
         }
       }
     }
-
     .content {
       display: flex;
       flex-direction: column;
       gap: var(--padding-2x);
       flex-grow: 1;
-
       .description {
         margin: 0;
         color: var(--color-text-secondary);
@@ -134,54 +124,44 @@
         @include text.clamp(5);
       }
     }
-
     .footer {
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-
       .time-remaining-wrapper {
         display: flex;
         flex-direction: column;
-
         .section-title {
           color: var(--text-description);
           @include fonts.small(true);
         }
-
         .time-remaining {
           display: flex;
           align-items: center;
           gap: var(--padding);
-
           .icon {
             display: flex;
             color: var(--text-description);
           }
         }
       }
-
       .link {
         display: flex;
         align-items: center;
         justify-content: center;
-
         color: var(--button-secondary-color);
         font-weight: var(--font-weight-bold);
         text-decoration: none;
-
         width: 35px;
         height: 35px;
         border: solid var(--button-border-size) var(--primary);
         border-radius: 50%;
         box-sizing: border-box;
-
         @include media.min-width(medium) {
           width: auto;
           height: auto;
           border: none;
         }
-
         .text {
           display: none;
           @include media.min-width(medium) {
