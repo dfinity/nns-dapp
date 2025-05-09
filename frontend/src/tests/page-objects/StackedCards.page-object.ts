@@ -123,34 +123,26 @@ export class StackedCardsPo extends BasePageObject {
     return -1;
   }
 
-  async getDotsContainer(): Promise<DotsContainerPo | null> {
+  async getDotsContainerPo(): Promise<DotsContainerPo | null> {
     return DotsContainerPo.under(this.root);
   }
 
-  async getButtonsContainer(): Promise<ButtonsContainerPo | null> {
+  async getButtonsContainerPo(): Promise<ButtonsContainerPo | null> {
     return ButtonsContainerPo.under(this.root);
   }
 
-  async hasDotsNavigation(): Promise<boolean> {
-    return (await this.getDotsContainer()) !== null;
-  }
-
-  async hasButtonsNavigation(): Promise<boolean> {
-    return (await this.getButtonsContainer()) !== null;
-  }
-
   async getPrevButton(): Promise<NavigationButtonPo | null> {
-    const buttonsContainer = await this.getButtonsContainer();
+    const buttonsContainer = await this.getButtonsContainerPo();
     return buttonsContainer ? buttonsContainer.getPrevButton() : null;
   }
 
   async getNextButton(): Promise<NavigationButtonPo | null> {
-    const buttonsContainer = await this.getButtonsContainer();
+    const buttonsContainer = await this.getButtonsContainerPo();
     return buttonsContainer ? buttonsContainer.getNextButton() : null;
   }
 
   async getCurrentIndexDisplay(): Promise<number | null> {
-    const buttonsContainer = await this.getButtonsContainer();
+    const buttonsContainer = await this.getButtonsContainerPo();
     return buttonsContainer ? await buttonsContainer.getCurrentIndex() : null;
   }
 
