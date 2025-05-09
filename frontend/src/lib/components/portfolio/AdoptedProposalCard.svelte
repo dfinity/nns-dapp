@@ -24,7 +24,7 @@
   );
 </script>
 
-<Card testId="launch-project-card">
+<Card testId="adopted-proposal-card">
   <div class="wrapper">
     <div class="header">
       <div class="title-wrapper">
