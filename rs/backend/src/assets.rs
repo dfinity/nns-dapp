@@ -311,9 +311,53 @@ fn security_headers() -> Vec<HeaderField> {
             "Strict-Transport-Security".to_string(),
             "max-age=31536000 ; includeSubDomains".to_string(),
         ),
-        // "Referrer-Policy: no-referrer" would be more strict, but breaks local dev deployment
-        // same-origin is still ok from a security perspective
+        // "Referrer-Policy: no-referrer" would be more strict, but breaks local dev deployment same-origin is still ok from a security perspective
         ("Referrer-Policy".to_string(), "same-origin".to_string()),
+        (
+            "Permissions-Policy".to_string(),
+            "accelerometer=(),\
+         ambient-light-sensor=(),\
+         autoplay=(),\
+         battery=(),\
+         camera=(self),\
+         clipboard-read=(self),\
+         clipboard-write=(self),\
+         conversion-measurement=(),\
+         cross-origin-isolated=(),\
+         display-capture=(),\
+         document-domain=(),\
+         encrypted-media=(),\
+         execution-while-not-rendered=(),\
+         execution-while-out-of-viewport=(),\
+         focus-without-user-activation=(),\
+         fullscreen=(),\
+         gamepad=(),\
+         geolocation=(),\
+         gyroscope=(),\
+         hid=(),\
+         idle-detection=(),\
+         interest-cohort=(),\
+         keyboard-map=(),\
+         magnetometer=(),\
+         microphone=(),\
+         midi=(),\
+         navigation-override=(),\
+         payment=(),\
+         picture-in-picture=(),\
+         publickey-credentials-get=(),\
+         screen-wake-lock=(),\
+         serial=(),\
+         speaker-selection=(),\
+         sync-script=(),\
+         sync-xhr=(),\
+         trust-token-redemption=(),\
+         usb=(),\
+         vertical-scroll=(),\
+         web-share=(),\
+         window-placement=(),\
+         xr-spatial-tracking=()"
+                .to_string(),
+        ),
     ]
 }
 
