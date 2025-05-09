@@ -6,6 +6,9 @@
     component: Component;
     props?: Record<string, unknown>;
   };
+
+  const REFRESH_INTERVAL = 2000;
+  const SWIPE_THRESHOLD = 50;
 </script>
 
 <script lang="ts">
@@ -47,7 +50,7 @@
 
   const handleSwipe = () => {
     const swipeDistance = touchEndX - touchStartX;
-    const minSwipeDistance = 50;
+    const minSwipeDistance = SWIPE_THRESHOLD;
     if (Math.abs(swipeDistance) < minSwipeDistance) return;
     if (swipeDistance > 0) prevCard();
     else nextCard();
@@ -61,7 +64,7 @@
     clearInterval();
 
     if (cards.length > 1) {
-      intervalId = window.setInterval(nextCard, 5000);
+      intervalId = window.setInterval(nextCard, REFRESH_INTERVAL);
     }
   };
 
@@ -81,6 +84,7 @@
         <div
           class="card-wrapper"
           class:active={i === activeIndex}
+          class:pulse={i === activeIndex}
           data-tid="project-card-wrapper"
         >
           <card.component {...card.props} />
@@ -112,6 +116,21 @@
     --card-stacked-dots-space: 34px;
   }
 
+  @keyframes pulse-animation {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(61, 77, 153, 0.2);
+    }
+    50% {
+      transform: scale(1.03);
+      box-shadow: 0 0 0 5px rgba(61, 77, 153, 0);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(61, 77, 153, 0);
+    }
+  }
+
   .stacked-cards {
     display: flex;
     flex-direction: column;
@@ -137,6 +156,9 @@
           position: relative;
           opacity: 1;
           pointer-events: all;
+        }
+        &.pulse {
+          animation: pulse-animation 400ms ease-out;
         }
       }
     }
