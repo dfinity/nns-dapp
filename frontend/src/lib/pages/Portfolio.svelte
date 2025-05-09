@@ -46,6 +46,7 @@
         (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
     )
   );
+
   const totalStakedInUsd = $derived(getTotalStakeInUsd(tableProjects));
   const hasUpricedStake = $derived(
     tableProjects.some(
@@ -55,6 +56,7 @@
         (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
     )
   );
+
   const hasUnpricedTokensOrStake = $derived(
     hasUnpricedTokens || hasUpricedStake
   );
@@ -63,16 +65,15 @@
     $authSignedInStore ? totalTokensBalanceInUsd + totalStakedInUsd : undefined
   );
 
-  const areHeldTokensLoading = $derived(
-    userTokens.some((token) => token.balance === "loading")
-  );
-
   // Determines the display state of the held tokens card
   // - 'full': Shows card with data (or when user is not signed in, visitor data)
   // - 'loading': Shows skeleton while data is being fetched
   // - 'empty': Shows empty state when user has no tokens
   type TokensCardType = "empty" | "skeleton" | "full";
 
+  const areHeldTokensLoading = $derived(
+    userTokens.some((token) => token.balance === "loading")
+  );
   const heldTokensCard: TokensCardType = $derived(
     !$authSignedInStore
       ? "full"
@@ -86,7 +87,6 @@
   const areStakedTokensLoading = $derived(
     tableProjects.some((project) => project.isStakeLoading)
   );
-
   // Determines the display state of the staked tokens card
   // Similar logic to heldTokensCard but for staked tokens
   const stakedTokensCard: TokensCardType = $derived(
