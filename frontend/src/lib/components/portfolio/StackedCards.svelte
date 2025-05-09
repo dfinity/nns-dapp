@@ -7,7 +7,7 @@
     props?: Record<string, unknown>;
   };
 
-  const REFRESH_INTERVAL = 2000;
+  const REFRESH_INTERVAL = 5000;
   const SWIPE_THRESHOLD = 50;
 </script>
 
