@@ -34,8 +34,12 @@
     openSnsProposals: ProposalInfo[];
   };
 
-  const { userTokens, tableProjects, snsProjects, openSnsProposals }: Props =
-    $props();
+  const {
+    userTokens = [],
+    tableProjects,
+    snsProjects,
+    openSnsProposals,
+  }: Props = $props();
 
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
   const hasUnpricedTokens = $derived(
