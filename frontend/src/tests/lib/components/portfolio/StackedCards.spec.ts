@@ -14,13 +14,13 @@ describe("StackedCards Component", () => {
 
   it("should render empty when no cards are provided", async () => {
     const po = renderComponent([]);
+    const buttonsContainerPo = await po.getButtonsContainerPo();
+    const dotsContainerPo = await po.getDotsContainerPo();
     const dotsPo = await po.getDots();
-    const hasDotsNavigation = await po.hasDotsNavigation();
-    const hasButtonsNavigation = await po.hasButtonsNavigation();
 
+    expect(await buttonsContainerPo.isPresent()).toBe(false);
+    expect(await dotsContainerPo.isPresent()).toBe(false);
     expect(dotsPo.length).toBe(0);
-    expect(hasDotsNavigation).toBe(false);
-    expect(hasButtonsNavigation).toBe(false);
   });
 
   it("should render a single card without dots or buttons", async () => {
@@ -28,13 +28,13 @@ describe("StackedCards Component", () => {
     const po = renderComponent(cards);
     const dotsPo = await po.getDots();
     const cardWrappers = await po.getCardWrappers();
-    const hasDotsNavigation = await po.hasDotsNavigation();
-    const hasButtonsNavigation = await po.hasButtonsNavigation();
+    const buttonsContainerPo = await po.getButtonsContainerPo();
+    const dotsContainerPo = await po.getDotsContainerPo();
 
-    expect(dotsPo.length).toBe(0);
     expect(cardWrappers.length).toBe(1);
-    expect(hasDotsNavigation).toBe(false);
-    expect(hasButtonsNavigation).toBe(false);
+    expect(await buttonsContainerPo.isPresent()).toBe(false);
+    expect(await dotsContainerPo.isPresent()).toBe(false);
+    expect(dotsPo.length).toBe(0);
   });
 
   it("should render multiple cards with dots when cards are <= MAX_NUMBER_OF_DOTS", async () => {
@@ -42,15 +42,16 @@ describe("StackedCards Component", () => {
     const po = renderComponent(cards);
     const dotsPo = await po.getDots();
     const cardWrappers = await po.getCardWrappers();
-    const hasDotsNavigation = await po.hasDotsNavigation();
-    const hasButtonsNavigation = await po.hasButtonsNavigation();
+    const buttonsContainerPo = await po.getButtonsContainerPo();
+    const dotsContainerPo = await po.getDotsContainerPo();
 
-    expect(dotsPo.length).toBe(2);
-    expect(cardWrappers.length).toBe(2);
+    expect(await buttonsContainerPo.isPresent()).toBe(false);
+
     expect(await po.getActiveCardIndex()).toBe(0);
     expect(await po.getActiveDotIndex()).toBe(0);
-    expect(hasDotsNavigation).toBe(true);
-    expect(hasButtonsNavigation).toBe(false);
+    expect(await dotsContainerPo.isPresent()).toBe(true);
+    expect(dotsPo.length).toBe(2);
+    expect(cardWrappers.length).toBe(2);
   });
 
   it("should change active card when clicking a dot", async () => {
@@ -125,35 +126,37 @@ describe("StackedCards Component", () => {
     const cards = Array(MAX_NUMBER_OF_DOTS + 1).fill({ component: Card });
     const po = renderComponent(cards);
     const cardWrappers = await po.getCardWrappers();
-    const hasDotsNavigation = await po.hasDotsNavigation();
-    const hasButtonsNavigation = await po.hasButtonsNavigation();
+    const buttonsContainerPo = await po.getButtonsContainerPo();
+    const dotsContainerPo = await po.getDotsContainerPo();
+
+    expect(await dotsContainerPo.isPresent()).toBe(false);
 
     expect(cardWrappers.length).toBe(MAX_NUMBER_OF_DOTS + 1);
-    expect(hasDotsNavigation).toBe(false);
-    expect(hasButtonsNavigation).toBe(true);
-    expect(await po.getCurrentIndexDisplay()).toBe(1); // 1-indexed
+    expect(await buttonsContainerPo.isPresent()).toBe(true);
+    expect(await buttonsContainerPo.getCurrentIndex()).toBe(1);
   });
 
   it("should navigate with prev/next buttons", async () => {
     const cards = Array(MAX_NUMBER_OF_DOTS + 2).fill({ component: Card });
     const po = renderComponent(cards);
-    const prevButton = await po.getPrevButton();
-    const nextButton = await po.getNextButton();
+    const buttonsContainerPo = await po.getButtonsContainerPo();
+    const prevButton = buttonsContainerPo.getPrevButton();
+    const nextButton = buttonsContainerPo.getNextButton();
 
     expect(await po.getActiveCardIndex()).toBe(0);
-    expect(await po.getCurrentIndexDisplay()).toBe(1); // 1-indexed
+    expect(await buttonsContainerPo.getCurrentIndex()).toBe(1); // 1-indexed
 
     await nextButton.click();
     expect(await po.getActiveCardIndex()).toBe(1);
-    expect(await po.getCurrentIndexDisplay()).toBe(2);
+    expect(await buttonsContainerPo.getCurrentIndex()).toBe(2);
 
     await nextButton.click();
     expect(await po.getActiveCardIndex()).toBe(2);
-    expect(await po.getCurrentIndexDisplay()).toBe(3);
+    expect(await buttonsContainerPo.getCurrentIndex()).toBe(3);
 
     await prevButton.click();
     expect(await po.getActiveCardIndex()).toBe(1);
-    expect(await po.getCurrentIndexDisplay()).toBe(2);
+    expect(await buttonsContainerPo.getCurrentIndex()).toBe(2);
 
     // Test wrap-around behavior
     const totalCards = MAX_NUMBER_OF_DOTS + 2;
@@ -161,11 +164,11 @@ describe("StackedCards Component", () => {
       await nextButton.click();
     }
     expect(await po.getActiveCardIndex()).toBe(0);
-    expect(await po.getCurrentIndexDisplay()).toBe(1);
+    expect(await buttonsContainerPo.getCurrentIndex()).toBe(1);
 
     await prevButton.click();
     expect(await po.getActiveCardIndex()).toBe(totalCards - 1);
-    expect(await po.getCurrentIndexDisplay()).toBe(totalCards);
+    expect(await buttonsContainerPo.getCurrentIndex()).toBe(totalCards);
   });
 
   it("should reset timer when navigating with buttons", async () => {
@@ -173,7 +176,8 @@ describe("StackedCards Component", () => {
 
     const cards = Array(MAX_NUMBER_OF_DOTS + 1).fill({ component: Card });
     const po = renderComponent(cards);
-    const nextButton = await po.getNextButton();
+    const buttonsContainerPo = await po.getButtonsContainerPo();
+    const nextButton = buttonsContainerPo.getNextButton();
 
     expect(await po.getActiveCardIndex()).toBe(0);
 
