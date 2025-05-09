@@ -119,7 +119,7 @@
     --elastic-out: cubic-bezier(0.16, 1.1, 0.3, 1.2);
   }
 
-  @keyframes scale-in {
+  @keyframes pulse {
     0% {
       transform: scale(0.97);
       opacity: 0.8;
@@ -166,7 +166,7 @@
           position: relative;
           opacity: 1;
           pointer-events: all;
-          animation: scale-in 550ms var(--elastic-out) forwards;
+          animation: pulse 550ms var(--elastic-out) forwards;
         }
 
         &.exiting {
