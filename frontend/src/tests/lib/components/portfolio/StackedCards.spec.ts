@@ -127,7 +127,7 @@ describe("StackedCards Component", () => {
     const cardWrappers = await po.getCardWrappers();
     const hasDotsNavigation = await po.hasDotsNavigation();
     const hasButtonsNavigation = await po.hasButtonsNavigation();
-    
+
     expect(cardWrappers.length).toBe(MAX_NUMBER_OF_DOTS + 1);
     expect(hasDotsNavigation).toBe(false);
     expect(hasButtonsNavigation).toBe(true);
