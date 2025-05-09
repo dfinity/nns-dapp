@@ -82,7 +82,7 @@
       swapLifecycle: SnsSwapLifecycle.Open,
       projects: $snsProjectsActivePadStore,
     })}
-    adoptenSnsProposals={filterProjectsStatus({
+    adoptedSnsProposals={filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Adopted,
       projects: $snsProjectsActivePadStore,
     })}

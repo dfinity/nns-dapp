@@ -32,7 +32,7 @@
   export let userTokens: UserToken[] = [];
   export let tableProjects: TableProject[];
   export let snsProjects: SnsFullProject[];
-  export let adoptenSnsProposals: SnsFullProject[];
+  export let adoptedSnsProposals: SnsFullProject[];
   export let openSnsProposals: ProposalInfo[];
 
   let totalTokensBalanceInUsd: number;
@@ -138,7 +138,7 @@
   }));
 
   let adoptedSnsProposalsSummaries: SnsSummary[];
-  $: adoptedSnsProposalsSummaries = adoptenSnsProposals
+  $: adoptedSnsProposalsSummaries = adoptedSnsProposals
     .sort(comparesByDecentralizationSaleOpenTimestampDesc)
     .reverse()
     .map((project) => project.summary);
