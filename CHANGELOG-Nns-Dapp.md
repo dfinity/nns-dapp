@@ -11,6 +11,17 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 136473
+
+### Application
+
+#### Added
+
+- Topic-based filtering for SNS proposals
+- Topic-based SNS neuron voting delegation
+
+### Operations
+
 ## Proposal 136220
 
 ### Application
