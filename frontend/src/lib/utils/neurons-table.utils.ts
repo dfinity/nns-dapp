@@ -6,6 +6,7 @@ import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type {
   NeuronsTableColumnId,
+  NeuronsTableVoteDelegationState,
   TableNeuron,
   TableNeuronComparator,
 } from "$lib/types/neurons-table";
