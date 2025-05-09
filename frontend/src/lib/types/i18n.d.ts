@@ -1339,6 +1339,7 @@ interface I18nPortfolio {
   total_assets_title: string;
   project_status_open: string;
   project_status_proposal: string;
+  project_status_adopted_proposal: string;
   open_project_card_title: string;
   open_project_current_commitment: string;
   open_project_card_min_icp: string;
@@ -1346,6 +1347,7 @@ interface I18nPortfolio {
   open_project_card_nf: string;
   open_project_card_link: string;
   open_project_card_neuron_fund_tooltip: string;
+  adopted_proposal_card_time_remaining: string;
   new_sns_proposal_card_title: string;
   new_sns_proposal_card_link: string;
   new_sns_proposal_card_adopt: string;
