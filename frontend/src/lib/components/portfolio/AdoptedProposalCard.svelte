@@ -120,7 +120,6 @@
       .description {
         margin: 0;
         color: var(--color-text-secondary);
-        height: calc(5 * var(--line-height-standard) * 1rem);
         @include text.clamp(5);
       }
     }
