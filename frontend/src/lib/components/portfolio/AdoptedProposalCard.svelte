@@ -68,8 +68,13 @@
           </span>
         </div>
       </div>
-      <a {href} class="link" aria-label="something" data-tid="project-link">
-        <span class="text">{$i18n.portfolio.open_project_card_link} </span>
+      <a
+        {href}
+        class="link"
+        aria-label={$i18n.portfolio.open_project_card_link}
+        data-tid="project-link"
+      >
+        <span class="text">{$i18n.portfolio.open_project_card_link}</span>
         <IconRight />
       </a>
     </div>
@@ -84,9 +89,8 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    height: 100%;
-    background-color: var(--card-background-tint);
     height: 270px;
+    background-color: var(--card-background-tint);
     gap: var(--padding-2x);
     padding: var(--padding-2x);
     /* Required to give space to the StackedCards dots */
