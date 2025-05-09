@@ -56,6 +56,7 @@
   const onChange = () => {
     // Checkbox doesn't support two-way binding
     checked = !checked;
+
     onNnsChange({ topicKey, checked });
   };
 

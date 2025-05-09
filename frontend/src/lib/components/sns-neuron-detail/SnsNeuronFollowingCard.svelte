@@ -69,6 +69,9 @@
     $ENABLE_SNS_TOPICS &&
     nonNullish(rootCanisterId) &&
     nonNullish($snsTopicsStore[rootCanisterId?.toText()]);
+
+  let hideFollowees: boolean;
+  $: hideFollowees = isFollowByTopic && $ENABLE_SNS_TOPICS;
 </script>
 
 <CardInfo noMargin testId="sns-neuron-following-card-component">
