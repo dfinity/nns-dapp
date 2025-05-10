@@ -42,4 +42,7 @@ export type NeuronsTableColumn = ResponsiveTableColumn<
 
 export type NeuronsTableOrder = ResponsiveTableOrder<NeuronsTableColumnId>;
 
-export type NeuronsTableVoteDelegationState = "all" | "some" | "none";
+// Keep in sync with the NeuronsTableVoteDelegationStateOrder
+export type NeuronsTableVoteDelegationState = "none" | "some" | "all";
+export const NeuronsTableVoteDelegationStateOrder: NeuronsTableVoteDelegationState[] =
+  ["none", "some", "all"] as const;
