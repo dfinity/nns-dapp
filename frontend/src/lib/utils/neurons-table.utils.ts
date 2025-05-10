@@ -4,10 +4,11 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
-import type {
-  NeuronsTableColumnId,
-  TableNeuron,
-  TableNeuronComparator,
+import {
+  NeuronsTableVoteDelegationStateOrder,
+  type NeuronsTableColumnId,
+  type TableNeuron,
+  type TableNeuronComparator,
 } from "$lib/types/neurons-table";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
@@ -174,7 +175,7 @@ export const compareByDissolveDelay = createDescendingComparator(
 export const compareByVoteDelegation = createDescendingComparator(
   (neuron: TableNeuron) => {
     const state = neuron.voteDelegationState ?? "none";
-    return ["none", "some", "all"].indexOf(state);
+    return NeuronsTableVoteDelegationStateOrder.indexOf(state);
   }
 );
 
