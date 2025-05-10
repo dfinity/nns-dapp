@@ -156,8 +156,13 @@
           })}
         </span>
       </div>
-      <a {href} class="link" aria-label="something" data-tid="project-link">
-        <span class="text">{$i18n.portfolio.open_project_card_link} </span>
+      <a
+        {href}
+        class="link"
+        aria-label={$i18n.portfolio.open_project_card_link}
+        data-tid="project-link"
+      >
+        <span class="text">{$i18n.portfolio.open_project_card_link}</span>
         <IconRight />
       </a>
     </div>

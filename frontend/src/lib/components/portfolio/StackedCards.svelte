@@ -6,6 +6,9 @@
     component: Component;
     props?: Record<string, unknown>;
   };
+
+  const REFRESH_INTERVAL = 5000;
+  const SWIPE_THRESHOLD = 50;
 </script>
 
 <script lang="ts">
@@ -13,6 +16,7 @@
   const { cards = [] }: Props = $props();
 
   let activeIndex = $state(0);
+  let previousIndex = $state<number | null>(null);
 
   let intervalId: number | undefined;
   let touchStartX: number = 0;
@@ -31,6 +35,7 @@
   const setCard = (newIndex: number) => {
     if (newIndex === activeIndex) return;
 
+    previousIndex = activeIndex;
     activeIndex = newIndex;
     resetTimer();
   };
@@ -47,7 +52,7 @@
 
   const handleSwipe = () => {
     const swipeDistance = touchEndX - touchStartX;
-    const minSwipeDistance = 50;
+    const minSwipeDistance = SWIPE_THRESHOLD;
     if (Math.abs(swipeDistance) < minSwipeDistance) return;
     if (swipeDistance > 0) prevCard();
     else nextCard();
@@ -61,7 +66,7 @@
     clearInterval();
 
     if (cards.length > 1) {
-      intervalId = window.setInterval(nextCard, 5000);
+      intervalId = window.setInterval(nextCard, REFRESH_INTERVAL);
     }
   };
 
@@ -81,6 +86,7 @@
         <div
           class="card-wrapper"
           class:active={i === activeIndex}
+          class:exiting={i === previousIndex}
           data-tid="project-card-wrapper"
         >
           <card.component {...card.props} />
@@ -110,8 +116,31 @@
 
   :root {
     --card-stacked-dots-space: 34px;
+    --elastic-out: cubic-bezier(0.16, 1.1, 0.3, 1.2);
   }
 
+  @keyframes pulse {
+    0% {
+      transform: scale(0.97);
+      opacity: 0.8;
+    }
+    40% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
   .stacked-cards {
     display: flex;
     flex-direction: column;
@@ -126,17 +155,22 @@
 
       .card-wrapper {
         opacity: 0;
-        transition: opacity var(--animation-time-long) ease-in-out;
         pointer-events: none;
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
+        transition: opacity 250ms ease-out;
 
         &.active {
           position: relative;
           opacity: 1;
           pointer-events: all;
+          animation: pulse 550ms var(--elastic-out) forwards;
+        }
+
+        &.exiting {
+          animation: fade-out 250ms ease-out forwards;
         }
       }
     }
