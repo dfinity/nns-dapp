@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Swipe gestures for project cards on the portfolio page
+* Display the voting delegation state in the SNS neurons table.
 
 #### Changed
 
