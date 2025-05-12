@@ -387,6 +387,7 @@ describe("neurons-table.utils", () => {
       state: NeuronState.Locked,
       tags: [],
       isPublic: false,
+      voteDelegationState: "none",
     };
 
     const convert = (snsNeurons: SnsNeuron[]) =>
