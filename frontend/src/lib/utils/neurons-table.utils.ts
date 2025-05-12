@@ -4,11 +4,12 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
-import type {
-  NeuronsTableColumnId,
-  NeuronsTableVoteDelegationState,
-  TableNeuron,
-  TableNeuronComparator,
+import {
+  NeuronsTableVoteDelegationStateOrder,
+  type NeuronsTableColumnId,
+  type NeuronsTableVoteDelegationState,
+  type TableNeuron,
+  type TableNeuronComparator,
 } from "$lib/types/neurons-table";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
@@ -193,6 +194,13 @@ export const compareByDissolveDelay = createDescendingComparator(
   (neuron: TableNeuron) => neuron.dissolveDelaySeconds
 );
 
+export const compareByVoteDelegation = createDescendingComparator(
+  (neuron: TableNeuron) => {
+    const state = neuron.voteDelegationState ?? "none";
+    return NeuronsTableVoteDelegationStateOrder.indexOf(state);
+  }
+);
+
 export const compareByState = createDescendingComparator(
   (neuron: TableNeuron) =>
     [
@@ -204,7 +212,7 @@ export const compareByState = createDescendingComparator(
 );
 
 // Orders strings as if they are positive integers, so "9" < "10" < "11", by
-// ordering first by length and then legicographically.
+// ordering first by length and then lexicographically.
 export const compareById = mergeComparators([
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId.length),
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId),
@@ -220,4 +228,5 @@ export const comparatorsByColumnId: Partial<
   maturity: compareByMaturity,
   dissolveDelay: compareByDissolveDelay,
   state: compareByState,
+  voteDelegation: compareByVoteDelegation,
 };

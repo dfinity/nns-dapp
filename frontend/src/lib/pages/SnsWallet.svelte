@@ -6,36 +6,38 @@
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { tokensByLedgerCanisterIdStore } from "$lib/derived/tokens.derived";
   import type { CanisterId } from "$lib/types/canister";
-  import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import type { WalletStore } from "$lib/types/wallet.context";
   import { nonNullish } from "@dfinity/utils";
   import { writable } from "svelte/store";
 
-  export let accountIdentifier: string | undefined | null = undefined;
+  type Props = {
+    accountIdentifier: string | undefined | null;
+  };
+  const { accountIdentifier }: Props = $props();
 
   const selectedAccountStore = writable<WalletStore>({
     account: undefined,
     neurons: [],
   });
 
-  let ledgerCanisterId: CanisterId | undefined;
-  $: ledgerCanisterId = $snsProjectSelectedStore?.summary.ledgerCanisterId;
+  const ledgerCanisterId: CanisterId | undefined = $derived(
+    $snsProjectSelectedStore?.summary.ledgerCanisterId
+  );
+  const indexCanisterId: CanisterId | undefined = $derived(
+    $snsProjectSelectedStore?.summary.indexCanisterId
+  );
+  const token = $derived(
+    nonNullish(ledgerCanisterId)
+      ? $tokensByLedgerCanisterIdStore[ledgerCanisterId.toText()]
+      : undefined
+  );
 
-  let indexCanisterId: CanisterId | undefined;
-  $: indexCanisterId = $snsProjectSelectedStore?.summary.indexCanisterId;
-
-  let token: IcrcTokenMetadata | undefined;
-  $: token = nonNullish(ledgerCanisterId)
-    ? $tokensByLedgerCanisterIdStore[ledgerCanisterId.toText()]
-    : undefined;
-
-  let transactions: IcrcWalletTransactionsList;
-
-  // TODO: Svelte v5 migration - marked as potentially undefined because of SnsWallet.spec.ts
-  let wallet: IcrcWalletPage | undefined;
+  let wallet: IcrcWalletPage;
+  let transactions: IcrcWalletTransactionsList | undefined = $state();
 
   const reloadAccount = async () => await wallet?.reloadAccount?.();
-  const reloadTransactions = () => transactions?.reloadTransactions?.();
+  const reloadTransactions = () =>
+    transactions?.reloadTransactions?.() ?? Promise.resolve();
 </script>
 
 <IcrcWalletPage

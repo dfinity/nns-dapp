@@ -36,6 +36,57 @@ class DotButtonPo extends ButtonPo {
   }
 }
 
+class NavigationButtonPo extends ButtonPo {
+  static prev(element: PageObjectElement): NavigationButtonPo {
+    return new NavigationButtonPo(element.byTestId("prev-button"));
+  }
+
+  static next(element: PageObjectElement): NavigationButtonPo {
+    return new NavigationButtonPo(element.byTestId("next-button"));
+  }
+}
+
+class DotsContainerPo extends BasePageObject {
+  private static readonly TID = "dots-container";
+
+  static under(element: PageObjectElement): DotsContainerPo | null {
+    try {
+      return new DotsContainerPo(element.byTestId(DotsContainerPo.TID));
+    } catch {
+      return null;
+    }
+  }
+
+  async getDots(): Promise<DotButtonPo[]> {
+    return DotButtonPo.allUnder(this.root);
+  }
+}
+
+class ButtonsContainerPo extends BasePageObject {
+  private static readonly TID = "buttons-container";
+
+  static under(element: PageObjectElement): ButtonsContainerPo | null {
+    try {
+      return new ButtonsContainerPo(element.byTestId(ButtonsContainerPo.TID));
+    } catch {
+      return null;
+    }
+  }
+
+  getPrevButton(): NavigationButtonPo {
+    return NavigationButtonPo.prev(this.root);
+  }
+
+  getNextButton(): NavigationButtonPo {
+    return NavigationButtonPo.next(this.root);
+  }
+
+  async getDisplayedCurrentIndex(): Promise<number> {
+    const indexText = await this.root.byTestId("activeIndex").getText();
+    return parseInt(indexText, 10);
+  }
+}
+
 export class StackedCardsPo extends BasePageObject {
   private static readonly TID = "stacked-cards-component";
 
@@ -70,6 +121,31 @@ export class StackedCardsPo extends BasePageObject {
       }
     }
     return -1;
+  }
+
+  async getDotsContainerPo(): Promise<DotsContainerPo | null> {
+    return DotsContainerPo.under(this.root);
+  }
+
+  async getButtonsContainerPo(): Promise<ButtonsContainerPo | null> {
+    return ButtonsContainerPo.under(this.root);
+  }
+
+  async getPrevButton(): Promise<NavigationButtonPo | null> {
+    const buttonsContainer = await this.getButtonsContainerPo();
+    return buttonsContainer ? buttonsContainer.getPrevButton() : null;
+  }
+
+  async getNextButton(): Promise<NavigationButtonPo | null> {
+    const buttonsContainer = await this.getButtonsContainerPo();
+    return buttonsContainer ? buttonsContainer.getNextButton() : null;
+  }
+
+  async getCurrentIndexDisplay(): Promise<number | null> {
+    const buttonsContainer = await this.getButtonsContainerPo();
+    return buttonsContainer
+      ? await buttonsContainer.getDisplayedCurrentIndex()
+      : null;
   }
 
   async getActiveCardPo(): Promise<BasePortfolioCardPo> {
