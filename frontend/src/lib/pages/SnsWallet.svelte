@@ -3,6 +3,7 @@
   import IcrcWalletPage from "$lib/components/accounts/IcrcWalletPage.svelte";
   import IcrcWalletTransactionsList from "$lib/components/accounts/IcrcWalletTransactionsList.svelte";
   import NoTransactions from "$lib/components/accounts/NoTransactions.svelte";
+  import SnsWalletDevTools from "$lib/components/experimental/SnsWalletDevTools.svelte";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { tokensByLedgerCanisterIdStore } from "$lib/derived/tokens.derived";
   import type { CanisterId } from "$lib/types/canister";
@@ -76,3 +77,7 @@
     {/if}
   </svelte:fragment>
 </IcrcWalletPage>
+
+{#if nonNullish(indexCanisterId) && nonNullish(ledgerCanisterId)}
+  <SnsWalletDevTools {indexCanisterId} {ledgerCanisterId} />
+{/if}

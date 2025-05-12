@@ -80,6 +80,7 @@ export const icrcTransfer = async ({
   identity: Identity;
   canisterId: Principal;
 } & IcrcTransferParams): Promise<IcrcBlockIndex> => {
+  // TODO: This comment seems wrong
   logWithTimestamp("Getting ckBTC transfer: call...");
 
   const {
