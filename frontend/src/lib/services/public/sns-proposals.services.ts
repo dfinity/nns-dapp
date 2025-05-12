@@ -27,6 +27,7 @@ import type {
 } from "@dfinity/sns";
 import { fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
+import { getCurrentIdentity } from "../auth.services";
 
 export const registerVote = async ({
   rootCanisterId,
@@ -148,6 +149,29 @@ export const loadSnsProposals = async ({
     },
     logMessage: "loadSnsProposals",
   });
+};
+
+export const refreshUnsupportedFilterByTopicSnsesStore = async (
+  rootCanisterId: Principal
+): Promise<void> => {
+  try {
+    const { include_topic_filtering } = await queryProposals({
+      params: {},
+      identity: getCurrentIdentity(),
+      certified: false,
+      rootCanisterId,
+    });
+    const includeTopicFiltering = fromNullable(include_topic_filtering);
+    updateUnsupportedFilterByTopicSnsesStore({
+      rootCanisterId,
+      includeTopicFiltering,
+    });
+  } catch (err) {
+    console.error(
+      "Error while refreshing unsupportedFilterByTopicSnsesStore",
+      err
+    );
+  }
 };
 
 /**
