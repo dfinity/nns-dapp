@@ -79,5 +79,5 @@
 </IcrcWalletPage>
 
 {#if nonNullish(indexCanisterId) && nonNullish(ledgerCanisterId)}
-  <SnsWalletDevTools {indexCanisterId} {ledgerCanisterId} />
+  <SnsWalletDevTools {indexCanisterId} {ledgerCanisterId} {token} />
 {/if}

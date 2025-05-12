@@ -12,7 +12,7 @@
       subaccount: string
     ) => Promise<void>;
 
-    // Send tokens fromt the given subaccount to the main account.
+    // Send tokens from the given subaccount to the main account.
     __experimentaRecoverIcrcBalanceFromSubaccount: (
       subaccount: string
     ) => Promise<void>;
@@ -25,15 +25,17 @@
   import { authStore } from "$lib/stores/auth.store";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
+  import type { IcrcTokenMetadata } from "@dfinity/ledger-icrc";
   import type { Principal } from "@dfinity/principal";
   import { isNullish } from "@dfinity/utils";
 
   type Props = {
     indexCanisterId: Principal;
     ledgerCanisterId: Principal;
+    token: IcrcTokenMetadata;
   };
 
-  const { indexCanisterId, ledgerCanisterId }: Props = $props();
+  const { indexCanisterId, ledgerCanisterId, token }: Props = $props();
   const identity = $derived($authStore.identity);
 
   $effect(() => {
@@ -102,8 +104,10 @@
 
         console.log(`Balance of subaccount ${subaccount} is ${balance}`);
 
-        console.log("Sending balance to main account...");
-        const fee = 1_000n;
+        console.log(
+          `Sending balance(${balance}) minus the transaction fee (${token.fee})to main account...`
+        );
+        const amount = BigInt(balance) - token.fee;
 
         const a = await icrcTransfer({
           canisterId: ledgerCanisterId,
@@ -111,9 +115,9 @@
           to: {
             owner: identity.getPrincipal(),
           },
-          amount: BigInt(balance) - fee,
+          amount,
           fromSubAccount: hexStringToBytes(subaccount),
-          fee,
+          fee: token.fee,
         });
 
         console.log(a);
@@ -138,7 +142,7 @@
           // This one should be defined by the total amount in the account
           amount: 1_000_000_000n,
           // I need to get this one right from the project info
-          fee: 1_000n,
+          fee: token.fee,
         });
         console.log(a);
       } catch (error) {
