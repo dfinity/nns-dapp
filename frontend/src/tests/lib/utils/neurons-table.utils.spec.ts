@@ -9,6 +9,7 @@ import {
   compareByStake,
   compareByState,
   compareByVoteDelegation,
+  getNnsNeuronVoteDelegationState,
   getSnsNeuronVoteDelegationState,
   tableNeuronsFromNeuronInfos,
   tableNeuronsFromSnsNeurons,
@@ -20,7 +21,12 @@ import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron, mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import {
+  NeuronState,
+  Topic,
+  type Followees,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
@@ -71,6 +77,7 @@ describe("neurons-table.utils", () => {
       state: NeuronState.Locked,
       tags: [],
       isPublic: false,
+      voteDelegationState: "none",
     };
 
     const minimumDissolveDelay = BigInt(SECONDS_IN_HALF_YEAR);
@@ -264,6 +271,67 @@ describe("neurons-table.utils", () => {
     });
   });
 
+  describe("getNnsNeuronVoteDelegationState", () => {
+    const neuronWithFollowees = (followees: Followees[]): NeuronInfo => ({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        followees,
+      },
+    });
+
+    it('should return "none" if no followees', () => {
+      const neuron = neuronWithFollowees([]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("none");
+    });
+
+    it('should return "some" if some followees are present', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.Governance, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("some");
+    });
+
+    it('should return "all" if all topics are explicitly followed', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.NeuronManagement, followees: [] },
+        { topic: Topic.ExchangeRate, followees: [] },
+        { topic: Topic.NetworkEconomics, followees: [] },
+        { topic: Topic.Governance, followees: [] },
+        { topic: Topic.NodeAdmin, followees: [] },
+        { topic: Topic.ParticipantManagement, followees: [] },
+        { topic: Topic.SubnetManagement, followees: [] },
+        { topic: Topic.NetworkCanisterManagement, followees: [] },
+        { topic: Topic.Kyc, followees: [] },
+        { topic: Topic.NodeProviderRewards, followees: [] },
+        { topic: Topic.IcOsVersionDeployment, followees: [] },
+        { topic: Topic.IcOsVersionElection, followees: [] },
+        { topic: Topic.SnsAndCommunityFund, followees: [] },
+        { topic: Topic.ApiBoundaryNodeManagement, followees: [] },
+        { topic: Topic.SubnetRental, followees: [] },
+        { topic: Topic.ProtocolCanisterManagement, followees: [] },
+        { topic: Topic.ServiceNervousSystemManagement, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("all");
+    });
+
+    it('should return "all" if All + Governance & SnsAndCommunityFund are followed', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.Unspecified, followees: [] },
+        { topic: Topic.Governance, followees: [] },
+        { topic: Topic.SnsAndCommunityFund, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("all");
+    });
+
+    it('should ignore "SNS Decentralization Sale" if followed', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.SnsDecentralizationSale, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("none");
+    });
+  });
+
   describe("getSnsNeuronVoteDelegationState", () => {
     const neuronId = { id: Uint8Array.from([1, 2, 3]) };
 
@@ -387,6 +455,7 @@ describe("neurons-table.utils", () => {
       state: NeuronState.Locked,
       tags: [],
       isPublic: false,
+      voteDelegationState: "none",
     };
 
     const convert = (snsNeurons: SnsNeuron[]) =>
@@ -400,6 +469,7 @@ describe("neurons-table.utils", () => {
         },
         ledgerCanisterId,
         i18n: en,
+        topicInfos: [],
       });
 
     it("should convert SnsNeuron to TableNeuron", () => {
@@ -460,6 +530,7 @@ describe("neurons-table.utils", () => {
           ...expectedTableNeuron,
           availableMaturity,
           stakedMaturity,
+          voteDelegationState: "none",
         },
       ]);
     });
@@ -484,6 +555,7 @@ describe("neurons-table.utils", () => {
             "/neuron/?u=br5f7-7uaaa-aaaaa-qaaca-cai&neuron=fafafafafafafafa",
           domKey: neuronIdString2,
           neuronId: neuronIdString2,
+          voteDelegationState: "none",
         },
       ]);
     });
@@ -505,6 +577,7 @@ describe("neurons-table.utils", () => {
         {
           ...expectedTableNeuron,
           tags: [{ text: "Hotkey control" }],
+          voteDelegationState: "none",
         },
       ]);
     });

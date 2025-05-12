@@ -11,6 +11,7 @@ import {
   type TableNeuron,
   type TableNeuronComparator,
 } from "$lib/types/neurons-table";
+import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
@@ -39,10 +40,11 @@ import {
 import { getUsdValue } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, Topic } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2, isNullish, type Token } from "@dfinity/utils";
+import { enumValues } from "./enum.utils";
 
 export const tableNeuronsFromNeuronInfos = ({
   neuronInfos,
@@ -83,6 +85,7 @@ export const tableNeuronsFromNeuronInfos = ({
       amount: stake,
       tokenPrice: icpPrice,
     });
+
     return {
       ...(rowHref && { rowHref }),
       domKey: neuronIdString,
@@ -102,8 +105,39 @@ export const tableNeuronsFromNeuronInfos = ({
         minimumDissolveDelay,
       }),
       isPublic: isPublicNeuron(neuronInfo),
+      voteDelegationState: getNnsNeuronVoteDelegationState(neuronInfo),
     };
   });
+};
+
+export const getNnsNeuronVoteDelegationState = (
+  neuron: NeuronInfo
+): NeuronsTableVoteDelegationState => {
+  const followees = (neuron.fullNeuron?.followees ?? []).filter(
+    // Ignore deprecated topic
+    (followee) => followee.topic !== Topic.SnsDecentralizationSale
+  );
+  if (followees.length === 0) return "none";
+
+  const delegatedTopicMap = new Set(followees.map(({ topic }) => topic));
+  const requiredTopics = new Set(
+    delegatedTopicMap.has(Topic.Unspecified)
+      ? // Because Topic.Unspecified(0) covers all except "Governance" and "SNS & Neurons' Fund"
+        [Topic.Governance, Topic.SnsAndCommunityFund]
+      : enumValues(Topic).filter(
+          (topic) =>
+            ![
+              // Not required when it's not selected
+              Topic.Unspecified,
+              Topic.SnsDecentralizationSale,
+            ].includes(topic)
+        )
+  );
+  const followsAllRequiredTopics = Array.from(requiredTopics).every((topic) =>
+    delegatedTopicMap.has(topic)
+  );
+
+  return followsAllRequiredTopics ? "all" : "some";
 };
 
 export const getSnsNeuronVoteDelegationState = ({
@@ -134,6 +168,7 @@ export const tableNeuronsFromSnsNeurons = ({
   icpSwapUsdPrices,
   ledgerCanisterId,
   i18n,
+  topicInfos,
 }: {
   snsNeurons: SnsNeuron[];
   universe: UniverseCanisterIdText;
@@ -142,6 +177,7 @@ export const tableNeuronsFromSnsNeurons = ({
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
   ledgerCanisterId: Principal;
   i18n: I18n;
+  topicInfos: TopicInfoWithUnknown[];
 }): TableNeuron[] => {
   return snsNeurons.map((snsNeuron) => {
     const dissolveDelaySeconds = getSnsDissolveDelaySeconds(snsNeuron) ?? 0n;
@@ -162,6 +198,10 @@ export const tableNeuronsFromSnsNeurons = ({
       amount: stake,
       tokenPrice,
     });
+    const voteDelegationState = getSnsNeuronVoteDelegationState({
+      topicCount: topicInfos.length,
+      neuron: snsNeuron,
+    });
     return {
       rowHref,
       domKey: neuronIdString,
@@ -178,6 +218,7 @@ export const tableNeuronsFromSnsNeurons = ({
         i18n,
       }),
       isPublic: false,
+      voteDelegationState,
     };
   });
 };
