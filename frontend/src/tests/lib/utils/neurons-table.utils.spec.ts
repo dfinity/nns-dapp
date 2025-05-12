@@ -400,6 +400,7 @@ describe("neurons-table.utils", () => {
         },
         ledgerCanisterId,
         i18n: en,
+        topicInfos: [],
       });
 
     it("should convert SnsNeuron to TableNeuron", () => {
