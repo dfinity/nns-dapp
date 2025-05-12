@@ -1283,7 +1283,9 @@
     "new_sns_proposal_card_title": "Create New SNS",
     "new_sns_proposal_card_link": "Vote",
     "new_sns_proposal_card_adopt": "Adopt",
-    "new_sns_proposal_card_reject": "Reject"
+    "new_sns_proposal_card_reject": "Reject",
+    "next_card": "Next Card",
+    "previous_card": "Previous Card"
   },
   "highlight": {
     "topics_feature_title": "New feature ",

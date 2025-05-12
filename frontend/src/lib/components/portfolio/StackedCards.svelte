@@ -1,4 +1,5 @@
 <script lang="ts" module>
+  import { i18n } from "$lib/stores/i18n";
   import { IconLeft, IconRight } from "@dfinity/gix-components";
   import type { Component } from "svelte";
   import { onDestroy } from "svelte";
@@ -101,7 +102,7 @@
         <button
           class="ghost"
           onclick={prevCard}
-          aria-label="Previuos Card"
+          aria-label={$i18n.portfolio.previous_card}
           data-tid="prev-button"><IconLeft size="24px" /></button
         >
         <span class="current-card-index" data-tid="activeIndex"
@@ -110,7 +111,7 @@
         <button
           class="ghost"
           onclick={nextCard}
-          aria-label="Next Card"
+          aria-label={$i18n.portfolio.next_card}
           data-tid="next-button"><IconRight size="24px" /></button
         >
       </div>

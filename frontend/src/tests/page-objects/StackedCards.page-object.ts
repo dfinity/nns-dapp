@@ -81,7 +81,7 @@ class ButtonsContainerPo extends BasePageObject {
     return NavigationButtonPo.next(this.root);
   }
 
-  async getCurrentIndex(): Promise<number> {
+  async getDisplayedCurrentIndex(): Promise<number> {
     const indexText = await this.root.byTestId("activeIndex").getText();
     return parseInt(indexText, 10);
   }
@@ -143,7 +143,9 @@ export class StackedCardsPo extends BasePageObject {
 
   async getCurrentIndexDisplay(): Promise<number | null> {
     const buttonsContainer = await this.getButtonsContainerPo();
-    return buttonsContainer ? await buttonsContainer.getCurrentIndex() : null;
+    return buttonsContainer
+      ? await buttonsContainer.getDisplayedCurrentIndex()
+      : null;
   }
 
   async getActiveCardPo(): Promise<BasePortfolioCardPo> {

@@ -1352,6 +1352,8 @@ interface I18nPortfolio {
   new_sns_proposal_card_link: string;
   new_sns_proposal_card_adopt: string;
   new_sns_proposal_card_reject: string;
+  next_card: string;
+  previous_card: string;
 }
 
 interface I18nHighlight {

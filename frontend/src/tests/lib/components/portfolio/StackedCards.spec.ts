@@ -133,42 +133,43 @@ describe("StackedCards Component", () => {
 
     expect(cardWrappers.length).toBe(MAX_NUMBER_OF_DOTS + 1);
     expect(await buttonsContainerPo.isPresent()).toBe(true);
-    expect(await buttonsContainerPo.getCurrentIndex()).toBe(1);
+    expect(await buttonsContainerPo.getDisplayedCurrentIndex()).toBe(1);
   });
 
   it("should navigate with prev/next buttons", async () => {
-    const cards = Array(MAX_NUMBER_OF_DOTS + 2).fill({ component: Card });
+    const totalCards = MAX_NUMBER_OF_DOTS + 2;
+    const cards = Array(totalCards).fill({ component: Card });
     const po = renderComponent(cards);
     const buttonsContainerPo = await po.getButtonsContainerPo();
     const prevButton = buttonsContainerPo.getPrevButton();
     const nextButton = buttonsContainerPo.getNextButton();
 
     expect(await po.getActiveCardIndex()).toBe(0);
-    expect(await buttonsContainerPo.getCurrentIndex()).toBe(1); // 1-indexed
+    expect(await buttonsContainerPo.getDisplayedCurrentIndex()).toBe(1); // 1-indexed
 
     await nextButton.click();
     expect(await po.getActiveCardIndex()).toBe(1);
-    expect(await buttonsContainerPo.getCurrentIndex()).toBe(2);
+    expect(await buttonsContainerPo.getDisplayedCurrentIndex()).toBe(2);
 
     await nextButton.click();
     expect(await po.getActiveCardIndex()).toBe(2);
-    expect(await buttonsContainerPo.getCurrentIndex()).toBe(3);
+    expect(await buttonsContainerPo.getDisplayedCurrentIndex()).toBe(3);
 
     await prevButton.click();
     expect(await po.getActiveCardIndex()).toBe(1);
-    expect(await buttonsContainerPo.getCurrentIndex()).toBe(2);
+    expect(await buttonsContainerPo.getDisplayedCurrentIndex()).toBe(2);
 
-    // Test wrap-around behavior
-    const totalCards = MAX_NUMBER_OF_DOTS + 2;
     for (let i = 0; i < totalCards - 1; i++) {
       await nextButton.click();
     }
     expect(await po.getActiveCardIndex()).toBe(0);
-    expect(await buttonsContainerPo.getCurrentIndex()).toBe(1);
+    expect(await buttonsContainerPo.getDisplayedCurrentIndex()).toBe(1);
 
     await prevButton.click();
     expect(await po.getActiveCardIndex()).toBe(totalCards - 1);
-    expect(await buttonsContainerPo.getCurrentIndex()).toBe(totalCards);
+    expect(await buttonsContainerPo.getDisplayedCurrentIndex()).toBe(
+      totalCards
+    );
   });
 
   it("should reset timer when navigating with buttons", async () => {
