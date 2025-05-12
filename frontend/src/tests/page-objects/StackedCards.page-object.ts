@@ -5,7 +5,6 @@ import { LaunchProjectCardPo } from "$tests/page-objects/LaunchProjectCard.page-
 import { NewSnsProposalCardPo } from "$tests/page-objects/NewSnsProposalCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { AdoptedProposalCardPo } from "./AdoptedProposalCard.page-object";
 
 class ProjectCardWrapperPo extends BasePageObject {
   private static readonly TID = "project-card-wrapper";
