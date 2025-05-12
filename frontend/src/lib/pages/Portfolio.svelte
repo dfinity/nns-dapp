@@ -32,8 +32,8 @@
     userTokens: UserToken[];
     tableProjects: TableProject[];
     snsProjects: SnsFullProject[];
-    adoptedSnsProposals: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
+    adoptedSnsProposals?: SnsFullProject[];
   };
 
   const {
@@ -41,7 +41,8 @@
     tableProjects,
     snsProjects,
     openSnsProposals,
-    adoptedSnsProposals,
+    // TODO: To be removed in the router's PR
+    adoptedSnsProposals = [],
   }: Props = $props();
 
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
