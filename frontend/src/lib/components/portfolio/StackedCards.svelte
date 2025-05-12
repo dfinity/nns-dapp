@@ -1,4 +1,6 @@
 <script lang="ts" module>
+  import { i18n } from "$lib/stores/i18n";
+  import { IconLeft, IconRight } from "@dfinity/gix-components";
   import type { Component } from "svelte";
   import { onDestroy } from "svelte";
 
@@ -9,6 +11,7 @@
 
   const REFRESH_INTERVAL = 5000;
   const SWIPE_THRESHOLD = 50;
+  const MAX_NUMBER_OF_DOTS = 7;
 </script>
 
 <script lang="ts">
@@ -94,7 +97,25 @@
       {/each}
     </div>
 
-    {#if cards.length > 1}
+    {#if cards.length > MAX_NUMBER_OF_DOTS}
+      <div class="buttons-container" data-tid="buttons-container">
+        <button
+          class="ghost"
+          onclick={prevCard}
+          aria-label={$i18n.portfolio.previous_card}
+          data-tid="prev-button"><IconLeft size="24px" /></button
+        >
+        <span class="current-card-index" data-tid="activeIndex"
+          >{activeIndex + 1}</span
+        >
+        <button
+          class="ghost"
+          onclick={nextCard}
+          aria-label={$i18n.portfolio.next_card}
+          data-tid="next-button"><IconRight size="24px" /></button
+        >
+      </div>
+    {:else if cards.length > 1}
       <div class="dots-container" data-tid="dots-container">
         {#each cards as _, i}
           <button
@@ -112,8 +133,6 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
   :root {
     --card-stacked-dots-space: 34px;
     --elastic-out: cubic-bezier(0.16, 1.1, 0.3, 1.2);
@@ -172,6 +191,28 @@
         &.exiting {
           animation: fade-out 250ms ease-out forwards;
         }
+      }
+    }
+
+    .buttons-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--padding-1_5x);
+      position: absolute;
+      bottom: var(--padding-0_5x);
+
+      button {
+        color: var(--button-secondary-color);
+        padding: 0;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .current-card-index {
+        color: var(--text-description);
+        font-weight: var(--font-weight-bold);
       }
     }
 
