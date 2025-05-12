@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
@@ -31,6 +32,7 @@
     userTokens: UserToken[];
     tableProjects: TableProject[];
     snsProjects: SnsFullProject[];
+    adoptedSnsProposals: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
   };
 
@@ -39,6 +41,7 @@
     tableProjects,
     snsProjects,
     openSnsProposals,
+    adoptedSnsProposals,
   }: Props = $props();
 
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
@@ -91,8 +94,6 @@
   const areStakedTokensLoading = $derived(
     tableProjects.some((project) => project.isStakeLoading)
   );
-  // Determines the display state of the staked tokens card
-  // Similar logic to heldTokensCard but for staked tokens
   const stakedTokensCard: TokensCardType = $derived(
     !$authSignedInStore
       ? "full"
@@ -152,7 +153,23 @@
       }))
   );
 
-  const cards: CardItem[] = $derived([...launchpadCards, ...openProposalCards]);
+  const adoptedSnsProposalsCards = $derived(
+    [...adoptedSnsProposals]
+      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
+      .reverse()
+      .map((project) => project.summary)
+      .map<CardItem>((summary) => ({
+        // TODO: Svelte v5 migration - fix type
+        component: AdoptedProposalCard as unknown as Component,
+        props: { summary },
+      }))
+  );
+
+  const cards: CardItem[] = $derived([
+    ...launchpadCards,
+    ...openProposalCards,
+    ...adoptedSnsProposalsCards,
+  ]);
 </script>
 
 <main data-tid="portfolio-page-component">
