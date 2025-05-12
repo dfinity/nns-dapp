@@ -7,7 +7,10 @@
     createSnsNsFunctionsProjectStore,
     type SnsNervousSystemFunctionsProjectStore,
   } from "$lib/derived/sns-ns-functions-project.derived";
-  import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
+  import {
+    createEnableFilteringBySnsTopicsStore,
+    snsTopicsStore,
+  } from "$lib/derived/sns-topics.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
@@ -24,8 +27,10 @@
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { getContext } from "svelte";
+  import { getContext, onMount } from "svelte";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
+  import { refreshUnsupportedFilterByTopicSnsesStore } from "$lib/services/public/sns-proposals.services";
+  import { get, type Readable } from "svelte/store";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
@@ -64,11 +69,35 @@
     neuron.followees.length > 0 &&
     isNullish($nsFunctions);
 
+  // This store reliably indicates if the setFollowing API is supported.
+  let supportSetFollowingStore: Readable<boolean> | undefined;
+  $: supportSetFollowingStore = nonNullish(rootCanisterId)
+    ? createEnableFilteringBySnsTopicsStore(rootCanisterId)
+    : undefined;
+  // Since most of the SNSes are upgraded, the API is supported by default.
+  let isSetFollowingApiSupported: boolean;
+  $: isSetFollowingApiSupported = nonNullish(supportSetFollowingStore)
+    ? get(supportSetFollowingStore)
+    : true;
+
   let isFollowByTopic: boolean;
   $: isFollowByTopic =
     $ENABLE_SNS_TOPICS &&
     nonNullish(rootCanisterId) &&
-    nonNullish($snsTopicsStore[rootCanisterId?.toText()]);
+    nonNullish($snsTopicsStore[rootCanisterId?.toText()]) &&
+    // TODO(mstr): remove this after "Personal DAO" is upgraded
+    isSetFollowingApiSupported;
+
+  // TODO(mstr): remove this after "Personal DAO" is upgraded
+  onMount(async () => {
+    const PERSONAL_DAO_CANISTER_ID = "izscx-raaaa-aaaaq-aaesq-cai";
+    if (
+      rootCanisterId &&
+      rootCanisterId.toText() === PERSONAL_DAO_CANISTER_ID
+    ) {
+      refreshUnsupportedFilterByTopicSnsesStore(rootCanisterId);
+    }
+  });
 </script>
 
 <CardInfo noMargin testId="sns-neuron-following-card-component">
