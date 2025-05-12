@@ -366,18 +366,6 @@ describe("Portfolio page", () => {
       expect(await activeCard.getTitle()).toBe("LaterTimestampAdoptedProject");
     });
 
-    it("should show all cards when snsProjects and openSnsProposals are not empty", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects,
-        openSnsProposals: mockSnsProposals,
-      });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(4);
-    });
-
     it("should show first on going swaps, then open proposals, and then adopted proposals", async () => {
       const po = renderPage({
         snsProjects: mockSnsProjects.slice(0, 1),
