@@ -42,4 +42,12 @@ export type NeuronsTableColumn = ResponsiveTableColumn<
 
 export type NeuronsTableOrder = ResponsiveTableOrder<NeuronsTableColumnId>;
 
-export type NeuronsTableVoteDelegationState = "all" | "some" | "none";
+export const NeuronsTableVoteDelegationStateOrder = [
+  "none",
+  "some",
+  "all",
+] as const;
+// Since `NeuronsTableVoteDelegationStateOrder` is a tuple of exact string literals,
+// we can get the type of any value that can be indexed by a number.
+export type NeuronsTableVoteDelegationState =
+  (typeof NeuronsTableVoteDelegationStateOrder)[number];
