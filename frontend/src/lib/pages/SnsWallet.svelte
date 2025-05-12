@@ -37,7 +37,7 @@
 
   const reloadAccount = async () => await wallet?.reloadAccount?.();
   const reloadTransactions = () =>
-    transactions?.reloadTransactions?.() || Promise.resolve();
+    transactions?.reloadTransactions?.() ?? Promise.resolve();
 </script>
 
 <IcrcWalletPage
