@@ -92,6 +92,7 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     if (
       !(await this.getNeuronVoteDelegationCellPo().getTooltipPo().isPresent())
     ) {
+      // Prevents unwanted error messages when trying to query a tooltip by a non-existent ID.
       return undefined;
     }
     return this.getNeuronVoteDelegationCellPo().getTooltipText();
