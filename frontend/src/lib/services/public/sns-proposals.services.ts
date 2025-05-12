@@ -63,6 +63,22 @@ export const registerVote = async ({
   }
 };
 
+const updateUnsupportedFilterByTopicSnsesStore = async ({
+  rootCanisterId,
+  includeTopicFiltering,
+}: {
+  rootCanisterId: Principal;
+  includeTopicFiltering: boolean | undefined;
+}): Promise<void> => {
+  if (isNullish(includeTopicFiltering)) {
+    unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+  } else if (includeTopicFiltering) {
+    unsupportedFilterByTopicSnsesStore.delete(rootCanisterId.toText());
+  } else {
+    unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+  }
+};
+
 export const loadSnsProposals = async ({
   rootCanisterId,
   snsFunctions,
@@ -119,14 +135,10 @@ export const loadSnsProposals = async ({
       });
 
       const includeTopicFiltering = fromNullable(include_topic_filtering);
-
-      if (isNullish(includeTopicFiltering)) {
-        unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
-      } else if (includeTopicFiltering) {
-        unsupportedFilterByTopicSnsesStore.delete(rootCanisterId.toText());
-      } else {
-        unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
-      }
+      updateUnsupportedFilterByTopicSnsesStore({
+        rootCanisterId,
+        includeTopicFiltering,
+      });
     },
     onError: (err) => {
       toastsError({
