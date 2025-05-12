@@ -13,9 +13,8 @@
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-  import type { SnsSummary } from "$lib/types/sns";
   import type { TableProject } from "$lib/types/staking";
-  import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+  import type { UserToken } from "$lib/types/tokens-page";
   import {
     compareProposalInfoByDeadlineTimestampSeconds,
     getTopHeldTokens,
@@ -28,43 +27,46 @@
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
   import type { Component } from "svelte";
 
-  export let userTokens: UserToken[] = [];
-  export let tableProjects: TableProject[];
-  export let snsProjects: SnsFullProject[];
-  export let openSnsProposals: ProposalInfo[];
+  type Props = {
+    userTokens: UserToken[];
+    tableProjects: TableProject[];
+    snsProjects: SnsFullProject[];
+    openSnsProposals: ProposalInfo[];
+  };
 
-  let totalTokensBalanceInUsd: number;
-  $: totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
+  const {
+    userTokens = [],
+    tableProjects,
+    snsProjects,
+    openSnsProposals,
+  }: Props = $props();
 
-  let hasUnpricedTokens: boolean;
-  $: hasUnpricedTokens = userTokens.some(
-    (token) =>
-      token.balance instanceof TokenAmountV2 &&
-      token.balance.toUlps() > 0n &&
-      (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
-  );
-  let totalStakedInUsd: number;
-  $: totalStakedInUsd = getTotalStakeInUsd(tableProjects);
-
-  let hasUnpricedStake: boolean;
-  $: hasUnpricedStake = tableProjects.some(
-    (project) =>
-      project.stake instanceof TokenAmountV2 &&
-      project.stake.toUlps() > 0n &&
-      (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
+  const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
+  const hasUnpricedTokens = $derived(
+    userTokens.some(
+      (token) =>
+        token.balance instanceof TokenAmountV2 &&
+        token.balance.toUlps() > 0n &&
+        (!("balanceInUsd" in token) || isNullish(token.balanceInUsd))
+    )
   );
 
-  let hasUnpricedTokensOrStake: boolean;
-  $: hasUnpricedTokensOrStake = hasUnpricedTokens || hasUnpricedStake;
+  const totalStakedInUsd = $derived(getTotalStakeInUsd(tableProjects));
+  const hasUpricedStake = $derived(
+    tableProjects.some(
+      (project) =>
+        project.stake instanceof TokenAmountV2 &&
+        project.stake.toUlps() > 0n &&
+        (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
+    )
+  );
 
-  let totalUsdAmount: number | undefined;
-  $: totalUsdAmount = $authSignedInStore
-    ? totalTokensBalanceInUsd + totalStakedInUsd
-    : undefined;
+  const hasUnpricedTokensOrStake = $derived(
+    hasUnpricedTokens || hasUpricedStake
+  );
 
-  let areHeldTokensLoading: boolean;
-  $: areHeldTokensLoading = userTokens.some(
-    (token) => token.balance === "loading"
+  const totalUsdAmount = $derived(
+    $authSignedInStore ? totalTokensBalanceInUsd + totalStakedInUsd : undefined
   );
 
   // Determines the display state of the held tokens card
@@ -73,79 +75,84 @@
   // - 'empty': Shows empty state when user has no tokens
   type TokensCardType = "empty" | "skeleton" | "full";
 
-  let heldTokensCard: TokensCardType;
-  $: heldTokensCard = !$authSignedInStore
-    ? "full"
-    : areHeldTokensLoading
-      ? "skeleton"
-      : totalTokensBalanceInUsd === 0
-        ? "empty"
-        : "full";
-
-  let areStakedTokensLoading: boolean;
-  $: areStakedTokensLoading = tableProjects.some(
-    (project) => project.isStakeLoading
+  const areHeldTokensLoading = $derived(
+    userTokens.some((token) => token.balance === "loading")
+  );
+  const heldTokensCard: TokensCardType = $derived(
+    !$authSignedInStore
+      ? "full"
+      : areHeldTokensLoading
+        ? "skeleton"
+        : totalTokensBalanceInUsd === 0
+          ? "empty"
+          : "full"
   );
 
+  const areStakedTokensLoading = $derived(
+    tableProjects.some((project) => project.isStakeLoading)
+  );
   // Determines the display state of the staked tokens card
   // Similar logic to heldTokensCard but for staked tokens
-  let stakedTokensCard: TokensCardType;
-  $: stakedTokensCard = !$authSignedInStore
-    ? "full"
-    : areStakedTokensLoading
-      ? "skeleton"
-      : totalStakedInUsd === 0
-        ? "empty"
-        : "full";
+  const stakedTokensCard: TokensCardType = $derived(
+    !$authSignedInStore
+      ? "full"
+      : areStakedTokensLoading
+        ? "skeleton"
+        : totalStakedInUsd === 0
+          ? "empty"
+          : "full"
+  );
 
   // Controls whether the staked tokens card should show a primary action
   // Primary action is shown when there are tokens but no stakes
   // This helps guide users to stake their tokens when possible
-  let hasNoStakedTokensCardAPrimaryAction: boolean;
-  $: hasNoStakedTokensCardAPrimaryAction =
-    stakedTokensCard === "empty" && heldTokensCard === "full";
+  const hasNoStakedTokensCardAPrimaryAction = $derived(
+    stakedTokensCard === "empty" && heldTokensCard === "full"
+  );
 
   // Global loading state that tracks if either held or staked tokens are loading
   // TotalAssetsCard will show this if either held or staked are loading
-  let isSomethingLoading: boolean;
-  $: isSomethingLoading = areHeldTokensLoading || areStakedTokensLoading;
+  const isSomethingLoading = $derived(
+    areHeldTokensLoading || areStakedTokensLoading
+  );
 
-  let topHeldTokens: UserTokenData[];
-  $: topHeldTokens = getTopHeldTokens({
-    userTokens: userTokens,
-    isSignedIn: $authSignedInStore,
-  });
+  const topHeldTokens = $derived(
+    getTopHeldTokens({
+      userTokens: userTokens,
+      isSignedIn: $authSignedInStore,
+    })
+  );
 
-  let topStakedTokens: TableProject[];
-  $: topStakedTokens = getTopStakedTokens({
-    projects: tableProjects,
-    isSignedIn: $authSignedInStore,
-  });
+  const topStakedTokens = $derived(
+    getTopStakedTokens({
+      projects: tableProjects,
+      isSignedIn: $authSignedInStore,
+    })
+  );
 
-  let snsSummaries: SnsSummary[];
-  $: snsSummaries = snsProjects
-    .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-    .reverse()
-    .map((project) => project.summary);
+  const launchpadCards = $derived(
+    [...snsProjects]
+      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
+      .reverse()
+      .map((project) => project.summary)
+      .map<CardItem>((summary) => ({
+        // TODO: Svelte v5 migration - fix type
+        component: LaunchProjectCard as unknown as Component,
+        props: { summary },
+      }))
+  );
 
-  let launchpadCards: CardItem[];
-  $: launchpadCards = snsSummaries.map<CardItem>((summary) => ({
-    // TODO: Svelte v5 migration - fix type
-    component: LaunchProjectCard as unknown as Component,
-    props: { summary },
-  }));
+  const openProposalCards = $derived(
+    [...openSnsProposals]
+      .sort(compareProposalInfoByDeadlineTimestampSeconds)
+      .map((proposalInfo) => ({
+        // TODO: Svelte v5 migration - fix type
+        component: NewSnsProposalCard as unknown as Component,
+        props: { proposalInfo },
+      }))
+  );
 
-  let openProposalCards: CardItem[];
-  $: openProposalCards = openSnsProposals
-    .sort(compareProposalInfoByDeadlineTimestampSeconds)
-    .map((proposalInfo) => ({
-      // TODO: Svelte v5 migration - fix type
-      component: NewSnsProposalCard as unknown as Component,
-      props: { proposalInfo },
-    }));
-
-  let cards: CardItem[] = [];
-  $: cards = [...launchpadCards, ...openProposalCards];
+  const cards: CardItem[] = $derived([...launchpadCards, ...openProposalCards]);
 </script>
 
 <main data-tid="portfolio-page-component">
