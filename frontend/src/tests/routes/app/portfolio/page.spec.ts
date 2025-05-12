@@ -449,7 +449,7 @@ describe("Portfolio route", () => {
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
 
-      it.only("should render cards for on-going swaps, open sns proposals and adopted sns proposals", async () => {
+      it("should render cards for on-going swaps, open sns proposals and adopted sns proposals", async () => {
         const rootCanisterIdForOpenProject = Principal.from("aaaaa-aa");
         const rootCanisterIdForAdoptedProject = Principal.from("2vxsx-fae");
         const proposals = [{ ...mockProposalInfo, status: 1 }];
