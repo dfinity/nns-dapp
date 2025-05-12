@@ -32,14 +32,12 @@
       : undefined
   );
 
-  // TODO(yhabib): figure out why Svelte thinks that this value changes overtime
-  // svelte-ignore non_reactive_update
-  let transactions: IcrcWalletTransactionsList;
-
   let wallet: IcrcWalletPage;
+  let transactions: IcrcWalletTransactionsList | undefined = $state();
 
   const reloadAccount = async () => await wallet?.reloadAccount?.();
-  const reloadTransactions = () => transactions?.reloadTransactions?.();
+  const reloadTransactions = () =>
+    transactions?.reloadTransactions?.() || Promise.resolve();
 </script>
 
 <IcrcWalletPage
