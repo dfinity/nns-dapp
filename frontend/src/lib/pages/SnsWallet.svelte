@@ -78,6 +78,6 @@
   </svelte:fragment>
 </IcrcWalletPage>
 
-{#if nonNullish(indexCanisterId) && nonNullish(ledgerCanisterId)}
+{#if nonNullish(indexCanisterId) && nonNullish(ledgerCanisterId) && nonNullish(token)}
   <SnsWalletDevTools {indexCanisterId} {ledgerCanisterId} {token} />
 {/if}
