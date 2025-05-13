@@ -101,30 +101,30 @@ describe("icrc-index api", () => {
     const ledgerCanisterId = principal(1);
 
     it("returns ledger id", async () => {
-      indexCanisterMock.ledgerId.mockResolvedValue(ledgerCanisterId);
+      indexNgCanisterMock.ledgerId.mockResolvedValue(ledgerCanisterId);
       const resultPrincipal = await getLedgerId({
         identity: mockIdentity,
         indexCanisterId,
         certified: true,
       });
 
-      expect(spyOnIndexCanisterCreate).toBeCalledTimes(1);
-      expect(spyOnIndexCanisterCreate).toBeCalledWith({
+      expect(spyOnIndexNgCanisterCreate).toBeCalledTimes(1);
+      expect(spyOnIndexNgCanisterCreate).toBeCalledWith({
         agent: agentMock,
         canisterId: indexCanisterId,
       });
 
       expect(resultPrincipal).toEqual(ledgerCanisterId);
 
-      expect(indexCanisterMock.ledgerId).toBeCalledTimes(1);
-      expect(indexCanisterMock.ledgerId).toBeCalledWith({
+      expect(indexNgCanisterMock.ledgerId).toBeCalledTimes(1);
+      expect(indexNgCanisterMock.ledgerId).toBeCalledWith({
         certified: true,
       });
     });
 
     it("throws an error if canister throws", async () => {
       const err = new Error("test");
-      indexCanisterMock.ledgerId.mockRejectedValue(err);
+      indexNgCanisterMock.ledgerId.mockRejectedValue(err);
 
       const call = () =>
         getLedgerId({

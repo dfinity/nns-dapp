@@ -47,22 +47,6 @@ export const getTransactions = async ({
   };
 };
 
-export const getLedgerId = async ({
-  identity,
-  indexCanisterId,
-  certified,
-}: {
-  identity: Identity;
-  indexCanisterId: Principal;
-  certified?: boolean;
-}): Promise<Principal> => {
-  const {
-    canister: { ledgerId },
-  } = await indexCanister({ identity, canisterId: indexCanisterId });
-
-  return ledgerId({ certified });
-};
-
 // TODO(yhabib): Migrate all methods to the indexNgCanister
 const indexCanister = async ({
   identity,
@@ -88,6 +72,22 @@ const indexCanister = async ({
     canister,
     agent,
   };
+};
+
+export const getLedgerId = async ({
+  identity,
+  indexCanisterId,
+  certified,
+}: {
+  identity: Identity;
+  indexCanisterId: Principal;
+  certified?: boolean;
+}): Promise<Principal> => {
+  const {
+    canister: { ledgerId },
+  } = await indexNgCanister({ identity, canisterId: indexCanisterId });
+
+  return ledgerId({ certified });
 };
 
 export const listSubaccounts = async ({
