@@ -87,17 +87,6 @@
     nonNullish($snsTopicsStore[rootCanisterId?.toText()]) &&
     // TODO(mstr): remove this after "Personal DAO" is upgraded
     isSetFollowingApiSupported;
-
-  // TODO(mstr): remove this after "Personal DAO" is upgraded
-  onMount(async () => {
-    const PERSONAL_DAO_CANISTER_ID = "izscx-raaaa-aaaaq-aaesq-cai";
-    if (
-      rootCanisterId &&
-      rootCanisterId.toText() === PERSONAL_DAO_CANISTER_ID
-    ) {
-      refreshUnsupportedFilterByTopicSnsesStore(rootCanisterId);
-    }
-  });
 </script>
 
 <CardInfo noMargin testId="sns-neuron-following-card-component">
