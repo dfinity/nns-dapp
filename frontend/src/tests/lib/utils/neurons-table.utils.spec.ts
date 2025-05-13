@@ -387,6 +387,7 @@ describe("neurons-table.utils", () => {
       state: NeuronState.Locked,
       tags: [],
       isPublic: false,
+      voteDelegationState: "none",
     };
 
     const convert = (snsNeurons: SnsNeuron[]) =>
@@ -400,6 +401,7 @@ describe("neurons-table.utils", () => {
         },
         ledgerCanisterId,
         i18n: en,
+        topicInfos: [],
       });
 
     it("should convert SnsNeuron to TableNeuron", () => {

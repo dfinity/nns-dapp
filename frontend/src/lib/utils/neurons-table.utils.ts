@@ -11,6 +11,7 @@ import {
   type TableNeuron,
   type TableNeuronComparator,
 } from "$lib/types/neurons-table";
+import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
@@ -134,6 +135,7 @@ export const tableNeuronsFromSnsNeurons = ({
   icpSwapUsdPrices,
   ledgerCanisterId,
   i18n,
+  topicInfos,
 }: {
   snsNeurons: SnsNeuron[];
   universe: UniverseCanisterIdText;
@@ -142,6 +144,7 @@ export const tableNeuronsFromSnsNeurons = ({
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
   ledgerCanisterId: Principal;
   i18n: I18n;
+  topicInfos: TopicInfoWithUnknown[];
 }): TableNeuron[] => {
   return snsNeurons.map((snsNeuron) => {
     const dissolveDelaySeconds = getSnsDissolveDelaySeconds(snsNeuron) ?? 0n;
@@ -178,6 +181,10 @@ export const tableNeuronsFromSnsNeurons = ({
         i18n,
       }),
       isPublic: false,
+      voteDelegationState: getSnsNeuronVoteDelegationState({
+        topicCount: topicInfos.length,
+        neuron: snsNeuron,
+      }),
     };
   });
 };
