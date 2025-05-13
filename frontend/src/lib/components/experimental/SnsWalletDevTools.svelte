@@ -2,25 +2,15 @@
   // This is a list of useful functions to help people find and recover tokens sent to ICRC subaccounts.
   // ICRC subaccounts are not officially supported thus this alternative solution.
   // They require the user to be logged in to the NNS dapp and in a project's wallet page.
+  type IcrcNamespace = {
+    help: () => void;
+    listSubaccounts: () => Promise<void>;
+    getBalance: (subaccount: string) => Promise<void>;
+    recover: (subaccount: string) => Promise<void>;
+  };
+
   type WindowWithExperimentalFunction = Window & {
-    // Display help information for available commands
-    __experimentalIcrcHelp: () => void;
-
-    // List subaccounts for the current project.
-    // In the devtools console, run: __experimentalGetIcrcSubaccounts()
-    __experimentalGetIcrcSubaccounts: () => Promise<void>;
-
-    // Get balance for a given subaccount.
-    // In the devtools console, run: __experimentalGetIcrcSubaccountBalance(subaccountId)
-    __experimentalGetIcrcSubaccountBalance: (
-      subaccount: string
-    ) => Promise<void>;
-
-    // Transfer all tokens from a given subaccount to the main account.
-    // In the devtools console, run: __experimentaRecoverIcrcBalanceFromSubaccount(subaccountId)
-    __experimentalRecoverIcrcBalanceFromSubaccount: (
-      subaccount: string
-    ) => Promise<void>;
+    __experimental_icrc: IcrcNamespace;
   };
 </script>
 
@@ -44,154 +34,150 @@
   const identity = $derived($authStore.identity);
 
   $effect(() => {
-    const experimentalWindow =
-      window as unknown as WindowWithExperimentalFunction;
-
-    experimentalWindow.__experimentalIcrcHelp = () => {
-      console.log(`
+    const icrcNamespace: IcrcNamespace = {
+      help: () => {
+        console.log(`
 === ICRC Subaccount Helper Tools ===
 
 Available commands:
 
-__experimentalGetIcrcSubaccounts()
+__experimental_icrc.listSubaccounts()
   - Lists all subaccounts for the current user in this project
 
-__experimentalGetIcrcSubaccountBalance("<accountId>")
+__experimental_icrc.getBalance("<accountId>")
   - Shows balance for the specified subaccount
 
-__experimentalRecoverIcrcBalanceFromSubaccount("<accountId>")
+__experimental_icrc.recover("<accountId>")
   - Transfers all tokens from the specified subaccount to your main account
 
 Note: You must be logged in to use these commands.
       `);
-    };
+      },
 
-    experimentalWindow.__experimentalGetIcrcSubaccounts = async () => {
-      if (isNullish(identity)) {
-        console.error("❌ No identity found. You need to login first.");
-        return;
-      }
-
-      try {
-        console.log("🔍 Fetching subaccounts...");
-
-        const data = await listSubaccounts({
-          identity,
-          indexCanisterId,
-        });
-
-        if (data.length === 0) {
-          console.log("ℹ️ No subaccounts found for this user.");
+      listSubaccounts: async () => {
+        if (isNullish(identity)) {
+          console.error("❌ No identity found. You need to login first.");
           return;
         }
 
-        console.log("✅ Found subaccounts:");
-        data.map(subaccountToHexString).forEach((subaccount, index) => {
-          console.log(`   ${index + 1}: ${subaccount}`);
-        });
-      } catch (error) {
-        console.error("❌ Failed to fetch subaccounts:", error);
-      }
-    };
+        try {
+          console.log("🔍 Fetching subaccounts...");
 
-    experimentalWindow.__experimentalGetIcrcSubaccountBalance = async (
-      subaccount: string
-    ) => {
-      if (isNullish(identity)) {
-        console.error("❌ No identity found. You need to login first.");
-        return;
-      }
+          const data = await listSubaccounts({
+            identity,
+            indexCanisterId,
+          });
 
-      if (isNullish(subaccount)) {
-        console.error("❌ Subaccount was not provided.");
-        return;
-      }
+          if (data.length === 0) {
+            console.log("ℹ️ No subaccounts found for this user.");
+            return;
+          }
 
-      try {
-        console.log(`🔍 Checking balance for subaccount: ${subaccount}...`);
-        const account = {
-          owner: identity.getPrincipal(),
-          subaccount: hexStringToBytes(subaccount),
-        };
+          console.log("✅ Found subaccounts:");
+          data.map(subaccountToHexString).forEach((subaccount, index) => {
+            console.log(`   ${index + 1}: ${subaccount}`);
+          });
+        } catch (error) {
+          console.error("❌ Failed to fetch subaccounts:", error);
+        }
+      },
 
-        const balance = await queryIcrcBalance({
-          identity,
-          certified: true,
-          canisterId: ledgerCanisterId,
-          account,
-        });
+      getBalance: async (subaccount: string) => {
+        if (isNullish(identity)) {
+          console.error("❌ No identity found. You need to login first.");
+          return;
+        }
 
-        console.log(`💰 Balance: ${balance} ${token.symbol}`);
-      } catch (error) {
-        console.error(
-          `❌ Failed to fetch balance for subaccount ${subaccount}:`,
-          error
-        );
-      }
-    };
+        if (isNullish(subaccount)) {
+          console.error("❌ Subaccount was not provided.");
+          return;
+        }
 
-    experimentalWindow.__experimentalRecoverIcrcBalanceFromSubaccount = async (
-      subaccount
-    ) => {
-      if (isNullish(identity)) {
-        console.error("❌ No identity found. You need to login first.");
-        return;
-      }
-
-      if (isNullish(subaccount)) {
-        console.error("❌ Subaccount was not provided.");
-        return;
-      }
-
-      try {
-        console.log(`🔍 Checking balance for subaccount: ${subaccount}...`);
-        const balance = await queryIcrcBalance({
-          identity,
-          certified: true,
-          canisterId: ledgerCanisterId,
-          account: {
+        try {
+          console.log(`🔍 Checking balance for subaccount: ${subaccount}...`);
+          const account = {
             owner: identity.getPrincipal(),
             subaccount: hexStringToBytes(subaccount),
-          },
-        });
+          };
 
-        console.log(`💰 Balance: ${balance} ${token.symbol}`);
+          const balance = await queryIcrcBalance({
+            identity,
+            certified: true,
+            canisterId: ledgerCanisterId,
+            account,
+          });
 
-        if (BigInt(balance) <= token.fee) {
+          console.log(`💰 Balance: ${balance} ${token.symbol}`);
+        } catch (error) {
           console.error(
-            `❌ Insufficient balance to cover the transfer fee (${token.fee} ${token.symbol}).`
+            `❌ Failed to fetch balance for subaccount ${subaccount}:`,
+            error
           );
+        }
+      },
+
+      recover: async (subaccount) => {
+        if (isNullish(identity)) {
+          console.error("❌ No identity found. You need to login first.");
           return;
         }
 
-        const amount = BigInt(balance) - token.fee;
-        console.log(
-          `⏳ Transferring ${amount} ${token.symbol} to main account...`
-        );
+        if (isNullish(subaccount)) {
+          console.error("❌ Subaccount was not provided.");
+          return;
+        }
 
-        const result = await icrcTransfer({
-          canisterId: ledgerCanisterId,
-          identity,
-          to: {
-            owner: identity.getPrincipal(),
-          },
-          amount,
-          fromSubAccount: hexStringToBytes(subaccount),
-          fee: token.fee,
-        });
+        try {
+          console.log(`🔍 Checking balance for subaccount: ${subaccount}...`);
+          const balance = await queryIcrcBalance({
+            identity,
+            certified: true,
+            canisterId: ledgerCanisterId,
+            account: {
+              owner: identity.getPrincipal(),
+              subaccount: hexStringToBytes(subaccount),
+            },
+          });
 
-        console.log(`✅ Transfer successful! Transaction ID: ${result}`);
-      } catch (error) {
-        console.error(`❌ Transfer failed:`, error);
-      }
+          console.log(`💰 Balance: ${balance} ${token.symbol}`);
+
+          if (BigInt(balance) <= token.fee) {
+            console.error(
+              `❌ Insufficient balance to cover the transfer fee (${token.fee} ${token.symbol}).`
+            );
+            return;
+          }
+
+          const amount = BigInt(balance) - token.fee;
+          console.log(
+            `⏳ Transferring ${amount} ${token.symbol} to main account...`
+          );
+
+          const result = await icrcTransfer({
+            canisterId: ledgerCanisterId,
+            identity,
+            to: {
+              owner: identity.getPrincipal(),
+            },
+            amount,
+            fromSubAccount: hexStringToBytes(subaccount),
+            fee: token.fee,
+          });
+
+          console.log(`✅ Transfer successful! Transaction ID: ${result}`);
+        } catch (error) {
+          console.error(`❌ Transfer failed:`, error);
+        }
+      },
     };
+
+    (window as unknown as WindowWithExperimentalFunction).__experimental_icrc =
+      icrcNamespace;
 
     // Testing function used only for development.
     // Uncomment it and run it as the other functions to send tokens to a given subaccount
     //
-    // experimentalWindow.__testSendTokensToSubaccount = async (
-    //   subaccount: string
-    // ) => {
+    // window.__testSendTokensToSubaccount = async (subaccount: string) => {
     //   if (isNullish(identity)) {
     //     console.error("❌ No identity found. You need to login first.");
     //     return;
