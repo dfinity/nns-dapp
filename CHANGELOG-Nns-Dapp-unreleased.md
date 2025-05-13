@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Swipe gestures for project cards on the portfolio page
+* Display upcoming swaps in the portfolio page
 
 #### Changed
 
