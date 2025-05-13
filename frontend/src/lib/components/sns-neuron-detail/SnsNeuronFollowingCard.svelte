@@ -27,9 +27,8 @@
   import type { Principal } from "@dfinity/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import { getContext, onMount } from "svelte";
+  import { getContext } from "svelte";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
-  import { refreshUnsupportedFilterByTopicSnsesStore } from "$lib/services/public/sns-proposals.services";
   import { get, type Readable } from "svelte/store";
 
   const { store }: SelectedSnsNeuronContext =
