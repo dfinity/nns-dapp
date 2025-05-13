@@ -3,6 +3,7 @@
   import {
     IconCheckCircle,
     IconCheckCircleFill,
+    IconErrorOutline,
     Tooltip,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
@@ -14,15 +15,13 @@
 
   const { rowData }: Props = $props();
   const voteDelegationState = $derived(rowData.voteDelegationState);
-  const isVisible = $derived(
-    nonNullish(voteDelegationState) && voteDelegationState !== "none"
-  );
+  const isVisible = $derived(nonNullish(voteDelegationState));
   const tooltipText = $derived(
     voteDelegationState === "all"
       ? $i18n.neuron_detail.vote_delegation_tooltip_all
       : voteDelegationState === "some"
         ? $i18n.neuron_detail.vote_delegation_tooltip_some
-        : ""
+        : $i18n.neuron_detail.vote_delegation_tooltip_none
   );
 </script>
 
@@ -37,6 +36,15 @@
         <div data-tid="icon-some" role="status" aria-label={tooltipText}>
           <IconCheckCircle size="18px" />
         </div>
+      {:else}
+        <div
+          data-tid="icon-some"
+          role="status"
+          aria-label={tooltipText}
+          class="none"
+        >
+          -
+        </div>
       {/if}
     </Tooltip>
   {/if}
@@ -47,5 +55,9 @@
     display: flex;
     justify-content: center;
     color: var(--elements-icons);
+  }
+
+  .none {
+    padding-left: var(--padding-0_5x);
   }
 </style>
