@@ -82,10 +82,6 @@
       swapLifecycle: SnsSwapLifecycle.Open,
       projects: $snsProjectsActivePadStore,
     })}
-    adoptedSnsProposals={filterProjectsStatus({
-      swapLifecycle: SnsSwapLifecycle.Adopted,
-      projects: $snsProjectsActivePadStore,
-    })}
     openSnsProposals={$openSnsProposalsStore}
   /></TestIdWrapper
 >

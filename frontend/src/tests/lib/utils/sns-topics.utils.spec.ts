@@ -1,10 +1,8 @@
-import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
 import type { SnsTopicKey } from "$lib/types/sns";
 import type {
   ListTopicsResponseWithUnknown,
   TopicInfoWithUnknown,
 } from "$lib/types/sns-aggregator";
-import { convertDtoTopicInfo } from "$lib/utils/sns-aggregator-converters.utils";
 import {
   addSnsNeuronToFollowingsByTopics,
   getAllSnsNSFunctions,
@@ -13,28 +11,22 @@ import {
   getSnsTopicFollowings,
   getSnsTopicInfoKey,
   getSnsTopicKeys,
-  getSnsTopicsByProject,
   getTopicInfoBySnsTopicKey,
   isSnsNeuronsFollowing,
   removeSnsNeuronFromFollowingsByTopics,
   snsTopicKeyToTopic,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
-import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
-import { principal } from "$tests/mocks/sns-projects.mock";
-import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsTopic,
 } from "@dfinity/sns";
-import { get } from "svelte/store";
 
 describe("sns-topics utils", () => {
   const neuronId1 = {
@@ -695,128 +687,6 @@ describe("sns-topics utils", () => {
           nsFunctions: [nativeNsFunction1, nativeNsFunction2],
         })
       ).toEqual(undefined);
-    });
-  });
-
-  describe("getSnsTopicsByProject", () => {
-    const rootCanisterId = mockPrincipal;
-
-    it("should provide topic info for sns", () => {
-      const topicInfoDto1 = topicInfoDtoMock({
-        topic: "DaoCommunitySettings",
-        name: "Topic1",
-        description: "This is a description",
-      });
-      const topicInfoDto2 = topicInfoDtoMock({
-        topic: "Governance",
-        name: "Topic2",
-        description: "This is a description 2",
-      });
-      setSnsProjects([
-        {
-          rootCanisterId: principal(321),
-          topics: {
-            topics: [],
-            uncategorized_functions: [],
-          },
-        },
-        {
-          rootCanisterId,
-          topics: {
-            topics: [topicInfoDto1, topicInfoDto2],
-            uncategorized_functions: [],
-          },
-        },
-        {
-          rootCanisterId: principal(123),
-          topics: {
-            topics: [],
-            uncategorized_functions: [],
-          },
-        },
-      ]);
-
-      expect(
-        getSnsTopicsByProject({
-          rootCanisterId,
-          snsTopicsStore: get(snsTopicsStore),
-        })
-      ).toEqual([
-        convertDtoTopicInfo(topicInfoDto1),
-        convertDtoTopicInfo(topicInfoDto2),
-      ]);
-    });
-
-    it("should return undefined when sns supports no topics", () => {
-      setSnsProjects([
-        {
-          rootCanisterId,
-        },
-      ]);
-
-      expect(
-        getSnsTopicsByProject({
-          rootCanisterId,
-          snsTopicsStore: get(snsTopicsStore),
-        })
-      ).toEqual(undefined);
-    });
-
-    it("should return undefined for unknown sns", () => {
-      setSnsProjects([
-        {
-          rootCanisterId,
-        },
-      ]);
-
-      expect(
-        getSnsTopicsByProject({
-          rootCanisterId,
-          snsTopicsStore: get(snsTopicsStore),
-        })
-      ).toEqual(undefined);
-    });
-
-    it("should sort topics by criticality and then alphabetically", () => {
-      const topicInfoDto1 = topicInfoDtoMock({
-        topic: "Governance",
-        name: "Topic2",
-        description: "This is a description 2",
-        isCritical: false,
-      });
-
-      const topicInfoDto2 = topicInfoDtoMock({
-        topic: "DaoCommunitySettings",
-        name: "Topic1",
-        description: "This is a description",
-      });
-
-      const topicInfoDto3 = topicInfoDtoMock({
-        topic: "TreasuryAssetManagement",
-        name: "Topic1",
-        description: "This is a description",
-        isCritical: true,
-      });
-      setSnsProjects([
-        {
-          rootCanisterId,
-          topics: {
-            topics: [topicInfoDto1, topicInfoDto2, topicInfoDto3],
-            uncategorized_functions: [],
-          },
-        },
-      ]);
-
-      expect(
-        getSnsTopicsByProject({
-          rootCanisterId,
-          snsTopicsStore: get(snsTopicsStore),
-        })
-      ).toEqual([
-        convertDtoTopicInfo(topicInfoDto3),
-        convertDtoTopicInfo(topicInfoDto2),
-        convertDtoTopicInfo(topicInfoDto1),
-      ]);
     });
   });
 });

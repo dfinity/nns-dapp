@@ -6,7 +6,6 @@ import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
-  createSummary,
   mockSnsFullProject,
   mockToken,
   principal,
@@ -24,7 +23,6 @@ import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -34,13 +32,11 @@ describe("Portfolio page", () => {
     tableProjects = [],
     snsProjects = [],
     openSnsProposals = [],
-    adoptedSnsProposals = [],
   }: {
     userTokens?: UserToken[];
     tableProjects?: TableProject[];
     snsProjects?: SnsFullProject[];
     openSnsProposals?: ProposalInfo[];
-    adoptedSnsProposals?: SnsFullProject[];
   } = {}) => {
     const { container } = render(Portfolio, {
       props: {
@@ -48,7 +44,6 @@ describe("Portfolio page", () => {
         tableProjects,
         snsProjects,
         openSnsProposals,
-        adoptedSnsProposals,
       },
     });
 
@@ -148,14 +143,7 @@ describe("Portfolio page", () => {
   describe("StackedCards", () => {
     const mockSnsProjects: SnsFullProject[] = [
       mockSnsFullProject,
-      {
-        ...mockSnsFullProject,
-        rootCanisterId: principal(2),
-        summary: createSummary({
-          lifecycle: SnsSwapLifecycle.Adopted,
-          projectName: "AdoptedProject",
-        }),
-      },
+      { ...mockSnsFullProject, rootCanisterId: principal(2) },
     ];
 
     const mockSnsProposals = [
@@ -252,64 +240,6 @@ describe("Portfolio page", () => {
       expect(cardWrappers.length).toBe(2);
     });
 
-    it("should display StackedCards when adoptedSnsProposals is not empty", async () => {
-      const po = renderPage({ adoptedSnsProposals: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should show all cards when snsProjects, openSnsProposals, and adoptedSnsProposals are not empty", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects,
-        adoptedSnsProposals: mockSnsProjects,
-        openSnsProposals: mockSnsProposals,
-      });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(6); // 2 snsProjects + 2 adoptedSnsProposals + 2 openSnsProposals
-    });
-
-    it("should sort launchpadCards", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("EarlierTimestampProject");
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampProject");
-    });
-
     it("should sort openSnsProposal", async () => {
       const po = renderPage({ openSnsProposals: mockSnsProposals });
       const stackedCardsPo = po.getStackedCardsPo();
@@ -328,26 +258,23 @@ describe("Portfolio page", () => {
       expect(await activeCard.getTitle()).toBe("TestDAO1");
     });
 
-    it("should sort adoptedSnsProposals", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({ adoptedSnsProposals: mockSnsProjects });
+    it("should show all cards when snsProjects and openSnsProposals are not empty", async () => {
+      const po = renderPage({
+        snsProjects: mockSnsProjects,
+        openSnsProposals: mockSnsProposals,
+      });
+      const stackedCardsPo = po.getStackedCardsPo();
+      const cardWrappers = await stackedCardsPo.getCardWrappers();
+
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(cardWrappers.length).toBe(4);
+    });
+
+    it("should show first on going swaps and then proposals", async () => {
+      const po = renderPage({
+        snsProjects: mockSnsProjects.slice(0, 1),
+        openSnsProposals: mockSnsProposals.slice(0, 1),
+      });
       const stackedCardsPo = po.getStackedCardsPo();
       const cardWrappers = await stackedCardsPo.getCardWrappers();
       const dotsPo = await stackedCardsPo.getDots();
@@ -356,43 +283,15 @@ describe("Portfolio page", () => {
       expect(cardWrappers.length).toBe(2);
 
       let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe(
-        "EarlierTimestampAdoptedProject"
-      );
+      expect(await activeCard.getTitle()).toBe("Tetris");
 
       await dotsPo[1].click();
 
       activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampAdoptedProject");
+      expect(await activeCard.getTitle()).toBe("TestDAO1");
     });
 
-    it("should show first on going swaps, then open proposals, and then adopted proposals", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects.slice(0, 1),
-        openSnsProposals: mockSnsProposals.slice(0, 1),
-        adoptedSnsProposals: mockSnsProjects.slice(1, 2),
-      });
-
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(3);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("Tetris"); // First sns project
-
-      await dotsPo[1].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO1"); // Open proposal
-
-      await dotsPo[2].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("AdoptedProject"); // Adopted proposal
-    });
-
-    it("should hide TotalAssetsCard when not signed", async () => {
+    it("should hide TotalAssetsCard when not signed in and there are sns projects", async () => {
       setNoIdentity();
       const po = renderPage({ snsProjects: mockSnsProjects });
       const stackedCardsPo = po.getStackedCardsPo();

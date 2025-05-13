@@ -1,4 +1,3 @@
-import { AdoptedProposalCardPo } from "$tests/page-objects/AdoptedProposalCard.page-object";
 import type { BasePortfolioCardPo } from "$tests/page-objects/BasePortfolioCard.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { LaunchProjectCardPo } from "$tests/page-objects/LaunchProjectCard.page-object";
@@ -158,9 +157,6 @@ export class StackedCardsPo extends BasePageObject {
     if (await activeCard.isPresent()) return activeCard;
 
     activeCard = NewSnsProposalCardPo.under(cardWrappers[activeIndex].root);
-    if (await activeCard.isPresent()) return activeCard;
-
-    activeCard = AdoptedProposalCardPo.under(cardWrappers[activeIndex].root);
     if (await activeCard.isPresent()) return activeCard;
 
     return null;

@@ -1,5 +1,4 @@
 import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
-import type { SnsTopicsStore } from "$lib/derived/sns-topics.derived";
 import type {
   SnsLegacyFollowings,
   SnsTopicFollowing,
@@ -11,7 +10,6 @@ import type {
   UnknownTopic,
 } from "$lib/types/sns-aggregator";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-import type { Principal } from "@dfinity/principal";
 import type {
   SnsNervousSystemFunction,
   SnsNeuron,
@@ -241,39 +239,4 @@ export const getCatchAllSnsLegacyFollowings = ({
         nsFunction,
         followees,
       };
-};
-
-// Returns the sorted list of topics for the given project.
-// The topics are sorted with critical topics first, then alphabetically within each group.
-export const getSnsTopicsByProject = ({
-  rootCanisterId,
-  snsTopicsStore,
-}: {
-  rootCanisterId: Principal | null | undefined;
-  snsTopicsStore: SnsTopicsStore;
-}): Array<TopicInfoWithUnknown> | undefined => {
-  const rootCanisterIdText = rootCanisterId?.toText();
-  if (isNullish(rootCanisterIdText)) {
-    return undefined;
-  }
-
-  const topicResponse = snsTopicsStore[rootCanisterIdText];
-  if (isNullish(topicResponse)) return undefined;
-
-  const topics = fromNullable(topicResponse.topics);
-  if (isNullish(topics)) return undefined;
-
-  // sorts topics with critical topics first, then alphabetically within each group
-  return topics.sort((a, b) => {
-    const isACritical = fromDefinedNullable(a.is_critical);
-    const isBCritical = fromDefinedNullable(b.is_critical);
-
-    if (isACritical && !isBCritical) return -1;
-    if (!isACritical && isBCritical) return 1;
-
-    const nameOfA = fromDefinedNullable(a.name);
-    const nameOfB = fromDefinedNullable(b.name);
-
-    return nameOfA.localeCompare(nameOfB);
-  });
 };
