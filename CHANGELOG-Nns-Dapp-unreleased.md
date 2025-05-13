@@ -14,8 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Swipe gestures for project cards on the portfolio page
-* Display the voting delegation state in the SNS neurons table.
+- Swipe gestures for project cards on the portfolio page
+- Display the voting delegation state in the SNS neurons table.
+- Display upcoming swaps in the portfolio page
 
 #### Changed
 
@@ -25,8 +26,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Fix tag background styling in the vote delegation modal (dark theme)
-* "Add Followee" button is not fully visible after adding a followee
+- Fix tag background styling in the vote delegation modal (dark theme)
+- "Add Followee" button is not fully visible after adding a followee
 
 #### Security
 
