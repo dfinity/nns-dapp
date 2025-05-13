@@ -24,6 +24,7 @@ describe("icrc-index api", () => {
   };
 
   const indexCanisterMock = mock<IcrcIndexCanister>();
+  let spyOnIndexCanisterCreate;
 
   const indexNgCanisterMock = mock<IcrcIndexNgCanister>();
   let spyOnIndexNgCanisterCreate;
@@ -31,6 +32,10 @@ describe("icrc-index api", () => {
   const agentMock = mock<HttpAgent>();
 
   beforeEach(() => {
+    spyOnIndexCanisterCreate = vi
+      .spyOn(IcrcIndexCanister, "create")
+      .mockImplementation(() => indexCanisterMock);
+
     spyOnIndexNgCanisterCreate = vi
       .spyOn(IcrcIndexNgCanister, "create")
       .mockImplementation(() => indexNgCanisterMock);
@@ -49,10 +54,11 @@ describe("icrc-index api", () => {
       });
       const result = await getTransactions(params);
 
-      expect(result).not.toBeUndefined();
-
-      expect(result.transactions).toEqual(transactions);
-      expect(result.oldestTxId).toEqual(oldestTxId);
+      expect(spyOnIndexCanisterCreate).toBeCalledTimes(1);
+      expect(spyOnIndexCanisterCreate).toBeCalledWith({
+        agent: agentMock,
+        canisterId: params.indexCanisterId,
+      });
 
       expect(indexCanisterMock.getTransactions).toBeCalledTimes(1);
       expect(indexCanisterMock.getTransactions).toBeCalledWith({
@@ -60,6 +66,9 @@ describe("icrc-index api", () => {
         start: undefined,
         account: params.account,
       });
+
+      expect(result.transactions).toEqual(transactions);
+      expect(result.oldestTxId).toEqual(oldestTxId);
     });
 
     it("passes start parameter", async () => {
@@ -71,6 +80,12 @@ describe("icrc-index api", () => {
       await getTransactions({
         ...params,
         start,
+      });
+
+      expect(spyOnIndexCanisterCreate).toBeCalledTimes(1);
+      expect(spyOnIndexCanisterCreate).toBeCalledWith({
+        agent: agentMock,
+        canisterId: params.indexCanisterId,
       });
 
       expect(indexCanisterMock.getTransactions).toBeCalledTimes(1);
