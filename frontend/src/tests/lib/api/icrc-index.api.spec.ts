@@ -24,7 +24,6 @@ describe("icrc-index api", () => {
   };
 
   const indexCanisterMock = mock<IcrcIndexCanister>();
-  let spyOnIndexCanisterCreate;
 
   const indexNgCanisterMock = mock<IcrcIndexNgCanister>();
   let spyOnIndexNgCanisterCreate;
@@ -32,10 +31,6 @@ describe("icrc-index api", () => {
   const agentMock = mock<HttpAgent>();
 
   beforeEach(() => {
-    spyOnIndexCanisterCreate = vi
-      .spyOn(IcrcIndexCanister, "create")
-      .mockImplementation(() => indexCanisterMock);
-
     spyOnIndexNgCanisterCreate = vi
       .spyOn(IcrcIndexNgCanister, "create")
       .mockImplementation(() => indexNgCanisterMock);
