@@ -14,7 +14,10 @@ import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
+import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { snsProposalsStore } from "$lib/stores/sns.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -28,8 +31,14 @@ import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
+import {
+  mockLifecycleResponse,
+  mockSnsToken,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { PortfolioRoutePo } from "$tests/page-objects/PortfolioRoute.page-object";
@@ -438,6 +447,60 @@ describe("Portfolio route", () => {
         expect(stakedTokensTitles).not.toContain(["Tetris"]);
 
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
+      });
+
+      it("should render cards for on-going swaps, open sns proposals and adopted sns proposals", async () => {
+        const rootCanisterIdForOpenProject = Principal.from("aaaaa-aa");
+        const rootCanisterIdForAdoptedProject = Principal.from("2vxsx-fae");
+        const proposals = [{ ...mockProposalInfo, status: 1 }];
+
+        snsAggregatorIncludingAbortedProjectsStore.setData([
+          {
+            ...aggregatorSnsMockDto,
+            canister_ids: {
+              ...aggregatorSnsMockDto.canister_ids,
+              root_canister_id: rootCanisterIdForOpenProject.toText(),
+            },
+          },
+          {
+            ...aggregatorSnsMockDto,
+            canister_ids: {
+              ...aggregatorSnsMockDto.canister_ids,
+              root_canister_id: rootCanisterIdForAdoptedProject.toText(),
+            },
+          },
+        ]);
+
+        snsLifecycleStore.setData({
+          certified: true,
+          rootCanisterId: rootCanisterIdForOpenProject,
+          data: {
+            ...mockLifecycleResponse,
+            lifecycle: [SnsSwapLifecycle.Open],
+          },
+        });
+
+        snsLifecycleStore.setData({
+          certified: true,
+          rootCanisterId: rootCanisterIdForAdoptedProject,
+          data: {
+            ...mockLifecycleResponse,
+            lifecycle: [SnsSwapLifecycle.Adopted],
+          },
+        });
+
+        snsProposalsStore.setProposals({
+          proposals,
+          certified: false,
+        });
+
+        const po = await renderPage();
+        const pagePo = po.getPortfolioPagePo();
+        const stackedCardsPo = pagePo.getStackedCardsPo();
+        const cardWrappers = await stackedCardsPo.getCardWrappers();
+
+        expect(await stackedCardsPo.isPresent()).toBe(true);
+        expect(cardWrappers.length).toBe(3);
       });
     });
   });
