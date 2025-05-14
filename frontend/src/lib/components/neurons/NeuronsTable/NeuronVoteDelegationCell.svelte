@@ -58,6 +58,6 @@
 
   .none {
     // To be aligned with other icons.
-    padding-left: var(--padding-0_5x);
+    padding-left: 6px;
   }
 </style>
