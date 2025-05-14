@@ -2,7 +2,6 @@ import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import type { Agent, Identity } from "@dfinity/agent";
 import {
-  IcrcIndexCanister,
   IcrcIndexNgCanister,
   type IcrcAccount,
   type IcrcGetTransactions,
@@ -33,7 +32,7 @@ export const getTransactions = async ({
 }: GetTransactionsParams): Promise<GetTransactionsResponse> => {
   const {
     canister: { getTransactions },
-  } = await indexCanister({ identity, canisterId: indexCanisterId });
+  } = await indexNgCanister({ identity, canisterId: indexCanisterId });
 
   const { oldest_tx_id, ...rest } = await getTransactions({
     max_results: maxResults,
@@ -44,33 +43,6 @@ export const getTransactions = async ({
   return {
     oldestTxId: fromNullable(oldest_tx_id),
     ...rest,
-  };
-};
-
-// TODO(yhabib): Migrate all methods to the indexNgCanister
-const indexCanister = async ({
-  identity,
-  canisterId,
-}: {
-  identity: Identity;
-  canisterId: Principal;
-}): Promise<{
-  canister: IcrcIndexCanister;
-  agent: Agent;
-}> => {
-  const agent = await createAgent({
-    identity,
-    host: HOST,
-  });
-
-  const canister = IcrcIndexCanister.create({
-    agent,
-    canisterId,
-  });
-
-  return {
-    canister,
-    agent,
   };
 };
 
