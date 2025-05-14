@@ -744,6 +744,7 @@
     "auto_stake_maturity_on_success": "Automatically staking new maturity.",
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
     "maturity_title": "Maturity",
+    "vote_delegation_title": "Vote Delegation",
     "vote_delegation_tooltip_all": "This neuron delegates voting on all topics.",
     "vote_delegation_tooltip_some": "Partial voting delegation is active.",
     "maturity_last_distribution": "Last Maturity Distribution",

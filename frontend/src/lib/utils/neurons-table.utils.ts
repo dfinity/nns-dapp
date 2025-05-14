@@ -218,7 +218,11 @@ export const tableNeuronsFromSnsNeurons = ({
         i18n,
       }),
       isPublic: false,
-      voteDelegationState,
+      voteDelegationState: getSnsNeuronVoteDelegationState({
+        topicCount: topicInfos.length,
+        neuron: snsNeuron,
+      }),
+
     };
   });
 };
