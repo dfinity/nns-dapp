@@ -1,7 +1,7 @@
 <script lang="ts" module>
   // This is a list of useful functions to help people find and recover tokens sent to ICRC subaccounts.
   // ICRC subaccounts are not officially supported thus this alternative solution.
-  // They require the user to be logged in to the NNS dapp and in a project's wallet page.
+  // They require the user to be logged in to the NNS dapp and in an SNS project's wallet page.
   type IcrcNamespace = {
     help: () => void;
     listSubaccounts: () => Promise<void>;
@@ -20,6 +20,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
+  import type { SignIdentity } from "@dfinity/agent";
   import type { IcrcTokenMetadata } from "@dfinity/ledger-icrc";
   import type { Principal } from "@dfinity/principal";
   import { isNullish } from "@dfinity/utils";
@@ -32,6 +33,15 @@
 
   const { indexCanisterId, ledgerCanisterId, token }: Props = $props();
   const identity = $derived($authStore.identity);
+
+  const getSignIdentity = (): SignIdentity | null => {
+    if (isNullish(identity)) {
+      console.error("❌ No identity found. You need to login first.");
+      return null;
+    }
+
+    return identity as SignIdentity;
+  };
 
   $effect(() => {
     const icrcNamespace: IcrcNamespace = {
@@ -55,10 +65,8 @@ Note: You must be logged in to use these commands.
       },
 
       listSubaccounts: async () => {
-        if (isNullish(identity)) {
-          console.error("❌ No identity found. You need to login first.");
-          return;
-        }
+        const identity = getSignIdentity();
+        if (isNullish(identity)) return;
 
         try {
           console.log("🔍 Fetching subaccounts...");
@@ -83,10 +91,8 @@ Note: You must be logged in to use these commands.
       },
 
       getBalance: async (subaccount: string) => {
-        if (isNullish(identity)) {
-          console.error("❌ No identity found. You need to login first.");
-          return;
-        }
+        const identity = getSignIdentity();
+        if (isNullish(identity)) return;
 
         if (isNullish(subaccount)) {
           console.error("❌ Subaccount was not provided.");
@@ -117,10 +123,8 @@ Note: You must be logged in to use these commands.
       },
 
       recover: async (subaccount) => {
-        if (isNullish(identity)) {
-          console.error("❌ No identity found. You need to login first.");
-          return;
-        }
+        const identity = getSignIdentity();
+        if (isNullish(identity)) return;
 
         if (isNullish(subaccount)) {
           console.error("❌ Subaccount was not provided.");
