@@ -3,7 +3,6 @@
   import {
     IconCheckCircle,
     IconCheckCircleFill,
-    IconErrorOutline,
     Tooltip,
   } from "@dfinity/gix-components";
   import { i18n } from "$lib/stores/i18n";
@@ -38,7 +37,7 @@
         </div>
       {:else}
         <div
-          data-tid="icon-some"
+          data-tid="icon-none"
           role="status"
           aria-label={tooltipText}
           class="none"

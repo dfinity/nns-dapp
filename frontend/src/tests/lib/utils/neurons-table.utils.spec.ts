@@ -723,7 +723,7 @@ describe("neurons-table.utils", () => {
     it('should treat the absence of the vote delegation as "none" state', () => {
       const neuronNone: TableNeuron = {
         ...mockTableNeuron,
-        voteDelegationState: undefined,
+        voteDelegationState: "none",
       };
       expect(compareByVoteDelegation(neuronNone, neuronAll)).toBe(1);
       expect(compareByVoteDelegation(neuronNone, neuronSome)).toBe(1);
