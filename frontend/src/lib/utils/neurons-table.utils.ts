@@ -198,10 +198,6 @@ export const tableNeuronsFromSnsNeurons = ({
       amount: stake,
       tokenPrice,
     });
-    const voteDelegationState = getSnsNeuronVoteDelegationState({
-      topicCount: topicInfos.length,
-      neuron: snsNeuron,
-    });
     return {
       rowHref,
       domKey: neuronIdString,
@@ -218,7 +214,10 @@ export const tableNeuronsFromSnsNeurons = ({
         i18n,
       }),
       isPublic: false,
-      voteDelegationState,
+      voteDelegationState: getSnsNeuronVoteDelegationState({
+        topicCount: topicInfos.length,
+        neuron: snsNeuron,
+      }),
     };
   });
 };
