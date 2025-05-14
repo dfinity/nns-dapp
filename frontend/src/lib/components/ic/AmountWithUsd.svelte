@@ -1,5 +1,6 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { isPrivacyModeStore } from "$lib/derived/privacy-mode.derived";
   import { balancesVisibility } from "$lib/stores/balances-visibility.store";
   import {
     formatNumber,
@@ -15,7 +16,7 @@
 
   const { amount, amountInUsd }: Props = $props();
 
-  const privacyMode = $derived($balancesVisibility === "hide");
+  const privacyMode = $derived($isPrivacyModeStore);
 
   $effect(() => {
     console.log($balancesVisibility);
