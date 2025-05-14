@@ -13,6 +13,7 @@ import {
 } from "$lib/types/neurons-table";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
+import { enumValues } from "$lib/utils/enum.utils";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
   getNeuronTags,

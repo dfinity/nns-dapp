@@ -28,6 +28,7 @@ describe("NeuronsTable", () => {
     rowHref: "/neurons/10",
     domKey: "10",
     neuronId: "10",
+    voteDelegationState: "none",
   };
 
   const neuron2: TableNeuron = {
@@ -35,6 +36,7 @@ describe("NeuronsTable", () => {
     rowHref: "/neurons/99",
     domKey: "99",
     neuronId: "99",
+    voteDelegationState: "some",
   };
 
   const neuron3: TableNeuron = {
@@ -42,6 +44,7 @@ describe("NeuronsTable", () => {
     rowHref: "/neurons/200",
     domKey: "200",
     neuronId: "200",
+    voteDelegationState: "all",
   };
 
   const neuron4: TableNeuron = {
@@ -95,6 +98,28 @@ describe("NeuronsTable", () => {
       "",
       "Maturity",
       "",
+      "Vote Delegation",
+      "",
+      "Dissolve Delay",
+      "",
+      "State",
+      "", // No header for actions column.
+    ]);
+  });
+
+  it("should render desktop headers with vote delegation state", async () => {
+    const po = renderComponent({
+      neurons: [{ ...neuron1, voteDelegationState: "all" }],
+    });
+    expect(await po.getDesktopColumnHeaders()).toEqual([
+      "Neurons",
+      "",
+      "Stake",
+      "",
+      "Maturity",
+      "",
+      "Vote Delegation",
+      "",
       "Dissolve Delay",
       "",
       "State",
@@ -142,6 +167,8 @@ describe("NeuronsTable", () => {
       expect.any(String), // gap
       "desktop-align-left", // Dissolve Delay
       expect.any(String), // gap
+      "desktop-align-left", // Vote Delegation
+      expect.any(String), // gap
       "desktop-align-left", // State
       "desktop-align-right", // Actions
     ]);
@@ -160,12 +187,14 @@ describe("NeuronsTable", () => {
         "1fr", // gap
         "max-content", // State
         "1fr", // gap
+        "max-content", // Vote Delegation
+        "1fr", // gap
         "max-content", // Dissolve Delay
         "max-content", // Actions
       ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5" "cell-7 cell-7"'
+      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5" "cell-7 cell-7" "cell-9 cell-9"'
     );
   });
 

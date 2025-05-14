@@ -126,4 +126,5 @@ export const mockTableNeuron: TableNeuron = {
   state: NeuronState.Locked,
   tags: [],
   isPublic: undefined,
+  voteDelegationState: "none",
 };
