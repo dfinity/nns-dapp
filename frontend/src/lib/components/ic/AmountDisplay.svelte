@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { renderPrivacyModeBalance } from "$lib/utils/format.utils";
   import {
     FailedTokenAmount,
     formatTokenV2,
@@ -17,6 +18,7 @@
   export let size: "inherit" | "huge" | undefined = undefined;
   export let sign: "+" | "-" | "" = "";
   export let detailed: boolean | "height_decimals" = false;
+  export let privacyMode = false;
 
   const isValidAmount = (
     amount:
@@ -45,6 +47,8 @@
     class:tabular-num={detailed === "height_decimals"}
     >{#if !isValidAmount(amount)}
       -/-
+    {:else if privacyMode}
+      {renderPrivacyModeBalance(3)}
     {:else}
       {`${sign}${formatTokenV2({ value: amount, detailed })}`}
     {/if}</span

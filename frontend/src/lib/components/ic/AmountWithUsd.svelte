@@ -1,17 +1,36 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { balancesVisibility } from "$lib/stores/balances-visibility.store";
+  import {
+    formatNumber,
+    renderPrivacyModeBalance,
+  } from "$lib/utils/format.utils";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
   import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
-  export let amount: TokenAmountV2 | UnavailableTokenAmount;
-  export let amountInUsd: number | undefined;
+  type Props = {
+    amount: TokenAmountV2 | UnavailableTokenAmount;
+    amountInUsd: number | undefined;
+  };
+
+  const { amount, amountInUsd }: Props = $props();
+
+  const privacyMode = $derived($balancesVisibility === "hide");
+
+  $effect(() => {
+    console.log($balancesVisibility);
+
+    balancesVisibility.set("hide");
+    console.log(privacyMode);
+  });
 </script>
 
 <div class="values" data-tid="amount-with-usd-component">
-  <AmountDisplay singleLine {amount} />
+  <AmountDisplay singleLine {amount} {privacyMode} />
   <span data-tid="usd-value" class="usd-value">
-    {#if nonNullish(amountInUsd)}
+    {#if privacyMode}
+      {renderPrivacyModeBalance(3)}
+    {:else if nonNullish(amountInUsd)}
       ${formatNumber(amountInUsd)}
     {:else}
       $-/-
