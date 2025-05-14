@@ -264,6 +264,67 @@ describe("neurons-table.utils", () => {
     });
   });
 
+  describe("getNnsNeuronVoteDelegationState", () => {
+    const neuronWithFollowees = (followees: Followees[]): NeuronInfo => ({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        followees,
+      },
+    });
+
+    it('should return "none" if no followees', () => {
+      const neuron = neuronWithFollowees([]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("none");
+    });
+
+    it('should return "some" if some followees are present', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.Governance, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("some");
+    });
+
+    it('should return "all" if all topics are explicitly followed', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.NeuronManagement, followees: [] },
+        { topic: Topic.ExchangeRate, followees: [] },
+        { topic: Topic.NetworkEconomics, followees: [] },
+        { topic: Topic.Governance, followees: [] },
+        { topic: Topic.NodeAdmin, followees: [] },
+        { topic: Topic.ParticipantManagement, followees: [] },
+        { topic: Topic.SubnetManagement, followees: [] },
+        { topic: Topic.NetworkCanisterManagement, followees: [] },
+        { topic: Topic.Kyc, followees: [] },
+        { topic: Topic.NodeProviderRewards, followees: [] },
+        { topic: Topic.IcOsVersionDeployment, followees: [] },
+        { topic: Topic.IcOsVersionElection, followees: [] },
+        { topic: Topic.SnsAndCommunityFund, followees: [] },
+        { topic: Topic.ApiBoundaryNodeManagement, followees: [] },
+        { topic: Topic.SubnetRental, followees: [] },
+        { topic: Topic.ProtocolCanisterManagement, followees: [] },
+        { topic: Topic.ServiceNervousSystemManagement, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("all");
+    });
+
+    it('should return "all" if All + Governance & SnsAndCommunityFund are followed', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.Unspecified, followees: [] },
+        { topic: Topic.Governance, followees: [] },
+        { topic: Topic.SnsAndCommunityFund, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("all");
+    });
+
+    it('should ignore "SNS Decentralization Sale" if followed', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.SnsDecentralizationSale, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("none");
+    });
+  });
+
   describe("getSnsNeuronVoteDelegationState", () => {
     const neuronId = { id: Uint8Array.from([1, 2, 3]) };
 

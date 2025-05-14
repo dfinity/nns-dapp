@@ -107,6 +107,36 @@ export const tableNeuronsFromNeuronInfos = ({
   });
 };
 
+export const getNnsNeuronVoteDelegationState = (
+  neuron: NeuronInfo
+): NeuronsTableVoteDelegationState => {
+  const followees = (neuron.fullNeuron?.followees ?? []).filter(
+    // Ignore deprecated topic
+    (followee) => followee.topic !== Topic.SnsDecentralizationSale
+  );
+  if (followees.length === 0) return "none";
+
+  const delegatedTopicMap = new Set(followees.map(({ topic }) => topic));
+  const requiredTopics = new Set(
+    delegatedTopicMap.has(Topic.Unspecified)
+      ? // Because Topic.Unspecified(0) covers all except "Governance" and "SNS & Neurons' Fund"
+        [Topic.Governance, Topic.SnsAndCommunityFund]
+      : enumValues(Topic).filter(
+          (topic) =>
+            ![
+              // Not required when it's not selected
+              Topic.Unspecified,
+              Topic.SnsDecentralizationSale,
+            ].includes(topic)
+        )
+  );
+  const followsAllRequiredTopics = Array.from(requiredTopics).every((topic) =>
+    delegatedTopicMap.has(topic)
+  );
+
+  return followsAllRequiredTopics ? "all" : "some";
+};
+
 export const getSnsNeuronVoteDelegationState = ({
   topicCount,
   neuron,
