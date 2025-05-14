@@ -13,6 +13,7 @@ import {
 } from "$lib/types/neurons-table";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
+import { enumValues } from "$lib/utils/enum.utils";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
   getNeuronTags,
@@ -44,7 +45,6 @@ import { NeuronState, Topic } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2, isNullish, type Token } from "@dfinity/utils";
-import { enumValues } from "./enum.utils";
 
 export const tableNeuronsFromNeuronInfos = ({
   neuronInfos,
@@ -222,7 +222,6 @@ export const tableNeuronsFromSnsNeurons = ({
         topicCount: topicInfos.length,
         neuron: snsNeuron,
       }),
-
     };
   });
 };

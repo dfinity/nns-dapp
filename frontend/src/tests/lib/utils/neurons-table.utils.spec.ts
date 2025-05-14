@@ -201,6 +201,28 @@ describe("neurons-table.utils", () => {
       ]);
     });
 
+    it("should convert neuronInfo vote delegation state", () => {
+      const tableNeurons = convert([
+        {
+          ...defaultNeuronInfo,
+          fullNeuron: {
+            ...defaultNeuronInfo.fullNeuron,
+            followees: [
+              { topic: Topic.Unspecified, followees: [] },
+              { topic: Topic.Governance, followees: [] },
+              { topic: Topic.SnsAndCommunityFund, followees: [] },
+            ],
+          },
+        },
+      ]);
+      expect(tableNeurons).toEqual([
+        {
+          ...defaultExpectedTableNeuron,
+          voteDelegationState: "all",
+        },
+      ]);
+    });
+
     it("should convert neuronInfo for spawning neuron without href", () => {
       const spawningNeuronInfo = {
         ...defaultNeuronInfo,
