@@ -1,15 +1,17 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import Input from "$lib/components/ui/Input.svelte";
   import { Html } from "@dfinity/gix-components";
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
 
   type Props = {
     followeeHex: string;
+    errorMessage?: string;
     openPrevStep: () => void;
     addFollowing: (followeeHex: string) => void;
   };
   let {
     followeeHex = $bindable(),
+    errorMessage,
     openPrevStep,
     addFollowing,
   }: Props = $props();
@@ -22,19 +24,24 @@
     addFollowing(followeeHex);
   }}
 >
-  <Input
+  <InputWithError
     testId="new-followee-id"
     inputType="text"
     autocomplete="off"
     placeholderLabelKey="new_followee.placeholder"
     name="new-followee-id"
+    {errorMessage}
     bind:value={followeeHex}
+    on:nnsInput={() => {
+      // Hide error message when user starts typing
+      errorMessage = undefined;
+    }}
   >
     <svelte:fragment slot="label"
       ><h5 class="label">{$i18n.follow_sns_topics.neuron_label}</h5
       ></svelte:fragment
     >
-  </Input>
+  </InputWithError>
 
   <p class="description"
     ><Html text={$i18n.follow_sns_topics.neuron_description} /></p
