@@ -54,10 +54,11 @@ describe("icrc-index api", () => {
       });
       const result = await getTransactions(params);
 
-      expect(result).not.toBeUndefined();
-
-      expect(result.transactions).toEqual(transactions);
-      expect(result.oldestTxId).toEqual(oldestTxId);
+      expect(spyOnIndexCanisterCreate).toBeCalledTimes(1);
+      expect(spyOnIndexCanisterCreate).toBeCalledWith({
+        agent: agentMock,
+        canisterId: params.indexCanisterId,
+      });
 
       expect(indexCanisterMock.getTransactions).toBeCalledTimes(1);
       expect(indexCanisterMock.getTransactions).toBeCalledWith({
@@ -65,6 +66,9 @@ describe("icrc-index api", () => {
         start: undefined,
         account: params.account,
       });
+
+      expect(result.transactions).toEqual(transactions);
+      expect(result.oldestTxId).toEqual(oldestTxId);
     });
 
     it("passes start parameter", async () => {
@@ -76,6 +80,12 @@ describe("icrc-index api", () => {
       await getTransactions({
         ...params,
         start,
+      });
+
+      expect(spyOnIndexCanisterCreate).toBeCalledTimes(1);
+      expect(spyOnIndexCanisterCreate).toBeCalledWith({
+        agent: agentMock,
+        canisterId: params.indexCanisterId,
       });
 
       expect(indexCanisterMock.getTransactions).toBeCalledTimes(1);
@@ -101,30 +111,30 @@ describe("icrc-index api", () => {
     const ledgerCanisterId = principal(1);
 
     it("returns ledger id", async () => {
-      indexCanisterMock.ledgerId.mockResolvedValue(ledgerCanisterId);
+      indexNgCanisterMock.ledgerId.mockResolvedValue(ledgerCanisterId);
       const resultPrincipal = await getLedgerId({
         identity: mockIdentity,
         indexCanisterId,
         certified: true,
       });
 
-      expect(spyOnIndexCanisterCreate).toBeCalledTimes(1);
-      expect(spyOnIndexCanisterCreate).toBeCalledWith({
+      expect(spyOnIndexNgCanisterCreate).toBeCalledTimes(1);
+      expect(spyOnIndexNgCanisterCreate).toBeCalledWith({
         agent: agentMock,
         canisterId: indexCanisterId,
       });
 
       expect(resultPrincipal).toEqual(ledgerCanisterId);
 
-      expect(indexCanisterMock.ledgerId).toBeCalledTimes(1);
-      expect(indexCanisterMock.ledgerId).toBeCalledWith({
+      expect(indexNgCanisterMock.ledgerId).toBeCalledTimes(1);
+      expect(indexNgCanisterMock.ledgerId).toBeCalledWith({
         certified: true,
       });
     });
 
     it("throws an error if canister throws", async () => {
       const err = new Error("test");
-      indexCanisterMock.ledgerId.mockRejectedValue(err);
+      indexNgCanisterMock.ledgerId.mockRejectedValue(err);
 
       const call = () =>
         getLedgerId({
