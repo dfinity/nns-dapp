@@ -73,4 +73,34 @@ describe("FollowSnsNeuronsByTopicStepNeuron", () => {
     expect(props.addFollowing).toHaveBeenCalledTimes(2);
     expect(props.addFollowing).toHaveBeenCalledWith("5678");
   });
+
+  it("displays an error", async () => {
+    const props = $state({
+      followeeHex: "1234",
+      errorMessage: "test error",
+      openPrevStep: vi.fn(),
+      addFollowing: vi.fn(),
+    });
+    const po = renderComponent(props);
+
+    expect(await po.getNeuronIdInputPo().getErrorMessage()).toEqual(
+      "test error"
+    );
+  });
+
+  it("hides an error on change", async () => {
+    const props = $state({
+      followeeHex: "1234",
+      errorMessage: "test error",
+      openPrevStep: vi.fn(),
+      addFollowing: vi.fn(),
+    });
+    const po = renderComponent(props);
+
+    expect(await po.getNeuronIdInputPo().getErrorMessage()).toEqual(
+      "test error"
+    );
+    await po.getNeuronIdInputPo().typeText("1234");
+    expect(await po.getNeuronIdInputPo().getErrorMessage()).toBe(null);
+  });
 });

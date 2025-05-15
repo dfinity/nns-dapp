@@ -32,6 +32,10 @@
     name="new-followee-id"
     {errorMessage}
     bind:value={followeeHex}
+    on:nnsInput={() => {
+      // Hide error message when user starts typing
+      errorMessage = undefined;
+    }}
   >
     <svelte:fragment slot="label"
       ><h5 class="label">{$i18n.follow_sns_topics.neuron_label}</h5
