@@ -382,17 +382,18 @@ describe("FollowSnsNeuronsByTopicModal", () => {
       },
     ]);
     expect(get(toastsStore)).toEqual([]);
+    expect(await neuronStepPo.getNeuronIdInputPo().getErrorMessage()).toEqual(
+      null
+    );
 
     rejectQuerySnsNeuron();
     await runResolvedPromises();
 
     expect(get(busyStore)).toEqual([]);
-    expect(get(toastsStore)).toMatchObject([
-      {
-        level: "error",
-        text: "Neuron with ID 040506 does not exist.",
-      },
-    ]);
+    expect(await neuronStepPo.getNeuronIdInputPo().getErrorMessage()).toEqual(
+      "Neuron with ID 040506 does not exist."
+    );
+    expect(get(toastsStore)).toMatchObject([]);
 
     expect(setFollowingSpy).toBeCalledTimes(0);
     expect(reloadNeuronSpy).toBeCalledTimes(0);
@@ -443,17 +444,18 @@ describe("FollowSnsNeuronsByTopicModal", () => {
 
     expect(get(busyStore)).toEqual([]);
     expect(get(toastsStore)).toEqual([]);
+    expect(await neuronStepPo.getNeuronIdInputPo().getErrorMessage()).toEqual(
+      null
+    );
 
     await neuronStepPo.clickConfirmButton();
     await runResolvedPromises();
 
     expect(get(busyStore)).toEqual([]);
-    expect(get(toastsStore)).toMatchObject([
-      {
-        level: "error",
-        text: "A voting delegation for the selected topic(s) and the entered neuron ID has already been set.",
-      },
-    ]);
+    expect(get(toastsStore)).toEqual([]);
+    expect(await neuronStepPo.getNeuronIdInputPo().getErrorMessage()).toEqual(
+      "A voting delegation for the selected topic(s) and the entered neuron ID has already been set."
+    );
 
     expect(setFollowingSpy).toBeCalledTimes(0);
     expect(reloadNeuronSpy).toBeCalledTimes(0);
