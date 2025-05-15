@@ -17,6 +17,7 @@
 <script lang="ts">
   import { listSubaccounts } from "$lib/api/icrc-index.api";
   import { icrcTransfer, queryIcrcBalance } from "$lib/api/icrc-ledger.api";
+  import { analytics } from "$lib/services/analytics.services";
   import { authStore } from "$lib/stores/auth.store";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
@@ -134,6 +135,8 @@ Note: You must be logged in to use these commands.
         }
 
         try {
+          analytics.event("experimental-recover-sns-subaccount-balance");
+
           console.log(`🔍 Checking balance for subaccount: ${subaccount}...`);
           const balance = await queryIcrcBalance({
             identity,
