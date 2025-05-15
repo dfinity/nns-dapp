@@ -1517,7 +1517,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102091751789155393,
+    "icrc1_total_supply": 102092752189744523,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2830,7 +2830,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -3334,7 +3334,7 @@
           "description": "Manage vectors in the neuron pylon.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
               "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
               "validator_method_name": "icrc55_command_validate",
@@ -3850,7 +3850,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100872942481777,
+    "icrc1_total_supply": 100871611869718,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4404,20 +4404,6 @@
               "target_method_name": "create_vector"
             }
           }
-        },
-        {
-          "id": 7000,
-          "name": "Neuron Pylon: ICRC55 Command",
-          "description": "Manage vectors in the neuron pylon.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
-              "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
-              "validator_method_name": "icrc55_command_validate",
-              "target_method_name": "icrc55_command"
-            }
-          }
         }
       ],
       "topics": [
@@ -4449,7 +4435,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -4518,7 +4504,22 @@
           "is_critical": false,
           "name": "Application Business Logic",
           "description": "Proposals that are custom to what the governed dapp requires.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 7000,
+              "name": "Neuron Pylon: ICRC55 Command",
+              "description": "Manage vectors in the neuron pylon.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+                  "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+                  "validator_method_name": "icrc55_command_validate",
+                  "target_method_name": "icrc55_command"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
@@ -4976,7 +4977,7 @@
         "final_reward_rate_basis_points": 0,
         "initial_reward_rate_basis_points": 0,
         "reward_rate_transition_duration_seconds": 0,
-        "round_duration_seconds": 86400
+        "round_duration_seconds": 31536000
       },
       "maturity_modulation_disabled": false,
       "max_number_of_principals_per_neuron": 5
@@ -5081,7 +5082,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995254384287,
+    "icrc1_total_supply": 995058642676,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5181,7 +5182,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -8419,7 +8420,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19222591732187645,
+    "icrc1_total_supply": 19223531080656693,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9807,7 +9808,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": [
@@ -11998,7 +11999,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25608474701598342,
+    "icrc1_total_supply": 25616264230087889,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -12449,7 +12450,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -12904,7 +12905,7 @@
           "description": "Function to submit fixture data for a match.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
               "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
               "validator_method_name": "validateSubmitFixtureData",
@@ -12960,7 +12961,7 @@
           "description": "Function to create a new player.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
               "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
               "validator_method_name": "validateCreatePlayer",
@@ -13606,7 +13607,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10069553577911892,
+    "icrc1_total_supply": 10069784640856900,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14250,20 +14251,6 @@
           }
         },
         {
-          "id": 54000,
-          "name": "Submit Fixture Data",
-          "description": "Function to submit fixture data for a match.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
-              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
-              "validator_method_name": "validateSubmitFixtureData",
-              "target_method_name": "submitFixtureData"
-            }
-          }
-        },
-        {
           "id": 55000,
           "name": "Create New League",
           "description": "Function to create a new football league.",
@@ -14302,20 +14289,6 @@
               "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
               "validator_method_name": "validateRescheduleFixture",
               "target_method_name": "rescheduleFixture"
-            }
-          }
-        },
-        {
-          "id": 58000,
-          "name": "Create Player",
-          "description": "Function to create a new player.",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
-              "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
-              "validator_method_name": "validateCreatePlayer",
-              "target_method_name": "createPlayer"
             }
           }
         },
@@ -14391,7 +14364,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -14461,6 +14434,34 @@
           "name": "Application Business Logic",
           "description": "Proposals that are custom to what the governed dapp requires.",
           "custom_functions": [
+            {
+              "id": 54000,
+              "name": "Submit Fixture Data",
+              "description": "Function to submit fixture data for a match.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+                  "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+                  "validator_method_name": "validateSubmitFixtureData",
+                  "target_method_name": "submitFixtureData"
+                }
+              }
+            },
+            {
+              "id": 58000,
+              "name": "Create Player",
+              "description": "Function to create a new player.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+                  "target_canister_id": "52fzd-2aaaa-aaaal-qmzsa-cai",
+                  "validator_method_name": "validateCreatePlayer",
+                  "target_method_name": "createPlayer"
+                }
+              }
+            },
             {
               "id": 70000,
               "name": "Add Initial Fixtures",
@@ -15342,7 +15343,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 104110145344797883,
+    "icrc1_total_supply": 104125600377677596,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -15610,7 +15611,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": [
@@ -17127,7 +17128,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98586167061352850,
+    "icrc1_total_supply": 98591168152567551,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -17634,7 +17635,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -18849,7 +18850,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99831530333812590,
+    "icrc1_total_supply": 99831584118986284,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -19351,7 +19352,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -20227,7 +20228,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100375449159747790,
+    "icrc1_total_supply": 100393458528027929,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

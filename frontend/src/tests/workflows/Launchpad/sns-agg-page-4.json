@@ -4018,7 +4018,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99052531735693897,
+    "icrc1_total_supply": 99052978798629820,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4714,7 +4714,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -5166,7 +5166,7 @@
       ]
     ],
     "icrc1_fee": [500000000],
-    "icrc1_total_supply": 4206181875232470,
+    "icrc1_total_supply": 4219683964760131,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5264,7 +5264,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -5598,7 +5598,7 @@
           "description": "Proposal to add new NervousSystemFunction: grant_permission",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "validator_method_name": "validate_grant_permission",
@@ -5612,7 +5612,7 @@
           "description": "Proposal to add new NervousSystemFunction: revoke_permission",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "validator_method_name": "validate_revoke_permission",
@@ -5626,7 +5626,7 @@
           "description": "commit the batch that proposed by community who has Prepare permisson",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -6019,7 +6019,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 213961125325668576,
+    "icrc1_total_supply": 213986240707263106,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -6338,50 +6338,7 @@
       "decentralization_swap_termination_timestamp_seconds": 1739109633
     },
     "topics": {
-      "uncategorized_functions": [
-        {
-          "id": 1000,
-          "name": "grant_permission ",
-          "description": "Proposal to add new NervousSystemFunction: grant_permission",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "validator_method_name": "validate_grant_permission",
-              "target_method_name": "grant_permission"
-            }
-          }
-        },
-        {
-          "id": 1001,
-          "name": "revoke_permission",
-          "description": "Proposal to add new NervousSystemFunction: revoke_permission",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "validator_method_name": "validate_revoke_permission",
-              "target_method_name": "revoke_permission"
-            }
-          }
-        },
-        {
-          "id": 1003,
-          "name": "commit_proposed_batch",
-          "description": "commit the batch that proposed by community who has Prepare permisson",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "validator_method_name": "validate_commit_proposed_batch",
-              "target_method_name": "commit_proposed_batch"
-            }
-          }
-        }
-      ],
+      "uncategorized_functions": [],
       "topics": [
         {
           "native_functions": [
@@ -6411,7 +6368,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -6472,7 +6429,50 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1000,
+              "name": "grant_permission ",
+              "description": "Proposal to add new NervousSystemFunction: grant_permission",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "validator_method_name": "validate_grant_permission",
+                  "target_method_name": "grant_permission"
+                }
+              }
+            },
+            {
+              "id": 1001,
+              "name": "revoke_permission",
+              "description": "Proposal to add new NervousSystemFunction: revoke_permission",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "validator_method_name": "validate_revoke_permission",
+                  "target_method_name": "revoke_permission"
+                }
+              }
+            },
+            {
+              "id": 1003,
+              "name": "commit_proposed_batch",
+              "description": "commit the batch that proposed by community who has Prepare permisson",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [],
@@ -7577,7 +7577,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100183590698010056,
+    "icrc1_total_supply": 100199157592266779,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9557,7 +9557,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100043228162013481,
+    "icrc1_total_supply": 100055765729354472,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -10372,7 +10372,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -10680,6 +10680,14 @@
           "id": 15,
           "name": "Advance SNS target version",
           "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -11074,7 +11082,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 2101517938130212,
+    "icrc1_total_supply": 2104257041214704,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -11428,7 +11436,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -11563,6 +11571,14 @@
               "id": 5,
               "name": "Remove nervous system function",
               "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -11874,7 +11890,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99999279000000,
+    "icrc1_total_supply": 99999253000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 300000000,
@@ -11972,7 +11988,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -13451,7 +13467,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000649291995221,
+    "icrc1_total_supply": 100000813664255315,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14568,7 +14584,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
