@@ -4,11 +4,19 @@
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { formatCurrencyNumber, formatNumber } from "$lib/utils/format.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
-  import type { Component } from "svelte";
+  import type { Snippet } from "svelte";
+
+  export type ChildrenProps = {
+    hasError: boolean;
+    hasPricesAndUnpricedTokens: boolean;
+    icpAmountFormatted: string;
+    icpPrice: number | undefined;
+    usdAmountFormatted: string;
+  };
 
   type Props = {
     absentValue?: string;
-    children: Component;
+    children: Snippet<[ChildrenProps]>;
     hasUnpricedTokens: boolean;
     usdAmount: number | undefined;
   };

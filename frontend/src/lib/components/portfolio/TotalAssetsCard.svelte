@@ -6,6 +6,7 @@
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
   import { Spinner } from "@dfinity/gix-components";
+
   type Props = {
     usdAmount: number | undefined;
     hasUnpricedTokens: boolean;
