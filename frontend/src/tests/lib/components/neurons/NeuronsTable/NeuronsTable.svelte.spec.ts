@@ -147,6 +147,26 @@ describe("NeuronsTable", () => {
     ]);
   });
 
+  it("should render desktop headers with vote delegation state", async () => {
+    const po = renderComponent({
+      neurons: [{ ...neuron1, voteDelegationState: "all" }],
+    });
+    expect(await po.getDesktopColumnHeaders()).toEqual([
+      "Neurons",
+      "",
+      "Stake",
+      "",
+      "Maturity",
+      "",
+      "Vote Delegation",
+      "",
+      "Dissolve Delay",
+      "",
+      "State",
+      "", // No header for actions column.
+    ]);
+  });
+
   it("should render mobile headers", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     expect(await po.getMobileColumnHeaders()).toEqual([
@@ -775,8 +795,10 @@ describe("NeuronsTable", () => {
     );
 
     expect(await row2Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
-    expect(await row2Po.getVoteDelegationVisibleState()).toBe(undefined);
-    expect(await row2Po.getVoteDelegationTooltipText()).toBe(undefined);
+    expect(await row2Po.getVoteDelegationVisibleState()).toBe("none");
+    expect(await row2Po.getVoteDelegationTooltipText()).toBe(
+      "Voting not delegated on any topic."
+    );
   });
 
   it("should not render vote delegation state when not available", async () => {
@@ -784,11 +806,11 @@ describe("NeuronsTable", () => {
       neurons: [
         {
           ...neuron1,
-          voteDelegationState: "none",
+          voteDelegationState: undefined,
         },
         {
           ...neuron2,
-          voteDelegationState: "none",
+          voteDelegationState: undefined,
         },
       ],
     });

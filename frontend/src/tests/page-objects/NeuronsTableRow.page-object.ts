@@ -1,3 +1,4 @@
+import type { NeuronsTableVoteDelegationState } from "$lib/types/neurons-table";
 import { NeuronIdCellPo } from "$tests/page-objects/NeuronIdCell.page-object";
 import { NeuronMaturityCellPo } from "$tests/page-objects/NeuronMaturityCell.page-object";
 import { NeuronStakeCellPo } from "$tests/page-objects/NeuronStakeCell.page-object";

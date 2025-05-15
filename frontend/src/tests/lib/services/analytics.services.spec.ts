@@ -3,11 +3,13 @@ import Plausible from "plausible-tracker";
 vi.mock("plausible-tracker", () => {
   const enableAutoPageviews = vi.fn(() => () => {});
   const enableAutoOutboundTracking = vi.fn(() => () => {});
+  const trackEvent = vi.fn();
 
   return {
     default: vi.fn(() => ({
       enableAutoPageviews,
       enableAutoOutboundTracking,
+      trackEvent,
     })),
   };
 });
@@ -67,5 +69,29 @@ describe("analytics service", () => {
     initAnalytics();
 
     expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(1);
+  });
+
+  it("should track custom events", async () => {
+    vi.doMock("$lib/utils/env-vars.utils", () => ({
+      getEnvVars: getEnvVarsFactory("some-domain"),
+    }));
+
+    const { initAnalytics, analytics } = await import(
+      "$lib/services/analytics.services"
+    );
+
+    const tracker = Plausible();
+    initAnalytics();
+
+    analytics.event("test-event");
+    expect(tracker.trackEvent).toHaveBeenCalledWith("test-event", {
+      props: undefined,
+    });
+
+    const eventProps = { category: "test", value: 123, enabled: true };
+    analytics.event("test-event-with-props", eventProps);
+    expect(tracker.trackEvent).toHaveBeenCalledWith("test-event-with-props", {
+      props: eventProps,
+    });
   });
 });

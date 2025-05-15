@@ -111,20 +111,25 @@ export const tableNeuronsFromNeuronInfos = ({
   });
 };
 
+/// This function is used to determine the topic-based vote delegation state of a neuron.
 export const getNnsNeuronVoteDelegationState = (
   neuron: NeuronInfo
 ): NeuronsTableVoteDelegationState => {
+  // Topic.Unspecified(0) covers all except "Governance" and "SNS & Neurons' Fund"
+  const TOPICS_NOT_COVERED_BY_UNSPECIFIED = [
+    Topic.Governance,
+    Topic.SnsAndCommunityFund,
+  ];
+  const DEPRECATED_TOPIC = Topic.SnsDecentralizationSale;
   const followees = (neuron.fullNeuron?.followees ?? []).filter(
-    // Ignore deprecated topic
-    (followee) => followee.topic !== Topic.SnsDecentralizationSale
+    (followee) => followee.topic !== DEPRECATED_TOPIC
   );
   if (followees.length === 0) return "none";
 
   const delegatedTopicMap = new Set(followees.map(({ topic }) => topic));
   const requiredTopics = new Set(
     delegatedTopicMap.has(Topic.Unspecified)
-      ? // Because Topic.Unspecified(0) covers all except "Governance" and "SNS & Neurons' Fund"
-        [Topic.Governance, Topic.SnsAndCommunityFund]
+      ? TOPICS_NOT_COVERED_BY_UNSPECIFIED
       : enumValues(Topic).filter(
           (topic) =>
             ![

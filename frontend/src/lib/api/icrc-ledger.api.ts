@@ -80,7 +80,7 @@ export const icrcTransfer = async ({
   identity: Identity;
   canisterId: Principal;
 } & IcrcTransferParams): Promise<IcrcBlockIndex> => {
-  logWithTimestamp("Getting ckBTC transfer: call...");
+  logWithTimestamp("Getting ICRC transfer: call...");
 
   const {
     canister: { transfer: transferApi },
