@@ -21,53 +21,53 @@
   }: Props = $props();
 </script>
 
-<UsdValueHeadless
-  {usdAmount}
-  {hasUnpricedTokens}
-  let:icpPrice
-  let:usdAmountFormatted
-  let:icpAmountFormatted
-  let:hasError
-  let:hasPricesAndUnpricedTokens
->
-  <Card testId="total-assets-card-component">
-    <div
-      class="wrapper"
-      class:full-width={isFullWidth}
-      data-tid="total-assets-card-component-wrapper"
-    >
-      <h3>{$i18n.portfolio.total_assets_title}</h3>
-      <div class="pricing">
-        <div class="totals">
-          <div class="primary-amount-row">
-            {#if !isLoading}
-              <span class="primary-amount" data-tid="primary-amount">
-                ${usdAmountFormatted}
-              </span>
-              {#if hasPricesAndUnpricedTokens}
-                <TooltipIcon>
-                  {$i18n.accounts.unpriced_tokens_warning}
-                </TooltipIcon>
+<UsdValueHeadless {usdAmount} {hasUnpricedTokens}>
+  {#snippet children({
+    usdAmountFormatted,
+    icpPrice,
+    icpAmountFormatted,
+    hasPricesAndUnpricedTokens,
+    hasError,
+  })}
+    <Card testId="total-assets-card-component">
+      <div
+        class="wrapper"
+        class:full-width={isFullWidth}
+        data-tid="total-assets-card-component-wrapper"
+      >
+        <h3>{$i18n.portfolio.total_assets_title}</h3>
+        <div class="pricing">
+          <div class="totals">
+            <div class="primary-amount-row">
+              {#if !isLoading}
+                <span class="primary-amount" data-tid="primary-amount">
+                  ${usdAmountFormatted}
+                </span>
+                {#if hasPricesAndUnpricedTokens}
+                  <TooltipIcon>
+                    {$i18n.accounts.unpriced_tokens_warning}
+                  </TooltipIcon>
+                {/if}
+              {:else}
+                <div>
+                  <Spinner inline size="small" />
+                </div>
               {/if}
-            {:else}
-              <div>
-                <Spinner inline size="small" />
-              </div>
-            {/if}
+            </div>
+            <div class="secondary-amount" data-tid="secondary-amount">
+              {#if !isLoading}
+                {icpAmountFormatted}
+              {:else}
+                {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+              {/if}
+              {$i18n.core.icp}
+            </div>
           </div>
-          <div class="secondary-amount" data-tid="secondary-amount">
-            {#if !isLoading}
-              {icpAmountFormatted}
-            {:else}
-              {PRICE_NOT_AVAILABLE_PLACEHOLDER}
-            {/if}
-            {$i18n.core.icp}
-          </div>
+          <IcpExchangeRate {hasError} {icpPrice} />
         </div>
-        <IcpExchangeRate {hasError} {icpPrice} />
       </div>
-    </div>
-  </Card>
+    </Card>
+  {/snippet}
 </UsdValueHeadless>
 
 <style lang="scss">
