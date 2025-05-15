@@ -13,6 +13,7 @@ import {
 } from "$lib/types/neurons-table";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
+import { enumValues } from "$lib/utils/enum.utils";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
   getNeuronTags,
@@ -40,7 +41,7 @@ import {
 import { getUsdValue } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, Topic } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2, isNullish, type Token } from "@dfinity/utils";
@@ -84,6 +85,7 @@ export const tableNeuronsFromNeuronInfos = ({
       amount: stake,
       tokenPrice: icpPrice,
     });
+
     return {
       ...(rowHref && { rowHref }),
       domKey: neuronIdString,
@@ -103,8 +105,44 @@ export const tableNeuronsFromNeuronInfos = ({
         minimumDissolveDelay,
       }),
       isPublic: isPublicNeuron(neuronInfo),
+      voteDelegationState: getNnsNeuronVoteDelegationState(neuronInfo),
     };
   });
+};
+
+/// This function is used to determine the topic-based vote delegation state of a neuron.
+export const getNnsNeuronVoteDelegationState = (
+  neuron: NeuronInfo
+): NeuronsTableVoteDelegationState => {
+  // Topic.Unspecified(0) covers all except "Governance" and "SNS & Neurons' Fund"
+  const TOPICS_NOT_COVERED_BY_UNSPECIFIED = [
+    Topic.Governance,
+    Topic.SnsAndCommunityFund,
+  ];
+  const DEPRECATED_TOPIC = Topic.SnsDecentralizationSale;
+  const followees = (neuron.fullNeuron?.followees ?? []).filter(
+    (followee) => followee.topic !== DEPRECATED_TOPIC
+  );
+  if (followees.length === 0) return "none";
+
+  const delegatedTopicMap = new Set(followees.map(({ topic }) => topic));
+  const requiredTopics = new Set(
+    delegatedTopicMap.has(Topic.Unspecified)
+      ? TOPICS_NOT_COVERED_BY_UNSPECIFIED
+      : enumValues(Topic).filter(
+          (topic) =>
+            ![
+              // Not required when it's not selected
+              Topic.Unspecified,
+              Topic.SnsDecentralizationSale,
+            ].includes(topic)
+        )
+  );
+  const followsAllRequiredTopics = Array.from(requiredTopics).every((topic) =>
+    delegatedTopicMap.has(topic)
+  );
+
+  return followsAllRequiredTopics ? "all" : "some";
 };
 
 export const getSnsNeuronVoteDelegationState = ({
