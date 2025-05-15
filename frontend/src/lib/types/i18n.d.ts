@@ -780,6 +780,7 @@ interface I18nNeuron_detail {
   vote_delegation_title: string;
   vote_delegation_tooltip_all: string;
   vote_delegation_tooltip_some: string;
+  vote_delegation_tooltip_none: string;
   maturity_last_distribution: string;
   maturity_last_distribution_info: string;
   stake_maturity: string;

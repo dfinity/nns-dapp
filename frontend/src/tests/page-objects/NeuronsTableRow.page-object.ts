@@ -1,3 +1,4 @@
+import type { NeuronsTableVoteDelegationState } from "$lib/types/neurons-table";
 import { NeuronIdCellPo } from "$tests/page-objects/NeuronIdCell.page-object";
 import { NeuronMaturityCellPo } from "$tests/page-objects/NeuronMaturityCell.page-object";
 import { NeuronStakeCellPo } from "$tests/page-objects/NeuronStakeCell.page-object";
@@ -98,9 +99,11 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return this.getNeuronVoteDelegationCellPo().getTooltipText();
   }
 
-  async getVoteDelegationIconType(): Promise<"all" | "some" | undefined> {
+  async getVoteDelegationVisibleState(): Promise<NeuronsTableVoteDelegationState> {
     const { root: poRoot } = this.getNeuronVoteDelegationCellPo();
     if (await poRoot.byTestId("icon-all").isPresent()) return "all";
     if (await poRoot.byTestId("icon-some").isPresent()) return "some";
+    if (await poRoot.byTestId("icon-none").isPresent()) return "none";
+    throw new Error("Unable to determine the vote delegation state.");
   }
 }
