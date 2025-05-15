@@ -6,7 +6,7 @@ export type BalancePrivacyOption = "show" | "hide";
 
 export type BalancePrivacyOptionStore = Writable<BalancePrivacyOption>;
 
-export const balancesVisibility = writableStored<BalancePrivacyOption>({
+export const balancePrivacyOptionStore = writableStored<BalancePrivacyOption>({
   key: StoreLocalStorageKey.BalancePrivacyOption,
   defaultValue: "show",
 });
