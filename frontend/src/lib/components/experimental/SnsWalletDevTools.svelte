@@ -113,7 +113,9 @@ Note: You must be logged in to use these commands.
             account,
           });
 
-          console.log(`💰 Balance: ${balance} ${token.symbol}`);
+          console.log(
+            `💰 Balance: ${balance} ${token.symbol}(values shown in base units)`
+          );
         } catch (error) {
           console.error(
             `❌ Failed to fetch balance for subaccount ${subaccount}:`,
@@ -154,7 +156,7 @@ Note: You must be logged in to use these commands.
 
           const amount = BigInt(balance) - token.fee;
           console.log(
-            `⏳ Transferring ${amount} ${token.symbol} to main account...`
+            `⏳ Transferring ${amount} ${token.symbol}(values shown in base units) to main account...`
           );
 
           const result = await icrcTransfer({
