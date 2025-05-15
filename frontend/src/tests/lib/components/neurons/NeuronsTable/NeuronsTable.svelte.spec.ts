@@ -734,20 +734,22 @@ describe("NeuronsTable", () => {
     const [row0Po, row1Po, row2Po] = rowPos;
 
     expect(await row0Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
-    expect(await row0Po.getVoteDelegationIconType()).toBe("all");
+    expect(await row0Po.getVoteDelegationVisibleState()).toBe("all");
     expect(await row0Po.getVoteDelegationTooltipText()).toBe(
-      "This neuron delegates voting on all topics."
+      "Voting delegated on all topics."
     );
 
     expect(await row1Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
-    expect(await row1Po.getVoteDelegationIconType()).toBe("some");
+    expect(await row1Po.getVoteDelegationVisibleState()).toBe("some");
     expect(await row1Po.getVoteDelegationTooltipText()).toBe(
-      "Partial voting delegation is active."
+      "Voting delegated on some topics."
     );
 
     expect(await row2Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
-    expect(await row2Po.getVoteDelegationIconType()).toBe(undefined);
-    expect(await row2Po.getVoteDelegationTooltipText()).toBe(undefined);
+    expect(await row2Po.getVoteDelegationVisibleState()).toBe("none");
+    expect(await row2Po.getVoteDelegationTooltipText()).toBe(
+      "Voting not delegated on any topic."
+    );
   });
 
   it("should not render vote delegation state when not available", async () => {
@@ -792,13 +794,14 @@ describe("NeuronsTable", () => {
     const [row0Po, row1Po] = rowPos;
 
     expect(await row0Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
-    expect(await row0Po.getVoteDelegationIconType()).toBe(undefined);
-    expect(await row0Po.getVoteDelegationTooltipText()).toBe(undefined);
+    expect(
+      await row0Po.getNeuronVoteDelegationCellPo().getTooltipPo().isPresent()
+    ).toBe(false);
 
     expect(await row1Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
-    expect(await row1Po.getVoteDelegationIconType()).toBe("some");
+    expect(await row1Po.getVoteDelegationVisibleState()).toBe("some");
     expect(await row1Po.getVoteDelegationTooltipText()).toBe(
-      "Partial voting delegation is active."
+      "Voting delegated on some topics."
     );
   });
 
