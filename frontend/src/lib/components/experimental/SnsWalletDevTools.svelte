@@ -133,9 +133,10 @@ Note: You must be logged in to use these commands.
           console.error("❌ Subaccount was not provided.");
           return;
         }
-        analytics.event("expperimenta-recover-sns-subaccount");
 
         try {
+          analytics.event("experimental-recover-sns-subaccount-balance");
+
           console.log(`🔍 Checking balance for subaccount: ${subaccount}...`);
           const balance = await queryIcrcBalance({
             identity,
