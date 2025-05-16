@@ -1,5 +1,5 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
-import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
+import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -15,8 +15,8 @@ export class FollowSnsNeuronsByTopicStepNeuronPo extends BasePageObject {
     );
   }
 
-  getNeuronIdInputPo(): TextInputPo {
-    return TextInputPo.under({
+  getNeuronIdInputPo(): InputWithErrorPo {
+    return InputWithErrorPo.under({
       element: this.root,
       testId: "new-followee-id",
     });

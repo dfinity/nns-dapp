@@ -52,6 +52,7 @@
     nonNullish,
   } from "@dfinity/utils";
   import { get } from "svelte/store";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   type Props = {
     rootCanisterId: Principal;
@@ -138,6 +139,7 @@
       nsFunctions,
     })
   );
+  let neuronErrorMessage: string | undefined = $state();
 
   const selectedTopicsContainLegacyFollowee: boolean = $derived(
     getLegacyFolloweesByTopics({
@@ -176,12 +178,12 @@
 
     if (!(await validateNeuronId(followeeNeuronId))) {
       stopBusy("add-followee-by-topic");
-      toastsError({
-        labelKey: "follow_sns_topics.error_neuron_not_exist",
-        substitutions: {
+      neuronErrorMessage = replacePlaceholders(
+        $i18n.follow_sns_topics.error_neuron_not_exist,
+        {
           $neuronId: followeeHex,
-        },
-      });
+        }
+      );
       return;
     }
 
@@ -193,9 +195,7 @@
 
     if (followingsToSet.length === 0) {
       stopBusy("add-followee-by-topic");
-      toastsError({
-        labelKey: "follow_sns_topics.error_already_following",
-      });
+      neuronErrorMessage = $i18n.follow_sns_topics.error_already_following;
       return;
     }
 
@@ -353,6 +353,7 @@
       bind:followeeHex={followeeNeuronIdHex}
       {openPrevStep}
       {addFollowing}
+      errorMessage={neuronErrorMessage}
     />
   {/if}
 </WizardModal>
