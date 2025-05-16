@@ -84,4 +84,5 @@ export const shortenWithMiddleEllipsis = (
     : text;
 };
 
-export const renderPrivacyModeBalance = (count: number) => "•".repeat(count);
+export const renderPrivacyModeBalance = (count: number) =>
+  count < 0 ? "" : "•".repeat(count);
