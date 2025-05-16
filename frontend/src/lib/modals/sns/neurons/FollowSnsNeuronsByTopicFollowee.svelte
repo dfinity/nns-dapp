@@ -50,7 +50,6 @@
   .remove-button {
     display: flex;
     align-items: center;
-    // TODO(sns-topics): Add --Copy-color to the gix/Copy and use --icon-color for both buttons.
     color: var(--primary);
     // Decrease the gap between copy and remove buttons.
     padding: 0 var(--padding-0_5x) 0 0;

@@ -19,8 +19,7 @@ export type TableNeuron = {
   state: NeuronState;
   tags: NeuronTagData[];
   isPublic: boolean;
-  // TODO(sns-topics): make it required after the NNS table is updated
-  voteDelegationState?: NeuronsTableVoteDelegationState;
+  voteDelegationState: NeuronsTableVoteDelegationState;
 };
 
 export type NeuronsTableColumnId =
