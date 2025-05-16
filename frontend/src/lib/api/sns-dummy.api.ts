@@ -100,20 +100,20 @@ const nsFunctionProposal2 = {
 };
 
 // We need to pass a proposal to add a function to the nervous system first
-// const executeNSFunctionProposal = {
-//   url: "internet-computer.org",
-//   title: "Execute Generic Nervoys system Function",
-//   summary:
-//     "# Summary\nThis is a dummy proposal to execute a *nervous system function*.",
-//   action: [
-//     {
-//       ExecuteGenericNervousSystemFunction: {
-//         function_id: 1_002n,
-//         payload: new Uint8Array(),
-//       },
-//     },
-//   ] as [SnsAction],
-// };
+const executeNSFunctionProposal = {
+  url: "internet-computer.org",
+  title: "Execute Generic Nervoys system Function",
+  summary:
+    "# Summary\nThis is a dummy proposal to execute a *nervous system function*.",
+  action: [
+    {
+      ExecuteGenericNervousSystemFunction: {
+        function_id: 1_002n,
+        payload: new Uint8Array(),
+      },
+    },
+  ] as [SnsAction],
+};
 
 // We need to pass a proposal to add a function to the nervous system first
 // const removeNSFunctionProposal = {
@@ -213,16 +213,11 @@ export const snsProposals = [
   manageSnsMetadataproposal,
   nsFunctionProposal1,
   nsFunctionProposal2,
-
-  // Fails with error: 1 defects in Proposal: There is no NervousSystemFunction with id: 1002
-  // Calling them with the delay after nsFunctionProposal1 (creation of 1002) does not help.
-  // executeNSFunctionProposal,
-  // removeNSFunctionProposal,
-
   // The following proposals require specific state to be set up first.
+  executeNSFunctionProposal,
+  // removeNSFunctionProposal,
   // upgradeProposal,
   // upgradeControlledCanisterProposal,
-
   registerDappCanisterProposal,
   transferFundsProposal,
   deregisterCanisterProposal,
