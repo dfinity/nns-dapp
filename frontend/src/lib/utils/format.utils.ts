@@ -83,3 +83,7 @@ export const shortenWithMiddleEllipsis = (
     ? `${text.slice(0, splitLength)}...${text.slice(-1 * splitLength)}`
     : text;
 };
+
+export const formatCurrencyNumberWithVisibility = () => {};
+
+export const renderPrivacyModeBalance = (count: number) => "•".repeat(count);

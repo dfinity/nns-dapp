@@ -2,7 +2,12 @@
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
-  import { formatCurrencyNumber, formatNumber } from "$lib/utils/format.utils";
+  import { isPrivacyModeStore } from "$lib/derived/privacy-mode.derived";
+  import {
+    formatCurrencyNumber,
+    formatNumber,
+    renderPrivacyModeBalance,
+  } from "$lib/utils/format.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let usdAmount: number | undefined;
@@ -19,8 +24,9 @@
   $: hasPricesAndUnpricedTokens = hasPrices && hasUnpricedTokens;
 
   let usdAmountFormatted: string;
-  $: usdAmountFormatted =
-    nonNullish(usdAmount) && hasPrices
+  $: usdAmountFormatted = isPrivacyModeStore
+    ? renderPrivacyModeBalance(5)
+    : nonNullish(usdAmount) && hasPrices
       ? formatCurrencyNumber(usdAmount)
       : absentValue;
 
@@ -34,9 +40,11 @@
   $: icpAmount = icpPrice && usdAmount && usdAmount / icpPrice;
 
   let icpAmountFormatted: string;
-  $: icpAmountFormatted = nonNullish(icpAmount)
-    ? formatNumber(icpAmount)
-    : absentValue;
+  $: icpAmountFormatted = $isPrivacyModeStore
+    ? renderPrivacyModeBalance(3)
+    : nonNullish(icpAmount)
+      ? formatNumber(icpAmount)
+      : absentValue;
 </script>
 
 <slot
