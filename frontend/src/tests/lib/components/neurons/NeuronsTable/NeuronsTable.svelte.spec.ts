@@ -102,6 +102,26 @@ describe("NeuronsTable", () => {
     ]);
   });
 
+  it("should render desktop headers with vote delegation state", async () => {
+    const po = renderComponent({
+      neurons: [{ ...neuron1, voteDelegationState: "all" }],
+    });
+    expect(await po.getDesktopColumnHeaders()).toEqual([
+      "Neurons",
+      "",
+      "Stake",
+      "",
+      "Maturity",
+      "",
+      "Vote Delegation",
+      "",
+      "Dissolve Delay",
+      "",
+      "State",
+      "", // No header for actions column.
+    ]);
+  });
+
   it("should render mobile headers", async () => {
     const po = renderComponent({ neurons: [neuron1, neuron2] });
     expect(await po.getMobileColumnHeaders()).toEqual([
@@ -468,6 +488,68 @@ describe("NeuronsTable", () => {
     ]);
   });
 
+  it("should change order store based on clicked header when vote delegation column available", async () => {
+    const po = renderComponent({
+      neurons: [
+        { ...neuron1, voteDelegationState: "some" },
+        { ...neuron2, voteDelegationState: "none" },
+        { ...neuron3, voteDelegationState: "all" },
+        { ...neuron4, voteDelegationState: "none" },
+      ],
+    });
+
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "stake" },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    await po.clickColumnHeader("Stake");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "stake", reversed: true },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    // The Neuron ID column is not sortable so clicking it does not change the
+    // order.
+    await po.clickColumnHeader("Neurons");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "stake", reversed: true },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    await po.clickColumnHeader("Maturity");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "maturity" },
+      { columnId: "stake", reversed: true },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    await po.clickColumnHeader("Vote Delegation");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "voteDelegation" },
+      { columnId: "maturity" },
+      { columnId: "stake", reversed: true },
+      { columnId: "dissolveDelay" },
+    ]);
+
+    await po.clickColumnHeader("Dissolve Delay");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "dissolveDelay" },
+      { columnId: "voteDelegation" },
+      { columnId: "maturity" },
+      { columnId: "stake", reversed: true },
+    ]);
+
+    await po.clickColumnHeader("State");
+    expect(get(neuronsTableOrderStore)).toEqual([
+      { columnId: "state" },
+      { columnId: "dissolveDelay" },
+      { columnId: "voteDelegation" },
+      { columnId: "maturity" },
+      { columnId: "stake", reversed: true },
+    ]);
+  });
+
   it("should display setting button", async () => {
     const po = renderComponent({
       neurons: [neuron1, neuron2, neuron3, neuron4],
@@ -628,5 +710,131 @@ describe("NeuronsTable", () => {
 
     expect(await visibilityTooltipPo.isPresent()).toBe(true);
     expect(await visibilityTooltipPo.getTooltipText()).toBe("Neuron is public");
+  });
+
+  it("should render vote delegation state", async () => {
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          voteDelegationState: "all",
+        },
+        {
+          ...neuron2,
+          voteDelegationState: "some",
+        },
+        {
+          ...neuron3,
+          voteDelegationState: "none",
+        },
+      ],
+    });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(3);
+    const [row0Po, row1Po, row2Po] = rowPos;
+
+    expect(await row0Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
+    expect(await row0Po.getVoteDelegationVisibleState()).toBe("all");
+    expect(await row0Po.getVoteDelegationTooltipText()).toBe(
+      "Voting delegated on all topics."
+    );
+
+    expect(await row1Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
+    expect(await row1Po.getVoteDelegationVisibleState()).toBe("some");
+    expect(await row1Po.getVoteDelegationTooltipText()).toBe(
+      "Voting delegated on some topics."
+    );
+
+    expect(await row2Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
+    expect(await row2Po.getVoteDelegationVisibleState()).toBe("none");
+    expect(await row2Po.getVoteDelegationTooltipText()).toBe(
+      "Voting not delegated on any topic."
+    );
+  });
+
+  it("should not render vote delegation state when not available", async () => {
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          voteDelegationState: undefined,
+        },
+        {
+          ...neuron2,
+          voteDelegationState: undefined,
+        },
+      ],
+    });
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(await rowPos[0].getNeuronVoteDelegationCellPo().isPresent()).toBe(
+      false
+    );
+    expect(await rowPos[1].getNeuronVoteDelegationCellPo().isPresent()).toBe(
+      false
+    );
+  });
+
+  it("should render vote delegation state when partly available", async () => {
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          voteDelegationState: undefined,
+        },
+        {
+          ...neuron2,
+          voteDelegationState: "some",
+        },
+      ],
+    });
+
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    const [row0Po, row1Po] = rowPos;
+
+    expect(await row0Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
+    expect(
+      await row0Po.getNeuronVoteDelegationCellPo().getTooltipPo().isPresent()
+    ).toBe(false);
+
+    expect(await row1Po.getNeuronVoteDelegationCellPo().isPresent()).toBe(true);
+    expect(await row1Po.getVoteDelegationVisibleState()).toBe("some");
+    expect(await row1Po.getVoteDelegationTooltipText()).toBe(
+      "Voting delegated on some topics."
+    );
+  });
+
+  it("should sort neurons by vote delegation state", async () => {
+    const po = renderComponent({
+      neurons: [
+        {
+          ...neuron1,
+          voteDelegationState: "none",
+        },
+        {
+          ...neuron2,
+          voteDelegationState: "all",
+        },
+        {
+          ...neuron3,
+          voteDelegationState: "some",
+        },
+        {
+          ...neuron4,
+          voteDelegationState: "none",
+        },
+      ],
+    });
+
+    const rowPos = await po.getNeuronsTableRowPos();
+    expect(rowPos).toHaveLength(4);
+    // ... appear in the UI in sorted order.
+    expect(await rowPos[0].getNeuronId()).toBe(neuron1.neuronId);
+    expect(await rowPos[1].getNeuronId()).toBe(neuron2.neuronId);
+    expect(await rowPos[2].getNeuronId()).toBe(neuron3.neuronId);
+    expect(await rowPos[3].getNeuronId()).toBe(neuron4.neuronId);
+
+    po.clickColumnHeader("Vote Delegation");
   });
 });

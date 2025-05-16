@@ -1,8 +1,12 @@
+import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
 import { i18n } from "$lib/stores/i18n";
 import { snsFiltersStore } from "$lib/stores/sns-filters.store";
-import type { Filter } from "$lib/types/filters";
+import { type Filter } from "$lib/types/filters";
 import { enumValues } from "$lib/utils/enum.utils";
-import { generateSnsProposalTypesFilterData } from "$lib/utils/sns-proposals.utils";
+import {
+  generateSnsProposalTopicsFilterData,
+  generateSnsProposalTypesFilterData,
+} from "$lib/utils/sns-proposals.utils";
 import type { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
@@ -14,6 +18,7 @@ import { get } from "svelte/store";
 const defaultFiltersProjectData = {
   types: [],
   decisionStatus: [],
+  topics: [],
 };
 
 // Load decision status, these are hardcoded based on enum values
@@ -68,7 +73,21 @@ const loadTypesFilters = ({
   });
 };
 
-// TODO: Set default filters
+const loadTopicsFilters = (rootCanisterId: Principal) => {
+  const topics = get(createSnsTopicsProjectStore(rootCanisterId)) ?? [];
+  const filters = get(snsFiltersStore)?.[rootCanisterId.toText()]?.topics ?? [];
+
+  const updatedTopicsFilterData = generateSnsProposalTopicsFilterData({
+    topics,
+    filters,
+  });
+
+  snsFiltersStore.setTopics({
+    rootCanisterId,
+    topics: updatedTopicsFilterData,
+  });
+};
+
 export const loadSnsFilters = async ({
   rootCanisterId,
   nsFunctions,
@@ -87,6 +106,11 @@ export const loadSnsFilters = async ({
       types: defaultFiltersProjectData.types,
     });
 
+    snsFiltersStore.setTopics({
+      rootCanisterId,
+      topics: defaultFiltersProjectData.topics,
+    });
+
     // Do not re-initialise decision status and reward status to not override user selection.
     // We assume that the enums are not going to change.
     loadDecisionStatusFilters(rootCanisterId);
@@ -95,4 +119,6 @@ export const loadSnsFilters = async ({
   // It's safe to reload types filters as the `loadTypesFilters` respects user selection,
   // and it needs to be reloaded to get nsFunctions update.
   loadTypesFilters({ rootCanisterId, nsFunctions, snsName });
+
+  loadTopicsFilters(rootCanisterId);
 };

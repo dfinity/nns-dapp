@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-03-27_03-14-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-01_03-23-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -272,6 +272,10 @@ pub struct NodeOperatorRecord {
 pub enum GetNodeOperatorsAndDcsOfNodeProviderResponse {
     Ok(Vec<(DataCenterRecord, NodeOperatorRecord)>),
     Err(String),
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GetNodeProvidersMonthlyXdrRewardsRequest {
+    pub registry_version: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeProvidersMonthlyXdrRewards {
@@ -558,8 +562,9 @@ impl Service {
     }
     pub async fn get_node_providers_monthly_xdr_rewards(
         &self,
+        arg0: Option<GetNodeProvidersMonthlyXdrRewardsRequest>,
     ) -> CallResult<(GetNodeProvidersMonthlyXdrRewardsResponse,)> {
-        ic_cdk::call(self.0, "get_node_providers_monthly_xdr_rewards", ()).await
+        ic_cdk::call(self.0, "get_node_providers_monthly_xdr_rewards", (arg0,)).await
     }
     pub async fn get_subnet_for_canister(
         &self,

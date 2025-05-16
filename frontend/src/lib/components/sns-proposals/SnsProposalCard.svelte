@@ -14,6 +14,10 @@
     SnsProposalData,
     SnsProposalId,
   } from "@dfinity/sns";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
+  import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
+  import { Principal } from "@dfinity/principal";
+  import { get } from "svelte/store";
 
   export let proposalData: SnsProposalData;
   export let nsFunctions: SnsNervousSystemFunction[] | undefined;
@@ -30,6 +34,10 @@
   $: proposerString =
     proposer !== undefined ? subaccountToHexString(proposer.id) : undefined;
   let deadlineTimestampSeconds: bigint | undefined;
+  let topics: TopicInfoWithUnknown[] | undefined;
+  $: topics = get(
+    createSnsTopicsProjectStore(Principal.fromText(rootCanisterId))
+  );
 
   $: ({
     id,
@@ -37,7 +45,7 @@
     type,
     proposer,
     current_deadline_timestamp_seconds: deadlineTimestampSeconds,
-  } = mapProposalInfo({ proposalData, nsFunctions }));
+  } = mapProposalInfo({ proposalData, nsFunctions, topics }));
 
   let status: UniversalProposalStatus | undefined;
   $: status = getUniversalProposalStatus(proposalData);

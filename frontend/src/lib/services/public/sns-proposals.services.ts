@@ -4,35 +4,28 @@ import {
   registerVote as registerVoteApi,
 } from "$lib/api/sns-governance.api";
 import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
-import { snsOnlyProjectStore } from "$lib/derived/sns/sns-selected-project.derived";
-import { sortedSnsUserNeuronsStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
-import {
-  getSnsNeuronIdentity,
-  syncSnsNeurons,
-} from "$lib/services/sns-neurons.services";
+import { createEnableFilteringBySnsTopicsStore } from "$lib/derived/sns-topics.derived";
+import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
-import { authStore } from "$lib/stores/auth.store";
 import { snsSelectedFiltersStore } from "$lib/stores/sns-filters.store";
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
-import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import { unsupportedFilterByTopicSnsesStore } from "$lib/stores/sns-unsupported-filter-by-topic.store";
+import { toastsError } from "$lib/stores/toasts.store";
+import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import {
-  getSnsNeuronState,
-  hasPermissionToVote,
-  subaccountToHexString,
-} from "$lib/utils/sns-neuron.utils";
-import { toExcludeTypeParameter } from "$lib/utils/sns-proposals.utils";
-import { NeuronState } from "@dfinity/nns";
+  toExcludeTypeParameter,
+  toIncludeTopicsParameter,
+} from "$lib/utils/sns-proposals.utils";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsResponse,
   SnsNervousSystemFunction,
-  SnsNeuron,
   SnsNeuronId,
   SnsProposalData,
   SnsProposalId,
   SnsVote,
 } from "@dfinity/sns";
-import { fromDefinedNullable, isNullish } from "@dfinity/utils";
+import { fromNullable, isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const registerVote = async ({
@@ -70,69 +63,6 @@ export const registerVote = async ({
   }
 };
 
-// TODO(demo): remove after voting implementation
-export const registerVoteDemo = async ({
-  vote,
-  proposal,
-  snsFunctions,
-}: {
-  vote: SnsVote;
-  proposal: SnsProposalData;
-  snsFunctions: SnsNervousSystemFunction[];
-}) => {
-  let registrations = 0;
-
-  const rootCanisterId = get(snsOnlyProjectStore);
-
-  if (isNullish(rootCanisterId)) {
-    throw new Error("no rootCanisterId");
-  }
-
-  const registerNeuronVote = async (neuron: SnsNeuron) => {
-    await registerVote({
-      rootCanisterId,
-      neuronId: fromDefinedNullable(neuron.id),
-      proposalId: fromDefinedNullable(proposal.id),
-      vote,
-    });
-    registrations++;
-  };
-
-  try {
-    await syncSnsNeurons(rootCanisterId);
-
-    const neurons = get(sortedSnsUserNeuronsStore);
-    const votableNeurons = neurons.filter(
-      (neuron) =>
-        getSnsNeuronState(neuron) !== NeuronState.Dissolved &&
-        hasPermissionToVote({ neuron, identity: get(authStore).identity })
-    );
-
-    if (votableNeurons.length === 0) {
-      toastsError({
-        labelKey: `None of ${neurons.length} neurons is allowed to vote`,
-      });
-      return;
-    }
-
-    await Promise.all(votableNeurons.map(registerNeuronVote));
-
-    await loadSnsProposals({
-      rootCanisterId,
-      snsFunctions,
-    });
-
-    toastsSuccess({
-      labelKey: `${registrations} votes were successfully registered`,
-    });
-  } catch (err) {
-    toastsError({
-      labelKey: `There was an error while vote registration. ${registrations} votes registered.`,
-      err,
-    });
-  }
-};
-
 export const loadSnsProposals = async ({
   rootCanisterId,
   snsFunctions,
@@ -142,11 +72,27 @@ export const loadSnsProposals = async ({
   snsFunctions: SnsNervousSystemFunction[];
   beforeProposalId?: SnsProposalId;
 }): Promise<void> => {
-  const filters = get(snsSelectedFiltersStore)[rootCanisterId.toText()];
-  const excludeType = toExcludeTypeParameter({
-    filter: filters?.types ?? [],
-    snsFunctions,
-  });
+  const {
+    types = [],
+    decisionStatus = [],
+    topics = [],
+  } = get(snsSelectedFiltersStore)?.[rootCanisterId.toText()] || {};
+
+  const includeStatus = decisionStatus.map(({ value }) => value);
+
+  const isFilteringByTopicEnabled = get(
+    createEnableFilteringBySnsTopicsStore(rootCanisterId)
+  );
+  const includeTopics = isFilteringByTopicEnabled
+    ? toIncludeTopicsParameter(topics)
+    : [];
+  const excludeType = isFilteringByTopicEnabled
+    ? []
+    : toExcludeTypeParameter({
+        filter: types,
+        snsFunctions,
+      });
+
   return queryAndUpdate<SnsListProposalsResponse, unknown>({
     identityType: "current",
     request: ({ certified, identity }) =>
@@ -154,22 +100,33 @@ export const loadSnsProposals = async ({
         params: {
           limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
           beforeProposal: beforeProposalId,
-          includeStatus:
-            filters?.decisionStatus.map(({ value }) => value) ?? [],
+          includeStatus,
           excludeType,
+          includeTopics,
         },
         identity,
         certified,
         rootCanisterId,
       }),
     onLoad: ({ response, certified }) => {
-      const { proposals } = response;
+      const { proposals, include_topic_filtering } = response;
+
       snsProposalsStore.addProposals({
         rootCanisterId,
         proposals,
         certified,
         completed: proposals.length < DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
       });
+
+      const includeTopicFiltering = fromNullable(include_topic_filtering);
+
+      if (isNullish(includeTopicFiltering)) {
+        unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+      } else if (includeTopicFiltering) {
+        unsupportedFilterByTopicSnsesStore.delete(rootCanisterId.toText());
+      } else {
+        unsupportedFilterByTopicSnsesStore.add(rootCanisterId.toText());
+      }
     },
     onError: (err) => {
       toastsError({

@@ -4,10 +4,12 @@ import Plausible from "plausible-tracker";
 
 const domain = PLAUSIBLE_DOMAIN;
 
+let tracker: ReturnType<typeof Plausible> | undefined;
+
 export const initAnalytics = () => {
   if (isNullish(domain)) return;
 
-  const tracker = Plausible({
+  tracker = Plausible({
     domain,
     hashMode: false,
     // Change to true for local development and see traffic at https://plausible.io/test.nns.ic0.app/
@@ -15,4 +17,10 @@ export const initAnalytics = () => {
   });
 
   tracker.enableAutoPageviews();
+};
+
+export const analytics = {
+  event: (name: string, props?: Record<string, string | number | boolean>) => {
+    tracker?.trackEvent(name, { props });
+  },
 };

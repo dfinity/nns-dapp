@@ -1,11 +1,16 @@
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
+import type { TableNeuron } from "$lib/types/neurons-table";
 import {
   compareByDissolveDelay,
   compareById,
   compareByMaturity,
   compareByStake,
   compareByState,
+  compareByVoteDelegation,
+  getNnsNeuronVoteDelegationState,
+  getSnsNeuronVoteDelegationState,
   tableNeuronsFromNeuronInfos,
   tableNeuronsFromSnsNeurons,
 } from "$lib/utils/neurons-table.utils";
@@ -16,7 +21,12 @@ import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron, mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import {
+  NeuronState,
+  Topic,
+  type Followees,
+  type NeuronInfo,
+} from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
@@ -67,7 +77,10 @@ describe("neurons-table.utils", () => {
       state: NeuronState.Locked,
       tags: [],
       isPublic: false,
+      voteDelegationState: "none",
     };
+
+    const minimumDissolveDelay = BigInt(SECONDS_IN_HALF_YEAR);
 
     const convert = (neuronInfos: NeuronInfo[]) =>
       tableNeuronsFromNeuronInfos({
@@ -79,6 +92,7 @@ describe("neurons-table.utils", () => {
         },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
 
     it("should convert default neuronInfo to tableNeuron", () => {
@@ -187,6 +201,28 @@ describe("neurons-table.utils", () => {
       ]);
     });
 
+    it("should convert neuronInfo vote delegation state", () => {
+      const tableNeurons = convert([
+        {
+          ...defaultNeuronInfo,
+          fullNeuron: {
+            ...defaultNeuronInfo.fullNeuron,
+            followees: [
+              { topic: Topic.Unspecified, followees: [] },
+              { topic: Topic.Governance, followees: [] },
+              { topic: Topic.SnsAndCommunityFund, followees: [] },
+            ],
+          },
+        },
+      ]);
+      expect(tableNeurons).toEqual([
+        {
+          ...defaultExpectedTableNeuron,
+          voteDelegationState: "all",
+        },
+      ]);
+    });
+
     it("should convert neuronInfo for spawning neuron without href", () => {
       const spawningNeuronInfo = {
         ...defaultNeuronInfo,
@@ -246,6 +282,7 @@ describe("neurons-table.utils", () => {
         },
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
+        minimumDissolveDelay,
       });
       expect(tableNeurons).toEqual([
         {
@@ -253,6 +290,149 @@ describe("neurons-table.utils", () => {
           tags: [{ text: "Hotkey control" }],
         },
       ]);
+    });
+  });
+
+  describe("getNnsNeuronVoteDelegationState", () => {
+    const neuronWithFollowees = (followees: Followees[]): NeuronInfo => ({
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        followees,
+      },
+    });
+
+    it('should return "none" if no followees', () => {
+      const neuron = neuronWithFollowees([]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("none");
+    });
+
+    it('should return "some" if some followees are present', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.Governance, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("some");
+    });
+
+    it('should return "all" if all topics are explicitly followed', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.NeuronManagement, followees: [] },
+        { topic: Topic.ExchangeRate, followees: [] },
+        { topic: Topic.NetworkEconomics, followees: [] },
+        { topic: Topic.Governance, followees: [] },
+        { topic: Topic.NodeAdmin, followees: [] },
+        { topic: Topic.ParticipantManagement, followees: [] },
+        { topic: Topic.SubnetManagement, followees: [] },
+        { topic: Topic.NetworkCanisterManagement, followees: [] },
+        { topic: Topic.Kyc, followees: [] },
+        { topic: Topic.NodeProviderRewards, followees: [] },
+        { topic: Topic.IcOsVersionDeployment, followees: [] },
+        { topic: Topic.IcOsVersionElection, followees: [] },
+        { topic: Topic.SnsAndCommunityFund, followees: [] },
+        { topic: Topic.ApiBoundaryNodeManagement, followees: [] },
+        { topic: Topic.SubnetRental, followees: [] },
+        { topic: Topic.ProtocolCanisterManagement, followees: [] },
+        { topic: Topic.ServiceNervousSystemManagement, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("all");
+    });
+
+    it('should return "all" if All + Governance & SnsAndCommunityFund are followed', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.Unspecified, followees: [] },
+        { topic: Topic.Governance, followees: [] },
+        { topic: Topic.SnsAndCommunityFund, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("all");
+    });
+
+    it('should ignore "SNS Decentralization Sale" if followed', () => {
+      const neuron = neuronWithFollowees([
+        { topic: Topic.SnsDecentralizationSale, followees: [] },
+      ]);
+      expect(getNnsNeuronVoteDelegationState(neuron)).toEqual("none");
+    });
+  });
+
+  describe("getSnsNeuronVoteDelegationState", () => {
+    const neuronId = { id: Uint8Array.from([1, 2, 3]) };
+
+    it('should return "none" if no delegation', () => {
+      const neuron = createMockSnsNeuron({
+        topicFollowees: {},
+      });
+
+      expect(
+        getSnsNeuronVoteDelegationState({
+          topicCount: 2,
+          neuron,
+        })
+      ).toEqual("none");
+    });
+
+    it('should return "none" if no topics', () => {
+      const neuron = createMockSnsNeuron({
+        sourceNnsNeuronId: 0n,
+        topicFollowees: {
+          DaoCommunitySettings: [
+            {
+              neuronId,
+            },
+          ],
+        },
+      });
+
+      expect(
+        getSnsNeuronVoteDelegationState({
+          topicCount: 0,
+          neuron,
+        })
+      ).toEqual("none");
+    });
+
+    it('should return "all" when all topics are delegated', () => {
+      const neuron = createMockSnsNeuron({
+        sourceNnsNeuronId: 0n,
+        topicFollowees: {
+          DaoCommunitySettings: [
+            {
+              neuronId,
+            },
+          ],
+          CriticalDappOperations: [
+            {
+              neuronId,
+            },
+          ],
+        },
+      });
+
+      expect(
+        getSnsNeuronVoteDelegationState({
+          topicCount: 2,
+          neuron,
+        })
+      ).toEqual("all");
+    });
+
+    it('should return "some" when there are delegations but not for all topics', () => {
+      const neuron = createMockSnsNeuron({
+        sourceNnsNeuronId: 0n,
+        topicFollowees: {
+          DaoCommunitySettings: [
+            {
+              neuronId,
+            },
+          ],
+        },
+      });
+
+      expect(
+        getSnsNeuronVoteDelegationState({
+          topicCount: 2,
+          neuron,
+        })
+      ).toEqual("some");
     });
   });
 
@@ -297,6 +477,7 @@ describe("neurons-table.utils", () => {
       state: NeuronState.Locked,
       tags: [],
       isPublic: false,
+      voteDelegationState: "none",
     };
 
     const convert = (snsNeurons: SnsNeuron[]) =>
@@ -310,6 +491,7 @@ describe("neurons-table.utils", () => {
         },
         ledgerCanisterId,
         i18n: en,
+        topicInfos: [],
       });
 
     it("should convert SnsNeuron to TableNeuron", () => {
@@ -370,6 +552,7 @@ describe("neurons-table.utils", () => {
           ...expectedTableNeuron,
           availableMaturity,
           stakedMaturity,
+          voteDelegationState: "none",
         },
       ]);
     });
@@ -394,6 +577,7 @@ describe("neurons-table.utils", () => {
             "/neuron/?u=br5f7-7uaaa-aaaaa-qaaca-cai&neuron=fafafafafafafafa",
           domKey: neuronIdString2,
           neuronId: neuronIdString2,
+          voteDelegationState: "none",
         },
       ]);
     });
@@ -415,6 +599,7 @@ describe("neurons-table.utils", () => {
         {
           ...expectedTableNeuron,
           tags: [{ text: "Hotkey control" }],
+          voteDelegationState: "none",
         },
       ]);
     });
@@ -509,6 +694,43 @@ describe("neurons-table.utils", () => {
 
       expect(compareByMaturity(neuron1, neuron2)).toBe(0);
       expect(compareByMaturity(neuron2, neuron1)).toBe(0);
+    });
+  });
+
+  describe("compareByVoteDelegation", () => {
+    const neuronNone: TableNeuron = {
+      ...mockTableNeuron,
+      voteDelegationState: "none",
+    };
+    const neuronSome: TableNeuron = {
+      ...mockTableNeuron,
+      voteDelegationState: "some",
+    };
+    const neuronAll: TableNeuron = {
+      ...mockTableNeuron,
+      voteDelegationState: "all",
+    };
+
+    it("should sort neurons by descending vote delegation state", () => {
+      expect(compareByVoteDelegation(neuronNone, neuronAll)).toBe(1);
+      expect(compareByVoteDelegation(neuronNone, neuronSome)).toBe(1);
+      expect(compareByVoteDelegation(neuronSome, neuronAll)).toBe(1);
+      expect(compareByVoteDelegation(neuronAll, neuronSome)).toBe(-1);
+      expect(compareByVoteDelegation(neuronAll, neuronNone)).toBe(-1);
+      expect(compareByVoteDelegation(neuronSome, neuronNone)).toBe(-1);
+    });
+
+    it('should treat the absence of the vote delegation as "none" state', () => {
+      const neuronNone: TableNeuron = {
+        ...mockTableNeuron,
+        voteDelegationState: undefined,
+      };
+      expect(compareByVoteDelegation(neuronNone, neuronAll)).toBe(1);
+      expect(compareByVoteDelegation(neuronNone, neuronSome)).toBe(1);
+      expect(compareByVoteDelegation(neuronSome, neuronAll)).toBe(1);
+      expect(compareByVoteDelegation(neuronAll, neuronSome)).toBe(-1);
+      expect(compareByVoteDelegation(neuronAll, neuronNone)).toBe(-1);
+      expect(compareByVoteDelegation(neuronSome, neuronNone)).toBe(-1);
     });
   });
 

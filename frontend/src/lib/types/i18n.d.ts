@@ -40,6 +40,7 @@ interface I18nCore {
   or: string;
   add: string;
   not_applicable: string;
+  view_more: string;
 }
 
 interface I18nError {
@@ -441,6 +442,8 @@ interface I18nFollow_sns_topics {
   topic_definitions_description: string;
   topic_definitions_title: string;
   topics_title: string;
+  legacy_title: string;
+  deactivate_catch_all_title: string;
   topics_description: string;
   topics_critical_label: string;
   topics_critical_tooltip: string;
@@ -448,16 +451,25 @@ interface I18nFollow_sns_topics {
   topics_non_critical_tooltip: string;
   topics_following: string;
   topics_legacy_following_description: string;
+  legacy_description: string;
+  legacy_topics_header: string;
+  legacy_followees_header: string;
+  catch_all_description: string;
   neuron_title: string;
   neuron_label: string;
   neuron_description: string;
   neuron_follow: string;
   busy_updating: string;
   busy_removing: string;
+  busy_removing_catch_all: string;
+  busy_removing_legacy: string;
   success_set_following: string;
+  success_removing_legacy: string;
+  success_removing_catch_all: string;
   error_neuron_not_exist: string;
   error_add_following: string;
   error_remove_following: string;
+  error_already_following: string;
 }
 
 interface I18nMissing_rewards {
@@ -536,6 +548,7 @@ interface I18nVoting {
   sns_actionable_proposal_tooltip: string;
   total_actionable_proposal_tooltip: string;
   is_actionable_status_badge_tooltip: string;
+  all_sns_proposals_without_topic: string;
 }
 
 interface I18nActionable_proposals_sign_in {
@@ -764,6 +777,10 @@ interface I18nNeuron_detail {
   auto_stake_maturity_on_success: string;
   auto_stake_maturity_off_success: string;
   maturity_title: string;
+  vote_delegation_title: string;
+  vote_delegation_tooltip_all: string;
+  vote_delegation_tooltip_some: string;
+  vote_delegation_tooltip_none: string;
   maturity_last_distribution: string;
   maturity_last_distribution_info: string;
   stake_maturity: string;
@@ -1324,6 +1341,7 @@ interface I18nPortfolio {
   total_assets_title: string;
   project_status_open: string;
   project_status_proposal: string;
+  project_status_adopted_proposal: string;
   open_project_card_title: string;
   open_project_current_commitment: string;
   open_project_card_min_icp: string;
@@ -1331,10 +1349,18 @@ interface I18nPortfolio {
   open_project_card_nf: string;
   open_project_card_link: string;
   open_project_card_neuron_fund_tooltip: string;
+  adopted_proposal_card_time_remaining: string;
   new_sns_proposal_card_title: string;
   new_sns_proposal_card_link: string;
   new_sns_proposal_card_adopt: string;
   new_sns_proposal_card_reject: string;
+  next_card: string;
+  previous_card: string;
+}
+
+interface I18nHighlight {
+  topics_feature_title: string;
+  topics_feature_description: string;
 }
 
 interface I18nNeuron_state {
@@ -1631,6 +1657,7 @@ interface I18n {
   tokens: I18nTokens;
   import_token: I18nImport_token;
   portfolio: I18nPortfolio;
+  highlight: I18nHighlight;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;

@@ -3,10 +3,12 @@ import { HOST } from "$lib/constants/environment.constants";
 import type { Agent, Identity } from "@dfinity/agent";
 import {
   IcrcIndexCanister,
+  IcrcIndexNgCanister,
   type IcrcAccount,
   type IcrcGetTransactions,
 } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
+import type { SubAccount } from "@dfinity/ledger-icrc/dist/candid/icrc_index";
+import { Principal } from "@dfinity/principal";
 import { fromNullable } from "@dfinity/utils";
 
 export interface GetTransactionsParams {
@@ -45,22 +47,7 @@ export const getTransactions = async ({
   };
 };
 
-export const getLedgerId = async ({
-  identity,
-  indexCanisterId,
-  certified,
-}: {
-  identity: Identity;
-  indexCanisterId: Principal;
-  certified?: boolean;
-}): Promise<Principal> => {
-  const {
-    canister: { ledgerId },
-  } = await indexCanister({ identity, canisterId: indexCanisterId });
-
-  return ledgerId({ certified });
-};
-
+// TODO(yhabib): Migrate all methods to the indexNgCanister
 const indexCanister = async ({
   identity,
   canisterId,
@@ -77,6 +64,73 @@ const indexCanister = async ({
   });
 
   const canister = IcrcIndexCanister.create({
+    agent,
+    canisterId,
+  });
+
+  return {
+    canister,
+    agent,
+  };
+};
+
+export const getLedgerId = async ({
+  identity,
+  indexCanisterId,
+  certified,
+}: {
+  identity: Identity;
+  indexCanisterId: Principal;
+  certified?: boolean;
+}): Promise<Principal> => {
+  const {
+    canister: { ledgerId },
+  } = await indexNgCanister({ identity, canisterId: indexCanisterId });
+
+  return ledgerId({ certified });
+};
+
+export const listSubaccounts = async ({
+  identity,
+  indexCanisterId,
+  certified,
+}: {
+  identity: Identity;
+  indexCanisterId: Principal;
+  certified?: boolean;
+}): Promise<Array<SubAccount>> => {
+  const {
+    canister: { listSubaccounts },
+  } = await indexNgCanister({
+    identity,
+    canisterId: indexCanisterId,
+  });
+
+  const owner = identity.getPrincipal();
+  const subaccounts = await listSubaccounts({
+    owner,
+    certified,
+  });
+
+  return subaccounts;
+};
+
+const indexNgCanister = async ({
+  identity,
+  canisterId,
+}: {
+  identity: Identity;
+  canisterId: Principal;
+}): Promise<{
+  canister: IcrcIndexNgCanister;
+  agent: Agent;
+}> => {
+  const agent = await createAgent({
+    identity,
+    host: HOST,
+  });
+
+  const canister = IcrcIndexNgCanister.create({
     agent,
     canisterId,
   });

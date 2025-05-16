@@ -22,8 +22,10 @@
   import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { IconNeuronsPage, Spinner } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
+  import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 
   let loading = true;
 
@@ -45,6 +47,10 @@
   let summary: SnsSummary | undefined;
   $: summary = $snsProjectSelectedStore?.summary;
 
+  const topicInfosStore = createSnsTopicsProjectStore($snsOnlyProjectStore);
+  let topicInfos: TopicInfoWithUnknown[];
+  $: topicInfos = $topicInfosStore ?? [];
+
   let tableNeurons: TableNeuron[] = [];
   $: tableNeurons = nonNullish(summary)
     ? tableNeuronsFromSnsNeurons({
@@ -55,6 +61,7 @@
         snsNeurons: $definedSnsNeuronStore,
         icpSwapUsdPrices: $icpSwapUsdPricesStore,
         ledgerCanisterId: summary.ledgerCanisterId,
+        topicInfos,
       })
     : [];
 

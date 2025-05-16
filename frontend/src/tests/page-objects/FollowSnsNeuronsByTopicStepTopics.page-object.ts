@@ -97,6 +97,13 @@ export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
     });
   }
 
+  getDeactivateCatchAllButtonPo(): ButtonPo {
+    return ButtonPo.under({
+      element: this.root,
+      testId: "deactivate-catch-all-button",
+    });
+  }
+
   async getFollowSnsNeuronsByTopicLegacyFolloweePos(): Promise<
     FollowSnsNeuronsByTopicLegacyFolloweePo[]
   > {
@@ -109,5 +116,9 @@ export class FollowSnsNeuronsByTopicStepTopicsPo extends BasePageObject {
 
   clickCancelButton(): Promise<void> {
     return this.getCancelButtonPo().click();
+  }
+
+  clickDeactivateCatchAllButton(): Promise<void> {
+    return this.getDeactivateCatchAllButtonPo().click();
   }
 }

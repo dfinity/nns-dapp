@@ -1,24 +1,28 @@
 <script lang="ts">
   import FilterModal from "$lib/modals/common/FilterModal.svelte";
+  import type {
+    Filter,
+    FiltersData,
+    NnsProposalFilterCategory,
+  } from "$lib/types/filters";
 
-  export let title: string;
+  type Props = {
+    title: string;
+    visible: boolean;
+    filters: Filter<FiltersData>[] | undefined;
+    category: undefined | NnsProposalFilterCategory;
+  };
 
-  const filters = [
-    {
-      id: "1",
-      value: 1,
-      name: "Filter 1",
-      checked: false,
-    },
-    {
-      id: "2",
-      value: 2,
-      name: "Filter 2",
-      checked: true,
-    },
-  ];
+  const { title, visible = true, filters, category }: Props = $props();
 </script>
 
-<FilterModal on:nnsClose on:nnsConfirm {filters}
-  ><span slot="title">{title}</span></FilterModal
+<FilterModal
+  on:nnsClose
+  on:nnsConfirm
+  on:nnsChange
+  on:nnsSelectAll
+  on:nnsClearSelection
+  {filters}
+  {visible}
+  {category}><span slot="title">{title}</span></FilterModal
 >

@@ -1,11 +1,20 @@
 import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
-import type { Filter, SnsProposalTypeFilterId } from "$lib/types/filters";
-import { ALL_SNS_GENERIC_PROPOSAL_TYPES_ID } from "$lib/types/filters";
+import type {
+  Filter,
+  SnsProposalTopicFilterId,
+  SnsProposalTypeFilterId,
+} from "$lib/types/filters";
+import {
+  ALL_SNS_GENERIC_PROPOSAL_TYPES_ID,
+  ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+} from "$lib/types/filters";
+import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
 import {
   ballotVotingPower,
   fromPercentageBasisPoints,
+  generateSnsProposalTopicsFilterData,
   generateSnsProposalTypesFilterData,
   getUniversalProposalStatus,
   isAccepted,
@@ -19,6 +28,7 @@ import {
   snsRewardStatus,
   sortSnsProposalsById,
   toExcludeTypeParameter,
+  toIncludeTopicsParameter,
 } from "$lib/utils/sns-proposals.utils";
 import {
   allTopicsNervousSystemFunctionMock,
@@ -31,6 +41,7 @@ import {
   createSnsProposal,
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
+import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -40,6 +51,7 @@ import {
   type SnsPercentage,
   type SnsProposalData,
   type SnsTally,
+  type SnsTopicInfo,
 } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 
@@ -56,6 +68,7 @@ describe("sns-proposals utils", () => {
     total: 30n,
     timestamp_seconds: 1n,
   };
+
   describe("isAccepted", () => {
     it("should return true if the proposal is accepted", () => {
       const proposal: SnsProposalData = {
@@ -245,7 +258,11 @@ describe("sns-proposals utils", () => {
           },
         ],
       };
-      const mappedProposal = mapProposalInfo({ proposalData, nsFunctions: [] });
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [],
+        topics: undefined,
+      });
       expect(mappedProposal.rewardStatus).toBe(
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES
       );
@@ -270,7 +287,11 @@ describe("sns-proposals utils", () => {
           },
         ],
       };
-      const mappedProposal = mapProposalInfo({ proposalData, nsFunctions: [] });
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [],
+        topics: undefined,
+      });
       expect(mappedProposal.id).not.toBeInstanceOf(Array);
       expect(mappedProposal.payload_text_rendering).not.toBeInstanceOf(Array);
       expect(mappedProposal.proposer).not.toBeInstanceOf(Array);
@@ -291,7 +312,11 @@ describe("sns-proposals utils", () => {
         wait_for_quiet_state: [{ current_deadline_timestamp_seconds }],
       } as SnsProposalData;
 
-      const mappedProposal = mapProposalInfo({ proposalData, nsFunctions: [] });
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [],
+        topics: undefined,
+      });
       expect(mappedProposal.title).toBe(proposal.title);
       expect(mappedProposal.url).toBe(proposal.url);
       expect(mappedProposal.summary).toBe(proposal.summary);
@@ -309,11 +334,89 @@ describe("sns-proposals utils", () => {
       const mappedProposal = mapProposalInfo({
         proposalData,
         nsFunctions: [nervousSystemFunctionMock],
+        topics: undefined,
       });
       expect(mappedProposal.type).toBe(nervousSystemFunctionMock.name);
       expect(mappedProposal.typeDescription).toBe(
         nervousSystemFunctionMock.description[0]
       );
+    });
+
+    it("should provide topic key", () => {
+      const proposalData = {
+        ...mockSnsProposal,
+        action: nervousSystemFunctionMock.id,
+        topic: [{ Governance: null }],
+      } as SnsProposalData;
+
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: [],
+      });
+      expect(mappedProposal.topicKey).toBe("Governance");
+    });
+
+    it("should provide topic info", () => {
+      const proposalData = {
+        ...mockSnsProposal,
+        action: nervousSystemFunctionMock.id,
+        topic: [{ Governance: null }],
+      } as SnsProposalData;
+
+      const topicInfo1: SnsTopicInfo = {
+        ...topicInfoMock,
+        topic: [{ DaoCommunitySettings: null }],
+      };
+      const topicInfo2: SnsTopicInfo = {
+        ...topicInfoMock,
+        topic: [{ Governance: null }],
+      };
+      const mappedProposal = mapProposalInfo({
+        proposalData,
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: [topicInfo1, topicInfo2],
+      });
+      expect(mappedProposal.topicInfo).toBe(topicInfo2);
+    });
+
+    it("should not break when topics are not available", () => {
+      const testTopicInfo: SnsTopicInfo = {
+        ...topicInfoMock,
+        topic: [{ Governance: null }],
+      };
+      const { topicKey, topicInfo } = mapProposalInfo({
+        proposalData: {
+          ...mockSnsProposal,
+          topic: undefined,
+        },
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: [testTopicInfo],
+      });
+      expect(topicKey).toBe(undefined);
+      expect(topicInfo).toBe(undefined);
+
+      const { topicKey: topicKey2, topicInfo: topicInfo2 } = mapProposalInfo({
+        proposalData: {
+          ...mockSnsProposal,
+          topic: [{ Governance: null }],
+        },
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: undefined,
+      });
+      expect(topicKey2).toBe("Governance");
+      expect(topicInfo2).toBe(undefined);
+
+      const { topicKey: topicKey3, topicInfo: topicInfo3 } = mapProposalInfo({
+        proposalData: {
+          ...mockSnsProposal,
+          topic: undefined,
+        },
+        nsFunctions: [nervousSystemFunctionMock],
+        topics: undefined,
+      });
+      expect(topicKey3).toBe(undefined);
+      expect(topicInfo3).toBe(undefined);
     });
   });
 
@@ -747,6 +850,117 @@ describe("sns-proposals utils", () => {
     });
   });
 
+  describe("generateSnsProposalTopicsFilterData", () => {
+    it("should return an empty array if there are no topics", () => {
+      const result = generateSnsProposalTopicsFilterData({
+        topics: [],
+        filters: [],
+      });
+
+      expect(result.length).toBe(0);
+    });
+
+    it("should filter out topics with null topic field", () => {
+      const topicsWithNull: TopicInfoWithUnknown[] = [
+        {
+          ...topicInfoMock,
+          topic: null,
+        },
+        {
+          ...topicInfoMock,
+          topic: [{ Governance: null }],
+        },
+      ];
+
+      const result = generateSnsProposalTopicsFilterData({
+        topics: topicsWithNull,
+        filters: [],
+      });
+
+      expect(result.length).toBe(2);
+      expect(result[0].id).toBe("Governance");
+      expect(result[1].id).toBe(ALL_SNS_PROPOSALS_WITHOUT_TOPIC);
+    });
+
+    it("should preserve checked state from existing filters", () => {
+      const topics: TopicInfoWithUnknown[] = [
+        {
+          ...topicInfoMock,
+          topic: [{ Governance: null }],
+        },
+        {
+          ...topicInfoMock,
+          topic: [{ DaoCommunitySettings: null }],
+        },
+      ];
+
+      const existingFilters: Filter<SnsProposalTopicFilterId>[] = [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance Topic",
+          checked: true,
+        },
+        {
+          id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          name: "All proposals without topic",
+          checked: false,
+        },
+      ];
+
+      const result = generateSnsProposalTopicsFilterData({
+        topics,
+        filters: existingFilters,
+      });
+
+      const governanceFilter = result.find(({ id }) => id === "Governance");
+      const withoutTopicFilter = result.find(
+        ({ id }) => id === ALL_SNS_PROPOSALS_WITHOUT_TOPIC
+      );
+
+      expect(governanceFilter?.checked).toBe(true);
+      expect(withoutTopicFilter?.checked).toBe(false);
+
+      // DaoCommunitySettings was not in the existing filters, so it should be checked
+      const daoSettingsFilter = result.find(
+        ({ id }) => id === "DaoCommunitySettings"
+      );
+      expect(daoSettingsFilter?.checked).toBe(true);
+    });
+
+    it("should show all proposals when default setupt of filters", () => {
+      const topics: TopicInfoWithUnknown[] = [
+        {
+          ...topicInfoMock,
+          name: ["Test Topic"],
+          topic: [{ Governance: null }],
+          is_critical: [true],
+        },
+      ];
+
+      const result = generateSnsProposalTopicsFilterData({
+        topics,
+        filters: [],
+      });
+
+      expect(result[0]).toEqual({
+        id: "Governance",
+        value: "Governance",
+        name: "Test Topic",
+        isCritical: true,
+        checked: true,
+      });
+
+      expect(result[1]).toEqual({
+        id: "all_sns_proposals_without_topic",
+        name: "Proposals without a topic",
+        value: "all_sns_proposals_without_topic",
+        checked: true,
+      });
+    });
+  });
+
   describe("toExcludeTypeParameter", () => {
     const allTypesNsFunctionId = ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID;
     const nativeNsFunctionId1 = 1n;
@@ -894,6 +1108,72 @@ describe("sns-proposals utils", () => {
         genericNsFunctionId1,
         genericNsFunctionId2,
       ]);
+    });
+  });
+
+  describe("toIncludeTopicsParameter", () => {
+    it("should return empty array when no filters are provided", () => {
+      expect(toIncludeTopicsParameter([])).toEqual([]);
+    });
+
+    it("should convert topic keys to topics for known topics", () => {
+      const filters: Filter<SnsProposalTopicFilterId>[] = [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance Topic",
+          checked: true,
+        },
+        {
+          id: "DaoCommunitySettings",
+          value: "DaoCommunitySettings",
+          name: "DAO Community Settings",
+          checked: true,
+        },
+      ];
+
+      const result = toIncludeTopicsParameter(filters);
+
+      expect(result).toEqual([
+        { Governance: null },
+        { DaoCommunitySettings: null },
+      ]);
+    });
+
+    it("should include null when ALL_SNS_PROPOSALS_WITHOUT_TOPIC is selected", () => {
+      const filters: Filter<SnsProposalTopicFilterId>[] = [
+        {
+          id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          name: "Proposals without a topic",
+          checked: true,
+        },
+      ];
+
+      const result = toIncludeTopicsParameter(filters);
+
+      expect(result).toEqual([null]);
+    });
+
+    it("should combine known topics and null when both regular topics and ALL_SNS_PROPOSALS_WITHOUT_TOPIC are selected", () => {
+      const filters: Filter<SnsProposalTopicFilterId>[] = [
+        {
+          id: "Governance",
+          value: "Governance",
+          name: "Governance Topic",
+          checked: true,
+        },
+        {
+          id: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          value: ALL_SNS_PROPOSALS_WITHOUT_TOPIC,
+          name: "Proposals without a topic",
+          checked: true,
+        },
+      ];
+
+      const result = toIncludeTopicsParameter(filters);
+
+      expect(result).toEqual([{ Governance: null }, null]);
     });
   });
 

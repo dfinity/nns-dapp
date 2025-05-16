@@ -4,12 +4,16 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
-import type {
-  NeuronsTableColumnId,
-  TableNeuron,
-  TableNeuronComparator,
+import {
+  NeuronsTableVoteDelegationStateOrder,
+  type NeuronsTableColumnId,
+  type NeuronsTableVoteDelegationState,
+  type TableNeuron,
+  type TableNeuronComparator,
 } from "$lib/types/neurons-table";
+import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
+import { enumValues } from "$lib/utils/enum.utils";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
 import {
   getNeuronTags,
@@ -28,6 +32,7 @@ import {
   getSnsNeuronState,
   getSnsNeuronTags,
 } from "$lib/utils/sns-neuron.utils";
+import { getSnsTopicFollowings } from "$lib/utils/sns-topics.utils";
 import {
   createAscendingComparator,
   createDescendingComparator,
@@ -36,7 +41,7 @@ import {
 import { getUsdValue } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState, Topic } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2, isNullish, type Token } from "@dfinity/utils";
@@ -48,6 +53,7 @@ export const tableNeuronsFromNeuronInfos = ({
   icpSwapUsdPrices,
   i18n,
   startReducingVotingPowerAfterSeconds,
+  minimumDissolveDelay,
 }: {
   neuronInfos: NeuronInfo[];
   identity?: Identity | undefined | null;
@@ -55,6 +61,7 @@ export const tableNeuronsFromNeuronInfos = ({
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
   i18n: I18n;
   startReducingVotingPowerAfterSeconds: bigint | undefined;
+  minimumDissolveDelay: bigint;
 }): TableNeuron[] => {
   return neuronInfos.map((neuronInfo) => {
     const { neuronId, dissolveDelaySeconds } = neuronInfo;
@@ -78,6 +85,7 @@ export const tableNeuronsFromNeuronInfos = ({
       amount: stake,
       tokenPrice: icpPrice,
     });
+
     return {
       ...(rowHref && { rowHref }),
       domKey: neuronIdString,
@@ -94,10 +102,67 @@ export const tableNeuronsFromNeuronInfos = ({
         accounts,
         i18n,
         startReducingVotingPowerAfterSeconds,
+        minimumDissolveDelay,
       }),
       isPublic: isPublicNeuron(neuronInfo),
+      voteDelegationState: getNnsNeuronVoteDelegationState(neuronInfo),
     };
   });
+};
+
+/// This function is used to determine the topic-based vote delegation state of a neuron.
+export const getNnsNeuronVoteDelegationState = (
+  neuron: NeuronInfo
+): NeuronsTableVoteDelegationState => {
+  // Topic.Unspecified(0) covers all except "Governance" and "SNS & Neurons' Fund"
+  const TOPICS_NOT_COVERED_BY_UNSPECIFIED = [
+    Topic.Governance,
+    Topic.SnsAndCommunityFund,
+  ];
+  const DEPRECATED_TOPIC = Topic.SnsDecentralizationSale;
+  const followees = (neuron.fullNeuron?.followees ?? []).filter(
+    (followee) => followee.topic !== DEPRECATED_TOPIC
+  );
+  if (followees.length === 0) return "none";
+
+  const delegatedTopicMap = new Set(followees.map(({ topic }) => topic));
+  const requiredTopics = new Set(
+    delegatedTopicMap.has(Topic.Unspecified)
+      ? TOPICS_NOT_COVERED_BY_UNSPECIFIED
+      : enumValues(Topic).filter(
+          (topic) =>
+            ![
+              // Not required when it's not selected
+              Topic.Unspecified,
+              Topic.SnsDecentralizationSale,
+            ].includes(topic)
+        )
+  );
+  const followsAllRequiredTopics = Array.from(requiredTopics).every((topic) =>
+    delegatedTopicMap.has(topic)
+  );
+
+  return followsAllRequiredTopics ? "all" : "some";
+};
+
+export const getSnsNeuronVoteDelegationState = ({
+  topicCount,
+  neuron,
+}: {
+  topicCount: number;
+  neuron: SnsNeuron;
+}): NeuronsTableVoteDelegationState => {
+  // If there are no topics, no delegation by topic is possible.
+  if (topicCount === 0) return "none";
+
+  const followedTopicCount = new Set(
+    getSnsTopicFollowings(neuron).map(({ topic }) => topic)
+  ).size;
+  return followedTopicCount === 0
+    ? "none"
+    : followedTopicCount === topicCount
+      ? "all"
+      : "some";
 };
 
 export const tableNeuronsFromSnsNeurons = ({
@@ -108,6 +173,7 @@ export const tableNeuronsFromSnsNeurons = ({
   icpSwapUsdPrices,
   ledgerCanisterId,
   i18n,
+  topicInfos,
 }: {
   snsNeurons: SnsNeuron[];
   universe: UniverseCanisterIdText;
@@ -116,6 +182,7 @@ export const tableNeuronsFromSnsNeurons = ({
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
   ledgerCanisterId: Principal;
   i18n: I18n;
+  topicInfos: TopicInfoWithUnknown[];
 }): TableNeuron[] => {
   return snsNeurons.map((snsNeuron) => {
     const dissolveDelaySeconds = getSnsDissolveDelaySeconds(snsNeuron) ?? 0n;
@@ -152,6 +219,10 @@ export const tableNeuronsFromSnsNeurons = ({
         i18n,
       }),
       isPublic: false,
+      voteDelegationState: getSnsNeuronVoteDelegationState({
+        topicCount: topicInfos.length,
+        neuron: snsNeuron,
+      }),
     };
   });
 };
@@ -168,6 +239,13 @@ export const compareByDissolveDelay = createDescendingComparator(
   (neuron: TableNeuron) => neuron.dissolveDelaySeconds
 );
 
+export const compareByVoteDelegation = createDescendingComparator(
+  (neuron: TableNeuron) => {
+    const state = neuron.voteDelegationState ?? "none";
+    return NeuronsTableVoteDelegationStateOrder.indexOf(state);
+  }
+);
+
 export const compareByState = createDescendingComparator(
   (neuron: TableNeuron) =>
     [
@@ -179,7 +257,7 @@ export const compareByState = createDescendingComparator(
 );
 
 // Orders strings as if they are positive integers, so "9" < "10" < "11", by
-// ordering first by length and then legicographically.
+// ordering first by length and then lexicographically.
 export const compareById = mergeComparators([
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId.length),
   createAscendingComparator((neuron: TableNeuron) => neuron.neuronId),
@@ -195,4 +273,5 @@ export const comparatorsByColumnId: Partial<
   maturity: compareByMaturity,
   dissolveDelay: compareByDissolveDelay,
   state: compareByState,
+  voteDelegation: compareByVoteDelegation,
 };

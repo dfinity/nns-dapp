@@ -5,7 +5,10 @@
   import { IconPublicBadge, Tooltip } from "@dfinity/gix-components";
   import NeuronTag from "$lib/components/ui/NeuronTag.svelte";
 
-  export let rowData: TableNeuron;
+  type Props = {
+    rowData: TableNeuron;
+  };
+  const { rowData }: Props = $props();
 </script>
 
 <div data-tid="neuron-id-cell-component" class="container">

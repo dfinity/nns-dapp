@@ -1,3 +1,5 @@
+import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
+import type { SnsTopicsStore } from "$lib/derived/sns-topics.derived";
 import type {
   SnsLegacyFollowings,
   SnsTopicFollowing,
@@ -9,13 +11,19 @@ import type {
   UnknownTopic,
 } from "$lib/types/sns-aggregator";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
+import type { Principal } from "@dfinity/principal";
 import type {
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsNeuronId,
   SnsTopic,
 } from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable, nonNullish } from "@dfinity/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 
 export const snsTopicToTopicKey = (
   topic: SnsTopic | UnknownTopic
@@ -77,14 +85,12 @@ export const getSnsTopicKeys = (
 
 export const getTopicInfoBySnsTopicKey = ({
   topicKey,
-  listTopics,
+  topics,
 }: {
   topicKey: SnsTopicKey;
-  listTopics: ListTopicsResponseWithUnknown;
+  topics: Array<TopicInfoWithUnknown>;
 }): TopicInfoWithUnknown | undefined =>
-  (fromNullable(listTopics.topics) ?? []).find(
-    (topicInfo) => getSnsTopicInfoKey(topicInfo) === topicKey
-  );
+  topics.find((topicInfo) => getSnsTopicInfoKey(topicInfo) === topicKey);
 
 // Combines native and generic nervous system functions
 export const getAllSnsNSFunctions = (
@@ -211,4 +217,63 @@ export const getLegacyFolloweesByTopics = ({
     },
     []
   );
+};
+
+// Returns the catch-all SNS followees of the neuron.
+// Because the catch-all is not part of any topic, we need to get it from nsFunctions.
+export const getCatchAllSnsLegacyFollowings = ({
+  neuron,
+  nsFunctions,
+}: {
+  neuron: SnsNeuron;
+  nsFunctions: SnsNervousSystemFunction[];
+}): SnsLegacyFollowings | undefined => {
+  const nsFunction = nsFunctions.find(
+    (nsFunction) => nsFunction.id === ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID
+  );
+  // Find the followees in a list where each item is a tuple of `[nsFunctionId, Followee[]]`
+  const followees = neuron.followees.find(
+    ([id]) => id === ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID
+  )?.[1]?.followees;
+  return isNullish(nsFunction) || isNullish(followees)
+    ? undefined
+    : {
+        nsFunction,
+        followees,
+      };
+};
+
+// Returns the sorted list of topics for the given project.
+// The topics are sorted with critical topics first, then alphabetically within each group.
+export const getSnsTopicsByProject = ({
+  rootCanisterId,
+  snsTopicsStore,
+}: {
+  rootCanisterId: Principal | null | undefined;
+  snsTopicsStore: SnsTopicsStore;
+}): Array<TopicInfoWithUnknown> | undefined => {
+  const rootCanisterIdText = rootCanisterId?.toText();
+  if (isNullish(rootCanisterIdText)) {
+    return undefined;
+  }
+
+  const topicResponse = snsTopicsStore[rootCanisterIdText];
+  if (isNullish(topicResponse)) return undefined;
+
+  const topics = fromNullable(topicResponse.topics);
+  if (isNullish(topics)) return undefined;
+
+  // sorts topics with critical topics first, then alphabetically within each group
+  return topics.sort((a, b) => {
+    const isACritical = fromDefinedNullable(a.is_critical);
+    const isBCritical = fromDefinedNullable(b.is_critical);
+
+    if (isACritical && !isBCritical) return -1;
+    if (!isACritical && isBCritical) return 1;
+
+    const nameOfA = fromDefinedNullable(a.name);
+    const nameOfB = fromDefinedNullable(b.name);
+
+    return nameOfA.localeCompare(nameOfB);
+  });
 };

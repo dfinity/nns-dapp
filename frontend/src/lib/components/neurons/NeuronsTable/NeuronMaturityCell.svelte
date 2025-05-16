@@ -2,7 +2,10 @@
   import MaturityWithTooltip from "$lib/components/neurons/MaturityWithTooltip.svelte";
   import type { TableNeuron } from "$lib/types/neurons-table";
 
-  export let rowData: TableNeuron;
+  type Props = {
+    rowData: TableNeuron;
+  };
+  const { rowData }: Props = $props();
 </script>
 
 <div data-tid="neuron-maturity-cell-component">

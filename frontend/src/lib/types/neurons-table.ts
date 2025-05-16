@@ -19,6 +19,8 @@ export type TableNeuron = {
   state: NeuronState;
   tags: NeuronTagData[];
   isPublic: boolean;
+  // TODO(sns-topics): make it required after the NNS table is updated
+  voteDelegationState?: NeuronsTableVoteDelegationState;
 };
 
 export type NeuronsTableColumnId =
@@ -26,6 +28,7 @@ export type NeuronsTableColumnId =
   | "stake"
   | "maturity"
   | "dissolveDelay"
+  | "voteDelegation"
   | "state";
 
 // Should define a partial ordering on TableNeuron by return -1 if a < b, +1 if
@@ -38,3 +41,13 @@ export type NeuronsTableColumn = ResponsiveTableColumn<
 >;
 
 export type NeuronsTableOrder = ResponsiveTableOrder<NeuronsTableColumnId>;
+
+export const NeuronsTableVoteDelegationStateOrder = [
+  "none",
+  "some",
+  "all",
+] as const;
+// Since `NeuronsTableVoteDelegationStateOrder` is a tuple of exact string literals,
+// we can get the type of any value that can be indexed by a number.
+export type NeuronsTableVoteDelegationState =
+  (typeof NeuronsTableVoteDelegationStateOrder)[number];

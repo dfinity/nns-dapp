@@ -36,7 +36,8 @@
     "collapse_all": "Collapse All",
     "or": "or",
     "add": "Add",
-    "not_applicable": "N/A"
+    "not_applicable": "N/A",
+    "view_more": "View more"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -423,26 +424,37 @@
     "create_as_public_neuron_failure": "Making your neuron public has failed, so it was created as a private neuron. You can change neuron visibility at any time under \"Advanced Details & Settings\""
   },
   "follow_sns_topics": {
-    "topic_definitions_description": "Proposal types are grouped into topics, unique for each SNS. You can review the topic definitions for this SNS here.",
+    "topic_definitions_description": "Proposal types are grouped into topics defined by each SNS community. You can review the topic definitions for this SNS here.",
     "topic_definitions_title": "Topic Definition List",
     "topics_title": "Delegate Voting",
-    "topics_description": "Delegate your voting by following other neurons to maximize your voting rewards. Your voting is fully delegated only if following is set for every topic. Alternatively, you can vote manually.",
+    "legacy_title": "Change to Topic Following",
+    "deactivate_catch_all_title": "Deactivating Catch-All Following",
+    "topics_description": "As an alternative to voting manually, you can delegate your voting power to other neurons. To cover all proposals, make sure delegation is set for each topic.",
     "topics_critical_label": "Critical topics",
-    "topics_critical_tooltip": "Critical topics include proposals that are vital to the management of a given SNS DAO, so they require 67% \"yes\" votes to be adopted. They include treasury management and critical dapp operations.",
+    "topics_critical_tooltip": "Critical topics include proposals that are vital to the management of a given SNS DAO, so they require 67% \"yes\" votes to be adopted. These include treasury management and critical dapp operations.",
     "topics_non_critical_label": "Non-critical topics",
     "topics_non_critical_tooltip": "Non-critical topics include proposals that manage the day-to-day operations of a given SNS DAO, including code upgrades or SNS parameter management.",
-    "topics_following": "CURRENTLY FOLLOWING",
-    "topics_legacy_following_description": "*You have legacy following for these types. In order to change them, set following for the topic. Any changes will override current settings for the topic.",
+    "topics_following": "CURRENT DELEGATES",
+    "topics_legacy_following_description": "*You have legacy delegations applied to the following proposal types. When you set delegations for this topic, the current settings will be overwritten.",
+    "legacy_description": "You have legacy delegations applied to some proposal types. When you set delegations for this topic, the current settings will be overwritten. Please confirm the changes to proceed.",
+    "legacy_topics_header": "Topics with active legacy delegations",
+    "legacy_followees_header": "Current legacy delegations",
+    "catch_all_description": "Legacy \"Catch-All\" followings are currently active. Confirming will deactivate them and remove the associated legacy followings.",
     "neuron_title": "Enter Neuron to Follow",
     "neuron_label": "Neuron to Follow",
-    "neuron_description": "*Developer neurons are not stored in a central place as of now. You can often find them on the <a href=\"https://forum.dfinity.org/\" rel=\"noopener noreferrer\" aria-label=\"DFINITY forum\" target=\"_blank\">DFINITY forum</a> in the founding team’s announcement, or on their <a href=\"https://x.com/home\" rel=\"noopener noreferrer\" aria-label=\"X\" target=\"_blank\">X</a> account. Alternatively, you can review voting power distributions of all neurons on <a href=\"https://snsgeek.app/sns\" rel=\"noopener noreferrer\" aria-label=\"snsgeek\" target=\"_blank\">snsGeek</a>, and select a neuron from their list.",
+    "neuron_description": "*There are no named neurons. You can often find relevant neuron IDs on the <a href=\"https://forum.dfinity.org/\" rel=\"noopener noreferrer\" aria-label=\"DFINITY forum\" target=\"_blank\">DFINITY forum</a>, in the full neuron list on <a href=\"https://snsgeek.app/sns\" rel=\"noopener noreferrer\" aria-label=\"snsgeek\" target=\"_blank\">snsGeek</a>, or on a project’s account on <a href=\"https://x.com/home\" rel=\"noopener noreferrer\" aria-label=\"X\" target=\"_blank\">X</a>.",
     "neuron_follow": "Follow Neuron",
     "busy_updating": "Updating neuron followings",
     "busy_removing": "Removing neuron following",
+    "busy_removing_catch_all": "Removing catch-all followings",
+    "busy_removing_legacy": "Removing neuron legacy following",
     "success_set_following": "The neuron following was successfully added.",
-    "error_neuron_not_exist": "Neuron with id $neuronId does not exist.",
+    "success_removing_legacy": "The legacy neuron following was successfully removed.",
+    "success_removing_catch_all": "Legacy \"Catch-All\" followings were successfully removed.",
+    "error_neuron_not_exist": "Neuron with ID $neuronId does not exist.",
     "error_add_following": "There was an error while adding a followee.",
-    "error_remove_following": "There was an error while unfollowing the neuron."
+    "error_remove_following": "There was an error while unfollowing the neuron.",
+    "error_already_following": "A voting delegation for the selected topic(s) and the entered neuron ID has already been set."
   },
   "missing_rewards": {
     "description": "ICP neurons that are inactive for $period start missing voting rewards. To avoid missing rewards, vote manually, edit, or confirm your following.",
@@ -513,7 +525,8 @@
     "nns_actionable_proposal_tooltip": "You can still vote on $count NNS proposals.",
     "sns_actionable_proposal_tooltip": "You can still vote on $count $snsName proposals.",
     "total_actionable_proposal_tooltip": "You can still vote on $count proposals.",
-    "is_actionable_status_badge_tooltip": "You can still vote on this proposal."
+    "is_actionable_status_badge_tooltip": "You can still vote on this proposal.",
+    "all_sns_proposals_without_topic": "Proposals without a topic"
   },
   "actionable_proposals_sign_in": {
     "title": "You are not signed in.",
@@ -731,6 +744,10 @@
     "auto_stake_maturity_on_success": "Automatically staking new maturity.",
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
     "maturity_title": "Maturity",
+    "vote_delegation_title": "Vote Delegation",
+    "vote_delegation_tooltip_all": "Voting delegated on all topics.",
+    "vote_delegation_tooltip_some": "Voting delegated on some topics.",
+    "vote_delegation_tooltip_none": "Voting not delegated on any topic.",
     "maturity_last_distribution": "Last Maturity Distribution",
     "maturity_last_distribution_info": "On a day with no settled proposals, no rewards are distributed; rather rewards will roll over to the following day. The last distribution date is the last time rewards were distributed. <a href=\"https://wiki.internetcomputer.org/wiki/Roll-over_of_NNS_voting_rewards\" rel=\"noopener noreferrer\" aria-label=\"more info about the voting rewards\" target=\"_blank\">Learn more</a>",
     "stake_maturity": "Stake",
@@ -1256,6 +1273,7 @@
     "total_assets_title": "Total Holdings",
     "project_status_open": "Ongoing",
     "project_status_proposal": "Open",
+    "project_status_adopted_proposal": "Upcoming",
     "open_project_card_title": "COMMITMENT",
     "open_project_current_commitment": "ICP raised",
     "open_project_card_min_icp": "Min ICP",
@@ -1263,9 +1281,16 @@
     "open_project_card_nf": "Neurons' Fund",
     "open_project_card_link": "View",
     "open_project_card_neuron_fund_tooltip": "The Neurons' Fund (NF) is an NNS controlled treasury, designed to support the development of the SNS ecosystem. Decisions on the allocation of NF resources are collectively made by the NNS.",
+    "adopted_proposal_card_time_remaining": "SALE STARTS IN",
     "new_sns_proposal_card_title": "Create New SNS",
     "new_sns_proposal_card_link": "Vote",
     "new_sns_proposal_card_adopt": "Adopt",
-    "new_sns_proposal_card_reject": "Reject"
+    "new_sns_proposal_card_reject": "Reject",
+    "next_card": "Next Card",
+    "previous_card": "Previous Card"
+  },
+  "highlight": {
+    "topics_feature_title": "New feature ",
+    "topics_feature_description": "As an SNS DAO member, you can now delegate your voting power based on proposal topics. Find the new feature in your SNS neuron detail view."
   }
 }

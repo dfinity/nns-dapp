@@ -14,11 +14,12 @@
     SnsTopicKey,
   } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
-  import type { SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import FollowSnsNeuronsByTopicLegacyFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicLegacyFollowee.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID } from "$lib/constants/sns-proposals.constants";
 
   type Props = {
     topicInfo: TopicInfoWithUnknown;
@@ -30,6 +31,10 @@
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
+    removeLegacyFollowing: (args: {
+      nsFunction: SnsNervousSystemFunction;
+      followee: SnsNeuronId;
+    }) => void;
   };
 
   let {
@@ -39,6 +44,7 @@
     checked = false,
     onNnsChange,
     removeFollowing,
+    removeLegacyFollowing,
   }: Props = $props();
 
   const topicKey: SnsTopicKey = $derived(getSnsTopicInfoKey(topicInfo));
@@ -76,7 +82,6 @@
         text="block"
         {checked}
         on:nnsChange={onChange}
-        preventDefault
         --checkbox-label-order="1"
         --checkbox-padding="var(--padding) 0"
       >
@@ -145,9 +150,15 @@
                   <FollowSnsNeuronsByTopicLegacyFollowee
                     nsFunction={followees.nsFunction}
                     {neuronId}
-                    onRemoveClick={() => {
-                      // TODO(sns-topics): Remove legacy following
-                    }}
+                    onRemoveClick={followees.nsFunction.id ===
+                    ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID
+                      ? undefined
+                      : () => {
+                          removeLegacyFollowing({
+                            nsFunction: followees.nsFunction,
+                            followee: neuronId,
+                          });
+                        }}
                   />
                 </li>
               {/each}

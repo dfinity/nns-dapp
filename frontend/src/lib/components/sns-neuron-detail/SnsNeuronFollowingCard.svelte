@@ -83,17 +83,6 @@
           <span class="note">
             {$i18n.neuron_detail.following_note}
           </span>
-          <button
-            data-tid="sns-topic-definitions-button"
-            class="ghost with-icon sns-topic-definitions-button"
-            on:click={() =>
-              openSnsNeuronModal({
-                type: "sns-topic-definitions",
-              })}
-          >
-            <span>{$i18n.neuron_detail.following_link} </span>
-            <IconRight />
-          </button>
         {:else}
           <span>
             {$i18n.neuron_detail.following_description_to_be_removed}
@@ -103,12 +92,26 @@
     </svelte:fragment>
   </KeyValuePairInfo>
 
-  {#if followees.length > 0}
+  {#if !isFollowByTopic && followees.length > 0}
     <div class="frame">
       {#each followees as followee}
         <SnsFollowee {followee} />
       {/each}
     </div>
+  {/if}
+
+  {#if isFollowByTopic}
+    <button
+      data-tid="sns-topic-definitions-button"
+      class="ghost with-icon sns-topic-definitions-button"
+      on:click={() =>
+        openSnsNeuronModal({
+          type: "sns-topic-definitions",
+        })}
+    >
+      <span>{$i18n.neuron_detail.following_link} </span>
+      <IconRight />
+    </button>
   {/if}
 
   {#if showLoading}
@@ -151,11 +154,11 @@
     .note {
       @include fonts.small(true);
     }
+  }
 
-    .sns-topic-definitions-button {
-      padding: var(--padding) 0;
-      color: var(--primary);
-      font-weight: var(--font-weight-bold);
-    }
+  .sns-topic-definitions-button {
+    padding: var(--padding) 0 var(--padding-2x);
+    color: var(--primary);
+    font-weight: var(--font-weight-bold);
   }
 </style>

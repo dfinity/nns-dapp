@@ -1,3 +1,5 @@
+import { FollowSnsNeuronsByTopicStepDeactivateCatchAllPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepDeactivateCatchAll.page-object";
+import { FollowSnsNeuronsByTopicStepLegacyPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepLegacy.page-object";
 import { FollowSnsNeuronsByTopicStepNeuronPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepNeuron.page-object";
 import { FollowSnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepTopics.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
@@ -22,7 +24,15 @@ export class FollowSnsNeuronsByTopicModalPo extends ModalPo {
     return FollowSnsNeuronsByTopicStepTopicsPo.under(this.root);
   }
 
+  getFollowSnsNeuronsByTopicStepLegacyPo(): FollowSnsNeuronsByTopicStepLegacyPo {
+    return FollowSnsNeuronsByTopicStepLegacyPo.under(this.root);
+  }
+
   getFollowSnsNeuronsByTopicStepNeuronPo(): FollowSnsNeuronsByTopicStepNeuronPo {
     return FollowSnsNeuronsByTopicStepNeuronPo.under(this.root);
+  }
+
+  getFollowSnsNeuronsByTopicStepDeactivateCatchAllPo(): FollowSnsNeuronsByTopicStepDeactivateCatchAllPo {
+    return FollowSnsNeuronsByTopicStepDeactivateCatchAllPo.under(this.root);
   }
 }

@@ -1,31 +1,40 @@
+import { snsTopicsStore } from "$lib/derived/sns-topics.derived";
 import type { SnsTopicKey } from "$lib/types/sns";
 import type {
   ListTopicsResponseWithUnknown,
   TopicInfoWithUnknown,
 } from "$lib/types/sns-aggregator";
+import { convertDtoTopicInfo } from "$lib/utils/sns-aggregator-converters.utils";
 import {
   addSnsNeuronToFollowingsByTopics,
   getAllSnsNSFunctions,
+  getCatchAllSnsLegacyFollowings,
   getLegacyFolloweesByTopics,
   getSnsTopicFollowings,
   getSnsTopicInfoKey,
   getSnsTopicKeys,
+  getSnsTopicsByProject,
   getTopicInfoBySnsTopicKey,
   isSnsNeuronsFollowing,
   removeSnsNeuronFromFollowingsByTopics,
   snsTopicKeyToTopic,
   snsTopicToTopicKey,
 } from "$lib/utils/sns-topics.utils";
+import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
+import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import type {
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsTopic,
 } from "@dfinity/sns";
+import { get } from "svelte/store";
 
 describe("sns-topics utils", () => {
   const neuronId1 = {
@@ -199,7 +208,7 @@ describe("sns-topics utils", () => {
       expect(
         getTopicInfoBySnsTopicKey({
           topicKey: "DaoCommunitySettings",
-          listTopics,
+          topics: [knownTopicInfo, completelyUnknownTopicInfo],
         })
       ).toEqual(knownTopicInfo);
     });
@@ -208,7 +217,7 @@ describe("sns-topics utils", () => {
       expect(
         getTopicInfoBySnsTopicKey({
           topicKey: "DappCanisterManagement",
-          listTopics,
+          topics: [knownTopicInfo, completelyUnknownTopicInfo],
         })
       ).toEqual(undefined);
     });
@@ -604,6 +613,210 @@ describe("sns-topics utils", () => {
           topicInfos: [],
         })
       ).toEqual([]);
+    });
+  });
+
+  describe("getCatchAllSnsLegacyFollowings", () => {
+    const catchAllNativeNsFunctionId = 0n;
+    const catchAllNativeNsFunction: SnsNervousSystemFunction = {
+      ...nativeNsFunction,
+      id: catchAllNativeNsFunctionId,
+    };
+    const nativeNsFunctionId1 = 1n;
+    const nativeNsFunction1: SnsNervousSystemFunction = {
+      ...nativeNsFunction,
+      id: nativeNsFunctionId1,
+    };
+    const nativeNsFunctionId2 = 2n;
+    const nativeNsFunction2: SnsNervousSystemFunction = {
+      ...nativeNsFunction,
+      id: nativeNsFunctionId2,
+    };
+
+    it("returns catch all followings", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [nativeNsFunctionId1, { followees: [neuronId1] }],
+          [catchAllNativeNsFunctionId, { followees: [neuronId1, neuronId2] }],
+          [nativeNsFunctionId2, { followees: [neuronId2] }],
+        ],
+      };
+
+      expect(
+        getCatchAllSnsLegacyFollowings({
+          neuron: testNeuron,
+          nsFunctions: [
+            catchAllNativeNsFunction,
+            nativeNsFunction1,
+            nativeNsFunction2,
+          ],
+        })
+      ).toEqual({
+        nsFunction: catchAllNativeNsFunction,
+        followees: [neuronId1, neuronId2],
+      });
+    });
+
+    it("return undefined when no catch-all followees", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [nativeNsFunctionId1, { followees: [neuronId1] }],
+          [nativeNsFunctionId2, { followees: [neuronId2] }],
+        ],
+      };
+
+      expect(
+        getCatchAllSnsLegacyFollowings({
+          neuron: testNeuron,
+          nsFunctions: [
+            catchAllNativeNsFunction,
+            nativeNsFunction1,
+            nativeNsFunction2,
+          ],
+        })
+      ).toEqual(undefined);
+    });
+
+    it("return undefined when no catch-all ns function", () => {
+      const testNeuron: SnsNeuron = {
+        ...mockSnsNeuron,
+        followees: [
+          [nativeNsFunctionId1, { followees: [neuronId1] }],
+          [catchAllNativeNsFunctionId, { followees: [neuronId1, neuronId1] }],
+          [nativeNsFunctionId2, { followees: [neuronId2] }],
+        ],
+      };
+
+      expect(
+        getCatchAllSnsLegacyFollowings({
+          neuron: testNeuron,
+          nsFunctions: [nativeNsFunction1, nativeNsFunction2],
+        })
+      ).toEqual(undefined);
+    });
+  });
+
+  describe("getSnsTopicsByProject", () => {
+    const rootCanisterId = mockPrincipal;
+
+    it("should provide topic info for sns", () => {
+      const topicInfoDto1 = topicInfoDtoMock({
+        topic: "DaoCommunitySettings",
+        name: "Topic1",
+        description: "This is a description",
+      });
+      const topicInfoDto2 = topicInfoDtoMock({
+        topic: "Governance",
+        name: "Topic2",
+        description: "This is a description 2",
+      });
+      setSnsProjects([
+        {
+          rootCanisterId: principal(321),
+          topics: {
+            topics: [],
+            uncategorized_functions: [],
+          },
+        },
+        {
+          rootCanisterId,
+          topics: {
+            topics: [topicInfoDto1, topicInfoDto2],
+            uncategorized_functions: [],
+          },
+        },
+        {
+          rootCanisterId: principal(123),
+          topics: {
+            topics: [],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+
+      expect(
+        getSnsTopicsByProject({
+          rootCanisterId,
+          snsTopicsStore: get(snsTopicsStore),
+        })
+      ).toEqual([
+        convertDtoTopicInfo(topicInfoDto1),
+        convertDtoTopicInfo(topicInfoDto2),
+      ]);
+    });
+
+    it("should return undefined when sns supports no topics", () => {
+      setSnsProjects([
+        {
+          rootCanisterId,
+        },
+      ]);
+
+      expect(
+        getSnsTopicsByProject({
+          rootCanisterId,
+          snsTopicsStore: get(snsTopicsStore),
+        })
+      ).toEqual(undefined);
+    });
+
+    it("should return undefined for unknown sns", () => {
+      setSnsProjects([
+        {
+          rootCanisterId,
+        },
+      ]);
+
+      expect(
+        getSnsTopicsByProject({
+          rootCanisterId,
+          snsTopicsStore: get(snsTopicsStore),
+        })
+      ).toEqual(undefined);
+    });
+
+    it("should sort topics by criticality and then alphabetically", () => {
+      const topicInfoDto1 = topicInfoDtoMock({
+        topic: "Governance",
+        name: "Topic2",
+        description: "This is a description 2",
+        isCritical: false,
+      });
+
+      const topicInfoDto2 = topicInfoDtoMock({
+        topic: "DaoCommunitySettings",
+        name: "Topic1",
+        description: "This is a description",
+      });
+
+      const topicInfoDto3 = topicInfoDtoMock({
+        topic: "TreasuryAssetManagement",
+        name: "Topic1",
+        description: "This is a description",
+        isCritical: true,
+      });
+      setSnsProjects([
+        {
+          rootCanisterId,
+          topics: {
+            topics: [topicInfoDto1, topicInfoDto2, topicInfoDto3],
+            uncategorized_functions: [],
+          },
+        },
+      ]);
+
+      expect(
+        getSnsTopicsByProject({
+          rootCanisterId,
+          snsTopicsStore: get(snsTopicsStore),
+        })
+      ).toEqual([
+        convertDtoTopicInfo(topicInfoDto3),
+        convertDtoTopicInfo(topicInfoDto2),
+        convertDtoTopicInfo(topicInfoDto1),
+      ]);
     });
   });
 });

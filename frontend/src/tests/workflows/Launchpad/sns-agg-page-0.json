@@ -17,7 +17,8 @@
       "dapps": [
         "sqbzf-5aaaa-aaaam-aavya-cai",
         "epeco-piaaa-aaaai-qatka-cai",
-        "thhc2-kiaaa-aaaao-ajnha-cai"
+        "thhc2-kiaaa-aaaao-ajnha-cai",
+        "heixj-ryaaa-aaaal-qsm5a-cai"
       ],
       "archives": ["zmbi7-fyaaa-aaaaq-aaahq-cai"]
     },
@@ -235,6 +236,20 @@
               "target_method_name": "manage_neuron"
             }
           }
+        },
+        {
+          "id": 2005,
+          "name": "Set module",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "Governance",
+              "validator_canister_id": "heixj-ryaaa-aaaal-qsm5a-cai",
+              "target_canister_id": "heixj-ryaaa-aaaal-qsm5a-cai",
+              "validator_method_name": "validate_set_module",
+              "target_method_name": "set_module"
+            }
+          }
         }
       ]
     },
@@ -368,7 +383,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999943709894000,
+    "icrc1_total_supply": 799999938310794000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -562,6 +577,20 @@
                   "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
                   "validator_method_name": "validate_icrc1_transfer",
                   "target_method_name": "icrc1_transfer"
+                }
+              }
+            },
+            {
+              "id": 2005,
+              "name": "Set module",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "Governance",
+                  "validator_canister_id": "heixj-ryaaa-aaaal-qsm5a-cai",
+                  "target_canister_id": "heixj-ryaaa-aaaal-qsm5a-cai",
+                  "validator_method_name": "validate_set_module",
+                  "target_method_name": "set_module"
                 }
               }
             }
@@ -1606,7 +1635,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10143777568116511,
+    "icrc1_total_supply": 10161523354564876,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2920,7 +2949,7 @@
           "description": "grant permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "validator_method_name": "validate_grant_permission",
@@ -2934,7 +2963,7 @@
           "description": "revoke permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "validator_method_name": "validate_revoke_permission",
@@ -2948,7 +2977,7 @@
           "description": "commit the batch that proposed by community who has Prepare permisson",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -2962,7 +2991,7 @@
           "description": "grant permission to asset canister",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
               "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
               "validator_method_name": "validate_grant_permission",
@@ -2976,7 +3005,7 @@
           "description": "commit the batch that proposed by community who has Prepare permission",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
               "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -2990,7 +3019,7 @@
           "description": "commit the batch that proposed by community who has Prepare permission",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
               "target_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -3153,7 +3182,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 617068988483562,
+    "icrc1_total_supply": 617266990275133,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3221,90 +3250,6 @@
     },
     "topics": {
       "uncategorized_functions": [
-        {
-          "id": 1000,
-          "name": "grant_permission",
-          "description": "grant permission to asset canister",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
-              "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
-              "validator_method_name": "validate_grant_permission",
-              "target_method_name": "grant_permission"
-            }
-          }
-        },
-        {
-          "id": 1001,
-          "name": "revoke_permission",
-          "description": "revoke permission to asset canister",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
-              "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
-              "validator_method_name": "validate_revoke_permission",
-              "target_method_name": "revoke_permission"
-            }
-          }
-        },
-        {
-          "id": 1003,
-          "name": "commit_proposed_batch",
-          "description": "commit the batch that proposed by community who has Prepare permisson",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
-              "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
-              "validator_method_name": "validate_commit_proposed_batch",
-              "target_method_name": "commit_proposed_batch"
-            }
-          }
-        },
-        {
-          "id": 1004,
-          "name": "grant_permission",
-          "description": "grant permission to asset canister",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
-              "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
-              "validator_method_name": "validate_grant_permission",
-              "target_method_name": "grant_permission"
-            }
-          }
-        },
-        {
-          "id": 1005,
-          "name": "commit_proposed_batch",
-          "description": "commit the batch that proposed by community who has Prepare permission",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
-              "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
-              "validator_method_name": "validate_commit_proposed_batch",
-              "target_method_name": "commit_proposed_batch"
-            }
-          }
-        },
-        {
-          "id": 1006,
-          "name": "commit_proposed_batch_of_kinic_ui",
-          "description": "commit the batch that proposed by community who has Prepare permission",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
-              "target_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
-              "validator_method_name": "validate_commit_proposed_batch",
-              "target_method_name": "commit_proposed_batch"
-            }
-          }
-        },
         {
           "id": 101000,
           "name": "Call `trade_tokens` on the KINIC trading pair canister at the CYCLES-TRANSFER-STATION.",
@@ -3424,7 +3369,92 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1000,
+              "name": "grant_permission",
+              "description": "grant permission to asset canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+                  "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+                  "validator_method_name": "validate_grant_permission",
+                  "target_method_name": "grant_permission"
+                }
+              }
+            },
+            {
+              "id": 1001,
+              "name": "revoke_permission",
+              "description": "revoke permission to asset canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+                  "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+                  "validator_method_name": "validate_revoke_permission",
+                  "target_method_name": "revoke_permission"
+                }
+              }
+            },
+            {
+              "id": 1003,
+              "name": "commit_proposed_batch",
+              "description": "commit the batch that proposed by community who has Prepare permisson",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+                  "target_canister_id": "74iy7-xqaaa-aaaaf-qagra-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            },
+            {
+              "id": 1004,
+              "name": "grant_permission",
+              "description": "grant permission to asset canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+                  "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+                  "validator_method_name": "validate_grant_permission",
+                  "target_method_name": "grant_permission"
+                }
+              }
+            },
+            {
+              "id": 1005,
+              "name": "commit_proposed_batch",
+              "description": "commit the batch that proposed by community who has Prepare permission",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+                  "target_canister_id": "va3nt-myaaa-aaaak-afjga-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            },
+            {
+              "id": 1006,
+              "name": "commit_proposed_batch_of_kinic_ui",
+              "description": "commit the batch that proposed by community who has Prepare permission",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
+                  "target_canister_id": "xcvai-qiaaa-aaaak-afowq-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [],
@@ -3869,7 +3899,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104429548986412610,
+    "icrc1_total_supply": 104444729795869290,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4485,7 +4515,7 @@
     },
     "meta": {
       "url": "https://yadjb-mqaaa-aaaan-qaqlq-cai.raw.ic0.app/",
-      "name": "ICGhost",
+      "name": "Ghost",
       "description": "The First Decentralized Meme Coin on IC",
       "logo": "/v1/sns/root/4m6il-zqaaa-aaaaq-aaa2a-cai/logo.png"
     },
@@ -4662,17 +4692,17 @@
       "default_followees": {
         "followees": []
       },
-      "max_dissolve_delay_seconds": 31536000,
+      "max_dissolve_delay_seconds": 63115200,
       "max_dissolve_delay_bonus_percentage": 25,
       "max_followees_per_function": 15,
       "automatically_advance_target_version": true,
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
-      "neuron_minimum_stake_e8s": 1000000000000,
-      "max_neuron_age_for_age_bonus": 15768000,
+      "neuron_minimum_stake_e8s": 30000000000000000,
+      "max_neuron_age_for_age_bonus": 31557600,
       "initial_voting_period_seconds": 345600,
-      "neuron_minimum_dissolve_delay_to_vote_seconds": 604800,
+      "neuron_minimum_dissolve_delay_to_vote_seconds": 2592000,
       "reject_cost_e8s": 10000000000000,
       "max_proposals_to_keep_per_action": 100,
       "wait_for_quiet_deadline_increase_seconds": 86400,
@@ -4781,7 +4811,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 930989394607034316,
+    "icrc1_total_supply": 931491344627160103,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

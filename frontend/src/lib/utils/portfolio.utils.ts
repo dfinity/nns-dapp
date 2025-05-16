@@ -1,4 +1,4 @@
-import { CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -28,7 +28,7 @@ const filterCyclesTransferStation = ({
   universeId,
 }: {
   universeId: string;
-}): boolean => CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID !== universeId;
+}): boolean => !abandonedProjectsCanisterId.includes(universeId);
 
 const compareTokensByUsdBalance = createDescendingComparator(
   (token: UserTokenData) => token?.balanceInUsd ?? 0 > 0

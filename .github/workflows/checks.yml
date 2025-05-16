@@ -334,8 +334,8 @@ jobs:
         run: scripts/network-config.test
       - name: Get SNS tool
         run: |
-          diff <(scripts/sns/aggregator/get-sns dog) <(echo "Name:   DOGMI
-          Symbol: DOGMI
+          diff <(scripts/sns/aggregator/get-sns dog) <(echo "Name:   PokedBots
+          Symbol: POKED
           Aggregator URL:         https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/nb7he-piaaa-aaaaq-aadqq-cai/slow.json
           Root canister ID:       nb7he-piaaa-aaaaq-aadqq-cai
           Governance canister ID: ni4my-zaaaa-aaaaq-aadra-cai
@@ -343,8 +343,8 @@ jobs:
           Index canister ID:      n535v-yiaaa-aaaaq-aadsq-cai
           Swap canister ID:       n223b-vqaaa-aaaaq-aadsa-cai
           Transaction fee:      1000
-          Minimum neuron stake: 10000
-          Proposal fee:         15000")
+          Minimum neuron stake: 500000
+          Proposal fee:         5000000")
   checks-pass:
     needs:
       - formatting

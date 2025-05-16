@@ -1,5 +1,9 @@
 import FollowSnsNeuronsByTopicStepTopics from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicStepTopics.svelte";
-import type { SnsTopicFollowing, SnsTopicKey } from "$lib/types/sns";
+import type {
+  SnsLegacyFollowings,
+  SnsTopicFollowing,
+  SnsTopicKey,
+} from "$lib/types/sns";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { nervousSystemFunctionMock } from "$tests/mocks/sns-functions.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -100,12 +104,18 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     selectedTopics: SnsTopicKey[];
     topicInfos: TopicInfoWithUnknown[];
     followings: SnsTopicFollowing[];
+    catchAllLegacyFollowings: SnsLegacyFollowings | undefined;
     closeModal: () => void;
     openNextStep: () => void;
     removeFollowing: (args: {
       topicKey: SnsTopicKey;
       neuronId: SnsNeuronId;
     }) => void;
+    removeLegacyFollowing: (args: {
+      nsFunction: SnsNervousSystemFunction;
+      followee: SnsNeuronId;
+    }) => void;
+    openDeactivateCatchAllStep: () => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicStepTopics, {
       props,
@@ -120,9 +130,12 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     selectedTopics: [],
     topicInfos: [],
     followings: [],
+    catchAllLegacyFollowings: undefined,
     closeModal: vi.fn(),
     openNextStep: vi.fn(),
     removeFollowing: vi.fn(),
+    removeLegacyFollowing: vi.fn(),
+    openDeactivateCatchAllStep: vi.fn(),
   };
 
   it("displays critical and non-critical topics", async () => {
@@ -260,6 +273,117 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     expect(closeModal).toBeCalledTimes(1);
     await po.clickNextButton();
     expect(openNextStep).toBeCalledTimes(1);
+  });
+
+  it("displays legacy catch-all tags when catch-all provided", async () => {
+    const po = renderComponent({
+      ...defaultProps,
+      neuron: {
+        ...mockSnsNeuron,
+        followees: [
+          [
+            // Assigned to non-critical topicInfo2
+            legacyNsFunction2.id,
+            {
+              followees: [legacyFolloweeNeuronId1],
+            },
+          ],
+        ],
+      },
+      topicInfos: [
+        criticalTopicInfo1,
+        criticalTopicInfo2,
+        topicInfo1,
+        topicInfo2,
+      ],
+      catchAllLegacyFollowings: {
+        nsFunction: {
+          ...legacyNsFunction1,
+          id: 0n,
+          name: "Catch-all",
+        },
+        followees: [legacyFolloweeNeuronId1, legacyFolloweeNeuronId2],
+      },
+    });
+
+    const legacyPos = await po.getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    // non-critical-topic-count(2) * catch-all-count(2) + legacyNsFunction2
+    expect(legacyPos.length).toEqual(2 * 2 + 1);
+
+    const topic1FolloweePos = await (
+      await po.getTopicItemPoByName(topicName1)
+    ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    expect(topic1FolloweePos.length).toEqual(2);
+
+    expect(
+      await (
+        await po.getTopicItemPoByName(topicName1)
+      ).getLegacyFolloweeNsFunctionNames()
+    ).toEqual(["Catch-all", "Catch-all"]);
+    expect(
+      await (
+        await po.getTopicItemPoByName(topicName1)
+      ).getLegacyFolloweeNeuronIds()
+    ).toEqual(["01020304", "05060708"]);
+
+    const topic2FolloweePos = await (
+      await po.getTopicItemPoByName(topicName2)
+    ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
+    expect(topic2FolloweePos.length).toEqual(3);
+    const topic2LegacyFolloweePos = await (
+      await po.getTopicItemPoByName(topicName2)
+    ).getFollowSnsNeuronsByTopicLegacyFolloweePos();
+
+    expect(
+      await (
+        await po.getTopicItemPoByName(topicName2)
+      ).getLegacyFolloweeNsFunctionNames()
+    ).toEqual(["Catch-all", "Catch-all", legacyNsFunction2Name]);
+
+    // Only "Catch-all" should not have remove button
+    for (const po of topic2LegacyFolloweePos) {
+      const nsFunctionName = await po.getNsFunctionName();
+      const hasRemoveButton = await po
+        .getFollowSnsNeuronsByTopicFolloweePo()
+        .hasRemoveButton();
+
+      if (nsFunctionName === "Catch-all") {
+        expect(hasRemoveButton).toEqual(false);
+      } else {
+        expect(hasRemoveButton).toEqual(true);
+      }
+    }
+
+    expect(
+      await (
+        await po.getTopicItemPoByName(topicName2)
+      ).getLegacyFolloweeNeuronIds()
+    ).toEqual(["01020304", "05060708", "01020304"]);
+  });
+
+  it("displays deactivate catch-all followings button when catch-all provided", async () => {
+    const spyOpenDeactivateCatchAllStep = vi.fn();
+    const po = renderComponent({
+      ...defaultProps,
+      catchAllLegacyFollowings: {
+        nsFunction: legacyNsFunction1,
+        followees: [legacyFolloweeNeuronId1],
+      },
+      openDeactivateCatchAllStep: spyOpenDeactivateCatchAllStep,
+    });
+
+    expect(await po.getDeactivateCatchAllButtonPo().isPresent()).toEqual(true);
+    await po.clickDeactivateCatchAllButton();
+    expect(spyOpenDeactivateCatchAllStep).toBeCalledTimes(1);
+  });
+
+  it("doesn't display deactivate catch-all followings when no catch-all", async () => {
+    const po = renderComponent({
+      ...defaultProps,
+      catchAllLegacyFollowings: undefined,
+    });
+
+    expect(await po.getDeactivateCatchAllButtonPo().isPresent()).toEqual(false);
   });
 
   describe("legacy followees", () => {

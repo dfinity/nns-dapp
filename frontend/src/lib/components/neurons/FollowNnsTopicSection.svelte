@@ -2,6 +2,7 @@
   // Tested in EditFollowNeurons.spec.ts
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
   import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
   import { removeFollowee } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -14,7 +15,6 @@
   } from "$lib/utils/neuron.utils";
   import { IconClose, Value } from "@dfinity/gix-components";
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
-  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let topic: Topic;
   export let neuron: NeuronInfo;
@@ -65,12 +65,13 @@
 
 <TestIdWrapper testId="follow-nns-topic-section-component">
   <FollowTopicSection
-    on:nnsOpen={openNewFolloweeModal}
     id={String(topic)}
     count={followees.length}
+    {openNewFolloweeModal}
   >
     <svelte:fragment slot="title">{title}</svelte:fragment>
     <svelte:fragment slot="subtitle">{subtitle}</svelte:fragment>
+
     <ul>
       {#each followees as followee (followee.neuronId)}
         <li data-tid="current-followee-item">
