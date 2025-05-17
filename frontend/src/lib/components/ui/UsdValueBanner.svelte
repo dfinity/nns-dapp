@@ -10,38 +10,39 @@
   const absentValue = "-/-";
 </script>
 
-<UsdValueHeadless
-  {usdAmount}
-  {hasUnpricedTokens}
-  let:icpPrice
-  let:usdAmountFormatted
-  let:icpAmountFormatted
-  let:hasError
-  let:hasPricesAndUnpricedTokens
-  ><div class="wrapper" data-tid="usd-value-banner-component">
-    <div class="table-banner-icon">
-      <slot name="icon" />
-    </div>
-    <div class="text-content">
-      <div class="totals">
-        <div class="primary-amount-row">
-          <span class="primary-amount" data-tid="primary-amount">
-            ${usdAmountFormatted}
-          </span>
-          {#if hasPricesAndUnpricedTokens}
-            <TooltipIcon>
-              {$i18n.accounts.unpriced_tokens_warning}
-            </TooltipIcon>
-          {/if}
-        </div>
-        <div class="secondary-amount" data-tid="secondary-amount">
-          {icpAmountFormatted}
-          {$i18n.core.icp}
-        </div>
+<UsdValueHeadless {usdAmount} {hasUnpricedTokens}>
+  {#snippet children({
+    usdAmountFormatted,
+    icpPrice,
+    icpAmountFormatted,
+    hasPricesAndUnpricedTokens,
+    hasError,
+  })}
+    <div class="wrapper" data-tid="usd-value-banner-component">
+      <div class="table-banner-icon">
+        <slot name="icon" />
       </div>
-      <IcpExchangeRate {icpPrice} {hasError} {absentValue} />
+      <div class="text-content">
+        <div class="totals">
+          <div class="primary-amount-row">
+            <span class="primary-amount" data-tid="primary-amount">
+              ${usdAmountFormatted}
+            </span>
+            {#if hasPricesAndUnpricedTokens}
+              <TooltipIcon>
+                {$i18n.accounts.unpriced_tokens_warning}
+              </TooltipIcon>
+            {/if}
+          </div>
+          <div class="secondary-amount" data-tid="secondary-amount">
+            {icpAmountFormatted}
+            {$i18n.core.icp}
+          </div>
+        </div>
+        <IcpExchangeRate {icpPrice} {hasError} {absentValue} />
+      </div>
     </div>
-  </div>
+  {/snippet}
 </UsdValueHeadless>
 
 <style lang="scss">
