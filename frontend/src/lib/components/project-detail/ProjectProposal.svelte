@@ -13,6 +13,8 @@
   let proposalId: ProposalId | undefined;
   $: proposalId = getProjectProposal(summary);
 
+  // TODO: Reconciliate with proposalInfo for a long term solution
+  let loadProposalError: boolean = false;
   let proposalInfo: ProposalInfo | undefined;
 
   const loadProposalFromId = (proposalId: ProposalId | undefined) => {
@@ -20,6 +22,9 @@
       loadProposal({
         proposalId,
         silentErrorMessages: true,
+        handleError: () => {
+          loadProposalError = true;
+        },
         setProposal: (proposal: ProposalInfo) => {
           // User might navigate quickly between proposals - previous / next.
           // e.g. the update call of previous proposal id 3n might be fetched after user has navigated to next proposal id 2n
@@ -38,9 +43,9 @@
 {#if nonNullish(proposalInfo)}
   <h3>{$i18n.sns_project_detail.swap_proposal}</h3>
   <NnsProposalCard {proposalInfo} />
-{:else if nonNullish(proposalId)}
+{:else if loadProposalError && nonNullish(proposalId)}
   <h3>{$i18n.sns_project_detail.swap_proposal}</h3>
-  <div class="info-message">
+  <div class="info-message" data-tid="proposal-card-alternative-info">
     <IconInfo size="24" />
     <span class="stack">
       <span>
