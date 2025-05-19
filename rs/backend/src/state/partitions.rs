@@ -129,7 +129,6 @@ impl Partitions {
 /// Note: Would prefer to use `TryFrom`, but that causes a conflict.  `DefaultMemoryImpl` a type alias which
 /// may refer to a type that has a generic implementation of `TryFrom`.  This is frustrating.
 impl From<DefaultMemoryImpl> for Partitions {
-    #[must_use]
     fn from(memory: DefaultMemoryImpl) -> Self {
         let memory_manager = MemoryManager::init(memory);
         Partitions { memory_manager }

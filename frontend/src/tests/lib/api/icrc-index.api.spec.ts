@@ -10,7 +10,7 @@ import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import type { HttpAgent } from "@dfinity/agent";
-import { IcrcIndexCanister, IcrcIndexNgCanister } from "@dfinity/ledger-icrc";
+import { IcrcIndexNgCanister } from "@dfinity/ledger-icrc";
 import { mock } from "vitest-mock-extended";
 
 describe("icrc-index api", () => {
@@ -23,19 +23,12 @@ describe("icrc-index api", () => {
     indexCanisterId: principal(0),
   };
 
-  const indexCanisterMock = mock<IcrcIndexCanister>();
-  let spyOnIndexCanisterCreate;
-
   const indexNgCanisterMock = mock<IcrcIndexNgCanister>();
   let spyOnIndexNgCanisterCreate;
 
   const agentMock = mock<HttpAgent>();
 
   beforeEach(() => {
-    spyOnIndexCanisterCreate = vi
-      .spyOn(IcrcIndexCanister, "create")
-      .mockImplementation(() => indexCanisterMock);
-
     spyOnIndexNgCanisterCreate = vi
       .spyOn(IcrcIndexNgCanister, "create")
       .mockImplementation(() => indexNgCanisterMock);
@@ -48,20 +41,21 @@ describe("icrc-index api", () => {
     const oldestTxId = 1234n;
 
     it("returns list of transaction", async () => {
-      indexCanisterMock.getTransactions.mockResolvedValue({
+      indexNgCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [oldestTxId],
+        balance: 0n,
       });
       const result = await getTransactions(params);
 
-      expect(spyOnIndexCanisterCreate).toBeCalledTimes(1);
-      expect(spyOnIndexCanisterCreate).toBeCalledWith({
+      expect(spyOnIndexNgCanisterCreate).toBeCalledTimes(1);
+      expect(spyOnIndexNgCanisterCreate).toBeCalledWith({
         agent: agentMock,
         canisterId: params.indexCanisterId,
       });
 
-      expect(indexCanisterMock.getTransactions).toBeCalledTimes(1);
-      expect(indexCanisterMock.getTransactions).toBeCalledWith({
+      expect(indexNgCanisterMock.getTransactions).toBeCalledTimes(1);
+      expect(indexNgCanisterMock.getTransactions).toBeCalledWith({
         max_results: params.maxResults,
         start: undefined,
         account: params.account,
@@ -72,9 +66,10 @@ describe("icrc-index api", () => {
     });
 
     it("passes start parameter", async () => {
-      indexCanisterMock.getTransactions.mockResolvedValue({
+      indexNgCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [oldestTxId],
+        balance: 0n,
       });
       const start = 23n;
       await getTransactions({
@@ -82,14 +77,14 @@ describe("icrc-index api", () => {
         start,
       });
 
-      expect(spyOnIndexCanisterCreate).toBeCalledTimes(1);
-      expect(spyOnIndexCanisterCreate).toBeCalledWith({
+      expect(spyOnIndexNgCanisterCreate).toBeCalledTimes(1);
+      expect(spyOnIndexNgCanisterCreate).toBeCalledWith({
         agent: agentMock,
         canisterId: params.indexCanisterId,
       });
 
-      expect(indexCanisterMock.getTransactions).toBeCalledTimes(1);
-      expect(indexCanisterMock.getTransactions).toBeCalledWith({
+      expect(indexNgCanisterMock.getTransactions).toBeCalledTimes(1);
+      expect(indexNgCanisterMock.getTransactions).toBeCalledWith({
         max_results: params.maxResults,
         start,
         account: params.account,
@@ -98,7 +93,7 @@ describe("icrc-index api", () => {
 
     it("throws an error if canister throws", async () => {
       const err = new Error("test");
-      indexCanisterMock.getTransactions.mockRejectedValue(err);
+      indexNgCanisterMock.getTransactions.mockRejectedValue(err);
 
       const call = () => getTransactions(params);
 

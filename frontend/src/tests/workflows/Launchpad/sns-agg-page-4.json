@@ -818,7 +818,7 @@
                 "intercept_icp_e8s": 4000000000000,
                 "from_direct_participation_icp_e8s": 13900384531313,
                 "slope_denominator": 365448521549985,
-                "to_direct_participation_icp_e8s": 18446744073709551615
+                "to_direct_participation_icp_e8s": 18446744073709552000
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 6574394013474,
@@ -900,7 +900,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 100000000000000000,
+    "icrc1_total_supply": 1e17,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1545,7 +1545,7 @@
               "intercept_icp_e8s": 4000000000000,
               "from_direct_participation_icp_e8s": 13900384531313,
               "slope_denominator": 365448521549985,
-              "to_direct_participation_icp_e8s": 18446744073709551615
+              "to_direct_participation_icp_e8s": 18446744073709552000
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 6574394013474,
@@ -1794,7 +1794,7 @@
           "swap_start_timestamp_seconds": 1735679700,
           "swap_due_timestamp_seconds": 1736889300,
           "min_participants": 1,
-          "sns_token_e8s": 20000000000000000,
+          "sns_token_e8s": 2e16,
           "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "transaction_fee_e8s": 10000,
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -2380,7 +2380,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 13086776345355,
                 "slope_denominator": 359577925627968,
-                "to_direct_participation_icp_e8s": 18446744073709551615
+                "to_direct_participation_icp_e8s": 18446744073709552000
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 8023396640288,
@@ -2408,7 +2408,7 @@
           "max_icp_e8s": 33023396640288,
           "swap_due_timestamp_seconds": 1736889300,
           "min_participants": 1,
-          "sns_token_e8s": 20000000000000000,
+          "sns_token_e8s": 2e16,
           "sale_delay_seconds": null,
           "max_participant_icp_e8s": 10000000000000,
           "min_direct_participation_icp_e8s": 5000000000000,
@@ -2462,7 +2462,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100000000000000000,
+    "icrc1_total_supply": 1e17,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2473,7 +2473,7 @@
         "max_icp_e8s": 33023396640288,
         "swap_due_timestamp_seconds": 1736889300,
         "min_participants": 1,
-        "sns_token_e8s": 20000000000000000,
+        "sns_token_e8s": 2e16,
         "sale_delay_seconds": null,
         "max_participant_icp_e8s": 10000000000000,
         "min_direct_participation_icp_e8s": 5000000000000,
@@ -2501,7 +2501,7 @@
         "swap_start_timestamp_seconds": 1735679700,
         "swap_due_timestamp_seconds": 1736889300,
         "min_participants": 1,
-        "sns_token_e8s": 20000000000000000,
+        "sns_token_e8s": 2e16,
         "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
         "transaction_fee_e8s": 10000,
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -3087,7 +3087,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 13086776345355,
               "slope_denominator": 359577925627968,
-              "to_direct_participation_icp_e8s": 18446744073709551615
+              "to_direct_participation_icp_e8s": 18446744073709552000
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 8023396640288,
@@ -3345,7 +3345,7 @@
           "swap_start_timestamp_seconds": 1736043300,
           "swap_due_timestamp_seconds": 1737252900,
           "min_participants": 100,
-          "sns_token_e8s": 20000000000000000,
+          "sns_token_e8s": 2e16,
           "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "transaction_fee_e8s": 100000,
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -3910,7 +3910,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 9513134323403,
                 "slope_denominator": 354002835088317,
-                "to_direct_participation_icp_e8s": 18446744073709551615
+                "to_direct_participation_icp_e8s": 18446744073709552000
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7678146410688,
@@ -3964,7 +3964,7 @@
           "max_icp_e8s": 17678146410688,
           "swap_due_timestamp_seconds": 1737252900,
           "min_participants": 100,
-          "sns_token_e8s": 20000000000000000,
+          "sns_token_e8s": 2e16,
           "sale_delay_seconds": null,
           "max_participant_icp_e8s": 10000000000000,
           "min_direct_participation_icp_e8s": 2000000000000,
@@ -4018,7 +4018,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99052531735693897,
+    "icrc1_total_supply": 99053006339348270,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4029,7 +4029,7 @@
         "max_icp_e8s": 17678146410688,
         "swap_due_timestamp_seconds": 1737252900,
         "min_participants": 100,
-        "sns_token_e8s": 20000000000000000,
+        "sns_token_e8s": 2e16,
         "sale_delay_seconds": null,
         "max_participant_icp_e8s": 10000000000000,
         "min_direct_participation_icp_e8s": 2000000000000,
@@ -4058,7 +4058,7 @@
         "swap_start_timestamp_seconds": 1736043300,
         "swap_due_timestamp_seconds": 1737252900,
         "min_participants": 100,
-        "sns_token_e8s": 20000000000000000,
+        "sns_token_e8s": 2e16,
         "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
         "transaction_fee_e8s": 100000,
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -4623,7 +4623,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 9513134323403,
               "slope_denominator": 354002835088317,
-              "to_direct_participation_icp_e8s": 18446744073709551615
+              "to_direct_participation_icp_e8s": 18446744073709552000
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7678146410688,
@@ -4714,7 +4714,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -5166,7 +5166,7 @@
       ]
     ],
     "icrc1_fee": [500000000],
-    "icrc1_total_supply": 4206181875232470,
+    "icrc1_total_supply": 4219142310866638,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5264,7 +5264,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -5598,7 +5598,7 @@
           "description": "Proposal to add new NervousSystemFunction: grant_permission",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "validator_method_name": "validate_grant_permission",
@@ -5612,7 +5612,7 @@
           "description": "Proposal to add new NervousSystemFunction: revoke_permission",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "validator_method_name": "validate_revoke_permission",
@@ -5626,7 +5626,7 @@
           "description": "commit the batch that proposed by community who has Prepare permisson",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -5913,7 +5913,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 8802938626084,
                 "slope_denominator": 372288345009152,
-                "to_direct_participation_icp_e8s": 18446744073709551615
+                "to_direct_participation_icp_e8s": 18446744073709552000
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 9211380197810,
@@ -6019,7 +6019,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 213961125325668576,
+    "icrc1_total_supply": 213986758314744000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -6279,7 +6279,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 8802938626084,
               "slope_denominator": 372288345009152,
-              "to_direct_participation_icp_e8s": 18446744073709551615
+              "to_direct_participation_icp_e8s": 18446744073709552000
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 9211380197810,
@@ -6338,50 +6338,7 @@
       "decentralization_swap_termination_timestamp_seconds": 1739109633
     },
     "topics": {
-      "uncategorized_functions": [
-        {
-          "id": 1000,
-          "name": "grant_permission ",
-          "description": "Proposal to add new NervousSystemFunction: grant_permission",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "validator_method_name": "validate_grant_permission",
-              "target_method_name": "grant_permission"
-            }
-          }
-        },
-        {
-          "id": 1001,
-          "name": "revoke_permission",
-          "description": "Proposal to add new NervousSystemFunction: revoke_permission",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "validator_method_name": "validate_revoke_permission",
-              "target_method_name": "revoke_permission"
-            }
-          }
-        },
-        {
-          "id": 1003,
-          "name": "commit_proposed_batch",
-          "description": "commit the batch that proposed by community who has Prepare permisson",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
-              "validator_method_name": "validate_commit_proposed_batch",
-              "target_method_name": "commit_proposed_batch"
-            }
-          }
-        }
-      ],
+      "uncategorized_functions": [],
       "topics": [
         {
           "native_functions": [
@@ -6411,7 +6368,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -6472,7 +6429,50 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1000,
+              "name": "grant_permission ",
+              "description": "Proposal to add new NervousSystemFunction: grant_permission",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "validator_method_name": "validate_grant_permission",
+                  "target_method_name": "grant_permission"
+                }
+              }
+            },
+            {
+              "id": 1001,
+              "name": "revoke_permission",
+              "description": "Proposal to add new NervousSystemFunction: revoke_permission",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "validator_method_name": "validate_revoke_permission",
+                  "target_method_name": "revoke_permission"
+                }
+              }
+            },
+            {
+              "id": 1003,
+              "name": "commit_proposed_batch",
+              "description": "commit the batch that proposed by community who has Prepare permisson",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "target_canister_id": "3y5ko-7qaaa-aaaal-aaaaq-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [],
@@ -7472,7 +7472,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 14056163545378,
                 "slope_denominator": 364165659876922,
-                "to_direct_participation_icp_e8s": 18446744073709551615
+                "to_direct_participation_icp_e8s": 18446744073709552000
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 9424915867611,
@@ -7577,7 +7577,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100183590698010056,
+    "icrc1_total_supply": 100206236066506130,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8292,7 +8292,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 14056163545378,
               "slope_denominator": 364165659876922,
-              "to_direct_participation_icp_e8s": 18446744073709551615
+              "to_direct_participation_icp_e8s": 18446744073709552000
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 9424915867611,
@@ -8763,7 +8763,7 @@
           "swap_start_timestamp_seconds": 1739815200,
           "swap_due_timestamp_seconds": 1740679200,
           "min_participants": 100,
-          "sns_token_e8s": 40000000000000000,
+          "sns_token_e8s": 4e16,
           "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
           "transaction_fee_e8s": 100000,
           "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -9447,7 +9447,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 11122733855983,
                 "slope_denominator": 366784665681131,
-                "to_direct_participation_icp_e8s": 18446744073709551615
+                "to_direct_participation_icp_e8s": 18446744073709552000
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 10124522014496,
@@ -9503,7 +9503,7 @@
           "max_icp_e8s": 22124522014496,
           "swap_due_timestamp_seconds": 1740679200,
           "min_participants": 100,
-          "sns_token_e8s": 40000000000000000,
+          "sns_token_e8s": 4e16,
           "sale_delay_seconds": null,
           "max_participant_icp_e8s": 5000000000000,
           "min_direct_participation_icp_e8s": 3000000000000,
@@ -9557,7 +9557,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100043228162013481,
+    "icrc1_total_supply": 100055769306241870,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9568,7 +9568,7 @@
         "max_icp_e8s": 22124522014496,
         "swap_due_timestamp_seconds": 1740679200,
         "min_participants": 100,
-        "sns_token_e8s": 40000000000000000,
+        "sns_token_e8s": 4e16,
         "sale_delay_seconds": null,
         "max_participant_icp_e8s": 5000000000000,
         "min_direct_participation_icp_e8s": 3000000000000,
@@ -9595,7 +9595,7 @@
         "swap_start_timestamp_seconds": 1739815200,
         "swap_due_timestamp_seconds": 1740679200,
         "min_participants": 100,
-        "sns_token_e8s": 40000000000000000,
+        "sns_token_e8s": 4e16,
         "nns_governance_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
         "transaction_fee_e8s": 100000,
         "icp_ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
@@ -10279,7 +10279,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 11122733855983,
               "slope_denominator": 366784665681131,
-              "to_direct_participation_icp_e8s": 18446744073709551615
+              "to_direct_participation_icp_e8s": 18446744073709552000
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 10124522014496,
@@ -10372,7 +10372,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -10680,6 +10680,14 @@
           "id": 15,
           "name": "Advance SNS target version",
           "description": "Proposal to advance the target version of this SNS.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 16,
+          "name": "Set topics for custom proposals",
+          "description": "Proposal to set the topics for custom SNS proposals.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -10992,7 +11000,7 @@
                 "intercept_icp_e8s": 3000000000000,
                 "from_direct_participation_icp_e8s": 6642520782867,
                 "slope_denominator": 365926536383867,
-                "to_direct_participation_icp_e8s": 18446744073709551615
+                "to_direct_participation_icp_e8s": 18446744073709552000
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 5231872919642,
@@ -11074,7 +11082,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 2101517938130212,
+    "icrc1_total_supply": 2104290228279576,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -11363,7 +11371,7 @@
               "intercept_icp_e8s": 3000000000000,
               "from_direct_participation_icp_e8s": 6642520782867,
               "slope_denominator": 365926536383867,
-              "to_direct_participation_icp_e8s": 18446744073709551615
+              "to_direct_participation_icp_e8s": 18446744073709552000
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 5231872919642,
@@ -11428,7 +11436,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -11563,6 +11571,14 @@
               "id": 5,
               "name": "Remove nervous system function",
               "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 16,
+              "name": "Set topics for custom proposals",
+              "description": "Proposal to set the topics for custom SNS proposals.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -11874,7 +11890,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99999279000000,
+    "icrc1_total_supply": 99999245000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 300000000,
@@ -11972,7 +11988,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -13341,7 +13357,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 27006909319377,
                 "slope_denominator": 365535873828799,
-                "to_direct_participation_icp_e8s": 18446744073709551615
+                "to_direct_participation_icp_e8s": 18446744073709552000
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 15211631910004,
@@ -13451,7 +13467,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100000649291995221,
+    "icrc1_total_supply": 100000813635355310,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14475,7 +14491,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 27006909319377,
               "slope_denominator": 365535873828799,
-              "to_direct_participation_icp_e8s": 18446744073709551615
+              "to_direct_participation_icp_e8s": 18446744073709552000
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 15211631910004,
@@ -14568,7 +14584,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
