@@ -19,7 +19,7 @@ describe("balancesVisibility", () => {
     balancePrivacyOptionStore.set("hide");
 
     expect(
-      window.localStorage.getItem(StoreLocalStorageKey.BalancePrivacyMode)
+      window.localStorage.getItem(StoreLocalStorageKey.BalancePrivacyOption)
     ).toEqual('"hide"');
   });
 });

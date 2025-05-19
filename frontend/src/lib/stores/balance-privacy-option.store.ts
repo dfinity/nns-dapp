@@ -7,6 +7,6 @@ export type BalancePrivacyOption = "show" | "hide";
 export type BalancePrivacyOptionStore = Writable<BalancePrivacyOption>;
 
 export const balancePrivacyOptionStore = writableStored<BalancePrivacyOption>({
-  key: StoreLocalStorageKey.BalancePrivacyMode,
+  key: StoreLocalStorageKey.BalancePrivacyOption,
   defaultValue: "show",
 });
