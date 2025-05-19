@@ -42,12 +42,26 @@
   <h3>{$i18n.sns_project_detail.swap_proposal}</h3>
   <div class="info-message">
     <IconInfo size="24" />
-    <span>
-      You can find the proposal details on the
+    <span class="stack">
+      <span>
+        You can find the proposal details on the <a
+          href="https://dashboard.internetcomputer.org/proposal/{proposalId}"
+          target="_blank"
+          rel="noopener noreferrer">dashboard</a
+        >
+        or on
+        <a
+          href="https://f2djv-5aaaa-aaaah-qdbea-cai.raw.icp0.io/proposal/{proposalId}"
+          target="_blank"
+          rel="noopener noreferrer">vpgeek</a
+        >.
+      </span>
       <a
-        href="https://dashboard.internetcomputer.org/proposal/{proposalId}"
-        target="_blank">dashboard</a
-      >.
+        href="https://forum.dfinity.org/t/nns-governance-bug-in-proposal-136693/48224"
+        class="small"
+        target="_blank"
+        rel="noopener noreferrer">why is the proposal not in the dapp?</a
+      >
     </span>
   </div>
 {/if}
@@ -60,26 +74,27 @@
   .info-message {
     display: flex;
     align-items: center;
-    gap: var(--padding-2x);
-    padding: 14px 16px;
-    margin: 16px 0;
-    background-color: #f0f7ff;
-    border-left: 4px solid #2196f3;
+    gap: var(--padding);
+    padding: var(--padding-1_5x) var(--padding-2x);
+    margin: var(--padding-2x) 0;
+    background: var(--card-background);
+    border-left: 4px solid var(--primary);
     border-radius: 4px;
-    color: #333;
-    font-size: 16px;
     line-height: 1.5;
   }
-
-  .info-message a {
-    color: #0d6efd;
-    text-decoration: underline;
-    margin-left: 4px;
+  .stack {
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Optional hover effect for the entire message */
-  .info-message:hover {
-    background-color: #e3f2fd;
-    transition: background-color 0.2s ease;
+  .info-message {
+    a {
+      color: var(--button-secondary-color);
+    }
+
+    .small {
+      font-size: var(--font-size-small);
+      color: var(--content-color);
+    }
   }
 </style>
