@@ -1,8 +1,13 @@
 <script lang="ts">
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
+  import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
-  import { formatCurrencyNumber, formatNumber } from "$lib/utils/format.utils";
+  import {
+    formatCurrencyNumber,
+    formatNumber,
+    renderPrivacyModeBalance,
+  } from "$lib/utils/format.utils";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
@@ -33,9 +38,11 @@
   const hasPricesAndUnpricedTokens = $derived(hasPrices && hasUnpricedTokens);
 
   const usdAmountFormatted = $derived(
-    nonNullish(usdAmount) && hasPrices
-      ? formatCurrencyNumber(usdAmount)
-      : absentValue
+    $isBalancePrivacyOptionStore
+      ? renderPrivacyModeBalance(5)
+      : nonNullish(usdAmount) && hasPrices
+        ? formatCurrencyNumber(usdAmount)
+        : absentValue
   );
   const icpPrice = $derived(
     isNullish($icpSwapUsdPricesStore) || $icpSwapUsdPricesStore === "error"
@@ -49,7 +56,11 @@
       : undefined
   );
   const icpAmountFormatted = $derived(
-    nonNullish(icpAmount) ? formatNumber(icpAmount) : absentValue
+    $isBalancePrivacyOptionStore
+      ? renderPrivacyModeBalance(3)
+      : nonNullish(icpAmount)
+        ? formatNumber(icpAmount)
+        : absentValue
   );
 </script>
 
