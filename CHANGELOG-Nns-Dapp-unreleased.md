@@ -33,6 +33,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Security
 
+* Added Permissions Policy to enhance browser security controls
+
 #### Not Published
 
 ### Operations
