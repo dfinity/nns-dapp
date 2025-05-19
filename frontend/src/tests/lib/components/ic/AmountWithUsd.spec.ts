@@ -1,5 +1,7 @@
 import AmountWithUsd from "$lib/components/ic/AmountWithUsd.svelte";
+import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { AmountWithUsdPo } from "$tests/page-objects/AmountWithUsd.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
@@ -43,5 +45,16 @@ describe("AmountWithUsd", () => {
       amountInUsd: undefined,
     });
     expect(await po.getAmountInUsd()).toEqual("$-/-");
+  });
+
+  it("should render the hidden characters if the user is logged in and hide balance is toggled", async () => {
+    resetIdentity();
+    balancePrivacyOptionStore.set("hide");
+
+    const po = renderComponent({
+      amount: tokenAmount,
+      amountInUsd: undefined,
+    });
+    expect(await po.getAmountInUsd()).toEqual("$•••");
   });
 });

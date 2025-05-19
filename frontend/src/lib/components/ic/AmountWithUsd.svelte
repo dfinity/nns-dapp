@@ -21,7 +21,7 @@
   <AmountDisplay singleLine {amount} {hideValue} />
   <span data-tid="usd-value" class="usd-value">
     {#if hideValue}
-      {renderPrivacyModeBalance(3)}
+      ${renderPrivacyModeBalance(3)}
     {:else if nonNullish(amountInUsd)}
       ${formatNumber(amountInUsd)}
     {:else}

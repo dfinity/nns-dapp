@@ -139,4 +139,12 @@ describe("AmountDisplay", () => {
     });
     expect(await po.getCopyButtonPo().isPresent()).toBe(false);
   });
+
+  it("should render the hidden character if hideValue is true", async () => {
+    const po = renderComponent({
+      ...props,
+      hideValue: true,
+    });
+    expect(await po.getText()).toEqual("••• ICP");
+  });
 });
