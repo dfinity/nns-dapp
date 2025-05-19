@@ -17,8 +17,10 @@
     topHeldTokens: UserTokenData[];
     usdAmount: number;
     numberOfTopStakedTokens: number;
+    icon?: Component;
   };
-  const { topHeldTokens, usdAmount, numberOfTopStakedTokens }: Props = $props();
+  const { topHeldTokens, usdAmount, numberOfTopStakedTokens, icon }: Props =
+    $props();
 
   const href = AppPath.Tokens;
 
