@@ -53,14 +53,14 @@
         <a
           href="https://f2djv-5aaaa-aaaah-qdbea-cai.raw.icp0.io/proposal/{proposalId}"
           target="_blank"
-          rel="noopener noreferrer">vpgeek</a
+          rel="noopener noreferrer">vpGeek</a
         >.
       </span>
       <a
         href="https://forum.dfinity.org/t/nns-governance-bug-in-proposal-136693/48224"
         class="small"
         target="_blank"
-        rel="noopener noreferrer">why is the proposal not in the dapp?</a
+        rel="noopener noreferrer">Why is the proposal not in the dapp?</a
       >
     </span>
   </div>
