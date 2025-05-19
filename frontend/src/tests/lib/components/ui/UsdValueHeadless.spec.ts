@@ -114,7 +114,7 @@ describe("UsdValueHeadless", () => {
     expect(await po.getIcpAmountFormatted()).toBe("5.00");
   });
 
-  it("should hide balance if user is logged in and has toggle hide balance", async () => {
+  it("should hide balance if user is logged in and hide balance is toggled", async () => {
     balancePrivacyOptionStore.set("hide");
     resetIdentity();
 
