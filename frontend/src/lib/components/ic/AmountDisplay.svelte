@@ -7,16 +7,31 @@
   import { Copy } from "@dfinity/gix-components";
   import { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
-  export let amount: TokenAmount | TokenAmountV2 | UnavailableTokenAmount;
-  export let label: string | undefined = undefined;
-  export let inline = false;
-  export let singleLine = false;
-  export let title = false;
-  export let copy = false;
-  export let text = false;
-  export let size: "inherit" | "huge" | undefined = undefined;
-  export let sign: "+" | "-" | "" = "";
-  export let detailed: boolean | "height_decimals" = false;
+  type Props = {
+    amount: TokenAmount | TokenAmountV2 | UnavailableTokenAmount;
+    label?: string;
+    inline?: boolean;
+    singleLine?: boolean;
+    title?: boolean;
+    copy?: boolean;
+    text?: boolean;
+    size?: "inherit" | "huge";
+    sign?: "+" | "-" | "";
+    detailed?: boolean | "height_decimals";
+  };
+
+  const {
+    amount,
+    label = undefined,
+    inline = false,
+    singleLine = false,
+    title = false,
+    copy = false,
+    text = false,
+    size = undefined,
+    sign = "",
+    detailed = false,
+  }: Props = $props();
 
   const isValidAmount = (
     amount:
