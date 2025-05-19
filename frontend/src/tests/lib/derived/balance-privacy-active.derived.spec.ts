@@ -1,4 +1,4 @@
-import { isPrivacyModeStore } from "$lib/derived/balance-privacy-active.derived";
+import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
 import { authStore } from "$lib/stores/auth.store";
 import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
@@ -10,7 +10,7 @@ describe("balance-privacy-active.derived", () => {
   });
 
   it("should be false by default", () => {
-    const value = get(isPrivacyModeStore);
+    const value = get(isBalancePrivacyOptionStore);
     expect(value).toBe(false);
   });
 
@@ -18,7 +18,7 @@ describe("balance-privacy-active.derived", () => {
     balancePrivacyOptionStore.set("hide");
     authStore.setForTesting(null);
 
-    const value = get(isPrivacyModeStore);
+    const value = get(isBalancePrivacyOptionStore);
     expect(value).toBe(false);
   });
 
@@ -26,7 +26,7 @@ describe("balance-privacy-active.derived", () => {
     authStore.setForTesting(mockIdentity);
     balancePrivacyOptionStore.set("show");
 
-    const value = get(isPrivacyModeStore);
+    const value = get(isBalancePrivacyOptionStore);
     expect(value).toBe(false);
   });
 
@@ -34,7 +34,7 @@ describe("balance-privacy-active.derived", () => {
     authStore.setForTesting(mockIdentity);
     balancePrivacyOptionStore.set("hide");
 
-    const value = get(isPrivacyModeStore);
+    const value = get(isBalancePrivacyOptionStore);
     expect(value).toBe(true);
   });
 });
