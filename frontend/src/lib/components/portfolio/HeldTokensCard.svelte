@@ -17,8 +17,10 @@
     topHeldTokens: UserTokenData[];
     usdAmount: number;
     numberOfTopStakedTokens: number;
+    icon?: Component;
   };
-  const { topHeldTokens, usdAmount, numberOfTopStakedTokens }: Props = $props();
+  const { topHeldTokens, usdAmount, numberOfTopStakedTokens, icon }: Props =
+    $props();
 
   const href = AppPath.Tokens;
 
@@ -43,9 +45,9 @@
       title={$i18n.portfolio.held_tokens_card_title}
       linkText={$i18n.portfolio.held_tokens_card_link}
     >
-      <svelte:fragment slot="icon">
+      {#snippet icon()}
         <IconHeldTokens />
-      </svelte:fragment>
+      {/snippet}
     </TokensCardHeader>
     <div class="body" role="table">
       <div class="header" role="row">

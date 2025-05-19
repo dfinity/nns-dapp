@@ -3,15 +3,17 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
+  import type { Snippet } from "svelte";
 
   type Props = {
     usdAmount: number;
     href: string;
     title: string;
     linkText: string;
+    icon: Snippet;
   };
 
-  const { usdAmount, href, title, linkText }: Props = $props();
+  const { usdAmount, href, title, linkText, icon }: Props = $props();
 
   const usdAmountFormatted = $derived(
     $authSignedInStore
@@ -23,7 +25,7 @@
 <div class="header">
   <div class="header-wrapper">
     <div class="icon" aria-hidden="true">
-      <slot name="icon" />
+      {@render icon()}
     </div>
     <div class="text-content">
       <h5 class="title">{title}</h5>

@@ -46,9 +46,9 @@
       title={$i18n.portfolio.staked_tokens_card_title}
       linkText={$i18n.portfolio.staked_tokens_card_link}
     >
-      <svelte:fragment slot="icon">
+      {#snippet icon()}
         <IconNeuronsPage />
-      </svelte:fragment>
+      {/snippet}
     </TokensCardHeader>
     <div class="body" role="table">
       <div class="header" role="row">
