@@ -14,20 +14,24 @@
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
-  export let topStakedTokens: TableProject[];
-  export let usdAmount: number;
-  export let numberOfTopHeldTokens: number;
+  type Props = {
+    topStakedTokens: TableProject[];
+    usdAmount: number;
+    numberOfTopHeldTokens: number;
+  };
+
+  const { topStakedTokens, usdAmount, numberOfTopHeldTokens }: Props = $props();
 
   const href = AppPath.Staking;
 
-  let numberOfTopStakedTokens: number;
-  $: numberOfTopStakedTokens = topStakedTokens.length;
+  const numberOfTopStakedTokens = $derived(topStakedTokens.length);
 
-  let showInfoRow: boolean;
-  $: showInfoRow = shouldShowInfoRow({
-    currentCardNumberOfTokens: numberOfTopStakedTokens,
-    otherCardNumberOfTokens: numberOfTopHeldTokens,
-  });
+  const showInfoRow = $derived(
+    shouldShowInfoRow({
+      currentCardNumberOfTokens: numberOfTopStakedTokens,
+      otherCardNumberOfTokens: numberOfTopHeldTokens,
+    })
+  );
 </script>
 
 <Card testId="staked-tokens-card">

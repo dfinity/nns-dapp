@@ -4,15 +4,20 @@
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
 
-  export let usdAmount: number;
-  export let href: string;
-  export let title: string;
-  export let linkText: string;
+  type Props = {
+    usdAmount: number;
+    href: string;
+    title: string;
+    linkText: string;
+  };
 
-  let usdAmountFormatted: string;
-  $: usdAmountFormatted = $authSignedInStore
-    ? formatCurrencyNumber(usdAmount)
-    : PRICE_NOT_AVAILABLE_PLACEHOLDER;
+  const { usdAmount, href, title, linkText }: Props = $props();
+
+  const usdAmountFormatted = $derived(
+    $authSignedInStore
+      ? formatCurrencyNumber(usdAmount)
+      : PRICE_NOT_AVAILABLE_PLACEHOLDER
+  );
 </script>
 
 <div class="header">

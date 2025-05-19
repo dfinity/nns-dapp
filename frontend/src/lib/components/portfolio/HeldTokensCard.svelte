@@ -13,20 +13,22 @@
   import { IconAccountsPage, IconHeldTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
-  export let topHeldTokens: UserTokenData[];
-  export let usdAmount: number;
-  export let numberOfTopStakedTokens: number;
+  type Props = {
+    topHeldTokens: UserTokenData[];
+    usdAmount: number;
+    numberOfTopStakedTokens: number;
+  };
+  const { topHeldTokens, usdAmount, numberOfTopStakedTokens }: Props = $props();
 
   const href = AppPath.Tokens;
 
-  let numberOfTopHeldTokens: number;
-  $: numberOfTopHeldTokens = topHeldTokens.length;
-
-  let showInfoRow: boolean;
-  $: showInfoRow = shouldShowInfoRow({
-    currentCardNumberOfTokens: numberOfTopHeldTokens,
-    otherCardNumberOfTokens: numberOfTopStakedTokens,
-  });
+  const numberOfTopHeldTokens = $derived(topHeldTokens.length);
+  const showInfoRow = $derived(
+    shouldShowInfoRow({
+      currentCardNumberOfTokens: numberOfTopHeldTokens,
+      otherCardNumberOfTokens: numberOfTopStakedTokens,
+    })
+  );
 </script>
 
 <Card testId="held-tokens-card">
