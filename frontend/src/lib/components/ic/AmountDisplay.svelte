@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { renderPrivacyModeBalance } from "$lib/utils/format.utils";
   import {
     FailedTokenAmount,
     formatTokenV2,
@@ -18,6 +19,7 @@
     size?: "inherit" | "huge";
     sign?: "+" | "-" | "";
     detailed?: boolean | "height_decimals";
+    hideValue?: boolean;
   };
 
   const {
@@ -31,6 +33,7 @@
     size = undefined,
     sign = "",
     detailed = false,
+    hideValue = false,
   }: Props = $props();
 
   const isValidAmount = (
@@ -58,7 +61,10 @@
     data-tid="token-value"
     class="value"
     class:tabular-num={detailed === "height_decimals"}
-    >{#if !isValidAmount(amount)}
+  >
+    {#if hideValue}
+      {renderPrivacyModeBalance(3)}
+    {:else if !isValidAmount(amount)}
       -/-
     {:else}
       {`${sign}${formatTokenV2({ value: amount, detailed })}`}
