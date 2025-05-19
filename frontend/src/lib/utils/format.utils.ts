@@ -85,4 +85,4 @@ export const shortenWithMiddleEllipsis = (
 };
 
 export const renderPrivacyModeBalance = (count: number) =>
-  count < 0 ? "" : "•".repeat(count);
+  "•".repeat(Math.max(0, count));
