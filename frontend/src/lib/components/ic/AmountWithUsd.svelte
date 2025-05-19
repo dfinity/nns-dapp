@@ -18,7 +18,7 @@
 </script>
 
 <div class="values" data-tid="amount-with-usd-component">
-  <AmountDisplay singleLine {amount} />
+  <AmountDisplay singleLine {amount} {hideValue} />
   <span data-tid="usd-value" class="usd-value">
     {#if hideValue}
       {renderPrivacyModeBalance(3)}

@@ -64,10 +64,10 @@
   >
     {#if hideValue}
       {renderPrivacyModeBalance(3)}
-    {:else if !isValidAmount(amount)}
-      -/-
-    {:else}
+    {:else if isValidAmount(amount)}
       {`${sign}${formatTokenV2({ value: amount, detailed })}`}
+    {:else}
+      -/-
     {/if}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span
