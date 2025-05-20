@@ -313,6 +313,9 @@ fn security_headers() -> Vec<HeaderField> {
         ),
         // "Referrer-Policy: no-referrer" would be more strict, but breaks local dev deployment same-origin is still ok from a security perspective
         ("Referrer-Policy".to_string(), "same-origin".to_string()),
+        // camera is required for QR codes
+        // clipboard r&w is required for copying/pasting into the nns-dapp
+        // hid & usb are required for HW
         (
             "Permissions-Policy".to_string(),
             "accelerometer=(),\
