@@ -334,7 +334,7 @@ fn security_headers() -> Vec<HeaderField> {
          gamepad=(),\
          geolocation=(),\
          gyroscope=(),\
-         hid=(),\
+         hid=(self),\
          idle-detection=(),\
          interest-cohort=(),\
          keyboard-map=(),\
@@ -351,7 +351,7 @@ fn security_headers() -> Vec<HeaderField> {
          sync-script=(),\
          sync-xhr=(),\
          trust-token-redemption=(),\
-         usb=(),\
+         usb=(self),\
          vertical-scroll=(),\
          web-share=(),\
          window-placement=(),\
