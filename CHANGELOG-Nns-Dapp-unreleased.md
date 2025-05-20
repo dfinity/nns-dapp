@@ -14,12 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Swipe gestures for project cards on the portfolio page
-* Display the voting delegation state in the SNS neurons table
-* Display upcoming swaps in the portfolio page
-* Display the voting delegation state in the NNS neurons table
-* Display neuron ID related errors inline during vote delegation process
-
 #### Changed
 
 #### Deprecated
@@ -28,12 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Fix tag background styling in the vote delegation modal (dark theme)
-* "Add Followee" button is not fully visible after adding a followee
-
 #### Security
-
-* Added Permissions Policy to enhance browser security controls
 
 #### Not Published
 
