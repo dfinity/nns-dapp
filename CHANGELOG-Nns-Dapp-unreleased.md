@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Added support for hardware wallet connections through browser permissions
+
 #### Security
 
 #### Not Published
