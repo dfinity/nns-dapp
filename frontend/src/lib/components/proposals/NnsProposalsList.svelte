@@ -21,9 +21,16 @@
     disableInfiniteScroll: boolean;
     loading: boolean;
     loadingAnimation?: "spinner" | "skeleton";
+    loadNextProposals: () => Promise<void>;
   };
-  const { hidden, disableInfiniteScroll, loading, loadingAnimation }: Props =
-    $props();
+
+  const {
+    hidden,
+    disableInfiniteScroll,
+    loading,
+    loadingAnimation,
+    loadNextProposals,
+  }: Props = $props();
 
   // Prevent pre-rendering issue "IntersectionObserver is not defined"
   // Note: Another solution would be to lazy load the InfiniteScroll component
@@ -44,7 +51,7 @@
         {:else}
           <ListLoader loading={loadingAnimation === "spinner"}>
             <InfiniteScroll
-              on:nnsIntersect
+              onIntersect={loadNextProposals}
               layout="grid"
               disabled={disableInfiniteScroll || loading}
             >
