@@ -36,7 +36,7 @@
   {:else}
     <InfiniteScroll
       onIntersect={loadNextTransactions}
-      disabled={disabledInifiteScroll}
+      disabled={disabledInfiteScroll}
     >
       {#each transactions as transaction (transaction.domKey)}
         <div animate:flip={{ duration: 250 }}>

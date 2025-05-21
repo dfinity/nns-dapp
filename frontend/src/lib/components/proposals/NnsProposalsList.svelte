@@ -75,7 +75,7 @@
         {:else if actionableProposals?.length === 0}
           <ActionableProposalsEmpty />
         {:else}
-          <InfiniteScroll layout="grid" onIntersect={async () => {}}>
+          <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
             {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
               <NnsProposalCard {hidden} actionable {proposalInfo} />
             {/each}
