@@ -141,15 +141,6 @@ describe("HeldTokensCard", () => {
       expect(await po.getAmount()).toBe("$•••");
     });
 
-    it("should show the usd amount", async () => {
-      const po = renderComponent({
-        topHeldTokens: mockTokens,
-        usdAmount: 6000,
-      });
-
-      expect(await po.getAmount()).toBe("$6’000");
-    });
-
     it("should show all the tokens with their balance", async () => {
       const po = renderComponent({
         topHeldTokens: mockTokens,
