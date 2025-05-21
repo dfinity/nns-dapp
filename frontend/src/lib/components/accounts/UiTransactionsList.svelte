@@ -7,15 +7,18 @@
   import { InfiniteScroll, Spinner } from "@dfinity/gix-components";
   import { flip } from "svelte/animate";
 
-  export let transactions: UiTransaction[];
-  export let loading: boolean;
-  export let completed = false;
+  type Props = {
+    transactions: UiTransaction[];
+    loading: boolean;
+    completed?: boolean;
+  };
 
-  $: isEmpty = transactions.length === 0;
+  const { transactions, loading, completed = false }: Props = $props();
 
-  $: showSkeleton = isEmpty && loading;
-  $: showNoTransactions = isEmpty && !loading;
-  $: disabledInifiteScroll = loading || completed;
+  const isEmpty = $derived(transactions.length === 0);
+  const showSkeleton = $derived(isEmpty && loading);
+  const showNoTransactions = $derived(isEmpty && !loading);
+  const disabledInifiteScroll = $derived(loading || completed);
 </script>
 
 <div data-tid="transactions-list" class="container">
