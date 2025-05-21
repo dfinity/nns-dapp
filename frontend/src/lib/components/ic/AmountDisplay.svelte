@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { renderPrivacyModeBalance } from "$lib/utils/format.utils";
+  import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import {
     FailedTokenAmount,
     formatTokenV2,
@@ -44,6 +44,12 @@
       | FailedTokenAmount
   ): amount is TokenAmount | TokenAmountV2 =>
     amount instanceof TokenAmount || amount instanceof TokenAmountV2;
+
+  const formattedValue = $derived(
+    isValidAmount(amount)
+      ? `${sign}${formatTokenV2({ value: amount, detailed })}`
+      : "-/-"
+  );
 </script>
 
 <div
@@ -63,11 +69,9 @@
     class:tabular-num={detailed === "height_decimals"}
   >
     {#if hideValue}
-      {renderPrivacyModeBalance(3)}
-    {:else if isValidAmount(amount)}
-      {`${sign}${formatTokenV2({ value: amount, detailed })}`}
+      <PrivacyAwareAmount value={formattedValue} length={3} />
     {:else}
-      -/-
+      {formattedValue}
     {/if}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span

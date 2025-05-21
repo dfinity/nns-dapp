@@ -1,7 +1,6 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
-  import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import { formatNumber } from "$lib/utils/format.utils";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
   import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
@@ -16,11 +15,10 @@
   const formattedValue = $derived(
     nonNullish(amountInUsd) ? formatNumber(amountInUsd) : "-/-"
   );
-  const hideValue = $derived($isBalancePrivacyOptionStore);
 </script>
 
 <div class="values" data-tid="amount-with-usd-component">
-  <AmountDisplay singleLine {amount} {hideValue} />
+  <AmountDisplay singleLine {amount} hideValue={true} />
   <span data-tid="usd-value" class="usd-value">
     $<PrivacyAwareAmount value={formattedValue} length={3} />
   </span>
