@@ -18,8 +18,8 @@
 
   type Props = {
     hidden: boolean;
-    disableInfiniteScroll?: boolean;
-    loading?: boolean;
+    disableInfiniteScroll: boolean;
+    loading: boolean;
     loadingAnimation?: "spinner" | "skeleton";
   };
   const { hidden, disableInfiniteScroll, loading, loadingAnimation }: Props =
