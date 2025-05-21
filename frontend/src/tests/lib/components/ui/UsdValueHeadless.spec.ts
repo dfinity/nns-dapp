@@ -1,5 +1,7 @@
+import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import UsdValueHeadlessTest from "$tests/lib/components/ui/UsdValueHeadlessTest.svelte";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { UsdValueHeadlessPo } from "$tests/page-objects/UsdValueHeadless.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
@@ -110,5 +112,18 @@ describe("UsdValueHeadless", () => {
 
     expect(await po.getUsdAmountFormatted()).toBe("1’000");
     expect(await po.getIcpAmountFormatted()).toBe("5.00");
+  });
+
+  it("should hide balance if user is logged in and hide balance is toggled", async () => {
+    balancePrivacyOptionStore.set("hide");
+    resetIdentity();
+
+    const po = renderComponent({
+      usdAmount: 1000,
+      hasUnpricedTokens: false,
+    });
+
+    expect(await po.getUsdAmountFormatted()).toBe("•••••");
+    expect(await po.getIcpAmountFormatted()).toBe("•••");
   });
 });
