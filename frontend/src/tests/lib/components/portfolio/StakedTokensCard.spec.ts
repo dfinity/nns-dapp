@@ -1,5 +1,6 @@
 import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
+import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import type { TableProject } from "$lib/types/staking";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -188,6 +189,16 @@ describe("StakedTokensCard", () => {
       });
 
       expect(await po.getAmount()).toBe("$5’000");
+    });
+
+    it("should show the usd amount", async () => {
+      balancePrivacyOptionStore.set("hide");
+
+      const po = renderComponent({
+        usdAmount: 5000,
+      });
+
+      expect(await po.getAmount()).toBe("$•••");
     });
 
     it("should show all the projects with their maturity, staked in usd and staked in native currency", async () => {
