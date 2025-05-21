@@ -235,6 +235,35 @@ describe("StakedTokensCard", () => {
       ]);
     });
 
+    it("should hide the balance for all the projects", async () => {
+      balancePrivacyOptionStore.set("hide");
+
+      const po = renderComponent({
+        topStakedTokens: mockStakedTokens,
+      });
+
+      const titles = await po.getStakedTokensTitle();
+      const stakesInUsd = await po.getStakedTokensStakeInUsd();
+      const stakesInNativeCurrency =
+        await po.getStakedTokensStakeInNativeCurrency();
+
+      expect(titles).toEqual([
+        "Internet Computer",
+        "Project 1",
+        "Project 2",
+        "Project 3",
+      ]);
+
+      expect(stakesInUsd).toEqual(["$•••", "$•••", "$•••", "$•••"]);
+
+      expect(stakesInNativeCurrency).toEqual([
+        "••• ICP",
+        "••• TET",
+        "••• TET",
+        "••• TET",
+      ]);
+    });
+
     it("should not show info row when numberOfTopHeldTokens is the same as the number of topStakedTokens", async () => {
       const po = renderComponent({
         topStakedTokens: mockStakedTokens.slice(0, 3),
