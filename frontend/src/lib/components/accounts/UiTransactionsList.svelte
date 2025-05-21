@@ -18,7 +18,7 @@
   const isEmpty = $derived(transactions.length === 0);
   const showSkeleton = $derived(isEmpty && loading);
   const showNoTransactions = $derived(isEmpty && !loading);
-  const disabledInifiteScroll = $derived(loading || completed);
+  const disabledInfiteScroll = $derived(loading || completed);
 </script>
 
 <div data-tid="transactions-list" class="container">
@@ -28,7 +28,7 @@
   {:else if showNoTransactions}
     <NoTransactions />
   {:else}
-    <InfiniteScroll on:nnsIntersect disabled={disabledInifiteScroll}>
+    <InfiniteScroll on:nnsIntersect disabled={disabledInfiteScroll}>
       {#each transactions as transaction (transaction.domKey)}
         <div animate:flip={{ duration: 250 }}>
           <TransactionCard {transaction} />
