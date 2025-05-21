@@ -75,7 +75,6 @@
         {:else if actionableProposals?.length === 0}
           <ActionableProposalsEmpty />
         {:else}
-          <!-- TODO: Fix once GIX makes the cb optional -->
           <InfiniteScroll layout="grid" onIntersect={async () => {}}>
             {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
               <NnsProposalCard {hidden} actionable {proposalInfo} />

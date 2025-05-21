@@ -71,7 +71,6 @@
       {:else if proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}
-        <!-- TODO: Remove noop once GIX is fixed -->
         <InfiniteScroll layout="grid" onIntersect={async () => {}}>
           {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
             <SnsProposalCard
