@@ -4,8 +4,12 @@
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
   import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
-  export let amount: TokenAmountV2 | UnavailableTokenAmount;
-  export let amountInUsd: number | undefined;
+  type Props = {
+    amount: TokenAmountV2 | UnavailableTokenAmount;
+    amountInUsd: number | undefined;
+  };
+
+  const { amount, amountInUsd }: Props = $props();
 </script>
 
 <div class="values" data-tid="amount-with-usd-component">
