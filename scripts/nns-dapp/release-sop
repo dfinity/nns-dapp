@@ -392,7 +392,7 @@ review_proposal() {
   echo
   echo "======================================================================"
   echo
-  echo "Review the proposal above ☝️  and have someone else review it as well."
+  echo "Review the proposal above ☝️, paste this description in the previously created thread in the channel #eng-nns-dapp, and ping your colleagues for a review."
 }
 
 review_feature_flags() {
