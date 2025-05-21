@@ -140,7 +140,7 @@ describe("AmountDisplay", () => {
     expect(await po.getCopyButtonPo().isPresent()).toBe(false);
   });
 
-  it("should render the hidden character if hideValue is true", async () => {
+  it("should render the hidden characters if hideValue is true", async () => {
     const po = renderComponent({
       ...props,
       hideValue: true,
