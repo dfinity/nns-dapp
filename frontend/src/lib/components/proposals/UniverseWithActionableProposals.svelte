@@ -16,7 +16,7 @@
     <UniverseSummary {universe} />
   </div>
 
-  <InfiniteScroll layout="grid" disabled>
+  <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
     {@render children()}
   </InfiniteScroll>
 </div>
