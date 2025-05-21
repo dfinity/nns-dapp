@@ -1,8 +1,10 @@
 import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import {
   FailedTokenAmount,
   UnavailableTokenAmount,
 } from "$lib/utils/token.utils";
+import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -141,6 +143,9 @@ describe("AmountDisplay", () => {
   });
 
   it("should render the hidden characters if hideValue is true", async () => {
+    resetIdentity();
+    balancePrivacyOptionStore.set("hide");
+
     const po = renderComponent({
       ...props,
       hideValue: true,
