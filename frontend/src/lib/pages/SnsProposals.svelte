@@ -151,7 +151,7 @@
     {proposals}
     actionableSelected={$actionableProposalsActiveStore}
     nsFunctions={$nsFunctionsStore}
-    on:nnsIntersect={loadNextPage}
+    {loadNextPage}
     {disableInfiniteScroll}
     {loadingNextPage}
   />
