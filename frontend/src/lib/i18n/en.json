@@ -153,7 +153,9 @@
     "source_code": "Source Code",
     "settings": "Settings",
     "reporting": "Reporting",
-    "portfolio": "Portfolio"
+    "portfolio": "Portfolio",
+    "privacy_mode_hide": "Hide Balance",
+    "privacy_mode_show": "Show Balance"
   },
   "alfred": {
     "no_results": "No results found",
