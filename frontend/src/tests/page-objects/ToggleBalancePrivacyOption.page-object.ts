@@ -1,6 +1,6 @@
+import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { TogglePo } from "$tests/page-objects/Toggle.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ButtonPo } from "./Button.page-object";
-import { TogglePo } from "./Toggle.page-object";
 
 export class ToggleBalancePrivacyOptionPageObject extends ButtonPo {
   private static TID = "toggle-balance-privacy-option-component";
