@@ -156,7 +156,8 @@ const getAlfredItems = (): AlfredItem[] => {
       description: "Privacy mode for your balance",
       icon: IconEyeClosed,
       action: () => balancePrivacyOptionStore.set("hide"),
-      contextFilter: (context) => context.balancePrivacyOption === "show",
+      contextFilter: (context) =>
+        context.balancePrivacyOption === "show" && context.isSignedIn,
     },
     {
       id: "show-balance",
@@ -165,7 +166,8 @@ const getAlfredItems = (): AlfredItem[] => {
       description: "Display your balances",
       icon: IconEyeOpen,
       action: () => balancePrivacyOptionStore.set("show"),
-      contextFilter: (context) => context.balancePrivacyOption === "hide",
+      contextFilter: (context) =>
+        context.balancePrivacyOption === "hide" && context.isSignedIn,
     },
     {
       id: "log-in",
