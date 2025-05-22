@@ -12,7 +12,12 @@
   };
 </script>
 
-<button class="wrapper" {onclick}>
+<button
+  class="wrapper"
+  {onclick}
+  aria-label={$i18n.navigation.toggle_balance_privacy_mode}
+  data-tid="toggle-balance-privacy-option-component"
+>
   <span class="text">
     <IconEyeOpen />
     {$i18n.navigation.toggle_balance_privacy_mode}
