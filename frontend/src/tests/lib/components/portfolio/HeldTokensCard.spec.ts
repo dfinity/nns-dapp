@@ -164,6 +164,27 @@ describe("HeldTokensCard", () => {
       ]);
     });
 
+    it("should hide the balances for all the tokens", async () => {
+      balancePrivacyOptionStore.set("hide");
+
+      const po = renderComponent({
+        topHeldTokens: mockTokens,
+        usdAmount: 600,
+      });
+      const titles = await po.getHeldTokensTitles();
+      const usdBalances = await po.getHeldTokensBalanceInUsd();
+      const nativeBalances = await po.getHeldTokensBalanceInNativeCurrency();
+
+      expect(titles.length).toBe(3);
+      expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH"]);
+
+      expect(usdBalances.length).toBe(3);
+      expect(usdBalances).toEqual(["$•••", "$•••", "$•••"]);
+
+      expect(nativeBalances.length).toBe(3);
+      expect(nativeBalances).toEqual(["••• ICP", "••• ckBTC", "••• ckETH"]);
+    });
+
     it("should not show info row when numberOfTopHeldTokens is the same as the number of topStakedTokens", async () => {
       const po = renderComponent({
         topHeldTokens: mockTokens.slice(0, 3),

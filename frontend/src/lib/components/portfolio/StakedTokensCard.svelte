@@ -3,6 +3,7 @@
   import Card from "$lib/components/portfolio/Card.svelte";
   import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -105,7 +106,10 @@
               role="cell"
               aria-label={`${stakedToken.title} USD: ${stakedToken?.stakeInUsd ?? 0}`}
             >
-              ${formatNumber(stakedToken?.stakeInUsd ?? 0)}
+              $<PrivacyAwareAmount
+                value={formatNumber(stakedToken?.stakeInUsd ?? 0)}
+                length={3}
+              />
             </div>
             <div
               class="stake-native"
@@ -113,12 +117,15 @@
               role="cell"
               aria-label={`${stakedToken.title} D: ${stakedToken?.stakeInUsd ?? 0}`}
             >
-              {stakedToken.stake instanceof TokenAmountV2
-                ? formatTokenV2({
-                    value: stakedToken.stake,
-                    detailed: false,
-                  })
-                : PRICE_NOT_AVAILABLE_PLACEHOLDER}
+              <PrivacyAwareAmount
+                value={stakedToken.stake instanceof TokenAmountV2
+                  ? formatTokenV2({
+                      value: stakedToken.stake,
+                      detailed: false,
+                    })
+                  : PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                length={3}
+              />
               {stakedToken.stake.token.symbol}
             </div>
           </svelte:element>
