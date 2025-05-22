@@ -21,13 +21,16 @@
     nsFunctions: SnsNervousSystemFunction[] | undefined;
     disableInfiniteScroll?: boolean;
     loadingNextPage?: boolean;
+    loadNextPage: () => Promise<void>;
   };
+
   const {
     proposals,
     actionableSelected,
     nsFunctions,
     disableInfiniteScroll = false,
     loadingNextPage = false,
+    loadNextPage,
   }: Props = $props();
 </script>
 
@@ -44,7 +47,7 @@
         <ListLoader loading={loadingNextPage}>
           <InfiniteScroll
             layout="grid"
-            on:nnsIntersect
+            onIntersect={loadNextPage}
             disabled={disableInfiniteScroll}
           >
             {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
@@ -68,7 +71,7 @@
       {:else if proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}
-        <InfiniteScroll layout="grid" disabled>
+        <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
           {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
             <SnsProposalCard
               actionable={proposalData.isActionable}

@@ -422,7 +422,7 @@
 
           {#if $selectedAccountStore.account !== undefined}
             <UiTransactionsList
-              on:nnsIntersect={loadNextTransactions}
+              {loadNextTransactions}
               transactions={uiTransactions ?? []}
               loading={loadingTransactions}
               completed={completedTransactions}

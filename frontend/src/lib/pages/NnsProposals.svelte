@@ -58,7 +58,7 @@
     }
   };
 
-  const findNextProposals = () =>
+  const loadNextProposals = () =>
     wrapProposalLoading(
       listNextProposals({
         beforeProposal: lastProposalId($sortedProposals.proposals),
@@ -134,5 +134,5 @@
   {disableInfiniteScroll}
   {loading}
   {loadingAnimation}
-  on:nnsIntersect={findNextProposals}
+  {loadNextProposals}
 />

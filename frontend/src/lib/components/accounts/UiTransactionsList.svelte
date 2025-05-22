@@ -11,9 +11,15 @@
     transactions: UiTransaction[];
     loading: boolean;
     completed?: boolean;
+    loadNextTransactions: () => Promise<void>;
   };
 
-  const { transactions, loading, completed = false }: Props = $props();
+  const {
+    transactions,
+    loading,
+    completed = false,
+    loadNextTransactions,
+  }: Props = $props();
 
   const isEmpty = $derived(transactions.length === 0);
   const showSkeleton = $derived(isEmpty && loading);
@@ -28,7 +34,10 @@
   {:else if showNoTransactions}
     <NoTransactions />
   {:else}
-    <InfiniteScroll on:nnsIntersect disabled={disabledInfiteScroll}>
+    <InfiniteScroll
+      onIntersect={loadNextTransactions}
+      disabled={disabledInfiteScroll}
+    >
       {#each transactions as transaction (transaction.domKey)}
         <div animate:flip={{ duration: 250 }}>
           <TransactionCard {transaction} />

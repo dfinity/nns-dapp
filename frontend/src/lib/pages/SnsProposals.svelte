@@ -90,7 +90,7 @@
     (() => fetchProposals($snsFiltersStore))();
 
   let loadingNextPage = false;
-  let loadNextPage: () => void;
+  let loadNextPage: () => Promise<void>;
   $: loadNextPage = async () => {
     const selectedProjectCanisterId = $snsOnlyProjectStore;
     if (
@@ -151,7 +151,7 @@
     {proposals}
     actionableSelected={$actionableProposalsActiveStore}
     nsFunctions={$nsFunctionsStore}
-    on:nnsIntersect={loadNextPage}
+    {loadNextPage}
     {disableInfiniteScroll}
     {loadingNextPage}
   />
