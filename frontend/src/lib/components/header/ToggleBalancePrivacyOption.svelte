@@ -12,7 +12,7 @@
   };
 </script>
 
-<div class="wrapper" data-tid="balance-privacy-option">
+<div class="wrapper">
   <span class="text">
     <IconEyeOpen />
     {$i18n.navigation.toggle_balance_privacy_mode}
