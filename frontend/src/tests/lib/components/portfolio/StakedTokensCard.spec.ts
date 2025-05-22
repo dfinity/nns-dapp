@@ -191,7 +191,7 @@ describe("StakedTokensCard", () => {
       expect(await po.getAmount()).toBe("$5’000");
     });
 
-    it("should show the usd amount", async () => {
+    it("should hide the usd amount", async () => {
       balancePrivacyOptionStore.set("hide");
 
       const po = renderComponent({
