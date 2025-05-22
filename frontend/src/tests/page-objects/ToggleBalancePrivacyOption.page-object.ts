@@ -1,6 +1,6 @@
+import { BasePageObject } from "$tests/page-objects/base.page-object";
 import { TogglePo } from "$tests/page-objects/Toggle.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { BasePageObject } from "./base.page-object";
 
 export class ToggleBalancePrivacyOptionPo extends BasePageObject {
   private static TID = "toggle-balance-privacy-option-component";
