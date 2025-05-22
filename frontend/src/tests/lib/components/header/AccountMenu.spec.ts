@@ -136,6 +136,27 @@ describe("AccountMenu", () => {
       );
     });
 
+    it("should render toggle privacy option button", async () => {
+      const { accountMenuPo } = renderComponent();
+      const toggleBalancePrivacyOptionPo =
+        await accountMenuPo.getToggleBalancePrivacyOptionPo();
+
+      await accountMenuPo.openMenu();
+      expect(await toggleBalancePrivacyOptionPo.isPresent()).toBe(true);
+    });
+
+    it("should not close menu when toggle privacy option button is clicked", async () => {
+      const { accountMenuPo } = renderComponent();
+      const toggleBalancePrivacyOptionPo =
+        await accountMenuPo.getToggleBalancePrivacyOptionPo();
+
+      await accountMenuPo.openMenu();
+
+      expect(await accountMenuPo.isOpen()).toBe(true);
+      await toggleBalancePrivacyOptionPo.click();
+      expect(await accountMenuPo.isOpen()).toBe(true);
+    });
+
     describe("export feature flag", () => {
       beforeEach(() => {
         vi.spyOn(console, "error").mockImplementation(() => {});

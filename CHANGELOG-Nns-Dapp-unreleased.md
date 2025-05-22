@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Privacy mode for balances
+
 #### Changed
 
 #### Deprecated
