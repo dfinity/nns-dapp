@@ -9,9 +9,9 @@ import { get } from "svelte/store";
 describe("ToggleBalancePrivacyOption", () => {
   const renderComponent = () => {
     const { container } = render(ToggleBalancePrivacyOption);
-    const po = ToggleBalancePrivacyOptionPo.under({
-      element: new JestPageObjectElement(container),
-    });
+    const po = ToggleBalancePrivacyOptionPo.under(
+      new JestPageObjectElement(container)
+    );
 
     return po;
   };

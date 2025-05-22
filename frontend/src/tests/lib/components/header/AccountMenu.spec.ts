@@ -142,7 +142,7 @@ describe("AccountMenu", () => {
         await accountMenuPo.getToggleBalancePrivacyOptionPo();
 
       await accountMenuPo.openMenu();
-      expect(toggleBalancePrivacyOptionPo).toBe(true);
+      expect(await toggleBalancePrivacyOptionPo.isPresent()).toBe(true);
     });
 
     it("should not close menu when toggle privacy option button is clicked", async () => {

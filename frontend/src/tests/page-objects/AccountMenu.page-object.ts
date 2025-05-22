@@ -75,6 +75,6 @@ export class AccountMenuPo extends BasePageObject {
   }
 
   getToggleBalancePrivacyOptionPo(): ToggleBalancePrivacyOptionPo {
-    return ToggleBalancePrivacyOptionPo.under({ element: this.root });
+    return ToggleBalancePrivacyOptionPo.under(this.root);
   }
 }
