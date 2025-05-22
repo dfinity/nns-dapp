@@ -40,6 +40,7 @@
     @include account-menu.button;
     justify-content: space-between;
     padding: 0;
+    cursor: pointer;
 
     .text {
       display: flex;
