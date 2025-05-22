@@ -2,14 +2,14 @@ import ToggleBalancePrivacyOption from "$lib/components/header/ToggleBalancePriv
 import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { ToggleBalancePrivacyOptionPageObject } from "$tests/page-objects/ToggleBalancePrivacyOption.page-object";
+import { ToggleBalancePrivacyOptionPo } from "$tests/page-objects/ToggleBalancePrivacyOption.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { get } from "svelte/store";
 
 describe("ToggleBalancePrivacyOption", () => {
   const renderComponent = () => {
     const { container } = render(ToggleBalancePrivacyOption);
-    const po = ToggleBalancePrivacyOptionPageObject.under({
+    const po = ToggleBalancePrivacyOptionPo.under({
       element: new JestPageObjectElement(container),
     });
 
