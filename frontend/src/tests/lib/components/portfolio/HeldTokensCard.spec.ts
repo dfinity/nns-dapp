@@ -1,4 +1,5 @@
 import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
+import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCToken as CkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
@@ -127,6 +128,17 @@ describe("HeldTokensCard", () => {
       });
 
       expect(await po.getAmount()).toBe("$6’000");
+    });
+
+    it("should hide the usd amount", async () => {
+      balancePrivacyOptionStore.set("hide");
+
+      const po = renderComponent({
+        topHeldTokens: mockTokens,
+        usdAmount: 6000,
+      });
+
+      expect(await po.getAmount()).toBe("$•••");
     });
 
     it("should show all the tokens with their balance", async () => {

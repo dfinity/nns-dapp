@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
@@ -30,7 +31,7 @@
     <div class="text-content">
       <h5 class="title">{title}</h5>
       <p class="amount" data-tid="amount" aria-label={`${title}: ${usdAmount}`}>
-        ${usdAmountFormatted}
+        $<PrivacyAwareAmount value={usdAmountFormatted} length={3} />
       </p>
     </div>
   </div>
