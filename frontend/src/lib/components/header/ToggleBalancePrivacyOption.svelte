@@ -6,31 +6,30 @@
 
   let checked = $derived($isBalancePrivacyOptionStore);
 
-  const onToggle = () => {
+  const onclick = () => {
     checked = !checked;
     balancePrivacyOptionStore.set(checked ? "hide" : "show");
   };
 </script>
 
-<div class="wrapper">
+<button class="wrapper" {onclick}>
   <span class="text">
     <IconEyeOpen />
     {$i18n.navigation.toggle_balance_privacy_mode}
   </span>
   <Toggle
     bind:checked
-    on:nnsToggle={onToggle}
     ariaLabel={$i18n.navigation.toggle_balance_privacy_mode}
   />
-</div>
+</button>
 
 <style lang="scss">
   @use "../../themes/mixins/account-menu";
 
   .wrapper {
-    display: flex;
+    @include account-menu.button;
     justify-content: space-between;
-    align-items: center;
+    padding: 0;
 
     .text {
       display: flex;
