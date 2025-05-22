@@ -284,8 +284,8 @@
         "decentralization_sale_open_timestamp_seconds": 1746820800
       },
       "derived": {
-        "buyer_total_icp_e8s": 4758276632398,
-        "sns_tokens_per_icp": 43.075806
+        "buyer_total_icp_e8s": 11254683912597,
+        "sns_tokens_per_icp": 18.211672
       }
     },
     "icrc1_metadata": [
@@ -408,12 +408,12 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 43.0758056640625,
-      "buyer_total_icp_e8s": 4758276632398,
+      "sns_tokens_per_icp": 18.211671829223633,
+      "buyer_total_icp_e8s": 11254683912597,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
-      "direct_participation_icp_e8s": 4758276632398,
-      "direct_participant_count": 165,
+      "direct_participation_icp_e8s": 11254683912597,
+      "direct_participant_count": 313,
       "cf_neuron_count": 0
     },
     "lifecycle": {

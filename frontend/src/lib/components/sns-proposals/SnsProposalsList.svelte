@@ -15,11 +15,20 @@
   import { fromNullable, isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
-  export let proposals: SnsProposalActionableData[] | undefined;
-  export let actionableSelected: boolean;
-  export let nsFunctions: SnsNervousSystemFunction[] | undefined;
-  export let disableInfiniteScroll = false;
-  export let loadingNextPage = false;
+  type Props = {
+    proposals: SnsProposalActionableData[] | undefined;
+    actionableSelected: boolean;
+    nsFunctions: SnsNervousSystemFunction[] | undefined;
+    disableInfiniteScroll?: boolean;
+    loadingNextPage?: boolean;
+  };
+  const {
+    proposals,
+    actionableSelected,
+    nsFunctions,
+    disableInfiniteScroll = false,
+    loadingNextPage = false,
+  }: Props = $props();
 </script>
 
 <TestIdWrapper testId="sns-proposal-list-component">
