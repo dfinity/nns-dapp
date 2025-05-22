@@ -16,7 +16,7 @@
 
   const { usdAmount, href, title, linkText, icon }: Props = $props();
 
-  const formattedAmount = $derived(
+  const usdAmountFormatted = $derived(
     $authSignedInStore
       ? formatCurrencyNumber(usdAmount)
       : PRICE_NOT_AVAILABLE_PLACEHOLDER
@@ -31,7 +31,7 @@
     <div class="text-content">
       <h5 class="title">{title}</h5>
       <p class="amount" data-tid="amount" aria-label={`${title}: ${usdAmount}`}>
-        $<PrivacyAwareAmount value={formattedAmount} length={3} />
+        $<PrivacyAwareAmount value={usdAmountFormatted} length={3} />
       </p>
     </div>
   </div>
