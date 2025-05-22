@@ -7,6 +7,7 @@
   import LoginIconOnly from "$lib/components/header/LoginIconOnly.svelte";
   import Logout from "$lib/components/header/Logout.svelte";
   import ManageInternetIdentityButton from "$lib/components/header/ManageInternetIdentityButton.svelte";
+  import ToggleBalancePrivacyOption from "$lib/components/header/ToggleBalancePrivacyOption.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
   import { IconUser, Popover } from "@dfinity/gix-components";
@@ -33,6 +34,8 @@
     <Popover bind:visible anchor={button} direction="rtl">
       <div class="info">
         <AccountDetails />
+
+        <ToggleBalancePrivacyOption />
 
         <ManageInternetIdentityButton />
 
