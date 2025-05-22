@@ -154,7 +154,8 @@
     "settings": "Settings",
     "reporting": "Reporting",
     "portfolio": "Portfolio",
-    "toggle_balance_privacy_mode": "Hide Balance"
+    "privacy_mode_hide": "Hide Balance",
+    "privacy_mode_show": "Show Balance"
   },
   "alfred": {
     "no_results": "No results found",

@@ -2,11 +2,17 @@
   import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
   import { i18n } from "$lib/stores/i18n";
-  import { IconEyeOpen, Toggle } from "@dfinity/gix-components";
+  import { IconEyeClosed, IconEyeOpen, Toggle } from "@dfinity/gix-components";
 
   let checked = $derived($isBalancePrivacyOptionStore);
+  const label = $derived(
+    checked
+      ? $i18n.navigation.privacy_mode_show
+      : $i18n.navigation.privacy_mode_hide
+  );
+  const Icon = $derived(checked ? IconEyeOpen : IconEyeClosed);
 
-  const onclick = () => {
+  const toggle = () => {
     checked = !checked;
     balancePrivacyOptionStore.set(checked ? "hide" : "show");
   };
@@ -14,18 +20,17 @@
 
 <button
   class="wrapper"
-  {onclick}
-  aria-label={$i18n.navigation.toggle_balance_privacy_mode}
+  onclick={toggle}
+  aria-label={label}
   data-tid="toggle-balance-privacy-option-component"
 >
   <span class="text">
-    <IconEyeOpen />
-    {$i18n.navigation.toggle_balance_privacy_mode}
+    <Icon />
+    <span data-tid="label">
+      {label}
+    </span>
   </span>
-  <Toggle
-    bind:checked
-    ariaLabel={$i18n.navigation.toggle_balance_privacy_mode}
-  />
+  <Toggle bind:checked ariaLabel={label} on:nnsToggle={toggle} />
 </button>
 
 <style lang="scss">

@@ -20,21 +20,21 @@ describe("ToggleBalancePrivacyOption", () => {
     resetIdentity();
   });
 
-  it("should initialize the toggle to off if the store is hide", async () => {
+  it("should initialize the toggle to Off if the privacyStore is set to hide", async () => {
     balancePrivacyOptionStore.set("hide");
     const po = renderComponent();
 
     expect(await po.isToggleEnabled()).toBe(true);
   });
 
-  it("should initialize the toggle to on if the store is show", async () => {
+  it("should initialize the toggle to On if the privacyStore is set to show", async () => {
     balancePrivacyOptionStore.set("show");
     const po = renderComponent();
 
     expect(await po.isToggleEnabled()).toBe(false);
   });
 
-  it("should mutate the store when the toggle is clicked", async () => {
+  it("should mutate the store when the button is clicked", async () => {
     balancePrivacyOptionStore.set("hide");
     const po = renderComponent();
 
@@ -44,5 +44,28 @@ describe("ToggleBalancePrivacyOption", () => {
 
     expect(await po.isToggleEnabled()).toBe(false);
     expect(get(balancePrivacyOptionStore)).toBe("show");
+  });
+
+  it("should mutate the store when the toggle is changed", async () => {
+    balancePrivacyOptionStore.set("hide");
+    const po = renderComponent();
+
+    expect(await po.isToggleEnabled()).toBe(true);
+
+    await po.getToggle().click();
+
+    expect(await po.isToggleEnabled()).toBe(false);
+    expect(get(balancePrivacyOptionStore)).toBe("show");
+  });
+
+  it("should change the label based on the operation", async () => {
+    balancePrivacyOptionStore.set("hide");
+    const po = renderComponent();
+
+    expect(await po.getText("label")).toBe("Show Balance");
+
+    await po.click();
+
+    expect(await po.getText("label")).toBe("Hide Balance");
   });
 });

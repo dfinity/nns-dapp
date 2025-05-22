@@ -160,7 +160,8 @@ interface I18nNavigation {
   settings: string;
   reporting: string;
   portfolio: string;
-  toggle_balance_privacy_mode: string;
+  privacy_mode_hide: string;
+  privacy_mode_show: string;
 }
 
 interface I18nAlfred {
