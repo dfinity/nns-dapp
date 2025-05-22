@@ -16,7 +16,7 @@
 
   const { usdAmount, href, title, linkText, icon }: Props = $props();
 
-  const formattedAmount = $derived(
+  const usdAmountFormatted = $derived(
     $authSignedInStore
       ? formatCurrencyNumber(usdAmount)
       : PRICE_NOT_AVAILABLE_PLACEHOLDER
