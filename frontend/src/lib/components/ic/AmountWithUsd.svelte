@@ -1,5 +1,6 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import { formatNumber } from "$lib/utils/format.utils";
   import { UnavailableTokenAmount } from "$lib/utils/token.utils";
   import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
@@ -10,16 +11,16 @@
   };
 
   const { amount, amountInUsd }: Props = $props();
+
+  const formattedValue = $derived(
+    nonNullish(amountInUsd) ? formatNumber(amountInUsd) : "-/-"
+  );
 </script>
 
 <div class="values" data-tid="amount-with-usd-component">
-  <AmountDisplay singleLine {amount} />
+  <AmountDisplay singleLine {amount} hideValue={true} />
   <span data-tid="usd-value" class="usd-value">
-    {#if nonNullish(amountInUsd)}
-      ${formatNumber(amountInUsd)}
-    {:else}
-      $-/-
-    {/if}
+    $<PrivacyAwareAmount value={formattedValue} length={3} />
   </span>
 </div>
 

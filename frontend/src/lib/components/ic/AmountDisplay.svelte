@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import {
     FailedTokenAmount,
     formatTokenV2,
@@ -18,6 +19,7 @@
     size?: "inherit" | "huge";
     sign?: "+" | "-" | "";
     detailed?: boolean | "height_decimals";
+    hideValue?: boolean;
   };
 
   const {
@@ -31,6 +33,7 @@
     size = undefined,
     sign = "",
     detailed = false,
+    hideValue = false,
   }: Props = $props();
 
   const isValidAmount = (
@@ -41,6 +44,12 @@
       | FailedTokenAmount
   ): amount is TokenAmount | TokenAmountV2 =>
     amount instanceof TokenAmount || amount instanceof TokenAmountV2;
+
+  const formattedValue = $derived(
+    isValidAmount(amount)
+      ? `${sign}${formatTokenV2({ value: amount, detailed })}`
+      : "-/-"
+  );
 </script>
 
 <div
@@ -58,10 +67,11 @@
     data-tid="token-value"
     class="value"
     class:tabular-num={detailed === "height_decimals"}
-    >{#if !isValidAmount(amount)}
-      -/-
+  >
+    {#if hideValue}
+      <PrivacyAwareAmount value={formattedValue} length={3} />
     {:else}
-      {`${sign}${formatTokenV2({ value: amount, detailed })}`}
+      {formattedValue}
     {/if}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span
