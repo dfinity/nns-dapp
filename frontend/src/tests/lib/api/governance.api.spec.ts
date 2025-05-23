@@ -490,11 +490,7 @@ describe("neurons-api", () => {
 
     it("throws error when disburseMaturity fails", async () => {
       const error = new Error();
-      mockGovernanceCanister.disburseMaturity.mockImplementation(
-        vi.fn(() => {
-          throw error;
-        })
-      );
+      mockGovernanceCanister.disburseMaturity.mockRejectedValue(error);
 
       const call = () =>
         disburseMaturity({
