@@ -472,7 +472,6 @@ confirm_cmd dfx canister install nns-dapp --argument "$(execute cat "nns-dapp-ar
 record "Release candidate URL" echo "https://$CANISTER_ID.${TEST_DOMAIN}/"
 verify "CI NNS-dapp WASM hash" "RC WASM hash" get_module_hash_from_network "$TEST_NETWORK"
 record "Post RC on Slack" post_rc_on_slack
-confirm_manual "Update playground" printf 'Update the "Playground" bookmark on the #eng-nns-dapp Slack channel to point to the new release candidate.\n\nSlack channel: https://dfinity.slack.com/channels/eng-nns-dapp\nNew Playground bookmark:  %s\n' "$(checklist_must_get "Release candidate URL")"
 
 # Release
 record "Canister IDs" "$SOURCE_DIR/../canister_ids" --export --network "$TEST_NETWORK"
