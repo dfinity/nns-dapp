@@ -5,12 +5,21 @@ import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import WalletLayout from "$routes/(app)/(u)/(detail)/wallet/+layout.svelte";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Wallet layout", () => {
+  const renderComponent = () => {
+    return render(WalletLayout, {
+      props: {
+        children: createMockSnippet(),
+      },
+    });
+  };
+
   it("back button should navigate to tokens page if universe is not NNS", async () => {
     page.mock({
       routeId: AppPath.Wallet,
@@ -19,7 +28,7 @@ describe("Wallet layout", () => {
         account: mockSnsMainAccount.identifier,
       },
     });
-    const { queryByTestId } = render(WalletLayout);
+    const { queryByTestId } = renderComponent();
 
     expect(get(pageStore).path).toEqual(AppPath.Wallet);
     await fireEvent.click(queryByTestId("back"));
@@ -35,7 +44,7 @@ describe("Wallet layout", () => {
         account: mockMainAccount.identifier,
       },
     });
-    const { queryByTestId } = render(WalletLayout);
+    const { queryByTestId } = renderComponent();
 
     expect(get(pageStore).path).toEqual(AppPath.Wallet);
     await fireEvent.click(queryByTestId("back"));
@@ -56,7 +65,7 @@ describe("Wallet layout", () => {
     });
     referrerPathStore.pushPath(AppPath.Portfolio);
 
-    const { queryByTestId } = render(WalletLayout);
+    const { queryByTestId } = renderComponent();
 
     expect(get(pageStore).path).toEqual(AppPath.Wallet);
     await fireEvent.click(queryByTestId("back"));

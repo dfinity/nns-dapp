@@ -4,16 +4,25 @@ import { layoutTitleStore } from "$lib/stores/layout.store";
 import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import NeuronsLayout from "$routes/(app)/(u)/(list)/neurons/+layout.svelte";
+import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Neurons layout", () => {
+  const renderComponent = () => {
+    return render(NeuronsLayout, {
+      props: {
+        children: createMockSnippet(),
+      },
+    });
+  };
+
   beforeEach(() => {
     layoutTitleStore.set({ title: "" });
   });
 
   it("should set title and header layout to 'Neuron Staking'", () => {
-    render(NeuronsLayout);
+    renderComponent();
 
     expect(get(layoutTitleStore)).toEqual({
       title: "Neuron Staking",
@@ -22,7 +31,7 @@ describe("Neurons layout", () => {
   });
 
   it("should have a back button", () => {
-    const { getByTestId } = render(NeuronsLayout);
+    const { getByTestId } = renderComponent();
     const backButton = getByTestId("back");
 
     expect(backButton).toBeInTheDocument();
@@ -33,7 +42,7 @@ describe("Neurons layout", () => {
       routeId: AppPath.Neurons,
     });
 
-    const { getByTestId } = render(NeuronsLayout);
+    const { getByTestId } = renderComponent();
     const backButton = getByTestId("back");
 
     expect(get(pageStore).path).toEqual(AppPath.Neurons);
@@ -48,7 +57,7 @@ describe("Neurons layout", () => {
     });
     referrerPathStore.pushPath(AppPath.Portfolio);
 
-    const { getByTestId } = render(NeuronsLayout);
+    const { getByTestId } = renderComponent();
     const backButton = getByTestId("back");
 
     expect(get(pageStore).path).toEqual(AppPath.Neurons);

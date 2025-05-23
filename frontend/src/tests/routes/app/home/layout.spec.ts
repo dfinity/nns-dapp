@@ -4,10 +4,19 @@ import { layoutTitleStore } from "$lib/stores/layout.store";
 import { page } from "$mocks/$app/stores";
 import HomeLayout from "$routes/(app)/(home)/+layout.svelte";
 import en from "$tests/mocks/i18n.mock";
+import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Home layout", () => {
+  const renderComponent = () => {
+    return render(HomeLayout, {
+      props: {
+        children: createMockSnippet(),
+      },
+    });
+  };
+
   beforeEach(() => {
     layoutTitleStore.set({ title: "" });
     page.mock({
@@ -19,7 +28,7 @@ describe("Home layout", () => {
   });
 
   it("should set title and header layout to 'Tokens'", () => {
-    render(HomeLayout);
+    renderComponent();
 
     expect(get(layoutTitleStore)).toEqual({
       title: en.navigation.tokens,
@@ -28,13 +37,13 @@ describe("Home layout", () => {
   });
 
   it("should not show the split content navigation", () => {
-    const { queryByTestId } = render(HomeLayout);
+    const { queryByTestId } = renderComponent();
 
     expect(queryByTestId("select-universe-nav-title")).not.toBeInTheDocument();
   });
 
   it("should render menu toggle button", () => {
-    const { queryByTestId } = render(HomeLayout);
+    const { queryByTestId } = renderComponent();
 
     expect(queryByTestId("menu-toggle")).toBeInTheDocument();
   });
@@ -43,7 +52,7 @@ describe("Home layout", () => {
     it("should show the Portfolio title", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", true);
 
-      render(HomeLayout);
+      renderComponent();
 
       expect(get(layoutTitleStore)).toEqual({
         title: en.navigation.portfolio,
