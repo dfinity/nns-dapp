@@ -158,6 +158,11 @@
     $soonLosingRewardNeuronsStore.some(
       ({ neuronId }) => neuronId === neuron!.neuronId
     );
+
+  $: console.log(
+    "🌻 NEURON MATURITY DISBURSEMENTS IN PROGRESS",
+    neuron?.fullNeuron?.maturityDisbursementsInProgress
+  );
 </script>
 
 <TestIdWrapper testId="nns-neuron-detail-component">

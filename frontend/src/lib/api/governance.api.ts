@@ -226,6 +226,36 @@ export const spawnNeuron = async ({
   return newNeuronId;
 };
 
+export type ApiDisburseMaturityParams = ApiManageNeuronParams & {
+  // account?: Principal;
+  // subAccount?: string;
+  percentageToDisburse: number;
+};
+// disburseMaturity is not yet supported by the ledger
+export const disburseMaturity = async ({
+  neuronId,
+  percentageToDisburse,
+  // TODO(disburse-maturity): Add external account support
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // account,
+  // TODO(disburse-maturity): Add subAccount support
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // subAccount,
+  identity,
+}: ApiDisburseMaturityParams): Promise<void> => {
+  logWithTimestamp(`Disburse maturity (${hashCode(neuronId)}) call...`);
+
+  const { canister } = await governanceCanister({ identity });
+  await canister.disburseMaturity({
+    neuronId,
+    // account,
+    // subAccount,
+    percentageToDisburse,
+  });
+
+  logWithTimestamp(`Disburse maturity (${hashCode(neuronId)}) complete.`);
+};
+
 // Shared by addHotkey and removeHotkey
 export type ApiManageHotkeyParams = ApiManageNeuronParams & {
   principal: Principal;

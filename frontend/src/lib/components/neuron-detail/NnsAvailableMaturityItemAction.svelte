@@ -12,6 +12,7 @@
   } from "$lib/utils/neuron.utils";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
+  import NnsDisburseMaturityButton from "./actions/NnsDisburseMaturityButton.svelte";
 
   export let neuron: NeuronInfo;
 
@@ -38,5 +39,7 @@
   {#if isControllable}
     <NnsStakeMaturityButton {neuron} />
     <SpawnNeuronButton {neuron} />
+    <!-- // TODO(disburse-maturity): Add disburse maturity button visibility logic -->
+    <NnsDisburseMaturityButton {neuron} />
   {/if}
 </CommonItemAction>

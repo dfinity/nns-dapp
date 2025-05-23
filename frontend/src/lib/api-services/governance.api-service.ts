@@ -5,6 +5,7 @@ import {
   claimOrRefreshNeuron,
   claimOrRefreshNeuronByMemo,
   disburse,
+  disburseMaturity,
   getNetworkEconomicsParameters,
   increaseDissolveDelay,
   joinCommunityFund,
@@ -28,6 +29,7 @@ import {
   type ApiAutoStakeMaturityParams,
   type ApiChangeNeuronVisibilityParams,
   type ApiClaimNeuronParams,
+  type ApiDisburseMaturityParams,
   type ApiDisburseParams,
   type ApiIncreaseDissolveDelayParams,
   type ApiManageHotkeyParams,
@@ -200,6 +202,9 @@ export const governanceApiService = {
   },
   spawnNeuron(params: ApiSpawnNeuronParams) {
     return clearCacheAfter(spawnNeuron(params));
+  },
+  disburseMaturity(params: ApiDisburseMaturityParams) {
+    return clearCacheAfter(disburseMaturity(params));
   },
   splitNeuron(params: ApiSplitNeuronParams) {
     return clearCacheAfter(splitNeuron(params));

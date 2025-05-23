@@ -29,6 +29,7 @@
   } from "$lib/utils/neuron.utils";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import NnsDisburseMaturityModal from "./NnsDisburseMaturityModal.svelte";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);
@@ -78,6 +79,13 @@
 
     {#if type === "spawn"}
       <SpawnNeuronModal on:nnsClose={close} {neuron} />
+    {/if}
+    {#if type === "disburse-maturity"}
+      <NnsDisburseMaturityModal
+        on:nnsClose={close}
+        {neuron}
+        neuronId={neuron.neuronId}
+      />
     {/if}
 
     {#if type === "auto-stake-maturity"}
