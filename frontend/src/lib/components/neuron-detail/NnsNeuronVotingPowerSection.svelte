@@ -57,7 +57,7 @@
             {$i18n.neuron_detail.calculated_as}
           </span>
           <span class="calculation" data-tid="voting-power-generic-description">
-            $i18n.neuron_detail.voting_power_section_calculation_generic_new
+            {$i18n.neuron_detail.voting_power_section_calculation_generic_new}
           </span>
         </span>
         <span class="info-item">
