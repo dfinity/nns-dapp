@@ -226,6 +226,29 @@ export const spawnNeuron = async ({
   return newNeuronId;
 };
 
+export type ApiDisburseMaturityParams = ApiManageNeuronParams & {
+  // TODO(disburse-maturity): Add sub and external accounts support.
+  // account?: Principal;
+  // subAccount?: string;
+  percentageToDisburse: number;
+};
+
+export const disburseMaturity = async ({
+  neuronId,
+  percentageToDisburse,
+  identity,
+}: ApiDisburseMaturityParams): Promise<void> => {
+  logWithTimestamp(`Disburse maturity (${hashCode(neuronId)}) call...`);
+
+  const { canister } = await governanceCanister({ identity });
+  await canister.disburseMaturity({
+    neuronId,
+    percentageToDisburse,
+  });
+
+  logWithTimestamp(`Disburse maturity (${hashCode(neuronId)}) complete.`);
+};
+
 // Shared by addHotkey and removeHotkey
 export type ApiManageHotkeyParams = ApiManageNeuronParams & {
   principal: Principal;
