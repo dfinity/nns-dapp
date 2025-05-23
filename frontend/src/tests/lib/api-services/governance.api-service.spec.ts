@@ -889,6 +889,39 @@ describe("neurons api-service", () => {
     });
   });
 
+  describe("disburseMaturity", () => {
+    const params = {
+      neuronId,
+      percentageToDisburse: 50,
+      identity: mockIdentity,
+    };
+
+    it("should call disburseMaturity api", async () => {
+      vi.spyOn(api, "disburseMaturity").mockResolvedValueOnce(undefined);
+      expect(await governanceApiService.disburseMaturity(params)).toEqual(
+        undefined
+      );
+      expect(api.disburseMaturity).toHaveBeenCalledWith(params);
+      expect(api.disburseMaturity).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.disburseMaturity,
+        apiServiceFunc: governanceApiService.disburseMaturity,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.disburseMaturity,
+        apiServiceFunc: governanceApiService.disburseMaturity,
+        params,
+      });
+    });
+  });
+
   describe("splitNeuron", () => {
     const params = {
       neuronId,

@@ -4,6 +4,7 @@ import {
   changeNeuronVisibility,
   claimOrRefreshNeuronByMemo,
   disburse,
+  disburseMaturity,
   getNetworkEconomicsParameters,
   increaseDissolveDelay,
   joinCommunityFund,
@@ -464,6 +465,44 @@ describe("neurons-api", () => {
           percentageToSpawn: 50,
           neuronId: 10n,
         });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("disburseMaturity", () => {
+    it("disburse the maturity of a neuron successfully", async () => {
+      mockGovernanceCanister.disburseMaturity.mockImplementation(
+        vi.fn().mockResolvedValue(undefined)
+      );
+
+      await disburseMaturity({
+        identity: mockIdentity,
+        percentageToDisburse: 50,
+        neuronId: 10n,
+      });
+
+      expect(mockGovernanceCanister.disburseMaturity).toBeCalledTimes(1);
+      expect(mockGovernanceCanister.disburseMaturity).toBeCalledWith({
+        percentageToDisburse: 50,
+        neuronId: 10n,
+      });
+    });
+
+    it("throws error when disburseMaturity fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.disburseMaturity.mockImplementation(
+        vi.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        disburseMaturity({
+          identity: mockIdentity,
+          percentageToDisburse: 50,
+          neuronId: 10n,
+        });
+
       await expect(call).rejects.toThrow(error);
     });
   });
