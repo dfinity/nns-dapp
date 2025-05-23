@@ -5,10 +5,19 @@ import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import Layout from "$routes/(app)/(u)/(detail)/proposal/+layout.svelte";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
+import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Proposal Layout", () => {
+  const renderComponent = (props?) => {
+    return render(Layout, {
+      props: {
+        children: createMockSnippet(),
+        ...props,
+      },
+    });
+  };
   it("should go back to the proposal page if coming from proposals page", async () => {
     page.mock({
       data: {
@@ -16,7 +25,7 @@ describe("Proposal Layout", () => {
       },
       routeId: AppPath.Proposal,
     });
-    const { queryByTestId } = render(Layout);
+    const { queryByTestId } = renderComponent();
 
     const { path } = get(pageStore);
     expect(path).toEqual(AppPath.Proposal);
@@ -39,7 +48,7 @@ describe("Proposal Layout", () => {
       },
       routeId: AppPath.Proposal,
     });
-    const { queryByTestId } = render(Layout);
+    const { queryByTestId } = renderComponent();
 
     const backButton = queryByTestId("back");
     expect(backButton).toBeInTheDocument();
@@ -59,7 +68,7 @@ describe("Proposal Layout", () => {
       },
       routeId: AppPath.Proposal,
     });
-    const { queryByTestId } = render(Layout);
+    const { queryByTestId } = renderComponent();
 
     const backButton = queryByTestId("back");
     expect(backButton).toBeInTheDocument();
@@ -81,7 +90,7 @@ describe("Proposal Layout", () => {
     });
     referrerPathStore.pushPath(AppPath.Launchpad);
 
-    const { queryByTestId } = render(Layout);
+    const { queryByTestId } = renderComponent();
 
     const { path } = get(pageStore);
     expect(path).toEqual(AppPath.Proposal);
@@ -103,7 +112,7 @@ describe("Proposal Layout", () => {
     });
     referrerPathStore.pushPath(AppPath.Portfolio);
 
-    const { queryByTestId } = render(Layout);
+    const { queryByTestId } = renderComponent();
 
     const { path } = get(pageStore);
     expect(path).toEqual(AppPath.Proposal);

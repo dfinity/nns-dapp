@@ -5,8 +5,14 @@
   import SelectUniverseNav from "$lib/components/universe/SelectUniverseNav.svelte";
   import { SplitContent } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
+  import type { Snippet } from "svelte";
 
-  export let resetScrollPositionAfterNavigation = false;
+  type Props = {
+    resetScrollPositionAfterNavigation?: boolean;
+    children: Snippet;
+  };
+  const { resetScrollPositionAfterNavigation = false, children }: Props =
+    $props();
 
   let splitContent: SplitContent | undefined;
 
@@ -19,15 +25,23 @@
 
 <div class="container">
   <SplitContent bind:this={splitContent}>
-    <div class="nav" slot="start">
-      <SelectUniverseNav />
-    </div>
+    {#snippet start()}
+      <div class="nav">
+        <SelectUniverseNav />
+      </div>
+    {/snippet}
 
-    <Title slot="title" />
+    {#snippet title()}
+      <Title />
+    {/snippet}
 
-    <HeaderToolbar slot="toolbar-end" />
+    {#snippet toolbarEnd()}
+      <HeaderToolbar />
+    {/snippet}
 
-    <slot slot="end" />
+    {#snippet end()}
+      {@render children()}
+    {/snippet}
   </SplitContent>
 </div>
 

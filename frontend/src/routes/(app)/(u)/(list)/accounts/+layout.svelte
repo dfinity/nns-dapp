@@ -6,6 +6,12 @@
   import LayoutList from "$lib/components/layout/LayoutList.svelte";
   import { accountsTitleStore } from "$lib/derived/accounts-title.derived";
   import { accountsPageOrigin } from "$lib/derived/routes.derived";
+  import type { Snippet } from "svelte";
+
+  type Props = {
+    children: Snippet;
+  };
+  const { children }: Props = $props();
 
   const back = (): Promise<void> => goto($accountsPageOrigin);
 </script>
@@ -14,7 +20,7 @@
   <Layout>
     <Content {back}>
       <IslandWidthMain>
-        <slot />
+        {@render children()}
       </IslandWidthMain>
     </Content>
   </Layout>

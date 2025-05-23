@@ -4,6 +4,12 @@
   import Layout from "$lib/components/layout/Layout.svelte";
   import LayoutNavGuard from "$lib/components/layout/LayoutNavGuard.svelte";
   import { walletPageOrigin } from "$lib/derived/routes.derived";
+  import type { Snippet } from "svelte";
+
+  type Props = {
+    children: Snippet;
+  };
+  const { children }: Props = $props();
 
   const back = (): Promise<void> => goto($walletPageOrigin);
 </script>
@@ -11,7 +17,7 @@
 <LayoutNavGuard>
   <Layout>
     <Content {back}>
-      <slot />
+      {@render children()}
     </Content>
   </Layout>
 </LayoutNavGuard>
