@@ -219,25 +219,21 @@ export const makeSnsDummyProposals = async ({
   });
   const { snsProposals } = await import("./sns-dummy.api");
 
-  const allCalls = await Promise.allSettled(
-    snsProposals.map((proposal) =>
-      canister
-        .manageNeuron({
-          subaccount: neuronId.id,
-          command: [{ MakeProposal: proposal }],
-        })
-        .catch((error) => {
-          console.error(
-            "Error while creating dummy proposal: ",
-            proposal.title
-          );
-          console.error(error);
-          throw error;
-        })
-    )
-  );
+  const errors: unknown[] = [];
+  for (const proposal of snsProposals) {
+    try {
+      await canister.manageNeuron({
+        subaccount: neuronId.id,
+        command: [{ MakeProposal: proposal }],
+      });
+    } catch (error) {
+      console.error("Error while creating dummy proposal: ", proposal.title);
+      console.error(error);
+      errors.push(error);
+    }
+  }
 
-  if (allCalls.some((call) => call.status === "rejected")) {
+  if (errors.length > 0) {
     throw new Error();
   }
 
