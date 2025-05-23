@@ -27,6 +27,7 @@ describe("Alfred Component", () => {
     "Canisters",
     "Settings",
     "Copy principal ID",
+    "Hide Balance",
     "Log Out",
   ];
 

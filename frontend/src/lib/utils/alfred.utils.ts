@@ -1,9 +1,15 @@
 import { login, logout } from "$lib/services/auth.services";
+import {
+  balancePrivacyOptionStore,
+  type BalancePrivacyOptionData,
+} from "$lib/stores/balance-privacy-option.store";
 import { i18n } from "$lib/stores/i18n";
 import {
   IconCopy,
   IconDarkMode,
   IconDocument,
+  IconEyeClosed,
+  IconEyeOpen,
   IconHome,
   IconLaunchpad,
   IconLedger,
@@ -30,6 +36,7 @@ interface AlfredItemBase {
   contextFilter?: (context: {
     isSignedIn: boolean;
     theme: ThemeStoreData;
+    balancePrivacyOption: BalancePrivacyOptionData;
   }) => boolean;
 }
 
@@ -143,6 +150,26 @@ const getAlfredItems = (): AlfredItem[] => {
       contextFilter: (context) => context.theme === Theme.DARK,
     },
     {
+      id: "hide-balance",
+      type: "action",
+      title: "Hide Balance",
+      description: "Privacy mode for your balance",
+      icon: IconEyeClosed,
+      action: () => balancePrivacyOptionStore.set("hide"),
+      contextFilter: (context) =>
+        context.balancePrivacyOption === "show" && context.isSignedIn,
+    },
+    {
+      id: "show-balance",
+      type: "action",
+      title: "Show Balance",
+      description: "Display your balances",
+      icon: IconEyeOpen,
+      action: () => balancePrivacyOptionStore.set("show"),
+      contextFilter: (context) =>
+        context.balancePrivacyOption === "hide" && context.isSignedIn,
+    },
+    {
       id: "log-in",
       type: "action",
       title: alfred.log_in_title,
@@ -170,7 +197,11 @@ const copyToClipboard = async (value: string) =>
 
 export const filterAlfredItems = (
   query: string,
-  context: { isSignedIn: boolean; theme: ThemeStoreData }
+  context: {
+    isSignedIn: boolean;
+    theme: ThemeStoreData;
+    balancePrivacyOption: BalancePrivacyOptionData;
+  }
 ): AlfredItem[] => {
   const items = alfredItems.filter(
     ({ contextFilter }) => contextFilter?.(context) ?? true
