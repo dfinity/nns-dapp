@@ -800,6 +800,7 @@ interface I18nNeuron_detail {
   stake: string;
   spawn_neuron: string;
   spawn: string;
+  disburse_maturity_button: string;
   stake_maturity_disabled_tooltip: string;
   disburse_maturity_disabled_tooltip_zero: string;
   disburse_maturity_disabled_tooltip_non_zero: string;
