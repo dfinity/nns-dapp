@@ -3,7 +3,6 @@ import {
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import ChangeBulkNeuronVisibilityForm from "$lib/modals/neurons/ChangeBulkNeuronVisibilityForm.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -570,10 +569,6 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
   });
 
   it("should display 'Missing rewards' tag", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      true
-    );
     networkEconomicsStore.setParameters({
       parameters: mockNetworkEconomics,
       certified: true,

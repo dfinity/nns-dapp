@@ -3,7 +3,6 @@ import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
@@ -72,10 +71,6 @@ describe("NnsLosingRewardsNeuronCard", () => {
   });
 
   it("should render 'Missing rewards' tag", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      true
-    );
     networkEconomicsStore.setParameters({
       parameters: mockNetworkEconomics,
       certified: true,

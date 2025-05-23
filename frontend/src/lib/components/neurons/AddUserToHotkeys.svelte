@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Banner from "$lib/components/ui/Banner.svelte";
+  import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
   import { addHotkeyForHardwareWalletNeuron } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
@@ -6,9 +8,6 @@
   import { busy, IconInfo } from "@dfinity/gix-components";
   import type { NeuronId } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
-  import Banner from "$lib/components/ui/Banner.svelte";
-  import BannerIcon from "$lib/components/ui/BannerIcon.svelte";
 
   export let account: Account;
   export let neuronId: NeuronId;
@@ -33,13 +32,11 @@
 </script>
 
 <div class="wrapper" data-tid="add-principal-to-hotkeys-modal">
-  {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
-    <Banner htmlText={$i18n.missing_rewards.hw_create_neuron_warning}>
-      <BannerIcon slot="icon">
-        <IconInfo />
-      </BannerIcon>
-    </Banner>
-  {/if}
+  <Banner htmlText={$i18n.missing_rewards.hw_create_neuron_warning}>
+    <BannerIcon slot="icon">
+      <IconInfo />
+    </BannerIcon>
+  </Banner>
 
   <p class="description">{$i18n.neurons.add_user_as_hotkey_message}</p>
 
