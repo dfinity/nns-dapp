@@ -826,6 +826,48 @@ export const spawnNeuron = async ({
   }
 };
 
+export const disburseMaturity = async ({
+  neuronId,
+  account,
+  subAccount,
+  percentageToDisburse,
+}: {
+  neuronId: NeuronId;
+  account?: Principal;
+  subAccount?: string;
+  percentageToDisburse: number;
+}): Promise<void> => {
+  try {
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
+
+    console.log("😈 disburseMaturity service called", {
+      neuronId,
+      // account,
+      // subAccount,
+      percentageToDisburse,
+    });
+
+    await governanceApiService.disburseMaturity({
+      neuronId,
+      // account,
+      // subAccount,
+      percentageToDisburse,
+      identity,
+    });
+
+    await listNeurons();
+  } catch (err) {
+    console.log(err);
+    console.log("---------");
+    console.log(typeof err);
+    console.log("message", (err as Error)?.message);
+    toastsShow(mapNeuronErrorToToastMessage(err));
+
+    return undefined;
+  }
+};
+
 export const startDissolving = async (
   neuronId: NeuronId
 ): Promise<NeuronId | undefined> => {
