@@ -144,6 +144,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     dfxNetwork: "testnet",
     featureFlags: JSON.stringify({
       ENABLE_CKTESTBTC: true,
+      ENABLE_DISBURSE_MATURITY: false,
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
       ENABLE_PERIODIC_FOLLOWING_CONFIRMATION: false,
       ENABLE_USD_VALUES: false,
