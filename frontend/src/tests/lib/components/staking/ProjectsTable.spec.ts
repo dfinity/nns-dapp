@@ -938,10 +938,6 @@ describe("ProjectsTable", () => {
 
     describe("Nns neurons missing rewards badge", () => {
       it("should render the badge in Nns row", async () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
         neuronsStore.setNeurons({
           neurons: [nnsNeuronWithStake],
           certified: true,
@@ -966,29 +962,6 @@ describe("ProjectsTable", () => {
         expect(await secondRow.getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
         expect(
           await secondRow
-            .getProjectTitleCellPo()
-            .getNnsNeuronsMissingRewardsBadgePo()
-            .isPresent()
-        ).toBe(false);
-      });
-
-      it("should not render the badge when feature flag off", async () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          false
-        );
-        neuronsStore.setNeurons({
-          neurons: [nnsNeuronWithStake],
-          certified: true,
-        });
-        const po = renderComponent();
-        const [firstRow] = await po.getProjectsTableRowPos();
-
-        expect(await firstRow.getHref()).toBe(
-          `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-        );
-        expect(
-          await firstRow
             .getProjectTitleCellPo()
             .getNnsNeuronsMissingRewardsBadgePo()
             .isPresent()

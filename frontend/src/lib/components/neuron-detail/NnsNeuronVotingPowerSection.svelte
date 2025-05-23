@@ -4,7 +4,6 @@
   import NnsNeuronStateItemAction from "$lib/components/neuron-detail/NnsNeuronStateItemAction.svelte";
   import NnsStakeItemAction from "$lib/components/neuron-detail/NnsStakeItemAction.svelte";
   import { neuronMinimumDissolveDelayToVoteSeconds } from "$lib/derived/network-economics.derived";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
@@ -58,9 +57,7 @@
             {$i18n.neuron_detail.calculated_as}
           </span>
           <span class="calculation" data-tid="voting-power-generic-description">
-            {$ENABLE_PERIODIC_FOLLOWING_CONFIRMATION
-              ? $i18n.neuron_detail.voting_power_section_calculation_generic_new
-              : $i18n.neuron_detail.voting_power_section_calculation_generic}
+            $i18n.neuron_detail.voting_power_section_calculation_generic_new
           </span>
         </span>
         <span class="info-item">
@@ -69,10 +66,7 @@
           </span>
           <span class="calculation" data-tid="voting-power-description">
             {replacePlaceholders(
-              $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION
-                ? $i18n.neuron_detail
-                    .voting_power_section_calculation_specific_new
-                : $i18n.neuron_detail.voting_power_section_calculation_specific,
+              $i18n.neuron_detail.voting_power_section_calculation_specific_new,
               {
                 $stake: formatTokenE8s({
                   value: neuronStake(neuron),
@@ -108,9 +102,7 @@
     <NnsStakeItemAction {neuron} />
     <NnsNeuronStateItemAction {neuron} />
     <NnsNeuronDissolveDelayItemAction {neuron} />
-    {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
-      <NnsNeuronRewardStatusAction {neuron} />
-    {/if}
+    <NnsNeuronRewardStatusAction {neuron} />
   </ul>
 </Section>
 

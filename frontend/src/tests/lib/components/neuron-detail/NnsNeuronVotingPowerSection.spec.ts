@@ -1,7 +1,6 @@
 import NnsNeuronVotingPowerSection from "$lib/components/neuron-detail/NnsNeuronVotingPowerSection.svelte";
 import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
@@ -63,29 +62,7 @@ describe("NnsStakeItemAction", () => {
     );
   });
 
-  it("should render description with voting power explanation", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      false
-    );
-    const neuron: NeuronInfo = {
-      ...mockNeuron,
-      decidingVotingPower: 614000000n,
-      potentialVotingPower: 614000000n,
-      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
-    };
-    const po = renderComponent(neuron);
-
-    expect(await po.getGenericDescription()).toBe(
-      "voting_power = (staked_amount + staked_maturity) × (1 + age_bonus) × (1 + dissolve_delay_bonus)"
-    );
-  });
-
   it("should render description with voting power explanation including activity multiplier", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      true
-    );
     const neuron: NeuronInfo = {
       ...mockNeuron,
       decidingVotingPower: 614000000n,
@@ -99,29 +76,7 @@ describe("NnsStakeItemAction", () => {
     );
   });
 
-  it("should render description with voting power calculation", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      false
-    );
-    const neuron: NeuronInfo = {
-      ...mockNeuron,
-      decidingVotingPower: 614000000n,
-      potentialVotingPower: 614000000n,
-      dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
-    };
-    const po = renderComponent(neuron);
-
-    expect(await po.getDescription()).toBe(
-      "voting_power = (30.00 + 0) × 1.00 × 1.06 = 6.14"
-    );
-  });
-
   it("should render description with voting power calculation including activity multiplier", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      true
-    );
     const neuron: NeuronInfo = {
       ...mockNeuron,
       dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
@@ -152,10 +107,6 @@ describe("NnsStakeItemAction", () => {
   });
 
   it("should render reward status item action when flag enabled", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      true
-    );
     networkEconomicsStore.setParameters({
       parameters: mockNetworkEconomics,
       certified: true,
@@ -168,24 +119,7 @@ describe("NnsStakeItemAction", () => {
     expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(true);
   });
 
-  it("should not render reward status item action when flag disabled", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      false
-    );
-    const po = renderComponent({
-      ...mockNeuron,
-      dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
-    });
-
-    expect(await po.getNnsNeuronRewardStatusActionPo().isPresent()).toBe(false);
-  });
-
   it("should render voting power w/o extra class when not reduced voting power", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      true
-    );
     const neuron: NeuronInfo = {
       ...mockNeuron,
       dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
@@ -203,10 +137,6 @@ describe("NnsStakeItemAction", () => {
   });
 
   it("should render voting power with isReducedVotingPower class when reduced voting power", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      true
-    );
     const neuron: NeuronInfo = {
       ...mockNeuron,
       dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),

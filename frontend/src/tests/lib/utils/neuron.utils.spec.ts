@@ -13,7 +13,6 @@ import {
   MIN_NEURON_STAKE,
 } from "$lib/constants/neurons.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { enumValues } from "$lib/utils/enum.utils";
@@ -1790,10 +1789,6 @@ describe("neuron-utils", () => {
       };
 
       it("returns 'XX days to confirm' tag", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
         const testTag = ({
           secondsToConfirm,
           expectedText,
@@ -1864,11 +1859,6 @@ describe("neuron-utils", () => {
       });
 
       it("returns no 'XX days to confirm' tag when dissolve delay too low", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
-
         const oneDayToConfirmSeconds =
           nowSeconds - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY;
         expect(
@@ -1896,11 +1886,6 @@ describe("neuron-utils", () => {
       });
 
       it("returns 'Missing rewards' tag", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
-
         expect(
           getNeuronTags({
             neuron: losingRewardNeuron,
@@ -1914,11 +1899,6 @@ describe("neuron-utils", () => {
       });
 
       it("returns no 'Missing rewards' tag when dissolve delay too low", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
-
         expect(
           getNeuronTags({
             neuron: {
@@ -1935,11 +1915,6 @@ describe("neuron-utils", () => {
       });
 
       it("returns no 'Missing rewards' tag when no voting power economics", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
-
         expect(
           getNeuronTags({
             neuron: losingRewardNeuron,
@@ -1952,30 +1927,7 @@ describe("neuron-utils", () => {
         ).toEqual([]);
       });
 
-      it("returns no 'Missing rewards' tag without feature flag", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          false
-        );
-
-        expect(
-          getNeuronTags({
-            neuron: losingRewardNeuron,
-            identity: mockIdentity,
-            accounts: accountsWithHW,
-            i18n: en,
-            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
-            minimumDissolveDelay,
-          })
-        ).toEqual([]);
-      });
-
       it("returns 'Missing rewards soon' tag", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
-
         expect(
           getNeuronTags({
             neuron: losingRewardSoonNeuron,
@@ -1989,11 +1941,6 @@ describe("neuron-utils", () => {
       });
 
       it("returns no 'Missing rewards soon' tag when dissolve delay too low", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
-
         expect(
           getNeuronTags({
             neuron: {
@@ -2010,11 +1957,6 @@ describe("neuron-utils", () => {
       });
 
       it("returns no 'Missing rewards soon' tag w/o voting power economics", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
-
         expect(
           getNeuronTags({
             neuron: losingRewardSoonNeuron,
@@ -2022,24 +1964,6 @@ describe("neuron-utils", () => {
             accounts: accountsWithHW,
             i18n: en,
             startReducingVotingPowerAfterSeconds: undefined,
-            minimumDissolveDelay,
-          })
-        ).toEqual([]);
-      });
-
-      it("returns no 'Missing rewards soon' tag without feature flag", () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          false
-        );
-
-        expect(
-          getNeuronTags({
-            neuron: losingRewardSoonNeuron,
-            identity: mockIdentity,
-            accounts: accountsWithHW,
-            i18n: en,
-            startReducingVotingPowerAfterSeconds: BigInt(SECONDS_IN_HALF_YEAR),
             minimumDissolveDelay,
           })
         ).toEqual([]);

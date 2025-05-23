@@ -45,7 +45,6 @@
   } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { canistersStore } from "$lib/stores/canisters.store";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import {
@@ -414,7 +413,7 @@
             <SignInGuard />
           </WalletPageHeading>
 
-          {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION && isHardwareWallet}
+          {#if isHardwareWallet}
             <LedgerNeuronHotkeyWarning />
           {/if}
 
