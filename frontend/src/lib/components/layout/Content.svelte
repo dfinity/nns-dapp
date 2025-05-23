@@ -2,12 +2,13 @@
   import HeaderToolbar from "$lib/components/header/HeaderToolbar.svelte";
   import Title from "$lib/components/header/Title.svelte";
   import { Content } from "@dfinity/gix-components";
+  import type { Snippet } from "svelte";
 
   type Props = {
     back?: () => Promise<void>;
+    children: Snippet;
   };
-
-  const { back }: Props = $props();
+  const { back, children }: Props = $props();
 </script>
 
 <Content onBack={back}>
@@ -18,5 +19,5 @@
   {#snippet toolbarEnd()}
     <HeaderToolbar />
   {/snippet}
-  <div> </div>
+  {@render children()}
 </Content>
