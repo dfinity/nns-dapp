@@ -176,6 +176,7 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../themes/mixins/portfolio";
 
   .wrapper {
     display: flex;
@@ -206,7 +207,7 @@
       opacity: 0.1;
       z-index: 0;
       // TODO: Introduce in GIX once it is part of the design system
-      color: rgba(#3d4d99, 0.7);
+      color: #3d4d9973;
       pointer-events: none;
       transform: rotate(270deg) scale(1.2);
     }
@@ -216,6 +217,8 @@
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: var(--padding-0_5x);
+
+      @include portfolio.card-tag;
 
       .title-wrapper {
         display: flex;

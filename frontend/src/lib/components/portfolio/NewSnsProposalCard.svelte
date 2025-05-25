@@ -95,6 +95,7 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../themes/mixins/portfolio";
 
   .wrapper {
     display: flex;
@@ -121,6 +122,8 @@
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: var(--padding-0_5x);
+
+      @include portfolio.card-tag;
 
       .title-wrapper {
         display: flex;
