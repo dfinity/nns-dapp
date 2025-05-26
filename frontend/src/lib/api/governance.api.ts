@@ -227,20 +227,15 @@ export const spawnNeuron = async ({
 };
 
 export type ApiDisburseMaturityParams = ApiManageNeuronParams & {
+  // TODO(disburse-maturity): Add sub and external accounts support.
   // account?: Principal;
   // subAccount?: string;
   percentageToDisburse: number;
 };
-// disburseMaturity is not yet supported by the ledger
+
 export const disburseMaturity = async ({
   neuronId,
   percentageToDisburse,
-  // TODO(disburse-maturity): Add external account support
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // account,
-  // TODO(disburse-maturity): Add subAccount support
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // subAccount,
   identity,
 }: ApiDisburseMaturityParams): Promise<void> => {
   logWithTimestamp(`Disburse maturity (${hashCode(neuronId)}) call...`);
@@ -248,8 +243,6 @@ export const disburseMaturity = async ({
   const { canister } = await governanceCanister({ identity });
   await canister.disburseMaturity({
     neuronId,
-    // account,
-    // subAccount,
     percentageToDisburse,
   });
 

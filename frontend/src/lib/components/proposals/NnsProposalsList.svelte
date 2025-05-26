@@ -13,21 +13,29 @@
   import { filteredActionableProposals } from "$lib/derived/proposals.derived";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
   import { InfiniteScroll } from "@dfinity/gix-components";
-  import type { ProposalInfo } from "@dfinity/nns";
   import { isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
-  export let hidden: boolean;
-  export let disableInfiniteScroll: boolean;
-  export let loading: boolean;
-  export let loadingAnimation: "spinner" | "skeleton" | undefined;
+
+  type Props = {
+    hidden: boolean;
+    disableInfiniteScroll: boolean;
+    loading: boolean;
+    loadingAnimation?: "spinner" | "skeleton";
+    loadNextProposals: () => Promise<void>;
+  };
+
+  const {
+    hidden,
+    disableInfiniteScroll,
+    loading,
+    loadingAnimation,
+    loadNextProposals,
+  }: Props = $props();
 
   // Prevent pre-rendering issue "IntersectionObserver is not defined"
   // Note: Another solution would be to lazy load the InfiniteScroll component
-  let display = true;
-  $: display = !building;
-
-  let actionableProposals: ProposalInfo[] | undefined;
-  $: actionableProposals = $actionableNnsProposalsStore.proposals;
+  const display = $derived(!building);
+  const actionableProposals = $derived($actionableNnsProposalsStore.proposals);
 </script>
 
 <TestIdWrapper testId="nns-proposal-list-component">
@@ -43,7 +51,7 @@
         {:else}
           <ListLoader loading={loadingAnimation === "spinner"}>
             <InfiniteScroll
-              on:nnsIntersect
+              onIntersect={loadNextProposals}
               layout="grid"
               disabled={disableInfiniteScroll || loading}
             >
@@ -67,7 +75,7 @@
         {:else if actionableProposals?.length === 0}
           <ActionableProposalsEmpty />
         {:else}
-          <InfiniteScroll layout="grid" disabled>
+          <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
             {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
               <NnsProposalCard {hidden} actionable {proposalInfo} />
             {/each}

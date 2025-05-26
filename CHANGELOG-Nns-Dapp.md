@@ -11,6 +11,49 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 136711
+
+### Application
+
+#### Fixed
+
+- Added support for hardware wallet connections through browser permissions
+
+### Operations
+
+## Proposal 136705
+
+### Application
+
+#### Added
+
+* Display neuron ID related errors inline during vote delegation process
+* Display alternative info box for proposal's info
+
+#### Security
+
+* Added Permissions Policy to enhance browser security controls
+
+### Operations
+
+## Proposal 136688
+
+### Application
+
+#### Added
+
+* Swipe gestures for project cards on the portfolio page
+* Display the voting delegation state in the SNS neurons table
+* Display upcoming swaps in the portfolio page
+* Display the voting delegation state in the NNS neurons table
+
+#### Fixed
+
+* Fix tag background styling in the vote delegation modal (dark theme)
+* "Add Followee" button is not fully visible after adding a followee
+
+### Operations
+
 ## Proposal 136473
 
 ### Application

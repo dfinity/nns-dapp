@@ -26,7 +26,7 @@
     fakeLoading = false;
   });
   let fakeLoading = false;
-  const showMore = () => {
+  const showMore = async () => {
     if (fakeLoading) {
       return;
     }
@@ -48,7 +48,7 @@
       <span>{$i18n.neuron_detail.vote}</span>
     </h4>
 
-    <InfiniteScroll on:nnsIntersect={showMore} disabled={disableInfiniteScroll}>
+    <InfiniteScroll onIntersect={showMore} disabled={disableInfiniteScroll}>
       {#each ballotsToShow as ballot}
         <li>
           <BallotSummary {ballot} />

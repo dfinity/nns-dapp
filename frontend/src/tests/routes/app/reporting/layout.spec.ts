@@ -5,6 +5,7 @@ import { pageStore } from "$lib/derived/page.derived";
 import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import Layout from "$routes/(app)/(nns)/reporting/+layout.svelte";
+import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -22,7 +23,11 @@ describe("Layout", () => {
       routeId: AppPath.Reporting,
     });
 
-    return render(Layout);
+    return render(Layout, {
+      props: {
+        children: createMockSnippet(),
+      },
+    });
   };
 
   it("should stay in the page if feature flag is on", () => {

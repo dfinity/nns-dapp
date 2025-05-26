@@ -4,6 +4,7 @@ import { pageStore } from "$lib/derived/page.derived";
 import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import Layout from "$routes/(app)/(nns)/settings/+layout.svelte";
+import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -16,7 +17,11 @@ describe("Layout", () => {
       },
       routeId: AppPath.Settings,
     });
-    const { queryByTestId } = render(Layout);
+    const { queryByTestId } = render(Layout, {
+      props: {
+        children: createMockSnippet(),
+      },
+    });
 
     const { path } = get(pageStore);
     expect(path).toEqual(AppPath.Settings);

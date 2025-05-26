@@ -3,10 +3,19 @@ import { pageStore } from "$lib/derived/page.derived";
 import { referrerPathStore } from "$lib/stores/routes.store";
 import { page } from "$mocks/$app/stores";
 import ProjectLayout from "$routes/(app)/(nns)/project/+layout.svelte";
+import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Project layout", () => {
+  const renderComponent = () => {
+    return render(ProjectLayout, {
+      props: {
+        children: createMockSnippet(),
+      },
+    });
+  };
+
   describe("back button", () => {
     it("should navigate to Portfolio page if previous page was Portfolio page", async () => {
       page.mock({
@@ -14,7 +23,7 @@ describe("Project layout", () => {
       });
       referrerPathStore.pushPath(AppPath.Portfolio);
 
-      const { queryByTestId } = render(ProjectLayout);
+      const { queryByTestId } = renderComponent();
 
       expect(get(pageStore).path).toEqual(AppPath.Project);
       await fireEvent.click(queryByTestId("back"));
@@ -26,7 +35,7 @@ describe("Project layout", () => {
       page.mock({
         routeId: AppPath.Project,
       });
-      const { queryByTestId } = render(ProjectLayout);
+      const { queryByTestId } = renderComponent();
 
       expect(get(pageStore).path).toEqual(AppPath.Project);
       await fireEvent.click(queryByTestId("back"));

@@ -1435,7 +1435,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 40912415750622,
                 "slope_denominator": 262824949935962,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 26262869760070,
@@ -1517,7 +1517,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102092765121055660,
+    "icrc1_total_supply": 102093181216311782,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2736,7 +2736,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 40912415750622,
               "slope_denominator": 262824949935962,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 26262869760070,
@@ -3768,7 +3768,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 36519467832205,
                 "slope_denominator": 237923751739741,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 23723112487237,
@@ -3850,7 +3850,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100871576969834,
+    "icrc1_total_supply": 100870950689264,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4201,7 +4201,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 36519467832205,
               "slope_denominator": 237923751739741,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 23723112487237,
@@ -5082,7 +5082,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 995040576353,
+    "icrc1_total_supply": 994977356502,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5630,7 +5630,7 @@
           "description": "Configure the system parameters of the ICDexRouter.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DaoCommunitySettings",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSysConfig",
@@ -5644,7 +5644,7 @@
           "description": "Set the wasm of the ICDexPair.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSetICDexPairWasm",
@@ -5658,7 +5658,7 @@
           "description": "Set the wasm of the ICDexMaker.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSetICDexMakerWasm",
@@ -5672,7 +5672,7 @@
           "description": "Modifying the controllers of the trading pair.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DaoCommunitySettings",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSetControllers",
@@ -5686,7 +5686,7 @@
           "description": " Modify the controllers of an ICDexMaker canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerSetControllers",
@@ -5700,7 +5700,7 @@
           "description": "Create a new trading pair by governance.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorCreate",
@@ -5714,7 +5714,7 @@
           "description": "Create a new Automated Market Maker (ICDexMaker). ",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerMakerCreate",
@@ -5728,7 +5728,7 @@
           "description": "Set up vip-maker qualification and configure rebate rate.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairSetVipMaker",
@@ -5742,7 +5742,7 @@
           "description": "Suspend (true) or open (false) a trading pair. If `_openingTime` is specified, it means that the pair will be opened automatically after that time.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairPause",
@@ -5756,7 +5756,7 @@
           "description": "Suspend (true) or open (false) all trading pairs. ",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairPauseAll",
@@ -5770,7 +5770,7 @@
           "description": " Upgrade all ICDexPairs to latest version.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorUpdateAll",
@@ -5784,7 +5784,7 @@
           "description": " Pause or enable Automated Market Maker (ICDexMaker).",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerSetPause",
@@ -5798,7 +5798,7 @@
           "description": "Upgrade all ICDexMakers to the latest version. ",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerUpdateAll",
@@ -5812,7 +5812,7 @@
           "description": "Add frontend governance method `commit_proposed_batch`",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
               "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
               "validator_method_name": "commit_proposed_batch",
@@ -5826,7 +5826,7 @@
           "description": "Withdrawing funds from Trader to SNS Treasury",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "3yss5-5qaaa-aaaar-qad7a-cai",
               "validator_method_name": "validatorTraderWithdraw",
@@ -5840,7 +5840,7 @@
           "description": "Backs up and saves a snapshot of a trading pair.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorBackup",
@@ -5854,7 +5854,7 @@
           "description": "Backup the data of a trading pair to another canister.  ",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorBackupToTempCanister",
@@ -5882,7 +5882,7 @@
           "description": "Let ICDexMaker approve the `_amount` of the sysToken the trading pair could spend.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerApproveToPair",
@@ -5896,7 +5896,7 @@
           "description": "Lock or unlock an Automated Market Maker (ICDexMaker) system transaction lock.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerTransactionLock",
@@ -5910,7 +5910,7 @@
           "description": "Add governance method `ICDexRouter.update()`",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorUpdate",
@@ -5924,7 +5924,7 @@
           "description": "Reinstall a trading pair canister which is paused.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorReinstall",
@@ -5938,7 +5938,7 @@
           "description": "Removes all snapshots prior to the specified timestamp of the trading pair.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorRemoveSnapshot",
@@ -5952,7 +5952,7 @@
           "description": "\"Recover data for a trading pair.   Note: You need to check the wasm version and the status of the trading pair, the operation may lead to data loss.\"",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorRecovery",
@@ -5966,7 +5966,7 @@
           "description": "\"Save the data of snapshot to another canister.   Note: Canister `_pairTo` is created only for backing up data and should not be used for trading. It needs to implement the recover() method like ICDexPair.\"",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSnapshotToTempCanister",
@@ -5980,7 +5980,7 @@
           "description": "Puts a pair into a list of trading pairs.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPut",
@@ -5994,7 +5994,7 @@
           "description": "Removes a pair from the list of trading pairs.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorRemove",
@@ -6008,7 +6008,7 @@
           "description": "Enable/disable Auction Mode",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairSetAuctionMode",
@@ -6022,7 +6022,7 @@
           "description": "Open IDO of a trading pair and configure parameters",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairIDOSetFunder",
@@ -6036,7 +6036,7 @@
           "description": "Configure the trading pair parameters and configure its DRC205 parameters.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairConfig",
@@ -6050,7 +6050,7 @@
           "description": "When the data is too large to be backed up, you can set the UpgradeMode to #Base.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairSetUpgradeMode",
@@ -6064,7 +6064,7 @@
           "description": "Sets an order with #Todo status as an error order.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairSetOrderFail",
@@ -6078,7 +6078,7 @@
           "description": "Enable strategy orders for a trading pair.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairEnableStratOrder",
@@ -6092,7 +6092,7 @@
           "description": "Configuring strategy order parameters for a trading pair.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DaoCommunitySettings",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorStoConfig",
@@ -6120,7 +6120,7 @@
           "description": "Withdraw cycles.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairWithdrawCycles",
@@ -6134,7 +6134,7 @@
           "description": "Add/Remove ICTC Administrator",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairIctcSetAdmin",
@@ -6148,7 +6148,7 @@
           "description": "Clear logs of transaction orders and transaction tasks. ",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairIctcClearLog",
@@ -6162,7 +6162,7 @@
           "description": "Try the task again.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairIctcRedoTT",
@@ -6176,7 +6176,7 @@
           "description": "Complete a blocking order.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairIctcCompleteTO",
@@ -6190,7 +6190,7 @@
           "description": "Add a whitelist trading pair (only these pairs are allowed to be traded)",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "3jd4g-jyaaa-aaaar-qaeba-cai",
               "validator_method_name": "validatorTraderSetWhitelist",
@@ -6204,7 +6204,7 @@
           "description": "Add asset canister permission",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
               "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
               "validator_method_name": "validate_grant_permission",
@@ -6218,7 +6218,7 @@
           "description": "Set status of a pending task.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairIctcDoneTT",
@@ -6232,7 +6232,7 @@
           "description": "Set status of a pending order.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairIctcDoneTO",
@@ -6246,7 +6246,7 @@
           "description": "Run the ICTC actuator and check the status of the transaction order `toid`.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairIctcRunTO",
@@ -6260,7 +6260,7 @@
           "description": "Change the status of a transaction order to #Blocking.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairIctcBlockTO",
@@ -6274,7 +6274,7 @@
           "description": "Synchronizing token0 and token1 transfer fees.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairSync",
@@ -6288,7 +6288,7 @@
           "description": "Removes vip-maker qualification.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairRemoveVipMaker",
@@ -6302,7 +6302,7 @@
           "description": "Retrieve missing funds from the order's TxAccount. The funds of the TxAccount will be refunded to the ICDexRouter canister-id.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairFallbackByTxid",
@@ -6316,7 +6316,7 @@
           "description": "Cancels an order.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairCancelByTxid",
@@ -6330,7 +6330,7 @@
           "description": "Submit a text description of the Trading Ambassadors (referral) system.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorPairTaSetDescription",
@@ -6344,7 +6344,7 @@
           "description": "Withdraw the token to the specified account.Withdrawals can only be made to a DAO address, or to a blackhole address (destruction), not to a private address.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSysWithdraw",
@@ -6358,7 +6358,7 @@
           "description": "Placing an order in a trading pair as a trader.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSysOrder",
@@ -6372,7 +6372,7 @@
           "description": "Cancel own orders as a trader.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSysCancelOrder",
@@ -6386,7 +6386,7 @@
           "description": "Reinstall an ICDexMaker canister which is paused. Note: Operate with caution. Consider calling this method only if upgrading is not possible.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerReinstall",
@@ -6400,7 +6400,7 @@
           "description": "Upgrade an ICDexMaker canister. Permissions: Dao, Private Maker Creator",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerUpdate",
@@ -6414,7 +6414,7 @@
           "description": "Remove an Automated Market Maker (ICDexMaker).Permissions: Dao, Private Maker Creator",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DappCanisterManagement",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerRemove",
@@ -6428,7 +6428,7 @@
           "description": "Configure an Automated Market Maker (ICDexMaker).",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DaoCommunitySettings",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerConfig",
@@ -6442,7 +6442,7 @@
           "description": "Reset Automated Market Maker (ICDexMaker) local account balance.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerResetLocalBalance",
@@ -6456,7 +6456,7 @@
           "description": "Withdraw funds from the trading pair to an Automated Market Maker (ICDexMaker) local account.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerDexWithdraw",
@@ -6470,7 +6470,7 @@
           "description": "Deposit from Automated Market Maker (ICDexMaker) to TraderAccount for the trading pair.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerDexDeposit",
@@ -6484,7 +6484,7 @@
           "description": "Deletes grid order from Automated Market Maker (ICDexMaker).",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerDeleteGridOrder",
@@ -6498,7 +6498,7 @@
           "description": "Creates a grid order for Automated Market Maker (ICDexMaker) on the trading pair.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerCreateGridOrder",
@@ -6512,7 +6512,7 @@
           "description": "Batch conversion of fees in ICDexRouter.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSysConversionFees",
@@ -6526,7 +6526,7 @@
           "description": "Calls specified canister's methods, such as trading pairs, using ICDexRouter as a proxy for governance purposes. This is a generic ICDex governance method with the disadvantage that the parameters are in binary unreadable form.  Proposals that call this method, where its parameters are not clear, please vote to reject.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSysCall",
@@ -6540,7 +6540,7 @@
           "description": "frontend governance method commit_proposed_batch",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
               "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
               "validator_method_name": "validate_commit_proposed_batch",
@@ -6554,7 +6554,7 @@
           "description": "Cancels trade orders in pending on the trading pair placed by Automated Market Maker (ICDexMaker).",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMakerCancelAllOrders",
@@ -6568,7 +6568,7 @@
           "description": "Put a canister-id into Cycles Monitor.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMonitorPut",
@@ -6582,7 +6582,7 @@
           "description": "Remove a canister-id from Cycles Monitor.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMonitorRemove",
@@ -6610,7 +6610,7 @@
           "description": "Start the Timer, it will be started automatically when upgrading the canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorTimerStart",
@@ -6624,7 +6624,7 @@
           "description": "Synchronize trading fees for all pairs.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSync",
@@ -6652,7 +6652,7 @@
           "description": "Stop the Timer",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorTimerStop",
@@ -6666,7 +6666,7 @@
           "description": "Synchronize the vip-maker records of all pairs into the ICDexRouter.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorSyncVipMakers",
@@ -6680,7 +6680,7 @@
           "description": "Open a new round mining event.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "odhfn-cqaaa-aaaar-qaana-cai",
               "validator_method_name": "validatorMiningNewRound",
@@ -6694,7 +6694,7 @@
           "description": "Update data for specified rounds.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "odhfn-cqaaa-aaaar-qaana-cai",
               "validator_method_name": "validatorMiningUpdateRound",
@@ -6708,7 +6708,7 @@
           "description": "Synchronize all token fees",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrSyncAllTokenFee",
@@ -6722,7 +6722,7 @@
           "description": "Add a pair to the list",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrPutTradingPair",
@@ -6736,7 +6736,7 @@
           "description": "Remove a pair to the list",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrRemoveTradingPair",
@@ -6750,7 +6750,7 @@
           "description": "Set the score of a pair (score2, max 20)",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrSetScore",
@@ -6764,7 +6764,7 @@
           "description": "Add a currency token to the list",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrPutCurrency",
@@ -6778,7 +6778,7 @@
           "description": "Remove a currency token to the list",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrRemoveCurrency",
@@ -6792,7 +6792,7 @@
           "description": "Submit a Dex to DexAggregator",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrSetDex",
@@ -6806,7 +6806,7 @@
           "description": "Remove a Dex from DexAggregator",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrDelDex",
@@ -6820,7 +6820,7 @@
           "description": "Add a pair to a Market list",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrPutPairToMarket",
@@ -6834,7 +6834,7 @@
           "description": "Remove a pair from the market list",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrRemovePairFromMarket",
@@ -6848,7 +6848,7 @@
           "description": "Add metadata to a token",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrAddTokenMetadata",
@@ -6862,7 +6862,7 @@
           "description": "Remove metadata of a token",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrRemoveTokenMetadata",
@@ -6876,7 +6876,7 @@
           "description": "Configuring DexAggregator",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "DaoCommunitySettings",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrConfig",
@@ -6890,7 +6890,7 @@
           "description": "Withdraw token from DexAggregator",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrSysWithdraw",
@@ -6904,7 +6904,7 @@
           "description": "Burn token from DexAggregator",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrSysBurn",
@@ -6918,7 +6918,7 @@
           "description": "Verify listing referrer",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrVerifyListingReferrer",
@@ -6932,7 +6932,7 @@
           "description": "Deleting a verified listing referrer",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrDropListingReferrer",
@@ -6946,7 +6946,7 @@
           "description": "Listing Referrer creates a proposal to increase the trading pair score",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrPropose",
@@ -6960,7 +6960,7 @@
           "description": "Unlocking NFTs locked in DexAggregator by NFT holders",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
               "validator_method_name": "dexAggrMngNFTUnStake",
@@ -6974,7 +6974,7 @@
           "description": "Converts ICP to Cycles. (This is done manually, Monitor also has an automatic conversion feature based on the configuration.)",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMonitorIcpToCycles",
@@ -6988,7 +6988,7 @@
           "description": "Sends Cycles to a specific canister.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
               "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
               "validator_method_name": "validatorMonitorSendCycles",
@@ -8311,7 +8311,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 46599274217624,
                 "slope_denominator": 282979308548553,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 28279922307231,
@@ -8420,7 +8420,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19223572219227228,
+    "icrc1_total_supply": 19223764320017713,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9716,7 +9716,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 46599274217624,
               "slope_denominator": 282979308548553,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 28279922307231,
@@ -9811,78 +9811,7 @@
           "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
-          "custom_functions": [
-            {
-              "id": 1000,
-              "name": "sys_config",
-              "description": "Configure the system parameters of the ICDexRouter.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "DaoCommunitySettings",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSysConfig",
-                  "target_method_name": "sys_config"
-                }
-              }
-            },
-            {
-              "id": 1003,
-              "name": "setControllers",
-              "description": "Modifying the controllers of the trading pair.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "DaoCommunitySettings",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSetControllers",
-                  "target_method_name": "setControllers"
-                }
-              }
-            },
-            {
-              "id": 1034,
-              "name": "sto_config",
-              "description": "Configuring strategy order parameters for a trading pair.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "DaoCommunitySettings",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorStoConfig",
-                  "target_method_name": "sto_config"
-                }
-              }
-            },
-            {
-              "id": 1058,
-              "name": "maker_config",
-              "description": "Configure an Automated Market Maker (ICDexMaker).",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "DaoCommunitySettings",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerConfig",
-                  "target_method_name": "maker_config"
-                }
-              }
-            },
-            {
-              "id": 1090,
-              "name": "DexAggr.config",
-              "description": "Configuring DexAggregator",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "DaoCommunitySettings",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrConfig",
-                  "target_method_name": "config"
-                }
-              }
-            }
-          ]
+          "custom_functions": []
         },
         {
           "native_functions": [
@@ -9940,14 +9869,36 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
+          "custom_functions": []
+        },
+        {
+          "native_functions": [],
+          "topic": "ApplicationBusinessLogic",
+          "is_critical": false,
+          "name": "Application Business Logic",
+          "description": "Proposals that are custom to what the governed dapp requires.",
           "custom_functions": [
+            {
+              "id": 1000,
+              "name": "sys_config",
+              "description": "Configure the system parameters of the ICDexRouter.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSysConfig",
+                  "target_method_name": "sys_config"
+                }
+              }
+            },
             {
               "id": 1001,
               "name": "setICDexPairWasm",
               "description": "Set the wasm of the ICDexPair.",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
                   "validator_method_name": "validatorSetICDexPairWasm",
@@ -9961,11 +9912,25 @@
               "description": "Set the wasm of the ICDexMaker.",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
                   "validator_method_name": "validatorSetICDexMakerWasm",
                   "target_method_name": "setICDexMakerWasm"
+                }
+              }
+            },
+            {
+              "id": 1003,
+              "name": "setControllers",
+              "description": "Modifying the controllers of the trading pair.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSetControllers",
+                  "target_method_name": "setControllers"
                 }
               }
             },
@@ -9975,7 +9940,7 @@
               "description": " Modify the controllers of an ICDexMaker canister.",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
                   "validator_method_name": "validatorMakerSetControllers",
@@ -9989,7 +9954,7 @@
               "description": "Create a new trading pair by governance.",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
                   "validator_method_name": "validatorCreate",
@@ -10003,11 +9968,53 @@
               "description": "Create a new Automated Market Maker (ICDexMaker). ",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
                   "validator_method_name": "validatorMakerMakerCreate",
                   "target_method_name": "maker_create"
+                }
+              }
+            },
+            {
+              "id": 1007,
+              "name": "pair_setVipMaker",
+              "description": "Set up vip-maker qualification and configure rebate rate.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairSetVipMaker",
+                  "target_method_name": "pair_setVipMaker"
+                }
+              }
+            },
+            {
+              "id": 1008,
+              "name": "pair_pause",
+              "description": "Suspend (true) or open (false) a trading pair. If `_openingTime` is specified, it means that the pair will be opened automatically after that time.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairPause",
+                  "target_method_name": "pair_pause"
+                }
+              }
+            },
+            {
+              "id": 1009,
+              "name": "pair_pauseAll",
+              "description": "Suspend (true) or open (false) all trading pairs. ",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairPauseAll",
+                  "target_method_name": "pair_pauseAll"
                 }
               }
             },
@@ -10017,11 +10024,25 @@
               "description": " Upgrade all ICDexPairs to latest version.",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
                   "validator_method_name": "validatorUpdateAll",
                   "target_method_name": "updateAll"
+                }
+              }
+            },
+            {
+              "id": 1011,
+              "name": "maker_setPause",
+              "description": " Pause or enable Automated Market Maker (ICDexMaker).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerSetPause",
+                  "target_method_name": "maker_setPause"
                 }
               }
             },
@@ -10031,7 +10052,7 @@
               "description": "Upgrade all ICDexMakers to the latest version. ",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
                   "validator_method_name": "validatorMakerUpdateAll",
@@ -10045,7 +10066,7 @@
               "description": "Add frontend governance method `commit_proposed_batch`",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
                   "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
                   "validator_method_name": "commit_proposed_batch",
@@ -10054,84 +10075,47 @@
               }
             },
             {
-              "id": 1024,
-              "name": "recovery",
-              "description": "\"Recover data for a trading pair.   Note: You need to check the wasm version and the status of the trading pair, the operation may lead to data loss.\"",
+              "id": 1014,
+              "name": "Trader.withdraw()",
+              "description": "Withdrawing funds from Trader to SNS Treasury",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorRecovery",
-                  "target_method_name": "recovery"
+                  "target_canister_id": "3yss5-5qaaa-aaaar-qad7a-cai",
+                  "validator_method_name": "validatorTraderWithdraw",
+                  "target_method_name": "withdraw"
                 }
               }
             },
             {
-              "id": 1036,
-              "name": "pair_withdrawCycles",
-              "description": "Withdraw cycles.",
+              "id": 1016,
+              "name": "backup",
+              "description": "Backs up and saves a snapshot of a trading pair.",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairWithdrawCycles",
-                  "target_method_name": "pair_withdrawCycles"
+                  "validator_method_name": "validatorBackup",
+                  "target_method_name": "backup"
                 }
               }
             },
             {
-              "id": 1055,
-              "name": "maker_reinstall",
-              "description": "Reinstall an ICDexMaker canister which is paused. Note: Operate with caution. Consider calling this method only if upgrading is not possible.",
+              "id": 1017,
+              "name": "backupToTempCanister",
+              "description": "Backup the data of a trading pair to another canister.  ",
               "function_type": {
                 "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
+                  "topic": "ApplicationBusinessLogic",
                   "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerReinstall",
-                  "target_method_name": "maker_reinstall"
+                  "validator_method_name": "validatorBackupToTempCanister",
+                  "target_method_name": "backupToTempCanister"
                 }
               }
             },
-            {
-              "id": 1056,
-              "name": "maker_update",
-              "description": "Upgrade an ICDexMaker canister. Permissions: Dao, Private Maker Creator",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerUpdate",
-                  "target_method_name": "maker_update"
-                }
-              }
-            },
-            {
-              "id": 1057,
-              "name": "maker_remove",
-              "description": "Remove an Automated Market Maker (ICDexMaker).Permissions: Dao, Private Maker Creator",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "DappCanisterManagement",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerRemove",
-                  "target_method_name": "maker_remove"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "native_functions": [],
-          "topic": "ApplicationBusinessLogic",
-          "is_critical": false,
-          "name": "Application Business Logic",
-          "description": "Proposals that are custom to what the governed dapp requires.",
-          "custom_functions": [
             {
               "id": 1018,
               "name": "dex_addCompetition",
@@ -10143,6 +10127,230 @@
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
                   "validator_method_name": "validatorDexAddCompetition",
                   "target_method_name": "dex_addCompetition"
+                }
+              }
+            },
+            {
+              "id": 1019,
+              "name": "maker_approveToPair",
+              "description": "Let ICDexMaker approve the `_amount` of the sysToken the trading pair could spend.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerApproveToPair",
+                  "target_method_name": "maker_approveToPair"
+                }
+              }
+            },
+            {
+              "id": 1020,
+              "name": "maker_transactionLock",
+              "description": "Lock or unlock an Automated Market Maker (ICDexMaker) system transaction lock.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerTransactionLock",
+                  "target_method_name": "maker_transactionLock"
+                }
+              }
+            },
+            {
+              "id": 1021,
+              "name": "update",
+              "description": "Add governance method `ICDexRouter.update()`",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorUpdate",
+                  "target_method_name": "update"
+                }
+              }
+            },
+            {
+              "id": 1022,
+              "name": "reinstall",
+              "description": "Reinstall a trading pair canister which is paused.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorReinstall",
+                  "target_method_name": "reinstall"
+                }
+              }
+            },
+            {
+              "id": 1023,
+              "name": "removeSnapshot",
+              "description": "Removes all snapshots prior to the specified timestamp of the trading pair.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorRemoveSnapshot",
+                  "target_method_name": "removeSnapshot"
+                }
+              }
+            },
+            {
+              "id": 1024,
+              "name": "recovery",
+              "description": "\"Recover data for a trading pair.   Note: You need to check the wasm version and the status of the trading pair, the operation may lead to data loss.\"",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorRecovery",
+                  "target_method_name": "recovery"
+                }
+              }
+            },
+            {
+              "id": 1025,
+              "name": "snapshotToTempCanister",
+              "description": "\"Save the data of snapshot to another canister.   Note: Canister `_pairTo` is created only for backing up data and should not be used for trading. It needs to implement the recover() method like ICDexPair.\"",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSnapshotToTempCanister",
+                  "target_method_name": "snapshotToTempCanister"
+                }
+              }
+            },
+            {
+              "id": 1026,
+              "name": "put",
+              "description": "Puts a pair into a list of trading pairs.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPut",
+                  "target_method_name": "put"
+                }
+              }
+            },
+            {
+              "id": 1027,
+              "name": "remove",
+              "description": "Removes a pair from the list of trading pairs.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorRemove",
+                  "target_method_name": "remove"
+                }
+              }
+            },
+            {
+              "id": 1028,
+              "name": "pair_setAuctionMode",
+              "description": "Enable/disable Auction Mode",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairSetAuctionMode",
+                  "target_method_name": "pair_setAuctionMode"
+                }
+              }
+            },
+            {
+              "id": 1029,
+              "name": "pair_IDOSetFunder",
+              "description": "Open IDO of a trading pair and configure parameters",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairIDOSetFunder",
+                  "target_method_name": "pair_IDOSetFunder"
+                }
+              }
+            },
+            {
+              "id": 1030,
+              "name": "pair_config",
+              "description": "Configure the trading pair parameters and configure its DRC205 parameters.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairConfig",
+                  "target_method_name": "pair_config"
+                }
+              }
+            },
+            {
+              "id": 1031,
+              "name": "pair_setUpgradeMode",
+              "description": "When the data is too large to be backed up, you can set the UpgradeMode to #Base.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairSetUpgradeMode",
+                  "target_method_name": "pair_setUpgradeMode"
+                }
+              }
+            },
+            {
+              "id": 1032,
+              "name": "pair_setOrderFail",
+              "description": "Sets an order with #Todo status as an error order.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairSetOrderFail",
+                  "target_method_name": "pair_setOrderFail"
+                }
+              }
+            },
+            {
+              "id": 1033,
+              "name": "pair_enableStratOrder",
+              "description": "Enable strategy orders for a trading pair.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairEnableStratOrder",
+                  "target_method_name": "pair_enableStratOrder"
+                }
+              }
+            },
+            {
+              "id": 1034,
+              "name": "sto_config",
+              "description": "Configuring strategy order parameters for a trading pair.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorStoConfig",
+                  "target_method_name": "sto_config"
                 }
               }
             },
@@ -10161,6 +10369,482 @@
               }
             },
             {
+              "id": 1036,
+              "name": "pair_withdrawCycles",
+              "description": "Withdraw cycles.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairWithdrawCycles",
+                  "target_method_name": "pair_withdrawCycles"
+                }
+              }
+            },
+            {
+              "id": 1037,
+              "name": "pair_ictcSetAdmin",
+              "description": "Add/Remove ICTC Administrator",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairIctcSetAdmin",
+                  "target_method_name": "pair_ictcSetAdmin"
+                }
+              }
+            },
+            {
+              "id": 1038,
+              "name": "pair_ictcClearLog",
+              "description": "Clear logs of transaction orders and transaction tasks. ",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairIctcClearLog",
+                  "target_method_name": "pair_ictcClearLog"
+                }
+              }
+            },
+            {
+              "id": 1039,
+              "name": "pair_ictcRedoTT",
+              "description": "Try the task again.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairIctcRedoTT",
+                  "target_method_name": "pair_ictcRedoTT"
+                }
+              }
+            },
+            {
+              "id": 1040,
+              "name": "pair_ictcCompleteTO",
+              "description": "Complete a blocking order.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairIctcCompleteTO",
+                  "target_method_name": "pair_ictcCompleteTO"
+                }
+              }
+            },
+            {
+              "id": 1041,
+              "name": "ConversionTrader.setWhitelist",
+              "description": "Add a whitelist trading pair (only these pairs are allowed to be traded)",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "3jd4g-jyaaa-aaaar-qaeba-cai",
+                  "validator_method_name": "validatorTraderSetWhitelist",
+                  "target_method_name": "setWhitelist"
+                }
+              }
+            },
+            {
+              "id": 1042,
+              "name": "grant_permission",
+              "description": "Add asset canister permission",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
+                  "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
+                  "validator_method_name": "validate_grant_permission",
+                  "target_method_name": "grant_permission"
+                }
+              }
+            },
+            {
+              "id": 1043,
+              "name": "pair_ictcDoneTT",
+              "description": "Set status of a pending task.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairIctcDoneTT",
+                  "target_method_name": "pair_ictcDoneTT"
+                }
+              }
+            },
+            {
+              "id": 1044,
+              "name": "pair_ictcDoneTO",
+              "description": "Set status of a pending order.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairIctcDoneTO",
+                  "target_method_name": "pair_ictcDoneTO"
+                }
+              }
+            },
+            {
+              "id": 1045,
+              "name": "pair_ictcRunTO",
+              "description": "Run the ICTC actuator and check the status of the transaction order `toid`.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairIctcRunTO",
+                  "target_method_name": "pair_ictcRunTO"
+                }
+              }
+            },
+            {
+              "id": 1046,
+              "name": "pair_ictcBlockTO",
+              "description": "Change the status of a transaction order to #Blocking.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairIctcBlockTO",
+                  "target_method_name": "pair_ictcBlockTO"
+                }
+              }
+            },
+            {
+              "id": 1047,
+              "name": "pair_sync",
+              "description": "Synchronizing token0 and token1 transfer fees.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairSync",
+                  "target_method_name": "pair_sync"
+                }
+              }
+            },
+            {
+              "id": 1048,
+              "name": "pair_removeVipMaker",
+              "description": "Removes vip-maker qualification.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairRemoveVipMaker",
+                  "target_method_name": "pair_removeVipMaker"
+                }
+              }
+            },
+            {
+              "id": 1049,
+              "name": "pair_fallbackByTxid",
+              "description": "Retrieve missing funds from the order's TxAccount. The funds of the TxAccount will be refunded to the ICDexRouter canister-id.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairFallbackByTxid",
+                  "target_method_name": "pair_fallbackByTxid"
+                }
+              }
+            },
+            {
+              "id": 1050,
+              "name": "pair_cancelByTxid",
+              "description": "Cancels an order.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairCancelByTxid",
+                  "target_method_name": "pair_cancelByTxid"
+                }
+              }
+            },
+            {
+              "id": 1051,
+              "name": "pair_taSetDescription",
+              "description": "Submit a text description of the Trading Ambassadors (referral) system.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorPairTaSetDescription",
+                  "target_method_name": "pair_taSetDescription"
+                }
+              }
+            },
+            {
+              "id": 1052,
+              "name": "sys_withdraw",
+              "description": "Withdraw the token to the specified account.Withdrawals can only be made to a DAO address, or to a blackhole address (destruction), not to a private address.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSysWithdraw",
+                  "target_method_name": "sys_withdraw"
+                }
+              }
+            },
+            {
+              "id": 1053,
+              "name": "sys_order",
+              "description": "Placing an order in a trading pair as a trader.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSysOrder",
+                  "target_method_name": "sys_order"
+                }
+              }
+            },
+            {
+              "id": 1054,
+              "name": "sys_cancelOrder",
+              "description": "Cancel own orders as a trader.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSysCancelOrder",
+                  "target_method_name": "sys_cancelOrder"
+                }
+              }
+            },
+            {
+              "id": 1055,
+              "name": "maker_reinstall",
+              "description": "Reinstall an ICDexMaker canister which is paused. Note: Operate with caution. Consider calling this method only if upgrading is not possible.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerReinstall",
+                  "target_method_name": "maker_reinstall"
+                }
+              }
+            },
+            {
+              "id": 1056,
+              "name": "maker_update",
+              "description": "Upgrade an ICDexMaker canister. Permissions: Dao, Private Maker Creator",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerUpdate",
+                  "target_method_name": "maker_update"
+                }
+              }
+            },
+            {
+              "id": 1057,
+              "name": "maker_remove",
+              "description": "Remove an Automated Market Maker (ICDexMaker).Permissions: Dao, Private Maker Creator",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerRemove",
+                  "target_method_name": "maker_remove"
+                }
+              }
+            },
+            {
+              "id": 1058,
+              "name": "maker_config",
+              "description": "Configure an Automated Market Maker (ICDexMaker).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerConfig",
+                  "target_method_name": "maker_config"
+                }
+              }
+            },
+            {
+              "id": 1059,
+              "name": "maker_resetLocalBalance",
+              "description": "Reset Automated Market Maker (ICDexMaker) local account balance.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerResetLocalBalance",
+                  "target_method_name": "maker_resetLocalBalance"
+                }
+              }
+            },
+            {
+              "id": 1060,
+              "name": "maker_dexWithdraw",
+              "description": "Withdraw funds from the trading pair to an Automated Market Maker (ICDexMaker) local account.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerDexWithdraw",
+                  "target_method_name": "maker_dexWithdraw"
+                }
+              }
+            },
+            {
+              "id": 1061,
+              "name": "maker_dexDeposit",
+              "description": "Deposit from Automated Market Maker (ICDexMaker) to TraderAccount for the trading pair.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerDexDeposit",
+                  "target_method_name": "maker_dexDeposit"
+                }
+              }
+            },
+            {
+              "id": 1062,
+              "name": "maker_deleteGridOrder",
+              "description": "Deletes grid order from Automated Market Maker (ICDexMaker).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerDeleteGridOrder",
+                  "target_method_name": "maker_deleteGridOrder"
+                }
+              }
+            },
+            {
+              "id": 1063,
+              "name": "maker_createGridOrder",
+              "description": "Creates a grid order for Automated Market Maker (ICDexMaker) on the trading pair.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerCreateGridOrder",
+                  "target_method_name": "maker_createGridOrder"
+                }
+              }
+            },
+            {
+              "id": 1064,
+              "name": "sys_conversionFees",
+              "description": "Batch conversion of fees in ICDexRouter.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSysConversionFees",
+                  "target_method_name": "sys_conversionFees"
+                }
+              }
+            },
+            {
+              "id": 1065,
+              "name": "sys_call",
+              "description": "Calls specified canister's methods, such as trading pairs, using ICDexRouter as a proxy for governance purposes. This is a generic ICDex governance method with the disadvantage that the parameters are in binary unreadable form.  Proposals that call this method, where its parameters are not clear, please vote to reject.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSysCall",
+                  "target_method_name": "sys_call"
+                }
+              }
+            },
+            {
+              "id": 1066,
+              "name": "commit_proposed_batch",
+              "description": "frontend governance method commit_proposed_batch",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
+                  "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            },
+            {
+              "id": 1067,
+              "name": "maker_cancelAllOrders",
+              "description": "Cancels trade orders in pending on the trading pair placed by Automated Market Maker (ICDexMaker).",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMakerCancelAllOrders",
+                  "target_method_name": "maker_cancelAllOrders"
+                }
+              }
+            },
+            {
+              "id": 1068,
+              "name": "monitor_put",
+              "description": "Put a canister-id into Cycles Monitor.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMonitorPut",
+                  "target_method_name": "monitor_put"
+                }
+              }
+            },
+            {
+              "id": 1069,
+              "name": "monitor_remove",
+              "description": "Remove a canister-id from Cycles Monitor.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMonitorRemove",
+                  "target_method_name": "monitor_remove"
+                }
+              }
+            },
+            {
               "id": 1070,
               "name": "debug_canister_status",
               "description": "Returns a canister's caniter_status information.",
@@ -10175,6 +10859,34 @@
               }
             },
             {
+              "id": 1071,
+              "name": "timerStart",
+              "description": "Start the Timer, it will be started automatically when upgrading the canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorTimerStart",
+                  "target_method_name": "timerStart"
+                }
+              }
+            },
+            {
+              "id": 1072,
+              "name": "sync",
+              "description": "Synchronize trading fees for all pairs.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSync",
+                  "target_method_name": "sync"
+                }
+              }
+            },
+            {
               "id": 1073,
               "name": "debug_monitor",
               "description": "Perform a monitoring. Typically, monitoring is implemented in a timer.",
@@ -10185,6 +10897,356 @@
                   "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
                   "validator_method_name": "validatorDebugMonitor",
                   "target_method_name": "debug_monitor"
+                }
+              }
+            },
+            {
+              "id": 1074,
+              "name": "timerStop",
+              "description": "Stop the Timer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorTimerStop",
+                  "target_method_name": "timerStop"
+                }
+              }
+            },
+            {
+              "id": 1075,
+              "name": "syncVipMakers",
+              "description": "Synchronize the vip-maker records of all pairs into the ICDexRouter.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorSyncVipMakers",
+                  "target_method_name": "syncVipMakers"
+                }
+              }
+            },
+            {
+              "id": 1076,
+              "name": "Mining.newRound",
+              "description": "Open a new round mining event.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "odhfn-cqaaa-aaaar-qaana-cai",
+                  "validator_method_name": "validatorMiningNewRound",
+                  "target_method_name": "newRound"
+                }
+              }
+            },
+            {
+              "id": 1077,
+              "name": "Mining.updateRound",
+              "description": "Update data for specified rounds.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "odhfn-cqaaa-aaaar-qaana-cai",
+                  "validator_method_name": "validatorMiningUpdateRound",
+                  "target_method_name": "updateRound"
+                }
+              }
+            },
+            {
+              "id": 1078,
+              "name": "DexAggr.syncAllTokenFee",
+              "description": "Synchronize all token fees",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrSyncAllTokenFee",
+                  "target_method_name": "sync"
+                }
+              }
+            },
+            {
+              "id": 1079,
+              "name": "DexAggr.putTradingPair",
+              "description": "Add a pair to the list",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrPutTradingPair",
+                  "target_method_name": "put"
+                }
+              }
+            },
+            {
+              "id": 1080,
+              "name": "DexAggr.removeTradingPair",
+              "description": "Remove a pair to the list",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrRemoveTradingPair",
+                  "target_method_name": "remove"
+                }
+              }
+            },
+            {
+              "id": 1081,
+              "name": "DexAggr.setScore",
+              "description": "Set the score of a pair (score2, max 20)",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrSetScore",
+                  "target_method_name": "setScore"
+                }
+              }
+            },
+            {
+              "id": 1082,
+              "name": "DexAggr.putCurrencyToken",
+              "description": "Add a currency token to the list",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrPutCurrency",
+                  "target_method_name": "putCurrency"
+                }
+              }
+            },
+            {
+              "id": 1083,
+              "name": "DexAggr.removeCurrencyToken",
+              "description": "Remove a currency token to the list",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrRemoveCurrency",
+                  "target_method_name": "removeCurrency"
+                }
+              }
+            },
+            {
+              "id": 1084,
+              "name": "DexAggr.setDex",
+              "description": "Submit a Dex to DexAggregator",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrSetDex",
+                  "target_method_name": "setDex"
+                }
+              }
+            },
+            {
+              "id": 1085,
+              "name": "DexAggr.delDex",
+              "description": "Remove a Dex from DexAggregator",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrDelDex",
+                  "target_method_name": "delDex"
+                }
+              }
+            },
+            {
+              "id": 1086,
+              "name": "DexAggr.putPairToMarket",
+              "description": "Add a pair to a Market list",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrPutPairToMarket",
+                  "target_method_name": "putPairToMarket"
+                }
+              }
+            },
+            {
+              "id": 1087,
+              "name": "DexAggr.removePairFromMarket",
+              "description": "Remove a pair from the market list",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrRemovePairFromMarket",
+                  "target_method_name": "removePairFromMarket"
+                }
+              }
+            },
+            {
+              "id": 1088,
+              "name": "DexAggr.addTokenMetadata",
+              "description": "Add metadata to a token",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrAddTokenMetadata",
+                  "target_method_name": "addTokenMetadata"
+                }
+              }
+            },
+            {
+              "id": 1089,
+              "name": "DexAggr.removeTokenMetadata",
+              "description": "Remove metadata of a token",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrRemoveTokenMetadata",
+                  "target_method_name": "removeTokenMetadata"
+                }
+              }
+            },
+            {
+              "id": 1090,
+              "name": "DexAggr.config",
+              "description": "Configuring DexAggregator",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrConfig",
+                  "target_method_name": "config"
+                }
+              }
+            },
+            {
+              "id": 1091,
+              "name": "DexAggr.sysWithdraw",
+              "description": "Withdraw token from DexAggregator",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrSysWithdraw",
+                  "target_method_name": "sys_withdraw"
+                }
+              }
+            },
+            {
+              "id": 1092,
+              "name": "DexAggr.sysBurn",
+              "description": "Burn token from DexAggregator",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrSysBurn",
+                  "target_method_name": "sys_burn"
+                }
+              }
+            },
+            {
+              "id": 1093,
+              "name": "DexAggr.verifyListingReferre",
+              "description": "Verify listing referrer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrVerifyListingReferrer",
+                  "target_method_name": "verifyListingReferrer"
+                }
+              }
+            },
+            {
+              "id": 1094,
+              "name": "DexAggr.dropListingReferrer",
+              "description": "Deleting a verified listing referrer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrDropListingReferrer",
+                  "target_method_name": "dropListingReferrer"
+                }
+              }
+            },
+            {
+              "id": 1095,
+              "name": "DexAggr.propose",
+              "description": "Listing Referrer creates a proposal to increase the trading pair score",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrPropose",
+                  "target_method_name": "propose"
+                }
+              }
+            },
+            {
+              "id": 1096,
+              "name": "DexAggr.mngNFTUnStake",
+              "description": "Unlocking NFTs locked in DexAggregator by NFT holders",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
+                  "validator_method_name": "dexAggrMngNFTUnStake",
+                  "target_method_name": "NFTUnStake"
+                }
+              }
+            },
+            {
+              "id": 1097,
+              "name": "monitor_icp_to_cycles",
+              "description": "Converts ICP to Cycles. (This is done manually, Monitor also has an automatic conversion feature based on the configuration.)",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMonitorIcpToCycles",
+                  "target_method_name": "monitor_icp_to_cycles"
+                }
+              }
+            },
+            {
+              "id": 1099,
+              "name": "monitor_send_cycles",
+              "description": "Sends Cycles to a specific canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
+                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
+                  "validator_method_name": "validatorMonitorSendCycles",
+                  "target_method_name": "monitor_send_cycles"
                 }
               }
             }
@@ -10271,1072 +11333,7 @@
           "is_critical": true,
           "name": "Critical Dapp Operations",
           "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
-          "custom_functions": [
-            {
-              "id": 1007,
-              "name": "pair_setVipMaker",
-              "description": "Set up vip-maker qualification and configure rebate rate.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairSetVipMaker",
-                  "target_method_name": "pair_setVipMaker"
-                }
-              }
-            },
-            {
-              "id": 1008,
-              "name": "pair_pause",
-              "description": "Suspend (true) or open (false) a trading pair. If `_openingTime` is specified, it means that the pair will be opened automatically after that time.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairPause",
-                  "target_method_name": "pair_pause"
-                }
-              }
-            },
-            {
-              "id": 1009,
-              "name": "pair_pauseAll",
-              "description": "Suspend (true) or open (false) all trading pairs. ",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairPauseAll",
-                  "target_method_name": "pair_pauseAll"
-                }
-              }
-            },
-            {
-              "id": 1011,
-              "name": "maker_setPause",
-              "description": " Pause or enable Automated Market Maker (ICDexMaker).",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerSetPause",
-                  "target_method_name": "maker_setPause"
-                }
-              }
-            },
-            {
-              "id": 1014,
-              "name": "Trader.withdraw()",
-              "description": "Withdrawing funds from Trader to SNS Treasury",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "3yss5-5qaaa-aaaar-qad7a-cai",
-                  "validator_method_name": "validatorTraderWithdraw",
-                  "target_method_name": "withdraw"
-                }
-              }
-            },
-            {
-              "id": 1016,
-              "name": "backup",
-              "description": "Backs up and saves a snapshot of a trading pair.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorBackup",
-                  "target_method_name": "backup"
-                }
-              }
-            },
-            {
-              "id": 1017,
-              "name": "backupToTempCanister",
-              "description": "Backup the data of a trading pair to another canister.  ",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorBackupToTempCanister",
-                  "target_method_name": "backupToTempCanister"
-                }
-              }
-            },
-            {
-              "id": 1019,
-              "name": "maker_approveToPair",
-              "description": "Let ICDexMaker approve the `_amount` of the sysToken the trading pair could spend.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerApproveToPair",
-                  "target_method_name": "maker_approveToPair"
-                }
-              }
-            },
-            {
-              "id": 1020,
-              "name": "maker_transactionLock",
-              "description": "Lock or unlock an Automated Market Maker (ICDexMaker) system transaction lock.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerTransactionLock",
-                  "target_method_name": "maker_transactionLock"
-                }
-              }
-            },
-            {
-              "id": 1021,
-              "name": "update",
-              "description": "Add governance method `ICDexRouter.update()`",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorUpdate",
-                  "target_method_name": "update"
-                }
-              }
-            },
-            {
-              "id": 1022,
-              "name": "reinstall",
-              "description": "Reinstall a trading pair canister which is paused.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorReinstall",
-                  "target_method_name": "reinstall"
-                }
-              }
-            },
-            {
-              "id": 1023,
-              "name": "removeSnapshot",
-              "description": "Removes all snapshots prior to the specified timestamp of the trading pair.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorRemoveSnapshot",
-                  "target_method_name": "removeSnapshot"
-                }
-              }
-            },
-            {
-              "id": 1025,
-              "name": "snapshotToTempCanister",
-              "description": "\"Save the data of snapshot to another canister.   Note: Canister `_pairTo` is created only for backing up data and should not be used for trading. It needs to implement the recover() method like ICDexPair.\"",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSnapshotToTempCanister",
-                  "target_method_name": "snapshotToTempCanister"
-                }
-              }
-            },
-            {
-              "id": 1026,
-              "name": "put",
-              "description": "Puts a pair into a list of trading pairs.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPut",
-                  "target_method_name": "put"
-                }
-              }
-            },
-            {
-              "id": 1027,
-              "name": "remove",
-              "description": "Removes a pair from the list of trading pairs.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorRemove",
-                  "target_method_name": "remove"
-                }
-              }
-            },
-            {
-              "id": 1028,
-              "name": "pair_setAuctionMode",
-              "description": "Enable/disable Auction Mode",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairSetAuctionMode",
-                  "target_method_name": "pair_setAuctionMode"
-                }
-              }
-            },
-            {
-              "id": 1029,
-              "name": "pair_IDOSetFunder",
-              "description": "Open IDO of a trading pair and configure parameters",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairIDOSetFunder",
-                  "target_method_name": "pair_IDOSetFunder"
-                }
-              }
-            },
-            {
-              "id": 1030,
-              "name": "pair_config",
-              "description": "Configure the trading pair parameters and configure its DRC205 parameters.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairConfig",
-                  "target_method_name": "pair_config"
-                }
-              }
-            },
-            {
-              "id": 1031,
-              "name": "pair_setUpgradeMode",
-              "description": "When the data is too large to be backed up, you can set the UpgradeMode to #Base.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairSetUpgradeMode",
-                  "target_method_name": "pair_setUpgradeMode"
-                }
-              }
-            },
-            {
-              "id": 1032,
-              "name": "pair_setOrderFail",
-              "description": "Sets an order with #Todo status as an error order.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairSetOrderFail",
-                  "target_method_name": "pair_setOrderFail"
-                }
-              }
-            },
-            {
-              "id": 1033,
-              "name": "pair_enableStratOrder",
-              "description": "Enable strategy orders for a trading pair.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairEnableStratOrder",
-                  "target_method_name": "pair_enableStratOrder"
-                }
-              }
-            },
-            {
-              "id": 1037,
-              "name": "pair_ictcSetAdmin",
-              "description": "Add/Remove ICTC Administrator",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairIctcSetAdmin",
-                  "target_method_name": "pair_ictcSetAdmin"
-                }
-              }
-            },
-            {
-              "id": 1038,
-              "name": "pair_ictcClearLog",
-              "description": "Clear logs of transaction orders and transaction tasks. ",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairIctcClearLog",
-                  "target_method_name": "pair_ictcClearLog"
-                }
-              }
-            },
-            {
-              "id": 1039,
-              "name": "pair_ictcRedoTT",
-              "description": "Try the task again.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairIctcRedoTT",
-                  "target_method_name": "pair_ictcRedoTT"
-                }
-              }
-            },
-            {
-              "id": 1040,
-              "name": "pair_ictcCompleteTO",
-              "description": "Complete a blocking order.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairIctcCompleteTO",
-                  "target_method_name": "pair_ictcCompleteTO"
-                }
-              }
-            },
-            {
-              "id": 1041,
-              "name": "ConversionTrader.setWhitelist",
-              "description": "Add a whitelist trading pair (only these pairs are allowed to be traded)",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "3jd4g-jyaaa-aaaar-qaeba-cai",
-                  "validator_method_name": "validatorTraderSetWhitelist",
-                  "target_method_name": "setWhitelist"
-                }
-              }
-            },
-            {
-              "id": 1042,
-              "name": "grant_permission",
-              "description": "Add asset canister permission",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
-                  "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
-                  "validator_method_name": "validate_grant_permission",
-                  "target_method_name": "grant_permission"
-                }
-              }
-            },
-            {
-              "id": 1043,
-              "name": "pair_ictcDoneTT",
-              "description": "Set status of a pending task.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairIctcDoneTT",
-                  "target_method_name": "pair_ictcDoneTT"
-                }
-              }
-            },
-            {
-              "id": 1044,
-              "name": "pair_ictcDoneTO",
-              "description": "Set status of a pending order.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairIctcDoneTO",
-                  "target_method_name": "pair_ictcDoneTO"
-                }
-              }
-            },
-            {
-              "id": 1045,
-              "name": "pair_ictcRunTO",
-              "description": "Run the ICTC actuator and check the status of the transaction order `toid`.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairIctcRunTO",
-                  "target_method_name": "pair_ictcRunTO"
-                }
-              }
-            },
-            {
-              "id": 1046,
-              "name": "pair_ictcBlockTO",
-              "description": "Change the status of a transaction order to #Blocking.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairIctcBlockTO",
-                  "target_method_name": "pair_ictcBlockTO"
-                }
-              }
-            },
-            {
-              "id": 1047,
-              "name": "pair_sync",
-              "description": "Synchronizing token0 and token1 transfer fees.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairSync",
-                  "target_method_name": "pair_sync"
-                }
-              }
-            },
-            {
-              "id": 1048,
-              "name": "pair_removeVipMaker",
-              "description": "Removes vip-maker qualification.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairRemoveVipMaker",
-                  "target_method_name": "pair_removeVipMaker"
-                }
-              }
-            },
-            {
-              "id": 1049,
-              "name": "pair_fallbackByTxid",
-              "description": "Retrieve missing funds from the order's TxAccount. The funds of the TxAccount will be refunded to the ICDexRouter canister-id.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairFallbackByTxid",
-                  "target_method_name": "pair_fallbackByTxid"
-                }
-              }
-            },
-            {
-              "id": 1050,
-              "name": "pair_cancelByTxid",
-              "description": "Cancels an order.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairCancelByTxid",
-                  "target_method_name": "pair_cancelByTxid"
-                }
-              }
-            },
-            {
-              "id": 1051,
-              "name": "pair_taSetDescription",
-              "description": "Submit a text description of the Trading Ambassadors (referral) system.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorPairTaSetDescription",
-                  "target_method_name": "pair_taSetDescription"
-                }
-              }
-            },
-            {
-              "id": 1052,
-              "name": "sys_withdraw",
-              "description": "Withdraw the token to the specified account.Withdrawals can only be made to a DAO address, or to a blackhole address (destruction), not to a private address.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSysWithdraw",
-                  "target_method_name": "sys_withdraw"
-                }
-              }
-            },
-            {
-              "id": 1053,
-              "name": "sys_order",
-              "description": "Placing an order in a trading pair as a trader.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSysOrder",
-                  "target_method_name": "sys_order"
-                }
-              }
-            },
-            {
-              "id": 1054,
-              "name": "sys_cancelOrder",
-              "description": "Cancel own orders as a trader.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSysCancelOrder",
-                  "target_method_name": "sys_cancelOrder"
-                }
-              }
-            },
-            {
-              "id": 1059,
-              "name": "maker_resetLocalBalance",
-              "description": "Reset Automated Market Maker (ICDexMaker) local account balance.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerResetLocalBalance",
-                  "target_method_name": "maker_resetLocalBalance"
-                }
-              }
-            },
-            {
-              "id": 1060,
-              "name": "maker_dexWithdraw",
-              "description": "Withdraw funds from the trading pair to an Automated Market Maker (ICDexMaker) local account.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerDexWithdraw",
-                  "target_method_name": "maker_dexWithdraw"
-                }
-              }
-            },
-            {
-              "id": 1061,
-              "name": "maker_dexDeposit",
-              "description": "Deposit from Automated Market Maker (ICDexMaker) to TraderAccount for the trading pair.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerDexDeposit",
-                  "target_method_name": "maker_dexDeposit"
-                }
-              }
-            },
-            {
-              "id": 1062,
-              "name": "maker_deleteGridOrder",
-              "description": "Deletes grid order from Automated Market Maker (ICDexMaker).",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerDeleteGridOrder",
-                  "target_method_name": "maker_deleteGridOrder"
-                }
-              }
-            },
-            {
-              "id": 1063,
-              "name": "maker_createGridOrder",
-              "description": "Creates a grid order for Automated Market Maker (ICDexMaker) on the trading pair.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerCreateGridOrder",
-                  "target_method_name": "maker_createGridOrder"
-                }
-              }
-            },
-            {
-              "id": 1064,
-              "name": "sys_conversionFees",
-              "description": "Batch conversion of fees in ICDexRouter.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSysConversionFees",
-                  "target_method_name": "sys_conversionFees"
-                }
-              }
-            },
-            {
-              "id": 1065,
-              "name": "sys_call",
-              "description": "Calls specified canister's methods, such as trading pairs, using ICDexRouter as a proxy for governance purposes. This is a generic ICDex governance method with the disadvantage that the parameters are in binary unreadable form.  Proposals that call this method, where its parameters are not clear, please vote to reject.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSysCall",
-                  "target_method_name": "sys_call"
-                }
-              }
-            },
-            {
-              "id": 1066,
-              "name": "commit_proposed_batch",
-              "description": "frontend governance method commit_proposed_batch",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
-                  "target_canister_id": "7vkf4-jqaaa-aaaaj-azrua-cai",
-                  "validator_method_name": "validate_commit_proposed_batch",
-                  "target_method_name": "commit_proposed_batch"
-                }
-              }
-            },
-            {
-              "id": 1067,
-              "name": "maker_cancelAllOrders",
-              "description": "Cancels trade orders in pending on the trading pair placed by Automated Market Maker (ICDexMaker).",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMakerCancelAllOrders",
-                  "target_method_name": "maker_cancelAllOrders"
-                }
-              }
-            },
-            {
-              "id": 1068,
-              "name": "monitor_put",
-              "description": "Put a canister-id into Cycles Monitor.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMonitorPut",
-                  "target_method_name": "monitor_put"
-                }
-              }
-            },
-            {
-              "id": 1069,
-              "name": "monitor_remove",
-              "description": "Remove a canister-id from Cycles Monitor.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMonitorRemove",
-                  "target_method_name": "monitor_remove"
-                }
-              }
-            },
-            {
-              "id": 1071,
-              "name": "timerStart",
-              "description": "Start the Timer, it will be started automatically when upgrading the canister.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorTimerStart",
-                  "target_method_name": "timerStart"
-                }
-              }
-            },
-            {
-              "id": 1072,
-              "name": "sync",
-              "description": "Synchronize trading fees for all pairs.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSync",
-                  "target_method_name": "sync"
-                }
-              }
-            },
-            {
-              "id": 1074,
-              "name": "timerStop",
-              "description": "Stop the Timer",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorTimerStop",
-                  "target_method_name": "timerStop"
-                }
-              }
-            },
-            {
-              "id": 1075,
-              "name": "syncVipMakers",
-              "description": "Synchronize the vip-maker records of all pairs into the ICDexRouter.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorSyncVipMakers",
-                  "target_method_name": "syncVipMakers"
-                }
-              }
-            },
-            {
-              "id": 1076,
-              "name": "Mining.newRound",
-              "description": "Open a new round mining event.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "odhfn-cqaaa-aaaar-qaana-cai",
-                  "validator_method_name": "validatorMiningNewRound",
-                  "target_method_name": "newRound"
-                }
-              }
-            },
-            {
-              "id": 1077,
-              "name": "Mining.updateRound",
-              "description": "Update data for specified rounds.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "odhfn-cqaaa-aaaar-qaana-cai",
-                  "validator_method_name": "validatorMiningUpdateRound",
-                  "target_method_name": "updateRound"
-                }
-              }
-            },
-            {
-              "id": 1078,
-              "name": "DexAggr.syncAllTokenFee",
-              "description": "Synchronize all token fees",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrSyncAllTokenFee",
-                  "target_method_name": "sync"
-                }
-              }
-            },
-            {
-              "id": 1079,
-              "name": "DexAggr.putTradingPair",
-              "description": "Add a pair to the list",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrPutTradingPair",
-                  "target_method_name": "put"
-                }
-              }
-            },
-            {
-              "id": 1080,
-              "name": "DexAggr.removeTradingPair",
-              "description": "Remove a pair to the list",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrRemoveTradingPair",
-                  "target_method_name": "remove"
-                }
-              }
-            },
-            {
-              "id": 1081,
-              "name": "DexAggr.setScore",
-              "description": "Set the score of a pair (score2, max 20)",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrSetScore",
-                  "target_method_name": "setScore"
-                }
-              }
-            },
-            {
-              "id": 1082,
-              "name": "DexAggr.putCurrencyToken",
-              "description": "Add a currency token to the list",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrPutCurrency",
-                  "target_method_name": "putCurrency"
-                }
-              }
-            },
-            {
-              "id": 1083,
-              "name": "DexAggr.removeCurrencyToken",
-              "description": "Remove a currency token to the list",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrRemoveCurrency",
-                  "target_method_name": "removeCurrency"
-                }
-              }
-            },
-            {
-              "id": 1084,
-              "name": "DexAggr.setDex",
-              "description": "Submit a Dex to DexAggregator",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrSetDex",
-                  "target_method_name": "setDex"
-                }
-              }
-            },
-            {
-              "id": 1085,
-              "name": "DexAggr.delDex",
-              "description": "Remove a Dex from DexAggregator",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrDelDex",
-                  "target_method_name": "delDex"
-                }
-              }
-            },
-            {
-              "id": 1086,
-              "name": "DexAggr.putPairToMarket",
-              "description": "Add a pair to a Market list",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrPutPairToMarket",
-                  "target_method_name": "putPairToMarket"
-                }
-              }
-            },
-            {
-              "id": 1087,
-              "name": "DexAggr.removePairFromMarket",
-              "description": "Remove a pair from the market list",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrRemovePairFromMarket",
-                  "target_method_name": "removePairFromMarket"
-                }
-              }
-            },
-            {
-              "id": 1088,
-              "name": "DexAggr.addTokenMetadata",
-              "description": "Add metadata to a token",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrAddTokenMetadata",
-                  "target_method_name": "addTokenMetadata"
-                }
-              }
-            },
-            {
-              "id": 1089,
-              "name": "DexAggr.removeTokenMetadata",
-              "description": "Remove metadata of a token",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrRemoveTokenMetadata",
-                  "target_method_name": "removeTokenMetadata"
-                }
-              }
-            },
-            {
-              "id": 1091,
-              "name": "DexAggr.sysWithdraw",
-              "description": "Withdraw token from DexAggregator",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrSysWithdraw",
-                  "target_method_name": "sys_withdraw"
-                }
-              }
-            },
-            {
-              "id": 1092,
-              "name": "DexAggr.sysBurn",
-              "description": "Burn token from DexAggregator",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrSysBurn",
-                  "target_method_name": "sys_burn"
-                }
-              }
-            },
-            {
-              "id": 1093,
-              "name": "DexAggr.verifyListingReferre",
-              "description": "Verify listing referrer",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrVerifyListingReferrer",
-                  "target_method_name": "verifyListingReferrer"
-                }
-              }
-            },
-            {
-              "id": 1094,
-              "name": "DexAggr.dropListingReferrer",
-              "description": "Deleting a verified listing referrer",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrDropListingReferrer",
-                  "target_method_name": "dropListingReferrer"
-                }
-              }
-            },
-            {
-              "id": 1095,
-              "name": "DexAggr.propose",
-              "description": "Listing Referrer creates a proposal to increase the trading pair score",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrPropose",
-                  "target_method_name": "propose"
-                }
-              }
-            },
-            {
-              "id": 1096,
-              "name": "DexAggr.mngNFTUnStake",
-              "description": "Unlocking NFTs locked in DexAggregator by NFT holders",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i2ied-uqaaa-aaaar-qaaza-cai",
-                  "validator_method_name": "dexAggrMngNFTUnStake",
-                  "target_method_name": "NFTUnStake"
-                }
-              }
-            },
-            {
-              "id": 1097,
-              "name": "monitor_icp_to_cycles",
-              "description": "Converts ICP to Cycles. (This is done manually, Monitor also has an automatic conversion feature based on the configuration.)",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMonitorIcpToCycles",
-                  "target_method_name": "monitor_icp_to_cycles"
-                }
-              }
-            },
-            {
-              "id": 1099,
-              "name": "monitor_send_cycles",
-              "description": "Sends Cycles to a specific canister.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "6zwik-gaaaa-aaaap-ab63q-cai",
-                  "target_canister_id": "i5jcx-ziaaa-aaaar-qaazq-cai",
-                  "validator_method_name": "validatorMonitorSendCycles",
-                  "target_method_name": "monitor_send_cycles"
-                }
-              }
-            }
-          ]
+          "custom_functions": []
         }
       ]
     }
@@ -11917,7 +11914,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 42800529481250,
                 "slope_denominator": 256652167317491,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 25623390151244,
@@ -11999,7 +11996,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25616407032167628,
+    "icrc1_total_supply": 25617648484571724,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -12385,7 +12382,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 42800529481250,
               "slope_denominator": 256652167317491,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 25623390151244,
@@ -13500,7 +13497,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 11069990682527,
                 "slope_denominator": 248296626053228,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7306736351998,
@@ -13607,7 +13604,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10069887282109344,
+    "icrc1_total_supply": 10070013735225709,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14063,7 +14060,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 11069990682527,
               "slope_denominator": 248296626053228,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7306736351998,
@@ -15263,7 +15260,7 @@
                 "intercept_icp_e8s": 2000000000000,
                 "from_direct_participation_icp_e8s": 3666046805859,
                 "slope_denominator": 257600954816183,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 3975782274175,
@@ -15343,7 +15340,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 104128257785423710,
+    "icrc1_total_supply": 104132348311592472,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -15548,7 +15545,7 @@
               "intercept_icp_e8s": 2000000000000,
               "from_direct_participation_icp_e8s": 3666046805859,
               "slope_denominator": 257600954816183,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 3975782274175,
@@ -17046,7 +17043,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 10260777177913,
                 "slope_denominator": 254542688644933,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7473761955801,
@@ -17128,7 +17125,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98591910782408900,
+    "icrc1_total_supply": 98542511522659204,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -17570,7 +17567,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 10260777177913,
               "slope_denominator": 254542688644933,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7473761955801,
@@ -18774,7 +18771,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 13274424563693,
                 "slope_denominator": 250336400025685,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 7328638859966,
@@ -18850,7 +18847,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99831584566543900,
+    "icrc1_total_supply": 99831672181969223,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -19287,7 +19284,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 13274424563693,
               "slope_denominator": 250336400025685,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 7328638859966,
@@ -20130,7 +20127,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 8952005956801,
                 "slope_denominator": 257099668370747,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 6467280392480,
@@ -20228,7 +20225,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100396031378409250,
+    "icrc1_total_supply": 100398275910606498,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -20663,7 +20660,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 8952005956801,
               "slope_denominator": 257099668370747,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 6467280392480,

@@ -580,7 +580,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 9443475840273,
                 "slope_denominator": 252788656512281,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 6350913167654,
@@ -660,7 +660,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 1e16,
+    "icrc1_total_supply": 10000000000000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1075,7 +1075,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 9443475840273,
               "slope_denominator": 252788656512281,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 6350913167654,
@@ -1507,7 +1507,7 @@
       ]
     ],
     "icrc1_fee": [10000000],
-    "icrc1_total_supply": 5455557172433053,
+    "icrc1_total_supply": 5456683626363723,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1880,7 +1880,8 @@
         "ovi7y-dyaaa-aaaal-ajcoa-cai",
         "7br3t-maaaa-aaaah-aecia-cai",
         "7isqp-2iaaa-aaaah-aecjq-cai",
-        "72uhw-wyaaa-aaaah-aeckq-cai"
+        "72uhw-wyaaa-aaaah-aeckq-cai",
+        "kdrez-4qaaa-aaaal-qsnwq-cai"
       ],
       "archives": ["jzjst-5aaaa-aaaaq-aadja-cai"]
     },
@@ -2166,7 +2167,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100005268465902,
+    "icrc1_total_supply": 100008371896763,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2721,7 +2722,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 8800000000,
-        "sns_tokens_per_icp": 101
+        "sns_tokens_per_icp": 101.0
       }
     },
     "icrc1_metadata": [
@@ -2763,7 +2764,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041637606705473300,
+    "icrc1_total_supply": 1041635998583160074,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2845,7 +2846,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 101,
+      "sns_tokens_per_icp": 101.0,
       "buyer_total_icp_e8s": 8800000000,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
@@ -3511,7 +3512,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 11744913691854,
                 "slope_denominator": 292440932387610,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 8596332755075,
@@ -3618,7 +3619,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11674072640932252,
+    "icrc1_total_supply": 11674153217312858,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3864,7 +3865,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 11744913691854,
               "slope_denominator": 292440932387610,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 8596332755075,
@@ -3954,7 +3955,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []
@@ -4356,15 +4357,15 @@
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
-      "neuron_minimum_stake_e8s": 1e18,
+      "neuron_minimum_stake_e8s": 1000000000000000001,
       "max_neuron_age_for_age_bonus": 157788000,
       "initial_voting_period_seconds": 345600,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 7890048,
-      "reject_cost_e8s": 1e18,
+      "reject_cost_e8s": 1000000000000000000,
       "max_proposals_to_keep_per_action": 100,
       "wait_for_quiet_deadline_increase_seconds": 172800,
       "max_number_of_neurons": 200000,
-      "transaction_fee_e8s": 1e18,
+      "transaction_fee_e8s": 1000000000000000000,
       "max_number_of_proposals_with_ballots": 700,
       "max_age_bonus_percentage": 50,
       "neuron_grantable_permissions": {
@@ -4638,7 +4639,7 @@
                 "intercept_icp_e8s": 1000000000000,
                 "from_direct_participation_icp_e8s": 4170022893989,
                 "slope_denominator": 287964848918103,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 2702288490509,
@@ -4994,7 +4995,7 @@
               "intercept_icp_e8s": 1000000000000,
               "from_direct_participation_icp_e8s": 4170022893989,
               "slope_denominator": 287964848918103,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 2702288490509,
@@ -5047,7 +5048,8 @@
         "qu2gy-uqaaa-aaaal-qcv6a-cai",
         "kw5rk-raaaa-aaaai-qpfoa-cai",
         "kr4x6-4yaaa-aaaai-qpfoq-cai",
-        "2hrv7-oaaaa-aaaai-ap7va-cai"
+        "2hrv7-oaaaa-aaaai-ap7va-cai",
+        "kkspf-kyaaa-aaaal-qsnxa-cai"
       ],
       "archives": ["mxu7p-2yaaa-aaaaq-aadvq-cai"]
     },
@@ -5237,6 +5239,20 @@
               "target_method_name": "icrc1_transfer"
             }
           }
+        },
+        {
+          "id": 10001,
+          "name": "Toolkit service - manage neurons",
+          "description": "Manage neurons managed by the toolkit service canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "kkspf-kyaaa-aaaal-qsnxa-cai",
+              "target_canister_id": "kkspf-kyaaa-aaaal-qsnxa-cai",
+              "validator_method_name": "tk_service_validate_manage_neuron",
+              "target_method_name": "tk_service_manage_neuron"
+            }
+          }
         }
       ]
     },
@@ -5372,7 +5388,7 @@
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2320778485404243500,
+    "icrc1_total_supply": 2320933092847117975,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5625,7 +5641,22 @@
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 10001,
+              "name": "Toolkit service - manage neurons",
+              "description": "Manage neurons managed by the toolkit service canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "kkspf-kyaaa-aaaal-qsnxa-cai",
+                  "target_canister_id": "kkspf-kyaaa-aaaal-qsnxa-cai",
+                  "validator_method_name": "tk_service_validate_manage_neuron",
+                  "target_method_name": "tk_service_manage_neuron"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
@@ -6064,7 +6095,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 5009841503002,
                 "slope_denominator": 307928755133301,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 11034669140869,
@@ -6173,7 +6204,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999779730000,
+    "icrc1_total_supply": 1999999779230000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -6342,7 +6373,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 5009841503002,
               "slope_denominator": 307928755133301,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 11034669140869,
@@ -7642,7 +7673,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 20725138936158,
                 "slope_denominator": 324770090007823,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 12614883649178,
@@ -7749,7 +7780,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 1e16,
+    "icrc1_total_supply": 10000000000000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8591,7 +8622,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 20725138936158,
               "slope_denominator": 324770090007823,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 12614883649178,
@@ -9646,7 +9677,7 @@
                 "intercept_icp_e8s": 0,
                 "from_direct_participation_icp_e8s": 15841675744689,
                 "slope_denominator": 339390959314632,
-                "to_direct_participation_icp_e8s": 18446744073709552000
+                "to_direct_participation_icp_e8s": 18446744073709551615
               }
             ],
             "max_neurons_fund_participation_icp_e8s": 11943255958506,
@@ -9754,7 +9785,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100186971718711490,
+    "icrc1_total_supply": 100189023255316045,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -10548,7 +10579,7 @@
               "intercept_icp_e8s": 0,
               "from_direct_participation_icp_e8s": 15841675744689,
               "slope_denominator": 339390959314632,
-              "to_direct_participation_icp_e8s": 18446744073709552000
+              "to_direct_participation_icp_e8s": 18446744073709551615
             }
           ],
           "max_neurons_fund_participation_icp_e8s": 11943255958506,

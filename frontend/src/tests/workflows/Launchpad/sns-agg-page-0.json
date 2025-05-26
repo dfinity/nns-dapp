@@ -383,7 +383,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 314100000000,
-        "sns_tokens_per_icp": 1
+        "sns_tokens_per_icp": 1.0
       }
     },
     "icrc1_metadata": [
@@ -425,7 +425,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999932106894000,
+    "icrc1_total_supply": 799999930302994000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -477,7 +477,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 1,
+      "sns_tokens_per_icp": 1.0,
       "buyer_total_icp_e8s": 314100000000,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
@@ -1683,7 +1683,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 100000000000000,
-        "sns_tokens_per_icp": 25
+        "sns_tokens_per_icp": 25.0
       }
     },
     "icrc1_metadata": [
@@ -1719,7 +1719,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10161763062910584,
+    "icrc1_total_supply": 10161779626028672,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1770,7 +1770,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 25,
+      "sns_tokens_per_icp": 25.0,
       "buyer_total_icp_e8s": 100000000000000,
       "cf_participant_count": 113,
       "neurons_fund_participation_icp_e8s": 33317301010214,
@@ -2775,7 +2775,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 0,
-        "sns_tokens_per_icp": 0
+        "sns_tokens_per_icp": 0.0
       }
     },
     "icrc1_metadata": [
@@ -2841,7 +2841,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 0,
+      "sns_tokens_per_icp": 0.0,
       "buyer_total_icp_e8s": 0,
       "cf_participant_count": null,
       "neurons_fund_participation_icp_e8s": null,
@@ -3266,7 +3266,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 617299449838923,
+    "icrc1_total_supply": 617299511981459,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3983,7 +3983,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104452734207158240,
+    "icrc1_total_supply": 104454404485405526,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4491,7 +4491,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 0,
-        "sns_tokens_per_icp": 0
+        "sns_tokens_per_icp": 0.0
       }
     },
     "icrc1_metadata": [
@@ -4521,7 +4521,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 1e18,
+    "icrc1_total_supply": 1000000000000000000,
     "swap_params": {
       "params": null
     },
@@ -4557,7 +4557,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 0,
+      "sns_tokens_per_icp": 0.0,
       "buyer_total_icp_e8s": 0,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": null,
@@ -4593,7 +4593,8 @@
         "yadjb-mqaaa-aaaan-qaqlq-cai",
         "p3sub-gqaaa-aaaal-acwza-cai",
         "77bch-kaaaa-aaaan-qa4vq-cai",
-        "gfcya-pyaaa-aaaan-qbxda-cai"
+        "gfcya-pyaaa-aaaan-qbxda-cai",
+        "kntjr-haaaa-aaaal-qsnxq-cai"
       ],
       "archives": ["52vqa-maaaa-aaaaq-aaa7a-cai"]
     },
@@ -4769,6 +4770,20 @@
               "target_method_name": "transferPosition"
             }
           }
+        },
+        {
+          "id": 2001,
+          "name": "Toolkit service - manage neurons",
+          "description": "Manage neurons managed by the toolkit service canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "kntjr-haaaa-aaaal-qsnxq-cai",
+              "target_canister_id": "kntjr-haaaa-aaaal-qsnxq-cai",
+              "validator_method_name": "tk_service_validate_manage_neuron",
+              "target_method_name": "tk_service_manage_neuron"
+            }
+          }
         }
       ]
     },
@@ -4847,7 +4862,7 @@
           "max_icp_e8s": 2000000000000,
           "swap_due_timestamp_seconds": 1690462231,
           "min_participants": 200,
-          "sns_token_e8s": 2e17,
+          "sns_token_e8s": 200000000000000000,
           "sale_delay_seconds": null,
           "max_participant_icp_e8s": 5000000000,
           "min_direct_participation_icp_e8s": null,
@@ -4859,7 +4874,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 2000000000000,
-        "sns_tokens_per_icp": 100000
+        "sns_tokens_per_icp": 100000.0
       }
     },
     "icrc1_metadata": [
@@ -4901,7 +4916,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 931858864601590500,
+    "icrc1_total_supply": 931937014906124209,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4912,7 +4927,7 @@
         "max_icp_e8s": 2000000000000,
         "swap_due_timestamp_seconds": 1690462231,
         "min_participants": 200,
-        "sns_token_e8s": 2e17,
+        "sns_token_e8s": 200000000000000000,
         "sale_delay_seconds": null,
         "max_participant_icp_e8s": 5000000000,
         "min_direct_participation_icp_e8s": null,
@@ -4952,7 +4967,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 100000,
+      "sns_tokens_per_icp": 100000.0,
       "buyer_total_icp_e8s": 2000000000000,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
@@ -5136,7 +5151,22 @@
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 2001,
+              "name": "Toolkit service - manage neurons",
+              "description": "Manage neurons managed by the toolkit service canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "kntjr-haaaa-aaaal-qsnxq-cai",
+                  "target_canister_id": "kntjr-haaaa-aaaal-qsnxq-cai",
+                  "validator_method_name": "tk_service_validate_manage_neuron",
+                  "target_method_name": "tk_service_manage_neuron"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
@@ -5427,7 +5457,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 5e16,
+    "icrc1_total_supply": 50000000000000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5691,7 +5721,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 0,
-        "sns_tokens_per_icp": 0
+        "sns_tokens_per_icp": 0.0
       }
     },
     "icrc1_metadata": [
@@ -5721,7 +5751,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 2.1e17,
+    "icrc1_total_supply": 210000000000000000,
     "swap_params": {
       "params": null
     },
@@ -5755,7 +5785,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 0,
+      "sns_tokens_per_icp": 0.0,
       "buyer_total_icp_e8s": 0,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": null,
@@ -5971,7 +6001,7 @@
       },
       "derived": {
         "buyer_total_icp_e8s": 0,
-        "sns_tokens_per_icp": 0
+        "sns_tokens_per_icp": 0.0
       }
     },
     "icrc1_metadata": [
@@ -6041,7 +6071,7 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 0,
+      "sns_tokens_per_icp": 0.0,
       "buyer_total_icp_e8s": 0,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": null,

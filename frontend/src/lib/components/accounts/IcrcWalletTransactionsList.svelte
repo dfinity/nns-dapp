@@ -120,7 +120,7 @@
   {ledgerCanisterId}
 >
   <UiTransactionsList
-    on:nnsIntersect={loadNextTransactions}
+    {loadNextTransactions}
     transactions={uiTransactions}
     {loading}
     {completed}
