@@ -3,40 +3,36 @@
   import {
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,
     MIN_NEURON_STAKE,
+    ULPS_PER_MATURITY,
   } from "$lib/constants/neurons.constants";
-  import { ULPS_PER_MATURITY } from "$lib/constants/neurons.constants";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-    type NnsNeuronContext,
-  } from "$lib/types/nns-neuron-detail.context";
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
   import { Tooltip } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { getContext } from "svelte";
+  import { nonNullish } from "@dfinity/utils";
 
-  export let neuron: NeuronInfo;
+  type Props = {
+    neuron: NeuronInfo;
+  };
 
-  let enoughMaturity: boolean;
-  $: enoughMaturity =
-    neuron.fullNeuron === undefined
-      ? false
-      : isEnoughMaturityToSpawn({
-          neuron,
-          percentage: 100,
-        });
+  const { neuron }: Props = $props();
 
-  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
-    NNS_NEURON_CONTEXT_KEY
+  const enoughMaturity = $derived(
+    nonNullish(neuron.fullNeuron) &&
+      // Same logic as in SpawnNeuronButton
+      isEnoughMaturityToSpawn({
+        neuron,
+        percentage: 100,
+      })
   );
 
   const showModal = () =>
     openNnsNeuronModal({
       type: "disburse-maturity",
-      data: { neuron: $store.neuron },
+      data: { neuron },
     });
 </script>
 
@@ -45,15 +41,15 @@
     <button
       data-tid="disburse-maturity-button"
       class="secondary"
-      on:click={showModal}
+      onclick={showModal}
     >
       {$i18n.neuron_detail.disburse_maturity}
     </button>
   {:else}
     <Tooltip
-      id="spawn-maturity-button"
+      id="disburse-maturity-button"
       text={replacePlaceholders(
-        $i18n.neuron_detail.spawn_neuron_disabled_tooltip,
+        $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
         {
           $amount: formatNumber(
             Number(MIN_NEURON_STAKE) /
@@ -61,6 +57,7 @@
               MATURITY_MODULATION_VARIANCE_PERCENTAGE,
             { minFraction: 4, maxFraction: 4 }
           ),
+          // TODO(disburse-maturity): check if this is correct for disburse maturity as well
           $min: formatNumber(Number(MIN_NEURON_STAKE) / ULPS_PER_MATURITY, {
             minFraction: 0,
             maxFraction: 0,

@@ -781,6 +781,7 @@ export const isEnoughMaturityToSpawn = ({
   const maturitySelected = Math.floor(
     (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
   );
+  // TODO(disburse-maturity): Verify if this is the correct approach for disbursing maturity.
   return (
     maturitySelected >=
     Number(MIN_NEURON_STAKE) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
