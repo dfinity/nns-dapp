@@ -68,7 +68,7 @@
 <Card testId="launch-project-card">
   <div class="wrapper">
     <div class="background-icon">
-      <IconRocketLaunch size="220px" />
+      <IconRocketLaunch size="270px" />
     </div>
     <div class="header">
       <div class="title-wrapper">
@@ -202,14 +202,13 @@
 
     .background-icon {
       position: absolute;
-      bottom: 5px;
-      right: -30px;
-      opacity: 0.1;
+      right: -60px;
+      opacity: 0.07;
       z-index: 0;
       // TODO: Introduce in GIX once it is part of the design system
-      color: #3d4d9973;
+      color: #3d4d99;
       pointer-events: none;
-      transform: rotate(270deg) scale(1.2);
+      transform: rotate(270deg);
     }
 
     .header {
