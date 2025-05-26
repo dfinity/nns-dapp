@@ -12,7 +12,6 @@
   import NnsStakeNeuronModal from "$lib/modals/neurons/NnsStakeNeuronModal.svelte";
   import SnsStakeNeuronModal from "$lib/modals/sns/neurons/SnsStakeNeuronModal.svelte";
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -159,9 +158,7 @@
         </PageBanner>
       {/if}
 
-      {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION}
-        <LosingRewardsBanner />
-      {/if}
+      <LosingRewardsBanner />
 
       <ProjectsTable on:nnsStakeTokens={openStakingModal} />
     </div>

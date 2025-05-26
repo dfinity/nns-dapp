@@ -2,7 +2,6 @@
   import NnsNeuronsMissingRewardsBadge from "$lib/components/neurons/NnsNeuronsMissingRewardsBadge.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
   import { FailedTokenAmount } from "$lib/utils/token.utils";
@@ -16,7 +15,7 @@
   <div class="title-wrapper">
     <h5 data-tid="project-title">{rowData.title}</h5>
   </div>
-  {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION && rowData.universeId === OWN_CANISTER_ID_TEXT}
+  {#if rowData.universeId === OWN_CANISTER_ID_TEXT}
     <NnsNeuronsMissingRewardsBadge />
   {/if}
   {#if rowData.stake instanceof FailedTokenAmount}

@@ -172,10 +172,7 @@ describe("NnsNeurons", () => {
 
     it("should display `Missing rewards` tag", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
+
       networkEconomicsStore.setParameters({
         parameters: mockNetworkEconomics,
         certified: true,
@@ -220,17 +217,7 @@ describe("NnsNeurons", () => {
       });
     });
 
-    it("should not display LosingRewardsBanner by default", async () => {
-      const po = await renderComponent();
-      // It should be behind the feature flag
-      expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(false);
-    });
-
     it("should display LosingRewardsBanner", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       const po = await renderComponent();
 
       expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);

@@ -20,7 +20,6 @@ import {
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
-import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
@@ -79,7 +78,6 @@ import {
   secondsToDuration,
 } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
-import { get } from "svelte/store";
 
 export type StateInfo = {
   Icon?: ComponentType;
@@ -563,8 +561,7 @@ const getNeuronTagsUnrelatedToController = ({
   // 2. no voting power economics available
   if (
     nonNullish(startReducingVotingPowerAfterSeconds) &&
-    hasEnoughDissolveDelayToVote(neuron, minimumDissolveDelay) &&
-    get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)
+    hasEnoughDissolveDelayToVote(neuron, minimumDissolveDelay)
   ) {
     if (
       isNeuronMissingReward({ neuron, startReducingVotingPowerAfterSeconds })

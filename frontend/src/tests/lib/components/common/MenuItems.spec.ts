@@ -284,27 +284,10 @@ describe("MenuItems", () => {
     });
   });
 
-  describe("Nns neurons missing rewards badge", () => {
-    it("should not render the badge when feature flag disabled", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        false
-      );
-      const po = renderComponent();
-      expect(await po.getNnsNeuronsMissingRewardsBadgePo().isPresent()).toEqual(
-        false
-      );
-    });
-
-    it("should render the badge when feature flag enabled", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
-      const po = renderComponent();
-      expect(await po.getNnsNeuronsMissingRewardsBadgePo().isPresent()).toEqual(
-        true
-      );
-    });
+  it("should render the badge when feature flag enabled", async () => {
+    const po = renderComponent();
+    expect(await po.getNnsNeuronsMissingRewardsBadgePo().isPresent()).toEqual(
+      true
+    );
   });
 });

@@ -26,7 +26,6 @@
     refreshNeuronIfNeeded,
   } from "$lib/services/neurons.services";
   import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { toastsError } from "$lib/stores/toasts.store";
@@ -153,7 +152,6 @@
 
   let isConfirmFollowingVisible = false;
   $: isConfirmFollowingVisible =
-    $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION &&
     nonNullish(neuron) &&
     $soonLosingRewardNeuronsStore.some(
       ({ neuronId }) => neuronId === neuron!.neuronId

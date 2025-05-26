@@ -156,10 +156,6 @@ describe("NnsNeuronPageHeading", () => {
   });
 
   it("should render 'Missing rewards' tag", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      true
-    );
     networkEconomicsStore.setParameters({
       parameters: mockNetworkEconomics,
       certified: true,
