@@ -15,7 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Privacy mode for balances
-- Privacy mode controls to Alfred
+- Privacy mode controls in the Command Palette
 
 #### Changed
 
