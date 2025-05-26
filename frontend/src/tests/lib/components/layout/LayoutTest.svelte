@@ -6,7 +6,7 @@
   export let content = "";
   export let spy: (() => void) | undefined = undefined;
 
-  const back = () => spy?.();
+  const back = async () => spy?.();
 </script>
 
 <Layout>

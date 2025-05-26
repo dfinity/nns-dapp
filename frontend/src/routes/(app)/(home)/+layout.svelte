@@ -5,6 +5,12 @@
   import LayoutList from "$lib/components/layout/LayoutList.svelte";
   import { ENABLE_PORTFOLIO_PAGE } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
+  import type { Snippet } from "svelte";
+
+  type Props = {
+    children: Snippet;
+  };
+  const { children }: Props = $props();
 
   const title = $ENABLE_PORTFOLIO_PAGE
     ? $i18n.navigation.portfolio
@@ -15,10 +21,10 @@
   <Layout>
     <Content>
       {#if $ENABLE_PORTFOLIO_PAGE}
-        <slot />
+        {@render children()}
       {:else}
         <IslandWidthMain>
-          <slot />
+          {@render children()}
         </IslandWidthMain>
       {/if}
     </Content>

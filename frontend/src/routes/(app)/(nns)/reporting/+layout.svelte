@@ -4,6 +4,12 @@
   import Layout from "$lib/components/layout/Layout.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { referrerPathStore } from "$lib/stores/routes.store";
+  import type { Snippet } from "svelte";
+
+  type Props = {
+    children: Snippet;
+  };
+  const { children }: Props = $props();
 
   const back = async () => {
     if ($referrerPathStore.length > 0) {
@@ -19,6 +25,6 @@
 
 <Layout>
   <Content {back}>
-    <slot />
+    {@render children()}
   </Content>
 </Layout>
