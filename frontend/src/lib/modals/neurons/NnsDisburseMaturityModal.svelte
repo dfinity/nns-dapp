@@ -3,13 +3,12 @@
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
   import { disburseMaturity } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
-  import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
-  import { ICPToken, isNullish } from "@dfinity/utils";
+  import { ICPToken } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";
   import { icpAccountsStore } from "../../derived/icp-accounts.derived";
-  import { isIcpAccountIdentifier } from "@dfinity/ledger-icp";
 
   type Props = {
     neuron: NeuronInfo;
@@ -17,7 +16,7 @@
     close: () => void;
   };
 
-  export const { neuron, neuronId, close }: Props = $props();
+  const { neuron, neuronId, close }: Props = $props();
 
   // TODO(disburse-maturity): use the real fee (networkEconomics?)
   const minimumAmountE8s = $derived(0n); // minimumAmountToDisburseMaturity(ICPToken?.fee ?? 0n);
