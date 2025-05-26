@@ -6,7 +6,10 @@
   import { Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 
-  export let neuron: NeuronInfo;
+  type Props = {
+    neuron: NeuronInfo;
+  };
+  const { neuron }: Props = $props();
 </script>
 
 <Section testId="nns-neuron-maturity-section-component">
