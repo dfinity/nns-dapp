@@ -81,11 +81,7 @@
       <SpawnNeuronModal on:nnsClose={close} {neuron} />
     {/if}
     {#if type === "disburse-maturity"}
-      <NnsDisburseMaturityModal
-        on:nnsClose={close}
-        {neuron}
-        neuronId={neuron.neuronId}
-      />
+      <NnsDisburseMaturityModal {close} {neuron} neuronId={neuron.neuronId} />
     {/if}
 
     {#if type === "auto-stake-maturity"}

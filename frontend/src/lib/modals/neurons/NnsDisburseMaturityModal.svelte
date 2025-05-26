@@ -11,17 +11,18 @@
   import { icpAccountsStore } from "../../derived/icp-accounts.derived";
   import { isIcpAccountIdentifier } from "@dfinity/ledger-icp";
 
-  export let neuron: NeuronInfo;
-  export let neuronId: NeuronId;
+  type Props = {
+    neuron: NeuronInfo;
+    neuronId: NeuronId;
+    close: () => void;
+  };
 
-  const token = ICPToken;
+  export const { neuron, neuronId, close }: Props = $props();
 
-  let minimumAmountE8s: bigint;
   // TODO(disburse-maturity): use the real fee (networkEconomics?)
-  $: minimumAmountE8s = 0n; // minimumAmountToDisburseMaturity(token?.fee ?? 0n);
+  const minimumAmountE8s = $derived(0n); // minimumAmountToDisburseMaturity(ICPToken?.fee ?? 0n);
 
   const dispatcher = createEventDispatcher();
-  const close = () => dispatcher("nnsClose");
 
   // TODO(disburse-maturity): add validation (isIcpAccountIdentifier)
   const disburseMaturity2 = async ({
@@ -73,7 +74,9 @@
     stopBusy("disburse-maturity");
   };
 
-  const availableMaturityE8s = neuron.fullNeuron?.maturityE8sEquivalent ?? 0n;
+  const availableMaturityE8s = $derived(
+    neuron.fullNeuron?.maturityE8sEquivalent ?? 0n
+  );
 </script>
 
 <DisburseMaturityModal
@@ -81,6 +84,6 @@
   {minimumAmountE8s}
   on:nnsDisburseMaturity={disburseMaturity2}
   rootCanisterId={OWN_CANISTER_ID}
-  {token}
-  on:nnsClose
+  token={ICPToken}
+  on:nnsClose={close}
 />
