@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-08_03-21-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/rosetta-icrc-release-1.2.2/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -696,6 +696,7 @@ pub struct WaitForQuietState {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ProposalData {
     pub id: Option<ProposalId>,
+    pub topic: Option<i32>,
     pub failure_reason: Option<GovernanceError>,
     pub ballots: Vec<(u64, Ballot)>,
     pub proposal_timestamp_seconds: u64,
