@@ -14,14 +14,18 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import NnsDisburseMaturityButton from "./actions/NnsDisburseMaturityButton.svelte";
 
-  export let neuron: NeuronInfo;
+  type Props = {
+    neuron: NeuronInfo;
+  };
 
-  let isControllable: boolean;
-  $: isControllable = isNeuronControllable({
-    neuron,
-    identity: $authStore.identity,
-    accounts: $icpAccountsStore,
-  });
+  const { neuron }: Props = $props();
+  const isControllable = $derived(
+    isNeuronControllable({
+      neuron,
+      identity: $authStore.identity,
+      accounts: $icpAccountsStore,
+    })
+  );
 </script>
 
 <CommonItemAction testId="nns-available-maturity-item-action-component">
