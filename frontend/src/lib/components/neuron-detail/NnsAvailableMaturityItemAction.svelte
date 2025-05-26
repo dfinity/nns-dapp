@@ -28,14 +28,15 @@
       accounts: $icpAccountsStore,
     })
   );
-  const isControlledByHardwareWallet = $derived(
+  // Can be ignored after the Ledger support is fully implemented.
+  const isControlledByHW = $derived(
     isNeuronControlledByHardwareWallet({
       neuron,
       accounts: $icpAccountsStore,
     })
   );
   const isDisburseMaturityAvailable = $derived(
-    isControllable && !isControlledByHardwareWallet && $ENABLE_DISBURSE_MATURITY
+    isControllable && !isControlledByHW && $ENABLE_DISBURSE_MATURITY
   );
 </script>
 
