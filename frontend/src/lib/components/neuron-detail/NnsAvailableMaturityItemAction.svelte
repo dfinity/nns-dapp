@@ -9,6 +9,7 @@
   import {
     formattedMaturity,
     isNeuronControllable,
+    isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
@@ -27,8 +28,14 @@
       accounts: $icpAccountsStore,
     })
   );
-  const isDisburseMaturityVisible = $derived(
-    isControllable && $ENABLE_DISBURSE_MATURITY
+  const isControlledByHardwareWallet = $derived(
+    isNeuronControlledByHardwareWallet({
+      neuron,
+      accounts: $icpAccountsStore,
+    })
+  );
+  const isDisburseMaturityAvailable = $derived(
+    isControllable && !isControlledByHardwareWallet && $ENABLE_DISBURSE_MATURITY
   );
 </script>
 
@@ -46,7 +53,7 @@
   >
   {#if isControllable}
     <NnsStakeMaturityButton {neuron} />
-    {#if isDisburseMaturityVisible}
+    {#if isDisburseMaturityAvailable}
       <NnsDisburseMaturityButton {neuron} />
     {:else}
       <SpawnNeuronButton {neuron} />
