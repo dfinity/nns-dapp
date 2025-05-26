@@ -12,7 +12,8 @@
   } from "$lib/utils/neuron.utils";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import NnsDisburseMaturityButton from "./actions/NnsDisburseMaturityButton.svelte";
+  import NnsDisburseMaturityButton from "$lib/components/neuron-detail/actions/NnsDisburseMaturityButton.svelte";
+  import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
 
   type Props = {
     neuron: NeuronInfo;
@@ -25,6 +26,9 @@
       identity: $authStore.identity,
       accounts: $icpAccountsStore,
     })
+  );
+  const isDisburseMaturityVisible = $derived(
+    isControllable && $ENABLE_DISBURSE_MATURITY
   );
 </script>
 
@@ -42,8 +46,10 @@
   >
   {#if isControllable}
     <NnsStakeMaturityButton {neuron} />
-    <SpawnNeuronButton {neuron} />
-    <!-- // TODO(disburse-maturity): Add disburse maturity button visibility logic -->
-    <NnsDisburseMaturityButton {neuron} />
+    {#if isDisburseMaturityVisible}
+      <NnsDisburseMaturityButton {neuron} />
+    {:else}
+      <SpawnNeuronButton {neuron} />
+    {/if}
   {/if}
 </CommonItemAction>
