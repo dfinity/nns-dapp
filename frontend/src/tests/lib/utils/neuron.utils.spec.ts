@@ -75,6 +75,7 @@ import {
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
   topicsToFollow,
+  totalMaturityDisbursementsInProgress,
   userAuthorizedNeuron,
   validTopUpAmount,
   votedNeuronDetails,
@@ -91,6 +92,7 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import {
   mockFullNeuron,
+  mockMaturityDisbursement,
   mockNeuron,
   mockNeuronControlled,
   mockNeuronNotControlled,
@@ -3936,6 +3938,53 @@ describe("neuron-utils", () => {
           )
         ).toBe(false);
       });
+    });
+  });
+
+  describe("totalMaturityDisbursementsInProgress", () => {
+    it("should calculate total disbursements", () => {
+      expect(
+        totalMaturityDisbursementsInProgress({
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            maturityDisbursementsInProgress: [
+              {
+                ...mockMaturityDisbursement,
+                amountE8s: 100_000_000n,
+              },
+              {
+                ...mockMaturityDisbursement,
+                amountE8s: 200_000_000n,
+              },
+            ],
+          },
+        })
+      ).toBe(100_000_000n + 200_000_000n);
+    });
+
+    it("should return 0 if no disbursements", () => {
+      expect(
+        totalMaturityDisbursementsInProgress({
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            maturityDisbursementsInProgress: [],
+          },
+        })
+      ).toBe(0n);
+    });
+
+    it("should return 0 when maturityDisbursementsInProgress not available", () => {
+      expect(
+        totalMaturityDisbursementsInProgress({
+          ...mockNeuron,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            maturityDisbursementsInProgress: undefined,
+          },
+        })
+      ).toBe(0n);
     });
   });
 });
