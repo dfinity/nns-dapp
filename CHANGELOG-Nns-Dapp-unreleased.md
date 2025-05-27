@@ -14,18 +14,17 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Privacy mode for balances
-- Privacy mode controls in the Command Palette
+* Privacy mode controls in the Command Palette
 
 #### Changed
+
+* Styles for the SNS Projects Portfolio Cards
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-- Infinite scrolling in Voting and Proposals lists
 
 #### Security
 

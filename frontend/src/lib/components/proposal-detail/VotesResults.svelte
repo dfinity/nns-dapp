@@ -27,64 +27,71 @@
       .replace(/\$icon_immediate_majority/g, immediateMajorityIcon)
       .replace(/\$icon_standard_majority/g, standardMajorityIcon);
 
-  export let yes: number;
-  export let no: number;
-  export let total: number;
-  export let deadlineTimestampSeconds: bigint | undefined = undefined;
-  export let immediateMajorityPercent: number;
-  export let standardMajorityPercent: number;
+  type Props = {
+    yes: number;
+    no: number;
+    total: number;
+    deadlineTimestampSeconds?: bigint;
+    immediateMajorityPercent: number;
+    standardMajorityPercent: number;
+  };
+  const {
+    yes,
+    no,
+    total,
+    deadlineTimestampSeconds,
+    immediateMajorityPercent,
+    standardMajorityPercent,
+  }: Props = $props();
 
-  let yesProportion: number;
-  $: yesProportion = total ? yes / total : 0;
-
-  let noProportion: number;
-  $: noProportion = total ? no / total : 0;
-
-  let yesNoSum: number;
-  $: yesNoSum = yes + no;
-  let castVotesYes: number;
-  $: castVotesYes = yesNoSum > 0 ? (yes / yesNoSum) * 100 : 0;
-  let castVotesNo: number;
-  $: castVotesNo = yesNoSum > 0 ? (no / yesNoSum) * 100 : 0;
-
-  let showExpirationDate: boolean = true;
-  $: showExpirationDate =
+  const yesProportion = $derived(total ? yes / total : 0);
+  const noProportion = $derived(total ? no / total : 0);
+  const yesNoSum = $derived(yes + no);
+  const castVotesYes = $derived(yesNoSum > 0 ? (yes / yesNoSum) * 100 : 0);
+  const castVotesNo = $derived(yesNoSum > 0 ? (no / yesNoSum) * 100 : 0);
+  const showExpirationDate = $derived(
     nonNullish(deadlineTimestampSeconds) &&
-    deadlineTimestampSeconds > BigInt(nowInSeconds());
+      deadlineTimestampSeconds > BigInt(nowInSeconds())
+  );
 
-  let isCriticalProposalMode: boolean;
-  $: isCriticalProposalMode = isCriticalProposal(immediateMajorityPercent);
+  const isCriticalProposalMode = $derived(
+    isCriticalProposal(immediateMajorityPercent)
+  );
 
-  let immediateMajorityTitle: string;
-  $: immediateMajorityTitle = isCriticalProposalMode
-    ? $i18n.proposal_detail__vote.immediate_super_majority
-    : $i18n.proposal_detail__vote.immediate_majority;
-
-  let immediateMajorityDescription: string;
-  $: immediateMajorityDescription = isCriticalProposalMode
-    ? replacePlaceholders(
-        $i18n.proposal_detail__vote.immediate_super_majority_description,
-        {
-          $immediate_majority: formatPercent(immediateMajorityPercent),
-          $no_immediate_majority: formatPercent(100 - immediateMajorityPercent),
-        }
-      )
-    : $i18n.proposal_detail__vote.immediate_majority_description;
-
-  let standardMajorityTitle: string;
-  $: standardMajorityTitle = isCriticalProposalMode
-    ? $i18n.proposal_detail__vote.standard_super_majority
-    : $i18n.proposal_detail__vote.standard_majority;
-
-  let standardMajorityDescription: string;
-  $: standardMajorityDescription = replacePlaceholders(
+  const immediateMajorityTitle = $derived(
     isCriticalProposalMode
-      ? $i18n.proposal_detail__vote.standard_super_majority_description
-      : $i18n.proposal_detail__vote.standard_majority_description,
-    {
-      $immediate_majority: formatPercent(immediateMajorityPercent),
-      $standard_majority: formatPercent(standardMajorityPercent),
-    }
+      ? $i18n.proposal_detail__vote.immediate_super_majority
+      : $i18n.proposal_detail__vote.immediate_majority
+  );
+  const immediateMajorityDescription = $derived(
+    isCriticalProposalMode
+      ? replacePlaceholders(
+          $i18n.proposal_detail__vote.immediate_super_majority_description,
+          {
+            $immediate_majority: formatPercent(immediateMajorityPercent),
+            $no_immediate_majority: formatPercent(
+              100 - immediateMajorityPercent
+            ),
+          }
+        )
+      : $i18n.proposal_detail__vote.immediate_majority_description
+  );
+
+  const standardMajorityTitle = $derived(
+    isCriticalProposalMode
+      ? $i18n.proposal_detail__vote.standard_super_majority
+      : $i18n.proposal_detail__vote.standard_majority
+  );
+  const standardMajorityDescription = $derived(
+    replacePlaceholders(
+      isCriticalProposalMode
+        ? $i18n.proposal_detail__vote.standard_super_majority_description
+        : $i18n.proposal_detail__vote.standard_majority_description,
+      {
+        $immediate_majority: formatPercent(immediateMajorityPercent),
+        $standard_majority: formatPercent(standardMajorityPercent),
+      }
+    )
   );
 </script>
 

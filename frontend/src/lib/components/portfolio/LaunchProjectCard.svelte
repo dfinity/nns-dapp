@@ -67,6 +67,9 @@
 
 <Card testId="launch-project-card">
   <div class="wrapper">
+    <div class="background-icon">
+      <IconRocketLaunch size="270px" />
+    </div>
     <div class="header">
       <div class="title-wrapper">
         <div>
@@ -173,6 +176,7 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../themes/mixins/portfolio";
 
   .wrapper {
     display: flex;
@@ -181,6 +185,8 @@
     height: 100%;
     background-color: var(--card-background-tint);
     min-height: 240px;
+    position: relative;
+    overflow: hidden;
 
     gap: var(--padding-2x);
     padding: var(--padding-2x);
@@ -194,11 +200,24 @@
       padding-bottom: var(--card-stacked-dots-space);
     }
 
+    .background-icon {
+      position: absolute;
+      right: -60px;
+      opacity: 0.07;
+      z-index: 0;
+      // TODO: Introduce in GIX once it is part of the design system
+      color: #3d4d99;
+      pointer-events: none;
+      transform: rotate(270deg);
+    }
+
     .header {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: var(--padding-0_5x);
+
+      @include portfolio.card-tag;
 
       .title-wrapper {
         display: flex;
