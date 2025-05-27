@@ -13,14 +13,18 @@
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 
-  export let neuron: NeuronInfo;
+  type Props = {
+    neuron: NeuronInfo;
+  };
 
-  let isControllable: boolean;
-  $: isControllable = isNeuronControllable({
-    neuron,
-    identity: $authStore.identity,
-    accounts: $icpAccountsStore,
-  });
+  const { neuron }: Props = $props();
+  const isControllable = $derived(
+    isNeuronControllable({
+      neuron,
+      identity: $authStore.identity,
+      accounts: $icpAccountsStore,
+    })
+  );
 </script>
 
 <CommonItemAction testId="nns-available-maturity-item-action-component">
