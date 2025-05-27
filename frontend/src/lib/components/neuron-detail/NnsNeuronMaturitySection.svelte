@@ -5,6 +5,7 @@
   import { formattedTotalMaturity } from "$lib/utils/neuron.utils";
   import { Section } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
+  import ViewActiveDisbursementsItemAction from "./ViewActiveDisbursementsItemAction.svelte";
 
   type Props = {
     neuron: NeuronInfo;
@@ -23,6 +24,7 @@
   <ul class="content">
     <NnsStakedMaturityItemAction {neuron} />
     <NnsAvailableMaturityItemAction {neuron} />
+    <ViewActiveDisbursementsItemAction {neuron} />
   </ul>
 </Section>
 
