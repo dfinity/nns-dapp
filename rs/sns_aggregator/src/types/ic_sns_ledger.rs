@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-08_03-21-base/rs/ledger_suite/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-23_03-21-base/rs/ledger_suite/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -207,6 +207,29 @@ pub struct GetTransactionsResponse {
     pub log_length: candid::Nat,
     pub transactions: Vec<Transaction>,
     pub archived_transactions: Vec<GetTransactionsResponseArchivedTransactionsItem>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetAllowancesArgs {
+    pub take: Option<candid::Nat>,
+    pub prev_spender: Option<Account>,
+    pub from_account: Option<Account>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Allowance103 {
+    pub from_account: Account,
+    pub to_spender: Account,
+    pub allowance: candid::Nat,
+    pub expires_at: Option<u64>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum GetAllowancesError {
+    GenericError { message: String, error_code: candid::Nat },
+    AccessDenied { reason: String },
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum Icrc103GetAllowancesResponse {
+    Ok(Vec<Allowance103>),
+    Err(GetAllowancesError),
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc10SupportedStandardsRetItem {
@@ -429,6 +452,12 @@ impl Service {
     }
     pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
         ic_cdk::call(self.0, "get_transactions", (arg0,)).await
+    }
+    pub async fn icrc_103_get_allowances(
+        &self,
+        arg0: GetAllowancesArgs,
+    ) -> CallResult<(Icrc103GetAllowancesResponse,)> {
+        ic_cdk::call(self.0, "icrc103_get_allowances", (arg0,)).await
     }
     pub async fn icrc_10_supported_standards(&self) -> CallResult<(Vec<Icrc10SupportedStandardsRetItem>,)> {
         ic_cdk::call(self.0, "icrc10_supported_standards", ()).await
