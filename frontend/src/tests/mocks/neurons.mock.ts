@@ -25,6 +25,7 @@ export const mockFullNeuron: Neuron = {
   accountIdentifier:
     "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
   joinedCommunityFundTimestampSeconds: undefined,
+  maturityDisbursementsInProgress: [],
   dissolveState: undefined,
   followees: [],
   visibility: undefined,
