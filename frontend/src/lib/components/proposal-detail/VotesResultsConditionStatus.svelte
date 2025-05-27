@@ -8,18 +8,18 @@
   import type { Snippet } from "svelte";
 
   type Props = {
-    testId: string;
-    toggleContent: () => void;
-    status?: "default" | "success" | "failed";
-    title: Snippet;
     children: Snippet;
+    status?: "default" | "success" | "failed";
+    testId: string;
+    title: Snippet;
+    toggleContent: () => void;
   };
   let {
+    children,
     status = "default",
     testId,
-    toggleContent = $bindable(),
     title,
-    children,
+    toggleContent = $bindable(),
   }: Props = $props();
 </script>
 
