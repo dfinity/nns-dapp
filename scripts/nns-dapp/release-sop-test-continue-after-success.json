@@ -94,7 +94,6 @@
     "Release candidate URL: Was already: \u001b[35mhttps://jefp3-bqaaa-aaaaa-aacyq-cai.user-ingress.devenv.dfinity.network/\u001b[0m",
     "RC WASM hash: 6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4",
     "Post RC on Slack: Was already: \u001b[35mhttps://dfinity.slack.com/archives/C03HZERHBT3/p1687962898467509\u001b[0m",
-    "Update playground: Was already done. Skipping.",
     "Canister IDs: Was already: \u001b[35m{ \"internet_identity\": { \"devenv_user\": \"wqmuk-5qaaa-aaaaa-aaaqq-cai\" } }\u001b[0m",
     "Build hashes: Was already: \u001b[35m41ed48445882e6cff25f14c10ca1fb5c34b2df04c4c2b4d77a6244a0baa0e5ca  assets.tar.xz",
     "6fbaddd1b8fde76de97ca1b03a356f01741878d6210cd9b7c6753ae80ae374a4  nns-dapp.wasm.gz",
