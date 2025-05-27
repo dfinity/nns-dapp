@@ -33,15 +33,15 @@
     {@render title()}
 
     {#if status === "default"}
-      <span class="icon default">
+      <span class="icon default" data-tid="vote-result-condition-default-icon">
         <IconCheckCircleV2 size={20} />
       </span>
     {:else if status === "success"}
-      <span class="icon success">
+      <span class="icon success" data-tid="vote-result-condition-success-icon">
         <IconCheckCircleFill size={20} />
       </span>
     {:else if status === "failed"}
-      <span class="icon failed">
+      <span class="icon failed" data-tid="vote-result-condition-failed-icon">
         <IconCloseCircleFill size={20} />
       </span>
     {/if}
