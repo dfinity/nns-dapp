@@ -28,27 +28,26 @@
       .replace(/\$icon_immediate_majority/g, immediateMajorityIcon)
       .replace(/\$icon_standard_majority/g, standardMajorityIcon);
 
+  // https://github.com/dfinity/ic/blob/d91cbbb662d03aee629902c7e4fd7ee5abdd6ba5/rs/nns/governance/src/governance.rs#L1035
   const getParticipationStatus = () => {
     const standardMajority = standardMajorityPercent / 100;
 
-    if (yesProportion >= standardMajority) {
-      return "success";
-    } else if (canStillVote) {
-      return "default";
-    } else {
-      return "failed";
-    }
+    if (yesProportion >= standardMajority) return "success";
+    return canStillVote ? "default" : "failed";
   };
-  const getMajorityStatus = () => {
-    const immediateMajority = immediateMajorityPercent / 100;
 
-    if (yesProportion >= immediateMajority) {
-      return "success";
-    } else if (noProportion >= immediateMajority || !canStillVote) {
-      return "failed";
-    } else {
-      return "default";
-    }
+  // Critical proposals required that yes more than twice the no votes, while normal proposals only require that yes is more than no.
+  // https://github.com/dfinity/ic/blob/d91cbbb662d03aee629902c7e4fd7ee5abdd6ba5/rs/nns/governance/src/governance.rs#L1036
+  const getMajorityStatus = () => {
+    const immediateYesMajority = yesProportion > immediateMajorityPercent / 100;
+    const immediateNoMajority = noProportion > immediateMajorityPercent / 100;
+
+    if (immediateYesMajority) return "success";
+    if (immediateNoMajority) return "failed";
+    if (canStillVote) return "default";
+
+    const majority = isCriticalProposalMode ? yes > 2 * no : yes > no;
+    return majority ? "success" : "failed";
   };
 
   type Props = {
@@ -229,16 +228,20 @@
   </div>
 
   <div class="votes-results-legends">
-    <div class="votes-results-legends-header">
+    <button
+      class="votes-results-legends-header"
+      onclick={toggleAllContent}
+      data-tid="toggle-content-button"
+    >
       <h3 class="description">
         {isCriticalProposalMode
           ? $i18n.proposal_detail__vote.super_majority_decision_intro
           : $i18n.proposal_detail__vote.decision_intro}
       </h3>
-      <button onclick={toggleAllContent} data-tid="toggle-content-button">
+      <span class="icon" aria-hidden="true">
         <IconExpandMore />
-      </button>
-    </div>
+      </span>
+    </button>
     <ol>
       <li>
         <VotesResultsConditionStatus
@@ -439,10 +442,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       h3 {
         color: var(--content-color);
       }
-      button {
+
+      .icon {
         padding: 0;
         color: var(--primary);
       }

@@ -80,7 +80,7 @@ export class VotesResultPo extends BasePageObject {
       this.root.byTestId("immediate-majority-description").getText()
     );
   }
-  async getImmediateMajorityStatus(): Promise<"success" | "error" | "default"> {
+  async getMajorityStatus(): Promise<"success" | "error" | "default"> {
     return this.getElement(
       "immediate-majority-collapsible-status"
     ).getAttribute("data-status") as Promise<"success" | "error" | "default">;
@@ -96,7 +96,7 @@ export class VotesResultPo extends BasePageObject {
       this.root.byTestId("standard-majority-description").getText()
     );
   }
-  async getStandardMajorityStatus(): Promise<"success" | "error" | "default"> {
+  async getParticipationStatus(): Promise<"success" | "error" | "default"> {
     return this.getElement("standard-majority-collapsible-status").getAttribute(
       "data-status"
     ) as Promise<"success" | "error" | "default">;

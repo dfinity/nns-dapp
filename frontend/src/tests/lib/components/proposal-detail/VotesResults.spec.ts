@@ -130,10 +130,7 @@ describe("VotesResults", () => {
       await po.expandMajorityDescriptions();
 
       expect(await po.getImmediateMajorityDescription()).toBe(
-        en.proposal_detail__vote.immediate_majority_description.replace(
-          "$icon_immediate_majority",
-          ""
-        )
+        `This condition is met when there are more yes-votes than no-votes by the expiration date.This can become true at the expiration date or if the yes-bar reaches  - in which case the condition cannot be changed anymore and the proposal is adopted early.See here for more information.`
       );
       expect(await po.getStandardMajorityDescription()).toBe(
         en.proposal_detail__vote.standard_majority_description.replace(
@@ -172,10 +169,7 @@ describe("VotesResults", () => {
         )
       );
       expect(await po.getImmediateMajorityDescription()).toBe(
-        en.proposal_detail__vote.immediate_super_majority_description.replace(
-          "$icon_immediate_majority",
-          ""
-        )
+        `This condition is met when there are more than twice as many yes-votes as no-votes by the expiration date.This can become true at the expiration date or if the yes-bar reaches  - in which case the condition cannot be changed anymore and the proposal is adopted early.See here for more information.`
       );
     });
   });
@@ -188,94 +182,161 @@ describe("VotesResults", () => {
     describe("voting period is open", () => {
       const deadlineTimestampSeconds = BigInt(now + 100000);
 
-      it("should render default status when neither conditions were met", async () => {
-        const po = renderComponent({
-          yes: 0,
-          no: 0,
-          total: 10,
-          deadlineTimestampSeconds,
+      describe("participation condition", () => {
+        it("should render default status when participation threshold is not met", async () => {
+          const po = renderComponent({
+            standardMajorityPercent: 3,
+            yes: 0,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 0%, where participation condition is 3%
+          expect(await po.getParticipationStatus()).toBe("default");
         });
 
-        expect(await po.getStandardMajorityStatus()).toBe("default");
-        expect(await po.getImmediateMajorityStatus()).toBe("default");
+        it("should render participation success when participation condition is met", async () => {
+          const po = renderComponent({
+            standardMajorityPercent: 3,
+            yes: 1,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 10%, where participation condition is 3%
+          expect(await po.getParticipationStatus()).toBe("success");
+        });
       });
 
-      it("should render participation success when standard majority condition is met", async () => {
-        const po = renderComponent({
-          standardMajorityPercent: 3,
-          yes: 1,
-          no: 0,
-          total: 10,
-          deadlineTimestampSeconds,
+      describe("majority condition", () => {
+        it("should render default status when absolute majority condition is not met", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 4,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 40%, where majority condition is 50%
+          expect(await po.getMajorityStatus()).toBe("default");
         });
 
-        // yes is 10%, where standard majority is 3%
-        expect(await po.getStandardMajorityStatus()).toBe("success");
-        expect(await po.getImmediateMajorityStatus()).toBe("default");
-      });
+        it("should render majority success when yes votes are more than immediate majority threshold -> absolute majority", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 6,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
 
-      it("should render participation success and majority failed when standard majority condition is met but no votes are more than immediate majority", async () => {
-        const po = renderComponent({
-          standardMajorityPercent: 3,
-          immediateMajorityPercent: 50,
-          yes: 3,
-          no: 6,
-          total: 10,
-          deadlineTimestampSeconds,
+          // yes is 60% when immediate majority is 50% -> absolute majority
+          expect(await po.getMajorityStatus()).toBe("success");
         });
 
-        // yes is 30% and no is 60% where standard majority is 3% and immediate majority is 50%
-        expect(await po.getStandardMajorityStatus()).toBe("success");
-        expect(await po.getImmediateMajorityStatus()).toBe("failed");
-      });
+        it("should render majority failed when no votes are more than immediate majority threshold -> absolute majority", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 0,
+            no: 6,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
 
-      it("should render participation and majority success when both conditions are met", async () => {
-        const po = renderComponent({
-          standardMajorityPercent: 3,
-          immediateMajorityPercent: 50,
-          yes: 6,
-          no: 0,
-          total: 10,
-          deadlineTimestampSeconds,
+          // no is 60% when immediate majority is 50% -> absolute majority
+          expect(await po.getMajorityStatus()).toBe("failed");
         });
-
-        // yes is 60%, where standard majority is 3% and immediate majority is 50%
-        expect(await po.getStandardMajorityStatus()).toBe("success");
-        expect(await po.getImmediateMajorityStatus()).toBe("success");
       });
     });
 
     describe("voting period is closed", () => {
       const deadlineTimestampSeconds = BigInt(now - 1);
 
-      it("should render participation success and majority failed when standard majority condition is met but not immediate majority and users can no longer vote", async () => {
-        const po = renderComponent({
-          standardMajorityPercent: 3,
-          immediateMajorityPercent: 50,
-          yes: 3,
-          no: 0,
-          total: 10,
-          deadlineTimestampSeconds,
+      describe("participation condition", () => {
+        it("should render participation success when standard majority condition is met", async () => {
+          const po = renderComponent({
+            standardMajorityPercent: 3,
+            yes: 3,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 30% where standard majority is 3%
+          expect(await po.getParticipationStatus()).toBe("success");
         });
 
-        // yes is 30%, where standard majority is 3% and immediate majority is 50%
-        expect(await po.getStandardMajorityStatus()).toBe("success");
-        expect(await po.getImmediateMajorityStatus()).toBe("failed");
+        it("should render participation success when standard majority condition is met", async () => {
+          const po = renderComponent({
+            standardMajorityPercent: 3,
+            yes: 0.1,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 1% where standard majority is 3%
+          expect(await po.getParticipationStatus()).toBe("failed");
+        });
       });
 
-      it("should render participation and majority failed when neither conditions are met and users can no longer vote", async () => {
-        const po = renderComponent({
-          standardMajorityPercent: 3,
-          immediateMajorityPercent: 50,
-          yes: 0.1,
-          no: 0,
-          total: 10,
-          deadlineTimestampSeconds,
+      describe("majority condition", () => {
+        it("should render majority success when yes votes are more than no votes -> Normal proposal", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 3.1,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 31% and no votes are 30% for a normal proposal
+          expect(await po.getMajorityStatus()).toBe("success");
         });
 
-        // yes is 10%, where standard majority is 3% and immediate majority is 50%
-        expect(await po.getStandardMajorityStatus()).toBe("failed");
-        expect(await po.getImmediateMajorityStatus()).toBe("failed");
+        it("should render majority failed when yes votes are not more than no votes -> Normal proposal", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 3,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 30% and no is 30% for a normal proposal
+          expect(await po.getMajorityStatus()).toBe("failed");
+        });
+
+        it("should render majority success when yes votes are more than double the no votes -> Critical proposal", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 67,
+            standardMajorityPercent: 20,
+            yes: 6.1,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 61% and no votes are 30% for a normal proposal
+          expect(await po.getMajorityStatus()).toBe("success");
+        });
+
+        it("should render majority success when yes votes are more than double the no votes -> Critical proposal", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 67,
+            standardMajorityPercent: 20,
+            yes: 6,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 61% and no votes are 30% for a normal proposal
+          expect(await po.getMajorityStatus()).toBe("failed");
+        });
       });
     });
   });
