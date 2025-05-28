@@ -320,7 +320,7 @@ describe("VotesResults", () => {
             deadlineTimestampSeconds,
           });
 
-          // yes is 61% and no votes are 30% for a normal proposal
+          // yes is 61% and no votes are 30% for a critical proposal
           expect(await po.getMajorityStatus()).toBe("success");
         });
 
@@ -334,7 +334,7 @@ describe("VotesResults", () => {
             deadlineTimestampSeconds,
           });
 
-          // yes is 61% and no votes are 30% for a normal proposal
+          // yes is 60% and no votes are 30% for a critical proposal
           expect(await po.getMajorityStatus()).toBe("failed");
         });
       });
