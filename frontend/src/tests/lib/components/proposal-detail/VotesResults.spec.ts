@@ -174,7 +174,7 @@ describe("VotesResults", () => {
     });
   });
 
-  describe.only("Voting status", () => {
+  describe("Voting status", () => {
     beforeEach(() => {
       vi.useFakeTimers();
     });
