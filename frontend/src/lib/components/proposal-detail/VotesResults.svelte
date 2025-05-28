@@ -82,23 +82,6 @@
     isCriticalProposal(immediateMajorityPercent)
   );
 
-  const standardMajorityTitle = $derived(
-    isCriticalProposalMode
-      ? $i18n.proposal_detail__vote.standard_super_majority
-      : $i18n.proposal_detail__vote.standard_majority
-  );
-  const standardMajorityDescription = $derived(
-    replacePlaceholders(
-      isCriticalProposalMode
-        ? $i18n.proposal_detail__vote.standard_super_majority_description
-        : $i18n.proposal_detail__vote.standard_majority_description,
-      {
-        $immediate_majority: formatPercent(immediateMajorityPercent),
-        $standard_majority: formatPercent(standardMajorityPercent),
-      }
-    )
-  );
-
   const immediateMajorityTitle = $derived(
     isCriticalProposalMode
       ? $i18n.proposal_detail__vote.immediate_super_majority
@@ -116,6 +99,23 @@
           }
         )
       : $i18n.proposal_detail__vote.immediate_majority_description
+  );
+
+  const standardMajorityTitle = $derived(
+    isCriticalProposalMode
+      ? $i18n.proposal_detail__vote.standard_super_majority
+      : $i18n.proposal_detail__vote.standard_majority
+  );
+  const standardMajorityDescription = $derived(
+    replacePlaceholders(
+      isCriticalProposalMode
+        ? $i18n.proposal_detail__vote.standard_super_majority_description
+        : $i18n.proposal_detail__vote.standard_majority_description,
+      {
+        $immediate_majority: formatPercent(immediateMajorityPercent),
+        $standard_majority: formatPercent(standardMajorityPercent),
+      }
+    )
   );
 
   let toggleParticipatonContent = $state(() => {});
