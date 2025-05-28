@@ -1411,3 +1411,11 @@ export const hasEnoughDissolveDelayToVote = (
   { dissolveDelaySeconds }: NeuronInfo,
   minimumDissolveDelay: bigint
 ): boolean => dissolveDelaySeconds >= minimumDissolveDelay;
+
+export const totalMaturityDisbursementsInProgress = (
+  neuron: NeuronInfo
+): bigint =>
+  neuron.fullNeuron?.maturityDisbursementsInProgress?.reduce(
+    (acc, disbursement) => acc + (disbursement.amountE8s ?? 0n),
+    0n
+  ) ?? 0n;
