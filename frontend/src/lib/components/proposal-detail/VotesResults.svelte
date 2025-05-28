@@ -1,5 +1,6 @@
 <script lang="ts">
   import ProposalContentCell from "$lib/components/proposal-detail/ProposalContentCell.svelte";
+  import VotesResultsConditionStatus from "$lib/components/proposal-detail/VotesResultsConditionStatus.svelte";
   import Countdown from "$lib/components/proposals/Countdown.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { nowInSeconds } from "$lib/utils/date.utils";
@@ -8,7 +9,6 @@
   import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
   import { Html, IconExpandMore } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import VotesResultsConditionStatus from "./VotesResultsConditionStatus.svelte";
 
   const formatVotingPower = (value: number) =>
     `${formatNumber(value, {
