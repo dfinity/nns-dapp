@@ -44,10 +44,10 @@
 
     if (yesProportion >= immediateMajority) {
       return "success";
-    } else if (canStillVote) {
-      return "default";
-    } else {
+    } else if (noProportion >= immediateMajority || !canStillVote) {
       return "failed";
+    } else {
+      return "default";
     }
   };
 
