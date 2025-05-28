@@ -4,12 +4,13 @@
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
+  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import {
     voteRegistrationStore,
+    votingNeuronSelectStore,
     type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
-  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
@@ -142,8 +143,12 @@
   let hasNeurons = false;
   $: hasNeurons = $definedNeuronsStore.length > 0;
 
+  // TODO(mstr): Rename to `minDissolveDelayToVoteSeconds`
   let minSnsDissolveDelaySeconds: bigint;
-  $: minSnsDissolveDelaySeconds = BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
+  $: minSnsDissolveDelaySeconds =
+    $networkEconomicsStore.parameters?.votingPowerEconomics
+      ?.neuronMinimumDissolveDelayToVoteSeconds ??
+    BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
 </script>
 
 <VotingCard
