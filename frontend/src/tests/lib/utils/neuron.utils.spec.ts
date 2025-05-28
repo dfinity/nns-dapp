@@ -3943,6 +3943,8 @@ describe("neuron-utils", () => {
 
   describe("totalMaturityDisbursementsInProgress", () => {
     it("should calculate total disbursements", () => {
+      const maturityDisbursementAmount1 = 100_000_000n;
+      const maturityDisbursementAmount2 = 200_000_000n;
       expect(
         totalMaturityDisbursementsInProgress({
           ...mockNeuron,
@@ -3951,16 +3953,16 @@ describe("neuron-utils", () => {
             maturityDisbursementsInProgress: [
               {
                 ...mockMaturityDisbursement,
-                amountE8s: 100_000_000n,
+                amountE8s: maturityDisbursementAmount1,
               },
               {
                 ...mockMaturityDisbursement,
-                amountE8s: 200_000_000n,
+                amountE8s: maturityDisbursementAmount2,
               },
             ],
           },
         })
-      ).toBe(100_000_000n + 200_000_000n);
+      ).toBe(maturityDisbursementAmount1 + maturityDisbursementAmount2);
     });
 
     it("should return 0 if no disbursements", () => {
