@@ -561,6 +561,7 @@ export const fromPercentageBasisPoints = (
     : fromNullable(percentage.basis_points);
 };
 
+// TODO: Read information from proposal
 // Is a proposal with variable voting-participation thresholds
 export const isCriticalProposal = (immediateMajorityPercent: number): boolean =>
   immediateMajorityPercent !==

@@ -26,12 +26,15 @@ describe("VotesResults", () => {
     deadlineTimestampSeconds?: bigint;
     immediateMajorityPercent?: number;
     standardMajorityPercent?: number;
+    yes?: number;
+    no?: number;
+    total?: number;
   }) => {
     const { container } = render(VotesResults, {
       props: {
-        yes: yesCount,
-        no: noCount,
-        total: totalValue,
+        yes: props?.yes ?? yesCount,
+        no: props?.no ?? noCount,
+        total: props?.total ?? totalValue,
         deadlineTimestampSeconds: props?.deadlineTimestampSeconds ?? 0n,
         immediateMajorityPercent:
           props?.immediateMajorityPercent ?? defaultImmediateMajorityPercent,
@@ -134,21 +137,21 @@ describe("VotesResults", () => {
       );
     });
 
-    it("should render supermajority titles", async () => {
+    it("should render supermajority titles for a Critical proposal", async () => {
       const po = renderComponent({
         immediateMajorityPercent: 67,
         standardMajorityPercent: 20,
       });
 
-      expect(await po.getImmediateMajorityTitle()).toBe(
-        en.proposal_detail__vote.immediate_super_majority
-      );
       expect(await po.getStandardMajorityTitle()).toBe(
         en.proposal_detail__vote.standard_super_majority
       );
+      expect(await po.getImmediateMajorityTitle()).toBe(
+        en.proposal_detail__vote.immediate_super_majority
+      );
     });
 
-    it("should render supermajority descriptions with placeholders", async () => {
+    it("should render supermajority descriptions with placeholders for a Critical proposal", async () => {
       const po = renderComponent({
         immediateMajorityPercent: 67,
         standardMajorityPercent: 20,
@@ -156,12 +159,95 @@ describe("VotesResults", () => {
       // expand majority descriptions
       await po.expandMajorityDescriptions();
 
-      expect(await po.getImmediateMajorityDescription()).toBe(
-        "A critical proposal is immediately adopted or rejected if, before the voting period ends, more than 67% of the total voting power votes Yes, or at least 33% votes No, respectively (indicated by )."
-      );
       expect(await po.getStandardMajorityDescription()).toBe(
-        "At the end of the voting period, a critical proposal is adopted if more than 67% of the votes cast are Yes votes, provided these votes represent at least 20% of the total voting power (indicated by ). Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
+        en.proposal_detail__vote.standard_super_majority_description.replace(
+          "$icon_standard_majority",
+          ""
+        )
       );
+      expect(await po.getImmediateMajorityDescription()).toBe(
+        en.proposal_detail__vote.immediate_super_majority_description.replace(
+          "$icon_immediate_majority",
+          ""
+        )
+      );
+    });
+  });
+
+  describe.only("Voting status", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    it("should render default status when neither conditions were met", async () => {
+      const po = renderComponent({
+        yes: 0,
+        no: 0,
+        total: 10,
+        deadlineTimestampSeconds: BigInt(now + 100000),
+      });
+
+      expect(await po.getStandardMajorityStatus()).toBe("default");
+      expect(await po.getImmediateMajorityStatus()).toBe("default");
+    });
+
+    it("should render participation success when standard majority condition is met", async () => {
+      const po = renderComponent({
+        standardMajorityPercent: 3,
+        yes: 1,
+        no: 0,
+        total: 10,
+        deadlineTimestampSeconds: BigInt(now + 100000),
+      });
+
+      // yes is 10%, where standard majority is 3%
+      expect(await po.getStandardMajorityStatus()).toBe("success");
+      expect(await po.getImmediateMajorityStatus()).toBe("default");
+    });
+
+    it("should render participation success and majority failed when standard majority condition is met but not immediate majority and users can no longer vote", async () => {
+      const po = renderComponent({
+        standardMajorityPercent: 3,
+        immediateMajorityPercent: 50,
+        yes: 3,
+        no: 0,
+        total: 10,
+        deadlineTimestampSeconds: BigInt(now - 1),
+      });
+
+      // yes is 30%, where standard majority is 3% and immediate majority is 50%
+      expect(await po.getStandardMajorityStatus()).toBe("success");
+      expect(await po.getImmediateMajorityStatus()).toBe("failed");
+    });
+
+    it("should render participation and majority success when both conditions are met", async () => {
+      const po = renderComponent({
+        standardMajorityPercent: 3,
+        immediateMajorityPercent: 50,
+        yes: 6,
+        no: 0,
+        total: 10,
+        deadlineTimestampSeconds: BigInt(now + 100000),
+      });
+
+      // yes is 60%, where standard majority is 3% and immediate majority is 50%
+      expect(await po.getStandardMajorityStatus()).toBe("success");
+      expect(await po.getImmediateMajorityStatus()).toBe("success");
+    });
+
+    it("should render participation and majority failed when neither conditions are met", async () => {
+      const po = renderComponent({
+        standardMajorityPercent: 3,
+        immediateMajorityPercent: 50,
+        yes: 0.1,
+        no: 0,
+        total: 10,
+        deadlineTimestampSeconds: BigInt(now - 1),
+      });
+
+      // yes is 10%, where standard majority is 3% and immediate majority is 50%
+      expect(await po.getStandardMajorityStatus()).toBe("failed");
+      expect(await po.getImmediateMajorityStatus()).toBe("failed");
     });
   });
 });

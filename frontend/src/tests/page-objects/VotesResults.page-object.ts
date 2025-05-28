@@ -1,7 +1,6 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
 export class VotesResultPo extends BasePageObject {
@@ -64,17 +63,11 @@ export class VotesResultPo extends BasePageObject {
   }
 
   async expandMajorityDescriptions(): Promise<void> {
-    await Promise.all([
-      ButtonPo.under({
-        element: this.root,
-        testId: "immediate-majority-toggle",
-      }).click(),
-      ButtonPo.under({
-        element: this.root,
-        testId: "standard-majority-toggle",
-      }).click(),
-    ]);
-    await runResolvedPromises();
+    const button = ButtonPo.under({
+      element: this.root,
+      testId: "toggle-content-button",
+    });
+    await button.click();
   }
 
   async getImmediateMajorityTitle(): Promise<string> {
@@ -82,12 +75,17 @@ export class VotesResultPo extends BasePageObject {
       await this.root.byTestId("immediate-majority-title").getText()
     )?.trim();
   }
-
   async getImmediateMajorityDescription(): Promise<string> {
     return assertNonNullish(
       this.root.byTestId("immediate-majority-description").getText()
     );
   }
+  async getImmediateMajorityStatus(): Promise<"success" | "error" | "default"> {
+    return this.getElement(
+      "immediate-majority-collapsible-status"
+    ).getAttribute("data-status") as Promise<"success" | "error" | "default">;
+  }
+
   async getStandardMajorityTitle(): Promise<string> {
     return (
       await this.root.byTestId("standard-majority-title").getText()
@@ -97,5 +95,10 @@ export class VotesResultPo extends BasePageObject {
     return assertNonNullish(
       this.root.byTestId("standard-majority-description").getText()
     );
+  }
+  async getStandardMajorityStatus(): Promise<"success" | "error" | "default"> {
+    return this.getElement("standard-majority-collapsible-status").getAttribute(
+      "data-status"
+    ) as Promise<"success" | "error" | "default">;
   }
 }
