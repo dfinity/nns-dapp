@@ -36,7 +36,7 @@
     return canStillVote ? "default" : "failed";
   };
 
-  // Critical proposals required that yes more than twice the no votes, while normal proposals only require that yes is more than no.
+  // Critical proposals require that the number of "yes" votes is more than twice the number of "no" votes, while normal proposals only need "yes" votes to exceed "no" votes.
   // https://github.com/dfinity/ic/blob/d91cbbb662d03aee629902c7e4fd7ee5abdd6ba5/rs/nns/governance/src/governance.rs#L1036
   const getMajorityStatus = () => {
     const immediateYesMajority = yesProportion > immediateMajorityPercent / 100;
