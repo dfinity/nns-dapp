@@ -9,7 +9,7 @@
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
+  import { isEnoughMaturityToDisburse } from "$lib/utils/neuron.utils";
   import { Tooltip } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
@@ -23,7 +23,7 @@
   const enoughMaturity = $derived(
     nonNullish(neuron.fullNeuron) &&
       // Same logic as in SpawnNeuronButton
-      isEnoughMaturityToSpawn({
+      isEnoughMaturityToDisburse({
         neuron,
         percentage: 100,
       })
