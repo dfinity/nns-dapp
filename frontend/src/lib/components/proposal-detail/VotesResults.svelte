@@ -117,10 +117,10 @@
     )
   );
 
-  let toggleParticipatonContent = $state(() => {});
+  let toggleParticipationContent = $state(() => {});
   let toggleMajorityContent = $state(() => {});
   let toggleAllContent = $derived(() => {
-    toggleParticipatonContent();
+    toggleParticipationContent();
     toggleMajorityContent();
   });
 </script>
@@ -263,7 +263,7 @@
       <li>
         <VotesResultsConditionStatus
           testId="immediate-majority-collapsible"
-          bind:toggleContent={toggleParticipatonContent}
+          bind:toggleContent={toggleParticipationContent}
           status={getMajorityStatus()}
         >
           {#snippet title()}
