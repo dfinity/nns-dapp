@@ -130,10 +130,16 @@ describe("VotesResults", () => {
       await po.expandMajorityDescriptions();
 
       expect(await po.getImmediateMajorityDescription()).toBe(
-        "A proposal is immediately adopted or rejected if, before the voting period ends, more than half of the total voting power votes Yes, or at least half votes No, respectively (indicated by )."
+        en.proposal_detail__vote.immediate_majority_description.replace(
+          "$icon_immediate_majority",
+          ""
+        )
       );
       expect(await po.getStandardMajorityDescription()).toBe(
-        "At the end of the voting period, a proposal is adopted if more than half of the votes cast are Yes votes, provided these votes represent at least 3% of the total voting power (indicated by ). Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
+        en.proposal_detail__vote.standard_majority_description.replace(
+          "$icon_standard_majority",
+          ""
+        )
       );
     });
 
