@@ -19,7 +19,7 @@
         "vzs3x-taaaa-aaaan-qzzjq-cai",
         "v6t5d-6yaaa-aaaan-qzzja-cai"
       ],
-      "archives": []
+      "archives": ["kdokl-pqaaa-aaaaq-aae5q-cai"]
     },
     "meta": {
       "url": "https://tacodao.com",
@@ -165,6 +165,20 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 1001,
+          "name": "addToken",
+          "description": "Registers a token as trusted given its ledger id.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "CriticalDappOperations",
+              "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+              "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
+              "validator_method_name": "validate_addToken",
+              "target_method_name": "addToken"
+            }
+          }
         }
       ]
     },
@@ -204,7 +218,7 @@
     },
     "swap_state": {
       "swap": {
-        "lifecycle": 2,
+        "lifecycle": 3,
         "init": {
           "nns_proposal_id": 136453,
           "sns_root_canister_id": "lacdn-3iaaa-aaaaq-aae3a-cai",
@@ -284,8 +298,8 @@
         "decentralization_sale_open_timestamp_seconds": 1746820800
       },
       "derived": {
-        "buyer_total_icp_e8s": 11254683912597,
-        "sns_tokens_per_icp": 18.211672
+        "buyer_total_icp_e8s": 12707777371395,
+        "sns_tokens_per_icp": 16.129225
       }
     },
     "icrc1_metadata": [
@@ -327,7 +341,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777777700000000,
+    "icrc1_total_supply": 777777629650000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -408,18 +422,18 @@
       }
     },
     "derived_state": {
-      "sns_tokens_per_icp": 18.211671829223633,
-      "buyer_total_icp_e8s": 11254683912597,
+      "sns_tokens_per_icp": 16.12922477722168,
+      "buyer_total_icp_e8s": 12707777371395,
       "cf_participant_count": 0,
       "neurons_fund_participation_icp_e8s": 0,
-      "direct_participation_icp_e8s": 11254683912597,
-      "direct_participant_count": 313,
+      "direct_participation_icp_e8s": 12707777371395,
+      "direct_participant_count": 398,
       "cf_neuron_count": 0
     },
     "lifecycle": {
       "decentralization_sale_open_timestamp_seconds": 1746820800,
-      "lifecycle": 2,
-      "decentralization_swap_termination_timestamp_seconds": null
+      "lifecycle": 3,
+      "decentralization_swap_termination_timestamp_seconds": 1748030448
     },
     "topics": {
       "uncategorized_functions": [],
@@ -604,7 +618,22 @@
           "is_critical": true,
           "name": "Critical Dapp Operations",
           "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1001,
+              "name": "addToken",
+              "description": "Registers a token as trusted given its ledger id.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "CriticalDappOperations",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
+                  "validator_method_name": "validate_addToken",
+                  "target_method_name": "addToken"
+                }
+              }
+            }
+          ]
         }
       ]
     }
