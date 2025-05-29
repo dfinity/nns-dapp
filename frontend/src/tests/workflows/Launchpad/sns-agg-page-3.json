@@ -1507,7 +1507,7 @@
       ]
     ],
     "icrc1_fee": [10000000],
-    "icrc1_total_supply": 5456683626363723,
+    "icrc1_total_supply": 5457771870382776,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2029,6 +2029,20 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 1001,
+          "name": "Toolkit service - manage neurons",
+          "description": "Manage neurons managed by the toolkit service canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "kdrez-4qaaa-aaaal-qsnwq-cai",
+              "target_canister_id": "kdrez-4qaaa-aaaal-qsnwq-cai",
+              "validator_method_name": "tk_service_validate_manage_neuron",
+              "target_method_name": "tk_service_manage_neuron"
+            }
+          }
         }
       ]
     },
@@ -2043,7 +2057,7 @@
       "neuron_claimer_permissions": {
         "permissions": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       },
-      "neuron_minimum_stake_e8s": 1000000,
+      "neuron_minimum_stake_e8s": 100000000,
       "max_neuron_age_for_age_bonus": 63115200,
       "initial_voting_period_seconds": 172800,
       "neuron_minimum_dissolve_delay_to_vote_seconds": 15778800,
@@ -2167,7 +2181,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100008371896763,
+    "icrc1_total_supply": 100009611034443,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2379,7 +2393,22 @@
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1001,
+              "name": "Toolkit service - manage neurons",
+              "description": "Manage neurons managed by the toolkit service canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "kdrez-4qaaa-aaaal-qsnwq-cai",
+                  "target_canister_id": "kdrez-4qaaa-aaaal-qsnwq-cai",
+                  "validator_method_name": "tk_service_validate_manage_neuron",
+                  "target_method_name": "tk_service_manage_neuron"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
@@ -2764,7 +2793,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041635998583160074,
+    "icrc1_total_supply": 1041634086243321739,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3619,7 +3648,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11674153217312858,
+    "icrc1_total_supply": 11676273728991967,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -5388,7 +5417,7 @@
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2320933092847117975,
+    "icrc1_total_supply": 2320862827967020851,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -6204,7 +6233,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999779230000,
+    "icrc1_total_supply": 1999999779090000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -9785,7 +9814,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100189023255316045,
+    "icrc1_total_supply": 100190762268163965,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

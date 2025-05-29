@@ -344,7 +344,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98342686920740853,
+    "icrc1_total_supply": 98343062291868767,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -1132,7 +1132,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 126219135977992644,
+    "icrc1_total_supply": 126232226508623655,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2215,7 +2215,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50632693429870530,
+    "icrc1_total_supply": 50633052036300095,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2852,7 +2852,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 9961543909301998,
+    "icrc1_total_supply": 9961553906897168,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3492,7 +3492,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10180356491857596,
+    "icrc1_total_supply": 10180426555106703,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4128,7 +4128,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12726571045469653,
+    "icrc1_total_supply": 12726638091734096,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5443,6 +5443,34 @@
               "target_method_name": "commit_proposed_batch"
             }
           }
+        },
+        {
+          "id": 3000,
+          "name": "Transfer liquidity position on ICPSwap",
+          "description": "This method allows to transfer a liquidity position on ICPSwap, owned by the Gold DAO SNS governance canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "g5je6-yaaaa-aaaap-ahkza-cai",
+              "target_canister_id": "k46ek-4qaaa-aaaag-qcyzq-cai",
+              "validator_method_name": "dex_transfer_position_validate",
+              "target_method_name": "transferPosition"
+            }
+          }
+        },
+        {
+          "id": 3001,
+          "name": "Transfer liquidity position on Sonic",
+          "description": "This method allows to transfer a liquidity position on Sonic, owned by the Gold DAO SNS governance canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "g5je6-yaaaa-aaaap-ahkza-cai",
+              "target_canister_id": "3dyvk-bqaaa-aaaak-qtr3q-cai",
+              "validator_method_name": "dex_transfer_position_validate",
+              "target_method_name": "transferPosition"
+            }
+          }
         }
       ]
     },
@@ -5859,7 +5887,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99366676809508784,
+    "icrc1_total_supply": 99357353588513194,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
@@ -6508,6 +6536,34 @@
                   "target_canister_id": "54vkq-taaaa-aaaap-ahqra-cai",
                   "validator_method_name": "manage_sns_neuron_validate",
                   "target_method_name": "manage_sns_neuron"
+                }
+              }
+            },
+            {
+              "id": 3000,
+              "name": "Transfer liquidity position on ICPSwap",
+              "description": "This method allows to transfer a liquidity position on ICPSwap, owned by the Gold DAO SNS governance canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "g5je6-yaaaa-aaaap-ahkza-cai",
+                  "target_canister_id": "k46ek-4qaaa-aaaag-qcyzq-cai",
+                  "validator_method_name": "dex_transfer_position_validate",
+                  "target_method_name": "transferPosition"
+                }
+              }
+            },
+            {
+              "id": 3001,
+              "name": "Transfer liquidity position on Sonic",
+              "description": "This method allows to transfer a liquidity position on Sonic, owned by the Gold DAO SNS governance canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "g5je6-yaaaa-aaaap-ahkza-cai",
+                  "target_canister_id": "3dyvk-bqaaa-aaaak-qtr3q-cai",
+                  "validator_method_name": "dex_transfer_position_validate",
+                  "target_method_name": "transferPosition"
                 }
               }
             }
