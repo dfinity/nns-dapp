@@ -117,9 +117,11 @@
     )
   );
 
+  let expanded = $state(false);
   let toggleParticipationContent = $state(() => {});
   let toggleMajorityContent = $state(() => {});
   let toggleAllContent = $derived(() => {
+    expanded = !expanded;
     toggleParticipationContent();
     toggleMajorityContent();
   });
@@ -229,7 +231,7 @@
 
   <div class="votes-results-legends">
     <button
-      class="votes-results-legends-header"
+      class="votes-results-legends-expand-button"
       onclick={toggleAllContent}
       data-tid="toggle-content-button"
     >
@@ -238,7 +240,7 @@
           ? $i18n.proposal_detail__vote.super_majority_decision_intro
           : $i18n.proposal_detail__vote.decision_intro}
       </h3>
-      <span class="icon" aria-hidden="true">
+      <span class="icon" aria-hidden="true" class:expanded>
         <IconExpandMore />
       </span>
     </button>
@@ -438,18 +440,24 @@
     flex-direction: column;
     row-gap: var(--padding-0_5x);
 
-    .votes-results-legends-header {
+    .votes-results-legends-expand-button {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0;
 
       h3 {
         color: var(--content-color);
       }
 
+      transition: transform ease-out var(--animation-time-normal);
       .icon {
         padding: 0;
         color: var(--primary);
+
+        &.expanded {
+          transform: rotate(-180deg);
+        }
       }
     }
 

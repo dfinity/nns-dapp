@@ -6,3 +6,8 @@ div.split-pane + div.split-pane {
     display: none;
   }
 }
+
+// Workaround to avoid extra styling in bottom sheet, that was introduced in gix https://github.com/dfinity/gix-components/pull/628/files#diff-cb6285c9f761dc189f57123ab2426f1ce3bbb85d99ed0be3a06b5889e8299286R53-R55
+[data-tid="bottom-sheet"] > span {
+  display: contents !important;
+}
