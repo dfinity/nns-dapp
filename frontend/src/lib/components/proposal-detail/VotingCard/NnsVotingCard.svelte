@@ -4,12 +4,12 @@
   import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { registerNnsVotes } from "$lib/services/nns-vote-registration.services";
-  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { neuronsStore, type NeuronsStore } from "$lib/stores/neurons.store";
   import {
     voteRegistrationStore,
+    votingNeuronSelectStore,
     type VoteRegistrationStoreEntry,
   } from "$lib/stores/vote-registration.store";
-  import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
   import {
     SELECTED_PROPOSAL_CONTEXT_KEY,
     type SelectedProposalContext,
@@ -18,8 +18,6 @@
   import {
     filterIneligibleNnsNeurons,
     votedNeuronDetails,
-    type CompactNeuronInfo,
-    type IneligibleNeuronData,
   } from "$lib/utils/neuron.utils";
   import {
     isProposalDeadlineInTheFuture,
@@ -33,7 +31,11 @@
   } from "@dfinity/nns";
   import { getContext } from "svelte";
 
-  export let proposalInfo: ProposalInfo;
+  type Props = {
+    proposalInfo: ProposalInfo;
+  };
+
+  const { proposalInfo }: Props = $props();
 
   const votableNeurons = ({
     neurons,
@@ -47,18 +49,18 @@
       proposal,
     }).map((neuron) => nnsNeuronToVotingNeuron({ neuron, proposal }));
 
-  let visible = false;
-  /** Signals that the initial checkbox preselection was done. To avoid removing of user selection after second queryAndUpdate callback. */
+  const visible = $derived(
+    // definedNeuronsStore is always defined.
+    $definedNeuronsStore && isProposalDeadlineInTheFuture(proposalInfo)
+  );
+  /** Signals that the initial checkbox pre-selection was done. To avoid removing of user selection after second queryAndUpdate callback. */
   let initialSelectionDone = false;
-  let voteRegistration: VoteRegistrationStoreEntry | undefined = undefined;
 
-  $: voteRegistration = (
-    $voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
-  ).find(({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString);
-
-  $: $definedNeuronsStore,
-    (visible = isProposalDeadlineInTheFuture(proposalInfo));
-
+  const voteRegistration: VoteRegistrationStoreEntry | undefined = $derived(
+    ($voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []).find(
+      ({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString
+    )
+  );
   const updateVotingNeuronSelectedStore = ({
     neurons,
     proposal,
@@ -84,11 +86,12 @@
       );
     }
   };
-
-  $: updateVotingNeuronSelectedStore({
-    neurons: $definedNeuronsStore,
-    proposal: proposalInfo,
-  });
+  $effect(() =>
+    updateVotingNeuronSelectedStore({
+      neurons: $definedNeuronsStore,
+      proposal: proposalInfo,
+    })
+  );
 
   const { store } = getContext<SelectedProposalContext>(
     SELECTED_PROPOSAL_CONTEXT_KEY
@@ -108,7 +111,7 @@
     });
 
   // UI loader
-  const neuronsStoreReady = (): boolean => {
+  const neuronsStoreReady = ({ neurons, certified }: NeuronsStore): boolean => {
     // We consider the neurons store as ready if it has been initialized once. Subsequent changes that happen after vote or other functions are handled with the busy store.
     // This to avoid the display of a spinner within the page and another spinner over it (the busy spinner) when the user vote is being processed.
     if (neuronsReady) {
@@ -116,34 +119,28 @@
     }
 
     return (
-      $neuronsStore.neurons !== undefined &&
-      ($neuronsStore.certified === true ||
-        ($neuronsStore.certified === false && isForceCallStrategy()))
+      neurons !== undefined &&
+      (certified === true || (certified === false && isForceCallStrategy()))
     );
   };
-
-  let neuronsReady = false;
-  $: $neuronsStore, (neuronsReady = neuronsStoreReady());
-
-  let neuronsVotedForProposal: CompactNeuronInfo[];
-  $: {
-    neuronsVotedForProposal = votedNeuronDetails({
+  const neuronsReady = $derived(neuronsStoreReady($neuronsStore));
+  const neuronsVotedForProposal = $derived(
+    votedNeuronDetails({
       neurons: $definedNeuronsStore,
       proposal: proposalInfo,
-    });
-  }
-
-  let ineligibleNeurons: IneligibleNeuronData[];
-  $: ineligibleNeurons = filterIneligibleNnsNeurons({
-    neurons: $definedNeuronsStore,
-    proposal: proposalInfo,
-  });
-
-  let hasNeurons = false;
-  $: hasNeurons = $definedNeuronsStore.length > 0;
-
-  let minSnsDissolveDelaySeconds: bigint;
-  $: minSnsDissolveDelaySeconds = BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE);
+    })
+  );
+  const ineligibleNeurons = $derived(
+    filterIneligibleNnsNeurons({
+      neurons: $definedNeuronsStore,
+      proposal: proposalInfo,
+    })
+  );
+  const hasNeurons = $derived($definedNeuronsStore.length > 0);
+  // TODO: switch to voting economics
+  const minSnsDissolveDelaySeconds = $derived(
+    BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE)
+  );
 </script>
 
 <VotingCard
