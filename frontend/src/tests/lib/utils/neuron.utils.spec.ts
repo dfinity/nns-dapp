@@ -9,8 +9,10 @@ import {
 } from "$lib/constants/constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
+  MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   MAX_NEURONS_MERGED,
   MIN_NEURON_STAKE,
+  MINIMUM_DISBURSEMENT,
 } from "$lib/constants/neurons.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -30,11 +32,11 @@ import {
   filterIneligibleNnsNeurons,
   followeesByTopic,
   followeesNeurons,
-  formatVotingPower,
-  formatVotingPowerDetailed,
   formattedMaturity,
   formattedStakedMaturity,
   formattedTotalMaturity,
+  formatVotingPower,
+  formatVotingPowerDetailed,
   getDissolvingTimeInSeconds,
   getDissolvingTimestampSeconds,
   getNeuronById,
@@ -47,6 +49,7 @@ import {
   hasEnoughMaturityToStake,
   hasJoinedCommunityFund,
   hasValidStake,
+  isEnoughMaturityToDisburse,
   isEnoughMaturityToSpawn,
   isEnoughToStakeNeuron,
   isHotKeyControllable,
@@ -1395,6 +1398,97 @@ describe("neuron-utils", () => {
       expect(isEnoughMaturityToSpawn({ neuron: neuron2, percentage: 10 })).toBe(
         false
       );
+    });
+  });
+
+  describe("isEnoughMaturityToDisburse", () => {
+    const JUST_ENOUGH_MATURITY = BigInt(
+      Math.round(
+        Number(MINIMUM_DISBURSEMENT) /
+          Number(MATURITY_MODULATION_VARIANCE_PERCENTAGE)
+      )
+    );
+
+    it("return false if fullNeuron is not available", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: undefined,
+      };
+      expect(isEnoughMaturityToDisburse({ neuron, percentage: 100 })).toBe(
+        false
+      );
+    });
+
+    it("returns false if not enough maturity", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: MINIMUM_DISBURSEMENT - 1_000n,
+        },
+      };
+      expect(isEnoughMaturityToDisburse({ neuron, percentage: 100 })).toBe(
+        false
+      );
+
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: MINIMUM_DISBURSEMENT * 2n,
+        },
+      };
+      expect(
+        isEnoughMaturityToDisburse({ neuron: neuron2, percentage: 10 })
+      ).toBe(false);
+    });
+
+    it("return false if not enough maturity because of variation", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: JUST_ENOUGH_MATURITY - 1n,
+        },
+      };
+      expect(isEnoughMaturityToDisburse({ neuron, percentage: 100 })).toBe(
+        false
+      );
+
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: JUST_ENOUGH_MATURITY * 2n - 1n,
+        },
+      };
+      expect(
+        isEnoughMaturityToDisburse({ neuron: neuron2, percentage: 50 })
+      ).toBe(false);
+    });
+
+    it("return true if enough maturity", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: JUST_ENOUGH_MATURITY,
+        },
+      };
+      expect(isEnoughMaturityToDisburse({ neuron, percentage: 100 })).toBe(
+        true
+      );
+
+      const neuron2 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: JUST_ENOUGH_MATURITY * 2n,
+        },
+      };
+      expect(
+        isEnoughMaturityToDisburse({ neuron: neuron2, percentage: 50 })
+      ).toBe(true);
     });
   });
 
