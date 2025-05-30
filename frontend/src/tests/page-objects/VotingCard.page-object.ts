@@ -1,4 +1,5 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { IneligibleNeuronListPo } from "$tests/page-objects/IneligibleNeuronList.page-object";
 import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-object";
 import { VotingConfirmationToolbarPo } from "$tests/page-objects/VotingConfirmationToolbar.page-object";
 import { VotingNeuronSelectListPo } from "$tests/page-objects/VotingNeuronSelectList.page-object";
@@ -62,6 +63,10 @@ export class VotingCardPo extends BasePageObject {
 
   getIneligibleNeurons(): PageObjectElement {
     return this.root.byTestId("ineligible-neurons");
+  }
+
+  getIneligibleNeuronListPo(): IneligibleNeuronListPo {
+    return IneligibleNeuronListPo.under(this.root);
   }
 
   async getIneligibleNeuronsHeaderText(): Promise<string> {

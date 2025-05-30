@@ -46,13 +46,15 @@
   <VotingCardNeuronList>
     {#each ineligibleNeurons as neuron}
       <li class="value" title={neuron.neuronIdString}>
-        <span class="label">
+        <span class="label" data-tid="ineligible-neuron-id">
           {shortenWithMiddleEllipsis(
             neuron.neuronIdString,
             SNS_NEURON_ID_DISPLAY_LENGTH
           )}
         </span>
-        <small class="value">{reasonText(neuron)}</small>
+        <small class="value" data-tid="ineligible-neuron-reason"
+          >{reasonText(neuron)}</small
+        >
       </li>
     {/each}
   </VotingCardNeuronList>
