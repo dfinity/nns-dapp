@@ -3,6 +3,7 @@
   import {
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,
     MIN_NEURON_STAKE,
+    MINIMUM_DISBURSEMENT,
     ULPS_PER_MATURITY,
   } from "$lib/constants/neurons.constants";
   import { i18n } from "$lib/stores/i18n";
@@ -57,8 +58,7 @@
               MATURITY_MODULATION_VARIANCE_PERCENTAGE,
             { minFraction: 4, maxFraction: 4 }
           ),
-          // TODO(disburse-maturity): check if this is correct for disburse maturity as well
-          $min: formatNumber(Number(MIN_NEURON_STAKE) / ULPS_PER_MATURITY, {
+          $min: formatNumber(Number(MINIMUM_DISBURSEMENT) / ULPS_PER_MATURITY, {
             minFraction: 0,
             maxFraction: 0,
           }),
