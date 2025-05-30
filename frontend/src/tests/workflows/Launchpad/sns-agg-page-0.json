@@ -425,7 +425,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999930302994000,
+    "icrc1_total_supply": 799999929517694000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1719,7 +1719,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10161779626028672,
+    "icrc1_total_supply": 10161013720076473,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3112,6 +3112,20 @@
           }
         },
         {
+          "id": 1007,
+          "name": "call_nns_manage_neuron_api",
+          "description": "This function calls the manage_neuron API of the NNS governance canister.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "cmwbp-2qaaa-aaaak-ak2bq-cai",
+              "target_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+              "validator_method_name": "validate_manage_neuron",
+              "target_method_name": "manage_neuron"
+            }
+          }
+        },
+        {
           "id": 101000,
           "name": "Call `trade_tokens` on the KINIC trading pair canister at the CYCLES-TRANSFER-STATION.",
           "description": null,
@@ -3266,7 +3280,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 617299511981459,
+    "icrc1_total_supply": 617371700646993,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3588,7 +3602,22 @@
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1007,
+              "name": "call_nns_manage_neuron_api",
+              "description": "This function calls the manage_neuron API of the NNS governance canister.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "cmwbp-2qaaa-aaaak-ak2bq-cai",
+                  "target_canister_id": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+                  "validator_method_name": "validate_manage_neuron",
+                  "target_method_name": "manage_neuron"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
@@ -3983,7 +4012,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104454404485405526,
+    "icrc1_total_supply": 104455942478744531,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4916,7 +4945,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 931937014906124209,
+    "icrc1_total_supply": 931952916776360182,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

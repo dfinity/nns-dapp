@@ -26,12 +26,15 @@ describe("VotesResults", () => {
     deadlineTimestampSeconds?: bigint;
     immediateMajorityPercent?: number;
     standardMajorityPercent?: number;
+    yes?: number;
+    no?: number;
+    total?: number;
   }) => {
     const { container } = render(VotesResults, {
       props: {
-        yes: yesCount,
-        no: noCount,
-        total: totalValue,
+        yes: props?.yes ?? yesCount,
+        no: props?.no ?? noCount,
+        total: props?.total ?? totalValue,
         deadlineTimestampSeconds: props?.deadlineTimestampSeconds ?? 0n,
         immediateMajorityPercent:
           props?.immediateMajorityPercent ?? defaultImmediateMajorityPercent,
@@ -127,28 +130,31 @@ describe("VotesResults", () => {
       await po.expandMajorityDescriptions();
 
       expect(await po.getImmediateMajorityDescription()).toBe(
-        "A proposal is immediately adopted or rejected if, before the voting period ends, more than half of the total voting power votes Yes, or at least half votes No, respectively (indicated by )."
+        `This condition is met when there are more yes-votes than no-votes by the expiration date.This can become true at the expiration date or if the yes-bar reaches  - in which case the condition cannot be changed anymore and the proposal is adopted early.See here for more information.`
       );
       expect(await po.getStandardMajorityDescription()).toBe(
-        "At the end of the voting period, a proposal is adopted if more than half of the votes cast are Yes votes, provided these votes represent at least 3% of the total voting power (indicated by ). Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
+        en.proposal_detail__vote.standard_majority_description.replace(
+          "$icon_standard_majority",
+          ""
+        )
       );
     });
 
-    it("should render supermajority titles", async () => {
+    it("should render supermajority titles for a Critical proposal", async () => {
       const po = renderComponent({
         immediateMajorityPercent: 67,
         standardMajorityPercent: 20,
       });
 
-      expect(await po.getImmediateMajorityTitle()).toBe(
-        en.proposal_detail__vote.immediate_super_majority
-      );
       expect(await po.getStandardMajorityTitle()).toBe(
         en.proposal_detail__vote.standard_super_majority
       );
+      expect(await po.getImmediateMajorityTitle()).toBe(
+        en.proposal_detail__vote.immediate_super_majority
+      );
     });
 
-    it("should render supermajority descriptions with placeholders", async () => {
+    it("should render supermajority descriptions with placeholders for a Critical proposal", async () => {
       const po = renderComponent({
         immediateMajorityPercent: 67,
         standardMajorityPercent: 20,
@@ -156,12 +162,182 @@ describe("VotesResults", () => {
       // expand majority descriptions
       await po.expandMajorityDescriptions();
 
-      expect(await po.getImmediateMajorityDescription()).toBe(
-        "A critical proposal is immediately adopted or rejected if, before the voting period ends, more than 67% of the total voting power votes Yes, or at least 33% votes No, respectively (indicated by )."
-      );
       expect(await po.getStandardMajorityDescription()).toBe(
-        "At the end of the voting period, a critical proposal is adopted if more than 67% of the votes cast are Yes votes, provided these votes represent at least 20% of the total voting power (indicated by ). Otherwise, it is rejected. Before a proposal is decided, the voting period can be extended in order to “wait for quiet”. Such voting period extensions occur when a proposal’s voting results turn from either a Yes majority to a No majority or vice versa."
+        en.proposal_detail__vote.standard_super_majority_description.replace(
+          "$icon_standard_majority",
+          ""
+        )
       );
+      expect(await po.getImmediateMajorityDescription()).toBe(
+        `This condition is met when there are more than twice as many yes-votes as no-votes by the expiration date.This can become true at the expiration date or if the yes-bar reaches  - in which case the condition cannot be changed anymore and the proposal is adopted early.See here for more information.`
+      );
+    });
+  });
+
+  describe("Voting status", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    describe("voting period is open", () => {
+      const deadlineTimestampSeconds = BigInt(now + 100000);
+
+      describe("participation condition", () => {
+        it("should render default status when participation threshold is not met", async () => {
+          const po = renderComponent({
+            standardMajorityPercent: 3,
+            yes: 0,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 0%, where participation condition is 3%
+          expect(await po.getParticipationStatus()).toBe("default");
+        });
+
+        it("should render participation success when participation condition is met", async () => {
+          const po = renderComponent({
+            standardMajorityPercent: 3,
+            yes: 1,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 10%, where participation condition is 3%
+          expect(await po.getParticipationStatus()).toBe("success");
+        });
+      });
+
+      describe("majority condition", () => {
+        it("should render default status when absolute majority condition is not met", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 4,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 40%, where majority condition is 50%
+          expect(await po.getMajorityStatus()).toBe("default");
+        });
+
+        it("should render majority success when yes votes are more than immediate majority threshold -> absolute majority", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 6,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 60% when immediate majority is 50% -> absolute majority
+          expect(await po.getMajorityStatus()).toBe("success");
+        });
+
+        it("should render majority failed when no votes are more than immediate majority threshold -> absolute majority", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 0,
+            no: 6,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // no is 60% when immediate majority is 50% -> absolute majority
+          expect(await po.getMajorityStatus()).toBe("failed");
+        });
+      });
+    });
+
+    describe("voting period is closed", () => {
+      const deadlineTimestampSeconds = BigInt(now - 1);
+
+      describe("participation condition", () => {
+        it("should render participation success when standard majority condition is met", async () => {
+          const po = renderComponent({
+            standardMajorityPercent: 3,
+            yes: 3,
+            no: 0,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 30% where standard majority is 3%
+          expect(await po.getParticipationStatus()).toBe("success");
+        });
+
+        it("should render participation success when standard majority condition is met", async () => {
+          const po = renderComponent({
+            standardMajorityPercent: 3,
+            yes: 0.1,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 1% where standard majority is 3%
+          expect(await po.getParticipationStatus()).toBe("failed");
+        });
+      });
+
+      describe("majority condition", () => {
+        it("should render majority success when yes votes are more than no votes -> Normal proposal", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 3.1,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 31% and no votes are 30% for a normal proposal
+          expect(await po.getMajorityStatus()).toBe("success");
+        });
+
+        it("should render majority failed when yes votes are not more than no votes -> Normal proposal", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 50,
+            yes: 3,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 30% and no is 30% for a normal proposal
+          expect(await po.getMajorityStatus()).toBe("failed");
+        });
+
+        it("should render majority success when yes votes are more than double the no votes -> Critical proposal", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 67,
+            standardMajorityPercent: 20,
+            yes: 6.1,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 61% and no votes are 30% for a critical proposal
+          expect(await po.getMajorityStatus()).toBe("success");
+        });
+
+        it("should render majority success when yes votes are more than double the no votes -> Critical proposal", async () => {
+          const po = renderComponent({
+            immediateMajorityPercent: 67,
+            standardMajorityPercent: 20,
+            yes: 6,
+            no: 3,
+            total: 10,
+            deadlineTimestampSeconds,
+          });
+
+          // yes is 60% and no votes are 30% for a critical proposal
+          expect(await po.getMajorityStatus()).toBe("failed");
+        });
+      });
     });
   });
 });
