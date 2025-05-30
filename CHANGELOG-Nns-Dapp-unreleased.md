@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Styles for the SNS Projects Portfolio Cards
+* Improved voting status display with conditions progress indicators
 
 #### Deprecated
 

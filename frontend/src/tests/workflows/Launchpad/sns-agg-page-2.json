@@ -1517,7 +1517,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102093181216311782,
+    "icrc1_total_supply": 102093346190946104,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3166,7 +3166,7 @@
           "description": "Transfer ckBTC from the SNS treasury",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "ApplicationBusinessLogic",
               "validator_canister_id": "uwkt7-miaaa-aaaal-qdeuq-cai",
               "target_canister_id": "mxzaz-hqaaa-aaaar-qaada-cai",
               "validator_method_name": "validate_icrc1_transfer",
@@ -3306,7 +3306,7 @@
           "description": "Manage NTN neuron owned by Neutrinite",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": null,
+              "topic": "TreasuryAssetManagement",
               "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
               "target_canister_id": "oypg6-faaaa-aaaaq-aadza-cai",
               "validator_method_name": "validate_manage_neuron",
@@ -3395,6 +3395,20 @@
               "target_canister_id": "kv5pw-kyaaa-aaaag-qcyya-cai",
               "validator_method_name": "validate_icpswap_transfer_position",
               "target_method_name": "transferPosition"
+            }
+          }
+        },
+        {
+          "id": 88005,
+          "name": "Transfer cICP",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "n6tkf-tqaaa-aaaal-qsneq-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
             }
           }
         }
@@ -3850,7 +3864,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100870950689264,
+    "icrc1_total_supply": 100873301339702,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4238,20 +4252,6 @@
     "topics": {
       "uncategorized_functions": [
         {
-          "id": 5000,
-          "name": "Transfer SNS Treasury ckBTC",
-          "description": "Transfer ckBTC from the SNS treasury",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "uwkt7-miaaa-aaaal-qdeuq-cai",
-              "target_canister_id": "mxzaz-hqaaa-aaaar-qaada-cai",
-              "validator_method_name": "validate_icrc1_transfer",
-              "target_method_name": "icrc1_transfer"
-            }
-          }
-        },
-        {
           "id": 6000,
           "name": "DeVeFi Add Vector Pair",
           "description": "Add vector pair canister to DeFi Vectors",
@@ -4378,20 +4378,6 @@
           }
         },
         {
-          "id": 6213,
-          "name": "manage KONG neuron",
-          "description": "Manage NTN neuron owned by Neutrinite",
-          "function_type": {
-            "GenericNervousSystemFunction": {
-              "topic": null,
-              "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
-              "target_canister_id": "oypg6-faaaa-aaaaq-aadza-cai",
-              "validator_method_name": "validate_manage_neuron",
-              "target_method_name": "manage_neuron"
-            }
-          }
-        },
-        {
           "id": 6311,
           "name": "DeVeFi:ICP/ckUSDT:Create Vector",
           "description": "Creates a new vector",
@@ -4506,6 +4492,20 @@
           "description": "Proposals that are custom to what the governed dapp requires.",
           "custom_functions": [
             {
+              "id": 5000,
+              "name": "Transfer SNS Treasury ckBTC",
+              "description": "Transfer ckBTC from the SNS treasury",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "uwkt7-miaaa-aaaal-qdeuq-cai",
+                  "target_canister_id": "mxzaz-hqaaa-aaaar-qaada-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
+            },
+            {
               "id": 7000,
               "name": "Neuron Pylon: ICRC55 Command",
               "description": "Manage vectors in the neuron pylon.",
@@ -4578,6 +4578,20 @@
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
           "custom_functions": [
             {
+              "id": 6213,
+              "name": "manage KONG neuron",
+              "description": "Manage NTN neuron owned by Neutrinite",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "2kusx-raaaa-aaaal-qjaxq-cai",
+                  "target_canister_id": "oypg6-faaaa-aaaaq-aadza-cai",
+                  "validator_method_name": "validate_manage_neuron",
+                  "target_method_name": "manage_neuron"
+                }
+              }
+            },
+            {
               "id": 7001,
               "name": "transfer DKP",
               "description": "transfer DKP from Neutrinite",
@@ -4614,6 +4628,20 @@
                   "topic": "TreasuryAssetManagement",
                   "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
                   "target_canister_id": "buwm7-7yaaa-aaaar-qagva-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
+            },
+            {
+              "id": 88005,
+              "name": "Transfer cICP",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "n6tkf-tqaaa-aaaal-qsneq-cai",
                   "validator_method_name": "validate_icrc1_transfer",
                   "target_method_name": "icrc1_transfer"
                 }
@@ -5082,7 +5110,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 994977356502,
+    "icrc1_total_supply": 994926517471,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8420,7 +8448,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19223764320017713,
+    "icrc1_total_supply": 19223853992817981,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11996,7 +12024,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25617648484571724,
+    "icrc1_total_supply": 25620445324776346,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -13604,7 +13632,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10070013735225709,
+    "icrc1_total_supply": 10070761131960064,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15340,7 +15368,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 104132348311592472,
+    "icrc1_total_supply": 104159393210335951,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -17125,7 +17153,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98542511522659204,
+    "icrc1_total_supply": 98544650965077196,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -18847,7 +18875,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99831672181969223,
+    "icrc1_total_supply": 99831720609632496,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -20225,7 +20253,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100398275910606498,
+    "icrc1_total_supply": 100405517349974705,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -20741,7 +20769,7 @@
             }
           ],
           "topic": "DaoCommunitySettings",
-          "is_critical": false,
+          "is_critical": true,
           "name": "DAO community settings",
           "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
           "custom_functions": []

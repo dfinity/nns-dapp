@@ -1,13 +1,13 @@
 <script lang="ts">
   import ProposalContentCell from "$lib/components/proposal-detail/ProposalContentCell.svelte";
-  import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
+  import VotesResultsConditionStatus from "$lib/components/proposal-detail/VotesResultsConditionStatus.svelte";
   import Countdown from "$lib/components/proposals/Countdown.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
-  import { Html } from "@dfinity/gix-components";
+  import { Html, IconExpandMore } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   const formatVotingPower = (value: number) =>
@@ -20,12 +20,35 @@
       minFraction: 0,
       maxFraction: 2,
     })}`;
+
   const immediateMajorityIcon = `<span class="inline-maturity-icon immediate-majority"></span>`;
   const standardMajorityIcon = `<span class="inline-maturity-icon standard-majority"></span>`;
   const iconifyDescription = (description: string) =>
     description
       .replace(/\$icon_immediate_majority/g, immediateMajorityIcon)
       .replace(/\$icon_standard_majority/g, standardMajorityIcon);
+
+  // https://github.com/dfinity/ic/blob/d91cbbb662d03aee629902c7e4fd7ee5abdd6ba5/rs/nns/governance/src/governance.rs#L1035
+  const getParticipationStatus = () => {
+    const standardMajority = standardMajorityPercent / 100;
+
+    if (yesProportion >= standardMajority) return "success";
+    return canStillVote ? "default" : "failed";
+  };
+
+  // Critical proposals require that the number of "yes" votes is more than twice the number of "no" votes, while normal proposals only need "yes" votes to exceed "no" votes.
+  // https://github.com/dfinity/ic/blob/d91cbbb662d03aee629902c7e4fd7ee5abdd6ba5/rs/nns/governance/src/governance.rs#L1036
+  const getMajorityStatus = () => {
+    const immediateYesMajority = yesProportion > immediateMajorityPercent / 100;
+    const immediateNoMajority = noProportion > immediateMajorityPercent / 100;
+
+    if (immediateYesMajority) return "success";
+    if (immediateNoMajority) return "failed";
+    if (canStillVote) return "default";
+
+    const majority = isCriticalProposalMode ? yes > 2 * no : yes > no;
+    return majority ? "success" : "failed";
+  };
 
   type Props = {
     yes: number;
@@ -49,7 +72,7 @@
   const yesNoSum = $derived(yes + no);
   const castVotesYes = $derived(yesNoSum > 0 ? (yes / yesNoSum) * 100 : 0);
   const castVotesNo = $derived(yesNoSum > 0 ? (no / yesNoSum) * 100 : 0);
-  const showExpirationDate = $derived(
+  const canStillVote = $derived(
     nonNullish(deadlineTimestampSeconds) &&
       deadlineTimestampSeconds > BigInt(nowInSeconds())
   );
@@ -93,6 +116,13 @@
       }
     )
   );
+
+  let toggleParticipationContent = $state(() => {});
+  let toggleMajorityContent = $state(() => {});
+  let toggleAllContent = $derived(() => {
+    toggleParticipationContent();
+    toggleMajorityContent();
+  });
 </script>
 
 <ProposalContentCell testId="votes-results-component">
@@ -186,7 +216,7 @@
       </span>
     </span>
     <div class="remain" data-tid="remain">
-      {#if showExpirationDate}
+      {#if canStillVote}
         <span class="caption description">
           {$i18n.proposal_detail__vote.expiration}
         </span>
@@ -198,39 +228,54 @@
   </div>
 
   <div class="votes-results-legends">
-    <h3 class="description">
-      {isCriticalProposalMode
-        ? $i18n.proposal_detail__vote.super_majority_decision_intro
-        : $i18n.proposal_detail__vote.decision_intro}
-    </h3>
+    <button
+      class="votes-results-legends-header"
+      onclick={toggleAllContent}
+      data-tid="toggle-content-button"
+    >
+      <h3 class="description">
+        {isCriticalProposalMode
+          ? $i18n.proposal_detail__vote.super_majority_decision_intro
+          : $i18n.proposal_detail__vote.decision_intro}
+      </h3>
+      <span class="icon" aria-hidden="true">
+        <IconExpandMore />
+      </span>
+    </button>
     <ol>
       <li>
-        <VotesResultsMajorityDescription testId="immediate-majority-toggle">
-          <h4
-            data-tid="immediate-majority-title"
-            slot="title"
-            class="description"
-          >
-            {immediateMajorityTitle}
-          </h4>
-          <p data-tid="immediate-majority-description" class="description">
-            <Html text={iconifyDescription(immediateMajorityDescription)} />
-          </p>
-        </VotesResultsMajorityDescription>
-      </li>
-      <li>
-        <VotesResultsMajorityDescription testId="standard-majority-toggle">
-          <h4
-            data-tid="standard-majority-title"
-            slot="title"
-            class="description"
-          >
-            {standardMajorityTitle}
-          </h4>
+        <VotesResultsConditionStatus
+          testId="standard-majority-collapsible"
+          bind:toggleContent={toggleParticipationContent}
+          status={getParticipationStatus()}
+        >
+          {#snippet title()}
+            <h4 data-tid="standard-majority-title" class="description">
+              {standardMajorityTitle}
+            </h4>
+          {/snippet}
+
           <p data-tid="standard-majority-description" class="description">
             <Html text={iconifyDescription(standardMajorityDescription)} />
           </p>
-        </VotesResultsMajorityDescription>
+        </VotesResultsConditionStatus>
+      </li>
+      <li>
+        <VotesResultsConditionStatus
+          testId="immediate-majority-collapsible"
+          bind:toggleContent={toggleMajorityContent}
+          status={getMajorityStatus()}
+        >
+          {#snippet title()}
+            <h4 data-tid="immediate-majority-title" class="description">
+              {immediateMajorityTitle}
+            </h4>
+          {/snippet}
+
+          <p data-tid="immediate-majority-description" class="description">
+            <Html text={iconifyDescription(immediateMajorityDescription)} />
+          </p>
+        </VotesResultsConditionStatus>
       </li>
     </ol>
   </div>
@@ -392,6 +437,21 @@
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-0_5x);
+
+    .votes-results-legends-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      h3 {
+        color: var(--content-color);
+      }
+
+      .icon {
+        padding: 0;
+        color: var(--primary);
+      }
+    }
 
     ol {
       margin: 0;
