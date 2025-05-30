@@ -1,9 +1,10 @@
 <script lang="ts">
   import JsonPreview from "$lib/components/common/JsonPreview.svelte";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
+  import Copy from "$lib/components/ui/Copy.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { expandObject, stringifyJson } from "$lib/utils/utils";
-  import { Copy, SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
 
   // `undefined` means that the payload is not loaded yet
