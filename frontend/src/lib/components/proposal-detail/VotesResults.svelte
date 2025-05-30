@@ -246,7 +246,7 @@
       <li>
         <VotesResultsConditionStatus
           testId="standard-majority-collapsible"
-          bind:toggleContent={toggleMajorityContent}
+          bind:toggleContent={toggleParticipationContent}
           status={getParticipationStatus()}
         >
           {#snippet title()}
@@ -263,7 +263,7 @@
       <li>
         <VotesResultsConditionStatus
           testId="immediate-majority-collapsible"
-          bind:toggleContent={toggleParticipationContent}
+          bind:toggleContent={toggleMajorityContent}
           status={getMajorityStatus()}
         >
           {#snippet title()}
