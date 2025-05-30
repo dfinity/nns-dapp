@@ -14,6 +14,7 @@ import {
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
+  MINIMUM_DISBURSEMENT,
   MIN_NEURON_STAKE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
   TOPICS_TO_FOLLOW_NNS,
@@ -781,6 +782,24 @@ export const isEnoughMaturityToSpawn = ({
   return (
     maturitySelected >=
     Number(MIN_NEURON_STAKE) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
+  );
+};
+
+export const isEnoughMaturityToDisburse = ({
+  neuron: { fullNeuron },
+  percentage,
+}: {
+  neuron: NeuronInfo;
+  percentage: number;
+}): boolean => {
+  if (isNullish(fullNeuron)) return false;
+
+  const maturitySelected = Math.floor(
+    (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
+  );
+  return (
+    maturitySelected >=
+    Number(MINIMUM_DISBURSEMENT) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
   );
 };
 
