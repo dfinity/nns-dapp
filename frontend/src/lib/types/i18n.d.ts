@@ -42,6 +42,7 @@ interface I18nCore {
   not_applicable: string;
   view_more: string;
   copy: string;
+  copied: string;
 }
 
 interface I18nError {

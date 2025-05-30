@@ -1,26 +1,41 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconCopy } from "@dfinity/gix-components";
+  import { IconCheck, IconCopy } from "@dfinity/gix-components";
+
+  const TIMEOUT_DURATION = 2000;
 
   type Props = {
     value: string;
   };
   const { value }: Props = $props();
+  let copied = $state(false);
 
   const copyToClipboard = async (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
     await navigator?.clipboard.writeText(value);
+    copied = true;
+
+    setTimeout(() => {
+      copied = false;
+    }, TIMEOUT_DURATION);
   };
 </script>
 
 <button
   data-tid="copy-component"
   onclick={copyToClipboard}
-  aria-label={`${$i18n.core.copy}: ${value}`}
-  class="icon-only"
+  aria-label={`${copied ? $i18n.core.copied : $i18n.core.copy}: ${value}`}
+  class:copied
+  disabled={copied}
+  title={copied ? $i18n.core.copied : $i18n.core.copy}
 >
-  <IconCopy />
+  {#if copied}
+    <IconCheck size="20" />
+  {:else}
+    <IconCopy size="20" />
+  {/if}
 </button>
 
 <style lang="scss">
@@ -29,8 +44,11 @@
     width: var(--padding-4x);
     min-width: var(--padding-4x);
 
-    &.icon-only {
-      color: var(--primary);
+    color: var(--primary);
+    transition: color 0.2s ease;
+
+    &.copied {
+      color: var(--positive-emphasis);
     }
   }
 </style>
