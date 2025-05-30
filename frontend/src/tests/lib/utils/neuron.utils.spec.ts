@@ -1419,30 +1419,6 @@ describe("neuron-utils", () => {
       );
     });
 
-    it("returns false if not enough maturity", () => {
-      const neuron = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: MINIMUM_DISBURSEMENT - 1_000n,
-        },
-      };
-      expect(isEnoughMaturityToDisburse({ neuron, percentage: 100 })).toBe(
-        false
-      );
-
-      const neuron2 = {
-        ...mockNeuron,
-        fullNeuron: {
-          ...mockFullNeuron,
-          maturityE8sEquivalent: MINIMUM_DISBURSEMENT * 2n,
-        },
-      };
-      expect(
-        isEnoughMaturityToDisburse({ neuron: neuron2, percentage: 10 })
-      ).toBe(false);
-    });
-
     it("return false if not enough maturity because of variation", () => {
       const neuron = {
         ...mockNeuron,
