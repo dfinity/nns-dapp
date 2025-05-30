@@ -41,6 +41,7 @@ interface I18nCore {
   add: string;
   not_applicable: string;
   view_more: string;
+  copy: string;
 }
 
 interface I18nError {
@@ -710,16 +711,16 @@ interface I18nProposal_detail__vote {
   vote_status_registering: string;
   vote_status_updating: string;
   expiration: string;
-  immediate_majority: string;
-  immediate_majority_description: string;
-  immediate_super_majority: string;
-  immediate_super_majority_description: string;
+  decision_intro: string;
   standard_majority: string;
   standard_majority_description: string;
+  immediate_majority: string;
+  immediate_majority_description: string;
+  super_majority_decision_intro: string;
   standard_super_majority: string;
   standard_super_majority_description: string;
-  decision_intro: string;
-  super_majority_decision_intro: string;
+  immediate_super_majority: string;
+  immediate_super_majority_description: string;
   cast_votes: string;
   cast_votes_needs: string;
   no_nns_neurons: string;
