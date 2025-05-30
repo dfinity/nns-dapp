@@ -785,6 +785,7 @@ export const isEnoughMaturityToSpawn = ({
   );
 };
 
+/// Checks if the neuron has enough maturity to disburse maturity. Expected percentage: 0–100.
 export const isEnoughMaturityToDisburse = ({
   neuron: { fullNeuron },
   percentage,
