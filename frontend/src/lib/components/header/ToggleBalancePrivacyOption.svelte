@@ -1,5 +1,6 @@
 <script lang="ts">
   import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
+  import { analytics } from "$lib/services/analytics.services";
   import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
   import { i18n } from "$lib/stores/i18n";
   import { IconEyeClosed, IconEyeOpen, Toggle } from "@dfinity/gix-components";
@@ -14,7 +15,12 @@
 
   const toggle = () => {
     checked = !checked;
-    balancePrivacyOptionStore.set(checked ? "hide" : "show");
+
+    const newState = checked ? "hide" : "show";
+    balancePrivacyOptionStore.set(newState);
+    analytics.event("privacy-mode-toggle", {
+      value: newState,
+    });
   };
 </script>
 
