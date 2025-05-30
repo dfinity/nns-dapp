@@ -802,6 +802,7 @@ interface I18nNeuron_detail {
   stake: string;
   spawn_neuron: string;
   spawn: string;
+  disburse_maturity_button: string;
   stake_maturity_disabled_tooltip: string;
   disburse_maturity_disabled_tooltip_zero: string;
   disburse_maturity_disabled_tooltip_non_zero: string;
@@ -826,6 +827,7 @@ interface I18nNeuron_detail {
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
   spawn_neuron_disabled_tooltip: string;
+  disburse_maturity_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;
   no_notkeys: string;

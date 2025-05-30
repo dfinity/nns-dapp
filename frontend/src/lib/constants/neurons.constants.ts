@@ -10,6 +10,9 @@ export const MAX_NEURONS_MERGED = 2;
 export const MIN_NEURON_STAKE = 100_000_000n;
 export const MAX_CONCURRENCY = 10;
 export const MATURITY_MODULATION_VARIANCE_PERCENTAGE = 0.95;
+// The minimum amount of ICP to disburse in a single transaction.
+// https://github.com/dfinity/ic/blob/b9c23dd08c76349a3dd1b422e39988bea8363d33/rs/nns/governance/src/governance/disburse_maturity.rs#L29
+export const MINIMUM_DISBURSEMENT = 100_000_000n;
 // Neuron ids are random u64. Max digits of a u64 is 20.
 export const MAX_NEURON_ID_DIGITS = 20;
 

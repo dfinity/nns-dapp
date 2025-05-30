@@ -13,6 +13,8 @@ export type NnsNeuronModalType =
   | "stake-maturity"
   | "merge-maturity"
   | "spawn"
+  | "disburse-maturity"
+  | "view-active-disbursements"
   | "join-community-fund"
   | "dev-add-maturity"
   | "voting-history"

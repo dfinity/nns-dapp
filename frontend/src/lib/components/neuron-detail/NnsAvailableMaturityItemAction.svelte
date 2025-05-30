@@ -9,9 +9,12 @@
   import {
     formattedMaturity,
     isNeuronControllable,
+    isNeuronControlledByHardwareWallet,
   } from "$lib/utils/neuron.utils";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
+  import NnsDisburseMaturityButton from "$lib/components/neuron-detail/actions/NnsDisburseMaturityButton.svelte";
+  import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
 
   type Props = {
     neuron: NeuronInfo;
@@ -24,6 +27,16 @@
       identity: $authStore.identity,
       accounts: $icpAccountsStore,
     })
+  );
+  // Can be ignored after the Ledger support is fully implemented.
+  const isControlledByHW = $derived(
+    isNeuronControlledByHardwareWallet({
+      neuron,
+      accounts: $icpAccountsStore,
+    })
+  );
+  const isDisburseMaturityAvailable = $derived(
+    isControllable && !isControlledByHW && $ENABLE_DISBURSE_MATURITY
   );
 </script>
 
@@ -41,6 +54,10 @@
   >
   {#if isControllable}
     <NnsStakeMaturityButton {neuron} />
-    <SpawnNeuronButton {neuron} />
+    {#if isDisburseMaturityAvailable}
+      <NnsDisburseMaturityButton {neuron} />
+    {:else}
+      <SpawnNeuronButton {neuron} />
+    {/if}
   {/if}
 </CommonItemAction>
