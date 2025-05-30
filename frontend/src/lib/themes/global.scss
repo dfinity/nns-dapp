@@ -6,3 +6,7 @@ div.split-pane + div.split-pane {
     display: none;
   }
 }
+
+[data-tid="bottom-sheet"] > span {
+  display: contents !important;
+}
