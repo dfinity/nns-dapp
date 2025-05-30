@@ -1419,7 +1419,7 @@ describe("neuron-utils", () => {
       );
     });
 
-    it("return false if not enough maturity because of variation", () => {
+    it("return false if not enough maturity", () => {
       const neuron = {
         ...mockNeuron,
         fullNeuron: {
@@ -1464,6 +1464,17 @@ describe("neuron-utils", () => {
       };
       expect(
         isEnoughMaturityToDisburse({ neuron: neuron2, percentage: 50 })
+      ).toBe(true);
+
+      const neuron3 = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          maturityE8sEquivalent: JUST_ENOUGH_MATURITY * 100n,
+        },
+      };
+      expect(
+        isEnoughMaturityToDisburse({ neuron: neuron3, percentage: 100 })
       ).toBe(true);
     });
   });
