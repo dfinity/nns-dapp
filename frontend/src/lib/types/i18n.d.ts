@@ -826,6 +826,7 @@ interface I18nNeuron_detail {
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
   spawn_neuron_disabled_tooltip: string;
+  disburse_maturity_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;
   no_notkeys: string;

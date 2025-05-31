@@ -793,6 +793,7 @@
     "split_neuron_success": "Your neuron has successfully been split.",
     "split_neuron_disabled_tooltip": "Neuron needs a minimum stake of $amount $token to be splittable.",
     "spawn_neuron_disabled_tooltip": "You need at least the equivalent of $amount ICP ($min / $variability) to spawn a new neuron from maturity.",
+    "disburse_maturity_disabled_tooltip": "You need at least the equivalent of $amount ICP ($min / $variability) to disburse maturity.",
     "hotkeys_title": "Hotkeys",
     "add_hotkey": "Add Hotkey",
     "no_notkeys": "No hotkeys",
