@@ -10,7 +10,7 @@ import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsDisburseMaturityButton", () => {
-  const ENOUGH_MATURITY = BigInt(
+  const minMaturityForDisbursement = BigInt(
     Math.round(
       Number(MINIMUM_DISBURSEMENT) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
     )
@@ -29,7 +29,7 @@ describe("NnsDisburseMaturityButton", () => {
       ...mockNeuron,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
-        maturityE8sEquivalent: ENOUGH_MATURITY,
+        maturityE8sEquivalent: minMaturityForDisbursement,
       },
     });
 
@@ -42,7 +42,7 @@ describe("NnsDisburseMaturityButton", () => {
       ...mockNeuron,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
-        maturityE8sEquivalent: ENOUGH_MATURITY - 1n,
+        maturityE8sEquivalent: minMaturityForDisbursement - 1n,
       },
     });
 
