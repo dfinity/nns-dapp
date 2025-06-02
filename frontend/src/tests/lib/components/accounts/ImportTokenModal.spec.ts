@@ -9,7 +9,6 @@ import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.cons
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { page } from "$mocks/$app/stores";
@@ -484,7 +483,6 @@ describe("ImportTokenModal", () => {
           importTokenIndexId: indexCanisterId.toText(),
         },
       });
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
     });
 
     it("imports from URL", async () => {
@@ -589,29 +587,6 @@ describe("ImportTokenModal", () => {
         importTokenLedgerId: undefined,
         importTokenIndexId: undefined,
       });
-    });
-
-    it("does not auto validate when feature flag disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", false);
-      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
-        imported_tokens: [],
-      });
-      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
-
-      importedTokensStore.set({
-        importedTokens: [],
-        certified: true,
-      });
-
-      const po = renderComponent();
-      const formPo = po.getImportTokenFormPo();
-      const reviewPo = po.getImportTokenReviewPo();
-
-      await runResolvedPromises();
-
-      // Should stay as form step
-      expect(await formPo.isPresent()).toEqual(true);
-      expect(await reviewPo.isPresent()).toEqual(false);
     });
 
     it("should navigate to the imported token page when importing a duplicate", async () => {
