@@ -5,18 +5,27 @@
   import { QRCode } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
-  export let address: string | undefined;
-  export let qrCodeLabel: string;
-  export let logo: string;
-  export let logoArialLabel: string;
-  export let logoSize: "huge" | "big" = "huge";
-  // Render the QR-code when the space is available / rendered to avoid UI glitch.
-  export let renderQRCode = false;
+  type Props = {
+    address?: string;
+    qrCodeLabel: string;
+    logo: string;
+    logoArialLabel: string;
+    logoSize?: "huge" | "big";
+    renderQRCode?: boolean;
+    qrCodeRendered?: boolean;
+  };
 
-  export let qrCodeRendered: boolean = QR_CODE_RENDERED_DEFAULT_STATE;
+  const {
+    address,
+    qrCodeLabel,
+    logo,
+    logoArialLabel,
+    logoSize = "huge",
+    renderQRCode = false,
+    qrCodeRendered = $bindable(QR_CODE_RENDERED_DEFAULT_STATE),
+  }: Props = $props();
 
-  let addressSelected = false;
-  $: addressSelected = nonNullish(address);
+  const addressSelected = $derived(nonNullish(address));
 </script>
 
 <div class="content">

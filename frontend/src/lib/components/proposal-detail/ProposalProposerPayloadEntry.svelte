@@ -7,16 +7,21 @@
   import { SkeletonText } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
 
-  // `undefined` means that the payload is not loaded yet
-  // `null` means that the payload was not found
-  // `object` means that the payload is an object
-  export let payload: object | undefined | null;
+  type Props = {
+    // `undefined` means that the payload is not loaded yet
+    // `null` means that the payload was not found
+    // `object` means that the payload is an object
+    payload?: object | undefined | null;
+  };
 
-  let copyContent = "";
-  $: copyContent = stringifyJson(payload, { indentation: 2 }) ?? "";
+  const { payload = $bindable() }: Props = $props();
 
-  let expandedPayload: unknown;
-  $: expandedPayload = isNullish(payload) ? payload : expandObject(payload);
+  const copyContent = $derived(
+    stringifyJson(payload, { indentation: 2 }) ?? ""
+  );
+  const expandedPayload = $derived(
+    isNullish(payload) ? undefined : expandObject(payload)
+  );
 </script>
 
 <div class="content-cell-island">
