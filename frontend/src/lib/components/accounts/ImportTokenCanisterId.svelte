@@ -1,6 +1,6 @@
 <script lang="ts">
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
-  import Copy from "$lib/components/ui/Copy.svelte";
+  import { Copy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
 

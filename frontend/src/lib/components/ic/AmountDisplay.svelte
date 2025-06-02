@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Copy from "$lib/components/ui/Copy.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import {
     FailedTokenAmount,
     formatTokenV2,
     UnavailableTokenAmount,
   } from "$lib/utils/token.utils";
+  import { Copy } from "@dfinity/gix-components";
   import { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {

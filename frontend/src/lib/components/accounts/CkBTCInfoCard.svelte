@@ -1,7 +1,6 @@
 <script lang="ts">
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import CkBTCUpdateBalanceButton from "$lib/components/accounts/CkBTCUpdateBalanceButton.svelte";
-  import Copy from "$lib/components/ui/Copy.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import {
     BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
@@ -19,6 +18,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
+    Copy,
     Html,
     IconQRCode,
     QRCode,

@@ -97,7 +97,7 @@
     box-sizing: border-box;
 
     position: fixed;
-    z-index: calc(var(--bottom-sheet-z-index) + 1);
+    z-index: 1000;
     padding: var(--padding-2x) var(--padding-3x);
 
     border-radius: var(--border-radius);

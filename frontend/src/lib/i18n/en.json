@@ -37,9 +37,7 @@
     "or": "or",
     "add": "Add",
     "not_applicable": "N/A",
-    "view_more": "View more",
-    "copy": "Copy to clipboard",
-    "copied": "Copied"
+    "view_more": "View more"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import Copy from "$lib/components/ui/Copy.svelte";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
-  import { Tooltip } from "@dfinity/gix-components";
+  import { Copy, Tooltip } from "@dfinity/gix-components";
   import { createEventDispatcher } from "svelte";
 
   export let tagName: "h3" | "p" | "span" | "h5" = "h3";
