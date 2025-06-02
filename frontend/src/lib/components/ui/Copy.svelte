@@ -1,8 +1,10 @@
+<script module>
+  const FEEDBACK_DURATION = 2000;
+</script>
+
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { IconCheck, IconCopy } from "@dfinity/gix-components";
-
-  const FEEDBACK_DURATION = 2000;
 
   type Props = {
     value: string;
