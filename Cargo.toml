@@ -23,7 +23,7 @@ ic-base-types = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-rel
 ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 ic-nervous-system-common = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
-ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
+ic-nervous-system-root = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.3" }
 ic-nns-common = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
