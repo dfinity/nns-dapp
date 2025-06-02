@@ -1,8 +1,5 @@
 import NnsDisburseMaturityButton from "$lib/components/neuron-detail/actions/NnsDisburseMaturityButton.svelte";
-import {
-  MATURITY_MODULATION_VARIANCE_PERCENTAGE,
-  MINIMUM_DISBURSEMENT,
-} from "$lib/constants/neurons.constants";
+import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { DisburseMaturityButtonPo } from "$tests/page-objects/DisburseMaturityButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -10,11 +7,7 @@ import type { NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsDisburseMaturityButton", () => {
-  const minMaturityForDisbursement = BigInt(
-    Math.round(
-      Number(MINIMUM_DISBURSEMENT) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
-    )
-  );
+  const minMaturityForDisbursement = MIN_DISBURSEMENT_WITH_VARIANCE;
   const renderComponent = (neuron: NeuronInfo) => {
     const { container } = render(NnsDisburseMaturityButton, {
       props: {

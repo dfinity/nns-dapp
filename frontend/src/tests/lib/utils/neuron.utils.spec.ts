@@ -9,10 +9,9 @@ import {
 } from "$lib/constants/constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import {
-  MATURITY_MODULATION_VARIANCE_PERCENTAGE,
   MAX_NEURONS_MERGED,
+  MIN_DISBURSEMENT_WITH_VARIANCE,
   MIN_NEURON_STAKE,
-  MINIMUM_DISBURSEMENT,
 } from "$lib/constants/neurons.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import { neuronsStore } from "$lib/stores/neurons.store";
@@ -1402,12 +1401,7 @@ describe("neuron-utils", () => {
   });
 
   describe("isEnoughMaturityToDisburse", () => {
-    const JUST_ENOUGH_MATURITY = BigInt(
-      Math.round(
-        Number(MINIMUM_DISBURSEMENT) /
-          Number(MATURITY_MODULATION_VARIANCE_PERCENTAGE)
-      )
-    );
+    const JUST_ENOUGH_MATURITY = MIN_DISBURSEMENT_WITH_VARIANCE;
 
     it("return false if fullNeuron is not available", () => {
       const neuron = {
