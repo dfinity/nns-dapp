@@ -14,7 +14,7 @@ import {
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
-  MINIMUM_DISBURSEMENT,
+  MIN_DISBURSEMENT_WITH_VARIANCE,
   MIN_NEURON_STAKE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
   TOPICS_TO_FOLLOW_NNS,
@@ -808,10 +808,7 @@ export const isEnoughMaturityToDisburse = ({
   const maturitySelected = Math.floor(
     (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
   );
-  return (
-    maturitySelected >=
-    Number(MINIMUM_DISBURSEMENT) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
-  );
+  return maturitySelected >= MIN_DISBURSEMENT_WITH_VARIANCE;
 };
 
 export const isSpawning = (neuron: NeuronInfo): boolean =>

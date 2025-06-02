@@ -13,6 +13,20 @@ export const MATURITY_MODULATION_VARIANCE_PERCENTAGE = 0.95;
 // The minimum amount of ICP to disburse in a single transaction.
 // https://github.com/dfinity/ic/blob/b9c23dd08c76349a3dd1b422e39988bea8363d33/rs/nns/governance/src/governance/disburse_maturity.rs#L29
 export const MINIMUM_DISBURSEMENT = 100_000_000n;
+// The minimum maturity to disburse with the maturity modulation variance applied.
+export const MIN_DISBURSEMENT_WITH_VARIANCE = BigInt(
+  Math.round(
+    Number(MINIMUM_DISBURSEMENT) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
+  )
+);
+// The minimum maturity ICP equivalent to disburse with the maturity modulation variance applied.
+export const MIN_DISBURSEMENT_WITH_VARIANCE_ICP = BigInt(
+  Math.round(
+    Number(MINIMUM_DISBURSEMENT) /
+      (ULPS_PER_MATURITY * MATURITY_MODULATION_VARIANCE_PERCENTAGE)
+  )
+);
+
 // Neuron ids are random u64. Max digits of a u64 is 20.
 export const MAX_NEURON_ID_DIGITS = 20;
 

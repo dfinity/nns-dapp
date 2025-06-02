@@ -2,6 +2,7 @@
   import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
   import {
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,
+    MIN_DISBURSEMENT_ICP_EQUIVALENT,
     MINIMUM_DISBURSEMENT,
     ULPS_PER_MATURITY,
   } from "$lib/constants/neurons.constants";
@@ -26,14 +27,10 @@
       })
   );
   const getDisabledText = () => {
-    const minIcpEquivalent =
-      Number(MINIMUM_DISBURSEMENT) /
-      ULPS_PER_MATURITY /
-      MATURITY_MODULATION_VARIANCE_PERCENTAGE;
     return replacePlaceholders(
       $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
       {
-        $amount: formatNumber(minIcpEquivalent, {
+        $amount: formatNumber(Number(MIN_DISBURSEMENT_ICP_EQUIVALENT), {
           minFraction: 4,
           maxFraction: 4,
         }),
