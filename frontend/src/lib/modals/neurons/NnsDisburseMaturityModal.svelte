@@ -5,16 +5,15 @@
   import { disburseMaturity as disburseMaturityService } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken } from "@dfinity/utils";
 
   type Props = {
     neuron: NeuronInfo;
-    neuronId: NeuronId;
     close: () => void;
   };
 
-  const { neuron, neuronId, close }: Props = $props();
+  const { neuron, close }: Props = $props();
   const disburseMaturity = async ({
     detail: { percentageToDisburse },
   }: CustomEvent<{
@@ -25,7 +24,7 @@
 
     // TODO(disburse-maturity): switch to account identifier when API supports it
     const { success } = await disburseMaturityService({
-      neuronId,
+      neuronId: neuron.neuronId,
       percentageToDisburse,
     });
 

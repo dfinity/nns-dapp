@@ -82,7 +82,7 @@
     {/if}
 
     {#if type === "disburse-maturity"}
-      <NnsDisburseMaturityModal {close} {neuron} neuronId={neuron.neuronId} />
+      <NnsDisburseMaturityModal {close} {neuron} />
     {/if}
 
     {#if type === "auto-stake-maturity"}
