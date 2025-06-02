@@ -66,6 +66,8 @@ describe("NnsDisburseMaturityModal", () => {
 
   it("should disable next button when 0 selected", async () => {
     const po = await renderNnsDisburseMaturityModal({ neuron: testNeuron() });
+    await po.setPercentage(100);
+    expect(await po.isNextButtonDisabled()).toBe(false);
     await po.setPercentage(0);
     expect(await po.isNextButtonDisabled()).toBe(true);
   });
