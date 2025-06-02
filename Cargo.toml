@@ -18,7 +18,7 @@ ic-management-canister-types = "0.1.0"
 cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
-dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
+dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.3" }
 ic-base-types = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 ic-crypto-sha2 = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 ic-ledger-core = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
