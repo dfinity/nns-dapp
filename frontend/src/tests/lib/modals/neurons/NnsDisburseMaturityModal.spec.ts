@@ -12,10 +12,10 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { runResolvedPromises } from "../../../utils/timers.test-utils";
 
 vi.mock("$lib/api/governance.api");
 
