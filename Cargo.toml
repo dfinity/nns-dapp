@@ -29,7 +29,7 @@ ic-nns-constants = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-
 ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
-registry-canister = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
+registry-canister = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.3" }
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 
