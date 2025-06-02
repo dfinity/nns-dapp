@@ -118,6 +118,22 @@ describe("NnsAvailableMaturityItemAction", () => {
       expect(await po.hasDisburseMaturityButton()).toBe(true);
     });
 
+    // TODO: Remove this once the ENABLE_DISBURSE_MATURITY feature flag is no longer needed.
+    it("should not render Disburse button w/o the feature flag", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_DISBURSE_MATURITY", false);
+      const po = renderComponent({
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+        },
+      });
+
+      expect(await po.hasStakeButton()).toBe(true);
+      expect(await po.hasSpawnButton()).toBe(true);
+      expect(await po.hasDisburseMaturityButton()).toBe(false);
+    });
+
     it("should render Spawn button if controlled by attached Ledger device", async () => {
       setAccountsForTesting({
         main: mockMainAccount,
