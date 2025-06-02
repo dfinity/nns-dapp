@@ -15,7 +15,7 @@ ic-cdk-macros = "0.17.0"
 ic-cdk-timers = "0.11.0"
 ic-management-canister-types = "0.1.0"
 
-cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
+cycles-minting-canister = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.3" }
 dfn_candid = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 dfn_core = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
 dfn_protobuf = { git = "https://github.com/dfinity/ic", rev = "rosetta-icrc-release-1.2.2" }
