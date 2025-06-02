@@ -1,6 +1,7 @@
 <script lang="ts">
   import Copy from "$lib/components/ui/Copy.svelte";
   import { Value } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   type Props = {
     identifier: string;
@@ -14,7 +15,7 @@
     showCopy = false,
     size = "small",
   }: Props = $props();
-  const labelText = $derived(label === undefined ? "" : `${label} `);
+  const labelText = $derived(nonNullish(label) ? `${label}` : "");
 </script>
 
 <p>

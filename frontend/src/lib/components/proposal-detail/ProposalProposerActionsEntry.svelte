@@ -10,9 +10,7 @@
   };
   const { actionKey, actionData }: Props = $props();
 
-  const copyContent = $derived(
-    stringifyJson(actionData, { indentation: 2 }) ?? ""
-  );
+  const copyContent = $derived(stringifyJson(actionData, { indentation: 2 }));
 </script>
 
 <div

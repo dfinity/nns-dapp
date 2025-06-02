@@ -13,14 +13,11 @@
     // `object` means that the payload is an object
     payload?: object | undefined | null;
   };
+  const { payload }: Props = $props();
 
-  const { payload = $bindable() }: Props = $props();
-
-  const copyContent = $derived(
-    stringifyJson(payload, { indentation: 2 }) ?? ""
-  );
+  const copyContent = $derived(stringifyJson(payload, { indentation: 2 }));
   const expandedPayload = $derived(
-    isNullish(payload) ? undefined : expandObject(payload)
+    isNullish(payload) ? payload : expandObject(payload)
   );
 </script>
 

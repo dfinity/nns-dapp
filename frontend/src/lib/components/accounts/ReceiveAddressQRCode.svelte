@@ -22,7 +22,7 @@
     logoArialLabel,
     logoSize = "huge",
     renderQRCode = false,
-    qrCodeRendered = $bindable(QR_CODE_RENDERED_DEFAULT_STATE),
+    qrCodeRendered = QR_CODE_RENDERED_DEFAULT_STATE,
   }: Props = $props();
 
   const addressSelected = $derived(nonNullish(address));
