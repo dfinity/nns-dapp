@@ -22,7 +22,7 @@
     logoArialLabel,
     logoSize = "huge",
     renderQRCode = false,
-    qrCodeRendered = QR_CODE_RENDERED_DEFAULT_STATE,
+    qrCodeRendered = $bindable(QR_CODE_RENDERED_DEFAULT_STATE),
   }: Props = $props();
 
   const addressSelected = $derived(nonNullish(address));
@@ -51,9 +51,12 @@
     {/if}
   </article>
 
+  <!-- TODO: Migrate consumers to Svelte5 to replace slots with snippets. -->
   {#if addressSelected && qrCodeRendered}
     <div data-tid="qr-address-label" class="address-block">
       <p class="label no-margin" data-tid="token-address-label">
+        <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+        <!-- svelte-ignore slot_element_deprecated -->
         <slot name="address-label" />
       </p>
       <div class="address">
@@ -61,6 +64,8 @@
         <Copy value={address ?? ""} />
       </div>
 
+      <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+      <!-- svelte-ignore slot_element_deprecated -->
       <slot name="additional-information" />
     </div>
   {/if}
