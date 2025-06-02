@@ -15,7 +15,7 @@
     qrCodeRendered?: boolean;
   };
 
-  const {
+  let {
     address,
     qrCodeLabel,
     logo,
