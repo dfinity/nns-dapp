@@ -20,12 +20,10 @@ export const MIN_DISBURSEMENT_WITH_VARIANCE = BigInt(
   )
 );
 // The minimum maturity ICP equivalent to disburse with the maturity modulation variance applied.
-export const MIN_DISBURSEMENT_WITH_VARIANCE_ICP = BigInt(
-  Math.round(
-    Number(MINIMUM_DISBURSEMENT) /
-      (ULPS_PER_MATURITY * MATURITY_MODULATION_VARIANCE_PERCENTAGE)
-  )
-);
+export const MIN_DISBURSEMENT_WITH_VARIANCE_ICP =
+  Number(MINIMUM_DISBURSEMENT) /
+  ULPS_PER_MATURITY /
+  MATURITY_MODULATION_VARIANCE_PERCENTAGE;
 
 // Neuron ids are random u64. Max digits of a u64 is 20.
 export const MAX_NEURON_ID_DIGITS = 20;

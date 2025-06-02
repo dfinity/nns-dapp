@@ -2,7 +2,7 @@
   import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
   import {
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,
-    MIN_DISBURSEMENT_ICP_EQUIVALENT,
+    MIN_DISBURSEMENT_WITH_VARIANCE_ICP,
     MINIMUM_DISBURSEMENT,
     ULPS_PER_MATURITY,
   } from "$lib/constants/neurons.constants";
@@ -30,7 +30,7 @@
     return replacePlaceholders(
       $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
       {
-        $amount: formatNumber(Number(MIN_DISBURSEMENT_ICP_EQUIVALENT), {
+        $amount: formatNumber(MIN_DISBURSEMENT_WITH_VARIANCE_ICP, {
           minFraction: 4,
           maxFraction: 4,
         }),
