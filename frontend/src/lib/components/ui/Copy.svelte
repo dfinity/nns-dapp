@@ -2,7 +2,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconCheck, IconCopy } from "@dfinity/gix-components";
 
-  const TIMEOUT_DURATION = 2000;
+  const FEEDBACK_DURATION = 2000;
 
   type Props = {
     value: string;
@@ -19,7 +19,7 @@
 
     setTimeout(() => {
       copied = false;
-    }, TIMEOUT_DURATION);
+    }, FEEDBACK_DURATION);
   };
 </script>
 
@@ -45,7 +45,7 @@
     min-width: var(--padding-4x);
 
     color: var(--primary);
-    transition: color 0.2s ease;
+    transition: color var(--animation-time-normal) ease;
 
     &.copied {
       color: var(--positive-emphasis);
