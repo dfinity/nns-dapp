@@ -1,7 +1,6 @@
 <script lang="ts">
   import Copy from "$lib/components/ui/Copy.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/mockable.constants";
   import { QRCode } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
@@ -12,7 +11,7 @@
     logoArialLabel: string;
     logoSize?: "huge" | "big";
     renderQRCode?: boolean;
-    qrCodeRendered?: boolean;
+    qrCodeRendered: boolean;
   };
 
   let {
@@ -22,7 +21,7 @@
     logoArialLabel,
     logoSize = "huge",
     renderQRCode = false,
-    qrCodeRendered = $bindable(QR_CODE_RENDERED_DEFAULT_STATE),
+    qrCodeRendered = $bindable(),
   }: Props = $props();
 
   const addressSelected = $derived(nonNullish(address));
