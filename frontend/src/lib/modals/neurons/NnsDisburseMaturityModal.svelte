@@ -1,9 +1,6 @@
 <script lang="ts">
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-  import {
-    MATURITY_MODULATION_VARIANCE_PERCENTAGE,
-    MINIMUM_DISBURSEMENT,
-  } from "$lib/constants/neurons.constants";
+  import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
   import { disburseMaturity as disburseMaturityService } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -18,11 +15,6 @@
   };
 
   const { neuron, neuronId, close }: Props = $props();
-  const minimumAmountE8s = BigInt(
-    Math.round(
-      Number(MINIMUM_DISBURSEMENT) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
-    )
-  );
   const disburseMaturity = async ({
     detail: { percentageToDisburse },
   }: CustomEvent<{
@@ -54,7 +46,7 @@
 
 <DisburseMaturityModal
   {availableMaturityE8s}
-  {minimumAmountE8s}
+  minimumAmountE8s={MIN_DISBURSEMENT_WITH_VARIANCE}
   on:nnsDisburseMaturity={disburseMaturity}
   rootCanisterId={OWN_CANISTER_ID}
   token={ICPToken}

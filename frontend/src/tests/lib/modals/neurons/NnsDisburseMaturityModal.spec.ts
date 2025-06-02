@@ -1,8 +1,5 @@
 import * as api from "$lib/api/governance.api";
-import {
-  MATURITY_MODULATION_VARIANCE_PERCENTAGE,
-  MINIMUM_DISBURSEMENT,
-} from "$lib/constants/neurons.constants";
+import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants";
 import NnsDisburseMaturityModal from "$lib/modals/neurons/NnsDisburseMaturityModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -20,11 +17,7 @@ import { get } from "svelte/store";
 vi.mock("$lib/api/governance.api");
 
 describe("NnsDisburseMaturityModal", () => {
-  const minMaturityForDisbursement = BigInt(
-    Math.round(
-      Number(MINIMUM_DISBURSEMENT) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
-    )
-  );
+  const minMaturityForDisbursement = MIN_DISBURSEMENT_WITH_VARIANCE;
   const enoughMaturityToDisburse1Percent = minMaturityForDisbursement * 100n;
   const testNeuron = (
     maturityE8sEquivalent: bigint = enoughMaturityToDisburse1Percent
