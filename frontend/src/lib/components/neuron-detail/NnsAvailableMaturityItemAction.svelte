@@ -1,10 +1,12 @@
 <script lang="ts">
+  import NnsDisburseMaturityButton from "$lib/components/neuron-detail/actions/NnsDisburseMaturityButton.svelte";
   import NnsStakeMaturityButton from "$lib/components/neuron-detail/actions/NnsStakeMaturityButton.svelte";
   import SpawnNeuronButton from "$lib/components/neuron-detail/actions/SpawnNeuronButton.svelte";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     formattedMaturity,
@@ -35,9 +37,6 @@
       accounts: $icpAccountsStore,
     })
   );
-  const isDisburseMaturityAvailable = $derived(
-    isControllable && !isControlledByHW && $ENABLE_DISBURSE_MATURITY
-  );
 </script>
 
 <CommonItemAction testId="nns-available-maturity-item-action-component">
@@ -54,7 +53,7 @@
   >
   {#if isControllable}
     <NnsStakeMaturityButton {neuron} />
-    {#if isDisburseMaturityAvailable}
+    {#if !isControlledByHW && $ENABLE_DISBURSE_MATURITY}
       <NnsDisburseMaturityButton {neuron} />
     {:else}
       <SpawnNeuronButton {neuron} />

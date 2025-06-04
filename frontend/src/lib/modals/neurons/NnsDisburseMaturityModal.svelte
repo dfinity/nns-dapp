@@ -1,69 +1,41 @@
 <script lang="ts">
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
   import { disburseMaturity as disburseMaturityService } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken } from "@dfinity/utils";
-  import { get } from "svelte/store";
-  import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-  import { mainTransactionFeeE8sStore } from "../../derived/main-transaction-fee.derived";
 
   type Props = {
     neuron: NeuronInfo;
-    neuronId: NeuronId;
     close: () => void;
   };
 
-  const { neuron, neuronId, close }: Props = $props();
-
-  const minimumAmountE8s = $derived($mainTransactionFeeE8sStore);
-
-  // TODO(disburse-maturity): ¿add validation (isIcpAccountIdentifier)
+  const { neuron, close }: Props = $props();
   const disburseMaturity = async ({
-    detail: { percentageToDisburse, destinationAddress },
+    detail: { percentageToDisburse },
   }: CustomEvent<{
     percentageToDisburse: number;
     destinationAddress: string;
   }>) => {
-    const accounts = get(icpAccountsStore);
-    const isMainAccount = destinationAddress === accounts.main?.identifier;
-    const isSubAccount = accounts?.subAccounts?.find(
-      ({ identifier }) => identifier === destinationAddress
-    );
-
-    // Main account is the default account — not needed to be provided (undefined)
-    const account = isMainAccount ? undefined : accounts.main?.principal;
-    // Only user sub-accounts are supported.
-    const subAccount = isSubAccount ? destinationAddress : undefined;
-
-    // TODO(disburse-maturity): switch to account identifier when API supports it
-    // if () {
-    //   toastsError({
-    //     labelKey: "Transfer between accounts is not supported yet",
-    //   });
-    // }
-
     startBusy({ initiator: "disburse-maturity" });
 
     // TODO(disburse-maturity): switch to account identifier when API supports it
-    await disburseMaturityService({
-      neuronId,
+    const { success } = await disburseMaturityService({
+      neuronId: neuron.neuronId,
       percentageToDisburse,
-      // account,
-      // subAccount,
     });
-
-    console.log("Disburse maturity success", neuron.fullNeuron);
-
-    toastsSuccess({
-      labelKey: "neuron_detail.disburse_maturity_success",
-    });
-
-    close();
 
     stopBusy("disburse-maturity");
+
+    if (success) {
+      toastsSuccess({
+        labelKey: "neuron_detail.disburse_maturity_success",
+      });
+      close();
+    }
   };
 
   const availableMaturityE8s = $derived(
@@ -73,7 +45,7 @@
 
 <DisburseMaturityModal
   {availableMaturityE8s}
-  {minimumAmountE8s}
+  minimumAmountE8s={MIN_DISBURSEMENT_WITH_VARIANCE}
   on:nnsDisburseMaturity={disburseMaturity}
   rootCanisterId={OWN_CANISTER_ID}
   token={ICPToken}
