@@ -20,6 +20,7 @@ runs:
     - name: Checkout nns-dapp
       uses: actions/checkout@v4
     - name: Get node version
+      shell: bash
       run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
     - uses: actions/setup-node@v4
       with:
