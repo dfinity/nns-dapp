@@ -24,6 +24,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Fixed an issue where SNS neurons that had been disbursed but still had active maturity disbursements were not displayed in the dapp.
+
 #### Security
 
 #### Not Published
