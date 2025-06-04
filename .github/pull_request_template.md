@@ -12,4 +12,5 @@
 
 # Todos
 
-- [ ] Add entry to changelog (if necessary).
+- [ ] Accessibility (a11y) – any impact?
+- [ ] Changelog – is it needed?
