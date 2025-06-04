@@ -1,6 +1,7 @@
 <script lang="ts">
   import NnsAvailableMaturityItemAction from "$lib/components/neuron-detail/NnsAvailableMaturityItemAction.svelte";
   import NnsStakedMaturityItemAction from "$lib/components/neuron-detail/NnsStakedMaturityItemAction.svelte";
+  import ViewActiveDisbursementsItemAction from "$lib/components/neuron-detail/ViewActiveDisbursementsItemAction.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { formattedTotalMaturity } from "$lib/utils/neuron.utils";
   import { Section } from "@dfinity/gix-components";
@@ -23,6 +24,7 @@
   <ul class="content">
     <NnsStakedMaturityItemAction {neuron} />
     <NnsAvailableMaturityItemAction {neuron} />
+    <ViewActiveDisbursementsItemAction {neuron} />
   </ul>
 </Section>
 
