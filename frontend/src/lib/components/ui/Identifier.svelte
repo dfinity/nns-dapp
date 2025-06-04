@@ -15,7 +15,7 @@
     showCopy = false,
     size = "small",
   }: Props = $props();
-  const labelText = $derived(nonNullish(label) ? `${label}` : "");
+  const labelText = $derived(nonNullish(label) ? `${label} ` : "");
 </script>
 
 <p>
