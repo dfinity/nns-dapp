@@ -1,7 +1,7 @@
 import { ActiveDisbursementEntryPo } from "$tests/page-objects/ActiveDisbursementEntry.page-object";
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import type { ButtonPo } from "./Button.page-object";
 
 export class NnsActiveDisbursementsModalPo extends ModalPo {
   private static readonly TID = "nns-active-disbursements-modal";

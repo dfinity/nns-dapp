@@ -1,4 +1,5 @@
 <script lang="ts">
+  import NnsActiveDisbursementEntry from "$lib/modals/neurons/NnsActiveDisbursementEntry.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
@@ -8,7 +9,6 @@
   import { Html, KeyValuePair, Modal } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken } from "@dfinity/utils";
-  import NnsActiveDisbursementEntry from "./NnsActiveDisbursementEntry.svelte";
 
   type Props = {
     neuron: NeuronInfo;

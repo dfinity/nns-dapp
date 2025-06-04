@@ -1,14 +1,14 @@
+import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import NnsActiveDisbursementsModal from "$lib/modals/neurons/NnsActiveDisbursementsModal.svelte";
+import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
-import { NnsActiveDisbursementsModalPo } from "$tests/page-objects/NnsActiveDisbursementsModal.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { NeuronInfo } from "@dfinity/nns";
-import { SECONDS_IN_HALF_YEAR } from "../../../../lib/constants/constants";
-import { mockPrincipalText } from "../../../mocks/auth.store.mock";
 import {
   mockMaturityDisbursement,
   mockNeuron,
-} from "../../../mocks/neurons.mock";
+} from "$tests/mocks/neurons.mock";
+import { NnsActiveDisbursementsModalPo } from "$tests/page-objects/NnsActiveDisbursementsModal.page-object";
+import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import type { NeuronInfo } from "@dfinity/nns";
 
 describe("NnsActiveDisbursementsModal", () => {
   const maturityDisbursementAmount1 = 100_000_000n;
