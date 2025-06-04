@@ -12,6 +12,7 @@
   import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
   import NnsActiveDisbursementsModal from "$lib/modals/neurons/NnsActiveDisbursementsModal.svelte";
   import NnsAutoStakeMaturityModal from "$lib/modals/neurons/NnsAutoStakeMaturityModal.svelte";
+  import NnsDisburseMaturityModal from "$lib/modals/neurons/NnsDisburseMaturityModal.svelte";
   import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
@@ -82,6 +83,10 @@
     {/if}
     {#if type === "view-active-disbursements"}
       <NnsActiveDisbursementsModal {close} {neuron} />
+    {/if}
+
+    {#if type === "disburse-maturity"}
+      <NnsDisburseMaturityModal {close} {neuron} />
     {/if}
 
     {#if type === "auto-stake-maturity"}
