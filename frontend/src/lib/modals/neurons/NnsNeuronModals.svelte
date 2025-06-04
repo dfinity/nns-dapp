@@ -83,6 +83,10 @@
       <!-- TODO: display <NnsActiveDisbursementsModal {close} {neuron} /> -->
     {/if}
 
+    {#if type === "disburse-maturity"}
+      NnsDisburseMaturityModal
+    {/if}
+
     {#if type === "auto-stake-maturity"}
       <NnsAutoStakeMaturityModal on:nnsClose={close} {neuron} />
     {/if}
