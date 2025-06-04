@@ -6,11 +6,11 @@ import {
   sortedSnsUserNeuronsStore,
 } from "$lib/derived/sns/sns-sorted-neurons.derived";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { runResolvedPromises } from "$lib/utils/timers.test-utils";
 import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
