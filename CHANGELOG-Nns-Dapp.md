@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 136785
+
+### Application
+
+#### Added
+
+* Privacy mode controls in the Command Palette
+
+#### Changed
+
+* Styles for the SNS Projects Portfolio Cards
+* Improved voting status display with conditions progress indicators
+
+### Operations
+
 ## Proposal 136737
 
 ### Application
