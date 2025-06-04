@@ -14,13 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Privacy mode controls in the Command Palette
 * Visual feedback on copy to clipboard actions
 
 #### Changed
-
-* Styles for the SNS Projects Portfolio Cards
-* Improved voting status display with conditions progress indicators
 
 #### Deprecated
 
