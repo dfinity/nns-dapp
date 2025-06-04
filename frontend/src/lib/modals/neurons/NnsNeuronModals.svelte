@@ -80,6 +80,9 @@
     {#if type === "spawn"}
       <SpawnNeuronModal on:nnsClose={close} {neuron} />
     {/if}
+    {#if type === "view-active-disbursements"}
+      <!-- TODO: display <NnsActiveDisbursementsModal {close} {neuron} /> -->
+    {/if}
 
     {#if type === "disburse-maturity"}
       <NnsDisburseMaturityModal {close} {neuron} />
