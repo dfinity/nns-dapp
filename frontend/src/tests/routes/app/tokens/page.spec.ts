@@ -1136,25 +1136,12 @@ describe("Tokens route", () => {
     });
 
     it("opens import token modal when ledger canister id in URL", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
-
       const po = await renderPage();
       await runResolvedPromises();
 
       expect(
         await po.getSignInTokensPagePo().getImportTokenModalPo().isPresent()
       ).toBe(true);
-    });
-
-    it("does not open import token modal when flag disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", false);
-
-      const po = await renderPage();
-      await runResolvedPromises();
-
-      expect(
-        await po.getSignInTokensPagePo().getImportTokenModalPo().isPresent()
-      ).toBe(false);
     });
   });
 });

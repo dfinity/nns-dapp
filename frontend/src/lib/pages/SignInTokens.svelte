@@ -5,7 +5,6 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-  import { ENABLE_IMPORT_TOKEN_BY_URL } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
   import { IconAccountsPage, PageBanner } from "@dfinity/gix-components";
@@ -14,12 +13,10 @@
   export let userTokensData: UserToken[];
   let showImportTokenModal = false;
   $: showImportTokenModal =
-    $ENABLE_IMPORT_TOKEN_BY_URL &&
     // Since there are two ImportTokenModals on both Tokens and SignInTokens pages,
     // we need to hide this modal after a successful sign-in to
     // prevent it from blocking this component’s destruction.
-    !$authSignedInStore &&
-    nonNullish($pageStore.importTokenLedgerId);
+    !$authSignedInStore && nonNullish($pageStore.importTokenLedgerId);
 </script>
 
 <TestIdWrapper testId="sign-in-tokens-page-component">
