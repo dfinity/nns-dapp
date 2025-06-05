@@ -338,10 +338,22 @@
         {
           "Nat": [32]
         }
+      ],
+      [
+        "icrc103:public_allowances",
+        {
+          "Text": "true"
+        }
+      ],
+      [
+        "icrc103:max_take_value",
+        {
+          "Nat": [500]
+        }
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777777629650000,
+    "icrc1_total_supply": 777777522000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
