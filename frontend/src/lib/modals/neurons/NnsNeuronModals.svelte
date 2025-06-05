@@ -10,6 +10,7 @@
   import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
   import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
   import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
+  import NnsActiveDisbursementsModal from "$lib/modals/neurons/NnsActiveDisbursementsModal.svelte";
   import NnsAutoStakeMaturityModal from "$lib/modals/neurons/NnsAutoStakeMaturityModal.svelte";
   import NnsDisburseMaturityModal from "$lib/modals/neurons/NnsDisburseMaturityModal.svelte";
   import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
