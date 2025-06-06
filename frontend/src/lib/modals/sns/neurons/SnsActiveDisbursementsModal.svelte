@@ -18,9 +18,6 @@
   let symbol: string;
   $: symbol = token?.symbol ?? "";
 
-  let activeDisbursementsCount: number;
-  $: activeDisbursementsCount = neuron.disburse_maturity_in_progress.length;
-
   // calculate the total maturity
   let totalMaturity: bigint;
   $: totalMaturity = totalDisbursingMaturity(neuron);

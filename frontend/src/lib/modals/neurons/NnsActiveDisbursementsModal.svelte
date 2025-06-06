@@ -19,7 +19,6 @@
   const activeDisbursements = $derived(
     neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
   );
-  const activeDisbursementsCount = $derived(activeDisbursements.length);
   const totalMaturity = $derived(totalMaturityDisbursementsInProgress(neuron));
 </script>
 
