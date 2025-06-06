@@ -1,5 +1,6 @@
 import {
   definedSnsNeuronStore,
+  nonEmptySnsNeuronStore,
   snsSortedNeuronStore,
   sortedSnsCFNeuronsStore,
   sortedSnsUserNeuronsStore,
@@ -9,13 +10,15 @@ import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-describe("definedSnsNeuronStore", () => {
+describe("nonEmptySnsNeuronStore", () => {
   const principal2 = Principal.fromText("aaaaa-aa");
 
   beforeEach(() => {
@@ -68,8 +71,60 @@ describe("definedSnsNeuronStore", () => {
     page.mock({ data: { universe: mockPrincipal.toText() } });
 
     await waitFor(() =>
-      expect(get(definedSnsNeuronStore)).toEqual([neurons[1], neurons[2]])
+      expect(get(nonEmptySnsNeuronStore)).toEqual([neurons[1], neurons[2]])
     );
+  });
+
+  it("should not filter out empty neurons with ongoing maturity disbursement", async () => {
+    const neurons: SnsNeuron[] = [
+      {
+        ...createMockSnsNeuron({
+          stake: 0n,
+          id: [1, 5, 3, 9, 1, 1, 1],
+        }),
+        maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [0n],
+        disburse_maturity_in_progress: [
+          {
+            amount_e8s: 1n,
+          } as DisburseMaturityInProgress,
+        ],
+      },
+      {
+        ...createMockSnsNeuron({
+          stake: 0n,
+          id: [1, 5, 3, 9, 9, 3, 2],
+        }),
+        maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [0n],
+        disburse_maturity_in_progress: [
+          {
+            amount_e8s: 0n,
+          } as DisburseMaturityInProgress,
+        ],
+      },
+      {
+        ...createMockSnsNeuron({
+          stake: 0n,
+          id: [1, 2, 2, 9, 9, 3, 2],
+        }),
+        maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [0n],
+        disburse_maturity_in_progress: [],
+      },
+    ];
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockPrincipal,
+      neurons,
+      certified: true,
+    });
+
+    page.mock({ data: { universe: mockPrincipal.toText() } });
+    await runResolvedPromises();
+
+    expect(get(nonEmptySnsNeuronStore).length).toEqual(1);
+
+    expect(get(nonEmptySnsNeuronStore)).toEqual([neurons[0]]);
   });
 
   it("should return the defined neurons of the selected project", async () => {
@@ -127,7 +182,7 @@ describe("definedSnsNeuronStore", () => {
     page.mock({ data: { universe: mockPrincipal.toText() } });
 
     await waitFor(() =>
-      expect(get(definedSnsNeuronStore)).toEqual([
+      expect(get(nonEmptySnsNeuronStore)).toEqual([
         neurons1[0],
         neurons1[1],
         neurons1[2],
@@ -137,11 +192,77 @@ describe("definedSnsNeuronStore", () => {
     page.mock({ data: { universe: principal2.toText() } });
 
     await waitFor(() =>
-      expect(get(definedSnsNeuronStore)).toEqual([
+      expect(get(nonEmptySnsNeuronStore)).toEqual([
         neurons2[0],
         neurons2[1],
         neurons2[2],
       ])
+    );
+  });
+});
+
+describe("definedSnsNeuronStore", () => {
+  const principal2 = Principal.fromText("aaaaa-aa");
+
+  beforeEach(() => {
+    setSnsProjects([
+      {
+        rootCanisterId: mockPrincipal,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+      {
+        rootCanisterId: principal2,
+        lifecycle: SnsSwapLifecycle.Committed,
+      },
+    ]);
+  });
+
+  it("filters out empty neurons with disbursement in progress", async () => {
+    const neurons: SnsNeuron[] = [
+      {
+        ...createMockSnsNeuron({
+          stake: 0n,
+          id: [1, 4, 3, 9, 1, 1, 1],
+        }),
+        maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [0n],
+        disburse_maturity_in_progress: [
+          {
+            amount_e8s: 500_000_000n,
+          } as DisburseMaturityInProgress,
+        ],
+      },
+      {
+        ...createMockSnsNeuron({
+          stake: 30_000_000_000n,
+          id: [1, 5, 3, 9, 9, 3, 2],
+        }),
+        maturity_e8s_equivalent: 0n,
+        staked_maturity_e8s_equivalent: [0n],
+        disburse_maturity_in_progress: [
+          {
+            amount_e8s: 1_500_000_000n,
+          } as DisburseMaturityInProgress,
+        ],
+      },
+      {
+        ...createMockSnsNeuron({
+          stake: 0n,
+          id: [1, 2, 2, 9, 9, 3, 2],
+        }),
+        maturity_e8s_equivalent: 100_000_000n,
+      },
+    ];
+    snsNeuronsStore.setNeurons({
+      rootCanisterId: mockPrincipal,
+      neurons,
+      certified: true,
+    });
+
+    page.mock({ data: { universe: mockPrincipal.toText() } });
+
+    await waitFor(() =>
+      expect(get(definedSnsNeuronStore)).toEqual([neurons[1], neurons[2]])
     );
   });
 });

@@ -23,6 +23,7 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
+import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/sns-governance.api");
@@ -43,6 +44,19 @@ describe("SnsNeurons", () => {
     maturity: 0n,
     stakedMaturity: 0n,
   });
+  const neuronWithDisbursementInProgressOnly: SnsNeuron = {
+    ...createMockSnsNeuron({
+      id: [4, 6, 8],
+      stake: 0n,
+    }),
+    maturity_e8s_equivalent: 0n,
+    staked_maturity_e8s_equivalent: [0n],
+    disburse_maturity_in_progress: [
+      {
+        amount_e8s: 100_000_000n,
+      } as DisburseMaturityInProgress,
+    ],
+  };
   const neuronNFStake = 400_000_000n;
   const neuronNF: SnsNeuron = {
     ...createMockSnsNeuron({
@@ -131,6 +145,17 @@ describe("SnsNeurons", () => {
         neuron1,
         disbursedNeuron,
         neuronNF,
+      ]);
+      const po = await renderComponent();
+
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(rows).toHaveLength(2);
+    });
+
+    it("should render neurons with disbursement in progress", async () => {
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
+        neuron1,
+        neuronWithDisbursementInProgressOnly,
       ]);
       const po = await renderComponent();
 
