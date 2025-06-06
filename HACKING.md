@@ -4,18 +4,18 @@ This document list a couple of useful information to develop the NNS-dapp fronte
 
 ## Table of contents
 
--   [dapp development](#dapp-development)
--   [Local](#local)
--   [Testnet](#testnet)
--   [Preview](#preview)
-    -   [Configure](#configure)
--   [Requirements](#requirements)
--   [Dependencies](#dependencies)
--   [ckBTC deployment](#ckbtc-deployment)
-    -   [Bitcoin network](#bitcoin-network)
-    -   [Ledger, Index and Minter](#ledger-index-and-minter)
-    -   [Feature flag](#feature-flag)
--   [Mint bitcoin](#mint-bitcoin)
+- [dapp development](#dapp-development)
+- [Local](#local)
+- [Testnet](#testnet)
+- [Preview](#preview)
+  - [Configure](#configure)
+- [Requirements](#requirements)
+- [Dependencies](#dependencies)
+- [ckBTC deployment](#ckbtc-deployment)
+  - [Bitcoin network](#bitcoin-network)
+  - [Ledger, Index and Minter](#ledger-index-and-minter)
+  - [Feature flag](#feature-flag)
+- [Mint bitcoin](#mint-bitcoin)
 
 ## dapp development
 
@@ -28,16 +28,16 @@ That is why we are providing a `./config.sh` script that generate the above envi
 
 To run the dapp against canisters deployed locally on a simulated IC network, use the steps below:
 
--   Run `scripts/setup` to install necessary tools.
--   Clone the [snsdemo](https://github.com/dfinity/snsdemo/) repository. We'll use it to set up the test environment.
--   In the `snsdemo` repo, run:
-    -   `bin/dfx-sns-demo-install` (to install necessary tools)
-    -   `ulimit -n 65536` (increase the limit for the current shell session to avoid "Too many open files" OS errors)
-    -   `bin/dfx-snapshot-stock-make --snapshot $HOME/my-snapshot.tar.xz` (to create a snapshot with a test environment)
--   Go back to the `nns-dapp` repo
--   Run `scripts/dfx-snapshot-start --snapshot $HOME/my-snapshot.tar.xz` (this will keep running so switch to another terminal window)
--   Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
--   In the `./frontend/` folder, first run `npm ci` and then `npm run dev` to serve the application.
+- Run `scripts/setup` to install necessary tools.
+- Clone the [snsdemo](https://github.com/dfinity/snsdemo/) repository. We'll use it to set up the test environment.
+- In the `snsdemo` repo, run:
+  - `bin/dfx-sns-demo-install` (to install necessary tools)
+  - `ulimit -n 65536` (increase the limit for the current shell session to avoid "Too many open files" OS errors)
+  - `bin/dfx-snapshot-stock-make --snapshot $HOME/my-snapshot.tar.xz` (to create a snapshot with a test environment)
+- Go back to the `nns-dapp` repo
+- Run `scripts/dfx-snapshot-start --snapshot $HOME/my-snapshot.tar.xz` (this will keep running so switch to another terminal window)
+- Run `DFX_NETWORK=local ./config.sh` to populate the `./frontend/.env` file.
+- In the `./frontend/` folder, first run `npm ci` and then `npm run dev` to serve the application.
 
 With this setup, you can work on the frontend code without building the
 nns-dapp canister. If you want to change the back-end code, you can deploy it
@@ -64,9 +64,9 @@ npm run preview
 
 To develop and run locally the dapp against a testnet, proceed as following:
 
--   Copy the [`canister_ids.json`] to the root of your local project
--   Run `DFX_NETWORK=<testnet_name> ./config.sh` to populate the `.env` file
--   Start `npm run dev` in the `./frontend/` folder to serve the application
+- Copy the [`canister_ids.json`] to the root of your local project
+- Run `DFX_NETWORK=<testnet_name> ./config.sh` to populate the `.env` file
+- Start `npm run dev` in the `./frontend/` folder to serve the application
 
 e.g. replace `<testnet_name>` with `small11`
 
