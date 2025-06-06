@@ -14,6 +14,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
+import { tick } from "svelte";
 
 describe("LosingRewardsBanner", () => {
   const nowSeconds = nowInSeconds();
@@ -186,7 +187,7 @@ describe("LosingRewardsBanner", () => {
       neurons: [losingRewardsNeuron],
       certified: true,
     });
-    const po = await renderComponent();
+    const po = renderComponent();
 
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);
     await po.clickConfirm();
@@ -198,7 +199,7 @@ describe("LosingRewardsBanner", () => {
     ).toHaveLength(1);
 
     await po.getLosingRewardNeuronsModalPo().clickConfirmFollowing();
-    await runResolvedPromises();
+    await tick();
 
     expect(
       await po
@@ -220,7 +221,7 @@ describe("LosingRewardsBanner", () => {
       neurons: [losingRewardsNeuron],
       certified: true,
     });
-    const po = await renderComponent();
+    const po = renderComponent();
 
     await po.clickConfirm();
     await runResolvedPromises();

@@ -6,6 +6,7 @@ import { UsdValueHeadlessPo } from "$tests/page-objects/UsdValueHeadless.page-ob
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
+import { tick } from "svelte";
 
 describe("UsdValueHeadless", () => {
   const renderComponent = ({
@@ -109,6 +110,7 @@ describe("UsdValueHeadless", () => {
     expect(await po.getIcpAmountFormatted()).toBe("10.00");
 
     setIcpPrice(200);
+    await tick();
 
     expect(await po.getUsdAmountFormatted()).toBe("1’000");
     expect(await po.getIcpAmountFormatted()).toBe("5.00");

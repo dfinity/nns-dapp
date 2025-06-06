@@ -5,15 +5,10 @@ import {
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
-import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 
 vi.mock("$lib/api/sns-aggregator.api");
 
-const blockedPaths = ["$lib/api/sns-aggregator.api"];
-
 describe("sns-aggregator api-service", () => {
-  blockAllCallsTo(blockedPaths);
-
   const successData = [aggregatorSnsMockDto, aggregatorSnsMockDto];
   let resolveFn = undefined;
   let rejectFn = undefined;

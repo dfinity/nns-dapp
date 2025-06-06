@@ -17,6 +17,7 @@ import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron, SnsNeuronId, SnsTopic } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array, fromNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 describe("FollowSnsNeuronsByTopicModal", () => {
@@ -275,7 +276,10 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     expect(reloadNeuronSpy).toBeCalledTimes(0);
     expect(closeModalSpy).toBeCalledTimes(0);
     resolveSetFollowing();
-    await runResolvedPromises();
+
+    // TODO: Why do we need to tick twice here?
+    await tick();
+    await tick();
 
     // After successful set following
     expect(reloadNeuronSpy).toBeCalledTimes(1);
@@ -388,6 +392,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
 
     rejectQuerySnsNeuron();
     await runResolvedPromises();
+    await tick();
 
     expect(get(busyStore)).toEqual([]);
     expect(await neuronStepPo.getNeuronIdInputPo().getErrorMessage()).toEqual(
@@ -449,7 +454,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
     );
 
     await neuronStepPo.clickConfirmButton();
-    await runResolvedPromises();
+    await tick();
 
     expect(get(busyStore)).toEqual([]);
     expect(get(toastsStore)).toEqual([]);
@@ -889,6 +894,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
         },
       ]);
 
+      await tick();
       expect(await topicsStepPo.isPresent()).toEqual(true);
       expect(await deactivateCatchAllStepPo.isPresent()).toEqual(false);
     });
