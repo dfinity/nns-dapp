@@ -187,10 +187,13 @@ describe("LosingRewardsBanner", () => {
       neurons: [losingRewardsNeuron],
       certified: true,
     });
+
     const po = renderComponent();
 
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);
+
     await po.clickConfirm();
+
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(true);
     expect(
       await po
@@ -199,14 +202,17 @@ describe("LosingRewardsBanner", () => {
     ).toHaveLength(1);
 
     await po.getLosingRewardNeuronsModalPo().clickConfirmFollowing();
+
+    // TODO: Figure out why this all this is needed
+    await runResolvedPromises();
     await tick();
+    await advanceTime(500);
 
     expect(
       await po
         .getLosingRewardNeuronsModalPo()
         .getNnsLosingRewardsNeuronCardPos()
     ).toHaveLength(0);
-    await advanceTime(500);
     expect(spyRefreshVotingPower).toBeCalledTimes(1);
     expect(await po.getLosingRewardNeuronsModalPo().isPresent()).toEqual(false);
   });
