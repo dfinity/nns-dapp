@@ -82,7 +82,7 @@
     "@dfinity/identity": "^2.1.3",
     "@dfinity/ledger-icp": "next",
     "@dfinity/ledger-icrc": "next",
-    "@dfinity/nns": "next",
+    "@dfinity/nns": "file:../../ic-js/dfinity-nns-8.4.1.tgz",
     "@dfinity/principal": "^2.4.0",
     "@dfinity/sns": "next",
     "@dfinity/utils": "next",
