@@ -37,6 +37,7 @@ import {
 } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns.api");
@@ -45,6 +46,7 @@ vi.mock("$lib/api/sns-ledger.api");
 
 describe("SnsNeuronDetail", () => {
   fakeSnsGovernanceApi.install();
+  // TODO: This fake is empty. It can be cleaned up.
   fakeSnsApi.install();
 
   const rootCanisterId = rootCanisterIdMock;
@@ -279,6 +281,7 @@ describe("SnsNeuronDetail", () => {
 
       await po.removeHotkey(hotkeyPrincipal);
       await runResolvedPromises();
+      await tick();
 
       expect(await po.getHotkeyPrincipals()).toEqual([]);
     });
@@ -318,6 +321,7 @@ describe("SnsNeuronDetail", () => {
 
       await po.removeHotkey(hotkeyPrincipal);
       await runResolvedPromises();
+      await tick();
 
       expect(await po.getHotkeyPrincipals()).toEqual([]);
 
