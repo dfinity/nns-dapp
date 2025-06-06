@@ -4,6 +4,7 @@ import { HideZeroNeuronsTogglePo } from "$tests/page-objects/HideZeroNeuronsTogg
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 describe("HideZeroNeuronsToggle", () => {
@@ -38,7 +39,7 @@ describe("HideZeroNeuronsToggle", () => {
     expect(await toggle.isEnabled()).toBe(false);
 
     hideZeroNeuronsStore.set("hide");
-    await runResolvedPromises();
+    await tick();
 
     expect(get(hideZeroNeuronsStore)).toBe("hide");
     expect(await toggle.isEnabled()).toBe(true);

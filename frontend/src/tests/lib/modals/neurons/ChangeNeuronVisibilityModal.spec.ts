@@ -98,6 +98,8 @@ describe("ChangeNeuronVisibilityModal", () => {
     };
   };
 
+  // Rest of the test file remains the same...
+
   it("should display modal", async () => {
     const { po } = await renderComponent();
 
@@ -204,6 +206,7 @@ describe("ChangeNeuronVisibilityModal", () => {
   });
 
   it("should handle error when changing neuron visibility", async () => {
+    queryNeuronSpy.mockRejectedValue(new Error("Test error"));
     spyConsoleError.mockReturnValue();
 
     const { po } = await renderComponent();
