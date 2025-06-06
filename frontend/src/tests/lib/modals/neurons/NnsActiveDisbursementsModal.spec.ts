@@ -79,6 +79,8 @@ describe("NnsActiveDisbursementsModal", () => {
     const close = vi.fn();
     const po = await renderComponent(close);
 
+    expect(close).toHaveBeenCalledTimes(0);
+
     await po.getCloseButtonPo().click();
 
     expect(close).toHaveBeenCalledTimes(1);

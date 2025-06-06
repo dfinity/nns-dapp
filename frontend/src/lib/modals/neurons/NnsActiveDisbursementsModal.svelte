@@ -16,9 +16,10 @@
   };
   const { neuron, close }: Props = $props();
 
-  const activeDisbursementsCount = $derived(
-    neuron.fullNeuron?.maturityDisbursementsInProgress?.length ?? 0
+  const activeDisbursements = $derived(
+    neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
   );
+  const activeDisbursementsCount = $derived(activeDisbursements.length);
   const totalMaturity = $derived(totalMaturityDisbursementsInProgress(neuron));
 </script>
 
@@ -39,7 +40,7 @@
     </KeyValuePair>
 
     <div class="disbursements">
-      {#each neuron.fullNeuron?.maturityDisbursementsInProgress ?? [] as disbursement}
+      {#each activeDisbursements as disbursement}
         <NnsActiveDisbursementEntry {disbursement} />
       {/each}
     </div>
