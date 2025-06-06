@@ -15,26 +15,36 @@
     type Token,
   } from "@dfinity/utils";
 
-  export let testId: string | undefined = undefined;
-  export let steps: WizardSteps;
-  export let currentStep: WizardStep | undefined = undefined;
-  export let disablePointerEvents = false;
+  type Props = {
+    testId?: string;
+    steps: WizardSteps;
+    currentStep?: WizardStep;
+    disablePointerEvents?: boolean;
+    modal?: WizardModal;
+    set: (step: number) => void;
+    scanQrCode: (args: { requiredToken: Token }) => Promise<QrResponse>;
+  };
+
+  let {
+    testId,
+    steps,
+    currentStep,
+    disablePointerEvents = false,
+    modal = $bindable(),
+    set = $bindable(),
+    scanQrCode = $bindable(),
+  }: Props = $props();
 
   const STEP_QRCODE = "QRCode";
-
-  let stepsPlusQr: WizardSteps;
-  $: stepsPlusQr = [
+  const stepsPlusQr: WizardSteps = $derived([
     ...steps,
     {
       name: STEP_QRCODE,
       title: "",
     },
-  ];
-
-  export let modal: WizardModal;
-
-  export const set = (step: number) => {
-    modal.set(step);
+  ]);
+  set = (step: number) => {
+    modal?.set(step);
   };
 
   const goStep = (stepName: string) => {
@@ -96,7 +106,7 @@
 
   // Using const to export a function is incompatible with Svelte v5
   // svelte-ignore unused-export-let
-  export let scanQrCode = async ({
+  scanQrCode = async ({
     requiredToken,
   }: {
     requiredToken: Token;
@@ -146,6 +156,8 @@
   on:nnsClose
   {disablePointerEvents}
 >
+  <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+  <!-- svelte-ignore slot_element_deprecated -->
   <slot name="title" slot="title" />
   <slot />
   {#if currentStep?.name === STEP_QRCODE}
