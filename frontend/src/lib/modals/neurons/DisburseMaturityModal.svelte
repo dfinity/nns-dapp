@@ -24,14 +24,32 @@
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
   import { assertNonNullish, type Token } from "@dfinity/utils";
-  import { createEventDispatcher } from "svelte";
 
-  export let availableMaturityE8s: bigint;
-  export let rootCanisterId: Principal;
-  export let token: Token;
-  export let minimumAmountE8s: bigint;
-  // Using `undefined` allows only ICRC
-  export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  type Props = {
+    availableMaturityE8s: bigint;
+    rootCanisterId: Principal;
+    token: Token;
+    minimumAmountE8s: bigint;
+    selectedNetwork?: TransactionNetwork;
+    close: () => void;
+    disburseMaturity: (args: {
+      percentageToDisburse: number;
+      destinationAddress: string | undefined;
+    }) => void;
+  };
+
+  const {
+    availableMaturityE8s,
+    rootCanisterId,
+    token,
+    minimumAmountE8s,
+    // Using `undefined` allows only ICRC
+    selectedNetwork,
+    close,
+    disburseMaturity,
+  }: Props = $props();
+
+  // export let selectedNetwork: TransactionNetwork | undefined = undefined;
 
   const steps: WizardSteps = [
     {
@@ -44,73 +62,68 @@
     },
   ];
 
-  let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let currentStep: WizardStep | undefined = $state();
+  let modal: WizardModal | undefined = $state();
+  let percentageToDisburse = $state(0);
+  let selectedDestinationAddress: string | undefined = $state();
+  // By default, show the dropdown in SelectDestinationAddress
+  let showManualAddress = $state(false);
+  let scanQrCode:
+    | undefined
+    | (({ requiredToken }: { requiredToken: Token }) => Promise<QrResponse>) =
+    $state();
 
-  let percentageToDisburse = 0;
-  let selectedMaturityE8s: bigint;
-  $: selectedMaturityE8s =
-    (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
-
-  let notEnoughMaturitySelected = false;
-  $: notEnoughMaturitySelected = selectedMaturityE8s < minimumAmountE8s;
-
-  let disabled = false;
-  $: disabled =
+  const selectedMaturityE8s = $derived(
+    (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n
+  );
+  const notEnoughMaturitySelected = $derived(
+    selectedMaturityE8s < minimumAmountE8s
+  );
+  const disabled = $derived(
     invalidAddress({
       address: selectedDestinationAddress,
       network: undefined,
       rootCanisterId,
-    }) || notEnoughMaturitySelected;
-
+    }) || notEnoughMaturitySelected
+  );
   // Show the text only if the selected percentage is greater than 0.
-  let disabledText: string | undefined = undefined;
-  $: disabledText =
+  const disabledText = $derived(
     notEnoughMaturitySelected && percentageToDisburse > 0
       ? replacePlaceholders(
           $i18n.neuron_detail.disburse_maturity_disabled_tooltip_non_zero,
           { $amount: formatTokenE8s({ value: minimumAmountE8s }) }
         )
-      : undefined;
-
-  const dispatcher = createEventDispatcher();
+      : undefined
+  );
   const disburseNeuronMaturity = () => {
-    dispatcher("nnsDisburseMaturity", {
+    disburseMaturity({
       percentageToDisburse,
       destinationAddress: selectedDestinationAddress,
     });
   };
-  const close = () => dispatcher("nnsClose");
 
-  const goToConfirm = () => modal.next();
-
-  let maturityToDisburseE8s: bigint;
-  $: maturityToDisburseE8s =
-    (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n;
+  const goToConfirm = () => modal?.next();
+  const maturityToDisburseE8s = $derived(
+    (availableMaturityE8s * BigInt(percentageToDisburse)) / 100n
+  );
 
   // +/- 5%
-  let predictedMinimumTokens: string;
-  $: predictedMinimumTokens = formatTokenE8s({
-    value: BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95)),
-    roundingMode: "floor",
-  });
-  let predictedMaximumTokens: string;
-  $: predictedMaximumTokens = formatTokenE8s({
-    value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
-    roundingMode: "ceil",
-  });
-
-  let selectedDestinationAddress: string | undefined = undefined;
-  // By default, show the dropdown in SelectDestinationAddress
-  let showManualAddress = false;
-
-  let scanQrCode: ({
-    requiredToken,
-  }: {
-    requiredToken: Token;
-  }) => Promise<QrResponse>;
+  const predictedMinimumTokens = $derived(
+    formatTokenE8s({
+      value: BigInt(Math.floor(Number(maturityToDisburseE8s) * 0.95)),
+      roundingMode: "floor",
+    })
+  );
+  const predictedMaximumTokens = $derived(
+    formatTokenE8s({
+      value: BigInt(Math.ceil(Number(maturityToDisburseE8s) * 1.05)),
+      roundingMode: "ceil",
+    })
+  );
 
   const goQRCode = async () => {
+    if (!scanQrCode) return;
+
     const { result, identifier } = await scanQrCode({
       requiredToken: token,
     });
@@ -124,23 +137,23 @@
     selectedDestinationAddress = identifier;
   };
 
-  // Note: This doesn't support subaccount names. Yet, we don't have subaccounts for SNS, nor are we planning to add in the near future.
-  let destinationAddressName: string | undefined = undefined;
-  $: destinationAddressName =
+  // Note: This doesn't support sub-account names. Yet, we don't have sub-accounts for SNS, nor are we planning to add in the near future.
+  const destinationAddressName = $derived(
     getAccountByRootCanister({
       identifier: selectedDestinationAddress,
       rootCanisterId,
       universesAccounts: $universesAccountsStore,
     })?.type === "main"
       ? $i18n.accounts.main
-      : selectedDestinationAddress;
+      : selectedDestinationAddress
+  );
 </script>
 
 <QrWizardModal
   testId="disburse-maturity-modal-component"
   {steps}
   bind:currentStep
-  on:nnsClose
+  on:nnsClose={close}
   bind:scanQrCode
   bind:modal
 >
@@ -191,7 +204,7 @@
   {:else if currentStep?.name === "ConfirmDisburseMaturity"}
     <NeuronConfirmActionScreen
       on:nnsConfirm={disburseNeuronMaturity}
-      on:nnsCancel={modal.back}
+      on:nnsCancel={() => modal?.back()}
       editLabel={$i18n.neuron_detail.disburse_maturity_edit}
     >
       {$i18n.neuron_detail.disburse_maturity_confirmation_description}
