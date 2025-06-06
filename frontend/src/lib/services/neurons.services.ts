@@ -70,7 +70,10 @@ import {
 } from "$lib/utils/neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import type { TransactionWithId } from "@dfinity/ledger-icp";
+import type {
+  AccountIdentifierHex,
+  TransactionWithId,
+} from "@dfinity/ledger-icp";
 import {
   NeuronVisibility,
   Topic,
@@ -829,9 +832,11 @@ export const spawnNeuron = async ({
 export const disburseMaturity = async ({
   neuronId,
   percentageToDisburse,
+  accountIdentifier,
 }: {
   neuronId: NeuronId;
   percentageToDisburse: number;
+  accountIdentifier?: AccountIdentifierHex;
 }): Promise<{ success: boolean }> => {
   try {
     const identity: Identity =
@@ -841,6 +846,7 @@ export const disburseMaturity = async ({
       neuronId,
       percentageToDisburse,
       identity,
+      accountIdentifier,
     });
 
     await listNeurons();
