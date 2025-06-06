@@ -10,18 +10,21 @@
   import { Tag } from "@dfinity/gix-components";
   import type { NeuronInfo, Topic } from "@dfinity/nns";
 
-  export let followee: FolloweesNeuron;
-  export let neuron: NeuronInfo;
-  export let isInteractive = true;
+  type Props = {
+    followee: FolloweesNeuron;
+    neuron: NeuronInfo;
+    isInteractive?: boolean;
+  };
+  const { followee, neuron, isInteractive = true }: Props = $props();
+
+  const id = $derived(`followee-${followee.neuronId}`);
+  let name = $derived(
+    $knownNeuronsStore.find(({ id }) => id === followee.neuronId)?.name ??
+      followee.neuronId.toString()
+  );
 
   // TODO: Align with `en.governance.json` "topics.[topic]"
   const topicTitle = (topic: Topic) => getTopicTitle({ topic, i18n: $i18n });
-  let id: string;
-  $: id = `followee-${followee.neuronId}`;
-  let name: string;
-  $: name =
-    $knownNeuronsStore.find(({ id }) => id === followee.neuronId)?.name ??
-    followee.neuronId.toString();
 
   const openVotingHistory = () =>
     emit<NnsNeuronModalVotingHistory>({
@@ -42,7 +45,7 @@
           name="title"
           {id}
           class="text"
-          on:click={openVotingHistory}
+          onclick={openVotingHistory}
         >
           {name}
         </button>
