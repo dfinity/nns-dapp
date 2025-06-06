@@ -13,14 +13,18 @@
   const dateTime = $derived(
     secondsToDateTime(disbursement.timestampOfDisbursementSeconds ?? 0n)
   );
+  console.log("disbursement", disbursement);
+
   const account = $derived(disbursement.accountToDisburseTo);
   const destination = $derived(
-    nonNullish(account)
-      ? encodeIcrcAccount({
-          owner: account.owner,
-          subaccount: account.subaccount,
-        } as IcrcAccount)
-      : ""
+    nonNullish(disbursement.accountIdentifierToDisburseTo)
+      ? disbursement.accountIdentifierToDisburseTo
+      : nonNullish(account)
+        ? encodeIcrcAccount({
+            owner: account.owner,
+            subaccount: account.subaccount,
+          } as IcrcAccount)
+        : ""
   );
   const amount = formatMaturity(disbursement.amountE8s ?? 0n);
 </script>
