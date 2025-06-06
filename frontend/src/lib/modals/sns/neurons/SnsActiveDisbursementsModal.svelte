@@ -18,9 +18,6 @@
   let symbol: string;
   $: symbol = token?.symbol ?? "";
 
-  let activeDisbursementsCount: number;
-  $: activeDisbursementsCount = neuron.disburse_maturity_in_progress.length;
-
   // calculate the total maturity
   let totalMaturity: bigint;
   $: totalMaturity = totalDisbursingMaturity(neuron);
@@ -31,8 +28,8 @@
 
 <Modal on:nnsClose testId="sns-active-disbursements-modal">
   <svelte:fragment slot="title"
-    >{activeDisbursementsCount}
-    {$i18n.neuron_detail.view_active_disbursements_modal_title}</svelte:fragment
+    >{$i18n.neuron_detail
+      .view_active_disbursements_modal_title}</svelte:fragment
   >
 
   <div class="content">
@@ -54,7 +51,7 @@
     <span class="description">
       <Html
         text={replacePlaceholders(
-          $i18n.neuron_detail.active_maturity_disbursements_description,
+          $i18n.neuron_detail.active_maturity_disbursements_description_sns,
           {
             $symbol: symbol,
           }
