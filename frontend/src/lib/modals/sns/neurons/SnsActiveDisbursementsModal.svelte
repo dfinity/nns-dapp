@@ -31,8 +31,8 @@
 
 <Modal on:nnsClose testId="sns-active-disbursements-modal">
   <svelte:fragment slot="title"
-    >{activeDisbursementsCount}
-    {$i18n.neuron_detail.view_active_disbursements_modal_title}</svelte:fragment
+    >{$i18n.neuron_detail
+      .view_active_disbursements_modal_title}</svelte:fragment
   >
 
   <div class="content">
