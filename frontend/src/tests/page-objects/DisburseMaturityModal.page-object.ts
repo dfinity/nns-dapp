@@ -45,6 +45,10 @@ export class DisburseMaturityModalPo extends ModalPo {
     return this.getNeuronSelectPercentagePo().getAvailableMaturity();
   }
 
+  async getDescriptionHtml(): Promise<string> {
+    return this.getElement("maturity-description").innerHtmlForDebugging();
+  }
+
   async getConfirmTokens(): Promise<string> {
     return (
       await this.getNeuronConfirmActionScreenPo().getTextWithCollapsedWhitespaces(

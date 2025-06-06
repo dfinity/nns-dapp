@@ -54,7 +54,7 @@
     <span class="description">
       <Html
         text={replacePlaceholders(
-          $i18n.neuron_detail.active_maturity_disbursements_description,
+          $i18n.neuron_detail.active_maturity_disbursements_description_sns,
           {
             $symbol: symbol,
           }
