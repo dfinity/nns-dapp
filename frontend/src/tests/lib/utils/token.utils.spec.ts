@@ -135,14 +135,9 @@ describe("token-utils", () => {
   });
 
   it("should use roundingMode", () => {
-    // NodeJS supports roundingMode since v19
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#browser_compatibility
-    // expect(formatTokenE8s({ value: 111_100_000n, roundingMode: "ceil" })).toEqual(
-    //   "1.12"
-    // );
     expect(
       formatTokenE8s({ value: 111_100_000n, roundingMode: "ceil" })
-    ).toEqual("1.11");
+    ).toEqual("1.12");
   });
 
   describe("formatTokenV2", () => {
@@ -283,14 +278,9 @@ describe("token-utils", () => {
       });
 
       it("should use roundingMode", () => {
-        // NodeJS supports roundingMode since v19
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#browser_compatibility
-        // expect(testFormat({ value: 111_100_000n, roundingMode: "ceil" })).toEqual(
-        //   "1.12"
-        // );
         expect(
           testFormat({ value: 111_100_000n, roundingMode: "ceil" })
-        ).toEqual("1.11");
+        ).toEqual("1.12");
       });
     });
 

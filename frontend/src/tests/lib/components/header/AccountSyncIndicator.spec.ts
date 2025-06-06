@@ -8,7 +8,7 @@ import {
   waitFor,
   type RenderResult,
 } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import { tick, type Component } from "svelte";
 
 describe("AccountSyncIndicator", () => {
   describe("not signed in", () => {
@@ -71,6 +71,8 @@ describe("AccountSyncIndicator", () => {
         state: "in_progress",
       });
 
+      await tick();
+
       await waitFor(() => expect(getByTestId("sync-indicator")).not.toBeNull());
     });
 
@@ -83,12 +85,16 @@ describe("AccountSyncIndicator", () => {
         state: "in_progress",
       });
 
+      await tick();
+
       await waitFor(() => expect(getByTestId("sync-indicator")).not.toBeNull());
 
       syncStore.setState({
         key: "balances",
         state: "idle",
       });
+
+      await tick();
 
       await waitFor(() =>
         expect(() => getByTestId("sync-indicator")).toThrow()

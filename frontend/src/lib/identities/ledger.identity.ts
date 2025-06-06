@@ -324,7 +324,9 @@ export class LedgerIdentity extends SignIdentity {
     const readStateBody: ReadRequest = {
       // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
       request_type: "read_state" as ReadRequestType.ReadState,
-      paths: createReadStatePaths(requestId),
+      paths: createReadStatePaths(requestId).map((path) =>
+        path.map((bufferLike) => new Uint8Array(bufferLike).buffer)
+      ),
       ingress_expiry: body.ingress_expiry,
       sender: body.sender,
     };

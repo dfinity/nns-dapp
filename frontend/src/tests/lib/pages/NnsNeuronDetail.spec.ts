@@ -197,11 +197,9 @@ describe("NeuronDetail", () => {
         controller: mockIdentity.getPrincipal().toText(),
       });
 
-      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([testNeuron]);
       const spyRefreshVotingPower = vi
         .spyOn(governanceApi, "refreshVotingPower")
         .mockResolvedValue();
-      vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
 
       const po = await renderComponent(`${neuronId}`);
 

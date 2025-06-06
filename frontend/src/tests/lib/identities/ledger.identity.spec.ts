@@ -31,7 +31,7 @@ describe("LedgerIdentity", () => {
     paths: [],
     canister_id: mockCanisterId,
     method_name: "get_balance",
-    arg: new TextEncoder().encode(""),
+    arg: new Uint8Array(new TextEncoder().encode("")).buffer,
     sender: mockPrincipal,
     ingress_expiry: new Expiry(100000),
   };
@@ -43,7 +43,12 @@ describe("LedgerIdentity", () => {
   const requestId1 = requestIdOf(callBody1);
   const readStateBody1 = {
     request_type: "read_state" as ReadRequestType.ReadState,
-    paths: [[new TextEncoder().encode("request_status"), requestId1]],
+    paths: [
+      [
+        new Uint8Array(new TextEncoder().encode("request_status")).buffer,
+        requestId1,
+      ],
+    ],
     sender: mockPrincipal,
     ingress_expiry: new Expiry(100000),
   };
@@ -169,7 +174,12 @@ describe("LedgerIdentity", () => {
       request: {},
       body: {
         ...readStateBody1,
-        paths: [[new TextEncoder().encode("request_status"), requestId2]],
+        paths: [
+          [
+            new Uint8Array(new TextEncoder().encode("request_status")).buffer,
+            requestId2,
+          ],
+        ],
       },
     };
     const identity = await LedgerIdentity.create();

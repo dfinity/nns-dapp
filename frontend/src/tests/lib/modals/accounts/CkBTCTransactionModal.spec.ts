@@ -6,7 +6,6 @@ import {
 import { AppPath } from "$lib/constants/routes.constants";
 import CkBTCTransactionModal from "$lib/modals/accounts/CkBTCTransactionModal.svelte";
 import * as services from "$lib/services/ckbtc-convert.services";
-import { convertCkBTCToBtcIcrc2 } from "$lib/services/ckbtc-convert.services";
 import { transferTokens } from "$lib/services/icrc-accounts.services";
 import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
@@ -220,7 +219,9 @@ describe("CkBTCTransactionModal", () => {
     });
 
     it("should render progress when converting ckBTC to Bitcoin", async () => {
-      vi.mocked(convertCkBTCToBtcIcrc2).mockResolvedValue({ success: true });
+      vi.spyOn(services, "convertCkBTCToBtcIcrc2").mockResolvedValue({
+        success: true,
+      });
 
       const amount = 10;
       const destinationAddress = mockBTCAddressTestnet;
