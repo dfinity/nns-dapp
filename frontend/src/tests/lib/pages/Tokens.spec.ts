@@ -296,48 +296,23 @@ describe("Tokens page", () => {
       expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
     });
 
-    describe("when ENABLE_IMPORT_TOKEN_BY_URL disabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", false);
+    it("opens import token modal when ledger canister id in URL", async () => {
+      vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue({
+        name: "Tetris",
+        symbol: "TET",
+        logo: "https://tetris.tet/logo.png",
+      } as IcrcTokenMetadata);
+
+      page.mock({
+        routeId: AppPath.Tokens,
+        data: {
+          universe: OWN_CANISTER_ID_TEXT,
+          importTokenLedgerId: principal(1).toText(),
+        },
       });
+      const po = renderPage([positiveBalance, zeroBalance]);
 
-      it("doesn't open import token modal when ledger canister id in URL", async () => {
-        page.mock({
-          routeId: AppPath.Tokens,
-          data: {
-            universe: OWN_CANISTER_ID_TEXT,
-            importTokenLedgerId: principal(1).toText(),
-          },
-        });
-        const po = renderPage([positiveBalance, zeroBalance]);
-
-        expect(await po.getImportTokenModalPo().isPresent()).toBe(false);
-      });
-    });
-
-    describe("when ENABLE_IMPORT_TOKEN_BY_URL enabled", () => {
-      beforeEach(() => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
-      });
-
-      it("opens import token modal when ledger canister id in URL", async () => {
-        vi.spyOn(ledgerApi, "queryIcrcToken").mockResolvedValue({
-          name: "Tetris",
-          symbol: "TET",
-          logo: "https://tetris.tet/logo.png",
-        } as IcrcTokenMetadata);
-
-        page.mock({
-          routeId: AppPath.Tokens,
-          data: {
-            universe: OWN_CANISTER_ID_TEXT,
-            importTokenLedgerId: principal(1).toText(),
-          },
-        });
-        const po = renderPage([positiveBalance, zeroBalance]);
-
-        expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
-      });
+      expect(await po.getImportTokenModalPo().isPresent()).toBe(true);
     });
   });
 

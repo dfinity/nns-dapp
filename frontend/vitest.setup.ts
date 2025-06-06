@@ -151,7 +151,6 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_PORTFOLIO_PAGE: false,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
-      ENABLE_IMPORT_TOKEN_BY_URL: true,
       ENABLE_SNS_TOPICS: false,
     }),
     fetchRootKey: "false",
