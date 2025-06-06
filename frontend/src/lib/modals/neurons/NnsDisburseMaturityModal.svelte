@@ -15,17 +15,17 @@
 
   const { neuron, close }: Props = $props();
   const disburseMaturity = async ({
-    detail: { percentageToDisburse },
+    detail: { percentageToDisburse, destinationAddress: accountIdentifier },
   }: CustomEvent<{
     percentageToDisburse: number;
     destinationAddress: string;
   }>) => {
     startBusy({ initiator: "disburse-maturity" });
 
-    // TODO(disburse-maturity): switch to account identifier when API supports it
     const { success } = await disburseMaturityService({
       neuronId: neuron.neuronId,
       percentageToDisburse,
+      accountIdentifier,
     });
 
     stopBusy("disburse-maturity");
