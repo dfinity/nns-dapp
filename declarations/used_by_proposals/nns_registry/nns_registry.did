@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-30_03-21-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-05_03-24-base/rs/registry/canister/canister/registry.did>
 // A brief note about the history of this file: This file used to be
 // automatically generated, but now, it is hand-crafted, because the
 // auto-generator has some some pretty degenerate behaviors. The worst of those
@@ -28,6 +28,7 @@ type AddNodeOperatorPayload = record {
   rewardable_nodes : vec record { text; nat32 };
   node_provider_principal_id : opt principal;
   dc_id : text;
+  max_rewardable_nodes : opt vec record { text; nat32 };
 };
 
 type AddNodePayload = record {
@@ -249,6 +250,7 @@ type MigrateCanistersResponse = record {};
 
 type NodeOperatorRecord = record {
   ipv6 : opt text;
+  max_rewardable_nodes : vec record { text; nat32 };
   node_operator_principal_id : blob;
   node_allowance : nat64;
   rewardable_nodes : vec record { text; nat32 };
@@ -397,6 +399,7 @@ type UpdateNodeOperatorConfigPayload = record {
   node_allowance : opt nat64;
   rewardable_nodes : vec record { text; nat32 };
   dc_id : opt text;
+  max_rewardable_nodes : opt vec record { text; nat32 };
 };
 
 type UpdateNodeRewardsTableProposalPayload = record {
