@@ -20,8 +20,9 @@
     </KeyValuePair>
     <KeyValuePair>
       <span slot="key" class="description"
-        >{$i18n.neuron_detail.view_active_disbursements_to}<span
-          data-tid="destination">{destination}</span
+        >{$i18n.neuron_detail.view_active_disbursements_to}&nbsp;<span
+          data-tid="destination"
+          class="destination">{destination}</span
         ></span
       >
       <span slot="value" class="description timestamp" data-tid="timestamp"
@@ -61,6 +62,11 @@
 
   .description {
     font-size: var(--font-size-small);
+  }
+
+  .destination {
+    // To break the long destination account identifier.
+    word-break: break-word;
   }
 
   .timestamp {
