@@ -1,6 +1,6 @@
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
-import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import type {
   KnownNeuron,
   MaturityDisbursement,
@@ -10,6 +10,9 @@ import type {
 import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import type { Subscriber } from "svelte/store";
+
+export const mockAccountIdentifier =
+  "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32";
 
 export const mockFullNeuron: Neuron = {
   id: 1n,
@@ -27,8 +30,7 @@ export const mockFullNeuron: Neuron = {
   spawnAtTimesSeconds: undefined,
   neuronFees: 0n,
   hotKeys: [],
-  accountIdentifier:
-    "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
+  accountIdentifier: mockAccountIdentifier,
   joinedCommunityFundTimestampSeconds: undefined,
   maturityDisbursementsInProgress: [],
   dissolveState: undefined,
@@ -42,10 +44,10 @@ export const mockFullNeuron: Neuron = {
 export const mockMaturityDisbursement: MaturityDisbursement = {
   timestampOfDisbursementSeconds: 1_000_000_000n,
   amountE8s: 1_000_000n,
-  accountToDisburseTo: {
-    owner: mockPrincipal,
-    subaccount: undefined,
-  },
+  accountToDisburseTo: undefined,
+  // For the nns-dapp the accountIdentifierToDisburseTo field is used for non-main destinations,
+  // instead of accountToDisburseTo.
+  accountIdentifierToDisburseTo: mockAccountIdentifier,
   finalizeDisbursementTimestampSeconds: 1_000_000_000n,
 };
 
