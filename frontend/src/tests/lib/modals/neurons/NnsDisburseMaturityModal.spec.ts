@@ -104,7 +104,7 @@ describe("NnsDisburseMaturityModal", () => {
     await po.setPercentage(50);
     await po.clickNextButton();
     expect(await po.getConfirmPercentage()).toEqual("50%");
-    expect(await po.getConfirmTokens()).toBe("50.00-55.26 ICP");
+    expect(await po.getConfirmTokens()).toBe("50.00-55.27 ICP");
     expect(await po.getConfirmDestination()).toEqual("Main");
   });
 

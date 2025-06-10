@@ -9,7 +9,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor, type RenderResult } from "@testing-library/svelte";
-import type { Component } from "svelte";
+import { tick, type Component } from "svelte";
 
 describe("AddAccountModal", () => {
   const mockLedgerIdentity = new MockLedgerIdentity();
@@ -68,13 +68,11 @@ describe("AddAccountModal", () => {
     const accountCard = queryByText(en.accounts.attach_hardware_title);
     expect(accountCard).not.toBeNull();
 
-    accountCard &&
-      accountCard.parentElement &&
+    accountCard?.parentElement &&
       (await fireEvent.click(accountCard.parentElement));
 
-    await waitFor(() =>
-      expect(queryByText(en.accounts.attach_hardware_enter_name)).not.toBeNull()
-    );
+    await tick();
+    expect(queryByText(en.accounts.attach_hardware_enter_name)).not.toBeNull();
   };
 
   it("should be able to select new Ledger device ", async () => {
@@ -106,20 +104,20 @@ describe("AddAccountModal", () => {
     const accountCard = queryByText(en.accounts.new_linked_subtitle);
     expect(accountCard).not.toBeNull();
 
-    accountCard &&
-      accountCard.parentElement &&
+    accountCard?.parentElement &&
       (await fireEvent.click(accountCard.parentElement));
+    await tick();
 
-    await waitFor(async () => {
-      const input = container.querySelector('input[name="add-text-input"]');
-      // Svelte generates code for listening to the `input` event
-      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-      input &&
-        (await fireEvent.input(input, { target: { value: "test name" } }));
+    const input = container.querySelector('input[name="add-text-input"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    input && (await fireEvent.input(input, { target: { value: "test name" } }));
 
-      const createButton = container.querySelector('button[type="submit"]');
-      expect(createButton?.getAttribute("disabled")).toBeNull();
-    });
+    // Wait for busy animation
+    await tick();
+
+    const createButton = container.querySelector('button[type="submit"]');
+    expect(createButton?.getAttribute("disabled")).toBeNull();
   });
 
   const testSubaccount = async (
@@ -132,25 +130,22 @@ describe("AddAccountModal", () => {
     const accountCard = queryByText(en.accounts.new_linked_subtitle);
     expect(accountCard).not.toBeNull();
 
-    accountCard &&
-      accountCard.parentElement &&
+    accountCard?.parentElement &&
       (await fireEvent.click(accountCard.parentElement));
+    await tick();
 
-    await waitFor(async () => {
-      const input = container.querySelector('input[name="add-text-input"]');
-      // Svelte generates code for listening to the `input` event
-      // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-      input &&
-        (await fireEvent.input(input, { target: { value: "test name" } }));
+    // await waitFor(async () => {
+    const input = container.querySelector('input[name="add-text-input"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    input && (await fireEvent.input(input, { target: { value: "test name" } }));
 
-      const createButton = container.querySelector('button[type="submit"]');
+    const createButton = container.querySelector('button[type="submit"]');
 
-      createButton && (await fireEvent.click(createButton));
+    createButton && fireEvent.click(createButton);
 
-      expect(addSubAccount).toBeCalled();
-
-      extraChecks?.(container);
-    });
+    expect(addSubAccount).toBeCalled();
+    extraChecks?.(container);
   };
 
   it("should create a subaccount", async () => await testSubaccount());
@@ -206,6 +201,7 @@ describe("AddAccountModal", () => {
     await shouldNavigateSubaccountStep(renderResult);
     // Wait for the step content to be fully rendered
     await runResolvedPromises();
+    await tick();
 
     const { getByTestId, getByText } = renderResult;
     await goBack({

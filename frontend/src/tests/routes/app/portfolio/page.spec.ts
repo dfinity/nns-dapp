@@ -53,12 +53,14 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 describe("Portfolio route", () => {
   const renderPage = async () => {
     const { container } = render(PortfolioRoute);
     await runResolvedPromises();
+    await tick();
 
     return PortfolioRoutePo.under(new JestPageObjectElement(container));
   };
