@@ -24,6 +24,7 @@ import {
   type SnsNeuronId,
 } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 
 vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/api/sns-ledger.api");
@@ -74,6 +75,7 @@ describe("SnsNeurons", () => {
   const renderComponent = async () => {
     const { container } = render(SnsNeurons);
     await runResolvedPromises();
+    await tick();
     return SnsNeuronsPo.under(new JestPageObjectElement(container));
   };
 
@@ -187,6 +189,7 @@ describe("SnsNeurons", () => {
       expect(spyGetNeuronBalance).toBeCalledTimes(0);
 
       await renderComponent();
+      await runResolvedPromises();
 
       expect(spyGetNeuronBalance).toBeCalledTimes(2);
       expect(spyGetNeuronBalance).toBeCalledWith({
