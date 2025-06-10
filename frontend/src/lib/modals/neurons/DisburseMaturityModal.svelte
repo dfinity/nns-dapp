@@ -264,4 +264,9 @@
     // To not break "To address:" line.
     white-space: nowrap;
   }
+
+  .destination-value {
+    // To break the long destination account identifier.
+    word-break: break-all;
+  }
 </style>
