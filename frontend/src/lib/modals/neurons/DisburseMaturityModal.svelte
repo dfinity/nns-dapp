@@ -25,6 +25,7 @@
   import type { Principal } from "@dfinity/principal";
   import { assertNonNullish, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";
 
   export let availableMaturityE8s: bigint;
   export let rootCanisterId: Principal;
@@ -166,10 +167,12 @@
           )}
         </span>
 
-        <span class="description">
+        <span class="description" data-tid="maturity-description">
           <Html
             text={replacePlaceholders(
-              $i18n.neuron_detail.disburse_maturity_description_2,
+              $isNnsUniverseStore
+                ? $i18n.neuron_detail.disburse_maturity_description_2_nns
+                : $i18n.neuron_detail.disburse_maturity_description_2_sns,
               { $symbol: token.symbol }
             )}
           />
