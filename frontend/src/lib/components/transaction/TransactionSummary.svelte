@@ -1,10 +1,23 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+  import { tokensByLedgerCanisterIdStore } from "$lib/derived/tokens.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { formatNumber } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import {
+    getLedgerCanisterIdFromToken,
+    getUsdValue,
+    toTokenAmountV2,
+  } from "$lib/utils/token.utils";
   import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
-  import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
+  import {
+    isNullish,
+    nonNullish,
+    TokenAmount,
+    TokenAmountV2,
+    type Token,
+  } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
   type Props = {
@@ -47,25 +60,87 @@
       token,
     })
   );
+
+  const tokenPrice = $derived.by(() => {
+    const ledgerCanisterId = getLedgerCanisterIdFromToken(
+      token,
+      $tokensByLedgerCanisterIdStore
+    );
+
+    if (
+      isNullish(ledgerCanisterId) ||
+      isNullish($icpSwapUsdPricesStore) ||
+      $icpSwapUsdPricesStore === "error"
+    )
+      return undefined;
+
+    return $icpSwapUsdPricesStore[ledgerCanisterId];
+  });
+
+  const tokenAmountUsdValue = $derived.by(() => {
+    if (isNullish(tokenAmount) || isNullish(tokenPrice)) return undefined;
+
+    const usdValue = getUsdValue({ amount: tokenAmount, tokenPrice });
+    return nonNullish(usdValue) ? formatNumber(usdValue) : undefined;
+  });
+
+  const transactionFeeUsdValue = $derived.by(() => {
+    if (isNullish(transactionFee) || isNullish(tokenPrice)) return undefined;
+
+    const feeAmount = toTokenAmountV2(transactionFee);
+    const usdValue = getUsdValue({ amount: feeAmount, tokenPrice });
+    return nonNullish(usdValue) ? formatNumber(usdValue) : undefined;
+  });
+
+  const totalDeductedUsdValue = $derived.by(() => {
+    if (isNullish(tokenTotalDeducted) || isNullish(tokenPrice))
+      return undefined;
+
+    const usdValue = getUsdValue({
+      amount: tokenTotalDeducted,
+      tokenPrice,
+    });
+    return nonNullish(usdValue) ? formatNumber(usdValue) : undefined;
+  });
 </script>
 
 <article class="container">
   <KeyValuePair testId="transaction-summary-sending-amount">
     <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
-    <AmountDisplay slot="value" singleLine detailed amount={tokenAmount} />
+    <div class="value" slot="value">
+      <AmountDisplay singleLine detailed amount={tokenAmount} />
+      {#if nonNullish(tokenAmountUsdValue)}
+        <span class="fiat" data-tid="fiat-value">
+          (~${tokenAmountUsdValue})
+        </span>
+      {/if}
+    </div>
   </KeyValuePair>
 
   {#if showLedgerFee}
     <KeyValuePair testId="transaction-summary-fee">
       <span class="label" slot="key">{ledgerFeeLabel}</span>
-      <AmountDisplay slot="value" singleLine detailed amount={transactionFee} />
+      <div class="value" slot="value">
+        <AmountDisplay singleLine detailed amount={transactionFee} />
+        {#if nonNullish(transactionFeeUsdValue)}
+          <span class="fiat" data-tid="fiat-value">
+            (${transactionFeeUsdValue})
+          </span>
+        {/if}
+      </div>
     </KeyValuePair>
 
     <div class="deducted" data-tid="transaction-summary-total-deducted">
       <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
 
-      <p>
+      <p class="value">
         <AmountDisplay inline detailed amount={tokenTotalDeducted} />
+
+        {#if nonNullish(totalDeductedUsdValue)}
+          <span class="fiat" data-tid="fiat-value">
+            (~${totalDeductedUsdValue})
+          </span>
+        {/if}
       </p>
     </div>
   {/if}
@@ -123,5 +198,15 @@
 
   .subtitle {
     margin: 0 0 var(--padding-0_5x);
+  }
+
+  .value {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+
+    .fiat {
+      color: var(--text-description);
+    }
   }
 </style>
