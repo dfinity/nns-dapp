@@ -759,7 +759,7 @@
     "view_active_disbursements": "View Active Disbursements",
     "view_active_disbursements_status": "Disbursing",
     "view_active_disbursements_modal_title": "Active Disbursements",
-    "view_active_disbursements_to": "To: ",
+    "view_active_disbursements_to": "To:",
     "disburse_maturity_description_1": "Burn maturity to mint new $symbol tokens. In 7 days, new $symbol tokens will be minted and sent to the destination address.",
     "disburse_maturity_description_2_nns": "The quantity of new $symbol minted will depend on the maturity modulation function (see the <a href=\"https://learn.internetcomputer.org/hc/en-us/articles/34084120668692-Neurons#h_01JJ26QNTYVT1XCBYB42GBAER3\" target=\"_blank\">wiki page</a>). Consult with tax and legal advisors with further questions, and proceed at your own risk.",
     "disburse_maturity_description_2_sns": "The quantity of new $symbol minted will depend on the maturity modulation function (see the <a href=\"https://learn.internetcomputer.org/hc/en-us/articles/34084687583252-Neurons#h_01JJ26QNTYVT1XCBYB42GBAER3\" target=\"_blank\">wiki page</a>). Consult with tax and legal advisors with further questions, and proceed at your own risk.",

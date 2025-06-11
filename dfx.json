@@ -346,6 +346,12 @@
         "https://yhabib-ingress.devenv.dfinity.network"
       ],
       "type": "persistent"
+    },
+    "devenv_francesco": {
+      "providers": [
+        "https://francesco-ingress.devenv.dfinity.network"
+      ],
+      "type": "persistent"
     }
   },
   "defaults": {

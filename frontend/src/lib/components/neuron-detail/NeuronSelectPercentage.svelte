@@ -65,7 +65,7 @@
       <Tooltip id="disabled-disburse-button-modal" text={disabledText} top>
         <button
           data-tid="select-maturity-percentage-button"
-          class="primary"
+          class="primary disabled-button"
           on:click={selectPercentage}
           {disabled}
         >
@@ -97,5 +97,9 @@
       margin-top: var(--padding);
       text-align: right;
     }
+  }
+
+  .disabled-button {
+    width: 100%;
   }
 </style>

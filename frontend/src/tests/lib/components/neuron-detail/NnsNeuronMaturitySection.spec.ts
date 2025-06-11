@@ -42,7 +42,7 @@ describe("NnsNeuronMaturitySection", () => {
   });
 
   it("should render active disbursements item action when maturity disbursement in progress", async () => {
-    const neuron = {
+    const neuron: NeuronInfo = {
       ...mockNeuron,
       fullNeuron: {
         ...mockNeuron.fullNeuron,
@@ -52,6 +52,7 @@ describe("NnsNeuronMaturitySection", () => {
             timestampOfDisbursementSeconds: undefined,
             accountToDisburseTo: undefined,
             finalizeDisbursementTimestampSeconds: undefined,
+            accountIdentifierToDisburseTo: undefined,
           },
         ],
       },

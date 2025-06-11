@@ -1,8 +1,8 @@
 import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import NnsActiveDisbursementsModal from "$lib/modals/neurons/NnsActiveDisbursementsModal.svelte";
-import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import {
+  mockAccountIdentifier,
   mockMaturityDisbursement,
   mockNeuron,
 } from "$tests/mocks/neurons.mock";
@@ -64,14 +64,14 @@ describe("NnsActiveDisbursementsModal", () => {
     expect(await entries[0].getMaturity()).toBe(
       `${maturityDisbursementAmountIcp1}.00`
     );
-    expect(await entries[0].getDestination()).toBe(mockPrincipalText);
+    expect(await entries[0].getDestination()).toBe(mockAccountIdentifier);
     expect(await entries[0].getTimestamp()).toBe("Jan 1, 1970 12:00 AM");
 
     // second entry
     expect(await entries[1].getMaturity()).toBe(
       `${maturityDisbursementAmountIcp2}.00`
     );
-    expect(await entries[1].getDestination()).toBe(mockPrincipalText);
+    expect(await entries[1].getDestination()).toBe(mockAccountIdentifier);
     expect(await entries[1].getTimestamp()).toBe("Jul 2, 1970 3:00 PM");
   });
 

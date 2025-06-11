@@ -30,7 +30,7 @@
     rootCanisterId,
     universesAccounts: $universesAccountsStore,
   });
-  let address: string;
+  let address: string | undefined = undefined;
   $: {
     if (
       !invalidAddress({ address, rootCanisterId, network: selectedNetwork })

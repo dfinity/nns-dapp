@@ -20,6 +20,7 @@ import { CkBTCInfoCardPo } from "$tests/page-objects/CkBTCInfoCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 
 describe("CkBTCInfoCard", () => {
   const props = {
@@ -259,16 +260,15 @@ describe("CkBTCInfoCard", () => {
         ...props,
       });
 
-      const { container } = render(CkBTCInfoCard, {
-        props: testProps,
-      });
-      await runResolvedPromises();
-      const po = CkBTCInfoCardPo.under(new JestPageObjectElement(container));
+      const po = await renderComponent(testProps);
 
       expect(await po.hasAddress()).toBe(false);
+
       testProps.account = mockCkBTCMainAccount;
 
       await runResolvedPromises();
+      await tick();
+
       expect(await po.hasAddress()).toBe(true);
       expect(await po.getAddress()).toBe(mockBTCAddressTestnet);
     });
