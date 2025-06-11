@@ -6,7 +6,9 @@ import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 
 describe("BitcoinEstimatedFee", () => {
   let spyEstimateFee;
@@ -47,14 +49,19 @@ describe("BitcoinEstimatedFee", () => {
   });
 
   it("should display estimated fee for network Bitcoin", async () => {
+    vi.useFakeTimers();
     expect(spyEstimateFee).not.toHaveBeenCalled();
     const { getByTestId } = render(BitcoinEstimatedFee, {
       props: { selectedNetwork: TransactionNetwork.BTC_TESTNET, ...props },
     });
 
-    await waitFor(() =>
-      expect(getByTestId("bitcoin-estimated-fee")).not.toBeNull()
-    );
+    // There is a debounce function in the component when loading the fee
+    vi.advanceTimersByTime(1000);
+
+    await runResolvedPromises();
+    await tick();
+
+    expect(getByTestId("bitcoin-estimated-fee")).not.toBeNull();
 
     // Query + update
     expect(spyEstimateFee).toHaveBeenCalledTimes(2);
