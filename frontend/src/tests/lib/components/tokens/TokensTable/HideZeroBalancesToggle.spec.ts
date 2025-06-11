@@ -2,8 +2,8 @@ import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroB
 import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
 import { HideZeroBalancesTogglePo } from "$tests/page-objects/HideZeroBalancesToggle.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 describe("HideZeroBalancesToggle", () => {
@@ -38,13 +38,13 @@ describe("HideZeroBalancesToggle", () => {
     expect(await toggle.isEnabled()).toBe(false);
 
     hideZeroBalancesStore.set("hide");
-    await runResolvedPromises();
+    await tick();
 
     expect(get(hideZeroBalancesStore)).toBe("hide");
     expect(await toggle.isEnabled()).toBe(true);
 
     hideZeroBalancesStore.set("show");
-    await runResolvedPromises();
+    await tick();
 
     expect(get(hideZeroBalancesStore)).toBe("show");
     expect(await toggle.isEnabled()).toBe(false);

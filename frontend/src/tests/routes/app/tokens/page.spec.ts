@@ -59,6 +59,7 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
@@ -168,24 +169,33 @@ describe("Tokens route", () => {
       );
       vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockImplementation(
         async ({ canisterId }) => {
-          const balancesMap = {
-            [CKBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
-            [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: ckBTCBalanceE8s,
-            [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
-            [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE8s,
-            [CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
-            [ledgerCanisterIdTetris.toText()]: tetrisBalanceE8s,
-            [ledgerCanisterIdPacman.toText()]: pacmanBalanceE8s,
-            // imported tokens
-            [importedToken1Id.toText()]: 10n,
-            [importedToken2Id.toText()]: 0n,
+          // Use a function to get current values instead of capturing them in closure
+          const getCurrentBalance = (canisterIdText: string) => {
+            switch (canisterIdText) {
+              case CKBTC_UNIVERSE_CANISTER_ID.toText():
+              case CKTESTBTC_UNIVERSE_CANISTER_ID.toText():
+                return ckBTCBalanceE8s;
+              case CKETH_UNIVERSE_CANISTER_ID.toText():
+              case CKETHSEPOLIA_UNIVERSE_CANISTER_ID.toText():
+                return ckETHBalanceUlps;
+              case CKUSDC_UNIVERSE_CANISTER_ID.toText():
+                return ckUSDCBalanceE8s;
+              case ledgerCanisterIdTetris.toText():
+                return tetrisBalanceE8s;
+              case ledgerCanisterIdPacman.toText():
+                return pacmanBalanceE8s;
+              case importedToken1Id.toText():
+                return 10n;
+              case importedToken2Id.toText():
+                return 0n;
+              default:
+                throw new Error(
+                  `Account not found for canister ${canisterIdText}`
+                );
+            }
           };
-          if (isNullish(balancesMap[canisterId.toText()])) {
-            throw new Error(
-              `Account not found for canister ${canisterId.toText()}`
-            );
-          }
-          return balancesMap[canisterId.toText()];
+
+          return getCurrentBalance(canisterId.toText());
         }
       );
       vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
@@ -288,7 +298,7 @@ describe("Tokens route", () => {
           ckBTCBalanceE8s += 100_000_000n;
           await modalPo.clickFinish();
 
-          await runResolvedPromises();
+          await tick();
 
           expect(await tokensPagePo.getRowData("ckBTC")).toEqual({
             projectName: "ckBTC",
@@ -392,7 +402,7 @@ describe("Tokens route", () => {
           ckETHBalanceUlps += 1_000_000_000_000_000_000n;
           await modalPo.clickFinish();
 
-          await runResolvedPromises();
+          await tick();
 
           expect(await tokensPagePo.getRowData("ckETH")).toEqual({
             projectName: "ckETH",
@@ -417,7 +427,7 @@ describe("Tokens route", () => {
           tetrisBalanceE8s += 100_000_000n;
           await modalPo.clickFinish();
 
-          await runResolvedPromises();
+          await tick();
 
           expect(await tokensPagePo.getRowData("Tetris")).toEqual({
             projectName: "Tetris",
@@ -426,6 +436,8 @@ describe("Tokens route", () => {
         });
 
         it("users can send ckBTC tokens", async () => {
+          vi.useFakeTimers();
+
           const po = await renderPage();
 
           const tokensPagePo = po.getTokensPagePo();
@@ -445,13 +457,12 @@ describe("Tokens route", () => {
             owner: principal(1),
           };
 
+          ckBTCBalanceE8s -= amountCkBTCTransactionUlps;
+
           await po.transferCkBTCTokens({
             amount: amountCkBTCTransaction,
             destinationAddress: encodeIcrcAccount(toAccount),
           });
-
-          ckBTCBalanceE8s = ckBTCBalanceE8s - amountCkBTCTransactionUlps;
-          await runResolvedPromises();
 
           expect(icrcLedgerApi.icrcTransfer).toBeCalledTimes(1);
           expect(icrcLedgerApi.icrcTransfer).toBeCalledWith({
@@ -463,15 +474,16 @@ describe("Tokens route", () => {
             identity: mockIdentity,
           });
 
+          await runResolvedPromises();
+
           expect(await tokensPagePo.getRowData("ckBTC")).toEqual({
             projectName: "ckBTC",
             balance: "2.45 ckBTC",
           });
-          await vi.waitFor(async () =>
-            expect(await po.getCkBTCTransactionModalPo().isPresent()).toBe(
-              false
-            )
-          );
+
+          // Required for the animation to finish.
+          vi.advanceTimersByTime(500);
+          expect(await po.getCkBTCTransactionModalPo().isPresent()).toBe(false);
         });
 
         it("users can send ckETH tokens", async () => {

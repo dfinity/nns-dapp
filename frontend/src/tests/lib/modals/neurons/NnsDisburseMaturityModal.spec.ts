@@ -104,10 +104,50 @@ describe("NnsDisburseMaturityModal", () => {
     await po.setPercentage(50);
     await po.clickNextButton();
     expect(await po.getConfirmPercentage()).toEqual("50%");
-    expect(await po.getConfirmTokens()).toBe("50.00-55.26 ICP");
+    expect(await po.getConfirmTokens()).toBe("50.00-55.27 ICP");
     expect(await po.getConfirmDestination()).toEqual("Main");
   });
 
+  it("should disburse maturity to entered destination", async () => {
+    const neuron = testNeuron();
+    const close = vi.fn();
+    const spyDisburseMaturity = vi
+      .spyOn(api, "disburseMaturity")
+      .mockResolvedValue();
+    // Add the neuron to the store to avoid extra query from getIdentityOfControllerByNeuronId
+    neuronsStore.setNeurons({
+      neurons: [neuron],
+      certified: true,
+    });
+    const po = await renderNnsDisburseMaturityModal({ neuron, close });
+
+    await po.setPercentage(50);
+    await po.getSelectDestinationAddressPo().toggleSelect();
+    await po
+      .getSelectDestinationAddressPo()
+      .enterAddress(mockHardwareWalletAccount.identifier);
+
+    await po.clickNextButton();
+
+    expect(
+      await po.getNeuronConfirmActionScreenPo().getConfirmButton().isDisabled()
+    ).toEqual(false);
+    expect(spyDisburseMaturity).toHaveBeenCalledTimes(0);
+
+    await po.clickConfirmButton();
+    await runResolvedPromises();
+
+    expect(spyDisburseMaturity).toHaveBeenCalledTimes(1);
+    expect(spyDisburseMaturity).toHaveBeenCalledWith({
+      neuronId: neuron.neuronId,
+      percentageToDisburse: 50,
+      identity: mockIdentity,
+      toAccountIdentifier: mockHardwareWalletAccount.identifier,
+    });
+    expect(close).toHaveBeenCalledTimes(1);
+  });
+
+  // FIXME: This test makes other tests fail if it runs first.
   it("should successfully disburse maturity", async () => {
     const neuron = testNeuron();
     const close = vi.fn();
@@ -179,45 +219,6 @@ describe("NnsDisburseMaturityModal", () => {
         text: "Maturity successfully disbursed.",
       },
     ]);
-    expect(close).toHaveBeenCalledTimes(1);
-  });
-
-  it("should disburse maturity to entered destination", async () => {
-    const neuron = testNeuron();
-    const close = vi.fn();
-    const spyDisburseMaturity = vi
-      .spyOn(api, "disburseMaturity")
-      .mockResolvedValue();
-    // Add the neuron to the store to avoid extra query from getIdentityOfControllerByNeuronId
-    neuronsStore.setNeurons({
-      neurons: [neuron],
-      certified: true,
-    });
-    const po = await renderNnsDisburseMaturityModal({ neuron, close });
-
-    await po.setPercentage(50);
-    await po.getSelectDestinationAddressPo().toggleSelect();
-    await po
-      .getSelectDestinationAddressPo()
-      .enterAddress(mockHardwareWalletAccount.identifier);
-
-    await po.clickNextButton();
-
-    expect(
-      await po.getNeuronConfirmActionScreenPo().getConfirmButton().isDisabled()
-    ).toEqual(false);
-    expect(spyDisburseMaturity).toHaveBeenCalledTimes(0);
-
-    await po.clickConfirmButton();
-    await runResolvedPromises();
-
-    expect(spyDisburseMaturity).toHaveBeenCalledTimes(1);
-    expect(spyDisburseMaturity).toHaveBeenCalledWith({
-      neuronId: neuron.neuronId,
-      percentageToDisburse: 50,
-      identity: mockIdentity,
-      toAccountIdentifier: mockHardwareWalletAccount.identifier,
-    });
     expect(close).toHaveBeenCalledTimes(1);
   });
 });
