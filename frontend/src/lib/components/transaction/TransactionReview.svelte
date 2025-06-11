@@ -14,30 +14,30 @@
 
   type Props = {
     additionalInfo: Snippet;
+    description: Snippet;
+    destinationInfo: Snippet;
     disableSubmit: boolean;
     handleGoBack: () => void;
+    receivedAmount: Snippet;
     selectedNetwork?: TransactionNetwork;
     showLedgerFee?: boolean;
     token: Token;
     transaction: NewTransaction;
     transactionFee: TokenAmountV2 | TokenAmount;
-    receiveAmount: Snippet;
-    description: Snippet;
-    destinationInfo: Snippet;
   };
 
   const {
     additionalInfo,
+    description,
+    destinationInfo,
     disableSubmit,
     handleGoBack,
+    receivedAmount,
     selectedNetwork = undefined,
     showLedgerFee = true,
     token,
     transaction,
     transactionFee,
-    receiveAmount,
-    description,
-    destinationInfo,
   }: Props = $props();
 
   const { sourceAccount, amount, destinationAddress } = $derived(transaction);
@@ -57,7 +57,7 @@
       {token}
       {transactionFee}
       {showLedgerFee}
-      {receiveAmount}
+      {receivedAmount}
     />
 
     <TransactionDescription

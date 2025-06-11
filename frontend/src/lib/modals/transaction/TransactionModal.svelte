@@ -188,7 +188,7 @@
       {#snippet description()}
         <slot name="description" />
       {/snippet}
-      {#snippet receiveAmount()}
+      {#snippet receivedAmount()}
         <slot name="received-amount" />
         <TransactionReceivedAmount amount={amount!} {token} />
       {/snippet}

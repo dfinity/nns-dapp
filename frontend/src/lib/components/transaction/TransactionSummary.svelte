@@ -9,7 +9,7 @@
 
   type Props = {
     amount: number;
-    receiveAmount: Snippet;
+    receivedAmount: Snippet;
     showLedgerFee?: boolean;
     token: Token;
     transactionFee: TokenAmount | TokenAmountV2;
@@ -17,7 +17,7 @@
 
   const {
     amount,
-    receiveAmount,
+    receivedAmount,
     showLedgerFee = true,
     token,
     transactionFee,
@@ -88,7 +88,7 @@
     <IconSouth />
   </div>
 
-  {@render receiveAmount()}
+  {@render receivedAmount()}
 </article>
 
 <style lang="scss">
