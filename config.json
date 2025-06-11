@@ -54,8 +54,7 @@
         "HOST": "https://mstr-ingress.devenv.dfinity.network",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        },
-        "PLAUSIBLE_DOMAIN": "https://qsgjb-riaaa-aaaaa-aaaga-cai.mstr-ingress.devenv.dfinity.network"
+        }
       }
     },
     "devenv_cosku": {
