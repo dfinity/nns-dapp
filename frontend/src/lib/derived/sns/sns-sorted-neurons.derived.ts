@@ -7,6 +7,7 @@ import {
   totalDisbursingMaturity,
 } from "$lib/utils/sns-neuron.utils";
 import type { SnsNeuron } from "@dfinity/sns";
+import { isNullish } from "@dfinity/utils";
 import { derived, type Readable } from "svelte/store";
 
 // A neuron is considered "non-empty" if it has a non-zero stake, non-zero maturity,
@@ -15,7 +16,7 @@ export const nonEmptySnsNeuronStore: Readable<SnsNeuron[]> = derived(
   [snsNeuronsStore, selectedUniverseIdStore],
   ([store, selectedSnsRootCanisterId]) => {
     const projectStore = store[selectedSnsRootCanisterId.toText()];
-    return projectStore === undefined
+    return isNullish(projectStore)
       ? []
       : projectStore.neurons.filter(
           (neuron) =>
