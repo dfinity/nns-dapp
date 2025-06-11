@@ -6,33 +6,33 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
-  import type { Principal } from "@dfinity/principal";
-  import { nonNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import { isNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
-  export let transactionFee: TokenAmount | TokenAmountV2;
+  type Props = {
+    transactionFee: TokenAmount | TokenAmountV2;
+  };
 
-  let ledgerCanisterId: Principal | undefined;
-  $: ledgerCanisterId = getLedgerCanisterIdFromUniverse($selectedUniverseStore);
+  const { transactionFee }: Props = $props();
 
-  let tokenPrice: number | undefined;
-  $: tokenPrice =
-    nonNullish(ledgerCanisterId) &&
-    nonNullish($icpSwapUsdPricesStore) &&
-    $icpSwapUsdPricesStore !== "error"
-      ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
-      : undefined;
+  const usdValue = $derived.by(() => {
+    const ledgerCanisterId = getLedgerCanisterIdFromUniverse(
+      $selectedUniverseStore
+    );
 
-  let usdValue: number;
-  $: usdValue = getUsdValue({ amount: transactionFee, tokenPrice }) ?? 0;
+    if (isNullish($icpSwapUsdPricesStore) || $icpSwapUsdPricesStore === "error")
+      return 0;
 
-  let isAlmostZero: boolean;
-  $: isAlmostZero = usdValue > 0 && usdValue < 0.01;
+    const tokenPrice = $icpSwapUsdPricesStore[ledgerCanisterId.toText()];
+    return getUsdValue({ amount: transactionFee, tokenPrice }) ?? 0;
+  });
 
-  let formattedUsdValue: string;
-  $: formattedUsdValue = isAlmostZero ? "0.01" : formatNumber(usdValue);
-
-  let usdValueDisplay: string;
-  $: usdValueDisplay = `(${isAlmostZero ? "< " : ""}$${formattedUsdValue})`;
+  const isAlmostZero = $derived(usdValue > 0 && usdValue < 0.01);
+  const formattedUsdValue = $derived(
+    isAlmostZero ? "0.01" : formatNumber(usdValue)
+  );
+  const usdValueDisplay = $derived(
+    `(${isAlmostZero ? "< " : ""}$${formattedUsdValue})`
+  );
 </script>
 
 <div data-tid="transaction-form-fee">
