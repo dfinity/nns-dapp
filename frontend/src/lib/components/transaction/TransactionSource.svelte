@@ -5,14 +5,18 @@
   import { KeyValuePair } from "@dfinity/gix-components";
   import { TokenAmountV2, type Token } from "@dfinity/utils";
 
-  export let account: Account;
-  export let token: Token;
+  type Props = {
+    account: Account;
+    token: Token;
+  };
+  const { account, token }: Props = $props();
 
-  let amount: TokenAmountV2;
-  $: amount = TokenAmountV2.fromUlps({
-    amount: account.balanceUlps,
-    token,
-  });
+  const amount = $derived(
+    TokenAmountV2.fromUlps({
+      amount: account.balanceUlps,
+      token,
+    })
+  );
 </script>
 
 <p class="label account-name" data-tid="transaction-review-source-account-name">
