@@ -191,7 +191,6 @@
   let areWatchersSet = false;
 
   let unsubscribeWatchCommitment: () => void | undefined;
-  let unsubscribeWatchMetrics: () => void | undefined;
   $: if (
     nonNullish(rootCanisterId) &&
     nonNullish(swapCanisterId) &&
@@ -274,7 +273,6 @@
 
   onDestroy(() => {
     unsubscribeWatchCommitment?.();
-    unsubscribeWatchMetrics?.();
     if (isNullish(rootCanisterId)) {
       return;
     }
