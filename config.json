@@ -73,6 +73,14 @@
         }
       }
     },
+    "devenv_francesco": {
+      "config": {
+        "HOST": "https://francesco-ingress.devenv.dfinity.network",
+        "FEATURE_FLAGS": {
+          "ENABLE_CKTESTBTC": false
+        }
+      }
+    },
     "local": {
       "config": {
         "HOST": "http://localhost:8080",
