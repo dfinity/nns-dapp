@@ -180,7 +180,7 @@
       on:nnsClose
     >
       {#snippet additionalInfo()}
-        <slot name="additional-info" />
+        <slot name="additional-info-review" />
       {/snippet}
       {#snippet destinationInfo()}
         <slot name="destination-info" />
@@ -189,7 +189,7 @@
         <slot name="description" />
       {/snippet}
       {#snippet receiveAmount()}
-        <slot name="receive-amount" />
+        <slot name="received-amount" />
         <TransactionReceivedAmount amount={amount!} {token} />
       {/snippet}
     </TransactionReview>
