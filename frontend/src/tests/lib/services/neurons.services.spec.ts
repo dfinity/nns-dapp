@@ -1230,7 +1230,7 @@ describe("neurons-services", () => {
   });
 
   describe("disburseMaturity", () => {
-    it("should disburse maturity", async () => {
+    it("should call disburse maturity api", async () => {
       neuronsStore.pushNeurons({ neurons, certified: true });
       expect(spyDisburseMaturity).toBeCalledTimes(0);
       const { success } = await services.disburseMaturity({
@@ -1238,11 +1238,6 @@ describe("neurons-services", () => {
         percentageToDisburse: 50,
       });
 
-      expect(spyDisburseMaturity).toBeCalledWith({
-        identity: mockIdentity,
-        neuronId: controlledNeuron.neuronId,
-        percentageToDisburse: 50,
-      });
       expect(spyDisburseMaturity).toBeCalledTimes(1);
       expect(spyDisburseMaturity).toBeCalledWith({
         identity: mockIdentity,
@@ -1252,7 +1247,26 @@ describe("neurons-services", () => {
       expect(success).toBe(true);
     });
 
-    it("should not disburse maturity if no identity", async () => {
+    it("should provide account identifier", async () => {
+      neuronsStore.pushNeurons({ neurons, certified: true });
+      expect(spyDisburseMaturity).toBeCalledTimes(0);
+      const { success } = await services.disburseMaturity({
+        neuronId: controlledNeuron.neuronId,
+        percentageToDisburse: 50,
+        toAccountIdentifier: mockMainAccount.identifier,
+      });
+
+      expect(spyDisburseMaturity).toBeCalledTimes(1);
+      expect(spyDisburseMaturity).toBeCalledWith({
+        identity: mockIdentity,
+        neuronId: controlledNeuron.neuronId,
+        percentageToDisburse: 50,
+        toAccountIdentifier: mockMainAccount.identifier,
+      });
+      expect(success).toBe(true);
+    });
+
+    it("should not call disburse maturity if no identity provided", async () => {
       setNoIdentity();
 
       const { success } = await services.disburseMaturity({
