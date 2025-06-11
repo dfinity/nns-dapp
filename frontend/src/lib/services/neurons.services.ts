@@ -18,7 +18,6 @@ import { definedNeuronsStore } from "$lib/derived/neurons.derived";
 import type { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { getLedgerIdentityProxy } from "$lib/proxy/icp-ledger.services.proxy";
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
-import { analytics } from "$lib/services/analytics.services";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import {
   getAccountIdentity,
@@ -856,10 +855,6 @@ export const disburseMaturity = async ({
     return { success: true };
   } catch (err) {
     toastsShow(mapNeuronErrorToToastMessage(err));
-
-    analytics.event("disburse-nns-maturity-fail", {
-      feature: "disburse-nns-maturity",
-    });
 
     return { success: false };
   }

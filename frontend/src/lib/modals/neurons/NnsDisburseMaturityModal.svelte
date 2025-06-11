@@ -24,7 +24,6 @@
     startBusy({ initiator: "disburse-maturity" });
 
     analytics.event("disburse-nns-maturity-confirmation-click", {
-      feature: "disburse-nns-maturity",
       percentage: percentageToDisburse,
     });
 
@@ -41,10 +40,6 @@
         labelKey: "neuron_detail.disburse_maturity_success",
       });
       close();
-
-      analytics.event("disburse-nns-maturity-success", {
-        feature: "disburse-nns-maturity",
-      });
     }
   };
 
