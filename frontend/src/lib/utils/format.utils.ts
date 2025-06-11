@@ -86,3 +86,9 @@ export const shortenWithMiddleEllipsis = (
 
 export const renderPrivacyModeBalance = (count: number) =>
   "•".repeat(Math.max(0, count));
+
+export const formatUsdValue = (usdValue: number): string => {
+  const isAlmostZero = usdValue > 0 && usdValue < 0.01;
+  const formattedValue = isAlmostZero ? "0.01" : formatNumber(usdValue);
+  return `${isAlmostZero ? "< " : ""}$${formattedValue}`;
+};
