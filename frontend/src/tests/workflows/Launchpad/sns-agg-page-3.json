@@ -1504,10 +1504,22 @@
         {
           "Nat": [32]
         }
+      ],
+      [
+        "icrc103:public_allowances",
+        {
+          "Text": "true"
+        }
+      ],
+      [
+        "icrc103:max_take_value",
+        {
+          "Nat": [500]
+        }
       ]
     ],
     "icrc1_fee": [10000000],
-    "icrc1_total_supply": 5457771870382776,
+    "icrc1_total_supply": 5460321305162514,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2178,10 +2190,22 @@
         {
           "Nat": [32]
         }
+      ],
+      [
+        "icrc103:public_allowances",
+        {
+          "Text": "true"
+        }
+      ],
+      [
+        "icrc103:max_take_value",
+        {
+          "Nat": [500]
+        }
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100009611034443,
+    "icrc1_total_supply": 100012272391294,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2793,7 +2817,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041634086243321739,
+    "icrc1_total_supply": 1041632184517732563,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3648,7 +3672,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11676273728991967,
+    "icrc1_total_supply": 11677961975056671,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -5414,10 +5438,22 @@
         {
           "Nat": [32]
         }
+      ],
+      [
+        "icrc103:public_allowances",
+        {
+          "Text": "true"
+        }
+      ],
+      [
+        "icrc103:max_take_value",
+        {
+          "Nat": [500]
+        }
       ]
     ],
     "icrc1_fee": [1215752192, 23],
-    "icrc1_total_supply": 2320862827967020851,
+    "icrc1_total_supply": 2320702759152748734,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -6230,10 +6266,22 @@
         {
           "Nat": [32]
         }
+      ],
+      [
+        "icrc103:public_allowances",
+        {
+          "Text": "true"
+        }
+      ],
+      [
+        "icrc103:max_take_value",
+        {
+          "Nat": [500]
+        }
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999999779090000,
+    "icrc1_total_supply": 1999999778970000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -9811,10 +9859,22 @@
         {
           "Nat": [32]
         }
+      ],
+      [
+        "icrc103:public_allowances",
+        {
+          "Text": "true"
+        }
+      ],
+      [
+        "icrc103:max_take_value",
+        {
+          "Nat": [500]
+        }
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100190762268163965,
+    "icrc1_total_supply": 100193441230018139,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

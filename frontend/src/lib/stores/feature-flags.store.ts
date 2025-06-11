@@ -37,7 +37,6 @@ export const EDITABLE_FEATURE_FLAGS: Array<FeatureKey> = [
   "ENABLE_USD_VALUES",
   "ENABLE_USD_VALUES_FOR_NEURONS",
   "ENABLE_PORTFOLIO_PAGE",
-  "ENABLE_IMPORT_TOKEN_BY_URL",
   "ENABLE_SNS_TOPICS",
 ];
 
@@ -159,6 +158,5 @@ export const {
   // Used only in tests only
   TEST_FLAG_EDITABLE,
   TEST_FLAG_NOT_EDITABLE,
-  ENABLE_IMPORT_TOKEN_BY_URL,
   ENABLE_SNS_TOPICS,
 } = featureFlagsStore;

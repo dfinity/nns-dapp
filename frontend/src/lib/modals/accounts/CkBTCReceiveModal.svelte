@@ -5,6 +5,7 @@
   import BitcoinKYTFee from "$lib/components/accounts/BitcoinKYTFee.svelte";
   import ReceiveAddressQRCode from "$lib/components/accounts/ReceiveAddressQRCode.svelte";
   import ReceiveSelectAccountDropdown from "$lib/components/accounts/ReceiveSelectAccountDropdown.svelte";
+  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/mockable.constants";
   import { loadBtcAddress } from "$lib/services/ckbtc-minter.services";
   import { bitcoinAddressStore } from "$lib/stores/bitcoin.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
@@ -75,7 +76,7 @@
   $: segmentLabel = ckTESTBTC ? $i18n.ckbtc.test_title : $i18n.ckbtc.title;
 
   // Avoid a UI glich by not showing the buttons until the QR Code is rendered
-  let qrCodeRendered: boolean;
+  let qrCodeRendered: boolean = QR_CODE_RENDERED_DEFAULT_STATE;
 
   const dispatcher = createEventDispatcher();
 

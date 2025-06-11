@@ -1,22 +1,30 @@
 <script lang="ts">
   import Copy from "$lib/components/ui/Copy.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
-  import { QR_CODE_RENDERED_DEFAULT_STATE } from "$lib/constants/mockable.constants";
   import { QRCode } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
-  export let address: string | undefined;
-  export let qrCodeLabel: string;
-  export let logo: string;
-  export let logoArialLabel: string;
-  export let logoSize: "huge" | "big" = "huge";
-  // Render the QR-code when the space is available / rendered to avoid UI glitch.
-  export let renderQRCode = false;
+  type Props = {
+    address?: string;
+    qrCodeLabel: string;
+    logo: string;
+    logoArialLabel: string;
+    logoSize?: "huge" | "big";
+    renderQRCode?: boolean;
+    qrCodeRendered: boolean;
+  };
 
-  export let qrCodeRendered: boolean = QR_CODE_RENDERED_DEFAULT_STATE;
+  let {
+    address,
+    qrCodeLabel,
+    logo,
+    logoArialLabel,
+    logoSize = "huge",
+    renderQRCode = false,
+    qrCodeRendered = $bindable(),
+  }: Props = $props();
 
-  let addressSelected = false;
-  $: addressSelected = nonNullish(address);
+  const addressSelected = $derived(nonNullish(address));
 </script>
 
 <div class="content">
@@ -42,9 +50,12 @@
     {/if}
   </article>
 
+  <!-- TODO: Migrate consumers to Svelte5 to replace slots with snippets. -->
   {#if addressSelected && qrCodeRendered}
     <div data-tid="qr-address-label" class="address-block">
       <p class="label no-margin" data-tid="token-address-label">
+        <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+        <!-- svelte-ignore slot_element_deprecated -->
         <slot name="address-label" />
       </p>
       <div class="address">
@@ -52,6 +63,8 @@
         <Copy value={address ?? ""} />
       </div>
 
+      <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+      <!-- svelte-ignore slot_element_deprecated -->
       <slot name="additional-information" />
     </div>
   {/if}

@@ -1,15 +1,13 @@
 <script lang="ts">
   import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroBalancesToggle.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-  import {
-    ENABLE_IMPORT_TOKEN_BY_URL,
-    ENABLE_USD_VALUES,
-  } from "$lib/stores/feature-flags.store";
+  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
@@ -21,7 +19,6 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { IconHeldTokens, IconPlus, Tooltip } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
-  import Separator from "$lib/components/ui/Separator.svelte";
 
   export let userTokensData: UserToken[];
 
@@ -134,7 +131,7 @@
     </div>
   </TokensTable>
 
-  {#if showImportTokenModal || ($ENABLE_IMPORT_TOKEN_BY_URL && nonNullish($pageStore.importTokenLedgerId))}
+  {#if showImportTokenModal || nonNullish($pageStore.importTokenLedgerId)}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
 </div>
