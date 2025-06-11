@@ -58,6 +58,7 @@ impl From<&UpstreamData> for SlowSnsData {
             canister_ids,
             list_sns_canisters,
             meta: _,
+            metrics: _,
             parameters,
             nervous_system_parameters,
             swap_state,
