@@ -5,36 +5,48 @@
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
   import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
+  import type { Snippet } from "svelte";
 
-  export let amount: number;
-  export let token: Token;
-  export let transactionFee: TokenAmount | TokenAmountV2;
-  export let showLedgerFee = true;
+  type Props = {
+    amount: number;
+    receiveAmount: Snippet;
+    showLedgerFee?: boolean;
+    token: Token;
+    transactionFee: TokenAmount | TokenAmountV2;
+  };
+
+  const {
+    amount,
+    receiveAmount,
+    showLedgerFee = true,
+    token,
+    transactionFee,
+  }: Props = $props();
 
   // If we made it this far, the number is valid.
-  let tokenAmount: TokenAmountV2;
-  $: tokenAmount = TokenAmountV2.fromNumber({
-    amount,
-    token,
-  });
-
-  let ledgerFeeLabel: string;
-  $: ledgerFeeLabel = replacePlaceholders(
-    $i18n.accounts.token_transaction_fee,
-    {
-      $tokenSymbol: token.symbol,
-    }
+  const tokenAmount = $derived(
+    TokenAmountV2.fromNumber({
+      amount,
+      token,
+    })
   );
 
-  let totalDeducted: bigint;
-  $: totalDeducted =
-    tokenAmount.toUlps() + toTokenAmountV2(transactionFee).toUlps();
+  const ledgerFeeLabel = $derived(
+    replacePlaceholders($i18n.accounts.token_transaction_fee, {
+      $tokenSymbol: token.symbol,
+    })
+  );
 
-  let tokenTotalDeducted: TokenAmountV2;
-  $: tokenTotalDeducted = TokenAmountV2.fromUlps({
-    amount: totalDeducted,
-    token,
-  });
+  const totalDeducted = $derived(
+    tokenAmount.toUlps() + toTokenAmountV2(transactionFee).toUlps()
+  );
+
+  const tokenTotalDeducted = $derived(
+    TokenAmountV2.fromUlps({
+      amount: totalDeducted,
+      token,
+    })
+  );
 </script>
 
 <article class="container">
@@ -76,7 +88,7 @@
     <IconSouth />
   </div>
 
-  <slot name="received-amount" />
+  {@render receiveAmount()}
 </article>
 
 <style lang="scss">

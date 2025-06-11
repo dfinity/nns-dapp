@@ -2,19 +2,31 @@
   import { i18n } from "$lib/stores/i18n";
   import { TransactionNetwork } from "$lib/types/transaction";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
+  import type { Snippet } from "svelte";
 
-  export let destinationAddress: string;
-  export let selectedNetwork: TransactionNetwork | undefined = undefined;
+  type Props = {
+    description: Snippet;
+    destinationAddress: string;
+    destinationInfo: Snippet;
+    selectedNetwork?: TransactionNetwork;
+  };
+
+  const {
+    description,
+    destinationAddress,
+    destinationInfo,
+    selectedNetwork,
+  }: Props = $props();
 </script>
 
 <p class="label no-margin">{$i18n.accounts.to_address}</p>
 <p class="account-identifier value no-margin" data-tid="destination">
-  <slot name="destination-info" />
+  {@render destinationInfo()}
   {destinationAddress}
 </p>
 
 <p class="label desc">{$i18n.accounts.description}</p>
-<span data-tid="transaction-description"><slot name="description" /></span>
+<span data-tid="transaction-description">{@render description()}</span>
 
 <p class="label network">{$i18n.accounts.network}</p>
 <p class="value no-margin" data-tid="transaction-description-network">
