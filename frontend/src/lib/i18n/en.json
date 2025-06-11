@@ -284,7 +284,6 @@
     "token_transaction_fee": "$tokenSymbol Ledger Fee",
     "transaction_fee": "Transaction Fee",
     "review_transaction": "Review Transaction",
-    "you_are_sending": "You are sending",
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
     "account_identifier": "Account Identifier",
