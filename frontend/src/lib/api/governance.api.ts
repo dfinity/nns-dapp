@@ -229,10 +229,11 @@ export const spawnNeuron = async ({
 
 export type ApiDisburseMaturityParams = ApiManageNeuronParams & {
   percentageToDisburse: number;
+  // If toAccountIdentifier is not provided, the disbursement will be made to the users Main account.
+  // https://github.com/dfinity/ic/blob/e9618fe054cb9c1837ca3aab24f98cf08366602c/rs/nns/governance/api/src/types.rs#L944-L948
   toAccountIdentifier?: AccountIdentifierHex;
 };
 
-// If the accountIdentifier is not provided, the disbursement will be made to the users Main account.
 export const disburseMaturity = async ({
   neuronId,
   percentageToDisburse,
