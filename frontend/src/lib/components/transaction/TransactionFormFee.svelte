@@ -6,19 +6,12 @@
   import { formatUsdValue } from "$lib/utils/format.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
-  import {
-    isNullish,
-    nonNullish,
-    type TokenAmount,
-    TokenAmountV2,
-  } from "@dfinity/utils";
-  import type { Snippet } from "svelte";
+  import { isNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {
-    label?: Snippet;
     transactionFee: TokenAmount | TokenAmountV2;
   };
-  const { label, transactionFee }: Props = $props();
+  const { transactionFee }: Props = $props();
 
   const usdValueDisplay = $derived.by(() => {
     const ledgerCanisterId = getLedgerCanisterIdFromUniverse(
@@ -36,11 +29,7 @@
 
 <div data-tid="transaction-form-fee">
   <p class="fee label no-margin">
-    {#if nonNullish(label)}
-      {@render label()}
-    {:else}
-      {$i18n.accounts.transaction_fee}
-    {/if}
+    {$i18n.accounts.transaction_fee}
   </p>
 
   <p class="value">
