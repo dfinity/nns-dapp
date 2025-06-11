@@ -16,8 +16,6 @@ import { NeuronVisibility, Topic, Vote } from "@dfinity/nns";
 import type { RewardEvent } from "@dfinity/nns/dist/candid/governance";
 import type { Mock } from "vitest";
 
-// TODO: Review tests and mocks
-
 vi.mock("$lib/api/governance.api");
 
 const neuron1 = createMockNeuron(1);

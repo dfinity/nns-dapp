@@ -33,7 +33,6 @@ const modulePath = "$lib/api/sns-governance.api";
 
 const fakeFunctions = {
   querySnsNeurons,
-  querySnsNeuron,
   getSnsNeuron,
   nervousSystemParameters,
   getNeuronBalance,

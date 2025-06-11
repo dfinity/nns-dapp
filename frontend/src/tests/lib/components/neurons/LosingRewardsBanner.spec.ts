@@ -203,7 +203,6 @@ describe("LosingRewardsBanner", () => {
 
     await po.getLosingRewardNeuronsModalPo().clickConfirmFollowing();
 
-    // TODO: Figure out why this all this is needed
     await runResolvedPromises();
     await tick();
     await advanceTime(500);

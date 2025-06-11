@@ -46,7 +46,6 @@ vi.mock("$lib/api/sns-ledger.api");
 
 describe("SnsNeuronDetail", () => {
   fakeSnsGovernanceApi.install();
-  // TODO: This fake is empty. It can be cleaned up.
   fakeSnsApi.install();
 
   const rootCanisterId = rootCanisterIdMock;

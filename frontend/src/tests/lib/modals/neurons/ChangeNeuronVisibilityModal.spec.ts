@@ -98,8 +98,6 @@ describe("ChangeNeuronVisibilityModal", () => {
     };
   };
 
-  // Rest of the test file remains the same...
-
   it("should display modal", async () => {
     const { po } = await renderComponent();
 
