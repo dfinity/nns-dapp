@@ -119,4 +119,3 @@ playwright-results/
 **/*.rs.bk
 
 tmp
-.nvmrc

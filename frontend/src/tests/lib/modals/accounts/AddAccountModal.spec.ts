@@ -134,7 +134,6 @@ describe("AddAccountModal", () => {
       (await fireEvent.click(accountCard.parentElement));
     await tick();
 
-    // await waitFor(async () => {
     const input = container.querySelector('input[name="add-text-input"]');
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
