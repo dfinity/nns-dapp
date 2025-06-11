@@ -3,7 +3,7 @@
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { formatUsdValue } from "$lib/utils/format.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
   import { isNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
@@ -11,10 +11,9 @@
   type Props = {
     transactionFee: TokenAmount | TokenAmountV2;
   };
-
   const { transactionFee }: Props = $props();
 
-  const usdValue = $derived.by(() => {
+  const usdValueDisplay = $derived.by(() => {
     const ledgerCanisterId = getLedgerCanisterIdFromUniverse(
       $selectedUniverseStore
     );
@@ -23,16 +22,9 @@
       return 0;
 
     const tokenPrice = $icpSwapUsdPricesStore[ledgerCanisterId.toText()];
-    return getUsdValue({ amount: transactionFee, tokenPrice }) ?? 0;
+    const usdValue = getUsdValue({ amount: transactionFee, tokenPrice }) ?? 0;
+    return formatUsdValue(usdValue);
   });
-
-  const isAlmostZero = $derived(usdValue > 0 && usdValue < 0.01);
-  const formattedUsdValue = $derived(
-    isAlmostZero ? "0.01" : formatNumber(usdValue)
-  );
-  const usdValueDisplay = $derived(
-    `(${isAlmostZero ? "< " : ""}$${formattedUsdValue})`
-  );
 </script>
 
 <div data-tid="transaction-form-fee">
@@ -43,7 +35,7 @@
   <p class="value">
     <AmountDisplay amount={transactionFee} singleLine />
     <span class="usd-value" data-tid="transaction-form-fee-usd-value">
-      {usdValueDisplay}
+      ({usdValueDisplay})
     </span>
   </p>
 </div>
