@@ -144,6 +144,7 @@ describe("NnsDisburseMaturityModal", () => {
       neuronId: neuron.neuronId,
       percentageToDisburse: 100,
       identity: mockIdentity,
+      toAccountIdentifier: mockMainAccount.identifier,
     });
     expect(close).toHaveBeenCalledTimes(0);
     expect(get(busyStore)).toEqual([
