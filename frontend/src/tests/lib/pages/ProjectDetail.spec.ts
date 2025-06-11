@@ -38,7 +38,6 @@ import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { ProjectDetailPo } from "$tests/page-objects/ProjectDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   advanceTime,
@@ -57,18 +56,7 @@ vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/location.api");
 vi.mock("$lib/api/proposals.api");
 
-const blockedApiPaths = [
-  "$lib/api/nns-dapp.api",
-  "$lib/api/sns.api",
-  "$lib/api/sns-swap-metrics.api",
-  "$lib/api/sns-sale.api",
-  "$lib/api/icp-ledger.api",
-  "$lib/api/location.api",
-  "$lib/api/proposals.api",
-];
-
 describe("ProjectDetail", () => {
-  blockAllCallsTo(blockedApiPaths);
   fakeLocationApi.install();
 
   const rootCanisterId = mockCanisterId;
