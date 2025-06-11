@@ -21,7 +21,6 @@
   const activeDisbursements = $derived(
     neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
   );
-  const activeDisbursementsCount = $derived(activeDisbursements.length);
   const totalMaturity = $derived(totalMaturityDisbursementsInProgress(neuron));
 
   onMount(() => {
@@ -32,8 +31,7 @@
 </script>
 
 <Modal on:nnsClose={close} testId="nns-active-disbursements-modal">
-  <svelte:fragment slot="title"
-    >{activeDisbursementsCount}
+  <svelte:fragment slot="title">
     {$i18n.neuron_detail.view_active_disbursements_modal_title}</svelte:fragment
   >
 
@@ -56,7 +54,7 @@
     <span class="description">
       <Html
         text={replacePlaceholders(
-          $i18n.neuron_detail.active_maturity_disbursements_description,
+          $i18n.neuron_detail.active_maturity_disbursements_description_nns,
           {
             $symbol: ICPToken.symbol,
           }
