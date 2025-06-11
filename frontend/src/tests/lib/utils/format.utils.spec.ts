@@ -151,7 +151,7 @@ describe("format.utils", () => {
     it("should format values >= 0.01 normally", () => {
       expect(formatUsdValue(0.01)).toEqual("$0.01");
       expect(formatUsdValue(1.23)).toEqual("$1.23");
-      expect(formatUsdValue(123.45)).toEqual("($123.45");
+      expect(formatUsdValue(123.45)).toEqual("$123.45");
     });
   });
 });
