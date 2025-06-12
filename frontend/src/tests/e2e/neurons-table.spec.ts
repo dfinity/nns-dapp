@@ -131,7 +131,7 @@ test("Test neurons table", async ({ page, context, browser }) => {
   await page.reload();
 
   step("Make screenshots");
-  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
+  await appPo.getNeuronDetailPo().waitForContentLoaded();
 
   await replaceContent({
     page,
