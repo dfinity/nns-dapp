@@ -70,4 +70,14 @@ export class DisburseMaturityModalPo extends ModalPo {
   getSelectDestinationAddressPo(): SelectDestinationAddressPo {
     return SelectDestinationAddressPo.under(this.root);
   }
+
+  async disburseMaturity({
+    percentage,
+  }: {
+    percentage: number;
+  }): Promise<void> {
+    await this.setPercentage(percentage);
+    await this.clickNextButton();
+    await this.clickConfirmButton();
+  }
 }

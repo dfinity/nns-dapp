@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * Visual feedback on copy to clipboard actions
+* Disburse maturity for NNS neurons
 
 #### Changed
 
