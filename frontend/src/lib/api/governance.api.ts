@@ -6,6 +6,7 @@ import { HOST } from "$lib/constants/environment.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Agent, Identity } from "@dfinity/agent";
+import type { AccountIdentifierHex } from "@dfinity/ledger-icp";
 import type {
   E8s,
   KnownNeuron,
@@ -227,16 +228,17 @@ export const spawnNeuron = async ({
 };
 
 export type ApiDisburseMaturityParams = ApiManageNeuronParams & {
-  // TODO(disburse-maturity): Add sub and external accounts support.
-  // account?: Principal;
-  // subAccount?: string;
   percentageToDisburse: number;
+  // If toAccountIdentifier is not provided, the disbursement will be made to the users Main account.
+  // https://github.com/dfinity/ic/blob/e9618fe054cb9c1837ca3aab24f98cf08366602c/rs/nns/governance/api/src/types.rs#L944-L948
+  toAccountIdentifier?: AccountIdentifierHex;
 };
 
 export const disburseMaturity = async ({
   neuronId,
   percentageToDisburse,
   identity,
+  toAccountIdentifier,
 }: ApiDisburseMaturityParams): Promise<void> => {
   logWithTimestamp(`Disburse maturity (${hashCode(neuronId)}) call...`);
 
@@ -244,6 +246,7 @@ export const disburseMaturity = async ({
   await canister.disburseMaturity({
     neuronId,
     percentageToDisburse,
+    toAccountIdentifier,
   });
 
   logWithTimestamp(`Disburse maturity (${hashCode(neuronId)}) complete.`);

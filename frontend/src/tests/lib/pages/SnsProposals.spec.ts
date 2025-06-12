@@ -25,6 +25,7 @@ import {
   type SnsProposalData,
 } from "@dfinity/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-governance.api");
@@ -184,6 +185,9 @@ describe("SnsProposals", () => {
       it("should render proposals", async () => {
         const { queryAllByTestId, queryByTestId } = render(SnsProposals);
 
+        await runResolvedPromises();
+        await tick();
+
         await waitFor(() =>
           expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
         );
@@ -247,9 +251,10 @@ describe("SnsProposals", () => {
       const { getByTestId, queryAllByTestId, queryByTestId } =
         render(SnsProposals);
 
-      await waitFor(() =>
-        expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
-      );
+      await runResolvedPromises();
+      await tick();
+
+      expect(queryByTestId("proposals-loading")).not.toBeInTheDocument();
 
       expect(queryAllByTestId("proposal-card").length).toBe(proposals.length);
 
@@ -290,9 +295,10 @@ describe("SnsProposals", () => {
       const { getByTestId, queryAllByTestId, queryByTestId } =
         render(SnsProposals);
 
-      await waitFor(() =>
-        expect(queryByTestId("proposals-loading")).not.toBeInTheDocument()
-      );
+      await runResolvedPromises();
+      await tick();
+
+      expect(queryByTestId("proposals-loading")).not.toBeInTheDocument();
 
       // initially there are 2 proposals
       expect(queryAllByTestId("proposal-card").length).toBe(2);

@@ -25,6 +25,7 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
@@ -113,10 +114,12 @@ describe("Neurons", () => {
     expect(await po.hasNnsNeuronsPo()).toBe(false);
     expect(await po.hasSnsNeuronsPo()).toBe(true);
     expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(false);
+
     fakeSnsGovernanceApi.resume();
-    await waitFor(async () => {
-      expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
-    });
+    await runResolvedPromises();
+    await tick();
+
+    expect(await po.getSnsNeuronsPo().isContentLoaded()).toBe(true);
 
     const neuronIdText = getSnsNeuronIdAsHexString(testCommittedSnsNeuron);
     expect(

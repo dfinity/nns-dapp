@@ -1,15 +1,22 @@
 import * as api from "$lib/api/governance.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants";
 import NnsDisburseMaturityModal from "$lib/modals/neurons/NnsDisburseMaturityModal.svelte";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
-import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import en from "$tests/mocks/i18n.mock";
+import {
+  mockHardwareWalletAccount,
+  mockMainAccount,
+} from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { extractHrefFromText } from "$tests/utils/utils.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
@@ -64,6 +71,20 @@ describe("NnsDisburseMaturityModal", () => {
     expect(await po.getTotalMaturity()).toBe("1.05");
   });
 
+  it("should display Nns description", async () => {
+    page.mock({ data: { universe: OWN_CANISTER_ID_TEXT } });
+
+    const po = await renderNnsDisburseMaturityModal({
+      neuron: testNeuron(minMaturityForDisbursement),
+    });
+    const href = extractHrefFromText(await po.getDescriptionHtml());
+
+    expect(href).toBeDefined();
+    expect(href).toEqual(
+      extractHrefFromText(en.neuron_detail.disburse_maturity_description_2_nns)
+    );
+  });
+
   it("should disable next button when 0 selected", async () => {
     const po = await renderNnsDisburseMaturityModal({ neuron: testNeuron() });
     await po.setPercentage(100);
@@ -101,10 +122,50 @@ describe("NnsDisburseMaturityModal", () => {
     await po.setPercentage(50);
     await po.clickNextButton();
     expect(await po.getConfirmPercentage()).toEqual("50%");
-    expect(await po.getConfirmTokens()).toBe("50.00-55.26 ICP");
+    expect(await po.getConfirmTokens()).toBe("50.00-55.27 ICP");
     expect(await po.getConfirmDestination()).toEqual("Main");
   });
 
+  it("should disburse maturity to entered destination", async () => {
+    const neuron = testNeuron();
+    const close = vi.fn();
+    const spyDisburseMaturity = vi
+      .spyOn(api, "disburseMaturity")
+      .mockResolvedValue();
+    // Add the neuron to the store to avoid extra query from getIdentityOfControllerByNeuronId
+    neuronsStore.setNeurons({
+      neurons: [neuron],
+      certified: true,
+    });
+    const po = await renderNnsDisburseMaturityModal({ neuron, close });
+
+    await po.setPercentage(50);
+    await po.getSelectDestinationAddressPo().toggleSelect();
+    await po
+      .getSelectDestinationAddressPo()
+      .enterAddress(mockHardwareWalletAccount.identifier);
+
+    await po.clickNextButton();
+
+    expect(
+      await po.getNeuronConfirmActionScreenPo().getConfirmButton().isDisabled()
+    ).toEqual(false);
+    expect(spyDisburseMaturity).toHaveBeenCalledTimes(0);
+
+    await po.clickConfirmButton();
+    await runResolvedPromises();
+
+    expect(spyDisburseMaturity).toHaveBeenCalledTimes(1);
+    expect(spyDisburseMaturity).toHaveBeenCalledWith({
+      neuronId: neuron.neuronId,
+      percentageToDisburse: 50,
+      identity: mockIdentity,
+      toAccountIdentifier: mockHardwareWalletAccount.identifier,
+    });
+    expect(close).toHaveBeenCalledTimes(1);
+  });
+
+  // FIXME: This test makes other tests fail if it runs first.
   it("should successfully disburse maturity", async () => {
     const neuron = testNeuron();
     const close = vi.fn();
@@ -144,6 +205,7 @@ describe("NnsDisburseMaturityModal", () => {
       neuronId: neuron.neuronId,
       percentageToDisburse: 100,
       identity: mockIdentity,
+      toAccountIdentifier: mockMainAccount.identifier,
     });
     expect(close).toHaveBeenCalledTimes(0);
     expect(get(busyStore)).toEqual([

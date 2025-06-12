@@ -167,10 +167,18 @@ install_rust() {
   append_to_profile 'export CARGO_BUILD_JOBS=2'
 }
 
-install_binstall() {
+install_binstall_linux() {
   local BINSTALL_VERSION
   BINSTALL_VERSION="$(jq -r .defaults.build.config.BINSTALL_VERSION config.json)"
   curl -L --proto '=https' --tlsv1.2 -sSf "https://github.com/cargo-bins/cargo-binstall/releases/download/v${BINSTALL_VERSION}/cargo-binstall-x86_64-unknown-linux-musl.tgz" | tar -xvzf -
+  ./cargo-binstall -y --force "cargo-binstall@$BINSTALL_VERSION"
+}
+
+install_binstall_darwin() {
+  local BINSTALL_VERSION
+  BINSTALL_VERSION="$(jq -r .defaults.build.config.BINSTALL_VERSION config.json)"
+  curl -L --proto '=https' --tlsv1.2 -sSf "https://github.com/cargo-bins/cargo-binstall/releases/download/v${BINSTALL_VERSION}/cargo-binstall-aarch64-apple-darwin.zip" -o cargo-binstall.zip
+  unzip cargo-binstall.zip
   ./cargo-binstall -y --force "cargo-binstall@$BINSTALL_VERSION"
 }
 
@@ -289,7 +297,7 @@ command -v jq || "install_jq_$OS"
 command -v yq || "install_yq_$OS"
 command -v npm || "install_npm_$OS"
 command -v cargo || install_rust
-cargo binstall -V || install_binstall
+cargo binstall -V || "install_binstall_$OS"
 check_ic_wasm 2>/dev/null || { install_ic_wasm && check_ic_wasm; }
 check_cargo_sort 2>/dev/null || { install_cargo_sort && check_cargo_sort; }
 command -v xz || "install_xz_$OS"
