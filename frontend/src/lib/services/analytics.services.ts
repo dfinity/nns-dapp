@@ -21,6 +21,10 @@ export const initAnalytics = () => {
 
 export const analytics = {
   event: (name: string, props?: Record<string, string | number | boolean>) => {
-    tracker?.trackEvent(name, { props });
+    try {
+      tracker?.trackEvent(name, { props });
+    } catch (error) {
+      console.error("plausible event:", error);
+    }
   },
 };
