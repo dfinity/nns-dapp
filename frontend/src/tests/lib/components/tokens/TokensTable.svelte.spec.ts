@@ -24,6 +24,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get, writable, type Writable } from "svelte/store";
 import type { Mock } from "vitest";
 
@@ -530,7 +531,7 @@ describe("TokensTable", () => {
           columnId: "title",
         },
       ]);
-      await runResolvedPromises();
+      await tick();
 
       expect(await getProjectNames(po)).toEqual(["A", "Internet Computer"]);
     });

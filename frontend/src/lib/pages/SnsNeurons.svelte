@@ -8,7 +8,7 @@
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { definedSnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
+  import { nonEmptySnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import { claimNextNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
@@ -58,7 +58,7 @@
         token: summary.token,
         identity: $authStore.identity,
         i18n: $i18n,
-        snsNeurons: $definedSnsNeuronStore,
+        snsNeurons: $nonEmptySnsNeuronStore,
         icpSwapUsdPrices: $icpSwapUsdPricesStore,
         ledgerCanisterId: summary.ledgerCanisterId,
         topicInfos,
