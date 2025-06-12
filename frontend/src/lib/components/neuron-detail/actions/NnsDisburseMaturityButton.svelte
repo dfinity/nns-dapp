@@ -7,6 +7,7 @@
     MINIMUM_DISBURSEMENT,
     ULPS_PER_MATURITY,
   } from "$lib/constants/neurons.constants";
+  import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -67,11 +68,14 @@
         ? getMaximumReachedDisabledText()
         : undefined
   );
-  const showModal = () =>
+  const showModal = () => {
     openNnsNeuronModal({
       type: "disburse-maturity",
       data: { neuron },
     });
+
+    analytics.event("nns-disburse-maturity-start");
+  };
 </script>
 
 <DisburseMaturityButton on:click={showModal} {disabledText} />

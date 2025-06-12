@@ -1,5 +1,6 @@
 <script lang="ts">
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
+  import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import {
@@ -16,11 +17,19 @@
   const totalMaturityDisbursements = $derived(
     totalMaturityDisbursementsInProgress(neuron)
   );
-  const showModal = () =>
+  const showModal = () => {
     openNnsNeuronModal({
       type: "view-active-disbursements",
       data: { neuron },
     });
+
+    const activeDisbursementsCount = (
+      neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
+    ).length;
+    analytics.event("nns-disburse-maturity-show-active", {
+      activeDisbursementsCount,
+    });
+  };
 </script>
 
 {#if totalMaturityDisbursements > 0n}
