@@ -17,18 +17,19 @@
   const totalMaturityDisbursements = $derived(
     totalMaturityDisbursementsInProgress(neuron)
   );
-  const showModal = () =>
+  const showModal = () => {
     openNnsNeuronModal({
       type: "view-active-disbursements",
       data: { neuron },
     });
 
-  const activeDisbursementsCount = (
-    neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
-  ).length;
-  analytics.event("nns-disburse-maturity-show-active", {
-    activeDisbursementsCount,
-  });
+    const activeDisbursementsCount = (
+      neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
+    ).length;
+    analytics.event("nns-disburse-maturity-show-active", {
+      activeDisbursementsCount,
+    });
+  };
 </script>
 
 {#if totalMaturityDisbursements > 0n}
