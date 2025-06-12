@@ -152,6 +152,8 @@
         h3 {
           margin: 0;
           padding: 0;
+
+          @include text.clamp(1);
         }
 
         .description {
