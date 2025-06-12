@@ -5,7 +5,6 @@ import {
 } from "$lib/constants/constants";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -107,8 +106,6 @@ describe("NnsNeurons", () => {
     });
 
     it("should provide USD prices", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       vi.spyOn(api, "queryNeurons").mockResolvedValue([
         {
           ...mockNeuron,
@@ -130,25 +127,13 @@ describe("NnsNeurons", () => {
       expect(await rows[0].getStakeInUsd()).toBe("$33.00");
     });
 
-    it("should not show total USD value banner when feature flag is disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-      const po = await renderComponent();
-
-      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
-    });
-
     it("should show total USD value banner when feature flag is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       const po = await renderComponent();
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
     });
 
     it("should show total stake in USD", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       vi.spyOn(api, "queryNeurons").mockResolvedValue([
         {
           ...mockNeuron,
@@ -171,8 +156,6 @@ describe("NnsNeurons", () => {
     });
 
     it("should display `Missing rewards` tag", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       networkEconomicsStore.setParameters({
         parameters: mockNetworkEconomics,
         certified: true,

@@ -4,7 +4,6 @@ import {
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import { NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE } from "$lib/constants/neurons.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -174,25 +173,7 @@ describe("NnsNeuronPageHeading", () => {
     expect(await po.getNeuronTags()).toEqual(["Missing rewards"]);
   });
 
-  it("should not display USD balance if feature flag is disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-    const stake = 300_000_000n;
-    const po = renderComponent({
-      ...mockNeuron,
-      fullNeuron: {
-        ...mockNeuron.fullNeuron,
-        cachedNeuronStake: stake,
-        neuronFees: 0n,
-      },
-    });
-
-    expect(await po.hasBalanceInUsd()).toBe(false);
-  });
-
-  it("should display USD balance if feature flag is enabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
+  it("should display USD balance ", async () => {
     const stake = 300_000_000n;
     const po = renderComponent({
       ...mockNeuron,

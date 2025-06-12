@@ -26,12 +26,6 @@ test("Test neuron details", async ({ page, context }) => {
   await page.goto("/tokens");
   await expect(page).toHaveTitle("Tokens / NNS Dapp");
 
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_USD_VALUES_FOR_NEURONS",
-    value: true,
-  });
-
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
 

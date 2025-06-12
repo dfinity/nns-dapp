@@ -1,7 +1,6 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -240,8 +239,6 @@ describe("SnsNeurons", () => {
     });
 
     it("should provide USD prices", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       setIcpSwapUsdPrices({
         [ledgerCanisterId.toText()]: 0.1,
       });
@@ -254,25 +251,13 @@ describe("SnsNeurons", () => {
       expect(await rows[1].getStakeInUsd()).toBe("$0.20");
     });
 
-    it("should not show total USD value banner when feature flag is disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-      const po = await renderComponent();
-
-      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
-    });
-
-    it("should show total USD value banner when feature flag is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
+    it("should show total USD value banner", async () => {
       const po = await renderComponent();
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
     });
 
     it("should show total stake in USD", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       setIcpSwapUsdPrices({
         [ledgerCanisterId.toText()]: 0.1,
       });
@@ -289,8 +274,6 @@ describe("SnsNeurons", () => {
     });
 
     it("should show absent total stake in USD if token price is unknown", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       setIcpSwapUsdPrices({
         // No price for the SNS token.
         [ledgerCanisterId.toText()]: undefined,

@@ -6,7 +6,6 @@ import {
   SECONDS_IN_FOUR_YEARS,
 } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -127,21 +126,7 @@ describe("SnsNeuronPageHeading", () => {
     expect(await po.hasHotkeyTag()).toBe(true);
   });
 
-  it("should not display USD balance if feature flag is disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-    const stake = 300_000_000n;
-    const neuron = createMockSnsNeuron({
-      stake,
-    });
-    const po = renderSnsNeuronCmp(neuron);
-
-    expect(await po.hasBalanceInUsd()).toBe(false);
-  });
-
   it("should display USD balance if feature flag is enabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
     const stake = 300_000_000n;
     const neuron = createMockSnsNeuron({
       stake,
