@@ -53,11 +53,25 @@ describe("NeuronDetail", () => {
   fakeSnsGovernanceApi.install();
   fakeSnsAggregatorApi.install();
 
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+      last_price: "10.00",
+    },
+    {
+      ...mockIcpSwapTicker,
+      base_id: testSnsLedgerCanisterId.toText(),
+      last_price: "100.00",
+    },
+  ];
+
   beforeEach(() => {
     resetIdentity();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
     vi.spyOn(icpLedgerApi, "queryAccountBalance").mockResolvedValue(0n);
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
   });
 
   describe("nns neuron", () => {
@@ -151,20 +165,6 @@ describe("NeuronDetail", () => {
 
     it("should load ICP Swap tickers", async () => {
       await loadSnsProjects();
-
-      const tickers = [
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "10.00",
-        },
-        {
-          ...mockIcpSwapTicker,
-          base_id: testSnsLedgerCanisterId.toText(),
-          last_price: "100.00",
-        },
-      ];
-      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
 
       expect(get(icpSwapTickersStore)).toBeUndefined();
       expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);

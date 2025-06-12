@@ -48,6 +48,14 @@ describe("Neurons", () => {
   fakeSnsGovernanceApi.install();
   fakeSnsAggregatorApi.install();
 
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+      last_price: "10.00",
+    },
+  ];
+
   let testCommittedSnsNeuron;
 
   beforeEach(async () => {
@@ -75,6 +83,8 @@ describe("Neurons", () => {
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
 
     await loadSnsProjects();
+
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
   });
 
   it("should render NnsNeurons by default", async () => {
@@ -143,15 +153,6 @@ describe("Neurons", () => {
       data: { universe: OWN_CANISTER_ID_TEXT },
       routeId: AppPath.Neurons,
     });
-
-    const tickers = [
-      {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-        last_price: "10.00",
-      },
-    ];
-    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
 
     expect(get(icpSwapTickersStore)).toBeUndefined();
     expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
