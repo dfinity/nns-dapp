@@ -773,6 +773,7 @@
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
     "stake_maturity_disabled_tooltip": "Currently, you do not have any maturity available to stake into this neuron.",
+    "stake_maturity_disabled_tooltip_max_disbursements": "The maximum of $maxDisbursements active maturity disbursements for this neuron has been reached. Please wait for a disbursement to complete before initiating a new one.",
     "disburse_maturity_disabled_tooltip_zero": "Currently, you do not have any maturity available to disburse.",
     "disburse_maturity_disabled_tooltip_non_zero": "You do not have enough maturity to disburse. The minimum is: $amount.",
     "start_dissolve_description": "This will cause your neuron to lose its age bonus.\nAre you sure you wish to continue?",
