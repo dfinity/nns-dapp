@@ -1,3 +1,4 @@
+import { AppPath } from "$lib/constants/routes.constants";
 import { login, logout } from "$lib/services/auth.services";
 import {
   balancePrivacyOptionStore,
@@ -62,7 +63,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.home_title,
       description: alfred.home_description,
-      path: "/",
+      path: AppPath.Portfolio,
       icon: IconHome,
     },
     {
@@ -70,7 +71,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.tokens_title,
       description: alfred.tokens_description,
-      path: "/accounts",
+      path: AppPath.Accounts,
       icon: IconTokens,
     },
     {
@@ -78,7 +79,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.neurons_title,
       description: alfred.neurons_description,
-      path: "/neurons",
+      path: AppPath.Neurons,
       icon: IconNeurons,
     },
     {
@@ -86,7 +87,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.voting_title,
       description: alfred.voting_description,
-      path: "/proposals",
+      path: AppPath.Proposals,
       icon: IconVote,
     },
     {
@@ -94,7 +95,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.launchpad_title,
       description: alfred.launchpad_description,
-      path: "/launchpad",
+      path: AppPath.Launchpad,
       icon: IconLaunchpad,
     },
     {
@@ -102,7 +103,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.reporting_title,
       description: alfred.reporting_description,
-      path: "/reporting",
+      path: AppPath.Reporting,
       icon: IconDocument,
     },
     {
@@ -110,7 +111,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.canisters_title,
       description: alfred.canisters_description,
-      path: "/canisters",
+      path: AppPath.Canisters,
       icon: IconLedger,
     },
     {
@@ -118,7 +119,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.settings_title,
       description: alfred.settings_description,
-      path: "/settings",
+      path: AppPath.Settings,
       icon: IconSettings,
     },
     {
