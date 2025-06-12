@@ -27,12 +27,11 @@
         percentage: 100,
       })
   );
-  const activeDisbursements = $derived(
-    neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
-  );
-  const isMaximumDisbursementsReached = $derived(
-    activeDisbursements.length >= 1
-  );
+  const isMaximumDisbursementsReached = $derived.by(() => {
+    const activeDisbursements =
+      neuron.fullNeuron?.maturityDisbursementsInProgress ?? [];
+    return activeDisbursements.length >= MAX_DISBURSEMENTS_IN_PROGRESS;
+  });
   const getNotEnoughMaturityDisabledText = () =>
     replacePlaceholders(
       $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
