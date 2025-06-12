@@ -75,24 +75,24 @@ pub struct UpstreamData {
 impl Default for UpstreamData {
     fn default() -> Self {
         Self {
-            index: Default::default(),
-            canister_ids: Default::default(),
-            list_sns_canisters: Default::default(),
-            meta: Default::default(),
+            index: u64::default(),
+            canister_ids: DeployedSns::default(),
+            list_sns_canisters: ListSnsCanistersResponse::default(),
+            meta: GetMetadataResponse::default(),
             metrics: GetMetricsResponse {
                 get_metrics_result: None,
             },
-            parameters: Default::default(),
-            nervous_system_parameters: Default::default(),
-            swap_state: Default::default(),
-            icrc1_metadata: Default::default(),
-            icrc1_fee: Default::default(),
-            icrc1_total_supply: Default::default(),
-            swap_params: Default::default(),
-            init: Default::default(),
-            derived_state: Default::default(),
-            lifecycle: Default::default(),
-            topics: Default::default(),
+            parameters: ListNervousSystemFunctionsResponse::default(),
+            nervous_system_parameters: None,
+            swap_state: GetStateResponse::default(),
+            icrc1_metadata: Vec::default(),
+            icrc1_fee: Nat::default(),
+            icrc1_total_supply: Nat::default(),
+            swap_params: None,
+            init: None,
+            derived_state: None,
+            lifecycle: None,
+            topics: None,
         }
     }
 }
