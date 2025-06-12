@@ -122,8 +122,8 @@ test("Test neurons table", async ({ page, context, browser }) => {
   // Reload the page to see the maturity and enable the spawn neuron button.
   await page.reload();
 
-  step("Spawn a neuron");
-  await neuronDetail.spawnNeuron({ percentage: 100 });
+  step("Disburse maturity");
+  await neuronDetail.disburseMaturity({ percentage: 100 });
 
   step("Wait for the hotkey neurons to be created");
   await createHotkeyNeuronsPromise;
