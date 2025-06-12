@@ -63,7 +63,7 @@
         ? $i18n.ckbtc.sending_ckbtc_to_btc
         : currentStep?.name === "QRCode"
           ? $i18n.accounts.scan_qr_code
-          : $i18n.accounts.you_are_sending;
+          : $i18n.accounts.review_transaction;
 
   let modal: TransactionModal;
   let progressStep: ConvertBtcStep = ConvertBtcStep.APPROVE_TRANSFER;

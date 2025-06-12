@@ -150,6 +150,7 @@ export const formatTokenV2 = ({
   } else {
     ulps = value.toUlps();
   }
+
   return formatTokenUlps({
     value: ulps,
     tokenDecimals: value.token.decimals,
