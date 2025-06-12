@@ -158,9 +158,8 @@
           margin: 0;
           padding: 0;
           color: var(--color-text-secondary);
-          max-width: 95%;
 
-          @include text.truncate;
+          @include text.clamp(1);
         }
       }
     }
