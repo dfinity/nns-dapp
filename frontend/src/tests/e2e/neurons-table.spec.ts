@@ -135,7 +135,7 @@ test("Test neurons table", async ({ page, context, browser }) => {
 
   await replaceContent({
     page,
-    selectors: ['[data-tid="neuron-id"]'],
+    selectors: ['[data-tid="identifier"]'],
     pattern: /[0-9a-f]{7}...[0-9a-f]{7}/,
     replacements: replacementNeuronIds,
   });
