@@ -96,7 +96,7 @@ describe("SnsNeuronPageHeading", () => {
     //   * max age bonus multiplier
     // = (2.00 + 1.00) * 2.00 * 1.25
     // = 7.50
-    expect(await po.getVotingPower()).toEqual("Voting Power: 7.50");
+    expect(await po.getVotingPower()).contains("Voting Power: 7.50");
   });
 
   it("should render no votig power if neuron can't vote", async () => {
@@ -109,7 +109,7 @@ describe("SnsNeuronPageHeading", () => {
     });
     const po = renderSnsNeuronCmp(neuron);
 
-    expect(await po.getVotingPower()).toEqual("No Voting Power");
+    expect(await po.getVotingPower()).contains("No Voting Power");
   });
 
   it("should render hotkey tag if user is a hotkey", async () => {

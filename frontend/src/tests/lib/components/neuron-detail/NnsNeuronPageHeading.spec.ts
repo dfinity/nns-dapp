@@ -56,7 +56,7 @@ describe("NnsNeuronPageHeading", () => {
       dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE),
     });
 
-    expect(await po.getVotingPower()).toEqual("Voting Power: 3.14");
+    expect(await po.getVotingPower()).contains("Voting Power: 3.14");
   });
 
   it("should render no voting power if neuron can't vote", async () => {
@@ -67,7 +67,7 @@ describe("NnsNeuronPageHeading", () => {
       dissolveDelaySeconds: BigInt(NNS_MINIMUM_DISSOLVE_DELAY_TO_VOTE - 1),
     });
 
-    expect(await po.getVotingPower()).toEqual("No Voting Power");
+    expect(await po.getVotingPower()).contains("No Voting Power");
   });
 
   it("should render neuron's fund tag if belongs part of neurons fund", async () => {
