@@ -118,6 +118,30 @@ describe("NnsAvailableMaturityItemAction", () => {
       expect(await po.hasDisburseMaturityButton()).toBe(true);
     });
 
+    it("should disable Disburse button when active disbursements limit reached", async () => {
+      const po = renderComponent({
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockNeuron.fullNeuron,
+          controller: mockIdentity.getPrincipal().toText(),
+          maturityE8sEquivalent: 900_000_000n,
+          maturityDisbursementsInProgress: new Array(10).fill({
+            amountE8s: 100_000_000n,
+            timestampOfDisbursementSeconds: undefined,
+            accountToDisburseTo: undefined,
+            finalizeDisbursementTimestampSeconds: undefined,
+            accountIdentifierToDisburseTo: undefined,
+          }),
+        },
+      });
+
+      expect(await po.hasDisburseMaturityButton()).toBe(true);
+      expect(await po.getDisburseMaturityButton().isDisabled()).toBe(true);
+      expect(await po.getDisburseMaturityButton().getTooltipText()).toBe(
+        "The maximum of 10 active maturity disbursements for this neuron has been reached. Please wait for a disbursement to complete before initiating a new one."
+      );
+    });
+
     // TODO: Remove this once the ENABLE_DISBURSE_MATURITY feature flag is no longer needed.
     it("should not render Disburse button w/o the feature flag", async () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_DISBURSE_MATURITY", false);
