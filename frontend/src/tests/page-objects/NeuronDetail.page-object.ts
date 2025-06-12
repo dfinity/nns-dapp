@@ -33,4 +33,23 @@ export class NeuronDetailPo extends BasePageObject {
     ]);
     return nnsLoaded || snsLoaded;
   }
+
+  async waitForContentLoaded(): Promise<void> {
+    await Promise.race([
+      this.getNnsNeuronDetailPo().waitFor(),
+      this.getSnsNeuronDetailPo().waitFor(),
+    ]);
+    await Promise.race([
+      Promise.all(
+        (await this.getNnsNeuronDetailPo().getSkeletonCardPos()).map((card) =>
+          card.waitForAbsent()
+        )
+      ),
+      Promise.all(
+        (await this.getSnsNeuronDetailPo().getSkeletonCardPos()).map((card) =>
+          card.waitForAbsent()
+        )
+      ),
+    ]);
+  }
 }
