@@ -68,6 +68,10 @@ const createHotkeyNeuronsInOtherAccount = async ({
     .getNnsNeuronDetailPo()
     .addHotkey(hotkeyPrincipal);
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().joinCommunityFund();
+
+  // close the success modal that could cover the button
+  await appPo.getToastsPo().closeAll();
+
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().unlockNeuron();
   await page.close();
 };
