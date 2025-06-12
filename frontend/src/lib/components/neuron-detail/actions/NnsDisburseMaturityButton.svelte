@@ -2,6 +2,7 @@
   import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
   import {
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,
+    MAX_DISBURSEMENTS_IN_PROGRESS,
     MIN_DISBURSEMENT_WITH_VARIANCE_ICP,
     MINIMUM_DISBURSEMENT,
     ULPS_PER_MATURITY,
@@ -26,8 +27,14 @@
         percentage: 100,
       })
   );
-  const getDisabledText = () => {
-    return replacePlaceholders(
+  const activeDisbursements = $derived(
+    neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
+  );
+  const isMaximumDisbursementsReached = $derived(
+    activeDisbursements.length >= 1
+  );
+  const getNotEnoughMaturityDisabledText = () =>
+    replacePlaceholders(
       $i18n.neuron_detail.disburse_maturity_disabled_tooltip,
       {
         $amount: formatNumber(MIN_DISBURSEMENT_WITH_VARIANCE_ICP, {
@@ -47,7 +54,20 @@
         ),
       }
     );
-  };
+  const getMaximumReachedDisabledText = () =>
+    replacePlaceholders(
+      $i18n.neuron_detail.stake_maturity_disabled_tooltip_max_disbursements,
+      {
+        $maxDisbursements: `${MAX_DISBURSEMENTS_IN_PROGRESS}`,
+      }
+    );
+  const disabledText = $derived(
+    !enoughMaturity
+      ? getNotEnoughMaturityDisabledText()
+      : isMaximumDisbursementsReached
+        ? getMaximumReachedDisabledText()
+        : undefined
+  );
   const showModal = () =>
     openNnsNeuronModal({
       type: "disburse-maturity",
@@ -55,7 +75,4 @@
     });
 </script>
 
-<DisburseMaturityButton
-  on:click={showModal}
-  disabledText={enoughMaturity ? undefined : getDisabledText()}
-/>
+<DisburseMaturityButton on:click={showModal} {disabledText} />
