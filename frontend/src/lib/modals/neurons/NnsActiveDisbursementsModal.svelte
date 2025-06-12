@@ -26,7 +26,7 @@
 
   onMount(() => {
     analytics.event("open-active-disbursements-modal", {
-      count: activeDisbursementsCount,
+      activeDisbursementsCount,
     });
   });
 </script>

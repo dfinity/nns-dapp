@@ -24,7 +24,7 @@
     startBusy({ initiator: "disburse-maturity" });
 
     analytics.event("disburse-nns-maturity-confirmation-click", {
-      percentage: percentageToDisburse,
+      percentageToDisburse,
     });
 
     const { success } = await disburseMaturityService({
