@@ -3,8 +3,9 @@
   import {
     MATURITY_MODULATION_VARIANCE_PERCENTAGE,
     MIN_NEURON_STAKE,
+    ULPS_PER_MATURITY,
   } from "$lib/constants/neurons.constants";
-  import { ULPS_PER_MATURITY } from "$lib/constants/neurons.constants";
+  import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
   import {
     NNS_NEURON_CONTEXT_KEY,
@@ -33,8 +34,10 @@
     NNS_NEURON_CONTEXT_KEY
   );
 
-  const showModal = () =>
+  const showModal = () => {
     openNnsNeuronModal({ type: "spawn", data: { neuron: $store.neuron } });
+    analytics.event("spawn-nns-neuron-click");
+  };
 </script>
 
 <TestIdWrapper testId="spawn-neuron-button-component">
