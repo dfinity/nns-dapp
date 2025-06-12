@@ -51,5 +51,12 @@ export class NeuronDetailPo extends BasePageObject {
         )
       ),
     ]);
+
+    // Is relevant only for NNS neurons. Wait for the reward status action to be loaded, because the action item appears with a delay.
+    if (await this.getNnsNeuronDetailPo().isContentLoaded()) {
+      await this.getNnsNeuronDetailPo()
+        .getNnsNeuronRewardStatusActionPo()
+        .waitFor();
+    }
   }
 }
