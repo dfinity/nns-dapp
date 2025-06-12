@@ -23,7 +23,7 @@
   }>) => {
     startBusy({ initiator: "disburse-maturity" });
 
-    analytics.event("disburse-nns-maturity-confirmation-click", {
+    analytics.event("nns-disburse-maturity-confirm", {
       percentageToDisburse,
     });
 

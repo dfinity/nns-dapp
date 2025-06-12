@@ -55,7 +55,7 @@
       data: { neuron },
     });
 
-    analytics.event("disburse-nns-maturity-click");
+    analytics.event("nns-disburse-maturity-start");
   };
 </script>
 

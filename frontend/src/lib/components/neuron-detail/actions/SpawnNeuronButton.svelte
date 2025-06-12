@@ -36,7 +36,7 @@
 
   const showModal = () => {
     openNnsNeuronModal({ type: "spawn", data: { neuron: $store.neuron } });
-    analytics.event("spawn-nns-neuron-click");
+    analytics.event("nns-spawn-neuron-start");
   };
 </script>
 

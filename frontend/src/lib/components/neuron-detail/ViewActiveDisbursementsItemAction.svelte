@@ -26,7 +26,7 @@
   const activeDisbursementsCount = (
     neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
   ).length;
-  analytics.event("open-active-disbursements-modal", {
+  analytics.event("nns-disburse-maturity-show-active", {
     activeDisbursementsCount,
   });
 </script>
