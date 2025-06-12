@@ -1,6 +1,5 @@
 <script lang="ts">
   import NnsActiveDisbursementEntry from "$lib/modals/neurons/NnsActiveDisbursementEntry.svelte";
-  import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
@@ -10,7 +9,6 @@
   import { Html, KeyValuePair, Modal } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken } from "@dfinity/utils";
-  import { onMount } from "svelte";
 
   type Props = {
     neuron: NeuronInfo;
@@ -22,12 +20,6 @@
     neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
   );
   const totalMaturity = $derived(totalMaturityDisbursementsInProgress(neuron));
-
-  onMount(() => {
-    analytics.event("open-active-disbursements-modal", {
-      activeDisbursementsCount,
-    });
-  });
 </script>
 
 <Modal on:nnsClose={close} testId="nns-active-disbursements-modal">
