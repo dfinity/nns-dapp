@@ -86,6 +86,8 @@
       errorMessage = $i18n.error.amount_not_enough_stake_neuron;
       return;
     }
+
+    errorMessage = undefined;
   })();
 
   let disableButton: boolean;
