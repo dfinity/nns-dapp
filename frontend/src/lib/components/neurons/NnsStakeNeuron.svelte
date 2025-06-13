@@ -73,10 +73,9 @@
 
   let errorMessage: string | undefined = undefined;
   $: (() => {
-    if (isNullish(amount) || isNullish(account)) {
-      errorMessage = undefined;
-      return;
-    }
+    errorMessage = undefined;
+
+    if (isNullish(amount) || isNullish(account)) return;
 
     if (amount > max) {
       errorMessage = $i18n.error.insufficient_funds;
@@ -86,8 +85,6 @@
       errorMessage = $i18n.error.amount_not_enough_stake_neuron;
       return;
     }
-
-    errorMessage = undefined;
   })();
 
   let disableButton: boolean;
