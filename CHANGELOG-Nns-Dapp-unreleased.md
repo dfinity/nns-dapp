@@ -28,6 +28,8 @@ proposal is successful, the changes it released will be moved from this file to
 * Fix an issue where SNS neurons that had been disbursed but still had active maturity disbursements were not displayed in the dapp.
 * Fix disburse maturity disabled button width.
 * Fix proposal card display issues on mobile devices
+* Fix staking form error messages not clearing after correction
+
 
 #### Security
 
