@@ -40,12 +40,17 @@ import { get } from "svelte/store";
 describe("Staking", () => {
   const snsTitle = "SNS-1";
   const snsCanisterId = principal(1112);
+  const snsLedgerId = principal(54651);
 
   beforeEach(() => {
     resetIdentity();
 
     page.mock({
       routeId: AppPath.Staking,
+    });
+
+    setIcpSwapUsdPrices({
+      [snsLedgerId.toText()]: 10,
     });
   });
 
@@ -260,7 +265,6 @@ describe("Staking", () => {
   describe("Stake SNS token button", () => {
     const snsGovernanceIdText = "73vho-mf5gq-aq";
     const snsGovernanceId = Principal.fromText(snsGovernanceIdText);
-    const snsLedgerId = principal(54651);
     const snsTokenSymbol = "KLM";
     const snsTransactionFee = 123_000n;
     const snsAccountBalance = 200_000_000n;
@@ -462,10 +466,6 @@ describe("Staking", () => {
     });
 
     it("should display the amount in fiat value", async () => {
-      setIcpSwapUsdPrices({
-        [snsLedgerId.toText()]: 10,
-      });
-
       const po = renderComponent();
       const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
       await rows[1].getStakeButtonPo().click();

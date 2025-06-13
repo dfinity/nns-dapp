@@ -4,7 +4,6 @@ import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import { mockTableNeuron } from "$tests/mocks/neurons.mock";
@@ -225,8 +224,6 @@ describe("NeuronsTable", () => {
   });
 
   it("should render neuron stake in USD", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
     const po = renderComponent({
       neurons: [
         {
@@ -242,8 +239,6 @@ describe("NeuronsTable", () => {
   });
 
   it("should render absent neuron stake in USD", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
     const po = renderComponent({
       neurons: [
         {
@@ -256,22 +251,6 @@ describe("NeuronsTable", () => {
     expect(rowPos).toHaveLength(1);
     expect(await rowPos[0].getStakeInUsd()).toBe("$-/-");
     expect(await rowPos[0].hasStakeInUsd()).toBe(true);
-  });
-
-  it("should not render neuron stake in USD if feature flag is disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-    const po = renderComponent({
-      neurons: [
-        {
-          ...neuron1,
-          stakeInUsd: 1234.56,
-        },
-      ],
-    });
-    const rowPos = await po.getNeuronsTableRowPos();
-    expect(rowPos).toHaveLength(1);
-    expect(await rowPos[0].hasStakeInUsd()).toBe(false);
   });
 
   it("should render neuron maturity", async () => {
