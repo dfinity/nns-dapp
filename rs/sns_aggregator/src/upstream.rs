@@ -16,7 +16,7 @@ use candid::Principal;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
 
 /// default time window to get SNS metrics is 2 months.
-const DEFAULT_TIME_WINDOW: u64 = 2 * 30 * 24 * 3600;
+const TIME_WINDOW_SECONDS: u64 = 2 * 30 * 24 * 3600;
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
 pub async fn update_cache() {
@@ -133,7 +133,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
 
     crate::state::log(format!("Getting SNS index {index}... get_metrics"));
     let arg: types::GetMetricsRequest = GetMetricsRequest {
-        time_window_seconds: Some(DEFAULT_TIME_WINDOW),
+        time_window_seconds: Some(TIME_WINDOW_SECONDS),
     };
     let metrics: types::GetMetricsResponse = ic_cdk::api::call::call(governance_canister_id, "get_metrics", (arg,))
         .await
