@@ -208,6 +208,35 @@ describe("NnsStakeNeuronModal", () => {
       ).toBe(en.error.insufficient_funds);
     });
 
+    it("should clear the error if user corrects amount", async () => {
+      const po = await renderComponent({});
+
+      expect(
+        await po.getNnsStakeNeuronPo().getCreateButtonPo().isDisabled()
+      ).toBe(true);
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        false
+      );
+
+      await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(100000000);
+
+      expect(
+        await po.getNnsStakeNeuronPo().getCreateButtonPo().isDisabled()
+      ).toBe(true);
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        true
+      );
+      expect(
+        await po.getNnsStakeNeuronPo().getAmountInputPo().getErrorMessage()
+      ).toBe(en.error.insufficient_funds);
+
+      await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(10);
+
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        false
+      );
+    });
+
     it("should move to update dissolve delay after creating a neuron", async () => {
       const po = await renderComponent({});
 
