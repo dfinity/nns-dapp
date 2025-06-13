@@ -13,6 +13,9 @@ export const MATURITY_MODULATION_VARIANCE_PERCENTAGE = 0.95;
 // The minimum amount of ICP to disburse in a single transaction.
 // https://github.com/dfinity/ic/blob/b9c23dd08c76349a3dd1b422e39988bea8363d33/rs/nns/governance/src/governance/disburse_maturity.rs#L29
 export const MINIMUM_DISBURSEMENT = 100_000_000n;
+// The API will reject new disbursement requests if there are already 10 disbursements in progress.
+// https://github.com/dfinity/ic/blob/3564b37939f037ba4d051ada88251c13954597d2/rs/nns/governance/src/governance/disburse_maturity.rs#L40-L42
+export const MAX_DISBURSEMENTS_IN_PROGRESS = 10;
 // The minimum maturity to disburse with the maturity modulation variance applied.
 export const MIN_DISBURSEMENT_WITH_VARIANCE = BigInt(
   Math.round(

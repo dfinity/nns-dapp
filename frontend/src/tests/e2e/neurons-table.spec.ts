@@ -68,6 +68,10 @@ const createHotkeyNeuronsInOtherAccount = async ({
     .getNnsNeuronDetailPo()
     .addHotkey(hotkeyPrincipal);
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().joinCommunityFund();
+
+  // close the success modal that could cover the button
+  await appPo.getToastsPo().closeAll();
+
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().unlockNeuron();
   await page.close();
 };
@@ -118,8 +122,8 @@ test("Test neurons table", async ({ page, context, browser }) => {
   // Reload the page to see the maturity and enable the spawn neuron button.
   await page.reload();
 
-  step("Spawn a neuron");
-  await neuronDetail.spawnNeuron({ percentage: 100 });
+  step("Disburse maturity");
+  await neuronDetail.disburseMaturity({ percentage: 100 });
 
   step("Wait for the hotkey neurons to be created");
   await createHotkeyNeuronsPromise;
@@ -127,11 +131,11 @@ test("Test neurons table", async ({ page, context, browser }) => {
   await page.reload();
 
   step("Make screenshots");
-  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
+  await appPo.getNeuronDetailPo().waitForContentLoaded();
 
   await replaceContent({
     page,
-    selectors: ['[data-tid="neuron-id"]'],
+    selectors: ['[data-tid="identifier"]'],
     pattern: /[0-9a-f]{7}...[0-9a-f]{7}/,
     replacements: replacementNeuronIds,
   });

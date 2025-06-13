@@ -44,3 +44,8 @@ export const isNotVisible = (element: Element): boolean => {
     return nonNullish(heightString) && Number(heightString) === 0;
   }
 };
+
+export const extractHrefFromText = (html: string): string => {
+  const match = html.match(/href="([^"]+)"/);
+  return match ? match[1] : null;
+};

@@ -2,6 +2,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
+  import { analytics } from "$lib/services/analytics.services";
   import { disburseMaturity as disburseMaturityService } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
@@ -21,6 +22,10 @@
     destinationAddress: string;
   }>) => {
     startBusy({ initiator: "disburse-maturity" });
+
+    analytics.event("nns-disburse-maturity-confirm", {
+      percentageToDisburse,
+    });
 
     const { success } = await disburseMaturityService({
       neuronId: neuron.neuronId,

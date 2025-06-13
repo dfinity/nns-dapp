@@ -20,6 +20,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 
@@ -264,6 +265,7 @@ describe("ImportTokenModal", () => {
     // Wait for toast error to be called.
     resolveQueryIcrcToken();
     await runResolvedPromises();
+    await tick();
 
     expect(get(busyStore)).toEqual([]);
     expect(await formPo.isPresent()).toEqual(false);
@@ -280,6 +282,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(await reviewPo.isPresent()).toEqual(true);
     expect(await reviewPo.getLedgerCanisterIdPo().getCanisterIdText()).toEqual(
@@ -307,6 +310,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(
       await reviewPo.getIndexCanisterIdPo().getCanisterId().isPresent()
@@ -332,6 +336,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(await formPo.isPresent()).toEqual(false);
     expect(await reviewPo.isPresent()).toEqual(true);
@@ -372,6 +377,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(await formPo.isPresent()).toEqual(false);
     expect(getImportedTokensSpy).toBeCalledTimes(0);
@@ -431,6 +437,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(get(pageStore).path).toEqual(AppPath.Tokens);
 
@@ -464,6 +471,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(get(pageStore).path).toEqual(AppPath.Tokens);
 

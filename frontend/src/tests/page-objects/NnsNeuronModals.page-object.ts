@@ -1,4 +1,5 @@
 import { AddHotkeyModalPo } from "$tests/page-objects/AddHotkeyModal.page-object";
+import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { DisburseNnsNeuronModalPo } from "$tests/page-objects/DisburseNnsNeuronModal.page-object";
 import { DissolveActionButtonModalPo } from "$tests/page-objects/DissolveActionButtonModal.page-object";
 import { IncreaseNeuronStakeModalPo } from "$tests/page-objects/IncreaseNeuronStakeModal.page-object";
@@ -51,5 +52,9 @@ export class NnsNeuronModalsPo extends BasePageObject {
 
   getLosingRewardNeuronsModalPo(): LosingRewardNeuronsModalPo {
     return LosingRewardNeuronsModalPo.under(this.root);
+  }
+
+  getDisburseMaturityModalPo(): DisburseMaturityModalPo {
+    return DisburseMaturityModalPo.under(this.root);
   }
 }

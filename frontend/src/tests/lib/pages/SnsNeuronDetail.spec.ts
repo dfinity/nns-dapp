@@ -37,6 +37,7 @@ import {
 } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
 import { render, waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns.api");
@@ -279,6 +280,7 @@ describe("SnsNeuronDetail", () => {
 
       await po.removeHotkey(hotkeyPrincipal);
       await runResolvedPromises();
+      await tick();
 
       expect(await po.getHotkeyPrincipals()).toEqual([]);
     });
@@ -318,6 +320,7 @@ describe("SnsNeuronDetail", () => {
 
       await po.removeHotkey(hotkeyPrincipal);
       await runResolvedPromises();
+      await tick();
 
       expect(await po.getHotkeyPrincipals()).toEqual([]);
 

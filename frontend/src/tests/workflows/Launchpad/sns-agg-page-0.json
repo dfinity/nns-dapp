@@ -292,6 +292,20 @@
               "target_method_name": "icrc1_transfer"
             }
           }
+        },
+        {
+          "id": 2010,
+          "name": "Transfer cICP",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "n6tkf-tqaaa-aaaal-qsneq-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -437,7 +451,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999927464094000,
+    "icrc1_total_supply": 799999926304194000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -767,6 +781,20 @@
                   "topic": "TreasuryAssetManagement",
                   "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
                   "target_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
+            },
+            {
+              "id": 2010,
+              "name": "Transfer cICP",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "n6tkf-tqaaa-aaaal-qsneq-cai",
                   "validator_method_name": "validate_icrc1_transfer",
                   "target_method_name": "icrc1_transfer"
                 }
@@ -1743,7 +1771,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10160074798913208,
+    "icrc1_total_supply": 10160325132349870,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3316,7 +3344,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 617382565522873,
+    "icrc1_total_supply": 617449801050322,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4060,7 +4088,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 104992571217889702,
+    "icrc1_total_supply": 105087520026050998,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5005,7 +5033,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 932105004527941033,
+    "icrc1_total_supply": 932124487113367504,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

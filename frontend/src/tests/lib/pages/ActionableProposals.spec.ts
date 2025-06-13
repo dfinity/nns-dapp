@@ -21,6 +21,7 @@ import {
   SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
+import { tick } from "svelte";
 import { beforeEach } from "vitest";
 
 describe("ActionableProposals", () => {
@@ -147,7 +148,8 @@ describe("ActionableProposals", () => {
         proposals: [snsProposal1, snsProposal2],
       });
 
-      await runResolvedPromises();
+      await tick();
+
       const snsProposalsPos = await po
         .getActionableSnses()
         .getActionableSnsProposalsPos();
@@ -247,7 +249,8 @@ describe("ActionableProposals", () => {
         // no ballots
       });
 
-      await runResolvedPromises();
+      await tick();
+
       expect(
         await po.getActionableSnses().getActionableSnsProposalsPos()
       ).toHaveLength(0);
@@ -257,7 +260,7 @@ describe("ActionableProposals", () => {
         proposals: [snsProposal1, snsProposal2],
       });
 
-      await runResolvedPromises();
+      await tick();
       expect(
         await po.getActionableSnses().getActionableSnsProposalsPos()
       ).toHaveLength(2);
@@ -272,7 +275,7 @@ describe("ActionableProposals", () => {
     expect(await po.hasSkeletons()).toEqual(true);
 
     actionableNnsProposalsStore.setProposals([{ ...mockProposalInfo }]);
-    await runResolvedPromises();
+    await tick();
 
     expect(await po.hasActionableNnsProposals()).toEqual(false);
     expect(await po.hasSkeletons()).toEqual(true);
@@ -281,7 +284,7 @@ describe("ActionableProposals", () => {
       rootCanisterId: principal0,
       proposals: [],
     });
-    await runResolvedPromises();
+    await tick();
 
     expect(await po.hasActionableNnsProposals()).toEqual(true);
     expect(await po.hasSkeletons()).toEqual(false);
@@ -298,7 +301,7 @@ describe("ActionableProposals", () => {
       rootCanisterId: principal0,
       proposals: [],
     });
-    await runResolvedPromises();
+    await tick();
 
     expect(await po.hasActionableEmptyBanner()).toEqual(true);
   });

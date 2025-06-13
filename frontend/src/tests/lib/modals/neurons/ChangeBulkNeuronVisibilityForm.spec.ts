@@ -20,6 +20,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronType, NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import { tick } from "svelte";
 
 describe("ChangeBulkNeuronVisibilityForm", () => {
   const createMockNeuron = ({
@@ -605,6 +606,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
     neuronsStore.setNeurons({ neurons: [publicNeuron1], certified: true });
     await runResolvedPromises();
+    await tick();
 
     expect(await po.getLoadingContainer().isPresent()).toBe(false);
   });

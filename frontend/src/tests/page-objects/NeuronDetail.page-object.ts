@@ -33,4 +33,30 @@ export class NeuronDetailPo extends BasePageObject {
     ]);
     return nnsLoaded || snsLoaded;
   }
+
+  async waitForContentLoaded(): Promise<void> {
+    await Promise.race([
+      this.getNnsNeuronDetailPo().waitFor(),
+      this.getSnsNeuronDetailPo().waitFor(),
+    ]);
+    await Promise.race([
+      Promise.all(
+        (await this.getNnsNeuronDetailPo().getSkeletonCardPos()).map((card) =>
+          card.waitForAbsent()
+        )
+      ),
+      Promise.all(
+        (await this.getSnsNeuronDetailPo().getSkeletonCardPos()).map((card) =>
+          card.waitForAbsent()
+        )
+      ),
+    ]);
+
+    // Is relevant only for NNS neurons. Wait for the reward status action to be loaded, because the action item appears with a delay.
+    if (await this.getNnsNeuronDetailPo().isContentLoaded()) {
+      await this.getNnsNeuronDetailPo()
+        .getNnsNeuronRewardStatusActionPo()
+        .waitFor();
+    }
+  }
 }

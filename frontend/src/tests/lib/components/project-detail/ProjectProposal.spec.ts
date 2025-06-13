@@ -8,6 +8,7 @@ import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/proposals.api");
@@ -62,9 +63,12 @@ describe("ProjectProposal", () => {
       },
     });
 
-    await runResolvedPromises();
+    await tick();
 
     expect(queryByTestId("proposal-card")).not.toBeInTheDocument();
+
+    await tick();
+
     expect(queryByTestId("proposal-card-alternative-info")).toBeInTheDocument();
   });
 });

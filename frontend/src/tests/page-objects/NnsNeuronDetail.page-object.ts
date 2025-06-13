@@ -156,4 +156,19 @@ export class NnsNeuronDetailPo extends BasePageObject {
     await modal.spawnNeuron({ percentage });
     await modal.waitForClosed();
   }
+
+  async disburseMaturity({
+    percentage,
+  }: {
+    percentage: number;
+  }): Promise<void> {
+    await this.getMaturitySectionPo()
+      .getAvailableMaturityItemActionPo()
+      .getDisburseMaturityButton()
+      .getButton()
+      .click();
+    const modal = this.getNnsNeuronModalsPo().getDisburseMaturityModalPo();
+    await modal.disburseMaturity({ percentage });
+    await modal.waitForClosed();
+  }
 }

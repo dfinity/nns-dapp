@@ -253,6 +253,9 @@ describe("BtcCkBTCReceiveModal", () => {
   });
 
   it("should render a QR code", async () => {
+    vi.spyOn(minterApi, "getBTCAddress").mockResolvedValue(
+      mockBTCAddressTestnet
+    );
     const { getByTestId } = await renderReceiveModal({});
 
     expect(getByTestId("qr-code")).toBeInTheDocument();
@@ -262,6 +265,9 @@ describe("BtcCkBTCReceiveModal", () => {
     beforeEach(() => {
       vi.spyOn(tokensStore, "subscribe").mockImplementation(
         mockTokensSubscribe(mockUniversesTokens)
+      );
+      vi.spyOn(minterApi, "getBTCAddress").mockResolvedValue(
+        mockBTCAddressTestnet
       );
 
       page.mock({
