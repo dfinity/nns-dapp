@@ -2,14 +2,19 @@
   import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
   import { TokenAmountV2, type Token } from "@dfinity/utils";
 
-  export let amount: number;
-  export let token: Token;
+  type Props = {
+    amount: number;
+    token: Token;
+  };
 
-  let tokenAmount: TokenAmountV2;
-  $: tokenAmount = TokenAmountV2.fromNumber({
-    amount,
-    token,
-  });
+  const { amount, token }: Props = $props();
+
+  const tokenAmount = $derived(
+    TokenAmountV2.fromNumber({
+      amount,
+      token,
+    })
+  );
 </script>
 
 <TransactionReceivedTokenAmount
