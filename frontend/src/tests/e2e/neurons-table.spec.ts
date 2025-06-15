@@ -85,12 +85,6 @@ test("Test neurons table", async ({ page, context, browser }) => {
   await step("Sign in");
   await signInWithNewUser({ page, context });
 
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_USD_VALUES_FOR_NEURONS",
-    value: true,
-  });
-
   const principal = await appPo.getCanistersPo().getPrincipal();
 
   const createHotkeyNeuronsPromise = createHotkeyNeuronsInOtherAccount({

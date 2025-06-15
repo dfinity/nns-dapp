@@ -1,11 +1,9 @@
 <script lang="ts">
-  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
   import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
   import PageHeading from "$lib/components/common/PageHeading.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { selectedTokenStore } from "$lib/derived/selected-token.derived";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
@@ -52,27 +50,15 @@
     {/if}
   </svelte:fragment>
   <svelte:fragment slot="subtitle">
-    {#if $ENABLE_USD_VALUES_FOR_NEURONS}
-      <HeadingSubtitleWithUsdValue {amount} {ledgerCanisterId}>
-        {#if votingPower > 0}
-          {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
-            $votingPower: formatVotingPower(votingPower),
-          })}
-        {:else}
-          {$i18n.neuron_detail.voting_power_zero_subtitle}
-        {/if}
-      </HeadingSubtitleWithUsdValue>
-    {:else}
-      <HeadingSubtitle testId="voting-power">
-        {#if votingPower > 0}
-          {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
-            $votingPower: formatVotingPower(votingPower),
-          })}
-        {:else}
-          {$i18n.neuron_detail.voting_power_zero_subtitle}
-        {/if}
-      </HeadingSubtitle>
-    {/if}
+    <HeadingSubtitleWithUsdValue {amount} {ledgerCanisterId}>
+      {#if votingPower > 0}
+        {replacePlaceholders($i18n.neuron_detail.voting_power_subtitle, {
+          $votingPower: formatVotingPower(votingPower),
+        })}
+      {:else}
+        {$i18n.neuron_detail.voting_power_zero_subtitle}
+      {/if}
+    </HeadingSubtitleWithUsdValue>
   </svelte:fragment>
   <svelte:fragment slot="tags">
     {#if isHotkey}
