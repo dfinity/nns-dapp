@@ -1,17 +1,19 @@
 <script lang="ts">
+  import HideZeroNeuronsToggle from "$lib/components/staking/HideZeroNeuronsToggle.svelte";
   import ProjectActionsCell from "$lib/components/staking/ProjectActionsCell.svelte";
   import ProjectMaturityCell from "$lib/components/staking/ProjectMaturityCell.svelte";
   import ProjectNeuronsCell from "$lib/components/staking/ProjectNeuronsCell.svelte";
   import ProjectStakeCell from "$lib/components/staking/ProjectStakeCell.svelte";
   import ProjectTitleCell from "$lib/components/staking/ProjectTitleCell.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
+  import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
@@ -28,11 +30,8 @@
   import { IconNeuronsPage } from "@dfinity/gix-components";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
-  import HideZeroNeuronsToggle from "$lib/components/staking/HideZeroNeuronsToggle.svelte";
-  import Separator from "$lib/components/ui/Separator.svelte";
 
-  $: if ($authSignedInStore && $ENABLE_USD_VALUES_FOR_NEURONS) {
+  $: if ($authSignedInStore) {
     loadIcpSwapTickers();
   }
 
@@ -144,7 +143,7 @@
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
-  {#if $authSignedInStore && $ENABLE_USD_VALUES_FOR_NEURONS && hasAnyNeurons}
+  {#if $authSignedInStore && hasAnyNeurons}
     <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
       <IconNeuronsPage slot="icon" />
     </UsdValueBanner>

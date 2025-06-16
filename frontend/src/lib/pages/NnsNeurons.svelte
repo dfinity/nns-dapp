@@ -13,7 +13,6 @@
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import type { TableNeuron } from "$lib/types/neurons-table";
@@ -52,11 +51,9 @@
     <div class="container">
       <LosingRewardsBanner />
 
-      {#if $ENABLE_USD_VALUES_FOR_NEURONS}
-        <UsdValueBanner usdAmount={totalStakeInUsd} hasUnpricedTokens={false}>
-          <IconNeuronsPage slot="icon" />
-        </UsdValueBanner>
-      {/if}
+      <UsdValueBanner usdAmount={totalStakeInUsd} hasUnpricedTokens={false}>
+        <IconNeuronsPage slot="icon" />
+      </UsdValueBanner>
       <NeuronsTable neurons={tableNeurons} />
     </div>
   {:else}

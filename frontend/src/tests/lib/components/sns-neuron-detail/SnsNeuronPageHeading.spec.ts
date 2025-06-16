@@ -6,7 +6,6 @@ import {
   SECONDS_IN_FOUR_YEARS,
 } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -97,7 +96,7 @@ describe("SnsNeuronPageHeading", () => {
     //   * max age bonus multiplier
     // = (2.00 + 1.00) * 2.00 * 1.25
     // = 7.50
-    expect(await po.getVotingPower()).toEqual("Voting Power: 7.50");
+    expect(await po.getVotingPower()).equals("Voting Power: 7.50");
   });
 
   it("should render no votig power if neuron can't vote", async () => {
@@ -110,7 +109,7 @@ describe("SnsNeuronPageHeading", () => {
     });
     const po = renderSnsNeuronCmp(neuron);
 
-    expect(await po.getVotingPower()).toEqual("No Voting Power");
+    expect(await po.getVotingPower()).equals("No Voting Power");
   });
 
   it("should render hotkey tag if user is a hotkey", async () => {
@@ -127,21 +126,7 @@ describe("SnsNeuronPageHeading", () => {
     expect(await po.hasHotkeyTag()).toBe(true);
   });
 
-  it("should not display USD balance if feature flag is disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-    const stake = 300_000_000n;
-    const neuron = createMockSnsNeuron({
-      stake,
-    });
-    const po = renderSnsNeuronCmp(neuron);
-
-    expect(await po.hasBalanceInUsd()).toBe(false);
-  });
-
   it("should display USD balance if feature flag is enabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
     const stake = 300_000_000n;
     const neuron = createMockSnsNeuron({
       stake,

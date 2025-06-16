@@ -25,7 +25,7 @@ export class SnsNeuronPageHeadingPo extends BasePageObject {
   }
 
   getVotingPower(): Promise<string> {
-    return this.getText("voting-power");
+    return this.getHeadingSubtitleWithUsdValuePo().getSlotText();
   }
 
   hasHotkeyTag(): Promise<boolean> {

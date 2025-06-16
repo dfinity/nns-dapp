@@ -100,7 +100,6 @@
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_DISBURSE_MATURITY": true,
           "ENABLE_USD_VALUES": true,
-          "ENABLE_USD_VALUES_FOR_NEURONS": true,
           "ENABLE_PORTFOLIO_PAGE": true,
           "ENABLE_SNS_TOPICS": true
         }
