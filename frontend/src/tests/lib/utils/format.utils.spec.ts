@@ -2,6 +2,7 @@ import {
   formatCurrencyNumber,
   formatNumber,
   formatPercentage,
+  formatUsdValue,
   renderPrivacyModeBalance,
   shortenWithMiddleEllipsis,
 } from "$lib/utils/format.utils";
@@ -133,6 +134,24 @@ describe("format.utils", () => {
 
     it("returns empty string for negative counts", () => {
       expect(renderPrivacyModeBalance(-1)).toBe("");
+    });
+  });
+
+  describe("formatUsdValue", () => {
+    it("should format zero value", () => {
+      expect(formatUsdValue(0)).toEqual("$0.00");
+    });
+
+    it("should format almost zero values as < $0.01", () => {
+      expect(formatUsdValue(0.001)).toEqual("< $0.01");
+      expect(formatUsdValue(0.009)).toEqual("< $0.01");
+      expect(formatUsdValue(0.0099)).toEqual("< $0.01");
+    });
+
+    it("should format values >= 0.01 normally", () => {
+      expect(formatUsdValue(0.01)).toEqual("$0.01");
+      expect(formatUsdValue(1.23)).toEqual("$1.23");
+      expect(formatUsdValue(123.45)).toEqual("$123.45");
     });
   });
 });
