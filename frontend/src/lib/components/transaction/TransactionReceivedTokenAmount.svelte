@@ -24,9 +24,13 @@
     withFiatValue = false,
   }: Props = $props();
 
-  const priceStore = $derived(tokenPriceStore(amount));
+  const priceStore = $derived(
+    withFiatValue ? tokenPriceStore(amount) : undefined
+  );
 
   const usdValue = $derived.by(() => {
+    if (!withFiatValue) return undefined;
+
     const tokenPrice = $priceStore;
 
     if (isNullish(amount) || isNullish(tokenPrice)) return undefined;
@@ -47,7 +51,7 @@
 
   <p class="no-margin value" data-tid={testId} class:estimation>
     <AmountDisplay inline detailed="height_decimals" {amount} />
-    {#if withFiatValue && nonNullish(usdValue)}
+    {#if nonNullish(usdValue)}
       <span class="fiat" data-tid="fiat-value">
         (~${usdValue})
       </span>
