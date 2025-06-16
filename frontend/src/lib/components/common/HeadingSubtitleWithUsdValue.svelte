@@ -48,7 +48,7 @@
       </TooltipIcon>
     </div>
     <div class="vertical-divider"></div>
-    <div>
+    <div data-tid="slot">
       <slot />
     </div>
   </div>

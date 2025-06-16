@@ -22,4 +22,8 @@ export class HeadingSubtitleWithUsdValuePo extends BasePageObject {
   getAmountInUsd(): Promise<string> {
     return this.getText("usd-value");
   }
+
+  getSlotText(): Promise<string> {
+    return this.getText("slot");
+  }
 }
