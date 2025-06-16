@@ -14,9 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Visual feedback on copy to clipboard actions
-* Disburse maturity for NNS neurons
-
 #### Changed
 
 #### Deprecated
@@ -25,11 +22,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Fix an issue where SNS neurons that had been disbursed but still had active maturity disbursements were not displayed in the dapp.
-* Fix disburse maturity disabled button width.
-* Fix proposal card display issues on mobile devices
 * Fix staking form error messages not clearing after correction
-
 
 #### Security
 

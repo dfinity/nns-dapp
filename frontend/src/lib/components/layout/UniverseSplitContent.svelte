@@ -46,8 +46,6 @@
 </div>
 
 <style lang="scss">
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
-
   // Temporarily redefine default values of the SplitContent until the proper redesign is implemented.
   .container {
     display: contents;

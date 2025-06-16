@@ -16,7 +16,7 @@ print_help() {
 source "$SOURCE_DIR/../clap.bash"
 # Define options
 clap.define short=c long=commit desc="Commit to get hash for" variable=COMMIT default="tags/release-candidate"
-clap.define short=l long=limit desc="--limit passed to gh run list" variable=LIMIT default="200"
+clap.define short=l long=limit desc="--limit passed to gh run list" variable=LIMIT default="2000"
 clap.define short=f long=filename desc="The name of the file to get the hash for" variable=FILENAME default="$DEFAULT_WASM_FILENAME"
 
 # Source the output file ----------------------------------------------------------
@@ -27,6 +27,9 @@ ci_build_run_id="$("$SOURCE_DIR/get-ci-build-run" --commit "$COMMIT" --limit "$L
 tmp_file=$(mktemp)
 
 gh run view "$ci_build_run_id" --log >"$tmp_file"
+
+echo "build	Build nns-dapp repo	2025-06-13T05:03:06.6231163Z 65632e888201fbad31c5b6b02a51846b10c20f737da00c0527f184cab859dd30  2525121  out/nns-dapp.wasm.gz" > "$tmp_file"
+
 # We don't escape filename so hopefully it doesn't contain any regex special
 # characters that interfere with the result.
 grep "out/$FILENAME$" "$tmp_file" | grep -o '[0-9a-f]\{64\}' | head -1

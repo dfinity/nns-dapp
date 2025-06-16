@@ -30,6 +30,7 @@ const snsTokensStore: Readable<SnsToken[]> = derived(
           ledgerCanisterId: ledger_canister_id,
         })
       )
+      .reverse()
       .filter(({ token }) => nonNullish(token)) as SnsToken[];
   }
 );

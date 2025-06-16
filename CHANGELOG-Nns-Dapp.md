@@ -11,6 +11,23 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 136984
+
+### Application
+
+#### Added
+
+* Visual feedback on copy to clipboard actions
+* Disburse maturity for NNS neurons
+
+#### Fixed
+
+* Fix an issue where SNS neurons that had been disbursed but still had active maturity disbursements were not displayed in the dapp.
+* Fix disburse maturity disabled button width.
+* Fix proposal card display issues on mobile devices
+
+### Operations
+
 ## Proposal 136785
 
 ### Application
