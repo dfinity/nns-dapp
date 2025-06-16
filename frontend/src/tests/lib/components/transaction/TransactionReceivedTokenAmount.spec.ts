@@ -31,9 +31,7 @@ describe("TransactionReceivedTokenAmount", () => {
     const { getByText } = renderComponent();
 
     expect(
-      getByText(
-        formatTokenE8s({ value: amount.toE8s(), detailed: "height_decimals" })
-      )
+      getByText(formatTokenE8s({ value: amount.toE8s(), detailed: true }))
     ).toBeInTheDocument();
 
     expect(getByText(amount.token.symbol)).toBeInTheDocument();
