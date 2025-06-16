@@ -12,20 +12,19 @@ describe("TransactionReview", () => {
   }) as TokenAmount;
 
   const props = {
-    props: {
-      transaction: {
-        sourceAccount: mockMainAccount,
-        destinationAddress: "1234",
-        amount: 1234,
-      },
-      disableSubmit: false,
-      transactionFee: icp1,
-      token: ICPToken,
-      additionalInfo: createMockSnippet(),
-      description: createMockSnippet(),
-      destinationInfo: createMockSnippet(),
-      receivedAmount: createMockSnippet(),
+    transaction: {
+      sourceAccount: mockMainAccount,
+      destinationAddress: "1234",
+      amount: 1234,
     },
+    disableSubmit: false,
+    transactionFee: icp1,
+    token: ICPToken,
+    additionalInfo: createMockSnippet(),
+    description: createMockSnippet(),
+    destinationInfo: createMockSnippet(),
+    receivedAmount: createMockSnippet(),
+    handleGoBack: () => {},
   };
 
   describe("signed in", () => {

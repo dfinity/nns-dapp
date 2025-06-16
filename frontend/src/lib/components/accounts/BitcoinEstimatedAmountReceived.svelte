@@ -59,6 +59,7 @@
   amount={tokenEstimatedAmount}
   testId="bitcoin-estimated-amount-value"
   estimation
+  withFiatValue
 />
 
 <BitcoinFeeDisplay

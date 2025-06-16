@@ -60,6 +60,7 @@
   const tokenPrice = $derived($priceStore);
 
   const tokenAmountUsdValue = $derived.by(() => {
+    console.log(tokenPrice);
     if (isNullish(tokenAmount) || isNullish(tokenPrice)) return undefined;
 
     const usdValue = getUsdValue({ amount: tokenAmount, tokenPrice });
@@ -89,9 +90,11 @@
   <KeyValuePair testId="transaction-summary-sending-amount">
     <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
     <div slot="value" class="value">
-      <AmountDisplay singleLine detailed amount={tokenAmount} />
-
-      {#if nonNullish(tokenAmountUsdValue)}
+      <AmountDisplay
+        singleLine
+        detailed
+        amount={tokenAmount}
+      />{#if nonNullish(tokenAmountUsdValue)}
         <span class="fiat" data-tid="fiat-value">
           (~{tokenAmountUsdValue})
         </span>
@@ -103,9 +106,11 @@
     <KeyValuePair testId="transaction-summary-fee">
       <span class="label" slot="key">{ledgerFeeLabel}</span>
       <div class="value" slot="value">
-        <AmountDisplay singleLine detailed amount={transactionFee} />
-
-        {#if nonNullish(transactionFeeUsdValue)}
+        <AmountDisplay
+          singleLine
+          detailed
+          amount={transactionFee}
+        />{#if nonNullish(transactionFeeUsdValue)}
           <span class="fiat" data-tid="fiat-value">
             ({transactionFeeUsdValue})
           </span>
@@ -117,9 +122,11 @@
       <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
 
       <p class="value">
-        <AmountDisplay inline detailed amount={tokenTotalDeducted} />
-
-        {#if nonNullish(totalDeductedUsdValue)}
+        <AmountDisplay
+          inline
+          detailed
+          amount={tokenTotalDeducted}
+        />{#if nonNullish(totalDeductedUsdValue)}
           <span class="fiat" data-tid="fiat-value">
             (~{totalDeductedUsdValue})
           </span>

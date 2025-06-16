@@ -3,6 +3,7 @@ import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
 import { createMockSnippet } from "$tests/mocks/snippet.mock";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -23,6 +24,10 @@ describe("TransactionSummary", () => {
 
   const e8s = numberToE8s(amount);
 
+  beforeEach(() => {
+    setIcpPrice(10);
+  });
+
   it("should render sending amount", () => {
     const { getByTestId } = render(TransactionSummary, {
       props,
@@ -30,7 +35,9 @@ describe("TransactionSummary", () => {
 
     const block = getByTestId("transaction-summary-sending-amount");
 
-    expect(block.textContent).toContain(en.accounts.sending_amount);
+    expect(block.getElementsByTagName("span")[0].textContent).toEqual(
+      en.accounts.sending_amount
+    );
     expect(block.textContent).toContain(
       `${formatTokenE8s({ value: e8s, detailed: true })} ${token.symbol}`
     );
