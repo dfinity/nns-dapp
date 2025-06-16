@@ -32,7 +32,7 @@
 
 <KeyValuePair>
   <span class="label" slot="key">{$i18n.accounts.balance}</span>
-  <AmountDisplay slot="value" singleLine detailed="height_decimals" {amount} />
+  <AmountDisplay slot="value" singleLine detailed {amount} />
 </KeyValuePair>
 
 <style lang="scss">
