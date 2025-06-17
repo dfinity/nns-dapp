@@ -13,34 +13,35 @@
   import { valueSpan } from "$lib/utils/utils";
   import { Html, busy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { secondsToDuration, type Token } from "@dfinity/utils";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import { nonNullish, secondsToDuration, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
-  export let rootCanisterId: Principal;
-  export let neuron: SnsNeuron;
-  export let token: Token;
-  export let delayInSeconds: number;
+  type Props = {
+    rootCanisterId: Principal;
+    neuron: SnsNeuron;
+    token: Token;
+    delayInSeconds: number;
+  };
+
+  const { rootCanisterId, neuron, token, delayInSeconds }: Props = $props();
+
+  const neuronStake = $derived(getSnsNeuronStake(neuron));
+  const neuronId = $derived(getSnsNeuronIdAsHexString(neuron));
+  const snsParameters = $derived(
+    $snsParametersStore[rootCanisterId.toText()]?.parameters
+  );
+  const votingPower = $derived(
+    nonNullish(neuron) && nonNullish(snsParameters)
+      ? snsNeuronVotingPower({
+          newDissolveDelayInSeconds: BigInt(delayInSeconds),
+          neuron,
+          snsParameters,
+        })
+      : undefined
+  );
 
   const dispatcher = createEventDispatcher();
-
-  let neuronStake: bigint;
-  $: neuronStake = getSnsNeuronStake(neuron);
-
-  let neuronId: string;
-  $: neuronId = getSnsNeuronIdAsHexString(neuron);
-
-  let snsParameters: SnsNervousSystemParameters | undefined;
-  $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
-
-  let votingPower: number | undefined;
-  $: if (neuron !== undefined && snsParameters !== undefined) {
-    votingPower = snsNeuronVotingPower({
-      newDissolveDelayInSeconds: BigInt(delayInSeconds),
-      neuron,
-      snsParameters,
-    });
-  }
 </script>
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
@@ -79,7 +80,7 @@
       data-tid="edit-delay-button"
       class="secondary"
       disabled={$busy}
-      on:click={() => dispatcher("nnsBack")}
+      onclick={() => dispatcher("nnsBack")}
     >
       {$i18n.neurons.edit_delay}
     </button>
@@ -87,7 +88,7 @@
       class="primary"
       data-tid="confirm-delay-button"
       disabled={$busy}
-      on:click={() => dispatcher("nnsConfirm")}
+      onclick={() => dispatcher("nnsConfirm")}
     >
       {$i18n.neurons.confirm_update_delay}
     </button>
