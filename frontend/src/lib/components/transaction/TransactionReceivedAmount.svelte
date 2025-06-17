@@ -20,5 +20,4 @@
 <TransactionReceivedTokenAmount
   amount={tokenAmount}
   testId="transaction-summary-total-received"
-  withFiatValue
 />

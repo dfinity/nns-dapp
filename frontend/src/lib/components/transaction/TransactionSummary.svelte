@@ -73,16 +73,6 @@
     const usdValue = getUsdValue({ amount: feeAmount, tokenPrice });
     return nonNullish(usdValue) ? formatUsdValue(usdValue) : undefined;
   });
-
-  const totalDeductedUsdValue = $derived.by(() => {
-    if (isNullish(tokenTotalDeducted) || isNullish(tokenPrice))
-      return undefined;
-    const usdValue = getUsdValue({
-      amount: tokenTotalDeducted,
-      tokenPrice,
-    });
-    return nonNullish(usdValue) ? formatUsdValue(usdValue) : undefined;
-  });
 </script>
 
 <article class="container" data-tid="transaction-summary-component">
@@ -120,16 +110,8 @@
     <div class="deducted" data-tid="transaction-summary-total-deducted">
       <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
 
-      <p class="value">
-        <AmountDisplay
-          inline
-          detailed
-          amount={tokenTotalDeducted}
-        />{#if nonNullish(totalDeductedUsdValue)}
-          <span class="fiat" data-tid="fiat-value">
-            (~{totalDeductedUsdValue})
-          </span>
-        {/if}
+      <p>
+        <AmountDisplay inline detailed amount={tokenTotalDeducted} />
       </p>
     </div>
   {/if}
@@ -193,6 +175,7 @@
     display: flex;
     align-items: center;
     gap: var(--padding-0_5x);
+
     .fiat {
       color: var(--text-description);
     }
