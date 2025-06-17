@@ -6,8 +6,8 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     formatVotingPower,
-    neuronStake,
     neuronPotentialVotingPower,
+    neuronStake,
   } from "$lib/utils/neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { valueSpan } from "$lib/utils/utils";
@@ -16,13 +16,16 @@
   import { secondsToDuration } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
-  export let delayInSeconds: bigint;
-  export let neuron: NeuronInfo;
-  export let confirmButtonText: string;
+  type Props = {
+    delayInSeconds: bigint;
+    neuron: NeuronInfo;
+    confirmButtonText: string;
+  };
+  const { delayInSeconds, neuron, confirmButtonText }: Props = $props();
+
+  const neuronICP = $derived(neuronStake(neuron));
 
   const dispatcher = createEventDispatcher();
-  let neuronICP: bigint;
-  $: neuronICP = neuronStake(neuron);
 
   const updateNeuron = async () => {
     startBusyNeuron({ initiator: "update-delay", neuronId: neuron.neuronId });
@@ -77,7 +80,7 @@
     <button
       class="secondary"
       disabled={$busy}
-      on:click={() => dispatcher("nnsBack")}
+      onclick={() => dispatcher("nnsBack")}
     >
       {$i18n.neurons.edit_delay}
     </button>
@@ -85,7 +88,7 @@
       class="primary"
       data-tid="confirm-delay-button"
       disabled={$busy}
-      on:click={updateNeuron}
+      onclick={updateNeuron}
     >
       {confirmButtonText}
     </button>
