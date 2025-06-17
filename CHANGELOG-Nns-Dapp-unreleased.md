@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Visual feedback on copy to clipboard actions
 * Disburse maturity for NNS neurons
+* Updated and uniformed titles and H1 tags across pages
 
 #### Changed
 
