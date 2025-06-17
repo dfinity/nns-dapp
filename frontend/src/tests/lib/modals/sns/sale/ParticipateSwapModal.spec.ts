@@ -98,7 +98,7 @@ describe("ParticipateSwapModal", () => {
     expect(await form.isContinueButtonEnabled()).toBe(false);
 
     const icpAmount = 10;
-    const icpAmountFormatted = "10.0000";
+    const icpAmountFormatted = "10.00";
     await form.enterAmount(icpAmount);
     expect(await form.isContinueButtonEnabled()).toBe(true);
 

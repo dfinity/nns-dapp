@@ -50,7 +50,7 @@
   </p>
 
   <p class="no-margin value" data-tid={testId} class:estimation>
-    <AmountDisplay inline detailed="height_decimals" {amount} />
+    <AmountDisplay inline detailed {amount} />
     {#if nonNullish(usdValue)}
       <span class="fiat" data-tid="fiat-value">
         (~${usdValue})

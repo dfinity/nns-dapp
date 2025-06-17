@@ -11,49 +11,55 @@
   import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
-  export let neuronState: NeuronState;
-  export let neuronDissolveDelaySeconds: bigint;
-  export let neuronStake: TokenAmountV2;
-  export let delayInSeconds = 0;
-  export let minProjectDelayInSeconds: number;
-  export let maxDelayInSeconds = 0;
-  // sns and nns calculates voting power differently
-  export let calculateVotingPower: (delayInSeconds: number) => number;
-  export let minDissolveDelayDescription = "";
+  type Props = {
+    neuronState: NeuronState;
+    neuronDissolveDelaySeconds: bigint;
+    neuronStake: TokenAmountV2;
+    delayInSeconds?: number;
+    minProjectDelayInSeconds: number;
+    maxDelayInSeconds?: number;
+    // sns and nns calculates voting power differently
+    calculateVotingPower: (delayInSeconds: number) => number;
+    minDissolveDelayDescription?: string;
+  };
 
-  const dispatch = createEventDispatcher();
-
-  let votingPower: number;
-  $: votingPower = calculateVotingPower(delayInSeconds);
-
-  let disableUpdate: boolean;
-  $: disableUpdate = shouldUpdateBeDisabled(delayInSeconds);
-
-  let warningMessage: string | undefined;
-  $: warningMessage =
-    delayInSeconds > 0 && delayInSeconds < minProjectDelayInSeconds
-      ? $i18n.neurons.dissolve_delay_below_minimum
-      : undefined;
+  let {
+    neuronState,
+    neuronDissolveDelaySeconds,
+    neuronStake,
+    delayInSeconds = $bindable(0),
+    minProjectDelayInSeconds,
+    maxDelayInSeconds = 0,
+    calculateVotingPower,
+    minDissolveDelayDescription = "",
+  }: Props = $props();
 
   const getInputError = (delayInSeconds: number) => {
-    if (delayInSeconds > maxDelayInSeconds) {
+    if (delayInSeconds > maxDelayInSeconds)
       return $i18n.neurons.dissolve_delay_above_maximum;
-    }
-    if (delayInSeconds <= neuronDissolveDelaySeconds) {
+    if (delayInSeconds <= neuronDissolveDelaySeconds)
       return $i18n.neurons.dissolve_delay_below_current;
-    }
+
     return undefined;
   };
 
-  const shouldUpdateBeDisabled = (delayInSeconds: number): boolean => {
-    return nonNullish(getInputError(delayInSeconds));
-  };
+  const dispatch = createEventDispatcher();
+
+  const votingPower = $derived(calculateVotingPower(delayInSeconds));
+  const disableUpdate = $derived(nonNullish(getInputError(delayInSeconds)));
+  const warningMessage = $derived(
+    delayInSeconds > 0 && delayInSeconds < minProjectDelayInSeconds
+      ? $i18n.neurons.dissolve_delay_below_minimum
+      : undefined
+  );
 
   const cancel = () => dispatch("nnsCancel");
   const goToConfirmation = () => dispatch("nnsConfirmDelay");
 </script>
 
 <div class="wrapper" data-tid="set-dissolve-delay-component">
+  <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+  <!-- svelte-ignore slot_element_deprecated -->
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
     <slot name="neuron-id" />
@@ -118,13 +124,17 @@
   </div>
 
   <div class="toolbar">
-    <button on:click={cancel} data-tid="cancel-neuron-delay" class="secondary"
+    <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+    <!-- svelte-ignore slot_element_deprecated -->
+    <button onclick={cancel} data-tid="cancel-neuron-delay" class="secondary"
       ><slot name="cancel" /></button
     >
+    <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+    <!-- svelte-ignore slot_element_deprecated -->
     <button
       class="primary"
       disabled={disableUpdate}
-      on:click={goToConfirmation}
+      onclick={goToConfirmation}
       data-tid="go-confirm-delay-button"><slot name="confirm" /></button
     >
   </div>

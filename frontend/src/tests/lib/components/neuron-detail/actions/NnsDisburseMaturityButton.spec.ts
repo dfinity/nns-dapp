@@ -42,7 +42,7 @@ describe("NnsDisburseMaturityButton", () => {
     expect(await po.isPresent()).toBe(true);
     expect(await po.isDisabled()).toBe(true);
     expect(await po.getTooltipText()).toBe(
-      "You need at least the equivalent of 1.0526 ICP (1 / 95%) to disburse maturity."
+      "You need at least 1.0526 maturity to disburse."
     );
   });
 });
