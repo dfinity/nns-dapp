@@ -2,7 +2,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { formatUsdValue } from "$lib/utils/format.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
   import {
     isNullish,
@@ -36,7 +36,7 @@
     if (isNullish(amount) || isNullish(tokenPrice)) return undefined;
 
     const usdValue = getUsdValue({ amount, tokenPrice });
-    return nonNullish(usdValue) ? formatNumber(usdValue) : undefined;
+    return nonNullish(usdValue) ? formatUsdValue(usdValue) : undefined;
   });
 </script>
 
@@ -53,7 +53,7 @@
     <AmountDisplay inline detailed {amount} />
     {#if nonNullish(usdValue)}
       <span class="fiat" data-tid="fiat-value">
-        (~${usdValue})
+        (~{usdValue})
       </span>
     {/if}
   </p>
