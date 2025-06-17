@@ -29,12 +29,12 @@ const expectSignedInPortfolioPage = async (appPo: AppPo) => {
 
 test("Test multi-tab auth", async ({ page: page1, context }) => {
   await page1.goto("/accounts");
-  await expect(page1).toHaveTitle("ICP Tokens / NNS Dapp");
+  await expect(page1).toHaveTitle("Account | Network Nervous System");
   const appPo1 = new AppPo(PlaywrightPageObjectElement.fromPage(page1));
 
   const page2 = await context.newPage();
   await page2.goto("/accounts");
-  await expect(page2).toHaveTitle("ICP Tokens / NNS Dapp");
+  await expect(page2).toHaveTitle("Account | Network Nervous System");
   const appPo2 = new AppPo(PlaywrightPageObjectElement.fromPage(page2));
 
   // Neither page is signed in.
@@ -56,7 +56,7 @@ test("Test multi-tab auth", async ({ page: page1, context }) => {
   await page1.goto("/");
 
   //TODO: Remove once the the feature flag is in PROD
-  await expect(page1).toHaveTitle(/.*\s\/\sNNS Dapp/);
+  await expect(page1).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
 
   await setFeatureFlag({
     page: page1,

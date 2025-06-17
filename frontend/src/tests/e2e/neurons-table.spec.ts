@@ -26,7 +26,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const page = await context.newPage();
 
   await page.goto("/");
-  await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
+  await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
 
   await setFeatureFlag({
     page,
@@ -35,11 +35,11 @@ const createHotkeyNeuronsInOtherAccount = async ({
   });
 
   await page.reload();
-  await expect(page).toHaveTitle("Portfolio / NNS Dapp");
+  await expect(page).toHaveTitle("Portfolio | Network Nervous System");
   await signInWithNewUser({ page, context });
 
   await page.goto("/tokens");
-  await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("Tokens | Network Nervous System");
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
   await appPo.getIcpTokens(21);
@@ -78,7 +78,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
 
 test("Test neurons table", async ({ page, context, browser }) => {
   await page.goto("/canisters");
-  await expect(page).toHaveTitle("Canisters / NNS Dapp");
+  await expect(page).toHaveTitle("Canisters | Network Nervous System");
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
 
