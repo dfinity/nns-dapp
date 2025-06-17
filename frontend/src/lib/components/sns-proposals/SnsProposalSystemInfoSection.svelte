@@ -127,7 +127,6 @@
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   h2 {
-    font-size: 28px;
     @include fonts.h3;
   }
 </style>
