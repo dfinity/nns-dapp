@@ -5,6 +5,7 @@ import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { ConfirmSnsDissolveDelayPo } from "$tests/page-objects/ConfirmSnsDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { NeuronState } from "@dfinity/nns";
@@ -93,7 +94,31 @@ describe("ConfirmSnsDissolveDelay", () => {
       },
     });
 
-    expect(await po.getNeuronStake()).toBe("123.00 ZZZ Stake");
+    expect(await po.getNeuronStake()).toBe("123.00 ZZZ");
+  });
+
+  it("renders the fiat value together with the neuron stake", async () => {
+    setIcpSwapUsdPrices({
+      [mockPrincipal.toText()]: 10,
+    });
+
+    const neuron = createMockSnsNeuron({
+      stake: 12_300_000_000n,
+    });
+    const tokenSymbol = "ZZZ";
+    const po = renderComponent({
+      props: {
+        rootCanisterId: mockPrincipal,
+        delayInSeconds,
+        neuron,
+        token: {
+          ...mockSnsToken,
+          symbol: tokenSymbol,
+        },
+      },
+    });
+
+    expect(await po.getNeuronStake()).toBe("123.00 ZZZ(~$123.00)");
   });
 
   it("renders voting power", async () => {
