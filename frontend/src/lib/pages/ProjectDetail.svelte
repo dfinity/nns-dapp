@@ -145,7 +145,7 @@
   // Set up watchers and load the data in stores
   /////////////////////////////////
 
-  $: layoutTitleStore.set({
+  layoutTitleStore.set({
     title: $i18n.navigation.project_page,
   });
 
