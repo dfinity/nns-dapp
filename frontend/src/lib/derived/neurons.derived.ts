@@ -9,14 +9,27 @@ import {
   isNeuronMissingRewardsSoon,
   sortNeuronsByStake,
   sortNeuronsByVotingPowerRefreshedTimeout,
+  totalMaturityDisbursementsInProgress,
 } from "$lib/utils/neuron.utils";
 import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { derived, get, type Readable } from "svelte/store";
 
+// A neuron is considered "non-empty" if it has a non-zero stake, non-zero maturity,
+// or if a maturity disbursement is currently in progress.
+export const nonEmptyNeuronStore: Readable<NeuronInfo[]> = derived(
+  [neuronsStore],
+  ([$neuronsStore]) =>
+    $neuronsStore.neurons?.filter(
+      (neuron) =>
+        hasValidStake(neuron) ||
+        totalMaturityDisbursementsInProgress(neuron) > 0n
+    ) || []
+);
+
 export const definedNeuronsStore: Readable<NeuronInfo[]> = derived(
-  neuronsStore,
-  ($neuronsStore) => $neuronsStore.neurons?.filter(hasValidStake) || []
+  nonEmptyNeuronStore,
+  ($nonEmptyNeuronStore) => $nonEmptyNeuronStore.filter(hasValidStake) || []
 );
 
 export const sortedNeuronStore: Readable<NeuronInfo[]> = derived(
