@@ -147,7 +147,6 @@
   "navigation": {
     "tokens": "Tokens",
     "tokens_account": "Account",
-    "universe_tokens": "$tokenSymbol Tokens",
     "canisters": "Canisters",
     "neurons": "Neuron Staking",
     "neurons_account": "Staking Account",

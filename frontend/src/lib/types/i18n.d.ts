@@ -153,7 +153,6 @@ interface I18nWarning {
 interface I18nNavigation {
   tokens: string;
   tokens_account: string;
-  universe_tokens: string;
   canisters: string;
   neurons: string;
   neurons_account: string;
