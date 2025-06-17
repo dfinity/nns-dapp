@@ -91,7 +91,7 @@ describe("TransactionSummary", () => {
       `0.0001 ICP(< $0.01)`
     );
     expect((await po.getTransactionSummaryTotalDeducted()).amount).toEqual(
-      `123'456.7891 ICP(~$1’234’567.89)`
+      `123'456.7891 ICP`
     );
   });
 });
