@@ -5,9 +5,10 @@
   import { Layout } from "@dfinity/gix-components";
 
   export let title: string = "";
-  layoutTitleStore.set({
-    title,
-  });
+  title &&
+    layoutTitleStore.set({
+      title,
+    });
 </script>
 
 <Banner />

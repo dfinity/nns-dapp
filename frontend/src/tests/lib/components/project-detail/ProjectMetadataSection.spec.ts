@@ -38,7 +38,7 @@ describe("ProjectMetadataSection", () => {
       mockSnsFullProject.summary
     );
 
-    const element = container.querySelector("h1") as HTMLElement;
+    const element = container.querySelector("h2") as HTMLElement;
     expect(element).toBeInTheDocument();
     expect(element.textContent).toEqual(
       mockSnsFullProject.summary.metadata.name

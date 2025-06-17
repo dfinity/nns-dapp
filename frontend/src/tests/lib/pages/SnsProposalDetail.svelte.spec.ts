@@ -155,7 +155,6 @@ describe("SnsProposalDetail", () => {
       expect(spyOnSetTitle).toHaveBeenCalledTimes(1);
       expect(spyOnSetTitle).toHaveBeenCalledWith({
         title: `Proposal ${proposalIdText}`,
-        header: `Proposal ${proposalIdText}`,
       });
     });
 
