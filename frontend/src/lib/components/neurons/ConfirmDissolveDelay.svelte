@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { updateDelay } from "$lib/services/neurons.services";
@@ -21,7 +22,6 @@
     TokenAmountV2,
   } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import AmountDisplay from "../ic/AmountDisplay.svelte";
 
   type Props = {
     delayInSeconds: bigint;
