@@ -11,7 +11,7 @@ describe("TransactionReceivedAmount", () => {
 
     expect(
       getByTestId("transaction-summary-total-received")?.textContent.trim()
-    ).toEqual("123.56700000 ICP");
+    ).toEqual("123.567 ICP");
   });
 
   it("should render ckBTC amount", () => {
@@ -21,6 +21,6 @@ describe("TransactionReceivedAmount", () => {
 
     expect(
       getByTestId("transaction-summary-total-received")?.textContent.trim()
-    ).toEqual(`123.56700000 ${mockCkBTCToken.symbol}`);
+    ).toEqual(`123.567 ${mockCkBTCToken.symbol}`);
   });
 });

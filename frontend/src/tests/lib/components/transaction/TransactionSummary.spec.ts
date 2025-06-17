@@ -32,9 +32,7 @@ describe("TransactionSummary", () => {
 
     expect(block.textContent).toContain(en.accounts.sending_amount);
     expect(block.textContent).toContain(
-      `${formatTokenE8s({ value: e8s, detailed: "height_decimals" })} ${
-        token.symbol
-      }`
+      `${formatTokenE8s({ value: e8s, detailed: true })} ${token.symbol}`
     );
   });
 
@@ -53,7 +51,7 @@ describe("TransactionSummary", () => {
     expect(block.textContent).toContain(
       `${formatTokenE8s({
         value: transactionFee.toE8s(),
-        detailed: "height_decimals",
+        detailed: true,
       })} ${token.symbol}`
     );
   });
@@ -69,7 +67,7 @@ describe("TransactionSummary", () => {
     expect(block.textContent).toContain(
       `${formatTokenE8s({
         value: e8s + transactionFee.toE8s(),
-        detailed: "height_decimals",
+        detailed: true,
       })} ${token.symbol}`
     );
   });
