@@ -31,7 +31,7 @@
   }
 
   layoutTitleStore.set({
-    title: $i18n.wallet.title,
+    title: $i18n.navigation.tokens_account,
   });
 
   const redirectIfUnknownToken = () => {

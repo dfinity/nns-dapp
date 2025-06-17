@@ -3,11 +3,11 @@
   import ProposalSystemInfoEntry from "$lib/components/proposal-detail/ProposalSystemInfoEntry.svelte";
   import SnsProposerEntry from "$lib/components/sns-proposals/SnsProposerEntry.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
   import type { SnsNeuronId } from "@dfinity/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
-  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 
   export let proposalDataMap: SnsProposalDataMap;
 
@@ -46,9 +46,9 @@
 </script>
 
 <TestIdWrapper testId="proposal-system-info-details-component">
-  <h1 class="content-cell-title">
+  <h2 class="content-cell-title">
     {$i18n.proposal_detail.headline}
-  </h1>
+  </h2>
 
   <div class="content-cell-details">
     {#if nonNullish(type)}
@@ -126,7 +126,8 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  h1 {
+  h2 {
+    font-size: 28px;
     @include fonts.h3;
   }
 </style>

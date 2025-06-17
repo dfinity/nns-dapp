@@ -25,6 +25,7 @@
     watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { loadUserCountry } from "$lib/services/user-country.services";
+  import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
@@ -145,7 +146,7 @@
   /////////////////////////////////
 
   $: layoutTitleStore.set({
-    title: $projectDetailStore?.summary?.metadata.name ?? "",
+    title: $i18n.navigation.project_page,
   });
 
   let enableOpenProjectWatchers = false;

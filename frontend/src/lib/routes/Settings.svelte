@@ -8,8 +8,7 @@
     KeyValuePairInfo,
     SkeletonText,
   } from "@dfinity/gix-components";
-  import { debounce, nonNullish, secondsToDuration } from "@dfinity/utils";
-  import { onMount } from "svelte";
+  import { nonNullish, secondsToDuration } from "@dfinity/utils";
 
   let principalText = "";
   $: principalText = $authStore.identity?.getPrincipal().toText() ?? "";
@@ -17,16 +16,9 @@
   let remainingTimeMilliseconds: number | undefined;
   $: remainingTimeMilliseconds = $authRemainingTimeStore;
 
-  // Defer the title to avoid a visual glitch where the title moves from left to center in the header if navigation happens from Accounts page
-  onMount(
-    debounce(
-      () =>
-        layoutTitleStore.set({
-          title: $i18n.navigation.settings,
-        }),
-      500
-    )
-  );
+  layoutTitleStore.set({
+    title: $i18n.navigation.settings,
+  });
 </script>
 
 <Island>

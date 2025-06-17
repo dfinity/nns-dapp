@@ -146,9 +146,11 @@
   },
   "navigation": {
     "tokens": "Tokens",
+    "tokens_account": "Account",
     "universe_tokens": "$tokenSymbol Tokens",
     "canisters": "Canisters",
     "neurons": "Neuron Staking",
+    "neurons_account": "Staking Account",
     "voting": "Voting",
     "launchpad": "Launchpad",
     "manage_ii": "Manage Internet Identity",
@@ -157,7 +159,8 @@
     "reporting": "Reporting",
     "portfolio": "Portfolio",
     "privacy_mode_hide": "Hide Balance",
-    "privacy_mode_show": "Show Balance"
+    "privacy_mode_show": "Show Balance",
+    "project_page": "Project Page"
   },
   "alfred": {
     "no_results": "No results found",
