@@ -1,19 +1,26 @@
 <script lang="ts">
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { startBusyNeuron } from "$lib/services/busy.services";
   import { updateDelay } from "$lib/services/neurons.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatUsdValue } from "$lib/utils/format.utils";
   import {
     formatVotingPower,
     neuronPotentialVotingPower,
     neuronStake,
   } from "$lib/utils/neuron.utils";
-  import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { valueSpan } from "$lib/utils/utils";
-  import { Html, busy } from "@dfinity/gix-components";
+  import { getUsdValue } from "$lib/utils/token.utils";
+  import { busy } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import { secondsToDuration } from "@dfinity/utils";
+  import {
+    ICPToken,
+    isNullish,
+    nonNullish,
+    secondsToDuration,
+    TokenAmountV2,
+  } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   type Props = {
@@ -23,10 +30,21 @@
   };
   const { delayInSeconds, neuron, confirmButtonText }: Props = $props();
 
-  const neuronICP = $derived(neuronStake(neuron));
+  const stake = $derived(
+    TokenAmountV2.fromUlps({
+      amount: neuronStake(neuron),
+      token: ICPToken,
+    })
+  );
+  const priceStore = $derived(tokenPriceStore(stake));
+  const tokenPrice = $derived($priceStore);
+  const stakeInFiat = $derived.by(() => {
+    if (isNullish(stake) || isNullish(tokenPrice)) return undefined;
+    const fiatValue = getUsdValue({ amount: stake, tokenPrice });
+    return nonNullish(fiatValue) ? formatUsdValue(fiatValue) : undefined;
+  });
 
   const dispatcher = createEventDispatcher();
-
   const updateNeuron = async () => {
     startBusyNeuron({ initiator: "update-delay", neuronId: neuron.neuronId });
 
@@ -39,9 +57,7 @@
 
     stopBusy("update-delay");
 
-    if (neuronId !== undefined) {
-      dispatcher("nnsUpdated");
-    }
+    if (nonNullish(neuronId !== undefined)) dispatcher("nnsUpdated");
   };
 </script>
 
@@ -55,14 +71,16 @@
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
-    <p>
-      <Html
-        text={replacePlaceholders($i18n.neurons.amount_icp_stake, {
-          $amount: valueSpan(
-            formatTokenE8s({ value: neuronICP, detailed: true })
-          ),
-        })}
-      />
+    <p data-tid="neuron-stake" class="value">
+      <AmountDisplay
+        amount={stake}
+        singleLine
+        detailed
+      />{#if nonNullish(stakeInFiat)}
+        <span class="fiat" data-tid="fiat-value">
+          (~{stakeInFiat})
+        </span>
+      {/if}
     </p>
   </div>
   <div class="voting-power">
@@ -111,5 +129,15 @@
 
   .voting-power {
     flex-grow: 1;
+  }
+
+  .value {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+
+    .fiat {
+      color: var(--text-description);
+    }
   }
 </style>

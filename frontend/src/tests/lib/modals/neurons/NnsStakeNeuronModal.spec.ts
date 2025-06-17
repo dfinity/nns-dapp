@@ -294,7 +294,20 @@ describe("NnsStakeNeuronModal", () => {
       await runResolvedPromises();
 
       expect(await po.getSetDissolveDelayPo().getNeuronStake()).toBe(
-        "2.20 ICP Stake"
+        "2.20 ICP"
+      );
+    });
+
+    it("should show the fiat value side to the stake of the new neuron in the dissolve modal", async () => {
+      setIcpPrice(10);
+      const po = await renderComponent({});
+
+      await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(2.2);
+      await po.getNnsStakeNeuronPo().clickCreate();
+      await runResolvedPromises();
+
+      expect(await po.getSetDissolveDelayPo().getNeuronStake()).toBe(
+        "2.20 ICP(~$22.00)"
       );
     });
 

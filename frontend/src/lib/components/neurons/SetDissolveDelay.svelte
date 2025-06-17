@@ -1,14 +1,15 @@
 <script lang="ts">
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import RangeDissolveDelay from "$lib/components/neurons/RangeDissolveDelay.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { formatUsdValue } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { valueSpan } from "$lib/utils/utils";
-  import { Html } from "@dfinity/gix-components";
+  import { getUsdValue } from "$lib/utils/token.utils";
   import type { NeuronState } from "@dfinity/nns";
-  import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
+  import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   type Props = {
@@ -53,6 +54,14 @@
       : undefined
   );
 
+  const priceStore = $derived(tokenPriceStore(neuronStake));
+  const tokenPrice = $derived($priceStore);
+  const neuronStakeInFiat = $derived.by(() => {
+    if (isNullish(neuronStake) || isNullish(tokenPrice)) return undefined;
+    const fiatValue = getUsdValue({ amount: neuronStake, tokenPrice });
+    return nonNullish(fiatValue) ? formatUsdValue(fiatValue) : undefined;
+  });
+
   const cancel = () => dispatch("nnsCancel");
   const goToConfirmation = () => dispatch("nnsConfirmDelay");
 </script>
@@ -67,15 +76,16 @@
 
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
-    <p data-tid="neuron-stake">
-      <Html
-        text={replacePlaceholders($i18n.sns_neurons.token_stake, {
-          $amount: valueSpan(
-            formatTokenV2({ value: neuronStake, detailed: true })
-          ),
-          $token: neuronStake.token.symbol,
-        })}
-      />
+    <p data-tid="neuron-stake" class="value">
+      <AmountDisplay
+        amount={neuronStake}
+        singleLine
+        detailed
+      />{#if nonNullish(neuronStakeInFiat)}
+        <span class="fiat" data-tid="fiat-value">
+          (~{neuronStakeInFiat})
+        </span>
+      {/if}
     </p>
   </div>
 
@@ -153,5 +163,15 @@
 
   .select-delay-container {
     width: 100%;
+  }
+
+  .value {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+
+    .fiat {
+      color: var(--text-description);
+    }
   }
 </style>
