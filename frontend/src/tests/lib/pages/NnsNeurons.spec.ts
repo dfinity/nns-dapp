@@ -9,7 +9,11 @@ import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
-import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import {
+  mockFullNeuron,
+  mockMaturityDisbursement,
+  mockNeuron,
+} from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
@@ -29,6 +33,18 @@ describe("NnsNeurons", () => {
       ...mockFullNeuron,
       cachedNeuronStake: 0n,
       maturityE8sEquivalent: 0n,
+    },
+  };
+
+  const disbursedNeuronWithMaturityDisbursement = {
+    ...mockNeuron,
+    state: NeuronState.Dissolved,
+    neuronId: 225n,
+    fullNeuron: {
+      ...mockFullNeuron,
+      cachedNeuronStake: 0n,
+      maturityE8sEquivalent: 0n,
+      maturityDisbursementsInProgress: [mockMaturityDisbursement],
     },
   };
 
@@ -88,6 +104,18 @@ describe("NnsNeurons", () => {
       expect(rows).toHaveLength(2);
       expect(await rows[0].getStake()).not.toBe("0 ICP");
       expect(await rows[1].getStake()).not.toBe("0 ICP");
+    });
+
+    it("should display empty neurons with active disbursements", async () => {
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        disbursedNeuron,
+        disbursedNeuronWithMaturityDisbursement,
+      ]);
+      const po = await renderComponent();
+
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(rows).toHaveLength(1);
+      expect(await rows[0].getStake()).toBe("0 ICP");
     });
 
     it("should render an go-to-detail button for non-spawning neurons", async () => {
