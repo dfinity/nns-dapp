@@ -234,7 +234,7 @@ describe("NnsDisburseMaturityModal", () => {
     expect(get(toastsStore)).toMatchObject([
       {
         level: "success",
-        text: "Maturity successfully disbursed.",
+        text: "Maturity disbursing.",
       },
     ]);
     expect(close).toHaveBeenCalledTimes(1);
