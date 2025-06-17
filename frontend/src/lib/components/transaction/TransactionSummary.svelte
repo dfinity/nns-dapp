@@ -60,7 +60,6 @@
   const tokenPrice = $derived($priceStore);
 
   const tokenAmountUsdValue = $derived.by(() => {
-    console.log(tokenPrice);
     if (isNullish(tokenAmount) || isNullish(tokenPrice)) return undefined;
 
     const usdValue = getUsdValue({ amount: tokenAmount, tokenPrice });
@@ -86,7 +85,7 @@
   });
 </script>
 
-<article class="container">
+<article class="container" data-tid="transaction-summary-component">
   <KeyValuePair testId="transaction-summary-sending-amount">
     <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
     <div slot="value" class="value">
