@@ -5,6 +5,7 @@ import en from "$tests/mocks/i18n.mock";
 import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { TransactionSummaryPo } from "$tests/page-objects/TransactionSummary.page-object";
+import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -31,10 +32,6 @@ describe("TransactionSummary", () => {
   };
 
   const e8s = numberToE8s(amount);
-
-  // beforeEach(() => {
-  //   setIcpPrice(10);
-  // });
 
   it("should render sending amount", async () => {
     const po = renderComponent(props);
@@ -79,6 +76,22 @@ describe("TransactionSummary", () => {
         value: e8s + transactionFee.toE8s(),
         detailed: true,
       })} ${token.symbol}`
+    );
+  });
+
+  it("should display fiat values when conversion is available", async () => {
+    setIcpPrice(10);
+
+    const po = renderComponent(props);
+
+    expect((await po.getTransactionSummarySendignAmount()).amount).toEqual(
+      `123'456.789 ICP(~$1’234’567.89)`
+    );
+    expect((await po.getTransactionFee()).amount).toEqual(
+      `0.0001 ICP(< $0.01)`
+    );
+    expect((await po.getTransactionSummaryTotalDeducted()).amount).toEqual(
+      `123'456.7891 ICP(~$1’234’567.89)`
     );
   });
 });
