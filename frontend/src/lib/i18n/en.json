@@ -952,7 +952,6 @@
     "stake_sns_neuron": "Stake $tokenSymbol",
     "sns_neuron_destination": "Subaccount of",
     "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",
-    "token_stake": "$amount $token",
     "min_dissolve_delay_description": "Voting power is given to neurons with a dissolve delay of at least $duration."
   },
   "responsive_table": {
