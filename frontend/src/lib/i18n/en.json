@@ -1294,5 +1294,9 @@
     "new_sns_proposal_card_reject": "Reject",
     "next_card": "Next Card",
     "previous_card": "Previous Card"
+  },
+  "highlight": {
+    "disburse_maturity_title": "Farewell, Spawn Neuron!",
+    "disburse_maturity_description": "Now you can directly disburse your NNS neurons' maturity to the account of your choice."
   }
 }
