@@ -17,7 +17,6 @@
   import SkeletonHeading from "$lib/components/ui/SkeletonHeading.svelte";
   import { IS_TESTNET } from "$lib/constants/environment.constants";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { debugSelectedSnsNeuronStore } from "$lib/derived/debug.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { neuronsPathStore } from "$lib/derived/paths.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
@@ -58,8 +57,6 @@
     store: selectedSnsNeuronStore,
     reload: () => loadNeuron({ forceFetch: true }),
   });
-
-  debugSelectedSnsNeuronStore(selectedSnsNeuronStore);
 
   // BEGIN: loading and navigation
 

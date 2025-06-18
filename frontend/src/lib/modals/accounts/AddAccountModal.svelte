@@ -3,7 +3,6 @@
   import AddSubAccount from "$lib/components/accounts/AddSubAccount.svelte";
   import HardwareWalletConnect from "$lib/components/accounts/HardwareWalletConnect.svelte";
   import HardwareWalletName from "$lib/components/accounts/HardwareWalletName.svelte";
-  import { debugAddAccountStore } from "$lib/derived/debug.derived";
   import { i18n } from "$lib/stores/i18n";
   import type {
     AccountType,
@@ -51,8 +50,6 @@
     type: undefined,
     hardwareWalletName: undefined,
   });
-
-  debugAddAccountStore(addAccountStore);
 
   const selectType = async (type: AccountType) => {
     // Set the type in store and reset other values only if the new type is not the one that was previously used - e.g. user first select Ledger device, entered a name, clicked continue, went twice back and go to subaccount

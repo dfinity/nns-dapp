@@ -9,7 +9,6 @@
   import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
@@ -92,7 +91,6 @@
     swapCommitment: null,
     totalTokensSupply: null,
   });
-  debugSelectedProjectStore(projectDetailStore);
   setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
     store: projectDetailStore,
     reload,

@@ -4,7 +4,6 @@
   import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { debugSelectedCanisterStore } from "$lib/derived/debug.derived";
   import {
     getCanisterDetails,
     listCanisters,
@@ -71,8 +70,6 @@
     details: undefined,
     controller: undefined,
   });
-
-  debugSelectedCanisterStore(selectedCanisterStore);
 
   let loadingDetails = true;
   let canisterInfo: CanisterInfo | undefined;
