@@ -1,6 +1,5 @@
-import {
-  slugifyTitle,
-} from "$lib/utils/analytics.utils";
+import { slugifyTitle } from "$lib/utils/analytics.utils";
+
 describe("analytics.utils", () => {
   describe("slugifyTitle", () => {
     it("should convert camelCase to kebab-case", () => {
