@@ -27,4 +27,11 @@ export const analytics = {
       console.error("plausible event:", error);
     }
   },
+  pageView: (url: string) => {
+    try {
+      tracker?.trackPageview({ url });
+    } catch (error) {
+      console.error("plausible pageview:", error);
+    }
+  },
 };

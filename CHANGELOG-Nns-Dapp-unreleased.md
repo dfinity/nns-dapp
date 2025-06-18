@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+* Fiat values to confirmation screens
+
 #### Changed
 
 * Trim trailing zeros in transaction modals

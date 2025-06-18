@@ -2,9 +2,10 @@ import ConfirmSnsDissolveDelay from "$lib/components/sns-neurons/ConfirmSnsDisso
 import { SECONDS_IN_DAY, SECONDS_IN_YEAR } from "$lib/constants/constants";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { ConfirmSnsDissolveDelayPo } from "$tests/page-objects/ConfirmSnsDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { NeuronState } from "@dfinity/nns";
@@ -93,7 +94,44 @@ describe("ConfirmSnsDissolveDelay", () => {
       },
     });
 
-    expect(await po.getNeuronStake()).toBe("123.00 ZZZ Stake");
+    expect(await po.getNeuronStake()).toBe("123.00 ZZZ");
+  });
+
+  it("renders the fiat value together with the neuron stake", async () => {
+    const rootCanisterId = principal(2);
+    const ledgerCanisterId = principal(3);
+    const tokenSymbol = "ZZZ";
+    setSnsProjects([
+      {
+        rootCanisterId,
+        ledgerCanisterId,
+        tokenMetadata: {
+          symbol: tokenSymbol,
+          name: "Token",
+          decimals: 8,
+        },
+      },
+    ]);
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId.toText()]: 0.1,
+    });
+
+    const neuron = createMockSnsNeuron({
+      stake: 12_300_000_000n,
+    });
+    const po = renderComponent({
+      props: {
+        rootCanisterId,
+        delayInSeconds,
+        neuron,
+        token: {
+          ...mockSnsToken,
+          symbol: tokenSymbol,
+        },
+      },
+    });
+
+    expect(await po.getNeuronStake()).toBe("123.00 ZZZ(~$12.30)");
   });
 
   it("renders voting power", async () => {

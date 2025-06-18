@@ -297,7 +297,6 @@ interface I18nAccounts {
   token_transaction_fee: string;
   transaction_fee: string;
   review_transaction: string;
-  you_are_sending: string;
   current_balance: string;
   confirm_and_send: string;
   account_identifier: string;
@@ -992,7 +991,6 @@ interface I18nSns_neurons {
   stake_sns_neuron: string;
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
-  token_stake: string;
   min_dissolve_delay_description: string;
 }
 

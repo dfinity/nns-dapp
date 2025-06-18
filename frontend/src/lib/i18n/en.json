@@ -286,7 +286,6 @@
     "token_transaction_fee": "$tokenSymbol Ledger Fee",
     "transaction_fee": "Transaction Fee",
     "review_transaction": "Review Transaction",
-    "you_are_sending": "You are sending",
     "current_balance": "Current balance",
     "confirm_and_send": "Confirm and Send",
     "account_identifier": "Account Identifier",
@@ -381,7 +380,7 @@
     "age": "Age",
     "vestion_period": "Remaining vesting period",
     "neuron_id": "Neuron ID",
-    "neuron_balance": "Balance",
+    "neuron_balance": "Staked Balance",
     "current_dissolve_delay": "Current Dissolve Delay",
     "dissolve_delay_title": "Dissolve Delay",
     "no_delay": "0",
@@ -954,7 +953,6 @@
     "stake_sns_neuron": "Stake $tokenSymbol",
     "sns_neuron_destination": "Subaccount of",
     "stake_sns_neuron_success": "$tokenSymbol Neuron created successfully.",
-    "token_stake": "$amount $token Stake",
     "min_dissolve_delay_description": "Voting power is given to neurons with a dissolve delay of at least $duration."
   },
   "responsive_table": {

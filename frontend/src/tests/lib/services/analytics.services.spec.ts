@@ -4,12 +4,14 @@ vi.mock("plausible-tracker", () => {
   const enableAutoPageviews = vi.fn(() => () => {});
   const enableAutoOutboundTracking = vi.fn(() => () => {});
   const trackEvent = vi.fn();
+  const trackPageview = vi.fn();
 
   return {
     default: vi.fn(() => ({
       enableAutoPageviews,
       enableAutoOutboundTracking,
       trackEvent,
+      trackPageview,
     })),
   };
 });
@@ -92,6 +94,25 @@ describe("analytics service", () => {
     analytics.event("test-event-with-props", eventProps);
     expect(tracker.trackEvent).toHaveBeenCalledWith("test-event-with-props", {
       props: eventProps,
+    });
+  });
+
+  it("should track custom page views", async () => {
+    vi.doMock("$lib/utils/env-vars.utils", () => ({
+      getEnvVars: getEnvVarsFactory("some-domain"),
+    }));
+
+    const { initAnalytics, analytics } = await import(
+      "$lib/services/analytics.services"
+    );
+
+    const tracker = Plausible();
+    initAnalytics();
+    const pageToTrack = "/test-page";
+
+    analytics.pageView(pageToTrack);
+    expect(tracker.trackPageview).toHaveBeenCalledWith({
+      url: pageToTrack,
     });
   });
 });
