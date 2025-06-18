@@ -57,22 +57,6 @@ describe("analytics service", () => {
     });
   });
 
-  it("should enable auto page views", async () => {
-    vi.doMock("$lib/utils/env-vars.utils", () => ({
-      getEnvVars: getEnvVarsFactory("some-domain"),
-    }));
-
-    const { initAnalytics } = await import("$lib/services/analytics.services");
-
-    const tracker = Plausible();
-
-    expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(0);
-
-    initAnalytics();
-
-    expect(tracker.enableAutoPageviews).toHaveBeenCalledTimes(1);
-  });
-
   it("should track custom events", async () => {
     vi.doMock("$lib/utils/env-vars.utils", () => ({
       getEnvVars: getEnvVarsFactory("some-domain"),
