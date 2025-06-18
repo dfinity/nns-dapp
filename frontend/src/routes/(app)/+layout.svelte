@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { afterNavigate } from "$app/navigation";
+  import { page } from "$app/stores";
   import Warnings from "$lib/components/warnings/Warnings.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { analytics } from "$lib/services/analytics.services";
@@ -11,6 +12,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
+  import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
   import { confirmCloseApp } from "$lib/utils/before-unload.utils";
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
@@ -34,6 +36,14 @@
     analytics.pageView();
 
     const path = referrerPathForNav(nav);
+    // Track pageview with comprehensive query parameter tracking
+    if (browser && nav.to) {
+      const cleanUrl = transformUrlForAnalytics(
+        nav.to.url,
+        $projectSlugMapStore
+      );
+      analytics.pageView(cleanUrl);
+    }
     if (isNullish(path)) return;
 
     referrerPathStore.pushPath(path);
