@@ -15,7 +15,6 @@ export const initAnalytics = () => {
     // Change to true for local development and see traffic at https://plausible.io/test.nns.ic0.app/
     trackLocalhost: false,
   });
-
 };
 
 export const analytics = {
