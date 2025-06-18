@@ -1294,5 +1294,6 @@
     "new_sns_proposal_card_reject": "Reject",
     "next_card": "Next Card",
     "previous_card": "Previous Card"
-  }
+  },
+  "highlight": {}
 }

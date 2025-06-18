@@ -1364,6 +1364,8 @@ interface I18nPortfolio {
   previous_card: string;
 }
 
+interface I18nHighlight {}
+
 interface I18nNeuron_state {
   Unspecified: string;
   Locked: string;
@@ -1658,6 +1660,7 @@ interface I18n {
   tokens: I18nTokens;
   import_token: I18nImport_token;
   portfolio: I18nPortfolio;
+  highlight: I18nHighlight;
   neuron_state: I18nNeuron_state;
   topics: I18nTopics;
   topics_description: I18nTopics_description;
