@@ -43,7 +43,7 @@
   } = mapProposalInfo(proposalInfo));
 </script>
 
-<h1 class="content-cell-title">{$i18n.proposal_detail.headline}</h1>
+<h2 class="content-cell-title">{$i18n.proposal_detail.headline}</h2>
 
 <div
   class="content-cell-details"
@@ -124,7 +124,7 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  h1 {
+  h2 {
     @include fonts.h3;
   }
 </style>

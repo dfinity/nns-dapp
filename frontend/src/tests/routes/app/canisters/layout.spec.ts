@@ -18,7 +18,6 @@ describe("Canisters layout", () => {
 
     expect(get(layoutTitleStore)).toEqual({
       title: "Canisters",
-      header: "Canisters",
     });
   });
 });
