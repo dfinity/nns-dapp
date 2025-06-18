@@ -9,7 +9,6 @@ export const slugifyTitle = (title: string) =>
 import {
   AppPath,
   PROJECT_PARAM,
-  PROPOSAL_PARAM,
   UNIVERSE_PARAM,
 } from "$lib/constants/routes.constants";
 
@@ -27,26 +26,10 @@ export const transformUrlForAnalytics = (url: URL): string => {
       return project ? `/project/${project}` : pathname;
     }
 
-    case AppPath.Proposal + "/":
-    case AppPath.Proposal: {
-      const universe = searchParams.get(UNIVERSE_PARAM);
-      const proposal = searchParams.get(PROPOSAL_PARAM);
-      if (universe && proposal) {
-        return `/proposal/universe/${universe}/proposal/${proposal}`;
-      }
-      return pathname;
-    }
-
     case AppPath.Neurons + "/":
     case AppPath.Neurons: {
       const universe = searchParams.get(UNIVERSE_PARAM);
       return universe ? `/neurons/${universe}` : pathname;
-    }
-
-    case AppPath.Accounts + "/":
-    case AppPath.Accounts: {
-      const universe = searchParams.get(UNIVERSE_PARAM);
-      return universe ? `/accounts/${universe}` : pathname;
     }
 
     case AppPath.Wallet + "/":

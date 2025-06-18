@@ -50,48 +50,6 @@ describe("analytics.utils", () => {
       });
     });
 
-    describe("Proposal page transformations", () => {
-      it("should transform universe and proposal parameters", () => {
-        const url = new URL(
-          "http://localhost:8080/proposal/?u=qsgjb-riaaa-aaaaa-aaaga-cai&proposal=14"
-        );
-        const result = transformUrlForAnalytics(url);
-        expect(result).toBe(
-          "/proposal/universe/qsgjb-riaaa-aaaaa-aaaga-cai/proposal/14"
-        );
-      });
-
-      it("should transform parameters in different order", () => {
-        const url = new URL(
-          "http://localhost:8080/proposal/?proposal=14&u=qsgjb-riaaa-aaaaa-aaaga-cai"
-        );
-        const result = transformUrlForAnalytics(url);
-        expect(result).toBe(
-          "/proposal/universe/qsgjb-riaaa-aaaaa-aaaga-cai/proposal/14"
-        );
-      });
-
-      it("should return original pathname when universe parameter is missing", () => {
-        const url = new URL("http://localhost:8080/proposal/?proposal=14");
-        const result = transformUrlForAnalytics(url);
-        expect(result).toBe("/proposal/");
-      });
-
-      it("should return original pathname when proposal parameter is missing", () => {
-        const url = new URL(
-          "http://localhost:8080/proposal/?u=qsgjb-riaaa-aaaaa-aaaga-cai"
-        );
-        const result = transformUrlForAnalytics(url);
-        expect(result).toBe("/proposal/");
-      });
-
-      it("should return original pathname when both parameters are missing", () => {
-        const url = new URL("http://localhost:8080/proposal/");
-        const result = transformUrlForAnalytics(url);
-        expect(result).toBe("/proposal/");
-      });
-    });
-
     describe("Neurons page transformations", () => {
       it("should transform universe parameter", () => {
         const url = new URL(
@@ -119,28 +77,6 @@ describe("analytics.utils", () => {
         const url = new URL("http://localhost:8080/neurons/?u=");
         const result = transformUrlForAnalytics(url);
         expect(result).toBe("/neurons/");
-      });
-    });
-
-    describe("Accounts page transformations", () => {
-      it("should transform universe parameter", () => {
-        const url = new URL(
-          "http://localhost:8080/accounts/?u=qsgjb-riaaa-aaaaa-aaaga-cai"
-        );
-        const result = transformUrlForAnalytics(url);
-        expect(result).toBe("/accounts/qsgjb-riaaa-aaaaa-aaaga-cai");
-      });
-
-      it("should return original pathname when universe parameter is missing", () => {
-        const url = new URL("http://localhost:8080/accounts/");
-        const result = transformUrlForAnalytics(url);
-        expect(result).toBe("/accounts/");
-      });
-
-      it("should return original pathname when universe parameter is empty", () => {
-        const url = new URL("http://localhost:8080/accounts/?u=");
-        const result = transformUrlForAnalytics(url);
-        expect(result).toBe("/accounts/");
       });
     });
 
