@@ -6,3 +6,57 @@ export const slugifyTitle = (title: string) =>
     .replace(/[^\w\s-]/g, "") // Remove special characters
     .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
     .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
+import {
+  AppPath,
+  PROJECT_PARAM,
+  PROPOSAL_PARAM,
+  UNIVERSE_PARAM,
+} from "$lib/constants/routes.constants";
+
+/**
+ * Transforms query parameter URLs into clean, readable URLs for analytics tracking
+ */
+export const transformUrlForAnalytics = (url: URL): string => {
+  const pathname = url.pathname;
+  const searchParams = url.searchParams;
+
+  switch (pathname) {
+    case AppPath.Project + "/":
+    case AppPath.Project: {
+      const project = searchParams.get(PROJECT_PARAM);
+      return project ? `/project/${project}` : pathname;
+    }
+
+    case AppPath.Proposal + "/":
+    case AppPath.Proposal: {
+      const universe = searchParams.get(UNIVERSE_PARAM);
+      const proposal = searchParams.get(PROPOSAL_PARAM);
+      if (universe && proposal) {
+        return `/proposal/universe/${universe}/proposal/${proposal}`;
+      }
+      return pathname;
+    }
+
+    case AppPath.Neurons + "/":
+    case AppPath.Neurons: {
+      const universe = searchParams.get(UNIVERSE_PARAM);
+      return universe ? `/neurons/${universe}` : pathname;
+    }
+
+    case AppPath.Accounts + "/":
+    case AppPath.Accounts: {
+      const universe = searchParams.get(UNIVERSE_PARAM);
+      return universe ? `/accounts/${universe}` : pathname;
+    }
+
+    case AppPath.Wallet + "/":
+    case AppPath.Wallet: {
+      const universe = searchParams.get(UNIVERSE_PARAM);
+      return universe ? `/wallet/${universe}` : pathname;
+    }
+
+    default:
+      // For all other pages, return the original pathname
+      return pathname;
+  }
+};
