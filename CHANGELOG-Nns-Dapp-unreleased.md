@@ -27,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Fix staking form error messages not clearing after correction
+* Fixed an issue where NNS neurons that had been disbursed but still had active maturity disbursements were not displayed in the dapp.
 
 #### Security
 
