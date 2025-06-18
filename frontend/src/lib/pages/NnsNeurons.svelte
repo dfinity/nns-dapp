@@ -10,7 +10,7 @@
     neuronMinimumDissolveDelayToVoteSeconds,
     startReducingVotingPowerAfterSecondsStore,
   } from "$lib/derived/network-economics.derived";
-  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
+  import { nonEmptyNeuronStore } from "$lib/derived/neurons.derived";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
@@ -33,7 +33,7 @@
     identity: $authStore.identity,
     accounts: $icpAccountsStore,
     i18n: $i18n,
-    neuronInfos: $definedNeuronsStore,
+    neuronInfos: $nonEmptyNeuronStore,
     icpSwapUsdPrices: $icpSwapUsdPricesStore,
     startReducingVotingPowerAfterSeconds:
       $startReducingVotingPowerAfterSecondsStore,
