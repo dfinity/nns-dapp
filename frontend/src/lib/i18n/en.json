@@ -1295,8 +1295,5 @@
     "next_card": "Next Card",
     "previous_card": "Previous Card"
   },
-  "highlight": {
-    "topics_feature_title": "New feature ",
-    "topics_feature_description": "As an SNS DAO member, you can now delegate your voting power based on proposal topics. Find the new feature in your SNS neuron detail view."
-  }
+  "highlight": {}
 }
