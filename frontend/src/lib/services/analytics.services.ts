@@ -16,7 +16,6 @@ export const initAnalytics = () => {
     trackLocalhost: false,
   });
 
-  tracker.enableAutoPageviews();
 };
 
 export const analytics = {
