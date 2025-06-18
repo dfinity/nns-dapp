@@ -2,7 +2,7 @@ import {
   CKBTC_LEDGER_CANISTER_ID,
   CKTESTBTC_LEDGER_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
-import { getMapOfUniversesToProjectSlug } from "$lib/derived/analytics.derived";
+import { projectSlugMapStore } from "$lib/derived/analytics.derived";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { get } from "svelte/store";
@@ -10,7 +10,7 @@ import { describe, expect, it } from "vitest";
 
 describe("getMapOfUniversesToProjectSlug", () => {
   it("should have base universes", () => {
-    const map = get(getMapOfUniversesToProjectSlug);
+    const map = get(projectSlugMapStore);
 
     // IC universe Id
     expect(map.get("qhbym-qaaaa-aaaaa-aaafq-cai")).toBe("internet-computer");
@@ -32,7 +32,7 @@ describe("getMapOfUniversesToProjectSlug", () => {
         projectName: "Project Two",
       },
     ]);
-    const map = get(getMapOfUniversesToProjectSlug);
+    const map = get(projectSlugMapStore);
 
     expect(map.get(rootCanisterId1.toText())).toBe("project-one");
     expect(map.get(rootCanisterId2.toText())).toBe("project-two");

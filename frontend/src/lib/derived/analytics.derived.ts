@@ -3,7 +3,11 @@ import { universesStore } from "$lib/derived/universes.derived";
 import { slugifyTitle } from "$lib/utils/analytics.utils";
 import { derived } from "svelte/store";
 
-export const getMapOfUniversesToProjectSlug = derived(
+/**
+ * This derived store creates a mapping of projects and universe canister IDs to slugs.
+ * As the universeStore contains some of the projects, we ensure that a universe doesn't already exist on the map before adding it.
+ */
+export const projectSlugMapStore = derived(
   [universesStore, snsProjectsActivePadStore],
   ([$universesStore, $snsProjectsActivePadStore]) => {
     const universeToProjectSlugMap = new Map<string, string>();
