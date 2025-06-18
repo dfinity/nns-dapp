@@ -153,5 +153,5 @@ export const closeHighlight = async (page: Page) => {
     PlaywrightPageObjectElement.fromPage(page)
   );
 
-  highlightPo.clickClose();
+  await highlightPo.clickClose();
 };
