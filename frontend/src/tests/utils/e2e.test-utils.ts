@@ -149,7 +149,11 @@ export const dfxCanisterId = async (canisterName: string) => {
 
 // Close the Highlight popup if present
 export const closeHighlight = async (page: Page) => {
-  await HighlightPo.under(
+  const highlightPo = HighlightPo.under(
     PlaywrightPageObjectElement.fromPage(page)
-  )?.clickClose();
+  );
+
+  if (!(await highlightPo.isPresent())) return;
+
+  highlightPo.clickClose();
 };

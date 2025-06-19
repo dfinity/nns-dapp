@@ -451,7 +451,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999926304194000,
+    "icrc1_total_supply": 799999924975594000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -1771,7 +1771,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10160325132349870,
+    "icrc1_total_supply": 10161124031646499,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3344,7 +3344,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 617449801050322,
+    "icrc1_total_supply": 617462961204898,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4088,7 +4088,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 105087520026050998,
+    "icrc1_total_supply": 105161263380025138,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4889,6 +4889,20 @@
               "target_method_name": "tk_service_manage_neuron"
             }
           }
+        },
+        {
+          "id": 2002,
+          "name": "Transfer cICP",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "n6tkf-tqaaa-aaaal-qsneq-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -5033,7 +5047,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 932124487113367504,
+    "icrc1_total_supply": 932136421581680575,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5280,6 +5294,20 @@
                   "target_canister_id": "kntjr-haaaa-aaaal-qsnxq-cai",
                   "validator_method_name": "tk_service_validate_manage_neuron",
                   "target_method_name": "tk_service_manage_neuron"
+                }
+              }
+            },
+            {
+              "id": 2002,
+              "name": "Transfer cICP",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "n6tkf-tqaaa-aaaal-qsneq-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
                 }
               }
             }
