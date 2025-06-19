@@ -32,6 +32,14 @@ export const transformUrlForAnalytics = (
         : pathname;
     }
 
+    case AppPath.Neuron + "/":
+    case AppPath.Neuron: {
+      const universe = searchParams.get(UNIVERSE_PARAM);
+      return universe
+        ? `${AppPath.Neuron}/${projectsToSlugMap.get(universe) ?? universe}`
+        : pathname;
+    }
+
     case AppPath.Neurons + "/":
     case AppPath.Neurons: {
       const universe = searchParams.get(UNIVERSE_PARAM);

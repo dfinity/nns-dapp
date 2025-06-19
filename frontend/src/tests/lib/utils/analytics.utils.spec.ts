@@ -89,6 +89,24 @@ describe("analytics.utils", () => {
       });
     });
 
+    describe("Neuron page transformations", () => {
+      it("should transform universe parameter", () => {
+        const url = new URL(
+          "http://localhost:8080/neuron/?u=qsgjb-riaaa-aaaaa-aaaga-cai"
+        );
+        const result = transformUrlForAnalytics(url, projectsToSlugMap);
+        expect(result).toBe("/neuron/project-two");
+      });
+
+      it("should not track neuron parameter", () => {
+        const url = new URL(
+          "http://localhost:8080/neuron/?u=qsgjb-riaaa-aaaaa-aaaga-cai&neuron=12345"
+        );
+        const result = transformUrlForAnalytics(url, projectsToSlugMap);
+        expect(result).toBe("/neuron/project-two");
+      });
+    });
+
     describe("Wallet page transformations", () => {
       it("should transform universe parameter", () => {
         const url = new URL(
