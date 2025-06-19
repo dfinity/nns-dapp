@@ -1,14 +1,18 @@
 <script lang="ts">
+  import { page } from "$app/state";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
+  import { analytics } from "$lib/services/analytics.services";
   import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { NewTransaction } from "$lib/types/transaction";
+  import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import type { WizardStep } from "@dfinity/gix-components";
@@ -55,6 +59,18 @@
           $tokenSymbol: token.symbol,
         },
       });
+
+      analytics.event(
+        "sns-stake-neuron-increase",
+        transformUrlForAnalytics(page.url, $projectSlugMapStore),
+        {
+          tokenAmount: amount.toString(),
+          project:
+            $projectSlugMapStore.get(rootCanisterId.toText()) ??
+            rootCanisterId.toText(),
+        }
+      );
+
       dispatcher("nnsClose");
     }
 
