@@ -42,7 +42,7 @@
   afterNavigate((nav: AfterNavigate) => {
     // TODO: e2e to test this
     const path = referrerPathForNav(nav);
-    // Track pageview with comprehensive query parameter tracking
+
     if (browser && nav.to) {
       const cleanUrl = transformUrlForAnalytics(
         nav.to.url,
