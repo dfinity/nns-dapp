@@ -61,7 +61,9 @@ describe("analytics.utils", () => {
 
     describe("Neurons page transformations", () => {
       it("should transform universe parameter", () => {
-        const url = new URL("http://localhost:8080/neurons/project-two");
+        const url = new URL(
+          "http://localhost:8080/neurons/?u=qsgjb-riaaa-aaaaa-aaaga-cai"
+        );
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe("/neurons/project-two");
       });
@@ -106,6 +108,28 @@ describe("analytics.utils", () => {
         const url = new URL("http://localhost:8080/wallet/?u=");
         const result = transformUrlForAnalytics(url, projectsToSlugMap);
         expect(result).toBe("/wallet/");
+      });
+    });
+
+    describe("Unkown projects", () => {
+      it("should transform project parameter", () => {
+        const url = new URL(
+          "http://localhost:8080/project/?project=ajuq4-ruaaa"
+        );
+        const result = transformUrlForAnalytics(url, projectsToSlugMap);
+        expect(result).toBe("/project/ajuq4-ruaaa");
+      });
+
+      it("should transform universe parameter", () => {
+        const url = new URL("http://localhost:8080/neurons/?u=qsgjb-riaaa");
+        const result = transformUrlForAnalytics(url, projectsToSlugMap);
+        expect(result).toBe("/neurons/qsgjb-riaaa");
+      });
+
+      it("should leave the canisterId if universe is not known", () => {
+        const url = new URL("http://localhost:8080/wallet/?u=bd3sg-teaaa");
+        const result = transformUrlForAnalytics(url, projectsToSlugMap);
+        expect(result).toBe("/wallet/bd3sg-teaaa");
       });
     });
 

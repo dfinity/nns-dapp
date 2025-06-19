@@ -28,7 +28,7 @@ export const transformUrlForAnalytics = (
     case AppPath.Project: {
       const project = searchParams.get(PROJECT_PARAM);
       return project
-        ? `${AppPath.Project}/${projectsToSlugMap.get(project)}`
+        ? `${AppPath.Project}/${projectsToSlugMap.get(project) ?? project}`
         : pathname;
     }
 
@@ -36,7 +36,7 @@ export const transformUrlForAnalytics = (
     case AppPath.Neurons: {
       const universe = searchParams.get(UNIVERSE_PARAM);
       return universe
-        ? `${AppPath.Neurons}/${projectsToSlugMap.get(universe)}`
+        ? `${AppPath.Neurons}/${projectsToSlugMap.get(universe) ?? universe}`
         : pathname;
     }
 
@@ -44,7 +44,7 @@ export const transformUrlForAnalytics = (
     case AppPath.Wallet: {
       const universe = searchParams.get(UNIVERSE_PARAM);
       return universe
-        ? `${AppPath.Wallet}/${projectsToSlugMap.get(universe)}`
+        ? `${AppPath.Wallet}/${projectsToSlugMap.get(universe) ?? universe}`
         : pathname;
     }
 
