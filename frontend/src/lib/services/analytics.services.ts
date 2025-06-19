@@ -1,6 +1,10 @@
+import { page } from "$app/state";
 import { PLAUSIBLE_DOMAIN } from "$lib/constants/environment.constants";
+import { projectSlugMapStore } from "$lib/derived/analytics.derived";
+import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
 import { isNullish } from "@dfinity/utils";
 import Plausible from "plausible-tracker";
+import { get } from "svelte/store";
 
 const domain = PLAUSIBLE_DOMAIN;
 
@@ -18,19 +22,19 @@ export const initAnalytics = () => {
 };
 
 export const analytics = {
-  event: (
-    name: string,
+  event: (name: string, props?: Record<string, string | number | boolean>) => {
     // Override default url for tracking that doesn't considered query params
-    url: string,
-    props?: Record<string, string | number | boolean>
-  ) => {
+    const url = transformUrlForAnalytics(page.url, get(projectSlugMapStore));
+
     try {
       tracker?.trackEvent(name, { props }, { url });
     } catch (error) {
       console.error("plausible event:", error);
     }
   },
-  pageView: (url: string) => {
+  pageView: () => {
+    const url = transformUrlForAnalytics(page.url, get(projectSlugMapStore));
+
     try {
       tracker?.trackPageview({ url });
     } catch (error) {

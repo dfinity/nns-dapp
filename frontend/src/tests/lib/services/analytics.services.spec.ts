@@ -1,15 +1,11 @@
 import Plausible from "plausible-tracker";
 
 vi.mock("plausible-tracker", () => {
-  const enableAutoPageviews = vi.fn(() => () => {});
-  const enableAutoOutboundTracking = vi.fn(() => () => {});
   const trackEvent = vi.fn();
   const trackPageview = vi.fn();
 
   return {
     default: vi.fn(() => ({
-      enableAutoPageviews,
-      enableAutoOutboundTracking,
       trackEvent,
       trackPageview,
     })),
@@ -71,7 +67,7 @@ describe("analytics service", () => {
 
     const testUrl = "/test-url";
 
-    analytics.event("test-event", testUrl);
+    analytics.event("test-event");
     expect(tracker.trackEvent).toHaveBeenCalledWith(
       "test-event",
       {
@@ -81,7 +77,7 @@ describe("analytics service", () => {
     );
 
     const eventProps = { category: "test", value: 123, enabled: true };
-    analytics.event("test-event-with-props", testUrl, eventProps);
+    analytics.event("test-event-with-props", eventProps);
     expect(tracker.trackEvent).toHaveBeenCalledWith(
       "test-event-with-props",
       {
@@ -104,7 +100,7 @@ describe("analytics service", () => {
     initAnalytics();
     const pageToTrack = "/test-page";
 
-    analytics.pageView(pageToTrack);
+    analytics.pageView();
     expect(tracker.trackPageview).toHaveBeenCalledWith({
       url: pageToTrack,
     });

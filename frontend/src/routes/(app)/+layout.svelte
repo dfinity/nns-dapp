@@ -1,10 +1,8 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { afterNavigate } from "$app/navigation";
-  import { page } from "$app/state";
   import Warnings from "$lib/components/warnings/Warnings.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { analytics } from "$lib/services/analytics.services";
   import {
     initAppAuth,
@@ -13,24 +11,12 @@
   import { authStore } from "$lib/stores/auth.store";
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
-  import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
   import { confirmCloseApp } from "$lib/utils/before-unload.utils";
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
   import { BusyScreen, Toasts } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
   import type { AfterNavigate } from "@sveltejs/kit";
-  import { onMount } from "svelte";
-
-  onMount(async () => {
-    await Promise.all([initAppAuth(), initAppPublicData()]);
-
-    // Track initial page load
-    if (browser) {
-      const cleanUrl = transformUrlForAnalytics(page.url, $projectSlugMapStore);
-      analytics.pageView(cleanUrl);
-    }
-  });
 
   $: confirmCloseApp(
     voteRegistrationActive(
@@ -39,17 +25,15 @@
   );
 
   // Use the top level layout to set the `referrerPath` because anything under `{#if isNullish($navigating)}` will miss the `afterNavigate` events
-  afterNavigate((nav: AfterNavigate) => {
+  afterNavigate(async (nav: AfterNavigate) => {
     // TODO: e2e to test this
-    const path = referrerPathForNav(nav);
+    if (!browser) return;
 
-    if (browser && nav.to) {
-      const cleanUrl = transformUrlForAnalytics(
-        nav.to.url,
-        $projectSlugMapStore
-      );
-      analytics.pageView(cleanUrl);
-    }
+    await Promise.all([initAppAuth(), initAppPublicData()]);
+
+    analytics.pageView();
+
+    const path = referrerPathForNav(nav);
     if (isNullish(path)) return;
 
     referrerPathStore.pushPath(path);

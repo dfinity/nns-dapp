@@ -1,10 +1,7 @@
 <script lang="ts">
-  import { page } from "$app/state";
   import CommonItemAction from "$lib/components/ui/CommonItemAction.svelte";
-  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
-  import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import {
     formatMaturity,
@@ -30,13 +27,9 @@
       neuron.fullNeuron?.maturityDisbursementsInProgress ?? []
     ).length;
 
-    analytics.event(
-      "nns-disburse-maturity-show-active",
-      transformUrlForAnalytics(page.url, $projectSlugMapStore),
-      {
-        activeDisbursementsCount,
-      }
-    );
+    analytics.event("nns-disburse-maturity-show-active", {
+      activeDisbursementsCount,
+    });
   };
 </script>
 
