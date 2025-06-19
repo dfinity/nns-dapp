@@ -36,7 +36,7 @@
     analytics.pageView();
 
     const path = referrerPathForNav(nav);
-    // Track pageview with comprehensive query parameter tracking
+
     if (browser && nav.to) {
       const cleanUrl = transformUrlForAnalytics(
         nav.to.url,
