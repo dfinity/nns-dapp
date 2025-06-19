@@ -15,14 +15,10 @@
 </script>
 
 <script lang="ts">
-  import { page } from "$app/state";
-
   import { listSubaccounts } from "$lib/api/icrc-index.api";
   import { icrcTransfer, queryIcrcBalance } from "$lib/api/icrc-ledger.api";
-  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { analytics } from "$lib/services/analytics.services";
   import { authStore } from "$lib/stores/auth.store";
-  import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import type { SignIdentity } from "@dfinity/agent";
@@ -139,10 +135,7 @@ Note: You must be logged in to use these commands.
         }
 
         try {
-          analytics.event(
-            "experimental-recover-sns-subaccount-balance",
-            transformUrlForAnalytics(page.url, $projectSlugMapStore)
-          );
+          analytics.event("experimental-recover-sns-subaccount-balance");
 
           console.log(`🔍 Checking balance for subaccount: ${subaccount}...`);
           const balance = await queryIcrcBalance({

@@ -1,14 +1,11 @@
 <script lang="ts">
-  import { page } from "$app/state";
   import DisburseMaturityButton from "$lib/components/neuron-detail/actions/DisburseMaturityButton.svelte";
   import {
     MAX_DISBURSEMENTS_IN_PROGRESS,
     MIN_DISBURSEMENT_WITH_VARIANCE_ICP,
   } from "$lib/constants/neurons.constants";
-  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { analytics } from "$lib/services/analytics.services";
   import { i18n } from "$lib/stores/i18n";
-  import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
   import { formatNumber } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
@@ -63,10 +60,7 @@
       data: { neuron },
     });
 
-    analytics.event(
-      "nns-disburse-maturity-start",
-      transformUrlForAnalytics(page.url, $projectSlugMapStore)
-    );
+    analytics.event("nns-disburse-maturity-start");
   };
 </script>
 
