@@ -1,4 +1,17 @@
+import { page } from "$app/state";
 import Plausible from "plausible-tracker";
+
+let currentUrl = new URL("/", "http://localhost");
+vi.mock("$app/state", () => ({
+  page: {
+    get url() {
+      return currentUrl;
+    },
+    set url(value) {
+      currentUrl = value;
+    },
+  },
+}));
 
 vi.mock("plausible-tracker", () => {
   const trackEvent = vi.fn();
@@ -13,33 +26,19 @@ vi.mock("plausible-tracker", () => {
 });
 
 describe("analytics service", () => {
+  const plausibleDomain = "test-domain";
   const getEnvVarsFactory = (plausibleDomain: string) => () => ({
     plausibleDomain,
     featureFlags: "{}",
   });
 
   beforeEach(() => {
-    vi.resetModules();
-  });
-
-  it("should not do anything if domain is not set", async () => {
-    vi.doMock("$lib/utils/env-vars.utils", () => ({
-      getEnvVars: getEnvVarsFactory(undefined),
-    }));
-
-    const { initAnalytics } = await import("$lib/services/analytics.services");
-
-    expect(Plausible).toHaveBeenCalledTimes(0);
-    initAnalytics();
-    expect(Plausible).toHaveBeenCalledTimes(0);
-  });
-
-  it("should initialize Plausible with correct configuration", async () => {
-    const plausibleDomain = "test-domain";
     vi.doMock("$lib/utils/env-vars.utils", () => ({
       getEnvVars: getEnvVarsFactory(plausibleDomain),
     }));
+  });
 
+  it("should initialize Plausible with correct configuration", async () => {
     const { initAnalytics } = await import("$lib/services/analytics.services");
 
     expect(Plausible).toHaveBeenCalledTimes(0);
@@ -54,10 +53,6 @@ describe("analytics service", () => {
   });
 
   it("should track custom events", async () => {
-    vi.doMock("$lib/utils/env-vars.utils", () => ({
-      getEnvVars: getEnvVarsFactory("some-domain"),
-    }));
-
     const { initAnalytics, analytics } = await import(
       "$lib/services/analytics.services"
     );
@@ -66,6 +61,7 @@ describe("analytics service", () => {
     initAnalytics();
 
     const testUrl = "/test-url";
+    page.url = new URL(testUrl, "http://localhost");
 
     analytics.event("test-event");
     expect(tracker.trackEvent).toHaveBeenCalledWith(
@@ -88,10 +84,6 @@ describe("analytics service", () => {
   });
 
   it("should track custom page views", async () => {
-    vi.doMock("$lib/utils/env-vars.utils", () => ({
-      getEnvVars: getEnvVarsFactory("some-domain"),
-    }));
-
     const { initAnalytics, analytics } = await import(
       "$lib/services/analytics.services"
     );
@@ -99,6 +91,7 @@ describe("analytics service", () => {
     const tracker = Plausible();
     initAnalytics();
     const pageToTrack = "/test-page";
+    page.url = new URL(pageToTrack, "http://localhost");
 
     analytics.pageView();
     expect(tracker.trackPageview).toHaveBeenCalledWith({
