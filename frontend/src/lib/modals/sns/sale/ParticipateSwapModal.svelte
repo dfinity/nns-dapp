@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { page } from "$app/state";
   import AdditionalInfoForm from "$lib/components/sale/AdditionalInfoForm.svelte";
   import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
@@ -29,7 +28,6 @@
     TransactionInit,
     ValidateAmountFn,
   } from "$lib/types/transaction";
-  import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import {
     currentUserMaxCommitment,
@@ -147,16 +145,12 @@
         return;
       }
 
-      analytics.event(
-        "sns-sale-participation",
-        transformUrlForAnalytics(page.url, $projectSlugMapStore),
-        {
-          tokenAmount: amount.toString(),
-          project:
-            $projectSlugMapStore.get(rootCanisterId.toText()) ??
-            rootCanisterId.toText(),
-        }
-      );
+      analytics.event("sns-sale-participation", {
+        tokenAmount: amount.toString(),
+        project:
+          $projectSlugMapStore.get(rootCanisterId.toText()) ??
+          rootCanisterId.toText(),
+      });
 
       // We defer the closing of the modal a bit to let the user notice the last step was successful
       setTimeout(() => {
