@@ -13,6 +13,15 @@ export const slugifyTitle = (title: string) =>
     .replace(/[\s_-]+/g, "-") // Replace spaces and underscores with hyphens
     .replace(/^-+|-+$/g, ""); // Remove leading/trailing hyphens
 
+const buildUrl = (
+  url: string,
+  projectsToSlugMap: Map<string, string>,
+  parameter: string | null
+) =>
+  parameter
+    ? `${url}/${projectsToSlugMap.get(parameter) ?? parameter}`
+    : `${url}/`;
+
 /**
  * Transforms query parameter URLs into clean, readable URLs for analytics tracking
  */
@@ -27,33 +36,25 @@ export const transformUrlForAnalytics = (
     case AppPath.Project + "/":
     case AppPath.Project: {
       const project = searchParams.get(PROJECT_PARAM);
-      return project
-        ? `${AppPath.Project}/${projectsToSlugMap.get(project) ?? project}`
-        : pathname;
+      return buildUrl(AppPath.Project, projectsToSlugMap, project);
     }
 
     case AppPath.Neuron + "/":
     case AppPath.Neuron: {
       const universe = searchParams.get(UNIVERSE_PARAM);
-      return universe
-        ? `${AppPath.Neuron}/${projectsToSlugMap.get(universe) ?? universe}`
-        : pathname;
+      return buildUrl(AppPath.Neuron, projectsToSlugMap, universe);
     }
 
     case AppPath.Neurons + "/":
     case AppPath.Neurons: {
       const universe = searchParams.get(UNIVERSE_PARAM);
-      return universe
-        ? `${AppPath.Neurons}/${projectsToSlugMap.get(universe) ?? universe}`
-        : pathname;
+      return buildUrl(AppPath.Neurons, projectsToSlugMap, universe);
     }
 
     case AppPath.Wallet + "/":
     case AppPath.Wallet: {
       const universe = searchParams.get(UNIVERSE_PARAM);
-      return universe
-        ? `${AppPath.Wallet}/${projectsToSlugMap.get(universe) ?? universe}`
-        : pathname;
+      return buildUrl(AppPath.Wallet, projectsToSlugMap, universe);
     }
 
     default:

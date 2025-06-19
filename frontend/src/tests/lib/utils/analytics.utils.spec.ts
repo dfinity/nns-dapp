@@ -49,7 +49,7 @@ describe("analytics.utils", () => {
         );
         expect(
           transformUrlForAnalytics(urlWithoutTrailingSlash, projectsToSlugMap)
-        ).toBe("/project");
+        ).toBe("/project/");
       });
 
       it("should return original pathname when project parameter is empty", () => {
