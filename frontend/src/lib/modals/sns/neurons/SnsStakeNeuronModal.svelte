@@ -1,7 +1,9 @@
 <script lang="ts">
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
+  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
   import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
+  import { analytics } from "$lib/services/analytics.services";
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -89,6 +91,13 @@
         substitutions: {
           $tokenSymbol: token.symbol,
         },
+      });
+
+      analytics.event("sns-stake-new-neuron", {
+        tokenAmount: detail.amount.toString(),
+        project:
+          $projectSlugMapStore.get(rootCanisterId.toText()) ??
+          rootCanisterId.toText(),
       });
       dispatcher("nnsClose");
     }
