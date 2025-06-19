@@ -69,16 +69,26 @@ describe("analytics service", () => {
     const tracker = Plausible();
     initAnalytics();
 
-    analytics.event("test-event");
-    expect(tracker.trackEvent).toHaveBeenCalledWith("test-event", {
-      props: undefined,
-    });
+    const testUrl = "/test-url";
+
+    analytics.event("test-event", testUrl);
+    expect(tracker.trackEvent).toHaveBeenCalledWith(
+      "test-event",
+      {
+        props: undefined,
+      },
+      { url: testUrl }
+    );
 
     const eventProps = { category: "test", value: 123, enabled: true };
-    analytics.event("test-event-with-props", eventProps);
-    expect(tracker.trackEvent).toHaveBeenCalledWith("test-event-with-props", {
-      props: eventProps,
-    });
+    analytics.event("test-event-with-props", testUrl, eventProps);
+    expect(tracker.trackEvent).toHaveBeenCalledWith(
+      "test-event-with-props",
+      {
+        props: eventProps,
+      },
+      { url: testUrl }
+    );
   });
 
   it("should track custom page views", async () => {
