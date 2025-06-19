@@ -1364,7 +1364,10 @@ interface I18nPortfolio {
   previous_card: string;
 }
 
-interface I18nHighlight {}
+interface I18nHighlight {
+  disburse_maturity_title: string;
+  disburse_maturity_description: string;
+}
 
 interface I18nNeuron_state {
   Unspecified: string;
