@@ -34,12 +34,6 @@
     analytics.pageView();
 
     const path = referrerPathForNav(nav);
-
-    await Promise.all([initAppAuth(), initAppPublicData()]);
-
-    analytics.pageView();
-
-    const path = referrerPathForNav(nav);
     if (isNullish(path)) return;
 
     referrerPathStore.pushPath(path);
