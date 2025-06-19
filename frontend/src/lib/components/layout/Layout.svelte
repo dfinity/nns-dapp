@@ -3,11 +3,13 @@
   import Banner from "$lib/components/header/Banner.svelte";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { Layout } from "@dfinity/gix-components";
+  import type { Snippet } from "svelte";
 
   type Props = {
     title?: string;
+    children: Snippet;
   };
-  const { title = "" }: Props = $props();
+  const { title = "", children }: Props = $props();
 
   title &&
     layoutTitleStore.set({
@@ -19,6 +21,5 @@
 
 <Layout>
   <MenuItems slot="menu-items" />
-
-  <slot />
+  {@render children()}
 </Layout>
