@@ -125,7 +125,7 @@
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   h2 {
-    font-size: 28px;
+    @include fonts.h1;
   }
   main {
     padding-bottom: var(--footer-height);

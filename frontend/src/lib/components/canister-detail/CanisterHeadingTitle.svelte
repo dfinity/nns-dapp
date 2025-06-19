@@ -39,10 +39,10 @@
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
   h2 {
-    font-size: 28px;
-    margin: 0;
+    @include fonts.h1;
     // Needed if the canister id is very long for mobile and uses multiple lines.
     text-align: center;
+    margin: 0;
   }
 
   .skeleton {

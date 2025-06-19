@@ -4,7 +4,11 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { Layout } from "@dfinity/gix-components";
 
-  export let title: string = "";
+  type Props = {
+    title?: string;
+  };
+  const { title = "" }: Props = $props();
+
   title &&
     layoutTitleStore.set({
       title,

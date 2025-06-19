@@ -2,8 +2,12 @@
   import { triggerDebugReport } from "$lib/directives/debug.directives";
   import { layoutTitleStore } from "$lib/stores/layout.store";
 
-  $: pageTitle = $layoutTitleStore.title + " | Network Nervous System";
-  $: toolbarTitle = $layoutTitleStore.header || $layoutTitleStore.title;
+  let pageTitle = $derived(
+    $layoutTitleStore.title + " | Network Nervous System"
+  );
+  let toolbarTitle = $derived(
+    $layoutTitleStore.header || $layoutTitleStore.title
+  );
 </script>
 
 <svelte:head>
