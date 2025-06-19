@@ -93,7 +93,7 @@
         },
       });
 
-      analytics.event("sns-stake-neuron-new", {
+      analytics.event("sns-stake-new-neuron", {
         tokenAmount: detail.amount.toString(),
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??

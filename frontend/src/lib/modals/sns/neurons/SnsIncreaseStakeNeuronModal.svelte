@@ -58,7 +58,7 @@
         },
       });
 
-      analytics.event("sns-stake-neuron-increase", {
+      analytics.event("sns-stake-topup-neuron", {
         tokenAmount: amount.toString(),
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??

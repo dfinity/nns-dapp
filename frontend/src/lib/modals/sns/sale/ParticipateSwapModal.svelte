@@ -145,7 +145,7 @@
         return;
       }
 
-      analytics.event("sns-sale-participation", {
+      analytics.event("sns-swap-participation", {
         tokenAmount: amount.toString(),
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??
