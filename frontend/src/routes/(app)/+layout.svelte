@@ -1,7 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { afterNavigate } from "$app/navigation";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import Warnings from "$lib/components/warnings/Warnings.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { analytics } from "$lib/services/analytics.services";

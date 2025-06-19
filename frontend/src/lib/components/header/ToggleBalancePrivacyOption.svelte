@@ -1,8 +1,11 @@
 <script lang="ts">
+  import { page } from "$app/state";
+  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import { analytics } from "$lib/services/analytics.services";
   import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
   import { i18n } from "$lib/stores/i18n";
+  import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
   import { IconEyeClosed, IconEyeOpen, Toggle } from "@dfinity/gix-components";
 
   let checked = $derived($isBalancePrivacyOptionStore);
@@ -18,9 +21,13 @@
 
     const newState = checked ? "hide" : "show";
     balancePrivacyOptionStore.set(newState);
-    analytics.event("privacy-mode-toggle", {
-      value: newState,
-    });
+    analytics.event(
+      "privacy-mode-toggle",
+      transformUrlForAnalytics(page.url, $projectSlugMapStore),
+      {
+        value: newState,
+      }
+    );
   };
 </script>
 
