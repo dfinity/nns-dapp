@@ -24,19 +24,23 @@
   import { fromNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
 
-  export let neuron: SnsNeuron;
-  export let rootCanisterId: Principal;
-  export let nsFunction: SnsNervousSystemFunction;
+  type Props = {
+    neuron: SnsNeuron;
+    rootCanisterId: Principal;
+    nsFunction: SnsNervousSystemFunction;
+  };
+  const { neuron, rootCanisterId, nsFunction }: Props = $props();
 
   const { reload }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
-  let showModal = false;
+  let showModal = $state(false);
   const openModal = () => (showModal = true);
   const closeModal = () => (showModal = false);
 
-  let followees: SnsNeuronId[] = [];
-  $: followees = followeesByFunction({ neuron, functionId: nsFunction.id });
+  let followees = $derived(
+    followeesByFunction({ neuron, functionId: nsFunction.id })
+  );
 
   const removeCurrentFollowee = async (followee: SnsNeuronId) => {
     startBusy({
@@ -63,10 +67,8 @@
     id={nsFunction.id.toString()}
     openNewFolloweeModal={openModal}
   >
-    <svelte:fragment slot="title">{nsFunction.name}</svelte:fragment>
-    <svelte:fragment slot="subtitle"
-      >{fromNullable(nsFunction.description)}</svelte:fragment
-    >
+    {#snippet title()}{nsFunction.name}{/snippet}
+    {#snippet subtitle()}{fromNullable(nsFunction.description)}{/snippet}
     <ul>
       {#each followees as followee (subaccountToHexString(followee.id))}
         {@const followeeIdHex = subaccountToHexString(followee.id)}
@@ -77,7 +79,7 @@
           <button
             class="text"
             aria-label={$i18n.core.remove}
-            on:click={() => removeCurrentFollowee(followee)}
+            onclick={() => removeCurrentFollowee(followee)}
             ><IconClose /></button
           >
         </li>

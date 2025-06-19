@@ -15,29 +15,29 @@
   } from "$lib/utils/neuron.utils";
   import { IconClose, Value } from "@dfinity/gix-components";
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+  import { nonNullish } from "@dfinity/utils";
 
-  export let topic: Topic;
-  export let neuron: NeuronInfo;
+  type Props = {
+    topic: Topic;
+    neuron: NeuronInfo;
+  };
+  const { topic, neuron }: Props = $props();
 
   // TODO: Align with `en.governance.json` "topics.[topic]"
-  let title: string;
-  $: title = getTopicTitle({ topic, i18n: $i18n });
-  let subtitle: string;
-  $: subtitle = getTopicSubtitle({ topic, i18n: $i18n });
+  const title = $derived(getTopicTitle({ topic, i18n: $i18n }));
+  let subtitle = $derived(getTopicSubtitle({ topic, i18n: $i18n }));
+  let showNewFolloweeModal = $state(false);
 
-  let showNewFolloweeModal = false;
   type FolloweeData = {
     neuronId: NeuronId;
     name?: string;
   };
-  let followees: FolloweeData[] = [];
-  $: {
+  const followees: FolloweeData[] = $derived.by(() => {
     const followesPerTopic = followeesByTopic({ neuron, topic });
+
     const mapToKnownNeuron = (neuronId: NeuronId): FolloweeData => {
-      const knownNeuron = $knownNeuronsStore.find(
-        (currentNeuron) => currentNeuron.id === neuronId
-      );
-      return knownNeuron !== undefined
+      const knownNeuron = $knownNeuronsStore.find(({ id }) => id === neuronId);
+      return nonNullish(knownNeuron)
         ? {
             neuronId: knownNeuron.id,
             name: knownNeuron.name,
@@ -46,8 +46,8 @@
     };
     // If we remove the last followee of that topic, followesPerTopic is undefined.
     // and we need to reset the followees array
-    followees = followesPerTopic?.map(mapToKnownNeuron) ?? [];
-  }
+    return followesPerTopic?.map(mapToKnownNeuron) ?? [];
+  });
 
   const openNewFolloweeModal = () => (showNewFolloweeModal = true);
   const closeNewFolloweeModal = () => (showNewFolloweeModal = false);
@@ -69,16 +69,19 @@
     count={followees.length}
     {openNewFolloweeModal}
   >
-    <svelte:fragment slot="title">{title}</svelte:fragment>
-    <svelte:fragment slot="subtitle">{subtitle}</svelte:fragment>
-
+    {#snippet title()}
+      {title}
+    {/snippet}
+    {#snippet subtitle()}
+      {subtitle}
+    {/snippet}
     <ul>
       {#each followees as followee (followee.neuronId)}
         <li data-tid="current-followee-item">
           <Value>{followee.name ?? followee.neuronId}</Value>
           <button
             class="text"
-            on:click={() => removeCurrentFollowee(followee.neuronId)}
+            onclick={() => removeCurrentFollowee(followee.neuronId)}
             ><IconClose /></button
           >
         </li>
