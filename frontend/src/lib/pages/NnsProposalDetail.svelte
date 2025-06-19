@@ -4,7 +4,6 @@
   import NnsProposal from "$lib/components/proposal-detail/NnsProposal.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { debugSelectedProposalStore } from "$lib/derived/debug.derived";
   import { listNeurons } from "$lib/services/neurons.services";
   import { loadProposal } from "$lib/services/public/proposals.services";
   import { authStore } from "$lib/stores/auth.store";
@@ -45,8 +44,6 @@
     proposalId: undefined,
     proposal: undefined,
   });
-
-  debugSelectedProposalStore(selectedProposalStore);
 
   setContext<SelectedProposalContext>(SELECTED_PROPOSAL_CONTEXT_KEY, {
     store: selectedProposalStore,
