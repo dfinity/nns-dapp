@@ -64,7 +64,6 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/header";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .info {
     flex-direction: column;
@@ -76,16 +75,9 @@
   .toggle,
   :global([data-tid="menu-toggle"]) {
     @include header.button(--primary-tint);
-    background-color: var(--cp-light-50-45);
+    background-color: var(--sidebar-button-background);
     min-width: 0 !important;
     height: 28px !important;
     width: 28px !important;
-  }
-
-  @include media.dark-theme {
-    .toggle,
-    :global([data-tid="menu-toggle"]) {
-      background-color: var(--neutral-blue-a10);
-    }
   }
 </style>
