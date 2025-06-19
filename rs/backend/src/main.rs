@@ -1,9 +1,10 @@
 use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
     AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
-    DetachCanisterResponse, GetImportedTokensResponse, ImportedTokens, NamedCanister, RegisterHardwareWalletRequest,
-    RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
-    RenameSubAccountResponse, SetImportedTokensResponse,
+    DetachCanisterResponse, FavProjects, GetFavProjectsResponse, GetImportedTokensResponse, ImportedTokens,
+    NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse, RenameCanisterRequest,
+    RenameCanisterResponse, RenameSubAccountRequest, RenameSubAccountResponse, SetFavProjectsResponse,
+    SetImportedTokensResponse,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, Asset};
@@ -202,6 +203,20 @@ pub fn set_imported_tokens(settings: ImportedTokens) -> SetImportedTokensRespons
 pub fn get_imported_tokens() -> GetImportedTokensResponse {
     let principal = get_caller();
     with_state_mut(|s| s.accounts_store.get_imported_tokens(principal))
+}
+
+#[must_use]
+#[ic_cdk::update]
+pub fn set_fav_projects(settings: FavProjects) -> SetFavProjectsResponse {
+    let principal = get_caller();
+    with_state_mut(|s| s.accounts_store.set_fav_projects(principal, settings))
+}
+
+#[must_use]
+#[ic_cdk::query]
+pub fn get_fav_projects() -> GetFavProjectsResponse {
+    let principal = get_caller();
+    with_state_mut(|s| s.accounts_store.get_fav_projects(principal))
 }
 
 #[ic_cdk::update]
