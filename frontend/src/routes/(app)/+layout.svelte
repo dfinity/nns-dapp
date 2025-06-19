@@ -1,7 +1,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import { afterNavigate } from "$app/navigation";
-  import { page } from "$app/stores";
+  import { page } from "$app/state";
   import Warnings from "$lib/components/warnings/Warnings.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { projectSlugMapStore } from "$lib/derived/analytics.derived";
@@ -27,10 +27,7 @@
 
     // Track initial page load
     if (browser) {
-      const cleanUrl = transformUrlForAnalytics(
-        $page.url,
-        $projectSlugMapStore
-      );
+      const cleanUrl = transformUrlForAnalytics(page.url, $projectSlugMapStore);
       analytics.pageView(cleanUrl);
     }
   });

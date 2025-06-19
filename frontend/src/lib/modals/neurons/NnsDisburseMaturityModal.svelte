@@ -1,11 +1,14 @@
 <script lang="ts">
+  import { page } from "$app/state";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants";
+  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import DisburseMaturityModal from "$lib/modals/neurons/DisburseMaturityModal.svelte";
   import { analytics } from "$lib/services/analytics.services";
   import { disburseMaturity as disburseMaturityService } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { transformUrlForAnalytics } from "$lib/utils/analytics.utils";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken } from "@dfinity/utils";
 
@@ -23,9 +26,11 @@
   }>) => {
     startBusy({ initiator: "disburse-maturity" });
 
-    analytics.event("nns-disburse-maturity-confirm", {
-      percentageToDisburse,
-    });
+    analytics.event(
+      "nns-disburse-maturity-confirm",
+      transformUrlForAnalytics(page.url, $projectSlugMapStore),
+      { percentageToDisburse }
+    );
 
     const { success } = await disburseMaturityService({
       neuronId: neuron.neuronId,

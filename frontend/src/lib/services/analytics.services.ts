@@ -18,9 +18,14 @@ export const initAnalytics = () => {
 };
 
 export const analytics = {
-  event: (name: string, props?: Record<string, string | number | boolean>) => {
+  event: (
+    name: string,
+    // Override default url for tracking that doesn't considered query params
+    url: string,
+    props?: Record<string, string | number | boolean>
+  ) => {
     try {
-      tracker?.trackEvent(name, { props });
+      tracker?.trackEvent(name, { props }, { url });
     } catch (error) {
       console.error("plausible event:", error);
     }
