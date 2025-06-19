@@ -1,9 +1,11 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
   import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
+  import { analytics } from "$lib/services/analytics.services";
   import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -55,6 +57,14 @@
           $tokenSymbol: token.symbol,
         },
       });
+
+      analytics.event("sns-stake-topup-neuron", {
+        tokenAmount: amount.toString(),
+        project:
+          $projectSlugMapStore.get(rootCanisterId.toText()) ??
+          rootCanisterId.toText(),
+      });
+
       dispatcher("nnsClose");
     }
 

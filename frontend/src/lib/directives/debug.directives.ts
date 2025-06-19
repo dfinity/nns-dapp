@@ -1,6 +1,5 @@
 import { addHotkey } from "$lib/api/governance.api";
 import type { FeatureKey } from "$lib/constants/environment.constants";
-import { initDebugStore } from "$lib/derived/debug.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { listNeurons, removeFollowee } from "$lib/services/neurons.services";
 import { claimSeedNeurons } from "$lib/services/seed-neurons.services";
@@ -11,20 +10,17 @@ import {
 import { i18n } from "$lib/stores/i18n";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { enumKeys } from "$lib/utils/enum.utils";
 import { followeesByTopic } from "$lib/utils/neuron.utils";
 import { Topic, type NeuronId } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 /**
- * coo - original as object -> console
  * cn - claim neurons
  * ah - Tries to add the current user's principal as hotkey to the given neuron.
  * rfds - Removes any followee of the deprecated topic SnsDecentralizationSale for all the user's neurons.
  */
 export enum LogType {
-  ConsoleOriginalObject = "coo",
   ClaimNeurons = "cn",
   AddHotkey = "ah",
   RemoveFolloweesDecentralizedSale = "rfds",
@@ -96,12 +92,6 @@ export function triggerDebugReport(node: HTMLElement) {
             get(i18n).feature_flags_prompt.remove_override
           );
           flag && overrideFeatureFlagsStore.removeFlag(flag);
-          return;
-        }
-
-        if (LogType.ConsoleOriginalObject === logType) {
-          const debugStore = initDebugStore();
-          logWithTimestamp(get(debugStore));
           return;
         }
       }

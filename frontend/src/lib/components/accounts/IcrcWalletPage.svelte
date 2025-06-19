@@ -10,7 +10,6 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { syncAccounts as syncWalletAccounts } from "$lib/services/icrc-accounts.services";
@@ -40,8 +39,6 @@
   export let token: IcrcTokenMetadata | undefined = undefined;
   export let selectedAccountStore: Writable<WalletStore>;
   export let reloadTransactions: () => Promise<void>;
-
-  debugSelectedAccountStore(selectedAccountStore);
 
   const reloadOnlyAccountFromStore = () => setSelectedAccount();
 

@@ -153,7 +153,5 @@ export const closeHighlight = async (page: Page) => {
     PlaywrightPageObjectElement.fromPage(page)
   );
 
-  if (!(await highlightPo.isPresent())) return;
-
-  highlightPo.clickClose();
+  await highlightPo.clickClose();
 };
