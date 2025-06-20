@@ -1081,6 +1081,108 @@ fn get_imported_tokens_account_not_found() {
     );
 }
 
+// same but for fav_projects
+
+#[test]
+fn set_and_get_fav_projects() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let root_canister_id = PrincipalId::new_user_test_id(101);
+
+    assert_eq!(
+        store.get_fav_projects(principal),
+        GetFavProjectsResponse::Ok(FavProjects::default())
+    );
+
+    let fav_project = FavProject { root_canister_id };
+
+    assert_eq!(
+        store.set_fav_projects(
+            principal,
+            FavProjects {
+                fav_projects: vec![fav_project.clone()],
+            },
+        ),
+        SetFavProjectsResponse::Ok
+    );
+
+    assert_eq!(
+        store.get_fav_projects(principal),
+        GetFavProjectsResponse::Ok(FavProjects {
+            fav_projects: vec![fav_project],
+        })
+    );
+}
+
+fn get_unique_fav_projects(count: u64) -> Vec<FavProject> {
+    (0..count)
+        .map(|i| FavProject {
+            root_canister_id: PrincipalId::new_user_test_id(i),
+        })
+        .collect()
+}
+
+#[test]
+fn set_and_get_20_fav_projects() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    assert_eq!(
+        store.get_fav_projects(principal),
+        GetFavProjectsResponse::Ok(FavProjects::default())
+    );
+
+    let fav_projects = get_unique_fav_projects(20);
+
+    assert_eq!(
+        store.set_fav_projects(
+            principal,
+            FavProjects {
+                fav_projects: fav_projects.clone()
+            },
+        ),
+        SetFavProjectsResponse::Ok
+    );
+
+    assert_eq!(
+        store.get_fav_projects(principal),
+        GetFavProjectsResponse::Ok(FavProjects { fav_projects })
+    );
+}
+
+#[test]
+fn set_fav_projects_account_not_found() {
+    let mut store = setup_test_store();
+    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    assert_eq!(
+        store.set_fav_projects(non_existing_principal, FavProjects::default()),
+        SetFavProjectsResponse::AccountNotFound
+    );
+}
+
+#[test]
+fn set_fav_projects_too_many() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let fav_projects = get_unique_fav_projects(21);
+
+    assert_eq!(
+        store.set_fav_projects(principal, FavProjects { fav_projects },),
+        SetFavProjectsResponse::TooManyFavProjects { limit: 20 }
+    );
+}
+
+#[test]
+fn get_fav_projects_account_not_found() {
+    let mut store = setup_test_store();
+    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    assert_eq!(
+        store.get_fav_projects(non_existing_principal),
+        GetFavProjectsResponse::AccountNotFound
+    );
+}
+
 #[test]
 fn sub_account_name_too_long() {
     let mut store = setup_test_store();
