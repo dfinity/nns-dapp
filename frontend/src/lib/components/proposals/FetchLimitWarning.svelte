@@ -4,14 +4,17 @@
     MAX_ACTIONABLE_REQUEST_COUNT,
   } from "$lib/constants/constants";
   import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 </script>
 
 {#if $actionableNnsProposalsStore.fetchLimitReached}
   <div class="fetchLimitWarning">
-    Fetching of open proposals was limited to {MAX_ACTIONABLE_REQUEST_COUNT *
-      DEFAULT_LIST_PAGINATION_LIMIT} for performance reasons. Therefore some of your
-    actionable proposals (a subset of the open proposals) might not be shown here.
-    Please use a direct link if looking for a specific one.
+    {replacePlaceholders($i18n.warning.proposal_fetch_limit, {
+      $maxLimit: String(
+        MAX_ACTIONABLE_REQUEST_COUNT * DEFAULT_LIST_PAGINATION_LIMIT
+      ),
+    })}
   </div>
 {/if}
 

@@ -145,6 +145,7 @@ interface I18nError {
 
 interface I18nWarning {
   auth_sign_out: string;
+  proposal_fetch_limit: string;
   test_env_note: string;
   test_env_confirm: string;
   test_env_title: string;

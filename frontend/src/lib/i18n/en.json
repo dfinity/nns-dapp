@@ -140,6 +140,7 @@
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
+    "proposal_fetch_limit": "For this project, there are more than $maxLimit open proposal. For performance reasons, we limit the fetching of open proposals to the latest $maxLimit entries. Actionable proposals are filtered from them. Older items are not shown here. If looking for a specific one, please use a direct link.",
     "test_env_note": "<strong>Use with caution!</strong> This is not stable software, and it is not securely updated by the Network Nervous System. However, it accesses your real wallets and neurons. <br /><br />Functionality you see here can change at any time, and this dapp may not always be available.",
     "test_env_confirm": "I understand and want to continue",
     "test_env_title": "Warning"
