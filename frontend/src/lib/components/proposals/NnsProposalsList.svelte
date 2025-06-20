@@ -15,6 +15,7 @@
   import { InfiniteScroll } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
+  import FetchLimitWarning from "./FetchLimitWarning.svelte";
 
   type Props = {
     hidden: boolean;
@@ -75,6 +76,7 @@
         {:else if actionableProposals?.length === 0}
           <ActionableProposalsEmpty />
         {:else}
+          <FetchLimitWarning />
           <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
             {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
               <NnsProposalCard {hidden} actionable {proposalInfo} />
