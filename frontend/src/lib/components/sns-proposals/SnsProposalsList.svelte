@@ -14,6 +14,7 @@
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { fromNullable, isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
+  import FetchLimitWarning from "../proposals/FetchLimitWarning.svelte";
 
   type Props = {
     proposals: SnsProposalActionableData[] | undefined;
@@ -22,6 +23,7 @@
     disableInfiniteScroll?: boolean;
     loadingNextPage?: boolean;
     loadNextPage: () => Promise<void>;
+    wasFetchLimitReached?: boolean;
   };
 
   const {
@@ -31,6 +33,7 @@
     disableInfiniteScroll = false,
     loadingNextPage = false,
     loadNextPage,
+    wasFetchLimitReached = false,
   }: Props = $props();
 </script>
 
@@ -71,6 +74,9 @@
       {:else if proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}
+        {#if wasFetchLimitReached}
+          <FetchLimitWarning />
+        {/if}
         <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
           {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
             <SnsProposalCard

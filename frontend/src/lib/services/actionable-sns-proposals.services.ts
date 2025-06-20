@@ -62,9 +62,14 @@ export const loadActionableProposalsForSns = async (
         }).length > 0
     );
 
+    const fetchLimitReached =
+      Math.max(allProposals.length) ===
+      DEFAULT_LIST_PAGINATION_LIMIT * MAX_ACTIONABLE_REQUEST_COUNT;
+
     actionableSnsProposalsStore.set({
       rootCanisterId,
       proposals: votableProposals,
+      fetchLimitReached,
     });
   } catch (err) {
     console.error(err);

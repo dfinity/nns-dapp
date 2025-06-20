@@ -8,7 +8,11 @@
 
 <TestIdWrapper testId="actionable-nns-proposals-component">
   {#if $actionableNnsProposalsStore?.proposals?.length ?? 0 > 0}
-    <UniverseWithActionableProposals universe={$nnsUniverseStore}>
+    <UniverseWithActionableProposals
+      universe={$nnsUniverseStore}
+      fetchLimitReached={$actionableNnsProposalsStore.fetchLimitReached ??
+        false}
+    >
       {#each $actionableNnsProposalsStore?.proposals ?? [] as proposalInfo (proposalInfo.id)}
         <NnsProposalCard actionable fromActionablePage {proposalInfo} />
       {/each}

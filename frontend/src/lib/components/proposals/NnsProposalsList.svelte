@@ -76,7 +76,9 @@
         {:else if actionableProposals?.length === 0}
           <ActionableProposalsEmpty />
         {:else}
-          <FetchLimitWarning />
+          {#if $actionableNnsProposalsStore.fetchLimitReached}
+            <FetchLimitWarning />
+          {/if}
           <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
             {#each actionableProposals ?? [] as proposalInfo (proposalInfo.id)}
               <NnsProposalCard {hidden} actionable {proposalInfo} />
