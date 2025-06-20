@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-05_03-24-base/rs/ledger_suite/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/rosetta-release-2.1.5/rs/ledger_suite/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -57,6 +57,7 @@ pub struct UpgradeArgs {
     pub metadata: Option<Vec<(String, MetadataValue)>>,
     pub change_fee_collector: Option<ChangeFeeCollector>,
     pub max_memo_length: Option<u16>,
+    pub index_principal: Option<Principal>,
     pub token_name: Option<String>,
     pub feature_flags: Option<FeatureFlags>,
 }
@@ -82,6 +83,7 @@ pub struct InitArgs {
     pub fee_collector_account: Option<Account>,
     pub archive_options: InitArgsArchiveOptions,
     pub max_memo_length: Option<u16>,
+    pub index_principal: Option<Principal>,
     pub token_name: String,
     pub feature_flags: Option<FeatureFlags>,
 }
@@ -230,6 +232,19 @@ pub enum GetAllowancesError {
 pub enum Icrc103GetAllowancesResponse {
     Ok(Vec<Allowance103>),
     Err(GetAllowancesError),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum GetIndexPrincipalError {
+    GenericError {
+        description: String,
+        error_code: candid::Nat,
+    },
+    IndexPrincipalNotSet,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum GetIndexPrincipalResult {
+    Ok(Principal),
+    Err(GetIndexPrincipalError),
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc10SupportedStandardsRetItem {
@@ -458,6 +473,9 @@ impl Service {
         arg0: GetAllowancesArgs,
     ) -> CallResult<(Icrc103GetAllowancesResponse,)> {
         ic_cdk::call(self.0, "icrc103_get_allowances", (arg0,)).await
+    }
+    pub async fn icrc_106_get_index_principal(&self) -> CallResult<(GetIndexPrincipalResult,)> {
+        ic_cdk::call(self.0, "icrc106_get_index_principal", ()).await
     }
     pub async fn icrc_10_supported_standards(&self) -> CallResult<(Vec<Icrc10SupportedStandardsRetItem>,)> {
         ic_cdk::call(self.0, "icrc10_supported_standards", ()).await
