@@ -158,4 +158,5 @@ export const {
   TEST_FLAG_EDITABLE,
   TEST_FLAG_NOT_EDITABLE,
   ENABLE_SNS_TOPICS,
+  ENABLE_NNS_TOPICS,
 } = featureFlagsStore;
