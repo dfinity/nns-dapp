@@ -21,6 +21,14 @@ export class TooManyImportedTokensError extends AccountTranslateError {
   }
 }
 
+export class TooManyFavProjectsError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
 export class SubAccountLimitExceededError extends Error {}
 
 export class NameTooLongError extends AccountTranslateError {

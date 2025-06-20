@@ -38,6 +38,9 @@ export type DetachCanisterResponse = { Ok: null } | { CanisterNotFound: null };
 export type GetAccountResponse =
   | { Ok: AccountDetails }
   | { AccountNotFound: null };
+export type GetFavProjectsResponse =
+  | { Ok: FavProjects }
+  | { AccountNotFound: null };
 export type GetImportedTokensResponse =
   | { Ok: ImportedTokens }
   | { AccountNotFound: null };
@@ -66,6 +69,13 @@ export interface ImportedToken {
 export interface ImportedTokens {
   imported_tokens: Array<ImportedToken>;
 }
+export interface FavProject {
+  root_canister_id: Principal;
+}
+export interface FavProjects {
+  fav_projects: Array<FavProject>;
+}
+
 export interface RegisterHardwareWalletRequest {
   principal: Principal;
   name: string;
@@ -99,6 +109,10 @@ export type SetImportedTokensResponse =
   | { Ok: null }
   | { AccountNotFound: null }
   | { TooManyImportedTokens: { limit: number } };
+export type SetFavProjectsResponse =
+  | { Ok: null }
+  | { AccountNotFound: null }
+  | { TooManyFavProjects: { limit: number } };
 export interface Stats {
   seconds_since_last_ledger_sync: bigint;
   sub_accounts_count: bigint;
@@ -132,6 +146,7 @@ export default interface _SERVICE {
   get_account: () => Promise<GetAccountResponse>;
   get_canisters: () => Promise<Array<CanisterDetails>>;
   get_imported_tokens: () => Promise<GetImportedTokensResponse>;
+  get_fav_projects: () => Promise<GetFavProjectsResponse>;
   get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
   get_stats: () => Promise<Stats>;
   http_request: (arg_0: HttpRequest) => Promise<HttpResponse>;
@@ -142,4 +157,5 @@ export default interface _SERVICE {
     arg_0: RenameSubAccountRequest
   ) => Promise<RenameSubAccountResponse>;
   set_imported_tokens: ActorMethod<[ImportedTokens], SetImportedTokensResponse>;
+  set_fav_projects: ActorMethod<[FavProjects], SetFavProjectsResponse>;
 }

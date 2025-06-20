@@ -50,6 +50,12 @@ export const idlFactory = ({ IDL }) => {
     canister_id: IDL.Principal,
     block_index: IDL.Opt(IDL.Nat64),
   });
+  const FavProject = IDL.Record({ root_canister_id: IDL.Principal });
+  const FavProjects = IDL.Record({ fav_projects: IDL.Vec(FavProject) });
+  const GetFavProjectsResponse = IDL.Variant({
+    Ok: FavProjects,
+    AccountNotFound: IDL.Null,
+  });
   const ImportedToken = IDL.Record({
     index_canister_id: IDL.Opt(IDL.Principal),
     ledger_canister_id: IDL.Principal,
@@ -120,6 +126,11 @@ export const idlFactory = ({ IDL }) => {
     SubAccountNotFound: IDL.Null,
     NameTooLong: IDL.Null,
   });
+  const SetFavProjectsResponse = IDL.Variant({
+    Ok: IDL.Null,
+    AccountNotFound: IDL.Null,
+    TooManyFavProjects: IDL.Record({ limit: IDL.Int32 }),
+  });
   const SetImportedTokensResponse = IDL.Variant({
     Ok: IDL.Null,
     AccountNotFound: IDL.Null,
@@ -146,6 +157,7 @@ export const idlFactory = ({ IDL }) => {
     ),
     get_account: IDL.Func([], [GetAccountResponse], []),
     get_canisters: IDL.Func([], [IDL.Vec(CanisterDetails)], []),
+    get_fav_projects: IDL.Func([], [GetFavProjectsResponse], []),
     get_imported_tokens: IDL.Func([], [GetImportedTokensResponse], []),
     get_proposal_payload: IDL.Func(
       [IDL.Nat64],
@@ -164,6 +176,7 @@ export const idlFactory = ({ IDL }) => {
       [RenameSubAccountResponse],
       []
     ),
+    set_fav_projects: IDL.Func([FavProjects], [SetFavProjectsResponse], []),
     set_imported_tokens: IDL.Func(
       [ImportedTokens],
       [SetImportedTokensResponse],
