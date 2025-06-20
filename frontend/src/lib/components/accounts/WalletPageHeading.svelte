@@ -59,7 +59,7 @@
         <AmountDisplay amount={balance} size="huge" singleLine />
       </Tooltip>
     {:else}
-      <h1 data-tid="balance-placeholder">-/-</h1>
+      <h2 data-tid="balance-placeholder">-/-</h2>
     {/if}
   </svelte:fragment>
   <div
@@ -90,6 +90,12 @@
 </PageHeading>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  h2 {
+    @include fonts.h1;
+  }
+
   .subtitles {
     display: flex;
     flex-direction: column;

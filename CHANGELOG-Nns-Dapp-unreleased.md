@@ -19,6 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Trim trailing zeros in transaction modals
+* Updated and uniformed titles across pages
 
 #### Deprecated
 

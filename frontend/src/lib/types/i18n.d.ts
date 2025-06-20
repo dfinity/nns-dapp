@@ -152,9 +152,10 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
-  universe_tokens: string;
+  tokens_account: string;
   canisters: string;
   neurons: string;
+  neurons_account: string;
   voting: string;
   launchpad: string;
   manage_ii: string;
@@ -164,6 +165,7 @@ interface I18nNavigation {
   portfolio: string;
   privacy_mode_hide: string;
   privacy_mode_show: string;
+  project_page: string;
 }
 
 interface I18nAlfred {
