@@ -1,5 +1,6 @@
 import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
+import tailwindcss from "@tailwindcss/vite";
 import { readFileSync } from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -10,7 +11,7 @@ const json = readFileSync(file, "utf8");
 const { version } = JSON.parse(json);
 
 const config: UserConfig = {
-  plugins: [sveltekit()],
+  plugins: [tailwindcss(), sveltekit()],
   build: {
     target: "es2020",
     sourcemap: "hidden",
