@@ -1,14 +1,15 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Collapsible } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
   type Props = {
     id: string;
     count: number;
     openNewFolloweeModal: () => void;
-    title: Snippet;
-    subtitle: Snippet;
+    title: string;
+    subtitle?: string;
     children: Snippet;
   };
 
@@ -30,14 +31,15 @@
 <article data-tid={`follow-topic-${id}-section`}>
   <Collapsible {id} iconSize="medium" {testId}>
     <div class="wrapper" slot="header">
-      <span class="value" data-tid="topic-title">{@render title()}</span>
+      <span class="value" data-tid="topic-title">{title}</span>
       <span class="badge" data-tid={`topic-${id}-followees-badge`}>
         {count}
       </span>
     </div>
     <div class="content" data-tid="follow-topic-section-current">
-      <p class="subtitle description">{@render subtitle()}</p>
-
+      {#if nonNullish(subtitle)}
+        <p class="subtitle description">{subtitle}</p>
+      {/if}
       {#if count > 0}
         <p
           class="description current-followees"

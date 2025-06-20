@@ -66,9 +66,9 @@
     count={followees.length}
     id={nsFunction.id.toString()}
     openNewFolloweeModal={openModal}
+    title={nsFunction.name}
+    subtitle={fromNullable(nsFunction.description)?.[0]}
   >
-    {#snippet title()}{nsFunction.name}{/snippet}
-    {#snippet subtitle()}{fromNullable(nsFunction.description)}{/snippet}
     <ul>
       {#each followees as followee (subaccountToHexString(followee.id))}
         {@const followeeIdHex = subaccountToHexString(followee.id)}

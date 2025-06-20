@@ -68,13 +68,9 @@
     id={String(topic)}
     count={followees.length}
     {openNewFolloweeModal}
+    {title}
+    {subtitle}
   >
-    {#snippet title()}
-      {title}
-    {/snippet}
-    {#snippet subtitle()}
-      {subtitle}
-    {/snippet}
     <ul>
       {#each followees as followee (followee.neuronId)}
         <li data-tid="current-followee-item">
