@@ -661,13 +661,11 @@ impl AccountsStore {
             };
         }
         let account_identifier = AccountIdentifier::from(caller).to_vec();
-        let Some(mut account) = self.accounts_db.get(&account_identifier) else {
+        let Some(account) = self.accounts_db.get_mut(&account_identifier) else {
             return SetFavProjectsResponse::AccountNotFound;
         };
 
         account.fav_projects = Some(new_fav_projects);
-
-        self.accounts_db.insert(account_identifier, account);
         SetFavProjectsResponse::Ok
     }
 
