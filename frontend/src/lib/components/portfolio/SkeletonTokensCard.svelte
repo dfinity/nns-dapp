@@ -21,7 +21,7 @@
       <div class="header">
         <span class="skeleton"></span>
         <span class="skeleton justify-end"></span>
-        <span class="skeleton justify-end tablet-up"></span>
+        <span class="skeleton tablet-up justify-end"></span>
       </div>
 
       <div class="list">

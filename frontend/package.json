@@ -60,6 +60,7 @@
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
     "prettier-plugin-svelte": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.13",
     "sass": "~1.69.4",
     "svelte": "^5.28.2",
     "svelte-check": "^4.1.6",
@@ -88,9 +89,11 @@
     "@dfinity/utils": "next",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.8",
     "@ledgerhq/hw-transport-webhid": "^6.27.8",
+    "@tailwindcss/vite": "^4.1.10",
     "@zondax/ledger-icp": "^0.6.1",
     "buffer": "^6.0.3",
-    "plausible-tracker": "0.3.9"
+    "plausible-tracker": "0.3.9",
+    "tailwindcss": "^4.1.10"
   },
   "overrides": {
     "semver": "^7.5.3",
