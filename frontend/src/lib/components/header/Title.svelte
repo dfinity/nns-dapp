@@ -20,10 +20,12 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/text";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   h1 {
+    background-color: var(--sidebar-button-background);
     @include text.truncate;
+    border-radius: 45px;
+    padding: 4px 12px;
     line-height: 20px;
     font-size: 14px;
     margin: 0;
