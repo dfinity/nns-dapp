@@ -10,7 +10,6 @@
   import { actionableProposalsActiveStore } from "$lib/derived/actionable-proposals.derived";
   import { actionableProposalsNavigationIdsStore } from "$lib/derived/actionable-universes.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { debugSnsProposalStore } from "$lib/derived/debug.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
@@ -73,7 +72,6 @@
     // Because the update is ignored if the value is changed before onMount.
     await tick();
     proposal = value;
-    debugSnsProposalStore(value);
   };
 
   const goBack = async (

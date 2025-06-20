@@ -1367,8 +1367,8 @@ interface I18nPortfolio {
 }
 
 interface I18nHighlight {
-  topics_feature_title: string;
-  topics_feature_description: string;
+  disburse_maturity_title: string;
+  disburse_maturity_description: string;
 }
 
 interface I18nNeuron_state {

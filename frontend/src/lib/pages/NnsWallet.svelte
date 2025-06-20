@@ -23,7 +23,6 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
@@ -254,8 +253,6 @@
     account: undefined,
     neurons: [],
   });
-
-  debugSelectedAccountStore(selectedAccountStore);
 
   setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
