@@ -23,6 +23,7 @@ export interface FeatureFlags<T> {
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
   ENABLE_SNS_TOPICS: T;
+  ENABLE_NNS_TOPICS: T;
 }
 export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_CKTESTBTC: false,
@@ -33,6 +34,7 @@ export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   TEST_FLAG_EDITABLE: false,
   TEST_FLAG_NOT_EDITABLE: false,
   ENABLE_SNS_TOPICS: false,
+  ENABLE_NNS_TOPICS: false,
 };
 
 export type FeatureKey = keyof FeatureFlags<boolean>;
