@@ -15,10 +15,6 @@
     @include fonts.h1;
   }
 
-  h2 {
-    font-size: 28px;
-  }
-
   .summary {
     display: flex;
     flex-direction: column;

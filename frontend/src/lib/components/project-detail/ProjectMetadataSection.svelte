@@ -85,10 +85,6 @@
     @include fonts.h1;
   }
 
-  h2 {
-    font-size: 28px;
-  }
-
   p {
     margin: 0;
   }
