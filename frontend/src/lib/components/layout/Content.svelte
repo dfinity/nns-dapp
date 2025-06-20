@@ -21,3 +21,14 @@
   {/snippet}
   {@render children()}
 </Content>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/layout";
+
+  :global(.content .toolbar .back) {
+    background-color: var(--sidebar-button-background);
+    min-width: 0 !important;
+    height: 28px;
+    width: 28px;
+  }
+</style>

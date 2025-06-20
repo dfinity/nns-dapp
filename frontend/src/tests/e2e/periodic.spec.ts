@@ -11,7 +11,7 @@ test("Test periodic confirmation", async ({ page, context }) => {
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
 
   await page.goto("/tokens");
-  await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("Tokens | Network Nervous System");
 
   step("Sign in");
   await signInWithNewUser({ page, context });

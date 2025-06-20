@@ -2,6 +2,7 @@ import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import {
   definedNeuronsStore,
   neuronAccountsStore,
+  nonEmptyNeuronStore,
   soonLosingRewardNeuronsStore,
   sortedNeuronStore,
 } from "$lib/derived/neurons.derived";
@@ -9,11 +10,74 @@ import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
-import { mockNeuron } from "$tests/mocks/neurons.mock";
+import {
+  mockMaturityDisbursement,
+  mockNeuron,
+} from "$tests/mocks/neurons.mock";
 import type { NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
 
 describe("neurons-derived", () => {
+  describe("nonEmptyNeuronStore", () => {
+    it("should return empty array when no neurons", () => {
+      neuronsStore.reset();
+      const definedData = get(nonEmptyNeuronStore);
+      const storedData = get(neuronsStore);
+      expect(definedData).toEqual([]);
+      expect(storedData.neurons).toBeUndefined();
+    });
+
+    it("should filter out neurons with no stake and no maturity", () => {
+      const neurons: NeuronInfo[] = [
+        {
+          ...mockNeuron,
+          neuronId: 1n,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            cachedNeuronStake: 0n,
+            maturityE8sEquivalent: 0n,
+          },
+        },
+        { ...mockNeuron, neuronId: 2n },
+      ];
+      neuronsStore.setNeurons({ neurons, certified: true });
+
+      const definedData = get(nonEmptyNeuronStore);
+      expect(definedData.length).toBe(1);
+      expect(definedData[0].neuronId).toBe(2n);
+    });
+
+    it("should keep neurons with active maturity disbursements", () => {
+      const neurons: NeuronInfo[] = [
+        {
+          ...mockNeuron,
+          neuronId: 1n,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            cachedNeuronStake: 0n,
+            maturityE8sEquivalent: 0n,
+            maturityDisbursementsInProgress: [mockMaturityDisbursement],
+          },
+        },
+        {
+          ...mockNeuron,
+          neuronId: 2n,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            cachedNeuronStake: 0n,
+            maturityE8sEquivalent: 0n,
+            maturityDisbursementsInProgress: [],
+          },
+        },
+      ];
+      neuronsStore.setNeurons({ neurons, certified: true });
+
+      const definedData = get(nonEmptyNeuronStore);
+      expect(definedData.length).toBe(1);
+      expect(definedData[0].neuronId).toBe(1n);
+    });
+  });
+
   describe("definedNeuronsStore", () => {
     it("should return empty array when no neurons", () => {
       neuronsStore.reset();
@@ -42,6 +106,27 @@ describe("neurons-derived", () => {
       const storedData = get(neuronsStore);
       expect(definedData.length).toBe(1);
       expect(storedData.neurons?.length).toBe(2);
+    });
+
+    it("should filter out neurons with maturity disbursements in progress", () => {
+      const neurons: NeuronInfo[] = [
+        {
+          ...mockNeuron,
+          neuronId: 1n,
+          fullNeuron: {
+            ...mockNeuron.fullNeuron,
+            cachedNeuronStake: 0n,
+            maturityE8sEquivalent: 0n,
+            maturityDisbursementsInProgress: [mockMaturityDisbursement],
+          },
+        },
+        { ...mockNeuron, neuronId: 2n },
+      ];
+      neuronsStore.setNeurons({ neurons, certified: true });
+
+      const definedData = get(definedNeuronsStore);
+      expect(definedData.length).toBe(1);
+      expect(definedData[0].neuronId).toBe(2n);
     });
   });
 

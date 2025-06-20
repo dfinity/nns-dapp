@@ -9,7 +9,6 @@
   import { IS_TEST_ENV } from "$lib/constants/mockable.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { debugSelectedProjectStore } from "$lib/derived/debug.derived";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import SaleInProgressModal from "$lib/modals/sns/sale/SaleInProgressModal.svelte";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
@@ -25,6 +24,7 @@
     watchSnsTotalCommitment,
   } from "$lib/services/sns.services";
   import { loadUserCountry } from "$lib/services/user-country.services";
+  import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
   import {
@@ -92,7 +92,6 @@
     swapCommitment: null,
     totalTokensSupply: null,
   });
-  debugSelectedProjectStore(projectDetailStore);
   setContext<ProjectDetailContext>(PROJECT_DETAIL_CONTEXT_KEY, {
     store: projectDetailStore,
     reload,
@@ -144,8 +143,8 @@
   // Set up watchers and load the data in stores
   /////////////////////////////////
 
-  $: layoutTitleStore.set({
-    title: $projectDetailStore?.summary?.metadata.name ?? "",
+  layoutTitleStore.set({
+    title: $i18n.navigation.project_page,
   });
 
   let enableOpenProjectWatchers = false;

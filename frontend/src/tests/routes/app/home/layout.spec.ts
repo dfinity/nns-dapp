@@ -32,7 +32,6 @@ describe("Home layout", () => {
 
     expect(get(layoutTitleStore)).toEqual({
       title: en.navigation.tokens,
-      header: en.navigation.tokens,
     });
   });
 
@@ -56,7 +55,6 @@ describe("Home layout", () => {
 
       expect(get(layoutTitleStore)).toEqual({
         title: en.navigation.portfolio,
-        header: en.navigation.portfolio,
       });
     });
   });

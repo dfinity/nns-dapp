@@ -23,9 +23,7 @@
   }>) => {
     startBusy({ initiator: "disburse-maturity" });
 
-    analytics.event("nns-disburse-maturity-confirm", {
-      percentageToDisburse,
-    });
+    analytics.event("nns-disburse-maturity-confirm", { percentageToDisburse });
 
     const { success } = await disburseMaturityService({
       neuronId: neuron.neuronId,

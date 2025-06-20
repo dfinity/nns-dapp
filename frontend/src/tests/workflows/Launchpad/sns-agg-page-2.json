@@ -196,6 +196,20 @@
               "target_method_name": "manage_neuron"
             }
           }
+        },
+        {
+          "id": 5003,
+          "name": "Transfer cICP",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "n6tkf-tqaaa-aaaal-qsneq-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -1529,7 +1543,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102093770007980661,
+    "icrc1_total_supply": 102188486018216600,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2953,7 +2967,22 @@
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 5003,
+              "name": "Transfer cICP",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "n6tkf-tqaaa-aaaal-qsneq-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [
@@ -3024,8 +3053,7 @@
         "eqtcs-jiaaa-aaaal-qdmia-cai",
         "6jvpj-sqaaa-aaaaj-azwnq-cai",
         "gpdxq-kqaaa-aaaae-qakya-cai",
-        "nzsmr-6iaaa-aaaal-qsnea-cai",
-        "togwv-zqaaa-aaaal-qr7aa-cai"
+        "nzsmr-6iaaa-aaaal-qsnea-cai"
       ],
       "archives": ["fbysu-tqaaa-aaaaq-aacga-cai"]
     },
@@ -3890,7 +3918,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100872061127240,
+    "icrc1_total_supply": 100871716760892,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -5148,7 +5176,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 994888880321,
+    "icrc1_total_supply": 994878631321,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8498,7 +8526,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19224346937574915,
+    "icrc1_total_supply": 19224895617485917,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -12086,7 +12114,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25622229393142620,
+    "icrc1_total_supply": 25632079032101046,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -13694,7 +13722,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10072663449671802,
+    "icrc1_total_supply": 10072666734982564,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15002,7 +15030,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 104196744937819245,
+    "icrc1_total_supply": 104248546462700920,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -16828,7 +16856,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98554885853411583,
+    "icrc1_total_supply": 98567906368686116,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -18590,7 +18618,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99831809817800339,
+    "icrc1_total_supply": 99833033235357966,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -19980,7 +20008,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100409205542211354,
+    "icrc1_total_supply": 100410128810744214,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
