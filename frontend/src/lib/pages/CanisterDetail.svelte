@@ -182,8 +182,14 @@
       return;
     }
     notifyChecked = true;
-    if (await notifyTopUpIfNeeded({ canisterId })) {
-      reloadDetails(canisterId);
+    try {
+      if (await notifyTopUpIfNeeded({ canisterId })) {
+        reloadDetails(canisterId);
+      }
+    } catch (error: unknown) {
+      // If the notification fails, we avoid showing an error since it's a background task
+      // and not relevant to most users.
+      console.error("Failed to notify for canister top-up:", error);
     }
   };
 
