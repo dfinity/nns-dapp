@@ -33,7 +33,7 @@ export class WalletPageHeadingPo extends BasePageObject {
   }
 
   getSubtitle(): Promise<string> {
-    return this.getText("wallet-page-heading-subtitle");
+    return this.getHeadingSubtitleWithUsdValuePo().getSlotText();
   }
 
   hasBalanceInUsd(): Promise<boolean> {

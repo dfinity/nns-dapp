@@ -92,6 +92,14 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
 describe("Wallet", () => {
   let ckEthBalance = 1000000000000000000n;
   const importedTokenId = principal(123);
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_LEDGER_CANISTER_ID.toText(),
+      last_price: "10.00",
+    },
+  ];
+
   beforeEach(() => {
     resetIdentity();
     setCkETHCanisters();
@@ -105,6 +113,7 @@ describe("Wallet", () => {
     setCkETHCanisters();
     setAccountsForTesting(mockAccountsStoreData);
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(1234n);
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
     vi.mocked(ckbtcMinterApi.retrieveBtcStatusV2ByAccount).mockResolvedValue(
       []
     );

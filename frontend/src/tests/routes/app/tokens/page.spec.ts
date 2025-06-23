@@ -139,6 +139,14 @@ describe("Tokens route", () => {
     return TokensRoutePo.under(new JestPageObjectElement(container));
   };
 
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+      last_price: "0.00",
+    },
+  ];
+
   describe("when feature flag enabled", () => {
     beforeEach(() => {
       ckBTCBalanceE8s = ckBTCDefaultBalanceE8s;
@@ -202,6 +210,7 @@ describe("Tokens route", () => {
       vi.spyOn(ckBTCMinterApi, "updateBalance").mockRejectedValue(
         noPendingUtxos
       );
+      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
       vi.mocked(ckBTCMinterApi.minterInfo).mockResolvedValue(
         mockCkBTCMinterInfo
       );

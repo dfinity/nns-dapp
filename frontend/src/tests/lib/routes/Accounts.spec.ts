@@ -49,6 +49,13 @@ describe("Accounts", () => {
   let mainAccountBalance = mainAccountBalanceDefault;
   const hardwareWalletBalanceDefault = 220000000n;
   let hardwareWalletBalance = hardwareWalletBalanceDefault;
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+      last_price: "10.00",
+    },
+  ];
 
   const renderComponent = async () => {
     const { container } = render(Accounts);
@@ -90,6 +97,8 @@ describe("Accounts", () => {
     vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
       return mockAccountDetails;
     });
+
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
 
     // Reset to default value
     page.mock({
@@ -408,15 +417,6 @@ describe("Accounts", () => {
       });
 
       it("should load ICP Swap tickers", async () => {
-        const tickers = [
-          {
-            ...mockIcpSwapTicker,
-            base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-            last_price: "10.00",
-          },
-        ];
-        vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
-
         expect(get(icpSwapTickersStore)).toBeUndefined();
         expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
 
