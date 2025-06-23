@@ -152,6 +152,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       TEST_FLAG_NOT_EDITABLE: true,
       ENABLE_SNS_TOPICS: false,
       ENABLE_NNS_TOPICS: false,
+      ENABLE_LAUNCHPAD_REDESIGN: false,
     }),
     fetchRootKey: "false",
     host: "https://icp-api.io",
