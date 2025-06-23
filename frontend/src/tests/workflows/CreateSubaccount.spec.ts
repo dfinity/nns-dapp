@@ -1,8 +1,10 @@
 import { createSubAccount } from "$lib/api/accounts.api";
 import * as agent from "$lib/api/agent.api";
 import * as ledgerApi from "$lib/api/icp-ledger.api";
+import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import Accounts from "$lib/routes/Accounts.svelte";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -11,6 +13,7 @@ import {
   mockMainAccount,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
@@ -35,6 +38,15 @@ describe("Accounts", () => {
     ...mockSubAccountDetails,
     name: newSubaccountName,
   };
+
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+      last_price: "10.00",
+    },
+  ];
+
   beforeEach(() => {
     resetIdentity();
     vi.spyOn(console, "error").mockImplementation(vi.fn);
@@ -45,6 +57,7 @@ describe("Accounts", () => {
       sub_accounts: [mockSubaccount],
     });
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
   });
 
   describe("when tokens page flag is enabled", async () => {
