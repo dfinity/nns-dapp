@@ -307,6 +307,7 @@ describe("vote-registration-services", () => {
 
         expect(get(actionableNnsProposalsStore)).toEqual({
           proposals: [proposal],
+          fetchLimitReached: false,
         });
         expect(spyQueryNeurons).toBeCalledTimes(0);
         expect(spyQueryProposals).toBeCalledTimes(0);
@@ -334,6 +335,7 @@ describe("vote-registration-services", () => {
         // The store value should be not changed until the proposals are loaded
         expect(get(actionableNnsProposalsStore)).toEqual({
           proposals: [proposal],
+          fetchLimitReached: false,
         });
 
         // wait for actionable proposal loading
@@ -342,6 +344,7 @@ describe("vote-registration-services", () => {
 
         expect(get(actionableNnsProposalsStore)).toEqual({
           proposals: [votableProposal, votableProposal],
+          fetchLimitReached: false,
         });
       });
 
