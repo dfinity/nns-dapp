@@ -15,11 +15,23 @@
   import { fromNullable, isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
-  export let proposals: SnsProposalActionableData[] | undefined;
-  export let actionableSelected: boolean;
-  export let nsFunctions: SnsNervousSystemFunction[] | undefined;
-  export let disableInfiniteScroll = false;
-  export let loadingNextPage = false;
+  type Props = {
+    proposals: SnsProposalActionableData[] | undefined;
+    actionableSelected: boolean;
+    nsFunctions: SnsNervousSystemFunction[] | undefined;
+    disableInfiniteScroll?: boolean;
+    loadingNextPage?: boolean;
+    loadNextPage: () => Promise<void>;
+  };
+
+  const {
+    proposals,
+    actionableSelected,
+    nsFunctions,
+    disableInfiniteScroll = false,
+    loadingNextPage = false,
+    loadNextPage,
+  }: Props = $props();
 </script>
 
 <TestIdWrapper testId="sns-proposal-list-component">
@@ -35,7 +47,7 @@
         <ListLoader loading={loadingNextPage}>
           <InfiniteScroll
             layout="grid"
-            on:nnsIntersect
+            onIntersect={loadNextPage}
             disabled={disableInfiniteScroll}
           >
             {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
@@ -59,7 +71,7 @@
       {:else if proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}
-        <InfiniteScroll layout="grid" disabled>
+        <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
           {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
             <SnsProposalCard
               actionable={proposalData.isActionable}

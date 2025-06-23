@@ -2,8 +2,13 @@
   import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import type { Universe } from "$lib/types/universe";
   import { InfiniteScroll } from "@dfinity/gix-components";
+  import type { Snippet } from "svelte";
 
-  export let universe: Universe;
+  type Props = {
+    universe: Universe;
+    children: Snippet;
+  };
+  const { children, universe }: Props = $props();
 </script>
 
 <div class="container" data-tid="universe-with-actionable-proposals-component">
@@ -11,8 +16,8 @@
     <UniverseSummary {universe} />
   </div>
 
-  <InfiniteScroll layout="grid" disabled>
-    <slot />
+  <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
+    {@render children()}
   </InfiniteScroll>
 </div>
 

@@ -1,21 +1,24 @@
 <script lang="ts">
   import JsonPreview from "$lib/components/common/JsonPreview.svelte";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
+  import Copy from "$lib/components/ui/Copy.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { expandObject, stringifyJson } from "$lib/utils/utils";
-  import { Copy, SkeletonText } from "@dfinity/gix-components";
+  import { SkeletonText } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
 
-  // `undefined` means that the payload is not loaded yet
-  // `null` means that the payload was not found
-  // `object` means that the payload is an object
-  export let payload: object | undefined | null;
+  type Props = {
+    // `undefined` means that the payload is not loaded yet
+    // `null` means that the payload was not found
+    // `object` means that the payload is an object
+    payload?: object | undefined | null;
+  };
+  const { payload }: Props = $props();
 
-  let copyContent = "";
-  $: copyContent = stringifyJson(payload, { indentation: 2 }) ?? "";
-
-  let expandedPayload: unknown;
-  $: expandedPayload = isNullish(payload) ? payload : expandObject(payload);
+  const copyContent = $derived(stringifyJson(payload, { indentation: 2 }));
+  const expandedPayload = $derived(
+    isNullish(payload) ? payload : expandObject(payload)
+  );
 </script>
 
 <div class="content-cell-island">

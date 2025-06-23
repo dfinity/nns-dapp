@@ -38,7 +38,6 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
-import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { Principal } from "@dfinity/principal";
@@ -48,11 +47,8 @@ import type { MockInstance } from "vitest";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/canisters.api");
-const blockedApiPaths = ["$lib/api/canisters.api", "$lib/api/icp-ledger.api"];
 
 describe("canisters-services", () => {
-  blockAllCallsTo(blockedApiPaths);
-
   const newBalanceE8s = 100_000_000n;
   const exchangeRate = 10_000n;
   let spyQueryCanisters: MockInstance;

@@ -40,4 +40,30 @@ describe("NnsNeuronMaturitySection", () => {
     expect(await po.hasStakedMaturityItemAction()).toBe(true);
     expect(await po.hasAvailableMaturityItemAction()).toBe(true);
   });
+
+  it("should render active disbursements item action when maturity disbursement in progress", async () => {
+    const neuron: NeuronInfo = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        maturityDisbursementsInProgress: [
+          {
+            amountE8s: 200_000_000n,
+            timestampOfDisbursementSeconds: undefined,
+            accountToDisburseTo: undefined,
+            finalizeDisbursementTimestampSeconds: undefined,
+            accountIdentifierToDisburseTo: undefined,
+          },
+        ],
+      },
+    };
+    const po = renderComponent(neuron);
+
+    expect(await po.getViewActiveDisbursementsItemActionPo().isPresent()).toBe(
+      true
+    );
+    expect(
+      await po.getViewActiveDisbursementsItemActionPo().getDisbursementTotal()
+    ).toBe("2.00");
+  });
 });

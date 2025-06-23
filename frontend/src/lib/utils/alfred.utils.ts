@@ -1,9 +1,16 @@
+import { AppPath } from "$lib/constants/routes.constants";
 import { login, logout } from "$lib/services/auth.services";
+import {
+  balancePrivacyOptionStore,
+  type BalancePrivacyOptionData,
+} from "$lib/stores/balance-privacy-option.store";
 import { i18n } from "$lib/stores/i18n";
 import {
   IconCopy,
   IconDarkMode,
   IconDocument,
+  IconEyeClosed,
+  IconEyeOpen,
   IconHome,
   IconLaunchpad,
   IconLedger,
@@ -30,6 +37,7 @@ interface AlfredItemBase {
   contextFilter?: (context: {
     isSignedIn: boolean;
     theme: ThemeStoreData;
+    balancePrivacyOption: BalancePrivacyOptionData;
   }) => boolean;
 }
 
@@ -55,7 +63,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.home_title,
       description: alfred.home_description,
-      path: "/",
+      path: AppPath.Portfolio,
       icon: IconHome,
     },
     {
@@ -63,7 +71,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.tokens_title,
       description: alfred.tokens_description,
-      path: "/accounts",
+      path: AppPath.Accounts,
       icon: IconTokens,
     },
     {
@@ -71,7 +79,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.neurons_title,
       description: alfred.neurons_description,
-      path: "/neurons",
+      path: AppPath.Neurons,
       icon: IconNeurons,
     },
     {
@@ -79,7 +87,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.voting_title,
       description: alfred.voting_description,
-      path: "/proposals",
+      path: AppPath.Proposals,
       icon: IconVote,
     },
     {
@@ -87,7 +95,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.launchpad_title,
       description: alfred.launchpad_description,
-      path: "/launchpad",
+      path: AppPath.Launchpad,
       icon: IconLaunchpad,
     },
     {
@@ -95,7 +103,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.reporting_title,
       description: alfred.reporting_description,
-      path: "/reporting",
+      path: AppPath.Reporting,
       icon: IconDocument,
     },
     {
@@ -103,7 +111,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.canisters_title,
       description: alfred.canisters_description,
-      path: "/canisters",
+      path: AppPath.Canisters,
       icon: IconLedger,
     },
     {
@@ -111,7 +119,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "page",
       title: alfred.settings_title,
       description: alfred.settings_description,
-      path: "/settings",
+      path: AppPath.Settings,
       icon: IconSettings,
     },
     {
@@ -143,6 +151,26 @@ const getAlfredItems = (): AlfredItem[] => {
       contextFilter: (context) => context.theme === Theme.DARK,
     },
     {
+      id: "hide-balance",
+      type: "action",
+      title: "Hide Balance",
+      description: "Privacy mode for your balance",
+      icon: IconEyeClosed,
+      action: () => balancePrivacyOptionStore.set("hide"),
+      contextFilter: (context) =>
+        context.balancePrivacyOption === "show" && context.isSignedIn,
+    },
+    {
+      id: "show-balance",
+      type: "action",
+      title: "Show Balance",
+      description: "Display your balances",
+      icon: IconEyeOpen,
+      action: () => balancePrivacyOptionStore.set("show"),
+      contextFilter: (context) =>
+        context.balancePrivacyOption === "hide" && context.isSignedIn,
+    },
+    {
       id: "log-in",
       type: "action",
       title: alfred.log_in_title,
@@ -170,7 +198,11 @@ const copyToClipboard = async (value: string) =>
 
 export const filterAlfredItems = (
   query: string,
-  context: { isSignedIn: boolean; theme: ThemeStoreData }
+  context: {
+    isSignedIn: boolean;
+    theme: ThemeStoreData;
+    balancePrivacyOption: BalancePrivacyOptionData;
+  }
 ): AlfredItem[] => {
   const items = alfredItems.filter(
     ({ contextFilter }) => contextFilter?.(context) ?? true

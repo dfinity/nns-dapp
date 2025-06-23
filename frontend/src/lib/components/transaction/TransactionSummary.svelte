@@ -1,73 +1,117 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { formatUsdValue } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { toTokenAmountV2 } from "$lib/utils/token.utils";
+  import { getUsdValue, toTokenAmountV2 } from "$lib/utils/token.utils";
   import { IconSouth, KeyValuePair } from "@dfinity/gix-components";
-  import { TokenAmount, TokenAmountV2, type Token } from "@dfinity/utils";
+  import {
+    isNullish,
+    nonNullish,
+    TokenAmount,
+    TokenAmountV2,
+    type Token,
+  } from "@dfinity/utils";
+  import type { Snippet } from "svelte";
 
-  export let amount: number;
-  export let token: Token;
-  export let transactionFee: TokenAmount | TokenAmountV2;
-  export let showLedgerFee = true;
+  type Props = {
+    amount: number;
+    receivedAmount: Snippet;
+    showLedgerFee?: boolean;
+    token: Token;
+    transactionFee: TokenAmount | TokenAmountV2;
+  };
+
+  const {
+    amount,
+    receivedAmount,
+    showLedgerFee = true,
+    token,
+    transactionFee,
+  }: Props = $props();
 
   // If we made it this far, the number is valid.
-  let tokenAmount: TokenAmountV2;
-  $: tokenAmount = TokenAmountV2.fromNumber({
-    amount,
-    token,
-  });
-
-  let ledgerFeeLabel: string;
-  $: ledgerFeeLabel = replacePlaceholders(
-    $i18n.accounts.token_transaction_fee,
-    {
-      $tokenSymbol: token.symbol,
-    }
+  const tokenAmount = $derived(
+    TokenAmountV2.fromNumber({
+      amount,
+      token,
+    })
   );
 
-  let totalDeducted: bigint;
-  $: totalDeducted =
-    tokenAmount.toUlps() + toTokenAmountV2(transactionFee).toUlps();
+  const ledgerFeeLabel = $derived(
+    replacePlaceholders($i18n.accounts.token_transaction_fee, {
+      $tokenSymbol: token.symbol,
+    })
+  );
 
-  let tokenTotalDeducted: TokenAmountV2;
-  $: tokenTotalDeducted = TokenAmountV2.fromUlps({
-    amount: totalDeducted,
-    token,
+  const totalDeducted = $derived(
+    tokenAmount.toUlps() + toTokenAmountV2(transactionFee).toUlps()
+  );
+
+  const tokenTotalDeducted = $derived(
+    TokenAmountV2.fromUlps({
+      amount: totalDeducted,
+      token,
+    })
+  );
+
+  const priceStore = $derived(tokenPriceStore(tokenAmount));
+  const tokenPrice = $derived($priceStore);
+
+  const tokenAmountUsdValue = $derived.by(() => {
+    if (isNullish(tokenAmount) || isNullish(tokenPrice)) return undefined;
+
+    const usdValue = getUsdValue({ amount: tokenAmount, tokenPrice });
+    return nonNullish(usdValue) ? formatUsdValue(usdValue) : undefined;
+  });
+
+  const transactionFeeUsdValue = $derived.by(() => {
+    if (isNullish(transactionFee) || isNullish(tokenPrice)) return undefined;
+
+    const feeAmount = toTokenAmountV2(transactionFee);
+    const usdValue = getUsdValue({ amount: feeAmount, tokenPrice });
+    return nonNullish(usdValue) ? formatUsdValue(usdValue) : undefined;
   });
 </script>
 
-<article class="container">
+<article class="container" data-tid="transaction-summary-component">
   <KeyValuePair testId="transaction-summary-sending-amount">
     <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
-    <AmountDisplay
-      slot="value"
-      singleLine
-      detailed="height_decimals"
-      amount={tokenAmount}
-    />
+    <div slot="value" class="value">
+      <AmountDisplay
+        singleLine
+        detailed
+        amount={tokenAmount}
+      />{#if nonNullish(tokenAmountUsdValue)}
+        <span class="fiat" data-tid="fiat-value">
+          (~{tokenAmountUsdValue})
+        </span>
+      {/if}
+    </div>
   </KeyValuePair>
 
   {#if showLedgerFee}
     <KeyValuePair testId="transaction-summary-fee">
       <span class="label" slot="key">{ledgerFeeLabel}</span>
-      <AmountDisplay
-        slot="value"
-        singleLine
-        detailed="height_decimals"
-        amount={transactionFee}
-      />
+      <div class="value" slot="value">
+        <AmountDisplay
+          singleLine
+          detailed
+          amount={transactionFee}
+        />{#if nonNullish(transactionFeeUsdValue)}
+          <span class="fiat" data-tid="fiat-value">
+            ({transactionFeeUsdValue})
+          </span>
+        {/if}
+      </div>
     </KeyValuePair>
 
     <div class="deducted" data-tid="transaction-summary-total-deducted">
       <p class="label subtitle">{$i18n.accounts.total_deducted}</p>
 
       <p>
-        <AmountDisplay
-          inline
-          detailed="height_decimals"
-          amount={tokenTotalDeducted}
-        />
+        <AmountDisplay inline detailed amount={tokenTotalDeducted} />
       </p>
     </div>
   {/if}
@@ -76,7 +120,7 @@
     <IconSouth />
   </div>
 
-  <slot name="received-amount" />
+  {@render receivedAmount()}
 </article>
 
 <style lang="scss">
@@ -125,5 +169,15 @@
 
   .subtitle {
     margin: 0 0 var(--padding-0_5x);
+  }
+
+  .value {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+
+    .fiat {
+      color: var(--text-description);
+    }
   }
 </style>

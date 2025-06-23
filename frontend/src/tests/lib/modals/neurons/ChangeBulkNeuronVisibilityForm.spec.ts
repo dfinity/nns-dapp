@@ -3,7 +3,6 @@ import {
   SECONDS_IN_YEAR,
 } from "$lib/constants/constants";
 import ChangeBulkNeuronVisibilityForm from "$lib/modals/neurons/ChangeBulkNeuronVisibilityForm.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -21,6 +20,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronType, NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import { tick } from "svelte";
 
 describe("ChangeBulkNeuronVisibilityForm", () => {
   const createMockNeuron = ({
@@ -570,10 +570,6 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
   });
 
   it("should display 'Missing rewards' tag", async () => {
-    overrideFeatureFlagsStore.setFlag(
-      "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-      true
-    );
     networkEconomicsStore.setParameters({
       parameters: mockNetworkEconomics,
       certified: true,
@@ -610,6 +606,7 @@ describe("ChangeBulkNeuronVisibilityForm", () => {
 
     neuronsStore.setNeurons({ neurons: [publicNeuron1], certified: true });
     await runResolvedPromises();
+    await tick();
 
     expect(await po.getLoadingContainer().isPresent()).toBe(false);
   });

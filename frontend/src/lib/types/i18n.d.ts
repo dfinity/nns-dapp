@@ -41,6 +41,8 @@ interface I18nCore {
   add: string;
   not_applicable: string;
   view_more: string;
+  copy: string;
+  copied: string;
 }
 
 interface I18nError {
@@ -150,9 +152,10 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
-  universe_tokens: string;
+  tokens_account: string;
   canisters: string;
   neurons: string;
+  neurons_account: string;
   voting: string;
   launchpad: string;
   manage_ii: string;
@@ -160,6 +163,9 @@ interface I18nNavigation {
   settings: string;
   reporting: string;
   portfolio: string;
+  privacy_mode_hide: string;
+  privacy_mode_show: string;
+  project_page: string;
 }
 
 interface I18nAlfred {
@@ -291,7 +297,6 @@ interface I18nAccounts {
   token_transaction_fee: string;
   transaction_fee: string;
   review_transaction: string;
-  you_are_sending: string;
   current_balance: string;
   confirm_and_send: string;
   account_identifier: string;
@@ -708,16 +713,16 @@ interface I18nProposal_detail__vote {
   vote_status_registering: string;
   vote_status_updating: string;
   expiration: string;
-  immediate_majority: string;
-  immediate_majority_description: string;
-  immediate_super_majority: string;
-  immediate_super_majority_description: string;
+  decision_intro: string;
   standard_majority: string;
   standard_majority_description: string;
+  immediate_majority: string;
+  immediate_majority_description: string;
+  super_majority_decision_intro: string;
   standard_super_majority: string;
   standard_super_majority_description: string;
-  decision_intro: string;
-  super_majority_decision_intro: string;
+  immediate_super_majority: string;
+  immediate_super_majority_description: string;
   cast_votes: string;
   cast_votes_needs: string;
   no_nns_neurons: string;
@@ -790,7 +795,8 @@ interface I18nNeuron_detail {
   view_active_disbursements_modal_title: string;
   view_active_disbursements_to: string;
   disburse_maturity_description_1: string;
-  disburse_maturity_description_2: string;
+  disburse_maturity_description_2_nns: string;
+  disburse_maturity_description_2_sns: string;
   disburse_maturity_amount: string;
   disburse_maturity_confirmation_percentage: string;
   disburse_maturity_confirmation_amount: string;
@@ -801,6 +807,7 @@ interface I18nNeuron_detail {
   spawn_neuron: string;
   spawn: string;
   stake_maturity_disabled_tooltip: string;
+  stake_maturity_disabled_tooltip_max_disbursements: string;
   disburse_maturity_disabled_tooltip_zero: string;
   disburse_maturity_disabled_tooltip_non_zero: string;
   start_dissolve_description: string;
@@ -824,6 +831,7 @@ interface I18nNeuron_detail {
   split_neuron_success: string;
   split_neuron_disabled_tooltip: string;
   spawn_neuron_disabled_tooltip: string;
+  disburse_maturity_disabled_tooltip: string;
   hotkeys_title: string;
   add_hotkey: string;
   no_notkeys: string;
@@ -839,7 +847,8 @@ interface I18nNeuron_detail {
   disburse_maturity_confirmation_modal_title: string;
   disburse_maturity_confirmation_description: string;
   disburse_maturity_success: string;
-  active_maturity_disbursements_description: string;
+  active_maturity_disbursements_description_nns: string;
+  active_maturity_disbursements_description_sns: string;
   active_maturity_disbursements_amount: string;
   stake_confirmation_modal_title: string;
   stake_maturity_modal_description: string;
@@ -982,7 +991,6 @@ interface I18nSns_neurons {
   stake_sns_neuron: string;
   sns_neuron_destination: string;
   stake_sns_neuron_success: string;
-  token_stake: string;
   min_dissolve_delay_description: string;
 }
 
@@ -1359,8 +1367,8 @@ interface I18nPortfolio {
 }
 
 interface I18nHighlight {
-  topics_feature_title: string;
-  topics_feature_description: string;
+  disburse_maturity_title: string;
+  disburse_maturity_description: string;
 }
 
 interface I18nNeuron_state {

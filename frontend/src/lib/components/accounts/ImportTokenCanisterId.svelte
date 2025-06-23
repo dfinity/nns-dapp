@@ -1,13 +1,21 @@
 <script lang="ts">
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
-  import { Copy } from "@dfinity/gix-components";
+  import Copy from "$lib/components/ui/Copy.svelte";
   import type { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
 
-  export let label: string;
-  export let testId: string = "import-token-canister-id-component";
-  export let canisterId: Principal | undefined = undefined;
-  export let canisterIdFallback: string | undefined = undefined;
+  type Props = {
+    canisterId?: Principal;
+    canisterIdFallback?: string;
+    label: string;
+    testId?: string;
+  };
+  const {
+    canisterId,
+    canisterIdFallback,
+    label,
+    testId = "import-token-canister-id-component",
+  }: Props = $props();
 </script>
 
 <div class="container" data-tid={testId}>

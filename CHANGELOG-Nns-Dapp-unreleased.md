@@ -14,13 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Swipe gestures for project cards on the portfolio page
-* Display the voting delegation state in the SNS neurons table
-* Display upcoming swaps in the portfolio page
-* Display the voting delegation state in the NNS neurons table
-* Display neuron ID related errors inline during vote delegation process
+* Fiat values to confirmation screens
 
 #### Changed
+
+* Trim trailing zeros in transaction modals
+* Updated and uniformed titles across pages
 
 #### Deprecated
 
@@ -28,8 +27,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Fix tag background styling in the vote delegation modal (dark theme)
-* "Add Followee" button is not fully visible after adding a followee
+* Fix staking form error messages not clearing after correction
+* Fixed an issue where NNS neurons that had been disbursed but still had active maturity disbursements were not displayed in the dapp.
 
 #### Security
 

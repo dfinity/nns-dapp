@@ -1,22 +1,40 @@
 <script lang="ts">
+  import Copy from "$lib/components/ui/Copy.svelte";
+  import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import {
     FailedTokenAmount,
     formatTokenV2,
     UnavailableTokenAmount,
   } from "$lib/utils/token.utils";
-  import { Copy } from "@dfinity/gix-components";
   import { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
-  export let amount: TokenAmount | TokenAmountV2 | UnavailableTokenAmount;
-  export let label: string | undefined = undefined;
-  export let inline = false;
-  export let singleLine = false;
-  export let title = false;
-  export let copy = false;
-  export let text = false;
-  export let size: "inherit" | "huge" | undefined = undefined;
-  export let sign: "+" | "-" | "" = "";
-  export let detailed: boolean | "height_decimals" = false;
+  type Props = {
+    amount: TokenAmount | TokenAmountV2 | UnavailableTokenAmount;
+    label?: string;
+    inline?: boolean;
+    singleLine?: boolean;
+    title?: boolean;
+    copy?: boolean;
+    text?: boolean;
+    size?: "inherit" | "huge";
+    sign?: "+" | "-" | "";
+    detailed?: boolean | "height_decimals";
+    hideValue?: boolean;
+  };
+
+  const {
+    amount,
+    label = undefined,
+    inline = false,
+    singleLine = false,
+    title = false,
+    copy = false,
+    text = false,
+    size = undefined,
+    sign = "",
+    detailed = false,
+    hideValue = false,
+  }: Props = $props();
 
   const isValidAmount = (
     amount:
@@ -26,6 +44,12 @@
       | FailedTokenAmount
   ): amount is TokenAmount | TokenAmountV2 =>
     amount instanceof TokenAmount || amount instanceof TokenAmountV2;
+
+  const formattedValue = $derived(
+    isValidAmount(amount)
+      ? `${sign}${formatTokenV2({ value: amount, detailed })}`
+      : "-/-"
+  );
 </script>
 
 <div
@@ -43,10 +67,11 @@
     data-tid="token-value"
     class="value"
     class:tabular-num={detailed === "height_decimals"}
-    >{#if !isValidAmount(amount)}
-      -/-
+  >
+    {#if hideValue}
+      <PrivacyAwareAmount value={formattedValue} length={3} />
     {:else}
-      {`${sign}${formatTokenV2({ value: amount, detailed })}`}
+      {formattedValue}
     {/if}</span
   >
   <span class="label">{label !== undefined ? label : amount.token.symbol}</span

@@ -1,15 +1,23 @@
 <script lang="ts">
   import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
 
-  export let title: string;
-  export let subtitle: string;
-  export let count: number;
-  export let id: string;
+  type Props = {
+    id: string;
+    count: number;
+    title: string;
+    subtitle: string;
+    openNewFolloweeModal: () => void;
+  };
+  const {
+    id,
+    count,
+    title,
+    subtitle,
+    openNewFolloweeModal = () => {},
+  }: Props = $props();
 </script>
 
-<FollowTopicSection {count} {id}>
-  <h3 slot="title">{title}</h3>
-  <p slot="subtitle">{subtitle}</p>
+<FollowTopicSection {count} {id} {title} {subtitle} {openNewFolloweeModal}>
   <div data-tid="followee-children">
     <p>Followee</p>
   </div>

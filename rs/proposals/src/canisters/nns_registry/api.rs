@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-01_03-23-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-30_03-21-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -297,6 +297,13 @@ pub enum GetSubnetForCanisterResponse {
     Err(String),
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct MigrateCanistersPayload {
+    pub canister_ids: Vec<Principal>,
+    pub target_subnet_id: Principal,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct MigrateCanistersResponse {}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct PrepareCanisterMigrationPayload {
     pub canister_id_ranges: Vec<CanisterIdRange>,
     pub source_subnet: Principal,
@@ -571,6 +578,9 @@ impl Service {
         arg0: GetSubnetForCanisterRequest,
     ) -> CallResult<(GetSubnetForCanisterResponse,)> {
         ic_cdk::call(self.0, "get_subnet_for_canister", (arg0,)).await
+    }
+    pub async fn migrate_canisters(&self, arg0: MigrateCanistersPayload) -> CallResult<(MigrateCanistersResponse,)> {
+        ic_cdk::call(self.0, "migrate_canisters", (arg0,)).await
     }
     pub async fn prepare_canister_migration(&self, arg0: PrepareCanisterMigrationPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "prepare_canister_migration", (arg0,)).await

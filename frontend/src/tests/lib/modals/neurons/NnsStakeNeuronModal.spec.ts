@@ -14,7 +14,6 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -209,6 +208,35 @@ describe("NnsStakeNeuronModal", () => {
       ).toBe(en.error.insufficient_funds);
     });
 
+    it("should clear the error if user corrects amount", async () => {
+      const po = await renderComponent({});
+
+      expect(
+        await po.getNnsStakeNeuronPo().getCreateButtonPo().isDisabled()
+      ).toBe(true);
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        false
+      );
+
+      await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(100000000);
+
+      expect(
+        await po.getNnsStakeNeuronPo().getCreateButtonPo().isDisabled()
+      ).toBe(true);
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        true
+      );
+      expect(
+        await po.getNnsStakeNeuronPo().getAmountInputPo().getErrorMessage()
+      ).toBe(en.error.insufficient_funds);
+
+      await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(10);
+
+      expect(await po.getNnsStakeNeuronPo().getAmountInputPo().hasError()).toBe(
+        false
+      );
+    });
+
     it("should move to update dissolve delay after creating a neuron", async () => {
       const po = await renderComponent({});
 
@@ -266,7 +294,20 @@ describe("NnsStakeNeuronModal", () => {
       await runResolvedPromises();
 
       expect(await po.getSetDissolveDelayPo().getNeuronStake()).toBe(
-        "2.20 ICP Stake"
+        "2.20 ICP"
+      );
+    });
+
+    it("should show the fiat value side to the stake of the new neuron in the dissolve modal", async () => {
+      setIcpPrice(10);
+      const po = await renderComponent({});
+
+      await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(2.2);
+      await po.getNnsStakeNeuronPo().clickCreate();
+      await runResolvedPromises();
+
+      expect(await po.getSetDissolveDelayPo().getNeuronStake()).toBe(
+        "2.20 ICP(~$22.00)"
       );
     });
 
@@ -529,10 +570,6 @@ describe("NnsStakeNeuronModal", () => {
     });
 
     it("should display missing rewards warning when feature flag on", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       const po = await renderComponent({});
       await createNeuron(po);
 
@@ -540,20 +577,6 @@ describe("NnsStakeNeuronModal", () => {
       expect(
         await po.getAddUserToHotkeysPo().isMissingRewardsWarningVisible()
       ).toBe(true);
-    });
-
-    it("should not display missing rewards warning when feature flag off", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        false
-      );
-      const po = await renderComponent({});
-      await createNeuron(po);
-
-      expect(await po.getAddUserToHotkeysPo().isPresent()).toBe(true);
-      expect(
-        await po.getAddUserToHotkeysPo().isMissingRewardsWarningVisible()
-      ).toBe(false);
     });
 
     it("should create neuron for hardwareWallet and add dissolve delay", async () => {

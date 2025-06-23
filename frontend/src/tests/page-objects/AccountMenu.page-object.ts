@@ -1,6 +1,7 @@
 import { AccountDetailsPo } from "$tests/page-objects/AccountDetails.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { LinkPo } from "$tests/page-objects/Link.page-object";
+import { ToggleBalancePrivacyOptionPo } from "$tests/page-objects/ToggleBalancePrivacyOption.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -71,5 +72,9 @@ export class AccountMenuPo extends BasePageObject {
       element: this.root,
       testId: "reporting",
     });
+  }
+
+  getToggleBalancePrivacyOptionPo(): ToggleBalancePrivacyOptionPo {
+    return ToggleBalancePrivacyOptionPo.under(this.root);
   }
 }

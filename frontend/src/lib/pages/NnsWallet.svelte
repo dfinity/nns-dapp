@@ -23,7 +23,6 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { nnsAccountsListStore } from "$lib/derived/accounts-list.derived";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { debugSelectedAccountStore } from "$lib/derived/debug.derived";
   import { neuronAccountsStore } from "$lib/derived/neurons.derived";
   import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
   import { createSwapCanisterAccountsStore } from "$lib/derived/sns-swap-canisters-accounts.derived";
@@ -45,7 +44,6 @@
   } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { canistersStore } from "$lib/stores/canisters.store";
-  import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { icpAccountBalancesStore } from "$lib/stores/icp-account-balances.store";
   import {
@@ -256,8 +254,6 @@
     neurons: [],
   });
 
-  debugSelectedAccountStore(selectedAccountStore);
-
   setContext<WalletContext>(WALLET_CONTEXT_KEY, {
     store: selectedAccountStore,
   });
@@ -414,7 +410,7 @@
             <SignInGuard />
           </WalletPageHeading>
 
-          {#if $ENABLE_PERIODIC_FOLLOWING_CONFIRMATION && isHardwareWallet}
+          {#if isHardwareWallet}
             <LedgerNeuronHotkeyWarning />
           {/if}
 
@@ -422,7 +418,7 @@
 
           {#if $selectedAccountStore.account !== undefined}
             <UiTransactionsList
-              on:nnsIntersect={loadNextTransactions}
+              {loadNextTransactions}
               transactions={uiTransactions ?? []}
               loading={loadingTransactions}
               completed={completedTransactions}

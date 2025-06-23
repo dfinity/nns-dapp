@@ -70,7 +70,10 @@ import {
 } from "$lib/utils/neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
 import { AnonymousIdentity, type Identity } from "@dfinity/agent";
-import type { TransactionWithId } from "@dfinity/ledger-icp";
+import type {
+  AccountIdentifierHex,
+  TransactionWithId,
+} from "@dfinity/ledger-icp";
 import {
   NeuronVisibility,
   Topic,
@@ -823,6 +826,37 @@ export const spawnNeuron = async ({
     toastsShow(mapNeuronErrorToToastMessage(err));
 
     return undefined;
+  }
+};
+
+export const disburseMaturity = async ({
+  neuronId,
+  percentageToDisburse,
+  toAccountIdentifier,
+}: {
+  neuronId: NeuronId;
+  percentageToDisburse: number;
+  toAccountIdentifier?: AccountIdentifierHex;
+}): Promise<{ success: boolean }> => {
+  try {
+    const identity: Identity =
+      await getIdentityOfControllerByNeuronId(neuronId);
+
+    await governanceApiService.disburseMaturity({
+      neuronId,
+      percentageToDisburse,
+      identity,
+      toAccountIdentifier,
+    });
+
+    // TODO(disburse-maturity): Consider calling reloadNeuron. The other neurons shouldn't be affected by disbursement.
+    await listNeurons();
+
+    return { success: true };
+  } catch (err) {
+    toastsShow(mapNeuronErrorToToastMessage(err));
+
+    return { success: false };
   }
 };
 

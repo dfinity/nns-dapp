@@ -4,28 +4,27 @@
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { pageStore } from "$lib/derived/page.derived";
+  import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
   import {
     snsOnlyProjectStore,
     snsProjectSelectedStore,
   } from "$lib/derived/sns/sns-selected-project.derived";
-  import { definedSnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
+  import { nonEmptySnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.derived";
   import { loadSnsAccounts } from "$lib/services/sns-accounts.services";
   import { claimNextNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_USD_VALUES_FOR_NEURONS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import type { SnsSummary } from "$lib/types/sns";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { IconNeuronsPage, Spinner } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
   import { nonNullish } from "@dfinity/utils";
-  import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
-  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 
   let loading = true;
 
@@ -58,7 +57,7 @@
         token: summary.token,
         identity: $authStore.identity,
         i18n: $i18n,
-        snsNeurons: $definedSnsNeuronStore,
+        snsNeurons: $nonEmptySnsNeuronStore,
         icpSwapUsdPrices: $icpSwapUsdPricesStore,
         ledgerCanisterId: summary.ledgerCanisterId,
         topicInfos,
@@ -89,14 +88,12 @@
   {#if loading}
     <Spinner />
   {:else if tableNeurons.length > 0}
-    {#if $ENABLE_USD_VALUES_FOR_NEURONS}
-      <UsdValueBanner
-        usdAmount={totalStakeInUsd}
-        hasUnpricedTokens={!isTokenPriceKnown}
-      >
-        <IconNeuronsPage slot="icon" />
-      </UsdValueBanner>
-    {/if}
+    <UsdValueBanner
+      usdAmount={totalStakeInUsd}
+      hasUnpricedTokens={!isTokenPriceKnown}
+    >
+      <IconNeuronsPage slot="icon" />
+    </UsdValueBanner>
     <NeuronsTable neurons={tableNeurons} />
   {:else if nonNullish(summary)}
     <EmptyMessage

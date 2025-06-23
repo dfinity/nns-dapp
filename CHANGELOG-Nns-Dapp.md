@@ -11,6 +11,95 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 136984
+
+### Application
+
+#### Added
+
+* Visual feedback on copy to clipboard actions
+* Disburse maturity for NNS neurons
+
+#### Fixed
+
+* Fix an issue where SNS neurons that had been disbursed but still had active maturity disbursements were not displayed in the dapp.
+* Fix disburse maturity disabled button width.
+* Fix proposal card display issues on mobile devices
+
+### Operations
+
+## Proposal 136785
+
+### Application
+
+#### Added
+
+* Privacy mode controls in the Command Palette
+
+#### Changed
+
+* Styles for the SNS Projects Portfolio Cards
+* Improved voting status display with conditions progress indicators
+
+### Operations
+
+## Proposal 136737
+
+### Application
+
+#### Added
+
+- Privacy mode for balances
+
+#### Fixed
+
+- Infinite scrolling in Voting and Proposals lists
+
+### Operations
+
+## Proposal 136711
+
+### Application
+
+#### Fixed
+
+- Added support for hardware wallet connections through browser permissions
+
+### Operations
+
+## Proposal 136705
+
+### Application
+
+#### Added
+
+* Display neuron ID related errors inline during vote delegation process
+* Display alternative info box for proposal's info
+
+#### Security
+
+* Added Permissions Policy to enhance browser security controls
+
+### Operations
+
+## Proposal 136688
+
+### Application
+
+#### Added
+
+* Swipe gestures for project cards on the portfolio page
+* Display the voting delegation state in the SNS neurons table
+* Display upcoming swaps in the portfolio page
+* Display the voting delegation state in the NNS neurons table
+
+#### Fixed
+
+* Fix tag background styling in the vote delegation modal (dark theme)
+* "Add Followee" button is not fully visible after adding a followee
+
+### Operations
+
 ## Proposal 136473
 
 ### Application

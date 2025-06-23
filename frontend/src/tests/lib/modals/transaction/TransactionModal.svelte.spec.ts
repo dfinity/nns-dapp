@@ -264,7 +264,7 @@ describe("TransactionModal", () => {
               amount: BigInt(DEFAULT_TRANSACTION_FEE_E8S),
               token: ICPToken,
             }).toE8s(),
-            detailed: "height_decimals",
+            detailed: true,
           })
         )
       ).toBeInTheDocument();
@@ -296,7 +296,7 @@ describe("TransactionModal", () => {
               amount: fee.toE8s(),
               token: ICPToken,
             }).toE8s(),
-            detailed: "height_decimals",
+            detailed: true,
           })
         )
       ).toBeInTheDocument();

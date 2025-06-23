@@ -3,7 +3,12 @@
   import SignIn from "$lib/components/common/SignIn.svelte";
   import SummaryUniverse from "$lib/components/summary/SummaryUniverse.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { layoutTitleStore } from "$lib/stores/layout.store";
   import { IconNeuronsPage, PageBanner } from "@dfinity/gix-components";
+
+  layoutTitleStore.set({
+    title: $i18n.neuron_detail.title,
+  });
 </script>
 
 <main>

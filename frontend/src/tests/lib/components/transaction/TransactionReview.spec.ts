@@ -1,6 +1,7 @@
 import TransactionReview from "$lib/components/transaction/TransactionReview.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
+import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -11,16 +12,19 @@ describe("TransactionReview", () => {
   }) as TokenAmount;
 
   const props = {
-    props: {
-      transaction: {
-        sourceAccount: mockMainAccount,
-        destinationAddress: "1234",
-        amount: 1234,
-      },
-      disableSubmit: false,
-      transactionFee: icp1,
-      token: ICPToken,
+    transaction: {
+      sourceAccount: mockMainAccount,
+      destinationAddress: "1234",
+      amount: 1234,
     },
+    disableSubmit: false,
+    transactionFee: icp1,
+    token: ICPToken,
+    additionalInfo: createMockSnippet(),
+    description: createMockSnippet(),
+    destinationInfo: createMockSnippet(),
+    receivedAmount: createMockSnippet(),
+    handleGoBack: () => {},
   };
 
   describe("signed in", () => {

@@ -2,6 +2,8 @@ import {
   formatCurrencyNumber,
   formatNumber,
   formatPercentage,
+  formatUsdValue,
+  renderPrivacyModeBalance,
   shortenWithMiddleEllipsis,
 } from "$lib/utils/format.utils";
 
@@ -116,6 +118,40 @@ describe("format.utils", () => {
       expect(formatCurrencyNumber(1000000000)).toBe("1.00B");
       expect(formatCurrencyNumber(9990000000)).toBe("9.99B");
       expect(formatCurrencyNumber(24800000000)).toBe("24.80B");
+    });
+  });
+
+  describe("renderPrivacyModeBalance", () => {
+    it("returns empty string for 0 count", () => {
+      expect(renderPrivacyModeBalance(0)).toBe("");
+    });
+
+    it("returns the correct number of bullets ", () => {
+      expect(renderPrivacyModeBalance(1)).toBe("•");
+      expect(renderPrivacyModeBalance(3)).toBe("•••");
+      expect(renderPrivacyModeBalance(5)).toBe("•••••");
+    });
+
+    it("returns empty string for negative counts", () => {
+      expect(renderPrivacyModeBalance(-1)).toBe("");
+    });
+  });
+
+  describe("formatUsdValue", () => {
+    it("should format zero value", () => {
+      expect(formatUsdValue(0)).toEqual("$0.00");
+    });
+
+    it("should format almost zero values as < $0.01", () => {
+      expect(formatUsdValue(0.001)).toEqual("< $0.01");
+      expect(formatUsdValue(0.009)).toEqual("< $0.01");
+      expect(formatUsdValue(0.0099)).toEqual("< $0.01");
+    });
+
+    it("should format values >= 0.01 normally", () => {
+      expect(formatUsdValue(0.01)).toEqual("$0.01");
+      expect(formatUsdValue(1.23)).toEqual("$1.23");
+      expect(formatUsdValue(123.45)).toEqual("$123.45");
     });
   });
 });

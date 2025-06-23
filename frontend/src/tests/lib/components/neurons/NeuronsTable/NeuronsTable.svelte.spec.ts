@@ -4,7 +4,6 @@ import {
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import { mockTableNeuron } from "$tests/mocks/neurons.mock";
@@ -95,6 +94,8 @@ describe("NeuronsTable", () => {
       "",
       "Maturity",
       "",
+      "Vote Delegation",
+      "",
       "Dissolve Delay",
       "",
       "State",
@@ -140,6 +141,8 @@ describe("NeuronsTable", () => {
       expect.any(String), // gap
       "desktop-align-right", // Maturity
       expect.any(String), // gap
+      "desktop-align-left", // Vote Delegation
+      expect.any(String), // gap
       "desktop-align-left", // Dissolve Delay
       expect.any(String), // gap
       "desktop-align-left", // State
@@ -160,12 +163,14 @@ describe("NeuronsTable", () => {
         "1fr", // gap
         "max-content", // State
         "1fr", // gap
+        "max-content", // Vote delegation
+        "1fr", // gap
         "max-content", // Dissolve Delay
         "max-content", // Actions
       ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5" "cell-7 cell-7"'
+      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5" "cell-7 cell-7" "cell-9 cell-9"'
     );
   });
 
@@ -219,8 +224,6 @@ describe("NeuronsTable", () => {
   });
 
   it("should render neuron stake in USD", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
     const po = renderComponent({
       neurons: [
         {
@@ -236,8 +239,6 @@ describe("NeuronsTable", () => {
   });
 
   it("should render absent neuron stake in USD", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
     const po = renderComponent({
       neurons: [
         {
@@ -250,22 +251,6 @@ describe("NeuronsTable", () => {
     expect(rowPos).toHaveLength(1);
     expect(await rowPos[0].getStakeInUsd()).toBe("$-/-");
     expect(await rowPos[0].hasStakeInUsd()).toBe(true);
-  });
-
-  it("should not render neuron stake in USD if feature flag is disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-    const po = renderComponent({
-      neurons: [
-        {
-          ...neuron1,
-          stakeInUsd: 1234.56,
-        },
-      ],
-    });
-    const rowPos = await po.getNeuronsTableRowPos();
-    expect(rowPos).toHaveLength(1);
-    expect(await rowPos[0].hasStakeInUsd()).toBe(false);
   });
 
   it("should render neuron maturity", async () => {

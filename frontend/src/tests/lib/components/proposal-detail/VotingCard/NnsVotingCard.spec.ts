@@ -3,6 +3,7 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import NnsVotingCard from "$lib/components/proposal-detail/VotingCard/NnsVotingCard.svelte";
 import { SECONDS_IN_YEAR } from "$lib/constants/constants";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { votingNeuronSelectStore } from "$lib/stores/vote-registration.store";
 import {
@@ -12,6 +13,7 @@ import {
 } from "$lib/types/selected-proposal.context";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { VotingCardPo } from "$tests/page-objects/VotingCard.page-object";
@@ -46,25 +48,25 @@ describe("VotingCard", () => {
     ]),
   }));
 
-  const renderVotingCard = () =>
+  const renderVotingCard = (proposal) =>
     render(ContextWrapperTest, {
       props: {
         props: {
-          proposalInfo,
+          proposalInfo: proposal,
         },
         contextKey: SELECTED_PROPOSAL_CONTEXT_KEY,
         contextValue: {
           store: writable<SelectedProposalStore>({
-            proposalId: proposalInfo.id,
-            proposal: proposalInfo,
+            proposalId: proposal.id,
+            proposal,
           }),
         } as SelectedProposalContext,
         Component: NnsVotingCard,
       },
     });
 
-  const renderComponent = () => {
-    const { container } = renderVotingCard();
+  const renderComponent = (proposal = proposalInfo) => {
+    const { container } = renderVotingCard(proposal);
     return VotingCardPo.under(new JestPageObjectElement(container));
   };
 
@@ -84,6 +86,71 @@ describe("VotingCard", () => {
     neuronsStore.setNeurons({ neurons, certified: true });
     const po = renderComponent();
     expect(await po.hasVotingConfirmationToolbar()).toBe(true);
+  });
+
+  it("should display ineligible neurons", async () => {
+    const neuronId = 123n;
+    const neurons: NeuronInfo[] = [
+      {
+        ...mockNeuron,
+        neuronId,
+        createdTimestampSeconds: BigInt(1_000n),
+      },
+    ];
+    neuronsStore.setNeurons({ neurons, certified: true });
+    networkEconomicsStore.setParameters({
+      parameters: {
+        ...mockNetworkEconomics,
+        votingPowerEconomics: {
+          ...mockNetworkEconomics.votingPowerEconomics,
+          neuronMinimumDissolveDelayToVoteSeconds: BigInt(SECONDS_IN_YEAR),
+        },
+      },
+      certified: true,
+    });
+    const po = renderComponent({
+      ...proposalInfo,
+      // Make all the neurons ineligible by dissolve delay
+      ballots: [],
+    } as ProposalInfo);
+    expect(await po.getIneligibleNeurons().isPresent()).toBe(true);
+    expect(await po.getIneligibleNeuronListPo().isPresent()).toBe(true);
+    expect(await po.getIneligibleNeuronListPo().getNeuronIdTexts()).toEqual([
+      neuronId.toString(),
+    ]);
+    expect(
+      await po.getIneligibleNeuronListPo().getIneligibleReasonTexts()
+    ).toEqual(["dissolve delay < 1 year"]);
+  });
+
+  it("should fallback to default minimum dissolve delay", async () => {
+    const neuronId = 123n;
+    const neurons: NeuronInfo[] = [
+      {
+        ...mockNeuron,
+        neuronId,
+        createdTimestampSeconds: BigInt(1_000n),
+      },
+    ];
+    neuronsStore.setNeurons({ neurons, certified: true });
+    networkEconomicsStore.setParameters({
+      parameters: {
+        ...mockNetworkEconomics,
+        votingPowerEconomics: {
+          ...mockNetworkEconomics.votingPowerEconomics,
+          neuronMinimumDissolveDelayToVoteSeconds: undefined,
+        },
+      },
+      certified: true,
+    });
+    const po = renderComponent({
+      ...proposalInfo,
+      // Make all the neurons ineligible by dissolve delay
+      ballots: [],
+    } as ProposalInfo);
+    expect(
+      await po.getIneligibleNeuronListPo().getIneligibleReasonTexts()
+    ).toEqual(["dissolve delay < 6 months"]);
   });
 
   it("should disable action buttons if no neurons selected", async () => {

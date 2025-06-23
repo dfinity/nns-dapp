@@ -110,6 +110,7 @@ const shouldInvalidateCacheOnFailure = async <P, R>({
   const apiPromise = new Promise<void>((_, reject) => {
     rejectApi = reject;
   });
+
   (apiFunc as Mock).mockReturnValue(apiPromise);
   vi.spyOn(api, "queryNeurons").mockResolvedValue(neurons);
 
@@ -560,6 +561,10 @@ describe("neurons api-service", () => {
       identity: mockIdentity,
     };
 
+    beforeEach(() => {
+      vi.spyOn(api, "claimOrRefreshNeuron").mockReset();
+    });
+
     it("should call claimOrRefreshNeuron api", async () => {
       vi.spyOn(api, "claimOrRefreshNeuron").mockResolvedValueOnce(neuronId);
       expect(await governanceApiService.claimOrRefreshNeuron(params)).toEqual(
@@ -592,6 +597,10 @@ describe("neurons api-service", () => {
       controller: mockPrincipal,
       identity: mockIdentity,
     };
+
+    beforeEach(() => {
+      vi.spyOn(api, "claimOrRefreshNeuronByMemo").mockReset();
+    });
 
     it("should call claimOrRefreshNeuronByMemo api", async () => {
       vi.spyOn(api, "claimOrRefreshNeuronByMemo").mockResolvedValue(neuronId);
@@ -865,6 +874,10 @@ describe("neurons api-service", () => {
       identity: mockIdentity,
     };
 
+    beforeEach(() => {
+      vi.spyOn(api, "spawnNeuron").mockReset();
+    });
+
     it("should call spawnNeuron api", async () => {
       vi.spyOn(api, "spawnNeuron").mockResolvedValueOnce(neuronId);
       expect(await governanceApiService.spawnNeuron(params)).toEqual(neuronId);
@@ -889,12 +902,53 @@ describe("neurons api-service", () => {
     });
   });
 
+  describe("disburseMaturity", () => {
+    const params = {
+      neuronId,
+      percentageToDisburse: 50,
+      identity: mockIdentity,
+    };
+
+    beforeEach(() => {
+      vi.spyOn(api, "disburseMaturity").mockReset();
+    });
+
+    it("should call disburseMaturity api", async () => {
+      vi.spyOn(api, "disburseMaturity").mockResolvedValueOnce(undefined);
+      expect(await governanceApiService.disburseMaturity(params)).toEqual(
+        undefined
+      );
+      expect(api.disburseMaturity).toHaveBeenCalledWith(params);
+      expect(api.disburseMaturity).toHaveBeenCalledTimes(1);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.disburseMaturity,
+        apiServiceFunc: governanceApiService.disburseMaturity,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.disburseMaturity,
+        apiServiceFunc: governanceApiService.disburseMaturity,
+        params,
+      });
+    });
+  });
+
   describe("splitNeuron", () => {
     const params = {
       neuronId,
       identity: mockIdentity,
       amount: 10_000_000n,
     };
+
+    beforeEach(() => {
+      vi.spyOn(api, "splitNeuron").mockReset();
+    });
 
     it("should call splitNeuron api", async () => {
       vi.spyOn(api, "splitNeuron").mockResolvedValueOnce(neuronId);
@@ -959,6 +1013,10 @@ describe("neurons api-service", () => {
       fromSubaccount: new Uint8Array(),
       fee: 10_000n,
     };
+
+    beforeEach(() => {
+      vi.spyOn(api, "stakeNeuron").mockReset();
+    });
 
     it("should call stakeNeuron api", async () => {
       vi.spyOn(api, "stakeNeuron").mockResolvedValueOnce(neuronId);

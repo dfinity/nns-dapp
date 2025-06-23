@@ -48,6 +48,7 @@ import {
 } from "@dfinity/sns";
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { waitFor } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/sns-governance.api");
@@ -126,7 +127,10 @@ describe("SnsProposalDetail", () => {
       expect(await po.isContentLoaded()).toBe(false);
 
       fakeSnsGovernanceApi.resume();
-      await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+      await runResolvedPromises();
+      await tick();
+
+      expect(await po.isContentLoaded()).toBe(true);
       expect(await po.hasSummarySection()).toBe(true);
       expect(await po.hasSystemInfoSection()).toBe(true);
       expect(await po.getSkeletonDetails().isPresent()).toBe(false);
@@ -151,7 +155,6 @@ describe("SnsProposalDetail", () => {
       expect(spyOnSetTitle).toHaveBeenCalledTimes(1);
       expect(spyOnSetTitle).toHaveBeenCalledWith({
         title: `Proposal ${proposalIdText}`,
-        header: `Proposal ${proposalIdText}`,
       });
     });
 
@@ -172,9 +175,10 @@ describe("SnsProposalDetail", () => {
 
       const po = await renderComponent();
 
-      await waitFor(async () =>
-        expect(await po.getSystemInfoSectionTitle()).toBe("Proposal Details")
-      );
+      await runResolvedPromises();
+      await tick();
+
+      expect(await po.getSystemInfoSectionTitle()).toBe("Proposal Details");
     });
 
     it("should render the payload", async () => {
@@ -248,7 +252,10 @@ describe("SnsProposalDetail", () => {
       expect(await po.isContentLoaded()).toBe(false);
 
       fakeSnsGovernanceApi.resume();
-      await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+      await runResolvedPromises();
+      await tick();
+
+      expect(await po.isContentLoaded()).toBe(true);
 
       page.mock({ data: { universe: OWN_CANISTER_ID.toText() } });
       testProps.proposalIdText = proposalId.id.toString();
@@ -294,7 +301,10 @@ describe("SnsProposalDetail", () => {
         new JestPageObjectElement(container)
       );
 
-      await waitFor(async () => expect(await po.isContentLoaded()).toBe(true));
+      await runResolvedPromises();
+      await tick();
+
+      expect(await po.isContentLoaded()).toBe(true);
 
       const navigationPo = po.getProposalNavigationPo();
       expect(await navigationPo.isPresent()).toBe(true);
@@ -697,6 +707,116 @@ describe("SnsProposalDetail", () => {
     });
   });
 
+  describe("With aborted SNS without nervous system parameters", () => {
+    beforeEach(() => {
+      setNoIdentity();
+      page.mock({ data: { universe: rootCanisterId.toText() } });
+      setSnsProjects([
+        {
+          rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+        },
+        // This project is not used, but its presence also shouldn't cause
+        // errors.
+        {
+          nervousSystemParameters: null,
+          lifecycle: SnsSwapLifecycle.Aborted,
+        },
+      ]);
+    });
+
+    it("should render content without errors", async () => {
+      const proposal = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        proposalId: proposalId.id,
+      });
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        ...proposal,
+      });
+
+      expect(get(toastsStore)).toEqual([]);
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+
+      await runResolvedPromises();
+
+      expect(get(toastsStore)).toEqual([]);
+      expect(await po.isContentLoaded()).toBe(true);
+      expect(await po.hasSummarySection()).toBe(true);
+      expect(await po.hasSystemInfoSection()).toBe(true);
+      expect(await po.getSnsProposalVotingSectionPo().isPresent()).toBe(true);
+      expect(
+        await po.getSnsProposalVotingSectionPo().getVotingCardPo().isPresent()
+      ).toBe(true);
+      expect(await po.getSkeletonDetails().isPresent()).toBe(false);
+    });
+  });
+
+  describe("With prod SNSes", () => {
+    let rootCanisterId;
+
+    beforeEach(async () => {
+      setNoIdentity();
+      await setProdSnsProjects();
+
+      expect(get(snsAggregatorStore).data.length).toBeGreaterThan(25);
+      rootCanisterId = Principal.fromText(
+        get(snsAggregatorStore).data[0].canister_ids.root_canister_id
+      );
+
+      page.mock({ data: { universe: rootCanisterId.toText() } });
+    });
+
+    it("should render content without errors", async () => {
+      const proposal = createSnsProposal({
+        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
+        rewardStatus:
+          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
+        proposalId: proposalId.id,
+      });
+      fakeSnsGovernanceApi.addProposalWith({
+        identity: new AnonymousIdentity(),
+        rootCanisterId,
+        ...proposal,
+      });
+
+      expect(get(toastsStore)).toEqual([]);
+
+      const { container } = render(SnsProposalDetail, {
+        props: {
+          proposalIdText: proposalId.id.toString(),
+        },
+      });
+
+      const po = SnsProposalDetailPo.under(
+        new JestPageObjectElement(container)
+      );
+      await runResolvedPromises();
+
+      expect(get(toastsStore)).toEqual([]);
+      expect(await po.isContentLoaded()).toBe(true);
+      expect(await po.hasSummarySection()).toBe(true);
+      expect(await po.hasSystemInfoSection()).toBe(true);
+      expect(await po.getSnsProposalVotingSectionPo().isPresent()).toBe(true);
+      expect(
+        await po.getSnsProposalVotingSectionPo().getVotingCardPo().isPresent()
+      ).toBe(true);
+      expect(await po.getSkeletonDetails().isPresent()).toBe(false);
+    });
+  });
+
   describe('When one voting neuron follows another voting neuron and the second vote returns "Neuron already voted" error', () => {
     beforeEach(() => {
       page.mock({ data: { universe: rootCanisterId.toText() } });
@@ -796,6 +916,9 @@ describe("SnsProposalDetail", () => {
               ballots: ballotsWithVote(Vote.Yes),
             }))
       );
+
+      // TODO: Fix mock
+      // This contaminates the fake and breaks all the following tests dependeing on queryProposals.
       const spyQueryProposalApi = vi
         .spyOn(snsGovernanceApi, "queryProposal")
         .mockImplementation(
@@ -863,115 +986,6 @@ describe("SnsProposalDetail", () => {
       expect(spyRegisterVoteApi).toBeCalledTimes(2);
       // Proposals should be reloaded after voting
       expect(spyQueryProposalApi).toBeCalledTimes(2);
-    });
-  });
-
-  describe("With aborted SNS without nervous system parameters", () => {
-    beforeEach(() => {
-      setNoIdentity();
-      page.mock({ data: { universe: rootCanisterId.toText() } });
-      setSnsProjects([
-        {
-          rootCanisterId,
-          lifecycle: SnsSwapLifecycle.Committed,
-        },
-        // This project is not used, but its presence also shouldn't cause
-        // errors.
-        {
-          nervousSystemParameters: null,
-          lifecycle: SnsSwapLifecycle.Aborted,
-        },
-      ]);
-    });
-
-    it("should render content without errors", async () => {
-      const proposal = createSnsProposal({
-        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        rewardStatus:
-          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-        proposalId: proposalId.id,
-      });
-      fakeSnsGovernanceApi.addProposalWith({
-        identity: new AnonymousIdentity(),
-        rootCanisterId,
-        ...proposal,
-      });
-
-      expect(get(toastsStore)).toEqual([]);
-
-      const { container } = render(SnsProposalDetail, {
-        props: {
-          proposalIdText: proposalId.id.toString(),
-        },
-      });
-
-      const po = SnsProposalDetailPo.under(
-        new JestPageObjectElement(container)
-      );
-      await runResolvedPromises();
-
-      expect(get(toastsStore)).toEqual([]);
-      expect(await po.isContentLoaded()).toBe(true);
-      expect(await po.hasSummarySection()).toBe(true);
-      expect(await po.hasSystemInfoSection()).toBe(true);
-      expect(await po.getSnsProposalVotingSectionPo().isPresent()).toBe(true);
-      expect(
-        await po.getSnsProposalVotingSectionPo().getVotingCardPo().isPresent()
-      ).toBe(true);
-      expect(await po.getSkeletonDetails().isPresent()).toBe(false);
-    });
-  });
-
-  describe("With prod SNSes", () => {
-    let rootCanisterId;
-
-    beforeEach(async () => {
-      setNoIdentity();
-      await setProdSnsProjects();
-
-      expect(get(snsAggregatorStore).data.length).toBeGreaterThan(25);
-      rootCanisterId = Principal.fromText(
-        get(snsAggregatorStore).data[0].canister_ids.root_canister_id
-      );
-
-      page.mock({ data: { universe: rootCanisterId.toText() } });
-    });
-
-    it("should render content without errors", async () => {
-      const proposal = createSnsProposal({
-        status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
-        rewardStatus:
-          SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
-        proposalId: proposalId.id,
-      });
-      fakeSnsGovernanceApi.addProposalWith({
-        identity: new AnonymousIdentity(),
-        rootCanisterId,
-        ...proposal,
-      });
-
-      expect(get(toastsStore)).toEqual([]);
-
-      const { container } = render(SnsProposalDetail, {
-        props: {
-          proposalIdText: proposalId.id.toString(),
-        },
-      });
-
-      const po = SnsProposalDetailPo.under(
-        new JestPageObjectElement(container)
-      );
-      await runResolvedPromises();
-
-      expect(get(toastsStore)).toEqual([]);
-      expect(await po.isContentLoaded()).toBe(true);
-      expect(await po.hasSummarySection()).toBe(true);
-      expect(await po.hasSystemInfoSection()).toBe(true);
-      expect(await po.getSnsProposalVotingSectionPo().isPresent()).toBe(true);
-      expect(
-        await po.getSnsProposalVotingSectionPo().getVotingCardPo().isPresent()
-      ).toBe(true);
-      expect(await po.getSkeletonDetails().isPresent()).toBe(false);
     });
   });
 });

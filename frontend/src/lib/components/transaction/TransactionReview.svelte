@@ -4,34 +4,47 @@
   import TransactionSource from "$lib/components/transaction/TransactionSource.svelte";
   import TransactionSummary from "$lib/components/transaction/TransactionSummary.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { Account } from "$lib/types/account";
   import type {
     NewTransaction,
     TransactionNetwork,
   } from "$lib/types/transaction";
   import { busy } from "@dfinity/gix-components";
   import type { Token, TokenAmount, TokenAmountV2 } from "@dfinity/utils";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, type Snippet } from "svelte";
 
-  export let transaction: NewTransaction;
-  export let disableSubmit: boolean;
-  export let transactionFee: TokenAmountV2 | TokenAmount;
-  export let token: Token;
-  export let selectedNetwork: TransactionNetwork | undefined = undefined;
-  export let showLedgerFee = true;
+  type Props = {
+    additionalInfo: Snippet;
+    description: Snippet;
+    destinationInfo: Snippet;
+    disableSubmit: boolean;
+    handleGoBack: () => void;
+    receivedAmount: Snippet;
+    selectedNetwork?: TransactionNetwork;
+    showLedgerFee?: boolean;
+    token: Token;
+    transaction: NewTransaction;
+    transactionFee: TokenAmountV2 | TokenAmount;
+  };
 
-  let sourceAccount: Account;
-  let amount: number;
-  let destinationAddress: string;
-  $: ({ sourceAccount, amount, destinationAddress } = transaction);
+  const {
+    additionalInfo,
+    description,
+    destinationInfo,
+    disableSubmit,
+    handleGoBack,
+    receivedAmount,
+    selectedNetwork = undefined,
+    showLedgerFee = true,
+    token,
+    transaction,
+    transactionFee,
+  }: Props = $props();
+
+  const { sourceAccount, amount, destinationAddress } = $derived(transaction);
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
     dispatcher("nnsSubmit", transaction);
-  };
-
-  const back = () => {
-    dispatcher("nnsBack");
   };
 </script>
 
@@ -39,28 +52,36 @@
   <div class="info">
     <TransactionSource account={sourceAccount} {token} />
 
-    <TransactionSummary {amount} {token} {transactionFee} {showLedgerFee}>
-      <slot name="received-amount" slot="received-amount" />
-    </TransactionSummary>
+    <TransactionSummary
+      {amount}
+      {token}
+      {transactionFee}
+      {showLedgerFee}
+      {receivedAmount}
+    />
 
-    <TransactionDescription {selectedNetwork} {destinationAddress}>
-      <slot name="description" slot="description" />
-      <slot name="destination-info" slot="destination-info" />
-    </TransactionDescription>
+    <TransactionDescription
+      {selectedNetwork}
+      {destinationAddress}
+      {description}
+      {destinationInfo}
+    />
 
-    <slot name="additional-info" />
+    {@render additionalInfo()}
   </div>
 
   <div class="toolbar">
-    <button class="secondary" data-tid="transaction-button-back" on:click={back}
-      >{$i18n.accounts.edit_transaction}</button
+    <button
+      class="secondary"
+      data-tid="transaction-button-back"
+      onclick={handleGoBack}>{$i18n.accounts.edit_transaction}</button
     >
     <SignInGuard>
       <button
         class="primary"
         data-tid="transaction-button-execute"
         disabled={$busy || disableSubmit}
-        on:click={submit}>{$i18n.accounts.send_now}</button
+        onclick={submit}>{$i18n.accounts.send_now}</button
       >
     </SignInGuard>
   </div>

@@ -5,7 +5,6 @@ import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { SECONDS_IN_DAY, SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import NnsNeuronDetail from "$lib/pages/NnsNeuronDetail.svelte";
 import * as knownNeuronsServices from "$lib/services/known-neurons.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -123,28 +122,7 @@ describe("NeuronDetail", () => {
       });
     });
 
-    it("should not display confirm banner w/o feature flag", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        false
-      );
-      fakeGovernanceApi.addNeuronWith({
-        neuronId,
-        votingPowerRefreshedTimestampSeconds:
-          nowInSeconds() - SECONDS_IN_HALF_YEAR + SECONDS_IN_DAY,
-        dissolveDelaySeconds,
-      });
-
-      const po = await renderComponent(`${neuronId}`);
-
-      expect(await po.getConfirmFollowingBannerPo().isPresent()).toBe(false);
-    });
-
     it("should not display confirm banner w/o enough dissolve delay", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       fakeGovernanceApi.addNeuronWith({
         neuronId,
         votingPowerRefreshedTimestampSeconds:
@@ -158,10 +136,6 @@ describe("NeuronDetail", () => {
     });
 
     it("should display confirm banner for missing rewards soon neuron", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       fakeGovernanceApi.addNeuronWith({
         neuronId,
         votingPowerRefreshedTimestampSeconds:
@@ -175,10 +149,6 @@ describe("NeuronDetail", () => {
     });
 
     it("should not display confirm banner w/o voting power economics", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       networkEconomicsStore.reset();
       fakeGovernanceApi.addNeuronWith({
         neuronId,
@@ -193,10 +163,6 @@ describe("NeuronDetail", () => {
     });
 
     it("should display confirm banner for missing rewards neuron", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       fakeGovernanceApi.addNeuronWith({
         neuronId,
         votingPowerRefreshedTimestampSeconds:
@@ -210,10 +176,6 @@ describe("NeuronDetail", () => {
     });
 
     it("should not display confirm banner for not missing rewards neuron", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       fakeGovernanceApi.addNeuronWith({
         neuronId,
         stake: neuronStake,
@@ -227,10 +189,6 @@ describe("NeuronDetail", () => {
     });
 
     it("should call refreshVotingPower", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       const testNeuron = fakeGovernanceApi.addNeuronWith({
         neuronId,
         dissolveDelaySeconds: BigInt(SECONDS_IN_HALF_YEAR),
@@ -239,11 +197,9 @@ describe("NeuronDetail", () => {
         controller: mockIdentity.getPrincipal().toText(),
       });
 
-      vi.spyOn(governanceApi, "queryNeurons").mockResolvedValue([testNeuron]);
       const spyRefreshVotingPower = vi
         .spyOn(governanceApi, "refreshVotingPower")
         .mockResolvedValue();
-      vi.spyOn(governanceApi, "queryKnownNeurons").mockResolvedValue([]);
 
       const po = await renderComponent(`${neuronId}`);
 

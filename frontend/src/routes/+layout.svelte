@@ -9,7 +9,7 @@
     type AuthWorker,
   } from "$lib/services/worker-auth.services";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
-  import { ENABLE_SNS_TOPICS } from "$lib/stores/feature-flags.store";
+  import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsClean } from "$lib/stores/toasts.store";
   import { onMount } from "svelte";
@@ -54,13 +54,13 @@
 
 <Alfred />
 
-{#if $ENABLE_SNS_TOPICS && $authSignedInStore}
+{#if $ENABLE_DISBURSE_MATURITY && $authSignedInStore}
   <Highlight
     level="info"
-    title={$i18n.highlight.topics_feature_title}
-    description={$i18n.highlight.topics_feature_description}
-    link="https://internetcomputer.org/docs/building-apps/governing-apps/nns/using-the-nns-dapp/nns-dapp-sns-topic-following"
-    id="topics-feature"
+    title={$i18n.highlight.disburse_maturity_title}
+    description={$i18n.highlight.disburse_maturity_description}
+    link="https://internetcomputer.org/docs/building-apps/governing-apps/nns/using-the-nns-dapp/nns-dapp-advanced-neuron-operations#maturity-disbursements"
+    id="disburse-maturity-feature"
   />
 {/if}
 

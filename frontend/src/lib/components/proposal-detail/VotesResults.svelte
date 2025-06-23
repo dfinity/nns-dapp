@@ -1,13 +1,13 @@
 <script lang="ts">
   import ProposalContentCell from "$lib/components/proposal-detail/ProposalContentCell.svelte";
-  import VotesResultsMajorityDescription from "$lib/components/proposal-detail/VotesResultsMajorityDescription.svelte";
+  import VotesResultsConditionStatus from "$lib/components/proposal-detail/VotesResultsConditionStatus.svelte";
   import Countdown from "$lib/components/proposals/Countdown.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { nowInSeconds } from "$lib/utils/date.utils";
   import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
-  import { Html } from "@dfinity/gix-components";
+  import { Html, IconExpandMore } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   const formatVotingPower = (value: number) =>
@@ -20,6 +20,7 @@
       minFraction: 0,
       maxFraction: 2,
     })}`;
+
   const immediateMajorityIcon = `<span class="inline-maturity-icon immediate-majority"></span>`;
   const standardMajorityIcon = `<span class="inline-maturity-icon standard-majority"></span>`;
   const iconifyDescription = (description: string) =>
@@ -27,65 +28,103 @@
       .replace(/\$icon_immediate_majority/g, immediateMajorityIcon)
       .replace(/\$icon_standard_majority/g, standardMajorityIcon);
 
-  export let yes: number;
-  export let no: number;
-  export let total: number;
-  export let deadlineTimestampSeconds: bigint | undefined = undefined;
-  export let immediateMajorityPercent: number;
-  export let standardMajorityPercent: number;
+  // https://github.com/dfinity/ic/blob/d91cbbb662d03aee629902c7e4fd7ee5abdd6ba5/rs/nns/governance/src/governance.rs#L1035
+  const getParticipationStatus = () => {
+    const standardMajority = standardMajorityPercent / 100;
 
-  let yesProportion: number;
-  $: yesProportion = total ? yes / total : 0;
+    if (yesProportion >= standardMajority) return "success";
+    return canStillVote ? "default" : "failed";
+  };
 
-  let noProportion: number;
-  $: noProportion = total ? no / total : 0;
+  // Critical proposals require that the number of "yes" votes is more than twice the number of "no" votes, while normal proposals only need "yes" votes to exceed "no" votes.
+  // https://github.com/dfinity/ic/blob/d91cbbb662d03aee629902c7e4fd7ee5abdd6ba5/rs/nns/governance/src/governance.rs#L1036
+  const getMajorityStatus = () => {
+    const immediateYesMajority = yesProportion > immediateMajorityPercent / 100;
+    const immediateNoMajority = noProportion > immediateMajorityPercent / 100;
 
-  let yesNoSum: number;
-  $: yesNoSum = yes + no;
-  let castVotesYes: number;
-  $: castVotesYes = yesNoSum > 0 ? (yes / yesNoSum) * 100 : 0;
-  let castVotesNo: number;
-  $: castVotesNo = yesNoSum > 0 ? (no / yesNoSum) * 100 : 0;
+    if (immediateYesMajority) return "success";
+    if (immediateNoMajority) return "failed";
+    if (canStillVote) return "default";
 
-  let showExpirationDate: boolean = true;
-  $: showExpirationDate =
+    const majority = isCriticalProposalMode ? yes > 2 * no : yes > no;
+    return majority ? "success" : "failed";
+  };
+
+  type Props = {
+    yes: number;
+    no: number;
+    total: number;
+    deadlineTimestampSeconds?: bigint;
+    immediateMajorityPercent: number;
+    standardMajorityPercent: number;
+  };
+  const {
+    yes,
+    no,
+    total,
+    deadlineTimestampSeconds,
+    immediateMajorityPercent,
+    standardMajorityPercent,
+  }: Props = $props();
+
+  const yesProportion = $derived(total ? yes / total : 0);
+  const noProportion = $derived(total ? no / total : 0);
+  const yesNoSum = $derived(yes + no);
+  const castVotesYes = $derived(yesNoSum > 0 ? (yes / yesNoSum) * 100 : 0);
+  const castVotesNo = $derived(yesNoSum > 0 ? (no / yesNoSum) * 100 : 0);
+  const canStillVote = $derived(
     nonNullish(deadlineTimestampSeconds) &&
-    deadlineTimestampSeconds > BigInt(nowInSeconds());
-
-  let isCriticalProposalMode: boolean;
-  $: isCriticalProposalMode = isCriticalProposal(immediateMajorityPercent);
-
-  let immediateMajorityTitle: string;
-  $: immediateMajorityTitle = isCriticalProposalMode
-    ? $i18n.proposal_detail__vote.immediate_super_majority
-    : $i18n.proposal_detail__vote.immediate_majority;
-
-  let immediateMajorityDescription: string;
-  $: immediateMajorityDescription = isCriticalProposalMode
-    ? replacePlaceholders(
-        $i18n.proposal_detail__vote.immediate_super_majority_description,
-        {
-          $immediate_majority: formatPercent(immediateMajorityPercent),
-          $no_immediate_majority: formatPercent(100 - immediateMajorityPercent),
-        }
-      )
-    : $i18n.proposal_detail__vote.immediate_majority_description;
-
-  let standardMajorityTitle: string;
-  $: standardMajorityTitle = isCriticalProposalMode
-    ? $i18n.proposal_detail__vote.standard_super_majority
-    : $i18n.proposal_detail__vote.standard_majority;
-
-  let standardMajorityDescription: string;
-  $: standardMajorityDescription = replacePlaceholders(
-    isCriticalProposalMode
-      ? $i18n.proposal_detail__vote.standard_super_majority_description
-      : $i18n.proposal_detail__vote.standard_majority_description,
-    {
-      $immediate_majority: formatPercent(immediateMajorityPercent),
-      $standard_majority: formatPercent(standardMajorityPercent),
-    }
+      deadlineTimestampSeconds > BigInt(nowInSeconds())
   );
+
+  const isCriticalProposalMode = $derived(
+    isCriticalProposal(immediateMajorityPercent)
+  );
+
+  const immediateMajorityTitle = $derived(
+    isCriticalProposalMode
+      ? $i18n.proposal_detail__vote.immediate_super_majority
+      : $i18n.proposal_detail__vote.immediate_majority
+  );
+  const immediateMajorityDescription = $derived(
+    isCriticalProposalMode
+      ? replacePlaceholders(
+          $i18n.proposal_detail__vote.immediate_super_majority_description,
+          {
+            $immediate_majority: formatPercent(immediateMajorityPercent),
+            $no_immediate_majority: formatPercent(
+              100 - immediateMajorityPercent
+            ),
+          }
+        )
+      : $i18n.proposal_detail__vote.immediate_majority_description
+  );
+
+  const standardMajorityTitle = $derived(
+    isCriticalProposalMode
+      ? $i18n.proposal_detail__vote.standard_super_majority
+      : $i18n.proposal_detail__vote.standard_majority
+  );
+  const standardMajorityDescription = $derived(
+    replacePlaceholders(
+      isCriticalProposalMode
+        ? $i18n.proposal_detail__vote.standard_super_majority_description
+        : $i18n.proposal_detail__vote.standard_majority_description,
+      {
+        $immediate_majority: formatPercent(immediateMajorityPercent),
+        $standard_majority: formatPercent(standardMajorityPercent),
+      }
+    )
+  );
+
+  let expanded = $state(false);
+  let toggleParticipationContent = $state(() => {});
+  let toggleMajorityContent = $state(() => {});
+  let toggleAllContent = $derived(() => {
+    expanded = !expanded;
+    toggleParticipationContent();
+    toggleMajorityContent();
+  });
 </script>
 
 <ProposalContentCell testId="votes-results-component">
@@ -179,7 +218,7 @@
       </span>
     </span>
     <div class="remain" data-tid="remain">
-      {#if showExpirationDate}
+      {#if canStillVote}
         <span class="caption description">
           {$i18n.proposal_detail__vote.expiration}
         </span>
@@ -191,39 +230,54 @@
   </div>
 
   <div class="votes-results-legends">
-    <h3 class="description">
-      {isCriticalProposalMode
-        ? $i18n.proposal_detail__vote.super_majority_decision_intro
-        : $i18n.proposal_detail__vote.decision_intro}
-    </h3>
+    <button
+      class="votes-results-legends-expand-button"
+      onclick={toggleAllContent}
+      data-tid="toggle-content-button"
+    >
+      <h3 class="description">
+        {isCriticalProposalMode
+          ? $i18n.proposal_detail__vote.super_majority_decision_intro
+          : $i18n.proposal_detail__vote.decision_intro}
+      </h3>
+      <span class="icon" aria-hidden="true" class:expanded>
+        <IconExpandMore />
+      </span>
+    </button>
     <ol>
       <li>
-        <VotesResultsMajorityDescription testId="immediate-majority-toggle">
-          <h4
-            data-tid="immediate-majority-title"
-            slot="title"
-            class="description"
-          >
-            {immediateMajorityTitle}
-          </h4>
-          <p data-tid="immediate-majority-description" class="description">
-            <Html text={iconifyDescription(immediateMajorityDescription)} />
-          </p>
-        </VotesResultsMajorityDescription>
-      </li>
-      <li>
-        <VotesResultsMajorityDescription testId="standard-majority-toggle">
-          <h4
-            data-tid="standard-majority-title"
-            slot="title"
-            class="description"
-          >
-            {standardMajorityTitle}
-          </h4>
+        <VotesResultsConditionStatus
+          testId="standard-majority-collapsible"
+          bind:toggleContent={toggleParticipationContent}
+          status={getParticipationStatus()}
+        >
+          {#snippet title()}
+            <h4 data-tid="standard-majority-title" class="description">
+              {standardMajorityTitle}
+            </h4>
+          {/snippet}
+
           <p data-tid="standard-majority-description" class="description">
             <Html text={iconifyDescription(standardMajorityDescription)} />
           </p>
-        </VotesResultsMajorityDescription>
+        </VotesResultsConditionStatus>
+      </li>
+      <li>
+        <VotesResultsConditionStatus
+          testId="immediate-majority-collapsible"
+          bind:toggleContent={toggleMajorityContent}
+          status={getMajorityStatus()}
+        >
+          {#snippet title()}
+            <h4 data-tid="immediate-majority-title" class="description">
+              {immediateMajorityTitle}
+            </h4>
+          {/snippet}
+
+          <p data-tid="immediate-majority-description" class="description">
+            <Html text={iconifyDescription(immediateMajorityDescription)} />
+          </p>
+        </VotesResultsConditionStatus>
       </li>
     </ol>
   </div>
@@ -385,6 +439,27 @@
     display: flex;
     flex-direction: column;
     row-gap: var(--padding-0_5x);
+
+    .votes-results-legends-expand-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0;
+
+      h3 {
+        color: var(--content-color);
+      }
+
+      transition: transform ease-out var(--animation-time-normal);
+      .icon {
+        padding: 0;
+        color: var(--primary);
+
+        &.expanded {
+          transform: rotate(-180deg);
+        }
+      }
+    }
 
     ol {
       margin: 0;

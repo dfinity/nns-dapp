@@ -3,7 +3,9 @@ import SnsDisburseMaturityModal from "$lib/modals/sns/neurons/SnsDisburseMaturit
 import { authStore } from "$lib/stores/auth.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import { tokensStore } from "$lib/stores/tokens.store";
+import { page } from "$mocks/$app/stores";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
+import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import {
@@ -11,9 +13,11 @@ import {
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
+import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { extractHrefFromText } from "$tests/utils/utils.test-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { SnsNeuron } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
@@ -68,6 +72,18 @@ describe("SnsDisburseMaturityModal", () => {
     const po = await renderSnsDisburseMaturityModal();
     await po.setPercentage(0);
     expect(await po.isNextButtonDisabled()).toBe(true);
+  });
+
+  it("should display Sns description", async () => {
+    page.mock({ data: { universe: mockSnsCanisterIdText } });
+
+    const po = await renderSnsDisburseMaturityModal();
+    const href = extractHrefFromText(await po.getDescriptionHtml());
+
+    expect(href).toBeDefined();
+    expect(href).toEqual(
+      extractHrefFromText(en.neuron_detail.disburse_maturity_description_2_sns)
+    );
   });
 
   it("should disable next button when destination address is not selected", async () => {
@@ -163,13 +179,10 @@ describe("SnsDisburseMaturityModal", () => {
     await po.setPercentage(100);
     await po.clickNextButton();
 
-    // NodeJS supports roundingMode since v19
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#browser_compatibility
     // with 123123213n maturity
     // -5% is 1,169670524, which should show as 1.16 with the rounding mode "floor"
     // +5% is 1,292793737, which should show as 1.30 with the rounding mode "ceil"
-    // expect(await po.getConfirmTokens()).toBe("1.16-1.30 TST");
-    expect(await po.getConfirmTokens()).toBe("1.17-1.29 TST");
+    expect(await po.getConfirmTokens()).toBe("1.16-1.30 TST");
   });
 
   const disburse = async (neuron: SnsNeuron, accountAddress?: string) => {

@@ -8,7 +8,6 @@ import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Staking from "$lib/routes/Staking.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -41,12 +40,17 @@ import { get } from "svelte/store";
 describe("Staking", () => {
   const snsTitle = "SNS-1";
   const snsCanisterId = principal(1112);
+  const snsLedgerId = principal(54651);
 
   beforeEach(() => {
     resetIdentity();
 
     page.mock({
       routeId: AppPath.Staking,
+    });
+
+    setIcpSwapUsdPrices({
+      [snsLedgerId.toText()]: 10,
     });
   });
 
@@ -261,7 +265,6 @@ describe("Staking", () => {
   describe("Stake SNS token button", () => {
     const snsGovernanceIdText = "73vho-mf5gq-aq";
     const snsGovernanceId = Principal.fromText(snsGovernanceIdText);
-    const snsLedgerId = principal(54651);
     const snsTokenSymbol = "KLM";
     const snsTransactionFee = 123_000n;
     const snsAccountBalance = 200_000_000n;
@@ -463,10 +466,6 @@ describe("Staking", () => {
     });
 
     it("should display the amount in fiat value", async () => {
-      setIcpSwapUsdPrices({
-        [snsLedgerId.toText()]: 10,
-      });
-
       const po = renderComponent();
       const rows = await po.getProjectsTablePo().getProjectsTableRowPos();
       await rows[1].getStakeButtonPo().click();
@@ -511,17 +510,7 @@ describe("Staking", () => {
       });
     });
 
-    it("should not display LosingRewardsBanner by default", async () => {
-      const po = await renderComponent();
-      // It should be behind the feature flag
-      expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(false);
-    });
-
     it("should display LosingRewardsBanner", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       const po = await renderComponent();
 
       expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);
@@ -533,10 +522,7 @@ describe("Staking", () => {
         parameters: undefined,
         certified: undefined,
       });
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
+
       const po = await renderComponent();
 
       expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);

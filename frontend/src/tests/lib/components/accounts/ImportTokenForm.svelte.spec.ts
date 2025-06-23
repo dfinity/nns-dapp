@@ -1,5 +1,4 @@
 import ImportTokenForm from "$lib/components/accounts/ImportTokenForm.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenFormPo } from "$tests/page-objects/ImportTokenForm.page-object";
@@ -40,7 +39,6 @@ describe("ImportTokenForm", () => {
 
   beforeEach(() => {
     resetIdentity();
-    overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
   });
 
   it("should render ledger canister id", async () => {

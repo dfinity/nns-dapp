@@ -26,7 +26,7 @@ export class NnsNeuronPageHeadingPo extends BasePageObject {
   }
 
   getVotingPower(): Promise<string> {
-    return this.getText("voting-power");
+    return this.getHeadingSubtitleWithUsdValuePo().getSlotText();
   }
 
   async getNeuronTags(): Promise<string[]> {

@@ -69,9 +69,9 @@
 <TestIdWrapper testId="canisters-component">
   <main>
     <div class="summary" data-tid="projects-summary">
-      <h1 class="summary-title">
+      <h2 class="summary-title">
         <UniverseSummary universe={$nnsUniverseStore} />
-      </h1>
+      </h2>
       <div class="summary-details">
         <PrincipalText inline />
       </div>
@@ -124,6 +124,9 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
+  h2 {
+    @include fonts.h1;
+  }
   main {
     padding-bottom: var(--footer-height);
   }

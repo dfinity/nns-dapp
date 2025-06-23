@@ -1,14 +1,16 @@
 <script lang="ts">
   import JsonPreview from "$lib/components/common/JsonPreview.svelte";
   import TreeRawToggle from "$lib/components/proposal-detail/JsonRepresentationModeToggle.svelte";
+  import Copy from "$lib/components/ui/Copy.svelte";
   import { stringifyJson } from "$lib/utils/utils";
-  import { Copy } from "@dfinity/gix-components";
 
-  export let actionKey: string | undefined;
-  export let actionData: unknown | undefined;
+  type Props = {
+    actionKey?: string;
+    actionData?: unknown;
+  };
+  const { actionKey, actionData }: Props = $props();
 
-  let copyContent = "";
-  $: copyContent = stringifyJson(actionData, { indentation: 2 }) ?? "";
+  const copyContent = $derived(stringifyJson(actionData, { indentation: 2 }));
 </script>
 
 <div

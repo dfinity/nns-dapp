@@ -6,12 +6,21 @@ import { referrerPathStore } from "$lib/stores/routes.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import AccountsLayout from "$routes/(app)/(u)/(list)/accounts/+layout.svelte";
+import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
 describe("Accounts layout", () => {
+  const renderComponent = () => {
+    return render(AccountsLayout, {
+      props: {
+        children: createMockSnippet(),
+      },
+    });
+  };
+
   beforeEach(() => {
     layoutTitleStore.set({ title: "" });
     page.mock({
@@ -23,11 +32,10 @@ describe("Accounts layout", () => {
   });
 
   it("should set title and header layout to 'My ICP Tokens' when NNS Universe", () => {
-    render(AccountsLayout);
+    renderComponent();
 
     expect(get(layoutTitleStore)).toEqual({
-      title: "ICP Tokens",
-      header: "ICP Tokens",
+      title: "Account",
     });
   });
 
@@ -44,22 +52,21 @@ describe("Accounts layout", () => {
       },
     });
 
-    render(AccountsLayout);
+    renderComponent();
 
     expect(get(layoutTitleStore)).toEqual({
-      title: "TTRS Tokens",
-      header: "TTRS Tokens",
+      title: "Account",
     });
   });
 
   it("should not show the split content navigation", () => {
-    const { queryByTestId } = render(AccountsLayout);
+    const { queryByTestId } = renderComponent();
 
     expect(queryByTestId("select-universe-nav-title")).not.toBeInTheDocument();
   });
 
   it("should render back button", () => {
-    const { queryByTestId } = render(AccountsLayout);
+    const { queryByTestId } = renderComponent();
 
     expect(queryByTestId("back")).toBeInTheDocument();
   });
@@ -68,7 +75,7 @@ describe("Accounts layout", () => {
     page.mock({
       routeId: AppPath.Accounts,
     });
-    const { queryByTestId } = render(AccountsLayout);
+    const { queryByTestId } = renderComponent();
 
     expect(get(pageStore).path).toEqual(AppPath.Accounts);
     await fireEvent.click(queryByTestId("back"));
@@ -81,7 +88,7 @@ describe("Accounts layout", () => {
     page.mock({
       routeId: AppPath.Accounts,
     });
-    const { queryByTestId } = render(AccountsLayout);
+    const { queryByTestId } = renderComponent();
 
     expect(get(pageStore).path).toEqual(AppPath.Accounts);
     await fireEvent.click(queryByTestId("back"));

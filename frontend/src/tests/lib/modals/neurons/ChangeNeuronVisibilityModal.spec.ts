@@ -204,6 +204,7 @@ describe("ChangeNeuronVisibilityModal", () => {
   });
 
   it("should handle error when changing neuron visibility", async () => {
+    queryNeuronSpy.mockRejectedValue(new Error("Test error"));
     spyConsoleError.mockReturnValue();
 
     const { po } = await renderComponent();

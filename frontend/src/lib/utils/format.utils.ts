@@ -83,3 +83,9 @@ export const shortenWithMiddleEllipsis = (
     ? `${text.slice(0, splitLength)}...${text.slice(-1 * splitLength)}`
     : text;
 };
+
+export const renderPrivacyModeBalance = (count: number) =>
+  "•".repeat(Math.max(0, count));
+
+export const formatUsdValue = (usdValue: number): string =>
+  usdValue > 0 && usdValue < 0.01 ? "< $0.01" : `$${formatNumber(usdValue)}`;

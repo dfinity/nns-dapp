@@ -1,6 +1,7 @@
 <script lang="ts">
   import BITCOIN_LOGO from "$lib/assets/bitcoin.svg";
   import CkBTCUpdateBalanceButton from "$lib/components/accounts/CkBTCUpdateBalanceButton.svelte";
+  import Copy from "$lib/components/ui/Copy.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import {
     BITCOIN_BLOCK_EXPLORER_MAINNET_URL,
@@ -11,14 +12,11 @@
   import { ckBTCInfoStore } from "$lib/stores/ckbtc-info.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
-  import type { BtcAddressText } from "$lib/types/bitcoin";
   import type { CanisterId } from "$lib/types/canister";
-  import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
   import type { UniverseCanisterId } from "$lib/types/universe";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
   import {
-    Copy,
     Html,
     IconQRCode,
     QRCode,
@@ -27,37 +25,39 @@
   } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
-  export let account: Account | undefined;
-  export let minterCanisterId: CanisterId;
-  export let universeId: UniverseCanisterId;
-  export let reload: () => Promise<void>;
+  type Props = {
+    account?: Account;
+    minterCanisterId: CanisterId;
+    universeId: UniverseCanisterId;
+    reload: () => Promise<void>;
+  };
+  const { account, minterCanisterId, universeId, reload }: Props = $props();
 
-  let identifier: IcrcAccountIdentifierText | undefined;
-  $: identifier = account?.identifier;
-
-  let btcAddress: undefined | BtcAddressText;
-  $: btcAddress = identifier && $bitcoinAddressStore[identifier];
+  const identifier = $derived(account?.identifier);
+  const btcAddress = $derived(identifier && $bitcoinAddressStore[identifier]);
 
   // We load the BTC address once per session
-  let btcAddressLoaded = false;
-  $: btcAddressLoaded = nonNullish(btcAddress);
+  const btcAddressLoaded = $derived(nonNullish(btcAddress));
 
-  let blockExplorerUrl: string;
-  $: blockExplorerUrl = `${
-    isUniverseCkTESTBTC(universeId)
-      ? BITCOIN_BLOCK_EXPLORER_TESTNET_URL
-      : BITCOIN_BLOCK_EXPLORER_MAINNET_URL
-  }/${btcAddress ?? ""}`;
+  const blockExplorerUrl = $derived(
+    `${
+      isUniverseCkTESTBTC(universeId)
+        ? BITCOIN_BLOCK_EXPLORER_TESTNET_URL
+        : BITCOIN_BLOCK_EXPLORER_MAINNET_URL
+    }/${btcAddress ?? ""}`
+  );
 
-  $: identifier &&
-    loadBtcAddress({
-      minterCanisterId,
-      identifier,
-    });
+  const minConfirmations = $derived(
+    $ckBTCInfoStore[universeId.toText()]?.info.min_confirmations
+  );
 
-  let minConfirmations: number | undefined;
-  $: minConfirmations =
-    $ckBTCInfoStore[universeId.toText()]?.info.min_confirmations;
+  $effect(() => {
+    if (nonNullish(identifier))
+      loadBtcAddress({
+        minterCanisterId,
+        identifier,
+      });
+  });
 </script>
 
 <div class="grid" data-tid="bitcoin-address-component">

@@ -1,14 +1,15 @@
 <script lang="ts">
   import type { CanisterDetails } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import Copy from "$lib/components/ui/Copy.svelte";
   import { mapCanisterDetails } from "$lib/utils/canisters.utils";
-  import { Copy } from "@dfinity/gix-components";
 
-  export let canister: CanisterDetails;
-  export let titleTag: "h1" | "h4" = "h4";
+  type Props = {
+    canister: CanisterDetails;
+    titleTag?: "h1" | "h4";
+  };
 
-  let canisterId: string;
-  let validName: boolean;
-  $: ({ canisterId, validName } = mapCanisterDetails(canister));
+  const { canister, titleTag = "h4" }: Props = $props();
+  const { canisterId, validName } = $derived(mapCanisterDetails(canister));
 </script>
 
 <div class={`title-block ${titleTag}`} data-tid="canister-card-title-component">

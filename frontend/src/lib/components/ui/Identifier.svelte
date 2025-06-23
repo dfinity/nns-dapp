@@ -1,13 +1,21 @@
 <script lang="ts">
-  import { Copy, Value } from "@dfinity/gix-components";
+  import Copy from "$lib/components/ui/Copy.svelte";
+  import { Value } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
-  export let identifier: string;
-  export let label: string | undefined = undefined;
-  export let showCopy = false;
-  export let size: "small" | "medium" = "small";
-
-  let labelText: string;
-  $: labelText = label === undefined ? "" : `${label} `;
+  type Props = {
+    identifier: string;
+    label?: string;
+    showCopy?: boolean;
+    size?: "small" | "medium";
+  };
+  const {
+    identifier,
+    label,
+    showCopy = false,
+    size = "small",
+  }: Props = $props();
+  const labelText = $derived(nonNullish(label) ? `${label} ` : "");
 </script>
 
 <p>

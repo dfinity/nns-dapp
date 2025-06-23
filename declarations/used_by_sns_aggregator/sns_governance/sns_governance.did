@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-08_03-21-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-05_03-24-base/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -247,6 +247,24 @@ type GetMetadataResponse = record {
   logo : opt text;
   name : opt text;
   description : opt text;
+};
+
+type GetMetricsRequest = record {
+  time_window_seconds : opt nat64;
+};
+
+type Metrics = record {
+  num_recently_submitted_proposals : opt nat64;
+  last_ledger_block_timestamp : opt nat64;
+};
+
+type GetMetricsResult = variant {
+  Ok : Metrics;
+  Err : GovernanceError;
+};
+
+type GetMetricsResponse = record {
+  get_metrics_result : opt GetMetricsResult;
 };
 
 type GetModeResponse = record {
@@ -895,6 +913,7 @@ service : (Governance) -> {
   get_latest_reward_event : () -> (RewardEvent) query;
   get_maturity_modulation : (record {}) -> (GetMaturityModulationResponse);
   get_metadata : (record {}) -> (GetMetadataResponse) query;
+  get_metrics : (GetMetricsRequest) -> (GetMetricsResponse) composite_query;
   get_mode : (record {}) -> (GetModeResponse) query;
   get_nervous_system_parameters : (null) -> (NervousSystemParameters) query;
   get_neuron : (GetNeuron) -> (GetNeuronResponse) query;

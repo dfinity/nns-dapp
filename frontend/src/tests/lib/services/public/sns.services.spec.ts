@@ -33,7 +33,6 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { AnonymousIdentity, type HttpAgent } from "@dfinity/agent";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -65,15 +64,7 @@ vi.mock("$lib/proxy/api.import.proxy", () => {
   };
 });
 
-const blockedPaths = [
-  "$lib/api/sns-aggregator.api",
-  "$lib/api/sns-governance.api",
-  "$lib/api/sns.api",
-];
-
 describe("SNS public services", () => {
-  blockAllCallsTo(blockedPaths);
-
   beforeEach(() => {
     clearSnsAggregatorCache();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());

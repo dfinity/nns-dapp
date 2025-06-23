@@ -9,7 +9,6 @@ import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.cons
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import { page } from "$mocks/$app/stores";
@@ -21,6 +20,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 
@@ -265,6 +265,7 @@ describe("ImportTokenModal", () => {
     // Wait for toast error to be called.
     resolveQueryIcrcToken();
     await runResolvedPromises();
+    await tick();
 
     expect(get(busyStore)).toEqual([]);
     expect(await formPo.isPresent()).toEqual(false);
@@ -281,6 +282,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(await reviewPo.isPresent()).toEqual(true);
     expect(await reviewPo.getLedgerCanisterIdPo().getCanisterIdText()).toEqual(
@@ -308,6 +310,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(
       await reviewPo.getIndexCanisterIdPo().getCanisterId().isPresent()
@@ -333,6 +336,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(await formPo.isPresent()).toEqual(false);
     expect(await reviewPo.isPresent()).toEqual(true);
@@ -373,6 +377,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(await formPo.isPresent()).toEqual(false);
     expect(getImportedTokensSpy).toBeCalledTimes(0);
@@ -432,6 +437,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(get(pageStore).path).toEqual(AppPath.Tokens);
 
@@ -465,6 +471,7 @@ describe("ImportTokenModal", () => {
 
     // Wait for ModalWizard step animation.
     await runResolvedPromises();
+    await tick();
 
     expect(get(pageStore).path).toEqual(AppPath.Tokens);
 
@@ -484,7 +491,6 @@ describe("ImportTokenModal", () => {
           importTokenIndexId: indexCanisterId.toText(),
         },
       });
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", true);
     });
 
     it("imports from URL", async () => {
@@ -589,29 +595,6 @@ describe("ImportTokenModal", () => {
         importTokenLedgerId: undefined,
         importTokenIndexId: undefined,
       });
-    });
-
-    it("does not auto validate when feature flag disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_IMPORT_TOKEN_BY_URL", false);
-      vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
-        imported_tokens: [],
-      });
-      vi.spyOn(importedTokensApi, "setImportedTokens").mockResolvedValue();
-
-      importedTokensStore.set({
-        importedTokens: [],
-        certified: true,
-      });
-
-      const po = renderComponent();
-      const formPo = po.getImportTokenFormPo();
-      const reviewPo = po.getImportTokenReviewPo();
-
-      await runResolvedPromises();
-
-      // Should stay as form step
-      expect(await formPo.isPresent()).toEqual(true);
-      expect(await reviewPo.isPresent()).toEqual(false);
     });
 
     it("should navigate to the imported token page when importing a duplicate", async () => {

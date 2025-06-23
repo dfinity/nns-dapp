@@ -1,59 +1,74 @@
 <script lang="ts">
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import NeuronStateRemainingTime from "$lib/components/neurons/NeuronStateRemainingTime.svelte";
   import RangeDissolveDelay from "$lib/components/neurons/RangeDissolveDelay.svelte";
   import DayInput from "$lib/components/ui/DayInput.svelte";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { formatUsdValue } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { valueSpan } from "$lib/utils/utils";
-  import { Html } from "@dfinity/gix-components";
+  import { getUsdValue } from "$lib/utils/token.utils";
   import type { NeuronState } from "@dfinity/nns";
-  import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
+  import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
-  export let neuronState: NeuronState;
-  export let neuronDissolveDelaySeconds: bigint;
-  export let neuronStake: TokenAmountV2;
-  export let delayInSeconds = 0;
-  export let minProjectDelayInSeconds: number;
-  export let maxDelayInSeconds = 0;
-  // sns and nns calculates voting power differently
-  export let calculateVotingPower: (delayInSeconds: number) => number;
-  export let minDissolveDelayDescription = "";
+  type Props = {
+    neuronState: NeuronState;
+    neuronDissolveDelaySeconds: bigint;
+    neuronStake: TokenAmountV2;
+    delayInSeconds?: number;
+    minProjectDelayInSeconds: number;
+    maxDelayInSeconds?: number;
+    // sns and nns calculates voting power differently
+    calculateVotingPower: (delayInSeconds: number) => number;
+    minDissolveDelayDescription?: string;
+  };
 
-  const dispatch = createEventDispatcher();
-
-  let votingPower: number;
-  $: votingPower = calculateVotingPower(delayInSeconds);
-
-  let disableUpdate: boolean;
-  $: disableUpdate = shouldUpdateBeDisabled(delayInSeconds);
-
-  let warningMessage: string | undefined;
-  $: warningMessage =
-    delayInSeconds > 0 && delayInSeconds < minProjectDelayInSeconds
-      ? $i18n.neurons.dissolve_delay_below_minimum
-      : undefined;
+  let {
+    neuronState,
+    neuronDissolveDelaySeconds,
+    neuronStake,
+    delayInSeconds = $bindable(0),
+    minProjectDelayInSeconds,
+    maxDelayInSeconds = 0,
+    calculateVotingPower,
+    minDissolveDelayDescription = "",
+  }: Props = $props();
 
   const getInputError = (delayInSeconds: number) => {
-    if (delayInSeconds > maxDelayInSeconds) {
+    if (delayInSeconds > maxDelayInSeconds)
       return $i18n.neurons.dissolve_delay_above_maximum;
-    }
-    if (delayInSeconds <= neuronDissolveDelaySeconds) {
+    if (delayInSeconds <= neuronDissolveDelaySeconds)
       return $i18n.neurons.dissolve_delay_below_current;
-    }
+
     return undefined;
   };
 
-  const shouldUpdateBeDisabled = (delayInSeconds: number): boolean => {
-    return nonNullish(getInputError(delayInSeconds));
-  };
+  const dispatch = createEventDispatcher();
+
+  const votingPower = $derived(calculateVotingPower(delayInSeconds));
+  const disableUpdate = $derived(nonNullish(getInputError(delayInSeconds)));
+  const warningMessage = $derived(
+    delayInSeconds > 0 && delayInSeconds < minProjectDelayInSeconds
+      ? $i18n.neurons.dissolve_delay_below_minimum
+      : undefined
+  );
+
+  const priceStore = $derived(tokenPriceStore(neuronStake));
+  const tokenPrice = $derived($priceStore);
+  const neuronStakeInFiat = $derived.by(() => {
+    if (isNullish(neuronStake) || isNullish(tokenPrice)) return undefined;
+    const fiatValue = getUsdValue({ amount: neuronStake, tokenPrice });
+    return nonNullish(fiatValue) ? formatUsdValue(fiatValue) : undefined;
+  });
 
   const cancel = () => dispatch("nnsCancel");
   const goToConfirmation = () => dispatch("nnsConfirmDelay");
 </script>
 
 <div class="wrapper" data-tid="set-dissolve-delay-component">
+  <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+  <!-- svelte-ignore slot_element_deprecated -->
   <div>
     <p class="label">{$i18n.neurons.neuron_id}</p>
     <slot name="neuron-id" />
@@ -61,15 +76,16 @@
 
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
-    <p data-tid="neuron-stake">
-      <Html
-        text={replacePlaceholders($i18n.sns_neurons.token_stake, {
-          $amount: valueSpan(
-            formatTokenV2({ value: neuronStake, detailed: true })
-          ),
-          $token: neuronStake.token.symbol,
-        })}
-      />
+    <p data-tid="neuron-stake" class="value">
+      <AmountDisplay
+        amount={neuronStake}
+        singleLine
+        detailed
+      />{#if nonNullish(neuronStakeInFiat)}
+        <span class="fiat" data-tid="fiat-value">
+          (~{neuronStakeInFiat})
+        </span>
+      {/if}
     </p>
   </div>
 
@@ -118,13 +134,17 @@
   </div>
 
   <div class="toolbar">
-    <button on:click={cancel} data-tid="cancel-neuron-delay" class="secondary"
+    <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+    <!-- svelte-ignore slot_element_deprecated -->
+    <button onclick={cancel} data-tid="cancel-neuron-delay" class="secondary"
       ><slot name="cancel" /></button
     >
+    <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+    <!-- svelte-ignore slot_element_deprecated -->
     <button
       class="primary"
       disabled={disableUpdate}
-      on:click={goToConfirmation}
+      onclick={goToConfirmation}
       data-tid="go-confirm-delay-button"><slot name="confirm" /></button
     >
   </div>
@@ -143,5 +163,15 @@
 
   .select-delay-container {
     width: 100%;
+  }
+
+  .value {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+
+    .fiat {
+      color: var(--text-description);
+    }
   }
 </style>

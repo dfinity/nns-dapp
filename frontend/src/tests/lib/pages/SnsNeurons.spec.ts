@@ -1,7 +1,6 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -23,7 +22,9 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
+import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 
 vi.mock("$lib/api/sns-governance.api");
 vi.mock("$lib/api/sns-ledger.api");
@@ -43,6 +44,19 @@ describe("SnsNeurons", () => {
     maturity: 0n,
     stakedMaturity: 0n,
   });
+  const neuronWithDisbursementInProgressOnly: SnsNeuron = {
+    ...createMockSnsNeuron({
+      id: [4, 6, 8],
+      stake: 0n,
+    }),
+    maturity_e8s_equivalent: 0n,
+    staked_maturity_e8s_equivalent: [0n],
+    disburse_maturity_in_progress: [
+      {
+        amount_e8s: 100_000_000n,
+      } as DisburseMaturityInProgress,
+    ],
+  };
   const neuronNFStake = 400_000_000n;
   const neuronNF: SnsNeuron = {
     ...createMockSnsNeuron({
@@ -74,6 +88,7 @@ describe("SnsNeurons", () => {
   const renderComponent = async () => {
     const { container } = render(SnsNeurons);
     await runResolvedPromises();
+    await tick();
     return SnsNeuronsPo.under(new JestPageObjectElement(container));
   };
 
@@ -138,6 +153,17 @@ describe("SnsNeurons", () => {
       expect(rows).toHaveLength(2);
     });
 
+    it("should render neurons with disbursement in progress", async () => {
+      vi.spyOn(snsGovernanceApi, "querySnsNeurons").mockResolvedValue([
+        neuron1,
+        neuronWithDisbursementInProgressOnly,
+      ]);
+      const po = await renderComponent();
+
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(rows).toHaveLength(2);
+    });
+
     it("should claim unclaimed neuron", async () => {
       setSnsProjects([
         {
@@ -187,6 +213,7 @@ describe("SnsNeurons", () => {
       expect(spyGetNeuronBalance).toBeCalledTimes(0);
 
       await renderComponent();
+      await runResolvedPromises();
 
       expect(spyGetNeuronBalance).toBeCalledTimes(2);
       expect(spyGetNeuronBalance).toBeCalledWith({
@@ -212,8 +239,6 @@ describe("SnsNeurons", () => {
     });
 
     it("should provide USD prices", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       setIcpSwapUsdPrices({
         [ledgerCanisterId.toText()]: 0.1,
       });
@@ -226,25 +251,13 @@ describe("SnsNeurons", () => {
       expect(await rows[1].getStakeInUsd()).toBe("$0.20");
     });
 
-    it("should not show total USD value banner when feature flag is disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-      const po = await renderComponent();
-
-      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
-    });
-
-    it("should show total USD value banner when feature flag is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
+    it("should show total USD value banner", async () => {
       const po = await renderComponent();
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
     });
 
     it("should show total stake in USD", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       setIcpSwapUsdPrices({
         [ledgerCanisterId.toText()]: 0.1,
       });
@@ -261,8 +274,6 @@ describe("SnsNeurons", () => {
     });
 
     it("should show absent total stake in USD if token price is unknown", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       setIcpSwapUsdPrices({
         // No price for the SNS token.
         [ledgerCanisterId.toText()]: undefined,

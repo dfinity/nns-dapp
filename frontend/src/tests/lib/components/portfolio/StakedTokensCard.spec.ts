@@ -1,5 +1,6 @@
 import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
+import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import type { TableProject } from "$lib/types/staking";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -190,6 +191,16 @@ describe("StakedTokensCard", () => {
       expect(await po.getAmount()).toBe("$5’000");
     });
 
+    it("should hide the usd amount", async () => {
+      balancePrivacyOptionStore.set("hide");
+
+      const po = renderComponent({
+        usdAmount: 5000,
+      });
+
+      expect(await po.getAmount()).toBe("$•••");
+    });
+
     it("should show all the projects with their maturity, staked in usd and staked in native currency", async () => {
       const po = renderComponent({
         topStakedTokens: mockStakedTokens,
@@ -221,6 +232,35 @@ describe("StakedTokensCard", () => {
         "0.01 TET",
         "0.01 TET",
         "0.01 TET",
+      ]);
+    });
+
+    it("should hide the balance for all the projects", async () => {
+      balancePrivacyOptionStore.set("hide");
+
+      const po = renderComponent({
+        topStakedTokens: mockStakedTokens,
+      });
+
+      const titles = await po.getStakedTokensTitle();
+      const stakesInUsd = await po.getStakedTokensStakeInUsd();
+      const stakesInNativeCurrency =
+        await po.getStakedTokensStakeInNativeCurrency();
+
+      expect(titles).toEqual([
+        "Internet Computer",
+        "Project 1",
+        "Project 2",
+        "Project 3",
+      ]);
+
+      expect(stakesInUsd).toEqual(["$•••", "$•••", "$•••", "$•••"]);
+
+      expect(stakesInNativeCurrency).toEqual([
+        "••• ICP",
+        "••• TET",
+        "••• TET",
+        "••• TET",
       ]);
     });
 

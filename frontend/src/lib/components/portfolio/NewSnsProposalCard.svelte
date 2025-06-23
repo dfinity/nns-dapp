@@ -95,6 +95,7 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "@dfinity/gix-components/dist/styles/mixins/text";
+  @use "../../themes/mixins/portfolio";
 
   .wrapper {
     display: flex;
@@ -121,6 +122,8 @@
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: var(--padding-0_5x);
+
+      @include portfolio.card-tag;
 
       .title-wrapper {
         display: flex;
@@ -149,15 +152,16 @@
         h3 {
           margin: 0;
           padding: 0;
+
+          @include text.clamp(1);
         }
 
         .description {
           margin: 0;
           padding: 0;
           color: var(--color-text-secondary);
-          max-width: 95%;
 
-          @include text.truncate;
+          @include text.clamp(1);
         }
       }
     }

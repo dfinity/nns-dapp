@@ -103,7 +103,7 @@ describe("agent-api", () => {
     });
 
     it("for rootKey getter", async () => {
-      const rootKey = new Int8Array([1, 2, 3]);
+      const rootKey = new Int8Array([1, 2, 3]).buffer;
 
       mockAgent.rootKey = rootKey;
 
@@ -130,7 +130,9 @@ describe("agent-api", () => {
     });
 
     it("for method readState", async () => {
-      const readStateResponse = { certificate: Int8Array.from([1, 9, 3]) };
+      const readStateResponse = {
+        certificate: Int8Array.from([1, 9, 3]).buffer,
+      };
 
       mockAgent.readState.mockResolvedValue(readStateResponse);
 
@@ -210,7 +212,7 @@ describe("agent-api", () => {
     });
 
     it("for method fetchRootKey", async () => {
-      const rootKey = new Int8Array([3, 2, 3]);
+      const rootKey = new Int8Array([3, 2, 3]).buffer;
 
       mockAgent.fetchRootKey.mockResolvedValue(rootKey);
 

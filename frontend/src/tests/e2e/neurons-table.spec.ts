@@ -26,7 +26,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const page = await context.newPage();
 
   await page.goto("/");
-  await expect(page).toHaveTitle(/.*\s\/\sNNS Dapp/);
+  await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
 
   await setFeatureFlag({
     page,
@@ -35,11 +35,11 @@ const createHotkeyNeuronsInOtherAccount = async ({
   });
 
   await page.reload();
-  await expect(page).toHaveTitle("Portfolio / NNS Dapp");
+  await expect(page).toHaveTitle("Portfolio | Network Nervous System");
   await signInWithNewUser({ page, context });
 
   await page.goto("/tokens");
-  await expect(page).toHaveTitle("Tokens / NNS Dapp");
+  await expect(page).toHaveTitle("Tokens | Network Nervous System");
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
   await appPo.getIcpTokens(21);
@@ -68,24 +68,22 @@ const createHotkeyNeuronsInOtherAccount = async ({
     .getNnsNeuronDetailPo()
     .addHotkey(hotkeyPrincipal);
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().joinCommunityFund();
+
+  // close the success modal that could cover the button
+  await appPo.getToastsPo().closeAll();
+
   await appPo.getNeuronDetailPo().getNnsNeuronDetailPo().unlockNeuron();
   await page.close();
 };
 
 test("Test neurons table", async ({ page, context, browser }) => {
   await page.goto("/canisters");
-  await expect(page).toHaveTitle("Canisters / NNS Dapp");
+  await expect(page).toHaveTitle("Canisters | Network Nervous System");
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
 
   await step("Sign in");
   await signInWithNewUser({ page, context });
-
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_USD_VALUES_FOR_NEURONS",
-    value: true,
-  });
 
   const principal = await appPo.getCanistersPo().getPrincipal();
 
@@ -118,8 +116,8 @@ test("Test neurons table", async ({ page, context, browser }) => {
   // Reload the page to see the maturity and enable the spawn neuron button.
   await page.reload();
 
-  step("Spawn a neuron");
-  await neuronDetail.spawnNeuron({ percentage: 100 });
+  step("Disburse maturity");
+  await neuronDetail.disburseMaturity({ percentage: 100 });
 
   step("Wait for the hotkey neurons to be created");
   await createHotkeyNeuronsPromise;
@@ -127,11 +125,11 @@ test("Test neurons table", async ({ page, context, browser }) => {
   await page.reload();
 
   step("Make screenshots");
-  await appPo.getNeuronsPo().getNnsNeuronsPo().waitForContentLoaded();
+  await appPo.getNeuronDetailPo().waitForContentLoaded();
 
   await replaceContent({
     page,
-    selectors: ['[data-tid="neuron-id"]'],
+    selectors: ['[data-tid="identifier"]'],
     pattern: /[0-9a-f]{7}...[0-9a-f]{7}/,
     replacements: replacementNeuronIds,
   });

@@ -133,7 +133,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
     expect((element?.textContent ?? "").trim()).toEqual(
       `${formatTokenE8s({
         value: 0n,
-        detailed: "height_decimals",
+        detailed: true,
       })} ${en.ckbtc.btc}`
     );
   });
@@ -151,7 +151,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
     expect((element?.textContent ?? "").trim()).toEqual(
       `${formatTokenE8s({
         value: 0n,
-        detailed: "height_decimals",
+        detailed: true,
       })} ${en.ckbtc.btc}`
     );
   });
@@ -178,7 +178,7 @@ describe("BitcoinEstimatedAmountReceived", () => {
 
     const resultBtc = `${formatTokenE8s({
       value: 987_000n,
-      detailed: "height_decimals",
+      detailed: true,
     })} ${en.ckbtc.btc}`;
     expect(element?.textContent ?? "").toContain(resultBtc);
   });

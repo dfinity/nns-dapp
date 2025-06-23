@@ -1,46 +1,67 @@
 <script lang="ts">
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { formatUsdValue } from "$lib/utils/format.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import {
     getSnsNeuronIdAsHexString,
     getSnsNeuronStake,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import { formatTokenE8s } from "$lib/utils/token.utils";
-  import { valueSpan } from "$lib/utils/utils";
-  import { Html, busy } from "@dfinity/gix-components";
+  import { getUsdValue } from "$lib/utils/token.utils";
+  import { busy } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { secondsToDuration, type Token } from "@dfinity/utils";
+  import type { SnsNeuron } from "@dfinity/sns";
+  import {
+    isNullish,
+    nonNullish,
+    secondsToDuration,
+    TokenAmountV2,
+    type Token,
+  } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
-  export let rootCanisterId: Principal;
-  export let neuron: SnsNeuron;
-  export let token: Token;
-  export let delayInSeconds: number;
+  type Props = {
+    rootCanisterId: Principal;
+    neuron: SnsNeuron;
+    token: Token;
+    delayInSeconds: number;
+  };
+
+  const { rootCanisterId, neuron, token, delayInSeconds }: Props = $props();
+
+  const neuronStake = $derived(
+    TokenAmountV2.fromUlps({
+      amount: getSnsNeuronStake(neuron),
+      token,
+    })
+  );
+  const neuronId = $derived(getSnsNeuronIdAsHexString(neuron));
+  const snsParameters = $derived(
+    $snsParametersStore[rootCanisterId.toText()]?.parameters
+  );
+  const votingPower = $derived(
+    nonNullish(neuron) && nonNullish(snsParameters)
+      ? snsNeuronVotingPower({
+          newDissolveDelayInSeconds: BigInt(delayInSeconds),
+          neuron,
+          snsParameters,
+        })
+      : undefined
+  );
+
+  const priceStore = $derived(tokenPriceStore(neuronStake));
+  const tokenPrice = $derived($priceStore);
+  const neuronStakeInFiat = $derived.by(() => {
+    if (isNullish(neuronStake) || isNullish(tokenPrice)) return undefined;
+    const fiatValue = getUsdValue({ amount: neuronStake, tokenPrice });
+    return nonNullish(fiatValue) ? formatUsdValue(fiatValue) : undefined;
+  });
 
   const dispatcher = createEventDispatcher();
-
-  let neuronStake: bigint;
-  $: neuronStake = getSnsNeuronStake(neuron);
-
-  let neuronId: string;
-  $: neuronId = getSnsNeuronIdAsHexString(neuron);
-
-  let snsParameters: SnsNervousSystemParameters | undefined;
-  $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
-
-  let votingPower: number | undefined;
-  $: if (neuron !== undefined && snsParameters !== undefined) {
-    votingPower = snsNeuronVotingPower({
-      newDissolveDelayInSeconds: BigInt(delayInSeconds),
-      neuron,
-      snsParameters,
-    });
-  }
 </script>
 
 <div class="wrapper" data-tid="confirm-dissolve-delay-container">
@@ -55,15 +76,16 @@
   </div>
   <div>
     <p class="label">{$i18n.neurons.neuron_balance}</p>
-    <p data-tid="neuron-stake">
-      <Html
-        text={replacePlaceholders($i18n.sns_neurons.token_stake, {
-          $amount: valueSpan(
-            formatTokenE8s({ value: neuronStake, detailed: true })
-          ),
-          $token: token.symbol,
-        })}
-      />
+    <p data-tid="neuron-stake" class="value">
+      <AmountDisplay
+        amount={neuronStake}
+        singleLine
+        detailed
+      />{#if nonNullish(neuronStakeInFiat)}
+        <span class="fiat" data-tid="fiat-value">
+          (~{neuronStakeInFiat})
+        </span>
+      {/if}
     </p>
   </div>
   <div class="voting-power">
@@ -79,7 +101,7 @@
       data-tid="edit-delay-button"
       class="secondary"
       disabled={$busy}
-      on:click={() => dispatcher("nnsBack")}
+      onclick={() => dispatcher("nnsBack")}
     >
       {$i18n.neurons.edit_delay}
     </button>
@@ -87,7 +109,7 @@
       class="primary"
       data-tid="confirm-delay-button"
       disabled={$busy}
-      on:click={() => dispatcher("nnsConfirm")}
+      onclick={() => dispatcher("nnsConfirm")}
     >
       {$i18n.neurons.confirm_update_delay}
     </button>
@@ -110,5 +132,15 @@
 
   .voting-power {
     flex-grow: 1;
+  }
+
+  .value {
+    display: flex;
+    align-items: center;
+    gap: var(--padding-0_5x);
+
+    .fiat {
+      color: var(--text-description);
+    }
   }
 </style>

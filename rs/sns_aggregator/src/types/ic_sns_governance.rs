@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-08_03-21-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-05_03-24-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -697,6 +697,24 @@ pub struct GetMetadataResponse {
     pub description: Option<String>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetMetricsRequest {
+    pub time_window_seconds: Option<u64>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Metrics {
+    pub last_ledger_block_timestamp: Option<u64>,
+    pub num_recently_submitted_proposals: Option<u64>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum GetMetricsResult {
+    Ok(Metrics),
+    Err(GovernanceError),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct GetMetricsResponse {
+    pub get_metrics_result: Option<GetMetricsResult>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetModeArg {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetModeResponse {
@@ -962,6 +980,9 @@ impl Service {
     }
     pub async fn get_metadata(&self, arg0: GetMetadataArg) -> CallResult<(GetMetadataResponse,)> {
         ic_cdk::call(self.0, "get_metadata", (arg0,)).await
+    }
+    pub async fn get_metrics(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
+        ic_cdk::call(self.0, "get_metrics", (arg0,)).await
     }
     pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
         ic_cdk::call(self.0, "get_mode", (arg0,)).await

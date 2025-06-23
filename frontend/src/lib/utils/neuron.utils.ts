@@ -14,13 +14,13 @@ import {
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
   MAX_NEURONS_MERGED,
+  MIN_DISBURSEMENT_WITH_VARIANCE,
   MIN_NEURON_STAKE,
   NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS,
   TOPICS_TO_FOLLOW_NNS,
 } from "$lib/constants/neurons.constants";
 import { DEPRECATED_TOPICS } from "$lib/constants/proposals.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
-import { ENABLE_PERIODIC_FOLLOWING_CONFIRMATION } from "$lib/stores/feature-flags.store";
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { VoteRegistrationStoreData } from "$lib/stores/vote-registration.store";
 import type { Account } from "$lib/types/account";
@@ -79,7 +79,6 @@ import {
   secondsToDuration,
 } from "@dfinity/utils";
 import type { ComponentType } from "svelte";
-import { get } from "svelte/store";
 
 export type StateInfo = {
   Icon?: ComponentType;
@@ -563,8 +562,7 @@ const getNeuronTagsUnrelatedToController = ({
   // 2. no voting power economics available
   if (
     nonNullish(startReducingVotingPowerAfterSeconds) &&
-    hasEnoughDissolveDelayToVote(neuron, minimumDissolveDelay) &&
-    get(ENABLE_PERIODIC_FOLLOWING_CONFIRMATION)
+    hasEnoughDissolveDelayToVote(neuron, minimumDissolveDelay)
   ) {
     if (
       isNeuronMissingReward({ neuron, startReducingVotingPowerAfterSeconds })
@@ -785,6 +783,32 @@ export const isEnoughMaturityToSpawn = ({
     maturitySelected >=
     Number(MIN_NEURON_STAKE) / MATURITY_MODULATION_VARIANCE_PERCENTAGE
   );
+};
+
+/** Checks if the neuron has enough maturity to disburse maturity.
+ *
+ * The function calculates the selected maturity based on the provided percentage
+ * and compares it to the minimum required disbursement, adjusted by the maturity modulation variance.
+ * In the worst case maturity modulation (-500) the amount should be at least: 100_000_000 e8s
+ *
+ * @param {Object} params
+ * @param {NeuronInfo} params.neuron - The neuron whose maturity will be checked.
+ * @param {number} params.percentage - The percentage (0–100) of the neuron's maturity to disburse.
+ * @returns {boolean} True if the selected maturity is enough to disburse, false otherwise.
+ */
+export const isEnoughMaturityToDisburse = ({
+  neuron: { fullNeuron },
+  percentage,
+}: {
+  neuron: NeuronInfo;
+  percentage: number;
+}): boolean => {
+  if (isNullish(fullNeuron)) return false;
+
+  const maturitySelected = Math.floor(
+    (Number(fullNeuron.maturityE8sEquivalent) * percentage) / 100
+  );
+  return maturitySelected >= MIN_DISBURSEMENT_WITH_VARIANCE;
 };
 
 export const isSpawning = (neuron: NeuronInfo): boolean =>
@@ -1414,3 +1438,11 @@ export const hasEnoughDissolveDelayToVote = (
   { dissolveDelaySeconds }: NeuronInfo,
   minimumDissolveDelay: bigint
 ): boolean => dissolveDelaySeconds >= minimumDissolveDelay;
+
+export const totalMaturityDisbursementsInProgress = (
+  neuron: NeuronInfo
+): bigint =>
+  neuron.fullNeuron?.maturityDisbursementsInProgress?.reduce(
+    (acc, disbursement) => acc + (disbursement.amountE8s ?? 0n),
+    0n
+  ) ?? 0n;

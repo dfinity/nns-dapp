@@ -4,7 +4,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
@@ -536,8 +535,6 @@ describe("ProjectsTable", () => {
     });
 
     it("should display stake in USD", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       const tickers = [
         {
           ...mockIcpSwapTicker,
@@ -567,33 +564,8 @@ describe("ProjectsTable", () => {
       expect(await rowPos[0].hasStakeInUsd()).toBe(true);
     });
 
-    it("should not load ICP Swap tickers without feature flag", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
-
-      neuronsStore.setNeurons({
-        neurons: [nnsNeuronWithStake],
-        certified: true,
-      });
-
-      expect(get(icpSwapTickersStore)).toBeUndefined();
-      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-      const po = renderComponent();
-      await runResolvedPromises();
-
-      expect(get(icpSwapTickersStore)).toBeUndefined();
-      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-      const rowPos = await po.getProjectsTableRowPos();
-      expect(await rowPos[0].getStake()).toBe("1.00 ICP");
-      expect(await rowPos[0].hasStakeInUsd()).toBe(false);
-    });
-
     it("should not load ICP Swap tickers when not signed in", async () => {
       setNoIdentity();
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
 
       vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
 
@@ -617,8 +589,6 @@ describe("ProjectsTable", () => {
     });
 
     it("should not show total USD value banner when the user has no neurons", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       neuronsStore.setNeurons({
         neurons: [],
         certified: true,
@@ -635,23 +605,8 @@ describe("ProjectsTable", () => {
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
     });
 
-    it("should not show total USD value banner when feature flag is disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-      neuronsStore.setNeurons({
-        neurons: [nnsNeuronWithStake],
-        certified: true,
-      });
-
-      const po = renderComponent();
-      await runResolvedPromises();
-
-      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
-    });
-
     it("should not show total USD value banner when not logged in", async () => {
       setNoIdentity();
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
 
       const po = renderComponent();
       await runResolvedPromises();
@@ -660,8 +615,6 @@ describe("ProjectsTable", () => {
     });
 
     it("should show total stake in USD", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
@@ -703,8 +656,6 @@ describe("ProjectsTable", () => {
     });
 
     it("should ignore tokens with unknown balance in USD when adding up the total", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
@@ -737,8 +688,6 @@ describe("ProjectsTable", () => {
     });
 
     it("should show total USD banner when tickers fail to load", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
@@ -938,10 +887,6 @@ describe("ProjectsTable", () => {
 
     describe("Nns neurons missing rewards badge", () => {
       it("should render the badge in Nns row", async () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          true
-        );
         neuronsStore.setNeurons({
           neurons: [nnsNeuronWithStake],
           certified: true,
@@ -966,29 +911,6 @@ describe("ProjectsTable", () => {
         expect(await secondRow.getHref()).toBe(`/neurons/?u=${snsCanisterId}`);
         expect(
           await secondRow
-            .getProjectTitleCellPo()
-            .getNnsNeuronsMissingRewardsBadgePo()
-            .isPresent()
-        ).toBe(false);
-      });
-
-      it("should not render the badge when feature flag off", async () => {
-        overrideFeatureFlagsStore.setFlag(
-          "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-          false
-        );
-        neuronsStore.setNeurons({
-          neurons: [nnsNeuronWithStake],
-          certified: true,
-        });
-        const po = renderComponent();
-        const [firstRow] = await po.getProjectsTableRowPos();
-
-        expect(await firstRow.getHref()).toBe(
-          `/neurons/?u=${OWN_CANISTER_ID_TEXT}`
-        );
-        expect(
-          await firstRow
             .getProjectTitleCellPo()
             .getNnsNeuronsMissingRewardsBadgePo()
             .isPresent()

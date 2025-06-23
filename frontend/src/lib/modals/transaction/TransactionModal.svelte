@@ -163,28 +163,36 @@
       <slot name="additional-info-form" slot="additional-info" />
     </TransactionForm>
   {/if}
-  {#if currentStep?.name === "Review" && nonNullish(sourceAccount) && amount !== undefined && selectedDestinationAddress !== undefined}
+  {#if currentStep?.name === "Review" && nonNullish(sourceAccount) && nonNullish(amount) && nonNullish(selectedDestinationAddress)}
     <TransactionReview
       transaction={{
         destinationAddress: selectedDestinationAddress,
         sourceAccount,
         amount,
       }}
+      handleGoBack={goBack}
       {transactionFee}
       {disableSubmit}
       {token}
       {selectedNetwork}
       {showLedgerFee}
-      on:nnsBack={goBack}
       on:nnsSubmit
       on:nnsClose
     >
-      <slot name="additional-info-review" slot="additional-info" />
-      <slot name="destination-info" slot="destination-info" />
-      <slot name="description" slot="description" />
-      <slot name="received-amount" slot="received-amount">
-        <TransactionReceivedAmount {amount} {token} />
-      </slot>
+      {#snippet additionalInfo()}
+        <slot name="additional-info-review" />
+      {/snippet}
+      {#snippet destinationInfo()}
+        <slot name="destination-info" />
+      {/snippet}
+      {#snippet description()}
+        <slot name="description" />
+      {/snippet}
+      {#snippet receivedAmount()}
+        <slot name="received-amount">
+          <TransactionReceivedAmount amount={amount!} {token} />
+        </slot>
+      {/snippet}
     </TransactionReview>
   {/if}
   {#if currentStep?.name === STEP_PROGRESS}

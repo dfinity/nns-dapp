@@ -10,7 +10,9 @@
   import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
   import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
   import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";
+  import NnsActiveDisbursementsModal from "$lib/modals/neurons/NnsActiveDisbursementsModal.svelte";
   import NnsAutoStakeMaturityModal from "$lib/modals/neurons/NnsAutoStakeMaturityModal.svelte";
+  import NnsDisburseMaturityModal from "$lib/modals/neurons/NnsDisburseMaturityModal.svelte";
   import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
@@ -79,6 +81,13 @@
     {#if type === "spawn"}
       <SpawnNeuronModal on:nnsClose={close} {neuron} />
     {/if}
+    {#if type === "view-active-disbursements"}
+      <NnsActiveDisbursementsModal {close} {neuron} />
+    {/if}
+
+    {#if type === "disburse-maturity"}
+      <NnsDisburseMaturityModal {close} {neuron} />
+    {/if}
 
     {#if type === "auto-stake-maturity"}
       <NnsAutoStakeMaturityModal on:nnsClose={close} {neuron} />
@@ -89,7 +98,7 @@
     {/if}
 
     {#if type === "follow"}
-      <FollowNeuronsModal on:nnsClose={close} neuronId={neuron.neuronId} />
+      <FollowNeuronsModal onClose={close} neuronId={neuron.neuronId} />
     {/if}
 
     {#if type === "add-hotkey"}

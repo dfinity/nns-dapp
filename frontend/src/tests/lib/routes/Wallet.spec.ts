@@ -45,6 +45,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/icrc-ledger.api");
@@ -364,12 +365,16 @@ describe("Wallet", () => {
           accountIdentifier: undefined,
         },
       });
+
       await runResolvedPromises();
+      await tick();
+
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
 
       // Waits for the sns projects to be available
       setSnsProjects([{}]);
       await runResolvedPromises();
+      await tick();
 
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
     });
@@ -392,7 +397,10 @@ describe("Wallet", () => {
           accountIdentifier: undefined,
         },
       });
+
       await runResolvedPromises();
+      await tick();
+
       expect(get(pageStore).path).toEqual(AppPath.Wallet);
 
       // Waits for the imported tokens to be available
@@ -400,7 +408,10 @@ describe("Wallet", () => {
         importedTokens: [],
         certified: true,
       });
+
       await runResolvedPromises();
+      await tick();
+
       expect(get(pageStore).path).toEqual(AppPath.Tokens);
     });
 

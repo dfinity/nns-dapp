@@ -5,12 +5,15 @@ import {
 } from "$lib/constants/constants";
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
-import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
+import {
+  mockFullNeuron,
+  mockMaturityDisbursement,
+  mockNeuron,
+} from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
@@ -30,6 +33,18 @@ describe("NnsNeurons", () => {
       ...mockFullNeuron,
       cachedNeuronStake: 0n,
       maturityE8sEquivalent: 0n,
+    },
+  };
+
+  const disbursedNeuronWithMaturityDisbursement = {
+    ...mockNeuron,
+    state: NeuronState.Dissolved,
+    neuronId: 225n,
+    fullNeuron: {
+      ...mockFullNeuron,
+      cachedNeuronStake: 0n,
+      maturityE8sEquivalent: 0n,
+      maturityDisbursementsInProgress: [mockMaturityDisbursement],
     },
   };
 
@@ -91,6 +106,18 @@ describe("NnsNeurons", () => {
       expect(await rows[1].getStake()).not.toBe("0 ICP");
     });
 
+    it("should display empty neurons with active disbursements", async () => {
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        disbursedNeuron,
+        disbursedNeuronWithMaturityDisbursement,
+      ]);
+      const po = await renderComponent();
+
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(rows).toHaveLength(1);
+      expect(await rows[0].getStake()).toBe("0 ICP");
+    });
+
     it("should render an go-to-detail button for non-spawning neurons", async () => {
       const po = await renderComponent();
 
@@ -107,8 +134,6 @@ describe("NnsNeurons", () => {
     });
 
     it("should provide USD prices", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       vi.spyOn(api, "queryNeurons").mockResolvedValue([
         {
           ...mockNeuron,
@@ -130,25 +155,13 @@ describe("NnsNeurons", () => {
       expect(await rows[0].getStakeInUsd()).toBe("$33.00");
     });
 
-    it("should not show total USD value banner when feature flag is disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", false);
-
-      const po = await renderComponent();
-
-      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
-    });
-
     it("should show total USD value banner when feature flag is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       const po = await renderComponent();
 
       expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
     });
 
     it("should show total stake in USD", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-
       vi.spyOn(api, "queryNeurons").mockResolvedValue([
         {
           ...mockNeuron,
@@ -171,11 +184,6 @@ describe("NnsNeurons", () => {
     });
 
     it("should display `Missing rewards` tag", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES_FOR_NEURONS", true);
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       networkEconomicsStore.setParameters({
         parameters: mockNetworkEconomics,
         certified: true,
@@ -220,17 +228,7 @@ describe("NnsNeurons", () => {
       });
     });
 
-    it("should not display LosingRewardsBanner by default", async () => {
-      const po = await renderComponent();
-      // It should be behind the feature flag
-      expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(false);
-    });
-
     it("should display LosingRewardsBanner", async () => {
-      overrideFeatureFlagsStore.setFlag(
-        "ENABLE_PERIODIC_FOLLOWING_CONFIRMATION",
-        true
-      );
       const po = await renderComponent();
 
       expect(await po.getLosingRewardsBannerPo().isPresent()).toBe(true);

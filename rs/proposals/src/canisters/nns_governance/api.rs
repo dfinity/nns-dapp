@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-01_03-23-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-30_03-21-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -696,6 +696,7 @@ pub struct WaitForQuietState {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ProposalData {
     pub id: Option<ProposalId>,
+    pub topic: Option<i32>,
     pub failure_reason: Option<GovernanceError>,
     pub ballots: Vec<(u64, Ballot)>,
     pub proposal_timestamp_seconds: u64,
@@ -737,6 +738,13 @@ pub struct BallotInfo {
     pub proposal_id: Option<ProposalId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct MaturityDisbursement {
+    pub timestamp_of_disbursement_seconds: Option<u64>,
+    pub amount_e8s: Option<u64>,
+    pub account_to_disburse_to: Option<Account>,
+    pub finalize_disbursement_timestamp_seconds: Option<u64>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub enum DissolveState {
     DissolveDelaySeconds(u64),
     WhenDissolvedTimestampSeconds(u64),
@@ -761,6 +769,7 @@ pub struct Neuron {
     pub hot_keys: Vec<Principal>,
     pub account: serde_bytes::ByteBuf,
     pub joined_community_fund_timestamp_seconds: Option<u64>,
+    pub maturity_disbursements_in_progress: Option<Vec<MaturityDisbursement>>,
     pub dissolve_state: Option<DissolveState>,
     pub followees: Vec<(i32, Followees)>,
     pub neuron_fees_e8s: u64,

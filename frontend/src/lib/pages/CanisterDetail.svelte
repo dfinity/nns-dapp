@@ -4,7 +4,6 @@
   import ControllersCard from "$lib/components/canister-detail/ControllersCard.svelte";
   import SkeletonCard from "$lib/components/ui/SkeletonCard.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { debugSelectedCanisterStore } from "$lib/derived/debug.derived";
   import {
     getCanisterDetails,
     listCanisters,
@@ -71,8 +70,6 @@
     details: undefined,
     controller: undefined,
   });
-
-  debugSelectedCanisterStore(selectedCanisterStore);
 
   let loadingDetails = true;
   let canisterInfo: CanisterInfo | undefined;
@@ -185,8 +182,14 @@
       return;
     }
     notifyChecked = true;
-    if (await notifyTopUpIfNeeded({ canisterId })) {
-      reloadDetails(canisterId);
+    try {
+      if (await notifyTopUpIfNeeded({ canisterId })) {
+        reloadDetails(canisterId);
+      }
+    } catch (error: unknown) {
+      // If the notification fails, we avoid showing an error since it's a background task
+      // and not relevant to most users.
+      console.error("Failed to notify for canister top-up:", error);
     }
   };
 

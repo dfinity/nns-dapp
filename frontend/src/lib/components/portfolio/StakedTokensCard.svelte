@@ -3,6 +3,7 @@
   import Card from "$lib/components/portfolio/Card.svelte";
   import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -14,20 +15,24 @@
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
-  export let topStakedTokens: TableProject[];
-  export let usdAmount: number;
-  export let numberOfTopHeldTokens: number;
+  type Props = {
+    topStakedTokens: TableProject[];
+    usdAmount: number;
+    numberOfTopHeldTokens: number;
+  };
+
+  const { topStakedTokens, usdAmount, numberOfTopHeldTokens }: Props = $props();
 
   const href = AppPath.Staking;
 
-  let numberOfTopStakedTokens: number;
-  $: numberOfTopStakedTokens = topStakedTokens.length;
+  const numberOfTopStakedTokens = $derived(topStakedTokens.length);
 
-  let showInfoRow: boolean;
-  $: showInfoRow = shouldShowInfoRow({
-    currentCardNumberOfTokens: numberOfTopStakedTokens,
-    otherCardNumberOfTokens: numberOfTopHeldTokens,
-  });
+  const showInfoRow = $derived(
+    shouldShowInfoRow({
+      currentCardNumberOfTokens: numberOfTopStakedTokens,
+      otherCardNumberOfTokens: numberOfTopHeldTokens,
+    })
+  );
 </script>
 
 <Card testId="staked-tokens-card">
@@ -42,9 +47,9 @@
       title={$i18n.portfolio.staked_tokens_card_title}
       linkText={$i18n.portfolio.staked_tokens_card_link}
     >
-      <svelte:fragment slot="icon">
+      {#snippet icon()}
         <IconNeuronsPage />
-      </svelte:fragment>
+      {/snippet}
     </TokensCardHeader>
     <div class="body" role="table">
       <div class="header" role="row">
@@ -101,7 +106,10 @@
               role="cell"
               aria-label={`${stakedToken.title} USD: ${stakedToken?.stakeInUsd ?? 0}`}
             >
-              ${formatNumber(stakedToken?.stakeInUsd ?? 0)}
+              $<PrivacyAwareAmount
+                value={formatNumber(stakedToken?.stakeInUsd ?? 0)}
+                length={3}
+              />
             </div>
             <div
               class="stake-native"
@@ -109,12 +117,15 @@
               role="cell"
               aria-label={`${stakedToken.title} D: ${stakedToken?.stakeInUsd ?? 0}`}
             >
-              {stakedToken.stake instanceof TokenAmountV2
-                ? formatTokenV2({
-                    value: stakedToken.stake,
-                    detailed: false,
-                  })
-                : PRICE_NOT_AVAILABLE_PLACEHOLDER}
+              <PrivacyAwareAmount
+                value={stakedToken.stake instanceof TokenAmountV2
+                  ? formatTokenV2({
+                      value: stakedToken.stake,
+                      detailed: false,
+                    })
+                  : PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                length={3}
+              />
               {stakedToken.stake.token.symbol}
             </div>
           </svelte:element>

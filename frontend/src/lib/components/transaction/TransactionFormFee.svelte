@@ -3,47 +3,39 @@
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { formatUsdValue } from "$lib/utils/format.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
-  import type { Principal } from "@dfinity/principal";
-  import { nonNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+  import { isNullish, type TokenAmount, TokenAmountV2 } from "@dfinity/utils";
 
-  export let transactionFee: TokenAmount | TokenAmountV2;
+  type Props = {
+    transactionFee: TokenAmount | TokenAmountV2;
+  };
+  const { transactionFee }: Props = $props();
 
-  let ledgerCanisterId: Principal | undefined;
-  $: ledgerCanisterId = getLedgerCanisterIdFromUniverse($selectedUniverseStore);
+  const usdValueDisplay = $derived.by(() => {
+    const ledgerCanisterId = getLedgerCanisterIdFromUniverse(
+      $selectedUniverseStore
+    );
 
-  let tokenPrice: number | undefined;
-  $: tokenPrice =
-    nonNullish(ledgerCanisterId) &&
-    nonNullish($icpSwapUsdPricesStore) &&
-    $icpSwapUsdPricesStore !== "error"
-      ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
-      : undefined;
+    if (isNullish($icpSwapUsdPricesStore) || $icpSwapUsdPricesStore === "error")
+      return 0;
 
-  let usdValue: number;
-  $: usdValue = getUsdValue({ amount: transactionFee, tokenPrice }) ?? 0;
-
-  let isAlmostZero: boolean;
-  $: isAlmostZero = usdValue > 0 && usdValue < 0.01;
-
-  let formattedUsdValue: string;
-  $: formattedUsdValue = isAlmostZero ? "0.01" : formatNumber(usdValue);
-
-  let usdValueDisplay: string;
-  $: usdValueDisplay = `(${isAlmostZero ? "< " : ""}$${formattedUsdValue})`;
+    const tokenPrice = $icpSwapUsdPricesStore[ledgerCanisterId.toText()];
+    const usdValue = getUsdValue({ amount: transactionFee, tokenPrice }) ?? 0;
+    return formatUsdValue(usdValue);
+  });
 </script>
 
 <div data-tid="transaction-form-fee">
   <p class="fee label no-margin">
-    <slot name="label">{$i18n.accounts.transaction_fee}</slot>
+    {$i18n.accounts.transaction_fee}
   </p>
 
   <p class="value">
     <AmountDisplay amount={transactionFee} singleLine />
     <span class="usd-value" data-tid="transaction-form-fee-usd-value">
-      {usdValueDisplay}
+      ({usdValueDisplay})
     </span>
   </p>
 </div>

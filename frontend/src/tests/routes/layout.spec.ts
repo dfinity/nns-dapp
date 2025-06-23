@@ -83,6 +83,7 @@ describe("Layout", () => {
   it("should not show the Highlight component by default", async () => {
     const { container } = render(App);
 
+    setNoIdentity();
     const po = HighlightPo.under(new JestPageObjectElement(container));
 
     expect(await po.isPresent()).toBe(false);
@@ -98,7 +99,7 @@ describe("Layout", () => {
     expect(await renderComponent().isPresent()).toBe(false);
 
     resetIdentity();
-    overrideFeatureFlagsStore.setFlag("ENABLE_SNS_TOPICS", true);
+    overrideFeatureFlagsStore.setFlag("ENABLE_DISBURSE_MATURITY", true);
     expect(await renderComponent().isPresent()).toBe(true);
   });
 });

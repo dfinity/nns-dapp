@@ -2,14 +2,11 @@ import * as locationApi from "$lib/api/location.api";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { loadUserCountry } from "$lib/services/user-country.services";
 import { userCountryStore } from "$lib/stores/user-country.store";
-import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/location.api");
 
 describe("location services", () => {
-  blockAllCallsTo(["$lib/api/location.api"]);
-
   beforeEach(() => {
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
