@@ -13,7 +13,7 @@
 
 <Modal
   testId="follow-neurons-modal-component"
-  on:nnsClose
+  on:nnsClose={onClose}
   --modal-content-overflow-y="scroll"
 >
   <svelte:fragment slot="title"
