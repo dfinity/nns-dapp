@@ -101,6 +101,10 @@
       <FollowNeuronsModal onClose={close} neuronId={neuron.neuronId} />
     {/if}
 
+    {#if type === "follow-by-topic"}
+      <FollowNeuronsModal onClose={close} neuronId={neuron.neuronId} />
+    {/if}
+
     {#if type === "add-hotkey"}
       <AddHotkeyModal on:nnsClose={close} {neuron} />
     {/if}
