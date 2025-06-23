@@ -7,16 +7,16 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
 </script>
 
-<div>
+<p role="status">
   {replacePlaceholders($i18n.warning.proposal_fetch_limit, {
     $maxLimit: String(
       MAX_ACTIONABLE_REQUEST_COUNT * DEFAULT_LIST_PAGINATION_LIMIT
     ),
   })}
-</div>
+</p>
 
 <style>
-  div {
+  p {
     background-color: var(--orange-tint);
     margin: var(--padding-3x) 0;
     text-align: justify;
