@@ -10,7 +10,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Accounts from "$lib/routes/Accounts.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -409,8 +408,6 @@ describe("Accounts", () => {
       });
 
       it("should load ICP Swap tickers", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
         const tickers = [
           {
             ...mockIcpSwapTicker,
@@ -432,25 +429,6 @@ describe("Accounts", () => {
         const rowsPos = await tablePo.getRows();
 
         expect(await rowsPos[0].getBalanceInUsd()).toEqual("$31.40");
-      });
-
-      it("should not load ICP Swap tickers without feature flag", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
-
-        vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
-
-        expect(get(icpSwapTickersStore)).toBeUndefined();
-        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-        const po = await renderComponent();
-
-        expect(get(icpSwapTickersStore)).toBeUndefined();
-        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
-        const rowsPos = await tablePo.getRows();
-
-        expect(await rowsPos[0].hasBalanceInUsd()).toBe(false);
       });
     });
   });

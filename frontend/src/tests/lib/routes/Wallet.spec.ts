@@ -13,7 +13,6 @@ import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.co
 import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Wallet from "$lib/routes/Wallet.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
@@ -196,25 +195,7 @@ describe("Wallet", () => {
       expect(await po.getIcrcTokenTransactionModalPo().isPresent()).toBe(true);
     });
 
-    it("should not load ICP Swap tickers without feature flag", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
-
-      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
-
-      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-      const po = renderComponent();
-      await runResolvedPromises();
-
-      expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-      expect(
-        await po.getSnsWalletPo().getWalletPageHeadingPo().hasBalanceInUsd()
-      ).toBe(false);
-    });
-
     it("should load ICP Swap tickers", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
       const tickers = [
         {
           ...mockIcpSwapTicker,

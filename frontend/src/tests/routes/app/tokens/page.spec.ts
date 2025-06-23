@@ -539,8 +539,6 @@ describe("Tokens route", () => {
       });
 
       it("should load ICP Swap tickers", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
         const tickers = [
           {
             ...mockIcpSwapTicker,
@@ -564,25 +562,6 @@ describe("Tokens route", () => {
           .getRowByName("Internet Computer");
 
         expect(await rowPo.getBalanceInUsd()).toEqual("$12.35");
-      });
-
-      it("should not load ICP Swap tickers without feature flag", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
-
-        vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
-
-        expect(get(icpSwapTickersStore)).toBeUndefined();
-        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-        const po = await renderPage();
-
-        expect(get(icpSwapTickersStore)).toBeUndefined();
-        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-        const tokensPagePo = po.getTokensPagePo();
-        const rowsPos = await tokensPagePo.getTokensTable().getRows();
-
-        expect(await rowsPos[0].hasBalanceInUsd()).toBe(false);
       });
     });
 
@@ -1119,8 +1098,6 @@ describe("Tokens route", () => {
       });
 
       it("should not load ICP Swap tickers", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
         vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
 
         expect(get(icpSwapTickersStore)).toBeUndefined();
