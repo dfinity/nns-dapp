@@ -5,32 +5,36 @@
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_NNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     followeesNeurons,
     isHotKeyControllable,
     isNeuronControllable,
-    type FolloweesNeuron,
   } from "$lib/utils/neuron.utils";
   import { KeyValuePairInfo } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
 
-  export let neuron: NeuronInfo;
-  let isControllable: boolean;
-  $: isControllable =
+  type Props = {
+    neuron: NeuronInfo;
+  };
+  const { neuron }: Props = $props();
+
+  const isControllable = $derived(
     isNeuronControllable({
       neuron,
       identity: $authStore.identity,
       accounts: $icpAccountsStore,
     }) ||
-    isHotKeyControllable({
-      neuron,
-      identity: $authStore.identity,
-    });
-  let followees: FolloweesNeuron[];
-  $: followees = followeesNeurons(neuron);
+      isHotKeyControllable({
+        neuron,
+        identity: $authStore.identity,
+      })
+  );
+  const followees = $derived(followeesNeurons(neuron));
+  const isFollowByTopic = $derived($ENABLE_NNS_TOPICS);
 
   onMount(listKnownNeurons);
 </script>
@@ -54,7 +58,7 @@
 
   <div class="actions">
     {#if isControllable}
-      <FollowNeuronsButton />
+      <FollowNeuronsButton {isFollowByTopic} />
     {/if}
   </div>
 </CardInfo>

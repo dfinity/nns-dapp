@@ -11,6 +11,7 @@
     startReducingVotingPowerAfterSecondsStore,
   } from "$lib/derived/network-economics.derived";
   import { nonEmptyNeuronStore } from "$lib/derived/neurons.derived";
+  import NnsNeuronModals from "$lib/modals/neurons/NnsNeuronModals.svelte";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
@@ -64,6 +65,8 @@
   {:else}
     <EmptyMessage>{$i18n.neurons.text}</EmptyMessage>
   {/if}
+
+  <NnsNeuronModals />
 </TestIdWrapper>
 
 <style lang="scss">
