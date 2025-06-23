@@ -2,6 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
   import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
+  import FetchLimitWarning from "$lib/components/proposals/FetchLimitWarning.svelte";
   import ListLoader from "$lib/components/proposals/ListLoader.svelte";
   import LoadingProposals from "$lib/components/proposals/LoadingProposals.svelte";
   import NoProposals from "$lib/components/proposals/NoProposals.svelte";
@@ -14,7 +15,6 @@
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { fromNullable, isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
-  import FetchLimitWarning from "../proposals/FetchLimitWarning.svelte";
 
   type Props = {
     proposals: SnsProposalActionableData[] | undefined;

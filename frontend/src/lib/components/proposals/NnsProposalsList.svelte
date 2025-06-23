@@ -3,6 +3,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
   import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
+  import FetchLimitWarning from "$lib/components/proposals/FetchLimitWarning.svelte";
   import ListLoader from "$lib/components/proposals/ListLoader.svelte";
   import LoadingProposals from "$lib/components/proposals/LoadingProposals.svelte";
   import NnsProposalCard from "$lib/components/proposals/NnsProposalCard.svelte";
@@ -15,7 +16,6 @@
   import { InfiniteScroll } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
-  import FetchLimitWarning from "./FetchLimitWarning.svelte";
 
   type Props = {
     hidden: boolean;

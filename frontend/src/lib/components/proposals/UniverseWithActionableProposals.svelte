@@ -1,9 +1,9 @@
 <script lang="ts">
+  import FetchLimitWarning from "$lib/components/proposals/FetchLimitWarning.svelte";
   import UniverseSummary from "$lib/components/universe/UniverseSummary.svelte";
   import type { Universe } from "$lib/types/universe";
   import { InfiniteScroll } from "@dfinity/gix-components";
   import type { Snippet } from "svelte";
-  import FetchLimitWarning from "./FetchLimitWarning.svelte";
 
   type Props = {
     universe: Universe;
