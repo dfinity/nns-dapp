@@ -6,7 +6,7 @@ import { writable, type Readable } from "svelte/store";
 
 export interface ActionableSnsProposalsData {
   proposals: SnsProposalData[];
-  fetchLimitReached?: boolean;
+  fetchLimitReached: boolean;
 }
 export interface ActionableSnsProposalsStoreData {
   // Each SNS Project is an entry in this Store.

@@ -145,7 +145,7 @@
       false)
     : false;
 
-  $: wasFetchLimitReached =
+  $: fetchLimitReached =
     nonNullish(currentProjectCanisterId) &&
     $actionableSnsProposalsStore[currentProjectCanisterId.toText()]
       ?.fetchLimitReached;
@@ -159,6 +159,6 @@
     {loadNextPage}
     {disableInfiniteScroll}
     {loadingNextPage}
-    {wasFetchLimitReached}
+    {fetchLimitReached}
   />
 {/if}

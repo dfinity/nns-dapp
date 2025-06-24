@@ -31,7 +31,7 @@
     <UniverseWithActionableProposals
       {universe}
       fetchLimitReached={$actionableSnsProposalsStore[rootCanisterId]
-        .fetchLimitReached ?? false}
+        .fetchLimitReached}
     >
       {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
         <SnsProposalCard

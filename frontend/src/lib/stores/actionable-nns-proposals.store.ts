@@ -9,7 +9,7 @@ export interface ActionableNnsProposalsStoreData {
 export interface ActionableNnsProposalsStore
   extends Readable<ActionableNnsProposalsStoreData> {
   setProposals: (proposals: ProposalInfo[]) => void;
-  setFetchLimitReached: (wasLimitReached: boolean) => void;
+  setFetchLimitReached: (fetchLimitReached: boolean) => void;
   reset: () => void;
 }
 
@@ -27,8 +27,8 @@ const initActionableNnsProposalsStore = (): ActionableNnsProposalsStore => {
   return {
     subscribe,
 
-    setFetchLimitReached(wasLimitReached: boolean) {
-      update((state) => ({ ...state, fetchLimitReached: wasLimitReached }));
+    setFetchLimitReached(fetchLimitReached: boolean) {
+      update((state) => ({ ...state, fetchLimitReached }));
     },
 
     setProposals(proposals: ProposalInfo[]) {

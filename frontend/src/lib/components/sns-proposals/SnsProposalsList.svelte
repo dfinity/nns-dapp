@@ -23,7 +23,7 @@
     disableInfiniteScroll?: boolean;
     loadingNextPage?: boolean;
     loadNextPage: () => Promise<void>;
-    wasFetchLimitReached?: boolean;
+    fetchLimitReached?: boolean;
   };
 
   const {
@@ -33,7 +33,7 @@
     disableInfiniteScroll = false,
     loadingNextPage = false,
     loadNextPage,
-    wasFetchLimitReached = false,
+    fetchLimitReached = false,
   }: Props = $props();
 </script>
 
@@ -74,7 +74,7 @@
       {:else if proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}
-        {#if wasFetchLimitReached}
+        {#if fetchLimitReached}
           <FetchLimitWarning />
         {/if}
         <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
