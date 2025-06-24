@@ -14,11 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Fiat values to confirmation screens
-
 #### Changed
 
-* Trim trailing zeros in transaction modals
 * Updated and uniformed titles across pages
 
 #### Deprecated
@@ -27,8 +24,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Fix staking form error messages not clearing after correction
-* Fixed an issue where NNS neurons that had been disbursed but still had active maturity disbursements were not displayed in the dapp.
 * Increase open proposals fetch limit and display warning if reached
 
 #### Security

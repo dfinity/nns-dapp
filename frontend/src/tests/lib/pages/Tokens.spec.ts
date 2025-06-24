@@ -4,7 +4,6 @@ import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import TokensPage from "$lib/pages/Tokens.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -316,25 +315,13 @@ describe("Tokens page", () => {
     });
   });
 
-  it("should not show total USD value banner when feature flag is disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
-
-    const po = renderPage(userTokensPageMock);
-
-    expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
-  });
-
   it("should show total USD value banner when feature flag is enabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
     const po = renderPage(userTokensPageMock);
 
     expect(await po.getUsdValueBannerPo().isPresent()).toBe(true);
   });
 
   it("should show total USD value", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
     const token1 = createUserToken({
       universeId: principal(1),
       balanceInUsd: 2,
@@ -353,8 +340,6 @@ describe("Tokens page", () => {
   });
 
   it("should ignore tokens with unknown balance in USD when adding up the total", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
     const token1 = createUserToken({
       universeId: principal(1),
       balanceInUsd: 3,

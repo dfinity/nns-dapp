@@ -11,6 +11,25 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 137076
+
+### Application
+
+#### Added
+
+* Fiat values to confirmation screens
+
+#### Changed
+
+* Trim trailing zeros in transaction modals
+
+#### Fixed
+
+* Fix staking form error messages not clearing after correction
+* Fixed an issue where NNS neurons that had been disbursed but still had active maturity disbursements were not displayed in the dapp.
+
+### Operations
+
 ## Proposal 136984
 
 ### Application
