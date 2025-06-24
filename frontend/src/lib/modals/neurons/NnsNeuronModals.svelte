@@ -31,6 +31,7 @@
   } from "$lib/utils/neuron.utils";
   import type { NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import FollowNnsNeuronsByTopicModal from "./FollowNnsNeuronsByTopicModal.svelte";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;
   const close = () => (modal = undefined);
@@ -102,7 +103,10 @@
     {/if}
 
     {#if type === "follow-by-topic"}
-      <FollowNeuronsModal onClose={close} neuronId={neuron.neuronId} />
+      <FollowNnsNeuronsByTopicModal
+        closeModal={close}
+        neuronId={neuron.neuronId}
+      />
     {/if}
 
     {#if type === "add-hotkey"}
