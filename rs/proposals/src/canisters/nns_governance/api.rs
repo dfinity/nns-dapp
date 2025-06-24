@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-30_03-21-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-19_03-24-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -51,12 +51,17 @@ pub struct Follow {
     pub followees: Vec<NeuronId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct AccountIdentifier {
+    pub hash: serde_bytes::ByteBuf,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct Account {
     pub owner: Option<Principal>,
     pub subaccount: Option<serde_bytes::ByteBuf>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DisburseMaturity {
+    pub to_account_identifier: Option<AccountIdentifier>,
     pub to_account: Option<Account>,
     pub percentage_to_disburse: u32,
 }
@@ -146,10 +151,6 @@ pub struct StakeMaturity {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct MergeMaturity {
     pub percentage_to_merge: u32,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct AccountIdentifier {
-    pub hash: serde_bytes::ByteBuf,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Amount {
@@ -739,6 +740,7 @@ pub struct BallotInfo {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct MaturityDisbursement {
+    pub account_identifier_to_disburse_to: Option<AccountIdentifier>,
     pub timestamp_of_disbursement_seconds: Option<u64>,
     pub amount_e8s: Option<u64>,
     pub account_to_disburse_to: Option<Account>,
