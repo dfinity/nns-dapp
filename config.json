@@ -99,7 +99,6 @@
           "ENABLE_CKTESTBTC": false,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_DISBURSE_MATURITY": true,
-          "ENABLE_USD_VALUES": true,
           "ENABLE_PORTFOLIO_PAGE": true,
           "ENABLE_SNS_TOPICS": true,
           "ENABLE_NNS_TOPICS": false

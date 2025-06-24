@@ -1,7 +1,6 @@
 import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { ActionType } from "$lib/types/actions";
 import type { TokensTableOrder } from "$lib/types/tokens-page";
@@ -185,22 +184,7 @@ describe("TokensTable", () => {
     expect(await row2Po.getBalance()).toBe("1.14 TETRIS");
   });
 
-  it("should not render balance in USD with feature flag disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
-    const token1 = createUserToken({
-      universeId: OWN_CANISTER_ID,
-      balanceInUsd: 5,
-    });
-    const po = renderTable({ userTokensData: [token1] });
-
-    const rows = await po.getRows();
-    const rowPo = rows[0];
-
-    expect(await rowPo.hasBalanceInUsd()).toBe(false);
-  });
-
   it("should render unavailable USD balance", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
     });
@@ -213,7 +197,6 @@ describe("TokensTable", () => {
   });
 
   it("should render balance in USD", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
     const token1 = createUserToken({
       universeId: OWN_CANISTER_ID,
       balanceInUsd: 5.678,

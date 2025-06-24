@@ -7,7 +7,6 @@
   import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
-  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
@@ -76,11 +75,9 @@
 </script>
 
 <div class="wrapper" data-tid="tokens-page-component">
-  {#if $ENABLE_USD_VALUES}
-    <UsdValueBanner usdAmount={totalBalanceInUsd} {hasUnpricedTokens}>
-      <IconHeldTokens slot="icon" />
-    </UsdValueBanner>
-  {/if}
+  <UsdValueBanner usdAmount={totalBalanceInUsd} {hasUnpricedTokens}>
+    <IconHeldTokens slot="icon" />
+  </UsdValueBanner>
 
   <TokensTable
     userTokensData={shownTokensData}
