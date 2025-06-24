@@ -17,7 +17,6 @@
   import NnsWallet from "$lib/pages/NnsWallet.svelte";
   import SnsWallet from "$lib/pages/SnsWallet.svelte";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
-  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -26,7 +25,7 @@
 
   export let accountIdentifier: string | undefined | null = undefined;
 
-  $: if ($authSignedInStore && $ENABLE_USD_VALUES) {
+  $: if ($authSignedInStore) {
     loadIcpSwapTickers();
   }
 

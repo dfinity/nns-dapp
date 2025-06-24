@@ -99,7 +99,6 @@
           "ENABLE_CKTESTBTC": false,
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_DISBURSE_MATURITY": true,
-          "ENABLE_USD_VALUES": true,
           "ENABLE_PORTFOLIO_PAGE": true,
           "ENABLE_SNS_TOPICS": true,
           "ENABLE_NNS_TOPICS": false,
@@ -120,7 +119,7 @@
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2025-06-18",
         "IC_COMMIT_FOR_PROPOSALS": "release-2025-05-30_03-21-base",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-06-05_03-24-base"
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "rosetta-release-2.1.5"
       },
       "packtool": ""
     }
