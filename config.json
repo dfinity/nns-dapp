@@ -101,7 +101,8 @@
           "ENABLE_DISBURSE_MATURITY": true,
           "ENABLE_PORTFOLIO_PAGE": true,
           "ENABLE_SNS_TOPICS": true,
-          "ENABLE_NNS_TOPICS": false
+          "ENABLE_NNS_TOPICS": false,
+          "ENABLE_LAUNCHPAD_REDESIGN": false
         }
       }
     },
