@@ -8,6 +8,7 @@ import {
   compareTokensAlphabetically,
   compareTokensByBalance,
   compareTokensByImportance,
+  compareTokensByProject,
   compareTokensByUsdBalance,
   compareTokensIcpFirst,
   compareTokensWithBalanceOrImportedFirst,
@@ -63,10 +64,10 @@ describe("tokens-table.utils", () => {
     actions: [],
     domKey: "",
   } as UserTokenFailed;
+  const icpToken = createIcpUserToken();
 
   describe("compareTokensIcpFirst", () => {
     it("should keep ICP first", () => {
-      const icpToken = createIcpUserToken();
       const ckBTCUserToken = createUserToken(ckBTCTokenBase);
 
       expect(compareTokensIcpFirst(icpToken, ckBTCUserToken)).toEqual(-1);
@@ -116,6 +117,20 @@ describe("tokens-table.utils", () => {
       expect(
         compareTokensAlphabetically(annaToken, albertTokenLowerCase)
       ).toEqual(1);
+    });
+  });
+
+  describe("compareTokensByProject", () => {
+    const annaToken = createUserToken({ title: "Anna" });
+
+    it("should sort tokens by importance", () => {
+      expect(compareTokensByProject(annaToken, ckBTCToken)).toEqual(-1);
+      expect(compareTokensByProject(ckBTCToken, annaToken)).toEqual(1);
+    });
+
+    it("should prioritize ICP", () => {
+      expect(compareTokensByProject(annaToken, icpToken)).toEqual(1);
+      expect(compareTokensByProject(icpToken, ckBTCToken)).toEqual(-1);
     });
   });
 
