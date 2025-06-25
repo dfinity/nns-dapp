@@ -199,8 +199,8 @@ describe("Tokens page", () => {
     await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Positive balance",
       "Internet Computer",
+      "Positive balance",
     ]);
   });
 
