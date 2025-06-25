@@ -54,6 +54,11 @@ export const loadActionableProposals = async (): Promise<void> => {
     ...neuronManagementProposals,
   ].filter((proposal) => votableNeurons({ neurons, proposal }).length > 0);
 
+  const wasLimitReached =
+    Math.max(neuronManagementProposals.length, acceptVotesProposals.length) ===
+    DEFAULT_LIST_PAGINATION_LIMIT * MAX_ACTIONABLE_REQUEST_COUNT;
+  actionableNnsProposalsStore.setFetchLimitReached(wasLimitReached);
+
   actionableNnsProposalsStore.setProposals(
     sortProposalsByIdDescendingOrder(votableProposals)
   );

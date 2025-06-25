@@ -24,6 +24,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Increase open proposals fetch limit and display warning if reached
+
 #### Security
 
 #### Not Published

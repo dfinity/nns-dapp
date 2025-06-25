@@ -3,7 +3,7 @@ import {
   queryProposals,
   registerVote as registerVoteApi,
 } from "$lib/api/sns-governance.api";
-import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { createEnableFilteringBySnsTopicsStore } from "$lib/derived/sns-topics.derived";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
@@ -98,7 +98,7 @@ export const loadSnsProposals = async ({
     request: ({ certified, identity }) =>
       queryProposals({
         params: {
-          limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+          limit: DEFAULT_LIST_PAGINATION_LIMIT,
           beforeProposal: beforeProposalId,
           includeStatus,
           excludeType,
@@ -115,7 +115,7 @@ export const loadSnsProposals = async ({
         rootCanisterId,
         proposals,
         certified,
-        completed: proposals.length < DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+        completed: proposals.length < DEFAULT_LIST_PAGINATION_LIMIT,
       });
 
       const includeTopicFiltering = fromNullable(include_topic_filtering);
