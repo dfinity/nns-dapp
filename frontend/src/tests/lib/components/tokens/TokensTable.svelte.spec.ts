@@ -503,11 +503,15 @@ describe("TokensTable", () => {
         },
       ]);
       const po = renderTable({
-        userTokensData: [tokenIcp, tokenA],
+        userTokensData: [tokenIcp, tokenB, tokenA],
         orderStore: tokensTableOrderStore,
       });
 
-      expect(await getProjectNames(po)).toEqual(["Internet Computer", "A"]);
+      expect(await getProjectNames(po)).toEqual([
+        "Internet Computer",
+        "B",
+        "A",
+      ]);
 
       tokensTableOrderStore.set([
         {
@@ -516,7 +520,11 @@ describe("TokensTable", () => {
       ]);
       await tick();
 
-      expect(await getProjectNames(po)).toEqual(["A", "Internet Computer"]);
+      expect(await getProjectNames(po)).toEqual([
+        "Internet Computer",
+        "A",
+        "B",
+      ]);
     });
 
     it("should change order store based on clicked header", async () => {

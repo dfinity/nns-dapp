@@ -187,11 +187,11 @@ describe("tokens-table.utils", () => {
     const tokenImported = createTokenWithBalance({ id: 5, amount: 0n });
     const tokenNotImported = createTokenWithBalance({ id: 6, amount: 0n });
 
-    it("should compare by balance and tie breaks", () => {
+    it("should compare by ICP, balance and tie breaks", () => {
       const tokens = [
+        tokenIcp,
         tokenWithUsdBalance,
         tokenWithBalanceWithoutUsd,
-        tokenIcp,
         tokenCkbtcWithoutBalance,
         tokenImported,
         failedImportedToken,
