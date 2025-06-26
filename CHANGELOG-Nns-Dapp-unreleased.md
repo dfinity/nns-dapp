@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Updated and uniformed titles across pages
+* Improved accuracy of proposal voting progress indicators
 
 #### Deprecated
 
