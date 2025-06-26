@@ -310,7 +310,7 @@ describe("VotesResults", () => {
           expect(await po.getMajorityStatus()).toBe("failed");
         });
 
-        it("should render majority success when yes votes are more than double the no votes -> Critical proposal", async () => {
+        it("should render majority 'success' when yes votes exceed immediateMajorityPercent of exercised voting power in critical proposal", async () => {
           const po = renderComponent({
             immediateMajorityPercent: 67,
             standardMajorityPercent: 20,
@@ -320,21 +320,25 @@ describe("VotesResults", () => {
             deadlineTimestampSeconds,
           });
 
-          // yes is 61% and no votes are 30% for a critical proposal
+          // Total exercised votes = 6.1 + 3 = 9.1
+          // Yes percentage = (6.1 / 9.1) * 100 ≈ 67.03%
+          // 67.03% > 67%, so it should return "success"
           expect(await po.getMajorityStatus()).toBe("success");
         });
 
-        it("should render majority success when yes votes are more than double the no votes -> Critical proposal", async () => {
+        it("should render majority 'failed' when yes votes do not exceed immediateMajorityPercent in critical proposal", async () => {
           const po = renderComponent({
             immediateMajorityPercent: 67,
             standardMajorityPercent: 20,
-            yes: 6,
+            yes: 6.02,
             no: 3,
             total: 10,
             deadlineTimestampSeconds,
           });
 
-          // yes is 60% and no votes are 30% for a critical proposal
+          // Total exercised votes = 6.05 + 3 = 9.05
+          // Yes percentage = (6.05 / 9.05) * 100 = 66.85%
+          // 66.85% < 67%, so it should return "failed"
           expect(await po.getMajorityStatus()).toBe("failed");
         });
       });

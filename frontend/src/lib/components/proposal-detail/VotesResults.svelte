@@ -46,7 +46,9 @@
     if (immediateNoMajority) return "failed";
     if (canStillVote) return "default";
 
-    const majority = isCriticalProposalMode ? yes > 2 * no : yes > no;
+    const majority = isCriticalProposalMode
+      ? castVotesYes > immediateMajorityPercent
+      : yes > no;
     return majority ? "success" : "failed";
   };
 
