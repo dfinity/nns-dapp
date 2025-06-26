@@ -4,9 +4,11 @@
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
+  import { authSignedInStore } from "$lib/derived/auth.derived";
   import { snsProjectsActivePadStore } from "$lib/derived/sns/sns-projects.derived";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
+  import { loadSnsSwapCommitments } from "$lib/services/sns.services";
   import {
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
@@ -20,8 +22,6 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { Component } from "svelte";
-  import { authSignedInStore } from "../derived/auth.derived";
-  import { loadSnsSwapCommitments } from "../services/sns.services";
 
   loadIcpSwapTickers();
 
