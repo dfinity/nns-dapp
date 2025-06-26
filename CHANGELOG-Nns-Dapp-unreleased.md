@@ -14,8 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Support for a new SNS action type: `RegisterExtension`.
-
 #### Changed
 
 * Updated and uniformed titles across pages
