@@ -330,7 +330,7 @@ describe("VotesResults", () => {
           const po = renderComponent({
             immediateMajorityPercent: 67,
             standardMajorityPercent: 20,
-            yes: 6.02,
+            yes: 6.05,
             no: 3,
             total: 10,
             deadlineTimestampSeconds,
