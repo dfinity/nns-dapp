@@ -9,12 +9,14 @@
 </script>
 
 <div class="card-section" data-tid="card-section-component">
-  <h4>{title}</h4>
-  <div class="cards">
+  <h4 data-tid="title">{title}</h4>
+  <ul class="cards">
     {#each cards as { Component, props }}
-      <Component {...props} />
+      <li data-tid="card-entry">
+        <Component {...props} />
+      </li>
     {/each}
-  </div>
+  </ul>
 </div>
 
 <style lang="scss">
@@ -33,12 +35,17 @@
     gap: var(--padding-2x);
   }
 
-  .cards {
-    display: flex;
+  ul {
+    // reset default styles
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: 1fr;
     gap: var(--padding);
 
     @include media.min-width(medium) {
-      display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: var(--padding-2x);
     }
