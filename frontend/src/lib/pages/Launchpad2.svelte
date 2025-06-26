@@ -20,9 +20,16 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { Component } from "svelte";
+  import { authSignedInStore } from "../derived/auth.derived";
+  import { loadSnsSwapCommitments } from "../services/sns.services";
 
   loadIcpSwapTickers();
 
+  $effect(() => {
+    if ($authSignedInStore) {
+      loadSnsSwapCommitments();
+    }
+  });
   $effect(() => {
     if ($snsProposalsStoreIsLoading) {
       loadProposalsSnsCF({ omitLargeFields: false });
@@ -84,18 +91,16 @@
     filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
       projects: $snsProjectsActivePadStore,
-    })
+    }).sort(comparesByDecentralizationSaleOpenTimestampDesc)
   );
   const userCommittedSnsProjects = $derived(
-    launchedSnsProjects
-      .filter(
-        ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
-      )
-      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
+    launchedSnsProjects.filter(
+      ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
+    )
   );
   const notCommittedSnsProjects = $derived(
     launchedSnsProjects.filter(
-      ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n === 0n
+      ({ swapCommitment }) => !getCommitmentE8s(swapCommitment)
     )
   );
   const launchedSnsProjectsCards: ComponentWithProps[] = $derived(
