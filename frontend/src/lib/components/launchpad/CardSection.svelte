@@ -1,17 +1,19 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
+  import type { ComponentWithProps } from "$lib/types/svelte";
 
   type Props = {
     title: string;
-    children: Snippet;
+    cards: ComponentWithProps[];
   };
-  const { title, children }: Props = $props();
+  const { title, cards }: Props = $props();
 </script>
 
 <div class="card-section" data-tid="card-section-component">
   <h4>{title}</h4>
   <div class="cards">
-    {@render children()}
+    {#each cards as { Component, props }}
+      <Component {...props} />
+    {/each}
   </div>
 </div>
 

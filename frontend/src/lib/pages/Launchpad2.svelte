@@ -1,32 +1,25 @@
 <script lang="ts">
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
-  import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+  import CardSection from "$lib/components/launchpad/CardSection.svelte";
+  import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
+  import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
+  import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
+  import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
   import { snsProjectsActivePadStore } from "$lib/derived/sns/sns-projects.derived";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
-  import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { neuronsStore } from "$lib/stores/neurons.store";
-  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import {
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
   } from "$lib/stores/sns.store";
+  import type { ComponentWithProps } from "$lib/types/svelte";
+  import { compareProposalInfoByDeadlineTimestampSeconds } from "$lib/utils/portfolio.utils";
   import {
     comparesByDecentralizationSaleOpenTimestampDesc,
     filterProjectsStatus,
   } from "$lib/utils/projects.utils";
+  import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { Component } from "svelte";
-  import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
-  import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
-  import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
-  import type { CardItem } from "$lib/components/portfolio/StackedCards.svelte";
-  import { compareProposalInfoByDeadlineTimestampSeconds } from "$lib/utils/portfolio.utils";
-  import Projects from "../components/launchpad/Projects.svelte";
-  import CardSection from "../components/launchpad/CardSection.svelte";
-  import { getCommitmentE8s } from "../utils/sns.utils";
-  import ProjectCard from "../components/launchpad/ProjectCard.svelte";
 
   loadIcpSwapTickers();
 
@@ -42,23 +35,22 @@
       projects: $snsProjectsActivePadStore,
     })
   );
-  const launchedSnsCards = $derived(
+  const launchedSnsCards: ComponentWithProps[] = $derived(
     [...openSnsProjects]
       .sort(comparesByDecentralizationSaleOpenTimestampDesc)
       .reverse()
       .map((project) => project.summary)
-      .map<CardItem>((summary) => ({
-        // TODO: Svelte v5 migration - fix type
-        component: LaunchProjectCard as unknown as Component,
+      .map<ComponentWithProps>((summary) => ({
+        Component: LaunchProjectCard as unknown as Component,
         props: { summary },
       }))
   );
   const openSnsProposals = $derived($openSnsProposalsStore);
-  const openProposalCards = $derived(
+  const openProposalCards: ComponentWithProps[] = $derived(
     [...openSnsProposals]
       .sort(compareProposalInfoByDeadlineTimestampSeconds)
       .map((proposalInfo) => ({
-        component: NewSnsProposalCard as unknown as Component,
+        Component: NewSnsProposalCard as unknown as Component,
         props: { proposalInfo },
       }))
   );
@@ -76,14 +68,13 @@
       .sort(comparesByDecentralizationSaleOpenTimestampDesc)
       .reverse()
       .map((project) => project.summary)
-      .map<CardItem>((summary) => ({
-        // TODO: Svelte v5 migration - fix type
-        component: AdoptedProposalCard as unknown as Component,
+      .map<ComponentWithProps>((summary) => ({
+        Component: AdoptedProposalCard as unknown as Component,
         props: { summary },
       }))
   );
 
-  const newLaunchesCards: CardItem[] = $derived([
+  const newLaunchesCards: ComponentWithProps[] = $derived([
     ...launchedSnsCards,
     ...openProposalCards,
     ...adoptedSnsProposalsCards,
@@ -107,10 +98,14 @@
       ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n === 0n
     )
   );
-  const sortedLaunchedSnsProjects = $derived([
-    ...userCommittedSnsProjects,
-    ...notCommittedSnsProjects,
-  ]);
+  const launchedSnsProjectsCards: ComponentWithProps[] = $derived(
+    [...userCommittedSnsProjects, ...notCommittedSnsProjects].map(
+      (project) => ({
+        Component: ProjectCard as unknown as Component,
+        props: { project },
+      })
+    )
+  );
 </script>
 
 <main data-tid="launchpad-component">
@@ -121,19 +116,8 @@
     <div class="actions"> </div>
   </div>
 
-  <CardSection title="New Launches and Proposals">
-    {#each newLaunchesCards as card, i}
-      <div class="card-wrapper">
-        <card.component {...card.props} />
-      </div>
-    {/each}
-  </CardSection>
-
-  <CardSection title="Launched Projects">
-    {#each sortedLaunchedSnsProjects as project (project.rootCanisterId.toText())}
-      <ProjectCard {project} />
-    {/each}
-  </CardSection>
+  <CardSection title="New Launches and Proposals" cards={newLaunchesCards} />
+  <CardSection title="Launched Projects" cards={launchedSnsProjectsCards} />
 </main>
 
 <style lang="scss">
@@ -150,6 +134,7 @@
     line-height: 32px;
   }
   p {
+    margin: 0;
     font-family: "CircularXX TT";
     font-size: 16px;
     font-style: normal;
