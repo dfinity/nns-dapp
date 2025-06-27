@@ -13,6 +13,7 @@
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
@@ -43,6 +44,8 @@
     openSnsProposals,
     adoptedSnsProposals,
   }: Props = $props();
+
+  const isExchangeProviderDown = $derived($icpSwapUsdPricesStore === "error");
 
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
   const hasUnpricedTokens = $derived(
@@ -82,7 +85,7 @@
     userTokens.some((token) => token.balance === "loading")
   );
   const heldTokensCard: TokensCardType = $derived(
-    !$authSignedInStore
+    !$authSignedInStore || isExchangeProviderDown
       ? "full"
       : areHeldTokensLoading
         ? "skeleton"
@@ -95,7 +98,7 @@
     tableProjects.some((project) => project.isStakeLoading)
   );
   const stakedTokensCard: TokensCardType = $derived(
-    !$authSignedInStore
+    !$authSignedInStore || isExchangeProviderDown
       ? "full"
       : areStakedTokensLoading
         ? "skeleton"
@@ -121,6 +124,7 @@
     getTopHeldTokens({
       userTokens: userTokens,
       isSignedIn: $authSignedInStore,
+      areExchangePairsAvailable: !isExchangeProviderDown,
     })
   );
 
@@ -128,6 +132,7 @@
     getTopStakedTokens({
       projects: tableProjects,
       isSignedIn: $authSignedInStore,
+      areExchangePairsAvailable: !isExchangeProviderDown,
     })
   );
 

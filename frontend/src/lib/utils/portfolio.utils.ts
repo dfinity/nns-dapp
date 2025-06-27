@@ -10,6 +10,7 @@ import {
   mergeComparators,
 } from "$lib/utils/sort.utils";
 import {
+  compareByNeuronCount,
   compareByProjectTitle,
   compareIcpFirst,
 } from "$lib/utils/staking.utils";
@@ -34,9 +35,19 @@ const compareTokensByUsdBalance = createDescendingComparator(
   (token: UserTokenData) => token?.balanceInUsd ?? 0 > 0
 );
 
+const compareTokensByBalance = createDescendingComparator(
+  (token: UserTokenData) => token?.balance ?? 0 > 0
+);
+
 const compareTokens = mergeComparators([
   compareTokensIcpFirst,
   compareTokensByUsdBalance,
+  compareTokensByImportance,
+]);
+
+const compareTokensWhenExchangeProviderIsDown = mergeComparators([
+  compareTokensIcpFirst,
+  compareTokensByBalance,
   compareTokensByImportance,
 ]);
 
@@ -51,21 +62,30 @@ const compareTokens = mergeComparators([
 export const getTopHeldTokens = ({
   userTokens,
   isSignedIn = false,
+  areExchangePairsAvailable = true,
 }: {
   userTokens: UserToken[];
   isSignedIn?: boolean;
+  areExchangePairsAvailable?: boolean;
 }): UserTokenData[] => {
   const topTokens = userTokens
     .filter(isUserTokenData)
     .filter(({ universeId }) =>
       filterCyclesTransferStation({ universeId: universeId.toText() })
     )
-    .sort(compareTokens)
+    .sort(
+      areExchangePairsAvailable
+        ? compareTokensWhenExchangeProviderIsDown
+        : compareTokens
+    )
     .slice(0, MAX_NUMBER_OF_ITEMS);
 
   if (!isSignedIn) return topTokens;
 
-  return topTokens.filter((token) => token?.balanceInUsd ?? 0 > 0);
+  const propertyToFilterBy = areExchangePairsAvailable
+    ? "balanceInUsd"
+    : "balance";
+  return topTokens.filter((token) => token?.[propertyToFilterBy] ?? 0 > 0);
 };
 
 const compareProjectsByUsdBalance = createDescendingComparator(
@@ -75,6 +95,12 @@ const compareProjectsByUsdBalance = createDescendingComparator(
 const compareProjects = mergeComparators([
   compareIcpFirst,
   compareProjectsByUsdBalance,
+  compareByProjectTitle,
+]);
+
+const compareProjectsWhenExchangeProviderIsDown = mergeComparators([
+  compareIcpFirst,
+  compareByNeuronCount,
   compareByProjectTitle,
 ]);
 
@@ -89,18 +115,27 @@ const compareProjects = mergeComparators([
 export const getTopStakedTokens = ({
   projects,
   isSignedIn = false,
+  areExchangePairsAvailable = true,
 }: {
   projects: TableProject[];
   isSignedIn?: boolean;
+  areExchangePairsAvailable?: boolean;
 }): TableProject[] => {
   const topProjects = [...projects]
     .filter(filterCyclesTransferStation)
-    .sort(compareProjects)
+    .sort(
+      areExchangePairsAvailable
+        ? compareProjects
+        : compareProjectsWhenExchangeProviderIsDown
+    )
     .slice(0, MAX_NUMBER_OF_ITEMS);
 
   if (!isSignedIn) return topProjects;
 
-  return topProjects.filter((project) => project?.stakeInUsd ?? 0 > 0);
+  const propertyToFilterBy = areExchangePairsAvailable ? "stakeInUsd" : "stake";
+  return topProjects.filter(
+    (project) => project?.[propertyToFilterBy] ?? 0 > 0
+  );
 };
 
 /**

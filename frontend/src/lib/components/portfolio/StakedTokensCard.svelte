@@ -8,6 +8,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
   import type { TableProject } from "$lib/types/staking";
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
@@ -106,10 +107,15 @@
               role="cell"
               aria-label={`${stakedToken.title} USD: ${stakedToken?.stakeInUsd ?? 0}`}
             >
-              $<PrivacyAwareAmount
-                value={formatNumber(stakedToken?.stakeInUsd ?? 0)}
-                length={3}
-              />
+              $
+              {#if $icpSwapTickersStore !== "error"}
+                <PrivacyAwareAmount
+                  value={formatNumber(stakedToken?.stakeInUsd ?? 0)}
+                  length={3}
+                />
+              {:else}
+                {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+              {/if}
             </div>
             <div
               class="stake-native"
