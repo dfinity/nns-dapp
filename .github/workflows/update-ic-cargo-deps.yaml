@@ -3,7 +3,7 @@ name: Update IC Cargo Dependencies
 on:
   schedule:
     # Check for new IC releases every Sunday at 7:30am UTC.
-    - cron: '30 7 * * SUN'
+    - cron: "30 7 * * SUN"
   workflow_dispatch:
 jobs:
   update-ic-cargo-deps:
@@ -33,7 +33,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           base: main
-          reviewers: mstrasinskis, governance-team, yhabib
+          reviewers: mstrasinskis, yhabib
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: |
             Cargo.lock
@@ -45,7 +45,7 @@ jobs:
           branch: bot-ic-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'bot: Update IC Cargo Dependencies to ${{ steps.latest.outputs.latest_release }}'
+          title: "bot: Update IC Cargo Dependencies to ${{ steps.latest.outputs.latest_release }}"
           body: |
             # Motivation
             A newer release of the internet computer is available.
