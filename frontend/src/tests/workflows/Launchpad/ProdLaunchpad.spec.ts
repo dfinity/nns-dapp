@@ -31,6 +31,7 @@ describe("Launchpad", () => {
     vi.spyOn(proposalsApi, "queryProposals").mockImplementation(() =>
       Promise.resolve([])
     );
+    vi.spyOn(console, "log").mockImplementation(() => {});
 
     vi.mocked(queryFinalizationStatus).mockResolvedValue({
       auto_finalize_swap_response: [],
