@@ -47,7 +47,7 @@ pub struct UpstreamData {
     pub meta: GetMetadataResponse,
     /// Governance metrics such as the last ledger block timestamp and
     /// number of recently submitted proposals.
-    pub metrics: GetMetricsResponse,
+    pub metrics: Option<GetMetricsResponse>,
     /// Governance functions.
     pub parameters: ListNervousSystemFunctionsResponse,
     /// Governance parameters such as tokenomics.
@@ -79,9 +79,9 @@ impl Default for UpstreamData {
             canister_ids: DeployedSns::default(),
             list_sns_canisters: ListSnsCanistersResponse::default(),
             meta: GetMetadataResponse::default(),
-            metrics: GetMetricsResponse {
+            metrics: Some(GetMetricsResponse {
                 get_metrics_result: None,
-            },
+            }),
             parameters: ListNervousSystemFunctionsResponse::default(),
             nervous_system_parameters: None,
             swap_state: GetStateResponse::default(),
