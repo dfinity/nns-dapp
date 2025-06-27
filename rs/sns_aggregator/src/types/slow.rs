@@ -49,6 +49,8 @@ pub struct SlowSnsData {
     pub lifecycle: Option<GetLifecycleResponse>,
     /// The topics and the corresponding proposal types of this SNS.
     pub topics: Option<ListTopicsResponse>,
+
+    pub test_constant: i32,
 }
 
 impl From<&UpstreamData> for SlowSnsData {
@@ -69,6 +71,7 @@ impl From<&UpstreamData> for SlowSnsData {
             derived_state,
             lifecycle,
             topics,
+            test_constant
         } = upstream;
         SlowSnsData {
             index: *index,
@@ -87,6 +90,7 @@ impl From<&UpstreamData> for SlowSnsData {
             derived_state: derived_state.clone(),
             lifecycle: lifecycle.clone(),
             topics: topics.clone(),
+            test_constant: test_constant.clone(),
         }
     }
 }

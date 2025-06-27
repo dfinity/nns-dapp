@@ -66,4 +66,6 @@ pub struct UpstreamData {
     pub lifecycle: Option<GetLifecycleResponse>,
     /// The topics and the corresponding proposal types of this SNS.
     pub topics: Option<ListTopicsResponse>,
+    /// The topics and the corresponding proposal types of this SNS.
+    pub test_constant: i32,
 }
