@@ -27,6 +27,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Increase open proposals fetch limit and display warning if reached
+* Improved disburse button feedback when neuron has insufficient stake
 
 #### Security
 
