@@ -29,7 +29,7 @@ pub struct SlowSnsData {
     pub meta: SlowMetadata,
     /// Governance metrics such as the last ledger block timestamp and
     /// number of recently submitted proposals.
-    pub metrics: GetMetricsResponse,
+    pub metrics: Option<GetMetricsResponse>,
     /// Governance functions.
     pub parameters: ListNervousSystemFunctionsResponse,
     /// Governance parameters such as tokenomics.

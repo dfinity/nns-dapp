@@ -135,7 +135,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
     let arg: types::GetMetricsRequest = GetMetricsRequest {
         time_window_seconds: Some(TIME_WINDOW_SECONDS),
     };
-    let metrics: types::GetMetricsResponse = ic_cdk::api::call::call(governance_canister_id, "get_metrics", (arg,))
+    let metrics = ic_cdk::api::call::call(governance_canister_id, "get_metrics", (arg,))
         .await
         .map(|response: (_,)| response.0)
         .map_err(|err| {
