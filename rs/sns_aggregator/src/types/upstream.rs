@@ -67,5 +67,5 @@ pub struct UpstreamData {
     /// The topics and the corresponding proposal types of this SNS.
     pub topics: Option<ListTopicsResponse>,
     /// The topics and the corresponding proposal types of this SNS.
-    pub test_constant: i32,
+    pub test_constant: Option<i32>,
 }

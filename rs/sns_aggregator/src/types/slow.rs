@@ -50,7 +50,7 @@ pub struct SlowSnsData {
     /// The topics and the corresponding proposal types of this SNS.
     pub topics: Option<ListTopicsResponse>,
 
-    pub test_constant: i32,
+    pub test_constant: Option<i32>,
 }
 
 impl From<&UpstreamData> for SlowSnsData {
