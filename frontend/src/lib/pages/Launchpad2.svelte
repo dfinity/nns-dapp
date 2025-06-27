@@ -81,13 +81,11 @@
         props: { summary },
       }))
   );
-
   const newLaunchesCards: ComponentWithProps[] = $derived([
     ...launchedSnsCards,
     ...openProposalCards,
     ...adoptedSnsProposalsCards,
   ]);
-
   const launchedSnsProjects = $derived(
     filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
@@ -114,18 +112,21 @@
   );
 </script>
 
-<main data-tid="launchpad-component">
+<main data-tid="launchpad2-component">
   <div class="header">
     <h3>{$i18n.launchpad.headline}</h3>
     <p>{$i18n.launchpad.subheadline}</p>
   </div>
   <section>
     <h4>{$i18n.launchpad.upcoming_launches}</h4>
-    <CardList cards={newLaunchesCards} />
+    <CardList testId="upcoming-launches-list" cards={newLaunchesCards} />
   </section>
   <section>
     <h4>{$i18n.launchpad.launched_projects}</h4>
-    <CardList cards={launchedSnsProjectsCards} />
+    <CardList
+      testId="launched-projects-list"
+      cards={launchedSnsProjectsCards}
+    />
   </section>
 </main>
 
@@ -148,6 +149,7 @@
     padding: 0;
     max-width: none;
   }
+
   h4 {
     font-size: 16px;
     font-weight: 450;
