@@ -4,7 +4,7 @@
 
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import { IconCheck, IconCopy } from "@dfinity/gix-components";
+  import { IconCheck, IconCopy, Tooltip } from "@dfinity/gix-components";
 
   type Props = {
     value: string;
@@ -25,20 +25,21 @@
   };
 </script>
 
-<button
-  data-tid="copy-component"
-  onclick={copyToClipboard}
-  aria-label={`${copied ? $i18n.core.copied : $i18n.core.copy}: ${value}`}
-  class:copied
-  disabled={copied}
-  title={copied ? $i18n.core.copied : $i18n.core.copy}
->
-  {#if copied}
-    <IconCheck size="20" />
-  {:else}
-    <IconCopy size="20" />
-  {/if}
-</button>
+<Tooltip text={copied ? $i18n.core.copied : $i18n.core.copy}>
+  <button
+    data-tid="copy-component"
+    onclick={copyToClipboard}
+    aria-label={`${copied ? $i18n.core.copied : $i18n.core.copy}: ${value}`}
+    class:copied
+    disabled={copied}
+  >
+    {#if copied}
+      <IconCheck size="20" />
+    {:else}
+      <IconCopy size="20" />
+    {/if}
+  </button>
+</Tooltip>
 
 <style lang="scss">
   button {
