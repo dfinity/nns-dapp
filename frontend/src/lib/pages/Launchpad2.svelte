@@ -1,5 +1,4 @@
 <script lang="ts">
-  import CardSection from "$lib/components/launchpad/CardSection.svelte";
   import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
@@ -22,6 +21,7 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { Component } from "svelte";
+  import CardList from "$lib/components/launchpad/CardList.svelte";
 
   loadIcpSwapTickers();
 
@@ -115,14 +115,17 @@
 
 <main data-tid="launchpad-component">
   <div class="header">
-    <h2>Discover SNS Projects</h2>
+    <h3>Discover SNS Projects</h3>
     <p>See upcoming and available SNS projects</p>
-
-    <div class="actions"> </div>
   </div>
-
-  <CardSection title="New Launches and Proposals" cards={newLaunchesCards} />
-  <CardSection title="Launched Projects" cards={launchedSnsProjectsCards} />
+  <section>
+    <h4>New Launches and Proposals</h4>
+    <CardList cards={newLaunchesCards} />
+  </section>
+  <section>
+    <h4>Launched Projects</h4>
+    <CardList cards={launchedSnsProjectsCards} />
+  </section>
 </main>
 
 <style lang="scss">
@@ -132,12 +135,24 @@
     gap: var(--padding-3x);
   }
 
-  h2 {
+  h3 {
     font-family: "CircularXX TT";
     font-size: 24px;
     font-weight: 500;
     line-height: 32px;
   }
+
+  section {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+  }
+  h4 {
+    font-size: 16px;
+    font-weight: 450;
+    line-height: 20px;
+  }
+
   p {
     margin: 0;
     font-family: "CircularXX TT";

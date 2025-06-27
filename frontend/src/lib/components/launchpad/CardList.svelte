@@ -2,32 +2,21 @@
   import type { ComponentWithProps } from "$lib/types/svelte";
 
   type Props = {
-    title: string;
     cards: ComponentWithProps[];
   };
-  const { title, cards }: Props = $props();
+  const { cards }: Props = $props();
 </script>
 
-<div class="card-section" data-tid="card-section-component">
-  <h4 data-tid="title">{title}</h4>
-  <ul class="cards">
-    {#each cards as { Component, props }}
-      <li data-tid="card-entry">
-        <Component {...props} />
-      </li>
-    {/each}
-  </ul>
-</div>
+<ul data-tid="card-section-component">
+  {#each cards as { Component, props }}
+    <li data-tid="card-entry">
+      <Component {...props} />
+    </li>
+  {/each}
+</ul>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
-
-  h4 {
-    // TODO(launchpad): variables?
-    font-size: 16px;
-    font-weight: 450;
-    line-height: 20px;
-  }
 
   .card-section {
     display: flex;
