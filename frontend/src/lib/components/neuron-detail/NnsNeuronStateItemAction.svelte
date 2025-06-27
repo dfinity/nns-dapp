@@ -11,23 +11,24 @@
     ageMultiplier,
     getStateInfo,
     isNeuronControllable,
-    type StateInfo,
   } from "$lib/utils/neuron.utils";
   import { keyOf } from "$lib/utils/utils";
   import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-  import { ICPToken } from "@dfinity/utils";
+  import { ICPToken, nonNullish } from "@dfinity/utils";
 
-  export let neuron: NeuronInfo;
+  type Props = {
+    neuron: NeuronInfo;
+  };
+  const { neuron }: Props = $props();
 
-  let stateInfo: StateInfo;
-  $: stateInfo = getStateInfo(neuron.state);
-
-  let isControllable: boolean;
-  $: isControllable = isNeuronControllable({
-    neuron,
-    identity: $authStore.identity,
-    accounts: $icpAccountsStore,
-  });
+  const stateInfo = $derived(getStateInfo(neuron.state));
+  const isControllable = $derived(
+    isNeuronControllable({
+      neuron,
+      identity: $authStore.identity,
+      accounts: $icpAccountsStore,
+    })
+  );
 </script>
 
 <CommonItemAction
@@ -38,8 +39,8 @@
   tooltipId="neuron-state-info-icon"
 >
   <svelte:fragment slot="icon">
-    {#if stateInfo?.Icon !== undefined}
-      <svelte:component this={stateInfo.Icon} />
+    {#if nonNullish(stateInfo?.Icon)}
+      <stateInfo.Icon />
     {/if}
   </svelte:fragment>
   <span slot="title" data-tid="state-text">
