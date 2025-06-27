@@ -233,7 +233,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         derived_state: derived_state_response,
         lifecycle: lifecycle_response,
         topics: list_topics_response,
-        test_constant: 1
+        test_constant: 1,
     };
     State::insert_sns(index, &slow_data)
         .map_err(|err| crate::state::log(format!("Failed to create certified assets: {err:?}")))

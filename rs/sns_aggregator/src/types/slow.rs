@@ -71,7 +71,7 @@ impl From<&UpstreamData> for SlowSnsData {
             derived_state,
             lifecycle,
             topics,
-            test_constant
+            test_constant,
         } = upstream;
         SlowSnsData {
             index: *index,
