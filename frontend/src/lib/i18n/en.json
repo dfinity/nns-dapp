@@ -889,6 +889,12 @@
     "project_logo": "project logo",
     "no_proposals": "There are no decentralisation swap proposals open at the moment."
   },
+  "launchpad": {
+    "headline": "Discover SNS Projects",
+    "subheadline": "See upcoming and available SNS projects",
+    "upcoming_launches": "New Launches and Proposals",
+    "launched_projects": "Launched Projects"
+  },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
     "link_to_dashboard": "ICP Dashboard",
