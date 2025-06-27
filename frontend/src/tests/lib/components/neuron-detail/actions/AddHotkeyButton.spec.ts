@@ -9,7 +9,7 @@ describe("AddHotkeyButton", () => {
     const { getByText } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
-        testComponent: AddHotkeyButton,
+        TestComponent: AddHotkeyButton,
       },
     });
 
@@ -20,7 +20,7 @@ describe("AddHotkeyButton", () => {
     const { container, queryByTestId } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
-        testComponent: AddHotkeyButton,
+        TestComponent: AddHotkeyButton,
       },
     });
 

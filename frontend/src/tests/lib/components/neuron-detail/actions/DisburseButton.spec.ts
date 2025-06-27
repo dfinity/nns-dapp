@@ -7,26 +7,24 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("DisburseButton", () => {
-  it("renders title", () => {
-    const { getByText } = render(NeuronContextTest, {
+  const renderComponent = () => {
+    return render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
-        testComponent: DisburseButton,
+        TestComponent: DisburseButton,
       },
     });
+  };
 
+  it("renders title", () => {
+    const { getByText } = renderComponent();
     expect(getByText(en.neuron_detail.disburse)).toBeInTheDocument();
   });
 
   it("opens disburse nns neuron modal", async () => {
     // To avoid that the modal requests the accounts
     setAccountsForTesting(mockAccountsStoreData);
-    const { container, queryByTestId } = render(NeuronContextTest, {
-      props: {
-        neuron: mockNeuron,
-        testComponent: DisburseButton,
-      },
-    });
+    const { container, queryByTestId } = renderComponent();
 
     const buttonElement = container.querySelector("button");
     expect(buttonElement).not.toBeNull();
