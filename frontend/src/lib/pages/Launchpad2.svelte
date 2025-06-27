@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CardList from "$lib/components/launchpad/CardList.svelte";
   import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
@@ -8,6 +9,7 @@
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { loadSnsSwapCommitments } from "$lib/services/sns.services";
+  import { i18n } from "$lib/stores/i18n";
   import {
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
@@ -21,7 +23,6 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { Component } from "svelte";
-  import CardList from "$lib/components/launchpad/CardList.svelte";
 
   loadIcpSwapTickers();
 
@@ -115,15 +116,15 @@
 
 <main data-tid="launchpad-component">
   <div class="header">
-    <h3>Discover SNS Projects</h3>
-    <p>See upcoming and available SNS projects</p>
+    <h3>{$i18n.launchpad.headline}</h3>
+    <p>{$i18n.launchpad.subheadline}</p>
   </div>
   <section>
-    <h4>New Launches and Proposals</h4>
+    <h4>{$i18n.launchpad.upcoming_launches}</h4>
     <CardList cards={newLaunchesCards} />
   </section>
   <section>
-    <h4>Launched Projects</h4>
+    <h4>{$i18n.launchpad.launched_projects}</h4>
     <CardList cards={launchedSnsProjectsCards} />
   </section>
 </main>
