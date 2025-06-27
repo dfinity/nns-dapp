@@ -155,6 +155,7 @@
 
   p {
     margin: 0;
+
     font-family: "CircularXX TT";
     font-size: 16px;
     font-style: normal;
