@@ -1,20 +1,16 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-    type NnsNeuronContext,
-  } from "$lib/types/nns-neuron-detail.context";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import { getContext } from "svelte";
+  import type { NeuronInfo } from "@dfinity/nns";
 
-  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
-    NNS_NEURON_CONTEXT_KEY
-  );
+  type Props = {
+    neuron: NeuronInfo;
+  };
+  const { neuron }: Props = $props();
 </script>
 
 <button
   class="secondary"
-  on:click={() =>
-    openNnsNeuronModal({ type: "disburse", data: { neuron: $store.neuron } })}
+  onclick={() => openNnsNeuronModal({ type: "disburse", data: { neuron } })}
   data-tid="disburse-button">{$i18n.neuron_detail.disburse}</button
 >

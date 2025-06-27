@@ -5,14 +5,17 @@
   import { isVesting } from "$lib/utils/sns-neuron.utils";
   import type { SnsNeuron } from "@dfinity/sns";
 
-  export let neuron: SnsNeuron;
+  type Props = {
+    neuron: SnsNeuron;
+  };
+  const { neuron }: Props = $props();
 </script>
 
 <VestingTooltipWrapper {neuron}>
   <button
     class="secondary"
     disabled={isVesting(neuron)}
-    on:click={() => openSnsNeuronModal({ type: "disburse" })}
+    onclick={() => openSnsNeuronModal({ type: "disburse" })}
     data-tid="disburse-button">{$i18n.neuron_detail.disburse}</button
   >
 </VestingTooltipWrapper>
