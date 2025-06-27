@@ -774,6 +774,7 @@
     "stake": "Stake",
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
+    "disburse_stake_disabled_tooltip_zero": "Currently, you do not have any stake available to disburse.",
     "stake_maturity_disabled_tooltip": "Currently, you do not have any maturity available to stake into this neuron.",
     "stake_maturity_disabled_tooltip_max_disbursements": "The maximum of $maxDisbursements active maturity disbursements for this neuron has been reached. Please wait for a disbursement to complete before initiating a new one.",
     "disburse_maturity_disabled_tooltip_zero": "Currently, you do not have any maturity available to disburse.",
