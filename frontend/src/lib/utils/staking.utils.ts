@@ -247,6 +247,16 @@ export const compareByStakeInUsd = createDescendingComparator(
   (project: TableProject) => getUsdStake(project)
 );
 
+export const compareByNeuron = mergeComparators([
+  compareIcpFirst,
+  compareByNeuronCount,
+]);
+
+export const compareByProject = mergeComparators([
+  compareIcpFirst,
+  compareByProjectTitle,
+]);
+
 // This is used when clicking the "Stake" header, but in addition to sorting
 // by stake, it has a number of tie breakers.
 // Note that it tries to sort by USD stake but also sorts tokens with neurons
