@@ -1,13 +1,10 @@
 <script lang="ts">
   import CardList from "$lib/components/launchpad/CardList.svelte";
   import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
-  import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
-  import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
-  import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
+  import UpcomingLaunchesCards from "$lib/components/launchpad/UpcomingLaunchesCards.svelte";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { ComponentWithProps } from "$lib/types/svelte";
-  import { compareProposalInfoByDeadlineTimestampSeconds } from "$lib/utils/portfolio.utils";
   import {
     comparesByDecentralizationSaleOpenTimestampDesc,
     filterProjectsStatus,
@@ -26,45 +23,6 @@
   const { snsProjects, openSnsProposals, adoptedSnsProposals }: Props =
     $props();
 
-  const openSnsProjects = $derived(
-    filterProjectsStatus({
-      swapLifecycle: SnsSwapLifecycle.Open,
-      projects: snsProjects,
-    })
-  );
-  const launchedSnsCards: ComponentWithProps[] = $derived(
-    [...openSnsProjects]
-      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-      .reverse()
-      .map((project) => project.summary)
-      .map<ComponentWithProps>((summary) => ({
-        Component: LaunchProjectCard as unknown as Component,
-        props: { summary },
-      }))
-  );
-  const openProposalCards: ComponentWithProps[] = $derived(
-    [...openSnsProposals]
-      .sort(compareProposalInfoByDeadlineTimestampSeconds)
-      .map((proposalInfo) => ({
-        Component: NewSnsProposalCard as unknown as Component,
-        props: { proposalInfo },
-      }))
-  );
-  const adoptedSnsProposalsCards = $derived(
-    [...adoptedSnsProposals]
-      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-      .reverse()
-      .map((project) => project.summary)
-      .map<ComponentWithProps>((summary) => ({
-        Component: AdoptedProposalCard as unknown as Component,
-        props: { summary },
-      }))
-  );
-  const newLaunchesCards: ComponentWithProps[] = $derived([
-    ...launchedSnsCards,
-    ...openProposalCards,
-    ...adoptedSnsProposalsCards,
-  ]);
   const launchedSnsProjects = $derived(
     filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
@@ -98,7 +56,11 @@
   </div>
   <section>
     <h4>{$i18n.launchpad.upcoming_launches}</h4>
-    <CardList testId="upcoming-launches-list" cards={newLaunchesCards} />
+    <UpcomingLaunchesCards
+      {snsProjects}
+      {openSnsProposals}
+      {adoptedSnsProposals}
+    />
   </section>
   <section>
     <h4>{$i18n.launchpad.launched_projects}</h4>
