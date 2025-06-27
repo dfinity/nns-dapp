@@ -4,8 +4,14 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class CardListPo extends BasePageObject {
   static readonly TID = "card-list-component";
 
-  static under(element: PageObjectElement): CardListPo {
-    return new CardListPo(element.byTestId(CardListPo.TID));
+  static under({
+    element,
+    testId = CardListPo.TID,
+  }: {
+    element: PageObjectElement;
+    testId?: string;
+  }): CardListPo {
+    return new CardListPo(element.byTestId(testId));
   }
 
   static async allUnder(element: PageObjectElement): Promise<CardListPo[]> {

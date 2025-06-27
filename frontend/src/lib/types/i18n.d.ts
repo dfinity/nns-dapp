@@ -923,6 +923,13 @@ interface I18nSns_launchpad {
   no_proposals: string;
 }
 
+interface I18nLaunchpad {
+  headline: string;
+  subheadline: string;
+  upcoming_launches: string;
+  launched_projects: string;
+}
+
 interface I18nSns_project_detail {
   swap_proposal: string;
   link_to_dashboard: string;
@@ -1632,6 +1639,7 @@ interface I18n {
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
+  launchpad: I18nLaunchpad;
   sns_project_detail: I18nSns_project_detail;
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
