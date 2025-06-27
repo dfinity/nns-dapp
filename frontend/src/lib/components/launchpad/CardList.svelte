@@ -7,7 +7,7 @@
   const { cards }: Props = $props();
 </script>
 
-<ul data-tid="card-section-component">
+<ul data-tid="card-list-component">
   {#each cards as { Component, props }}
     <li data-tid="card-entry">
       <Component {...props} />
