@@ -187,20 +187,20 @@ describe("Tokens page", () => {
     ]);
   });
 
-  it("should not hide ICP even with zero balance", async () => {
+  it("should not hide ICP even with zero balance and should prioritize it", async () => {
     const po = renderPage([icpZeroBalance, positiveBalance]);
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Positive balance",
       "Internet Computer",
+      "Positive balance",
     ]);
 
     await po.getSettingsButtonPo().click();
     await po.getHideZeroBalancesTogglePo().getTogglePo().toggle();
 
     expect(await po.getTokensTable().getTokenNames()).toEqual([
-      "Positive balance",
       "Internet Computer",
+      "Positive balance",
     ]);
   });
 

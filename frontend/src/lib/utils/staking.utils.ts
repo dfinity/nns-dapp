@@ -262,9 +262,9 @@ export const compareByProject = mergeComparators([
 // Note that it tries to sort by USD stake but also sorts tokens with neurons
 // above tokens without neurons if there is no exchange rate for that project.
 export const compareByStake = mergeComparators([
+  compareIcpFirst,
   compareByStakeInUsd,
   comparePositiveNeuronsFirst,
-  compareIcpFirst,
 ]);
 
 export const sortTableProjects = (projects: TableProject[]): TableProject[] => {

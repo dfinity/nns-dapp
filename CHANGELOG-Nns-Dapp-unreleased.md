@@ -18,6 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 * Updated and uniformed titles across pages
 * Improved accuracy of proposal voting progress indicators
+* Prioritize ICP in tokens and staking tables
 
 #### Deprecated
 
