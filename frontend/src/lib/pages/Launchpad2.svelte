@@ -4,16 +4,8 @@
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
-  import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { snsProjectsActivePadStore } from "$lib/derived/sns/sns-projects.derived";
-  import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
-  import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
-  import { loadSnsSwapCommitments } from "$lib/services/sns.services";
+  import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    openSnsProposalsStore,
-    snsProposalsStoreIsLoading,
-  } from "$lib/stores/sns.store";
   import type { ComponentWithProps } from "$lib/types/svelte";
   import { compareProposalInfoByDeadlineTimestampSeconds } from "$lib/utils/portfolio.utils";
   import {
@@ -21,26 +13,23 @@
     filterProjectsStatus,
   } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
+  import type { ProposalInfo } from "@dfinity/nns";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { Component } from "svelte";
 
-  loadIcpSwapTickers();
+  type Props = {
+    snsProjects: SnsFullProject[];
+    openSnsProposals: ProposalInfo[];
+    adoptedSnsProposals: SnsFullProject[];
+  };
 
-  $effect(() => {
-    if ($authSignedInStore) {
-      loadSnsSwapCommitments();
-    }
-  });
-  $effect(() => {
-    if ($snsProposalsStoreIsLoading) {
-      loadProposalsSnsCF({ omitLargeFields: false });
-    }
-  });
+  const { snsProjects, openSnsProposals, adoptedSnsProposals }: Props =
+    $props();
 
   const openSnsProjects = $derived(
     filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Open,
-      projects: $snsProjectsActivePadStore,
+      projects: snsProjects,
     })
   );
   const launchedSnsCards: ComponentWithProps[] = $derived(
@@ -53,7 +42,6 @@
         props: { summary },
       }))
   );
-  const openSnsProposals = $derived($openSnsProposalsStore);
   const openProposalCards: ComponentWithProps[] = $derived(
     [...openSnsProposals]
       .sort(compareProposalInfoByDeadlineTimestampSeconds)
@@ -61,15 +49,6 @@
         Component: NewSnsProposalCard as unknown as Component,
         props: { proposalInfo },
       }))
-  );
-  // Upcoming SNS projects
-  const adoptedSnsProposals = $derived(
-    filterProjectsStatus({
-      // TODO(launchpad): restore me!
-      // swapLifecycle: SnsSwapLifecycle.Adopted,
-      swapLifecycle: SnsSwapLifecycle.Open,
-      projects: $snsProjectsActivePadStore,
-    })
   );
   const adoptedSnsProposalsCards = $derived(
     [...adoptedSnsProposals]
@@ -89,7 +68,7 @@
   const launchedSnsProjects = $derived(
     filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
-      projects: $snsProjectsActivePadStore,
+      projects: snsProjects,
     }).sort(comparesByDecentralizationSaleOpenTimestampDesc)
   );
   const userCommittedSnsProjects = $derived(
