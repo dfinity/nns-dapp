@@ -57,7 +57,7 @@
   </svelte:fragment>
   {#if isControllable}
     {#if neuron.state === NeuronState.Dissolved}
-      <DisburseButton />
+      <DisburseButton {neuron} />
     {:else}
       <DissolveActionButton neuronState={neuron.state} />
     {/if}
