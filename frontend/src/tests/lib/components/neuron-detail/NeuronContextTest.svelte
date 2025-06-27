@@ -25,6 +25,6 @@
   });
 </script>
 
-<TestComponent {neuron} {...componentProps}></TestComponent>
+<TestComponent {neuron} {...componentProps} />
 
 <NnsNeuronModals />
