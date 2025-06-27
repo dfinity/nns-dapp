@@ -7,10 +7,10 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("DisburseButton", () => {
-  const renderComponent = () => {
+  const renderComponent = (neuron = mockNeuron) => {
     return render(NeuronContextTest, {
       props: {
-        neuron: mockNeuron,
+        neuron,
         TestComponent: DisburseButton,
       },
     });
@@ -28,10 +28,26 @@ describe("DisburseButton", () => {
 
     const buttonElement = container.querySelector("button");
     expect(buttonElement).not.toBeNull();
+    expect(buttonElement).not.toBeDisabled();
 
     buttonElement && (await fireEvent.click(buttonElement));
 
     const modal = queryByTestId("disburse-neuron-modal");
     expect(modal).toBeInTheDocument();
+  });
+
+  it("shows disable button when not enough stake", async () => {
+    const neuronWithoutStake = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: BigInt(0),
+      },
+    };
+    const { container } = renderComponent(neuronWithoutStake);
+
+    const buttonElement = container.querySelector("button");
+    expect(buttonElement).not.toBeNull();
+    expect(buttonElement).toBeDisabled();
   });
 });

@@ -11,6 +11,17 @@ import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("DisburseSnsButton", () => {
+  const renderComponent = (neuron = mockSnsNeuron) => {
+    return render(SnsNeuronContextTest, {
+      props: {
+        neuron,
+        rootCanisterId: mockPrincipal,
+        testComponent: DisburseSnsButton,
+        passPropNeuron: true,
+      },
+    });
+  };
+
   beforeEach(() => {
     vi.spyOn(snsTokenSymbolSelectedStore, "subscribe").mockImplementation(
       mockTokenStore
@@ -18,15 +29,7 @@ describe("DisburseSnsButton", () => {
   });
 
   it("renders title", () => {
-    const { getByText } = render(SnsNeuronContextTest, {
-      props: {
-        neuron: mockSnsNeuron,
-        rootCanisterId: mockPrincipal,
-        testComponent: DisburseSnsButton,
-        passPropNeuron: true,
-      },
-    });
-
+    const { getByText } = renderComponent();
     expect(getByText(en.neuron_detail.disburse)).toBeInTheDocument();
   });
 
@@ -35,14 +38,16 @@ describe("DisburseSnsButton", () => {
       id: [1],
       vesting: true,
     });
-    const { queryByTestId } = render(SnsNeuronContextTest, {
-      props: {
-        neuron: vestingNeuron,
-        rootCanisterId: mockPrincipal,
-        testComponent: DisburseSnsButton,
-        passPropNeuron: true,
-      },
-    });
+    const { queryByTestId } = renderComponent(vestingNeuron);
+
+    expect(
+      queryByTestId("disburse-button").getAttribute("disabled")
+    ).not.toBeNull();
+  });
+
+  it("renders disabled button when not enough stake", () => {
+    const emptyNeuron = createMockSnsNeuron({ stake: BigInt(0) });
+    const { queryByTestId } = renderComponent(emptyNeuron);
 
     expect(
       queryByTestId("disburse-button").getAttribute("disabled")
@@ -50,15 +55,7 @@ describe("DisburseSnsButton", () => {
   });
 
   it("opens sns modal", async () => {
-    const { container, queryByTestId } = render(SnsNeuronContextTest, {
-      props: {
-        neuron: mockSnsNeuron,
-        rootCanisterId: mockPrincipal,
-        testComponent: DisburseSnsButton,
-        passPropNeuron: true,
-      },
-    });
-
+    const { container, queryByTestId } = renderComponent();
     const buttonElement = container.querySelector("button");
     expect(buttonElement).not.toBeNull();
 
