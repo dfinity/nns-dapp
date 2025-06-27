@@ -18,12 +18,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  .card-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--padding-2x);
-  }
-
   ul {
     // reset default styles
     list-style: none;
