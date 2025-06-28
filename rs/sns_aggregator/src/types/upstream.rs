@@ -7,6 +7,7 @@ use super::ic_sns_root::ListSnsCanistersResponse;
 use super::ic_sns_swap::{GetSaleParametersResponse, GetStateResponse};
 use super::ic_sns_wasm::DeployedSns;
 use super::{CandidType, Deserialize};
+use crate::types::ic_sns_governance::GetMetricsResponse;
 use crate::types::ic_sns_swap::{GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse};
 use candid::Nat;
 use ic_cdk::api::management_canister::provisional::CanisterId;
@@ -34,7 +35,7 @@ pub struct SnsCache {
 pub type SnsIndex = u64;
 
 /// Information about an SNS that changes relatively slowly and that is common, i.e. not user specific.
-#[derive(Clone, Debug, Default, CandidType, Serialize, Deserialize)]
+#[derive(Clone, Debug, CandidType, Serialize, Deserialize)]
 pub struct UpstreamData {
     /// Index of the SNS in the SNS wasms canister
     pub index: u64,
@@ -44,6 +45,9 @@ pub struct UpstreamData {
     pub list_sns_canisters: ListSnsCanistersResponse,
     /// Governance metadata such as token name and logo.
     pub meta: GetMetadataResponse,
+    /// Governance metrics such as the last ledger block timestamp and
+    /// number of recently submitted proposals.
+    pub metrics: Option<GetMetricsResponse>,
     /// Governance functions.
     pub parameters: ListNervousSystemFunctionsResponse,
     /// Governance parameters such as tokenomics.
@@ -66,4 +70,29 @@ pub struct UpstreamData {
     pub lifecycle: Option<GetLifecycleResponse>,
     /// The topics and the corresponding proposal types of this SNS.
     pub topics: Option<ListTopicsResponse>,
+}
+
+impl Default for UpstreamData {
+    fn default() -> Self {
+        Self {
+            index: u64::default(),
+            canister_ids: DeployedSns::default(),
+            list_sns_canisters: ListSnsCanistersResponse::default(),
+            meta: GetMetadataResponse::default(),
+            metrics: Some(GetMetricsResponse {
+                get_metrics_result: None,
+            }),
+            parameters: ListNervousSystemFunctionsResponse::default(),
+            nervous_system_parameters: None,
+            swap_state: GetStateResponse::default(),
+            icrc1_metadata: Vec::default(),
+            icrc1_fee: Nat::default(),
+            icrc1_total_supply: Nat::default(),
+            swap_params: None,
+            init: None,
+            derived_state: None,
+            lifecycle: None,
+            topics: None,
+        }
+    }
 }

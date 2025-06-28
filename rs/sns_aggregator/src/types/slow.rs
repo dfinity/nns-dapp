@@ -9,6 +9,7 @@ use crate::types::ic_sns_swap::{
 };
 use crate::types::ic_sns_wasm::DeployedSns;
 use crate::types::upstream::UpstreamData;
+use crate::types::GetMetricsResponse;
 use crate::Icrc1Value;
 use base64::{engine::general_purpose::STANDARD as BASE64_ENGINE, Engine};
 use candid::{CandidType, Nat};
@@ -26,6 +27,9 @@ pub struct SlowSnsData {
     pub list_sns_canisters: ListSnsCanistersResponse,
     /// Governance metadata such as token name and logo.
     pub meta: SlowMetadata,
+    /// Governance metrics such as the last ledger block timestamp and
+    /// number of recently submitted proposals.
+    pub metrics: Option<GetMetricsResponse>,
     /// Governance functions.
     pub parameters: ListNervousSystemFunctionsResponse,
     /// Governance parameters such as tokenomics.
@@ -58,6 +62,7 @@ impl From<&UpstreamData> for SlowSnsData {
             canister_ids,
             list_sns_canisters,
             meta: _,
+            metrics,
             parameters,
             nervous_system_parameters,
             swap_state,
@@ -75,6 +80,7 @@ impl From<&UpstreamData> for SlowSnsData {
             canister_ids: canister_ids.clone(),
             list_sns_canisters: list_sns_canisters.clone(),
             meta: SlowMetadata::from(upstream),
+            metrics: metrics.clone(),
             parameters: parameters.clone(),
             nervous_system_parameters: nervous_system_parameters.clone(),
             swap_state: SlowSwapState::from(swap_state),
