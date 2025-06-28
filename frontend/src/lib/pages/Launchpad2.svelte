@@ -13,6 +13,7 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { Component } from "svelte";
+  import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
 
   type Props = {
     snsProjects: SnsFullProject[];
@@ -22,6 +23,14 @@
 
   const { snsProjects, openSnsProposals, adoptedSnsProposals }: Props =
     $props();
+
+  const upcomingLaunchesCards = $derived(
+    getUpcomingLaunchesCards({
+      snsProjects,
+      openSnsProposals,
+      adoptedSnsProposals,
+    })
+  );
 
   const launchedSnsProjects = $derived(
     filterProjectsStatus({
@@ -54,21 +63,21 @@
     <h3>{$i18n.launchpad.headline}</h3>
     <p>{$i18n.launchpad.subheadline}</p>
   </div>
-  <section>
-    <h4>{$i18n.launchpad.upcoming_launches}</h4>
-    <UpcomingLaunchesCards
-      {snsProjects}
-      {openSnsProposals}
-      {adoptedSnsProposals}
-    />
-  </section>
-  <section>
-    <h4>{$i18n.launchpad.launched_projects}</h4>
-    <CardList
-      testId="launched-projects-list"
-      cards={launchedSnsProjectsCards}
-    />
-  </section>
+  {#if upcomingLaunchesCards.length > 0}
+    <section>
+      <h4>{$i18n.launchpad.upcoming_launches}</h4>
+      <CardList testId="upcoming-launches-list" cards={upcomingLaunchesCards} />
+    </section>
+  {/if}
+  {#if launchedSnsProjectsCards.length > 0}
+    <section>
+      <h4>{$i18n.launchpad.launched_projects}</h4>
+      <CardList
+        testId="launched-projects-list"
+        cards={launchedSnsProjectsCards}
+      />
+    </section>
+  {/if}
 </main>
 
 <style lang="scss">
