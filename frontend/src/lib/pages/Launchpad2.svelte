@@ -1,10 +1,10 @@
 <script lang="ts">
   import CardList from "$lib/components/launchpad/CardList.svelte";
   import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
-  import UpcomingLaunchesCards from "$lib/components/launchpad/UpcomingLaunchesCards.svelte";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { ComponentWithProps } from "$lib/types/svelte";
+  import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
   import {
     comparesByDecentralizationSaleOpenTimestampDesc,
     filterProjectsStatus,
@@ -13,25 +13,20 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import type { Component } from "svelte";
-  import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
 
   type Props = {
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
-    adoptedSnsProposals: SnsFullProject[];
   };
 
-  const { snsProjects, openSnsProposals, adoptedSnsProposals }: Props =
-    $props();
+  const { snsProjects, openSnsProposals }: Props = $props();
 
   const upcomingLaunchesCards = $derived(
     getUpcomingLaunchesCards({
       snsProjects,
       openSnsProposals,
-      adoptedSnsProposals,
     })
   );
-
   const launchedSnsProjects = $derived(
     filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,

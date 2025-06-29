@@ -30,16 +30,10 @@
 
   const snsProjects = $derived($snsProjectsActivePadStore);
   const openSnsProposals = $derived($openSnsProposalsStore);
-  const adoptedSnsProposals = $derived(
-    filterProjectsStatus({
-      swapLifecycle: SnsSwapLifecycle.Open,
-      projects: snsProjects,
-    })
-  );
 </script>
 
 {#if $ENABLE_LAUNCHPAD_REDESIGN}
-  <Launchpad2 {snsProjects} {openSnsProposals} {adoptedSnsProposals} />
+  <Launchpad2 {snsProjects} {openSnsProposals} />
 {:else}
   <Launchpad />
 {/if}

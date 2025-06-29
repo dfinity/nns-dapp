@@ -15,16 +15,15 @@ import type { Component } from "svelte";
 export const getUpcomingLaunchesCards = ({
   snsProjects,
   openSnsProposals,
-  adoptedSnsProposals,
 }: {
   snsProjects: SnsFullProject[];
   openSnsProposals: ProposalInfo[];
-  adoptedSnsProposals: SnsFullProject[];
 }): ComponentWithProps[] => {
   const openSnsProjects = filterProjectsStatus({
     swapLifecycle: SnsSwapLifecycle.Open,
     projects: snsProjects,
   });
+
   const launchedSnsCards: ComponentWithProps[] = [...openSnsProjects]
     .sort(comparesByDecentralizationSaleOpenTimestampDesc)
     .reverse()
@@ -33,13 +32,18 @@ export const getUpcomingLaunchesCards = ({
       Component: LaunchProjectCard as unknown as Component,
       props: { summary },
     }));
+
   const openProposalCards: ComponentWithProps[] = [...openSnsProposals]
     .sort(compareProposalInfoByDeadlineTimestampSeconds)
     .map((proposalInfo) => ({
       Component: NewSnsProposalCard as unknown as Component,
       props: { proposalInfo },
     }));
-  const adoptedSnsProposalCards = [...adoptedSnsProposals]
+
+  const adoptedSnsProposalCards = filterProjectsStatus({
+    swapLifecycle: SnsSwapLifecycle.Open,
+    projects: snsProjects,
+  })
     .sort(comparesByDecentralizationSaleOpenTimestampDesc)
     .reverse()
     .map((project) => project.summary)
