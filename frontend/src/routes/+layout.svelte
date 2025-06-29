@@ -13,6 +13,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsClean } from "$lib/stores/toasts.store";
   import { onMount } from "svelte";
+  import "../lib/app.css";
 
   let ready = false;
   let worker: AuthWorker | undefined;
