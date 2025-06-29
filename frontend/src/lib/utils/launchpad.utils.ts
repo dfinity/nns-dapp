@@ -30,13 +30,6 @@ export const getUpcomingLaunchesCards = ({
       props: { summary },
     }));
 
-  const openProposalCards: ComponentWithProps[] = [...openSnsProposals]
-    .sort(compareProposalInfoByDeadlineTimestampSeconds)
-    .map((proposalInfo) => ({
-      Component: NewSnsProposalCard as unknown as Component,
-      props: { proposalInfo },
-    }));
-
   const adoptedSnsProposalCards = filterProjectsStatus({
     swapLifecycle: SnsSwapLifecycle.Adopted,
     projects: snsProjects,
@@ -46,6 +39,13 @@ export const getUpcomingLaunchesCards = ({
     .map<ComponentWithProps>(({ summary }) => ({
       Component: AdoptedProposalCard as unknown as Component,
       props: { summary },
+    }));
+
+  const openProposalCards: ComponentWithProps[] = [...openSnsProposals]
+    .sort(compareProposalInfoByDeadlineTimestampSeconds)
+    .map((proposalInfo) => ({
+      Component: NewSnsProposalCard as unknown as Component,
+      props: { proposalInfo },
     }));
 
   return [
