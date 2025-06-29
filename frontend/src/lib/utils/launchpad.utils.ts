@@ -19,16 +19,13 @@ export const getUpcomingLaunchesCards = ({
   snsProjects: SnsFullProject[];
   openSnsProposals: ProposalInfo[];
 }): ComponentWithProps[] => {
-  const openSnsProjects = filterProjectsStatus({
+  const launchedSnsCards: ComponentWithProps[] = filterProjectsStatus({
     swapLifecycle: SnsSwapLifecycle.Open,
     projects: snsProjects,
-  });
-
-  const launchedSnsCards: ComponentWithProps[] = [...openSnsProjects]
+  })
     .sort(comparesByDecentralizationSaleOpenTimestampDesc)
     .reverse()
-    .map((project) => project.summary)
-    .map<ComponentWithProps>((summary) => ({
+    .map<ComponentWithProps>(({ summary }) => ({
       Component: LaunchProjectCard as unknown as Component,
       props: { summary },
     }));
@@ -41,13 +38,12 @@ export const getUpcomingLaunchesCards = ({
     }));
 
   const adoptedSnsProposalCards = filterProjectsStatus({
-    swapLifecycle: SnsSwapLifecycle.Open,
+    swapLifecycle: SnsSwapLifecycle.Adopted,
     projects: snsProjects,
   })
     .sort(comparesByDecentralizationSaleOpenTimestampDesc)
     .reverse()
-    .map((project) => project.summary)
-    .map<ComponentWithProps>((summary) => ({
+    .map<ComponentWithProps>(({ summary }) => ({
       Component: AdoptedProposalCard as unknown as Component,
       props: { summary },
     }));
