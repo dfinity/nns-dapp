@@ -25,7 +25,7 @@
   }: Props = $props();
 
   const priceStore = $derived(
-    withFiatValue ? tokenPriceStore(amount) : undefined
+    withFiatValue ? tokenPriceStore(amount.token) : undefined
   );
 
   const usdValue = $derived.by(() => {
