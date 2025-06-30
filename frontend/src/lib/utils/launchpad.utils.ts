@@ -1,4 +1,3 @@
-import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
 import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
 import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
 import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
@@ -9,7 +8,6 @@ import {
   comparesByDecentralizationSaleOpenTimestampDesc,
   filterProjectsStatus,
 } from "$lib/utils/projects.utils";
-import { getCommitmentE8s } from "$lib/utils/sns.utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import type { Component } from "svelte";
@@ -55,26 +53,4 @@ export const getUpcomingLaunchesCards = ({
     ...openProposalCards,
     ...adoptedSnsProposalCards,
   ];
-};
-
-export const getLaunchedSnsProjectCards = (
-  snsProjects: SnsFullProject[]
-): ComponentWithProps[] => {
-  const launchedSnsProjects = filterProjectsStatus({
-    swapLifecycle: SnsSwapLifecycle.Committed,
-    projects: snsProjects,
-  }).sort(comparesByDecentralizationSaleOpenTimestampDesc);
-  const committedSnsProjects = launchedSnsProjects.filter(
-    ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
-  );
-  const notCommittedSnsProjects = launchedSnsProjects.filter(
-    ({ swapCommitment }) => !getCommitmentE8s(swapCommitment)
-  );
-
-  return [...committedSnsProjects, ...notCommittedSnsProjects].map(
-    (project) => ({
-      Component: ProjectCard as unknown as Component,
-      props: { project },
-    })
-  );
 };
