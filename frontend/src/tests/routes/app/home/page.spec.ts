@@ -20,12 +20,6 @@ describe("Home page", () => {
     expect(getByTestId("login-button")).not.toBeNull();
   });
 
-  it("should render tokens pages", () => {
-    const { getByTestId } = render(HomeRoute);
-
-    expect(getByTestId("tokens-route-component")).not.toBeNull();
-  });
-
   it("should show the Portfolio page", () => {
     const { queryByTestId } = render(HomeRoute);
 

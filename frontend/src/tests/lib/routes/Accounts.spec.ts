@@ -437,8 +437,8 @@ describe("Accounts", () => {
     page.mock({
       data: {
         universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
-        routeId: AppPath.Accounts,
       },
+      routeId: AppPath.Accounts,
     });
 
     expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
@@ -452,8 +452,8 @@ describe("Accounts", () => {
     page.mock({
       data: {
         universe: OWN_CANISTER_ID_TEXT,
-        routeId: AppPath.Accounts,
       },
+      routeId: AppPath.Accounts,
     });
 
     expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
