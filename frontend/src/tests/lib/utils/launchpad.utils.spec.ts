@@ -1,10 +1,7 @@
 import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
 import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
 import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
-import {
-  getLaunchedSnsProjectCards,
-  getUpcomingLaunchesCards,
-} from "$lib/utils/launchpad.utils";
+import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import {
   createMockSnsFullProject,
@@ -12,7 +9,6 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import ProjectCard from "../../../lib/components/launchpad/ProjectCard.svelte";
 
 describe("Launchpad utils", () => {
   describe("getUpcomingLaunchesCards", () => {
@@ -174,111 +170,6 @@ describe("Launchpad utils", () => {
         {
           Component: AdoptedProposalCard,
           props: { summary: adoptedSnsProject1.summary },
-        },
-      ]);
-    });
-  });
-
-  describe("getLaunchedSnsProjectCards", () => {
-    it('returns only "Committed" projects', () => {
-      const abortedSnsProject = createMockSnsFullProject({
-        rootCanisterId: principal(1),
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Aborted,
-        },
-      });
-      const adoptedSnsProject = createMockSnsFullProject({
-        rootCanisterId: principal(2),
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Adopted,
-        },
-      });
-      const committedSnsProject = createMockSnsFullProject({
-        rootCanisterId: principal(2),
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Committed,
-        },
-      });
-      const openSnsProject = createMockSnsFullProject({
-        rootCanisterId: principal(2),
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-      });
-      const pendingSnsProject = createMockSnsFullProject({
-        rootCanisterId: principal(3),
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Pending,
-        },
-      });
-      const cards = getLaunchedSnsProjectCards([
-        abortedSnsProject,
-        adoptedSnsProject,
-        openSnsProject,
-        committedSnsProject,
-        pendingSnsProject,
-      ]);
-
-      expect(cards).toEqual([
-        {
-          Component: ProjectCard,
-          props: { project: committedSnsProject },
-        },
-      ]);
-    });
-
-    it("returns cards with user committed projects first", () => {
-      const project1 = createMockSnsFullProject({
-        rootCanisterId: principal(2),
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Committed,
-        },
-      });
-      const project2 = createMockSnsFullProject({
-        rootCanisterId: principal(2),
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Committed,
-        },
-        icpCommitment: 10n,
-      });
-      const project3 = createMockSnsFullProject({
-        rootCanisterId: principal(2),
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Committed,
-        },
-        icpCommitment: 0n,
-      });
-      const project4 = createMockSnsFullProject({
-        rootCanisterId: principal(2),
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Committed,
-        },
-        icpCommitment: 10n,
-      });
-
-      const cards = getLaunchedSnsProjectCards([
-        project1,
-        project2,
-        project3,
-        project4,
-      ]);
-
-      expect(cards).toEqual([
-        {
-          Component: ProjectCard,
-          props: { project: project2 },
-        },
-        {
-          Component: ProjectCard,
-          props: { project: project4 },
-        },
-        {
-          Component: ProjectCard,
-          props: { project: project1 },
-        },
-        {
-          Component: ProjectCard,
-          props: { project: project3 },
         },
       ]);
     });
