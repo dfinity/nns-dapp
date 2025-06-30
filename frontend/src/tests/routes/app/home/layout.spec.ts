@@ -26,11 +26,11 @@ describe("Home layout", () => {
     });
   });
 
-  it("should set title and header layout to 'Tokens'", () => {
+  it("should set title and header layout to 'Portfolio'", () => {
     renderComponent();
 
     expect(get(layoutTitleStore)).toEqual({
-      title: en.navigation.tokens,
+      title: en.navigation.portfolio,
     });
   });
 
@@ -44,13 +44,5 @@ describe("Home layout", () => {
     const { queryByTestId } = renderComponent();
 
     expect(queryByTestId("menu-toggle")).toBeInTheDocument();
-  });
-
-  it("should show the Portfolio title", () => {
-    renderComponent();
-
-    expect(get(layoutTitleStore)).toEqual({
-      title: en.navigation.portfolio,
-    });
   });
 });
