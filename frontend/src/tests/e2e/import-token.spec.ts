@@ -2,7 +2,6 @@ import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
   dfxCanisterId,
-  setFeatureFlag,
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
@@ -16,12 +15,6 @@ test("Test imported tokens", async ({ page, context }) => {
 
   await page.goto("/");
   await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
-
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_PORTFOLIO_PAGE",
-    value: true,
-  });
 
   await page.reload();
   await expect(page).toHaveTitle("Portfolio | Network Nervous System");

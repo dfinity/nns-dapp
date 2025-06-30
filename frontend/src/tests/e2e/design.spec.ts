@@ -1,10 +1,6 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import {
-  replaceContent,
-  setFeatureFlag,
-  signInWithNewUser,
-} from "$tests/utils/e2e.test-utils";
+import { replaceContent, signInWithNewUser } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
@@ -29,12 +25,6 @@ test.describe("Design", () => {
     await page.goto("/");
     await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
 
-    await setFeatureFlag({
-      page,
-      featureFlag: "ENABLE_PORTFOLIO_PAGE",
-      value: true,
-    });
-
     await page.reload();
     await expect(page).toHaveTitle("Portfolio | Network Nervous System");
 
@@ -55,12 +45,6 @@ test.describe("Design", () => {
       page = await browser.newPage();
       await page.goto("/");
       await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
-
-      await setFeatureFlag({
-        page,
-        featureFlag: "ENABLE_PORTFOLIO_PAGE",
-        value: true,
-      });
 
       await page.reload();
       await expect(page).toHaveTitle("Portfolio | Network Nervous System");
