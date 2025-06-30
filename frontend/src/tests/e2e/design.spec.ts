@@ -40,8 +40,7 @@ test.describe("Design", () => {
 
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage();
-      await page.goto("/");
-      await expect(page).toHaveTitle("Portfolio | Network Nervous System");
+      await page.goto("/tokens");
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });

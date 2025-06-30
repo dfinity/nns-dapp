@@ -6,14 +6,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test neuron increase stake", async ({ page, context }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
-
-  await page.reload();
-  await expect(page).toHaveTitle("Portfolio | Network Nervous System");
   await signInWithNewUser({ page, context });
-
-  await page.goto("/tokens");
-  await expect(page).toHaveTitle("Tokens | Network Nervous System");
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);

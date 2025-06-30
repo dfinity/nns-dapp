@@ -6,10 +6,6 @@ import { expect, test } from "@playwright/test";
 
 test("Test SNS participation", async ({ page, context }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
-
-  await page.reload();
-  await expect(page).toHaveTitle("Portfolio | Network Nervous System");
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);

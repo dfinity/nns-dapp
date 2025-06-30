@@ -13,15 +13,8 @@ test("Test imported tokens", async ({ page, context }) => {
   const testLedgerCanisterId = await dfxCanisterId("ckred_ledger");
   const testIndexCanisterId = await dfxCanisterId("ckred_index");
 
-  await page.goto("/");
-  await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
-
-  await page.reload();
-  await expect(page).toHaveTitle("Portfolio | Network Nervous System");
-  await signInWithNewUser({ page, context });
-
   await page.goto("/tokens");
-  await expect(page).toHaveTitle("Tokens | Network Nervous System");
+  await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);

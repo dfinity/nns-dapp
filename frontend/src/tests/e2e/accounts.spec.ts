@@ -6,6 +6,7 @@ import { expect, test } from "@playwright/test";
 test("Test accounts requirements", async ({ page, context }) => {
   await page.goto("/accounts");
   await expect(page).toHaveTitle("Account | Network Nervous System");
+
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
