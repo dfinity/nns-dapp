@@ -39,4 +39,12 @@ export class CardListEntryPo extends BasePageObject {
       (el) => new CardListEntryPo(el)
     );
   }
+
+  async getCardTitle(): Promise<string> {
+    return (
+      (await this.getText("project-name")) ??
+      (await this.getText("proposal-title")) ??
+      "getCardTitle: not found"
+    );
+  }
 }

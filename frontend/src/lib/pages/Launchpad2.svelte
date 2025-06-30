@@ -21,6 +21,8 @@
 
   const { snsProjects, openSnsProposals }: Props = $props();
 
+  // TODO(launchpad2): add skeletons on loading.
+
   const upcomingLaunchesCards = $derived(
     getUpcomingLaunchesCards({
       snsProjects,
