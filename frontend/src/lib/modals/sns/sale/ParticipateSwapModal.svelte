@@ -5,6 +5,7 @@
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { getConditionsToAccept } from "$lib/getters/sns-summary";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
   import { analytics } from "$lib/services/analytics.services";
@@ -46,6 +47,7 @@
     onDestroy,
     onMount,
   } from "svelte";
+  import type { Readable } from "svelte/store";
 
   onMount(() => {
     pollAccounts(false);
@@ -113,6 +115,9 @@
       ticketsStore: $snsTicketsStore,
     }).status !== "none";
 
+  let tokenPrice: Readable<number | undefined>;
+  $: tokenPrice = tokenPriceStore(ICPToken);
+
   let modal: TransactionModal;
   let progressStep: SaleStep = SaleStep.INITIALIZATION;
 
@@ -145,11 +150,15 @@
         return;
       }
 
+      const fiatAmount = nonNullish($tokenPrice)
+        ? $tokenPrice * amount
+        : undefined;
       analytics.event("sns-swap-participation", {
         tokenAmount: amount.toString(),
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??
           rootCanisterId.toText(),
+        ...(nonNullish(fiatAmount) && { fiatAmount: fiatAmount.toFixed(2) }),
       });
 
       // We defer the closing of the modal a bit to let the user notice the last step was successful
