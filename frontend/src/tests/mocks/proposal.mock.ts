@@ -1,6 +1,11 @@
 import type { VoteRegistrationStoreEntry } from "$lib/stores/vote-registration.store";
 import { deadlineTimestampSeconds } from "$tests/mocks/proposals.store.mock";
-import { Vote, type Action, type ProposalInfo } from "@dfinity/nns";
+import {
+  Vote,
+  type Action,
+  type CreateServiceNervousSystem,
+  type ProposalInfo,
+} from "@dfinity/nns";
 
 /**
  * Generate mock proposals with autoincremented "id".
@@ -97,3 +102,23 @@ export const mockVoteRegistration = {
   vote: Vote.No,
   status: "vote-registration",
 } as VoteRegistrationStoreEntry;
+
+export const createMockProposalActionCreateServiceNervousSystem = ({
+  name,
+}: {
+  name: string;
+}) =>
+  ({
+    CreateServiceNervousSystem: {
+      name,
+      governanceParameters: {},
+      fallbackControllerPrincipalIds: [],
+      logo: {},
+      url: "url",
+      ledgerParameters: {},
+      description: "Test DAO description",
+      dappCanisters: [],
+      swapParameters: {},
+      initialTokenDistribution: {},
+    } as CreateServiceNervousSystem,
+  }) as Action;
