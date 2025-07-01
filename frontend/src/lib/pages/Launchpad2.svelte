@@ -35,14 +35,12 @@
     const launchedSnsProjects = filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
       projects: snsProjects,
-    })
-      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-      .map(({ swapCommitment }) => swapCommitment);
+    }).sort(comparesByDecentralizationSaleOpenTimestampDesc);
     const userCommittedSnsProjects = launchedSnsProjects.filter(
-      (swapCommitment) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
+      ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
     );
     const notCommittedSnsProjects = launchedSnsProjects.filter(
-      (swapCommitment) =>
+      ({ swapCommitment }) =>
         isNullish(getCommitmentE8s(swapCommitment)) ||
         getCommitmentE8s(swapCommitment) === 0n
     );
