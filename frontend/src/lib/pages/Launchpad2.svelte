@@ -61,7 +61,11 @@
   {#if upcomingLaunchesCards.length > 0}
     <section>
       <h4>{$i18n.launchpad.upcoming_launches}</h4>
-      <CardList testId="upcoming-launches-list" cards={upcomingLaunchesCards} />
+      <CardList
+        testId="upcoming-launches-list"
+        cards={upcomingLaunchesCards}
+        mobileHorizontalScroll
+      />
     </section>
   {/if}
   {#if launchedSnsProjectsCards.length > 0}
