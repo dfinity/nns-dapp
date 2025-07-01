@@ -12,6 +12,7 @@
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import type { ProposalInfo } from "@dfinity/nns";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { isNullish } from "@dfinity/utils";
   import type { Component } from "svelte";
 
   type Props = {
@@ -29,30 +30,26 @@
       openSnsProposals,
     })
   );
-  const launchedSnsProjects = $derived(
-    filterProjectsStatus({
+  const launchedSnsProjectsCards: ComponentWithProps[] = $derived.by(() => {
+    const launchedSnsProjects = filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
       projects: snsProjects,
-    }).sort(comparesByDecentralizationSaleOpenTimestampDesc)
-  );
-  const userCommittedSnsProjects = $derived(
-    launchedSnsProjects.filter(
+    }).sort(comparesByDecentralizationSaleOpenTimestampDesc);
+    const userCommittedSnsProjects = launchedSnsProjects.filter(
       ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
-    )
-  );
-  const notCommittedSnsProjects = $derived(
-    launchedSnsProjects.filter(
-      ({ swapCommitment }) => !getCommitmentE8s(swapCommitment)
-    )
-  );
-  const launchedSnsProjectsCards: ComponentWithProps[] = $derived(
-    [...userCommittedSnsProjects, ...notCommittedSnsProjects].map(
+    );
+    const notCommittedSnsProjects = launchedSnsProjects.filter(
+      ({ swapCommitment }) =>
+        isNullish(getCommitmentE8s(swapCommitment)) ||
+        getCommitmentE8s(swapCommitment) === 0n
+    );
+    return [...userCommittedSnsProjects, ...notCommittedSnsProjects].map(
       (project) => ({
         Component: ProjectCard as unknown as Component,
         props: { project },
       })
-    )
-  );
+    );
+  });
 </script>
 
 <main data-tid="launchpad2-component">
@@ -63,7 +60,11 @@
   {#if upcomingLaunchesCards.length > 0}
     <section>
       <h4>{$i18n.launchpad.upcoming_launches}</h4>
-      <CardList testId="upcoming-launches-list" cards={upcomingLaunchesCards} />
+      <CardList
+        testId="upcoming-launches-list"
+        cards={upcomingLaunchesCards}
+        mobileHorizontalScroll
+      />
     </section>
   {/if}
   {#if launchedSnsProjectsCards.length > 0}
