@@ -3,7 +3,6 @@ import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page
 import { getNnsNeuronCardsIds } from "$tests/utils/e2e.nns-neuron.test-utils";
 import {
   replaceContent,
-  setFeatureFlag,
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
@@ -11,20 +10,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test neuron details", async ({ page, context }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
-
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_PORTFOLIO_PAGE",
-    value: true,
-  });
-
-  await page.reload();
-  await expect(page).toHaveTitle("Portfolio | Network Nervous System");
   await signInWithNewUser({ page, context });
-
-  await page.goto("/tokens");
-  await expect(page).toHaveTitle("Tokens | Network Nervous System");
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);

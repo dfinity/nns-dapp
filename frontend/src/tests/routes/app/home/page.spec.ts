@@ -1,7 +1,6 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as proposalsApi from "$lib/api/proposals.api";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import HomeRoute from "$routes/(app)/(home)/+page.svelte";
 import { setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
@@ -21,20 +20,10 @@ describe("Home page", () => {
     expect(getByTestId("login-button")).not.toBeNull();
   });
 
-  it("should render tokens pages", () => {
-    const { getByTestId } = render(HomeRoute);
+  it("should show the Portfolio page", () => {
+    const { queryByTestId } = render(HomeRoute);
 
-    expect(getByTestId("tokens-route-component")).not.toBeNull();
-  });
-
-  describe("when ENABLE_PORTFOLIO_PAGE feature flag is one", () => {
-    it("should show the Portfolio page", () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", true);
-
-      const { queryByTestId } = render(HomeRoute);
-
-      expect(queryByTestId("portfolio-route-component")).not.toBeNull();
-      expect(queryByTestId("tokens-route-component")).toBeNull();
-    });
+    expect(queryByTestId("portfolio-route-component")).not.toBeNull();
+    expect(queryByTestId("tokens-route-component")).toBeNull();
   });
 });

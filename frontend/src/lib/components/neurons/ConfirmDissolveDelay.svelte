@@ -36,7 +36,7 @@
       token: ICPToken,
     })
   );
-  const priceStore = $derived(tokenPriceStore(stake));
+  const priceStore = $derived(tokenPriceStore(stake.token));
   const tokenPrice = $derived($priceStore);
   const stakeInFiat = $derived.by(() => {
     if (isNullish(stake) || isNullish(tokenPrice)) return undefined;

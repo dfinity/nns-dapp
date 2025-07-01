@@ -10,10 +10,13 @@ use crate::types::ic_sns_swap::{
 };
 use crate::types::ic_sns_wasm::{DeployedSns, ListDeployedSnsesResponse};
 use crate::types::upstream::UpstreamData;
-use crate::types::{self, EmptyRecord, GetStateResponse, Icrc1Value, SnsTokens};
+use crate::types::{self, EmptyRecord, GetMetricsRequest, GetStateResponse, Icrc1Value, SnsTokens};
 use anyhow::anyhow;
 use candid::Principal;
 use ic_cdk::api::{call::RejectionCode, management_canister::provisional::CanisterId, time};
+
+/// default time window to get SNS metrics is 2 months.
+const TIME_WINDOW_SECONDS: u64 = 2 * 30 * 24 * 3600;
 
 /// Updates one part of the cache:  Either the list of SNSs or one SNS.
 pub async fn update_cache() {
@@ -128,6 +131,18 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             })
             .unwrap_or(existing_data.parameters);
 
+    crate::state::log(format!("Getting SNS index {index}... get_metrics"));
+    let arg: types::GetMetricsRequest = GetMetricsRequest {
+        time_window_seconds: Some(TIME_WINDOW_SECONDS),
+    };
+    let metrics = ic_cdk::api::call::call(governance_canister_id, "get_metrics", (arg,))
+        .await
+        .map(|response: (_,)| response.0)
+        .map_err(|err| {
+            crate::state::log(format!("Call to SnsGovernance.get_metrics failed: {err:?}"));
+        })
+        .unwrap_or(existing_data.metrics);
+
     crate::state::log(format!("Getting SNS index {index}... get_state"));
     let swap_state: GetStateResponse = get_swap_state(swap_canister_id)
         .await
@@ -135,7 +150,6 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         .unwrap_or(existing_data.swap_state);
 
     crate::state::log(format!("Getting SNS index {index}... icrc1_metadata"));
-    //let icrc1_metadata = Vec::new();
     let icrc1_metadata: Vec<(String, Icrc1Value)> =
         ic_cdk::api::call::call(ledger_canister_id, "icrc1_metadata", ((),))
             .await
@@ -144,7 +158,6 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .unwrap_or(existing_data.icrc1_metadata);
 
     crate::state::log(format!("Getting SNS index {index}... icrc1_fee"));
-    //let icrc1_fee = SnsTokens::default();
     let icrc1_fee: SnsTokens = ic_cdk::api::call::call(ledger_canister_id, "icrc1_fee", ((),))
         .await
         .map(|response: (_,)| response.0)
@@ -222,6 +235,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         canister_ids: sns_canister_ids,
         list_sns_canisters,
         meta,
+        metrics,
         parameters,
         nervous_system_parameters,
         swap_state,
