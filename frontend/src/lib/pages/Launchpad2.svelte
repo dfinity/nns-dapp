@@ -80,6 +80,8 @@
 </main>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   main {
     display: flex;
     flex-direction: column;
@@ -88,9 +90,13 @@
 
   h3 {
     font-family: "CircularXX TT";
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 500;
     line-height: 32px;
+
+    @include media.min-width(medium) {
+      font-size: 24px;
+    }
   }
 
   section {
@@ -100,9 +106,15 @@
   }
 
   h4 {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 450;
-    line-height: 20px;
+    line-height: 18px;
+    margin: var(--padding) 0;
+
+    @include media.min-width(medium) {
+      font-size: 16px;
+      line-height: 20px;
+    }
   }
 
   p {
