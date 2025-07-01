@@ -30,6 +30,7 @@
       openSnsProposals,
     })
   );
+
   const launchedSnsProjectsCards: ComponentWithProps[] = $derived.by(() => {
     const launchedSnsProjects = filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
