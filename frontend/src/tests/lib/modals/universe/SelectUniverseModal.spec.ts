@@ -1,4 +1,5 @@
 import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { AppPath } from "$lib/constants/routes.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import SelectUniverseModal from "$lib/modals/universe/SelectUniverseModal.svelte";
@@ -12,6 +13,7 @@ import {
 import { fireEvent } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
+// TODO: These tests don't seem to be applicable anymore as the component is not used for Tokens
 describe("SelectUniverseModal", () => {
   beforeEach(() => {
     vi.spyOn(snsProjectsCommittedStore, "subscribe").mockImplementation(
@@ -20,6 +22,7 @@ describe("SelectUniverseModal", () => {
 
     page.mock({
       data: { universe: mockSnsFullProject.rootCanisterId.toText() },
+      routeId: AppPath.Accounts,
     });
   });
 
@@ -42,6 +45,7 @@ describe("SelectUniverseModal", () => {
     cards && (await fireEvent.click(cards[1]));
 
     const { universe } = get(pageStore);
+
     expect(universe).toEqual(CKBTC_LEDGER_CANISTER_ID.toText());
   });
 

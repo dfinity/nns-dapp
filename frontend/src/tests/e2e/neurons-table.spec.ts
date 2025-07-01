@@ -2,7 +2,6 @@ import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
   replaceContent,
-  setFeatureFlag,
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
@@ -26,20 +25,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const page = await context.newPage();
 
   await page.goto("/");
-  await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
-
-  await setFeatureFlag({
-    page,
-    featureFlag: "ENABLE_PORTFOLIO_PAGE",
-    value: true,
-  });
-
-  await page.reload();
-  await expect(page).toHaveTitle("Portfolio | Network Nervous System");
   await signInWithNewUser({ page, context });
-
-  await page.goto("/tokens");
-  await expect(page).toHaveTitle("Tokens | Network Nervous System");
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
   await appPo.getIcpTokens(21);

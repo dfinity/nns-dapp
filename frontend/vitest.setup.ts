@@ -146,7 +146,6 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKTESTBTC: true,
       ENABLE_DISBURSE_MATURITY: false,
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
-      ENABLE_PORTFOLIO_PAGE: false,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
       ENABLE_SNS_TOPICS: false,
