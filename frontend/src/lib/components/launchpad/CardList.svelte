@@ -3,11 +3,12 @@
 
   type Props = {
     cards: ComponentWithProps[];
+    testId?: string;
   };
-  const { cards }: Props = $props();
+  const { cards, testId }: Props = $props();
 </script>
 
-<ul data-tid="card-list-component">
+<ul data-tid={testId ?? "card-list-component"}>
   {#each cards as { Component, props }}
     <li data-tid="card-entry">
       <Component {...props} />
