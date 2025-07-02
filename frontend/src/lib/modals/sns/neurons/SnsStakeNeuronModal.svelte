@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PRICE_NOT_AVAILABLE } from "$lib/constants/constants";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
@@ -98,14 +99,15 @@
       });
 
       const fiatAmount = nonNullish($tokenPrice)
-        ? $tokenPrice * detail.amount
-        : undefined;
+        ? ($tokenPrice * detail.amount).toFixed(1)
+        : PRICE_NOT_AVAILABLE;
+
       analytics.event("sns-stake-new-neuron", {
         tokenAmount: detail.amount.toString(),
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??
           rootCanisterId.toText(),
-        ...(nonNullish(fiatAmount) && { fiatAmount: fiatAmount.toFixed(2) }),
+        fiatAmount,
       });
       dispatcher("nnsClose");
     }

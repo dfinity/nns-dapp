@@ -3,6 +3,7 @@
   import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { PRICE_NOT_AVAILABLE } from "$lib/constants/constants";
   import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import { tokenPriceStore } from "$lib/derived/token-price.derived";
@@ -151,14 +152,15 @@
       }
 
       const fiatAmount = nonNullish($tokenPrice)
-        ? $tokenPrice * amount
-        : undefined;
+        ? ($tokenPrice * amount).toFixed(1)
+        : PRICE_NOT_AVAILABLE;
+
       analytics.event("sns-swap-participation", {
         tokenAmount: amount.toString(),
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??
           rootCanisterId.toText(),
-        ...(nonNullish(fiatAmount) && { fiatAmount: fiatAmount.toFixed(2) }),
+        fiatAmount,
       });
 
       // We defer the closing of the modal a bit to let the user notice the last step was successful

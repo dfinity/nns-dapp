@@ -1,5 +1,6 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { PRICE_NOT_AVAILABLE } from "$lib/constants/constants";
   import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
@@ -64,14 +65,15 @@
       });
 
       const fiatAmount = nonNullish($tokenPrice)
-        ? $tokenPrice * amount
-        : undefined;
+        ? ($tokenPrice * amount).toFixed(1)
+        : PRICE_NOT_AVAILABLE;
+
       analytics.event("sns-stake-topup-neuron", {
         tokenAmount: amount.toString(),
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??
           rootCanisterId.toText(),
-        ...(nonNullish(fiatAmount) && { fiatAmount: fiatAmount.toFixed(2) }),
+        fiatAmount,
       });
 
       dispatcher("nnsClose");
