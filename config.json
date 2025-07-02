@@ -18,8 +18,7 @@
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        },
-        "PLAUSIBLE_DOMAIN": "nns-test"
+        }
       }
     },
     "beta": {
@@ -29,8 +28,7 @@
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        },
-        "PLAUSIBLE_DOMAIN": "nns-test"
+        }
       }
     },
     "devenv_llorenc": {
