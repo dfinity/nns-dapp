@@ -560,7 +560,7 @@ export const queryLastestRewardEvent = async ({
   const { canister: governance } = await governanceCanister({ identity });
 
   try {
-    return governance.getLastestRewardEvent(certified);
+    return governance.getLatestRewardEvent(certified);
   } finally {
     logWithTimestamp(
       `Getting latest reward event call certified: ${certified} complete.`
