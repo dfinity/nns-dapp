@@ -121,6 +121,26 @@ describe("icp-swap.derived", () => {
       });
     });
 
+    it("should skip tickers with no volume_usd_24H", () => {
+      const icpPriceInUsd = 12.4;
+
+      const ckusdcTicker = {
+        ...mockIcpSwapTicker,
+        base_id: CKUSDC_LEDGER_CANISTER_ID.toText(),
+        last_price: `${icpPriceInUsd}`,
+      };
+      const noVolumeTicker = {
+        ...mockIcpSwapTicker,
+        volume_usd_24H: "0",
+      };
+
+      icpSwapTickersStore.set([ckusdcTicker, noVolumeTicker]);
+      expect(get(icpSwapUsdPricesStore)).toEqual({
+        [LEDGER_CANISTER_ID.toText()]: icpPriceInUsd,
+        [CKUSDC_LEDGER_CANISTER_ID.toText()]: 1,
+      });
+    });
+
     it("should not divide by zero for zero price", () => {
       const icpPriceInUsd = 12.4;
       const icpPriceInCketh = 0.0;
