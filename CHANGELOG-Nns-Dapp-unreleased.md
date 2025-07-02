@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 * Prioritize ICP in tokens and staking tables
+* Filter out tickers with no trading volume
 
 #### Deprecated
 
