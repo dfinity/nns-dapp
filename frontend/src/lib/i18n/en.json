@@ -38,6 +38,7 @@
     "add": "Add",
     "not_applicable": "N/A",
     "view_more": "View more",
+    "view": "View",
     "copy": "Copy to clipboard",
     "copied": "Copied"
   },
@@ -894,6 +895,11 @@
     "subheadline": "See upcoming and available SNS projects",
     "upcoming_launches": "New Launches and Proposals",
     "launched_projects": "Launched Projects"
+  },
+  "launchpad_cards": {
+    "ongoing_funded_of_min": "Funded of Min",
+    "ongoing_min_icp": "Min, ICP",
+    "ongoing_cap_icp": "Cap, ICP"
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
