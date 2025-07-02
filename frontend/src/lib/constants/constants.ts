@@ -25,3 +25,4 @@ export const NANO_SECONDS_IN_MILLISECOND = 1_000_000;
 export const NANO_SECONDS_IN_MINUTE = NANO_SECONDS_IN_MILLISECOND * 1_000 * 60;
 
 export const PRICE_NOT_AVAILABLE_PLACEHOLDER = "-/-";
+export const PRICE_NOT_AVAILABLE = "price-not-available";
