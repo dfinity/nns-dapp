@@ -151,8 +151,8 @@
         return;
       }
 
-      const fiatAmount = nonNullish($tokenPrice)
-        ? ($tokenPrice * amount).toFixed(1)
+      const usdAmount = nonNullish($tokenPrice)
+        ? ($tokenPrice * amount).toFixed(2)
         : PRICE_NOT_AVAILABLE;
 
       analytics.event("sns-swap-participation", {
@@ -160,7 +160,7 @@
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??
           rootCanisterId.toText(),
-        fiatAmount,
+        usdAmount,
       });
 
       // We defer the closing of the modal a bit to let the user notice the last step was successful

@@ -64,8 +64,8 @@
         },
       });
 
-      const fiatAmount = nonNullish($tokenPrice)
-        ? ($tokenPrice * amount).toFixed(1)
+      const usdAmount = nonNullish($tokenPrice)
+        ? ($tokenPrice * amount).toFixed(2)
         : PRICE_NOT_AVAILABLE;
 
       analytics.event("sns-stake-topup-neuron", {
@@ -73,7 +73,7 @@
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??
           rootCanisterId.toText(),
-        fiatAmount,
+        usdAmount,
       });
 
       dispatcher("nnsClose");

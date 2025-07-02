@@ -98,8 +98,8 @@
         },
       });
 
-      const fiatAmount = nonNullish($tokenPrice)
-        ? ($tokenPrice * detail.amount).toFixed(1)
+      const usdAmount = nonNullish($tokenPrice)
+        ? ($tokenPrice * detail.amount).toFixed(2)
         : PRICE_NOT_AVAILABLE;
 
       analytics.event("sns-stake-new-neuron", {
@@ -107,7 +107,7 @@
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??
           rootCanisterId.toText(),
-        fiatAmount,
+        usdAmount,
       });
       dispatcher("nnsClose");
     }
