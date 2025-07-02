@@ -152,7 +152,7 @@
       }
 
       const usdAmount = nonNullish($tokenPrice)
-        ? ($tokenPrice * amount).toFixed(2)
+        ? ($tokenPrice * amount).toFixed(1)
         : PRICE_NOT_AVAILABLE;
 
       analytics.event("sns-swap-participation", {

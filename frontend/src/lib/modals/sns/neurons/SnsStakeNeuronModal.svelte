@@ -99,7 +99,7 @@
       });
 
       const usdAmount = nonNullish($tokenPrice)
-        ? ($tokenPrice * detail.amount).toFixed(2)
+        ? ($tokenPrice * detail.amount).toFixed(1)
         : PRICE_NOT_AVAILABLE;
 
       analytics.event("sns-stake-new-neuron", {
