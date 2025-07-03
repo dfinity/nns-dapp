@@ -2,6 +2,7 @@
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { getMinDirectParticipation } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { formatNumber } from "$lib/utils/format.utils";
@@ -13,10 +14,10 @@
   import {
     IconAccountBalance,
     IconClockNoFill,
+    IconCoin,
     IconRight,
     IconRocketLaunch,
     Tag,
-    IconCoin,
   } from "@dfinity/gix-components";
   import { secondsToDuration } from "@dfinity/utils";
 
@@ -29,8 +30,10 @@
   const capIcp = $derived(
     getProjectCommitmentSplit(summary).totalCommitmentE8s
   );
-  const minIcp = $derived(summary.getMinParticipantIcpE8s());
-  const fundedOfMin = $derived(capIcp > 0n ? (capIcp * 100n) / minIcp : 0n);
+  const minIcp = $derived(getMinDirectParticipation(summary) ?? 0n);
+  const fundedOfMin = $derived(
+    capIcp > 0n && minIcp > 0n ? (capIcp * 100n) / minIcp : 0n
+  );
   const durationTillDeadline = $derived(
     durationTillSwapDeadline(summary.swap) ?? 0n
   );
