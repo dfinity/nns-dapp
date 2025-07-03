@@ -89,9 +89,9 @@
         <h6 class="stat-label">
           {$i18n.launchpad_cards.ongoing_min_icp}
         </h6>
-        <div class="stat-value" data-tid="min-icp-value">
+        <div class="stat-value">
           <IconCoin size="16px" />
-          <span>{formatParticipation(minIcp)}</span>
+          <span data-tid="min-icp-value">{formatParticipation(minIcp)}</span>
         </div>
       </li>
       <li class="stat-item">
