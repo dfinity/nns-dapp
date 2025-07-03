@@ -231,8 +231,8 @@ export const compareIcpFirst = createDescendingComparator(
   (project: TableProject) => project.universeId === OWN_CANISTER_ID_TEXT
 );
 
-export const compareNonFailedTokenAmountFirst = createDescendingComparator(
-  (project: TableProject) => !(project.stake instanceof FailedTokenAmount)
+export const compareNonFailedTokenAmountFirst = createAscendingComparator(
+  (project: TableProject) => project.stake instanceof FailedTokenAmount
 );
 
 const comparePositiveNeuronsFirst = createDescendingComparator(
