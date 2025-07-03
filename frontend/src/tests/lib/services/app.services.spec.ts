@@ -9,6 +9,7 @@ import { initAppPrivateData } from "$lib/services/app.services";
 import * as importedTokensServices from "$lib/services/imported-tokens.services";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockGovernanceMetrics } from "$tests/mocks/governance-metrics.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
@@ -148,6 +149,23 @@ describe("app-services", () => {
 
     expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(1);
     expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      certified: true,
+    });
+  });
+
+  it("should load governance metrics", async () => {
+    const spyGovernanceMetrics = vi
+      .spyOn(governanceApi, "getGovernanceMetrics")
+      .mockResolvedValue(mockGovernanceMetrics);
+
+    expect(spyGovernanceMetrics).toHaveBeenCalledTimes(0);
+
+    initAppPrivateData();
+    await runResolvedPromises();
+
+    expect(spyGovernanceMetrics).toHaveBeenCalledTimes(1);
+    expect(spyGovernanceMetrics).toHaveBeenCalledWith({
       identity: mockIdentity,
       certified: true,
     });

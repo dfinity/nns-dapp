@@ -4,6 +4,7 @@ import { initAccounts } from "$lib/services/icp-accounts.services";
 import { loadImportedTokens } from "$lib/services/imported-tokens.services";
 import { loadNetworkEconomicsParameters } from "$lib/services/network-economics.services";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
+import { loadGovernanceMetrics } from "./governance-metrics.service";
 
 export const initAppPrivateData = async (): Promise<void> => {
   const initNetworkEconomicsParameters: Promise<void>[] = [
@@ -17,11 +18,13 @@ export const initAppPrivateData = async (): Promise<void> => {
   const initImportedTokens: Promise<void>[] = [
     loadImportedTokens({ ignoreAccountNotFoundError: true }),
   ];
+  const initGovernanceMetrics: Promise<void>[] = [loadGovernanceMetrics()];
   /**
    * If Nns load but Sns load fails it is "fine" to go on because Nns are core features.
    */
   await Promise.allSettled([
     Promise.all(initNetworkEconomicsParameters),
+    Promise.all(initGovernanceMetrics),
     Promise.all(initNns),
     Promise.all(initImportedTokens),
     Promise.all(initSns),
