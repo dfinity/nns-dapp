@@ -143,6 +143,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         })
         .unwrap_or(existing_data.metrics);
 
+    crate::state::log(format!("Getting SNS index {index}... get_latest_reward_event"));
     let latest_reward_event = get_latest_reward_event(governance_canister_id)
         .await
         .map_err(|err| crate::state::log(format!("Call to SnsGovernance.get_latest_reward_event failed: {err:?}")))
