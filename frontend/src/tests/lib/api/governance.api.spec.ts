@@ -5,6 +5,7 @@ import {
   claimOrRefreshNeuronByMemo,
   disburse,
   disburseMaturity,
+  getGovernanceCachedMetrics,
   getNetworkEconomicsParameters,
   increaseDissolveDelay,
   joinCommunityFund,
@@ -911,6 +912,41 @@ describe("neurons-api", () => {
       expect(
         mockGovernanceCanister.getNetworkEconomicsParameters
       ).toHaveBeenCalledWith({ certified: false });
+    });
+  });
+
+  describe("getGovernanceCachedMetrics", () => {
+    const identity = mockIdentity;
+
+    it("should call the canister to get the governance cached metrics", async () => {
+      const certified = true;
+      await getGovernanceCachedMetrics({
+        certified,
+        identity,
+      });
+      expect(mockGovernanceCanister.getMetrics).toHaveBeenCalledTimes(1);
+      expect(mockGovernanceCanister.getMetrics).toHaveBeenCalledWith({
+        certified,
+      });
+    });
+
+    it("throws error when call fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.getMetrics.mockImplementation(
+        vi.fn(() => {
+          throw error;
+        })
+      );
+
+      const call = () =>
+        getGovernanceCachedMetrics({
+          certified: false,
+          identity,
+        });
+      await expect(call).rejects.toThrow(error);
+      expect(mockGovernanceCanister.getMetrics).toHaveBeenCalledWith({
+        certified: false,
+      });
     });
   });
 });
