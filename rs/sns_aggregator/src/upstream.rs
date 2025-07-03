@@ -143,6 +143,12 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         })
         .unwrap_or(existing_data.metrics);
 
+    let latest_reward_event = get_latest_reward_event(governance_canister_id)
+        .await
+        .map_err(|err| crate::state::log(format!("Call to SnsGovernance.get_latest_reward_event failed: {err:?}")))
+        .ok()
+        .or(existing_data.latest_reward_event);
+
     crate::state::log(format!("Getting SNS index {index}... get_state"));
     let swap_state: GetStateResponse = get_swap_state(swap_canister_id)
         .await
@@ -236,6 +242,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
         list_sns_canisters,
         meta,
         metrics,
+        latest_reward_event,
         parameters,
         nervous_system_parameters,
         swap_state,
@@ -285,6 +292,15 @@ pub async fn get_nervous_system_parameters(
     governance_canister_id: Principal,
 ) -> Result<NervousSystemParameters, (RejectionCode, String)> {
     ic_cdk::api::call::call(governance_canister_id, "get_nervous_system_parameters", ())
+        .await
+        .map(|response: (_,)| response.0)
+}
+
+/// Gets the latest voting reward distribution data.
+pub async fn get_latest_reward_event(
+    governance_canister_id: Principal,
+) -> Result<sns_gov::RewardEvent, (RejectionCode, String)> {
+    ic_cdk::call(governance_canister_id, "get_latest_reward_event", ())
         .await
         .map(|response: (_,)| response.0)
 }
