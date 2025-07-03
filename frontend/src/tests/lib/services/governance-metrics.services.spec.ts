@@ -1,7 +1,12 @@
 import * as api from "$lib/api/governance.api";
+import * as authServices from "$lib/services/auth.services";
 import { loadGovernanceMetrics } from "$lib/services/governance-metrics.service";
 import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
-import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import {
+  mockGetIdentity,
+  mockIdentity,
+  resetIdentity,
+} from "$tests/mocks/auth.store.mock";
 import { mockGovernanceMetrics } from "$tests/mocks/governance-metrics.mock";
 import { get } from "svelte/store";
 
@@ -13,13 +18,18 @@ describe("governance-metrics-services", () => {
     spyGetGovernanceMetrics = vi
       .spyOn(api, "getGovernanceMetrics")
       .mockResolvedValue(mockGovernanceMetrics);
+
+    resetIdentity();
+    vi.spyOn(authServices, "getAuthenticatedIdentity").mockImplementation(
+      mockGetIdentity
+    );
   });
 
   describe("loadGovernanceMetrics", () => {
     it("should load governance metrics", async () => {
       await loadGovernanceMetrics();
 
-      expect(spyGetGovernanceMetrics).toHaveBeenCalledTimes(1);
+      expect(spyGetGovernanceMetrics).toHaveBeenCalledTimes(2);
       expect(spyGetGovernanceMetrics).toHaveBeenCalledWith({
         identity: mockIdentity,
         certified: true,
@@ -50,7 +60,7 @@ describe("governance-metrics-services", () => {
       await loadGovernanceMetrics();
 
       expect(console.error).toBeCalledWith(error);
-      expect(console.error).toBeCalledTimes(1);
+      expect(console.error).toBeCalledTimes(2);
     });
   });
 });
