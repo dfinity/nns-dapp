@@ -26,6 +26,8 @@ proposal is successful, the changes it released will be moved from this file to
 #### Fixed
 
 * Improved disburse button feedback when neuron has insufficient stake
+* Improved project list organization by moving unresponsive projects to bottom
+
 
 #### Security
 
