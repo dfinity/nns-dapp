@@ -762,10 +762,10 @@ describe("neurons-api", () => {
         certified,
         identity,
       });
-      expect(
-        mockGovernanceCanister.getLastestRewardEvent
-      ).toHaveBeenCalledTimes(1);
-      expect(mockGovernanceCanister.getLastestRewardEvent).toHaveBeenCalledWith(
+      expect(mockGovernanceCanister.getLatestRewardEvent).toHaveBeenCalledTimes(
+        1
+      );
+      expect(mockGovernanceCanister.getLatestRewardEvent).toHaveBeenCalledWith(
         certified
       );
     });

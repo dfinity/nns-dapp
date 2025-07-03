@@ -231,6 +231,10 @@ export const compareIcpFirst = createDescendingComparator(
   (project: TableProject) => project.universeId === OWN_CANISTER_ID_TEXT
 );
 
+export const compareNonFailedTokenAmountFirst = createAscendingComparator(
+  (project: TableProject) => project.stake instanceof FailedTokenAmount
+);
+
 const comparePositiveNeuronsFirst = createDescendingComparator(
   (project: TableProject) => (project.neuronCount ?? 0) > 0
 );
@@ -249,11 +253,13 @@ export const compareByStakeInUsd = createDescendingComparator(
 
 export const compareByNeuron = mergeComparators([
   compareIcpFirst,
+  compareNonFailedTokenAmountFirst,
   compareByNeuronCount,
 ]);
 
 export const compareByProject = mergeComparators([
   compareIcpFirst,
+  compareNonFailedTokenAmountFirst,
   compareByProjectTitle,
 ]);
 
@@ -264,6 +270,7 @@ export const compareByProject = mergeComparators([
 export const compareByStake = mergeComparators([
   compareIcpFirst,
   compareByStakeInUsd,
+  compareNonFailedTokenAmountFirst,
   comparePositiveNeuronsFirst,
 ]);
 
@@ -271,6 +278,7 @@ export const sortTableProjects = (projects: TableProject[]): TableProject[] => {
   return [...projects].sort(
     mergeComparators([
       compareIcpFirst,
+      compareNonFailedTokenAmountFirst,
       comparePositiveNeuronsFirst,
       compareByProjectTitle,
     ])
