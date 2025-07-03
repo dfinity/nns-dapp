@@ -5,7 +5,7 @@ import {
   claimOrRefreshNeuronByMemo,
   disburse,
   disburseMaturity,
-  getGovernanceCachedMetrics,
+  getGovernanceMetrics,
   getNetworkEconomicsParameters,
   increaseDissolveDelay,
   joinCommunityFund,
@@ -915,12 +915,12 @@ describe("neurons-api", () => {
     });
   });
 
-  describe("getGovernanceCachedMetrics", () => {
+  describe("getGovernanceMetrics", () => {
     const identity = mockIdentity;
 
     it("should call the canister to get the governance cached metrics", async () => {
       const certified = true;
-      await getGovernanceCachedMetrics({
+      await getGovernanceMetrics({
         certified,
         identity,
       });
@@ -939,7 +939,7 @@ describe("neurons-api", () => {
       );
 
       const call = () =>
-        getGovernanceCachedMetrics({
+        getGovernanceMetrics({
           certified: false,
           identity,
         });

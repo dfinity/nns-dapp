@@ -642,7 +642,7 @@ export const getNetworkEconomicsParameters = async ({
   return response;
 };
 
-export const getGovernanceCachedMetrics = async ({
+export const getGovernanceMetrics = async ({
   identity,
   certified,
 }: ApiQueryParams): Promise<GovernanceCachedMetrics> => {
