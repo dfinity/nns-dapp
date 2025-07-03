@@ -4,16 +4,13 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
-  import type { SnsSummarySwap } from "$lib/types/sns";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
-  import { formatCurrencyNumber } from "$lib/utils/format.utils";
+  import { formatNumber } from "$lib/utils/format.utils";
   import { formatParticipation } from "$lib/utils/portfolio.utils";
   import {
     durationTillSwapDeadline,
     getProjectCommitmentSplit,
-    type FullProjectCommitmentSplit,
   } from "$lib/utils/projects.utils";
-  import { ulpsToNumber } from "$lib/utils/token.utils";
   import {
     IconAccountBalance,
     IconClockNoFill,
@@ -21,49 +18,25 @@
     IconRocketLaunch,
     Tag,
   } from "@dfinity/gix-components";
-  import { ICPToken, nonNullish, secondsToDuration } from "@dfinity/utils";
+  import { secondsToDuration } from "@dfinity/utils";
 
-  export let summary: SnsSummaryWrapper;
-  let swap: SnsSummarySwap;
-  $: ({ swap } = summary);
+  type Props = {
+    summary: SnsSummaryWrapper;
+  };
 
-  let projectCommitment: FullProjectCommitmentSplit;
-  $: projectCommitment = getProjectCommitmentSplit(
-    summary
-  ) as FullProjectCommitmentSplit;
+  const { summary }: Props = $props();
 
-  let directCommitment: number;
-  $: directCommitment = ulpsToNumber({
-    ulps: projectCommitment.directCommitmentE8s,
-    token: ICPToken,
-  });
-
-  let formattedDirectCommitment: string;
-  $: formattedDirectCommitment = formatCurrencyNumber(directCommitment);
-
-  let formattedMinCommitmentIcp: string;
-  $: formattedMinCommitmentIcp = formatParticipation(
-    projectCommitment.minDirectCommitmentE8s
+  const capIcp = $derived(
+    getProjectCommitmentSplit(summary).totalCommitmentE8s
   );
-
-  let formattedMaxCommitmentIcp: string;
-  $: formattedMaxCommitmentIcp = formatParticipation(
-    projectCommitment.maxDirectCommitmentE8s
+  const minIcp = $derived(summary.getMinParticipantIcpE8s());
+  const fundedOfMin = $derived(capIcp > 0n ? (capIcp * 100n) / minIcp : 0n);
+  const durationTillDeadline = $derived(
+    durationTillSwapDeadline(summary.swap) ?? 0n
   );
-
-  let nfCommitment: bigint | undefined;
-  $: nfCommitment = projectCommitment.nfCommitmentE8s;
-
-  let formattedNfCommitmentPercentage: string | null;
-  $: formattedNfCommitmentPercentage = nonNullish(nfCommitment)
-    ? formatParticipation(nfCommitment)
-    : null;
-
-  let durationTillDeadline: bigint;
-  $: durationTillDeadline = durationTillSwapDeadline(swap) ?? 0n;
-
-  let href: string;
-  $: href = `${AppPath.Project}/?project=${summary.rootCanisterId.toText()}`;
+  const href = $derived(
+    `${AppPath.Project}/?project=${summary.rootCanisterId.toText()}`
+  );
 </script>
 
 {#snippet backgroundIcon()}
@@ -78,14 +51,11 @@
 <CardFrame testId="ongoing-project-card" {backgroundIcon}>
   <div class="wrapper">
     <div class="header">
-      <div>
-        <Logo
-          src={summary.metadata.logo}
-          alt={summary.metadata.name}
-          size="medium"
-          desktopSize="big"
-        />
-      </div>
+      <Logo
+        src={summary.metadata.logo}
+        alt={summary.metadata.name}
+        size="medium"
+      />
       <h3 data-tid="project-name">{summary.metadata.name}</h3>
       <Tag size="medium">
         <span>{$i18n.portfolio.project_status_open}</span>
@@ -104,7 +74,12 @@
         </h6>
         <div class="stat-value" data-tid="direct-commitment">
           <IconRocketLaunch size="16px" />
-          <span>{formattedDirectCommitment}</span>
+          <span
+            >{formatNumber(Number(fundedOfMin), {
+              minFraction: 0,
+              maxFraction: 2,
+            })}%</span
+          >
         </div>
       </li>
       <li class="stat-item">
@@ -113,7 +88,7 @@
         </h6>
         <div class="stat-value" data-tid="min-direct-commitment">
           <IconCoin size="16px" />
-          <span>{formattedMinCommitmentIcp}</span>
+          <span>{formatParticipation(minIcp)}</span>
         </div>
       </li>
       <li class="stat-item">
@@ -122,7 +97,7 @@
         </h6>
         <div class="stat-value" data-tid="max-direct-commitment">
           <IconAccountBalance size="16px" />
-          <span>{formattedMaxCommitmentIcp}</span>
+          <span>{formatParticipation(capIcp)}</span>
         </div>
       </li>
     </ul>
