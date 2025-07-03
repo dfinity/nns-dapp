@@ -1,6 +1,5 @@
 <script lang="ts">
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
-  import IconCoin from "$lib/components/ui/icons/IconCoin.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { i18n } from "$lib/stores/i18n";
@@ -17,6 +16,7 @@
     IconRight,
     IconRocketLaunch,
     Tag,
+    IconCoin,
   } from "@dfinity/gix-components";
   import { secondsToDuration } from "@dfinity/utils";
 
