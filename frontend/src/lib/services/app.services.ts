@@ -1,10 +1,10 @@
 import { loadActionableProposals } from "$lib/services/actionable-proposals.services";
 import { loadActionableSnsProposals } from "$lib/services/actionable-sns-proposals.services";
+import { loadGovernanceMetrics } from "$lib/services/governance-metrics.service";
 import { initAccounts } from "$lib/services/icp-accounts.services";
 import { loadImportedTokens } from "$lib/services/imported-tokens.services";
 import { loadNetworkEconomicsParameters } from "$lib/services/network-economics.services";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
-import { loadGovernanceMetrics } from "./governance-metrics.service";
 
 export const initAppPrivateData = async (): Promise<void> => {
   const initNetworkEconomicsParameters: Promise<void>[] = [
