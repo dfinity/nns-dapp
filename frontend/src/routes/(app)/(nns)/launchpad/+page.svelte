@@ -11,8 +11,6 @@
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
   } from "$lib/stores/sns.store";
-  import { filterProjectsStatus } from "$lib/utils/projects.utils";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   if ($ENABLE_LAUNCHPAD_REDESIGN) {
     loadIcpSwapTickers();
