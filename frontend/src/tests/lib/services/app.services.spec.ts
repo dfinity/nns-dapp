@@ -164,7 +164,7 @@ describe("app-services", () => {
     initAppPrivateData();
     await runResolvedPromises();
 
-    expect(spyGovernanceMetrics).toHaveBeenCalledTimes(1);
+    expect(spyGovernanceMetrics).toHaveBeenCalledTimes(2);
     expect(spyGovernanceMetrics).toHaveBeenCalledWith({
       identity: mockIdentity,
       certified: true,
