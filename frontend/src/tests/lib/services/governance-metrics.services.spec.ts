@@ -1,0 +1,56 @@
+import * as api from "$lib/api/governance.api";
+import { loadGovernanceMetrics } from "$lib/services/governance-metrics.service";
+import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockGovernanceMetrics } from "$tests/mocks/governance-metrics.mock";
+import { get } from "svelte/store";
+
+describe("governance-metrics-services", () => {
+  let spyGetGovernanceMetrics;
+
+  beforeEach(() => {
+    resetIdentity();
+    spyGetGovernanceMetrics = vi
+      .spyOn(api, "getGovernanceMetrics")
+      .mockResolvedValue(mockGovernanceMetrics);
+  });
+
+  describe("loadGovernanceMetrics", () => {
+    it("should load governance metrics", async () => {
+      await loadGovernanceMetrics();
+
+      expect(spyGetGovernanceMetrics).toHaveBeenCalledTimes(1);
+      expect(spyGetGovernanceMetrics).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        certified: true,
+      });
+    });
+
+    it("should update governance metrics store", async () => {
+      expect(get(governanceMetricsStore)).toEqual({
+        parameters: undefined,
+        certified: undefined,
+      });
+
+      await loadGovernanceMetrics();
+
+      expect(get(governanceMetricsStore)).toEqual({
+        parameters: mockGovernanceMetrics,
+        certified: true,
+      });
+    });
+
+    it("should console log on error", async () => {
+      vi.spyOn(console, "error").mockReturnValue();
+      const error = new Error("test error");
+      spyGetGovernanceMetrics = vi
+        .spyOn(api, "getGovernanceMetrics")
+        .mockRejectedValue(error);
+
+      await loadGovernanceMetrics();
+
+      expect(console.error).toBeCalledWith(error);
+      expect(console.error).toBeCalledTimes(1);
+    });
+  });
+});
