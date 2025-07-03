@@ -75,9 +75,9 @@
         <h6 class="stat-label">
           {$i18n.launchpad_cards.ongoing_funded_of_min}
         </h6>
-        <div class="stat-value" data-tid="direct-commitment">
+        <div class="stat-value">
           <IconRocketLaunch size="16px" />
-          <span
+          <span data-tid="funded-of-min-value"
             >{formatNumber(Number(fundedOfMin), {
               minFraction: 0,
               maxFraction: 2,
@@ -89,7 +89,7 @@
         <h6 class="stat-label">
           {$i18n.launchpad_cards.ongoing_min_icp}
         </h6>
-        <div class="stat-value" data-tid="min-direct-commitment">
+        <div class="stat-value" data-tid="min-icp-value">
           <IconCoin size="16px" />
           <span>{formatParticipation(minIcp)}</span>
         </div>
@@ -98,9 +98,9 @@
         <h6 class="stat-label">
           {$i18n.launchpad_cards.ongoing_cap_icp}
         </h6>
-        <div class="stat-value" data-tid="max-direct-commitment">
+        <div class="stat-value">
           <IconAccountBalance size="16px" />
-          <span>{formatParticipation(capIcp)}</span>
+          <span data-tid="cap-icp-value">{formatParticipation(capIcp)}</span>
         </div>
       </li>
     </ul>
@@ -135,13 +135,13 @@
   @use "../../themes/mixins/launchpad";
 
   .background-icon {
-    position: absolute;
-    right: -40px;
-    bottom: -40px;
-
     // TODO: Introduce in GIX once it is part of the design system
     color: #3d4d99;
     transform: rotate(270deg);
+    position: absolute;
+
+    right: -40px;
+    bottom: -40px;
 
     @include media.min-width(medium) {
       right: -60px;
