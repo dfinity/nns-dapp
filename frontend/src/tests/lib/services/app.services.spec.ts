@@ -147,7 +147,7 @@ describe("app-services", () => {
     initAppPrivateData();
     await runResolvedPromises();
 
-    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(1);
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(2);
     expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledWith({
       identity: mockIdentity,
       certified: true,
