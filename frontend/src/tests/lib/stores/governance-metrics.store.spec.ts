@@ -15,7 +15,7 @@ describe("governance-metrics-store", () => {
     });
 
     expect(get(governanceMetricsStore)).toEqual({
-      parameters: mockGovernanceMetrics,
+      metrics: mockGovernanceMetrics,
       certified: true,
     });
   });
