@@ -23,6 +23,7 @@ export interface FeatureFlags<T> {
   ENABLE_SNS_TOPICS: T;
   ENABLE_NNS_TOPICS: T;
   ENABLE_LAUNCHPAD_REDESIGN: T;
+  ENABLE_APY_PORTFOLIO: T;
 }
 export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_CKTESTBTC: false,
@@ -33,6 +34,7 @@ export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_SNS_TOPICS: false,
   ENABLE_NNS_TOPICS: false,
   ENABLE_LAUNCHPAD_REDESIGN: false,
+  ENABLE_APY_PORTFOLIO: false,
 };
 
 export type FeatureKey = keyof FeatureFlags<boolean>;
