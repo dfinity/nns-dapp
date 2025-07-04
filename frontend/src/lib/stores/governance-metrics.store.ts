@@ -2,13 +2,13 @@ import type { GovernanceCachedMetrics } from "@dfinity/nns";
 import { writable, type Readable } from "svelte/store";
 
 export interface GovernanceMetricsStoreData {
-  parameters: GovernanceCachedMetrics | undefined;
+  metrics: GovernanceCachedMetrics | undefined;
   certified: boolean | undefined;
 }
 
 export interface GovernanceMetricsStore
   extends Readable<GovernanceMetricsStoreData> {
-  setParameters: (data: GovernanceMetricsStoreData) => void;
+  setMetrics: (data: GovernanceMetricsStoreData) => void;
 }
 
 /**
@@ -16,7 +16,7 @@ export interface GovernanceMetricsStore
  */
 const initGovernanceMetricsStore = () => {
   const initialStoreData: GovernanceMetricsStoreData = {
-    parameters: undefined,
+    metrics: undefined,
     certified: undefined,
   };
   const { subscribe, set } =
@@ -25,8 +25,8 @@ const initGovernanceMetricsStore = () => {
   return {
     subscribe,
 
-    setParameters(parameters: GovernanceMetricsStoreData) {
-      set(parameters);
+    setMetrics(metrics: GovernanceMetricsStoreData) {
+      set(metrics);
     },
 
     reset() {

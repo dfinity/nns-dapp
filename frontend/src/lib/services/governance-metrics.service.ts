@@ -8,9 +8,9 @@ export const loadGovernanceMetrics = async (): Promise<void> => {
   return queryAndUpdate<GovernanceCachedMetrics, unknown>({
     strategy: FORCE_CALL_STRATEGY,
     request: (options) => governanceApiService.getGovernanceMetrics(options),
-    onLoad: ({ response: parameters, certified }) => {
-      governanceMetricsStore.setParameters({
-        parameters,
+    onLoad: ({ response: metrics, certified }) => {
+      governanceMetricsStore.setMetrics({
+        metrics,
         certified,
       });
     },

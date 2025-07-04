@@ -9,8 +9,8 @@ describe("governance-metrics-store", () => {
       certified: undefined,
     });
 
-    governanceMetricsStore.setParameters({
-      parameters: mockGovernanceMetrics,
+    governanceMetricsStore.setMetrics({
+      metrics: mockGovernanceMetrics,
       certified: true,
     });
 

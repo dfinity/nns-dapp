@@ -38,14 +38,14 @@ describe("governance-metrics-services", () => {
 
     it("should update governance metrics store", async () => {
       expect(get(governanceMetricsStore)).toEqual({
-        parameters: undefined,
+        metrics: undefined,
         certified: undefined,
       });
 
       await loadGovernanceMetrics();
 
       expect(get(governanceMetricsStore)).toEqual({
-        parameters: mockGovernanceMetrics,
+        metrics: mockGovernanceMetrics,
         certified: true,
       });
     });
