@@ -133,6 +133,7 @@
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
   @use "@dfinity/gix-components/dist/styles/mixins/text";
   @use "../../themes/mixins/launchpad";
+  @use "../../themes/mixins/portfolio";
 
   .background-icon {
     // TODO: Introduce in GIX once it is part of the design system
@@ -164,10 +165,11 @@
   }
 
   .wrapper {
-    @include launchpad.card_container();
+    @include launchpad.card_container;
 
     .header {
-      @include launchpad.card_header();
+      @include launchpad.card_header;
+      @include portfolio.card-tag;
 
       --logo-size: var(--padding-4x);
       @include media.min-width(medium) {
@@ -177,7 +179,7 @@
       h3 {
         margin: 0;
         padding: 0;
-        @include launchpad.text_h3();
+        @include launchpad.text_h3;
         @include text.truncate;
       }
     }
@@ -186,7 +188,7 @@
       margin: 0;
       color: var(--color-text-secondary);
 
-      @include launchpad.text_h5();
+      @include launchpad.text_h5;
       @include text.clamp(2);
     }
 
@@ -213,12 +215,12 @@
         }
 
         h6 {
-          @include launchpad.text_h6();
+          @include launchpad.text_h6;
           margin: 0;
         }
 
         .stat-value {
-          @include launchpad.text_h4();
+          @include launchpad.text_h4;
 
           display: flex;
           align-items: center;
@@ -236,7 +238,7 @@
       }
 
       .time-remaining {
-        @include launchpad.text_body();
+        @include launchpad.text_body;
 
         display: flex;
         align-items: center;
@@ -244,7 +246,7 @@
       }
 
       .link {
-        @include launchpad.text_button();
+        @include launchpad.text_button;
         color: var(--button-secondary-color);
 
         display: flex;
