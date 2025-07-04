@@ -41,6 +41,7 @@ interface I18nCore {
   add: string;
   not_applicable: string;
   view_more: string;
+  view: string;
   copy: string;
   copied: string;
 }
@@ -929,6 +930,18 @@ interface I18nLaunchpad {
   subheadline: string;
   upcoming_launches: string;
   launched_projects: string;
+  participated_projects: string;
+}
+
+interface I18nLaunchpad_cards {
+  ongoing_funded_of_min: string;
+  ongoing_min_icp: string;
+  ongoing_cap_icp: string;
+  upcoming_tag_upcoming: string;
+  upcoming_link: string;
+  upcoming_sale_starts: string;
+  create_sns_proposal_title: string;
+  create_sns_proposal_vote: string;
 }
 
 interface I18nSns_project_detail {
@@ -1641,6 +1654,7 @@ interface I18n {
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
   launchpad: I18nLaunchpad;
+  launchpad_cards: I18nLaunchpad_cards;
   sns_project_detail: I18nSns_project_detail;
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;

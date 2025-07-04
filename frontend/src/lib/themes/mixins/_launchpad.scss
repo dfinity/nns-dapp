@@ -1,0 +1,89 @@
+@use "@dfinity/gix-components/dist/styles/mixins/media";
+
+@mixin text_h3 {
+  font-family: CircularXX;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+
+  @include media.min-width(medium) {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+@mixin text_h4 {
+  font-family: CircularXX;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 450;
+  line-height: 20px;
+}
+
+@mixin text_h5 {
+  font-family: CircularXX;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+
+  @include media.min-width(medium) {
+    font-size: 14px;
+    font-weight: 450;
+  }
+}
+
+@mixin text_h6 {
+  font-family: CircularXX;
+  font-size: 11px;
+  font-weight: 450;
+  line-height: 13px;
+}
+
+// e.g. 3d, 23h remaining
+@mixin text_body {
+  font-family: CircularXX;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+@mixin text_button {
+  font-family: CircularXX;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+@mixin card_content {
+  height: 100%;
+  display: grid;
+  grid-auto-rows: min-content;
+  box-sizing: border-box;
+
+  // Margins are used instead of gaps for flexibility
+  // (to be able to set auto for some rows)
+  > * {
+    margin-bottom: var(--padding);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    @include media.min-width(medium) {
+      margin-bottom: var(--padding-2x);
+    }
+  }
+}
+
+// 3 columns (logo, title, tag/action) container
+@mixin card_content_header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--padding);
+}
