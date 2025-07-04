@@ -31,26 +31,38 @@
     })
   );
 
-  const launchedSnsProjectsCards: ComponentWithProps[] = $derived.by(() => {
-    const launchedSnsProjects = filterProjectsStatus({
+  const launchedSnsProjects = $derived(
+    filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
       projects: snsProjects,
-    }).sort(comparesByDecentralizationSaleOpenTimestampDesc);
-    const userCommittedSnsProjects = launchedSnsProjects.filter(
-      ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
-    );
-    const notCommittedSnsProjects = launchedSnsProjects.filter(
-      ({ swapCommitment }) =>
-        isNullish(getCommitmentE8s(swapCommitment)) ||
-        getCommitmentE8s(swapCommitment) === 0n
-    );
-    return [...userCommittedSnsProjects, ...notCommittedSnsProjects].map(
-      (project) => ({
+    }).sort(comparesByDecentralizationSaleOpenTimestampDesc)
+  );
+  const userCommittedSnsProjects = $derived(
+    launchedSnsProjects
+      .filter(
+        ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
+      )
+      .map((project) => ({
         Component: ProjectCard as unknown as Component,
         props: { project },
-      })
-    );
-  });
+      }))
+  );
+  const notCommittedSnsProjects = $derived(
+    launchedSnsProjects
+      .filter(
+        ({ swapCommitment }) =>
+          isNullish(getCommitmentE8s(swapCommitment)) ||
+          getCommitmentE8s(swapCommitment) === 0n
+      )
+      .map((project) => ({
+        Component: ProjectCard as unknown as Component,
+        props: { project },
+      }))
+  );
+  const launchedSnsProjectsCards: ComponentWithProps[] = $derived([
+    ...userCommittedSnsProjects,
+    ...notCommittedSnsProjects,
+  ]);
 </script>
 
 <main data-tid="launchpad2-component">
@@ -68,8 +80,30 @@
       />
     </section>
   {/if}
+
+  {#if userCommittedSnsProjects.length > 0}
+    <section class="mobile-only">
+      <h4>{$i18n.launchpad.participated_projects}</h4>
+      <CardList
+        testId="launched-projects-list"
+        cards={userCommittedSnsProjects}
+        mobileHorizontalScroll={userCommittedSnsProjects.length > 1}
+      />
+    </section>
+  {/if}
+
+  {#if notCommittedSnsProjects.length > 0}
+    <section class="mobile-only">
+      <h4>{$i18n.launchpad.launched_projects}</h4>
+      <CardList
+        testId="launched-projects-list"
+        cards={notCommittedSnsProjects}
+      />
+    </section>
+  {/if}
+
   {#if launchedSnsProjectsCards.length > 0}
-    <section>
+    <section class="desktop-only">
       <h4>{$i18n.launchpad.launched_projects}</h4>
       <CardList
         testId="launched-projects-list"
@@ -81,6 +115,18 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  .desktop-only {
+    display: none;
+    @include media.min-width(medium) {
+      display: block;
+    }
+  }
+  .mobile-only {
+    @include media.min-width(medium) {
+      display: none;
+    }
+  }
 
   main {
     display: flex;
