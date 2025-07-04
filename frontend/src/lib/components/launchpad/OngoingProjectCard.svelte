@@ -236,7 +236,7 @@
     .footer {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: end;
 
       .time-remaining {
         @include launchpad.text_body;
