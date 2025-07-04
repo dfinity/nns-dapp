@@ -19,7 +19,7 @@ describe("network-economics-services", () => {
     it("should load network economics", async () => {
       await loadNetworkEconomicsParameters();
 
-      expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(1);
+      expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(2);
       expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledWith({
         identity: mockIdentity,
         certified: true,
@@ -50,7 +50,7 @@ describe("network-economics-services", () => {
       await loadNetworkEconomicsParameters();
 
       expect(console.error).toBeCalledWith(error);
-      expect(console.error).toBeCalledTimes(1);
+      expect(console.error).toBeCalledTimes(2);
     });
   });
 });
