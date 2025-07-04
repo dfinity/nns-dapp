@@ -52,7 +52,7 @@
 {/snippet}
 
 <CardFrame testId="ongoing-project-card" {backgroundIcon}>
-  <div class="wrapper">
+  <div class="card-content">
     <div class="header">
       <Logo
         src={summary.metadata.logo}
@@ -164,11 +164,14 @@
     }
   }
 
-  .wrapper {
-    @include launchpad.card_container;
+  .card-content {
+    @include launchpad.card_content;
+
+    // Make the last row always be at the bottom of the card
+    grid-template-rows: auto auto 1fr;
 
     .header {
-      @include launchpad.card_header;
+      @include launchpad.card_content_header;
       @include portfolio.card-tag;
 
       --logo-size: var(--padding-4x);
@@ -185,7 +188,7 @@
     }
 
     .description {
-      margin: 0;
+      margin-top: 0;
       color: var(--color-text-secondary);
 
       @include launchpad.text_h5;
@@ -194,7 +197,8 @@
 
     .stats {
       padding: 0;
-      margin: 0;
+      margin-top: 0;
+      margin-bottom: auto;
       list-style: none;
       display: flex;
 
@@ -230,12 +234,9 @@
     }
 
     .footer {
-      display: none;
-      @include media.min-width(medium) {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
       .time-remaining {
         @include launchpad.text_body;
@@ -249,7 +250,11 @@
         @include launchpad.text_button;
         color: var(--button-secondary-color);
 
-        display: flex;
+        display: none;
+        @include media.min-width(medium) {
+          display: flex;
+        }
+
         align-items: center;
         gap: var(--padding-0_5x);
       }

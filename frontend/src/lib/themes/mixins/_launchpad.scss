@@ -59,25 +59,29 @@
   }
 }
 
-@mixin card_container {
+@mixin card_content {
   height: 100%;
   display: grid;
   grid-auto-rows: min-content;
-  row-gap: var(--padding-2x);
   box-sizing: border-box;
 
-  // Auto space between last two elements to ensure the most content pass.
-  & > :last-child {
-    align-self: end;
-  }
+  // Margins are used instead of gaps for flexibility
+  // (to be able to set auto for some rows)
+  > * {
+    margin-bottom: var(--padding);
 
-  @include media.min-width(medium) {
-    row-gap: var(--padding-2x);
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    @include media.min-width(medium) {
+      margin-bottom: var(--padding-2x);
+    }
   }
 }
 
 // 3 columns (logo, title, tag/action) container
-@mixin card_header {
+@mixin card_content_header {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;

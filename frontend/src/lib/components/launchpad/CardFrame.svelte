@@ -27,6 +27,7 @@
     position: relative;
     box-sizing: border-box;
     overflow: hidden;
+    height: 100%;
 
     border-radius: var(--border-radius-2x);
     background-color: var(--card-background-tint);
@@ -34,11 +35,11 @@
     box-shadow: var(--box-shadow);
 
     // This component provides a height, but not the width.
-    height: 177px;
+    min-height: 180px;
     padding: var(--padding-2x);
 
     @include media.min-width(medium) {
-      height: 227px;
+      min-height: 230px;
       padding: var(--padding-3x);
     }
   }
