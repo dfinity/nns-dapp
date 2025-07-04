@@ -39,6 +39,7 @@
     "not_applicable": "N/A",
     "view_more": "View more",
     "view": "View",
+
     "copy": "Copy to clipboard",
     "copied": "Copied"
   },
@@ -899,7 +900,11 @@
   "launchpad_cards": {
     "ongoing_funded_of_min": "Funded of Min",
     "ongoing_min_icp": "Min, ICP",
-    "ongoing_cap_icp": "Cap, ICP"
+    "ongoing_cap_icp": "Cap, ICP",
+
+    "upcoming_tag_upcoming": "Upcoming",
+    "upcoming_link": "Link to project",
+    "upcoming_sale_starts": "Sale starts in"
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
