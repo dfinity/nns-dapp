@@ -64,7 +64,7 @@
       <CardList
         testId="upcoming-launches-list"
         cards={upcomingLaunchesCards}
-        mobileHorizontalScroll
+        mobileHorizontalScroll={upcomingLaunchesCards.length > 1}
       />
     </section>
   {/if}
