@@ -656,7 +656,7 @@ export const getGovernanceMetrics = async ({
   });
 
   logWithTimestamp(
-    `Getting network economics parameters call certified: ${certified} complete.`
+    `Getting governance metrics call certified: ${certified} complete.`
   );
 
   return response;
