@@ -6,12 +6,18 @@
     testId: string;
     children: Snippet;
     backgroundIcon?: Snippet;
+    highlighted?: boolean;
   };
 
-  const { testId, children, backgroundIcon }: Props = $props();
+  const {
+    testId,
+    children,
+    backgroundIcon,
+    highlighted = false,
+  }: Props = $props();
 </script>
 
-<article data-tid={testId}>
+<article data-tid={testId} class:highlighted>
   {#if nonNullish(backgroundIcon)}
     <div class="background-icon-container">
       {@render backgroundIcon()}
@@ -30,7 +36,7 @@
     height: 100%;
 
     border-radius: var(--border-radius-2x);
-    background-color: var(--card-background-tint);
+    background-color: var(--card-frame-background, var(--card-background-tint));
     // Designs has no shadow but we keep it for consistency with other cards
     box-shadow: var(--box-shadow);
 
@@ -41,6 +47,10 @@
     @include media.min-width(medium) {
       min-height: 230px;
       padding: var(--padding-3x);
+    }
+
+    &.highlighted {
+      background-color: var(--background);
     }
   }
 

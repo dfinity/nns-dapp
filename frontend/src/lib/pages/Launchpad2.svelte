@@ -1,6 +1,6 @@
 <script lang="ts">
   import CardList from "$lib/components/launchpad/CardList.svelte";
-  import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
+  import ProjectCard2 from "$lib/components/launchpad/ProjectCard2.svelte";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { ComponentWithProps } from "$lib/types/svelte";
@@ -43,7 +43,7 @@
         ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
       )
       .map((project) => ({
-        Component: ProjectCard as unknown as Component,
+        Component: ProjectCard2 as unknown as Component,
         props: { project },
       }))
   );
@@ -55,7 +55,7 @@
           getCommitmentE8s(swapCommitment) === 0n
       )
       .map((project) => ({
-        Component: ProjectCard as unknown as Component,
+        Component: ProjectCard2 as unknown as Component,
         props: { project },
       }))
   );
