@@ -36,17 +36,17 @@
   }
 
   .huge {
-    width: var(--padding-8x);
-    height: var(--padding-8x);
+    width: var(--logo-size, var(--padding-8x));
+    height: var(--logo-size, var(--padding-8x));
   }
 
   .big {
-    width: var(--padding-6x);
-    height: var(--padding-6x);
+    width: var(--logo-size, var(--padding-6x));
+    height: var(--logo-size, var(--padding-6x));
   }
 
   .medium {
-    width: var(--padding-4x);
-    height: var(--padding-4x);
+    width: var(--logo-size, var(--padding-4x));
+    height: var(--logo-size, var(--padding-4x));
   }
 </style>
