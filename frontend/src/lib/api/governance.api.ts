@@ -9,6 +9,7 @@ import type { Agent, Identity } from "@dfinity/agent";
 import type { AccountIdentifierHex } from "@dfinity/ledger-icp";
 import type {
   E8s,
+  GovernanceCachedMetrics,
   KnownNeuron,
   NetworkEconomics,
   NeuronId,
@@ -636,6 +637,26 @@ export const getNetworkEconomicsParameters = async ({
 
   logWithTimestamp(
     `Getting network economics parameters call certified: ${certified} complete.`
+  );
+
+  return response;
+};
+
+export const getGovernanceMetrics = async ({
+  identity,
+  certified,
+}: ApiQueryParams): Promise<GovernanceCachedMetrics> => {
+  logWithTimestamp(
+    `Getting Governance metrics call certified: ${certified}...`
+  );
+
+  const { canister: governance } = await governanceCanister({ identity });
+  const response = await governance.getMetrics({
+    certified,
+  });
+
+  logWithTimestamp(
+    `Getting governance metrics call certified: ${certified} complete.`
   );
 
   return response;

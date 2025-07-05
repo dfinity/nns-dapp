@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-26_03-25-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-03_03-27-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -723,6 +723,7 @@ pub struct GetMetricsRequest {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Metrics {
     pub last_ledger_block_timestamp: Option<u64>,
+    pub num_recently_executed_proposals: Option<u64>,
     pub num_recently_submitted_proposals: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
