@@ -9,7 +9,7 @@ defaults:
     shell: bash -euxlo pipefail {0}
 jobs:
   formatting:
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     env:
       DFX_NETWORK: mainnet
     steps:
@@ -38,7 +38,7 @@ jobs:
                   exit 1
           }
   relative-imports:
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     env:
       DFX_NETWORK: mainnet
     steps:
@@ -47,7 +47,7 @@ jobs:
       - name: Checks for the presence of relative imports
         run: ./scripts/check-relative-imports
   spelling:
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
       - name: Spellcheck changelog
         run: scripts/spellcheck-changelog
   cargo-tests:
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -102,7 +102,7 @@ jobs:
           shard_number: 2
           shard_count: 2
   svelte-lint:
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
@@ -124,7 +124,7 @@ jobs:
         working-directory: ./frontend
   shell-checks:
     name: ShellCheck
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Run ShellCheck
@@ -134,7 +134,7 @@ jobs:
           ./scripts/lint-sh
   ic-commit-consistency:
     name: IC Commit
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Install didc
@@ -158,7 +158,7 @@ jobs:
           fi
   release-templating-works:
     name: Release template
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -180,7 +180,7 @@ jobs:
           ./scripts/nns-dapp/release-check
   config-check:
     name: Config is as expected
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Install dfx
@@ -194,7 +194,7 @@ jobs:
         run: bash -x config.test
   migration-test-utils-work:
     name: Migration test utilities work
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Install cargo binstall
@@ -209,7 +209,7 @@ jobs:
     # TODO: Re-enable (add it in line 338) once fixed, should it depend on mainnet?
     if: false
     name: Can get NNS proposal args
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Install didc
@@ -225,7 +225,7 @@ jobs:
       - name: Test getting proposal args
         run: scripts/dfx-nns-proposal-args.test
   minor-version-bump-works:
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Install yq
@@ -257,7 +257,7 @@ jobs:
           # TODO: Verify that the commits contain the expected changes.
   version-match:
     name: The nns-dapp npm and cargo versions should match
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Backend and frontend have the same version
@@ -274,7 +274,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu 24.04, macos-13]
+        os: [ubuntu-24.04, macos-13]
     runs-on: ${{ matrix.os }}
     env:
       # Used by download-ci-wasm.test
@@ -362,7 +362,7 @@ jobs:
       - version-match
       - small-tests
     if: ${{ always() }}
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/needs_success
