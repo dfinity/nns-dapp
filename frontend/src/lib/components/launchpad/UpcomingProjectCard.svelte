@@ -28,7 +28,7 @@
   );
 </script>
 
-<CardFrame testId="upcoming-project-card">
+<CardFrame testId="upcoming-project-card-component">
   <div class="card-content">
     <div class="header">
       <Logo
@@ -48,12 +48,12 @@
         >{summary.metadata.description}</p
       >
       <a
+        data-tid="project-site-link"
         href={projectUrl}
         target="_blank"
         rel="noopener noreferrer"
         class="link"
         aria-label={$i18n.launchpad_cards.upcoming_link}
-        data-tid="project-link"
       >
         <span class="text">{$i18n.launchpad_cards.upcoming_link}</span>
         <IconOpenInNew />
