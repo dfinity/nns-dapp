@@ -1,7 +1,8 @@
 <script lang="ts">
-  import Card from "$lib/components/portfolio/Card.svelte";
+  import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import VotesResult from "$lib/components/portfolio/VotesResult.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import VoteLogo from "$lib/components/universe/VoteLogo.svelte";
   import { pageStore } from "$lib/derived/page.derived";
   import { i18n } from "$lib/stores/i18n";
   import { buildProposalUrl } from "$lib/utils/navigation.utils";
@@ -14,8 +15,6 @@
   } from "@dfinity/gix-components";
   import type { ProposalInfo } from "@dfinity/nns";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
-  import VoteLogo from "../universe/VoteLogo.svelte";
-  import CardFrame from "./CardFrame.svelte";
 
   type Props = {
     proposalInfo: ProposalInfo;

@@ -1,11 +1,10 @@
 <script lang="ts">
-  import SignedInOnly from "$lib/components/common/SignedInOnly.svelte";
-  import ProjectCardSwapInfo from "$lib/components/launchpad/ProjectCardSwapInfo.svelte";
+  import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
-  import { createIsSnsFinalizingStore } from "$lib/stores/sns-finalization-status.store";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
     IconAccountBalance,
@@ -13,12 +12,9 @@
     IconRight,
     IconStar,
     IconVote,
-    Spinner,
   } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import CardFrame from "./CardFrame.svelte";
-  import { AppPath } from "../../constants/routes.constants";
 
   type Props = {
     project: SnsFullProject;
