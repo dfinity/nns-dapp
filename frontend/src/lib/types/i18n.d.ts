@@ -949,12 +949,6 @@ interface I18nLaunchpad_cards {
   project_card_proposal_activity: string;
 }
 
-interface I18nLaunchpad_cards {
-  ongoing_funded_of_min: string;
-  ongoing_min_icp: string;
-  ongoing_cap_icp: string;
-}
-
 interface I18nSns_project_detail {
   swap_proposal: string;
   link_to_dashboard: string;
