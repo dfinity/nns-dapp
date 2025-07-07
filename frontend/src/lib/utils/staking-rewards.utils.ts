@@ -14,6 +14,7 @@ import {
   MAX_DISSOLVE_DELAY_BONUS,
 } from "$lib/constants/neurons.constants";
 import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
+import type { GovernanceMetricsStoreData } from "$lib/stores/governance-metrics.store";
 import type { NetworkEconomicsStoreData } from "$lib/stores/network-economics.store";
 import { type NeuronsStore } from "$lib/stores/neurons.store";
 import { type SnsAggregatorData } from "$lib/stores/sns-aggregator.store";
@@ -61,6 +62,7 @@ interface Params {
   nnsNeurons: NeuronsStore;
   nnsEconomics: NetworkEconomicsStoreData;
   fxRates: IcpSwapUsdPricesStoreData;
+  governanceMetrics: GovernanceMetricsStoreData;
 }
 
 export const getStakingRewardData = (params: Params): StakingRewardData => {
@@ -281,23 +283,32 @@ const getAPY = (
 /////////////////////
 
 const isDataReady = (params: Params) => {
-  const { tokens, snsProjects, snsNeurons, nnsNeurons, nnsEconomics, fxRates } =
-    params;
+  const {
+    tokens,
+    snsProjects,
+    snsNeurons,
+    nnsNeurons,
+    nnsEconomics,
+    fxRates,
+    governanceMetrics,
+  } = params;
 
   const areTokensReady = !tokens?.some((t) => t.balance === "loading");
   const areSnsProjectsReady = Boolean(snsProjects?.data);
   const areSnsNeuronsReady = Boolean(Object.keys(snsNeurons).length);
   const areNnsNeuronsReady = Boolean(nnsNeurons?.neurons);
-  const areNnsEconomicsReady = Boolean(nnsEconomics.parameters);
+  const isNnsEconomicsReady = Boolean(nnsEconomics.parameters);
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
+  const isGovernanceMetricsReady = Boolean(governanceMetrics.metrics);
 
   return [
     areTokensReady,
     areSnsProjectsReady,
     areSnsNeuronsReady,
     areNnsNeuronsReady,
-    areNnsEconomicsReady,
+    isNnsEconomicsReady,
     areFXRatesReady,
+    isGovernanceMetricsReady,
   ].every((x) => x === true);
 };
 
@@ -543,7 +554,7 @@ const getNnsRewardParams = (params: Params) => ({
   initialReward: NNS_INITIAL_REWARD_RATE,
   finalReward: NNS_FINAL_REWARD_RATE,
   rewardTransition: SECONDS_IN_EIGHT_YEARS,
-  totalSupply: NNS_TOTAL_SUPPLY,
+  totalSupply: Number(params.governanceMetrics.metrics?.totalSupplyIcp),
 });
 
 ////////////////////
@@ -554,8 +565,6 @@ const getTotalVotingPower = (): bigint => {
   // @TODO lastRewardEvent -> totalVotingPower
   return 50276005084190970n;
 };
-
-const NNS_TOTAL_SUPPLY = 534_809_202;
 
 const SNS_GENESIS_TIMESTAMP_SECONDS: Record<string, number> = {
   // Alice

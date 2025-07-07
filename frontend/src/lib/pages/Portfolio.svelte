@@ -16,6 +16,7 @@
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
+  import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
@@ -187,6 +188,7 @@
       nnsNeurons: $neuronsStore,
       nnsEconomics: $networkEconomicsStore,
       fxRates: $icpSwapUsdPricesStore,
+      governanceMetrics: $governanceMetricsStore,
     })
   );
 
