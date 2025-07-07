@@ -89,7 +89,9 @@
 
     <ul class="stats">
       <li class="stat-item">
-        <h6 class="stat-label">{$i18n.launchpad.project_card_token_price}</h6>
+        <h6 class="stat-label"
+          >{$i18n.launchpad_cards.project_card_token_price}</h6
+        >
         <div class="stat-value">
           <IconCoin size="16px" />
           <span data-tid="min-icp-value">{formattedTokenPriceUsd}</span>
@@ -97,7 +99,7 @@
       </li>
       <li class="stat-item">
         <h6 class="stat-label"
-          >{$i18n.launchpad.project_card_icp_in_treasury}</h6
+          >{$i18n.launchpad_cards.project_card_icp_in_treasury}</h6
         >
         <div class="stat-value">
           <IconAccountBalance size="16px" />
@@ -107,7 +109,7 @@
       <li class="stat-item">
         {#if userHasParticipated && nonNullish(myCommitmentIcp)}
           <h6 class="stat-label"
-            >{$i18n.launchpad.project_card_my_participation}</h6
+            >{$i18n.launchpad_cards.project_card_my_participation}</h6
           >
           <div class="stat-value" data-tid="my-commitment-icp-value">
             <IconVote size="16px" />
@@ -115,7 +117,7 @@
           </div>
         {:else}
           <h6 class="stat-label"
-            >{$i18n.launchpad.project_card_proposal_activity}</h6
+            >{$i18n.launchpad_cards.project_card_proposal_activity}</h6
           >
           <div class="stat-value" data-tid="my-commitment-icp-value">
             <IconWallet size="16px" />
