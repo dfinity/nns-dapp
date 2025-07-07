@@ -41,6 +41,7 @@ interface I18nCore {
   add: string;
   not_applicable: string;
   view_more: string;
+  view: string;
   copy: string;
   copied: string;
 }
@@ -931,6 +932,12 @@ interface I18nLaunchpad {
   launched_projects: string;
 }
 
+interface I18nLaunchpad_cards {
+  ongoing_funded_of_min: string;
+  ongoing_min_icp: string;
+  ongoing_cap_icp: string;
+}
+
 interface I18nSns_project_detail {
   swap_proposal: string;
   link_to_dashboard: string;
@@ -1641,6 +1648,7 @@ interface I18n {
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
   launchpad: I18nLaunchpad;
+  launchpad_cards: I18nLaunchpad_cards;
   sns_project_detail: I18nSns_project_detail;
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
