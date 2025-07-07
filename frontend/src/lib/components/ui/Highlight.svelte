@@ -90,7 +90,27 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  :root {
+  @include media.dark-theme() {
+    .highlight {
+      --highlight-info-bg: #dadef2;
+      --highlight-info-color: #151a33;
+
+      --highlight-success-bg: #2db28640;
+      --highlight-success-color: #29a079;
+
+      --highlight-warn-bg: #faa12340;
+      --highlight-warn-color: #faa123;
+
+      --highlight-danger-bg: #f2556f40;
+      --highlight-danger-color: #f2556f;
+
+      --highlight-background: #fff;
+      --highlight-text-color: #151a33;
+      --highligth-close-icon-color: #3d4d99;
+    }
+  }
+
+  .highlight {
     --highlight-info-bg: #ffffff26;
     --highlight-info-color: #fff;
 
@@ -113,26 +133,6 @@
     --spacing-sm: 16px;
     --spacing-md: 24px;
 
-    &[theme="dark"] {
-      --highlight-info-bg: #dadef2;
-      --highlight-info-color: #151a33;
-
-      --highlight-success-bg: #2db28640;
-      --highlight-success-color: #29a079;
-
-      --highlight-warn-bg: #faa12340;
-      --highlight-warn-color: #faa123;
-
-      --highlight-danger-bg: #f2556f40;
-      --highlight-danger-color: #f2556f;
-
-      --highlight-background: #fff;
-      --highlight-text-color: #151a33;
-      --highligth-close-icon-color: #3d4d99;
-    }
-  }
-
-  .highlight {
     box-sizing: border-box;
 
     position: fixed;
