@@ -499,9 +499,9 @@ const getGenesisTimestampSeconds = (sns?: CachedSnsDto): number => {
     if (snsGenesisTimestamp) {
       return snsGenesisTimestamp;
     } else {
-      console.warn(
+      /* console.warn(
         `Stacking rewards: no genesis timestamp found for SNS with root canister ID ${sns.canister_ids.root_canister_id}, using 0 instead.`
-      );
+      ); */
       return 0;
     }
   } else {
