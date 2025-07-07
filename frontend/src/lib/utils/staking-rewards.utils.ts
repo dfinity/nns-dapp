@@ -2,7 +2,9 @@ import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import {
   DAYS_IN_AVG_YEAR,
   E8S_RATE,
+  NNS_FINAL_REWARD_RATE,
   NNS_GENESIS_TIMESTAMP_SECONDS,
+  NNS_INITIAL_REWARD_RATE,
   SECONDS_IN_DAY,
   SECONDS_IN_EIGHT_YEARS,
   SECONDS_IN_FOUR_YEARS,
@@ -538,8 +540,8 @@ const getNnsRewardParams = (params: Params) => ({
   maxDissolveBonus: MAX_DISSOLVE_DELAY_BONUS,
   maxAge: SECONDS_IN_FOUR_YEARS,
   maxAgeBonus: MAX_AGE_BONUS,
-  initialReward: 0.1,
-  finalReward: 0.05,
+  initialReward: NNS_INITIAL_REWARD_RATE,
+  finalReward: NNS_FINAL_REWARD_RATE,
   rewardTransition: SECONDS_IN_EIGHT_YEARS,
   totalSupply: NNS_TOTAL_SUPPLY,
 });
