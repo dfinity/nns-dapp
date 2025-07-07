@@ -11,7 +11,6 @@ import {
   failedActionableSnsesStore,
 } from "$lib/stores/actionable-sns-proposals.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { votableSnsNeurons } from "$lib/utils/sns-neuron.utils";
 import {
   lastProposalId,
@@ -34,11 +33,7 @@ export const loadActionableSnsProposals = async () => {
     rootCanisterIds.map((rootCanisterId) =>
       loadActionableProposalsForSns(rootCanisterId)
     )
-  ).then(() => {
-    logWithTimestamp(
-      "Finished loading actionable SNS proposals for all root canister IDs."
-    );
-  });
+  );
 };
 
 export const loadActionableProposalsForSns = async (
