@@ -16,7 +16,6 @@
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
-  import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
   import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -25,6 +24,7 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
   import {
     compareProposalInfoByDeadlineTimestampSeconds,
     getTopHeldTokens,
@@ -36,7 +36,7 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import type { ProposalInfo } from "@dfinity/nns";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
-  import { onMount, type Component } from "svelte";
+  import { type Component } from "svelte";
 
   type Props = {
     userTokens: UserToken[];
@@ -181,10 +181,6 @@
     ...adoptedSnsProposalsCards,
   ]);
 
-  onMount(() => {
-    loadLatestRewardEvent();
-  });
-
   const stakingRewardData = $derived(
     getStakingRewardData({
       auth: $authSignedInStore,
@@ -202,6 +198,10 @@
   $effect(() => {
     if (!stakingRewardData.loading) {
       // @TODO Use the values in the UI
+      logWithTimestamp(
+        ">>>>> Staking rewards: data loaded.",
+        stakingRewardData
+      );
     }
   });
 </script>

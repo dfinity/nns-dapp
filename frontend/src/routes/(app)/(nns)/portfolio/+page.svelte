@@ -19,6 +19,7 @@
   } from "$lib/services/accounts-balances.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
+  import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -64,6 +65,10 @@
 
   $: if ($snsProposalsStoreIsLoading) {
     loadProposalsSnsCF({ omitLargeFields: false });
+  }
+
+  $: if ($authSignedInStore) {
+    loadLatestRewardEvent();
   }
 </script>
 
