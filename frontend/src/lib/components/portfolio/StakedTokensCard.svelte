@@ -128,13 +128,13 @@
               <div class="apy" data-tid="apy" role="cell">
                 {#if $authSignedInStore}
                   <span
-                    >{formatPercentage(stakedToken?.apy?.cur ?? 0.042, {
+                    >{formatPercentage(stakedToken?.apy?.cur ?? 0, {
                       minFraction: 2,
                       maxFraction: 2,
                     })}</span
                   >
                   <span class="description"
-                    >({formatPercentage(stakedToken?.apy?.max ?? 0.12, {
+                    >({formatPercentage(stakedToken?.apy?.max ?? 0, {
                       minFraction: 2,
                       maxFraction: 2,
                     })})</span
@@ -376,7 +376,7 @@
     }
 
     .gap-small {
-      gap: 4px;
+      gap: var(--padding-0_5x);
     }
 
     .text-right {
