@@ -19,6 +19,6 @@ export const loadNetworkEconomicsParameters = async (): Promise<void> => {
       console.error(err);
       // We swallow the error because the reward event is not critical to the app.
     },
-    logMessage: "Getting latest reward event for NNS",
+    logMessage: "Getting network economics parameters",
   });
 };
