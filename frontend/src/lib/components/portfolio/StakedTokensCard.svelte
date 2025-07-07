@@ -4,6 +4,7 @@
   import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -15,7 +16,6 @@
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
-  import TooltipIcon from "../ui/TooltipIcon.svelte";
 
   type Props = {
     topStakedTokens: TableProject[];
