@@ -1,10 +1,13 @@
 <script lang="ts">
+  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
+  import { formatNumber } from "$lib/utils/format.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
     IconAccountBalance,
@@ -12,8 +15,9 @@
     IconRight,
     IconStar,
     IconVote,
+    IconWallet,
   } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
+  import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
   import { onMount } from "svelte";
 
   type Props = {
@@ -29,17 +33,45 @@
   const { summary, swapCommitment, rootCanisterId } = $derived(project);
   const {
     metadata: { logo, name, description },
+    ledgerCanisterId,
   } = $derived(summary);
-  const commitmentE8s = $derived(getCommitmentE8s(swapCommitment));
-  const userHasParticipated = $derived(
-    nonNullish(commitmentE8s) && commitmentE8s > 0n
-  );
   const href = $derived(
     `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
   );
-  // const isFinalizingStore = $derived(
-  //   createIsSnsFinalizingStore(rootCanisterId)
-  // );
+  const formattedTokenPriceUsd = $derived.by(() => {
+    const tokenPriceUsd =
+      nonNullish(ledgerCanisterId) &&
+      nonNullish($icpSwapUsdPricesStore) &&
+      $icpSwapUsdPricesStore !== "error"
+        ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
+        : undefined;
+
+    if (isNullish(tokenPriceUsd)) {
+      return "$-/-";
+    }
+    if (tokenPriceUsd < 0.01) {
+      return "< $0.01";
+    }
+    return `$${formatNumber(tokenPriceUsd)}`;
+  });
+  const icpInTreasury = $derived.by(() => {
+    // TODO(launchpad2): should be available after aggregator upgrade
+    return "-/-%";
+  });
+  const myCommitmentIcp = $derived.by(() => {
+    const myCommitment = getCommitmentE8s(swapCommitment);
+    if (isNullish(myCommitment)) {
+      return undefined;
+    }
+    return TokenAmount.fromE8s({ amount: myCommitment, token: ICPToken });
+  });
+  const userHasParticipated = $derived(
+    nonNullish(myCommitmentIcp) && myCommitmentIcp.toE8s() > 0n
+  );
+  const proposalActivity = $derived.by(() => {
+    // TODO(launchpad2): should be available after aggregator upgrade
+    return "-";
+  });
 </script>
 
 <CardFrame testId="project-card-component" highlighted={userHasParticipated}>
@@ -47,43 +79,45 @@
     <div class="header">
       <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
       <h3 data-tid="project-name">{name}</h3>
-      <div class="fav-icon">
+      <div class="fav-icon mobile-only">
         <IconStar size="20px" />
       </div>
     </div>
 
     <p data-tid="project-description" class="description">{description}</p>
 
-    <!-- 
-    <ProjectCardSwapInfo isFinalizing={$isFinalizingStore} {project} />
-    <SignedInOnly>
-      {#if swapCommitment === undefined}
-        <div class="spinner">
-          <Spinner size="small" inline />
-        </div>
-      {/if}
-    </SignedInOnly> -->
     <ul class="stats">
       <li class="stat-item">
         <h6 class="stat-label"> Token Price </h6>
         <div class="stat-value">
           <IconCoin size="16px" />
-          <span data-tid="min-icp-value">$48.05</span>
+          <span data-tid="min-icp-value">{formattedTokenPriceUsd}</span>
         </div>
       </li>
       <li class="stat-item">
         <h6 class="stat-label"> Assets in Treasury </h6>
         <div class="stat-value">
           <IconAccountBalance size="16px" />
-          <span data-tid="cap-icp-value">82.67%</span>
+          <span data-tid="cap-icp-value">{icpInTreasury}</span>
         </div>
       </li>
       <li class="stat-item">
-        <h6 class="stat-label"> My Participation </h6>
-        <div class="stat-value">
-          <IconVote size="16px" />
-          <span data-tid="funded-of-min-value">4/week</span>
-        </div>
+        {#if userHasParticipated && nonNullish(myCommitmentIcp)}
+          <h6 class="stat-label">My Participation</h6>
+          <div class="stat-value" data-tid="my-commitment-icp-value">
+            <IconVote size="16px" />
+            <AmountDisplay amount={myCommitmentIcp} singleLine inline />
+          </div>
+        {:else}
+          <h6 class="stat-label">Proposal Activity</h6>
+          <div class="stat-value" data-tid="my-commitment-icp-value">
+            <IconWallet size="16px" />
+            <span class="proposal-activity">
+              <span data-tid="proposal-activity-value">{proposalActivity}</span
+              >/week
+            </span>
+          </div>
+        {/if}
       </li>
     </ul>
 
