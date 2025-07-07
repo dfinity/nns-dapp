@@ -166,7 +166,6 @@
         grid-template-columns: 1fr 1fr;
 
         font-size: 0.875rem;
-        color: var(--text-description);
         padding: 0 var(--padding-2x);
 
         @include media.min-width(medium) {
