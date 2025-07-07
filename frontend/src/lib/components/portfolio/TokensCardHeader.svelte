@@ -2,6 +2,7 @@
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
   import type { Snippet } from "svelte";
@@ -21,6 +22,9 @@
       ? formatCurrencyNumber(usdAmount)
       : PRICE_NOT_AVAILABLE_PLACEHOLDER
   );
+  $effect(() => {
+    console.log($isMobileViewportStore);
+  });
 </script>
 
 <div class="header">
