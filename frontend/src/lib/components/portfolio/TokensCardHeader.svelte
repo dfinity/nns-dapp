@@ -37,24 +37,27 @@
   </div>
 {/snippet}
 
-<a {href} class="header mobile" aria-label={linkText}>
-  {@render content()}
-  <span class="icon-link">
-    <IconRight />
-  </span>
-</a>
-
-<div class="header tablet-up">
-  {@render content()}
-  <a {href} class="button secondary link" aria-label={linkText}>
-    {linkText}
+{#if $isMobileViewportStore}
+  <a {href} class="header mobile" aria-label={linkText}>
+    {@render content()}
+    <span class="icon-link">
+      <IconRight />
+    </span>
   </a>
-</div>
+{:else}
+  <div class="header">
+    {@render content()}
+    <a {href} class="button secondary link" aria-label={linkText}>
+      {linkText}
+    </a>
+  </div>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .header {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     padding: var(--padding-3x) var(--padding-2x);
@@ -87,10 +90,17 @@
         }
       }
     }
+
+    .link {
+      width: auto;
+      height: auto;
+      padding: var(--padding) var(--padding-2x);
+      border-radius: var(--border-radius);
+      min-height: var(--button-min-height);
+    }
   }
 
   .mobile {
-    display: flex;
     text-decoration: none;
 
     .icon-link {
@@ -104,26 +114,6 @@
       font-weight: var(--font-weight-bold);
       border: solid var(--button-border-size) var(--primary);
       border-radius: 50%;
-    }
-
-    @include media.min-width(medium) {
-      display: none;
-    }
-  }
-
-  .tablet-up {
-    display: none;
-
-    @include media.min-width(medium) {
-      display: flex;
-    }
-
-    .link {
-      width: auto;
-      height: auto;
-      padding: var(--padding) var(--padding-2x);
-      border-radius: var(--border-radius);
-      min-height: var(--button-min-height);
     }
   }
 </style>
