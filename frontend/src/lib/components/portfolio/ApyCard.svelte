@@ -12,19 +12,35 @@
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {
-    rewardBalance: number;
-    stakingPower: number;
+    rewardBalanceUSD?: number;
+    rewardEstimateWeekUSD?: number;
+    stakingPower?: number;
+    stakingPowerUSD?: number;
+    loading: boolean;
   };
 
-  const { rewardBalance = 3260.21, stakingPower = 0.7845 }: Props = $props();
+  const {
+    rewardBalanceUSD = 3260.21,
+    rewardEstimateWeekUSD = 50.12,
+    stakingPower = 0.7845,
+    stakingPowerUSD = 16606,
+  }: Props = $props();
 
   const href = AppPath.Staking;
 
-  const rewardBalanceFormatted = $derived(
+  const rewardBalanceUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(5)
-      : nonNullish(rewardBalance)
-        ? formatCurrencyNumber(rewardBalance)
+      : nonNullish(rewardBalanceUSD)
+        ? formatCurrencyNumber(rewardBalanceUSD)
+        : "N/A"
+  );
+
+  const rewardEstimateWeekUSDFormatted = $derived(
+    $isBalancePrivacyOptionStore
+      ? renderPrivacyModeBalance(3)
+      : nonNullish(rewardEstimateWeekUSD)
+        ? formatCurrencyNumber(rewardEstimateWeekUSD)
         : "N/A"
   );
   const stakingPowerFormatted = $derived(
@@ -33,13 +49,20 @@
       maxFraction: 2,
     })
   );
+  const stakingPowerUSDFormatted = $derived(
+    $isBalancePrivacyOptionStore
+      ? renderPrivacyModeBalance(3)
+      : nonNullish(stakingPowerUSD)
+        ? formatCurrencyNumber(stakingPowerUSD)
+        : "N/A"
+  );
 </script>
 
 {#snippet content()}
   <div class="content">
     <div class="left">
       <span class="subtitle">{$i18n.portfolio.apy_card_reward_title}</span>
-      <span class="main-value">~${rewardBalanceFormatted}</span>
+      <span class="main-value">~${rewardBalanceUSDFormatted}</span>
       <span class="secondary-value"
         ><span>
           <svg
@@ -53,7 +76,7 @@
               d="M4.5 0.5L8.39711 7.25H0.602886L4.5 0.5Z"
               fill="currentColor"
             />
-          </svg>$85.03</span
+          </svg>${rewardEstimateWeekUSDFormatted}</span
         >{$i18n.portfolio.apy_card_estimation}</span
       >
     </div>
@@ -61,7 +84,7 @@
     <div class="right">
       <span class="subtitle">{$i18n.portfolio.apy_card_power_title}</span>
       <span class="main-value">~{stakingPowerFormatted}</span>
-      <span class="secondary-value">~$16606</span>
+      <span class="secondary-value">~${stakingPowerUSDFormatted}</span>
     </div>
   </div>
 {/snippet}
