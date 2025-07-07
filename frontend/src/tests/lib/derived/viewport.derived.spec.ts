@@ -16,7 +16,7 @@ const createMatchMediaMock = (matches: boolean) => {
 
 describe("viewport.derived", () => {
   it("should initialize as mobile when matchMedia matches", async () => {
-    window.matchMedia = createMatchMediaMock(true);
+    window.matchMedia = createMatchMediaMock(false);
 
     const { isMobileViewportStore } = await import(
       "$lib/derived/viewport.derived"
@@ -26,7 +26,7 @@ describe("viewport.derived", () => {
   });
 
   it("should initialize as non-mobile when matchMedia does not match", async () => {
-    window.matchMedia = createMatchMediaMock(false);
+    window.matchMedia = createMatchMediaMock(true);
 
     const { isMobileViewportStore } = await import(
       "$lib/derived/viewport.derived"
