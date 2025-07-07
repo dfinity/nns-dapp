@@ -202,7 +202,7 @@
   $effect(() => {
     if (!stakingRewardData.loading) {
       // @TODO Use the values in the UI
-      console.log(">>>>> Staking rewards: data loaded.", stakingRewardData);
+      // console.log(">>>>> Staking rewards: data loaded.", stakingRewardData);
     }
   });
 </script>
