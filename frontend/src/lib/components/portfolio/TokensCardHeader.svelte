@@ -2,6 +2,7 @@
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
   import type { Snippet } from "svelte";
@@ -17,7 +18,7 @@
   const { usdAmount, href, title, linkText, icon }: Props = $props();
 
   const usdAmountFormatted = $derived(
-    $authSignedInStore
+    $authSignedInStore && $icpSwapTickersStore !== "error"
       ? formatCurrencyNumber(usdAmount)
       : PRICE_NOT_AVAILABLE_PLACEHOLDER
   );

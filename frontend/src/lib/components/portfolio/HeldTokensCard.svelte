@@ -7,6 +7,7 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
@@ -107,10 +108,15 @@
               role="cell"
               aria-label={`${heldToken.title} USD: ${heldToken?.balanceInUsd ?? 0}`}
             >
-              $<PrivacyAwareAmount
-                value={formatNumber(heldToken?.balanceInUsd ?? 0)}
-                length={3}
-              />
+              $
+              {#if $icpSwapTickersStore !== "error"}
+                <PrivacyAwareAmount
+                  value={formatNumber(heldToken?.balanceInUsd ?? 0)}
+                  length={3}
+                />
+              {:else}
+                {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+              {/if}
             </div>
           </svelte:element>
         {/each}
