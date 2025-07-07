@@ -915,6 +915,11 @@
     "project_card_my_participation": "My Participation",
     "project_card_proposal_activity": "Proposal Activity"
   },
+  "launchpad_cards": {
+    "ongoing_funded_of_min": "Funded of Min",
+    "ongoing_min_icp": "Min, ICP",
+    "ongoing_cap_icp": "Cap, ICP"
+  },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
     "link_to_dashboard": "ICP Dashboard",

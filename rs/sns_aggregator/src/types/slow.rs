@@ -1,6 +1,6 @@
 //! Slowly changing information about an SNS
 use crate::types::ic_sns_governance::{
-    ListNervousSystemFunctionsResponse, ListTopicsResponse, NervousSystemParameters,
+    ListNervousSystemFunctionsResponse, ListTopicsResponse, NervousSystemParameters, RewardEvent,
 };
 use crate::types::ic_sns_root::ListSnsCanistersResponse;
 use crate::types::ic_sns_swap::{
@@ -30,6 +30,8 @@ pub struct SlowSnsData {
     /// Governance metrics such as the last ledger block timestamp and
     /// number of recently submitted proposals.
     pub metrics: Option<GetMetricsResponse>,
+    /// Latest voting reward distribution data.
+    pub latest_reward_event: Option<RewardEvent>,
     /// Governance functions.
     pub parameters: ListNervousSystemFunctionsResponse,
     /// Governance parameters such as tokenomics.
@@ -63,6 +65,7 @@ impl From<&UpstreamData> for SlowSnsData {
             list_sns_canisters,
             meta: _,
             metrics,
+            latest_reward_event,
             parameters,
             nervous_system_parameters,
             swap_state,
@@ -81,6 +84,7 @@ impl From<&UpstreamData> for SlowSnsData {
             list_sns_canisters: list_sns_canisters.clone(),
             meta: SlowMetadata::from(upstream),
             metrics: metrics.clone(),
+            latest_reward_event: latest_reward_event.clone(),
             parameters: parameters.clone(),
             nervous_system_parameters: nervous_system_parameters.clone(),
             swap_state: SlowSwapState::from(swap_state),
