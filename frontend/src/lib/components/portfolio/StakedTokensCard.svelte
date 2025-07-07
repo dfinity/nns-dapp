@@ -7,6 +7,7 @@
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
   import { formatNumber } from "$lib/utils/format.utils";
@@ -14,6 +15,7 @@
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
+  import TooltipIcon from "../ui/TooltipIcon.svelte";
 
   type Props = {
     topStakedTokens: TableProject[];
@@ -57,12 +59,45 @@
           >{$i18n.portfolio.staked_tokens_card_list_first_column}</span
         >
 
-        <span class="mobile-only justify-end text-right" role="columnheader"
-          >{$i18n.portfolio.staked_tokens_card_list_second_column_mobile}</span
-        >
-        <span class="tablet-up justify-end" role="columnheader"
-          >{$i18n.portfolio.staked_tokens_card_list_second_column}</span
-        >
+        {#if $ENABLE_APY_PORTFOLIO}
+          <span
+            class="mobile-only justify-end text-right align-center"
+            role="columnheader"
+            ><span>
+              {$i18n.portfolio
+                .staked_tokens_card_list_second_column_mobile_apy_first}
+            </span><span class="description"
+              >/{$i18n.portfolio
+                .staked_tokens_card_list_second_column_mobile_apy_second}
+            </span>
+          </span>
+        {:else}
+          <span class="mobile-only justify-end text-right" role="columnheader"
+            >{$i18n.portfolio
+              .staked_tokens_card_list_second_column_mobile}</span
+          >
+        {/if}
+
+        {#if $ENABLE_APY_PORTFOLIO}
+          <span
+            class="tablet-up justify-end align-center gap-small"
+            role="columnheader"
+            ><span>
+              {$i18n.portfolio.staked_tokens_card_list_second_column_apy_first}
+            </span>
+            <span class="description">
+              {$i18n.portfolio.staked_tokens_card_list_second_column_apy_second}
+            </span>
+            <TooltipIcon
+              tooltipId="apy"
+              text={$i18n.portfolio.staked_tokens_card_apy_tooltip}
+            />
+          </span>
+        {:else}
+          <span class="tablet-up justify-end" role="columnheader"
+            >{$i18n.portfolio.staked_tokens_card_list_second_column}</span
+          >
+        {/if}
         <span class="tablet-up justify-end" role="columnheader"
           >{$i18n.portfolio.staked_tokens_card_list_third_column}</span
         >
@@ -90,16 +125,27 @@
               <span data-tid="title">{stakedToken.title}</span>
             </div>
 
-            <div class="maturity" data-tid="maturity" role="cell">
-              {#if $authSignedInStore}
-                <MaturityWithTooltip
-                  availableMaturity={stakedToken?.availableMaturity ?? 0n}
-                  stakedMaturity={stakedToken?.stakedMaturity ?? 0n}
-                />
-              {:else}
-                {PRICE_NOT_AVAILABLE_PLACEHOLDER}
-              {/if}
-            </div>
+            {#if $ENABLE_APY_PORTFOLIO}
+              <div class="maturity" data-tid="apy" role="cell">
+                {#if $authSignedInStore}
+                  <span>{stakedToken.apy.cur}</span>
+                  <span>({stakedToken.apy.max})</span>
+                {:else}
+                  {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                {/if}
+              </div>
+            {:else}
+              <div class="maturity" data-tid="maturity" role="cell">
+                {#if $authSignedInStore}
+                  <MaturityWithTooltip
+                    availableMaturity={stakedToken?.availableMaturity ?? 0n}
+                    stakedMaturity={stakedToken?.stakedMaturity ?? 0n}
+                  />
+                {:else}
+                  {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                {/if}
+              </div>
+            {/if}
             <div
               class="stake-usd"
               data-tid="stake-in-usd"
@@ -275,6 +321,10 @@
     }
 
     /* Utilities */
+    .mobile-only {
+      display: flex;
+    }
+
     .tablet-up,
     .desktop-only {
       display: none !important;
@@ -297,6 +347,14 @@
 
     .justify-end {
       justify-self: end;
+    }
+
+    .align-center {
+      align-items: center;
+    }
+
+    .gap-small {
+      gap: 2px;
     }
 
     .text-right {
