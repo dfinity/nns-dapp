@@ -20,7 +20,6 @@ import { type SnsAggregatorData } from "$lib/stores/sns-aggregator.store";
 import { type NeuronsStore as SNSNeuronsStore } from "$lib/stores/sns-neurons.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
-import { Principal } from "@dfinity/principal";
 import {
   cloneNeurons,
   getNeuronBonusRatio,
@@ -31,9 +30,10 @@ import {
   isNeuronEligibleToVote,
   maximiseNeuronParams,
   type AgnosticNeuron,
-} from "./agnostic-neuron.utils";
-import { bigIntDiv, bigIntMul } from "./bigInt.utils";
-import { logWithTimestamp } from "./dev.utils";
+} from "$lib/utils/agnostic-neuron.utils";
+import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
+import { Principal } from "@dfinity/principal";
 
 type APY = Map<
   Principal,

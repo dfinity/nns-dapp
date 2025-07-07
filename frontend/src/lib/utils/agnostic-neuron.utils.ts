@@ -1,18 +1,18 @@
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
-import { bigIntMax } from "./bigInt.utils";
-import { nowInSeconds } from "./date.utils";
+import { bigIntMax } from "$lib/utils/bigInt.utils";
+import { nowInSeconds } from "$lib/utils/date.utils";
 import {
   getDissolvingTimeInSeconds,
   getLockedTimeInSeconds,
   hasAutoStakeMaturityOn,
-} from "./neuron.utils";
+} from "$lib/utils/neuron.utils";
 import {
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
   getSnsNeuronState,
   hasAutoStakeMaturityOn as hasAutoStakeMaturityOnSns,
-} from "./sns-neuron.utils";
+} from "$lib/utils/sns-neuron.utils";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import type { SnsNeuron } from "@dfinity/sns";
 
 export type AgnosticNeuron = NeuronInfo | SnsNeuron;
 
