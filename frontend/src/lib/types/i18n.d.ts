@@ -44,6 +44,7 @@ interface I18nCore {
   view: string;
   copy: string;
   copied: string;
+  week: string;
 }
 
 interface I18nError {
@@ -942,6 +943,10 @@ interface I18nLaunchpad_cards {
   upcoming_sale_starts: string;
   create_sns_proposal_title: string;
   create_sns_proposal_vote: string;
+  project_card_token_price: string;
+  project_card_icp_in_treasury: string;
+  project_card_my_participation: string;
+  project_card_proposal_activity: string;
 }
 
 interface I18nSns_project_detail {

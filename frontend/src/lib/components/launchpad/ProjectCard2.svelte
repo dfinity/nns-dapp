@@ -79,7 +79,8 @@
     <div class="header">
       <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
       <h3 data-tid="project-name">{name}</h3>
-      <div class="fav-icon mobile-only">
+      <div class="fav-icon">
+        <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
         <IconStar size="20px" />
       </div>
     </div>
@@ -88,14 +89,16 @@
 
     <ul class="stats">
       <li class="stat-item">
-        <h6 class="stat-label"> Token Price </h6>
+        <h6 class="stat-label">{$i18n.launchpad.project_card_token_price}</h6>
         <div class="stat-value">
           <IconCoin size="16px" />
           <span data-tid="min-icp-value">{formattedTokenPriceUsd}</span>
         </div>
       </li>
       <li class="stat-item">
-        <h6 class="stat-label"> Assets in Treasury </h6>
+        <h6 class="stat-label"
+          >{$i18n.launchpad.project_card_icp_in_treasury}</h6
+        >
         <div class="stat-value">
           <IconAccountBalance size="16px" />
           <span data-tid="cap-icp-value">{icpInTreasury}</span>
@@ -103,18 +106,22 @@
       </li>
       <li class="stat-item">
         {#if userHasParticipated && nonNullish(myCommitmentIcp)}
-          <h6 class="stat-label">My Participation</h6>
+          <h6 class="stat-label"
+            >{$i18n.launchpad.project_card_my_participation}</h6
+          >
           <div class="stat-value" data-tid="my-commitment-icp-value">
             <IconVote size="16px" />
             <AmountDisplay amount={myCommitmentIcp} singleLine inline />
           </div>
         {:else}
-          <h6 class="stat-label">Proposal Activity</h6>
+          <h6 class="stat-label"
+            >{$i18n.launchpad.project_card_proposal_activity}</h6
+          >
           <div class="stat-value" data-tid="my-commitment-icp-value">
             <IconWallet size="16px" />
             <span class="proposal-activity">
               <span data-tid="proposal-activity-value">{proposalActivity}</span
-              >/week
+              ><span class="unit">/{$i18n.core.week}</span>
             </span>
           </div>
         {/if}
@@ -122,6 +129,7 @@
     </ul>
 
     <div class="footer">
+      <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
       <button class="ghost with-icon"><IconStar size="20px" /> Watch</button>
       <a
         {href}
@@ -165,6 +173,12 @@
         padding: 0;
         @include launchpad.text_h3;
         @include text.truncate;
+      }
+
+      .fav-icon {
+        @include media.min-width(medium) {
+          display: none;
+        }
       }
     }
 
@@ -215,6 +229,13 @@
           display: flex;
           align-items: center;
           gap: var(--padding-0_5x);
+        }
+      }
+
+      .proposal-activity {
+        .unit {
+          @include launchpad.text_small;
+          text-transform: lowercase;
         }
       }
     }
