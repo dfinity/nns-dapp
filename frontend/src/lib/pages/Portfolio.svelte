@@ -13,7 +13,13 @@
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
+  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
   import {
@@ -22,6 +28,7 @@
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
   import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
+  import { getStakingRewardData } from "$lib/utils/staking-rewards.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import type { ProposalInfo } from "@dfinity/nns";
@@ -170,6 +177,24 @@
     ...openProposalCards,
     ...adoptedSnsProposalsCards,
   ]);
+
+  const stakingRewardData = $derived(
+    getStakingRewardData({
+      auth: $authSignedInStore,
+      tokens: $tokensListUserStore,
+      snsProjects: $snsAggregatorStore,
+      snsNeurons: $snsNeuronsStore,
+      nnsNeurons: $neuronsStore,
+      nnsEconomics: $networkEconomicsStore,
+      fxRates: $icpSwapUsdPricesStore,
+    })
+  );
+
+  $effect(() => {
+    if (!stakingRewardData.loading) {
+      // @TODO Use the values in the UI
+    }
+  });
 </script>
 
 <main data-tid="portfolio-page-component">
