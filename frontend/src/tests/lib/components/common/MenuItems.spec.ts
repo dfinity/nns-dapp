@@ -3,7 +3,6 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -270,18 +269,9 @@ describe("MenuItems", () => {
     });
   });
 
-  describe("portfolio", () => {
-    it("should not show the icon when the feature flag is off", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", false);
-      const po = renderComponent();
-      expect(await po.getPortfolioLinkPo().isPresent()).toBe(false);
-    });
-
-    it("should show the icon when the feature flag is on", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", true);
-      const po = renderComponent();
-      expect(await po.getPortfolioLinkPo().isPresent()).toBe(true);
-    });
+  it("should show the portfolio icon", async () => {
+    const po = renderComponent();
+    expect(await po.getPortfolioLinkPo().isPresent()).toBe(true);
   });
 
   it("should render the badge when feature flag enabled", async () => {

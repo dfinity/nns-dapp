@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { PRICE_NOT_AVAILABLE } from "$lib/constants/constants";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { snsParametersStore } from "$lib/derived/sns-parameters.derived";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
   import { analytics } from "$lib/services/analytics.services";
   import { stakeNeuron } from "$lib/services/sns-neurons.services";
@@ -23,6 +25,7 @@
     type TokenAmountV2,
   } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import type { Readable } from "svelte/store";
 
   export let token: Token;
   export let rootCanisterId: Principal;
@@ -69,6 +72,8 @@
     }
     return undefined;
   };
+  let tokenPrice: Readable<number | undefined>;
+  $: tokenPrice = tokenPriceStore(token);
 
   const dispatcher = createEventDispatcher();
   const stake = async ({ detail }: CustomEvent<NewTransaction>) => {
@@ -93,11 +98,16 @@
         },
       });
 
+      const usdAmount = nonNullish($tokenPrice)
+        ? ($tokenPrice * detail.amount).toFixed(1)
+        : PRICE_NOT_AVAILABLE;
+
       analytics.event("sns-stake-new-neuron", {
         tokenAmount: detail.amount.toString(),
         project:
           $projectSlugMapStore.get(rootCanisterId.toText()) ??
           rootCanisterId.toText(),
+        usdAmount,
       });
       dispatcher("nnsClose");
     }

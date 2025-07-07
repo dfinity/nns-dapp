@@ -30,6 +30,8 @@ export const icpSwapUsdPricesStore: IcpSwapUsdPricesStore = derived(
           tickers
             // Only keep ICP based tickers
             .filter((ticker) => ticker.target_id === icpLedgerCanisterId)
+            // Only keep tickers that have a non-zero volume in the last 24 hours
+            .filter((ticker) => Number(ticker.volume_usd_24H) > 0)
             .map((ticker) => [ticker.base_id, ticker])
         );
 
