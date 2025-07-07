@@ -1,27 +1,22 @@
 import { browser } from "$app/environment";
-import { derived, writable, type Readable } from "svelte/store";
+import { writable, type Readable } from "svelte/store";
 
-// Value from gix
 export const BREAKPOINT_SMALL = 576;
 
-const viewportWidthWritable = writable<number>(
-  browser ? window.innerWidth : BREAKPOINT_SMALL
-);
+const mobileMediaQueryWritable = writable<boolean>(false);
 
 if (browser) {
-  const handleResize = () => viewportWidthWritable.set(window.innerWidth);
-  window.addEventListener("resize", handleResize);
+  const mediaQuery = window.matchMedia(
+    `(max-width: ${BREAKPOINT_SMALL - 1}px)`
+  );
+
+  mobileMediaQueryWritable.set(mediaQuery.matches);
+
+  mediaQuery.addEventListener("change", (event: MediaQueryListEvent) => {
+    mobileMediaQueryWritable.set(event.matches);
+  });
 }
 
-export const viewportWidthStore: Readable<number> = {
-  subscribe: viewportWidthWritable.subscribe,
-};
-
-export const isMobileViewportStore: Readable<boolean> = derived(
-  viewportWidthStore,
-  ($viewportWidth) => $viewportWidth < BREAKPOINT_SMALL
-);
-
-export const setViewportWidthForTesting = (width: number) => {
-  viewportWidthWritable.set(width);
+export const isMobileViewportStore: Readable<boolean> = {
+  subscribe: mobileMediaQueryWritable.subscribe,
 };
