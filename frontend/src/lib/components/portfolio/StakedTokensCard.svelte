@@ -10,7 +10,7 @@
   import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
@@ -84,8 +84,7 @@
             role="columnheader"
             ><span>
               {$i18n.portfolio.staked_tokens_card_list_second_column_apy_first}
-            </span>
-            <span class="description">
+            </span><span class="description">
               {$i18n.portfolio.staked_tokens_card_list_second_column_apy_second}
             </span>
             <TooltipIcon
@@ -126,10 +125,20 @@
             </div>
 
             {#if $ENABLE_APY_PORTFOLIO}
-              <div class="maturity" data-tid="apy" role="cell">
+              <div class="apy" data-tid="apy" role="cell">
                 {#if $authSignedInStore}
-                  <span>{stakedToken.apy.cur}</span>
-                  <span>({stakedToken.apy.max})</span>
+                  <span
+                    >{formatPercentage(stakedToken?.apy?.cur ?? 0.042, {
+                      minFraction: 2,
+                      maxFraction: 2,
+                    })}</span
+                  >
+                  <span class="description"
+                    >({formatPercentage(stakedToken?.apy?.max ?? 0.12, {
+                      minFraction: 2,
+                      maxFraction: 2,
+                    })})</span
+                  >
                 {:else}
                   {PRICE_NOT_AVAILABLE_PLACEHOLDER}
                 {/if}
@@ -213,6 +222,7 @@
 
         font-size: 0.875rem;
         padding: 0 var(--padding-2x);
+        height: 20px;
 
         @include media.min-width(medium) {
           grid-template-columns: 1fr 1fr 1fr;
@@ -258,6 +268,18 @@
             gap: var(--padding);
           }
 
+          .apy {
+            grid-area: maturity;
+            display: flex;
+            gap: var(--padding-0_5x);
+
+            @include media.min-width(medium) {
+              flex-direction: column;
+              gap: 0;
+            }
+          }
+
+          .apy,
           .maturity,
           .stake-usd,
           .stake-native {
@@ -354,7 +376,7 @@
     }
 
     .gap-small {
-      gap: 2px;
+      gap: 4px;
     }
 
     .text-right {
