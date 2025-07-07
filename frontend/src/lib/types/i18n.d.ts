@@ -1380,6 +1380,11 @@ interface I18nPortfolio {
   new_sns_proposal_card_reject: string;
   next_card: string;
   previous_card: string;
+  apy_card_title: string;
+  apy_card_reward_title: string;
+  apy_card_power_title: string;
+  apy_card_link: string;
+  apy_card_estimation: string;
 }
 
 interface I18nHighlight {
