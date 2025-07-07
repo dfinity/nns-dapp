@@ -17,6 +17,7 @@ import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { GovernanceMetricsStoreData } from "$lib/stores/governance-metrics.store";
 import type { NetworkEconomicsStoreData } from "$lib/stores/network-economics.store";
 import { type NeuronsStore } from "$lib/stores/neurons.store";
+import type { NnsLatestRewardEventStoreData } from "$lib/stores/nns-latest-reward-event.store";
 import { type SnsAggregatorData } from "$lib/stores/sns-aggregator.store";
 import { type NeuronsStore as SNSNeuronsStore } from "$lib/stores/sns-neurons.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
@@ -34,6 +35,7 @@ import {
 } from "$lib/utils/agnostic-neuron.utils";
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import type { RewardEvent } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 
 type APY = Map<
@@ -63,6 +65,7 @@ interface Params {
   nnsEconomics: NetworkEconomicsStoreData;
   fxRates: IcpSwapUsdPricesStoreData;
   governanceMetrics: GovernanceMetricsStoreData;
+  nnsLastRewardEvent?: NnsLatestRewardEventStoreData;
 }
 
 export const getStakingRewardData = (params: Params): StakingRewardData => {
@@ -291,6 +294,7 @@ const isDataReady = (params: Params) => {
     nnsEconomics,
     fxRates,
     governanceMetrics,
+    nnsLastRewardEvent,
   } = params;
 
   const areTokensReady = !tokens?.some((t) => t.balance === "loading");
@@ -300,6 +304,7 @@ const isDataReady = (params: Params) => {
   const isNnsEconomicsReady = Boolean(nnsEconomics.parameters);
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
   const isGovernanceMetricsReady = Boolean(governanceMetrics.metrics);
+  const isNnsLastRewardEventReady = Boolean(nnsLastRewardEvent?.rewardEvent);
 
   return [
     areTokensReady,
@@ -309,6 +314,7 @@ const isDataReady = (params: Params) => {
     isNnsEconomicsReady,
     areFXRatesReady,
     isGovernanceMetricsReady,
+    isNnsLastRewardEventReady,
   ].every((x) => x === true);
 };
 
@@ -453,7 +459,9 @@ const getTokenReward = (
 ) => {
   const neuronRewardRatioForTheDay = bigIntDiv(
     neuronVotingPower,
-    getTotalVotingPower(),
+    getTotalVotingPower(
+      sns ? undefined /*@TODO*/ : params.nnsLastRewardEvent?.rewardEvent
+    ),
     20
   );
 
@@ -556,15 +564,23 @@ const getNnsRewardParams = (params: Params) => ({
   rewardTransition: SECONDS_IN_EIGHT_YEARS,
   totalSupply: Number(params.governanceMetrics.metrics?.totalSupplyIcp),
 });
+const getTotalVotingPower = (lastRewardEvent?: RewardEvent): bigint => {
+  if (
+    !lastRewardEvent ||
+    !lastRewardEvent.settled_proposals.length ||
+    !lastRewardEvent.distributed_e8s_equivalent
+  ) {
+    return BigInt(10 ** 30); // If we don't know, we assume a very big number, to make the reward neglibible.
+  }
+  return (
+    lastRewardEvent.distributed_e8s_equivalent /
+    BigInt(lastRewardEvent.settled_proposals.length)
+  );
+};
 
 ////////////////////
 /// TODO MOCKED DATA
 ////////////////////
-
-const getTotalVotingPower = (): bigint => {
-  // @TODO lastRewardEvent -> totalVotingPower
-  return 50276005084190970n;
-};
 
 const SNS_GENESIS_TIMESTAMP_SECONDS: Record<string, number> = {
   // Alice
