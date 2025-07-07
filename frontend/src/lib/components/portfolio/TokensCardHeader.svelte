@@ -23,7 +23,7 @@
   );
 </script>
 
-<div class="header">
+{#snippet content()}
   <div class="header-wrapper">
     <div class="icon" aria-hidden="true">
       {@render icon()}
@@ -35,13 +35,19 @@
       </p>
     </div>
   </div>
+{/snippet}
+
+<a {href} class="header mobile" aria-label={linkText}>
+  {@render content()}
+  <span class="icon-link">
+    <IconRight />
+  </span>
+</a>
+
+<div class="header tablet-up">
+  {@render content()}
   <a {href} class="button secondary link" aria-label={linkText}>
-    <span class="icon">
-      <IconRight />
-    </span>
-    <span class="text">
-      {linkText}
-    </span>
+    {linkText}
   </a>
 </div>
 
@@ -49,7 +55,6 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   .header {
-    display: flex;
     align-items: center;
     justify-content: space-between;
     padding: var(--padding-3x) var(--padding-2x);
@@ -62,6 +67,7 @@
       .icon {
         width: 50px;
         height: 50px;
+        display: block !important;
       }
 
       .text-content {
@@ -81,35 +87,43 @@
         }
       }
     }
+  }
 
-    .link {
+  .mobile {
+    display: flex;
+    text-decoration: none;
+
+    .icon-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 35px;
       height: 35px;
-      border-radius: 50%;
-      min-height: auto;
       padding: 0;
+      color: var(--button-secondary-color);
+      font-weight: var(--font-weight-bold);
+      border: solid var(--button-border-size) var(--primary);
+      border-radius: 50%;
+    }
 
-      @include media.min-width(medium) {
-        width: auto;
-        height: auto;
-        padding: var(--padding) var(--padding-2x);
-        border-radius: var(--border-radius);
-        min-height: var(--button-min-height);
-      }
+    @include media.min-width(medium) {
+      display: none;
+    }
+  }
 
-      .icon {
-        display: flex;
-        @include media.min-width(medium) {
-          display: none;
-        }
-      }
+  .tablet-up {
+    display: none;
 
-      .text {
-        display: none;
-        @include media.min-width(medium) {
-          display: inline;
-        }
-      }
+    @include media.min-width(medium) {
+      display: flex;
+    }
+
+    .link {
+      width: auto;
+      height: auto;
+      padding: var(--padding) var(--padding-2x);
+      border-radius: var(--border-radius);
+      min-height: var(--button-min-height);
     }
   }
 </style>
