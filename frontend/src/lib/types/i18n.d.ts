@@ -938,15 +938,15 @@ interface I18nLaunchpad_cards {
   ongoing_funded_of_min: string;
   ongoing_min_icp: string;
   ongoing_cap_icp: string;
+  project_card_token_price: string;
+  project_card_icp_in_treasury: string;
+  project_card_my_participation: string;
+  project_card_proposal_activity: string;
   upcoming_tag_upcoming: string;
   upcoming_link: string;
   upcoming_sale_starts: string;
   create_sns_proposal_title: string;
   create_sns_proposal_vote: string;
-  project_card_token_price: string;
-  project_card_icp_in_treasury: string;
-  project_card_my_participation: string;
-  project_card_proposal_activity: string;
 }
 
 interface I18nSns_project_detail {
@@ -1396,6 +1396,11 @@ interface I18nPortfolio {
   new_sns_proposal_card_reject: string;
   next_card: string;
   previous_card: string;
+  apy_card_title: string;
+  apy_card_reward_title: string;
+  apy_card_power_title: string;
+  apy_card_link: string;
+  apy_card_estimation: string;
 }
 
 interface I18nHighlight {

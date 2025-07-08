@@ -902,14 +902,15 @@
     "ongoing_funded_of_min": "Funded of Min",
     "ongoing_min_icp": "Min, ICP",
     "ongoing_cap_icp": "Cap, ICP",
-
+    "project_card_token_price": "Token Price",
+    "project_card_icp_in_treasury": "ICP in Treasury",
+    "project_card_my_participation": "My Participation",
+    "project_card_proposal_activity": "Proposal Activity",
     "upcoming_tag_upcoming": "Upcoming",
     "upcoming_link": "Link to project",
     "upcoming_sale_starts": "Sale starts in",
-
     "create_sns_proposal_title": "Create Service Nervous System (SNS)",
     "create_sns_proposal_vote": "Vote",
-
     "project_card_token_price": "Token Price",
     "project_card_icp_in_treasury": "ICP in Treasury",
     "project_card_my_participation": "My Participation",
@@ -1328,7 +1329,12 @@
     "new_sns_proposal_card_adopt": "Adopt",
     "new_sns_proposal_card_reject": "Reject",
     "next_card": "Next Card",
-    "previous_card": "Previous Card"
+    "previous_card": "Previous Card",
+    "apy_card_title": "Staking Rewards",
+    "apy_card_reward_title": "Reward Balance",
+    "apy_card_power_title": "Staking Power Used",
+    "apy_card_link": "View Staked",
+    "apy_card_estimation": "7d estimate"
   },
   "highlight": {
     "disburse_maturity_title": "Farewell, Spawn Neuron!",
