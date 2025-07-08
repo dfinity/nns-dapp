@@ -131,15 +131,15 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             })
             .unwrap_or(existing_data.parameters);
 
-    crate::state::log(format!("Getting SNS index {index}... get_metrics"));
+    crate::state::log(format!("Getting SNS index {index}... get_metrics_replicated"));
     let arg: types::GetMetricsRequest = GetMetricsRequest {
         time_window_seconds: Some(TIME_WINDOW_SECONDS),
     };
-    let metrics = ic_cdk::api::call::call(governance_canister_id, "get_metrics", (arg,))
+    let metrics = ic_cdk::api::call::call(governance_canister_id, "get_metrics_replicated", (arg,))
         .await
         .map(|response: (_,)| response.0)
         .map_err(|err| {
-            crate::state::log(format!("Call to SnsGovernance.get_metrics failed: {err:?}"));
+            crate::state::log(format!("Call to SnsGovernance.get_metrics_replicated failed: {err:?}"));
         })
         .unwrap_or(existing_data.metrics);
 

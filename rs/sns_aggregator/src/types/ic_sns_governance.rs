@@ -1002,8 +1002,8 @@ impl Service {
     pub async fn get_metadata(&self, arg0: GetMetadataArg) -> CallResult<(GetMetadataResponse,)> {
         ic_cdk::call(self.0, "get_metadata", (arg0,)).await
     }
-    pub async fn get_metrics(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
-        ic_cdk::call(self.0, "get_metrics", (arg0,)).await
+    pub async fn get_metrics_replicated(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
+        ic_cdk::call(self.0, "get_metrics_replicated", (arg0,)).await
     }
     pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
         ic_cdk::call(self.0, "get_mode", (arg0,)).await
