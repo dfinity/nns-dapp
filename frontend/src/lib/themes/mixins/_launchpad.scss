@@ -59,6 +59,13 @@
   }
 }
 
+@mixin text_small {
+  font-family: CircularXX;
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 18px;
+}
+
 @mixin card_content {
   height: 100%;
   display: grid;

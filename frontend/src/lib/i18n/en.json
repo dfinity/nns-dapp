@@ -40,7 +40,8 @@
     "view_more": "View more",
     "view": "View",
     "copy": "Copy to clipboard",
-    "copied": "Copied"
+    "copied": "Copied",
+    "week": "Week"
   },
   "error": {
     "auth_sync": "There was an unexpected issue while syncing the status of your authentication. Try to refresh your browser.",
@@ -899,7 +900,11 @@
   "launchpad_cards": {
     "ongoing_funded_of_min": "Funded of Min",
     "ongoing_min_icp": "Min, ICP",
-    "ongoing_cap_icp": "Cap, ICP"
+    "ongoing_cap_icp": "Cap, ICP",
+    "project_card_token_price": "Token Price",
+    "project_card_icp_in_treasury": "ICP in Treasury",
+    "project_card_my_participation": "My Participation",
+    "project_card_proposal_activity": "Proposal Activity"
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
