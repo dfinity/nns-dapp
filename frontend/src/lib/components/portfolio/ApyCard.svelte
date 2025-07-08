@@ -34,7 +34,7 @@
       ? renderPrivacyModeBalance(5)
       : nonNullish(rewardBalanceUSD)
         ? formatCurrencyNumber(rewardBalanceUSD)
-        : "N/A"
+        : $i18n.core.not_applicable
   );
 
   const rewardEstimateWeekUSDFormatted = $derived(
@@ -42,7 +42,7 @@
       ? renderPrivacyModeBalance(3)
       : nonNullish(rewardEstimateWeekUSD)
         ? formatCurrencyNumber(rewardEstimateWeekUSD)
-        : "N/A"
+        : $i18n.core.not_applicable
   );
   const stakingPowerPercentage = $derived(
     formatPercentage(stakingPower, {
@@ -55,13 +55,13 @@
       ? renderPrivacyModeBalance(3)
       : nonNullish(stakingPowerUSD)
         ? formatCurrencyNumber(stakingPowerUSD)
-        : "N/A"
+        : $i18n.core.not_applicable
   );
 </script>
 
 {#snippet content()}
   <div class="content">
-    <div class="left">
+    <div class="content">
       <span class="subtitle">{$i18n.portfolio.apy_card_reward_title}</span>
       <span class="main-value" data-tid="reward"
         >${rewardBalanceUSDFormatted}</span
@@ -84,7 +84,7 @@
       >
     </div>
 
-    <div class="right">
+    <div class="content">
       <span class="subtitle">{$i18n.portfolio.apy_card_power_title}</span>
       <span class="main-value" data-tid="staking-power"
         >{stakingPowerPercentage}</span
@@ -131,8 +131,7 @@
     display: flex;
     justify-content: space-between;
 
-    .left,
-    .right {
+    .content {
       display: flex;
       flex-direction: column;
       flex-grow: 1;
