@@ -7,7 +7,7 @@
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { formatUsdValue } from "$lib/utils/format.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
     IconAccountBalance,
@@ -44,10 +44,7 @@
     if (isNullish(tokenPriceUsd)) {
       return "$-/-";
     }
-    if (tokenPriceUsd < 0.01) {
-      return "< $0.01";
-    }
-    return `$${formatNumber(tokenPriceUsd)}`;
+    return formatUsdValue(tokenPriceUsd);
   });
   const icpInTreasury = $derived.by(() => {
     // TODO(launchpad2): should be available after aggregator upgrade
