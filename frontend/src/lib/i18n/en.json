@@ -904,7 +904,10 @@
     "project_card_token_price": "Token Price",
     "project_card_icp_in_treasury": "ICP in Treasury",
     "project_card_my_participation": "My Participation",
-    "project_card_proposal_activity": "Proposal Activity"
+    "project_card_proposal_activity": "Proposal Activity",
+    "upcoming_tag_upcoming": "Upcoming",
+    "upcoming_link": "Link to project",
+    "upcoming_sale_starts": "Sale starts in"
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
