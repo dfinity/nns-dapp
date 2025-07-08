@@ -216,7 +216,7 @@ pub fn set_fav_projects(settings: FavProjects) -> SetFavProjectsResponse {
 #[ic_cdk::query]
 pub fn get_fav_projects() -> GetFavProjectsResponse {
     let principal = get_caller();
-    with_state_mut(|s| s.accounts_store.get_fav_projects(principal))
+    with_state(|s| s.accounts_store.get_fav_projects(principal))
 }
 
 #[ic_cdk::update]
