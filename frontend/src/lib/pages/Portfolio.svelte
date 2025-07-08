@@ -1,6 +1,7 @@
 <script lang="ts">
   import CardList from "$lib/components/launchpad/CardList.svelte";
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
+  import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
@@ -130,9 +131,31 @@
     })
   );
 
+  const stakingRewardData = $derived(
+    getStakingRewardData({
+      auth: $authSignedInStore,
+      tokens: $tokensListUserStore,
+      snsProjects: $snsAggregatorStore,
+      snsNeurons: $snsNeuronsStore,
+      nnsNeurons: $neuronsStore,
+      nnsEconomics: $networkEconomicsStore,
+      fxRates: $icpSwapUsdPricesStore,
+      governanceMetrics: $governanceMetricsStore,
+      nnsLastRewardEvent: $nnsLatestRewardEventStore,
+    })
+  );
+
+  const tableProjectsWithApy: TableProject[] = $derived(
+    isStakingRewardDataReady(stakingRewardData)
+      ? tableProjects.map((project) => ({
+          ...project,
+          apy: stakingRewardData.apy.get(project.universeId) ?? undefined,
+        }))
+      : tableProjects
+  );
   const topStakedTokens = $derived(
     getTopStakedTokens({
-      projects: tableProjects,
+      projects: tableProjectsWithApy,
       isSignedIn: $authSignedInStore,
     })
   );
@@ -198,6 +221,17 @@
         isLoading={isSomethingLoading}
         isFullWidth={cards.length === 0}
       />
+      {#if isStakingRewardDataReady(stakingRewardData)}
+        <ApyCard
+          rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
+          rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
+          stakingPower={stakingRewardData.stakingPower}
+          stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+          loading={false}
+        />
+      {:else}
+        <SkeletonTokensCard testId="apy-skeleton-card" />
+      {/if}
     {/if}
 
     {#if cards.length > 0}
