@@ -944,6 +944,8 @@ interface I18nLaunchpad_cards {
   upcoming_tag_upcoming: string;
   upcoming_link: string;
   upcoming_sale_starts: string;
+  create_sns_proposal_title: string;
+  create_sns_proposal_vote: string;
 }
 
 interface I18nSns_project_detail {
