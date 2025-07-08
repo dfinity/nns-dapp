@@ -159,22 +159,22 @@
         font-weight: 450;
         line-height: 16px;
 
+        display: flex;
+
         @include media.min-width(medium) {
           font-size: 16px;
           font-weight: 400;
           line-height: 20px;
         }
-
-        display: flex;
-
-        .projection {
-          display: flex;
-          align-items: center;
-
-          color: #29a079;
-          padding-right: 4px;
-        }
       }
+    }
+
+    .projection {
+      display: flex;
+      align-items: center;
+
+      color: #29a079;
+      padding-right: 4px;
     }
   }
 
