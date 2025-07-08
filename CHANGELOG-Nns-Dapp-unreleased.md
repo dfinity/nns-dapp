@@ -16,18 +16,13 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Prioritize ICP in tokens and staking tables
-* Filter out tickers with no trading volume
-
 #### Deprecated
 
 #### Removed
 
 #### Fixed
 
-* Improved disburse button feedback when neuron has insufficient stake
 * Improved project list organization by moving unresponsive projects to bottom
-
 
 #### Security
 

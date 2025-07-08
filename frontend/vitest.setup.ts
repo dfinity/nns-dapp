@@ -111,6 +111,21 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
+// Default to desktop view (non-mobile)
+const defaultMatches = false;
+
+// Create a mock implementation of matchMedia
+window.matchMedia = vi.fn().mockImplementation((query) => ({
+  matches: defaultMatches,
+  media: query,
+  onchange: null,
+  addListener: vi.fn(),
+  removeListener: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  dispatchEvent: vi.fn(),
+}));
+
 Element.prototype.animate = (
   _keyframes: Keyframe[] | PropertyIndexedKeyframes,
   options?: number | KeyframeAnimationOptions

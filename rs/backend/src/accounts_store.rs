@@ -31,6 +31,9 @@ const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;
 // Can be revisited if users find this too restrictive.
 const MAX_IMPORTED_TOKENS: i32 = 20;
 
+// Conservatively limit the number of favorite projects to prevent using too much memory.
+const MAX_FAVORITE_PROJECTS: i32 = 20;
+
 /// Accounts and related data.
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
@@ -85,6 +88,7 @@ pub struct Account {
     hardware_wallet_accounts: Vec<NamedHardwareWalletAccount>,
     canisters: Vec<NamedCanister>,
     imported_tokens: Option<ImportedTokens>,
+    fav_projects: Option<FavProjects>,
     // default_account_transactions: Do not reuse this field. There are still accounts in stable memor with this unused field.
 }
 
@@ -169,6 +173,29 @@ pub enum SetImportedTokensResponse {
 #[derive(CandidType, Debug, PartialEq)]
 pub enum GetImportedTokensResponse {
     Ok(ImportedTokens),
+    AccountNotFound,
+}
+
+#[derive(CandidType, Clone, Copy, Default, Deserialize, Debug, Eq, PartialEq)]
+pub struct FavProject {
+    root_canister_id: PrincipalId,
+}
+
+#[derive(CandidType, Clone, Default, Deserialize, Debug, Eq, PartialEq)]
+pub struct FavProjects {
+    fav_projects: Vec<FavProject>,
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum SetFavProjectsResponse {
+    Ok,
+    AccountNotFound,
+    TooManyFavProjects { limit: i32 },
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum GetFavProjectsResponse {
+    Ok(FavProjects),
     AccountNotFound,
 }
 
@@ -627,6 +654,32 @@ impl AccountsStore {
         GetImportedTokensResponse::Ok(account.imported_tokens.unwrap_or_default())
     }
 
+    pub fn set_fav_projects(&mut self, caller: PrincipalId, new_fav_projects: FavProjects) -> SetFavProjectsResponse {
+        if new_fav_projects.fav_projects.len() > (MAX_FAVORITE_PROJECTS as usize) {
+            return SetFavProjectsResponse::TooManyFavProjects {
+                limit: MAX_FAVORITE_PROJECTS,
+            };
+        }
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let Some(mut account) = self.accounts_db.get(&account_identifier) else {
+            return SetFavProjectsResponse::AccountNotFound;
+        };
+
+        account.fav_projects = Some(new_fav_projects);
+
+        self.accounts_db.insert(account_identifier, account);
+        SetFavProjectsResponse::Ok
+    }
+
+    pub fn get_fav_projects(&self, caller: PrincipalId) -> GetFavProjectsResponse {
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let Some(account) = self.accounts_db.get(&account_identifier) else {
+            return GetFavProjectsResponse::AccountNotFound;
+        };
+
+        GetFavProjectsResponse::Ok(account.fav_projects.unwrap_or_default())
+    }
+
     pub fn get_stats(&self, stats: &mut Stats) {
         stats.accounts_count = self.accounts_db.len();
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
@@ -754,6 +807,7 @@ impl Account {
             hardware_wallet_accounts: Vec::new(),
             canisters: Vec::new(),
             imported_tokens: None,
+            fav_projects: None,
         }
     }
 }
