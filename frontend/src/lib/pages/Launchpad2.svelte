@@ -5,7 +5,6 @@
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
   import type { ComponentWithProps } from "$lib/types/svelte";
   import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
   import {
@@ -21,9 +20,10 @@
   type Props = {
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
+    isLoading: boolean;
   };
 
-  const { snsProjects, openSnsProposals }: Props = $props();
+  const { snsProjects, openSnsProposals, isLoading }: Props = $props();
 
   const upcomingLaunchesCards = $derived(
     getUpcomingLaunchesCards({
@@ -92,7 +92,7 @@
     <section>
       <h4>{$i18n.launchpad.participated_projects}</h4>
       <CardList
-        testId="launched-projects-list"
+        testId="user-committed-projects-list"
         cards={userCommittedSnsProjects}
         mobileHorizontalScroll={userCommittedSnsProjects.length > 1}
       />
@@ -101,7 +101,7 @@
 
   <section>
     <h4>{$i18n.launchpad.launched_projects}</h4>
-    {#if $isLoadingSnsProjectsStore}
+    {#if isLoading}
       <CardList testId="skeleton-projects-list" cards={skeletonCards} />
     {:else}
       <CardList
@@ -116,18 +116,6 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
-
-  .desktop-only {
-    display: none;
-    @include media.min-width(medium) {
-      display: block;
-    }
-  }
-  .mobile-only {
-    @include media.min-width(medium) {
-      display: none;
-    }
-  }
 
   main {
     display: flex;
