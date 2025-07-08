@@ -5,6 +5,7 @@ import { initAccounts } from "$lib/services/icp-accounts.services";
 import { loadImportedTokens } from "$lib/services/imported-tokens.services";
 import { loadNetworkEconomicsParameters } from "$lib/services/network-economics.services";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
+import { loadNnsTotalVotingPower } from "./nns-total-voting-power.service";
 
 export const initAppPrivateData = async (): Promise<void> => {
   const initNetworkEconomicsParameters: Promise<void>[] = [
@@ -34,4 +35,5 @@ export const initAppPrivateData = async (): Promise<void> => {
   // Because it's a non-critical enhancement, the loading of actionable proposals should not delay the execution of this function.
   loadActionableProposals();
   loadActionableSnsProposals();
+  loadNnsTotalVotingPower();
 };

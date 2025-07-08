@@ -17,7 +17,6 @@ import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { GovernanceMetricsStoreData } from "$lib/stores/governance-metrics.store";
 import type { NetworkEconomicsStoreData } from "$lib/stores/network-economics.store";
 import { type NeuronsStore } from "$lib/stores/neurons.store";
-import type { NnsLatestRewardEventStoreData } from "$lib/stores/nns-latest-reward-event.store";
 import { type SnsAggregatorData } from "$lib/stores/sns-aggregator.store";
 import { type NeuronsStore as SNSNeuronsStore } from "$lib/stores/sns-neurons.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
@@ -35,7 +34,6 @@ import {
 } from "$lib/utils/agnostic-neuron.utils";
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { RewardEvent } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 
 type APY = Map<
@@ -70,7 +68,7 @@ export interface StakingRewardCalcParams {
   nnsEconomics: NetworkEconomicsStoreData;
   fxRates: IcpSwapUsdPricesStoreData;
   governanceMetrics: GovernanceMetricsStoreData;
-  nnsLastRewardEvent?: NnsLatestRewardEventStoreData;
+  nnsTotalVotingPower: bigint;
 }
 
 export const getStakingRewardData = (
@@ -304,7 +302,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
     nnsEconomics,
     fxRates,
     governanceMetrics,
-    nnsLastRewardEvent,
+    nnsTotalVotingPower,
   } = params;
 
   const areTokensReady = !tokens?.some((t) => t.balance === "loading");
@@ -314,7 +312,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
   const isNnsEconomicsReady = Boolean(nnsEconomics.parameters);
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
   const isGovernanceMetricsReady = Boolean(governanceMetrics.metrics);
-  const isNnsLastRewardEventReady = Boolean(nnsLastRewardEvent?.rewardEvent);
+  const isNnsLastRewardEventReady = Boolean(nnsTotalVotingPower > 0n);
 
   return [
     areTokensReady,
@@ -469,9 +467,7 @@ const getTokenReward = (
 ) => {
   const neuronRewardRatioForTheDay = bigIntDiv(
     neuronVotingPower,
-    getTotalVotingPower(
-      sns ? undefined /*@TODO*/ : params.nnsLastRewardEvent?.rewardEvent
-    ),
+    sns ? getTotalVotingPower(sns) : params.nnsTotalVotingPower,
     20
   );
 
@@ -579,19 +575,12 @@ const getNnsRewardParams = (params: StakingRewardCalcParams) => ({
   totalSupply: Number(params.governanceMetrics.metrics?.totalSupplyIcp),
 });
 
-const getTotalVotingPower = (lastRewardEvent?: RewardEvent): bigint => {
-  // @TODO WRONG: USE THE EXPOSED TOTAL VOTING POWER!
-  if (
-    !lastRewardEvent ||
-    !lastRewardEvent.settled_proposals.length ||
-    !lastRewardEvent.total_available_e8s_equivalent
-  ) {
+const getTotalVotingPower = (sns: CachedSnsDto): bigint => {
+  // @TODO: USE THE EXPOSED TOTAL VOTING POWER!
+  if (!sns) {
     return BigInt(10 ** 30); // If we don't know, we assume a very big number, to make the reward neglibible.
   }
-  return (
-    lastRewardEvent.total_available_e8s_equivalent /
-    BigInt(lastRewardEvent.settled_proposals.length)
-  );
+  return 50_276_005_084_190_970n;
 };
 
 ////////////////////

@@ -19,7 +19,7 @@
   import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
-  import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
+  import { nnsTotalVotingPower } from "$lib/stores/nns-total-voting-power.store";
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { TableProject } from "$lib/types/staking";
@@ -191,7 +191,7 @@
       nnsEconomics: $networkEconomicsStore,
       fxRates: $icpSwapUsdPricesStore,
       governanceMetrics: $governanceMetricsStore,
-      nnsLastRewardEvent: $nnsLatestRewardEventStore,
+      nnsTotalVotingPower: $nnsTotalVotingPower,
     })
   );
 

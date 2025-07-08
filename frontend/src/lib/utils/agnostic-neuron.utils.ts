@@ -13,6 +13,7 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
+import { fromNullable } from "@dfinity/utils";
 
 export type AgnosticNeuron = NeuronInfo | SnsNeuron;
 
@@ -36,7 +37,7 @@ export const getNeuronStakedMaturityE8s = (neuron: AgnosticNeuron): bigint => {
   if (isNnsNeuron(neuron)) {
     return neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n;
   } else {
-    return neuron.staked_maturity_e8s_equivalent[0] ?? 0n;
+    return fromNullable(neuron.staked_maturity_e8s_equivalent) ?? 0n;
   }
 };
 
