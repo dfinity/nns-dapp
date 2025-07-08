@@ -43,7 +43,7 @@
         {:else}
           <VoteLogo size="medium" />
         {/if}
-        <h5 data-tid="project-name">{proposal.name}</h5>
+        <h3 data-tid="project-name">{proposal.name}</h3>
         <Tag size="medium">
           <span>{$i18n.portfolio.project_status_proposal}</span>
           <IconVote size="14px" />
