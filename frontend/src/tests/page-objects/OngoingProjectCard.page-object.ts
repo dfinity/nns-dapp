@@ -1,8 +1,8 @@
-import { BasePortfolioCardPo } from "$tests/page-objects/BasePortfolioCard.page-object";
+import { CardFramePo } from "$tests/page-objects/CardFrame.page-object";
 import { LinkPo } from "$tests/page-objects/Link.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
-export class OngoingProjectCardPo extends BasePortfolioCardPo {
+export class OngoingProjectCardPo extends CardFramePo {
   private static readonly TID = "ongoing-project-card";
 
   static under(element: PageObjectElement): OngoingProjectCardPo {

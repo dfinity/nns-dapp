@@ -17,6 +17,18 @@ describe("OngoingProjectCard", () => {
     return OngoingProjectCardPo.under(new JestPageObjectElement(container));
   };
 
+  it("should display a background icon", async () => {
+    const projectName = "Test Project";
+    const projectDescription = "This is a test project description";
+    const summary = createSummary({
+      projectName,
+      projectDescription,
+    });
+    const po = renderComponent(summary);
+
+    expect(await po.hasBackgroundIcon()).toEqual(true);
+  });
+
   it("should display project name and description", async () => {
     const projectName = "Test Project";
     const projectDescription = "This is a test project description";
