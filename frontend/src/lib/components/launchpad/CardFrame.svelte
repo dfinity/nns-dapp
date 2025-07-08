@@ -19,7 +19,7 @@
 
 <article data-tid={testId} class:highlighted>
   {#if nonNullish(backgroundIcon)}
-    <div class="background-icon-container">
+    <div class="background-icon-container" data-tid="background-icon">
       {@render backgroundIcon()}
     </div>
   {/if}
