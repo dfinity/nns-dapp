@@ -1,7 +1,7 @@
+import { AmountDisplayPo } from "$tests/page-objects/AmountDisplay.page-object";
 import { CardPo } from "$tests/page-objects/Card.page-object";
+import { LinkPo } from "$tests/page-objects/Link.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { AmountDisplayPo } from "./AmountDisplay.page-object";
-import { LinkPo } from "./Link.page-object";
 
 export class ProjectCard2Po extends CardPo {
   private static readonly TID = "project-card-component";
