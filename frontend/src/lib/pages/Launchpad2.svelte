@@ -46,8 +46,6 @@
         Component: ProjectCard2 as unknown as Component,
         props: { project },
       }))
-      // TODO: remove me, i'm for testing purposes only
-      .flatMap((item) => Array(7).fill(item))
   );
   const notCommittedSnsProjects = $derived(
     launchedSnsProjects

@@ -38,9 +38,7 @@ export class SnsSummaryWrapper implements SnsSummary {
   get metadata(): SnsSummaryMetadata {
     return {
       ...this.summary.metadata,
-      description:
-        this.summary.metadata.description +
-        " — a virtual pets game from the creators of Neopets. Non-profit, 100% on-chain. We've got baby dragons to adopt and care for! ",
+      description: this.summary.metadata.description,
     };
   }
   get token(): IcrcTokenMetadata {
