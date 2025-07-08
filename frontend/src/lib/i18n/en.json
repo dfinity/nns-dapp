@@ -903,7 +903,9 @@
 
     "upcoming_tag_upcoming": "Upcoming",
     "upcoming_link": "Link to project",
-    "upcoming_sale_starts": "Sale starts in"
+    "upcoming_sale_starts": "Sale starts in",
+    "create_sns_proposal_title": "Create Service Nervous System (SNS)",
+    "create_sns_proposal_vote": "Vote"
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
