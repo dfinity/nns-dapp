@@ -1,12 +1,14 @@
 <script lang="ts">
   import { nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
+  import { isMobileViewportStore } from "../../derived/viewport.derived";
 
   type Props = {
     testId: string;
     children: Snippet;
     backgroundIcon?: Snippet;
     highlighted?: boolean;
+    mobileHref?: string;
   };
 
   const {
@@ -14,20 +16,35 @@
     children,
     backgroundIcon,
     highlighted = false,
+    mobileHref,
   }: Props = $props();
+
+  const isLinkable = $derived(nonNullish(mobileHref) && $isMobileViewportStore);
 </script>
 
-<article data-tid={testId} class:highlighted>
-  {#if nonNullish(backgroundIcon)}
-    <div class="background-icon-container" data-tid="background-icon">
-      {@render backgroundIcon()}
-    </div>
-  {/if}
-  {@render children()}
-</article>
+{#snippet content()}
+  <article data-tid={testId} class:highlighted>
+    {#if nonNullish(backgroundIcon)}
+      <div class="background-icon-container" data-tid="background-icon">
+        {@render backgroundIcon()}
+      </div>
+    {/if}
+    {@render children()}
+  </article>
+{/snippet}
+
+{#if isLinkable}
+  <a href={mobileHref} data-tid="card-content-link">{@render content()}</a>
+{:else}
+  {@render content()}
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  a {
+    text-decoration: none;
+  }
 
   article {
     position: relative;

@@ -73,7 +73,11 @@
   });
 </script>
 
-<CardFrame testId="project-card-component" highlighted={userHasParticipated}>
+<CardFrame
+  testId="project-card-component"
+  highlighted={userHasParticipated}
+  mobileHref={href}
+>
   <div class="card-content" class:userHasParticipated>
     <div class="header">
       <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />

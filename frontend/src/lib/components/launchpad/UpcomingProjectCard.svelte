@@ -28,7 +28,7 @@
   );
 </script>
 
-<CardFrame testId="upcoming-project-card-component">
+<CardFrame testId="upcoming-project-card-component" mobileHref={href}>
   <div class="card-content">
     <div class="header">
       <Logo

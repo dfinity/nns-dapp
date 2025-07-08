@@ -35,7 +35,7 @@
 </script>
 
 {#if nonNullish(proposal)}
-  <CardFrame testId="create-sns-proposal-card-component">
+  <CardFrame testId="create-sns-proposal-card-component" mobileHref={href}>
     <div class="card-content">
       <div class="header">
         {#if nonNullish(proposal?.logo) && nonNullish(proposal?.name)}
