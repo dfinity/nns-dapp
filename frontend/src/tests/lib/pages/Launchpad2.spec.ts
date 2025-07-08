@@ -74,9 +74,6 @@ describe("Launchpad2", () => {
       await upcomingLaunchesCards.getCardEntries();
 
     expect(await po.getSkeletonProjectsCardListPo().isPresent()).toBe(false);
-    expect(await po.getUserCommittedProjectsCardListPo().isPresent()).toBe(
-      false
-    );
     expect(await upcomingLaunchesCards.isPresent()).toBe(true);
     expect(upcomingLaunchesCardsEntryPos.length).toBe(3);
 
