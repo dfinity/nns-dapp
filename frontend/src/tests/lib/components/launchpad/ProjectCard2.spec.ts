@@ -11,12 +11,12 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProjectCard2Po } from "$tests/page-objects/ProjectCard2.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
-import { setIcpSwapUsdPrices } from "../../../utils/icp-swap.test-utils";
 
 vi.mock("$lib/api/sns-sale.api");
 
