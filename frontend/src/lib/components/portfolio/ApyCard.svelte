@@ -20,13 +20,14 @@
   };
 
   const {
-    rewardBalanceUSD = 3260.21,
-    rewardEstimateWeekUSD = 50.12,
-    stakingPower = 0.7845,
-    stakingPowerUSD = 16606,
+    rewardBalanceUSD = 0,
+    rewardEstimateWeekUSD = 0,
+    stakingPower = 0,
+    stakingPowerUSD = 0,
   }: Props = $props();
 
   const href = AppPath.Staking;
+  const dataTid = "apy-card-component";
 
   const rewardBalanceUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
@@ -43,7 +44,7 @@
         ? formatCurrencyNumber(rewardEstimateWeekUSD)
         : "N/A"
   );
-  const stakingPowerFormatted = $derived(
+  const stakingPowerPercentage = $derived(
     formatPercentage(stakingPower, {
       minFraction: 2,
       maxFraction: 2,
@@ -62,9 +63,11 @@
   <div class="content">
     <div class="left">
       <span class="subtitle">{$i18n.portfolio.apy_card_reward_title}</span>
-      <span class="main-value">~${rewardBalanceUSDFormatted}</span>
+      <span class="main-value" data-tid="reward"
+        >${rewardBalanceUSDFormatted}</span
+      >
       <span class="secondary-value"
-        ><span>
+        ><span class="projection" data-tid="projection">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="9"
@@ -83,18 +86,29 @@
 
     <div class="right">
       <span class="subtitle">{$i18n.portfolio.apy_card_power_title}</span>
-      <span class="main-value">~{stakingPowerFormatted}</span>
-      <span class="secondary-value">~${stakingPowerUSDFormatted}</span>
+      <span class="main-value" data-tid="staking-power"
+        >{stakingPowerPercentage}</span
+      >
+      <span class="secondary-value" data-tid="total-staking-power"
+        >${stakingPowerUSDFormatted}</span
+      >
     </div>
   </div>
 {/snippet}
 
 {#if $isMobileViewportStore}
-  <a class="card mobile" {href}>
-    {@render content()}
-  </a>
+  <article class="card mobile" data-tid={dataTid}>
+    <a
+      {href}
+      class="link"
+      aria-label={$i18n.portfolio.apy_card_link}
+      data-tid="project-link"
+    >
+      {@render content()}
+    </a>
+  </article>
 {:else}
-  <article class="card desktop">
+  <article class="card desktop" data-tid={dataTid}>
     <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
     {@render content()}
 
@@ -153,7 +167,7 @@
 
         display: flex;
 
-        span {
+        .projection {
           display: flex;
           align-items: center;
 
@@ -180,7 +194,10 @@
 
   .card.mobile {
     padding: 20px 16px;
-    text-decoration: none;
+
+    .link {
+      text-decoration: none;
+    }
   }
 
   .card.desktop {
