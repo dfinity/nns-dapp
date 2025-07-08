@@ -1,7 +1,5 @@
 <script lang="ts">
-  import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import AmountWithUsd from "$lib/components/ic/AmountWithUsd.svelte";
-  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import type {
     UserTokenData,
     UserTokenFailed,
@@ -21,14 +19,7 @@
     ><Spinner inline size="tiny" /></span
   >
 {:else if isUserTokenData(rowData)}
-  {#if $ENABLE_USD_VALUES}
-    <AmountWithUsd
-      amount={rowData.balance}
-      amountInUsd={rowData.balanceInUsd}
-    />
-  {:else}
-    <AmountDisplay singleLine amount={rowData.balance} />
-  {/if}
+  <AmountWithUsd amount={rowData.balance} amountInUsd={rowData.balanceInUsd} />
 {:else}
   <span data-tid="unavailable-balance" class="value">-/-</span>
 {/if}

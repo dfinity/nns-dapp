@@ -1,14 +1,20 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Collapsible } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
+  import type { Snippet } from "svelte";
 
   type Props = {
     id: string;
     count: number;
     openNewFolloweeModal: () => void;
+    title: string;
+    subtitle?: string;
+    children: Snippet;
   };
 
-  const { id, count, openNewFolloweeModal }: Props = $props();
+  const { id, count, openNewFolloweeModal, title, subtitle, children }: Props =
+    $props();
   const defaultTestId = "collapsible";
   let testId = $state(defaultTestId);
 
@@ -25,18 +31,15 @@
 <article data-tid={`follow-topic-${id}-section`}>
   <Collapsible {id} iconSize="medium" {testId}>
     <div class="wrapper" slot="header">
-      <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
-      <!-- svelte-ignore slot_element_deprecated -->
-      <span class="value" data-tid="topic-title"><slot name="title" /></span>
+      <span class="value" data-tid="topic-title">{title}</span>
       <span class="badge" data-tid={`topic-${id}-followees-badge`}>
         {count}
       </span>
     </div>
     <div class="content" data-tid="follow-topic-section-current">
-      <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
-      <!-- svelte-ignore slot_element_deprecated -->
-      <p class="subtitle description"><slot name="subtitle" /></p>
-
+      {#if nonNullish(subtitle)}
+        <p class="subtitle description">{subtitle}</p>
+      {/if}
       {#if count > 0}
         <p
           class="description current-followees"
@@ -47,9 +50,7 @@
       {/if}
 
       <div class="followees-wrapper">
-        <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
-        <!-- svelte-ignore slot_element_deprecated -->
-        <slot />
+        {@render children()}
       </div>
       <div class="button-wrapper">
         <button

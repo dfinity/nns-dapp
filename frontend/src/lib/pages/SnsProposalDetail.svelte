@@ -13,6 +13,7 @@
   import { pageStore } from "$lib/derived/page.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
   import { snsFilteredProposalsStore } from "$lib/derived/sns/sns-filtered-proposals.derived";
   import { getSnsProposalById } from "$lib/services/public/sns-proposals.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
@@ -23,6 +24,7 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { ProposalsNavigationId } from "$lib/types/proposals";
+  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import type { UniverseCanisterIdText } from "$lib/types/universe";
   import { buildProposalsUrl } from "$lib/utils/navigation.utils";
   import { navigateToProposal } from "$lib/utils/proposals.utils";
@@ -45,8 +47,6 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { tick } from "svelte";
   import { get, type Readable } from "svelte/store";
-  import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
-  import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
 
   export let proposalIdText: string | undefined | null = undefined;
 
@@ -177,7 +177,6 @@
 
   $: layoutTitleStore.set({
     title,
-    header: title,
   });
 
   // preload sns functions for mapping

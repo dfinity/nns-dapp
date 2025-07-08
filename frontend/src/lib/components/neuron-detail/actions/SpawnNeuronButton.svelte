@@ -17,18 +17,21 @@
   import { isEnoughMaturityToSpawn } from "$lib/utils/neuron.utils";
   import { Tooltip } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
+  import { isNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 
-  export let neuron: NeuronInfo;
-
-  let enoughMaturity: boolean;
-  $: enoughMaturity =
-    neuron.fullNeuron === undefined
+  type Props = {
+    neuron: NeuronInfo;
+  };
+  const { neuron }: Props = $props();
+  const enoughMaturity = $derived(
+    isNullish(neuron.fullNeuron)
       ? false
       : isEnoughMaturityToSpawn({
           neuron,
           percentage: 100,
-        });
+        })
+  );
 
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -40,15 +43,20 @@
   };
 </script>
 
+{#snippet button()}
+  <button
+    data-tid="spawn-neuron-button"
+    class="secondary"
+    onclick={showModal}
+    disabled={!enoughMaturity}
+  >
+    {$i18n.neuron_detail.spawn_neuron}
+  </button>
+{/snippet}
+
 <TestIdWrapper testId="spawn-neuron-button-component">
   {#if enoughMaturity}
-    <button
-      data-tid="spawn-neuron-button"
-      class="secondary"
-      on:click={showModal}
-    >
-      {$i18n.neuron_detail.spawn_neuron}
-    </button>
+    {@render button()}
   {:else}
     <Tooltip
       id="spawn-maturity-button"
@@ -75,9 +83,7 @@
         }
       )}
     >
-      <button data-tid="spawn-neuron-button" disabled class="secondary">
-        {$i18n.neuron_detail.spawn_neuron}
-      </button>
+      {@render button()}
     </Tooltip>
   {/if}
 </TestIdWrapper>

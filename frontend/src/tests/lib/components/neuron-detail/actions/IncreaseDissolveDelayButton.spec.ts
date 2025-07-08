@@ -11,7 +11,7 @@ describe("IncreaseDissolveDelayButton", () => {
     const { container } = render(NeuronContextTest, {
       props: {
         neuron,
-        testComponent: IncreaseDissolveDelayButton,
+        TestComponent: IncreaseDissolveDelayButton,
       },
     });
 
@@ -42,7 +42,7 @@ describe("IncreaseDissolveDelayButton", () => {
     const { container, queryByTestId } = render(NeuronContextTest, {
       props: {
         neuron: mockNeuron,
-        testComponent: IncreaseDissolveDelayButton,
+        TestComponent: IncreaseDissolveDelayButton,
       },
     });
 

@@ -3,6 +3,7 @@
   import UniverseWithActionableProposals from "$lib/components/proposals/UniverseWithActionableProposals.svelte";
   import SnsProposalCard from "$lib/components/sns-proposals/SnsProposalCard.svelte";
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
+  import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
   import type { RootCanisterIdText } from "$lib/types/sns";
   import type { Universe } from "$lib/types/universe";
   import { Principal } from "@dfinity/principal";
@@ -27,7 +28,11 @@
 
 <TestIdWrapper testId="actionable-sns-proposals-component">
   {#if nonNullish(nsFunctions)}
-    <UniverseWithActionableProposals {universe}>
+    <UniverseWithActionableProposals
+      {universe}
+      fetchLimitReached={$actionableSnsProposalsStore[rootCanisterId]
+        .fetchLimitReached}
+    >
       {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
         <SnsProposalCard
           actionable

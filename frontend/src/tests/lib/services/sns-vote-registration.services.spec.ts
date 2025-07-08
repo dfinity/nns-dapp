@@ -214,9 +214,11 @@ describe("sns-vote-registration-services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
           proposals: [proposal1, proposal2],
+          fetchLimitReached: false,
         },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
+          fetchLimitReached: false,
         },
       });
       expect(spyQuerySnsProposals).toBeCalledTimes(0);
@@ -238,7 +240,7 @@ describe("sns-vote-registration-services", () => {
           includeRewardStatus: [
             SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
           ],
-          limit: 20,
+          limit: 100,
         },
         rootCanisterId,
       });
@@ -248,9 +250,11 @@ describe("sns-vote-registration-services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
           proposals: [proposal1, proposal2],
+          fetchLimitReached: false,
         },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
+          fetchLimitReached: false,
         },
       });
 
@@ -264,9 +268,11 @@ describe("sns-vote-registration-services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
           proposals: [proposal1],
+          fetchLimitReached: false,
         },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
+          fetchLimitReached: false,
         },
       });
     });
@@ -290,9 +296,11 @@ describe("sns-vote-registration-services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId.toText()]: {
           proposals: [proposal1, proposal2],
+          fetchLimitReached: false,
         },
         [rootCanisterId2.toText()]: {
           proposals: [proposal1, proposal2],
+          fetchLimitReached: false,
         },
       });
       expect(spyQuerySnsProposals).toBeCalledTimes(0);

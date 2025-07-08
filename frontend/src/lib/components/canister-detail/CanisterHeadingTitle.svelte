@@ -20,13 +20,13 @@
     </p>
     <!-- Only when we have loaded the data and we know whether the user is the controller -->
   {:else if isController === false}
-    <h1 data-tid="caniter-title-balance-unavailable">
+    <h2 data-tid="caniter-title-balance-unavailable">
       {#if canister.name.length === 0}
         {canister.canister_id.toText()}
       {:else}
         {canister.name}
       {/if}
-    </h1>
+    </h2>
   {:else}
     <div data-tid="skeleton" class="skeleton">
       <SkeletonText tagName="h1" />
@@ -38,10 +38,11 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
-  h1 {
-    margin: 0;
+  h2 {
+    @include fonts.h1;
     // Needed if the canister id is very long for mobile and uses multiple lines.
     text-align: center;
+    margin: 0;
   }
 
   .skeleton {

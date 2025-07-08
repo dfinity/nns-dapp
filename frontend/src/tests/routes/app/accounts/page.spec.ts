@@ -1,11 +1,14 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
+import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { page } from "$mocks/$app/stores";
 import AccountsPage from "$routes/(app)/(u)/(list)/accounts/+page.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { AccountsPlusPagePo } from "$tests/page-objects/AccountsPlusPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "@testing-library/svelte";
@@ -15,6 +18,13 @@ vi.mock("$lib/api/nns-dapp.api");
 vi.mock("$lib/api/sns-ledger.api");
 
 describe("Accounts page", () => {
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+      last_price: "10.00",
+    },
+  ];
   const renderComponent = () => {
     const { container } = render(AccountsPage);
     return AccountsPlusPagePo.under(new JestPageObjectElement(container));
@@ -23,6 +33,7 @@ describe("Accounts page", () => {
   beforeEach(() => {
     vi.spyOn(nnsDappApi, "queryAccount").mockResolvedValue(mockAccountDetails);
     vi.spyOn(ledgerApi, "queryAccountBalance").mockResolvedValue(314000000n);
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
   });
 
   describe("not logged in", () => {

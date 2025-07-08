@@ -8,6 +8,7 @@
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
@@ -20,8 +21,8 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import {
-    compareByNeuronCount,
-    compareByProjectTitle,
+    compareByNeuron,
+    compareByProject,
     compareByStake,
     getTableProjects,
     getTotalStakeInUsd,
@@ -42,7 +43,7 @@
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["minmax(min-content, max-content)"],
-      comparator: compareByProjectTitle,
+      comparator: compareByProject,
     },
     {
       title: "",
@@ -79,7 +80,7 @@
       cellComponent: ProjectNeuronsCell,
       alignment: "right",
       templateColumns: ["max-content"],
-      comparator: compareByNeuronCount,
+      comparator: compareByNeuron,
     },
     {
       title: "",
@@ -105,7 +106,10 @@
 
   let visibleTableProjects: TableProject[] = [];
   $: visibleTableProjects = shouldHideProjectsWithoutNeurons
-    ? tableProjects.filter(({ neuronCount }) => neuronCount ?? 0 > 0)
+    ? tableProjects.filter(
+        ({ neuronCount = 0, universeId }) =>
+          universeId === OWN_CANISTER_ID_TEXT || neuronCount > 0
+      )
     : tableProjects;
 
   let sortedTableProjects: TableProject[];

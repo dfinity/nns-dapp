@@ -26,8 +26,7 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   const portfolioPo = appPo.getPortfolioPo();
 
   await page.goto("/");
-  await portfolioPo.getPortfolioPagePo().getLoginCard().waitFor();
-  await expect(page).toHaveTitle("Portfolio / NNS Dapp");
+  await expect(page).toHaveTitle("Portfolio | Network Nervous System");
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
 

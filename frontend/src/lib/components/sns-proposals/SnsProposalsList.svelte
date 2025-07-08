@@ -2,6 +2,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ActionableProposalsEmpty from "$lib/components/proposals/ActionableProposalsEmpty.svelte";
   import ActionableProposalsSignIn from "$lib/components/proposals/ActionableProposalsSignIn.svelte";
+  import FetchLimitWarning from "$lib/components/proposals/FetchLimitWarning.svelte";
   import ListLoader from "$lib/components/proposals/ListLoader.svelte";
   import LoadingProposals from "$lib/components/proposals/LoadingProposals.svelte";
   import NoProposals from "$lib/components/proposals/NoProposals.svelte";
@@ -22,6 +23,7 @@
     disableInfiniteScroll?: boolean;
     loadingNextPage?: boolean;
     loadNextPage: () => Promise<void>;
+    fetchLimitReached?: boolean;
   };
 
   const {
@@ -31,6 +33,7 @@
     disableInfiniteScroll = false,
     loadingNextPage = false,
     loadNextPage,
+    fetchLimitReached = false,
   }: Props = $props();
 </script>
 
@@ -71,6 +74,9 @@
       {:else if proposals.length === 0}
         <ActionableProposalsEmpty />
       {:else}
+        {#if fetchLimitReached}
+          <FetchLimitWarning />
+        {/if}
         <InfiniteScroll layout="grid" disabled onIntersect={async () => {}}>
           {#each proposals as proposalData (fromNullable(proposalData.id)?.id)}
             <SnsProposalCard

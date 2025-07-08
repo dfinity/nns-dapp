@@ -3,11 +3,13 @@ import { writable, type Readable } from "svelte/store";
 
 export interface ActionableNnsProposalsStoreData {
   proposals: ProposalInfo[] | undefined;
+  fetchLimitReached: boolean;
 }
 
 export interface ActionableNnsProposalsStore
   extends Readable<ActionableNnsProposalsStoreData> {
   setProposals: (proposals: ProposalInfo[]) => void;
+  setFetchLimitReached: (fetchLimitReached: boolean) => void;
   reset: () => void;
 }
 
@@ -17,19 +19,24 @@ export interface ActionableNnsProposalsStore
  * This can't be derived from proposalsStore because that store contains only proposals that match the selected filter, while this store contains proposals regardless of the filter.
  */
 const initActionableNnsProposalsStore = (): ActionableNnsProposalsStore => {
-  const { subscribe, set } = writable<ActionableNnsProposalsStoreData>({
+  const { subscribe, update } = writable<ActionableNnsProposalsStoreData>({
     proposals: undefined,
+    fetchLimitReached: false,
   });
 
   return {
     subscribe,
 
+    setFetchLimitReached(fetchLimitReached: boolean) {
+      update((state) => ({ ...state, fetchLimitReached }));
+    },
+
     setProposals(proposals: ProposalInfo[]) {
-      set({ proposals: [...proposals] });
+      update((state) => ({ ...state, proposals: [...proposals] }));
     },
 
     reset(): void {
-      set({ proposals: undefined });
+      update((state) => ({ ...state, proposals: undefined }));
     },
   };
 };

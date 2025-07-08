@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-30_03-21-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-26_03-25-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -51,12 +51,17 @@ pub struct Follow {
     pub followees: Vec<NeuronId>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct AccountIdentifier {
+    pub hash: serde_bytes::ByteBuf,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct Account {
     pub owner: Option<Principal>,
     pub subaccount: Option<serde_bytes::ByteBuf>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DisburseMaturity {
+    pub to_account_identifier: Option<AccountIdentifier>,
     pub to_account: Option<Account>,
     pub percentage_to_disburse: u32,
 }
@@ -140,16 +145,21 @@ pub struct DisburseToNeuron {
     pub nonce: u64,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct FolloweesForTopic {
+    pub topic: Option<i32>,
+    pub followees: Option<Vec<NeuronId>>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct SetFollowing {
+    pub topic_following: Option<Vec<FolloweesForTopic>>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct StakeMaturity {
     pub percentage_to_stake: Option<u32>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct MergeMaturity {
     pub percentage_to_merge: u32,
-}
-#[derive(Serialize, CandidType, Deserialize)]
-pub struct AccountIdentifier {
-    pub hash: serde_bytes::ByteBuf,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Amount {
@@ -172,6 +182,7 @@ pub enum Command {
     RegisterVote(RegisterVote),
     Merge(Merge),
     DisburseToNeuron(DisburseToNeuron),
+    SetFollowing(SetFollowing),
     MakeProposal(Box<Proposal>),
     StakeMaturity(StakeMaturity),
     MergeMaturity(MergeMaturity),
@@ -739,6 +750,7 @@ pub struct BallotInfo {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct MaturityDisbursement {
+    pub account_identifier_to_disburse_to: Option<AccountIdentifier>,
     pub timestamp_of_disbursement_seconds: Option<u64>,
     pub amount_e8s: Option<u64>,
     pub account_to_disburse_to: Option<Account>,
@@ -1000,6 +1012,7 @@ pub enum ManageNeuronCommandRequest {
     RegisterVote(RegisterVote),
     Merge(Merge),
     DisburseToNeuron(DisburseToNeuron),
+    SetFollowing(SetFollowing),
     MakeProposal(MakeProposalRequest),
     StakeMaturity(StakeMaturity),
     MergeMaturity(MergeMaturity),
@@ -1033,6 +1046,8 @@ pub struct MergeResponse {
     pub source_neuron_info: Option<NeuronInfo>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct SetFollowingResponse {}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct MakeProposalResponse {
     pub message: Option<String>,
     pub proposal_id: Option<ProposalId>,
@@ -1064,6 +1079,7 @@ pub enum Command1 {
     RegisterVote(EmptyRecord),
     Merge(MergeResponse),
     DisburseToNeuron(SpawnResponse),
+    SetFollowing(SetFollowingResponse),
     MakeProposal(MakeProposalResponse),
     StakeMaturity(StakeMaturityResponse),
     MergeMaturity(MergeMaturityResponse),
