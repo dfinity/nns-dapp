@@ -11,6 +11,7 @@
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
   } from "$lib/stores/sns.store";
+  import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
 
   if ($ENABLE_LAUNCHPAD_REDESIGN) {
     loadIcpSwapTickers();
@@ -31,7 +32,11 @@
 </script>
 
 {#if $ENABLE_LAUNCHPAD_REDESIGN}
-  <Launchpad2 {snsProjects} {openSnsProposals} />
+  <Launchpad2
+    {snsProjects}
+    {openSnsProposals}
+    isLoading={$isLoadingSnsProjectsStore}
+  />
 {:else}
   <Launchpad />
 {/if}

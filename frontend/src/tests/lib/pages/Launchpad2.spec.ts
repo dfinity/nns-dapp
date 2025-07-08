@@ -18,8 +18,14 @@ describe("Launchpad2", () => {
   const renderComponent = (props: {
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
+    isLoading?: boolean;
   }) => {
-    const { container } = render(Launchpad2, { props });
+    const { container } = render(Launchpad2, {
+      props: {
+        ...props,
+        isLoading: props.isLoading ?? false,
+      },
+    });
     return Launchpad2Po.under(new JestPageObjectElement(container));
   };
 
@@ -27,11 +33,12 @@ describe("Launchpad2", () => {
     const po = renderComponent({
       snsProjects: [],
       openSnsProposals: [],
+      isLoading: true,
     });
 
     expect(await po.getUpcomingLaunchesCardListPo().isPresent()).toBe(false);
-    // TODO(launchpad2): to replace with skeletons
     expect(await po.getLaunchedProjectsCardListPo().isPresent()).toBe(false);
+    expect(await po.getSkeletonProjectsCardListPo().isPresent()).toBe(true);
   });
 
   it("displays upcoming launch cards", async () => {
@@ -66,6 +73,10 @@ describe("Launchpad2", () => {
     const upcomingLaunchesCardsEntryPos =
       await upcomingLaunchesCards.getCardEntries();
 
+    expect(await po.getSkeletonProjectsCardListPo().isPresent()).toBe(false);
+    expect(await po.getUserCommittedProjectsCardListPo().isPresent()).toBe(
+      false
+    );
     expect(await upcomingLaunchesCards.isPresent()).toBe(true);
     expect(upcomingLaunchesCardsEntryPos.length).toBe(3);
 
