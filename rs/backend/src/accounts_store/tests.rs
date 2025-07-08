@@ -1081,8 +1081,6 @@ fn get_imported_tokens_account_not_found() {
     );
 }
 
-// same but for fav_projects
-
 #[test]
 fn set_and_get_fav_projects() {
     let mut store = setup_test_store();
