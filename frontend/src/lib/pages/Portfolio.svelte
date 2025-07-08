@@ -196,7 +196,7 @@
   );
 
   $effect(() => {
-    if (!stakingRewardData.loading) {
+    if (!stakingRewardData.loading && !("error" in stakingRewardData)) {
       // @TODO Use the values in the UI
       logWithTimestamp(
         ">>>>> Staking rewards: data loaded.",

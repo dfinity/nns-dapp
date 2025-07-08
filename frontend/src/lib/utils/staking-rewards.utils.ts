@@ -46,17 +46,22 @@ type APY = Map<
   }
 >;
 
-interface StakingRewardData {
-  loading: boolean;
-  rewardBalanceUSD?: number;
-  rewardEstimateWeekUSD?: number;
-  stakingPower?: number;
-  stakingPowerUSD?: number;
-  apy?: APY;
-  error?: string;
-}
+type StakingRewardData =
+  | { loading: true }
+  | {
+      loading: false;
+      rewardBalanceUSD: number;
+      rewardEstimateWeekUSD: number;
+      stakingPower: number;
+      stakingPowerUSD: number;
+      apy: APY;
+    }
+  | {
+      loading: false;
+      error: string;
+    };
 
-interface Params {
+export interface StakingRewardCalcParams {
   auth: boolean;
   tokens: UserToken[];
   snsProjects: SnsAggregatorData;
@@ -68,7 +73,9 @@ interface Params {
   nnsLastRewardEvent?: NnsLatestRewardEventStoreData;
 }
 
-export const getStakingRewardData = (params: Params): StakingRewardData => {
+export const getStakingRewardData = (
+  params: StakingRewardCalcParams
+): StakingRewardData => {
   if (!params.auth) {
     logWithTimestamp("Staking rewards: user is not logged in.");
     return { loading: false, error: "Not authorized." };
@@ -101,7 +108,7 @@ export const getStakingRewardData = (params: Params): StakingRewardData => {
   }
 };
 
-const getRewardBalanceUSD = (params: Params): number => {
+const getRewardBalanceUSD = (params: StakingRewardCalcParams): number => {
   const { snsProjects, snsNeurons, nnsNeurons, fxRates } = params;
 
   const getReward = (
@@ -130,7 +137,7 @@ const getRewardBalanceUSD = (params: Params): number => {
   return nnsTotalRewardUSD + snsTotalRewardUSD;
 };
 
-const getStakingPower = (params: Params) => {
+const getStakingPower = (params: StakingRewardCalcParams) => {
   const { snsProjects, snsNeurons, nnsNeurons, fxRates, tokens } = params;
 
   const getStaking = (
@@ -182,7 +189,7 @@ const getStakingPower = (params: Params) => {
 };
 
 const getNnsRewardEstimationUSD = (
-  params: Params,
+  params: StakingRewardCalcParams,
   days: number,
   maximiseParams: boolean = false
 ): number => {
@@ -195,7 +202,7 @@ const getNnsRewardEstimationUSD = (
 };
 
 const getSnsRewardEstimationUSD = (
-  params: Params,
+  params: StakingRewardCalcParams,
   days: number,
   sns: CachedSnsDto,
   maximiseParams: boolean = false
@@ -210,12 +217,15 @@ const getSnsRewardEstimationUSD = (
   });
 };
 
-const getAllSnssRewardEstimationUSD = (params: Params, days: number): number =>
+const getAllSnssRewardEstimationUSD = (
+  params: StakingRewardCalcParams,
+  days: number
+): number =>
   params.snsProjects.data?.reduce((total, sns) => {
     return total + getSnsRewardEstimationUSD(params, days, sns);
   }, 0) ?? 0;
 
-const getAPYs = (params: Params) => {
+const getAPYs = (params: StakingRewardCalcParams) => {
   const { snsNeurons, nnsNeurons } = params;
   const apy: APY = new Map();
 
@@ -247,11 +257,11 @@ const getAPYs = (params: Params) => {
 };
 
 const getAPY = (
-  params: Params,
+  params: StakingRewardCalcParams,
   neurons: AgnosticNeuron[],
   ledgerPrincipal: Principal | string,
   rewardEstimationFunction: (
-    params: Params,
+    params: StakingRewardCalcParams,
     days: number,
     maximiseParams?: boolean
   ) => number
@@ -285,7 +295,7 @@ const getAPY = (
 /// SUPPORT FUNCTIONS
 /////////////////////
 
-const isDataReady = (params: Params) => {
+const isDataReady = (params: StakingRewardCalcParams) => {
   const {
     tokens,
     snsProjects,
@@ -323,7 +333,7 @@ const getNueronsRewardEstimationUSD = (params: {
   maximiseParams?: boolean;
   days: number;
   sns?: CachedSnsDto;
-  otherParams: Params;
+  otherParams: StakingRewardCalcParams;
 }) => {
   const { neurons: _neurons, maximiseParams, days, sns, otherParams } = params;
 
@@ -401,10 +411,10 @@ const getFXRate = (
 const getToken = (tokens: UserToken[], ledgerPrincipal: Principal | string) => {
   return tokens.find(
     (t) =>
-      t.ledgerCanisterId ===
+      t.ledgerCanisterId.toText() ===
       (ledgerPrincipal instanceof Principal
-        ? ledgerPrincipal
-        : Principal.fromText(ledgerPrincipal))
+        ? ledgerPrincipal.toText()
+        : ledgerPrincipal)
   ) as UserTokenData | undefined;
 };
 
@@ -452,7 +462,7 @@ const getPoolReward = (params: {
 };
 
 const getTokenReward = (
-  params: Params,
+  params: StakingRewardCalcParams,
   neuronVotingPower: bigint,
   addDays: number,
   sns?: CachedSnsDto
@@ -479,7 +489,7 @@ const getTokenReward = (
 };
 
 const getNeuronBonus = (
-  params: Params,
+  params: StakingRewardCalcParams,
   neuron: AgnosticNeuron,
   addDays: number,
   sns?: CachedSnsDto
@@ -499,8 +509,8 @@ const getGenesisTimestampSeconds = (sns?: CachedSnsDto): number => {
     if (snsGenesisTimestamp) {
       return snsGenesisTimestamp;
     } else {
-      console.warn(
-        `Stacking rewards: no genesis timestamp found for SNS with root canister ID ${sns.canister_ids.root_canister_id}, using 0 instead.`
+      logWithTimestamp(
+        `Staking rewards: No genesis timestamp found for SNS ${sns.canister_ids.root_canister_id}.`
       );
       return 0;
     }
@@ -509,7 +519,10 @@ const getGenesisTimestampSeconds = (sns?: CachedSnsDto): number => {
   }
 };
 
-const getRewardParams = (params: Params, sns?: CachedSnsDto) => {
+const getRewardParams = (
+  params: StakingRewardCalcParams,
+  sns?: CachedSnsDto
+) => {
   if (sns) {
     return getSnsRewardParams(sns);
   } else {
@@ -530,9 +543,10 @@ const getSnsRewardParams = (sns: CachedSnsDto) => {
     ),
     minStake: BigInt(snsSystemParams.neuron_minimum_stake_e8s ?? 0),
     maxDissolve: snsSystemParams.max_dissolve_delay_seconds ?? 0,
-    maxDissolveBonus: snsSystemParams.max_dissolve_delay_bonus_percentage ?? 0,
+    maxDissolveBonus:
+      snsSystemParams.max_dissolve_delay_bonus_percentage ?? 0 / 100,
     maxAge: snsSystemParams.max_neuron_age_for_age_bonus ?? 0,
-    maxAgeBonus: snsSystemParams.max_age_bonus_percentage ?? 0,
+    maxAgeBonus: snsSystemParams.max_age_bonus_percentage ?? 0 / 100,
     initialReward:
       snsSystemParams.voting_rewards_parameters
         ?.initial_reward_rate_basis_points ?? 0,
@@ -550,7 +564,7 @@ const getSnsRewardParams = (sns: CachedSnsDto) => {
 /// SUPPORT FUNCTIONS NNS
 /////////////////////////
 
-const getNnsRewardParams = (params: Params) => ({
+const getNnsRewardParams = (params: StakingRewardCalcParams) => ({
   minDissolve:
     params.nnsEconomics.parameters?.votingPowerEconomics
       ?.neuronMinimumDissolveDelayToVoteSeconds ?? 0n,
@@ -564,16 +578,18 @@ const getNnsRewardParams = (params: Params) => ({
   rewardTransition: SECONDS_IN_EIGHT_YEARS,
   totalSupply: Number(params.governanceMetrics.metrics?.totalSupplyIcp),
 });
+
 const getTotalVotingPower = (lastRewardEvent?: RewardEvent): bigint => {
+  // @TODO WRONG: USE THE EXPOSED TOTAL VOTING POWER!
   if (
     !lastRewardEvent ||
     !lastRewardEvent.settled_proposals.length ||
-    !lastRewardEvent.distributed_e8s_equivalent
+    !lastRewardEvent.total_available_e8s_equivalent
   ) {
     return BigInt(10 ** 30); // If we don't know, we assume a very big number, to make the reward neglibible.
   }
   return (
-    lastRewardEvent.distributed_e8s_equivalent /
+    lastRewardEvent.total_available_e8s_equivalent /
     BigInt(lastRewardEvent.settled_proposals.length)
   );
 };
