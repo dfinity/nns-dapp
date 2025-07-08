@@ -8,11 +8,11 @@
 
 <style lang="scss">
   div {
-    width: var(--padding-4x);
-    height: var(--padding-4x);
+    width: var(--skeleton-logo-size, var(--padding-4x));
+    height: var(--skeleton-logo-size, var(--padding-4x));
 
     overflow: hidden;
-    border-radius: var(--border-radius);
+    border-radius: 50%;
 
     :global(:first-child) {
       margin: 0;
