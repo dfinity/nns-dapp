@@ -149,6 +149,7 @@
       .header {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        height: 20px;
 
         font-size: 0.875rem;
         padding: 0 var(--padding-2x);

@@ -1,6 +1,7 @@
 import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { TableProject } from "$lib/types/staking";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
@@ -364,6 +365,204 @@ describe("StakedTokensCard", () => {
         mockStakedTokens[2].rowHref,
         mockStakedTokens[3].rowHref,
       ]);
+    });
+  });
+
+  describe("APY feature flag", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
+    });
+
+    describe("when not signed in", () => {
+      const icpProject: TableProject = {
+        ...mockTableProject,
+        stakeInUsd: undefined,
+        domKey: "/staking/icp",
+        stake: new UnavailableTokenAmount(NNS_TOKEN_DATA),
+      };
+      const tableProject1: TableProject = {
+        ...mockTableProject,
+        title: "Project 1",
+        stakeInUsd: undefined,
+        domKey: "/staking/1",
+        stake: new UnavailableTokenAmount(mockToken),
+      };
+      const tableProject2: TableProject = {
+        ...mockTableProject,
+        title: "Project 2",
+        stakeInUsd: undefined,
+        domKey: "/staking/2",
+        stake: new UnavailableTokenAmount(mockToken),
+      };
+
+      const tableProject3: TableProject = {
+        ...mockTableProject,
+        title: "Project 3",
+        stakeInUsd: undefined,
+        domKey: "/staking/3",
+        stake: new UnavailableTokenAmount(mockToken),
+      };
+
+      const mockStakedTokens: TableProject[] = [
+        icpProject,
+        tableProject1,
+        tableProject2,
+        tableProject3,
+      ];
+
+      beforeEach(() => {
+        setNoIdentity();
+      });
+
+      it("should list of tokens with placeholders", async () => {
+        const po = renderComponent({
+          topStakedTokens: mockStakedTokens,
+        });
+        const titles = await po.getStakedTokensTitle();
+        const apys = await po.getStakedTokensApy();
+        const stakesInUsd = await po.getStakedTokensStakeInUsd();
+        const stakesInNativeCurrency =
+          await po.getStakedTokensStakeInNativeCurrency();
+
+        expect(titles.length).toBe(4);
+        expect(titles).toEqual([
+          "Internet Computer",
+          "Project 1",
+          "Project 2",
+          "Project 3",
+        ]);
+
+        expect(apys.length).toBe(4);
+        expect(apys).toEqual(["-/-", "-/-", "-/-", "-/-"]);
+
+        expect(stakesInUsd.length).toBe(4);
+        expect(stakesInUsd).toEqual(["$0.00", "$0.00", "$0.00", "$0.00"]);
+
+        expect(stakesInNativeCurrency.length).toBe(4);
+        expect(stakesInNativeCurrency).toEqual([
+          "-/- ICP",
+          "-/- TET",
+          "-/- TET",
+          "-/- TET",
+        ]);
+
+        expect(await po.getInfoRow().isPresent()).toBe(false);
+      });
+    });
+
+    describe("when signed in", () => {
+      const icpProject: TableProject = {
+        ...mockTableProject,
+        stakeInUsd: 100,
+        domKey: "/staking/icp",
+        stake: TokenAmountV2.fromUlps({
+          amount: 1000_000n,
+          token: ICPToken,
+        }),
+        availableMaturity: 1_000_000_000n,
+        stakedMaturity: 1_000_000_000n,
+        apy: {
+          cur: 0.05,
+          max: 0.1,
+        },
+      };
+      const tableProject1: TableProject = {
+        ...mockTableProject,
+        title: "Project 1",
+        stakeInUsd: 200,
+        domKey: "/staking/1",
+        stake: TokenAmountV2.fromUlps({
+          amount: 1000_000n,
+          token: mockToken,
+        }),
+        apy: {
+          cur: 0.05,
+          max: 0.12,
+        },
+      };
+      const tableProject2: TableProject = {
+        ...mockTableProject,
+        title: "Project 2",
+        stakeInUsd: 300,
+        domKey: "/staking/2",
+        stake: TokenAmountV2.fromUlps({
+          amount: 1000_000n,
+          token: mockToken,
+        }),
+        apy: {
+          cur: 0.01,
+          max: 0.12,
+        },
+      };
+
+      const tableProject3: TableProject = {
+        ...mockTableProject,
+        title: "Project 3",
+        stakeInUsd: 400,
+        domKey: "/staking/3",
+        stake: TokenAmountV2.fromUlps({
+          amount: 1100_000n,
+          token: mockToken,
+        }),
+        apy: {
+          cur: 0.0,
+          max: 0.1,
+        },
+      };
+
+      const mockStakedTokens: TableProject[] = [
+        icpProject,
+        tableProject1,
+        tableProject2,
+        tableProject3,
+      ];
+
+      beforeEach(() => {
+        resetIdentity();
+      });
+
+      it("should show all the projects with their Apys, staked in usd and staked in native currency", async () => {
+        const po = renderComponent({
+          topStakedTokens: mockStakedTokens,
+        });
+
+        const titles = await po.getStakedTokensTitle();
+        const apys = await po.getStakedTokensApy();
+        const stakesInUsd = await po.getStakedTokensStakeInUsd();
+        const stakesInNativeCurrency =
+          await po.getStakedTokensStakeInNativeCurrency();
+
+        expect(titles.length).toBe(4);
+        expect(titles).toEqual([
+          "Internet Computer",
+          "Project 1",
+          "Project 2",
+          "Project 3",
+        ]);
+
+        expect(apys.length).toBe(4);
+        expect(apys).toEqual([
+          "5.00% (10.00%)",
+          "5.00% (12.00%)",
+          "1.00% (12.00%)",
+          "0.00% (10.00%)",
+        ]);
+        expect(stakesInUsd.length).toBe(4);
+        expect(stakesInUsd).toEqual([
+          "$100.00",
+          "$200.00",
+          "$300.00",
+          "$400.00",
+        ]);
+
+        expect(stakesInNativeCurrency.length).toBe(4);
+        expect(stakesInNativeCurrency).toEqual([
+          "0.01 ICP",
+          "0.01 TET",
+          "0.01 TET",
+          "0.01 TET",
+        ]);
+      });
     });
   });
 });
