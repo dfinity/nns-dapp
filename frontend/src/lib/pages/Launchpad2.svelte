@@ -1,8 +1,11 @@
 <script lang="ts">
   import CardList from "$lib/components/launchpad/CardList.svelte";
   import ProjectCard2 from "$lib/components/launchpad/ProjectCard2.svelte";
+  import SkeletonProjectCard from "$lib/components/launchpad/SkeletonProjectCard.svelte";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { isLoadingSnsProjectsStore } from "$lib/stores/sns.store";
   import type { ComponentWithProps } from "$lib/types/svelte";
   import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
   import {
@@ -22,15 +25,12 @@
 
   const { snsProjects, openSnsProposals }: Props = $props();
 
-  // TODO(launchpad2): add skeletons on loading.
-
   const upcomingLaunchesCards = $derived(
     getUpcomingLaunchesCards({
       snsProjects,
       openSnsProposals,
     })
   );
-
   const launchedSnsProjects = $derived(
     filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
@@ -63,6 +63,12 @@
     ...userCommittedSnsProjects,
     ...notCommittedSnsProjects,
   ]);
+  const skeletonCards: ComponentWithProps[] = $derived(
+    Array.from({ length: 3 }, () => ({
+      Component: SkeletonProjectCard as unknown as Component,
+      props: {},
+    }))
+  );
 </script>
 
 <main data-tid="launchpad2-component">
@@ -70,6 +76,7 @@
     <h3>{$i18n.launchpad.headline}</h3>
     <p>{$i18n.launchpad.subheadline}</p>
   </div>
+
   {#if upcomingLaunchesCards.length > 0}
     <section>
       <h4>{$i18n.launchpad.upcoming_launches}</h4>
@@ -81,8 +88,8 @@
     </section>
   {/if}
 
-  {#if userCommittedSnsProjects.length > 0}
-    <section class="mobile-only">
+  {#if $isMobileViewportStore && userCommittedSnsProjects.length > 0}
+    <section>
       <h4>{$i18n.launchpad.participated_projects}</h4>
       <CardList
         testId="launched-projects-list"
@@ -92,25 +99,19 @@
     </section>
   {/if}
 
-  {#if notCommittedSnsProjects.length > 0}
-    <section class="mobile-only">
-      <h4>{$i18n.launchpad.launched_projects}</h4>
+  <section>
+    <h4>{$i18n.launchpad.launched_projects}</h4>
+    {#if $isLoadingSnsProjectsStore}
+      <CardList testId="skeleton-projects-list" cards={skeletonCards} />
+    {:else}
       <CardList
         testId="launched-projects-list"
-        cards={notCommittedSnsProjects}
+        cards={$isMobileViewportStore
+          ? notCommittedSnsProjects
+          : launchedSnsProjectsCards}
       />
-    </section>
-  {/if}
-
-  {#if launchedSnsProjectsCards.length > 0}
-    <section class="desktop-only">
-      <h4>{$i18n.launchpad.launched_projects}</h4>
-      <CardList
-        testId="launched-projects-list"
-        cards={launchedSnsProjectsCards}
-      />
-    </section>
-  {/if}
+    {/if}
+  </section>
 </main>
 
 <style lang="scss">
