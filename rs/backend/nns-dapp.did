@@ -207,6 +207,29 @@ type GetImportedTokensResponse =
         AccountNotFound;
     };
 
+type FavProject =
+    record {
+        root_canister_id: principal;
+    };
+
+type FavProjects =
+    record {
+        fav_projects: vec FavProject;
+    };
+
+type SetFavProjectsResponse =
+    variant {
+        Ok;
+        AccountNotFound;
+        TooManyFavProjects: record{limit: int32};
+    };
+
+type GetFavProjectsResponse =
+    variant {
+        Ok: FavProjects;
+        AccountNotFound;
+    };
+
 type TvlResult =
     record {
         tvl : nat;
@@ -230,6 +253,8 @@ service: (opt Config) -> {
     detach_canister: (DetachCanisterRequest) -> (DetachCanisterResponse);
     set_imported_tokens: (ImportedTokens) -> (SetImportedTokensResponse);
     get_imported_tokens: () -> (GetImportedTokensResponse) query;
+    set_fav_projects: (FavProjects) -> (SetFavProjectsResponse);
+    get_fav_projects: () -> (GetFavProjectsResponse) query;
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;
