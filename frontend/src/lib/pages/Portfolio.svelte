@@ -2,6 +2,7 @@
   import CardList from "$lib/components/launchpad/CardList.svelte";
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
+  import ApySkeletonCard from "$lib/components/portfolio/ApySkeletonCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
@@ -141,7 +142,7 @@
       nnsEconomics: $networkEconomicsStore,
       fxRates: $icpSwapUsdPricesStore,
       governanceMetrics: $governanceMetricsStore,
-      nnsLastRewardEvent: $nnsLatestRewardEventStore,
+      nnsTotalVotingPower: $nnsTotalVotingPower,
     })
   );
 
@@ -209,6 +210,7 @@
     class="top"
     class:signed-in={$authSignedInStore}
     class:launchpad={cards.length > 0}
+    class:apy-card={$ENABLE_APY_PORTFOLIO}
   >
     {#if !$authSignedInStore}
       <div class="login-card">
@@ -219,18 +221,37 @@
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
-        isFullWidth={cards.length === 0}
+        isFullWidth={cards.length === 0 && !$ENABLE_APY_PORTFOLIO}
       />
+
+      {#if $ENABLE_APY_PORTFOLIO && !$isMobileViewportStore}
+        {#if isStakingRewardDataReady(stakingRewardData)}
+          <ApyCard
+            rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
+            rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
+            stakingPower={stakingRewardData.stakingPower}
+            stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+          />
+        {:else}
+          <ApySkeletonCard {stakingRewardData} />
+        {/if}
+      {/if}
+    {/if}
+
+    {#if cards.length > 0}
+      <StackedCards {cards} />
+    {/if}
+
+    {#if $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
       {#if isStakingRewardDataReady(stakingRewardData)}
         <ApyCard
           rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
           rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
           stakingPower={stakingRewardData.stakingPower}
           stakingPowerUSD={stakingRewardData.stakingPowerUSD}
-          loading={false}
         />
       {:else}
-        <SkeletonTokensCard testId="apy-skeleton-card" />
+        <ApySkeletonCard {stakingRewardData} />
       {/if}
     {/if}
 
@@ -316,13 +337,23 @@
         }
 
         // Case: signed in, no projects
-        &.signed-in:not(.launchpad) {
+        &.signed-in {
           grid-template-columns: 3fr;
         }
 
         // Case: signed in, with projects
         &.signed-in.launchpad {
           grid-template-columns: 2fr 1fr;
+        }
+
+        // Case: signed in, with APY card
+        &.signed-in.apy-card {
+          grid-template-columns: 2fr 1fr;
+        }
+
+        // Case: signed in, with APY card and projects
+        &.signed-in.apy-card.launchpad {
+          grid-template-columns: 1fr 1fr 1fr;
         }
       }
     }
