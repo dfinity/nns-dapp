@@ -15,7 +15,7 @@ export class SnsProposalSystemInfoSectionPo extends BasePageObject {
   }
 
   getTitleText(): Promise<string> {
-    return this.root.querySelector("h1").getText();
+    return this.root.querySelector("h2").getText();
   }
 
   async getTypeText(): Promise<string> {

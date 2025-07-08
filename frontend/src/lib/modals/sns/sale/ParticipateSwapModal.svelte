@@ -3,9 +3,13 @@
   import AdditionalInfoReview from "$lib/components/sale/AdditionalInfoReview.svelte";
   import SaleInProgress from "$lib/components/sale/SaleInProgress.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+  import { PRICE_NOT_AVAILABLE } from "$lib/constants/constants";
+  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import { getConditionsToAccept } from "$lib/getters/sns-summary";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
+  import { analytics } from "$lib/services/analytics.services";
   import {
     cancelPollAccounts,
     pollAccounts,
@@ -44,6 +48,7 @@
     onDestroy,
     onMount,
   } from "svelte";
+  import type { Readable } from "svelte/store";
 
   onMount(() => {
     pollAccounts(false);
@@ -111,6 +116,9 @@
       ticketsStore: $snsTicketsStore,
     }).status !== "none";
 
+  let tokenPrice: Readable<number | undefined>;
+  $: tokenPrice = tokenPriceStore(ICPToken);
+
   let modal: TransactionModal;
   let progressStep: SaleStep = SaleStep.INITIALIZATION;
 
@@ -124,11 +132,12 @@
       const updateProgress = (step: SaleStep) => (progressStep = step);
       const userCommitment =
         getCommitmentE8s($projectDetailStore.swapCommitment) ?? 0n;
+      const rootCanisterId = $projectDetailStore.summary.rootCanisterId;
 
       const { success } = await initiateSnsSaleParticipation({
         account: sourceAccount,
         amount: TokenAmount.fromNumber({ amount, token: ICPToken }),
-        rootCanisterId: $projectDetailStore.summary.rootCanisterId,
+        rootCanisterId,
         userCommitment,
         postprocess: async () => {
           await reload();
@@ -141,6 +150,18 @@
         dispatcher("nnsClose");
         return;
       }
+
+      const usdAmount = nonNullish($tokenPrice)
+        ? ($tokenPrice * amount).toFixed(1)
+        : PRICE_NOT_AVAILABLE;
+
+      analytics.event("sns-swap-participation", {
+        tokenAmount: amount.toString(),
+        project:
+          $projectSlugMapStore.get(rootCanisterId.toText()) ??
+          rootCanisterId.toText(),
+        usdAmount,
+      });
 
       // We defer the closing of the modal a bit to let the user notice the last step was successful
       setTimeout(() => {

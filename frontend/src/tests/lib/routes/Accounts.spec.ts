@@ -10,7 +10,6 @@ import { AppPath } from "$lib/constants/routes.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { pageStore } from "$lib/derived/page.derived";
 import Accounts from "$lib/routes/Accounts.svelte";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -50,6 +49,13 @@ describe("Accounts", () => {
   let mainAccountBalance = mainAccountBalanceDefault;
   const hardwareWalletBalanceDefault = 220000000n;
   let hardwareWalletBalance = hardwareWalletBalanceDefault;
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+      last_price: "10.00",
+    },
+  ];
 
   const renderComponent = async () => {
     const { container } = render(Accounts);
@@ -91,6 +97,8 @@ describe("Accounts", () => {
     vi.spyOn(nnsDappApi, "queryAccount").mockImplementation(async () => {
       return mockAccountDetails;
     });
+
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
 
     // Reset to default value
     page.mock({
@@ -409,17 +417,6 @@ describe("Accounts", () => {
       });
 
       it("should load ICP Swap tickers", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
-        const tickers = [
-          {
-            ...mockIcpSwapTicker,
-            base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-            last_price: "10.00",
-          },
-        ];
-        vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
-
         expect(get(icpSwapTickersStore)).toBeUndefined();
         expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
 
@@ -433,25 +430,6 @@ describe("Accounts", () => {
 
         expect(await rowsPos[0].getBalanceInUsd()).toEqual("$31.40");
       });
-
-      it("should not load ICP Swap tickers without feature flag", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
-
-        vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
-
-        expect(get(icpSwapTickersStore)).toBeUndefined();
-        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-        const po = await renderComponent();
-
-        expect(get(icpSwapTickersStore)).toBeUndefined();
-        expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-        const tablePo = po.getNnsAccountsPo().getTokensTablePo();
-        const rowsPos = await tablePo.getRows();
-
-        expect(await rowsPos[0].hasBalanceInUsd()).toBe(false);
-      });
     });
   });
 
@@ -459,8 +437,8 @@ describe("Accounts", () => {
     page.mock({
       data: {
         universe: CKBTC_UNIVERSE_CANISTER_ID.toText(),
-        routeId: AppPath.Accounts,
       },
+      routeId: AppPath.Accounts,
     });
 
     expect(get(pageStore)?.path).toEqual(AppPath.Accounts);
@@ -474,8 +452,8 @@ describe("Accounts", () => {
     page.mock({
       data: {
         universe: OWN_CANISTER_ID_TEXT,
-        routeId: AppPath.Accounts,
       },
+      routeId: AppPath.Accounts,
     });
 
     expect(get(pageStore)?.path).toEqual(AppPath.Accounts);

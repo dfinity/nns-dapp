@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-05_03-24-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-03_03-27-base/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -315,6 +315,31 @@ pub struct SetTopicsForCustomProposals {
     pub custom_function_id_to_topic: Vec<(u64, Topic)>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ChunkedCanisterWasm {
+    pub wasm_module_hash: serde_bytes::ByteBuf,
+    pub chunk_hashes_list: Vec<serde_bytes::ByteBuf>,
+    pub store_canister_id: Option<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum PreciseValue {
+    Int(i64),
+    Map(Vec<(String, Box<PreciseValue>)>),
+    Nat(u64),
+    Blob(serde_bytes::ByteBuf),
+    Bool(bool),
+    Text(String),
+    Array(Vec<Box<PreciseValue>>),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ExtensionInit {
+    pub value: Option<Box<PreciseValue>>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct RegisterExtension {
+    pub chunked_canister_wasm: Option<ChunkedCanisterWasm>,
+    pub extension_init: Option<ExtensionInit>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterDappCanisters {
     pub canister_ids: Vec<Principal>,
 }
@@ -325,12 +350,6 @@ pub struct TransferSnsTreasuryFunds {
     pub to_subaccount: Option<Subaccount>,
     pub memo: Option<u64>,
     pub amount_e8s: u64,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct ChunkedCanisterWasm {
-    pub wasm_module_hash: serde_bytes::ByteBuf,
-    pub chunk_hashes_list: Vec<serde_bytes::ByteBuf>,
-    pub store_canister_id: Option<Principal>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpgradeSnsControlledCanister {
@@ -386,6 +405,7 @@ pub enum Action {
     ManageDappCanisterSettings(ManageDappCanisterSettings),
     RemoveGenericNervousSystemFunction(u64),
     SetTopicsForCustomProposals(SetTopicsForCustomProposals),
+    RegisterExtension(RegisterExtension),
     UpgradeSnsToNextVersion(EmptyRecord),
     RegisterDappCanisters(RegisterDappCanisters),
     TransferSnsTreasuryFunds(TransferSnsTreasuryFunds),
@@ -703,6 +723,7 @@ pub struct GetMetricsRequest {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Metrics {
     pub last_ledger_block_timestamp: Option<u64>,
+    pub num_recently_executed_proposals: Option<u64>,
     pub num_recently_submitted_proposals: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]

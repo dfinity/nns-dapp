@@ -1,6 +1,5 @@
 import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { dispatchIntersecting } from "$lib/utils/events.utils";
@@ -152,21 +151,7 @@ describe("WalletPageHeading", () => {
     });
   });
 
-  it("should not display USD balance if feature flag is disabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
-
-    const balance = TokenAmountV2.fromString({
-      amount: "1",
-      token: ICPToken,
-    }) as TokenAmountV2;
-    const po = renderComponent({ balance, accountName });
-
-    expect(await po.hasBalanceInUsd()).toBe(false);
-  });
-
   it("should display USD balance if feature flag is enabled", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
     const balance = TokenAmountV2.fromString({
       amount: "3",
       token: ICPToken,
@@ -181,8 +166,6 @@ describe("WalletPageHeading", () => {
   });
 
   it("should error state when token prices failed to load", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
     icpSwapTickersStore.set("error");
 
     const balance = TokenAmountV2.fromString({
@@ -199,8 +182,6 @@ describe("WalletPageHeading", () => {
   });
 
   it("should get token price based on ledger canister ID", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
     const ledgerCanisterId = principal(3);
 
     setIcpSwapUsdPrices({

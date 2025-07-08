@@ -1,4 +1,3 @@
-export const DEFAULT_SNS_PROPOSALS_PAGE_SIZE = 20;
 export const ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID = 0n;
 
 // Valid ids for GenericNervousSystemFunction start at 1000

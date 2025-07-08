@@ -1,11 +1,9 @@
 <script lang="ts">
-  import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
   import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
   import PageHeading from "$lib/components/common/PageHeading.svelte";
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import IdentifierHash from "$lib/components/ui/IdentifierHash.svelte";
   import { onIntersection } from "$lib/directives/intersection.directives";
-  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
@@ -59,7 +57,7 @@
         <AmountDisplay amount={balance} size="huge" singleLine />
       </Tooltip>
     {:else}
-      <h1 data-tid="balance-placeholder">-/-</h1>
+      <h2 data-tid="balance-placeholder">-/-</h2>
     {/if}
   </svelte:fragment>
   <div
@@ -69,15 +67,9 @@
     on:nnsIntersecting={updateLayoutTitle}
     use:onIntersection
   >
-    {#if $ENABLE_USD_VALUES}
-      <HeadingSubtitleWithUsdValue amount={balance} {ledgerCanisterId}>
-        {accountName}
-      </HeadingSubtitleWithUsdValue>
-    {:else}
-      <HeadingSubtitle testId="wallet-page-heading-subtitle">
-        {accountName}
-      </HeadingSubtitle>
-    {/if}
+    <HeadingSubtitleWithUsdValue amount={balance} {ledgerCanisterId}>
+      {accountName}
+    </HeadingSubtitleWithUsdValue>
     {#if nonNullish(principal)}
       <p class="description" data-tid="wallet-page-heading-principal">
         {$i18n.core.principal}: <IdentifierHash
@@ -90,6 +82,12 @@
 </PageHeading>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  h2 {
+    @include fonts.h1;
+  }
+
   .subtitles {
     display: flex;
     flex-direction: column;

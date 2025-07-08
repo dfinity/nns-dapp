@@ -9,7 +9,6 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { proposalsPathStore } from "$lib/derived/paths.derived";
-  import { ENABLE_PORTFOLIO_PAGE } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import {
     ACTIONABLE_PROPOSALS_URL,
@@ -43,20 +42,16 @@
     statusIcon?: Component;
   }[];
   $: routes = [
-    ...($ENABLE_PORTFOLIO_PAGE
-      ? [
-          {
-            context: "portfolio",
-            href: AppPath.Portfolio,
-            selected: isSelectedPath({
-              currentPath: $pageStore.path,
-              paths: [AppPath.Portfolio],
-            }),
-            title: $i18n.navigation.portfolio,
-            icon: IconHome,
-          },
-        ]
-      : []),
+    {
+      context: "portfolio",
+      href: AppPath.Portfolio,
+      selected: isSelectedPath({
+        currentPath: $pageStore.path,
+        paths: [AppPath.Portfolio],
+      }),
+      title: $i18n.navigation.portfolio,
+      icon: IconHome,
+    },
     {
       context: "accounts",
       href: AppPath.Tokens,

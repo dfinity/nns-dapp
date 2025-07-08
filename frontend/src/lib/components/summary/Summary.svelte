@@ -3,12 +3,17 @@
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
 </script>
 
-<h1 class="summary" data-tid="projects-summary">
+<h2 class="summary" data-tid="projects-summary">
   <UniverseSummary universe={$selectedUniverseStore} />
-</h1>
+</h2>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  h2 {
+    @include fonts.h1;
+  }
 
   .summary {
     display: flex;

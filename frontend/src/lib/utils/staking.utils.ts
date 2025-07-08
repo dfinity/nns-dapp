@@ -231,6 +231,10 @@ export const compareIcpFirst = createDescendingComparator(
   (project: TableProject) => project.universeId === OWN_CANISTER_ID_TEXT
 );
 
+export const compareNonFailedTokenAmountFirst = createAscendingComparator(
+  (project: TableProject) => project.stake instanceof FailedTokenAmount
+);
+
 const comparePositiveNeuronsFirst = createDescendingComparator(
   (project: TableProject) => (project.neuronCount ?? 0) > 0
 );
@@ -247,20 +251,34 @@ export const compareByStakeInUsd = createDescendingComparator(
   (project: TableProject) => getUsdStake(project)
 );
 
+export const compareByNeuron = mergeComparators([
+  compareIcpFirst,
+  compareNonFailedTokenAmountFirst,
+  compareByNeuronCount,
+]);
+
+export const compareByProject = mergeComparators([
+  compareIcpFirst,
+  compareNonFailedTokenAmountFirst,
+  compareByProjectTitle,
+]);
+
 // This is used when clicking the "Stake" header, but in addition to sorting
 // by stake, it has a number of tie breakers.
 // Note that it tries to sort by USD stake but also sorts tokens with neurons
 // above tokens without neurons if there is no exchange rate for that project.
 export const compareByStake = mergeComparators([
-  compareByStakeInUsd,
-  comparePositiveNeuronsFirst,
   compareIcpFirst,
+  compareByStakeInUsd,
+  compareNonFailedTokenAmountFirst,
+  comparePositiveNeuronsFirst,
 ]);
 
 export const sortTableProjects = (projects: TableProject[]): TableProject[] => {
   return [...projects].sort(
     mergeComparators([
       compareIcpFirst,
+      compareNonFailedTokenAmountFirst,
       comparePositiveNeuronsFirst,
       compareByProjectTitle,
     ])

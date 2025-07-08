@@ -1,19 +1,15 @@
 import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import { tokensByLedgerCanisterIdStore } from "$lib/derived/tokens.derived";
 import { getLedgerCanisterIdFromToken } from "$lib/utils/token.utils";
-import {
-  isNullish,
-  type TokenAmount,
-  type TokenAmountV2,
-} from "@dfinity/utils";
+import { isNullish, type Token } from "@dfinity/utils";
 import { derived } from "svelte/store";
 
-export const tokenPriceStore = (amount: TokenAmountV2 | TokenAmount) => {
+export const tokenPriceStore = (token: Token) => {
   return derived(
     [tokensByLedgerCanisterIdStore, icpSwapUsdPricesStore],
     ([$tokensByLedgerCanisterIdStore, $icpSwapUsdPricesStore]) => {
       const ledgerCanisterId = getLedgerCanisterIdFromToken(
-        amount.token,
+        token,
         $tokensByLedgerCanisterIdStore
       );
 

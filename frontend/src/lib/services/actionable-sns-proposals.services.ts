@@ -1,6 +1,8 @@
 import { queryProposals } from "$lib/api/sns-governance.api";
-import { MAX_ACTIONABLE_REQUEST_COUNT } from "$lib/constants/constants";
-import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
+import {
+  DEFAULT_LIST_PAGINATION_LIMIT,
+  MAX_ACTIONABLE_REQUEST_COUNT,
+} from "$lib/constants/constants";
 import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { loadSnsNeurons } from "$lib/services/sns-neurons.services";
@@ -60,9 +62,14 @@ export const loadActionableProposalsForSns = async (
         }).length > 0
     );
 
+    const fetchLimitReached =
+      Math.max(allProposals.length) ===
+      DEFAULT_LIST_PAGINATION_LIMIT * MAX_ACTIONABLE_REQUEST_COUNT;
+
     actionableSnsProposalsStore.set({
       rootCanisterId,
       proposals: votableProposals,
+      fetchLimitReached,
     });
   } catch (err) {
     console.error(err);
@@ -102,7 +109,7 @@ const querySnsProposals = async ({
     // Fetch all proposals that are accepting votes.
     const { proposals: page } = await queryProposals({
       params: {
-        limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+        limit: DEFAULT_LIST_PAGINATION_LIMIT,
         includeRewardStatus: [
           SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
         ],
@@ -120,7 +127,7 @@ const querySnsProposals = async ({
     ]) as ProposalData[];
 
     // no more proposals available
-    if (page.length !== DEFAULT_SNS_PROPOSALS_PAGE_SIZE) {
+    if (page.length !== DEFAULT_LIST_PAGINATION_LIMIT) {
       break;
     }
 

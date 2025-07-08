@@ -10,12 +10,19 @@ import Launchpad from "$tests/workflows/Launchpad/LaunchpadWithLayout.svelte";
 import type { HttpAgent } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { isNullish } from "@dfinity/utils";
-import { render, waitFor } from "@testing-library/svelte";
+import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/proposals.api");
 vi.mock("$lib/api/sns-sale.api");
+
+vi.mock("$app/navigation", () => ({
+  afterNavigate: vi.fn((callback) => {
+    callback({ from: null, to: { url: new URL("http://localhost/") } });
+  }),
+}));
 
 describe("Launchpad", () => {
   beforeEach(() => {
@@ -72,12 +79,11 @@ describe("Launchpad", () => {
     const po = LaunchpadPo.under(new JestPageObjectElement(container));
 
     await po.getCommittedProjectsPo().waitForContentLoaded();
+    await tick();
 
-    await waitFor(async () =>
-      expect(
-        (await po.getCommittedProjectsPo().getProjectCardPos()).length
-      ).toBeGreaterThan(0)
-    );
+    expect(
+      (await po.getCommittedProjectsPo().getProjectCardPos()).length
+    ).toBeGreaterThan(0);
 
     expect(get(toastsStore).length).toBe(0);
   });

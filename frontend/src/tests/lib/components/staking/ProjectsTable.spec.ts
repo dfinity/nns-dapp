@@ -800,7 +800,7 @@ describe("ProjectsTable", () => {
       vi.advanceTimersByTime(500);
 
       rowPos = await po.getProjectsTableRowPos();
-      expect(rowPos.length).toBe(0);
+      expect(rowPos.length).toBe(1);
       expect(await po.getShowAllButtonPo().isPresent()).toBe(true);
 
       await po.getShowAllButtonPo().click();
@@ -1023,11 +1023,11 @@ describe("ProjectsTable", () => {
     expect(
       await Promise.all(rowPos.map((project) => project.getProjectTitle()))
     ).toEqual([
+      "Internet Computer",
       "D with more USD",
       "C with less USD",
       "B with neurons",
       "Z with neurons",
-      "Internet Computer",
       "A without neurons",
       "X without neurons",
     ]);

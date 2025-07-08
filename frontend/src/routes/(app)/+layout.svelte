@@ -3,6 +3,7 @@
   import { afterNavigate } from "$app/navigation";
   import Warnings from "$lib/components/warnings/Warnings.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { analytics } from "$lib/services/analytics.services";
   import {
     initAppAuth,
     initAppPublicData,
@@ -16,9 +17,6 @@
   import { BusyScreen, Toasts } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
   import type { AfterNavigate } from "@sveltejs/kit";
-  import { onMount } from "svelte";
-
-  onMount(async () => await Promise.all([initAppAuth(), initAppPublicData()]));
 
   $: confirmCloseApp(
     voteRegistrationActive(
@@ -27,8 +25,14 @@
   );
 
   // Use the top level layout to set the `referrerPath` because anything under `{#if isNullish($navigating)}` will miss the `afterNavigate` events
-  afterNavigate((nav: AfterNavigate) => {
+  afterNavigate(async (nav: AfterNavigate) => {
     // TODO: e2e to test this
+    if (!browser) return;
+
+    await Promise.all([initAppAuth(), initAppPublicData()]);
+
+    analytics.pageView();
+
     const path = referrerPathForNav(nav);
     if (isNullish(path)) return;
 

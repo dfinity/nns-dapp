@@ -6,7 +6,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
+  import { getStateInfo } from "$lib/utils/neuron.utils";
   import {
     ageMultiplier,
     getSnsNeuronState,
@@ -16,36 +16,32 @@
   import { keyOf } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import type { Token } from "@dfinity/utils";
+  import { nonNullish, type Token } from "@dfinity/utils";
 
-  export let neuron: SnsNeuron;
-  export let snsParameters: SnsNervousSystemParameters;
-  export let token: Token;
+  type Props = {
+    neuron: SnsNeuron;
+    snsParameters: SnsNervousSystemParameters;
+    token: Token;
+  };
+  const { neuron, snsParameters, token }: Props = $props();
 
-  let state: NeuronState;
-  $: state = getSnsNeuronState(neuron);
-
-  let stateInfo: StateInfo;
-  $: stateInfo = getStateInfo(state);
-
-  let ageBonus: number;
-  $: ageBonus = ageMultiplier({ neuron, snsParameters });
-
-  let allowedToDisburse: boolean;
-  $: allowedToDisburse =
+  const state = $derived(getSnsNeuronState(neuron));
+  const stateInfo = $derived(getStateInfo(state));
+  const ageBonus = $derived(ageMultiplier({ neuron, snsParameters }));
+  const allowedToDisburse = $derived(
     state === NeuronState.Dissolved &&
-    hasPermissionToDisburse({
-      neuron,
-      identity: $authStore.identity,
-    });
-
-  let allowedToDissolve = false;
-  $: allowedToDissolve =
+      hasPermissionToDisburse({
+        neuron,
+        identity: $authStore.identity,
+      })
+  );
+  const allowedToDissolve = $derived(
     [NeuronState.Dissolving, NeuronState.Locked].includes(state) &&
-    hasPermissionToDissolve({
-      neuron,
-      identity: $authStore.identity,
-    });
+      hasPermissionToDissolve({
+        neuron,
+        identity: $authStore.identity,
+      })
+  );
 </script>
 
 <CommonItemAction
@@ -56,8 +52,8 @@
   tooltipId="sns-neuron-state-info-icon"
 >
   <svelte:fragment slot="icon">
-    {#if stateInfo?.Icon !== undefined}
-      <svelte:component this={stateInfo.Icon} />
+    {#if nonNullish(stateInfo?.Icon)}
+      <stateInfo.Icon />
     {/if}
   </svelte:fragment>
   <span slot="title" data-tid="state-text">

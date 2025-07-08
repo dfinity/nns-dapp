@@ -41,6 +41,7 @@ interface I18nCore {
   add: string;
   not_applicable: string;
   view_more: string;
+  view: string;
   copy: string;
   copied: string;
 }
@@ -145,6 +146,7 @@ interface I18nError {
 
 interface I18nWarning {
   auth_sign_out: string;
+  proposal_fetch_limit: string;
   test_env_note: string;
   test_env_confirm: string;
   test_env_title: string;
@@ -152,9 +154,10 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
-  universe_tokens: string;
+  tokens_account: string;
   canisters: string;
   neurons: string;
+  neurons_account: string;
   voting: string;
   launchpad: string;
   manage_ii: string;
@@ -164,6 +167,7 @@ interface I18nNavigation {
   portfolio: string;
   privacy_mode_hide: string;
   privacy_mode_show: string;
+  project_page: string;
 }
 
 interface I18nAlfred {
@@ -804,6 +808,7 @@ interface I18nNeuron_detail {
   stake: string;
   spawn_neuron: string;
   spawn: string;
+  disburse_stake_disabled_tooltip_zero: string;
   stake_maturity_disabled_tooltip: string;
   stake_maturity_disabled_tooltip_max_disbursements: string;
   disburse_maturity_disabled_tooltip_zero: string;
@@ -918,6 +923,19 @@ interface I18nSns_launchpad {
   proposals: string;
   project_logo: string;
   no_proposals: string;
+}
+
+interface I18nLaunchpad {
+  headline: string;
+  subheadline: string;
+  upcoming_launches: string;
+  launched_projects: string;
+}
+
+interface I18nLaunchpad_cards {
+  ongoing_funded_of_min: string;
+  ongoing_min_icp: string;
+  ongoing_cap_icp: string;
 }
 
 interface I18nSns_project_detail {
@@ -1629,6 +1647,8 @@ interface I18n {
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
+  launchpad: I18nLaunchpad;
+  launchpad_cards: I18nLaunchpad_cards;
   sns_project_detail: I18nSns_project_detail;
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;

@@ -17,22 +17,24 @@ export interface FeatureFlags<T> {
   ENABLE_CKTESTBTC: T;
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: T;
   ENABLE_DISBURSE_MATURITY: T;
-  ENABLE_USD_VALUES: T;
-  ENABLE_PORTFOLIO_PAGE: T;
   // Used only in tests and set up in jest-setup.ts
   TEST_FLAG_EDITABLE: T;
   TEST_FLAG_NOT_EDITABLE: T;
   ENABLE_SNS_TOPICS: T;
+  ENABLE_NNS_TOPICS: T;
+  ENABLE_LAUNCHPAD_REDESIGN: T;
+  ENABLE_APY_PORTFOLIO: T;
 }
 export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_CKTESTBTC: false,
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
   ENABLE_DISBURSE_MATURITY: false,
-  ENABLE_USD_VALUES: false,
-  ENABLE_PORTFOLIO_PAGE: false,
   TEST_FLAG_EDITABLE: false,
   TEST_FLAG_NOT_EDITABLE: false,
   ENABLE_SNS_TOPICS: false,
+  ENABLE_NNS_TOPICS: false,
+  ENABLE_LAUNCHPAD_REDESIGN: false,
+  ENABLE_APY_PORTFOLIO: false,
 };
 
 export type FeatureKey = keyof FeatureFlags<boolean>;

@@ -6,6 +6,7 @@ import { writable, type Readable } from "svelte/store";
 
 export interface ActionableSnsProposalsData {
   proposals: SnsProposalData[];
+  fetchLimitReached: boolean;
 }
 export interface ActionableSnsProposalsStoreData {
   // Each SNS Project is an entry in this Store.
@@ -18,6 +19,7 @@ export interface ActionableSnsProposalsStore
   set: (data: {
     rootCanisterId: Principal;
     proposals: SnsProposalData[];
+    fetchLimitReached?: boolean;
   }) => void;
   resetForSns: (rootCanisterId: Principal) => void;
   resetForTesting: () => void;
@@ -44,13 +46,17 @@ const initActionableSnsProposalsStore = (): ActionableSnsProposalsStore => {
     set({
       rootCanisterId,
       proposals,
+      fetchLimitReached = false,
     }: {
       rootCanisterId: Principal;
       proposals: SnsProposalData[];
+      fetchLimitReached?: boolean;
     }) {
       update((currentState: ActionableSnsProposalsStoreData) => ({
         ...currentState,
         [rootCanisterId.toText()]: {
+          ...currentState[rootCanisterId.toText()],
+          fetchLimitReached,
           proposals,
         },
       }));

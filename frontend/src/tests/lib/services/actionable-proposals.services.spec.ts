@@ -79,7 +79,7 @@ describe("actionable-proposals.services", () => {
       ],
       id: votedProposalId,
     };
-    const fiveHundredsProposal = Array.from(Array(500))
+    const twelveHundredsProposal = Array.from(Array(1200))
       .map((_, index) => ({
         ...mockProposalInfo,
         id: BigInt(index),
@@ -157,8 +157,8 @@ describe("actionable-proposals.services", () => {
     });
 
     it("should query list proposals using multiple calls", async () => {
-      const firstResponseProposals = fiveHundredsProposal.slice(0, 100);
-      const secondResponseProposals = [fiveHundredsProposal[100]];
+      const firstResponseProposals = twelveHundredsProposal.slice(0, 100);
+      const secondResponseProposals = twelveHundredsProposal.slice(100, 150);
 
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
@@ -185,7 +185,7 @@ describe("actionable-proposals.services", () => {
       expect(spyQueryProposals).toHaveBeenCalledWith(
         expectedQueryManageNeuronProposalsParams
       );
-      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(101);
+      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(150);
       expect(get(actionableNnsProposalsStore)?.proposals).toEqual([
         ...firstResponseProposals,
         ...secondResponseProposals,
@@ -195,39 +195,48 @@ describe("actionable-proposals.services", () => {
     it("should log an error when request count limit reached", async () => {
       spyQueryProposals = vi
         .spyOn(api, "queryProposals")
-        .mockResolvedValueOnce(fiveHundredsProposal.slice(0, 100))
-        .mockResolvedValueOnce(fiveHundredsProposal.slice(100, 200))
-        .mockResolvedValueOnce(fiveHundredsProposal.slice(200, 300))
-        .mockResolvedValueOnce(fiveHundredsProposal.slice(300, 400))
-        .mockResolvedValueOnce(fiveHundredsProposal.slice(400, 500));
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(0, 100))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(100, 200))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(200, 300))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(300, 400))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(400, 500))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(500, 600))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(600, 700))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(700, 800))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(800, 900))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(900, 1000))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(1000, 1100))
+        .mockResolvedValueOnce(twelveHundredsProposal.slice(1100, 1150));
       spyConsoleError = silentConsoleErrors();
       expect(spyQueryProposals).not.toHaveBeenCalled();
       expect(spyConsoleError).not.toHaveBeenCalled();
 
       await loadActionableProposals();
+      expect(spyQueryProposals).toHaveBeenCalledTimes(12);
 
-      expect(spyQueryProposals).toHaveBeenCalledTimes(6);
       // expect an error message
       expect(spyConsoleError).toHaveBeenCalledTimes(1);
       expect(spyConsoleError).toHaveBeenCalledWith(
         "Max actionable pages loaded"
       );
 
-      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(500);
+      expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(1150);
       expect(get(actionableNnsProposalsStore)?.proposals).toEqual(
-        fiveHundredsProposal
+        twelveHundredsProposal.slice(0, 1150)
       );
     });
 
     it("should update actionable nns proposals store with votable proposals only", async () => {
       expect(get(actionableNnsProposalsStore)).toEqual({
         proposals: undefined,
+        fetchLimitReached: false,
       });
 
       await loadActionableProposals();
 
       expect(get(actionableNnsProposalsStore)).toEqual({
         proposals: [votableProposal],
+        fetchLimitReached: false,
       });
     });
 
@@ -296,8 +305,8 @@ describe("actionable-proposals.services", () => {
       });
 
       it("should request ManageNeurons proposals using multiple calls", async () => {
-        const firstResponseProposals = fiveHundredsProposal.slice(0, 100);
-        const secondResponseProposals = [fiveHundredsProposal[100]];
+        const firstResponseProposals = twelveHundredsProposal.slice(0, 100);
+        const secondResponseProposals = [twelveHundredsProposal[100]];
 
         await callLoadActionableProposals({
           queryProposalsResponses: [
@@ -338,31 +347,39 @@ describe("actionable-proposals.services", () => {
         await callLoadActionableProposals({
           queryProposalsResponses: [
             [],
-            fiveHundredsProposal.slice(0, 100),
-            fiveHundredsProposal.slice(100, 200),
-            fiveHundredsProposal.slice(200, 300),
-            fiveHundredsProposal.slice(300, 400),
-            fiveHundredsProposal.slice(400, 500),
+            twelveHundredsProposal.slice(0, 100),
+            twelveHundredsProposal.slice(100, 200),
+            twelveHundredsProposal.slice(200, 300),
+            twelveHundredsProposal.slice(300, 400),
+            twelveHundredsProposal.slice(400, 500),
+            twelveHundredsProposal.slice(500, 600),
+            twelveHundredsProposal.slice(600, 700),
+            twelveHundredsProposal.slice(700, 800),
+            twelveHundredsProposal.slice(800, 900),
+            twelveHundredsProposal.slice(900, 1000),
+            twelveHundredsProposal.slice(1000, 1100),
+            twelveHundredsProposal.slice(1100, 1200),
           ],
         });
 
-        expect(spyQueryProposals).toHaveBeenCalledTimes(6);
+        expect(spyQueryProposals).toHaveBeenCalledTimes(11);
         // expect an error message
         expect(spyConsoleError).toHaveBeenCalledTimes(1);
         expect(spyConsoleError).toHaveBeenCalledWith(
           "Max actionable pages loaded"
         );
         expect(get(actionableNnsProposalsStore)?.proposals?.length).toEqual(
-          500
+          1000
         );
         expect(get(actionableNnsProposalsStore)?.proposals).toEqual(
-          fiveHundredsProposal
+          twelveHundredsProposal.slice(0, 1000)
         );
       });
 
       it("should update actionable nns proposals store only with votable Neuron Management proposals", async () => {
         expect(get(actionableNnsProposalsStore)).toEqual({
           proposals: undefined,
+          fetchLimitReached: false,
         });
 
         await callLoadActionableProposals({
@@ -371,6 +388,7 @@ describe("actionable-proposals.services", () => {
 
         expect(get(actionableNnsProposalsStore)).toEqual({
           proposals: [votableProposal],
+          fetchLimitReached: false,
         });
       });
     });

@@ -7,7 +7,6 @@
     loadBalance,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
-  import { ENABLE_USD_VALUES } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { ActionType, type Action } from "$lib/types/actions";
@@ -81,11 +80,9 @@
 </script>
 
 <div class="wrapper" data-tid="accounts-body">
-  {#if $ENABLE_USD_VALUES}
-    <UsdValueBanner usdAmount={totalBalanceInUsd} hasUnpricedTokens={false}>
-      <IconHeldTokens slot="icon" />
-    </UsdValueBanner>
-  {/if}
+  <UsdValueBanner usdAmount={totalBalanceInUsd} hasUnpricedTokens={false}>
+    <IconHeldTokens slot="icon" />
+  </UsdValueBanner>
 
   <TokensTable
     {userTokensData}

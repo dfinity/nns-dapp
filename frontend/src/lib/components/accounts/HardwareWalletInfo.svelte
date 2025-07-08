@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { LedgerIdentity } from "$lib/identities/ledger.identity";
   import { i18n } from "$lib/stores/i18n";
-  import { principalToAccountIdentifier } from "@dfinity/ledger-icp";
+  import { principalToAccountIdentifier } from "@dfinity/nns";
 
   export let ledgerIdentity: LedgerIdentity;
 

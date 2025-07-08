@@ -4,7 +4,6 @@ import { SYNC_ACCOUNTS_RETRY_SECONDS } from "$lib/constants/accounts.constants";
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import NnsAccounts from "$lib/pages/NnsAccounts.svelte";
 import { cancelPollAccounts } from "$lib/services/icp-accounts.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
@@ -102,24 +101,7 @@ describe("NnsAccounts", () => {
       expect(await po.getAddAccountRowTabindex()).toBe("0");
     });
 
-    it("should not show total USD value banner when feature flag is disabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", false);
-
-      const mainTokenData = createUserToken({
-        title: "Main",
-        balanceInUsd: 30.0,
-        rowHref: "/main",
-        domKey: "/main",
-      });
-
-      const po = renderComponent([mainTokenData]);
-
-      expect(await po.getUsdValueBannerPo().isPresent()).toBe(false);
-    });
-
     it("should show total USD value banner when feature flag is enabled", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
       const mainTokenData = createUserToken({
         title: "Main",
         balanceInUsd: 30.0,
@@ -133,8 +115,6 @@ describe("NnsAccounts", () => {
     });
 
     it("should show total USD value", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_USD_VALUES", true);
-
       const mainTokenData = createUserToken({
         title: "Main",
         balanceInUsd: 30.0,

@@ -38,6 +38,7 @@
     "add": "Add",
     "not_applicable": "N/A",
     "view_more": "View more",
+    "view": "View",
     "copy": "Copy to clipboard",
     "copied": "Copied"
   },
@@ -140,15 +141,17 @@
   },
   "warning": {
     "auth_sign_out": "You have been logged out because your session has expired.",
+    "proposal_fetch_limit": "This project has more than $maxLimit open proposals. For performance reasons, we limit the fetching of open proposals to the latest $maxLimit entries. Actionable proposals are filtered from them. Previous items are not shown here. If looking for a specific one, please use a direct link.",
     "test_env_note": "<strong>Use with caution!</strong> This is not stable software, and it is not securely updated by the Network Nervous System. However, it accesses your real wallets and neurons. <br /><br />Functionality you see here can change at any time, and this dapp may not always be available.",
     "test_env_confirm": "I understand and want to continue",
     "test_env_title": "Warning"
   },
   "navigation": {
     "tokens": "Tokens",
-    "universe_tokens": "$tokenSymbol Tokens",
+    "tokens_account": "Account",
     "canisters": "Canisters",
     "neurons": "Neuron Staking",
+    "neurons_account": "Staking Account",
     "voting": "Voting",
     "launchpad": "Launchpad",
     "manage_ii": "Manage Internet Identity",
@@ -157,7 +160,8 @@
     "reporting": "Reporting",
     "portfolio": "Portfolio",
     "privacy_mode_hide": "Hide Balance",
-    "privacy_mode_show": "Show Balance"
+    "privacy_mode_show": "Show Balance",
+    "project_page": "Project Page"
   },
   "alfred": {
     "no_results": "No results found",
@@ -771,6 +775,7 @@
     "stake": "Stake",
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
+    "disburse_stake_disabled_tooltip_zero": "Currently, you do not have any stake available to disburse.",
     "stake_maturity_disabled_tooltip": "Currently, you do not have any maturity available to stake into this neuron.",
     "stake_maturity_disabled_tooltip_max_disbursements": "The maximum of $maxDisbursements active maturity disbursements for this neuron has been reached. Please wait for a disbursement to complete before initiating a new one.",
     "disburse_maturity_disabled_tooltip_zero": "Currently, you do not have any maturity available to disburse.",
@@ -884,6 +889,17 @@
     "proposals": "Proposals",
     "project_logo": "project logo",
     "no_proposals": "There are no decentralisation swap proposals open at the moment."
+  },
+  "launchpad": {
+    "headline": "Discover SNS Projects",
+    "subheadline": "See upcoming and available SNS projects",
+    "upcoming_launches": "New Launches and Proposals",
+    "launched_projects": "Launched Projects"
+  },
+  "launchpad_cards": {
+    "ongoing_funded_of_min": "Funded of Min",
+    "ongoing_min_icp": "Min, ICP",
+    "ongoing_cap_icp": "Cap, ICP"
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",

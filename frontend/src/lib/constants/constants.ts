@@ -1,5 +1,5 @@
 export const DEFAULT_LIST_PAGINATION_LIMIT = 100;
-export const MAX_ACTIONABLE_REQUEST_COUNT = 5;
+export const MAX_ACTIONABLE_REQUEST_COUNT = 10;
 // Use a different limit for Icrc transactions
 // the Index canister needs to query the Icrc Ledger canister for each transaction - i.e. it needs an update call
 export const DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT = 20;
@@ -25,3 +25,4 @@ export const NANO_SECONDS_IN_MILLISECOND = 1_000_000;
 export const NANO_SECONDS_IN_MINUTE = NANO_SECONDS_IN_MILLISECOND * 1_000 * 60;
 
 export const PRICE_NOT_AVAILABLE_PLACEHOLDER = "-/-";
+export const PRICE_NOT_AVAILABLE = "price-not-available";

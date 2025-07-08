@@ -1,9 +1,13 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { PRICE_NOT_AVAILABLE } from "$lib/constants/constants";
+  import { projectSlugMapStore } from "$lib/derived/analytics.derived";
   import { snsProjectSelectedStore } from "$lib/derived/sns/sns-selected-project.derived";
   import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
   import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
+  import { tokenPriceStore } from "$lib/derived/token-price.derived";
   import SnsNeuronTransactionModal from "$lib/modals/sns/neurons/SnsNeuronTransactionModal.svelte";
+  import { analytics } from "$lib/services/analytics.services";
   import { increaseStakeNeuron } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -16,6 +20,7 @@
   import type { SnsNeuronId } from "@dfinity/sns";
   import { type Token, TokenAmountV2, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import type { Readable } from "svelte/store";
 
   export let neuronId: SnsNeuronId;
   export let token: Token;
@@ -29,6 +34,9 @@
     currentStep?.name === "Form"
       ? $i18n.neurons.top_up_neuron
       : $i18n.accounts.review_transaction;
+
+  let tokenPrice: Readable<number | undefined>;
+  $: tokenPrice = tokenPriceStore(token);
 
   const dispatcher = createEventDispatcher();
   const increaseStake = async ({
@@ -55,6 +63,19 @@
           $tokenSymbol: token.symbol,
         },
       });
+
+      const usdAmount = nonNullish($tokenPrice)
+        ? ($tokenPrice * amount).toFixed(1)
+        : PRICE_NOT_AVAILABLE;
+
+      analytics.event("sns-stake-topup-neuron", {
+        tokenAmount: amount.toString(),
+        project:
+          $projectSlugMapStore.get(rootCanisterId.toText()) ??
+          rootCanisterId.toText(),
+        usdAmount,
+      });
+
       dispatcher("nnsClose");
     }
 

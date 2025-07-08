@@ -1,5 +1,5 @@
 import * as api from "$lib/api/sns-governance.api";
-import { DEFAULT_SNS_PROPOSALS_PAGE_SIZE } from "$lib/constants/sns-proposals.constants";
+import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import {
   getSnsProposalById,
   loadSnsProposals,
@@ -82,7 +82,7 @@ describe("sns-proposals services", () => {
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
-            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            limit: DEFAULT_LIST_PAGINATION_LIMIT,
             beforeProposal: undefined,
             includeStatus: [],
             excludeType: [],
@@ -103,7 +103,7 @@ describe("sns-proposals services", () => {
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
-            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            limit: DEFAULT_LIST_PAGINATION_LIMIT,
             beforeProposal: proposalId,
             includeStatus: [],
             excludeType: [],
@@ -146,7 +146,7 @@ describe("sns-proposals services", () => {
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
-            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            limit: DEFAULT_LIST_PAGINATION_LIMIT,
             beforeProposal: proposalId,
             includeStatus: selectedDecisionStatus,
             excludeType: [],
@@ -193,7 +193,7 @@ describe("sns-proposals services", () => {
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
-            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            limit: DEFAULT_LIST_PAGINATION_LIMIT,
             beforeProposal: proposalId,
             includeStatus: [],
             excludeType: [genericNervousSystemFunctionMock.id],
@@ -290,7 +290,7 @@ describe("sns-proposals services", () => {
 
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
-            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            limit: DEFAULT_LIST_PAGINATION_LIMIT,
             beforeProposal: proposalId,
             includeStatus: [],
             excludeType: [],
@@ -361,7 +361,7 @@ describe("sns-proposals services", () => {
 
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
-            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            limit: DEFAULT_LIST_PAGINATION_LIMIT,
             beforeProposal: proposalId,
             includeStatus: [],
             excludeType: [],
@@ -467,7 +467,7 @@ describe("sns-proposals services", () => {
         });
         expect(queryProposalsSpy).toHaveBeenCalledWith({
           params: {
-            limit: DEFAULT_SNS_PROPOSALS_PAGE_SIZE,
+            limit: DEFAULT_LIST_PAGINATION_LIMIT,
             beforeProposal: undefined,
             includeStatus: [],
             excludeType: [],
