@@ -20,7 +20,11 @@ describe("network-economics-services", () => {
       await loadNetworkEconomicsParameters();
 
       expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(2);
-      expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledWith({
+      expect(spyGetNetworkEconomicsParameters).toHaveBeenNthCalledWith(1, {
+        identity: mockIdentity,
+        certified: false,
+      });
+      expect(spyGetNetworkEconomicsParameters).toHaveBeenNthCalledWith(2, {
         identity: mockIdentity,
         certified: true,
       });
