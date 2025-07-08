@@ -936,6 +936,9 @@ interface I18nLaunchpad_cards {
   ongoing_funded_of_min: string;
   ongoing_min_icp: string;
   ongoing_cap_icp: string;
+  upcoming_tag_upcoming: string;
+  upcoming_link: string;
+  upcoming_sale_starts: string;
 }
 
 interface I18nSns_project_detail {
