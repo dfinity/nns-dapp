@@ -23,20 +23,20 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install didc
         run: scripts/install-didc
-      - name: Find newer IC release, if any
+      - name: Find newer IC commit, if any
         id: update
         run: |
-          current_release="$(jq -r .defaults.build.config.IC_COMMIT_FOR_SNS_AGGREGATOR config.json)"
-          echo "Current IC release: $current_release"
-          latest_release=$(curl -sSL https://api.github.com/repos/dfinity/ic/releases/latest | jq .tag_name -r)
-          echo "Latest IC release:  $latest_release"
+          current_commit="$(jq -r .defaults.build.config.IC_COMMIT_FOR_SNS_AGGREGATOR config.json)"
+          echo "Current IC commit: $current_commit"
+          latest_commit=$(curl -sSL https://api.github.com/repos/dfinity/ic/commits/master | jq .sha -r)
+          echo "Latest IC commit:  $latest_commit"
           {
-            if [ "$current_release" == "$latest_release" ]
+            if [ "$current_commit" == "$latest_commit" ]
             then
               echo "updated=0"
             else
               echo "updated=1"
-              echo "release=$latest_release"
+              echo "commit=$latest_commit"
             fi
           } >> "$GITHUB_OUTPUT"
       - name: Install sponge
@@ -46,7 +46,7 @@ jobs:
         if: ${{ steps.update.outputs.updated == '1' }}
         run: |
           # Update candid files
-          scripts/update_ic_commit --crate sns_aggregator --ic_commit "${{ steps.update.outputs.release }}"
+          scripts/update_ic_commit --crate sns_aggregator --ic_commit "${{ steps.update.outputs.commit }}"
           # Show changes
           echo "Git status:"
           git status
