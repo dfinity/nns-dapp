@@ -941,6 +941,9 @@ interface I18nLaunchpad_cards {
   project_card_icp_in_treasury: string;
   project_card_my_participation: string;
   project_card_proposal_activity: string;
+  upcoming_tag_upcoming: string;
+  upcoming_link: string;
+  upcoming_sale_starts: string;
 }
 
 interface I18nSns_project_detail {
