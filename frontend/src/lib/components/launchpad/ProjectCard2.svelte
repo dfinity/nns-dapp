@@ -25,11 +25,6 @@
   };
 
   const { project }: Props = $props();
-
-  onMount(() => {
-    loadSnsFinalizationStatus({ rootCanisterId: project.rootCanisterId });
-  });
-
   const { summary, swapCommitment, rootCanisterId } = $derived(project);
   const {
     metadata: { logo, name, description },
@@ -58,7 +53,7 @@
     // TODO(launchpad2): should be available after aggregator upgrade
     return "-/-%";
   });
-  const myCommitmentIcp = $derived.by(() => {
+  const userCommitmentIcp = $derived.by(() => {
     const myCommitment = getCommitmentE8s(swapCommitment);
     if (isNullish(myCommitment)) {
       return undefined;
@@ -66,11 +61,15 @@
     return TokenAmount.fromE8s({ amount: myCommitment, token: ICPToken });
   });
   const userHasParticipated = $derived(
-    nonNullish(myCommitmentIcp) && myCommitmentIcp.toE8s() > 0n
+    nonNullish(userCommitmentIcp) && userCommitmentIcp.toE8s() > 0n
   );
   const proposalActivity = $derived.by(() => {
     // TODO(launchpad2): should be available after aggregator upgrade
     return "-";
+  });
+
+  onMount(() => {
+    loadSnsFinalizationStatus({ rootCanisterId: rootCanisterId });
   });
 </script>
 
@@ -94,7 +93,7 @@
         >
         <div class="stat-value">
           <IconCoin size="16px" />
-          <span data-tid="min-icp-value">{formattedTokenPriceUsd}</span>
+          <span data-tid="token-price-value">{formattedTokenPriceUsd}</span>
         </div>
       </li>
       <li class="stat-item">
@@ -103,23 +102,23 @@
         >
         <div class="stat-value">
           <IconAccountBalance size="16px" />
-          <span data-tid="cap-icp-value">{icpInTreasury}</span>
+          <span data-tid="icp-in-treasury-value">{icpInTreasury}</span>
         </div>
       </li>
       <li class="stat-item">
-        {#if userHasParticipated && nonNullish(myCommitmentIcp)}
+        {#if userHasParticipated && nonNullish(userCommitmentIcp)}
           <h6 class="stat-label"
             >{$i18n.launchpad_cards.project_card_my_participation}</h6
           >
-          <div class="stat-value" data-tid="my-commitment-icp-value">
+          <div class="stat-value" data-tid="user-commitment-icp-value">
             <IconVote size="16px" />
-            <AmountDisplay amount={myCommitmentIcp} singleLine inline />
+            <AmountDisplay amount={userCommitmentIcp} singleLine inline />
           </div>
         {:else}
           <h6 class="stat-label"
             >{$i18n.launchpad_cards.project_card_proposal_activity}</h6
           >
-          <div class="stat-value" data-tid="my-commitment-icp-value">
+          <div class="stat-value" data-tid="proposal-activity-value">
             <IconWallet size="16px" />
             <span class="proposal-activity">
               <span data-tid="proposal-activity-value">{proposalActivity}</span
