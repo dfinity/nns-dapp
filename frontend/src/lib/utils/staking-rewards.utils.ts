@@ -25,9 +25,9 @@ import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import {
   cloneNeurons,
   getNeuronBonusRatio,
-  getNueronFreeMaturityE8s,
-  getNueronTotalMaturityE8s,
-  getNueronTotalStakeAfterFeesE8s,
+  getNeuronFreeMaturityE8s,
+  getNeuronTotalMaturityE8s,
+  getNeuronTotalStakeAfterFeesE8s,
   increaseNeuronMaturity,
   isNeuronEligibleToVote,
   maximiseNeuronParams,
@@ -39,7 +39,7 @@ import type { RewardEvent } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 
 type APY = Map<
-  Principal,
+  string,
   {
     cur: number;
     max: number;
@@ -115,7 +115,7 @@ const getRewardBalanceUSD = (params: StakingRewardCalcParams): number => {
     neuron: AgnosticNeuron,
     ledgerPrincipal: Principal | string
   ): number =>
-    bigIntDiv(getNueronTotalMaturityE8s(neuron), BigInt(E8S_RATE), 20) *
+    bigIntDiv(getNeuronTotalMaturityE8s(neuron), BigInt(E8S_RATE), 20) *
     getFXRate(fxRates, ledgerPrincipal);
 
   let nnsTotalRewardUSD = 0;
@@ -144,8 +144,8 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
     neuron: AgnosticNeuron,
     ledgerPrincipal: Principal | string
   ) => {
-    const staked = getNueronTotalStakeAfterFeesE8s(neuron);
-    const unstaked = getNueronFreeMaturityE8s(neuron);
+    const staked = getNeuronTotalStakeAfterFeesE8s(neuron);
+    const unstaked = getNeuronFreeMaturityE8s(neuron);
 
     return {
       stakedUSD:
@@ -193,7 +193,7 @@ const getNnsRewardEstimationUSD = (
   days: number,
   maximiseParams: boolean = false
 ): number => {
-  return getNueronsRewardEstimationUSD({
+  return getNeuronsRewardEstimationUSD({
     neurons: params.nnsNeurons.neurons ?? [],
     maximiseParams,
     days,
@@ -207,7 +207,7 @@ const getSnsRewardEstimationUSD = (
   sns: CachedSnsDto,
   maximiseParams: boolean = false
 ): number => {
-  return getNueronsRewardEstimationUSD({
+  return getNeuronsRewardEstimationUSD({
     neurons:
       params.snsNeurons[sns.canister_ids.root_canister_id]?.neurons ?? [],
     maximiseParams,
@@ -230,7 +230,7 @@ const getAPYs = (params: StakingRewardCalcParams) => {
   const apy: APY = new Map();
 
   apy.set(
-    LEDGER_CANISTER_ID,
+    LEDGER_CANISTER_ID.toText(),
     getAPY(
       params,
       nnsNeurons.neurons ?? [],
@@ -242,7 +242,7 @@ const getAPYs = (params: StakingRewardCalcParams) => {
     const rootPrincipal = sns.canister_ids.root_canister_id;
     const ledgerPrincipal = sns.canister_ids.ledger_canister_id;
     apy.set(
-      Principal.fromText(rootPrincipal),
+      rootPrincipal,
       getAPY(
         params,
         snsNeurons[rootPrincipal]?.neurons ?? [],
@@ -272,7 +272,7 @@ const getAPY = (
   let totalUSD = 0;
   neurons.forEach((neuron) => {
     const neuronTotalStake = bigIntDiv(
-      getNueronTotalStakeAfterFeesE8s(neuron),
+      getNeuronTotalStakeAfterFeesE8s(neuron),
       BigInt(E8S_RATE),
       8
     );
@@ -328,7 +328,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
   ].every((x) => x === true);
 };
 
-const getNueronsRewardEstimationUSD = (params: {
+const getNeuronsRewardEstimationUSD = (params: {
   neurons: AgnosticNeuron[];
   maximiseParams?: boolean;
   days: number;
@@ -364,7 +364,7 @@ const getNueronsRewardEstimationUSD = (params: {
           getDate(i)
         )
       ) {
-        const fullStake = getNueronTotalStakeAfterFeesE8s(neuron);
+        const fullStake = getNeuronTotalStakeAfterFeesE8s(neuron);
         if (fullStake > 0n) {
           const votingPowerRatio =
             1 + getNeuronBonus(otherParams, neuron, i, sns);
@@ -431,7 +431,7 @@ const getPoolReward = (params: {
   initialRewardRate: number;
   finalRewardRate: number;
   transitionDurationSeconds: number;
-  referanceDate: Date;
+  referenceDate: Date;
 }) => {
   const {
     genesisTimestampSeconds,
@@ -439,14 +439,14 @@ const getPoolReward = (params: {
     initialRewardRate,
     finalRewardRate,
     transitionDurationSeconds,
-    referanceDate,
+    referenceDate,
   } = params;
 
   let rewardRate = 0;
 
   const durationDays = transitionDurationSeconds / SECONDS_IN_DAY;
   const elapsedDays = Math.round(
-    (referanceDate.getTime() / 1000 - genesisTimestampSeconds) / SECONDS_IN_DAY
+    (referenceDate.getTime() / 1000 - genesisTimestampSeconds) / SECONDS_IN_DAY
   );
 
   if (elapsedDays > durationDays) {
@@ -478,7 +478,7 @@ const getTokenReward = (
   const rawReward =
     getPoolReward({
       genesisTimestampSeconds: getGenesisTimestampSeconds(sns),
-      referanceDate: getDate(addDays),
+      referenceDate: getDate(addDays),
       transitionDurationSeconds: getRewardParams(params, sns).rewardTransition,
       initialRewardRate: getRewardParams(params, sns).initialReward,
       finalRewardRate: getRewardParams(params, sns).finalReward,

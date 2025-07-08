@@ -24,7 +24,7 @@ export const isSnsNeuron = (neuron: AgnosticNeuron): neuron is SnsNeuron => {
   return !isNnsNeuron(neuron);
 };
 
-export const getNueronFreeMaturityE8s = (neuron: AgnosticNeuron): bigint => {
+export const getNeuronFreeMaturityE8s = (neuron: AgnosticNeuron): bigint => {
   if (isNnsNeuron(neuron)) {
     return neuron.fullNeuron?.maturityE8sEquivalent ?? 0n;
   } else {
@@ -32,7 +32,7 @@ export const getNueronFreeMaturityE8s = (neuron: AgnosticNeuron): bigint => {
   }
 };
 
-export const getNueronStakedMaturityE8s = (neuron: AgnosticNeuron): bigint => {
+export const getNeuronStakedMaturityE8s = (neuron: AgnosticNeuron): bigint => {
   if (isNnsNeuron(neuron)) {
     return neuron.fullNeuron?.stakedMaturityE8sEquivalent ?? 0n;
   } else {
@@ -40,11 +40,11 @@ export const getNueronStakedMaturityE8s = (neuron: AgnosticNeuron): bigint => {
   }
 };
 
-export const getNueronTotalMaturityE8s = (neuron: AgnosticNeuron): bigint => {
-  return getNueronFreeMaturityE8s(neuron) + getNueronStakedMaturityE8s(neuron);
+export const getNeuronTotalMaturityE8s = (neuron: AgnosticNeuron): bigint => {
+  return getNeuronFreeMaturityE8s(neuron) + getNeuronStakedMaturityE8s(neuron);
 };
 
-export const getNueronStakeE8s = (neuron: AgnosticNeuron): bigint => {
+export const getNeuronStakeE8s = (neuron: AgnosticNeuron): bigint => {
   if (isNnsNeuron(neuron)) {
     return neuron.fullNeuron?.cachedNeuronStake ?? 0n;
   } else {
@@ -52,7 +52,7 @@ export const getNueronStakeE8s = (neuron: AgnosticNeuron): bigint => {
   }
 };
 
-export const getNueronFees = (neuron: AgnosticNeuron): bigint => {
+export const getNeuronFees = (neuron: AgnosticNeuron): bigint => {
   if (isNnsNeuron(neuron)) {
     return neuron.fullNeuron?.neuronFees ?? 0n;
   } else {
@@ -60,27 +60,27 @@ export const getNueronFees = (neuron: AgnosticNeuron): bigint => {
   }
 };
 
-export const getNueronStakeAfterFeesE8s = (neuron: AgnosticNeuron): bigint => {
-  return bigIntMax(getNueronStakeE8s(neuron) - getNueronFees(neuron), 0n);
+export const getNeuronStakeAfterFeesE8s = (neuron: AgnosticNeuron): bigint => {
+  return bigIntMax(getNeuronStakeE8s(neuron) - getNeuronFees(neuron), 0n);
 };
 
-export const getNueronTotalStakeAfterFeesE8s = (
+export const getNeuronTotalStakeAfterFeesE8s = (
   neuron: AgnosticNeuron
 ): bigint => {
   return (
-    getNueronStakeAfterFeesE8s(neuron) + getNueronStakedMaturityE8s(neuron)
+    getNeuronStakeAfterFeesE8s(neuron) + getNeuronStakedMaturityE8s(neuron)
   );
 };
 
-export const getNueronTotalValueAfterFeesE8s = (
+export const getNeuronTotalValueAfterFeesE8s = (
   neuron: AgnosticNeuron
 ): bigint => {
   return (
-    getNueronTotalStakeAfterFeesE8s(neuron) + getNueronFreeMaturityE8s(neuron)
+    getNeuronTotalStakeAfterFeesE8s(neuron) + getNeuronFreeMaturityE8s(neuron)
   );
 };
 
-export const getNueronIsAutoStakingMaturity = (
+export const getNeuronIsAutoStakingMaturity = (
   neuron: AgnosticNeuron
 ): boolean => {
   if (isNnsNeuron(neuron)) {
@@ -90,7 +90,7 @@ export const getNueronIsAutoStakingMaturity = (
   }
 };
 
-export const getNueronIsDissolving = (neuron: AgnosticNeuron): boolean => {
+export const getNeuronIsDissolving = (neuron: AgnosticNeuron): boolean => {
   if (isNnsNeuron(neuron)) {
     return neuron.state === NeuronState.Dissolving;
   } else {
@@ -102,7 +102,7 @@ export const getNeuronDissolveDelaySeconds = (
   neuron: AgnosticNeuron,
   referenceDate?: Date
 ): bigint => {
-  if (getNueronIsDissolving(neuron)) {
+  if (getNeuronIsDissolving(neuron)) {
     if (isNnsNeuron(neuron)) {
       return getDissolvingTimeInSeconds(neuron, referenceDate) ?? 0n;
     } else {
@@ -117,11 +117,11 @@ export const getNeuronDissolveDelaySeconds = (
   }
 };
 
-export const getNueronAgeSeconds = (
+export const getNeuronAgeSeconds = (
   neuron: AgnosticNeuron,
   referenceDate: Date = new Date()
 ): number => {
-  if (getNueronIsDissolving(neuron)) {
+  if (getNeuronIsDissolving(neuron)) {
     return 0;
   }
 
@@ -144,10 +144,10 @@ export const isNeuronEligibleToVote = (
   neuron: AgnosticNeuron,
   minimumStakeE8s: bigint,
   minDissolveDelaySeconds: bigint,
-  referanceDate?: Date
+  referenceDate?: Date
 ): boolean =>
-  getNueronStakeE8s(neuron) >= minimumStakeE8s &&
-  getNeuronDissolveDelaySeconds(neuron, referanceDate) >=
+  getNeuronStakeE8s(neuron) >= minimumStakeE8s &&
+  getNeuronDissolveDelaySeconds(neuron, referenceDate) >=
     minDissolveDelaySeconds;
 
 export const maximiseNeuronParams = (
@@ -158,21 +158,21 @@ export const maximiseNeuronParams = (
 
   if (isNnsNeuron(neuron)) {
     if (neuron.fullNeuron) {
-      if (getNueronIsDissolving(neuron)) {
+      if (getNeuronIsDissolving(neuron)) {
         neuron.fullNeuron.agingSinceTimestampSeconds = BigInt(nowInSeconds());
       }
       neuron.fullNeuron.dissolveState = {
         DissolveDelaySeconds: maxDissolve,
       };
       neuron.fullNeuron.stakedMaturityE8sEquivalent =
-        getNueronTotalMaturityE8s(neuron);
+        getNeuronTotalMaturityE8s(neuron);
       neuron.fullNeuron.maturityE8sEquivalent = 0n;
       neuron.fullNeuron.autoStakeMaturity = true;
     }
     neuron.state = NeuronState.Locked;
     neuron.dissolveDelaySeconds = maxDissolve;
   } else {
-    if (getNueronIsDissolving(neuron)) {
+    if (getNeuronIsDissolving(neuron)) {
       neuron.aging_since_timestamp_seconds = BigInt(nowInSeconds());
     }
     neuron.dissolve_state = [
@@ -180,7 +180,7 @@ export const maximiseNeuronParams = (
         DissolveDelaySeconds: maxDissolve,
       },
     ];
-    neuron.staked_maturity_e8s_equivalent = [getNueronTotalMaturityE8s(neuron)];
+    neuron.staked_maturity_e8s_equivalent = [getNeuronTotalMaturityE8s(neuron)];
     neuron.maturity_e8s_equivalent = 0n;
     neuron.auto_stake_maturity = [true];
   }
@@ -198,7 +198,7 @@ export const getNeuronBonusRatio = (
 ) => {
   const { dissolveMax, dissolveBonus, ageMax, ageBonus, referenceDate } =
     params;
-  const ageSeconds = getNueronAgeSeconds(neuron, referenceDate);
+  const ageSeconds = getNeuronAgeSeconds(neuron, referenceDate);
   const agingBonus = Math.min(ageSeconds / ageMax, 1) * ageBonus;
 
   const dissolveSeconds = getNeuronDissolveDelaySeconds(neuron, referenceDate);
@@ -226,15 +226,15 @@ export const increaseNeuronMaturity = (
   neuron: AgnosticNeuron,
   maturityE8s: bigint
 ) => {
-  if (getNueronIsAutoStakingMaturity(neuron)) {
-    const newTotal = getNueronStakedMaturityE8s(neuron) + maturityE8s;
+  if (getNeuronIsAutoStakingMaturity(neuron)) {
+    const newTotal = getNeuronStakedMaturityE8s(neuron) + maturityE8s;
     if (isNnsNeuron(neuron)) {
       neuron.fullNeuron!.stakedMaturityE8sEquivalent = newTotal;
     } else {
       neuron.staked_maturity_e8s_equivalent = [newTotal];
     }
   } else {
-    const newTotal = getNueronFreeMaturityE8s(neuron) + maturityE8s;
+    const newTotal = getNeuronFreeMaturityE8s(neuron) + maturityE8s;
     if (isNnsNeuron(neuron)) {
       neuron.fullNeuron!.maturityE8sEquivalent = newTotal;
     } else {
