@@ -1173,7 +1173,7 @@ fn set_fav_projects_too_many() {
 
 #[test]
 fn get_fav_projects_account_not_found() {
-    let mut store = setup_test_store();
+    let store = setup_test_store();
     let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
     assert_eq!(
         store.get_fav_projects(non_existing_principal),
