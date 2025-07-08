@@ -36,10 +36,7 @@ export class SnsSummaryWrapper implements SnsSummary {
     return this.summary.indexCanisterId;
   }
   get metadata(): SnsSummaryMetadata {
-    return {
-      ...this.summary.metadata,
-      description: this.summary.metadata.description,
-    };
+    return this.summary.metadata;
   }
   get token(): IcrcTokenMetadata {
     return this.summary.token;
