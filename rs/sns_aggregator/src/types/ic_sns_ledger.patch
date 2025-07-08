@@ -1,8 +1,15 @@
 diff --git b/rs/sns_aggregator/src/types/ic_sns_ledger.rs a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-index 7566582df..00c91ff35 100644
+index 1cabf2a85..0e6b6a301 100644
 --- b/rs/sns_aggregator/src/types/ic_sns_ledger.rs
 +++ a/rs/sns_aggregator/src/types/ic_sns_ledger.rs
-@@ -129,7 +129,7 @@ pub struct GetBlocksResponseArchivedBlocksItem {
+@@ -1,5 +1,5 @@
+ //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
+-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/fccfa2c7c7cba9e5485ad0b48823990e24a67f40/rs/ledger_suite/icrc1/ledger/ledger.did>
++//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-03_03-27-base/rs/ledger_suite/icrc1/ledger/ledger.did>
+ #![allow(clippy::all)]
+ #![allow(unused_imports)]
+ #![allow(missing_docs)]
+@@ -127,7 +127,7 @@ pub struct GetBlocksResponseArchivedBlocksItem {
      pub start: BlockIndex,
      pub length: candid::Nat,
  }
@@ -11,7 +18,7 @@ index 7566582df..00c91ff35 100644
  pub struct GetBlocksResponse {
      pub certificate: Option<serde_bytes::ByteBuf>,
      pub first_index: BlockIndex,
-@@ -205,7 +205,7 @@ pub struct GetTransactionsResponseArchivedTransactionsItem {
+@@ -203,7 +203,7 @@ pub struct GetTransactionsResponseArchivedTransactionsItem {
      pub start: TxIndex,
      pub length: candid::Nat,
  }
@@ -20,7 +27,7 @@ index 7566582df..00c91ff35 100644
  pub struct GetTransactionsResponse {
      pub first_index: TxIndex,
      pub log_length: candid::Nat,
-@@ -339,7 +339,7 @@ pub struct GetBlocksResultArchivedBlocksItem {
+@@ -437,7 +437,7 @@ pub struct GetBlocksResultArchivedBlocksItem {
      pub args: Vec<GetBlocksArgs>,
      pub callback: GetBlocksResultArchivedBlocksItemCallback,
  }
