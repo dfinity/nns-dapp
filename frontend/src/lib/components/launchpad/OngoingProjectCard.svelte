@@ -51,7 +51,7 @@
   >
 {/snippet}
 
-<CardFrame testId="ongoing-project-card" {backgroundIcon}>
+<CardFrame testId="ongoing-project-card" {backgroundIcon} mobileHref={href}>
   <div class="card-content">
     <div class="header">
       <Logo
