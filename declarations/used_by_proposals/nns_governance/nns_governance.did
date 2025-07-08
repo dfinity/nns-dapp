@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-26_03-25-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/fccfa2c7c7cba9e5485ad0b48823990e24a67f40/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record {
   hash : blob;
 };
@@ -376,6 +376,7 @@ type GovernanceCachedMetrics = record {
   not_dissolving_neurons_e8s_buckets_seed : vec record { nat64; float64 };
   timestamp_seconds : nat64;
   seed_neuron_count : nat64;
+  spawning_neurons_count : nat64;
 
   non_self_authenticating_controller_neuron_subset_metrics : opt NeuronSubsetMetrics;
   public_neuron_subset_metrics : opt NeuronSubsetMetrics;
