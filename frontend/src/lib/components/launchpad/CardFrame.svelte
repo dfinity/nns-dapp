@@ -1,7 +1,7 @@
 <script lang="ts">
   import { nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
-  import { isMobileViewportStore } from "../../derived/viewport.derived";
+  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
 
   type Props = {
     testId: string;
