@@ -108,7 +108,7 @@
 
       h3 {
         @include launchpad.text_h3;
-        // TODO: move to _launchpad mixin
+        // TODO(launchpad2): think about moving to _launchpad mixin
         @include text.truncate;
 
         margin: 0;
