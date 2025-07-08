@@ -32,7 +32,8 @@ const MAX_SUB_ACCOUNT_ID: u8 = u8::MAX - 1;
 const MAX_IMPORTED_TOKENS: i32 = 20;
 
 // Conservatively limit the number of favorite projects to prevent using too much memory.
-const MAX_FAVORITE_PROJECTS: i32 = 20;
+// Should be in sync with the frontend value when implemented.
+const MAX_FAVORITE_PROJECTS: usize = 20;
 
 /// Accounts and related data.
 pub struct AccountsStore {
@@ -655,9 +656,9 @@ impl AccountsStore {
     }
 
     pub fn set_fav_projects(&mut self, caller: PrincipalId, new_fav_projects: FavProjects) -> SetFavProjectsResponse {
-        if new_fav_projects.fav_projects.len() > (MAX_FAVORITE_PROJECTS as usize) {
+        if new_fav_projects.fav_projects.len() > MAX_FAVORITE_PROJECTS {
             return SetFavProjectsResponse::TooManyFavProjects {
-                limit: MAX_FAVORITE_PROJECTS,
+                limit: MAX_FAVORITE_PROJECTS as i32,
             };
         }
         let account_identifier = AccountIdentifier::from(caller).to_vec();
