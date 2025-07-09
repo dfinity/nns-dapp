@@ -78,7 +78,7 @@
       }
     }
 
-    @include media.min-width(large) {
+    @include media.min-width(xlarge) {
       grid-template-columns: repeat(3, 1fr);
     }
   }

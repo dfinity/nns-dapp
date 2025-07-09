@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 137237
+
+### Application
+
+#### Changed
+
+* Prioritize ICP in tokens and staking tables
+* Filter out tickers with no trading volume
+
+#### Fixed
+
+* Improved disburse button feedback when neuron has insufficient stake
+
+### Operations
+
 ## Proposal 137154
 
 ### Application

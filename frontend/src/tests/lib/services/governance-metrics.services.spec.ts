@@ -30,7 +30,11 @@ describe("governance-metrics-services", () => {
       await loadGovernanceMetrics();
 
       expect(spyGetGovernanceMetrics).toHaveBeenCalledTimes(2);
-      expect(spyGetGovernanceMetrics).toHaveBeenCalledWith({
+      expect(spyGetGovernanceMetrics).toHaveBeenNthCalledWith(1, {
+        identity: mockIdentity,
+        certified: false,
+      });
+      expect(spyGetGovernanceMetrics).toHaveBeenNthCalledWith(2, {
         identity: mockIdentity,
         certified: true,
       });

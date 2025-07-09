@@ -153,8 +153,13 @@ describe("app-services", () => {
     initAppPrivateData();
     await runResolvedPromises();
 
-    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(1);
-    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledWith({
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(2);
+
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenNthCalledWith(1, {
+      identity: mockIdentity,
+      certified: false,
+    });
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenNthCalledWith(2, {
       identity: mockIdentity,
       certified: true,
     });
@@ -171,7 +176,11 @@ describe("app-services", () => {
     await runResolvedPromises();
 
     expect(spyGovernanceMetrics).toHaveBeenCalledTimes(2);
-    expect(spyGovernanceMetrics).toHaveBeenCalledWith({
+    expect(spyGovernanceMetrics).toHaveBeenNthCalledWith(1, {
+      identity: mockIdentity,
+      certified: false,
+    });
+    expect(spyGovernanceMetrics).toHaveBeenNthCalledWith(2, {
       identity: mockIdentity,
       certified: true,
     });
