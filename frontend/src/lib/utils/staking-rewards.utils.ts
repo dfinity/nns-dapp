@@ -30,6 +30,7 @@ import {
   getNeuronFreeMaturityE8s,
   getNeuronTotalMaturityE8s,
   getNeuronTotalStakeAfterFeesE8s,
+  getNeuronTotalValueAfterFeesE8s,
   increaseNeuronMaturity,
   isNeuronEligibleToVote,
   maximiseNeuronParams,
@@ -272,24 +273,33 @@ const getAPY = (
   const yearEstimatedMaxRewardUSD = rewardEstimationFunction(params, 365, true);
 
   let totalUSD = 0;
+  let totalMaxUSD = 0;
+  const fxRate = getFXRate(params.fxRates, ledgerPrincipal);
+
   neurons.forEach((neuron) => {
     const neuronTotalStake = bigIntDiv(
       getNeuronTotalStakeAfterFeesE8s(neuron),
       BigInt(E8S_RATE),
       8
     );
-    if (neuronTotalStake > 0) {
-      totalUSD += neuronTotalStake * getFXRate(params.fxRates, ledgerPrincipal);
-    }
+    totalUSD += neuronTotalStake * fxRate;
+
+    const neuronTotalMaxStake = bigIntDiv(
+      // Considering the un-staked maturity as well
+      getNeuronTotalValueAfterFeesE8s(neuron),
+      BigInt(E8S_RATE),
+      8
+    );
+    totalMaxUSD += neuronTotalMaxStake * fxRate;
   });
 
-  if (totalUSD === 0) {
+  if (totalUSD === 0 || totalMaxUSD === 0) {
     return { cur: 0, max: 0 };
   }
 
   return {
     cur: yearEstimatedRewardUSD / totalUSD,
-    max: yearEstimatedMaxRewardUSD / totalUSD,
+    max: yearEstimatedMaxRewardUSD / totalMaxUSD,
   };
 };
 
