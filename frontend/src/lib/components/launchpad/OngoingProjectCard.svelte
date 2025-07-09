@@ -2,15 +2,15 @@
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { getMinDirectParticipation } from "$lib/getters/sns-summary";
+  import {
+    getMaxDirectParticipation,
+    getMinDirectParticipation,
+  } from "$lib/getters/sns-summary";
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { formatNumber } from "$lib/utils/format.utils";
   import { formatParticipation } from "$lib/utils/portfolio.utils";
-  import {
-    durationTillSwapDeadline,
-    getProjectCommitmentSplit,
-  } from "$lib/utils/projects.utils";
+  import { durationTillSwapDeadline } from "$lib/utils/projects.utils";
   import {
     IconAccountBalance,
     IconClockNoFill,
@@ -19,7 +19,7 @@
     IconRocketLaunch,
     Tag,
   } from "@dfinity/gix-components";
-  import { secondsToDuration } from "@dfinity/utils";
+  import { nonNullish, secondsToDuration } from "@dfinity/utils";
 
   type Props = {
     summary: SnsSummaryWrapper;
@@ -27,12 +27,11 @@
 
   const { summary }: Props = $props();
 
-  const capIcp = $derived(
-    getProjectCommitmentSplit(summary).totalCommitmentE8s
-  );
+  const maxIcp = $derived(getMaxDirectParticipation(summary));
+  const commitmentIcp = $derived(summary.derived.buyer_total_icp_e8s);
   const minIcp = $derived(getMinDirectParticipation(summary) ?? 0n);
   const fundedOfMin = $derived(
-    capIcp > 0n && minIcp > 0n ? (capIcp * 100n) / minIcp : 0n
+    commitmentIcp > 0n && minIcp > 0n ? (commitmentIcp * 100n) / minIcp : 0n
   );
   const durationTillDeadline = $derived(
     durationTillSwapDeadline(summary.swap) ?? 0n
@@ -51,7 +50,7 @@
   >
 {/snippet}
 
-<CardFrame testId="ongoing-project-card" {backgroundIcon}>
+<CardFrame testId="ongoing-project-card" {backgroundIcon} mobileHref={href}>
   <div class="card-content">
     <div class="header">
       <Logo
@@ -94,15 +93,17 @@
           <span data-tid="min-icp-value">{formatParticipation(minIcp)}</span>
         </div>
       </li>
-      <li class="stat-item">
-        <h6 class="stat-label">
-          {$i18n.launchpad_cards.ongoing_cap_icp}
-        </h6>
-        <div class="stat-value">
-          <IconAccountBalance size="16px" />
-          <span data-tid="cap-icp-value">{formatParticipation(capIcp)}</span>
-        </div>
-      </li>
+      {#if nonNullish(maxIcp)}
+        <li class="stat-item">
+          <h6 class="stat-label">
+            {$i18n.launchpad_cards.ongoing_cap_icp}
+          </h6>
+          <div class="stat-value">
+            <IconAccountBalance size="16px" />
+            <span data-tid="cap-icp-value">{formatParticipation(maxIcp)}</span>
+          </div>
+        </li>
+      {/if}
     </ul>
 
     <div class="footer">
@@ -208,7 +209,7 @@
         justify-content: space-between;
         gap: var(--padding-0_5x);
 
-        padding: 0 var(--padding-2x);
+        padding: 0 var(--padding);
         border-right: 1px solid var(--elements-divider);
         &:first-child {
           padding-left: 0;
@@ -236,7 +237,7 @@
     .footer {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: end;
 
       .time-remaining {
         @include launchpad.text_body;

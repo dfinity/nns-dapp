@@ -44,6 +44,7 @@ interface I18nCore {
   view: string;
   copy: string;
   copied: string;
+  week: string;
 }
 
 interface I18nError {
@@ -930,12 +931,22 @@ interface I18nLaunchpad {
   subheadline: string;
   upcoming_launches: string;
   launched_projects: string;
+  participated_projects: string;
 }
 
 interface I18nLaunchpad_cards {
   ongoing_funded_of_min: string;
   ongoing_min_icp: string;
   ongoing_cap_icp: string;
+  project_card_token_price: string;
+  project_card_icp_in_treasury: string;
+  project_card_my_participation: string;
+  project_card_proposal_activity: string;
+  upcoming_tag_upcoming: string;
+  upcoming_link: string;
+  upcoming_sale_starts: string;
+  create_sns_proposal_title: string;
+  create_sns_proposal_vote: string;
 }
 
 interface I18nSns_project_detail {
@@ -1359,8 +1370,13 @@ interface I18nPortfolio {
   staked_tokens_card_link: string;
   staked_tokens_card_list_first_column: string;
   staked_tokens_card_list_second_column_mobile: string;
+  staked_tokens_card_list_second_column_mobile_apy_first: string;
+  staked_tokens_card_list_second_column_mobile_apy_second: string;
   staked_tokens_card_list_second_column: string;
+  staked_tokens_card_list_second_column_apy_first: string;
+  staked_tokens_card_list_second_column_apy_second: string;
   staked_tokens_card_list_third_column: string;
+  staked_tokens_card_apy_tooltip: string;
   staked_tokens_card_info_row: string;
   total_assets_title: string;
   project_status_open: string;
@@ -1380,6 +1396,13 @@ interface I18nPortfolio {
   new_sns_proposal_card_reject: string;
   next_card: string;
   previous_card: string;
+  apy_card_title: string;
+  apy_card_reward_title: string;
+  apy_card_power_title: string;
+  apy_card_link: string;
+  apy_card_estimation: string;
+  apy_card_error: string;
+  apy_card_tooltip: string;
 }
 
 interface I18nHighlight {

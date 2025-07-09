@@ -30,6 +30,7 @@ import {
   getNeuronFreeMaturityE8s,
   getNeuronTotalMaturityE8s,
   getNeuronTotalStakeAfterFeesE8s,
+  getNeuronTotalValueAfterFeesE8s,
   increaseNeuronMaturity,
   isNeuronEligibleToVote,
   maximiseNeuronParams,
@@ -39,6 +40,11 @@ import {
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { Principal } from "@dfinity/principal";
+
+/////////////////
+/// DOC REFERENCE
+/// https://docs.google.com/document/d/1jjglDtCZpdTHwPLB1hwW_oR-p4jU_t6ad1Gmw5bbiBk
+/////////////////
 
 type APY = Map<
   string,
@@ -72,7 +78,7 @@ export interface StakingRewardCalcParams {
   nnsEconomics: NetworkEconomicsStoreData;
   fxRates: IcpSwapUsdPricesStoreData;
   governanceMetrics: GovernanceMetricsStoreData;
-  nnsTotalVotingPower: bigint;
+  nnsTotalVotingPower: bigint | undefined;
 }
 
 export const getStakingRewardData = (
@@ -232,11 +238,11 @@ const getAPYs = (params: StakingRewardCalcParams) => {
   const apy: APY = new Map();
 
   apy.set(
-    LEDGER_CANISTER_ID.toText(),
+    OWN_CANISTER_ID_TEXT,
     getAPY(
       params,
       nnsNeurons.neurons ?? [],
-      OWN_CANISTER_ID_TEXT,
+      LEDGER_CANISTER_ID.toText(),
       getNnsRewardEstimationUSD
     )
   );
@@ -272,24 +278,33 @@ const getAPY = (
   const yearEstimatedMaxRewardUSD = rewardEstimationFunction(params, 365, true);
 
   let totalUSD = 0;
+  let totalMaxUSD = 0;
+  const fxRate = getFXRate(params.fxRates, ledgerPrincipal);
+
   neurons.forEach((neuron) => {
     const neuronTotalStake = bigIntDiv(
       getNeuronTotalStakeAfterFeesE8s(neuron),
       BigInt(E8S_RATE),
       8
     );
-    if (neuronTotalStake > 0) {
-      totalUSD += neuronTotalStake * getFXRate(params.fxRates, ledgerPrincipal);
-    }
+    totalUSD += neuronTotalStake * fxRate;
+
+    const neuronTotalMaxStake = bigIntDiv(
+      // Considering the un-staked maturity as well
+      getNeuronTotalValueAfterFeesE8s(neuron),
+      BigInt(E8S_RATE),
+      8
+    );
+    totalMaxUSD += neuronTotalMaxStake * fxRate;
   });
 
-  if (totalUSD === 0) {
+  if (totalUSD === 0 || totalMaxUSD === 0) {
     return { cur: 0, max: 0 };
   }
 
   return {
     cur: yearEstimatedRewardUSD / totalUSD,
-    max: yearEstimatedMaxRewardUSD / totalUSD,
+    max: yearEstimatedMaxRewardUSD / totalMaxUSD,
   };
 };
 
@@ -316,7 +331,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
   const isNnsEconomicsReady = Boolean(nnsEconomics.parameters);
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
   const isGovernanceMetricsReady = Boolean(governanceMetrics.metrics);
-  const isNnsTotalVotingPowerReady = Boolean(nnsTotalVotingPower > 0n);
+  const isNnsTotalVotingPowerReady = nnsTotalVotingPower !== undefined;
 
   return [
     areTokensReady,
@@ -469,9 +484,20 @@ const getTokenReward = (
   addDays: number,
   sns?: CachedSnsDto
 ) => {
+  const totalVotingPower = sns
+    ? getTotalVotingPower(sns)
+    : params.nnsTotalVotingPower;
+
+  if (totalVotingPower === 0n) {
+    logWithTimestamp(
+      "Staking rewards: total voting power missing for reward calculation."
+    );
+    return 0;
+  }
+
   const neuronRewardRatioForTheDay = bigIntDiv(
     neuronVotingPower,
-    sns ? getTotalVotingPower(sns) : params.nnsTotalVotingPower,
+    totalVotingPower!,
     20
   );
 
@@ -579,12 +605,9 @@ const getNnsRewardParams = (params: StakingRewardCalcParams) => ({
   totalSupply: Number(params.governanceMetrics.metrics?.totalSupplyIcp),
 });
 
-const getTotalVotingPower = (sns: CachedSnsDto): bigint => {
+const getTotalVotingPower = (_sns: CachedSnsDto): bigint => {
   // @TODO: USE THE EXPOSED TOTAL VOTING POWER!
-  if (!sns) {
-    return BigInt(10 ** 30); // If we don't know, we assume a very big number, to make the reward neglibible.
-  }
-  return 50_276_005_084_190_970n;
+  return 0n;
 };
 
 ////////////////////

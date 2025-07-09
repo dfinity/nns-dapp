@@ -2,6 +2,7 @@
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
   import type { Snippet } from "svelte";
@@ -23,7 +24,7 @@
   );
 </script>
 
-<div class="header">
+{#snippet content()}
   <div class="header-wrapper">
     <div class="icon" aria-hidden="true">
       {@render icon()}
@@ -35,15 +36,23 @@
       </p>
     </div>
   </div>
-  <a {href} class="button secondary link" aria-label={linkText}>
-    <span class="icon">
+{/snippet}
+
+{#if $isMobileViewportStore}
+  <a {href} class="header mobile" aria-label={linkText}>
+    {@render content()}
+    <span class="icon-link">
       <IconRight />
     </span>
-    <span class="text">
-      {linkText}
-    </span>
   </a>
-</div>
+{:else}
+  <div class="header">
+    {@render content()}
+    <a {href} class="button secondary link" aria-label={linkText}>
+      {linkText}
+    </a>
+  </div>
+{/if}
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
@@ -83,33 +92,28 @@
     }
 
     .link {
+      width: auto;
+      height: auto;
+      padding: var(--padding) var(--padding-2x);
+      border-radius: var(--border-radius);
+      min-height: var(--button-min-height);
+    }
+  }
+
+  .mobile {
+    text-decoration: none;
+
+    .icon-link {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 35px;
       height: 35px;
-      border-radius: 50%;
-      min-height: auto;
       padding: 0;
-
-      @include media.min-width(medium) {
-        width: auto;
-        height: auto;
-        padding: var(--padding) var(--padding-2x);
-        border-radius: var(--border-radius);
-        min-height: var(--button-min-height);
-      }
-
-      .icon {
-        display: flex;
-        @include media.min-width(medium) {
-          display: none;
-        }
-      }
-
-      .text {
-        display: none;
-        @include media.min-width(medium) {
-          display: inline;
-        }
-      }
+      color: var(--button-secondary-color);
+      font-weight: var(--font-weight-bold);
+      border: solid var(--button-border-size) var(--primary);
+      border-radius: 50%;
     }
   }
 </style>

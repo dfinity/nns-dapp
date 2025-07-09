@@ -7,6 +7,7 @@ canister_query get_account
 canister_query get_canisters
 canister_query get_histogram
 canister_query get_imported_tokens
+canister_query get_fav_projects
 canister_query get_stats
 canister_query get_toy_account
 canister_query get_tvl
@@ -23,4 +24,5 @@ canister_update register_hardware_wallet
 canister_update rename_canister
 canister_update rename_sub_account
 canister_update set_imported_tokens
+canister_update set_fav_projects
 main

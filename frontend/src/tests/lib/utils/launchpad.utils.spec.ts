@@ -1,6 +1,6 @@
-import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
-import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
-import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
+import CreateSnsProposalCard from "$lib/components/launchpad/CreateSnsProposalCard.svelte";
+import OngoingProjectCard from "$lib/components/launchpad/OngoingProjectCard.svelte";
+import UpcomingProjectCard from "$lib/components/launchpad/UpcomingProjectCard.svelte";
 import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import {
@@ -75,15 +75,15 @@ describe("Launchpad utils", () => {
       expect(cards.length).toBe(3);
       expect(cards).toEqual([
         {
-          Component: LaunchProjectCard,
+          Component: OngoingProjectCard,
           props: { summary: openSnsProject1.summary },
         },
         {
-          Component: NewSnsProposalCard,
+          Component: CreateSnsProposalCard,
           props: { proposalInfo: openProposal1 },
         },
         {
-          Component: AdoptedProposalCard,
+          Component: UpcomingProjectCard,
           props: { summary: adoptedSnsProject1.summary },
         },
       ]);
@@ -148,27 +148,27 @@ describe("Launchpad utils", () => {
       expect(cards.length).toBe(6);
       expect(cards).toEqual([
         {
-          Component: LaunchProjectCard,
+          Component: OngoingProjectCard,
           props: { summary: openSnsProject2.summary },
         },
         {
-          Component: LaunchProjectCard,
+          Component: OngoingProjectCard,
           props: { summary: openSnsProject1.summary },
         },
         {
-          Component: NewSnsProposalCard,
+          Component: CreateSnsProposalCard,
           props: { proposalInfo: openProposal2 },
         },
         {
-          Component: NewSnsProposalCard,
+          Component: CreateSnsProposalCard,
           props: { proposalInfo: openProposal1 },
         },
         {
-          Component: AdoptedProposalCard,
+          Component: UpcomingProjectCard,
           props: { summary: adoptedSnsProject2.summary },
         },
         {
-          Component: AdoptedProposalCard,
+          Component: UpcomingProjectCard,
           props: { summary: adoptedSnsProject1.summary },
         },
       ]);

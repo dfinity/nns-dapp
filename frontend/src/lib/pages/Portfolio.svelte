@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CardList from "$lib/components/launchpad/CardList.svelte";
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
@@ -7,31 +8,26 @@
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
-  import StackedCards, {
-    type CardItem,
-  } from "$lib/components/portfolio/StackedCards.svelte";
+  import StackedCards from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
-  import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
-  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
-  import { neuronsStore } from "$lib/stores/neurons.store";
-  import { nnsTotalVotingPower } from "$lib/stores/nns-total-voting-power.store";
-  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
+  import {
+    ENABLE_APY_PORTFOLIO,
+    ENABLE_LAUNCHPAD_REDESIGN,
+  } from "$lib/stores/feature-flags.store";
   import type { TableProject } from "$lib/types/staking";
+  import type { ComponentWithProps } from "$lib/types/svelte";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { logWithTimestamp } from "$lib/utils/dev.utils";
+  import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
   import {
     compareProposalInfoByDeadlineTimestampSeconds,
     getTopHeldTokens,
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
   import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
-  import { getStakingRewardData } from "$lib/utils/staking-rewards.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import type { ProposalInfo } from "@dfinity/nns";
@@ -146,9 +142,9 @@
       .sort(comparesByDecentralizationSaleOpenTimestampDesc)
       .reverse()
       .map((project) => project.summary)
-      .map<CardItem>((summary) => ({
+      .map<ComponentWithProps>((summary) => ({
         // TODO: Svelte v5 migration - fix type
-        component: LaunchProjectCard as unknown as Component,
+        Component: LaunchProjectCard as unknown as Component,
         props: { summary },
       }))
   );
@@ -158,7 +154,7 @@
       .sort(compareProposalInfoByDeadlineTimestampSeconds)
       .map((proposalInfo) => ({
         // TODO: Svelte v5 migration - fix type
-        component: NewSnsProposalCard as unknown as Component,
+        Component: NewSnsProposalCard as unknown as Component,
         props: { proposalInfo },
       }))
   );
@@ -168,42 +164,21 @@
       .sort(comparesByDecentralizationSaleOpenTimestampDesc)
       .reverse()
       .map((project) => project.summary)
-      .map<CardItem>((summary) => ({
+      .map<ComponentWithProps>((summary) => ({
         // TODO: Svelte v5 migration - fix type
-        component: AdoptedProposalCard as unknown as Component,
+        Component: AdoptedProposalCard as unknown as Component,
         props: { summary },
       }))
   );
 
-  const cards: CardItem[] = $derived([
-    ...launchpadCards,
-    ...openProposalCards,
-    ...adoptedSnsProposalsCards,
-  ]);
-
-  const stakingRewardData = $derived(
-    getStakingRewardData({
-      auth: $authSignedInStore,
-      tokens: $tokensListUserStore,
-      snsProjects: $snsAggregatorStore,
-      snsNeurons: $snsNeuronsStore,
-      nnsNeurons: $neuronsStore,
-      nnsEconomics: $networkEconomicsStore,
-      fxRates: $icpSwapUsdPricesStore,
-      governanceMetrics: $governanceMetricsStore,
-      nnsTotalVotingPower: $nnsTotalVotingPower,
-    })
+  const cards: ComponentWithProps[] = $derived(
+    $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO
+      ? getUpcomingLaunchesCards({
+          snsProjects,
+          openSnsProposals,
+        })
+      : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
   );
-
-  $effect(() => {
-    if (!stakingRewardData.loading && !("error" in stakingRewardData)) {
-      // @TODO Use the values in the UI
-      logWithTimestamp(
-        ">>>>> Staking rewards: data loaded.",
-        stakingRewardData
-      );
-    }
-  });
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -226,7 +201,15 @@
     {/if}
 
     {#if cards.length > 0}
-      <StackedCards {cards} />
+      {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
+        <CardList
+          testId="stacked-cards"
+          {cards}
+          mobileHorizontalScroll={cards.length > 1}
+        />
+      {:else}
+        <StackedCards {cards} />
+      {/if}
     {/if}
   </div>
 

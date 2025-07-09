@@ -17,6 +17,18 @@ describe("OngoingProjectCard", () => {
     return OngoingProjectCardPo.under(new JestPageObjectElement(container));
   };
 
+  it("should display a background icon", async () => {
+    const projectName = "Test Project";
+    const projectDescription = "This is a test project description";
+    const summary = createSummary({
+      projectName,
+      projectDescription,
+    });
+    const po = renderComponent(summary);
+
+    expect(await po.hasBackgroundIcon()).toEqual(true);
+  });
+
   it("should display project name and description", async () => {
     const projectName = "Test Project";
     const projectDescription = "This is a test project description";
@@ -52,9 +64,9 @@ describe("OngoingProjectCard", () => {
     expect(await po.getMinIcpValue()).toEqual("450k");
   });
 
-  it("should current icp value", async () => {
+  it("should max icp value", async () => {
     const summary = createSummary({
-      currentTotalCommitment: 500_000_000_000n,
+      maxDirectParticipation: 500_000_000_000n,
     });
     const po = renderComponent(summary);
 

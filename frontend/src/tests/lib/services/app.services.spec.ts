@@ -50,6 +50,10 @@ describe("app-services", () => {
     });
     mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
     mockLedgerCanister.accountBalance.mockResolvedValue(100_000_000n);
+    vi.spyOn(
+      nnsTotalVotingPowerService,
+      "loadNnsTotalVotingPower"
+    ).mockResolvedValue();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
@@ -98,9 +102,10 @@ describe("app-services", () => {
     const spyLoadActionableSnsProposals = vi
       .spyOn(actionableSnsProposalsServices, "loadActionableSnsProposals")
       .mockResolvedValue();
-    const spyLoadNnsTotalVotingPower = vi
-      .spyOn(nnsTotalVotingPowerService, "loadNnsTotalVotingPower")
-      .mockResolvedValue();
+    const spyLoadNnsTotalVotingPower = vi.spyOn(
+      nnsTotalVotingPowerService,
+      "loadNnsTotalVotingPower"
+    );
     let querySnsProjectsResolver;
     vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(
       (): Promise<CachedSnsDto[]> =>
@@ -153,8 +158,13 @@ describe("app-services", () => {
     initAppPrivateData();
     await runResolvedPromises();
 
-    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(1);
-    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledWith({
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(2);
+
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenNthCalledWith(1, {
+      identity: mockIdentity,
+      certified: false,
+    });
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenNthCalledWith(2, {
       identity: mockIdentity,
       certified: true,
     });
@@ -171,7 +181,11 @@ describe("app-services", () => {
     await runResolvedPromises();
 
     expect(spyGovernanceMetrics).toHaveBeenCalledTimes(2);
-    expect(spyGovernanceMetrics).toHaveBeenCalledWith({
+    expect(spyGovernanceMetrics).toHaveBeenNthCalledWith(1, {
+      identity: mockIdentity,
+      certified: false,
+    });
+    expect(spyGovernanceMetrics).toHaveBeenNthCalledWith(2, {
       identity: mockIdentity,
       certified: true,
     });
