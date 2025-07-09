@@ -326,7 +326,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
   const isNnsEconomicsReady = Boolean(nnsEconomics.parameters);
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
   const isGovernanceMetricsReady = Boolean(governanceMetrics.metrics);
-  const isNnsTotalVotingPowerReady = Boolean(nnsTotalVotingPower > 0n);
+  const isNnsTotalVotingPowerReady = nnsTotalVotingPower !== undefined;
 
   return [
     areTokensReady,
@@ -492,7 +492,7 @@ const getTokenReward = (
 
   const neuronRewardRatioForTheDay = bigIntDiv(
     neuronVotingPower,
-    sns ? getTotalVotingPower(sns) : params.nnsTotalVotingPower,
+    totalVotingPower,
     20
   );
 
