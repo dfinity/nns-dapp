@@ -232,11 +232,11 @@ const getAPYs = (params: StakingRewardCalcParams) => {
   const apy: APY = new Map();
 
   apy.set(
-    LEDGER_CANISTER_ID.toText(),
+    OWN_CANISTER_ID_TEXT,
     getAPY(
       params,
       nnsNeurons.neurons ?? [],
-      OWN_CANISTER_ID_TEXT,
+      LEDGER_CANISTER_ID.toText(),
       getNnsRewardEstimationUSD
     )
   );
