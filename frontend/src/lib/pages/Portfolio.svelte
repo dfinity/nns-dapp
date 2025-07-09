@@ -251,7 +251,7 @@
           stakingPowerUSD={stakingRewardData.stakingPowerUSD}
         />
       {:else}
-        <ApySkeletonCard {stakingRewardData} />
+        <ApyFallbackCard {stakingRewardData} />
       {/if}
     {/if}
 
