@@ -479,6 +479,17 @@ const getTokenReward = (
   addDays: number,
   sns?: CachedSnsDto
 ) => {
+  const totalVotingPower = sns
+    ? getTotalVotingPower(sns)
+    : params.nnsTotalVotingPower;
+
+  if (totalVotingPower === 0n) {
+    logWithTimestamp(
+      "Staking rewards: total voting power missing for reward calculation."
+    );
+    return 0;
+  }
+
   const neuronRewardRatioForTheDay = bigIntDiv(
     neuronVotingPower,
     sns ? getTotalVotingPower(sns) : params.nnsTotalVotingPower,
@@ -589,12 +600,9 @@ const getNnsRewardParams = (params: StakingRewardCalcParams) => ({
   totalSupply: Number(params.governanceMetrics.metrics?.totalSupplyIcp),
 });
 
-const getTotalVotingPower = (sns: CachedSnsDto): bigint => {
+const getTotalVotingPower = (_sns: CachedSnsDto): bigint => {
   // @TODO: USE THE EXPOSED TOTAL VOTING POWER!
-  if (!sns) {
-    return BigInt(10 ** 30); // If we don't know, we assume a very big number, to make the reward neglibible.
-  }
-  return 50_276_005_084_190_970n;
+  return 0n;
 };
 
 ////////////////////
