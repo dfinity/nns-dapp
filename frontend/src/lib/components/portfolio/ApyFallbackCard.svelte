@@ -202,6 +202,13 @@
     padding: 24px;
     grid-gap: 16px;
 
+    .title-text {
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 450;
+      line-height: 24px;
+    }
+
     .link,
     .title {
       height: 24px;
