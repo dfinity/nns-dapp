@@ -7,6 +7,7 @@ import * as actionableProposalsServices from "$lib/services/actionable-proposals
 import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-proposals.services";
 import { initAppPrivateData } from "$lib/services/app.services";
 import * as importedTokensServices from "$lib/services/imported-tokens.services";
+import * as nnsTotalVotingPowerService from "$lib/services/nns-total-voting-power.service";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockGovernanceMetrics } from "$tests/mocks/governance-metrics.mock";
@@ -49,6 +50,10 @@ describe("app-services", () => {
     });
     mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
     mockLedgerCanister.accountBalance.mockResolvedValue(100_000_000n);
+    vi.spyOn(
+      nnsTotalVotingPowerService,
+      "loadNnsTotalVotingPower"
+    ).mockResolvedValue();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
@@ -97,6 +102,10 @@ describe("app-services", () => {
     const spyLoadActionableSnsProposals = vi
       .spyOn(actionableSnsProposalsServices, "loadActionableSnsProposals")
       .mockResolvedValue();
+    const spyLoadNnsTotalVotingPower = vi.spyOn(
+      nnsTotalVotingPowerService,
+      "loadNnsTotalVotingPower"
+    );
     let querySnsProjectsResolver;
     vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(
       (): Promise<CachedSnsDto[]> =>
@@ -111,12 +120,14 @@ describe("app-services", () => {
 
     expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
     expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
+    expect(spyLoadNnsTotalVotingPower).toHaveBeenCalledTimes(0);
 
     querySnsProjectsResolver();
     await runResolvedPromises();
 
     expect(spyLoadActionableProposals).toHaveBeenCalledTimes(1);
     expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(1);
+    expect(spyLoadNnsTotalVotingPower).toHaveBeenCalledTimes(1);
   });
 
   it("should call loadImportedTokens", async () => {

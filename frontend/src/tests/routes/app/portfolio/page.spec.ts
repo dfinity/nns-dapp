@@ -22,6 +22,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import PortfolioRoute from "$routes/(app)/(nns)/portfolio/+page.svelte";
+import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCToken,
@@ -56,7 +57,11 @@ import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
+vi.mock("$lib/api/governance.api");
+
 describe("Portfolio route", () => {
+  fakeGovernanceApi.install();
+
   const renderPage = async () => {
     const { container } = render(PortfolioRoute);
     await runResolvedPromises();
