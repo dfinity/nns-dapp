@@ -34,6 +34,7 @@ import {
   isNeuronEligibleToVote,
   maximiseNeuronParams,
   type AgnosticNeuron,
+  type AgnosticNeuronArray,
 } from "$lib/utils/agnostic-neuron.utils";
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
@@ -330,7 +331,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
 };
 
 const getNeuronsRewardEstimationUSD = (params: {
-  neurons: AgnosticNeuron[];
+  neurons: AgnosticNeuronArray;
   maximiseParams?: boolean;
   days: number;
   sns?: CachedSnsDto;
