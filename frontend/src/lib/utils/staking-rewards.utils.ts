@@ -73,7 +73,7 @@ export interface StakingRewardCalcParams {
   nnsEconomics: NetworkEconomicsStoreData;
   fxRates: IcpSwapUsdPricesStoreData;
   governanceMetrics: GovernanceMetricsStoreData;
-  nnsTotalVotingPower: bigint;
+  nnsTotalVotingPower: bigint | undefined;
 }
 
 export const getStakingRewardData = (
