@@ -67,6 +67,7 @@
     {:else}
       <div class="title skeleton"></div>
       {@render loadingContent()}
+      <div class="link skeleton"></div>
     {/if}
   </article>
 {/if}
@@ -201,9 +202,15 @@
     padding: 24px;
     grid-gap: 16px;
 
+    .link,
     .title {
       height: 24px;
-      width: 60px;
+      width: 120px;
+    }
+
+    .link {
+      align-self: end;
+      justify-self: end;
     }
   }
 </style>
