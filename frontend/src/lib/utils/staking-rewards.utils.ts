@@ -41,6 +41,11 @@ import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { Principal } from "@dfinity/principal";
 
+/////////////////
+/// DOC REFERENCE
+/// https://docs.google.com/document/d/1jjglDtCZpdTHwPLB1hwW_oR-p4jU_t6ad1Gmw5bbiBk
+/////////////////
+
 type APY = Map<
   string,
   {
