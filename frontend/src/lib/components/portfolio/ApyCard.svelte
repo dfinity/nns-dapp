@@ -12,18 +12,16 @@
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {
-    rewardBalanceUSD?: number;
-    rewardEstimateWeekUSD?: number;
-    stakingPower?: number;
-    stakingPowerUSD?: number;
-    loading: boolean;
+    rewardBalanceUSD: number;
+    rewardEstimateWeekUSD: number;
+    stakingPower: number;
+    stakingPowerUSD: number;
   };
-
   const {
-    rewardBalanceUSD = 0,
-    rewardEstimateWeekUSD = 0,
-    stakingPower = 0,
-    stakingPowerUSD = 0,
+    rewardBalanceUSD,
+    rewardEstimateWeekUSD,
+    stakingPower,
+    stakingPowerUSD,
   }: Props = $props();
 
   const href = AppPath.Staking;
@@ -200,8 +198,6 @@
   }
 
   .card.desktop {
-    height: 270px;
-
     display: grid;
     grid-template-rows: auto auto 1fr;
     padding: 24px;
