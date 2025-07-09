@@ -290,6 +290,7 @@
         {topStakedTokens}
         usdAmount={totalStakedInUsd}
         numberOfTopHeldTokens={topHeldTokens.length}
+        apyError={!stakingRewardData.loading && "error" in stakingRewardData}
       />
     {/if}
   </div>
