@@ -185,7 +185,7 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
   const totalValueUSD = nnsTotalUSD + snsTotalUSD;
 
   return {
-    value: totalStakedUSD / totalValueUSD,
+    value: totalValueUSD ? totalStakedUSD / totalValueUSD : 0,
     valueUSD: totalStakedUSD,
   };
 };
