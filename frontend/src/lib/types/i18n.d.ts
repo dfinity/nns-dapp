@@ -1401,6 +1401,7 @@ interface I18nPortfolio {
   apy_card_power_title: string;
   apy_card_link: string;
   apy_card_estimation: string;
+  apy_card_error: string;
 }
 
 interface I18nHighlight {
