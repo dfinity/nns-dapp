@@ -12,6 +12,9 @@ describe("Home page", () => {
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockCkBTCToken);
     vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([]);
+
+    //mock console.log
+    vi.spyOn(console, "log").mockImplementation(() => undefined);
   });
 
   it("should render sign-in button", () => {

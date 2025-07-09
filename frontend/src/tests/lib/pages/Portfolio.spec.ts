@@ -56,6 +56,11 @@ describe("Portfolio page", () => {
     return PortfolioPagePo.under(new JestPageObjectElement(container));
   };
 
+  beforeEach(() => {
+    //mock console.log
+    vi.spyOn(console, "log").mockImplementation(() => undefined);
+  });
+
   describe("when not logged in", () => {
     const mockIcpToken = createIcpUserToken();
     const mockCkBTCToken = createUserToken(ckBTCTokenBase);
