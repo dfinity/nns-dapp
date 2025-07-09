@@ -931,6 +931,7 @@ interface I18nLaunchpad {
   subheadline: string;
   upcoming_launches: string;
   launched_projects: string;
+  participated_projects: string;
 }
 
 interface I18nLaunchpad_cards {

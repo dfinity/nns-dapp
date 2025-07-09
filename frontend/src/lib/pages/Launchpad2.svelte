@@ -1,7 +1,9 @@
 <script lang="ts">
   import CardList from "$lib/components/launchpad/CardList.svelte";
-  import ProjectCard from "$lib/components/launchpad/ProjectCard.svelte";
+  import ProjectCard2 from "$lib/components/launchpad/ProjectCard2.svelte";
+  import SkeletonProjectCard from "$lib/components/launchpad/SkeletonProjectCard.svelte";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { ComponentWithProps } from "$lib/types/svelte";
   import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
@@ -18,11 +20,10 @@
   type Props = {
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
+    isLoading: boolean;
   };
 
-  const { snsProjects, openSnsProposals }: Props = $props();
-
-  // TODO(launchpad2): add skeletons on loading.
+  const { snsProjects, openSnsProposals, isLoading }: Props = $props();
 
   const upcomingLaunchesCards = $derived(
     getUpcomingLaunchesCards({
@@ -30,27 +31,44 @@
       openSnsProposals,
     })
   );
-
-  const launchedSnsProjectsCards: ComponentWithProps[] = $derived.by(() => {
-    const launchedSnsProjects = filterProjectsStatus({
+  const launchedSnsProjects = $derived(
+    filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Committed,
       projects: snsProjects,
-    }).sort(comparesByDecentralizationSaleOpenTimestampDesc);
-    const userCommittedSnsProjects = launchedSnsProjects.filter(
-      ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
-    );
-    const notCommittedSnsProjects = launchedSnsProjects.filter(
-      ({ swapCommitment }) =>
-        isNullish(getCommitmentE8s(swapCommitment)) ||
-        getCommitmentE8s(swapCommitment) === 0n
-    );
-    return [...userCommittedSnsProjects, ...notCommittedSnsProjects].map(
-      (project) => ({
-        Component: ProjectCard as unknown as Component,
+    }).sort(comparesByDecentralizationSaleOpenTimestampDesc)
+  );
+  const userCommittedSnsProjects = $derived(
+    launchedSnsProjects
+      .filter(
+        ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
+      )
+      .map((project) => ({
+        Component: ProjectCard2 as unknown as Component,
         props: { project },
-      })
-    );
-  });
+      }))
+  );
+  const notCommittedSnsProjects = $derived(
+    launchedSnsProjects
+      .filter(
+        ({ swapCommitment }) =>
+          isNullish(getCommitmentE8s(swapCommitment)) ||
+          getCommitmentE8s(swapCommitment) === 0n
+      )
+      .map((project) => ({
+        Component: ProjectCard2 as unknown as Component,
+        props: { project },
+      }))
+  );
+  const launchedSnsProjectsCards: ComponentWithProps[] = $derived([
+    ...userCommittedSnsProjects,
+    ...notCommittedSnsProjects,
+  ]);
+  const skeletonCards: ComponentWithProps[] = $derived(
+    Array.from({ length: 3 }, () => ({
+      Component: SkeletonProjectCard as unknown as Component,
+      props: {},
+    }))
+  );
 </script>
 
 <main data-tid="launchpad2-component">
@@ -58,28 +76,47 @@
     <h3>{$i18n.launchpad.headline}</h3>
     <p>{$i18n.launchpad.subheadline}</p>
   </div>
+
   {#if upcomingLaunchesCards.length > 0}
     <section>
       <h4>{$i18n.launchpad.upcoming_launches}</h4>
       <CardList
         testId="upcoming-launches-list"
         cards={upcomingLaunchesCards}
-        mobileHorizontalScroll
+        mobileHorizontalScroll={upcomingLaunchesCards.length > 1}
       />
     </section>
   {/if}
-  {#if launchedSnsProjectsCards.length > 0}
+
+  {#if $isMobileViewportStore && userCommittedSnsProjects.length > 0}
     <section>
-      <h4>{$i18n.launchpad.launched_projects}</h4>
+      <h4>{$i18n.launchpad.participated_projects}</h4>
+      <CardList
+        testId="user-committed-projects-list"
+        cards={userCommittedSnsProjects}
+        mobileHorizontalScroll={userCommittedSnsProjects.length > 1}
+      />
+    </section>
+  {/if}
+
+  <section>
+    <h4>{$i18n.launchpad.launched_projects}</h4>
+    {#if isLoading}
+      <CardList testId="skeleton-projects-list" cards={skeletonCards} />
+    {:else}
       <CardList
         testId="launched-projects-list"
-        cards={launchedSnsProjectsCards}
+        cards={$isMobileViewportStore
+          ? notCommittedSnsProjects
+          : launchedSnsProjectsCards}
       />
-    </section>
-  {/if}
+    {/if}
+  </section>
 </main>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   main {
     display: flex;
     flex-direction: column;
@@ -88,9 +125,13 @@
 
   h3 {
     font-family: "CircularXX TT";
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 500;
     line-height: 32px;
+
+    @include media.min-width(medium) {
+      font-size: 24px;
+    }
   }
 
   section {
@@ -100,9 +141,15 @@
   }
 
   h4 {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 450;
-    line-height: 20px;
+    line-height: 18px;
+    margin: var(--padding) 0;
+
+    @include media.min-width(medium) {
+      font-size: 16px;
+      line-height: 20px;
+    }
   }
 
   p {

@@ -895,7 +895,8 @@
     "headline": "Discover SNS Projects",
     "subheadline": "See upcoming and available SNS projects",
     "upcoming_launches": "New Launches and Proposals",
-    "launched_projects": "Launched Projects"
+    "launched_projects": "Launched Projects",
+    "participated_projects": "My SNS Participation"
   },
   "launchpad_cards": {
     "ongoing_funded_of_min": "Funded of Min",

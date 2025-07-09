@@ -22,4 +22,11 @@ export class Launchpad2Po extends BasePageObject {
       testId: "launched-projects-list",
     });
   }
+
+  getSkeletonProjectsCardListPo(): CardListPo {
+    return CardListPo.under({
+      element: this.root,
+      testId: "skeleton-projects-list",
+    });
+  }
 }
