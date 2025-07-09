@@ -1,9 +1,9 @@
 import { queryProposals } from "$lib/api/proposals.api";
+import { getCurrentIdentity } from "$lib/services/auth.services";
 import { nnsTotalVotingPower } from "$lib/stores/nns-total-voting-power.store";
-import { getCurrentIdentity } from "./auth.services";
 
 export const loadNnsTotalVotingPower = async (): Promise<void> => {
-  const proposals = await queryProposals({
+  const _proposals = await queryProposals({
     beforeProposal: undefined,
     identity: getCurrentIdentity(),
     certified: false,
