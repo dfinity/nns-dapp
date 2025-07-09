@@ -130,20 +130,34 @@
         gap: var(--padding-0_5x);
 
         h3 {
-          @include launchpad.text_h3;
           @include text.clamp(1);
 
           margin: 0;
           padding: 0;
+
+          font-family: CircularXX;
+          font-size: 16px;
+          font-weight: 450;
+          line-height: 20px;
+
+          @include media.min-width(medium) {
+            font-size: 18px;
+            line-height: 24px;
+          }
         }
 
         .description {
           @include launchpad.text_body;
           @include text.clamp(1);
 
+          display: none;
           margin: 0;
           padding: 0;
           color: var(--color-text-secondary);
+
+          @include media.min-width(medium) {
+            display: block;
+          }
         }
       }
     }
