@@ -242,7 +242,7 @@
       <StackedCards {cards} />
     {/if}
 
-    {#if $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
+    {#if $ENABLE_APY_PORTFOLIO && $isMobileViewportStore && $authSignedInStore}
       {#if isStakingRewardDataReady(stakingRewardData)}
         <ApyCard
           rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}

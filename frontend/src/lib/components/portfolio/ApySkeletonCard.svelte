@@ -47,7 +47,7 @@
       <IconError size="20" />
     </div>
     <div class="error-text">
-      {$i18n.portfolio.apy_card_error_title}
+      {$i18n.portfolio.apy_card_error}
     </div>
   </div>
 {/snippet}
