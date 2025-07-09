@@ -1,4 +1,7 @@
-import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import {
   DAYS_IN_AVG_YEAR,
   E8S_RATE,
@@ -151,7 +154,7 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
         getFXRate(fxRates, ledgerPrincipal),
       totalUSD:
         bigIntDiv(staked + unstaked, BigInt(E8S_RATE), 20) *
-        getFXRate(fxRates, LEDGER_CANISTER_ID),
+        getFXRate(fxRates, ledgerPrincipal),
     };
   };
 
@@ -232,7 +235,7 @@ const getAPYs = (params: StakingRewardCalcParams) => {
     getAPY(
       params,
       nnsNeurons.neurons ?? [],
-      LEDGER_CANISTER_ID,
+      OWN_CANISTER_ID_TEXT,
       getNnsRewardEstimationUSD
     )
   );
@@ -312,7 +315,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
   const isNnsEconomicsReady = Boolean(nnsEconomics.parameters);
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
   const isGovernanceMetricsReady = Boolean(governanceMetrics.metrics);
-  const isNnsLastRewardEventReady = Boolean(nnsTotalVotingPower > 0n);
+  const isNnsTotalVotingPowerReady = Boolean(nnsTotalVotingPower > 0n);
 
   return [
     areTokensReady,
@@ -322,7 +325,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
     isNnsEconomicsReady,
     areFXRatesReady,
     isGovernanceMetricsReady,
-    isNnsLastRewardEventReady,
+    isNnsTotalVotingPowerReady,
   ].every((x) => x === true);
 };
 
@@ -540,9 +543,9 @@ const getSnsRewardParams = (sns: CachedSnsDto) => {
     minStake: BigInt(snsSystemParams.neuron_minimum_stake_e8s ?? 0),
     maxDissolve: snsSystemParams.max_dissolve_delay_seconds ?? 0,
     maxDissolveBonus:
-      snsSystemParams.max_dissolve_delay_bonus_percentage ?? 0 / 100,
+      (snsSystemParams.max_dissolve_delay_bonus_percentage ?? 0) / 100,
     maxAge: snsSystemParams.max_neuron_age_for_age_bonus ?? 0,
-    maxAgeBonus: snsSystemParams.max_age_bonus_percentage ?? 0 / 100,
+    maxAgeBonus: (snsSystemParams.max_age_bonus_percentage ?? 0) / 100,
     initialReward:
       snsSystemParams.voting_rewards_parameters
         ?.initial_reward_rate_basis_points ?? 0,

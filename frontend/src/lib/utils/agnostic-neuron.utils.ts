@@ -17,6 +17,8 @@ import { fromNullable } from "@dfinity/utils";
 
 export type AgnosticNeuron = NeuronInfo | SnsNeuron;
 
+export type AgnosticNeuronArray = NeuronInfo[] | SnsNeuron[];
+
 export const isNnsNeuron = (neuron: AgnosticNeuron): neuron is NeuronInfo => {
   return neuron && "neuronId" in neuron;
 };
@@ -208,7 +210,7 @@ export const getNeuronBonusRatio = (
   return dissolvingBonus + agingBonus;
 };
 
-export const cloneNeurons = (neurons: AgnosticNeuron[]) => {
+export const cloneNeurons = (neurons: AgnosticNeuronArray) => {
   if (isNnsNeuron(neurons[0])) {
     return (neurons as NeuronInfo[]).map((n) => ({
       ...n,
