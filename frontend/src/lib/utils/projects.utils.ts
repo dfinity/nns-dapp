@@ -432,6 +432,7 @@ export const getProjectCommitmentSplit = (
   );
 
   if (
+    // TODO: next line looks a bit suspicious, what if no NF?
     nonNullish(isNFParticipating) &&
     nonNullish(directCommitmentE8s) &&
     nonNullish(minDirectCommitmentE8s) &&
