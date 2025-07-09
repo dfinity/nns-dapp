@@ -492,7 +492,7 @@ const getTokenReward = (
 
   const neuronRewardRatioForTheDay = bigIntDiv(
     neuronVotingPower,
-    totalVotingPower,
+    totalVotingPower!,
     20
   );
 
