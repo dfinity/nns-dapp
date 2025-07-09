@@ -2,7 +2,7 @@
   import CardList from "$lib/components/launchpad/CardList.svelte";
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
-  import ApySkeletonCard from "$lib/components/portfolio/ApySkeletonCard.svelte";
+  import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
@@ -233,7 +233,7 @@
             stakingPowerUSD={stakingRewardData.stakingPowerUSD}
           />
         {:else}
-          <ApySkeletonCard {stakingRewardData} />
+          <ApyFallbackCard {stakingRewardData} />
         {/if}
       {/if}
     {/if}
