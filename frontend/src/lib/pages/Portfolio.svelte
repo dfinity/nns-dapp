@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CardList from "$lib/components/launchpad/CardList.svelte";
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
@@ -12,6 +13,7 @@
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import {
     ENABLE_APY_PORTFOLIO,
     ENABLE_LAUNCHPAD_REDESIGN,
@@ -31,8 +33,6 @@
   import type { ProposalInfo } from "@dfinity/nns";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
   import { type Component } from "svelte";
-  import CardList from "../components/launchpad/CardList.svelte";
-  import { isMobileViewportStore } from "../derived/viewport.derived";
 
   type Props = {
     userTokens: UserToken[];
