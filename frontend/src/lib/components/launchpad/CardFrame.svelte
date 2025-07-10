@@ -50,7 +50,6 @@
     position: relative;
     box-sizing: border-box;
     overflow: hidden;
-    height: 100%;
 
     border-radius: var(--border-radius-2x);
     background-color: var(--card-frame-background, var(--card-background-tint));
@@ -58,12 +57,15 @@
     box-shadow: var(--box-shadow);
 
     // This component provides a height, but not the width.
-    min-height: 180px;
-    padding: var(--padding-2x);
+    height: 180px;
+    padding: var(--padding-2x) var(--padding-2x)
+      var(--card-frame-padding-bottom, var(--padding-2x));
 
     @include media.min-width(medium) {
-      min-height: 230px;
-      padding: var(--padding-3x);
+      height: 230px;
+      max-height: 230px;
+      padding: var(--padding-3x) var(--padding-3x)
+        var(--card-frame-padding-bottom, var(--padding-3x));
     }
 
     &.highlighted {
