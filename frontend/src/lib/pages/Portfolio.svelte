@@ -38,7 +38,7 @@
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import type { ProposalInfo } from "@dfinity/nns";
-  import { TokenAmountV2, isNullish } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { type Component } from "svelte";
 
   type Props = {
@@ -229,13 +229,14 @@
         isFullWidth={cards.length === 0 && !$ENABLE_APY_PORTFOLIO}
       />
 
-      {#if $ENABLE_APY_PORTFOLIO && !$isMobileViewportStore}
+      {#if $ENABLE_APY_PORTFOLIO && !$isMobileViewportStore && nonNullish(totalUsdAmount)}
         {#if isStakingRewardDataReady(stakingRewardData)}
           <ApyCard
             rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
             rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
             stakingPower={stakingRewardData.stakingPower}
             stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+            totalAmountUSD={totalUsdAmount}
           />
         {:else}
           <ApyFallbackCard {stakingRewardData} />
@@ -247,13 +248,14 @@
       <StackedCards {cards} />
     {/if}
 
-    {#if $ENABLE_APY_PORTFOLIO && $isMobileViewportStore && $authSignedInStore}
+    {#if $ENABLE_APY_PORTFOLIO && $isMobileViewportStore && $authSignedInStore && nonNullish(totalUsdAmount)}
       {#if isStakingRewardDataReady(stakingRewardData)}
         <ApyCard
           rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
           rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
           stakingPower={stakingRewardData.stakingPower}
           stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+          totalAmountUSD={totalUsdAmount}
         />
       {:else}
         <ApyFallbackCard {stakingRewardData} />
