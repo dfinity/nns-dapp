@@ -146,7 +146,6 @@
         .description {
           @include launchpad.text_body;
           @include text.clamp(1);
-          // @include text.truncate();
 
           display: none;
           margin: 0;
