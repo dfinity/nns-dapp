@@ -101,7 +101,8 @@
         >{stakingPowerPercentage}</span
       >
       <span class="secondary-value" data-tid="total-staking-power"
-        >${stakingPowerUSDFormatted} (of ${totalValueUsdFormatted})</span
+        >${stakingPowerUSDFormatted}
+        <span>(of ${totalValueUsdFormatted})</span></span
       >
     </div>
   </div>
@@ -173,6 +174,8 @@
         line-height: 16px;
 
         display: flex;
+        align-items: center;
+        flex-wrap: wrap;
 
         @include media.min-width(medium) {
           font-size: 16px;
@@ -185,6 +188,7 @@
     .projection {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
 
       color: #29a079;
       padding-right: 4px;
