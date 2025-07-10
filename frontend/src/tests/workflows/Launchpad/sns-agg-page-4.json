@@ -3144,7 +3144,7 @@
     "meta": {
       "url": "https://fomowell.com/",
       "name": "FomoWell",
-      "description": "FomoWell is a fair launch platform for Web3 projects on the ICP blockchain.\n",
+      "description": "A High-Performance Bitcoin Asset Issuance and Trading Platform, Powered by @Dfinity",
       "logo": "/v1/sns/root/pww3s-sqaaa-aaaaq-aaedq-cai/logo.png"
     },
     "parameters": {
@@ -4038,7 +4038,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99088583901612893,
+    "icrc1_total_supply": 99096543131570386,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5210,7 +5210,7 @@
       ]
     ],
     "icrc1_fee": [500000000],
-    "icrc1_total_supply": 4224713764059251,
+    "icrc1_total_supply": 4224757080998793,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -6091,7 +6091,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 215750597768643622,
+    "icrc1_total_supply": 216112988212029069,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -7657,7 +7657,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100315978724572916,
+    "icrc1_total_supply": 100316758499050027,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -9657,7 +9657,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100096564282678467,
+    "icrc1_total_supply": 100110299203420450,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11190,7 +11190,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 2106335259411396,
+    "icrc1_total_supply": 2108171227542401,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -12018,7 +12018,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99999182000000,
+    "icrc1_total_supply": 99999176000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 300000000,
@@ -13624,7 +13624,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100090425345789467,
+    "icrc1_total_supply": 100093665831918698,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

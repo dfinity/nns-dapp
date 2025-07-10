@@ -26,7 +26,7 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import type { ProposalInfo } from "@dfinity/nns";
   import { TokenAmountV2, isNullish } from "@dfinity/utils";
-  import type { Component } from "svelte";
+  import { type Component } from "svelte";
 
   type Props = {
     userTokens: UserToken[];

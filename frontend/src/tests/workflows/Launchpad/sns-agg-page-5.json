@@ -361,7 +361,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777777399450000,
+    "icrc1_total_supply": 777777383080000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,

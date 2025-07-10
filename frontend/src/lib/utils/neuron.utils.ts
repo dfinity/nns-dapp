@@ -285,12 +285,33 @@ export const getDissolvingTimestampSeconds = (
     : undefined;
 
 export const getDissolvingTimeInSeconds = (
-  neuron: NeuronInfo
+  neuron: NeuronInfo,
+  referenceDate?: Date
 ): bigint | undefined => {
   const dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
+
   return nonNullish(dissolvingTimestamp)
-    ? dissolvingTimestamp - BigInt(nowInSeconds())
+    ? dissolvingTimestamp -
+        BigInt(
+          referenceDate
+            ? Math.floor(referenceDate.getTime() / 1000)
+            : nowInSeconds()
+        )
     : undefined;
+};
+
+export const getLockedTimeInSeconds = (
+  neuron: NeuronInfo
+): bigint | undefined => {
+  const neuronState = neuron.state;
+  const dissolveState = neuron.fullNeuron?.dissolveState;
+  if (
+    neuronState === NeuronState.Locked &&
+    dissolveState !== undefined &&
+    "DissolveDelaySeconds" in dissolveState
+  ) {
+    return dissolveState.DissolveDelaySeconds;
+  }
 };
 
 export const getSpawningTimeInSeconds = (
