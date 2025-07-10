@@ -82,7 +82,8 @@ export interface StakingRewardCalcParams {
 }
 
 export const getStakingRewardData = (
-  params: StakingRewardCalcParams
+  params: StakingRewardCalcParams,
+  forceInitialDate?: Date // For testing purposes
 ): StakingRewardData => {
   if (!params.auth) {
     logWithTimestamp("Staking rewards: user is not logged in.");
@@ -98,11 +99,11 @@ export const getStakingRewardData = (
         loading: false,
         rewardBalanceUSD: getRewardBalanceUSD(params),
         rewardEstimateWeekUSD:
-          getNnsRewardEstimationUSD(params, 7) +
-          getAllSnssRewardEstimationUSD(params, 7),
+          getNnsRewardEstimationUSD(params, 7, false, forceInitialDate) +
+          getAllSnssRewardEstimationUSD(params, 7, forceInitialDate),
         stakingPower: getStakingPower(params).value,
         stakingPowerUSD: getStakingPower(params).valueUSD,
-        apy: getAPYs(params),
+        apy: getAPYs(params, forceInitialDate),
       };
       logWithTimestamp("Staking rewards: calculation completed, fields ready.");
       return res;
@@ -199,13 +200,15 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
 const getNnsRewardEstimationUSD = (
   params: StakingRewardCalcParams,
   days: number,
-  maximiseParams: boolean = false
+  maximiseParams: boolean = false,
+  forceInitialDate?: Date
 ): number => {
   return getNeuronsRewardEstimationUSD({
     neurons: params.nnsNeurons.neurons ?? [],
     maximiseParams,
     days,
     otherParams: params,
+    forceInitialDate,
   });
 };
 
@@ -213,7 +216,8 @@ const getSnsRewardEstimationUSD = (
   params: StakingRewardCalcParams,
   days: number,
   sns: CachedSnsDto,
-  maximiseParams: boolean = false
+  maximiseParams: boolean = false,
+  forceInitialDate?: Date
 ): number => {
   return getNeuronsRewardEstimationUSD({
     neurons:
@@ -222,18 +226,23 @@ const getSnsRewardEstimationUSD = (
     days,
     otherParams: params,
     sns,
+    forceInitialDate,
   });
 };
 
 const getAllSnssRewardEstimationUSD = (
   params: StakingRewardCalcParams,
-  days: number
+  days: number,
+  forceInitialDate?: Date
 ): number =>
   params.snsProjects.data?.reduce((total, sns) => {
-    return total + getSnsRewardEstimationUSD(params, days, sns);
+    return (
+      total +
+      getSnsRewardEstimationUSD(params, days, sns, false, forceInitialDate)
+    );
   }, 0) ?? 0;
 
-const getAPYs = (params: StakingRewardCalcParams) => {
+const getAPYs = (params: StakingRewardCalcParams, forceInitialDate?: Date) => {
   const { snsNeurons, nnsNeurons } = params;
   const apy: APY = new Map();
 
@@ -243,7 +252,8 @@ const getAPYs = (params: StakingRewardCalcParams) => {
       params,
       nnsNeurons.neurons ?? [],
       LEDGER_CANISTER_ID.toText(),
-      getNnsRewardEstimationUSD
+      getNnsRewardEstimationUSD,
+      forceInitialDate
     )
   );
   params.snsProjects.data?.forEach((sns) => {
@@ -255,8 +265,15 @@ const getAPYs = (params: StakingRewardCalcParams) => {
         params,
         snsNeurons[rootPrincipal]?.neurons ?? [],
         ledgerPrincipal,
-        (params, days, maximiseNeuronParams) =>
-          getSnsRewardEstimationUSD(params, days, sns, maximiseNeuronParams)
+        (params, days, maximiseNeuronParams, forceInitialDate) =>
+          getSnsRewardEstimationUSD(
+            params,
+            days,
+            sns,
+            maximiseNeuronParams,
+            forceInitialDate
+          ),
+        forceInitialDate
       )
     );
   });
@@ -271,11 +288,23 @@ const getAPY = (
   rewardEstimationFunction: (
     params: StakingRewardCalcParams,
     days: number,
-    maximiseParams?: boolean
-  ) => number
+    maximiseParams?: boolean,
+    forceInitialDate?: Date
+  ) => number,
+  forceInitialDate?: Date
 ) => {
-  const yearEstimatedRewardUSD = rewardEstimationFunction(params, 365);
-  const yearEstimatedMaxRewardUSD = rewardEstimationFunction(params, 365, true);
+  const yearEstimatedRewardUSD = rewardEstimationFunction(
+    params,
+    365,
+    false,
+    forceInitialDate
+  );
+  const yearEstimatedMaxRewardUSD = rewardEstimationFunction(
+    params,
+    365,
+    true,
+    forceInitialDate
+  );
 
   let totalUSD = 0;
   let totalMaxUSD = 0;
@@ -350,9 +379,17 @@ const getNeuronsRewardEstimationUSD = (params: {
   maximiseParams?: boolean;
   days: number;
   sns?: CachedSnsDto;
+  forceInitialDate?: Date;
   otherParams: StakingRewardCalcParams;
 }) => {
-  const { neurons: _neurons, maximiseParams, days, sns, otherParams } = params;
+  const {
+    neurons: _neurons,
+    maximiseParams,
+    days,
+    sns,
+    forceInitialDate,
+    otherParams,
+  } = params;
 
   if (!_neurons || _neurons.length === 0) {
     return 0;
@@ -378,23 +415,24 @@ const getNeuronsRewardEstimationUSD = (params: {
           neuron,
           getRewardParams(otherParams, sns).minStake,
           getRewardParams(otherParams, sns).minDissolve,
-          getDate(i)
+          getDate(i, forceInitialDate)
         )
       ) {
         const fullStake = getNeuronTotalStakeAfterFeesE8s(neuron);
         if (fullStake > 0n) {
           const votingPowerRatio =
-            1 + getNeuronBonus(otherParams, neuron, i, sns);
+            1 + getNeuronBonus(otherParams, neuron, i, sns, forceInitialDate);
           neuronVotingPower = bigIntMul(fullStake, votingPowerRatio, 20);
         }
       }
 
-      if (neuronVotingPower > 0) {
+      if (neuronVotingPower > 0n) {
         const tokenReward = getTokenReward(
           otherParams,
           neuronVotingPower,
           i,
-          sns
+          sns,
+          forceInitialDate
         );
 
         const rewardUSD =
@@ -435,8 +473,8 @@ const getToken = (tokens: UserToken[], ledgerPrincipal: Principal | string) => {
   ) as UserTokenData | undefined;
 };
 
-const getDate = (addDays: number = 0): Date => {
-  const now = new Date();
+const getDate = (addDays: number = 0, forceInitialDate?: Date): Date => {
+  const now = forceInitialDate ?? new Date();
   const date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   date.setDate(now.getDate() + addDays);
   return date;
@@ -482,7 +520,8 @@ const getTokenReward = (
   params: StakingRewardCalcParams,
   neuronVotingPower: bigint,
   addDays: number,
-  sns?: CachedSnsDto
+  sns?: CachedSnsDto,
+  forceInitialDate?: Date
 ) => {
   const totalVotingPower = sns
     ? getTotalVotingPower(sns)
@@ -504,7 +543,7 @@ const getTokenReward = (
   const rawReward =
     getPoolReward({
       genesisTimestampSeconds: getGenesisTimestampSeconds(sns),
-      referenceDate: getDate(addDays),
+      referenceDate: getDate(addDays, forceInitialDate),
       transitionDurationSeconds: getRewardParams(params, sns).rewardTransition,
       initialRewardRate: getRewardParams(params, sns).initialReward,
       finalRewardRate: getRewardParams(params, sns).finalReward,
@@ -518,14 +557,15 @@ const getNeuronBonus = (
   params: StakingRewardCalcParams,
   neuron: AgnosticNeuron,
   addDays: number,
-  sns?: CachedSnsDto
+  sns?: CachedSnsDto,
+  forceInitialDate?: Date
 ): number =>
   getNeuronBonusRatio(neuron, {
     dissolveMax: getRewardParams(params, sns).maxDissolve,
     dissolveBonus: getRewardParams(params, sns).maxDissolveBonus,
     ageMax: getRewardParams(params, sns).maxAge,
     ageBonus: getRewardParams(params, sns).maxAgeBonus,
-    referenceDate: getDate(addDays),
+    referenceDate: getDate(addDays, forceInitialDate),
   });
 
 const getGenesisTimestampSeconds = (sns?: CachedSnsDto): number => {
