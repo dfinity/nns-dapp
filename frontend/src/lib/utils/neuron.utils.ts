@@ -78,10 +78,10 @@ import {
   nonNullish,
   secondsToDuration,
 } from "@dfinity/utils";
-import type { ComponentType } from "svelte";
+import type { Component } from "svelte";
 
 export type StateInfo = {
-  Icon?: ComponentType;
+  Icon?: Component;
   textKey: keyof I18n["neuron_state"];
 };
 
