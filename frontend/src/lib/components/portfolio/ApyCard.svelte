@@ -5,9 +5,9 @@
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import {
-      formatCurrencyNumber,
-      formatPercentage,
-      renderPrivacyModeBalance,
+    formatCurrencyNumber,
+    formatPercentage,
+    renderPrivacyModeBalance,
   } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
@@ -72,7 +72,7 @@
     <div class="content">
       <span class="subtitle"
         >{$i18n.portfolio.apy_card_reward_title}
-        <TooltipIcon iconSize={16} ={$i18n.portfolio.apy_card_tooltip} />
+        <TooltipIcon iconSize={16} text={$i18n.portfolio.apy_card_tooltip} />
       </span>
       <span class="main-value" data-tid="reward"
         >~${rewardBalanceUSDFormatted}</span
