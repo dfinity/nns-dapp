@@ -11,7 +11,6 @@
   } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import TooltipIcon from "../ui/TooltipIcon.svelte";
 
   type Props = {
     rewardBalanceUSD: number;
