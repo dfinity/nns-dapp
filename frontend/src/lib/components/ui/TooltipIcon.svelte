@@ -1,16 +1,26 @@
 <script lang="ts">
   import { IconInfo, Tooltip } from "@dfinity/gix-components";
 
-  export let tooltipId: string | undefined = undefined;
-  export let tooltipIdPrefix = "tooltip-icon";
-  export let text: string | undefined = undefined;
+  type Props = {
+    tooltipId?: string;
+    tooltipIdPrefix?: string;
+    text?: string;
+    iconSize?: number;
+  };
+
+  const {
+    tooltipId,
+    text,
+    iconSize = 20,
+    tooltipIdPrefix = "tooltip-icon",
+  }: Props = $props();
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class="wrapper" data-tid="tooltip-icon-component" on:click|preventDefault>
+<div class="wrapper" data-tid="tooltip-icon-component">
+  <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
+  <!-- svelte-ignore slot_element_deprecated -->
   <Tooltip id={tooltipId} idPrefix={tooltipIdPrefix} {text}>
-    <IconInfo />
+    <IconInfo size={`${iconSize}px`} />
     <slot slot="tooltip-content" />
   </Tooltip>
 </div>
