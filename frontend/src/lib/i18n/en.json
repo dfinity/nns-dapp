@@ -1328,10 +1328,11 @@
     "previous_card": "Previous Card",
     "apy_card_title": "Staking Rewards",
     "apy_card_reward_title": "Reward Balance",
-    "apy_card_power_title": "Staking Power Used",
+    "apy_card_power_title": "Staking Ratio",
     "apy_card_link": "View Staked",
     "apy_card_estimation": "7d estimate",
-    "apy_card_error": "Unable to load rewards"
+    "apy_card_error": "Unable to load rewards",
+    "apy_card_tooltip": "TBD"
   },
   "highlight": {
     "disburse_maturity_title": "Farewell, Spawn Neuron!",
