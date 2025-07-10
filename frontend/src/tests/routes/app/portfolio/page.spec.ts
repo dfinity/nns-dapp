@@ -105,9 +105,6 @@ describe("Portfolio route", () => {
 
     setCkETHCanisters();
     setCkUSDCCanisters();
-
-    //mock console.log
-    vi.spyOn(console, "log").mockImplementation(() => undefined);
   });
 
   it("should load ICP Swap tickers", async () => {

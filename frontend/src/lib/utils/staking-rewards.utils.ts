@@ -54,33 +54,26 @@ type APY = Map<
   }
 >;
 
-export const isStakingRewardDataReady = (
-  data: StakingRewardData
-): data is {
+type StakingRewardDataReady = {
   loading: false;
   rewardBalanceUSD: number;
   rewardEstimateWeekUSD: number;
   stakingPower: number;
   stakingPowerUSD: number;
   apy: APY;
-} => {
-  return !data.loading && !("error" in data);
 };
 
 type StakingRewardData =
   | { loading: true }
-  | {
-      loading: false;
-      rewardBalanceUSD: number;
-      rewardEstimateWeekUSD: number;
-      stakingPower: number;
-      stakingPowerUSD: number;
-      apy: APY;
-    }
+  | StakingRewardDataReady
   | {
       loading: false;
       error: string;
     };
+
+export const isStakingRewardDataReady = (
+  data: StakingRewardData
+): data is StakingRewardDataReady => !data.loading && !("error" in data);
 
 export interface StakingRewardCalcParams {
   auth: boolean;
