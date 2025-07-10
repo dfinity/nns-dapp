@@ -102,4 +102,5 @@ export const mockGovernanceMetrics: GovernanceCachedMetrics = {
   totalStakedMaturityE8sEquivalentSeed: 8n,
   totalSupplyIcp: 1000000n,
   totalVotingPowerNonSelfAuthenticatingController: undefined,
+  spawningNeuronsCount: 2n,
 };
