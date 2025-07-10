@@ -1328,10 +1328,11 @@
     "previous_card": "Previous Card",
     "apy_card_title": "Staking Rewards",
     "apy_card_reward_title": "Reward Balance",
-    "apy_card_power_title": "Staking Power Used",
+    "apy_card_power_title": "Staking Ratio",
     "apy_card_link": "View Staked",
     "apy_card_estimation": "7d estimate",
-    "apy_card_error": "Unable to load rewards"
+    "apy_card_error": "Unable to load rewards",
+    "apy_card_tooltip": "Maturity is an attribute of a neuron; it is not a tradable asset. To generate ICP from maturity, users need to trigger a non-deterministic process subject to a changing maturity modulation function. The dollar value reflects an estimate assuming today’s modulation function."
   },
   "highlight": {
     "disburse_maturity_title": "Farewell, Spawn Neuron!",

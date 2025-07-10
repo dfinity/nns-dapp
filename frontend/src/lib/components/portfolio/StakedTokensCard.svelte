@@ -90,6 +90,7 @@
             <TooltipIcon
               tooltipId="apy"
               text={$i18n.portfolio.staked_tokens_card_apy_tooltip}
+              iconSize={16}
             />
           </span>
         {:else}
