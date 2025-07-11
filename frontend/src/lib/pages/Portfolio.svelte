@@ -60,7 +60,6 @@
     adoptedSnsProposals,
     stakingRewardData,
   }: Props = $props();
-
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
   const hasUnpricedTokens = $derived(
     userTokens.some(

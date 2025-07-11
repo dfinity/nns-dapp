@@ -40,6 +40,7 @@ import {
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 
 /////////////////
 /// DOC REFERENCE
@@ -113,6 +114,8 @@ export const getStakingRewardData = (
       logWithTimestamp("Staking rewards: calculation completed, fields ready.");
       return res;
     } catch (e) {
+      console.log(e);
+
       logWithTimestamp("Staking rewards: error during calculation.", e);
       return { loading: false, error: "Error during calculation." };
     }
@@ -337,20 +340,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
   const isNnsEconomicsReady = Boolean(nnsEconomics.parameters);
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
   const isGovernanceMetricsReady = Boolean(governanceMetrics.metrics);
-  const isNnsTotalVotingPowerReady = nnsTotalVotingPower !== undefined;
-
-  console.log(tokens);
-
-  console.log({
-    areTokensReady,
-    areSnsNeuronsReady,
-    areSnsProjectsReady,
-    areNnsNeuronsReady,
-    isNnsEconomicsReady,
-    areFXRatesReady,
-    isGovernanceMetricsReady,
-    isNnsTotalVotingPowerReady,
-  });
+  const isNnsTotalVotingPowerReady = nonNullish(nnsTotalVotingPower);
 
   return [
     areTokensReady,
@@ -404,6 +394,7 @@ const getNeuronsRewardEstimationUSD = (params: {
         if (fullStake > 0n) {
           const votingPowerRatio =
             1 + getNeuronBonus(otherParams, neuron, i, sns);
+
           neuronVotingPower = bigIntMul(fullStake, votingPowerRatio, 20);
         }
       }
@@ -418,6 +409,7 @@ const getNeuronsRewardEstimationUSD = (params: {
 
         const rewardUSD =
           tokenReward * getFXRate(otherParams.fxRates, LEDGER_CANISTER_ID);
+
         increaseNeuronMaturity(
           neuron,
           BigInt(Math.floor(tokenReward * Number(E8S_RATE)))
