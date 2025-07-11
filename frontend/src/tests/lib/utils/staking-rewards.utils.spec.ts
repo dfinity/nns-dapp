@@ -105,27 +105,35 @@ describe("neuron-utils", () => {
     params = getInitialMockedParams();
   });
 
-  it("Works with an empty account", () => {
+  it("Works with an empty account (no neurons, no tokens, no SNSs)", () => {
     params.nnsNeurons.neurons = [];
     params.tokens = [];
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(0);
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(0);
     expect(
-      round(getRewardData(params).apy.get(OWN_CANISTER_ID_TEXT).cur, 2)
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(0);
     expect(
-      round(getRewardData(params).apy.get(OWN_CANISTER_ID_TEXT).max, 2)
+      roundToDecimals(
+        getRewardData(params).apy.get(OWN_CANISTER_ID_TEXT).cur,
+        2
+      )
+    ).toBe(0);
+    expect(
+      roundToDecimals(
+        getRewardData(params).apy.get(OWN_CANISTER_ID_TEXT).max,
+        2
+      )
     ).toBe(0);
 
     params.snsProjects.data.push(getTestSns());
-    expect(round(getRewardData(params).apy.get(TEST_SNS_IDS[0]).cur, 2)).toBe(
-      0
-    );
-    expect(round(getRewardData(params).apy.get(TEST_SNS_IDS[0]).max, 2)).toBe(
-      0
-    );
+    expect(
+      roundToDecimals(getRewardData(params).apy.get(TEST_SNS_IDS[0]).cur, 2)
+    ).toBe(0);
+    expect(
+      roundToDecimals(getRewardData(params).apy.get(TEST_SNS_IDS[0]).max, 2)
+    ).toBe(0);
   });
 
   //////////////////
@@ -133,25 +141,25 @@ describe("neuron-utils", () => {
   //////////////////
   it("Calculates the Reward balance", () => {
     // Initial state with a single NNS neuron, no matutiry, no fees, no reward
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(0);
 
     // Increase the stake, it should not change the reward balance
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       500 * E8S_RATE
     );
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(0);
 
     // Add staked maturity, it should affect the reward balance
     params.nnsNeurons.neurons[0].fullNeuron.stakedMaturityE8sEquivalent =
       BigInt(50 * E8S_RATE);
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       50 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
 
     // Increase the staked maturity
     params.nnsNeurons.neurons[0].fullNeuron.stakedMaturityE8sEquivalent =
       BigInt(500 * E8S_RATE);
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       500 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
 
@@ -159,13 +167,13 @@ describe("neuron-utils", () => {
     params.nnsNeurons.neurons[0].fullNeuron.maturityE8sEquivalent = BigInt(
       900 * E8S_RATE
     );
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1400 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
 
     // Add neuron fees, it should not affect the reward balance (it is subtracted from the stake, not the maturity)
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(100 * E8S_RATE);
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1400 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
 
@@ -176,7 +184,7 @@ describe("neuron-utils", () => {
     params.nnsNeurons.neurons[1].fullNeuron.maturityE8sEquivalent = BigInt(
       300 * E8S_RATE
     );
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
 
@@ -184,7 +192,7 @@ describe("neuron-utils", () => {
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       DissolveDelaySeconds: BigInt(SECONDS_IN_7_DAYS),
     };
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
 
@@ -198,22 +206,22 @@ describe("neuron-utils", () => {
 
     // Change the FX rate, it should affect the reward balance
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 12.34;
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
 
-    // Add an SNS project, without a neuron
+    // Add an SNS project, without a neuron, it should not affect the reward balance
     params.snsProjects.data.push(getTestSns());
     params.tokens.push({
       balanceInUsd: 0,
       ledgerCanisterId: Principal.fromText(TEST_SNS_IDS[0]),
     });
     params.fxRates[TEST_SNS_IDS[0]] = 100;
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
 
-    // Add 2 SNS neurons with maturities and stake
+    // Add 2 SNS neurons with maturities and stake, it should add up the reward balance
     params.snsNeurons[TEST_SNS_IDS[0]] = {
       neurons: [getTestNeuronSns(), getTestNeuronSns()],
     };
@@ -229,7 +237,7 @@ describe("neuron-utils", () => {
       n.maturity_e8s_equivalent = BigInt(50 * E8S_RATE);
       n.staked_maturity_e8s_equivalent = [BigInt(50 * E8S_RATE)];
     });
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()] +
         200 * params.fxRates[TEST_SNS_IDS[0]]
     );
@@ -238,7 +246,7 @@ describe("neuron-utils", () => {
     params.snsNeurons[TEST_SNS_IDS[0]].neurons.forEach((n) => {
       n.neuron_fees_e8s = BigInt(50 * E8S_RATE);
     });
-    expect(round(getRewardData(params).rewardBalanceUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()] +
         200 * params.fxRates[TEST_SNS_IDS[0]]
     );
@@ -258,30 +266,42 @@ describe("neuron-utils", () => {
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
       DissolveDelaySeconds: BigInt(8 * SECONDS_IN_YEAR),
     };
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(1.13);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(1.13);
 
     // Double the stake, the reward estimate should double
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       100 * E8S_RATE
     );
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(2.26);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(2.26);
 
     // No stake, no reward estimate
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(0);
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(0);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(0);
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       50 * E8S_RATE
     );
 
     // Changes in the fx rate should affect the reward estimate
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 1.23;
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(0.15);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(0.15);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 500;
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(62.82);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(62.82);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 0;
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(0);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(0);
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 9;
 
     // Multiple neurons should add up the reward estimates
@@ -297,18 +317,26 @@ describe("neuron-utils", () => {
         DissolveDelaySeconds: BigInt(8 * SECONDS_IN_YEAR),
       };
     });
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(4.52);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(4.52);
 
     // Remove the last neuron, the reward estimate should be 3/4 of before
     params.nnsNeurons.neurons.pop();
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(3.39);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(3.39);
 
     // Token balance should not affect the reward estimate
     params.tokens[0].balanceInUsd = 1000;
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(3.39);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(3.39);
 
     params.tokens[0].balanceInUsd = 0;
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(3.39);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(3.39);
 
     // Add a SNS project without a neuron
     params.snsProjects.data.push(getTestSns());
@@ -317,11 +345,15 @@ describe("neuron-utils", () => {
       ledgerCanisterId: Principal.fromText(TEST_SNS_IDS[0]),
     });
     params.fxRates[TEST_SNS_IDS[0]] = 100;
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(3.39);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(3.39);
 
     // Neuron fees should affect the reward estimate
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(50 * E8S_RATE);
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(2.26);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(2.26);
 
     // Add a couple of SNS neuron with a stake
     params.snsNeurons[TEST_SNS_IDS[0]] = {
@@ -337,26 +369,36 @@ describe("neuron-utils", () => {
         },
       ];
     });
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(37.59);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(37.59);
 
     // Change the stake of one of the SNS neurons
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
       BigInt(200 * E8S_RATE);
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(49.36);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(49.36);
 
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
       BigInt(400 * E8S_RATE);
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(72.92);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(72.92);
 
     // Change the FX rate of the SNS project
     params.fxRates[TEST_SNS_IDS[0]] = 1.23;
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(3.13);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(3.13);
 
     // Add fees to the SNS neuron
     params.snsNeurons[TEST_SNS_IDS[0]].neurons.forEach((n) => {
       n.neuron_fees_e8s = BigInt(500 * E8S_RATE);
     });
-    expect(round(getRewardData(params).rewardEstimateWeekUSD, 2)).toBe(2.26);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(2.26);
   });
 
   /////////////////
@@ -364,83 +406,87 @@ describe("neuron-utils", () => {
   /////////////////
 
   it("Calculates the Staking power (only NNS)", () => {
-    // Initial state with a single NNS neuron, equale split between balance and stake
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.5);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    // Initial state with a single NNS neuron, equally split between balance and stake
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     // Account for neuron fees
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(50 * E8S_RATE);
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = 0n;
 
     // Account for neuron staked maturitiy
     params.nnsNeurons.neurons[0].fullNeuron.stakedMaturityE8sEquivalent =
       BigInt(50 * E8S_RATE);
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.67);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(900);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.67);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(900);
     params.nnsNeurons.neurons[0].fullNeuron.stakedMaturityE8sEquivalent = 0n;
 
     // Account for neuron un-staked maturitiy
     params.nnsNeurons.neurons[0].fullNeuron.maturityE8sEquivalent = BigInt(
       50 * E8S_RATE
     );
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.33);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
     params.nnsNeurons.neurons[0].fullNeuron.maturityE8sEquivalent = 0n;
 
     // Other cases with different balances
     params.tokens[0].balanceInUsd = 900;
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.33);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     params.tokens[0].balanceInUsd = 1350;
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.25);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.25);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     params.tokens[0].balanceInUsd = 13500;
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.03);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.03);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     // Other cases with multiple neurons and different stakes
     params.nnsNeurons.neurons.push(getTestNeuronNns());
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.06);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(900);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.06);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(900);
 
     params.nnsNeurons.neurons.push(getTestNeuronNns());
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.09);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(1350);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.09);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
+      1350
+    );
 
     params.nnsNeurons.neurons.push(getTestNeuronNns());
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.12);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(1800);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.12);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
+      1800
+    );
 
     params.nnsNeurons.neurons = [getTestNeuronNns(), getTestNeuronNns()];
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       10 ** 10 * E8S_RATE
     );
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(1.0);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(1.0);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
       450 + 10 ** 10 * 9
     );
 
     // Test with no neurons
     params.nnsNeurons.neurons = [];
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
 
     // Test with a neuron that has no a negligible stake
     params.nnsNeurons.neurons.push(getTestNeuronNns());
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       1 * E8S_RATE
     );
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(9);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(9);
   });
 
   it("Calculates the Staking power (with SNSs)", () => {
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.5);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     // Add a SNS project without a neuron
     params.snsProjects.data.push(getTestSns());
@@ -448,8 +494,8 @@ describe("neuron-utils", () => {
       balanceInUsd: 450,
       ledgerCanisterId: Principal.fromText(TEST_SNS_IDS[0]),
     });
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.33);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     // Add an SNS neuron with a stake
     params.snsNeurons[TEST_SNS_IDS[0]] = {
@@ -458,14 +504,14 @@ describe("neuron-utils", () => {
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
       BigInt(45 * E8S_RATE);
     params.fxRates[TEST_SNS_IDS[0]] = 10;
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.5);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(900);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(900);
 
     // Modify the FX rate
     params.tokens[1].balanceInUsd = 45 * 1.23;
     params.fxRates[TEST_SNS_IDS[0]] = 1.23;
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.5);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
       450 + 45 * 1.23
     );
 
@@ -474,31 +520,31 @@ describe("neuron-utils", () => {
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].neuron_fees_e8s = BigInt(
       45 * E8S_RATE
     );
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.33);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].neuron_fees_e8s = BigInt(
       90 * E8S_RATE
     );
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.33);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     params.tokens[1].balanceInUsd = 0;
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.5);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(25 * E8S_RATE);
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.33);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(225);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(225);
 
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(50 * E8S_RATE);
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
   });
 
   it("Calculates the Staking power (complex cases: multiple SNSs, multiple neurons, fees, maturities)", () => {
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.5);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     params.snsProjects.data.push(getTestSns(TEST_SNS_IDS[0]));
     params.tokens.push({
@@ -516,8 +562,8 @@ describe("neuron-utils", () => {
       ledgerCanisterId: Principal.fromText(TEST_SNS_IDS[2]),
     });
 
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.17);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.17);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
 
     // Add SNS neurons
     params.snsNeurons[TEST_SNS_IDS[0]] = {
@@ -541,36 +587,48 @@ describe("neuron-utils", () => {
       BigInt(1000 * E8S_RATE);
     params.fxRates[TEST_SNS_IDS[2]] = 0.9;
 
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.5);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(2250);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
+      2250
+    );
 
     // Add fees
     params.snsNeurons[TEST_SNS_IDS[2]].neurons[0].neuron_fees_e8s = BigInt(
       500 * E8S_RATE
     );
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.44);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(1800);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.44);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
+      1800
+    );
 
     params.snsNeurons[TEST_SNS_IDS[2]].neurons[0].neuron_fees_e8s = BigInt(
       1000 * E8S_RATE
     );
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.38);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(1350);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.38);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
+      1350
+    );
 
     // Add maturities
     params.snsNeurons[TEST_SNS_IDS[2]].neurons[0].neuron_fees_e8s = BigInt(0);
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.5);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(2250);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
+      2250
+    );
     params.snsNeurons[TEST_SNS_IDS[2]].neurons[0].maturity_e8s_equivalent =
       BigInt(1000 * E8S_RATE);
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.42);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(2250);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.42);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
+      2250
+    );
 
     params.snsNeurons[
       TEST_SNS_IDS[2]
     ].neurons[0].staked_maturity_e8s_equivalent = [BigInt(1000 * E8S_RATE)];
-    expect(round(getRewardData(params).stakingPower, 2)).toBe(0.5);
-    expect(round(getRewardData(params).stakingPowerUSD, 2)).toBe(3150);
+    expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
+    expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
+      3150
+    );
   });
 
   ///////
@@ -581,11 +639,14 @@ describe("neuron-utils", () => {
     // Conficende range for APY calculations in respect to the reference value
     // This is used to check if the calculated APY is within a reasonable range
     // Some small differences can occur due to rounding and different precision levels
-    const confidence = 0.01; // 1% = 10 -> 9.9 <-> 10.1
+    const confidence = 0.01; // 1%, it means that if the reference was 10, a value between 9.9 and 10.1 is also accepted
 
     const checkApy = (id: string, max: boolean, value) =>
       inConfidenceRange(
-        round(getRewardData(params).apy.get(id)[max ? "max" : "cur"] * 100, 2),
+        roundToDecimals(
+          getRewardData(params).apy.get(id)[max ? "max" : "cur"] * 100,
+          2
+        ),
         value,
         confidence
       );
@@ -858,11 +919,14 @@ describe("neuron-utils", () => {
   });
 
   it("Calculates the APYs (SNSs)", () => {
-    const confidence = 0.01; // 1% = 10 -> 9.9 <-> 10.1
+    const confidence = 0.01; // 1%, it means that if the reference was 10, a value between 9.9 and 10.1 is also accepted
 
     const checkApy = (id: string, max: boolean, value) =>
       inConfidenceRange(
-        round(getRewardData(params).apy.get(id)[max ? "max" : "cur"] * 100, 2),
+        roundToDecimals(
+          getRewardData(params).apy.get(id)[max ? "max" : "cur"] * 100,
+          2
+        ),
         value,
         confidence
       );
@@ -1196,7 +1260,7 @@ const getRewardData = (params: TestStakingRewardCalcParams) => {
   return reward;
 };
 
-const round = (value: number, decimals: number): number => {
+const roundToDecimals = (value: number, decimals: number): number => {
   const factor = Math.pow(10, decimals);
   return Math.round(value * factor) / factor;
 };

@@ -156,7 +156,7 @@ export const isNeuronEligibleToVote = (
 export const maximiseNeuronParams = (
   neuron: AgnosticNeuron,
   maxDissolveSeconds: number,
-  forceInitialDate?: Date
+  forceInitialDate?: Date // For testing purposes
 ) => {
   const maxDissolve = BigInt(maxDissolveSeconds);
   const now = forceInitialDate
