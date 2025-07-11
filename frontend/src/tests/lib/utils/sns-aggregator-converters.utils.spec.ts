@@ -12,6 +12,7 @@ import {
 } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import {
+  convertDtoRewardEvent,
   convertDtoToListTopicsResponse,
   convertDtoToSnsSummary,
   convertDtoTopicInfo,
@@ -21,7 +22,11 @@ import {
 } from "$lib/utils/sns-aggregator-converters.utils";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { Principal } from "@dfinity/principal";
-import type { SnsNervousSystemParameters, SnsTopicInfo } from "@dfinity/sns";
+import type {
+  SnsNervousSystemParameters,
+  SnsRewardEvent,
+  SnsTopicInfo,
+} from "@dfinity/sns";
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {
@@ -1215,6 +1220,31 @@ describe("sns aggregator converters utils", () => {
           })
         ).toEqual(expectedTopicsResponse);
         expect(spyOnConsoleError).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe("convertDtoRewardEvent", () => {
+      it("converts RewardEvent to ic-js type", () => {
+        const expectedTopicsResponse: SnsRewardEvent = {
+          rounds_since_last_distribution: [1n],
+          actual_timestamp_seconds: 1752160922n,
+          end_timestamp_seconds: [1752160920n],
+          total_available_e8s_equivalent: [0n],
+          distributed_e8s_equivalent: 0n,
+          round: 1n,
+          settled_proposals: [{ id: 123n }],
+        };
+        expect(
+          convertDtoRewardEvent({
+            rounds_since_last_distribution: 1,
+            actual_timestamp_seconds: 1752160922,
+            end_timestamp_seconds: 1752160920,
+            total_available_e8s_equivalent: 0,
+            distributed_e8s_equivalent: 0,
+            round: 1,
+            settled_proposals: [{ id: 123 }],
+          })
+        ).toEqual(expectedTopicsResponse);
       });
     });
   });

@@ -72,6 +72,7 @@ type GetMetricsResultDto = {
   Ok?: MetricsDto;
   Err?: GovernanceErrorDto;
 };
+// This type is a combined version of multiple IC/sns types, so it can't be directly converted to a single @dfinity/sns type.
 export type CachedSnsMetricsDto = {
   get_metrics_result: GetMetricsResultDto;
 };
@@ -257,7 +258,7 @@ type ProposalIdDto = {
   id: number;
 };
 
-type RewardEventDto = {
+export type RewardEventDto = {
   rounds_since_last_distribution: number | null;
   actual_timestamp_seconds: number;
   end_timestamp_seconds: number | null;
@@ -321,7 +322,8 @@ export type CachedSnsDto = {
   canister_ids: CanisterIds;
   list_sns_canisters: ListSnsCanisterIds;
   meta: CachedSnsMetadataDto;
-  metrics: CachedSnsMetricsDto;
+  // Marked as optional because it could be missing in older aggregator versions.
+  metrics?: CachedSnsMetricsDto;
   parameters: {
     functions: CachedNervousFunctionDto[];
     reserved_ids: number[];
@@ -338,7 +340,8 @@ export type CachedSnsDto = {
   derived_state: CachedSnsSwapDerivedDto;
   swap_params: CachedSwapParamsResponseDto;
   init: CachedInitResponseDto;
-  latest_reward_event: RewardEventDto;
+  // Marked as optional because it could be missing in older aggregator versions.
+  latest_reward_event?: RewardEventDto;
   lifecycle: CachedLifecycleResponseDto | null;
   // TODO(mstr): Make it not optional after all the canisters are upgraded.
   topics?: CachedListTopicsResponseDto;

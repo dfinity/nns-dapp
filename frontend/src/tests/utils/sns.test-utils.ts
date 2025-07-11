@@ -6,6 +6,7 @@ import type {
   CachedListTopicsResponseDto,
   CachedNervousSystemParametersDto,
   CachedSnsDto,
+  RewardEventDto,
 } from "$lib/types/sns-aggregator";
 import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -37,6 +38,7 @@ export const setSnsProjects = (
     maxAgeBonusPercentage?: number;
     neuronMinimumStakeE8s?: bigint;
     topics?: CachedListTopicsResponseDto;
+    latestRewardEvent?: RewardEventDto;
   }[]
 ) => {
   const aggregatorProjects = params.map((params, index) => {
@@ -65,6 +67,7 @@ export const setSnsProjects = (
       maxAgeBonusPercentage: params.maxAgeBonusPercentage,
       neuronMinimumStakeE8s: params.neuronMinimumStakeE8s,
       topics: params.topics,
+      latestRewardEvent: params.latestRewardEvent,
     });
   });
   snsLifecycleStore.reset();
