@@ -210,8 +210,7 @@ export const getNeuronBonusRatio = (
 
   const dissolveSeconds = getNeuronDissolveDelaySeconds(neuron, referenceDate);
   const dissolvingBonus =
-    Math.min(Math.floor(Number(dissolveSeconds)) / dissolveMax, 1) *
-    dissolveBonus;
+    Math.min(Number(dissolveSeconds) / dissolveMax, 1) * dissolveBonus;
   return (1 + dissolvingBonus) * (1 + agingBonus) - 1;
 };
 
