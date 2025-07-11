@@ -400,7 +400,8 @@ const getNeuronsRewardEstimationUSD = (params: {
     neurons.forEach((neuron) =>
       maximiseNeuronParams(
         neuron,
-        getRewardParams(otherParams, sns).maxDissolve
+        getRewardParams(otherParams, sns).maxDissolve,
+        forceInitialDate
       )
     );
   }
@@ -436,7 +437,11 @@ const getNeuronsRewardEstimationUSD = (params: {
         );
 
         const rewardUSD =
-          tokenReward * getFXRate(otherParams.fxRates, LEDGER_CANISTER_ID);
+          tokenReward *
+          getFXRate(
+            otherParams.fxRates,
+            sns ? sns.canister_ids.ledger_canister_id : LEDGER_CANISTER_ID
+          );
         increaseNeuronMaturity(
           neuron,
           BigInt(Math.floor(tokenReward * Number(E8S_RATE)))
@@ -614,11 +619,11 @@ const getSnsRewardParams = (sns: CachedSnsDto) => {
     maxAge: snsSystemParams.max_neuron_age_for_age_bonus ?? 0,
     maxAgeBonus: (snsSystemParams.max_age_bonus_percentage ?? 0) / 100,
     initialReward:
-      snsSystemParams.voting_rewards_parameters
-        ?.initial_reward_rate_basis_points ?? 0,
+      (snsSystemParams.voting_rewards_parameters
+        ?.initial_reward_rate_basis_points ?? 0) / 10000,
     finalReward:
-      snsSystemParams.voting_rewards_parameters
-        ?.final_reward_rate_basis_points ?? 0,
+      (snsSystemParams.voting_rewards_parameters
+        ?.final_reward_rate_basis_points ?? 0) / 10000,
     rewardTransition:
       snsSystemParams.voting_rewards_parameters
         ?.reward_rate_transition_duration_seconds ?? 0,
@@ -645,9 +650,10 @@ const getNnsRewardParams = (params: StakingRewardCalcParams) => ({
   totalSupply: Number(params.governanceMetrics.metrics?.totalSupplyIcp),
 });
 
-const getTotalVotingPower = (_sns: CachedSnsDto): bigint => {
+const getTotalVotingPower = (sns: CachedSnsDto): bigint => {
   // @TODO: USE THE EXPOSED TOTAL VOTING POWER!
-  return 0n;
+  // @ts-expect-error need to update the type
+  return sns.nervous_system_parameters.total_voting_power ?? 0n;
 };
 
 ////////////////////
