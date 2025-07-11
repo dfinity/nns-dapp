@@ -90,7 +90,7 @@ describe("SelectDestinationAddress", () => {
         },
       });
 
-      expect(container.querySelector("input[id='toggle']")).toBeNull();
+      expect(container.querySelector("input[id='gix-cmp-toggle']")).toBeNull();
       expect(
         container.querySelector("input[name='accounts-address']")
       ).toBeNull();
@@ -104,7 +104,7 @@ describe("SelectDestinationAddress", () => {
         },
       });
 
-      expect(container.querySelector("input[id='toggle']")).toBeNull();
+      expect(container.querySelector("input[id='gix-cmp-toggle']")).toBeNull();
       expect(queryByTestId("select-account-dropdown")).toBeNull();
     });
   });
