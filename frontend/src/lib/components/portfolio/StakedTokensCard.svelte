@@ -15,26 +15,32 @@
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
-  import { TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {
     topStakedTokens: TableProject[];
     usdAmount: number;
     numberOfTopHeldTokens: number;
+    hasApyCalculationErrored?: boolean;
   };
 
-  const { topStakedTokens, usdAmount, numberOfTopHeldTokens }: Props = $props();
+  const {
+    topStakedTokens,
+    usdAmount,
+    numberOfTopHeldTokens,
+    hasApyCalculationErrored,
+  }: Props = $props();
 
   const href = AppPath.Staking;
 
   const numberOfTopStakedTokens = $derived(topStakedTokens.length);
-
   const showInfoRow = $derived(
     shouldShowInfoRow({
       currentCardNumberOfTokens: numberOfTopStakedTokens,
       otherCardNumberOfTokens: numberOfTopHeldTokens,
     })
   );
+  const showApy = $derived($ENABLE_APY_PORTFOLIO && !hasApyCalculationErrored);
 </script>
 
 <Card testId="staked-tokens-card">
@@ -59,7 +65,7 @@
           >{$i18n.portfolio.staked_tokens_card_list_first_column}</span
         >
 
-        {#if $ENABLE_APY_PORTFOLIO}
+        {#if showApy}
           <span
             class="mobile-only justify-end text-right align-center"
             role="columnheader"
@@ -78,7 +84,7 @@
           >
         {/if}
 
-        {#if $ENABLE_APY_PORTFOLIO}
+        {#if showApy}
           <span
             class="tablet-up justify-end align-center gap-small"
             role="columnheader"
@@ -105,6 +111,7 @@
 
       <div class="list" role="rowgroup">
         {#each topStakedTokens as stakedToken (stakedToken.domKey)}
+          {@const apy = stakedToken.apy}
           <svelte:element
             this={$authSignedInStore ? "a" : "div"}
             href={$authSignedInStore ? stakedToken.rowHref : undefined}
@@ -125,17 +132,17 @@
               <span data-tid="title">{stakedToken.title}</span>
             </div>
 
-            {#if $ENABLE_APY_PORTFOLIO}
+            {#if showApy}
               <div class="apy" data-tid="apy" role="cell">
-                {#if $authSignedInStore}
+                {#if $authSignedInStore && nonNullish(apy) && apy.max > 0}
                   <span
-                    >{formatPercentage(stakedToken?.apy?.cur ?? 0, {
+                    >{formatPercentage(apy.cur, {
                       minFraction: 2,
                       maxFraction: 2,
                     })}</span
                   >
                   <span class="description"
-                    >({formatPercentage(stakedToken?.apy?.max ?? 0, {
+                    >({formatPercentage(apy.max, {
                       minFraction: 2,
                       maxFraction: 2,
                     })})</span
