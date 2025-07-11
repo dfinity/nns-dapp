@@ -63,7 +63,7 @@ type StakingRewardDataReady = {
   apy: APY;
 };
 
-type StakingRewardData =
+export type StakingRewardData =
   | { loading: true }
   | StakingRewardDataReady
   | {
@@ -338,6 +338,19 @@ const isDataReady = (params: StakingRewardCalcParams) => {
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
   const isGovernanceMetricsReady = Boolean(governanceMetrics.metrics);
   const isNnsTotalVotingPowerReady = nnsTotalVotingPower !== undefined;
+
+  console.log(tokens);
+
+  console.log({
+    areTokensReady,
+    areSnsNeuronsReady,
+    areSnsProjectsReady,
+    areNnsNeuronsReady,
+    isNnsEconomicsReady,
+    areFXRatesReady,
+    isGovernanceMetricsReady,
+    isNnsTotalVotingPowerReady,
+  });
 
   return [
     areTokensReady,

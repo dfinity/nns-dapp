@@ -14,9 +14,7 @@
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import {
     isDesktopViewportStore,
     isMobileViewportStore,
@@ -25,12 +23,6 @@
     ENABLE_APY_PORTFOLIO,
     ENABLE_LAUNCHPAD_REDESIGN,
   } from "$lib/stores/feature-flags.store";
-  import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
-  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
-  import { neuronsStore } from "$lib/stores/neurons.store";
-  import { nnsTotalVotingPower } from "$lib/stores/nns-total-voting-power.store";
-  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { TableProject } from "$lib/types/staking";
   import type { ComponentWithProps } from "$lib/types/svelte";
   import type { UserToken } from "$lib/types/tokens-page";
@@ -42,8 +34,8 @@
   } from "$lib/utils/portfolio.utils";
   import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import {
-    getStakingRewardData,
     isStakingRewardDataReady,
+    type StakingRewardData,
   } from "$lib/utils/staking-rewards.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
@@ -57,6 +49,7 @@
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
     adoptedSnsProposals: SnsFullProject[];
+    stakingRewardData: StakingRewardData;
   };
 
   const {
@@ -65,6 +58,7 @@
     snsProjects,
     openSnsProposals,
     adoptedSnsProposals,
+    stakingRewardData,
   }: Props = $props();
 
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
@@ -147,20 +141,6 @@
     })
   );
 
-  const stakingRewardData = $derived(
-    getStakingRewardData({
-      auth: $authSignedInStore,
-      tokens: $tokensListUserStore,
-      snsProjects: $snsAggregatorStore,
-      snsNeurons: $snsNeuronsStore,
-      nnsNeurons: $neuronsStore,
-      nnsEconomics: $networkEconomicsStore,
-      fxRates: $icpSwapUsdPricesStore,
-      governanceMetrics: $governanceMetricsStore,
-      nnsTotalVotingPower: $nnsTotalVotingPower,
-    })
-  );
-
   const tableProjectsWithApy: TableProject[] = $derived(
     isStakingRewardDataReady(stakingRewardData)
       ? tableProjects.map((project) => ({
@@ -225,6 +205,10 @@
   const hasApyCalculationErrored = $derived(
     !stakingRewardData.loading && "error" in stakingRewardData
   );
+
+  // $effect(() => {
+  //   console.log(stakingRewardData);
+  // });
 </script>
 
 <main data-tid="portfolio-page-component">
