@@ -24,7 +24,7 @@
   ];
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
 
   let delayInSeconds = Number(neuron.dissolveDelaySeconds);
 
@@ -41,10 +41,10 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  onClose={() =>  dispatcher("nnsClose")}
   testId="increase-dissolve-delay-modal-component"
 >
-  <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
+  {#snippet title()}{currentStep?.title}{/snippet}
   {#if currentStep?.name === "SetDissolveDelay"}
     <SetNnsDissolveDelay
       {neuron}

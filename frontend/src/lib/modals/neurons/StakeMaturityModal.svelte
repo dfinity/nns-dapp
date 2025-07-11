@@ -26,7 +26,7 @@
   ];
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
 
   let percentageToStake = 0;
 
@@ -41,13 +41,11 @@
 <WizardModal
   {steps}
   bind:currentStep
-  on:nnsClose
+  onClose={() =>  dispatcher("nnsClose")}
   bind:this={modal}
   testId="stake-maturity-modal-component"
 >
-  <svelte:fragment slot="title"
-    >{currentStep?.title ?? steps[0].title}</svelte:fragment
-  >
+  {#snippet title()}{currentStep?.title ?? steps[0].title}{/snippet}
 
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage

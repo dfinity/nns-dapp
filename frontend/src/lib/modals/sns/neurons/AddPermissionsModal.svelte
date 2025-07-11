@@ -37,7 +37,7 @@
   ];
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
 
   let principal: Principal | undefined = undefined;
   const dispatcher = createEventDispatcher();
@@ -84,10 +84,8 @@
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <svelte:fragment slot="title"
-    >{`${currentStep?.title} - TESTNET ONLY`}</svelte:fragment
-  >
+<WizardModal {steps} bind:currentStep bind:this={modal} onClose={() =>  dispatcher("nnsClose")}>
+  {#snippet title()}{`${currentStep?.title} - TESTNET ONLY`}{/snippet}
 
   {#if currentStep?.name === "Principal"}
     <AddPrincipal

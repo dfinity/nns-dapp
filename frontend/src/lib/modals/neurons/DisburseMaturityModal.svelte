@@ -46,7 +46,7 @@
   ];
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
 
   let percentageToDisburse = 0;
   let selectedMaturityE8s: bigint;

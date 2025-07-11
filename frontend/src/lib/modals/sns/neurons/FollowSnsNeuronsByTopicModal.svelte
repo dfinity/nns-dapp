@@ -85,7 +85,7 @@
     },
   ];
   let currentStep: WizardStep | undefined = $state();
-  let modal: WizardModal | undefined = $state();
+  let modal: WizardModal<string> | undefined = $state();
   const openNextStep = () => {
     if (
       currentStep?.name === STEP_TOPICS &&
@@ -314,9 +314,9 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose={closeModal}
+  onClose={closeModal}
 >
-  <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
+  {#snippet title()}{currentStep?.title}{/snippet}
 
   {#if currentStep?.name === STEP_TOPICS}
     <FollowSnsNeuronsByTopicStepTopics

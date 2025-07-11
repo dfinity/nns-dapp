@@ -111,13 +111,11 @@
 
 <WizardModal
   bind:currentStep
-  on:nnsClose
+  onClose={() =>  dispatcher("nnsClose")}
   {steps}
   testId="disburse-sns-neuron-modal-component"
 >
-  <svelte:fragment slot="title"
-    ><span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span
-    ></svelte:fragment
+  {#snippet title()}<span data-tid="disburse-sns-neuron-modal">{currentStep?.title}</span>{/snippet}
   >
   {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron
