@@ -19,8 +19,8 @@ export type TableProject = {
   stakedMaturity: bigint | undefined;
   isStakeLoading?: boolean;
   apy?: {
-    cur: number | undefined;
-    max: number | undefined;
+    cur: number;
+    max: number;
   };
 };
 

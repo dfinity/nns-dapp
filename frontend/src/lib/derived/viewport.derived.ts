@@ -2,19 +2,26 @@ import { browser } from "$app/environment";
 import { writable, type Readable } from "svelte/store";
 
 export const BREAKPOINT_SMALL = 576;
+export const BREAKPOINT_LARGE = 1024;
 
-const mobileMediaQueryWritable = writable<boolean>(false);
+const createMediaQueryStore = (query: string): Readable<boolean> => {
+  const store = writable<boolean>(false);
 
-if (browser) {
-  const mediaQuery = window.matchMedia(`(min-width: ${BREAKPOINT_SMALL}px)`);
+  if (browser) {
+    const mediaQuery = window.matchMedia(query);
+    store.set(mediaQuery.matches);
 
-  mobileMediaQueryWritable.set(!mediaQuery.matches);
+    mediaQuery.addEventListener("change", (event: MediaQueryListEvent) => {
+      store.set(event.matches);
+    });
+  }
 
-  mediaQuery.addEventListener("change", (event: MediaQueryListEvent) => {
-    mobileMediaQueryWritable.set(!event.matches);
-  });
-}
-
-export const isMobileViewportStore: Readable<boolean> = {
-  subscribe: mobileMediaQueryWritable.subscribe,
+  return { subscribe: store.subscribe };
 };
+
+export const isMobileViewportStore = createMediaQueryStore(
+  `(max-width: ${BREAKPOINT_SMALL - 1}px)`
+);
+export const isDesktopViewportStore = createMediaQueryStore(
+  `(min-width: ${BREAKPOINT_LARGE}px)`
+);

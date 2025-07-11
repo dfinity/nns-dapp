@@ -63,7 +63,6 @@
 
     @include media.min-width(medium) {
       height: 230px;
-      max-height: 230px;
       padding: var(--padding-3x) var(--padding-3x)
         var(--card-frame-padding-bottom, var(--padding-3x));
     }
