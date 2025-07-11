@@ -114,8 +114,6 @@ export const getStakingRewardData = (
       logWithTimestamp("Staking rewards: calculation completed, fields ready.");
       return res;
     } catch (e) {
-      console.log(e);
-
       logWithTimestamp("Staking rewards: error during calculation.", e);
       return { loading: false, error: "Error during calculation." };
     }
@@ -394,7 +392,6 @@ const getNeuronsRewardEstimationUSD = (params: {
         if (fullStake > 0n) {
           const votingPowerRatio =
             1 + getNeuronBonus(otherParams, neuron, i, sns);
-
           neuronVotingPower = bigIntMul(fullStake, votingPowerRatio, 20);
         }
       }
@@ -409,7 +406,6 @@ const getNeuronsRewardEstimationUSD = (params: {
 
         const rewardUSD =
           tokenReward * getFXRate(otherParams.fxRates, LEDGER_CANISTER_ID);
-
         increaseNeuronMaturity(
           neuron,
           BigInt(Math.floor(tokenReward * Number(E8S_RATE)))

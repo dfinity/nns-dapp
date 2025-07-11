@@ -1,4 +1,5 @@
 import { ApyCardPo } from "$tests/page-objects/ApyCard.page-object";
+import { ApyFallbackCardPo } from "$tests/page-objects/ApyFallbackCard.page-object";
 import { HeldTokensCardPo } from "$tests/page-objects/HeldTokensCard.page-object";
 import { NoStakedTokensCardPo } from "$tests/page-objects/NoStakedTokensCard.page-object";
 import { StackedCardsPo } from "$tests/page-objects/StackedCards.page-object";
@@ -6,7 +7,6 @@ import { StakedTokensCardPo } from "$tests/page-objects/StakedTokensCard.page-ob
 import { TotalAssetsCardPo } from "$tests/page-objects/TotalAssetsCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ApyFallbackCardPo } from "./ApyFallbackCard.page-object";
 
 export class PortfolioPagePo extends BasePageObject {
   private static readonly TID = "portfolio-page-component";
