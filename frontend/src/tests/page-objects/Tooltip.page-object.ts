@@ -3,7 +3,7 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 import { assertNonNullish } from "$tests/utils/utils.test-utils";
 
 export class TooltipPo extends BasePageObject {
-  private static readonly TOOLTIP_TID = "tooltip-component";
+  private static readonly TOOLTIP_TID = "gix-cmp-tooltip-component";
 
   static under(element: PageObjectElement): TooltipPo {
     return new TooltipPo(element.byTestId(TooltipPo.TOOLTIP_TID));

@@ -5,14 +5,14 @@
   import type { SyncState } from "$lib/types/sync";
   import { IconError, IconSync, Popover } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import type { ComponentType } from "svelte";
+  import type { Component } from "svelte";
 
   let visible: boolean | undefined;
   let button: HTMLButtonElement | undefined;
 
   let label: string;
   let description: string;
-  let icon: ComponentType | undefined;
+  let icon: Component | undefined;
 
   const syncLabel = (state: SyncState): string => {
     switch (state) {
@@ -36,7 +36,7 @@
     }
   };
 
-  const syncIcon = (state: SyncState): ComponentType | undefined => {
+  const syncIcon = (state: SyncState): Component | undefined => {
     switch (state) {
       case "error":
         return IconError;

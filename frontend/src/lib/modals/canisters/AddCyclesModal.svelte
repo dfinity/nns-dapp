@@ -51,7 +51,7 @@
     getContext<CanisterDetailsContext>(CANISTER_DETAILS_CONTEXT_KEY);
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
   let account: Account | undefined;
   let amount: number | undefined;
   let canisterId: Principal | undefined;
@@ -102,12 +102,11 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  onClose={() => dispatcher("nnsClose")}
 >
-  <svelte:fragment slot="title"
-    ><span data-tid="top-up-canister-modal-title"
+  {#snippet title()}<span data-tid="top-up-canister-modal-title"
       >{currentStep?.title ?? $i18n.accounts.select_source}</span
-    ></svelte:fragment
+    >{/snippet}
   >
   <svelte:fragment>
     {#if currentStep?.name === "SelectCycles"}

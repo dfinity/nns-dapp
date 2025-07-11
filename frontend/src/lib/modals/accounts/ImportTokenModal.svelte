@@ -45,7 +45,7 @@
       title: $i18n.import_token.review_token_info,
     },
   ];
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
   const next = () => modal?.next();
   const back = () => modal?.back();
 
@@ -247,9 +247,9 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose={close}
+  onClose={close}
 >
-  <svelte:fragment slot="title">{currentStep?.title}</svelte:fragment>
+  {#snippet title()}{currentStep?.title}{/snippet}
 
   {#if currentStep?.name === STEP_FORM}
     <ImportTokenForm

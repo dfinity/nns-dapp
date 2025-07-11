@@ -30,7 +30,7 @@
   ];
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
 
   const dispatcher = createEventDispatcher();
   const invalidStates: InvalidState<NeuronInfo[]>[] = [
@@ -65,12 +65,10 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  onClose={() => dispatcher("nnsClose")}
 >
-  <svelte:fragment slot="title"
-    >{currentStep?.title ??
-      $i18n.neurons.merge_neurons_modal_title}</svelte:fragment
-  >
+  {#snippet title()}{currentStep?.title ??
+      $i18n.neurons.merge_neurons_modal_title}{/snippet}
   {#if currentStep?.name === "SelectNeurons"}
     <SelectNeuronsToMerge on:nnsSelect={handleNeuronSelection} on:nnsClose />
   {/if}

@@ -86,7 +86,7 @@
     },
   ];
 
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
   let scanQrCode: ({
     requiredToken,
   }: {
