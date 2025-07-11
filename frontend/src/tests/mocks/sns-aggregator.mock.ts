@@ -5,6 +5,8 @@ import type {
   CachedNervousSystemParametersDto,
   CachedSnsDto,
   CachedSnsTokenMetadataDto,
+  MetricsDto,
+  RewardEventDto,
 } from "$lib/types/sns-aggregator";
 import { convertDtoToTokenMetadata } from "$lib/utils/sns-aggregator-converters.utils";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
@@ -94,6 +96,8 @@ export const aggregatorSnsMockWith = ({
   maxAgeBonusPercentage,
   neuronMinimumStakeE8s,
   topics,
+  latestRewardEvent,
+  metrics,
 }: {
   rootCanisterId?: string;
   governanceCanisterId?: string;
@@ -119,6 +123,8 @@ export const aggregatorSnsMockWith = ({
   maxAgeBonusPercentage?: number;
   neuronMinimumStakeE8s?: bigint;
   topics?: CachedListTopicsResponseDto;
+  latestRewardEvent?: RewardEventDto;
+  metrics?: MetricsDto;
 }): CachedSnsDto => ({
   index: index ?? aggregatorSnsMockDto.index,
   ...aggregatorSnsMockDto,
@@ -238,4 +244,12 @@ export const aggregatorSnsMockWith = ({
     lifecycle: lifecycle ?? aggregatorSnsMockDto.lifecycle.lifecycle,
   },
   topics,
+  latest_reward_event: latestRewardEvent,
+  metrics: nonNullish(metrics)
+    ? {
+        get_metrics_result: {
+          Ok: metrics,
+        },
+      }
+    : undefined,
 });
