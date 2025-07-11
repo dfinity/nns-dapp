@@ -41,7 +41,7 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  onClose={() =>  dispatcher("nnsClose")}
+  onClose={() => dispatcher("nnsClose")}
   testId="increase-dissolve-delay-modal-component"
 >
   {#snippet title()}{currentStep?.title}{/snippet}

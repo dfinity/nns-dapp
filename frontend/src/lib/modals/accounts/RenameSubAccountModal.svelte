@@ -6,7 +6,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import {createEventDispatcher} from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   let steps: WizardSteps = [
     {
@@ -20,7 +20,7 @@
   const dispatcher = createEventDispatcher();
 </script>
 
-<WizardModal {steps} bind:currentStep onClose={() =>  dispatcher("nnsClose")}>
+<WizardModal {steps} bind:currentStep onClose={() => dispatcher("nnsClose")}>
   {#snippet title()}{$i18n.accounts.rename_linked_account}{/snippet}
 
   <RenameSubAccountAction on:nnsClose />

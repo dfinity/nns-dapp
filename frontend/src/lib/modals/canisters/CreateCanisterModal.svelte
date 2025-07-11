@@ -108,9 +108,11 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  onClose={() =>  dispatcher("nnsClose")}
+  onClose={() => dispatcher("nnsClose")}
 >
-  {#snippet title()}<span data-tid="create-canister-modal-title">{currentStep?.title ?? $i18n.canisters.add_canister}</span>{/snippet}
+  {#snippet title()}<span data-tid="create-canister-modal-title"
+      >{currentStep?.title ?? $i18n.canisters.add_canister}</span
+    >{/snippet}
   >
   <svelte:fragment>
     {#if currentStep?.name === "SelectData"}

@@ -15,7 +15,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import {createEventDispatcher, setContext, tick} from "svelte";
+  import { createEventDispatcher, setContext, tick } from "svelte";
   import { writable } from "svelte/store";
 
   const subAccountSteps: WizardSteps = [
@@ -89,7 +89,7 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  onClose={() =>  dispatcher("nnsClose")}
+  onClose={() => dispatcher("nnsClose")}
 >
   {#snippet title()}{currentStep?.title ?? $i18n.accounts.add_account}{/snippet}
 

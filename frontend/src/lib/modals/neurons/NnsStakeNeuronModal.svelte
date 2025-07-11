@@ -169,12 +169,13 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  onClose={() =>  dispatcher("nnsClose")}
+  onClose={() => dispatcher("nnsClose")}
   --modal-content-overflow-y={currentStep?.name === "EditFollowNeurons"
     ? "scroll"
     : "auto"}
 >
-  {#snippet title()}{currentStep?.title ?? $i18n.accounts.select_source}{/snippet}
+  {#snippet title()}{currentStep?.title ??
+      $i18n.accounts.select_source}{/snippet}
   {#if currentStep?.name === "StakeNeuron"}
     <NnsStakeNeuron
       bind:account={selectedAccount}

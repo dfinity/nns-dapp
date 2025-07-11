@@ -95,7 +95,7 @@
   testId="spawn-neuron-modal-component"
   {steps}
   bind:currentStep
-  onClose={() =>  dispatcher("nnsClose")}
+  onClose={() => dispatcher("nnsClose")}
 >
   {#snippet title()}{currentStep?.title ?? steps[0].title}{/snippet}
   {#if currentStep?.name === "SelectPercentage"}

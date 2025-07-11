@@ -41,7 +41,7 @@
 <WizardModal
   {steps}
   bind:currentStep
-  onClose={() =>  dispatcher("nnsClose")}
+  onClose={() => dispatcher("nnsClose")}
   bind:this={modal}
   testId="stake-maturity-modal-component"
 >

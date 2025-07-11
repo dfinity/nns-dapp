@@ -14,7 +14,7 @@
     nonNullish,
     type Token,
   } from "@dfinity/utils";
-  import {createEventDispatcher} from "svelte";
+  import { createEventDispatcher } from "svelte";
 
   export let testId: string | undefined = undefined;
   export let steps: WizardSteps;
@@ -146,7 +146,7 @@
   steps={stepsPlusQr}
   bind:currentStep
   bind:this={modal}
-  onClose={() =>  dispatcher("nnsClose")}
+  onClose={() => dispatcher("nnsClose")}
   {disablePointerEvents}
 >
   {#snippet title()}<slot name="title" />{/snippet}

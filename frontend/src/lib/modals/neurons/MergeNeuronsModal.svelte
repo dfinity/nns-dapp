@@ -65,7 +65,7 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  onClose={() =>  dispatcher("nnsClose")}
+  onClose={() => dispatcher("nnsClose")}
 >
   {#snippet title()}{currentStep?.title ??
       $i18n.neurons.merge_neurons_modal_title}{/snippet}

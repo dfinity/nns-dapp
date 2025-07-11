@@ -84,7 +84,12 @@
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<WizardModal {steps} bind:currentStep bind:this={modal} onClose={() =>  dispatcher("nnsClose")}>
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  onClose={() => dispatcher("nnsClose")}
+>
   {#snippet title()}{`${currentStep?.title} - TESTNET ONLY`}{/snippet}
 
   {#if currentStep?.name === "Principal"}
