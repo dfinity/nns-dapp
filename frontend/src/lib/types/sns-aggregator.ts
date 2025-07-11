@@ -26,10 +26,13 @@ export type CachedSnsMetadataDto = {
   description: string | null;
 };
 
+type SubaccountDto = {
+  subaccount: number[];
+};
+
 export type AccountDto = {
   owner: CanisterIdString | null;
-  // used unknown because it's not in use
-  subaccount: unknown | null;
+  subaccount: SubaccountDto | null;
 };
 
 export type TreasuryMetricsDto = {
@@ -61,10 +64,13 @@ export type MetricsDto = {
   voting_power_metrics: VotingPowerMetricsDto | null;
   genesis_timestamp_seconds: number | null;
 };
+type GovernanceErrorDto = {
+  error_message: string;
+  error_type: number;
+};
 type GetMetricsResultDto = {
-  Ok?: MetricsDto | null;
-  // Used unknown because it's not in use
-  Err?: unknown | null;
+  Ok?: MetricsDto;
+  Err?: GovernanceErrorDto;
 };
 export type CachedSnsMetricsDto = {
   get_metrics_result: GetMetricsResultDto;
