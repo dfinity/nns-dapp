@@ -196,7 +196,6 @@
   }
 
   .card.desktop {
-    height: 270px;
     display: grid;
     grid-template-rows: auto auto 1fr;
     padding: 24px;
