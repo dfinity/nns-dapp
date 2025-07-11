@@ -14,6 +14,7 @@
     nonNullish,
     type Token,
   } from "@dfinity/utils";
+  import {createEventDispatcher} from "svelte";
 
   export let testId: string | undefined = undefined;
   export let steps: WizardSteps;
@@ -31,7 +32,7 @@
     },
   ];
 
-  export let modal: WizardModal;
+  export let modal: WizardModal<string>;
 
   export const set = (step: number) => {
     modal.set(step);
@@ -136,6 +137,8 @@
     });
     resolveQrCodePromise = undefined;
   };
+
+  const dispatcher = createEventDispatcher();
 </script>
 
 <WizardModal
@@ -143,10 +146,10 @@
   steps={stepsPlusQr}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  onClose={() =>  dispatcher("nnsClose")}
   {disablePointerEvents}
 >
-  <slot name="title" slot="title" />
+  {#snippet title()}<slot name="title" />{/snippet}
   <slot />
   {#if currentStep?.name === STEP_QRCODE}
     <TransactionQRCode on:nnsCancel={onCancel} on:nnsQRCode={onQRCode} />

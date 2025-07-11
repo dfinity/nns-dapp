@@ -34,7 +34,7 @@
 
   const orderBy = async (selectedColumnId: string) =>
     (order = selectPrimaryOrder({ order, selectedColumnId }));
-  const onNnsSelect = ({ detail: selectedId }: CustomEvent<string>) =>
+  const onNnsSelect = (selectedId: string) =>
     orderBy(selectedId);
   const reverseOrder = () => orderBy(order[0].columnId);
 </script>
@@ -59,7 +59,7 @@
     </button>
   </div>
 
-  <ChipGroup {chips} on:nnsSelect={onNnsSelect} />
+  <ChipGroup {chips} onSelect={onNnsSelect} />
 </div>
 
 <style lang="scss">
