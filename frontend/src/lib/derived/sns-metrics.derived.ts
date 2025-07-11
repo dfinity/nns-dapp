@@ -5,7 +5,7 @@ import { type Readable } from "svelte/store";
 
 export interface SnsMetricsStoreData {
   // Root canister id is the key to identify the metrics for a specific project.
-  [rootCanisterId: string]: MetricsDto | undefined;
+  [rootCanisterId: CanisterIdString]: MetricsDto | undefined;
 }
 
 /**
