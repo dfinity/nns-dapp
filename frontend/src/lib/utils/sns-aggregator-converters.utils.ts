@@ -25,6 +25,7 @@ import type {
   CachedSwapParamsDto,
   CachedVotingRewardsParametersDto,
   ListTopicsResponseWithUnknown,
+  RewardEventDto,
   TopicInfoDto,
   TopicInfoWithUnknown,
 } from "$lib/types/sns-aggregator";
@@ -42,6 +43,7 @@ import type {
   SnsNervousSystemParameters,
   SnsNeuronsFundParticipationConstraints,
   SnsParams,
+  SnsRewardEvent,
   SnsSwapDerivedState,
   SnsSwapInit,
   SnsVotingRewardsParameters,
@@ -124,7 +126,7 @@ const convertDefaultFollowees = (
   ];
 };
 
-const numberToNullableBigInt = (num?: number): [] | [bigint] =>
+const numberToNullableBigInt = (num?: number | null): [] | [bigint] =>
   toNullable(convertOptionalNumToBigInt(num));
 
 const convertVotingRewardsParameters = (
@@ -574,4 +576,24 @@ export const convertDtoToListTopicsResponse = ({
   uncategorized_functions: toNullable(
     uncategorized_functions.map(convertNervousFunction)
   ),
+});
+
+export const convertDtoRewardEvent = (
+  rewardEvent: RewardEventDto
+): SnsRewardEvent => ({
+  rounds_since_last_distribution: numberToNullableBigInt(
+    rewardEvent.rounds_since_last_distribution
+  ),
+  actual_timestamp_seconds: BigInt(rewardEvent.actual_timestamp_seconds),
+  end_timestamp_seconds: numberToNullableBigInt(
+    rewardEvent.end_timestamp_seconds
+  ),
+  total_available_e8s_equivalent: numberToNullableBigInt(
+    rewardEvent.total_available_e8s_equivalent
+  ),
+  distributed_e8s_equivalent: BigInt(rewardEvent.distributed_e8s_equivalent),
+  round: BigInt(rewardEvent.round),
+  settled_proposals: rewardEvent.settled_proposals.map((proposal) => ({
+    id: BigInt(proposal.id),
+  })),
 });

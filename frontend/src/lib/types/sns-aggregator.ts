@@ -1,4 +1,5 @@
 import type { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
+import type { CanisterIdString } from "@dfinity/nns";
 import type { SnsListTopicsResponse, SnsTopicInfo } from "@dfinity/sns";
 
 type CanisterIds = {
@@ -23,6 +24,57 @@ export type CachedSnsMetadataDto = {
   url: string | null;
   name: string | null;
   description: string | null;
+};
+
+type SubaccountDto = {
+  subaccount: number[];
+};
+
+export type AccountDto = {
+  owner: CanisterIdString | null;
+  subaccount: SubaccountDto | null;
+};
+
+export type TreasuryMetricsDto = {
+  // Same as, e.g., `TransferSnsTreasuryFunds.from_treasury`.
+  treasury: number;
+  // A human-readable identified for this treasury, e.g., "ICP".
+  name: string | null;
+  // The source of truth for the treasury balance is this ledger canister / account.
+  ledger_canister_id: CanisterIdString | null;
+  account: AccountDto | null;
+  // The regularly updated amount of tokens in this treasury.
+  amount_e8s: number | null;
+  // The amount of tokens in this treasury at the end of swap finalization.
+  original_amount_e8s: number | null;
+  // When the metrics were last updated.
+  timestamp_seconds: number | null;
+};
+type VotingPowerMetricsDto = {
+  governance_total_potential_voting_power: number | null;
+  // When the metrics were last updated.
+  timestamp_seconds: number | null;
+};
+export type MetricsDto = {
+  num_recently_submitted_proposals: number | null;
+  num_recently_executed_proposals: number | null;
+  last_ledger_block_timestamp: number | null;
+  // The metrics below are cached (albeit this is an implementation detail).
+  treasury_metrics: TreasuryMetricsDto[] | null;
+  voting_power_metrics: VotingPowerMetricsDto | null;
+  genesis_timestamp_seconds: number | null;
+};
+type GovernanceErrorDto = {
+  error_message: string;
+  error_type: number;
+};
+type GetMetricsResultDto = {
+  Ok?: MetricsDto;
+  Err?: GovernanceErrorDto;
+};
+// This type is a combined version of multiple IC/sns types, so it can't be directly converted to a single @dfinity/sns type.
+export type CachedSnsMetricsDto = {
+  get_metrics_result: GetMetricsResultDto;
 };
 
 type Topic =
@@ -202,6 +254,20 @@ type CachedInitResponseDto = {
   init: CachedSwapInitParamsDto | null;
 };
 
+type ProposalIdDto = {
+  id: number;
+};
+
+export type RewardEventDto = {
+  rounds_since_last_distribution: number | null;
+  actual_timestamp_seconds: number;
+  end_timestamp_seconds: number | null;
+  total_available_e8s_equivalent: number | null;
+  distributed_e8s_equivalent: number;
+  round: number;
+  settled_proposals: Array<ProposalIdDto>;
+};
+
 export type CachedLifecycleResponseDto = {
   decentralization_sale_open_timestamp_seconds: number | null;
   lifecycle: number | null;
@@ -256,6 +322,8 @@ export type CachedSnsDto = {
   canister_ids: CanisterIds;
   list_sns_canisters: ListSnsCanisterIds;
   meta: CachedSnsMetadataDto;
+  // Marked as optional because it could be missing in older aggregator versions.
+  metrics?: CachedSnsMetricsDto;
   parameters: {
     functions: CachedNervousFunctionDto[];
     reserved_ids: number[];
@@ -272,6 +340,8 @@ export type CachedSnsDto = {
   derived_state: CachedSnsSwapDerivedDto;
   swap_params: CachedSwapParamsResponseDto;
   init: CachedInitResponseDto;
+  // Marked as optional because it could be missing in older aggregator versions.
+  latest_reward_event?: RewardEventDto;
   lifecycle: CachedLifecycleResponseDto | null;
   // TODO(mstr): Make it not optional after all the canisters are upgraded.
   topics?: CachedListTopicsResponseDto;
