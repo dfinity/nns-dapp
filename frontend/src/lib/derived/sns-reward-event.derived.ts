@@ -1,12 +1,13 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
 import { convertDtoRewardEvent } from "$lib/utils/sns-aggregator-converters.utils";
+import type { CanisterIdString } from "@dfinity/nns";
 import type { SnsRewardEvent } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { type Readable } from "svelte/store";
 
 export interface SnsRewardEventStoreData {
   // Root canister id is the key to identify the reward events for a specific project.
-  [rootCanisterId: string]: SnsRewardEvent | undefined;
+  [rootCanisterId: CanisterIdString]: SnsRewardEvent | undefined;
 }
 
 /**
