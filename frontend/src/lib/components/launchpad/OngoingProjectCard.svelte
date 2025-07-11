@@ -209,7 +209,7 @@
         justify-content: space-between;
         gap: var(--padding-0_5x);
 
-        padding: 0 var(--padding-2x);
+        padding: 0 var(--padding);
         border-right: 1px solid var(--elements-divider);
         &:first-child {
           padding-left: 0;
@@ -237,7 +237,7 @@
     .footer {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: end;
 
       .time-remaining {
         @include launchpad.text_body;
