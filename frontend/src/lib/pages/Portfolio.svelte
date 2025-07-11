@@ -16,11 +16,21 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
+  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
+  import {
+    isDesktopViewportStore,
+    isMobileViewportStore,
+  } from "$lib/derived/viewport.derived";
   import {
     ENABLE_APY_PORTFOLIO,
     ENABLE_LAUNCHPAD_REDESIGN,
   } from "$lib/stores/feature-flags.store";
+  import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
+  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { nnsTotalVotingPower } from "$lib/stores/nns-total-voting-power.store";
+  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { TableProject } from "$lib/types/staking";
   import type { ComponentWithProps } from "$lib/types/svelte";
   import type { UserToken } from "$lib/types/tokens-page";
@@ -166,6 +176,7 @@
     })
   );
 
+  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
   const launchpadCards = $derived(
     [...snsProjects]
       .sort(comparesByDecentralizationSaleOpenTimestampDesc)
@@ -178,6 +189,7 @@
       }))
   );
 
+  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
   const openProposalCards = $derived(
     [...openSnsProposals]
       .sort(compareProposalInfoByDeadlineTimestampSeconds)
@@ -188,6 +200,7 @@
       }))
   );
 
+  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
   const adoptedSnsProposalsCards = $derived(
     [...adoptedSnsProposals]
       .sort(comparesByDecentralizationSaleOpenTimestampDesc)
@@ -207,6 +220,10 @@
           openSnsProposals,
         })
       : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
+  );
+
+  const hasApyCalculationErrored = $derived(
+    !stakingRewardData.loading && "error" in stakingRewardData
   );
 </script>
 
@@ -229,7 +246,7 @@
         isFullWidth={cards.length === 0 && !$ENABLE_APY_PORTFOLIO}
       />
 
-      {#if $ENABLE_APY_PORTFOLIO && !$isMobileViewportStore && nonNullish(totalUsdAmount)}
+      {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
         {#if isStakingRewardDataReady(stakingRewardData)}
           <ApyCard
             rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
@@ -245,10 +262,18 @@
     {/if}
 
     {#if cards.length > 0}
-      <StackedCards {cards} />
+      {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
+        <CardList
+          testId="stacked-cards"
+          {cards}
+          mobileHorizontalScroll={cards.length > 1}
+        />
+      {:else}
+        <StackedCards {cards} />
+      {/if}
     {/if}
 
-    {#if $ENABLE_APY_PORTFOLIO && $isMobileViewportStore && $authSignedInStore && nonNullish(totalUsdAmount)}
+    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalUsdAmount)}
       {#if isStakingRewardDataReady(stakingRewardData)}
         <ApyCard
           rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
@@ -259,18 +284,6 @@
         />
       {:else}
         <ApyFallbackCard {stakingRewardData} />
-      {/if}
-    {/if}
-
-    {#if cards.length > 0}
-      {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
-        <CardList
-          testId="stacked-cards"
-          {cards}
-          mobileHorizontalScroll={cards.length > 1}
-        />
-      {:else}
-        <StackedCards {cards} />
       {/if}
     {/if}
   </div>
