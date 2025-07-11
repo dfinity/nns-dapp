@@ -9,8 +9,5 @@ export const loadNnsTotalVotingPower = async (): Promise<void> => {
     certified: false,
   });
 
-  // @TODO UPDATE WITH REAL API DATA
-  nnsTotalVotingPower.set(
-    proposals[0]?.totalPotentialVotingPower || BigInt(50_276_005_084_190_970)
-  );
+  nnsTotalVotingPower.set(proposals[0]?.totalPotentialVotingPower ?? 0n);
 };

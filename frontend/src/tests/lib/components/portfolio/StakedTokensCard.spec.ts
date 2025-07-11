@@ -17,16 +17,19 @@ describe("StakedTokensCard", () => {
     topStakedTokens = [],
     usdAmount = 0,
     numberOfTopHeldTokens = 0,
+    hasApyCalculationErrored = false,
   }: {
     topStakedTokens?: TableProject[];
     usdAmount?: number;
     numberOfTopHeldTokens?: number;
+    hasApyCalculationErrored?: boolean;
   } = {}) => {
     const { container } = render(StakedTokensCard, {
       props: {
         topStakedTokens,
         usdAmount,
         numberOfTopHeldTokens,
+        hasApyCalculationErrored,
       },
     });
 
@@ -506,7 +509,7 @@ describe("StakedTokensCard", () => {
         }),
         apy: {
           cur: 0.0,
-          max: 0.1,
+          max: 0.0,
         },
       };
 
@@ -528,6 +531,7 @@ describe("StakedTokensCard", () => {
 
         const titles = await po.getStakedTokensTitle();
         const apys = await po.getStakedTokensApy();
+        const maturities = await po.getStakedTokensMaturity();
         const stakesInUsd = await po.getStakedTokensStakeInUsd();
         const stakesInNativeCurrency =
           await po.getStakedTokensStakeInNativeCurrency();
@@ -540,12 +544,14 @@ describe("StakedTokensCard", () => {
           "Project 3",
         ]);
 
+        expect(maturities.length).toBe(0);
+
         expect(apys.length).toBe(4);
         expect(apys).toEqual([
           "5.00% (10.00%)",
           "5.00% (12.00%)",
           "1.00% (12.00%)",
-          "0.00% (10.00%)",
+          "-/-",
         ]);
         expect(stakesInUsd.length).toBe(4);
         expect(stakesInUsd).toEqual([
@@ -562,6 +568,20 @@ describe("StakedTokensCard", () => {
           "0.01 TET",
           "0.01 TET",
         ]);
+      });
+
+      it("should show maturity if the APY calculation restulted in an error", async () => {
+        const po = renderComponent({
+          topStakedTokens: mockStakedTokens,
+          hasApyCalculationErrored: true,
+        });
+
+        const apys = await po.getStakedTokensApy();
+        const maturities = await po.getStakedTokensMaturity();
+
+        expect(apys.length).toBe(0);
+        expect(maturities.length).toBe(4);
+        expect(maturities).toEqual(["20.00", "0", "0", "0"]);
       });
     });
   });

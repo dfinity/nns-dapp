@@ -1,8 +1,11 @@
 import { AdoptedProposalCardPo } from "$tests/page-objects/AdoptedProposalCard.page-object";
 import type { BasePortfolioCardPo } from "$tests/page-objects/BasePortfolioCard.page-object";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { CreateSnsProposalCardPo } from "$tests/page-objects/CreateSnsProposalCard.page-object";
 import { LaunchProjectCardPo } from "$tests/page-objects/LaunchProjectCard.page-object";
 import { NewSnsProposalCardPo } from "$tests/page-objects/NewSnsProposalCard.page-object";
+import { OngoingProjectCardPo } from "$tests/page-objects/OngoingProjectCard.page-object";
+import { UpcomingProjectCardPo } from "$tests/page-objects/UpcomingProjectCard.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -154,6 +157,7 @@ export class StackedCardsPo extends BasePageObject {
     const cardWrappers = await this.getCardWrappers();
     let activeCard: BasePortfolioCardPo;
 
+    // Deprecated cards
     activeCard = LaunchProjectCardPo.under(cardWrappers[activeIndex].root);
     if (await activeCard.isPresent()) return activeCard;
 
@@ -161,6 +165,16 @@ export class StackedCardsPo extends BasePageObject {
     if (await activeCard.isPresent()) return activeCard;
 
     activeCard = AdoptedProposalCardPo.under(cardWrappers[activeIndex].root);
+    if (await activeCard.isPresent()) return activeCard;
+
+    // Redesigned cards
+    activeCard = OngoingProjectCardPo.under(cardWrappers[activeIndex].root);
+    if (await activeCard.isPresent()) return activeCard;
+
+    activeCard = CreateSnsProposalCardPo.under(cardWrappers[activeIndex].root);
+    if (await activeCard.isPresent()) return activeCard;
+
+    activeCard = UpcomingProjectCardPo.under(cardWrappers[activeIndex].root);
     if (await activeCard.isPresent()) return activeCard;
 
     return null;

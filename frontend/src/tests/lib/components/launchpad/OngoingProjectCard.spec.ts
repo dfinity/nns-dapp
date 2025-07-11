@@ -64,9 +64,9 @@ describe("OngoingProjectCard", () => {
     expect(await po.getMinIcpValue()).toEqual("450k");
   });
 
-  it("should current icp value", async () => {
+  it("should max icp value", async () => {
     const summary = createSummary({
-      currentTotalCommitment: 500_000_000_000n,
+      maxDirectParticipation: 500_000_000_000n,
     });
     const po = renderComponent(summary);
 

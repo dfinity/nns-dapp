@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
@@ -12,18 +13,18 @@
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {
-    rewardBalanceUSD?: number;
-    rewardEstimateWeekUSD?: number;
-    stakingPower?: number;
-    stakingPowerUSD?: number;
-    loading: boolean;
+    rewardBalanceUSD: number;
+    rewardEstimateWeekUSD: number;
+    stakingPower: number;
+    stakingPowerUSD: number;
+    totalAmountUSD: number;
   };
-
   const {
-    rewardBalanceUSD = 0,
-    rewardEstimateWeekUSD = 0,
-    stakingPower = 0,
-    stakingPowerUSD = 0,
+    rewardBalanceUSD,
+    rewardEstimateWeekUSD,
+    stakingPower,
+    stakingPowerUSD,
+    totalAmountUSD,
   }: Props = $props();
 
   const href = AppPath.Staking;
@@ -57,14 +58,24 @@
         ? formatCurrencyNumber(stakingPowerUSD)
         : $i18n.core.not_applicable
   );
+  const totalValueUsdFormatted = $derived(
+    $isBalancePrivacyOptionStore
+      ? renderPrivacyModeBalance(3)
+      : nonNullish(totalAmountUSD)
+        ? formatCurrencyNumber(totalAmountUSD)
+        : $i18n.core.not_applicable
+  );
 </script>
 
 {#snippet content()}
   <div class="content">
     <div class="content">
-      <span class="subtitle">{$i18n.portfolio.apy_card_reward_title}</span>
+      <span class="subtitle"
+        >{$i18n.portfolio.apy_card_reward_title}
+        <TooltipIcon iconSize={16} text={$i18n.portfolio.apy_card_tooltip} />
+      </span>
       <span class="main-value" data-tid="reward"
-        >${rewardBalanceUSDFormatted}</span
+        >~${rewardBalanceUSDFormatted}</span
       >
       <span class="secondary-value"
         ><span class="projection" data-tid="projection">
@@ -79,7 +90,7 @@
               d="M4.5 0.5L8.39711 7.25H0.602886L4.5 0.5Z"
               fill="currentColor"
             />
-          </svg>${rewardEstimateWeekUSDFormatted}</span
+          </svg>~${rewardEstimateWeekUSDFormatted}</span
         >{$i18n.portfolio.apy_card_estimation}</span
       >
     </div>
@@ -90,7 +101,8 @@
         >{stakingPowerPercentage}</span
       >
       <span class="secondary-value" data-tid="total-staking-power"
-        >${stakingPowerUSDFormatted}</span
+        >${stakingPowerUSDFormatted}
+        <span>(of ${totalValueUsdFormatted})</span></span
       >
     </div>
   </div>
@@ -141,6 +153,9 @@
         font-size: 12px;
         font-weight: 700;
         color: var(--text-description);
+        display: flex;
+        align-items: center;
+        gap: 2px;
       }
 
       .main-value {
@@ -159,6 +174,8 @@
         line-height: 16px;
 
         display: flex;
+        align-items: center;
+        flex-wrap: wrap;
 
         @include media.min-width(medium) {
           font-size: 16px;
@@ -171,6 +188,7 @@
     .projection {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
 
       color: #29a079;
       padding-right: 4px;
@@ -200,8 +218,6 @@
   }
 
   .card.desktop {
-    height: 270px;
-
     display: grid;
     grid-template-rows: auto auto 1fr;
     padding: 24px;

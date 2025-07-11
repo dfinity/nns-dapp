@@ -39,7 +39,7 @@
     <div class="card-content">
       <div class="header">
         {#if nonNullish(proposal?.logo) && nonNullish(proposal?.name)}
-          <Logo src={proposal?.logo} alt={proposal?.name} size="medium" />
+          <Logo src={proposal?.logo} alt={proposal?.name} size="small" />
         {:else}
           <VoteLogo size="medium" />
         {/if}
@@ -121,8 +121,6 @@
     .content {
       display: flex;
       flex-direction: column;
-      gap: var(--padding-2x);
-      height: 124px;
 
       .description-wrapper {
         display: flex;
@@ -130,20 +128,35 @@
         gap: var(--padding-0_5x);
 
         h3 {
-          @include launchpad.text_h3;
           @include text.clamp(1);
 
           margin: 0;
           padding: 0;
+
+          font-size: 16px;
+          font-weight: 450;
+          line-height: 20px;
+
+          @include media.min-width(medium) {
+            font-size: 18px;
+            line-height: 24px;
+          }
         }
 
         .description {
           @include launchpad.text_body;
           @include text.clamp(1);
 
+          display: none;
           margin: 0;
           padding: 0;
           color: var(--color-text-secondary);
+
+          @include media.min-width(medium) {
+            display: block;
+            // To support -webkit-line-clamp
+            display: -webkit-box;
+          }
         }
       }
     }
