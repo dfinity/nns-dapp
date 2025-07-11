@@ -494,12 +494,12 @@ describe("Portfolio page", () => {
       expect(await stackedCardsPo.isPresent()).toBe(false);
     });
 
-    it("should show a full width TotalAssetsCard when no stacked cards", async () => {
+    it("should not show a full width TotalAssetsCard when no stacked cards but APY FF is on", async () => {
       const po = renderPage();
       const totalAssetsCardPo = po.getTotalAssetsCardPo();
 
       expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
+      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
     });
 
     it("should show a not full width TotalAssetsCard when stacked cards is not empty", async () => {

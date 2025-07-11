@@ -205,10 +205,6 @@
   const hasApyCalculationErrored = $derived(
     !stakingRewardData.loading && "error" in stakingRewardData
   );
-
-  // $effect(() => {
-  //   console.log(stakingRewardData);
-  // });
 </script>
 
 <main data-tid="portfolio-page-component">
