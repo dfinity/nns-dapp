@@ -16,7 +16,7 @@ export const initAnalytics = () => {
   tracker = Plausible({
     domain,
     hashMode: false,
-    // Change to true for local development and see traffic at https://plausible.io/test.nns.ic0.app/
+    // Change to true for local development and see traffic at https://plausible.io/nns-test
     trackLocalhost: false,
   });
 };
