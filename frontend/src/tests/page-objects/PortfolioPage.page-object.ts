@@ -1,3 +1,5 @@
+import { ApyCardPo } from "$tests/page-objects/ApyCard.page-object";
+import { ApyFallbackCardPo } from "$tests/page-objects/ApyFallbackCard.page-object";
 import { HeldTokensCardPo } from "$tests/page-objects/HeldTokensCard.page-object";
 import { NoStakedTokensCardPo } from "$tests/page-objects/NoStakedTokensCard.page-object";
 import { StackedCardsPo } from "$tests/page-objects/StackedCards.page-object";
@@ -27,6 +29,14 @@ export class PortfolioPagePo extends BasePageObject {
 
   getTotalAssetsCardPo(): TotalAssetsCardPo {
     return TotalAssetsCardPo.under(this.root);
+  }
+
+  getApyFallbackCardPo(): ApyFallbackCardPo {
+    return ApyFallbackCardPo.under(this.root);
+  }
+
+  getApyCardPo(): ApyCardPo {
+    return ApyCardPo.under(this.root);
   }
 
   getHeldTokensCardPo(): HeldTokensCardPo {

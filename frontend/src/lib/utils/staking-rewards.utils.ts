@@ -40,6 +40,7 @@ import {
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { Principal } from "@dfinity/principal";
+import { nonNullish } from "@dfinity/utils";
 
 /////////////////
 /// DOC REFERENCE
@@ -54,20 +55,26 @@ type APY = Map<
   }
 >;
 
-type StakingRewardData =
+type StakingRewardDataReady = {
+  loading: false;
+  rewardBalanceUSD: number;
+  rewardEstimateWeekUSD: number;
+  stakingPower: number;
+  stakingPowerUSD: number;
+  apy: APY;
+};
+
+export type StakingRewardData =
   | { loading: true }
-  | {
-      loading: false;
-      rewardBalanceUSD: number;
-      rewardEstimateWeekUSD: number;
-      stakingPower: number;
-      stakingPowerUSD: number;
-      apy: APY;
-    }
+  | StakingRewardDataReady
   | {
       loading: false;
       error: string;
     };
+
+export const isStakingRewardDataReady = (
+  data: StakingRewardData
+): data is StakingRewardDataReady => !data.loading && !("error" in data);
 
 export interface StakingRewardCalcParams {
   auth: boolean;
@@ -360,7 +367,7 @@ const isDataReady = (params: StakingRewardCalcParams) => {
   const isNnsEconomicsReady = Boolean(nnsEconomics.parameters);
   const areFXRatesReady = fxRates !== "error" && Boolean(fxRates);
   const isGovernanceMetricsReady = Boolean(governanceMetrics.metrics);
-  const isNnsTotalVotingPowerReady = nnsTotalVotingPower !== undefined;
+  const isNnsTotalVotingPowerReady = nonNullish(nnsTotalVotingPower);
 
   return [
     areTokensReady,

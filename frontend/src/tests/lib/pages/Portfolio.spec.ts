@@ -4,6 +4,7 @@ import Portfolio from "$lib/pages/Portfolio.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
+import type { StakingRewardData } from "$lib/utils/staking-rewards.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -36,12 +37,14 @@ describe("Portfolio page", () => {
     snsProjects = [],
     openSnsProposals = [],
     adoptedSnsProposals = [],
+    stakingRewardData = { loading: true },
   }: {
     userTokens?: UserToken[];
     tableProjects?: TableProject[];
     snsProjects?: SnsFullProject[];
     openSnsProposals?: ProposalInfo[];
     adoptedSnsProposals?: SnsFullProject[];
+    stakingRewardData?: StakingRewardData;
   } = {}) => {
     const { container } = render(Portfolio, {
       props: {
@@ -50,6 +53,7 @@ describe("Portfolio page", () => {
         snsProjects,
         openSnsProposals,
         adoptedSnsProposals,
+        stakingRewardData,
       },
     });
 
@@ -109,10 +113,33 @@ describe("Portfolio page", () => {
       setNoIdentity();
     });
 
-    it("should display the LoginCard when the user is not logged in", async () => {
+    it("should display the LoginCard", async () => {
       const po = renderPage();
 
       expect(await po.getLoginCard().isPresent()).toBe(true);
+    });
+
+    it("should not show TotalAssetsCard", async () => {
+      const po = renderPage();
+
+      expect(await po.getTotalAssetsCardPo().isPresent()).toBe(false);
+    });
+
+    it("should not show ApyCard", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
+      const po = renderPage();
+
+      expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
+    });
+
+    it("should show StackedCards when snsProjects is not empty", async () => {
+      const mockSnsProjects: SnsFullProject[] = [mockSnsFullProject];
+      const po = renderPage({ snsProjects: mockSnsProjects });
+      const stackedCardsPo = po.getStackedCardsPo();
+      const cardWrappers = await stackedCardsPo.getCardWrappers();
+
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(cardWrappers.length).toBe(1);
     });
 
     it("should show both cards with default data", async () => {
@@ -392,21 +419,6 @@ describe("Portfolio page", () => {
       activeCard = await stackedCardsPo.getActiveCardPo();
       expect(await activeCard.getTitle()).toBe("AdoptedProject"); // Adopted proposal
     });
-
-    it("should hide TotalAssetsCard when not signed", async () => {
-      setNoIdentity();
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await po.getTotalAssetsCardPo().isPresent()).toBe(false);
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-    });
-
-    it("should show TotalAssetsCard when signed in, even with sns projects", async () => {
-      const po = renderPage({ snsProjects: mockSnsProjects });
-
-      expect(await po.getTotalAssetsCardPo().isPresent()).toBe(true);
-    });
   });
 
   describe("StackedCards when feature flags enabled", () => {
@@ -482,12 +494,12 @@ describe("Portfolio page", () => {
       expect(await stackedCardsPo.isPresent()).toBe(false);
     });
 
-    it("should show a full width TotalAssetsCard when no stacked cards", async () => {
+    it("should not show a full width TotalAssetsCard when no stacked cards but APY FF is on", async () => {
       const po = renderPage();
       const totalAssetsCardPo = po.getTotalAssetsCardPo();
 
       expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
+      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
     });
 
     it("should show a not full width TotalAssetsCard when stacked cards is not empty", async () => {
@@ -1080,6 +1092,85 @@ describe("Portfolio page", () => {
         expect(
           await po.getTotalAssetsCardPo().getTotalsTooltipIconPo().isPresent()
         ).toBe(true);
+      });
+    });
+
+    describe("ApyCard", () => {
+      beforeEach(() => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
+      });
+
+      it("should show fallback Apy card while data loads", async () => {
+        const po = renderPage({
+          stakingRewardData: {
+            loading: true,
+          },
+        });
+
+        expect(await po.getApyCardPo().isPresent()).toBe(false);
+        expect(await po.getApyFallbackCardPo().isPresent()).toBe(true);
+        expect(
+          await po.getApyFallbackCardPo().getLoadingContent().isPresent()
+        ).toBe(true);
+        expect(
+          await po.getApyFallbackCardPo().getErrorContent().isPresent()
+        ).toBe(false);
+      });
+
+      it("should not show ApyCard if FF is off", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+        const po = renderPage({
+          stakingRewardData: {
+            loading: true,
+          },
+        });
+
+        expect(await po.getApyCardPo().isPresent()).toBe(false);
+        expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
+      });
+
+      it("should show fallback Apy card with an error when calculation fails", async () => {
+        const po = renderPage({
+          stakingRewardData: {
+            loading: false,
+            error: "Failed to load data",
+          },
+        });
+
+        expect(await po.getApyCardPo().isPresent()).toBe(false);
+        expect(await po.getApyFallbackCardPo().isPresent()).toBe(true);
+        expect(
+          await po.getApyFallbackCardPo().getLoadingContent().isPresent()
+        ).toBe(false);
+        expect(
+          await po.getApyFallbackCardPo().getErrorContent().isPresent()
+        ).toBe(true);
+      });
+
+      it("should show Apy card with all information", async () => {
+        const po = renderPage({
+          userTokens: [token1, token2],
+          tableProjects: [icpProject, tableProject1],
+          stakingRewardData: {
+            loading: false,
+            apy: new Map(),
+            rewardBalanceUSD: 10,
+            rewardEstimateWeekUSD: 1,
+            stakingPower: 0.1,
+            stakingPowerUSD: 100,
+          },
+        });
+
+        expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
+        expect(await po.getApyCardPo().isPresent()).toBe(true);
+        expect(await po.getApyCardPo().getRewardAmount()).toBe("~$10.00");
+        expect(await po.getApyCardPo().getProjectionAmount()).toBe("~$1.00");
+        expect(await po.getApyCardPo().getStakingPowerPercentage()).toBe(
+          "10.00%"
+        );
+        expect(await po.getApyCardPo().getTotalStakingPowerUSD()).toBe(
+          "$100.00 (of $600.00)"
+        );
       });
     });
 
