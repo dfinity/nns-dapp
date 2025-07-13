@@ -43,11 +43,19 @@ export class ProjectCard2Po extends CardPo {
   }
 
   getProposalActivity(): PageObjectElement {
+    return this.root.byTestId("proposal-activity");
+  }
+
+  getProposalActivityValue(): PageObjectElement {
     return this.root.byTestId("proposal-activity-value");
   }
 
-  getProposalActivityValue(): Promise<string> {
-    return this.getProposalActivity().getText();
+  getProposalActivityNotAvailable(): PageObjectElement {
+    return this.root.byTestId("proposal-activity-not-available");
+  }
+
+  getProposalActivityValueText(): Promise<string> {
+    return this.getProposalActivityValue().getText();
   }
 
   getProjectLinkPo(): LinkPo {

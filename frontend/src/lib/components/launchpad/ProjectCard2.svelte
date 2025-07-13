@@ -117,7 +117,7 @@
           <h6 class="stat-label"
             >{$i18n.launchpad_cards.project_card_proposal_activity}</h6
           >
-          <div class="stat-value" data-tid="proposal-activity-value">
+          <div class="stat-value" data-tid="proposal-activity">
             <IconWallet size="16px" />
             <span class="proposal-activity">
               {#if nonNullish(proposalActivity)}
@@ -125,7 +125,7 @@
                   >{proposalActivity}</span
                 ><span class="unit">/{$i18n.core.week}</span>
               {:else}
-                <span data-tid="proposal-activity-value"
+                <span data-tid="proposal-activity-not-available"
                   >{$i18n.core.not_applicable}</span
                 >
               {/if}
