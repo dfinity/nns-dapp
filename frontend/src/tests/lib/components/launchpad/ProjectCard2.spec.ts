@@ -7,6 +7,7 @@ import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-stat
 import {
   createMockSnsFullProject,
   mockSnsFullProject,
+  mockSnsMetrics,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProjectCard2Po } from "$tests/page-objects/ProjectCard2.page-object";
@@ -156,18 +157,49 @@ describe("ProjectCard2", () => {
     });
 
     it("should display proposal activity if no commitment", async () => {
+      const weeksInTwoMonths = (30 * 2) / 7;
+      const executedProposalsPerWeek = 10;
+      const executedProposalsIn2Months = Math.round(
+        weeksInTwoMonths * executedProposalsPerWeek
+      );
       const project = createMockSnsFullProject({
         rootCanisterId,
         summaryParams: {
           lifecycle: SnsSwapLifecycle.Open,
         },
         icpCommitment: undefined,
+        metrics: {
+          ...mockSnsMetrics,
+          num_recently_executed_proposals: executedProposalsIn2Months,
+        },
       });
       const po = await renderCard(project);
 
       expect(await po.getUserCommitmentIcp().isPresent()).toBe(false);
       expect(await po.getProposalActivity().isPresent()).toBe(true);
-      // TODO(launchpad2): Update this test when proposal activity is implemented.
+      expect(await po.getProposalActivityValueText()).toEqual(
+        executedProposalsPerWeek
+      );
+      expect(await po.getProposalActivityNotAvailable().isPresent()).toBe(
+        false
+      );
+    });
+
+    it("should display N/A for proposal activity when no metrics", async () => {
+      const project = createMockSnsFullProject({
+        rootCanisterId,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Open,
+        },
+        icpCommitment: undefined,
+        metrics: undefined,
+      });
+      const po = await renderCard(project);
+
+      expect(await po.getUserCommitmentIcp().isPresent()).toBe(false);
+      expect(await po.getProposalActivity().isPresent()).toBe(true);
+      expect(await po.getProposalActivityValue().isPresent()).toBe(false);
+      expect(await po.getProposalActivityNotAvailable().isPresent()).toBe(true);
     });
 
     it("should display ICP in treasury", async () => {
