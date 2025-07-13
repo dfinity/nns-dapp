@@ -5,6 +5,11 @@ import {
   snsProjectsRecordStore,
   snsProjectsStore,
 } from "$lib/derived/sns/sns-projects.derived";
+import {
+  mockSnsMetrics,
+  mockSnsRewardEvent,
+  mockSnsRewardEventDto,
+} from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
@@ -18,6 +23,33 @@ describe("projects.derived", () => {
       ]);
       const projects = get(snsProjectsStore);
       expect(projects).toHaveLength(2);
+    });
+
+    it("should include project metrics", () => {
+      setSnsProjects([
+        { lifecycle: SnsSwapLifecycle.Open, metrics: undefined },
+        { lifecycle: SnsSwapLifecycle.Committed, metrics: mockSnsMetrics },
+      ]);
+      const projects = get(snsProjectsStore);
+      expect(projects).toHaveLength(2);
+
+      expect(projects[0].metrics).toBeUndefined();
+      expect(projects[1].metrics).toEqual(mockSnsMetrics);
+    });
+
+    it("should include project last reward event", () => {
+      setSnsProjects([
+        { lifecycle: SnsSwapLifecycle.Open, latestRewardEvent: undefined },
+        {
+          lifecycle: SnsSwapLifecycle.Committed,
+          latestRewardEvent: mockSnsRewardEventDto,
+        },
+      ]);
+      const projects = get(snsProjectsStore);
+      expect(projects).toHaveLength(2);
+
+      expect(projects[0].latestRewardEvent).toBeUndefined();
+      expect(projects[1].latestRewardEvent).toEqual(mockSnsRewardEvent);
     });
   });
 
