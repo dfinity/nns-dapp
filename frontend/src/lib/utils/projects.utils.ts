@@ -1,3 +1,4 @@
+import { AGGREGATOR_METRICS_TIME_WINDOW_SECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import {
@@ -28,7 +29,6 @@ import {
   nonNullish,
   type TokenAmount,
 } from "@dfinity/utils";
-import { AGGREGATOR_METRICS_TIME_WINDOW_SECONDS } from "../constants/sns.constants";
 
 export const filterProjectsStatus = ({
   swapLifecycle,
