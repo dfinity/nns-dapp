@@ -1,11 +1,11 @@
-import { snsRewardEventStore } from "$lib/derived/sns-reward-event.derived";
+import { snsLatestRewardEventStore } from "$lib/derived/sns-latest-reward-event.derived";
 import type { RewardEventDto } from "$lib/types/sns-aggregator";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import type { SnsRewardEvent } from "@dfinity/sns";
 import { get } from "svelte/store";
 
-describe("snsRewardEventStore", () => {
+describe("snsLatestRewardEventStore", () => {
   const rootCanisterId = principal(0);
 
   it("should handle missing data", () => {
@@ -15,7 +15,7 @@ describe("snsRewardEventStore", () => {
       },
     ]);
 
-    expect(get(snsRewardEventStore)[rootCanisterId.toText()]).toEqual(
+    expect(get(snsLatestRewardEventStore)[rootCanisterId.toText()]).toEqual(
       undefined
     );
   });
@@ -47,7 +47,7 @@ describe("snsRewardEventStore", () => {
       },
     ]);
 
-    expect(get(snsRewardEventStore)[rootCanisterId.toText()]).toEqual(
+    expect(get(snsLatestRewardEventStore)[rootCanisterId.toText()]).toEqual(
       expectedRewardEvent
     );
   });
