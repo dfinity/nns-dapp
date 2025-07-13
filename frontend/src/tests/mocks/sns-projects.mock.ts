@@ -513,14 +513,14 @@ export const createMockSnsFullProject = ({
   summaryParams,
   rootCanisterId,
   icpCommitment,
-  metrics = mockSnsMetrics,
-  latestRewardEvent = mockSnsRewardEvent,
+  metrics,
+  latestRewardEvent,
 }: {
   rootCanisterId: Principal;
   summaryParams: SnsSummaryParams;
   icpCommitment?: bigint;
-  metrics?: MetricsDto | undefined;
-  latestRewardEvent?: SnsRewardEvent | undefined;
+  metrics?: MetricsDto;
+  latestRewardEvent?: SnsRewardEvent;
 }): SnsFullProject => ({
   rootCanisterId,
   summary: createSummary(summaryParams),
