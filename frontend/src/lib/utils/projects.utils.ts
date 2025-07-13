@@ -1,4 +1,3 @@
-import { AGGREGATOR_METRICS_TIME_WINDOW_SECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import {
