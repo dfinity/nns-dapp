@@ -8,7 +8,6 @@ import LaunchpadPage from "$routes/(app)/(nns)/launchpad/+page.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import {
-  createMockSnsFullProject,
   mockSnsSwapCommitment,
   principal,
 } from "$tests/mocks/sns-projects.mock";
@@ -59,19 +58,16 @@ describe("Launchpad page", () => {
   it("should load Swap commitments after login", async () => {
     const sns1RootCanisterId = principal(1);
     const sns2RootCanisterId = principal(2);
-    const sns1 = createMockSnsFullProject({
-      rootCanisterId: sns1RootCanisterId,
-      summaryParams: {
+    setSnsProjects([
+      {
+        rootCanisterId: sns1RootCanisterId,
         lifecycle: SnsSwapLifecycle.Open,
       },
-    });
-    const sns2 = createMockSnsFullProject({
-      rootCanisterId: sns2RootCanisterId,
-      summaryParams: {
+      {
+        rootCanisterId: sns2RootCanisterId,
         lifecycle: SnsSwapLifecycle.Adopted,
       },
-    });
-    setSnsProjects([sns1, sns2]);
+    ]);
 
     const querySnsSwapCommitmentSpy = vi
       .spyOn(snsApi, "querySnsSwapCommitment")

@@ -5,6 +5,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
+import type { MetricsDto, RewardEventDto } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
 import type { Universe } from "$lib/types/universe";
@@ -19,6 +20,7 @@ import {
   type SnsGetLifecycleResponse,
   type SnsGetMetadataResponse,
   type SnsParams,
+  type SnsRewardEvent,
   type SnsSwap,
   type SnsSwapBuyerState,
   type SnsSwapDerivedState,
@@ -307,6 +309,69 @@ export const mockSnsSummaryList: SnsSummaryWrapper[] = [
 
 export const mockSummary = mockSnsSummaryList[0];
 
+export const mockSnsMetrics: MetricsDto = {
+  treasury_metrics: [
+    {
+      name: "TOKEN_ICP",
+      original_amount_e8s: 314100000000,
+      amount_e8s: 314099990000,
+      account: {
+        owner: "7uieb-cx777-77776-qaaaq-cai",
+        subaccount: null,
+      },
+      ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+      treasury: 1,
+      timestamp_seconds: 1752222478,
+    },
+    {
+      name: "TOKEN_SNS_TOKEN",
+      original_amount_e8s: 0,
+      amount_e8s: 293700000000,
+      account: {
+        owner: "7uieb-cx777-77776-qaaaq-cai",
+        subaccount: {
+          subaccount: [
+            246, 230, 97, 166, 146, 227, 55, 186, 137, 156, 240, 185, 163, 97,
+            8, 105, 207, 138, 114, 142, 181, 152, 159, 206, 247, 187, 126, 235,
+            138, 0, 64, 161,
+          ],
+        },
+      },
+      ledger_canister_id: "75lp5-u7777-77776-qaaba-cai",
+      treasury: 2,
+      timestamp_seconds: 1752222478,
+    },
+  ],
+  voting_power_metrics: {
+    governance_total_potential_voting_power: 501746342465693,
+    timestamp_seconds: 1752222478,
+  },
+  last_ledger_block_timestamp: 1752141149,
+  num_recently_executed_proposals: 0,
+  num_recently_submitted_proposals: 0,
+  genesis_timestamp_seconds: 1752074520,
+};
+
+export const mockSnsRewardEventDto: RewardEventDto = {
+  rounds_since_last_distribution: 1,
+  actual_timestamp_seconds: 1752160922,
+  end_timestamp_seconds: 1752160920,
+  total_available_e8s_equivalent: 0,
+  distributed_e8s_equivalent: 0,
+  round: 1,
+  settled_proposals: [{ id: 123 }],
+};
+
+export const mockSnsRewardEvent: SnsRewardEvent = {
+  rounds_since_last_distribution: [1n],
+  actual_timestamp_seconds: 1752160922n,
+  end_timestamp_seconds: [1752160920n],
+  total_available_e8s_equivalent: [0n],
+  distributed_e8s_equivalent: 0n,
+  round: 1n,
+  settled_proposals: [{ id: 123n }],
+};
+
 export const mockSwapCommitment = mockSnsSwapCommitment(
   principal(0)
 ) as SnsSwapCommitment;
@@ -315,6 +380,8 @@ export const mockSnsFullProject: SnsFullProject = {
   rootCanisterId: principal(0),
   summary: mockSummary,
   swapCommitment: mockSwapCommitment,
+  metrics: mockSnsMetrics,
+  latestRewardEvent: mockSnsRewardEvent,
 };
 
 export const summaryForLifecycle = (
@@ -446,10 +513,14 @@ export const createMockSnsFullProject = ({
   summaryParams,
   rootCanisterId,
   icpCommitment,
+  metrics = mockSnsMetrics,
+  latestRewardEvent = mockSnsRewardEvent,
 }: {
   rootCanisterId: Principal;
   summaryParams: SnsSummaryParams;
   icpCommitment?: bigint;
+  metrics?: MetricsDto | undefined;
+  latestRewardEvent?: SnsRewardEvent | undefined;
 }): SnsFullProject => ({
   rootCanisterId,
   summary: createSummary(summaryParams),
@@ -459,6 +530,8 @@ export const createMockSnsFullProject = ({
       ? createBuyersState(icpCommitment)
       : undefined,
   },
+  metrics,
+  latestRewardEvent,
 });
 
 export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
