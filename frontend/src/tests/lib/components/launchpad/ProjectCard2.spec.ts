@@ -178,7 +178,7 @@ describe("ProjectCard2", () => {
       expect(await po.getUserCommitmentIcp().isPresent()).toBe(false);
       expect(await po.getProposalActivity().isPresent()).toBe(true);
       expect(await po.getProposalActivityValueText()).toEqual(
-        executedProposalsPerWeek
+        `${executedProposalsPerWeek}`
       );
       expect(await po.getProposalActivityNotAvailable().isPresent()).toBe(
         false
