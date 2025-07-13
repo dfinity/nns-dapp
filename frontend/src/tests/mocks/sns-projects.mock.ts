@@ -5,7 +5,7 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
-import type { MetricsDto } from "$lib/types/sns-aggregator";
+import type { MetricsDto, RewardEventDto } from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
 import type { Universe } from "$lib/types/universe";
@@ -350,6 +350,16 @@ export const mockSnsMetrics: MetricsDto = {
   num_recently_executed_proposals: 0,
   num_recently_submitted_proposals: 0,
   genesis_timestamp_seconds: 1752074520,
+};
+
+export const mockSnsRewardEventDto: RewardEventDto = {
+  rounds_since_last_distribution: 1,
+  actual_timestamp_seconds: 1752160922,
+  end_timestamp_seconds: 1752160920,
+  total_available_e8s_equivalent: 0,
+  distributed_e8s_equivalent: 0,
+  round: 1,
+  settled_proposals: [{ id: 123 }],
 };
 
 export const mockSnsRewardEvent: SnsRewardEvent = {
