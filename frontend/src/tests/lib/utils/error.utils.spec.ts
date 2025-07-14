@@ -132,7 +132,7 @@ describe("error-utils", () => {
   });
 
   describe("isCanisterOutOfCycles", () => {
-    it("should return true for query error with IC0207 code", () => {
+    it("should return true for query error with IC0 codes", () => {
       const queryError = {
         type: "query",
         result: {
@@ -140,32 +140,41 @@ describe("error-utils", () => {
         },
       } as QueryCallRejectedError;
       expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
-    });
 
-    it("should return false for query error with different error code", () => {
-      const queryError = {
-        type: "query",
-        result: {
-          error_code: "IC0503",
-        },
-      } as QueryCallRejectedError;
-      expect(isCanisterOutOfCyclesError(queryError)).toBe(false);
+      queryError.result.error_code = "IC0503";
+      expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
+
+      queryError.result.error_code = "IC0";
+      expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
+
+      queryError.result.error_code = "IC0999";
+      expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
     });
 
     it("should return true for update error with IC0207 code", () => {
-      const updateError = {
+      let updateError = {
         type: "update",
         error_code: "IC0207",
       } as UpdateCallRejectedError;
       expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
-    });
 
-    it("should return false for update error with different error code", () => {
-      const updateError = {
+      updateError = {
         type: "update",
         error_code: "IC0503",
       } as UpdateCallRejectedError;
-      expect(isCanisterOutOfCyclesError(updateError)).toBe(false);
+      expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
+
+      updateError = {
+        type: "update",
+        error_code: "IC0",
+      } as UpdateCallRejectedError;
+      expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
+
+      updateError = {
+        type: "update",
+        error_code: "IC0999",
+      } as UpdateCallRejectedError;
+      expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
     });
 
     it("should return false for invalid inputs", () => {

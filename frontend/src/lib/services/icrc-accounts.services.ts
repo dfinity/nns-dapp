@@ -223,6 +223,7 @@ export const loadAccounts = async ({
       });
 
       if (isCanisterOutOfCycles) {
+        // TODO: Rename store to be generic
         outOfCyclesCanistersStore.add(ledgerCanisterId.toString());
       }
 
