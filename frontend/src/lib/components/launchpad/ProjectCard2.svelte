@@ -8,6 +8,7 @@
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
   import { formatUsdValue } from "$lib/utils/format.utils";
+  import { snsProjectWeeklyProposalActivity } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
     IconAccountBalance,
@@ -60,10 +61,7 @@
   const userHasParticipated = $derived(
     nonNullish(userCommitmentIcp) && userCommitmentIcp.toE8s() > 0n
   );
-  const proposalActivity = $derived.by(() => {
-    // TODO(launchpad2): should be available after aggregator upgrade
-    return "-";
-  });
+  const proposalActivity = $derived(snsProjectWeeklyProposalActivity(project));
 
   onMount(() => {
     loadSnsFinalizationStatus({ rootCanisterId: rootCanisterId });
@@ -119,11 +117,18 @@
           <h6 class="stat-label"
             >{$i18n.launchpad_cards.project_card_proposal_activity}</h6
           >
-          <div class="stat-value" data-tid="proposal-activity-value">
+          <div class="stat-value" data-tid="proposal-activity">
             <IconWallet size="16px" />
             <span class="proposal-activity">
-              <span data-tid="proposal-activity-value">{proposalActivity}</span
-              ><span class="unit">/{$i18n.core.week}</span>
+              {#if nonNullish(proposalActivity)}
+                <span data-tid="proposal-activity-value"
+                  >{proposalActivity}</span
+                ><span class="unit">/{$i18n.core.week}</span>
+              {:else}
+                <span data-tid="proposal-activity-not-available"
+                  >{$i18n.core.not_applicable}</span
+                >
+              {/if}
             </span>
           </div>
         {/if}
