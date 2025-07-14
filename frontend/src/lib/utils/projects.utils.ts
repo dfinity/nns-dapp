@@ -479,7 +479,5 @@ export const snsProjectWeeklyProposalActivity = (
 
   if (!numRecentProposals) return undefined;
 
-  return Math.round(
-    (sns.metrics?.num_recently_executed_proposals ?? 0) / weeks
-  );
+  return Math.round(numRecentProposals / weeks);
 };
