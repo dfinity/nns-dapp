@@ -523,6 +523,8 @@ describe("Portfolio route", () => {
       });
 
       it("should render apy card when all stores have the required data", async () => {
+        vi.useFakeTimers();
+
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
         networkEconomicsStore.setParameters({
           certified: true,
@@ -536,6 +538,10 @@ describe("Portfolio route", () => {
 
         const po = await renderPage();
         const pagePo = po.getPortfolioPagePo();
+
+        // There is a debounce function that we have to wait for and then let svelte re-render
+        vi.advanceTimersByTime(1000);
+        await tick();
 
         expect(await pagePo.getApyFallbackCardPo().isPresent()).toBe(false);
         expect(await pagePo.getApyCardPo().isPresent()).toBe(true);
