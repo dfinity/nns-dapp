@@ -19,10 +19,13 @@
   } from "$lib/services/accounts-balances.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
-  import { loadLatestRewardEvent } from "$lib/services/nns-reward-event.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
+  import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
+  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
+  import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
+  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import {
     openSnsProposalsStore,
@@ -30,6 +33,7 @@
   } from "$lib/stores/sns.store";
   import type { UserToken } from "$lib/types/tokens-page";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
+  import { getStakingRewardData } from "$lib/utils/staking-rewards.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
 
@@ -66,10 +70,6 @@
   $: if ($snsProposalsStoreIsLoading) {
     loadProposalsSnsCF({ omitLargeFields: false });
   }
-
-  $: if ($authSignedInStore) {
-    loadLatestRewardEvent();
-  }
 </script>
 
 <TestIdWrapper testId="portfolio-route-component"
@@ -92,5 +92,16 @@
       projects: $snsProjectsActivePadStore,
     })}
     openSnsProposals={$openSnsProposalsStore}
+    stakingRewardData={getStakingRewardData({
+      auth: $authSignedInStore,
+      tokens: userTokens,
+      snsProjects: $snsAggregatorStore,
+      snsNeurons: $snsNeuronsStore,
+      nnsNeurons: $neuronsStore,
+      nnsEconomics: $networkEconomicsStore,
+      fxRates: $icpSwapUsdPricesStore,
+      governanceMetrics: $governanceMetricsStore,
+      nnsTotalVotingPower: $nnsTotalVotingPowerStore,
+    })}
   /></TestIdWrapper
 >
