@@ -49,7 +49,7 @@
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
     adoptedSnsProposals: SnsFullProject[];
-    stakingRewardData: StakingRewardData;
+    stakingRewardData?: StakingRewardData;
   };
 
   const {
@@ -141,7 +141,7 @@
   );
 
   const tableProjectsWithApy: TableProject[] = $derived(
-    isStakingRewardDataReady(stakingRewardData)
+    nonNullish(stakingRewardData) && isStakingRewardDataReady(stakingRewardData)
       ? tableProjects.map((project) => ({
           ...project,
           apy: stakingRewardData.apy.get(project.universeId) ?? undefined,
@@ -202,7 +202,9 @@
   );
 
   const hasApyCalculationErrored = $derived(
-    !stakingRewardData.loading && "error" in stakingRewardData
+    nonNullish(stakingRewardData) &&
+      !stakingRewardData.loading &&
+      "error" in stakingRewardData
   );
 </script>
 
