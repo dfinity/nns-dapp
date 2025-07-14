@@ -155,14 +155,18 @@ export const isNeuronEligibleToVote = (
 
 export const maximiseNeuronParams = (
   neuron: AgnosticNeuron,
-  maxDissolveSeconds: number
+  maxDissolveSeconds: number,
+  forceInitialDate?: Date // For testing purposes
 ) => {
   const maxDissolve = BigInt(maxDissolveSeconds);
+  const now = forceInitialDate
+    ? Math.floor(forceInitialDate.getTime() / 1000)
+    : nowInSeconds();
 
   if (isNnsNeuron(neuron)) {
     if (neuron.fullNeuron) {
       if (getNeuronIsDissolving(neuron)) {
-        neuron.fullNeuron.agingSinceTimestampSeconds = BigInt(nowInSeconds());
+        neuron.fullNeuron.agingSinceTimestampSeconds = BigInt(now);
       }
       neuron.fullNeuron.dissolveState = {
         DissolveDelaySeconds: maxDissolve,
@@ -176,7 +180,7 @@ export const maximiseNeuronParams = (
     neuron.dissolveDelaySeconds = maxDissolve;
   } else {
     if (getNeuronIsDissolving(neuron)) {
-      neuron.aging_since_timestamp_seconds = BigInt(nowInSeconds());
+      neuron.aging_since_timestamp_seconds = BigInt(now);
     }
     neuron.dissolve_state = [
       {
@@ -207,7 +211,7 @@ export const getNeuronBonusRatio = (
   const dissolveSeconds = getNeuronDissolveDelaySeconds(neuron, referenceDate);
   const dissolvingBonus =
     Math.min(Number(dissolveSeconds) / dissolveMax, 1) * dissolveBonus;
-  return dissolvingBonus + agingBonus;
+  return (1 + dissolvingBonus) * (1 + agingBonus) - 1;
 };
 
 export const cloneNeurons = (neurons: AgnosticNeuronArray) => {
