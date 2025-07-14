@@ -481,3 +481,21 @@ export const snsProjectWeeklyProposalActivity = (
 
   return Math.round(numRecentProposals / weeks);
 };
+
+export const snsProjectIcpInTreasuryPercentage = (
+  sns: SnsFullProject
+): number | undefined => {
+  const ICP_TREASURY_ID = 1;
+  const icpInTreasuryMetrics = sns.metrics?.treasury_metrics?.find(
+    ({ treasury }) => treasury === ICP_TREASURY_ID
+  );
+
+  if (!icpInTreasuryMetrics) return undefined;
+
+  const currentAmount = icpInTreasuryMetrics.amount_e8s;
+  const originalAmount = icpInTreasuryMetrics.original_amount_e8s;
+  if (isNullish(currentAmount) || isNullish(originalAmount)) return undefined;
+  if (originalAmount === 0) return 0;
+
+  return (currentAmount / originalAmount) * 100;
+};
