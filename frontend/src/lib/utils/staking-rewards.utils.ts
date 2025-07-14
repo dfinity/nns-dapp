@@ -536,7 +536,10 @@ const getTokenReward = (
   forceInitialDate?: Date
 ) => {
   const totalVotingPower = sns
-    ? getTotalVotingPower(sns)
+    ? BigInt(
+        sns.metrics?.get_metrics_result.Ok?.voting_power_metrics
+          ?.governance_total_potential_voting_power ?? 0
+      )
     : params.nnsTotalVotingPower;
 
   if (totalVotingPower === 0n) {
@@ -583,12 +586,12 @@ const getNeuronBonus = (
 const getGenesisTimestampSeconds = (sns?: CachedSnsDto): number => {
   if (sns) {
     const snsGenesisTimestamp =
-      SNS_GENESIS_TIMESTAMP_SECONDS[sns.canister_ids.root_canister_id];
+      sns.metrics?.get_metrics_result.Ok?.genesis_timestamp_seconds;
     if (snsGenesisTimestamp) {
       return snsGenesisTimestamp;
     } else {
       logWithTimestamp(
-        `Staking rewards: No genesis timestamp found for SNS ${sns.canister_ids.root_canister_id}.`
+        `Staking rewards: No genesis timestamp found for SNS ${sns.canister_ids.root_canister_id}, using 0.`
       );
       return 0;
     }
@@ -656,94 +659,3 @@ const getNnsRewardParams = (params: StakingRewardCalcParams) => ({
   rewardTransition: SECONDS_IN_EIGHT_YEARS,
   totalSupply: Number(params.governanceMetrics.metrics?.totalSupplyIcp),
 });
-
-const getTotalVotingPower = (sns: CachedSnsDto): bigint => {
-  // @TODO: USE THE EXPOSED TOTAL VOTING POWER!
-  // @ts-expect-error need to update the type
-  return sns.nervous_system_parameters.total_voting_power ?? 0n;
-};
-
-////////////////////
-/// TODO MOCKED DATA
-////////////////////
-
-const SNS_GENESIS_TIMESTAMP_SECONDS: Record<string, number> = {
-  // Alice
-  ["oh4fn-kyaaa-aaaaq-aaega-cai"]: 1736790536,
-  // BOOM DAO
-  ["xjngq-yaaaa-aaaaq-aabha-cai"]: 1693715788,
-  // Catalyze
-  ["uly3p-iqaaa-aaaaq-aabma-cai"]: 1693223087,
-  // Cecil The Lion DAO
-  ["ju4gz-6iaaa-aaaaq-aaeva-cai"]: 1741515516,
-  // DecideAI DAO
-  ["x4kx5-ziaaa-aaaaq-aabeq-cai"]: 1691591985, // Approx
-  // DOLR AI
-  ["67bll-riaaa-aaaaq-aaauq-cai"]: 1687199713, // Approx
-  // Dragginz
-  ["zxeu2-7aaaa-aaaaq-aaafa-cai"]: 1670315374, // Approx
-  // ELNA AI
-  ["gkoex-viaaa-aaaaq-aacmq-cai"]: 1709209296,
-  // EstateDAO
-  ["abhsa-pyaaa-aaaaq-aac3q-cai"]: 1712478525,
-  // FomoWell
-  ["pww3s-sqaaa-aaaaq-aaedq-cai"]: 1735934905,
-  // FuelEV
-  ["nllv2-byaaa-aaaaq-aaema-cai"]: 1738077495,
-  // Gold DAO
-  ["tw2vt-hqaaa-aaaaq-aab6a-cai"]: 1702368252,
-  // IC Explorer
-  ["n6mex-aqaaa-aaaaq-aaepq-cai"]: 1739708720,
-  // ICFC
-  ["gyito-zyaaa-aaaaq-aacpq-cai"]: 1710523096,
-  // ICLighthouse DAO
-  ["hjcnr-bqaaa-aaaaq-aacka-cai"]: 1708958462,
-  // ICPanda
-  ["d7wvo-iiaaa-aaaaq-aacsq-cai"]: 1710783322,
-  // ICPEx
-  ["jpz24-eqaaa-aaaaq-aaexq-cai"]: 1741941191,
-  // ICPSwap
-  ["csyra-haaaa-aaaaq-aacva-cai"]: 1711034629,
-  // ICVC
-  ["nuywj-oaaaa-aaaaq-aadta-cai"]: 1722750662,
-  // Kinic
-  ["7jkta-eyaaa-aaaaq-aaarq-cai"]: 1686064505,
-  // KongSwap
-  ["ormnc-tiaaa-aaaaq-aadyq-cai"]: 1729505139,
-  // Mimic
-  ["4m6il-zqaaa-aaaaq-aaa2a-cai"]: 1690320455, // Approx
-  // Motoko
-  ["ko36b-myaaa-aaaaq-aadbq-cai"]: 1715000742,
-  // Neutrinite
-  ["extk7-gaaaa-aaaaq-aacda-cai"]: 1702903834,
-  // NFID Wallet
-  ["m2blf-zqaaa-aaaaq-aaejq-cai"]: 1737735646,
-  // Nuance
-  ["rzbmc-yiaaa-aaaaq-aabsq-cai"]: 1694946754,
-  // OpenChat
-  ["3e3x2-xyaaa-aaaaq-aaalq-cai"]: 1677744638,
-  // ORIGYN
-  ["leu43-oiaaa-aaaaq-aadgq-cai"]: 1716620793,
-  // Personal DAO
-  ["izscx-raaaa-aaaaq-aaesq-cai"]: 1741017684,
-  // PokedBots
-  ["nb7he-piaaa-aaaaq-aadqq-cai"]: 1722453757,
-  // Sneed
-  ["fp274-iaaaa-aaaaq-aacha-cai"]: 1705799402,
-  // SONIC
-  ["qtooy-2yaaa-aaaaq-aabvq-cai"]: 1695889993,
-  // Swampies
-  ["l7ra6-uqaaa-aaaaq-aadea-cai"]: 1715346333,
-  // TACO DAO
-  ["lacdn-3iaaa-aaaaq-aae3a-cai"]: 1746713438,
-  // TRAX
-  ["ecu3s-hiaaa-aaaaq-aacaq-cai"]: 1702635478,
-  // WaterNeuron
-  ["jmod6-4iaaa-aaaaq-aadkq-cai"]: 1718691853,
-  // Yuku AI
-  ["cj5nf-5yaaa-aaaaq-aacxq-cai"]: 1711451235,
-  // ---- (formerly CYCLES-TRANSFER-STATION)
-  ["ibahq-taaaa-aaaaq-aadna-cai"]: 1719543728,
-  // ---- ex Seers ---- (formerly SEERS)
-  ["u67kc-jyaaa-aaaaq-aabpq-cai"]: 1694474846,
-};

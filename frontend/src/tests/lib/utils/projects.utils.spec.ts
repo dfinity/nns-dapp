@@ -19,6 +19,7 @@ import {
   participateButtonStatus,
   projectRemainingAmount,
   snsProjectDashboardUrl,
+  snsProjectWeeklyProposalActivity,
   userCountryIsNeeded,
   validParticipation,
 } from "$lib/utils/projects.utils";
@@ -28,6 +29,7 @@ import {
   createSummary,
   createTransferableAmount,
   mockSnsFullProject,
+  mockSnsMetrics,
   mockSnsParams,
   mockSnsSwapCommitment,
   mockSwap,
@@ -1459,5 +1461,38 @@ describe("comparesByDecentralizationSaleOpenTimestamp", () => {
     expect(
       comparesByDecentralizationSaleOpenTimestampDesc(project1, project2)
     ).toBe(-1);
+  });
+});
+
+describe("snsProjectWeeklyProposalActivity", () => {
+  it("should return undefined when no activity available", () => {
+    const testProject = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: undefined,
+    });
+
+    expect(snsProjectWeeklyProposalActivity(testProject)).toBe(undefined);
+  });
+
+  it("should return rounded weekly activity", () => {
+    // Related to AGGREGATOR_METRICS_TIME_WINDOW_SECONDS
+    const weeksInTwoMonths = (30 * 2) / 7;
+    const executedProposalsPerWeek = 10;
+    const executedProposalsIn2Months = Math.round(
+      weeksInTwoMonths * executedProposalsPerWeek
+    );
+    const testProject = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+        num_recently_executed_proposals: executedProposalsIn2Months,
+      },
+    });
+
+    expect(snsProjectWeeklyProposalActivity(testProject)).toBe(
+      executedProposalsPerWeek
+    );
   });
 });
