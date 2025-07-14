@@ -176,6 +176,7 @@
         display: flex;
         align-items: center;
         flex-wrap: wrap;
+        gap: 2px;
 
         @include media.min-width(medium) {
           font-size: 16px;
