@@ -109,7 +109,7 @@
               })}%</span
             >
           {:else}
-            <span data-tid="icp-in-treasury-not-available"
+            <span data-tid="icp-in-treasury-not-applicable"
               >{$i18n.core.not_applicable}</span
             >
           {/if}

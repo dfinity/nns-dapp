@@ -1,6 +1,8 @@
 <script lang="ts">
   import CardList from "$lib/components/launchpad/CardList.svelte";
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
+  import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
+  import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
@@ -13,7 +15,10 @@
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
+  import {
+    isDesktopViewportStore,
+    isMobileViewportStore,
+  } from "$lib/derived/viewport.derived";
   import {
     ENABLE_APY_PORTFOLIO,
     ENABLE_LAUNCHPAD_REDESIGN,
@@ -28,10 +33,14 @@
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
   import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
+  import {
+    isStakingRewardDataReady,
+    type StakingRewardData,
+  } from "$lib/utils/staking-rewards.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import type { ProposalInfo } from "@dfinity/nns";
-  import { TokenAmountV2, isNullish } from "@dfinity/utils";
+  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
   import { type Component } from "svelte";
 
   type Props = {
@@ -40,6 +49,7 @@
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
     adoptedSnsProposals: SnsFullProject[];
+    stakingRewardData: StakingRewardData;
   };
 
   const {
@@ -48,8 +58,8 @@
     snsProjects,
     openSnsProposals,
     adoptedSnsProposals,
+    stakingRewardData,
   }: Props = $props();
-
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
   const hasUnpricedTokens = $derived(
     userTokens.some(
@@ -130,13 +140,22 @@
     })
   );
 
+  const tableProjectsWithApy: TableProject[] = $derived(
+    isStakingRewardDataReady(stakingRewardData)
+      ? tableProjects.map((project) => ({
+          ...project,
+          apy: stakingRewardData.apy.get(project.universeId) ?? undefined,
+        }))
+      : tableProjects
+  );
   const topStakedTokens = $derived(
     getTopStakedTokens({
-      projects: tableProjects,
+      projects: tableProjectsWithApy,
       isSignedIn: $authSignedInStore,
     })
   );
 
+  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
   const launchpadCards = $derived(
     [...snsProjects]
       .sort(comparesByDecentralizationSaleOpenTimestampDesc)
@@ -149,6 +168,7 @@
       }))
   );
 
+  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
   const openProposalCards = $derived(
     [...openSnsProposals]
       .sort(compareProposalInfoByDeadlineTimestampSeconds)
@@ -159,6 +179,7 @@
       }))
   );
 
+  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
   const adoptedSnsProposalsCards = $derived(
     [...adoptedSnsProposals]
       .sort(comparesByDecentralizationSaleOpenTimestampDesc)
@@ -179,6 +200,10 @@
         })
       : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
   );
+
+  const hasApyCalculationErrored = $derived(
+    !stakingRewardData.loading && "error" in stakingRewardData
+  );
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -186,6 +211,7 @@
     class="top"
     class:signed-in={$authSignedInStore}
     class:launchpad={cards.length > 0}
+    class:apy-card={$ENABLE_APY_PORTFOLIO}
   >
     {#if !$authSignedInStore}
       <div class="login-card">
@@ -196,8 +222,22 @@
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
-        isFullWidth={cards.length === 0}
+        isFullWidth={cards.length === 0 && !$ENABLE_APY_PORTFOLIO}
       />
+
+      {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
+        {#if isStakingRewardDataReady(stakingRewardData)}
+          <ApyCard
+            rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
+            rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
+            stakingPower={stakingRewardData.stakingPower}
+            stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+            totalAmountUSD={totalUsdAmount}
+          />
+        {:else}
+          <ApyFallbackCard {stakingRewardData} />
+        {/if}
+      {/if}
     {/if}
 
     {#if cards.length > 0}
@@ -209,6 +249,20 @@
         />
       {:else}
         <StackedCards {cards} />
+      {/if}
+    {/if}
+
+    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalUsdAmount)}
+      {#if isStakingRewardDataReady(stakingRewardData)}
+        <ApyCard
+          rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
+          rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
+          stakingPower={stakingRewardData.stakingPower}
+          stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+          totalAmountUSD={totalUsdAmount}
+        />
+      {:else}
+        <ApyFallbackCard {stakingRewardData} />
       {/if}
     {/if}
   </div>
@@ -235,6 +289,7 @@
         {topStakedTokens}
         usdAmount={totalStakedInUsd}
         numberOfTopHeldTokens={topHeldTokens.length}
+        {hasApyCalculationErrored}
       />
     {/if}
   </div>
@@ -282,13 +337,23 @@
         }
 
         // Case: signed in, no projects
-        &.signed-in:not(.launchpad) {
+        &.signed-in {
           grid-template-columns: 3fr;
         }
 
         // Case: signed in, with projects
         &.signed-in.launchpad {
           grid-template-columns: 2fr 1fr;
+        }
+
+        // Case: signed in, with APY card
+        &.signed-in.apy-card {
+          grid-template-columns: 2fr 1fr;
+        }
+
+        // Case: signed in, with APY card and projects
+        &.signed-in.apy-card.launchpad {
+          grid-template-columns: 1fr 1fr 1fr;
         }
       }
     }
