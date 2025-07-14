@@ -7,8 +7,11 @@
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
-  import { formatUsdValue } from "$lib/utils/format.utils";
-  import { snsProjectWeeklyProposalActivity } from "$lib/utils/projects.utils";
+  import { formatNumber, formatUsdValue } from "$lib/utils/format.utils";
+  import {
+    snsProjectIcpInTreasuryPercentage,
+    snsProjectWeeklyProposalActivity,
+  } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
     IconAccountBalance,
@@ -47,10 +50,7 @@
     }
     return formatUsdValue(tokenPriceUsd);
   });
-  const icpInTreasury = $derived.by(() => {
-    // TODO(launchpad2): should be available after aggregator upgrade
-    return "-/-%";
-  });
+  const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
     const myCommitment = getCommitmentE8s(swapCommitment);
     if (isNullish(myCommitment)) {
@@ -101,7 +101,18 @@
         >
         <div class="stat-value">
           <IconAccountBalance size="16px" />
-          <span data-tid="icp-in-treasury-value">{icpInTreasury}</span>
+          {#if nonNullish(icpInTreasury)}
+            <span data-tid="icp-in-treasury-value"
+              >{formatNumber(icpInTreasury, {
+                minFraction: 0,
+                maxFraction: 2,
+              })}%</span
+            >
+          {:else}
+            <span data-tid="icp-in-treasury-not-available"
+              >{$i18n.core.not_applicable}</span
+            >
+          {/if}
         </div>
       </li>
       <li class="stat-item">
