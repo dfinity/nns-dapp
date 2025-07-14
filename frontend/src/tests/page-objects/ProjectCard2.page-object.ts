@@ -32,8 +32,16 @@ export class ProjectCard2Po extends CardPo {
     return this.getText("token-price-value");
   }
 
-  getIcpInTreasuryValue(): Promise<string> {
-    return this.getText("icp-in-treasury-value");
+  getIcpInTreasuryValue(): PageObjectElement {
+    return this.root.byTestId("icp-in-treasury-value");
+  }
+
+  getIcpInTreasuryValueText(): Promise<string> {
+    return this.getIcpInTreasuryValue().getText();
+  }
+
+  getIcpInTreasuryValueNotApplicable(): PageObjectElement {
+    return this.root.byTestId("icp-in-treasury-not-applicable");
   }
 
   getUserCommitmentIcp(): AmountDisplayPo {
