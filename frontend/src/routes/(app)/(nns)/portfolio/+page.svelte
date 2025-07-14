@@ -21,6 +21,7 @@
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
+  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -92,16 +93,18 @@
       projects: $snsProjectsActivePadStore,
     })}
     openSnsProposals={$openSnsProposalsStore}
-    stakingRewardData={getStakingRewardData({
-      auth: $authSignedInStore,
-      tokens: userTokens,
-      snsProjects: $snsAggregatorStore,
-      snsNeurons: $snsNeuronsStore,
-      nnsNeurons: $neuronsStore,
-      nnsEconomics: $networkEconomicsStore,
-      fxRates: $icpSwapUsdPricesStore,
-      governanceMetrics: $governanceMetricsStore,
-      nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-    })}
+    stakingRewardData={$ENABLE_APY_PORTFOLIO
+      ? getStakingRewardData({
+          auth: $authSignedInStore,
+          tokens: userTokens,
+          snsProjects: $snsAggregatorStore,
+          snsNeurons: $snsNeuronsStore,
+          nnsNeurons: $neuronsStore,
+          nnsEconomics: $networkEconomicsStore,
+          fxRates: $icpSwapUsdPricesStore,
+          governanceMetrics: $governanceMetricsStore,
+          nnsTotalVotingPower: $nnsTotalVotingPowerStore,
+        })
+      : undefined}
   /></TestIdWrapper
 >
