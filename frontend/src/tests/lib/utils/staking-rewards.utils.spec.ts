@@ -47,6 +47,16 @@ type TestStakingRewardCalcParams = {
         | "voting_rewards_parameters"
       >;
       icrc1_total_supply: CachedSnsDto["icrc1_total_supply"];
+      metrics?: {
+        get_metrics_result: {
+          Ok?: {
+            voting_power_metrics?: {
+              governance_total_potential_voting_power?: bigint;
+            };
+            genesis_timestamp_seconds?: number;
+          };
+        };
+      };
     }[];
   };
   snsNeurons: {
@@ -277,6 +287,14 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(2.26);
+
+    // In case of no voting power (e.g. data unavailable), the reward estimate should be 0
+    const old = params.nnsTotalVotingPower;
+    params.nnsTotalVotingPower = BigInt(0);
+    expect(
+      roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(0);
+    params.nnsTotalVotingPower = old;
 
     // No stake, no reward estimate
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(0);
@@ -690,6 +708,13 @@ describe("neuron-utils", () => {
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 6.85)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
 
+    // In case of no voting power (e.g. data unavailable), the APY should be 0
+    const old = params.nnsTotalVotingPower;
+    params.nnsTotalVotingPower = BigInt(0);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 0)).toBe(true);
+    params.nnsTotalVotingPower = old;
+
     // Different stake should have no effect on APY (more stake, more rewards, same APY ratio)
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       100 * E8S_RATE
@@ -994,6 +1019,17 @@ describe("neuron-utils", () => {
     params.tokens[1].balanceInUsd = 987654321;
     expect(checkApy(TEST_SNS_IDS[0], false, 7.05)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
+
+    // In case of no voting power (e.g. data unavailable), the APY should be 0
+    const old =
+      params.snsProjects.data[0].metrics.get_metrics_result.Ok
+        .voting_power_metrics.governance_total_potential_voting_power;
+    params.snsProjects.data[0].metrics.get_metrics_result.Ok.voting_power_metrics.governance_total_potential_voting_power =
+      BigInt(0);
+    expect(checkApy(TEST_SNS_IDS[0], false, 0)).toBe(true);
+    expect(checkApy(TEST_SNS_IDS[0], true, 0)).toBe(true);
+    params.snsProjects.data[0].metrics.get_metrics_result.Ok.voting_power_metrics.governance_total_potential_voting_power =
+      old;
 
     // Different stake should have no effect on APY (more stake, more rewards, same APY ratio)
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
@@ -1364,8 +1400,16 @@ const getTestSns = (
       final_reward_rate_basis_points: 400,
       reward_rate_transition_duration_seconds: SECONDS_IN_EIGHT_YEARS,
     },
-    // @ts-expect-error need to update the type
-    total_voting_power: 10_990_900_700_300_000n,
+  },
+  metrics: {
+    get_metrics_result: {
+      Ok: {
+        voting_power_metrics: {
+          governance_total_potential_voting_power: 10_990_900_700_300_000n,
+        },
+        genesis_timestamp_seconds: 0,
+      },
+    },
   },
   icrc1_total_supply: 135_000_000,
 });
