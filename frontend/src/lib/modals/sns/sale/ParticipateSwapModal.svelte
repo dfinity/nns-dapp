@@ -185,6 +185,8 @@
             rootCanisterId: summary.rootCanisterId,
             summary,
             swapCommitment,
+            metrics: undefined,
+            latestRewardEvent: undefined,
           },
           amount: tokenAmount,
         });

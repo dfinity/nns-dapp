@@ -5,15 +5,15 @@ import type { SnsRewardEvent } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { type Readable } from "svelte/store";
 
-export interface SnsRewardEventStoreData {
-  // Root canister id is the key to identify the reward events for a specific project.
+export interface SnsLatestRewardEventStoreData {
+  // Root canister id is the key to identify the latest reward events for a specific project.
   [rootCanisterId: CanisterIdString]: SnsRewardEvent | undefined;
 }
 
 /**
- * A store that contains the sns reward events for each project.
+ * A store that contains the latest sns reward events for each project.
  */
-export const snsRewardEventStore: Readable<SnsRewardEventStoreData> =
+export const snsLatestRewardEventStore: Readable<SnsLatestRewardEventStoreData> =
   snsAggregatorDerived((sns) =>
     isNullish(sns.latest_reward_event)
       ? undefined
