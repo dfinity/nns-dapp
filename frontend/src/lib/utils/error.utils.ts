@@ -205,16 +205,17 @@ const isUpdateCallRejectedError = (
   "type" in error &&
   error.type === "update";
 
+// TOOD: Rename the function for generic errors
 export const isCanisterOutOfCyclesError = (error: unknown): boolean => {
   // https://github.com/dfinity/ic/blob/6e327863fd0e72d8cf9c5c46fc1263f548fad4f5/rs/protobuf/src/gen/state/state.ingress.v1.rs#L146
-  const outOfCyclesCanisterErrorCode = "IC0207";
+  const errorPrefix = "IC0";
 
   if (isQueryCallRejectedError(error)) {
-    return error.result.error_code === outOfCyclesCanisterErrorCode;
+    return error.result.error_code.startsWith(errorPrefix);
   }
 
   if (isUpdateCallRejectedError(error)) {
-    return error.error_code === outOfCyclesCanisterErrorCode;
+    return error.error_code?.startsWith(errorPrefix) ?? false;
   }
 
   return false;
