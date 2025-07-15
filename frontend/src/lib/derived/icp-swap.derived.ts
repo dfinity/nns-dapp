@@ -25,14 +25,42 @@ export const icpSwapUsdPricesStore: IcpSwapUsdPricesStore = derived(
     // guarantee that it's format is as expected.
     try {
       const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
+
+      // First, get all ICP-based tickers
+      const icpBasedTickers = tickers.filter(
+        ({ target_id }) => target_id === icpLedgerCanisterId
+      );
+
+      // Group tickers by base_id to identify pairs with multiple tickers
+      const tickersByBaseId = icpBasedTickers.reduce(
+        (acc, ticker) => {
+          const baseId = ticker.base_id;
+          if (!acc[baseId]) acc[baseId] = [];
+
+          acc[baseId].push(ticker);
+          return acc;
+        },
+        {} as Record<string, IcpSwapTicker[]>
+      );
+
+      // Apply volume filter only when there are multiple tickers for the same pair
+      const filteredTickers = Object.values(tickersByBaseId).flatMap(
+        (tickersForPair) => {
+          if (tickersForPair.length === 1) {
+            // Single ticker for this pair - keep it regardless of volume
+            return tickersForPair;
+          } else {
+            // Multiple tickers for this pair - filter by volume
+            return tickersForPair.filter(
+              (ticker) => Number(ticker.volume_usd_24H) > 0
+            );
+          }
+        }
+      );
+
       const ledgerCanisterIdToTicker: Record<string, IcpSwapTicker> =
         Object.fromEntries(
-          tickers
-            // Only keep ICP based tickers
-            .filter((ticker) => ticker.target_id === icpLedgerCanisterId)
-            // Only keep tickers that have a non-zero volume in the last 24 hours
-            .filter((ticker) => Number(ticker.volume_usd_24H) > 0)
-            .map((ticker) => [ticker.base_id, ticker])
+          filteredTickers.map((ticker) => [ticker.base_id, ticker])
         );
 
       const ckusdcTicker =
