@@ -40,7 +40,7 @@ import {
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { Principal } from "@dfinity/principal";
-import { nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 
 /////////////////
 /// DOC REFERENCE
@@ -570,7 +570,7 @@ const getFXRate = (
       : ledgerPrincipal;
   const rate = (fxRates as Record<string, number>)[principal];
 
-  if (rate === undefined) {
+  if (isNullish(rate)) {
     throw new ApyMissingDataError(`FX rate for ${principal}.`);
   }
   return rate;
