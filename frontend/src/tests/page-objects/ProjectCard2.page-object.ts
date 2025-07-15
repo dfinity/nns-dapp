@@ -28,8 +28,8 @@ export class ProjectCard2Po extends CardPo {
     return this.getText("project-description");
   }
 
-  getTokenPriceValue(): Promise<string> {
-    return this.getText("token-price-value");
+  getMarketCapValue(): Promise<string> {
+    return this.getText("token-market-cap");
   }
 
   getIcpInTreasuryValue(): PageObjectElement {
