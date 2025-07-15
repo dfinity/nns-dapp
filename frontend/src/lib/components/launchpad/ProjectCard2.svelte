@@ -205,6 +205,7 @@
       }
 
       .fav-icon {
+        display: none;
         @include media.min-width(medium) {
           display: none;
         }
@@ -284,7 +285,8 @@
 
         color: var(--button-secondary-color);
 
-        display: flex;
+        display: none;
+        // display: flex;
         align-items: center;
         gap: var(--padding-0_5x);
       }
