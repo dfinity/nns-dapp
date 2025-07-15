@@ -65,6 +65,12 @@
         ? formatCurrencyNumber(totalAmountUSD)
         : $i18n.core.not_applicable
   );
+
+  const linkText = $derived(
+    stakingPowerUSD > 0
+      ? $i18n.portfolio.apy_card_link_view
+      : $i18n.portfolio.apy_card_link_start
+  );
 </script>
 
 {#snippet content()}
@@ -110,12 +116,7 @@
 
 {#if $isMobileViewportStore}
   <article class="card mobile" data-tid={dataTid}>
-    <a
-      {href}
-      class="link"
-      aria-label={$i18n.portfolio.apy_card_link}
-      data-tid="project-link"
-    >
+    <a {href} class="link" aria-label={linkText} data-tid="project-link">
       {@render content()}
     </a>
   </article>
@@ -124,13 +125,8 @@
     <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
     {@render content()}
 
-    <a
-      {href}
-      class="link"
-      aria-label={$i18n.portfolio.apy_card_link}
-      data-tid="project-link"
-    >
-      <span>{$i18n.portfolio.apy_card_link}</span>
+    <a {href} class="link" aria-label={linkText} data-tid="project-link">
+      <span>{linkText}</span>
       <IconRight />
     </a>
   </article>

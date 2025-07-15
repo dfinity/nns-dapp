@@ -1399,7 +1399,8 @@ interface I18nPortfolio {
   apy_card_title: string;
   apy_card_reward_title: string;
   apy_card_power_title: string;
-  apy_card_link: string;
+  apy_card_link_view: string;
+  apy_card_link_start: string;
   apy_card_estimation: string;
   apy_card_error: string;
   apy_card_tooltip: string;
