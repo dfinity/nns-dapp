@@ -37,6 +37,7 @@
   import { getStakingRewardData } from "$lib/utils/staking-rewards.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { onDestroy } from "svelte";
 
   resetBalanceLoading();
   loadIcpSwapTickers();
@@ -79,23 +80,24 @@
   $: {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-      if ($ENABLE_APY_PORTFOLIO) {
-        stakingRewardData = getStakingRewardData({
-          auth: $authSignedInStore,
-          tokens: userTokens,
-          snsProjects: $snsAggregatorStore,
-          snsNeurons: $snsNeuronsStore,
-          nnsNeurons: $neuronsStore,
-          nnsEconomics: $networkEconomicsStore,
-          fxRates: $icpSwapUsdPricesStore,
-          governanceMetrics: $governanceMetricsStore,
-          nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-        });
-      } else {
-        stakingRewardData = { loading: true };
-      }
+      if (!$ENABLE_APY_PORTFOLIO) return;
+
+      stakingRewardData = getStakingRewardData({
+        auth: $authSignedInStore,
+        tokens: userTokens,
+        snsProjects: $snsAggregatorStore,
+        snsNeurons: $snsNeuronsStore,
+        nnsNeurons: $neuronsStore,
+        nnsEconomics: $networkEconomicsStore,
+        fxRates: $icpSwapUsdPricesStore,
+        governanceMetrics: $governanceMetricsStore,
+        nnsTotalVotingPower: $nnsTotalVotingPowerStore,
+      });
     }, 700) as unknown as number;
   }
+  onDestroy(() => {
+    clearTimeout(debounceTimer);
+  });
 </script>
 
 <TestIdWrapper testId="portfolio-route-component"
