@@ -88,7 +88,7 @@
       <h3 data-tid="project-name">{name}</h3>
       <div class="fav-icon">
         <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
-        <IconStar size="20px" />
+        <!-- <IconStar size="20px" /> -->
       </div>
     </div>
 
@@ -157,7 +157,9 @@
 
     <div class="footer">
       <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
-      <button class="ghost with-icon"><IconStar size="20px" /> Watch</button>
+      <div>
+        <!-- <button class="ghost with-icon"><IconStar size="20px" /> Watch</button> -->
+      </div>
       <a
         {href}
         class="link"
