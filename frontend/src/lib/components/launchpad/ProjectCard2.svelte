@@ -12,6 +12,7 @@
   import {
     formatCurrencyNumber,
     formatPercentage,
+    formatUsdValue,
   } from "$lib/utils/format.utils";
   import {
     snsProjectIcpInTreasuryPercentage,
@@ -55,9 +56,9 @@
         ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
         : undefined;
 
-    if (isNullish(totalSupply) || isNullish(tokenPriceUsd)) return "-/-";
+    if (isNullish(totalSupply) || isNullish(tokenPriceUsd)) return "$-/-";
 
-    return formatCurrencyNumber(totalSupply * tokenPriceUsd);
+    return formatUsdValue(totalSupply * tokenPriceUsd);
   });
   const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
@@ -101,7 +102,7 @@
         >
         <div class="stat-value">
           <IconCoin size="16px" />
-          <span data-tid="token-market-cap">${formattedMarketCapUsd}</span>
+          <span data-tid="token-market-cap">{formattedMarketCapUsd}</span>
         </div>
       </li>
       <li class="stat-item">
