@@ -37,10 +37,16 @@
   import { getStakingRewardData } from "$lib/utils/staking-rewards.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { onDestroy } from "svelte";
 
   resetBalanceLoading();
   loadIcpSwapTickers();
   loadCkBTCTokens();
+
+  let stakingRewardData: ReturnType<typeof getStakingRewardData> = {
+    loading: true,
+  };
+  let debounceTimer: number;
 
   let userTokens: UserToken[];
   $: userTokens = $tokensListVisitorsStore;
@@ -71,6 +77,27 @@
   $: if ($snsProposalsStoreIsLoading) {
     loadProposalsSnsCF({ omitLargeFields: false });
   }
+  $: {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      if (!$ENABLE_APY_PORTFOLIO) return;
+
+      stakingRewardData = getStakingRewardData({
+        auth: $authSignedInStore,
+        tokens: userTokens,
+        snsProjects: $snsAggregatorStore,
+        snsNeurons: $snsNeuronsStore,
+        nnsNeurons: $neuronsStore,
+        nnsEconomics: $networkEconomicsStore,
+        fxRates: $icpSwapUsdPricesStore,
+        governanceMetrics: $governanceMetricsStore,
+        nnsTotalVotingPower: $nnsTotalVotingPowerStore,
+      });
+    }, 700) as unknown as number;
+  }
+  onDestroy(() => {
+    clearTimeout(debounceTimer);
+  });
 </script>
 
 <TestIdWrapper testId="portfolio-route-component"
@@ -93,18 +120,6 @@
       projects: $snsProjectsActivePadStore,
     })}
     openSnsProposals={$openSnsProposalsStore}
-    stakingRewardData={$ENABLE_APY_PORTFOLIO
-      ? getStakingRewardData({
-          auth: $authSignedInStore,
-          tokens: userTokens,
-          snsProjects: $snsAggregatorStore,
-          snsNeurons: $snsNeuronsStore,
-          nnsNeurons: $neuronsStore,
-          nnsEconomics: $networkEconomicsStore,
-          fxRates: $icpSwapUsdPricesStore,
-          governanceMetrics: $governanceMetricsStore,
-          nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-        })
-      : undefined}
+    {stakingRewardData}
   /></TestIdWrapper
 >
