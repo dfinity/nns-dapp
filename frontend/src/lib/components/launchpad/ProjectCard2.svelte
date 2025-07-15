@@ -7,7 +7,10 @@
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
-  import { formatNumber, formatUsdValue } from "$lib/utils/format.utils";
+  import {
+    formatCurrencyNumber,
+    formatPercentage,
+  } from "$lib/utils/format.utils";
   import {
     snsProjectIcpInTreasuryPercentage,
     snsProjectWeeklyProposalActivity,
@@ -103,10 +106,10 @@
           <IconAccountBalance size="16px" />
           {#if nonNullish(icpInTreasury)}
             <span data-tid="icp-in-treasury-value"
-              >{formatNumber(icpInTreasury, {
+              >{formatPercentage(icpInTreasury, {
                 minFraction: 0,
                 maxFraction: 2,
-              })}%</span
+              })}</span
             >
           {:else}
             <span data-tid="icp-in-treasury-not-applicable"

@@ -481,6 +481,8 @@ export const snsProjectWeeklyProposalActivity = (
   return Math.round(numRecentProposals / weeks);
 };
 
+// Returns the percentage [0..1] of ICP in the treasury compared to the original amount.
+// Returns undefined if the metrics are not available.
 export const snsProjectIcpInTreasuryPercentage = (
   sns: SnsFullProject
 ): number | undefined => {
@@ -496,5 +498,5 @@ export const snsProjectIcpInTreasuryPercentage = (
   if (isNullish(currentAmount) || isNullish(originalAmount)) return undefined;
   if (originalAmount === 0) return 0;
 
-  return (currentAmount / originalAmount) * 100;
+  return currentAmount / originalAmount;
 };
