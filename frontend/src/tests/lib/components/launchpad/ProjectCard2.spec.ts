@@ -122,7 +122,16 @@ describe("ProjectCard2", () => {
       expect(await po.isHighlighted()).toBe(false);
     });
 
-    it("should display token price", async () => {
+    it("should display market cap", async () => {
+      const totalTokenSupply = 25_000_000_000_000n;
+      const tokenPrice = 2;
+      setSnsProjects([
+        {
+          rootCanisterId: mockSnsFullProject.rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+          totalTokenSupply,
+        },
+      ]);
       const project = createMockSnsFullProject({
         rootCanisterId,
         summaryParams: {
@@ -132,12 +141,41 @@ describe("ProjectCard2", () => {
       });
       const ledgerCanisterId = project.summary.ledgerCanisterId;
       setIcpSwapUsdPrices({
-        [ledgerCanisterId.toText()]: 15,
+        [ledgerCanisterId.toText()]: tokenPrice,
       });
 
       const po = await renderCard(project);
 
-      expect(await po.getTokenPriceValue()).toEqual("$15.00");
+      // totalTokenSupply / 10**8 * tokenPrice
+      // 25_000_000_000_000 / 10**8 * 2 = 500_000
+      expect(await po.getMarketCapValue()).toEqual("$500’000");
+    });
+
+    it("should display '-' for market cap when price is not available", async () => {
+      const totalTokenSupply = 25_000_000_000_000n;
+      const tokenPrice = undefined;
+      setSnsProjects([
+        {
+          rootCanisterId: mockSnsFullProject.rootCanisterId,
+          lifecycle: SnsSwapLifecycle.Committed,
+          totalTokenSupply,
+        },
+      ]);
+      const project = createMockSnsFullProject({
+        rootCanisterId,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Open,
+          swapDueTimestampSeconds: BigInt(nowInSeconds + SECONDS_IN_DAY),
+        },
+      });
+      const ledgerCanisterId = project.summary.ledgerCanisterId;
+      setIcpSwapUsdPrices({
+        [ledgerCanisterId.toText()]: tokenPrice,
+      });
+
+      const po = await renderCard(project);
+
+      expect(await po.getMarketCapValue()).toEqual("$-/-");
     });
 
     it("should display user commitment if any", async () => {

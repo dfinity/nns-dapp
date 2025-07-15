@@ -2,9 +2,11 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
   import {
@@ -40,7 +42,12 @@
   const href = $derived(
     `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
   );
-  const formattedTokenPriceUsd = $derived.by(() => {
+  const formattedMarketCapUsd = $derived.by(() => {
+    const totalSupplyE8s =
+      $snsTotalSupplyTokenAmountStore[rootCanisterId.toText()]?.toE8s();
+    const totalSupply = nonNullish(totalSupplyE8s)
+      ? Number(totalSupplyE8s) / E8S_PER_ICP
+      : undefined;
     const tokenPriceUsd =
       nonNullish(ledgerCanisterId) &&
       nonNullish($icpSwapUsdPricesStore) &&
@@ -48,10 +55,9 @@
         ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
         : undefined;
 
-    if (isNullish(tokenPriceUsd)) {
-      return "$-/-";
-    }
-    return formatUsdValue(tokenPriceUsd);
+    if (isNullish(totalSupply) || isNullish(tokenPriceUsd)) return "-/-";
+
+    return formatCurrencyNumber(totalSupply * tokenPriceUsd);
   });
   const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
@@ -91,11 +97,11 @@
     <ul class="stats">
       <li class="stat-item">
         <h6 class="stat-label"
-          >{$i18n.launchpad_cards.project_card_token_price}</h6
+          >{$i18n.launchpad_cards.project_card_market_cap}</h6
         >
         <div class="stat-value">
           <IconCoin size="16px" />
-          <span data-tid="token-price-value">{formattedTokenPriceUsd}</span>
+          <span data-tid="token-market-cap">${formattedMarketCapUsd}</span>
         </div>
       </li>
       <li class="stat-item">
