@@ -7,10 +7,7 @@
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
-  import {
-    formatCurrencyNumber,
-    formatPercentage,
-  } from "$lib/utils/format.utils";
+  import { formatUsdValue, formatPercentage } from "$lib/utils/format.utils";
   import {
     snsProjectIcpInTreasuryPercentage,
     snsProjectWeeklyProposalActivity,
