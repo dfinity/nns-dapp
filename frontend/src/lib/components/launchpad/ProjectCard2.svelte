@@ -2,6 +2,7 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
@@ -55,7 +56,8 @@
         ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
         : undefined;
 
-    if (isNullish(totalSupply) || isNullish(tokenPriceUsd)) return "-/-";
+    if (isNullish(totalSupply) || isNullish(tokenPriceUsd))
+      return PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
     return formatCurrencyNumber(totalSupply * tokenPriceUsd);
   });
