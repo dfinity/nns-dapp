@@ -271,14 +271,17 @@
         display: flex;
       }
 
+      button {
+        visibility: hidden;
+      }
+
       .link,
       button {
         @include launchpad.text_button;
 
         color: var(--button-secondary-color);
 
-        display: none;
-        // display: flex;
+        display: flex;
         align-items: center;
         gap: var(--padding-0_5x);
       }
