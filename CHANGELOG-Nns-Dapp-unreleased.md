@@ -22,9 +22,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
-* Improved project list organization by moving unresponsive projects to bottom
-* Ledger and index canister errors
-
 #### Security
 
 #### Not Published
