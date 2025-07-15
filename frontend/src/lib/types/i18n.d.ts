@@ -938,7 +938,7 @@ interface I18nLaunchpad_cards {
   ongoing_funded_of_min: string;
   ongoing_min_icp: string;
   ongoing_cap_icp: string;
-  project_card_token_price: string;
+  project_card_market_cap: string;
   project_card_icp_in_treasury: string;
   project_card_my_participation: string;
   project_card_proposal_activity: string;
