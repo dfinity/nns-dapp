@@ -1551,7 +1551,7 @@ describe("snsProjectIcpInTreasuryPercentage", () => {
       },
     });
 
-    expect(snsProjectIcpInTreasuryPercentage(testProject)).toBe(20);
+    expect(snsProjectIcpInTreasuryPercentage(testProject)).toBe(0.2);
   });
 
   it("should use icp treasury metrics for calculation", () => {
@@ -1572,7 +1572,7 @@ describe("snsProjectIcpInTreasuryPercentage", () => {
       },
     });
 
-    expect(snsProjectIcpInTreasuryPercentage(testProject)).toBe(20);
+    expect(snsProjectIcpInTreasuryPercentage(testProject)).toBe(0.2);
   });
 
   it("should return undefined when no treasury metrics fields available", () => {
