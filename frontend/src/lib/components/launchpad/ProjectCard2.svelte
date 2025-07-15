@@ -88,7 +88,7 @@
       <h3 data-tid="project-name">{name}</h3>
       <div class="fav-icon">
         <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
-        <!-- <IconStar size="20px" /> -->
+        <IconStar size="20px" />
       </div>
     </div>
 
@@ -157,9 +157,7 @@
 
     <div class="footer">
       <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
-      <div>
-        <!-- <button class="ghost with-icon"><IconStar size="20px" /> Watch</button> -->
-      </div>
+      <button class="ghost with-icon"><IconStar size="20px" /> Watch</button>
       <a
         {href}
         class="link"
@@ -205,6 +203,7 @@
       }
 
       .fav-icon {
+        display: none;
         @include media.min-width(medium) {
           display: none;
         }
@@ -284,7 +283,8 @@
 
         color: var(--button-secondary-color);
 
-        display: flex;
+        display: none;
+        // display: flex;
         align-items: center;
         gap: var(--padding-0_5x);
       }
