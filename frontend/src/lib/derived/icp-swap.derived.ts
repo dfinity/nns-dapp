@@ -51,8 +51,10 @@ export const icpSwapUsdPricesStore: IcpSwapUsdPricesStore = derived(
             return tickersForPair;
           } else {
             // Multiple tickers for this pair - filter by volume
-            return tickersForPair.filter(
-              (ticker) => Number(ticker.volume_usd_24H) > 0
+            return (
+              tickersForPair.find(
+                (ticker) => Number(ticker.volume_usd_24H) > 0
+              ) ?? []
             );
           }
         }
