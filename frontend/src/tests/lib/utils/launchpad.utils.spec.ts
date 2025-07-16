@@ -351,7 +351,7 @@ describe("Launchpad utils", () => {
     });
   });
 
-  describe("compareSnsProjectsByUsdProposalActivity", () => {
+  describe("compareSnsProjectsByProposalActivity", () => {
     const projectWith5Proposals = createMockSnsFullProject({
       rootCanisterId: principal(1),
       summaryParams: {},
