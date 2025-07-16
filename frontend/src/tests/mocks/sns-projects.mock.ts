@@ -5,7 +5,11 @@ import type {
   SnsSummarySwap,
   SnsSwapCommitment,
 } from "$lib/types/sns";
-import type { MetricsDto, RewardEventDto } from "$lib/types/sns-aggregator";
+import type {
+  MetricsDto,
+  RewardEventDto,
+  TreasuryMetricsDto,
+} from "$lib/types/sns-aggregator";
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
 import type { Universe } from "$lib/types/universe";
@@ -309,20 +313,22 @@ export const mockSnsSummaryList: SnsSummaryWrapper[] = [
 
 export const mockSummary = mockSnsSummaryList[0];
 
+export const mockIcpTreasuryMetrics: TreasuryMetricsDto = {
+  name: "TOKEN_ICP",
+  original_amount_e8s: 314100000000,
+  amount_e8s: 314099990000,
+  account: {
+    owner: "7uieb-cx777-77776-qaaaq-cai",
+    subaccount: null,
+  },
+  ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+  treasury: 1,
+  timestamp_seconds: 1752222478,
+};
+
 export const mockSnsMetrics: MetricsDto = {
   treasury_metrics: [
-    {
-      name: "TOKEN_ICP",
-      original_amount_e8s: 314100000000,
-      amount_e8s: 314099990000,
-      account: {
-        owner: "7uieb-cx777-77776-qaaaq-cai",
-        subaccount: null,
-      },
-      ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
-      treasury: 1,
-      timestamp_seconds: 1752222478,
-    },
+    mockIcpTreasuryMetrics,
     {
       name: "TOKEN_SNS_TOKEN",
       original_amount_e8s: 0,
