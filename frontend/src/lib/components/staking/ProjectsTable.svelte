@@ -135,6 +135,11 @@
       (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
   );
 
+  let order: ProjectsTableOrder = [];
+  $: if ($authSignedInStore) {
+    order = $projectsTableOrderStore;
+  }
+
   const dispatcher = createEventDispatcher();
 
   const handleAction = ({
@@ -148,11 +153,6 @@
   const showAll = () => {
     hideZeroNeuronsStore.set("show");
   };
-
-  let order: ProjectsTableOrder = [];
-  $: if ($authSignedInStore) {
-    order = $projectsTableOrderStore;
-  }
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
