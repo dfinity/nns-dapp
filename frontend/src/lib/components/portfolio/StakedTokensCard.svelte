@@ -66,14 +66,12 @@
         >
 
         {#if showApy}
-          <span
-            class="mobile-only justify-end text-right align-center"
-            role="columnheader"
+          <span class="apy-label" role="columnheader"
             ><span>
               {$i18n.portfolio
                 .staked_tokens_card_list_second_column_mobile_apy_first}
             </span><span class="description"
-              >/{$i18n.portfolio
+              >{$i18n.portfolio
                 .staked_tokens_card_list_second_column_mobile_apy_second}
             </span>
           </span>
@@ -230,10 +228,21 @@
 
         font-size: 0.875rem;
         padding: 0 var(--padding-2x);
-        height: 20px;
+        align-items: center;
 
         @include media.min-width(medium) {
+          height: 20px;
           grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .apy-label {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+
+          @include media.min-width(medium) {
+            display: none;
+          }
         }
       }
 
