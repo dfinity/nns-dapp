@@ -19,7 +19,11 @@
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-  import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
+  import type {
+    ProjectsTableColumn,
+    ProjectsTableOrder,
+    TableProject,
+  } from "$lib/types/staking";
   import {
     compareByNeuron,
     compareByProject,
@@ -43,7 +47,7 @@
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["minmax(min-content, max-content)"],
-      comparator: compareByProject,
+      comparator: $authSignedInStore ? compareByProject : undefined,
     },
     {
       title: "",
@@ -56,7 +60,7 @@
       cellComponent: ProjectStakeCell,
       alignment: "right",
       templateColumns: ["max-content"],
-      comparator: compareByStake,
+      comparator: $authSignedInStore ? compareByStake : undefined,
     },
     {
       title: "",
@@ -80,7 +84,7 @@
       cellComponent: ProjectNeuronsCell,
       alignment: "right",
       templateColumns: ["max-content"],
-      comparator: compareByNeuron,
+      comparator: $authSignedInStore ? compareByNeuron : undefined,
     },
     {
       title: "",
@@ -144,6 +148,11 @@
   const showAll = () => {
     hideZeroNeuronsStore.set("show");
   };
+
+  let order: ProjectsTableOrder = [];
+  $: if ($authSignedInStore) {
+    order = $projectsTableOrderStore;
+  }
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
@@ -157,8 +166,8 @@
     tableData={sortedTableProjects}
     {columns}
     on:nnsAction={handleAction}
-    bind:order={$projectsTableOrderStore}
-    displayTableSettings
+    bind:order
+    displayTableSettings={$authSignedInStore}
   >
     <div slot="settings-popover">
       {#if $authSignedInStore}
