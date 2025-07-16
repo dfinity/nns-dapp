@@ -1,6 +1,8 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/tokens.constants";
+import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import type { UserToken } from "$lib/types/tokens-page";
+import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import {
   createAscendingComparator,
   createDescendingComparator,
@@ -101,3 +103,36 @@ export const compareTokensForTokensTable = ({
     compareTokensByImportance,
     compareTokensAlphabetically,
   ]);
+
+const importantTokensText = IMPORTANT_CK_TOKEN_IDS.map((token) =>
+  token.toText()
+);
+const isIcpToken = (token: UserToken) =>
+  token.universeId.toText() === OWN_CANISTER_ID_TEXT;
+const isCkToken = (token: UserToken) =>
+  importantTokensText.includes(token.universeId.toText());
+
+export const filterTokensByType = (
+  tokens: UserToken[],
+  type: "icp" | "ck" | "sns" | "imported",
+  importedTokens: ImportedTokenData[] = []
+) => {
+  if (type === "icp") return tokens.filter(isIcpToken);
+  if (type === "ck") return tokens.filter(isCkToken);
+  if (type === "imported")
+    return tokens.filter((t) =>
+      isImportedToken({ ledgerCanisterId: t.ledgerCanisterId, importedTokens })
+    );
+
+  if (type === "sns")
+    return tokens.filter(
+      (t) =>
+        !isIcpToken(t) &&
+        !isCkToken(t) &&
+        !isImportedToken({
+          ledgerCanisterId: t.ledgerCanisterId,
+          importedTokens,
+        })
+    );
+  return [];
+};
