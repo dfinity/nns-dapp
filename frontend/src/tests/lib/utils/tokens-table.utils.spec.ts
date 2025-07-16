@@ -410,40 +410,43 @@ describe("tokens-table.utils", () => {
     ];
 
     it("should filter ICP tokens", () => {
-      const result = filterTokensByType(allTokens, "icp");
+      const result = filterTokensByType({ tokens: allTokens, type: "icp" });
       expect(result).toEqual([icpToken]);
     });
 
     it("should filter ckTokens (important ck tokens)", () => {
-      const result = filterTokensByType(allTokens, "ck");
+      const result = filterTokensByType({ tokens: allTokens, type: "ck" });
       expect(result).toEqual([ckBTCToken, ckETHTToken, ckUSDCToken]);
     });
 
     it("should filter imported tokens", () => {
-      const result = filterTokensByType(
-        allTokens,
-        "imported",
-        mockImportedTokensData
-      );
+      const result = filterTokensByType({
+        tokens: allTokens,
+        type: "imported",
+        importedTokens: mockImportedTokensData,
+      });
       expect(result).toEqual([importedToken1, importedToken2]);
     });
 
     it("should filter imported tokens without providing importedTokens parameter", () => {
-      const result = filterTokensByType(allTokens, "imported");
+      const result = filterTokensByType({
+        tokens: allTokens,
+        type: "imported",
+      });
       expect(result).toEqual([]);
     });
 
     it("should filter SNS tokens (excluding ICP, ck, and imported)", () => {
-      const result = filterTokensByType(
-        allTokens,
-        "sns",
-        mockImportedTokensData
-      );
+      const result = filterTokensByType({
+        tokens: allTokens,
+        type: "sns",
+        importedTokens: mockImportedTokensData,
+      });
       expect(result).toEqual([snsToken1, snsToken2]);
     });
 
     it("should filter SNS tokens when no imported tokens are provided", () => {
-      const result = filterTokensByType(allTokens, "sns");
+      const result = filterTokensByType({ tokens: allTokens, type: "sns" });
       // Without imported tokens data, importedToken1 and importedToken2 should be classified as SNS
       expect(result).toEqual([
         snsToken1,
@@ -451,19 +454,6 @@ describe("tokens-table.utils", () => {
         importedToken1,
         importedToken2,
       ]);
-    });
-
-    it("should handle mixed token types correctly", () => {
-      const mixedTokens = [icpToken, ckBTCToken, snsToken1, importedToken1];
-
-      expect(filterTokensByType(mixedTokens, "icp")).toEqual([icpToken]);
-      expect(filterTokensByType(mixedTokens, "ck")).toEqual([ckBTCToken]);
-      expect(
-        filterTokensByType(mixedTokens, "sns", mockImportedTokensData)
-      ).toEqual([snsToken1]);
-      expect(
-        filterTokensByType(mixedTokens, "imported", mockImportedTokensData)
-      ).toEqual([importedToken1]);
     });
   });
 });

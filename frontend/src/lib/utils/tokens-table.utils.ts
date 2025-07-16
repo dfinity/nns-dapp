@@ -112,11 +112,15 @@ const isIcpToken = (token: UserToken) =>
 const isCkToken = (token: UserToken) =>
   importantTokensText.includes(token.universeId.toText());
 
-export const filterTokensByType = (
-  tokens: UserToken[],
-  type: "icp" | "ck" | "sns" | "imported",
-  importedTokens: ImportedTokenData[] = []
-) => {
+export const filterTokensByType = ({
+  tokens,
+  type,
+  importedTokens = [],
+}: {
+  tokens: UserToken[];
+  type: "icp" | "ck" | "sns" | "imported";
+  importedTokens?: ImportedTokenData[];
+}) => {
   if (type === "icp") return tokens.filter(isIcpToken);
   if (type === "ck") return tokens.filter(isCkToken);
   if (type === "imported")
