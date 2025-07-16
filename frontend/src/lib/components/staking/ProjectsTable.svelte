@@ -163,7 +163,7 @@
     <div slot="settings-popover">
       {#if $authSignedInStore}
         <HideZeroNeuronsToggle />
-        <Separator spacing="medium" />
+        <Separator spacing="none" />
       {/if}
     </div>
 

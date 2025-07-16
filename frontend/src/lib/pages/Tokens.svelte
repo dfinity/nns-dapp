@@ -88,7 +88,7 @@
   >
     <div slot="settings-popover">
       <HideZeroBalancesToggle />
-      <Separator spacing="medium" />
+      <Separator spacing="none" />
     </div>
 
     <div slot="last-row" class="last-row">

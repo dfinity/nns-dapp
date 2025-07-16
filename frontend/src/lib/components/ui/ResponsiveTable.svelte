@@ -4,10 +4,10 @@
 </script>
 
 <script lang="ts" generics="RowDataType extends ResponsiveTableRowData">
-  import { i18n } from "$lib/stores/i18n";
-  import ResponsiveTableSortControl from "$lib/components/ui/ResponsiveTableSortControl.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
+  import ResponsiveTableSortControl from "$lib/components/ui/ResponsiveTableSortControl.svelte";
+  import { i18n } from "$lib/stores/i18n";
   import type {
     ResponsiveTableColumn,
     ResponsiveTableOrder,
@@ -167,12 +167,14 @@
     invisibleBackdrop
     testId="settings-popover"
   >
-    <slot name="settings-popover" />
-    <ResponsiveTableSortControl
-      {columns}
-      bind:order
-      on:nnsClose={closeSettings}
-    />
+    <div class="popover-wrapper">
+      <slot name="settings-popover" />
+      <ResponsiveTableSortControl
+        {columns}
+        bind:order
+        on:nnsClose={closeSettings}
+      />
+    </div>
   </Popover>
 </TestIdWrapper>
 
@@ -300,5 +302,11 @@
         border-bottom: none;
       }
     }
+  }
+
+  .popover-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
   }
 </style>
