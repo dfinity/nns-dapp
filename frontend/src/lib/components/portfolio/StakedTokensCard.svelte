@@ -139,7 +139,7 @@
                       maxFraction: 2,
                     })}</span
                   >
-                  <span class="description"
+                  <span class="max"
                     >({formatPercentage(apy.max, {
                       minFraction: 2,
                       maxFraction: 2,
@@ -285,23 +285,35 @@
             gap: var(--padding);
           }
 
-          .apy {
-            grid-area: maturity;
-            display: flex;
-            gap: var(--padding-0_5x);
-
-            @include media.min-width(medium) {
-              flex-direction: column;
-              gap: 0;
-            }
-          }
-
           .apy,
           .maturity,
           .stake-usd,
           .stake-native {
             justify-self: end;
             text-align: right;
+          }
+
+          .apy {
+            grid-area: maturity;
+            display: flex;
+            gap: var(--padding-0_5x);
+            font-size: 0.875rem;
+            color: var(--text-description);
+
+            @include media.min-width(medium) {
+              font-size: var(--font-size-standard);
+              flex-direction: column;
+              gap: 0;
+              color: var(--text-primary);
+            }
+
+            .max {
+              color: var(--text-description);
+
+              @include media.min-width(medium) {
+                font-size: 0.875rem;
+              }
+            }
           }
 
           .maturity {
@@ -317,6 +329,7 @@
 
           .stake-usd {
             grid-area: usd;
+            font-size: var(--font-size-standard);
           }
 
           .stake-native {
