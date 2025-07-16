@@ -41,7 +41,7 @@ export const getUpcomingLaunchesCards = ({
     }));
 
   const adoptedSnsProposalCards = filterProjectsStatus({
-    swapLifecycle: SnsSwapLifecycle.Open,
+    swapLifecycle: SnsSwapLifecycle.Adopted,
     projects: snsProjects,
   })
     .sort(comparesByDecentralizationSaleOpenTimestampDesc)
