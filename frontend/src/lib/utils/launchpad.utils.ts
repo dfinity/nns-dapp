@@ -112,6 +112,9 @@ export const compareSnsProjectsByMarketCap = ({
         icpSwapUsdPricesStore,
       }) ?? 0n
   );
+export const compareSnsProjectsByIcpTreasury = createDescendingComparator(
+  (project: SnsFullProject) => snsProjectIcpInTreasuryPercentage(project)
+);
 
 export const compareLaunchpadSnsProjects = ({
   snsTotalSupplyTokenAmountStore,
@@ -132,4 +135,5 @@ export const compareLaunchpadSnsProjects = ({
       snsTotalSupplyTokenAmountStore,
       icpSwapUsdPricesStore,
     }),
+    compareSnsProjectsByIcpTreasury,
   ]);
