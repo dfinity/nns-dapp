@@ -66,14 +66,12 @@
         >
 
         {#if showApy}
-          <span
-            class="mobile-only justify-end text-right align-center"
-            role="columnheader"
+          <span class="apy-label" role="columnheader"
             ><span>
               {$i18n.portfolio
                 .staked_tokens_card_list_second_column_mobile_apy_first}
             </span><span class="description"
-              >/{$i18n.portfolio
+              >{$i18n.portfolio
                 .staked_tokens_card_list_second_column_mobile_apy_second}
             </span>
           </span>
@@ -141,7 +139,7 @@
                       maxFraction: 2,
                     })}</span
                   >
-                  <span class="description"
+                  <span class="max"
                     >({formatPercentage(apy.max, {
                       minFraction: 2,
                       maxFraction: 2,
@@ -230,10 +228,21 @@
 
         font-size: 0.875rem;
         padding: 0 var(--padding-2x);
-        height: 20px;
+        align-items: center;
 
         @include media.min-width(medium) {
+          height: 20px;
           grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .apy-label {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+
+          @include media.min-width(medium) {
+            display: none;
+          }
         }
       }
 
@@ -276,23 +285,35 @@
             gap: var(--padding);
           }
 
-          .apy {
-            grid-area: maturity;
-            display: flex;
-            gap: var(--padding-0_5x);
-
-            @include media.min-width(medium) {
-              flex-direction: column;
-              gap: 0;
-            }
-          }
-
           .apy,
           .maturity,
           .stake-usd,
           .stake-native {
             justify-self: end;
             text-align: right;
+          }
+
+          .apy {
+            grid-area: maturity;
+            display: flex;
+            gap: var(--padding-0_5x);
+            font-size: 0.875rem;
+            color: var(--text-description);
+
+            @include media.min-width(medium) {
+              font-size: var(--font-size-standard);
+              flex-direction: column;
+              gap: 0;
+              color: var(--text-primary);
+            }
+
+            .max {
+              color: var(--text-description);
+
+              @include media.min-width(medium) {
+                font-size: 0.875rem;
+              }
+            }
           }
 
           .maturity {
@@ -308,6 +329,7 @@
 
           .stake-usd {
             grid-area: usd;
+            font-size: var(--font-size-standard);
           }
 
           .stake-native {
