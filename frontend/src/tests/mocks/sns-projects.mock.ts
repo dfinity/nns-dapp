@@ -410,6 +410,7 @@ type SnsSummaryParams = {
   swapOpenTimestampSeconds?: bigint;
   nnsProposalId?: bigint;
   rootCanisterId?: Principal;
+  ledgerCanisterId?: Principal;
   projectName?: string;
   projectDescription?: string;
   projectUrl?: string;
@@ -442,6 +443,7 @@ export const createSummary = ({
   projectDescription,
   projectUrl,
   logo,
+  ledgerCanisterId,
 }: SnsSummaryParams): SnsSummaryWrapper => {
   const init: SnsSwapInit = {
     ...mockInit,
@@ -497,6 +499,7 @@ export const createSummary = ({
   const summary = summaryForLifecycle(lifecycle);
   return summary.override({
     rootCanisterId: rootCanisterId ?? summary.rootCanisterId,
+    ledgerCanisterId: ledgerCanisterId ?? summary.ledgerCanisterId,
     metadata,
     swap: {
       ...summary.swap,
