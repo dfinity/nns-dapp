@@ -4,6 +4,8 @@ import UpcomingProjectCard from "$lib/components/launchpad/UpcomingProjectCard.s
 import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
 import {
+  compareLaunchpadSnsProjects,
+  compareSnsProjectsByIcpTreasury,
   compareSnsProjectsByMarketCap,
   compareSnsProjectsByProposalActivity,
   compareSnsProjectsUndefinedIcpTreasuryLast,
@@ -14,6 +16,7 @@ import {
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import {
   createMockSnsFullProject,
+  mockIcpTreasuryMetrics,
   mockSnsMetrics,
   principal,
 } from "$tests/mocks/sns-projects.mock";
@@ -419,7 +422,7 @@ describe("Launchpad utils", () => {
     });
     const ledgerCanisterId2 = principal(4);
     // totalTokenSupply2 * tokenPrice
-    const projectWithBigMarketCap = createMockSnsFullProject({
+    const projectWithLargeMarketCap = createMockSnsFullProject({
       rootCanisterId: rootCanisterId2,
       summaryParams: {
         ledgerCanisterId: ledgerCanisterId2,
@@ -449,7 +452,7 @@ describe("Launchpad utils", () => {
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
       });
       expect(
-        comparator(projectWithSmallMarketCap, projectWithBigMarketCap)
+        comparator(projectWithSmallMarketCap, projectWithLargeMarketCap)
       ).toBe(1);
     });
 
@@ -459,7 +462,7 @@ describe("Launchpad utils", () => {
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
       });
       expect(
-        comparator(projectWithBigMarketCap, projectWithSmallMarketCap)
+        comparator(projectWithLargeMarketCap, projectWithSmallMarketCap)
       ).toBe(-1);
     });
 
@@ -471,9 +474,174 @@ describe("Launchpad utils", () => {
       expect(
         comparator(projectWithSmallMarketCap, projectWithSmallMarketCap)
       ).toBe(0);
-      expect(comparator(projectWithBigMarketCap, projectWithBigMarketCap)).toBe(
-        0
+      expect(
+        comparator(projectWithLargeMarketCap, projectWithLargeMarketCap)
+      ).toBe(0);
+    });
+  });
+
+  describe("compareSnsProjectsByIcpTreasury", () => {
+    const project100Percent = createMockSnsFullProject({
+      rootCanisterId: principal(1),
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+        treasury_metrics: [
+          {
+            ...mockIcpTreasuryMetrics,
+            amount_e8s: 100_000_000,
+            original_amount_e8s: 100_000_000,
+          },
+        ],
+      },
+    });
+    const project25Percent = createMockSnsFullProject({
+      rootCanisterId: principal(2),
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+        treasury_metrics: [
+          {
+            ...mockIcpTreasuryMetrics,
+            amount_e8s: 25_000_000,
+            original_amount_e8s: 100_000_000,
+          },
+        ],
+      },
+    });
+
+    it("returns -1 when project `a` has more treasury left than project `b`", () => {
+      expect(
+        compareSnsProjectsByIcpTreasury(project100Percent, project25Percent)
+      ).toBe(-1);
+    });
+
+    it("returns 1 when project `b` has more treasury left than project `a`", () => {
+      expect(
+        compareSnsProjectsByIcpTreasury(project25Percent, project100Percent)
+      ).toBe(1);
+    });
+
+    it("returns 0 when `a` and `b` have the same treasury left", () => {
+      expect(
+        compareSnsProjectsByIcpTreasury(project100Percent, project100Percent)
+      ).toBe(0);
+      expect(
+        compareSnsProjectsByIcpTreasury(project25Percent, project25Percent)
+      ).toBe(0);
+    });
+  });
+
+  describe("compareLaunchpadSnsProjects", () => {
+    const sameTokenSupplyRootCanisterId = principal(1);
+    const moreTokenSupplyRootCanisterId2 = principal(2);
+    const mostTokenSupplyRootCanisterId2 = principal(3);
+    const sameTokenPriceSummaryParams = (name) => ({
+      projectName: name,
+      ledgerCanisterId: principal(123),
+    });
+    const mockMetrics = (proposals, treasuryPercent) => ({
+      ...mockSnsMetrics,
+      num_recently_executed_proposals: proposals,
+      treasury_metrics: [
+        {
+          ...mockIcpTreasuryMetrics,
+          amount_e8s: treasuryPercent * 1_000_000_000,
+          original_amount_e8s: 1_000_000_000,
+        },
+      ],
+    });
+    const projectWithoutMetrics = createMockSnsFullProject({
+      rootCanisterId: sameTokenSupplyRootCanisterId,
+      summaryParams: sameTokenPriceSummaryParams("Project Without Metrics"),
+      metrics: undefined,
+    });
+    const projectWith50Proposals = createMockSnsFullProject({
+      rootCanisterId: sameTokenSupplyRootCanisterId,
+      summaryParams: sameTokenPriceSummaryParams("Project With 50 Proposals"),
+      metrics: mockMetrics(50, 10),
+    });
+    const projectWith100Proposals = createMockSnsFullProject({
+      rootCanisterId: sameTokenSupplyRootCanisterId,
+      summaryParams: sameTokenPriceSummaryParams("Project With 100 Proposals"),
+      metrics: mockMetrics(100, 10),
+    });
+    const projectTreasury100Percent = createMockSnsFullProject({
+      rootCanisterId: sameTokenSupplyRootCanisterId,
+      summaryParams: sameTokenPriceSummaryParams("Project Treasury 100%"),
+      metrics: mockMetrics(2, 100),
+    });
+    const projectTreasury25Percent = createMockSnsFullProject({
+      rootCanisterId: sameTokenSupplyRootCanisterId,
+      summaryParams: sameTokenPriceSummaryParams("Project Treasury 25%"),
+      metrics: mockMetrics(2, 25),
+    });
+    const projectWithSmallMarketCap = createMockSnsFullProject({
+      rootCanisterId: moreTokenSupplyRootCanisterId2,
+      summaryParams: sameTokenPriceSummaryParams(
+        "Project With Small Market Cap"
+      ),
+      metrics: mockMetrics(2, 10),
+    });
+    const projectWithLargeMarketCap = createMockSnsFullProject({
+      rootCanisterId: mostTokenSupplyRootCanisterId2,
+      summaryParams: sameTokenPriceSummaryParams(
+        "Project With Large Market Cap"
+      ),
+      metrics: mockMetrics(2, 10),
+    });
+
+    beforeEach(() => {
+      // mock the total token supply for the projects
+      setSnsProjects([
+        {
+          rootCanisterId: sameTokenSupplyRootCanisterId,
+          totalTokenSupply: 1_000_000_000_000n,
+        },
+        {
+          rootCanisterId: moreTokenSupplyRootCanisterId2,
+          totalTokenSupply: 2_000_000_000_000n,
+        },
+        {
+          rootCanisterId: mostTokenSupplyRootCanisterId2,
+          totalTokenSupply: 3_000_000_000_000n,
+        },
+      ]);
+      // mock same token price for all the projects
+      setIcpSwapUsdPrices({
+        [sameTokenPriceSummaryParams("_").ledgerCanisterId.toText()]: 1,
+      });
+    });
+
+    it("returns -1 when project `a` has more treasury left than project `b`", () => {
+      const projects = [
+        projectTreasury25Percent,
+        projectWithoutMetrics,
+        projectWith50Proposals,
+        projectWithSmallMarketCap,
+        projectTreasury100Percent,
+        projectWithLargeMarketCap,
+        projectWith100Proposals,
+      ];
+      const sortedProjects = projects.sort(
+        compareLaunchpadSnsProjects({
+          icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+          snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
+        })
       );
+      const sortedProjectNames = sortedProjects.map(
+        (project) => project.summary.metadata.name
+      );
+
+      expect(sortedProjectNames).toEqual([
+        "Project With 100 Proposals",
+        "Project With 50 Proposals",
+        "Project With Large Market Cap",
+        "Project With Small Market Cap",
+        "Project Treasury 100%",
+        "Project Treasury 25%",
+        "Project Without Metrics",
+      ]);
     });
   });
 });
