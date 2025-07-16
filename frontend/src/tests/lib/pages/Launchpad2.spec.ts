@@ -6,6 +6,7 @@ import {
 } from "$tests/mocks/proposal.mock";
 import {
   createMockSnsFullProject,
+  mockSnsMetrics,
   principal,
 } from "$tests/mocks/sns-projects.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -89,26 +90,68 @@ describe("Launchpad2", () => {
   });
 
   it("displays launched cards in correct order", async () => {
+    const project0 = createMockSnsFullProject({
+      rootCanisterId: principal(1),
+      summaryParams: {
+        lifecycle: SnsSwapLifecycle.Committed,
+        swapOpenTimestampSeconds: BigInt(168_000_000),
+        projectName: "Outdated Project",
+      },
+      metrics: undefined,
+    });
     const project1 = createMockSnsFullProject({
       rootCanisterId: principal(1),
       summaryParams: {
         lifecycle: SnsSwapLifecycle.Committed,
         swapOpenTimestampSeconds: BigInt(168_000_000),
-        projectName: "Not Committed Project",
+        projectName: "Not Committed, Not Active Project",
+      },
+      metrics: {
+        ...mockSnsMetrics,
+        num_recently_executed_proposals: 0,
       },
     });
-    const project2 = createMockSnsFullProject({
+    const project12 = createMockSnsFullProject({
       rootCanisterId: principal(1),
       summaryParams: {
         lifecycle: SnsSwapLifecycle.Committed,
         swapOpenTimestampSeconds: BigInt(168_000_000),
-        projectName: "Committed Project",
+        projectName: "Not Committed, Very Active Project",
+      },
+      metrics: {
+        ...mockSnsMetrics,
+        num_recently_executed_proposals: 22,
+      },
+    });
+    const project3 = createMockSnsFullProject({
+      rootCanisterId: principal(1),
+      summaryParams: {
+        lifecycle: SnsSwapLifecycle.Committed,
+        swapOpenTimestampSeconds: BigInt(168_000_000),
+        projectName: "Committed, Not Active Project",
       },
       icpCommitment: 10_000_000n,
+      metrics: {
+        ...mockSnsMetrics,
+        num_recently_executed_proposals: 0,
+      },
+    });
+    const project4 = createMockSnsFullProject({
+      rootCanisterId: principal(1),
+      summaryParams: {
+        lifecycle: SnsSwapLifecycle.Committed,
+        swapOpenTimestampSeconds: BigInt(168_000_000),
+        projectName: "Committed, Very Active Project",
+      },
+      icpCommitment: 10_000_000n,
+      metrics: {
+        ...mockSnsMetrics,
+        num_recently_executed_proposals: 22,
+      },
     });
 
     const po = renderComponent({
-      snsProjects: [project1, project2],
+      snsProjects: [project0, project1, project12, project3, project4],
       openSnsProposals: [],
     });
 
@@ -117,13 +160,17 @@ describe("Launchpad2", () => {
       await launchedProjectsCards.getCardEntries();
 
     expect(await launchedProjectsCards.isPresent()).toBe(true);
-    expect(launchedProjectsCardsEntryPos.length).toBe(2);
+    expect(launchedProjectsCardsEntryPos.length).toBe(5);
+    const launchedProjectsCardsTitles = await Promise.all(
+      launchedProjectsCardsEntryPos.map((card) => card.getCardTitle())
+    );
 
-    expect(await launchedProjectsCardsEntryPos[0].getCardTitle()).toEqual(
-      "Committed Project"
-    );
-    expect(await launchedProjectsCardsEntryPos[1].getCardTitle()).toEqual(
-      "Not Committed Project"
-    );
+    expect(launchedProjectsCardsTitles).toEqual([
+      "Committed, Very Active Project",
+      "Committed, Not Active Project",
+      "Not Committed, Very Active Project",
+      "Not Committed, Not Active Project",
+      "Outdated Project",
+    ]);
   });
 });
