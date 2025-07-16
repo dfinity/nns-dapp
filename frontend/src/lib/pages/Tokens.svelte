@@ -86,10 +86,10 @@
     bind:order={$tokensTableOrderStore}
     displayTableSettings
   >
-    <div slot="settings-popover">
+    <svelte:fragment slot="settings-popover">
       <HideZeroBalancesToggle />
       <Separator spacing="none" />
-    </div>
+    </svelte:fragment>
 
     <div slot="last-row" class="last-row">
       {#if shouldHideZeroBalances}

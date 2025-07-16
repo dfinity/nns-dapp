@@ -169,12 +169,12 @@
     bind:order
     displayTableSettings={$authSignedInStore}
   >
-    <div slot="settings-popover">
+    <svelte:fragment slot="settings-popover">
       {#if $authSignedInStore}
         <HideZeroNeuronsToggle />
         <Separator spacing="none" />
       {/if}
-    </div>
+    </svelte:fragment>
 
     <div
       slot="last-row"
