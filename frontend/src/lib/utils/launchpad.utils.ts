@@ -13,7 +13,7 @@ import {
 } from "$lib/utils/projects.utils";
 import type { ProposalInfo } from "@dfinity/nns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import { isNullish, TokenAmountV2 } from "@dfinity/utils";
+import { TokenAmountV2 } from "@dfinity/utils";
 import type { Component } from "svelte";
 import type { IcpSwapUsdPricesStoreData } from "../derived/icp-swap.derived";
 import {
@@ -65,55 +65,69 @@ export const getUpcomingLaunchesCards = ({
   ];
 };
 
-const compareSnsProjectsUndefinedIcpTreasuryLast = createAscendingComparator(
-  (project: SnsFullProject) =>
-    snsProjectIcpInTreasuryPercentage(project) === undefined
-);
-const compareSnsProjectsUndefinedProposalActivityLast =
+export const compareSnsProjectsUndefinedIcpTreasuryLast =
+  createAscendingComparator(
+    (project: SnsFullProject) =>
+      snsProjectIcpInTreasuryPercentage(project) === undefined
+  );
+
+export const compareSnsProjectsUndefinedProposalActivityLast =
   createAscendingComparator(
     (project: SnsFullProject) =>
       snsProjectWeeklyProposalActivity(project) === undefined
   );
-const compareSnsProjectsUndefinedPriceLast = (
-  icpSwapData: IcpSwapUsdPricesStoreData
-) =>
-  createAscendingComparator((project: SnsFullProject) => {
-    if (isNullish(icpSwapData) || icpSwapData === "error") return true;
-    const ledgerCanisterId = project.summary.ledgerCanisterId.toText();
-    return icpSwapData[ledgerCanisterId] === undefined;
-  });
-const compareSnsProjectsByUsdProposalActivity = createDescendingComparator(
-  (project: SnsFullProject) => snsProjectWeeklyProposalActivity(project)
-);
-const compareSnsProjectsByMarketCap = ({
+
+export const compareSnsProjectsUndefinedMarketCapLast = ({
   snsTotalSupplyTokenAmountStore,
   icpSwapUsdPricesStore,
 }: {
   snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
   icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
 }) =>
-  createDescendingComparator((project: SnsFullProject) =>
-    snsProjectMarketCap({
-      sns: project,
-      snsTotalSupplyTokenAmountStore: snsTotalSupplyTokenAmountStore,
-      icpSwapUsdPricesStore: icpSwapUsdPricesStore,
-    })
+  createAscendingComparator(
+    (project: SnsFullProject) =>
+      snsProjectMarketCap({
+        sns: project,
+        snsTotalSupplyTokenAmountStore,
+        icpSwapUsdPricesStore,
+      }) === undefined
   );
 
-export const compareLaunchpadSnsProjects = ({
-  icpSwapData,
+export const compareSnsProjectsByUsdProposalActivity =
+  createDescendingComparator((project: SnsFullProject) =>
+    snsProjectWeeklyProposalActivity(project)
+  );
+
+export const compareSnsProjectsByMarketCap = ({
   snsTotalSupplyTokenAmountStore,
   icpSwapUsdPricesStore,
 }: {
-  icpSwapData: IcpSwapUsdPricesStoreData;
+  snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
+  icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
+}) =>
+  createDescendingComparator(
+    (project: SnsFullProject) =>
+      snsProjectMarketCap({
+        sns: project,
+        snsTotalSupplyTokenAmountStore,
+        icpSwapUsdPricesStore,
+      }) ?? 0n
+  );
+
+export const compareLaunchpadSnsProjects = ({
+  snsTotalSupplyTokenAmountStore,
+  icpSwapUsdPricesStore,
+}: {
   snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
   icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
 }) =>
   mergeComparators([
     compareSnsProjectsUndefinedProposalActivityLast,
     compareSnsProjectsUndefinedIcpTreasuryLast,
-    // This should cover the main reason having no market cap value
-    compareSnsProjectsUndefinedPriceLast(icpSwapData),
+    compareSnsProjectsUndefinedMarketCapLast({
+      snsTotalSupplyTokenAmountStore,
+      icpSwapUsdPricesStore,
+    }),
     compareSnsProjectsByUsdProposalActivity,
     compareSnsProjectsByMarketCap({
       snsTotalSupplyTokenAmountStore,

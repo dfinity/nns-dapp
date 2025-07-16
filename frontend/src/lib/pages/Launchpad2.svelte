@@ -49,7 +49,6 @@
       )
       .sort(
         compareLaunchpadSnsProjects({
-          icpSwapData: $icpSwapUsdPricesStore,
           snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
           icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
         })
@@ -68,7 +67,6 @@
       )
       .sort(
         compareLaunchpadSnsProjects({
-          icpSwapData: $icpSwapUsdPricesStore,
           snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
           icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
         })
