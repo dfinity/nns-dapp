@@ -19,11 +19,7 @@
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-  import type {
-    ProjectsTableColumn,
-    ProjectsTableOrder,
-    TableProject,
-  } from "$lib/types/staking";
+  import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import {
     compareByNeuron,
     compareByProject,
@@ -40,7 +36,8 @@
     loadIcpSwapTickers();
   }
 
-  const columns: ProjectsTableColumn[] = [
+  let columns: ProjectsTableColumn[] = [];
+  $: columns = [
     {
       id: "title",
       title: $i18n.staking.nervous_systems,
@@ -135,11 +132,6 @@
       (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
   );
 
-  let order: ProjectsTableOrder = [];
-  $: if ($authSignedInStore) {
-    order = $projectsTableOrderStore;
-  }
-
   const dispatcher = createEventDispatcher();
 
   const handleAction = ({
@@ -162,39 +154,45 @@
     </UsdValueBanner>
   {/if}
 
-  <ResponsiveTable
-    tableData={sortedTableProjects}
-    {columns}
-    on:nnsAction={handleAction}
-    bind:order
-    displayTableSettings={$authSignedInStore}
-  >
-    <svelte:fragment slot="settings-popover">
-      {#if $authSignedInStore}
+  {#if !$authSignedInStore}
+    <ResponsiveTable
+      tableData={sortedTableProjects}
+      {columns}
+      on:nnsAction={handleAction}
+    />
+  {:else}
+    <ResponsiveTable
+      tableData={sortedTableProjects}
+      {columns}
+      on:nnsAction={handleAction}
+      bind:order={$projectsTableOrderStore}
+      displayTableSettings
+    >
+      <svelte:fragment slot="settings-popover">
         <HideZeroNeuronsToggle />
         <Separator spacing="none" />
-      {/if}
-    </svelte:fragment>
+      </svelte:fragment>
 
-    <div
-      slot="last-row"
-      class="last-row"
-      class:hidden={!shouldHideProjectsWithoutNeurons}
-    >
-      {#if shouldHideProjectsWithoutNeurons}
-        <div class="show-all-button-container">
-          {$i18n.staking.hide_no_neurons_table_hint}
-          <button
-            data-tid="show-all-button"
-            class="ghost show-all"
-            on:click={showAll}
-          >
-            {$i18n.staking.show_all}</button
-          >
-        </div>
-      {/if}
-    </div>
-  </ResponsiveTable>
+      <div
+        slot="last-row"
+        class="last-row"
+        class:hidden={!shouldHideProjectsWithoutNeurons}
+      >
+        {#if shouldHideProjectsWithoutNeurons}
+          <div class="show-all-button-container">
+            {$i18n.staking.hide_no_neurons_table_hint}
+            <button
+              data-tid="show-all-button"
+              class="ghost show-all"
+              on:click={showAll}
+            >
+              {$i18n.staking.show_all}</button
+            >
+          </div>
+        {/if}
+      </div>
+    </ResponsiveTable>
+  {/if}
 </div>
 
 <style lang="scss">
