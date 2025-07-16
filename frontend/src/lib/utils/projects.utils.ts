@@ -1,5 +1,6 @@
 import { AGGREGATOR_METRICS_TIME_WINDOW_SECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
+import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import {
   getDeniedCountries,
@@ -27,6 +28,7 @@ import {
   fromNullable,
   isNullish,
   nonNullish,
+  TokenAmountV2,
   type TokenAmount,
 } from "@dfinity/utils";
 
@@ -499,4 +501,36 @@ export const snsProjectIcpInTreasuryPercentage = (
   if (originalAmount === 0) return 0;
 
   return currentAmount / originalAmount;
+};
+
+/**
+ * Calculates the market cap of the SNS project.
+ * Market cap is calculated as:
+ * total supply of the SNS token * token price of the token in USD
+ */
+export const snsProjectMarketCap = ({
+  sns,
+  snsTotalSupplyTokenAmountStore,
+  icpSwapUsdPricesStore,
+}: {
+  sns: SnsFullProject;
+  snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
+  icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
+}): number | undefined => {
+  const { rootCanisterId, ledgerCanisterId } = sns.summary;
+  const totalSupplyE8s =
+    snsTotalSupplyTokenAmountStore[rootCanisterId.toText()]?.toE8s();
+  const totalSupply = nonNullish(totalSupplyE8s)
+    ? Number(totalSupplyE8s) / 100_000_000
+    : undefined;
+  const tokenPriceUsd =
+    nonNullish(ledgerCanisterId) &&
+    nonNullish(icpSwapUsdPricesStore) &&
+    icpSwapUsdPricesStore !== "error"
+      ? icpSwapUsdPricesStore[ledgerCanisterId.toText()]
+      : undefined;
+
+  if (isNullish(totalSupply) || isNullish(tokenPriceUsd)) return undefined;
+
+  return totalSupply * tokenPriceUsd;
 };
