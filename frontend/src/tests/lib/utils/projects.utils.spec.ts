@@ -1,5 +1,7 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
+import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -20,6 +22,7 @@ import {
   projectRemainingAmount,
   snsProjectDashboardUrl,
   snsProjectIcpInTreasuryPercentage,
+  snsProjectMarketCap,
   snsProjectWeeklyProposalActivity,
   userCountryIsNeeded,
   validParticipation,
@@ -39,9 +42,12 @@ import {
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { get } from "svelte/store";
 
 describe("project-utils", () => {
   const summaryUsRestricted: SnsSummaryWrapper = createSummary({
@@ -1626,5 +1632,71 @@ describe("snsProjectIcpInTreasuryPercentage", () => {
     });
 
     expect(snsProjectIcpInTreasuryPercentage(testProject)).toEqual(0);
+  });
+});
+
+describe("snsProjectMarketCap", () => {
+  it("should calculate project market cap", () => {
+    const rootCanisterId = rootCanisterIdMock;
+    const totalTokenSupply = 25_000_000_000_000n;
+    const tokenPrice = 2;
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        totalTokenSupply,
+      },
+    ]);
+    const project = createMockSnsFullProject({
+      rootCanisterId,
+      summaryParams: {
+        lifecycle: SnsSwapLifecycle.Open,
+      },
+    });
+    const ledgerCanisterId = project.summary.ledgerCanisterId;
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId.toText()]: tokenPrice,
+    });
+
+    const marketCap = snsProjectMarketCap({
+      sns: project,
+      snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
+      icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+    });
+
+    // totalTokenSupply / 10**8 * tokenPrice
+    // 25_000_000_000_000 / 10**8 * 2 = 500_000
+    expect(marketCap).toEqual(500_000);
+  });
+
+  it("should return undefined when price is not available", () => {
+    const rootCanisterId = rootCanisterIdMock;
+    const totalTokenSupply = 25_000_000_000_000n;
+    const tokenPrice = undefined;
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        totalTokenSupply,
+      },
+    ]);
+    const project = createMockSnsFullProject({
+      rootCanisterId,
+      summaryParams: {
+        lifecycle: SnsSwapLifecycle.Open,
+      },
+    });
+    const ledgerCanisterId = project.summary.ledgerCanisterId;
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId.toText()]: tokenPrice,
+    });
+
+    const marketCap = snsProjectMarketCap({
+      sns: project,
+      snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
+      icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+    });
+
+    expect(marketCap).toEqual(undefined);
   });
 });

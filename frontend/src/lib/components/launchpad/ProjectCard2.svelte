@@ -3,7 +3,6 @@
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
@@ -16,6 +15,7 @@
   } from "$lib/utils/format.utils";
   import {
     snsProjectIcpInTreasuryPercentage,
+    snsProjectMarketCap,
     snsProjectWeeklyProposalActivity,
   } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
@@ -38,28 +38,20 @@
   const { summary, swapCommitment, rootCanisterId } = $derived(project);
   const {
     metadata: { logo, name, description },
-    ledgerCanisterId,
   } = $derived(summary);
   const href = $derived(
     `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
   );
   const formattedMarketCapUsd = $derived.by(() => {
-    const totalSupplyE8s =
-      $snsTotalSupplyTokenAmountStore[rootCanisterId.toText()]?.toE8s();
-    const totalSupply = nonNullish(totalSupplyE8s)
-      ? Number(totalSupplyE8s) / E8S_PER_ICP
-      : undefined;
-    const tokenPriceUsd =
-      nonNullish(ledgerCanisterId) &&
-      nonNullish($icpSwapUsdPricesStore) &&
-      $icpSwapUsdPricesStore !== "error"
-        ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
-        : undefined;
+    const marketCap = snsProjectMarketCap({
+      sns: project,
+      snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
+      icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
+    });
 
-    if (isNullish(totalSupply) || isNullish(tokenPriceUsd))
-      return PRICE_NOT_AVAILABLE_PLACEHOLDER;
+    if (isNullish(marketCap)) return PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-    return formatCurrencyNumber(totalSupply * tokenPriceUsd);
+    return formatCurrencyNumber(marketCap);
   });
   const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
