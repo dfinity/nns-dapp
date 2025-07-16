@@ -12,7 +12,6 @@ describe("ApyCardPo", () => {
     stakingPower: 0.4567,
     stakingPowerUSD: 9876.54,
     totalAmountUSD: 12345.12,
-    loading: false,
   };
 
   const renderComponent = (props = defaultProps) => {
@@ -59,6 +58,20 @@ describe("ApyCardPo", () => {
     const linkPo = po.getLinkPo();
     expect(await linkPo.isPresent()).toBe(true);
     expect(await linkPo.getHref()).toBe("/staking");
+  });
+
+  it("should show specific label when there is staking power", async () => {
+    const po = renderComponent(defaultProps);
+
+    const linkPo = po.getLinkPo();
+    expect(await linkPo.getText()).contains("View Staked");
+  });
+
+  it("should show specific label when no staking power", async () => {
+    const po = renderComponent({ ...defaultProps, stakingPowerUSD: 0 });
+
+    const linkPo = po.getLinkPo();
+    expect(await linkPo.getText()).contains("Start Staking");
   });
 
   it("should display privacy placeholders when privacy mode is enabled", async () => {

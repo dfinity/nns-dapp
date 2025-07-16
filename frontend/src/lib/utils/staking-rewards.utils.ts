@@ -40,18 +40,24 @@ import {
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { Principal } from "@dfinity/principal";
-import { nonNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 
 /////////////////
 /// DOC REFERENCE
 /// https://docs.google.com/document/d/1jjglDtCZpdTHwPLB1hwW_oR-p4jU_t6ad1Gmw5bbiBk
 /////////////////
 
+export enum APY_CALC_ERROR {
+  MISSING_DATA,
+  UNEXPECTED,
+}
+
 type APY = Map<
   string,
   {
     cur: number;
     max: number;
+    error?: APY_CALC_ERROR;
   }
 >;
 
@@ -105,9 +111,10 @@ export const getStakingRewardData = (
       const res: StakingRewardData = {
         loading: false,
         rewardBalanceUSD: getRewardBalanceUSD(params),
-        rewardEstimateWeekUSD:
-          getNnsRewardEstimationUSD(params, 7, false, forceInitialDate) +
-          getAllSnssRewardEstimationUSD(params, 7, forceInitialDate),
+        rewardEstimateWeekUSD: getRewardEstimationForWeek(
+          params,
+          forceInitialDate
+        ),
         stakingPower: getStakingPower(params).value,
         stakingPowerUSD: getStakingPower(params).valueUSD,
         apy: getAPYs(params, forceInitialDate),
@@ -136,7 +143,15 @@ const getRewardBalanceUSD = (params: StakingRewardCalcParams): number => {
 
   let nnsTotalRewardUSD = 0;
   nnsNeurons.neurons?.forEach((neuron) => {
-    nnsTotalRewardUSD += getReward(neuron, LEDGER_CANISTER_ID);
+    try {
+      nnsTotalRewardUSD += getReward(neuron, LEDGER_CANISTER_ID);
+    } catch (e) {
+      let message = `Staking rewards: unexpected error calculating NNS reward balance, ignoring neuron ${neuron.neuronId}.`;
+      if (e instanceof ApyMissingDataError) {
+        message = `Staking rewards: error calculating NNS reward balance, data is missing, ignoring neuron ${neuron.neuronId}.`;
+      }
+      logWithTimestamp(message, e);
+    }
   });
 
   let snsTotalRewardUSD = 0;
@@ -145,7 +160,15 @@ const getRewardBalanceUSD = (params: StakingRewardCalcParams): number => {
     const ledgerPrincipal = sns.canister_ids.ledger_canister_id;
     if (snsNeurons[rootPrincipal]) {
       snsNeurons[rootPrincipal].neurons.forEach((neuron) => {
-        snsTotalRewardUSD += getReward(neuron, ledgerPrincipal);
+        try {
+          snsTotalRewardUSD += getReward(neuron, ledgerPrincipal);
+        } catch (e) {
+          let message = `Staking rewards: unexpected error calculating SNS reward balance, ignoring neuron ${neuron.id}.`;
+          if (e instanceof ApyMissingDataError) {
+            message = `Staking rewards: error calculating SNS reward balance, data is missing, ignoring neuron ${neuron.id}.`;
+          }
+          logWithTimestamp(message, e);
+        }
       });
     }
   });
@@ -177,8 +200,16 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
   let nnsStakedUSD = 0;
   nnsTotalUSD += getToken(tokens, LEDGER_CANISTER_ID)?.balanceInUsd ?? 0;
   nnsNeurons.neurons?.forEach((neuron) => {
-    nnsStakedUSD += getStaking(neuron, LEDGER_CANISTER_ID).stakedUSD;
-    nnsTotalUSD += getStaking(neuron, LEDGER_CANISTER_ID).totalUSD;
+    try {
+      nnsStakedUSD += getStaking(neuron, LEDGER_CANISTER_ID).stakedUSD;
+      nnsTotalUSD += getStaking(neuron, LEDGER_CANISTER_ID).totalUSD;
+    } catch (e) {
+      let message = `Staking rewards: unexpected error calculating NNS staking power, ignoring neuron ${neuron.neuronId}.`;
+      if (e instanceof ApyMissingDataError) {
+        message = `Staking rewards: error calculating NNS staking power, data is missing, ignoring neuron ${neuron.neuronId}.`;
+      }
+      logWithTimestamp(message, e);
+    }
   });
 
   let snsTotalUSD = 0;
@@ -189,8 +220,16 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
     snsTotalUSD += getToken(tokens, ledgerPrincipal)?.balanceInUsd ?? 0;
     if (snsNeurons[rootPrincipal]) {
       snsNeurons[rootPrincipal].neurons.forEach((neuron) => {
-        snsStakedUSD += getStaking(neuron, ledgerPrincipal).stakedUSD;
-        snsTotalUSD += getStaking(neuron, ledgerPrincipal).totalUSD;
+        try {
+          snsStakedUSD += getStaking(neuron, ledgerPrincipal).stakedUSD;
+          snsTotalUSD += getStaking(neuron, ledgerPrincipal).totalUSD;
+        } catch (e) {
+          let message = `Staking rewards: unexpected error calculating SNS staking power, ignoring neuron ${neuron.id}.`;
+          if (e instanceof ApyMissingDataError) {
+            message = `Staking rewards: error calculating SNS staking power, data is missing, ignoring neuron ${neuron.id}.`;
+          }
+          logWithTimestamp(message, e);
+        }
       });
     }
   });
@@ -202,6 +241,44 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
     value: totalValueUSD ? totalStakedUSD / totalValueUSD : 0,
     valueUSD: totalStakedUSD,
   };
+};
+
+const getRewardEstimationForWeek = (
+  params: StakingRewardCalcParams,
+  forceInitialDate?: Date
+) => {
+  let nnsReward = 0;
+  try {
+    nnsReward = getNnsRewardEstimationUSD(params, 7, false, forceInitialDate);
+  } catch (e) {
+    let message =
+      "Staking rewards: unexpected error calculating NNS reward estimation, ignoring NNS reward.";
+    if (e instanceof ApyMissingDataError) {
+      message =
+        "Staking rewards: error calculating NNS reward estimation, data is missing, ignoring NNS reward.";
+    }
+    logWithTimestamp(message, e);
+  }
+
+  let snsReward = 0;
+  snsReward =
+    params.snsProjects.data?.reduce((total, sns) => {
+      try {
+        return (
+          total +
+          getSnsRewardEstimationUSD(params, 7, sns, false, forceInitialDate)
+        );
+      } catch (e) {
+        let message = `Staking rewards: unexpected error calculating SNS reward estimation for ${sns.canister_ids.root_canister_id}, ignoring SNS reward.`;
+        if (e instanceof ApyMissingDataError) {
+          message = `Staking rewards: error calculating SNS reward estimation for ${sns.canister_ids.root_canister_id}, data is missing, ignoring SNS reward.`;
+        }
+        logWithTimestamp(message, e);
+        return total;
+      }
+    }, 0) ?? 0;
+
+  return nnsReward + snsReward;
 };
 
 const getNnsRewardEstimationUSD = (
@@ -237,52 +314,71 @@ const getSnsRewardEstimationUSD = (
   });
 };
 
-const getAllSnssRewardEstimationUSD = (
-  params: StakingRewardCalcParams,
-  days: number,
-  forceInitialDate?: Date
-): number =>
-  params.snsProjects.data?.reduce((total, sns) => {
-    return (
-      total +
-      getSnsRewardEstimationUSD(params, days, sns, false, forceInitialDate)
-    );
-  }, 0) ?? 0;
-
 const getAPYs = (params: StakingRewardCalcParams, forceInitialDate?: Date) => {
   const { snsNeurons, nnsNeurons } = params;
   const apy: APY = new Map();
 
-  apy.set(
-    OWN_CANISTER_ID_TEXT,
-    getAPY(
-      params,
-      nnsNeurons.neurons ?? [],
-      LEDGER_CANISTER_ID.toText(),
-      getNnsRewardEstimationUSD,
-      forceInitialDate
-    )
-  );
-  params.snsProjects.data?.forEach((sns) => {
-    const rootPrincipal = sns.canister_ids.root_canister_id;
-    const ledgerPrincipal = sns.canister_ids.ledger_canister_id;
+  try {
     apy.set(
-      rootPrincipal,
+      OWN_CANISTER_ID_TEXT,
       getAPY(
         params,
-        snsNeurons[rootPrincipal]?.neurons ?? [],
-        ledgerPrincipal,
-        (params, days, maximiseNeuronParams, forceInitialDate) =>
-          getSnsRewardEstimationUSD(
-            params,
-            days,
-            sns,
-            maximiseNeuronParams,
-            forceInitialDate
-          ),
+        nnsNeurons.neurons ?? [],
+        LEDGER_CANISTER_ID.toText(),
+        getNnsRewardEstimationUSD,
         forceInitialDate
       )
     );
+  } catch (e) {
+    let message = `Staking rewards: unexpected error calculating NNS APY, using 0.`;
+    let error = APY_CALC_ERROR.UNEXPECTED;
+    if (e instanceof ApyMissingDataError) {
+      message = `Staking rewards: error calculating NNS APY, data is missing, using 0.`;
+      error = APY_CALC_ERROR.MISSING_DATA;
+    }
+    logWithTimestamp(message, e);
+    apy.set(OWN_CANISTER_ID_TEXT, {
+      cur: 0,
+      max: 0,
+      error,
+    });
+  }
+
+  params.snsProjects.data?.forEach((sns) => {
+    const rootPrincipal = sns.canister_ids.root_canister_id;
+    const ledgerPrincipal = sns.canister_ids.ledger_canister_id;
+    try {
+      apy.set(
+        rootPrincipal,
+        getAPY(
+          params,
+          snsNeurons[rootPrincipal]?.neurons ?? [],
+          ledgerPrincipal,
+          (params, days, maximiseNeuronParams, forceInitialDate) =>
+            getSnsRewardEstimationUSD(
+              params,
+              days,
+              sns,
+              maximiseNeuronParams,
+              forceInitialDate
+            ),
+          forceInitialDate
+        )
+      );
+    } catch (e) {
+      let message = `Staking rewards: unexpected error calculating SNS APY for ${rootPrincipal}, using 0.`;
+      let error = APY_CALC_ERROR.UNEXPECTED;
+      if (e instanceof ApyMissingDataError) {
+        message = `Staking rewards: error calculating SNS APY for ${rootPrincipal}, data is missing, using 0.`;
+        error = APY_CALC_ERROR.MISSING_DATA;
+      }
+      logWithTimestamp(message, e);
+      apy.set(rootPrincipal, {
+        cur: 0,
+        max: 0,
+        error,
+      });
+    }
   });
 
   return apy;
@@ -401,7 +497,7 @@ const getNeuronsRewardEstimationUSD = (params: {
   if (!_neurons || _neurons.length === 0) {
     return 0;
   }
-  const neurons = cloneNeurons(_neurons ?? []);
+  const neurons = cloneNeurons(_neurons);
 
   if (maximiseParams) {
     neurons.forEach((neuron) =>
@@ -468,11 +564,16 @@ const getFXRate = (
   fxRates: IcpSwapUsdPricesStoreData,
   ledgerPrincipal: Principal | string
 ) => {
-  return (fxRates as Record<string, number>)[
+  const principal =
     ledgerPrincipal instanceof Principal
       ? ledgerPrincipal.toText()
-      : ledgerPrincipal
-  ];
+      : ledgerPrincipal;
+  const rate = (fxRates as Record<string, number>)[principal];
+
+  if (isNullish(rate)) {
+    throw new ApyMissingDataError(`FX rate for ${principal}.`);
+  }
+  return rate;
 };
 
 const getToken = (tokens: UserToken[], ledgerPrincipal: Principal | string) => {
@@ -542,11 +643,11 @@ const getTokenReward = (
       )
     : params.nnsTotalVotingPower;
 
-  if (totalVotingPower === 0n) {
-    logWithTimestamp(
-      "Staking rewards: total voting power missing for reward calculation."
+  if (!totalVotingPower) {
+    throw new ApyMissingDataError(
+      "total voting power for " +
+        (sns ? sns.canister_ids.root_canister_id : OWN_CANISTER_ID_TEXT)
     );
-    return 0;
   }
 
   const neuronRewardRatioForTheDay = bigIntDiv(
@@ -611,6 +712,13 @@ const getRewardParams = (
   }
 };
 
+class ApyMissingDataError extends Error {
+  constructor(message: string, ...args: ErrorOptions[]) {
+    logWithTimestamp("Staking rewards: missing data for" + message + ".");
+    super(message, ...args);
+  }
+}
+
 /////////////////////////
 /// SUPPORT FUNCTIONS SNS
 /////////////////////////
@@ -637,7 +745,7 @@ const getSnsRewardParams = (sns: CachedSnsDto) => {
     rewardTransition:
       snsSystemParams.voting_rewards_parameters
         ?.reward_rate_transition_duration_seconds ?? 0,
-    totalSupply: sns.icrc1_total_supply,
+    totalSupply: Math.trunc(sns.icrc1_total_supply / E8S_RATE),
   };
 };
 

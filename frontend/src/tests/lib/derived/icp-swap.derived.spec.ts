@@ -121,7 +121,7 @@ describe("icp-swap.derived", () => {
       });
     });
 
-    it("should skip tickers with no volume_usd_24H", () => {
+    it("should skip tickers with no volume_usd_24H when doubled the api response", () => {
       const icpPriceInUsd = 12.4;
 
       const ckusdcTicker = {
@@ -129,15 +129,37 @@ describe("icp-swap.derived", () => {
         base_id: CKUSDC_LEDGER_CANISTER_ID.toText(),
         last_price: `${icpPriceInUsd}`,
       };
+
       const noVolumeTicker = {
         ...mockIcpSwapTicker,
+        base_id: CKETH_LEDGER_CANISTER_ID.toText(),
         volume_usd_24H: "0",
+        last_price: `${icpPriceInUsd}`,
       };
 
       icpSwapTickersStore.set([ckusdcTicker, noVolumeTicker]);
       expect(get(icpSwapUsdPricesStore)).toEqual({
         [LEDGER_CANISTER_ID.toText()]: icpPriceInUsd,
         [CKUSDC_LEDGER_CANISTER_ID.toText()]: 1,
+        [CKETH_LEDGER_CANISTER_ID.toText()]: 1,
+      });
+
+      const sameTickerWithVolume = {
+        ...mockIcpSwapTicker,
+        base_id: CKETH_LEDGER_CANISTER_ID.toText(),
+        volume_usd_24H: "1000",
+        last_price: `${0.5 * icpPriceInUsd}`,
+      };
+
+      icpSwapTickersStore.set([
+        ckusdcTicker,
+        noVolumeTicker,
+        sameTickerWithVolume,
+      ]);
+      expect(get(icpSwapUsdPricesStore)).toEqual({
+        [LEDGER_CANISTER_ID.toText()]: icpPriceInUsd,
+        [CKUSDC_LEDGER_CANISTER_ID.toText()]: 1,
+        [CKETH_LEDGER_CANISTER_ID.toText()]: 2,
       });
     });
 

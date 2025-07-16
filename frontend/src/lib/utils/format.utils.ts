@@ -27,6 +27,19 @@ export const formatNumber = (
     .replace(",", ".");
 };
 
+export const compactCurrencyNumber = (value: number): string => {
+  if (value < 1_000) {
+    return `${formatNumber(value, { minFraction: 0, maxFraction: 2 })}`;
+  }
+
+  if (value < 1_000_000) {
+    const thousands = value / 1_000;
+    return `${formatNumber(thousands, { minFraction: 0, maxFraction: 2 })}k`;
+  }
+
+  return formatCurrencyNumber(value);
+};
+
 /**
  * Formats a number according to the following rules:
  * - X < 1'000: Display 2 decimal points (e.g., $420.69)
