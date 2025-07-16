@@ -1,6 +1,7 @@
 import CreateSnsProposalCard from "$lib/components/launchpad/CreateSnsProposalCard.svelte";
 import OngoingProjectCard from "$lib/components/launchpad/OngoingProjectCard.svelte";
 import UpcomingProjectCard from "$lib/components/launchpad/UpcomingProjectCard.svelte";
+import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type { ComponentWithProps } from "$lib/types/svelte";
 import { compareProposalInfoByDeadlineTimestampSeconds } from "$lib/utils/portfolio.utils";
@@ -11,16 +12,15 @@ import {
   snsProjectMarketCap,
   snsProjectWeeklyProposalActivity,
 } from "$lib/utils/projects.utils";
-import type { ProposalInfo } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { TokenAmountV2 } from "@dfinity/utils";
-import type { Component } from "svelte";
-import type { IcpSwapUsdPricesStoreData } from "../derived/icp-swap.derived";
 import {
   createAscendingComparator,
   createDescendingComparator,
   mergeComparators,
-} from "./sort.utils";
+} from "$lib/utils/sort.utils";
+import type { ProposalInfo } from "@dfinity/nns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { TokenAmountV2 } from "@dfinity/utils";
+import type { Component } from "svelte";
 
 export const getUpcomingLaunchesCards = ({
   snsProjects,
@@ -93,10 +93,9 @@ export const compareSnsProjectsUndefinedMarketCapLast = ({
       }) === undefined
   );
 
-export const compareSnsProjectsByUsdProposalActivity =
-  createDescendingComparator((project: SnsFullProject) =>
-    snsProjectWeeklyProposalActivity(project)
-  );
+export const compareSnsProjectsByProposalActivity = createDescendingComparator(
+  (project: SnsFullProject) => snsProjectWeeklyProposalActivity(project)
+);
 
 export const compareSnsProjectsByMarketCap = ({
   snsTotalSupplyTokenAmountStore,
@@ -128,7 +127,7 @@ export const compareLaunchpadSnsProjects = ({
       snsTotalSupplyTokenAmountStore,
       icpSwapUsdPricesStore,
     }),
-    compareSnsProjectsByUsdProposalActivity,
+    compareSnsProjectsByProposalActivity,
     compareSnsProjectsByMarketCap({
       snsTotalSupplyTokenAmountStore,
       icpSwapUsdPricesStore,
