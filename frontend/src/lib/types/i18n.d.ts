@@ -949,6 +949,11 @@ interface I18nLaunchpad_cards {
   create_sns_proposal_vote: string;
 }
 
+interface I18nFav_projects {
+  adding: string;
+  removing: string;
+}
+
 interface I18nSns_project_detail {
   swap_proposal: string;
   link_to_dashboard: string;
@@ -1111,6 +1116,8 @@ interface I18nError__imported_tokens {
 
 interface I18nError__fav_projects {
   too_many: string;
+  adding_error: string;
+  removing_error: string;
 }
 
 interface I18nError__sns {
@@ -1677,6 +1684,7 @@ interface I18n {
   sns_launchpad: I18nSns_launchpad;
   launchpad: I18nLaunchpad;
   launchpad_cards: I18nLaunchpad_cards;
+  fav_projects: I18nFav_projects;
   sns_project_detail: I18nSns_project_detail;
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
