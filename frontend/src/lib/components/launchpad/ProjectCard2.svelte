@@ -85,16 +85,14 @@
       <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
       <h3 data-tid="project-name">{name}</h3>
       <div class="fav-icon">
-        <FavProjectButton
-          testId="fav-project-button"
-          {project}
-          disabled={false}
-        >
-          {#if isSnsProjectFavorite( { project, favProjects: $snsFavProjectsStore.rootCanisterIds } )}
-            <IconStarFill size="20px" />
-          {:else}
-            <IconStar size="20px" />
-          {/if}
+        <FavProjectButton {project}>
+          {#snippet children({})}
+            {#if isSnsProjectFavorite( { project, favProjects: $snsFavProjectsStore.rootCanisterIds } )}
+              <IconStarFill size="20px" />
+            {:else}
+              <IconStar size="20px" />
+            {/if}
+          {/snippet}
         </FavProjectButton>
       </div>
     </div>
@@ -164,11 +162,7 @@
 
     <div class="footer">
       <div>
-        <FavProjectButton
-          testId="fav-project-button"
-          {project}
-          disabled={false}
-        >
+        <FavProjectButton {project}>
           <span class="fav-button">
             {#if isSnsProjectFavorite( { project, favProjects: $snsFavProjectsStore.rootCanisterIds } )}
               <IconStarFill size="20px" />
@@ -229,6 +223,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
+
+        color: var(--primary);
+        &:disabled {
+          color: var(--tooltip-background);
+        }
 
         @include media.min-width(medium) {
           display: none;
@@ -306,7 +305,6 @@
       .fav-button {
         @include launchpad.text_button;
 
-        color: var(--button-secondary-color);
         display: flex;
         align-items: center;
         gap: var(--padding-0_5x);
