@@ -1,6 +1,7 @@
 import CreateSnsProposalCard from "$lib/components/launchpad/CreateSnsProposalCard.svelte";
 import OngoingProjectCard from "$lib/components/launchpad/OngoingProjectCard.svelte";
 import UpcomingProjectCard from "$lib/components/launchpad/UpcomingProjectCard.svelte";
+import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
 import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type { ComponentWithProps } from "$lib/types/svelte";
@@ -65,6 +66,11 @@ export const getUpcomingLaunchesCards = ({
   ];
 };
 
+export const compareSnsProjectsAbandonedLast = createAscendingComparator(
+  (project: SnsFullProject) =>
+    abandonedProjectsCanisterId.includes(project.rootCanisterId.toText())
+);
+
 export const compareSnsProjectsUndefinedIcpTreasuryLast =
   createAscendingComparator(
     (project: SnsFullProject) =>
@@ -124,6 +130,7 @@ export const compareLaunchpadSnsProjects = ({
   icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
 }) =>
   mergeComparators([
+    compareSnsProjectsAbandonedLast,
     compareSnsProjectsUndefinedProposalActivityLast,
     compareSnsProjectsUndefinedIcpTreasuryLast,
     compareSnsProjectsUndefinedMarketCapLast({
