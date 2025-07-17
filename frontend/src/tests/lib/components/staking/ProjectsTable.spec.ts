@@ -102,7 +102,7 @@ describe("ProjectsTable", () => {
       ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
+      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
     );
   });
 
