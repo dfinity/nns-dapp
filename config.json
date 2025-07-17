@@ -28,7 +28,13 @@
         "API_HOST": "https://icp-api.io",
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
-          "ENABLE_CKTESTBTC": false
+          "ENABLE_CKTESTBTC": false,
+          "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
+          "ENABLE_DISBURSE_MATURITY": true,
+          "ENABLE_SNS_TOPICS": true,
+          "ENABLE_NNS_TOPICS": false,
+          "ENABLE_LAUNCHPAD_REDESIGN": true,
+          "ENABLE_APY_PORTFOLIO": true
         },
         "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
       }
