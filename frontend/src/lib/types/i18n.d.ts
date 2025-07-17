@@ -942,11 +942,18 @@ interface I18nLaunchpad_cards {
   project_card_icp_in_treasury: string;
   project_card_my_participation: string;
   project_card_proposal_activity: string;
+  project_card_watch: string;
   upcoming_tag_upcoming: string;
   upcoming_link: string;
   upcoming_sale_starts: string;
   create_sns_proposal_title: string;
   create_sns_proposal_vote: string;
+}
+
+interface I18nFav_projects {
+  adding: string;
+  removing: string;
+  maximum_reached_tooltip: string;
 }
 
 interface I18nSns_project_detail {
@@ -1107,6 +1114,12 @@ interface I18nError__imported_tokens {
   is_important: string;
   is_icp: string;
   invalid_canister_id: string;
+}
+
+interface I18nError__fav_projects {
+  too_many: string;
+  adding_error: string;
+  removing_error: string;
 }
 
 interface I18nError__sns {
@@ -1680,6 +1693,7 @@ interface I18n {
   sns_launchpad: I18nSns_launchpad;
   launchpad: I18nLaunchpad;
   launchpad_cards: I18nLaunchpad_cards;
+  fav_projects: I18nFav_projects;
   sns_project_detail: I18nSns_project_detail;
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;
@@ -1691,6 +1705,7 @@ interface I18n {
   error__account: I18nError__account;
   error__canister: I18nError__canister;
   error__imported_tokens: I18nError__imported_tokens;
+  error__fav_projects: I18nError__fav_projects;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
   auth_report: I18nAuth_report;

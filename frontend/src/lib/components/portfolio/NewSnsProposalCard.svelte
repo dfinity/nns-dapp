@@ -43,7 +43,7 @@
               <Logo src={proposal?.logo} alt={proposal?.name} size="medium" />
             {/if}
           </div>
-          <h5 data-tid="project-name">{proposal.name}</h5>
+          <h3 data-tid="project-name">{proposal.name}</h3>
         </div>
         <Tag size="medium">
           <span>{$i18n.portfolio.project_status_proposal}</span>
@@ -54,6 +54,7 @@
       <div class="content">
         <div class="description-wrapper">
           <h3 class="title">{$i18n.portfolio.new_sns_proposal_card_title}</h3>
+          lol
           <p class="description" data-tid="proposal-title">{proposal.title}</p>
         </div>
         <VotesResult
@@ -130,7 +131,7 @@
         align-items: center;
         gap: var(--padding);
 
-        h5 {
+        h3 {
           margin: 0;
           padding: 0;
           @include text.truncate;
@@ -149,19 +150,34 @@
         flex-direction: column;
         gap: var(--padding-0_5x);
 
-        h3 {
+        .title {
           margin: 0;
           padding: 0;
 
           @include text.clamp(1);
+
+          font-family: CircularXX;
+          font-size: 16px;
+          font-weight: 450;
+          line-height: 20px;
+
+          @include media.min-width(medium) {
+            font-size: 18px;
+            line-height: 24px;
+          }
         }
 
         .description {
+          display: none;
           margin: 0;
           padding: 0;
           color: var(--color-text-secondary);
 
           @include text.clamp(1);
+
+          @include media.min-width(medium) {
+            display: block;
+          }
         }
       }
     }

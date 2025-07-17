@@ -906,11 +906,17 @@
     "project_card_icp_in_treasury": "ICP in Treasury",
     "project_card_my_participation": "My Participation",
     "project_card_proposal_activity": "Proposal Activity",
+    "project_card_watch": "Watch",
     "upcoming_tag_upcoming": "Upcoming",
     "upcoming_link": "Link to project",
     "upcoming_sale_starts": "Sale starts in",
     "create_sns_proposal_title": "Create Service Nervous System (SNS)",
     "create_sns_proposal_vote": "Vote"
+  },
+  "fav_projects": {
+    "adding": "Adding project to favorites",
+    "removing": "Removing project from favorites",
+    "maximum_reached_tooltip": "You have reached the maximum number of favorite projects ($max). Please remove a project to add a new one."
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
@@ -1060,6 +1066,11 @@
     "is_important": "This token is already in the token list.",
     "is_icp": "You cannot import ICP.",
     "invalid_canister_id": "Importing the token was unsuccessful because \"$canisterId\" is not a valid canister ID. Please verify the ID and retry."
+  },
+  "error__fav_projects": {
+    "too_many": "You can't add more than $limit favorite projects.",
+    "adding_error": "There was an error while adding the project to favorites.",
+    "removing_error": "There was an error while removing the project from favorites."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",

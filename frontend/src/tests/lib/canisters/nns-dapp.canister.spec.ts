@@ -11,6 +11,7 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
+  TooManyFavProjectsError,
   TooManyImportedTokensError,
   UnknownProposalPayloadError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
@@ -18,7 +19,9 @@ import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   CreateSubAccountResponse,
   GetAccountResponse,
+  GetFavProjectsResponse,
   GetImportedTokensResponse,
+  SetFavProjectsResponse,
   SetImportedTokensResponse,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -27,7 +30,10 @@ import {
   mockAccountDetails,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { mockImportedToken } from "$tests/mocks/icrc-accounts.mock";
+import {
+  mockFavProject,
+  mockImportedToken,
+} from "$tests/mocks/icrc-accounts.mock";
 import type { HttpAgent } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
@@ -620,6 +626,140 @@ describe("NNSDapp", () => {
 
       await expect(call).rejects.toThrow(
         'Error setting imported tokens {"UnexpectedError":"message"}'
+      );
+    });
+  });
+
+  describe("NNSDapp.getFavProjects", () => {
+    it("should call get_fav_projects", async () => {
+      const service = mock<NNSDappService>();
+      service.get_fav_projects.mockResolvedValue({
+        Ok: {
+          fav_projects: [],
+        },
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      expect(service.get_fav_projects).not.toBeCalled();
+
+      await nnsDapp.getFavProjects({ certified: true });
+
+      expect(service.get_fav_projects).toBeCalledTimes(1);
+    });
+
+    it("should return fav projects", async () => {
+      const service = mock<NNSDappService>();
+      service.get_fav_projects.mockResolvedValue({
+        Ok: {
+          fav_projects: [mockFavProject],
+        },
+      });
+      const nnsDapp = await createNnsDapp(service);
+      const result = await nnsDapp.getFavProjects({ certified: true });
+
+      expect(result).toEqual({
+        fav_projects: [mockFavProject],
+      });
+    });
+
+    it("throws error if account not found", async () => {
+      const response: GetFavProjectsResponse = {
+        AccountNotFound: null,
+      };
+      const service = mock<NNSDappService>();
+      service.get_fav_projects.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.getFavProjects({ certified: true });
+
+      await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
+
+    it("should provide generic error message", async () => {
+      const response = {
+        UnexpectedError: "message",
+      };
+      const service = mock<NNSDappService>();
+      service.get_fav_projects.mockResolvedValue(
+        response as unknown as GetFavProjectsResponse
+      );
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.getFavProjects({ certified: true });
+
+      await expect(call).rejects.toThrow(
+        'Error getting fav projects {"UnexpectedError":"message"}'
+      );
+    });
+  });
+
+  describe("NNSDapp.setFavProjects", () => {
+    it("should call set_fav_projects", async () => {
+      const service = mock<NNSDappService>();
+      service.set_fav_projects.mockResolvedValue({
+        Ok: null,
+      });
+      const nnsDapp = await createNnsDapp(service);
+
+      expect(service.set_fav_projects).not.toBeCalled();
+
+      await nnsDapp.setFavProjects([mockFavProject]);
+
+      expect(service.set_fav_projects).toBeCalledTimes(1);
+      expect(service.set_fav_projects).toBeCalledWith({
+        fav_projects: [mockFavProject],
+      });
+    });
+
+    it("throws error if account not found", async () => {
+      const response: SetFavProjectsResponse = {
+        AccountNotFound: null,
+      };
+      const service = mock<NNSDappService>();
+      service.set_fav_projects.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.setFavProjects([]);
+
+      await expect(call).rejects.toThrow(AccountNotFoundError);
+    });
+
+    it("throws error if the limit has been reached", async () => {
+      const response: SetFavProjectsResponse = {
+        TooManyFavProjects: { limit: 20 },
+      };
+      const service = mock<NNSDappService>();
+      service.set_fav_projects.mockResolvedValue(response);
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.setFavProjects([]);
+
+      await expect(call).rejects.toThrowError(
+        new TooManyFavProjectsError("error__fav_projects.too_many", {
+          $limit: "20",
+        })
+      );
+    });
+
+    it("should provide generic error message", async () => {
+      const response = {
+        UnexpectedError: "message",
+      };
+      const service = mock<NNSDappService>();
+      service.set_fav_projects.mockResolvedValue(
+        response as unknown as SetFavProjectsResponse
+      );
+
+      const nnsDapp = await createNnsDapp(service);
+
+      const call = async () => nnsDapp.setFavProjects([]);
+
+      await expect(call).rejects.toThrow(
+        'Error setting fav projects {"UnexpectedError":"message"}'
       );
     });
   });
