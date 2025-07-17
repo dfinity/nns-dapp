@@ -8,7 +8,10 @@
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import {
+    abandonedProjectsCanisterId,
+    OWN_CANISTER_ID_TEXT,
+  } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
@@ -30,13 +33,14 @@
     sortTableProjects,
   } from "$lib/utils/staking.utils";
   import { IconNeuronsPage } from "@dfinity/gix-components";
-  import { TokenAmountV2, isNullish } from "@dfinity/utils";
+  import { isNullish, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   $: if ($authSignedInStore) {
     loadIcpSwapTickers();
   }
-  const commonColumns: ProjectsTableColumn[] = [
+  let commonColumns: ProjectsTableColumn[] = [];
+  $: commonColumns = [
     {
       id: "stake",
       title: $i18n.neuron_detail.stake,
@@ -106,6 +110,22 @@
     ...commonColumns,
   ];
 
+  let sunsettedSnsColumns: ProjectsTableColumn[] = [];
+  $: sunsettedSnsColumns = [
+    {
+      id: "title",
+      title: $i18n.staking.nervous_systems_sns_sunset,
+      cellComponent: ProjectTitleCell,
+      alignment: "left",
+      templateColumns: ["2fr"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+  ];
+
   let tableProjects: TableProject[];
   $: tableProjects = getTableProjects({
     universes: $selectableUniversesStore,
@@ -153,8 +173,13 @@
   );
 
   let snsNeurons: TableProject[] = [];
-  $: snsNeurons = sortedTableProjects.filter(
-    (project) => project.universeId !== OWN_CANISTER_ID_TEXT
+  $: snsNeurons = sortedTableProjects
+    .filter((p) => p.universeId !== OWN_CANISTER_ID_TEXT)
+    .filter((p) => !abandonedProjectsCanisterId.includes(p.universeId));
+
+  let sunsetSns: TableProject[] = [];
+  $: sunsetSns = sortedTableProjects.filter((p) =>
+    abandonedProjectsCanisterId.includes(p.universeId)
   );
 
   const dispatcher = createEventDispatcher();
@@ -192,6 +217,10 @@
         columns={snsColumns}
         on:nnsAction={handleAction}
       />
+
+      {#if sunsetSns.length > 0}
+        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
+      {/if}
     {:else}
       <ResponsiveTable
         tableData={nnsNeurons}
@@ -238,6 +267,10 @@
             <Separator spacing="none" />
           </svelte:fragment>
         </ResponsiveTable>
+      {/if}
+
+      {#if $hideZeroNeuronsStore !== "hide" && sunsetSns.length > 0}
+        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
       {/if}
     {/if}
   {:else if !$authSignedInStore}
