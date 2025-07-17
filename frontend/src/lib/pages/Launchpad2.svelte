@@ -1,12 +1,16 @@
 <script lang="ts">
   import CardList from "$lib/components/launchpad/CardList.svelte";
+  import FavProjectOnlyToggle from "$lib/components/launchpad/FavProjectOnlyToggle.svelte";
   import ProjectCard2 from "$lib/components/launchpad/ProjectCard2.svelte";
   import SkeletonProjectCard from "$lib/components/launchpad/SkeletonProjectCard.svelte";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+  import { snsFavProjectsToggleVisibleStore } from "$lib/derived/sns-fav-projects.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { snsFavProjectsVisibilityStore } from "$lib/stores/sns-fav-projects-visibility.store";
+  import { snsFavProjectsStore } from "$lib/stores/sns-fav-projects.store";
   import type { ComponentWithProps } from "$lib/types/svelte";
   import {
     compareLaunchpadSnsProjects,
@@ -16,6 +20,7 @@
     comparesByDecentralizationSaleOpenTimestampDesc,
     filterProjectsStatus,
   } from "$lib/utils/projects.utils";
+  import { isSnsProjectFavorite } from "$lib/utils/sns-fav-projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import type { ProposalInfo } from "@dfinity/nns";
   import { SnsSwapLifecycle } from "@dfinity/sns";
@@ -42,8 +47,19 @@
       projects: snsProjects,
     }).sort(comparesByDecentralizationSaleOpenTimestampDesc)
   );
+  const visibleLaunchedSnsProjects = $derived(
+    launchedSnsProjects.filter((project) =>
+      $snsFavProjectsToggleVisibleStore &&
+      $snsFavProjectsVisibilityStore === "fav"
+        ? isSnsProjectFavorite({
+            project,
+            favProjects: $snsFavProjectsStore.rootCanisterIds,
+          })
+        : launchedSnsProjects
+    )
+  );
   const userCommittedSnsProjects = $derived(
-    launchedSnsProjects
+    visibleLaunchedSnsProjects
       .filter(
         ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
       )
@@ -59,7 +75,7 @@
       }))
   );
   const notCommittedSnsProjects = $derived(
-    launchedSnsProjects
+    visibleLaunchedSnsProjects
       .filter(
         ({ swapCommitment }) =>
           isNullish(getCommitmentE8s(swapCommitment)) ||
@@ -90,8 +106,11 @@
 
 <main data-tid="launchpad2-component">
   <div class="header">
-    <h3>{$i18n.launchpad.headline}</h3>
-    <p>{$i18n.launchpad.subheadline}</p>
+    <div>
+      <h3>{$i18n.launchpad.headline}</h3>
+      <p>{$i18n.launchpad.subheadline}</p>
+    </div>
+    <FavProjectOnlyToggle />
   </div>
 
   {#if upcomingLaunchesCards.length > 0}
@@ -138,6 +157,13 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-3x);
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--padding-2x);
   }
 
   h3 {
