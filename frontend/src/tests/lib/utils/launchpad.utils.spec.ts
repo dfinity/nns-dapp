@@ -1,10 +1,12 @@
 import CreateSnsProposalCard from "$lib/components/launchpad/CreateSnsProposalCard.svelte";
 import OngoingProjectCard from "$lib/components/launchpad/OngoingProjectCard.svelte";
 import UpcomingProjectCard from "$lib/components/launchpad/UpcomingProjectCard.svelte";
+import { SEERS_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
 import {
   compareLaunchpadSnsProjects,
+  compareSnsProjectsAbandonedLast,
   compareSnsProjectsByIcpTreasury,
   compareSnsProjectsByMarketCap,
   compareSnsProjectsByProposalActivity,
@@ -23,6 +25,7 @@ import {
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { get } from "svelte/store";
 
@@ -188,6 +191,42 @@ describe("Launchpad utils", () => {
           props: { summary: adoptedSnsProject1.summary },
         },
       ]);
+    });
+  });
+
+  describe("compareSnsProjectsAbandonedLast", () => {
+    const project = createMockSnsFullProject({
+      rootCanisterId: principal(2),
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+      },
+    });
+    const abandonedProject = createMockSnsFullProject({
+      rootCanisterId: Principal.fromText(SEERS_ROOT_CANISTER_ID),
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+      },
+    });
+
+    it("returns 1 when treasury not available for the `a` project but available for the `b` project", () => {
+      expect(compareSnsProjectsAbandonedLast(abandonedProject, project)).toBe(
+        1
+      );
+    });
+
+    it("returns -1 when treasury not available for the `b` project", () => {
+      expect(compareSnsProjectsAbandonedLast(project, abandonedProject)).toBe(
+        -1
+      );
+    });
+
+    it("returns 0 when `a` and `b` have the same treasury availability", () => {
+      expect(compareSnsProjectsAbandonedLast(project, project)).toBe(0);
+      expect(
+        compareSnsProjectsAbandonedLast(abandonedProject, abandonedProject)
+      ).toBe(0);
     });
   });
 
