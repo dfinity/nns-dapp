@@ -1109,6 +1109,10 @@ interface I18nError__imported_tokens {
   invalid_canister_id: string;
 }
 
+interface I18nError__fav_projects {
+  too_many: string;
+}
+
 interface I18nError__sns {
   undefined_project: string;
   list_summaries: string;
@@ -1691,6 +1695,7 @@ interface I18n {
   error__account: I18nError__account;
   error__canister: I18nError__canister;
   error__imported_tokens: I18nError__imported_tokens;
+  error__fav_projects: I18nError__fav_projects;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
   auth_report: I18nAuth_report;

@@ -1061,6 +1061,9 @@
     "is_icp": "You cannot import ICP.",
     "invalid_canister_id": "Importing the token was unsuccessful because \"$canisterId\" is not a valid canister ID. Please verify the ID and retry."
   },
+  "error__fav_projects": {
+    "too_many": "You can't add more than $limit favorite projects."
+  },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
