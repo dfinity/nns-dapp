@@ -18,7 +18,7 @@
     sortTableData,
   } from "$lib/utils/responsive-table.utils";
   import { heightTransition } from "$lib/utils/transition.utils";
-  import { IconSettings, IconSouth, Popover } from "@dfinity/gix-components";
+  import { IconMenu, IconSouth, Popover } from "@dfinity/gix-components";
   import { assertNonNullish, isNullish, nonNullish } from "@dfinity/utils";
 
   export let testId = "responsive-table-component";
@@ -132,7 +132,7 @@
                 class="settings-button icon-only"
                 aria-label={$i18n.tokens.settings_button}
                 bind:this={settingsButton}
-                on:click={openSettings}><IconSettings /></button
+                on:click={openSettings}><IconMenu /></button
               >{/if}
           </span>
         {/if}
