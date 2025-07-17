@@ -1,23 +1,21 @@
 <script lang="ts">
   import HideZeroBalancesToggle from "$lib/components/tokens/TokensTable/HideZeroBalancesToggle.svelte";
+  import ImportTokenButton from "$lib/components/tokens/TokensTable/ImportTokenButton.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
-  import { pageStore } from "$lib/derived/page.derived";
-  import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
   import { hideZeroBalancesStore } from "$lib/stores/hide-zero-balances.store";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { tokensTableOrderStore } from "$lib/stores/tokens-table.store";
   import type { ImportedTokenData } from "$lib/types/imported-tokens";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import { IconHeldTokens, IconPlus, Tooltip } from "@dfinity/gix-components";
-  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+  import { filterTokens } from "$lib/utils/tokens-table.utils";
+  import { IconHeldTokens } from "@dfinity/gix-components";
+  import { TokenAmountV2, isNullish } from "@dfinity/utils";
 
   export let userTokensData: UserToken[];
 
@@ -67,11 +65,6 @@
   const showAll = () => {
     hideZeroBalancesStore.set("show");
   };
-
-  let showImportTokenModal = false;
-  let maximumImportedTokensReached = false;
-  $: maximumImportedTokensReached =
-    ($importedTokensStore.importedTokens?.length ?? 0) >= MAX_IMPORTED_TOKENS;
 </script>
 
 <div class="wrapper" data-tid="tokens-page-component">
@@ -80,14 +73,15 @@
   </UsdValueBanner>
 
   <TokensTable
-    userTokensData={shownTokensData}
+    userTokensData={filterTokens(shownTokensData, "icp")}
     on:nnsAction
-    firstColumnHeader={$i18n.tokens.projects_header}
+    firstColumnHeader={$i18n.tokens.projects_header_icp}
     bind:order={$tokensTableOrderStore}
     displayTableSettings
   >
     <svelte:fragment slot="settings-popover">
       <HideZeroBalancesToggle />
+      <ImportTokenButton />
       <Separator spacing="none" />
     </svelte:fragment>
 
@@ -104,32 +98,34 @@
           >
         </div>
       {/if}
-
-      {#if nonNullish($importedTokensStore.importedTokens)}
-        <Tooltip
-          top
-          testId="maximum-imported-tokens-tooltip"
-          text={maximumImportedTokensReached
-            ? replacePlaceholders($i18n.import_token.maximum_reached_tooltip, {
-                $max: `${MAX_IMPORTED_TOKENS}`,
-              })
-            : undefined}
-        >
-          <button
-            data-tid="import-token-button"
-            class="ghost with-icon import-token-button"
-            on:click={() => (showImportTokenModal = true)}
-            disabled={maximumImportedTokensReached}
-          >
-            <IconPlus />{$i18n.import_token.import_token}
-          </button>
-        </Tooltip>
-      {/if}
     </div>
   </TokensTable>
 
-  {#if showImportTokenModal || nonNullish($pageStore.importTokenLedgerId)}
-    <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
+  <TokensTable
+    userTokensData={filterTokens(shownTokensData, "ck")}
+    on:nnsAction
+    firstColumnHeader={$i18n.tokens.projects_header_ck}
+    bind:order={$tokensTableOrderStore}
+  />
+
+  <TokensTable
+    userTokensData={filterTokens(shownTokensData, "sns")}
+    on:nnsAction
+    firstColumnHeader={$i18n.tokens.projects_header_sns}
+    bind:order={$tokensTableOrderStore}
+  />
+
+  {#if $importedTokensStore?.importedTokens?.length ?? 0 > 0}
+    <TokensTable
+      userTokensData={filterTokens(
+        shownTokensData,
+        "imported",
+        $importedTokensStore.importedTokens
+      )}
+      on:nnsAction
+      firstColumnHeader={$i18n.tokens.projects_header_imported}
+      bind:order={$tokensTableOrderStore}
+    />
   {/if}
 </div>
 
