@@ -19,6 +19,7 @@
   export let firstColumnHeader: string;
   export let order: TokensTableOrder = [];
   export let displayTableSettings = false;
+  export let testId: string = "tokens-table-component";
 
   let enableSorting: boolean;
   $: enableSorting = order.length > 0;
@@ -61,7 +62,7 @@
 </script>
 
 <ResponsiveTable
-  testId="tokens-table-component"
+  {testId}
   tableData={userTokensData}
   {columns}
   bind:order

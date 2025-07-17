@@ -1321,6 +1321,10 @@ interface I18nSync {
 
 interface I18nTokens {
   projects_header: string;
+  projects_header_icp: string;
+  projects_header_ck: string;
+  projects_header_sns: string;
+  projects_header_imported: string;
   balance_header: string;
   accounts_header: string;
   settings_button: string;
@@ -1414,7 +1418,10 @@ interface I18nPortfolio {
   apy_card_link_start: string;
   apy_card_estimation: string;
   apy_card_error: string;
-  apy_card_tooltip: string;
+  apy_card_tooltip_reward_balance: string;
+  apy_card_tooltip_staking_ratio: string;
+  apy_card_tooltip_no_rewards: string;
+  apy_card_tooltip_error: string;
 }
 
 interface I18nHighlight {

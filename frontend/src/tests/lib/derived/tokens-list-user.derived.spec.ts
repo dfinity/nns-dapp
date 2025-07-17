@@ -55,7 +55,7 @@ describe("tokens-list-user.derived", () => {
       amount: mockMainAccount.balanceUlps,
       token: NNS_TOKEN_DATA,
     }),
-    actions: [UserTokenAction.GoToDetail],
+    actions: [UserTokenAction.Blank, UserTokenAction.GoToDetail],
     rowHref: icpHref,
     domKey: icpHref,
     accountIdentifier: undefined,
