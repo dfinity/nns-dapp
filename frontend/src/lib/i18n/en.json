@@ -1242,6 +1242,10 @@
   },
   "tokens": {
     "projects_header": "Projects",
+    "projects_header_icp": "ICP Token",
+    "projects_header_ck": "ckTokens",
+    "projects_header_sns": "SNS Tokens",
+    "projects_header_imported": "Imported Tokens",
     "balance_header": "Balance",
     "accounts_header": "Accounts",
     "settings_button": "Open tokens settings",
