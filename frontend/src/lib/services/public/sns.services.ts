@@ -40,8 +40,6 @@ export const loadSnsProjects = async (): Promise<void> => {
   try {
     const aggregatorData = await snsAggregatorApiService.querySnsProjects();
     snsAggregatorIncludingAbortedProjectsStore.setData(aggregatorData);
-    console.log("🍏 Loaded SNS aggregator data:", aggregatorData);
-
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
     toastsError(
