@@ -35,7 +35,9 @@
       onclick={showModal}
       disabled={maximumImportedTokensReached}
     >
-      {$i18n.import_token.import_token}<IconAdd />
+      {$i18n.import_token.import_token}<span class="icon">
+        <IconAdd />
+      </span>
     </button>
   </Tooltip>
 {/if}
@@ -51,13 +53,11 @@
     align-items: center;
     width: 100%;
     padding: 0;
-    /* gap: 0.5rem; */
-    /* padding: 0.5rem 1rem; */
+    color: var(--gix-color-text);
 
-    /* .icon {
-      width: 1.25rem;
-      height: 1.25rem;
-      fill: var(--gix-color-icon);
-    } */
+    .icon {
+      display: flex;
+      color: var(--primary);
+    }
   }
 </style>
