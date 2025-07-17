@@ -23,6 +23,16 @@ export class TokensPagePo extends BasePageObject {
     return TokensTablePo.under(this.root);
   }
 
+  getAllTokensTable(): TokensTablePo[] {
+    const ids = [
+      "icp-tokens-table-component",
+      "ck-tokens-table-component",
+      "sns-tokens-table-component",
+      "imported-tokens-table-component",
+    ];
+    return ids.map((id) => TokensTablePo.under(this.root, id));
+  }
+
   getSettingsButtonPo(): ButtonPo {
     return this.getButton("settings-button");
   }

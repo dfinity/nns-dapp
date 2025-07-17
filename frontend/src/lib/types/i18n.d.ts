@@ -1310,6 +1310,10 @@ interface I18nSync {
 
 interface I18nTokens {
   projects_header: string;
+  projects_header_icp: string;
+  projects_header_ck: string;
+  projects_header_sns: string;
+  projects_header_imported: string;
   balance_header: string;
   accounts_header: string;
   settings_button: string;

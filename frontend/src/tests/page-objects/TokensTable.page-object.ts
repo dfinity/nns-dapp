@@ -1,3 +1,5 @@
+import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { HideZeroBalancesTogglePo } from "$tests/page-objects/HideZeroBalancesToggle.page-object";
 import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";
 import {
   TokensTableRowPo,
@@ -19,8 +21,11 @@ export class TokensTablePo extends ResponsiveTablePo {
     "ckUSDC",
   ];
 
-  static under(element: PageObjectElement): TokensTablePo {
-    return new TokensTablePo(element.byTestId(TokensTablePo.TID));
+  static under(
+    element: PageObjectElement,
+    tid: string = TokensTablePo.TID
+  ): TokensTablePo {
+    return new TokensTablePo(element.byTestId(tid));
   }
 
   async getFirstColumnHeader(): Promise<string> {
@@ -98,6 +103,22 @@ export class TokensTablePo extends ResponsiveTablePo {
       testId: "receive-button-component",
       projectName,
     });
+  }
+
+  getSettingsButtonPo(): ButtonPo {
+    return this.getButton("settings-button");
+  }
+
+  getShowAllButtonPo(): ButtonPo {
+    return this.getButton("show-all-button");
+  }
+
+  getImportTokenButtonPo(): ButtonPo {
+    return this.getButton("import-token-button");
+  }
+
+  getHideZeroBalancesTogglePo(): HideZeroBalancesTogglePo {
+    return HideZeroBalancesTogglePo.under(this.root);
   }
 
   getLastRowText(): Promise<string> {
