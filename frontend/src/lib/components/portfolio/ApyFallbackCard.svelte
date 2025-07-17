@@ -34,7 +34,6 @@
     <div class="content">
       <div class="subtitle skeleton"></div>
       <div class="main-value skeleton"></div>
-      <div class="secondary-value-single skeleton"></div>
     </div>
   </div>
 {/snippet}
@@ -81,7 +80,6 @@
 
   .content {
     display: flex;
-    justify-content: space-between;
 
     .content {
       display: flex;
@@ -96,11 +94,11 @@
 
       .main-value {
         height: 32px;
-        width: 120px;
+        width: 100px;
 
         @include media.min-width(medium) {
           height: 36px;
-          width: 140px;
+          max-width: 140px;
         }
       }
 
@@ -115,7 +113,7 @@
 
           @include media.min-width(medium) {
             height: 20px;
-            width: 70px;
+            max-width: 70px;
           }
         }
 
@@ -125,18 +123,8 @@
 
           @include media.min-width(medium) {
             height: 20px;
-            width: 100px;
+            max-width: 100px;
           }
-        }
-      }
-
-      .secondary-value-single {
-        height: 16px;
-        width: 90px;
-
-        @include media.min-width(medium) {
-          height: 20px;
-          width: 110px;
         }
       }
     }
