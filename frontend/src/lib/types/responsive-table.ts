@@ -11,6 +11,7 @@ export interface ResponsiveTableRowData {
 export type ColumnAlignment = "left" | "right";
 export type TemplateItem =
   | "1fr"
+  | "2fr"
   | "max-content"
   | "minmax(max-content, 1fr)"
   | "minmax(min-content, max-content)";
