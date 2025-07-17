@@ -80,3 +80,12 @@
     </button>
   {/if}
 </TestIdWrapper>
+
+<style lang="scss">
+  button {
+    color: var(--primary);
+    &:disabled {
+      color: var(--tooltip-background);
+    }
+  }
+</style>
