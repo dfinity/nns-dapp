@@ -1110,8 +1110,6 @@ interface I18nError__imported_tokens {
 }
 
 interface I18nError__fav_projects {
-  load_fav_projects: string;
-  update_fav_project: string;
   too_many: string;
 }
 
