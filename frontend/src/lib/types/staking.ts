@@ -2,6 +2,7 @@ import type {
   ResponsiveTableColumn,
   ResponsiveTableOrder,
 } from "$lib/types/responsive-table";
+import type { APY_CALC_ERROR } from "$lib/utils/staking-rewards.utils";
 import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { TokenAmountV2 } from "@dfinity/utils";
 
@@ -21,6 +22,7 @@ export type TableProject = {
   apy?: {
     cur: number;
     max: number;
+    error?: APY_CALC_ERROR;
   };
 };
 

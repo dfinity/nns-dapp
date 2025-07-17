@@ -21,7 +21,8 @@
     topStakedTokens: TableProject[];
     usdAmount: number;
     numberOfTopHeldTokens: number;
-    hasApyCalculationErrored?: boolean;
+    hasApyCalculationErrored: boolean;
+    isApyLoading?: boolean;
   };
 
   const {
@@ -29,6 +30,7 @@
     usdAmount,
     numberOfTopHeldTokens,
     hasApyCalculationErrored,
+    isApyLoading,
   }: Props = $props();
 
   const href = AppPath.Staking;
@@ -132,21 +134,35 @@
 
             {#if showApy}
               <div class="apy" data-tid="apy" role="cell">
-                {#if $authSignedInStore && nonNullish(apy) && apy.max > 0}
+                {#if nonNullish(apy) && !apy?.error}
                   <span
                     >{formatPercentage(apy.cur, {
                       minFraction: 2,
                       maxFraction: 2,
                     })}</span
                   >
-                  <span class="max"
+                  <span class="max cell-with-tooltip"
                     >({formatPercentage(apy.max, {
                       minFraction: 2,
                       maxFraction: 2,
-                    })})</span
-                  >
+                    })})
+                    {#if apy.max === 0}
+                      <TooltipIcon
+                        iconSize={16}
+                        text={$i18n.portfolio.apy_card_tooltip_no_rewards}
+                      />
+                    {/if}
+                  </span>
+                {:else if !isApyLoading}
+                  <span class="cell-with-tooltip">
+                    {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                    <TooltipIcon
+                      iconSize={16}
+                      text={$i18n.portfolio.apy_card_tooltip_error}
+                    />
+                  </span>
                 {:else}
-                  {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                  <span class="cell skeleton"></span>
                 {/if}
               </div>
             {:else}
@@ -341,6 +357,18 @@
             @include media.min-width(medium) {
               display: block;
             }
+          }
+
+          .cell.skeleton {
+            height: 20px;
+            width: 80px;
+            border-radius: 4px;
+          }
+
+          .cell-with-tooltip {
+            display: flex;
+            align-items: center;
+            gap: var(--padding-0_5x);
           }
         }
       }

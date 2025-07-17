@@ -1310,7 +1310,7 @@
     "staked_tokens_card_list_second_column_apy_first": "APY",
     "staked_tokens_card_list_second_column_apy_second": "(max APY)",
     "staked_tokens_card_list_third_column": "Staked",
-    "staked_tokens_card_apy_tooltip": "APY (Annual Percentage Yield) shows how much you can earn in a year with your current setup. Max APY is the highest possible yearly return you could get if you optimized your participation.",
+    "staked_tokens_card_apy_tooltip": "APY (Annual Percentage Yield) shows how much you can earn in a year with your current setup. Max APY is the highest possible yearly return you could get if you optimized your settings.",
     "staked_tokens_card_info_row": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
     "total_assets_title": "Total Holdings",
     "project_status_open": "Ongoing",
@@ -1337,7 +1337,10 @@
     "apy_card_link_start": "Start Staking",
     "apy_card_estimation": "7d estimate",
     "apy_card_error": "Unable to load rewards",
-    "apy_card_tooltip": "Maturity is an attribute of a neuron; it is not a tradable asset. To generate ICP from maturity, users need to trigger a non-deterministic process subject to a changing maturity modulation function. The dollar value reflects an estimate assuming a modulation of 0%."
+    "apy_card_tooltip_reward_balance": "Rewards are given in maturity. Maturity is an attribute of a neuron, it is not a tradable asset. To generate tokens from maturity, users need to trigger a non-deterministic process subject to a changing maturity modulation function. The dollar value reflects an estimate assuming a modulation of 0%",
+    "apy_card_tooltip_staking_ratio": "The ratio of the total stake (including staked maturity), compared to all holdings and rewards:\n$totalStaked / ($totalHoldings + $totalRewards) = $ratio",
+    "apy_card_tooltip_no_rewards": "This project is currently not generating rewards.",
+    "apy_card_tooltip_error": "Unable to calculate the rewards for this project."
   },
   "highlight": {
     "disburse_maturity_title": "Farewell, Spawn Neuron!",
