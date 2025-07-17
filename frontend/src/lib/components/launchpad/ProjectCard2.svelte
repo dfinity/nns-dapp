@@ -1,6 +1,8 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
+  import FavProjectButton from "$lib/components/launchpad/FavProjectButton.svelte";
+  import IconStarFill from "$lib/components/ui/icons/IconStarFill.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -9,9 +11,9 @@
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
+  import { snsFavProjectsStore } from "$lib/stores/sns-fav-projects.store";
   import {
     compactCurrencyNumber,
-    formatCurrencyNumber,
     formatPercentage,
   } from "$lib/utils/format.utils";
   import {
@@ -19,6 +21,7 @@
     snsProjectMarketCap,
     snsProjectWeeklyProposalActivity,
   } from "$lib/utils/projects.utils";
+  import { isSnsProjectFavorite } from "$lib/utils/sns-fav-projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
     IconAccountBalance,
@@ -82,8 +85,17 @@
       <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
       <h3 data-tid="project-name">{name}</h3>
       <div class="fav-icon">
-        <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
-        <IconStar size="20px" />
+        <FavProjectButton
+          testId="fav-project-button"
+          {project}
+          disabled={false}
+        >
+          {#if isSnsProjectFavorite( { project, favProjects: $snsFavProjectsStore.rootCanisterIds } )}
+            <IconStarFill size="20px" />
+          {:else}
+            <IconStar size="20px" />
+          {/if}
+        </FavProjectButton>
       </div>
     </div>
 
@@ -151,8 +163,24 @@
     </ul>
 
     <div class="footer">
-      <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
-      <button class="ghost with-icon"><IconStar size="20px" /> Watch</button>
+      <div>
+        <FavProjectButton
+          testId="fav-project-button"
+          {project}
+          disabled={false}
+        >
+          <span class="fav-button">
+            {#if isSnsProjectFavorite( { project, favProjects: $snsFavProjectsStore.rootCanisterIds } )}
+              <IconStarFill size="20px" />
+              {$i18n.launchpad_cards.project_card_watch}
+            {:else}
+              <IconStar size="20px" />
+              {$i18n.launchpad_cards.project_card_watch}
+            {/if}
+          </span>
+        </FavProjectButton>
+      </div>
+
       <a
         {href}
         class="link"
@@ -198,7 +226,10 @@
       }
 
       .fav-icon {
-        display: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         @include media.min-width(medium) {
           display: none;
         }
@@ -272,12 +303,16 @@
         display: flex;
       }
 
-      button {
-        visibility: hidden;
+      .fav-button {
+        @include launchpad.text_button;
+
+        color: var(--button-secondary-color);
+        display: flex;
+        align-items: center;
+        gap: var(--padding-0_5x);
       }
 
-      .link,
-      button {
+      .link {
         @include launchpad.text_button;
 
         color: var(--button-secondary-color);
