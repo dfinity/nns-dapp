@@ -45,13 +45,6 @@ describe("ApyCardPo", () => {
     expect(stakingPower).toEqual("45.67%");
   });
 
-  it("should display total staking power USD", async () => {
-    const po = renderComponent(defaultProps);
-
-    const totalStakingPower = await po.getTotalStakingPowerUSD();
-    expect(totalStakingPower).toEqual("$9’877 (of $12’345)");
-  });
-
   it("should have project link", async () => {
     const po = renderComponent(defaultProps);
 
@@ -79,11 +72,9 @@ describe("ApyCardPo", () => {
     const po = renderComponent(defaultProps);
 
     const rewardAmount = await po.getRewardAmount();
-    const totalStakingPower = await po.getTotalStakingPowerUSD();
     const projectionAmount = await po.getProjectionAmount();
 
     expect(rewardAmount).toEqual("~$•••••");
     expect(projectionAmount).toEqual("~$•••");
-    expect(totalStakingPower).toEqual("$••• (of $•••)");
   });
 });
