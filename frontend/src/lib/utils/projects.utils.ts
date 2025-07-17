@@ -517,7 +517,10 @@ export const snsProjectMarketCap = ({
   snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
   icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
 }): number | undefined => {
-  const { rootCanisterId, ledgerCanisterId } = sns.summary;
+  const {
+    rootCanisterId,
+    summary: { ledgerCanisterId },
+  } = sns;
   const totalSupplyE8s =
     snsTotalSupplyTokenAmountStore[rootCanisterId.toText()]?.toE8s();
   const totalSupply = nonNullish(totalSupplyE8s)
