@@ -1,5 +1,6 @@
 <!-- source: DFINITY foundation -->
 <script lang="ts">
+  // TODO(launchpad2): Replace with the IconStarFill from the gix-components library
   import { DEFAULT_ICON_SIZE } from "@dfinity/gix-components";
 
   interface Props {
