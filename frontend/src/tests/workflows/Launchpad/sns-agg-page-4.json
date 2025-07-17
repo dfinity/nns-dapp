@@ -3144,7 +3144,7 @@
     "meta": {
       "url": "https://fomowell.com/",
       "name": "FomoWell",
-      "description": "FomoWell is a fair launch platform for Web3 projects on the ICP blockchain.\n",
+      "description": "A High-Performance Bitcoin Asset Issuance and Trading Platform, Powered by @Dfinity",
       "logo": "/v1/sns/root/pww3s-sqaaa-aaaaq-aaedq-cai/logo.png"
     },
     "parameters": {
@@ -3282,6 +3282,14 @@
           "id": 16,
           "name": "Set topics for custom proposals",
           "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 17,
+          "name": "Register SNS extension",
+          "description": "Proposal to register a new SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -4030,7 +4038,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99055519876971168,
+    "icrc1_total_supply": 99096543131570386,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4872,6 +4880,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 17,
+              "name": "Register SNS extension",
+              "description": "Proposal to register a new SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "CriticalDappOperations",
@@ -5045,6 +5061,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 17,
+          "name": "Register SNS extension",
+          "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -5186,7 +5210,7 @@
       ]
     ],
     "icrc1_fee": [500000000],
-    "icrc1_total_supply": 4223762513978876,
+    "icrc1_total_supply": 4224757080998793,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5430,6 +5454,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 17,
+              "name": "Register SNS extension",
+              "description": "Proposal to register a new SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "CriticalDappOperations",
@@ -5608,6 +5640,14 @@
           "id": 16,
           "name": "Set topics for custom proposals",
           "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 17,
+          "name": "Register SNS extension",
+          "description": "Proposal to register a new SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -6051,7 +6091,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 214771822274498302,
+    "icrc1_total_supply": 216112988212029069,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -6586,6 +6626,14 @@
               "id": 16,
               "name": "Set topics for custom proposals",
               "description": "Proposal to set the topics for custom SNS proposals.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 17,
+              "name": "Register SNS extension",
+              "description": "Proposal to register a new SNS extension.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -7609,7 +7657,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100305720680823664,
+    "icrc1_total_supply": 100316758499050027,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -8737,6 +8785,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 17,
+          "name": "Register SNS extension",
+          "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -9601,7 +9657,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100087618472305410,
+    "icrc1_total_supply": 100110299203420450,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -10562,6 +10618,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 17,
+              "name": "Register SNS extension",
+              "description": "Proposal to register a new SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "CriticalDappOperations",
@@ -11126,7 +11190,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 2106203956205700,
+    "icrc1_total_supply": 2108171227542401,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -11799,6 +11863,14 @@
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
+        },
+        {
+          "id": 17,
+          "name": "Register SNS extension",
+          "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
         }
       ]
     },
@@ -11946,7 +12018,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99999200000000,
+    "icrc1_total_supply": 99999176000000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 300000000,
@@ -12190,6 +12262,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 17,
+              "name": "Register SNS extension",
+              "description": "Proposal to register a new SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "CriticalDappOperations",
@@ -12367,6 +12447,14 @@
           "id": 16,
           "name": "Set topics for custom proposals",
           "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 17,
+          "name": "Register SNS extension",
+          "description": "Proposal to register a new SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -13536,7 +13624,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100088676210173307,
+    "icrc1_total_supply": 100093665831918698,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14796,6 +14884,14 @@
               "id": 16,
               "name": "Set topics for custom proposals",
               "description": "Proposal to set the topics for custom SNS proposals.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 17,
+              "name": "Register SNS extension",
+              "description": "Proposal to register a new SNS extension.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }

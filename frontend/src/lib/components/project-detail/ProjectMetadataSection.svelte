@@ -47,9 +47,9 @@
           alt={$i18n.sns_launchpad.project_logo}
           size="big"
         />
-        <h1 class="content-cell-title" data-tid="project-name">
+        <h2 class="content-cell-title" data-tid="project-name">
           {metadata.name}
-        </h1>
+        </h2>
       </div>
       <div class="metadata-wrapper">
         <p class="description">
@@ -79,6 +79,11 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  h2 {
+    @include fonts.h1;
+  }
 
   p {
     margin: 0;

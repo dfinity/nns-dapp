@@ -4,35 +4,43 @@
   import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
-  import { formatNumber } from "$lib/utils/format.utils";
+  import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
-  import { TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {
     topStakedTokens: TableProject[];
     usdAmount: number;
     numberOfTopHeldTokens: number;
+    hasApyCalculationErrored?: boolean;
   };
 
-  const { topStakedTokens, usdAmount, numberOfTopHeldTokens }: Props = $props();
+  const {
+    topStakedTokens,
+    usdAmount,
+    numberOfTopHeldTokens,
+    hasApyCalculationErrored,
+  }: Props = $props();
 
   const href = AppPath.Staking;
 
   const numberOfTopStakedTokens = $derived(topStakedTokens.length);
-
   const showInfoRow = $derived(
     shouldShowInfoRow({
       currentCardNumberOfTokens: numberOfTopStakedTokens,
       otherCardNumberOfTokens: numberOfTopHeldTokens,
     })
   );
+  const showApy = $derived($ENABLE_APY_PORTFOLIO && !hasApyCalculationErrored);
 </script>
 
 <Card testId="staked-tokens-card">
@@ -57,12 +65,43 @@
           >{$i18n.portfolio.staked_tokens_card_list_first_column}</span
         >
 
-        <span class="mobile-only justify-end text-right" role="columnheader"
-          >{$i18n.portfolio.staked_tokens_card_list_second_column_mobile}</span
-        >
-        <span class="tablet-up justify-end" role="columnheader"
-          >{$i18n.portfolio.staked_tokens_card_list_second_column}</span
-        >
+        {#if showApy}
+          <span class="apy-label" role="columnheader"
+            ><span>
+              {$i18n.portfolio
+                .staked_tokens_card_list_second_column_mobile_apy_first}
+            </span><span class="description"
+              >{$i18n.portfolio
+                .staked_tokens_card_list_second_column_mobile_apy_second}
+            </span>
+          </span>
+        {:else}
+          <span class="mobile-only justify-end text-right" role="columnheader"
+            >{$i18n.portfolio
+              .staked_tokens_card_list_second_column_mobile}</span
+          >
+        {/if}
+
+        {#if showApy}
+          <span
+            class="tablet-up justify-end align-center gap-small"
+            role="columnheader"
+            ><span>
+              {$i18n.portfolio.staked_tokens_card_list_second_column_apy_first}
+            </span><span class="description">
+              {$i18n.portfolio.staked_tokens_card_list_second_column_apy_second}
+            </span>
+            <TooltipIcon
+              tooltipId="apy"
+              text={$i18n.portfolio.staked_tokens_card_apy_tooltip}
+              iconSize={16}
+            />
+          </span>
+        {:else}
+          <span class="tablet-up justify-end" role="columnheader"
+            >{$i18n.portfolio.staked_tokens_card_list_second_column}</span
+          >
+        {/if}
         <span class="tablet-up justify-end" role="columnheader"
           >{$i18n.portfolio.staked_tokens_card_list_third_column}</span
         >
@@ -70,6 +109,7 @@
 
       <div class="list" role="rowgroup">
         {#each topStakedTokens as stakedToken (stakedToken.domKey)}
+          {@const apy = stakedToken.apy}
           <svelte:element
             this={$authSignedInStore ? "a" : "div"}
             href={$authSignedInStore ? stakedToken.rowHref : undefined}
@@ -90,16 +130,37 @@
               <span data-tid="title">{stakedToken.title}</span>
             </div>
 
-            <div class="maturity" data-tid="maturity" role="cell">
-              {#if $authSignedInStore}
-                <MaturityWithTooltip
-                  availableMaturity={stakedToken?.availableMaturity ?? 0n}
-                  stakedMaturity={stakedToken?.stakedMaturity ?? 0n}
-                />
-              {:else}
-                {PRICE_NOT_AVAILABLE_PLACEHOLDER}
-              {/if}
-            </div>
+            {#if showApy}
+              <div class="apy" data-tid="apy" role="cell">
+                {#if $authSignedInStore && nonNullish(apy) && apy.max > 0}
+                  <span
+                    >{formatPercentage(apy.cur, {
+                      minFraction: 2,
+                      maxFraction: 2,
+                    })}</span
+                  >
+                  <span class="max"
+                    >({formatPercentage(apy.max, {
+                      minFraction: 2,
+                      maxFraction: 2,
+                    })})</span
+                  >
+                {:else}
+                  {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                {/if}
+              </div>
+            {:else}
+              <div class="maturity" data-tid="maturity" role="cell">
+                {#if $authSignedInStore}
+                  <MaturityWithTooltip
+                    availableMaturity={stakedToken?.availableMaturity ?? 0n}
+                    stakedMaturity={stakedToken?.stakedMaturity ?? 0n}
+                  />
+                {:else}
+                  {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                {/if}
+              </div>
+            {/if}
             <div
               class="stake-usd"
               data-tid="stake-in-usd"
@@ -166,11 +227,22 @@
         grid-template-columns: 1fr 1fr;
 
         font-size: 0.875rem;
-        color: var(--text-description);
         padding: 0 var(--padding-2x);
+        align-items: center;
 
         @include media.min-width(medium) {
+          height: 20px;
           grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .apy-label {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+
+          @include media.min-width(medium) {
+            display: none;
+          }
         }
       }
 
@@ -213,11 +285,35 @@
             gap: var(--padding);
           }
 
+          .apy,
           .maturity,
           .stake-usd,
           .stake-native {
             justify-self: end;
             text-align: right;
+          }
+
+          .apy {
+            grid-area: maturity;
+            display: flex;
+            gap: var(--padding-0_5x);
+            font-size: 0.875rem;
+            color: var(--text-description);
+
+            @include media.min-width(medium) {
+              font-size: var(--font-size-standard);
+              flex-direction: column;
+              gap: 0;
+              color: var(--text-primary);
+            }
+
+            .max {
+              color: var(--text-description);
+
+              @include media.min-width(medium) {
+                font-size: 0.875rem;
+              }
+            }
           }
 
           .maturity {
@@ -233,6 +329,7 @@
 
           .stake-usd {
             grid-area: usd;
+            font-size: var(--font-size-standard);
           }
 
           .stake-native {
@@ -276,6 +373,10 @@
     }
 
     /* Utilities */
+    .mobile-only {
+      display: flex;
+    }
+
     .tablet-up,
     .desktop-only {
       display: none !important;
@@ -298,6 +399,14 @@
 
     .justify-end {
       justify-self: end;
+    }
+
+    .align-center {
+      align-items: center;
+    }
+
+    .gap-small {
+      gap: var(--padding-0_5x);
     }
 
     .text-right {

@@ -32,8 +32,8 @@ describe("ProposalSystemInfoSection", () => {
     });
 
     const { container } = renderResult;
-    expect(container.querySelector("h1")).not.toBeNull();
-    expect(container.querySelector("h1")?.textContent).toEqual(
+    expect(container.querySelector("h2")).not.toBeNull();
+    expect(container.querySelector("h2")?.textContent).toEqual(
       "Proposal Details"
     );
   });

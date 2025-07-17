@@ -167,6 +167,14 @@
           }
         },
         {
+          "id": 17,
+          "name": "Register SNS extension",
+          "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1001,
           "name": "addToken",
           "description": "Registers a token as trusted given its ledger id.",
@@ -353,7 +361,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777777429760000,
+    "icrc1_total_supply": 777777383080000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -621,6 +629,14 @@
               "id": 16,
               "name": "Set topics for custom proposals",
               "description": "Proposal to set the topics for custom SNS proposals.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 17,
+              "name": "Register SNS extension",
+              "description": "Proposal to register a new SNS extension.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }

@@ -7,7 +7,6 @@ import { FollowNeuronsModalPo } from "$tests/page-objects/FollowNeuronsModal.pag
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { Topic } from "@dfinity/nns";
-import { nonNullish } from "@dfinity/utils";
 
 describe("FollowNeuronsModal", () => {
   const neuronFollowing = {
@@ -39,9 +38,7 @@ describe("FollowNeuronsModal", () => {
     const { container } = render(FollowNeuronsModal, {
       props: {
         neuronId: neuronFollowing.neuronId,
-      },
-      events: {
-        ...(nonNullish(onClose) && { nnsClose: onClose }),
+        onClose,
       },
     });
 

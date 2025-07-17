@@ -1,20 +1,33 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
-  import {
-    NNS_NEURON_CONTEXT_KEY,
-    type NnsNeuronContext,
-  } from "$lib/types/nns-neuron-detail.context";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
-  import { getContext } from "svelte";
+  import { neuronStake } from "$lib/utils/neuron.utils";
+  import { Tooltip } from "@dfinity/gix-components";
+  import type { NeuronInfo } from "@dfinity/nns";
 
-  const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
-    NNS_NEURON_CONTEXT_KEY
-  );
+  type Props = {
+    neuron: NeuronInfo;
+  };
+  const { neuron }: Props = $props();
+  const isDisabled = $derived(neuronStake(neuron) === 0n);
 </script>
 
-<button
-  class="secondary"
-  on:click={() =>
-    openNnsNeuronModal({ type: "disburse", data: { neuron: $store.neuron } })}
-  data-tid="disburse-button">{$i18n.neuron_detail.disburse}</button
->
+{#snippet button()}
+  <button
+    class="secondary"
+    disabled={isDisabled}
+    onclick={() => openNnsNeuronModal({ type: "disburse", data: { neuron } })}
+    data-tid="disburse-button">{$i18n.neuron_detail.disburse}</button
+  >
+{/snippet}
+
+{#if isDisabled}
+  <Tooltip
+    id="spawn-maturity-button"
+    text={$i18n.neuron_detail.disburse_stake_disabled_tooltip_zero}
+  >
+    {@render button()}
+  </Tooltip>
+{:else}
+  {@render button()}
+{/if}

@@ -1,4 +1,6 @@
+import { AGGREGATOR_METRICS_TIME_WINDOW_SECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
+import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import {
   getDeniedCountries,
@@ -26,6 +28,7 @@ import {
   fromNullable,
   isNullish,
   nonNullish,
+  TokenAmountV2,
   type TokenAmount,
 } from "@dfinity/utils";
 
@@ -463,3 +466,71 @@ export const comparesByDecentralizationSaleOpenTimestampDesc =
   createDescendingComparator((sns: SnsFullProject): number =>
     Number(sns.summary.swap?.decentralization_sale_open_timestamp_seconds ?? 0)
   );
+
+/**
+ * Returns the number of proposals executed in the last week.
+ * The result is rounded to the nearest integer.
+ */
+export const snsProjectWeeklyProposalActivity = (
+  sns: SnsFullProject
+): number | undefined => {
+  const secondsInWeek = 7 * 24 * 3600;
+  const weeks = AGGREGATOR_METRICS_TIME_WINDOW_SECONDS / secondsInWeek;
+  const numRecentProposals = sns.metrics?.num_recently_executed_proposals;
+
+  if (!numRecentProposals) return undefined;
+
+  return Math.round(numRecentProposals / weeks);
+};
+
+// Returns the percentage [0..1] of ICP in the treasury compared to the original amount.
+// Returns undefined if the metrics are not available.
+export const snsProjectIcpInTreasuryPercentage = (
+  sns: SnsFullProject
+): number | undefined => {
+  const ICP_TREASURY_ID = 1;
+  const icpInTreasuryMetrics = sns.metrics?.treasury_metrics?.find(
+    ({ treasury }) => treasury === ICP_TREASURY_ID
+  );
+
+  if (!icpInTreasuryMetrics) return undefined;
+
+  const currentAmount = icpInTreasuryMetrics.amount_e8s;
+  const originalAmount = icpInTreasuryMetrics.original_amount_e8s;
+  if (isNullish(currentAmount) || isNullish(originalAmount)) return undefined;
+  if (originalAmount === 0) return 0;
+
+  return currentAmount / originalAmount;
+};
+
+/**
+ * Calculates the market cap of the SNS project.
+ * Market cap is calculated as:
+ * total supply of the SNS token * token price of the token in USD
+ */
+export const snsProjectMarketCap = ({
+  sns,
+  snsTotalSupplyTokenAmountStore,
+  icpSwapUsdPricesStore,
+}: {
+  sns: SnsFullProject;
+  snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
+  icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
+}): number | undefined => {
+  const { rootCanisterId, ledgerCanisterId } = sns.summary;
+  const totalSupplyE8s =
+    snsTotalSupplyTokenAmountStore[rootCanisterId.toText()]?.toE8s();
+  const totalSupply = nonNullish(totalSupplyE8s)
+    ? Number(totalSupplyE8s) / 100_000_000
+    : undefined;
+  const tokenPriceUsd =
+    nonNullish(ledgerCanisterId) &&
+    nonNullish(icpSwapUsdPricesStore) &&
+    icpSwapUsdPricesStore !== "error"
+      ? icpSwapUsdPricesStore[ledgerCanisterId.toText()]
+      : undefined;
+
+  if (isNullish(totalSupply) || isNullish(tokenPriceUsd)) return undefined;
+
+  return totalSupply * tokenPriceUsd;
+};

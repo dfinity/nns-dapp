@@ -5,11 +5,14 @@
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-  import type { TokensTableColumn, UserToken } from "$lib/types/tokens-page";
-  import type { TokensTableOrder } from "$lib/types/tokens-page";
+  import type {
+    TokensTableColumn,
+    TokensTableOrder,
+    UserToken,
+  } from "$lib/types/tokens-page";
   import {
-    compareTokensAlphabetically,
     compareTokensByBalance,
+    compareTokensByProject,
   } from "$lib/utils/tokens-table.utils";
 
   export let userTokensData: Array<UserToken>;
@@ -36,7 +39,7 @@
       cellComponent: TokenTitleCell,
       alignment: "left",
       templateColumns: ["1fr"],
-      comparator: enableSorting ? compareTokensAlphabetically : undefined,
+      comparator: enableSorting ? compareTokensByProject : undefined,
     },
     {
       id: "balance",

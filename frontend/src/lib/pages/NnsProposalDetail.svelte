@@ -123,7 +123,6 @@
 
   $: layoutTitleStore.set({
     title,
-    header: title,
   });
 </script>
 

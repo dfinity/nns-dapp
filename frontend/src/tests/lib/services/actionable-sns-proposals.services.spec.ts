@@ -67,7 +67,7 @@ describe("actionable-sns-proposals.services", () => {
         ],
       ] as [string, SnsBallot][],
     };
-    const hundredProposals = Array.from(Array(100))
+    const twelveHundredProposals = Array.from(Array(1200))
       .map((_, index) =>
         createSnsProposal({
           ...votableProposalProps,
@@ -115,7 +115,7 @@ describe("actionable-sns-proposals.services", () => {
       includeRewardStatus: [
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
       ],
-      limit: 20,
+      limit: 100,
     };
 
     let spyQuerySnsProposals: MockInstance;
@@ -268,8 +268,8 @@ describe("actionable-sns-proposals.services", () => {
 
     it("should query list proposals using multiple calls", async () => {
       mockSnsProjectsCommittedStore([rootCanisterId1]);
-      const firstResponse = hundredProposals.slice(0, 20);
-      const secondResponse = [hundredProposals[20]];
+      const firstResponse = twelveHundredProposals.slice(0, 100);
+      const secondResponse = twelveHundredProposals.slice(100, 150);
       spyQuerySnsProposals = vi
         .spyOn(api, "queryProposals")
         .mockResolvedValueOnce(queryProposalsResponse(firstResponse))
@@ -290,7 +290,7 @@ describe("actionable-sns-proposals.services", () => {
             SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
           ],
           beforeProposal: undefined,
-          limit: 20,
+          limit: 100,
         },
       });
       expect(spyQuerySnsProposals).toHaveBeenCalledWith({
@@ -304,12 +304,13 @@ describe("actionable-sns-proposals.services", () => {
           beforeProposal: {
             id: snsProposalId(firstResponse[firstResponse.length - 1]),
           },
-          limit: 20,
+          limit: 100,
         },
       });
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId1.toText()]: {
           proposals: [...firstResponse, ...secondResponse],
+          fetchLimitReached: false,
         },
       });
     });
@@ -319,19 +320,37 @@ describe("actionable-sns-proposals.services", () => {
       spyQuerySnsProposals = vi
         .spyOn(api, "queryProposals")
         .mockResolvedValueOnce(
-          queryProposalsResponse(hundredProposals.slice(0, 20))
+          queryProposalsResponse(twelveHundredProposals.slice(0, 100))
         )
         .mockResolvedValueOnce(
-          queryProposalsResponse(hundredProposals.slice(20, 40))
+          queryProposalsResponse(twelveHundredProposals.slice(100, 200))
         )
         .mockResolvedValueOnce(
-          queryProposalsResponse(hundredProposals.slice(40, 60))
+          queryProposalsResponse(twelveHundredProposals.slice(200, 300))
         )
         .mockResolvedValueOnce(
-          queryProposalsResponse(hundredProposals.slice(60, 80))
+          queryProposalsResponse(twelveHundredProposals.slice(300, 400))
         )
         .mockResolvedValueOnce(
-          queryProposalsResponse(hundredProposals.slice(80, 100))
+          queryProposalsResponse(twelveHundredProposals.slice(400, 500))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(twelveHundredProposals.slice(500, 600))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(twelveHundredProposals.slice(600, 700))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(twelveHundredProposals.slice(700, 800))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(twelveHundredProposals.slice(800, 900))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(twelveHundredProposals.slice(900, 1000))
+        )
+        .mockResolvedValueOnce(
+          queryProposalsResponse(twelveHundredProposals.slice(1000, 1100))
         );
       spyConsoleError = silentConsoleErrors();
       expect(spyQuerySnsProposals).not.toHaveBeenCalled();
@@ -339,7 +358,7 @@ describe("actionable-sns-proposals.services", () => {
 
       await loadActionableSnsProposals();
 
-      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(5);
+      expect(spyQuerySnsProposals).toHaveBeenCalledTimes(10);
       // expect an error message
       expect(spyConsoleError).toHaveBeenCalledTimes(1);
       expect(spyConsoleError).toHaveBeenCalledWith(
@@ -349,8 +368,8 @@ describe("actionable-sns-proposals.services", () => {
       const storeProposals = get(actionableSnsProposalsStore)?.[
         rootCanisterId1.toText()
       ]?.proposals;
-      expect(storeProposals).toHaveLength(100);
-      expect(storeProposals).toEqual(hundredProposals);
+      expect(storeProposals).toHaveLength(1000);
+      expect(storeProposals).toEqual(twelveHundredProposals.slice(0, 1000));
     });
 
     it("should update the store with actionable proposal only", async () => {
@@ -362,9 +381,11 @@ describe("actionable-sns-proposals.services", () => {
       expect(get(actionableSnsProposalsStore)).toEqual({
         [rootCanisterId1.toText()]: {
           proposals: [votableProposal1],
+          fetchLimitReached: false,
         },
         [rootCanisterId2.toText()]: {
           proposals: [votableProposal2],
+          fetchLimitReached: false,
         },
       });
     });

@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-05-30_03-21-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-26_03-25-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -72,6 +72,7 @@ pub struct AddNodePayload {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddNodeOperatorPayload {
     pub ipv6: Option<String>,
+    pub max_rewardable_nodes: Option<Vec<(String, u32)>>,
     pub node_operator_principal_id: Option<Principal>,
     pub node_allowance: u64,
     pub rewardable_nodes: Vec<(String, u32)>,
@@ -262,6 +263,7 @@ pub enum GetChunkResponse {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NodeOperatorRecord {
     pub ipv6: Option<String>,
+    pub max_rewardable_nodes: Vec<(String, u32)>,
     pub node_operator_principal_id: serde_bytes::ByteBuf,
     pub node_allowance: u64,
     pub rewardable_nodes: Vec<(String, u32)>,
@@ -422,6 +424,7 @@ pub struct UpdateNodeOperatorConfigPayload {
     pub set_ipv6_to_none: Option<bool>,
     pub ipv6: Option<String>,
     pub node_provider_id: Option<Principal>,
+    pub max_rewardable_nodes: Option<Vec<(String, u32)>>,
     pub node_allowance: Option<u64>,
     pub rewardable_nodes: Vec<(String, u32)>,
     pub dc_id: Option<String>,

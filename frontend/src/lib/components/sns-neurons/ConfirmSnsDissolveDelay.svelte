@@ -53,7 +53,7 @@
       : undefined
   );
 
-  const priceStore = $derived(tokenPriceStore(neuronStake));
+  const priceStore = $derived(tokenPriceStore(neuronStake.token));
   const tokenPrice = $derived($priceStore);
   const neuronStakeInFiat = $derived.by(() => {
     if (isNullish(neuronStake) || isNullish(tokenPrice)) return undefined;

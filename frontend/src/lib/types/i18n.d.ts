@@ -41,8 +41,10 @@ interface I18nCore {
   add: string;
   not_applicable: string;
   view_more: string;
+  view: string;
   copy: string;
   copied: string;
+  week: string;
 }
 
 interface I18nError {
@@ -145,6 +147,7 @@ interface I18nError {
 
 interface I18nWarning {
   auth_sign_out: string;
+  proposal_fetch_limit: string;
   test_env_note: string;
   test_env_confirm: string;
   test_env_title: string;
@@ -152,9 +155,10 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
-  universe_tokens: string;
+  tokens_account: string;
   canisters: string;
   neurons: string;
+  neurons_account: string;
   voting: string;
   launchpad: string;
   manage_ii: string;
@@ -164,6 +168,7 @@ interface I18nNavigation {
   portfolio: string;
   privacy_mode_hide: string;
   privacy_mode_show: string;
+  project_page: string;
 }
 
 interface I18nAlfred {
@@ -804,6 +809,7 @@ interface I18nNeuron_detail {
   stake: string;
   spawn_neuron: string;
   spawn: string;
+  disburse_stake_disabled_tooltip_zero: string;
   stake_maturity_disabled_tooltip: string;
   stake_maturity_disabled_tooltip_max_disbursements: string;
   disburse_maturity_disabled_tooltip_zero: string;
@@ -918,6 +924,29 @@ interface I18nSns_launchpad {
   proposals: string;
   project_logo: string;
   no_proposals: string;
+}
+
+interface I18nLaunchpad {
+  headline: string;
+  subheadline: string;
+  upcoming_launches: string;
+  launched_projects: string;
+  participated_projects: string;
+}
+
+interface I18nLaunchpad_cards {
+  ongoing_funded_of_min: string;
+  ongoing_min_icp: string;
+  ongoing_cap_icp: string;
+  project_card_market_cap: string;
+  project_card_icp_in_treasury: string;
+  project_card_my_participation: string;
+  project_card_proposal_activity: string;
+  upcoming_tag_upcoming: string;
+  upcoming_link: string;
+  upcoming_sale_starts: string;
+  create_sns_proposal_title: string;
+  create_sns_proposal_vote: string;
 }
 
 interface I18nSns_project_detail {
@@ -1347,8 +1376,13 @@ interface I18nPortfolio {
   staked_tokens_card_link: string;
   staked_tokens_card_list_first_column: string;
   staked_tokens_card_list_second_column_mobile: string;
+  staked_tokens_card_list_second_column_mobile_apy_first: string;
+  staked_tokens_card_list_second_column_mobile_apy_second: string;
   staked_tokens_card_list_second_column: string;
+  staked_tokens_card_list_second_column_apy_first: string;
+  staked_tokens_card_list_second_column_apy_second: string;
   staked_tokens_card_list_third_column: string;
+  staked_tokens_card_apy_tooltip: string;
   staked_tokens_card_info_row: string;
   total_assets_title: string;
   project_status_open: string;
@@ -1368,6 +1402,14 @@ interface I18nPortfolio {
   new_sns_proposal_card_reject: string;
   next_card: string;
   previous_card: string;
+  apy_card_title: string;
+  apy_card_reward_title: string;
+  apy_card_power_title: string;
+  apy_card_link_view: string;
+  apy_card_link_start: string;
+  apy_card_estimation: string;
+  apy_card_error: string;
+  apy_card_tooltip: string;
 }
 
 interface I18nHighlight {
@@ -1635,6 +1677,8 @@ interface I18n {
   proposal_detail__ineligible: I18nProposal_detail__ineligible;
   neuron_detail: I18nNeuron_detail;
   sns_launchpad: I18nSns_launchpad;
+  launchpad: I18nLaunchpad;
+  launchpad_cards: I18nLaunchpad_cards;
   sns_project_detail: I18nSns_project_detail;
   sns_sale: I18nSns_sale;
   sns_neuron_detail: I18nSns_neuron_detail;

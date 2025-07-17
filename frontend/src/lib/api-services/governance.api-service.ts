@@ -6,6 +6,7 @@ import {
   claimOrRefreshNeuronByMemo,
   disburse,
   disburseMaturity,
+  getGovernanceMetrics,
   getNetworkEconomicsParameters,
   increaseDissolveDelay,
   joinCommunityFund,
@@ -155,6 +156,9 @@ export const governanceApiService = {
   },
   getNetworkEconomicsParameters(params: ApiQueryParams) {
     return getNetworkEconomicsParameters(params);
+  },
+  getGovernanceMetrics(params: ApiQueryParams) {
+    return getGovernanceMetrics(params);
   },
 
   // Action calls

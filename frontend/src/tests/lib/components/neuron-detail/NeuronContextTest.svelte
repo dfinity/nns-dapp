@@ -9,9 +9,12 @@
   import { type Component, setContext } from "svelte";
   import { writable } from "svelte/store";
 
-  export let testComponent: Component;
-  export let neuron: NeuronInfo | undefined;
-  export let componentProps: Record<string, unknown> = {};
+  type Props = {
+    TestComponent: Component;
+    neuron?: NeuronInfo;
+    componentProps?: Record<string, unknown>;
+  };
+  const { TestComponent, neuron, componentProps = {} }: Props = $props();
 
   export const neuronStore = writable<NnsNeuronStore>({
     neuron,
@@ -22,6 +25,6 @@
   });
 </script>
 
-<svelte:component this={testComponent} {...componentProps} />
+<TestComponent {neuron} {...componentProps} />
 
 <NnsNeuronModals />

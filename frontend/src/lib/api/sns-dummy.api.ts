@@ -60,6 +60,7 @@ const nsFunctionProposal1 = {
               ],
               validator_method_name: ["test"],
               target_method_name: ["test"],
+              topic: [{ Governance: null }],
             },
           },
         ],
@@ -89,6 +90,7 @@ const nsFunctionProposal2 = {
               ],
               validator_method_name: ["test"],
               target_method_name: ["test"],
+              topic: [{ Governance: null }],
             },
           },
         ],
@@ -98,9 +100,10 @@ const nsFunctionProposal2 = {
 };
 
 // We need to pass a proposal to add a function to the nervous system first
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const executeNSFunctionProposal = {
   url: "internet-computer.org",
-  title: "Execute Generic Nervoys system Function",
+  title: "Execute Generic Nervous system Function",
   summary:
     "# Summary\nThis is a dummy proposal to execute a *nervous system function*.",
   action: [
@@ -212,7 +215,7 @@ export const snsProposals = [
   nsFunctionProposal1,
   nsFunctionProposal2,
   // The following proposals require specific state to be set up first.
-  executeNSFunctionProposal,
+  // executeNSFunctionProposal,
   // removeNSFunctionProposal,
   // upgradeProposal,
   // upgradeControlledCanisterProposal,

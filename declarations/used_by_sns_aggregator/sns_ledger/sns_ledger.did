@@ -1,4 +1,4 @@
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-05_03-24-base/rs/ledger_suite/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/fccfa2c7c7cba9e5485ad0b48823990e24a67f40/rs/ledger_suite/icrc1/ledger/ledger.did>
 type BlockIndex = nat;
 type Subaccount = blob;
 // Number of nanoseconds since the UNIX epoch in UTC timezone.
@@ -118,6 +118,7 @@ type InitArgs = record {
         controller_id : principal;
         more_controller_ids : opt vec principal;
     };
+    index_principal : opt principal;
 };
 
 type ChangeFeeCollector = variant {
@@ -144,6 +145,7 @@ type UpgradeArgs = record {
     max_memo_length : opt nat16;
     feature_flags : opt FeatureFlags;
     change_archive_options : opt ChangeArchiveOptions;
+    index_principal : opt principal;
 };
 
 type LedgerArg = variant {
@@ -507,6 +509,21 @@ type icrc103_get_allowances_response = variant {
     Err: GetAllowancesError;
 };
 
+type GetIndexPrincipalResult = variant {
+    Ok : principal;
+    Err : GetIndexPrincipalError;
+};
+
+type GetIndexPrincipalError = variant {
+    IndexPrincipalNotSet;
+
+    // Any error not covered by the above variants.
+    GenericError: record {
+       error_code: nat;
+       description: text;
+   };
+};
+
 service : (ledger_arg : LedgerArg) -> {
     archives : () -> (vec ArchiveInfo) query;
     get_transactions : (GetTransactionsRequest) -> (GetTransactionsResponse) query;
@@ -537,6 +554,8 @@ service : (ledger_arg : LedgerArg) -> {
     icrc10_supported_standards : () -> (vec record { name : text; url : text }) query;
 
     icrc103_get_allowances : (GetAllowancesArgs) -> (icrc103_get_allowances_response) query;
+
+    icrc106_get_index_principal: () -> (GetIndexPrincipalResult) query;
 
     is_ledger_ready: () -> (bool) query;
 }

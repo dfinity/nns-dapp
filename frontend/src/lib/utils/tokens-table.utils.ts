@@ -66,6 +66,11 @@ export const compareTokenHasBalance = createDescendingComparator(
     token.balance instanceof TokenAmountV2 && token.balance.toUlps() > 0n
 );
 
+export const compareTokensByProject = mergeComparators([
+  compareTokensIcpFirst,
+  compareTokensAlphabetically,
+]);
+
 // This is used when clicking the "Balance" header, but in addition to sorting
 // by balance, it has a number of tie breakers.
 // Note that it tries to sort by USD balance but also sorts tokens with balance
@@ -76,9 +81,9 @@ export const compareTokensByBalance = ({
   importedTokenIds: Set<string>;
 }) =>
   mergeComparators([
+    compareTokensIcpFirst,
     compareTokensByUsdBalance,
     compareTokenHasBalance,
-    compareTokensIcpFirst,
     compareTokensByImportance,
     compareTokensIsImported({ importedTokenIds }),
     compareFailedTokensLast,

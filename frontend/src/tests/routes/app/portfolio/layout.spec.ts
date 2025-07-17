@@ -18,7 +18,6 @@ describe("Portfolio layout", () => {
 
     expect(get(layoutTitleStore)).toEqual({
       title: "Portfolio",
-      header: "Portfolio",
     });
   });
 });

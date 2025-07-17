@@ -12,7 +12,9 @@ describe("Title", () => {
 
     render(Title);
 
-    const title = within(document.head).getByText(`${testTitle} / NNS Dapp`);
+    const title = within(document.head).getByText(
+      `${testTitle} | Network Nervous System`
+    );
 
     expect(title).not.toBeNull();
   });
@@ -33,18 +35,18 @@ describe("Title", () => {
     layoutTitleStore.set({ title: testTitle });
 
     const { container } = render(Title);
-    expect(container.querySelector("h4")?.textContent).toEqual(testTitle);
+    expect(container.querySelector("h1")?.textContent).toEqual(testTitle);
   });
 
-  it("should render empty header", () => {
+  it("should never render an empty header", () => {
     const testTitle = "test test test";
     const testHeader = "";
 
     layoutTitleStore.set({ title: testTitle, header: testHeader });
 
     const { container } = render(Title);
-    expect(container.querySelector("h4")?.textContent.trim()).toEqual(
-      testHeader.trim()
+    expect(container.querySelector("h1")?.textContent.trim()).toEqual(
+      testTitle.trim()
     );
   });
 });

@@ -30,11 +30,6 @@ describe("token-price.derived", () => {
     [snsLedgerCanisterIdText]: snsToken,
   };
 
-  const mockIcpTokenAmountV2 = TokenAmountV2.fromUlps({
-    amount: 100_000_000n, // 1 ICP
-    token: ICPToken,
-  });
-
   describe("tokenPriceStore", () => {
     beforeEach(() => {
       Object.entries(mockTokensByLedgerCanisterId).forEach(
@@ -51,14 +46,14 @@ describe("token-price.derived", () => {
     it("should return undefined when icpSwapUsdPricesStore is undefined", () => {
       icpSwapTickersStore.set([]);
 
-      const store = tokenPriceStore(mockIcpTokenAmountV2);
+      const store = tokenPriceStore(ICPToken);
       expect(get(store)).toBeUndefined();
     });
 
     it("should return undefined when icpSwapUsdPricesStore is 'error'", () => {
       icpSwapTickersStore.set("error");
 
-      const store = tokenPriceStore(mockIcpTokenAmountV2);
+      const store = tokenPriceStore(ICPToken);
       expect(get(store)).toBeUndefined();
     });
 
@@ -75,7 +70,7 @@ describe("token-price.derived", () => {
         token: { name: "Unknown", symbol: "UNK", decimals: 8 },
       });
 
-      const store = tokenPriceStore(unknownTokenAmount);
+      const store = tokenPriceStore(unknownTokenAmount.token);
       expect(get(store)).toBeUndefined();
     });
 
@@ -87,7 +82,7 @@ describe("token-price.derived", () => {
       };
       icpSwapTickersStore.set([ckusdcTicker]);
 
-      const store = tokenPriceStore(mockIcpTokenAmountV2);
+      const store = tokenPriceStore(ICPToken);
       expect(get(store)).toBe(12.4);
     });
 
@@ -99,12 +94,7 @@ describe("token-price.derived", () => {
       };
       icpSwapTickersStore.set([ckusdcTicker]);
 
-      const ckusdcTokenAmount = TokenAmountV2.fromUlps({
-        amount: 100_000_000n,
-        token: mockCkUSDCToken,
-      });
-
-      const store = tokenPriceStore(ckusdcTokenAmount);
+      const store = tokenPriceStore(mockCkUSDCToken);
       expect(get(store)).toBe(1.0);
     });
 
@@ -129,12 +119,7 @@ describe("token-price.derived", () => {
       };
       icpSwapTickersStore.set([ckusdcTicker, snsTicker]);
 
-      const snsTokenAmount = TokenAmountV2.fromUlps({
-        amount: 100_000_000n,
-        token: snsToken,
-      });
-
-      const store = tokenPriceStore(snsTokenAmount);
+      const store = tokenPriceStore(snsToken);
       expect(get(store)).toBe(124.0); // 12.4 / 0.1
     });
   });

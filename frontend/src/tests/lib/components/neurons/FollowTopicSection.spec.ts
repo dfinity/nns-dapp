@@ -1,4 +1,3 @@
-import FollowTopicsSection from "$lib/components/neurons/FollowTopicSection.svelte";
 import FollowTopicsSectionTest from "$tests/lib/components/neurons/FollowTopicSectionTest.svelte";
 import { render } from "$tests/utils/svelte.test-utils";
 import { fireEvent } from "@testing-library/svelte";
@@ -6,6 +5,7 @@ import { fireEvent } from "@testing-library/svelte";
 describe("FollowTopicsSection", () => {
   const title = "title";
   const subtitle = "subtitle";
+
   it("renders data", () => {
     const { getByText } = render(FollowTopicsSectionTest, {
       props: {
@@ -34,7 +34,7 @@ describe("FollowTopicsSection", () => {
   it("triggers open event", async () => {
     const openSpy = vi.fn();
 
-    const { queryByTestId } = render(FollowTopicsSection, {
+    const { queryByTestId } = render(FollowTopicsSectionTest, {
       props: {
         id: "3",
         count: 4,

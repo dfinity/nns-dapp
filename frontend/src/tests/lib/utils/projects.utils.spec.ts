@@ -1,5 +1,7 @@
 import { NOT_LOADED } from "$lib/constants/stores.constants";
+import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -19,6 +21,9 @@ import {
   participateButtonStatus,
   projectRemainingAmount,
   snsProjectDashboardUrl,
+  snsProjectIcpInTreasuryPercentage,
+  snsProjectMarketCap,
+  snsProjectWeeklyProposalActivity,
   userCountryIsNeeded,
   validParticipation,
 } from "$lib/utils/projects.utils";
@@ -28,6 +33,7 @@ import {
   createSummary,
   createTransferableAmount,
   mockSnsFullProject,
+  mockSnsMetrics,
   mockSnsParams,
   mockSnsSwapCommitment,
   mockSwap,
@@ -36,9 +42,12 @@ import {
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
+import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { get } from "svelte/store";
 
 describe("project-utils", () => {
   const summaryUsRestricted: SnsSummaryWrapper = createSummary({
@@ -1459,5 +1468,235 @@ describe("comparesByDecentralizationSaleOpenTimestamp", () => {
     expect(
       comparesByDecentralizationSaleOpenTimestampDesc(project1, project2)
     ).toBe(-1);
+  });
+});
+
+describe("snsProjectWeeklyProposalActivity", () => {
+  it("should return undefined when no activity available", () => {
+    const testProject = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: undefined,
+    });
+
+    expect(snsProjectWeeklyProposalActivity(testProject)).toBe(undefined);
+  });
+
+  it("should return rounded weekly activity", () => {
+    // Related to AGGREGATOR_METRICS_TIME_WINDOW_SECONDS
+    const weeksInTwoMonths = (30 * 2) / 7;
+    const executedProposalsPerWeek = 10;
+    const executedProposalsIn2Months = Math.round(
+      weeksInTwoMonths * executedProposalsPerWeek
+    );
+    const testProject = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+        num_recently_executed_proposals: executedProposalsIn2Months,
+      },
+    });
+
+    expect(snsProjectWeeklyProposalActivity(testProject)).toBe(
+      executedProposalsPerWeek
+    );
+  });
+});
+
+describe("snsProjectIcpInTreasuryPercentage", () => {
+  const icpInTreasuryMetrics = {
+    name: "TOKEN_ICP",
+    original_amount_e8s: 314100000000,
+    amount_e8s: 314099990000,
+    account: {
+      owner: "7uieb-cx777-77776-qaaaq-cai",
+      subaccount: null,
+    },
+    ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+    treasury: 1,
+    timestamp_seconds: 1752222478,
+  };
+  const snsTreasuryMetrics = {
+    name: "TOKEN_SNS_TOKEN",
+    original_amount_e8s: 0,
+    amount_e8s: 293700000000,
+    account: {
+      owner: "7uieb-cx777-77776-qaaaq-cai",
+      subaccount: null,
+    },
+    ledger_canister_id: "75lp5-u7777-77776-qaaba-cai",
+    treasury: 2,
+    timestamp_seconds: 1752222478,
+  };
+
+  it("should return undefined when no metrics available", () => {
+    const testProject = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: undefined,
+    });
+
+    expect(snsProjectIcpInTreasuryPercentage(testProject)).toBe(undefined);
+  });
+
+  it("should return rounded icp in treasury percentage", () => {
+    const testProject = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+        treasury_metrics: [
+          {
+            ...icpInTreasuryMetrics,
+            amount_e8s: 2_000_000_000,
+            original_amount_e8s: 10_000_000_000,
+          },
+          snsTreasuryMetrics,
+        ],
+      },
+    });
+
+    expect(snsProjectIcpInTreasuryPercentage(testProject)).toBe(0.2);
+  });
+
+  it("should use icp treasury metrics for calculation", () => {
+    const testProject = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+        treasury_metrics: [
+          snsTreasuryMetrics,
+          {
+            ...icpInTreasuryMetrics,
+            amount_e8s: 2_000_000_000,
+            original_amount_e8s: 10_000_000_000,
+          },
+          { ...snsTreasuryMetrics, treasury: 2 },
+        ],
+      },
+    });
+
+    expect(snsProjectIcpInTreasuryPercentage(testProject)).toBe(0.2);
+  });
+
+  it("should return undefined when no treasury metrics fields available", () => {
+    const testProject1 = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+        treasury_metrics: [
+          {
+            ...icpInTreasuryMetrics,
+            amount_e8s: undefined,
+            original_amount_e8s: 10_000_000_000,
+          },
+        ],
+      },
+    });
+    const testProject2 = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+        treasury_metrics: [
+          {
+            ...icpInTreasuryMetrics,
+            amount_e8s: 2_000_000_000,
+            original_amount_e8s: undefined,
+          },
+        ],
+      },
+    });
+
+    expect(snsProjectIcpInTreasuryPercentage(testProject1)).toBe(undefined);
+    expect(snsProjectIcpInTreasuryPercentage(testProject2)).toBe(undefined);
+  });
+
+  it("should handle division by zero", () => {
+    const testProject = createMockSnsFullProject({
+      rootCanisterId: rootCanisterIdMock,
+      summaryParams: {},
+      metrics: {
+        ...mockSnsMetrics,
+        treasury_metrics: [
+          {
+            ...icpInTreasuryMetrics,
+            amount_e8s: 10_000_000_000,
+            original_amount_e8s: 0,
+          },
+        ],
+      },
+    });
+
+    expect(snsProjectIcpInTreasuryPercentage(testProject)).toEqual(0);
+  });
+});
+
+describe("snsProjectMarketCap", () => {
+  it("should calculate project market cap", () => {
+    const rootCanisterId = rootCanisterIdMock;
+    const totalTokenSupply = 25_000_000_000_000n;
+    const tokenPrice = 2;
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        totalTokenSupply,
+      },
+    ]);
+    const project = createMockSnsFullProject({
+      rootCanisterId,
+      summaryParams: {
+        lifecycle: SnsSwapLifecycle.Open,
+      },
+    });
+    const ledgerCanisterId = project.summary.ledgerCanisterId;
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId.toText()]: tokenPrice,
+    });
+
+    const marketCap = snsProjectMarketCap({
+      sns: project,
+      snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
+      icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+    });
+
+    // totalTokenSupply / 10**8 * tokenPrice
+    // 25_000_000_000_000 / 10**8 * 2 = 500_000
+    expect(marketCap).toEqual(500_000);
+  });
+
+  it("should return undefined when price is not available", () => {
+    const rootCanisterId = rootCanisterIdMock;
+    const totalTokenSupply = 25_000_000_000_000n;
+    const tokenPrice = undefined;
+    setSnsProjects([
+      {
+        rootCanisterId: mockSnsFullProject.rootCanisterId,
+        lifecycle: SnsSwapLifecycle.Committed,
+        totalTokenSupply,
+      },
+    ]);
+    const project = createMockSnsFullProject({
+      rootCanisterId,
+      summaryParams: {
+        lifecycle: SnsSwapLifecycle.Open,
+      },
+    });
+    const ledgerCanisterId = project.summary.ledgerCanisterId;
+    setIcpSwapUsdPrices({
+      [ledgerCanisterId.toText()]: tokenPrice,
+    });
+
+    const marketCap = snsProjectMarketCap({
+      sns: project,
+      snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
+      icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+    });
+
+    expect(marketCap).toEqual(undefined);
   });
 });

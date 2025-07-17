@@ -8,6 +8,7 @@
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
@@ -20,8 +21,8 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import {
-    compareByNeuronCount,
-    compareByProjectTitle,
+    compareByNeuron,
+    compareByProject,
     compareByStake,
     getTableProjects,
     getTotalStakeInUsd,
@@ -35,14 +36,15 @@
     loadIcpSwapTickers();
   }
 
-  const columns: ProjectsTableColumn[] = [
+  let columns: ProjectsTableColumn[] = [];
+  $: columns = [
     {
       id: "title",
       title: $i18n.staking.nervous_systems,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["minmax(min-content, max-content)"],
-      comparator: compareByProjectTitle,
+      comparator: $authSignedInStore ? compareByProject : undefined,
     },
     {
       title: "",
@@ -55,7 +57,7 @@
       cellComponent: ProjectStakeCell,
       alignment: "right",
       templateColumns: ["max-content"],
-      comparator: compareByStake,
+      comparator: $authSignedInStore ? compareByStake : undefined,
     },
     {
       title: "",
@@ -79,7 +81,7 @@
       cellComponent: ProjectNeuronsCell,
       alignment: "right",
       templateColumns: ["max-content"],
-      comparator: compareByNeuronCount,
+      comparator: $authSignedInStore ? compareByNeuron : undefined,
     },
     {
       title: "",
@@ -105,7 +107,10 @@
 
   let visibleTableProjects: TableProject[] = [];
   $: visibleTableProjects = shouldHideProjectsWithoutNeurons
-    ? tableProjects.filter(({ neuronCount }) => neuronCount ?? 0 > 0)
+    ? tableProjects.filter(
+        ({ neuronCount = 0, universeId }) =>
+          universeId === OWN_CANISTER_ID_TEXT || neuronCount > 0
+      )
     : tableProjects;
 
   let sortedTableProjects: TableProject[];
@@ -149,39 +154,45 @@
     </UsdValueBanner>
   {/if}
 
-  <ResponsiveTable
-    tableData={sortedTableProjects}
-    {columns}
-    on:nnsAction={handleAction}
-    bind:order={$projectsTableOrderStore}
-    displayTableSettings
-  >
-    <div slot="settings-popover">
-      {#if $authSignedInStore}
-        <HideZeroNeuronsToggle />
-        <Separator spacing="medium" />
-      {/if}
-    </div>
-
-    <div
-      slot="last-row"
-      class="last-row"
-      class:hidden={!shouldHideProjectsWithoutNeurons}
+  {#if !$authSignedInStore}
+    <ResponsiveTable
+      tableData={sortedTableProjects}
+      {columns}
+      on:nnsAction={handleAction}
+    />
+  {:else}
+    <ResponsiveTable
+      tableData={sortedTableProjects}
+      {columns}
+      on:nnsAction={handleAction}
+      bind:order={$projectsTableOrderStore}
+      displayTableSettings
     >
-      {#if shouldHideProjectsWithoutNeurons}
-        <div class="show-all-button-container">
-          {$i18n.staking.hide_no_neurons_table_hint}
-          <button
-            data-tid="show-all-button"
-            class="ghost show-all"
-            on:click={showAll}
-          >
-            {$i18n.staking.show_all}</button
-          >
-        </div>
-      {/if}
-    </div>
-  </ResponsiveTable>
+      <svelte:fragment slot="settings-popover">
+        <HideZeroNeuronsToggle />
+        <Separator spacing="none" />
+      </svelte:fragment>
+
+      <div
+        slot="last-row"
+        class="last-row"
+        class:hidden={!shouldHideProjectsWithoutNeurons}
+      >
+        {#if shouldHideProjectsWithoutNeurons}
+          <div class="show-all-button-container">
+            {$i18n.staking.hide_no_neurons_table_hint}
+            <button
+              data-tid="show-all-button"
+              class="ghost show-all"
+              on:click={showAll}
+            >
+              {$i18n.staking.show_all}</button
+            >
+          </div>
+        {/if}
+      </div>
+    </ResponsiveTable>
+  {/if}
 </div>
 
 <style lang="scss">

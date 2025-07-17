@@ -20,14 +20,16 @@ describe("actionableSnsProposalsStore", () => {
   const principal2 = principal(1);
   const principal3 = principal(2);
 
-  it("should store sns proposals", () => {
+  it("should store sns proposals and if the fetch limit was reached", () => {
     actionableSnsProposalsStore.set({
       rootCanisterId: principal1,
       proposals: [snsProposal1],
+      fetchLimitReached: true,
     });
     actionableSnsProposalsStore.set({
       rootCanisterId: principal2,
       proposals: [snsProposal2],
+      fetchLimitReached: false,
     });
     actionableSnsProposalsStore.set({
       rootCanisterId: principal3,
@@ -36,12 +38,15 @@ describe("actionableSnsProposalsStore", () => {
 
     expect(get(actionableSnsProposalsStore)[principal1.toText()]).toEqual({
       proposals: [snsProposal1],
+      fetchLimitReached: true,
     });
     expect(get(actionableSnsProposalsStore)[principal2.toText()]).toEqual({
       proposals: [snsProposal2],
+      fetchLimitReached: false,
     });
     expect(get(actionableSnsProposalsStore)[principal3.toText()]).toEqual({
       proposals: [],
+      fetchLimitReached: false,
     });
   });
 
@@ -60,6 +65,7 @@ describe("actionableSnsProposalsStore", () => {
     ).toBeUndefined();
     expect(get(actionableSnsProposalsStore)[principal2.toText()]).toEqual({
       proposals: [snsProposal2],
+      fetchLimitReached: false,
     });
   });
 });

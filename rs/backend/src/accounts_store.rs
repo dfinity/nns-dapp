@@ -671,7 +671,7 @@ impl AccountsStore {
         SetFavProjectsResponse::Ok
     }
 
-    pub fn get_fav_projects(&mut self, caller: PrincipalId) -> GetFavProjectsResponse {
+    pub fn get_fav_projects(&self, caller: PrincipalId) -> GetFavProjectsResponse {
         let account_identifier = AccountIdentifier::from(caller).to_vec();
         let Some(account) = self.accounts_db.get(&account_identifier) else {
             return GetFavProjectsResponse::AccountNotFound;

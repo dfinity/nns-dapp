@@ -71,7 +71,6 @@ To migrate a test from jest to vitest, aside from moving it between folders, the
 - Replace `jest-mock-extended` with `vitest-mock-extended`
 
 - Replace path `$tests` with `$vitests` in following imports:
-
   - `$tests/utils/timers.test-utils`
   - `$tests/utils/utils.test-utils`
 

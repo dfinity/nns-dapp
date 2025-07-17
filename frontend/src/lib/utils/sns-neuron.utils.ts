@@ -81,11 +81,17 @@ export const getSnsDissolvingTimestampSeconds = (
 };
 
 export const getSnsDissolvingTimeInSeconds = (
-  neuron: SnsNeuron
+  neuron: SnsNeuron,
+  referenceDate?: Date
 ): bigint | undefined => {
   const dissolvingTimestamp = getSnsDissolvingTimestampSeconds(neuron);
   return nonNullish(dissolvingTimestamp)
-    ? dissolvingTimestamp - BigInt(nowInSeconds())
+    ? dissolvingTimestamp -
+        BigInt(
+          referenceDate
+            ? Math.floor(referenceDate.getTime() / 1000)
+            : nowInSeconds()
+        )
     : undefined;
 };
 

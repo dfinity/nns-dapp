@@ -7,33 +7,47 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { fireEvent, render } from "@testing-library/svelte";
 
 describe("DisburseButton", () => {
-  it("renders title", () => {
-    const { getByText } = render(NeuronContextTest, {
+  const renderComponent = (neuron = mockNeuron) => {
+    return render(NeuronContextTest, {
       props: {
-        neuron: mockNeuron,
-        testComponent: DisburseButton,
+        neuron,
+        TestComponent: DisburseButton,
       },
     });
+  };
 
+  it("renders title", () => {
+    const { getByText } = renderComponent();
     expect(getByText(en.neuron_detail.disburse)).toBeInTheDocument();
   });
 
   it("opens disburse nns neuron modal", async () => {
     // To avoid that the modal requests the accounts
     setAccountsForTesting(mockAccountsStoreData);
-    const { container, queryByTestId } = render(NeuronContextTest, {
-      props: {
-        neuron: mockNeuron,
-        testComponent: DisburseButton,
-      },
-    });
+    const { container, queryByTestId } = renderComponent();
 
     const buttonElement = container.querySelector("button");
     expect(buttonElement).not.toBeNull();
+    expect(buttonElement).not.toBeDisabled();
 
     buttonElement && (await fireEvent.click(buttonElement));
 
     const modal = queryByTestId("disburse-neuron-modal");
     expect(modal).toBeInTheDocument();
+  });
+
+  it("shows disable button when not enough stake", async () => {
+    const neuronWithoutStake = {
+      ...mockNeuron,
+      fullNeuron: {
+        ...mockNeuron.fullNeuron,
+        cachedNeuronStake: BigInt(0),
+      },
+    };
+    const { container } = renderComponent(neuronWithoutStake);
+
+    const buttonElement = container.querySelector("button");
+    expect(buttonElement).not.toBeNull();
+    expect(buttonElement).toBeDisabled();
   });
 });

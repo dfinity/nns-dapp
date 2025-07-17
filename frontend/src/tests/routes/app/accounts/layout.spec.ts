@@ -35,8 +35,7 @@ describe("Accounts layout", () => {
     renderComponent();
 
     expect(get(layoutTitleStore)).toEqual({
-      title: "ICP Tokens",
-      header: "ICP Tokens",
+      title: "Account",
     });
   });
 
@@ -56,8 +55,7 @@ describe("Accounts layout", () => {
     renderComponent();
 
     expect(get(layoutTitleStore)).toEqual({
-      title: "TTRS Tokens",
-      header: "TTRS Tokens",
+      title: "Account",
     });
   });
 

@@ -1,5 +1,4 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
 import { page } from "$mocks/$app/stores";
 import HomeLayout from "$routes/(app)/(home)/+layout.svelte";
@@ -27,12 +26,11 @@ describe("Home layout", () => {
     });
   });
 
-  it("should set title and header layout to 'Tokens'", () => {
+  it("should set title and header layout to 'Portfolio'", () => {
     renderComponent();
 
     expect(get(layoutTitleStore)).toEqual({
-      title: en.navigation.tokens,
-      header: en.navigation.tokens,
+      title: en.navigation.portfolio,
     });
   });
 
@@ -46,18 +44,5 @@ describe("Home layout", () => {
     const { queryByTestId } = renderComponent();
 
     expect(queryByTestId("menu-toggle")).toBeInTheDocument();
-  });
-
-  describe("when ENABLE_PORTFOLIO_PAGE feature flag is one", () => {
-    it("should show the Portfolio title", () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_PORTFOLIO_PAGE", true);
-
-      renderComponent();
-
-      expect(get(layoutTitleStore)).toEqual({
-        title: en.navigation.portfolio,
-        header: en.navigation.portfolio,
-      });
-    });
   });
 });

@@ -3,18 +3,17 @@
   import { i18n } from "$lib/stores/i18n";
   import { Modal } from "@dfinity/gix-components";
   import type { NeuronId } from "@dfinity/nns";
-  import { createEventDispatcher } from "svelte";
 
-  export let neuronId: NeuronId;
-
-  const dispatcher = createEventDispatcher();
-
-  const close = () => dispatcher("nnsClose");
+  type Props = {
+    neuronId: NeuronId;
+    onClose: () => void;
+  };
+  const { neuronId, onClose }: Props = $props();
 </script>
 
 <Modal
   testId="follow-neurons-modal-component"
-  on:nnsClose
+  on:nnsClose={onClose}
   --modal-content-overflow-y="scroll"
 >
   <svelte:fragment slot="title"
@@ -22,7 +21,7 @@
   >
   <EditFollowNeurons {neuronId} />
   <div class="toolbar">
-    <button data-tid="close-button" class="secondary" on:click={close}>
+    <button data-tid="close-button" class="secondary" onclick={onClose}>
       {$i18n.core.close}
     </button>
   </div>
