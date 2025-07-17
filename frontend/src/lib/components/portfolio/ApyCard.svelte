@@ -9,6 +9,7 @@
     formatPercentage,
     renderPrivacyModeBalance,
   } from "$lib/utils/format.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
@@ -38,6 +39,22 @@
         : $i18n.core.not_applicable
   );
 
+  const totalAmountUSDFormatted = $derived(
+    $isBalancePrivacyOptionStore
+      ? renderPrivacyModeBalance(3)
+      : nonNullish(totalAmountUSD)
+        ? formatCurrencyNumber(totalAmountUSD)
+        : $i18n.core.not_applicable
+  );
+
+  const stakingPowerUSDFormatted = $derived(
+    $isBalancePrivacyOptionStore
+      ? renderPrivacyModeBalance(3)
+      : nonNullish(stakingPowerUSD)
+        ? formatCurrencyNumber(stakingPowerUSD)
+        : $i18n.core.not_applicable
+  );
+
   const rewardEstimateWeekUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(3)
@@ -50,20 +67,6 @@
       minFraction: 2,
       maxFraction: 2,
     })
-  );
-  const stakingPowerUSDFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(3)
-      : nonNullish(stakingPowerUSD)
-        ? formatCurrencyNumber(stakingPowerUSD)
-        : $i18n.core.not_applicable
-  );
-  const totalValueUsdFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(3)
-      : nonNullish(totalAmountUSD)
-        ? formatCurrencyNumber(totalAmountUSD)
-        : $i18n.core.not_applicable
   );
 
   const linkText = $derived(
@@ -78,7 +81,10 @@
     <div class="content">
       <span class="subtitle"
         >{$i18n.portfolio.apy_card_reward_title}
-        <TooltipIcon iconSize={16} text={$i18n.portfolio.apy_card_tooltip} />
+        <TooltipIcon
+          iconSize={16}
+          text={$i18n.portfolio.apy_card_tooltip_reward_balance}
+        />
       </span>
       <span class="main-value" data-tid="reward"
         >~${rewardBalanceUSDFormatted}</span
@@ -102,13 +108,23 @@
     </div>
 
     <div class="content">
-      <span class="subtitle">{$i18n.portfolio.apy_card_power_title}</span>
-      <span class="main-value" data-tid="staking-power"
+      <span class="subtitle">
+        {$i18n.portfolio.apy_card_power_title}
+        <TooltipIcon
+          iconSize={16}
+          text={replacePlaceholders(
+            $i18n.portfolio.apy_card_tooltip_staking_ratio,
+            {
+              $totalStaked: String(stakingPowerUSDFormatted),
+              $totalHoldings: String(totalAmountUSDFormatted),
+              $totalRewards: String(rewardBalanceUSDFormatted),
+              $ratio: String(stakingPowerPercentage),
+            }
+          )}
+        />
+      </span>
+      <span class="main-value bigger" data-tid="staking-power"
         >{stakingPowerPercentage}</span
-      >
-      <span class="secondary-value" data-tid="total-staking-power"
-        >${stakingPowerUSDFormatted}
-        <span>(of ${totalValueUsdFormatted})</span></span
       >
     </div>
   </div>
@@ -142,8 +158,11 @@
     .content {
       display: flex;
       flex-direction: column;
+      align-items: flex-start;
+      justify-items: flex-start;
       flex-grow: 1;
       gap: 4px;
+      justify-content: flex-start;
 
       .subtitle {
         font-size: 12px;
@@ -161,6 +180,12 @@
 
         @include media.min-width(medium) {
           font-size: 27px;
+        }
+
+        &.bigger {
+          font-size: 42px;
+          line-height: 42px;
+          font-weight: 400;
         }
       }
 
