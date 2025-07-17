@@ -9,6 +9,7 @@ export enum StoreLocalStorageKey {
   HideZeroNeurons = "nnsHideZeroNeuronProjects",
   HighlightDisplay = "nnsHighlightDisplay-",
   BalancePrivacyOption = "nnsBalancePrivacyOption",
+  SnsFavProjectsOnly = "nnsSnsFavProjectsOnly",
 }
 
 export const NOT_LOADED = Symbol("NOT_LOADED");
