@@ -15,7 +15,6 @@
     tooltipIdPrefix = "tooltip-icon",
   }: Props = $props();
   const handleOnClick = (event: MouseEvent) => {
-    // Prevents the click event from propagating to the parent elements
     event.preventDefault();
   };
 </script>
