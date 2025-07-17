@@ -6,6 +6,9 @@ import { loadImportedTokens } from "$lib/services/imported-tokens.services";
 import { loadNetworkEconomicsParameters } from "$lib/services/network-economics.services";
 import { loadNnsTotalVotingPower } from "$lib/services/nns-total-voting-power.service";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
+import { loadSnsFavProjects } from "$lib/services/sns.fav-projects.services";
+import { ENABLE_LAUNCHPAD_REDESIGN } from "$lib/stores/feature-flags.store";
+import { get } from "svelte/store";
 
 export const initAppPrivateData = async (): Promise<void> => {
   const initNetworkEconomicsParameters: Promise<void>[] = [
@@ -15,9 +18,9 @@ export const initAppPrivateData = async (): Promise<void> => {
   // Reload the SNS projects even if they were loaded.
   // Get latest data and create wrapper caches for the logged in identity.
   const initSns: Promise<void>[] = [loadSnsProjects()];
-  // Load imported tokens
-  const initImportedTokens: Promise<void>[] = [
+  const initNnsDappUserData = (): Promise<void>[] => [
     loadImportedTokens({ ignoreAccountNotFoundError: true }),
+    ...(get(ENABLE_LAUNCHPAD_REDESIGN) ? [loadSnsFavProjects()] : []),
   ];
   const initGovernanceMetrics: Promise<void>[] = [loadGovernanceMetrics()];
   /**
@@ -27,7 +30,7 @@ export const initAppPrivateData = async (): Promise<void> => {
     Promise.all(initNetworkEconomicsParameters),
     Promise.all(initGovernanceMetrics),
     Promise.all(initNns),
-    Promise.all(initImportedTokens),
+    Promise.all(initNnsDappUserData()),
     Promise.all(initSns),
   ]);
 
