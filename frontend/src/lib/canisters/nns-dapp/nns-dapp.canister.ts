@@ -12,6 +12,7 @@ import {
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
+  TooManyFavProjectsError,
   TooManyImportedTokensError,
   UnknownProposalPayloadError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
@@ -21,6 +22,8 @@ import type {
   AccountDetails,
   CanisterDetails,
   CreateSubAccountResponse,
+  FavProject,
+  FavProjects,
   GetAccountResponse,
   ImportedToken,
   ImportedTokens,
@@ -372,5 +375,42 @@ export class NNSDappCanister {
     throw new Error(
       `Error setting imported tokens ${JSON.stringify(response)}`
     );
+  };
+
+  public getFavProjects = async ({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<FavProjects> => {
+    const response = await this.getNNSDappService(certified).get_fav_projects();
+    if ("Ok" in response) {
+      return response.Ok;
+    }
+    if ("AccountNotFound" in response) {
+      throw new AccountNotFoundError("error__account.not_found");
+    }
+    // Edge case
+    throw new Error(`Error getting fav projects ${JSON.stringify(response)}`);
+  };
+
+  public setFavProjects = async (
+    favProjects: Array<FavProject>
+  ): Promise<void> => {
+    const response = await this.certifiedService.set_fav_projects({
+      fav_projects: favProjects,
+    });
+    if ("Ok" in response) {
+      return;
+    }
+    if ("AccountNotFound" in response) {
+      throw new AccountNotFoundError("error__account.not_found");
+    }
+    if ("TooManyFavProjects" in response) {
+      throw new TooManyFavProjectsError("error__fav_projects.too_many", {
+        $limit: response.TooManyFavProjects?.limit.toString(),
+      });
+    }
+    // Edge case
+    throw new Error(`Error setting fav projects ${JSON.stringify(response)}`);
   };
 }
