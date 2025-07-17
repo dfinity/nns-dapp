@@ -5,6 +5,7 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
+  import { ENABLE_NEW_TABLES } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
   import { filterTokensByType } from "$lib/utils/tokens-table.utils";
@@ -33,32 +34,39 @@
       <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
       <SignIn slot="actions" />
     </PageBanner>
-    <TokensTable
-      on:nnsAction
-      userTokensData={filterTokensByType({
-        tokens: userTokensData,
-        type: "icp",
-      })}
-      firstColumnHeader={$i18n.tokens.projects_header_icp}
-    />
-    <TokensTable
-      on:nnsAction
-      userTokensData={filterTokensByType({
-        tokens: userTokensData,
-        type: "ck",
-      })}
-      firstColumnHeader={$i18n.tokens.projects_header_ck}
-    />
-    <TokensTable
-      on:nnsAction
-      userTokensData={filterTokensByType({
-        tokens: userTokensData,
-        type: "sns",
-      })}
-      firstColumnHeader={$i18n.tokens.projects_header_sns}
-    />
+    {#if $ENABLE_NEW_TABLES}
+      <TokensTable
+        on:nnsAction
+        userTokensData={filterTokensByType({
+          tokens: userTokensData,
+          type: "icp",
+        })}
+        firstColumnHeader={$i18n.tokens.projects_header_icp}
+      />
+      <TokensTable
+        on:nnsAction
+        userTokensData={filterTokensByType({
+          tokens: userTokensData,
+          type: "ck",
+        })}
+        firstColumnHeader={$i18n.tokens.projects_header_ck}
+      />
+      <TokensTable
+        on:nnsAction
+        userTokensData={filterTokensByType({
+          tokens: userTokensData,
+          type: "sns",
+        })}
+        firstColumnHeader={$i18n.tokens.projects_header_sns}
+      />
+    {:else}
+      <TokensTable
+        on:nnsAction
+        {userTokensData}
+        firstColumnHeader={$i18n.tokens.projects_header}
+      />
+    {/if}
   </div>
-
   {#if showImportTokenModal}
     <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
