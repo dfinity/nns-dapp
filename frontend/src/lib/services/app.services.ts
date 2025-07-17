@@ -7,7 +7,8 @@ import { loadNetworkEconomicsParameters } from "$lib/services/network-economics.
 import { loadNnsTotalVotingPower } from "$lib/services/nns-total-voting-power.service";
 import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { loadSnsFavProjects } from "$lib/services/sns.fav-projects.services";
-import { ENABLE_LAUNCHPAD_REDESIGN } from "../stores/feature-flags.store";
+import { ENABLE_LAUNCHPAD_REDESIGN } from "$lib/stores/feature-flags.store";
+import { get } from "svelte/store";
 
 export const initAppPrivateData = async (): Promise<void> => {
   const initNetworkEconomicsParameters: Promise<void>[] = [
@@ -19,7 +20,7 @@ export const initAppPrivateData = async (): Promise<void> => {
   const initSns: Promise<void>[] = [loadSnsProjects()];
   const initNnsDappUserData = (): Promise<void>[] => [
     loadImportedTokens({ ignoreAccountNotFoundError: true }),
-    ...(ENABLE_LAUNCHPAD_REDESIGN ? [loadSnsFavProjects()] : []),
+    ...(get(ENABLE_LAUNCHPAD_REDESIGN) ? [loadSnsFavProjects()] : []),
   ];
   const initGovernanceMetrics: Promise<void>[] = [loadGovernanceMetrics()];
   /**
