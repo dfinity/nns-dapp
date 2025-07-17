@@ -178,14 +178,19 @@
         font-weight: 450;
         line-height: 32px;
 
-        @include media.min-width(medium) {
-          font-size: 27px;
+        &.bigger {
+          font-size: 30px;
+          line-height: 30px;
+          font-weight: 400;
         }
 
-        &.bigger {
-          font-size: 42px;
-          line-height: 42px;
-          font-weight: 400;
+        @include media.min-width(medium) {
+          font-size: 27px;
+
+          &.bigger {
+            font-size: 40px;
+            line-height: 40px;
+          }
         }
       }
 

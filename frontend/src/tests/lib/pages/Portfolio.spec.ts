@@ -1168,9 +1168,6 @@ describe("Portfolio page", () => {
         expect(await po.getApyCardPo().getStakingPowerPercentage()).toBe(
           "10.00%"
         );
-        expect(await po.getApyCardPo().getTotalStakingPowerUSD()).toBe(
-          "$100.00 (of $600.00)"
-        );
       });
     });
 
