@@ -600,6 +600,11 @@ describe("Launchpad utils", () => {
       summaryParams: sameTokenPriceSummaryParams("Project With 50 Proposals"),
       metrics: mockMetrics(50, 10),
     });
+    const abandonedProject = createMockSnsFullProject({
+      rootCanisterId: Principal.fromText(SEERS_ROOT_CANISTER_ID),
+      summaryParams: sameTokenPriceSummaryParams("Abandoned Project"),
+      metrics: mockMetrics(50, 10),
+    });
     const projectWith100Proposals = createMockSnsFullProject({
       rootCanisterId: sameTokenSupplyRootCanisterId,
       summaryParams: sameTokenPriceSummaryParams("Project With 100 Proposals"),
@@ -657,6 +662,7 @@ describe("Launchpad utils", () => {
         projectTreasury25Percent,
         projectWithoutMetrics,
         projectWith50Proposals,
+        abandonedProject,
         projectWithSmallMarketCap,
         projectTreasury100Percent,
         projectWithLargeMarketCap,
@@ -680,6 +686,7 @@ describe("Launchpad utils", () => {
         "Project Treasury 100%",
         "Project Treasury 25%",
         "Project Without Metrics",
+        "Abandoned Project",
       ]);
     });
   });
