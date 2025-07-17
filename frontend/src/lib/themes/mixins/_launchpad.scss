@@ -53,10 +53,6 @@
   font-weight: 500;
   line-height: 20px;
   text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
 }
 
 @mixin text_small {
