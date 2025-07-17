@@ -94,7 +94,6 @@
     hideZeroBalancesStore.set("show");
   };
 
-  // TODO: Remove once FF id removed
   let showImportTokenModal = false;
   let maximumImportedTokensReached = false;
   $: maximumImportedTokensReached =
@@ -113,10 +112,11 @@
       firstColumnHeader={$i18n.tokens.projects_header_icp}
       bind:order={$tokensTableOrderStore}
       displayTableSettings
+      testId="icp-tokens-table-component"
     >
       <svelte:fragment slot="settings-popover">
         <HideZeroBalancesToggle />
-        <ImportTokenButton />
+        <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
         <Separator spacing="none" />
       </svelte:fragment>
 
@@ -143,10 +143,11 @@
         firstColumnHeader={$i18n.tokens.projects_header_ck}
         bind:order={$tokensTableOrderStore}
         displayTableSettings
+        testId="ck-tokens-table-component"
       >
         <svelte:fragment slot="settings-popover">
           <HideZeroBalancesToggle />
-          <ImportTokenButton />
+          <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
           <Separator spacing="none" />
         </svelte:fragment>
       </TokensTable>
@@ -159,10 +160,11 @@
         firstColumnHeader={$i18n.tokens.projects_header_sns}
         bind:order={$tokensTableOrderStore}
         displayTableSettings
+        testId="sns-tokens-table-component"
       >
         <svelte:fragment slot="settings-popover">
           <HideZeroBalancesToggle />
-          <ImportTokenButton />
+          <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
           <Separator spacing="none" />
         </svelte:fragment>
       </TokensTable>
@@ -175,10 +177,11 @@
         firstColumnHeader={$i18n.tokens.projects_header_imported}
         bind:order={$tokensTableOrderStore}
         displayTableSettings
+        testId="imported-tokens-table-component"
       >
         <svelte:fragment slot="settings-popover">
           <HideZeroBalancesToggle />
-          <ImportTokenButton />
+          <ImportTokenButton bind:isModalVisible={showImportTokenModal} />
           <Separator spacing="none" />
         </svelte:fragment>
       </TokensTable>
@@ -235,10 +238,10 @@
         {/if}
       </div>
     </TokensTable>
+  {/if}
 
-    {#if showImportTokenModal || nonNullish($pageStore.importTokenLedgerId)}
-      <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
-    {/if}
+  {#if showImportTokenModal || nonNullish($pageStore.importTokenLedgerId)}
+    <ImportTokenModal on:nnsClose={() => (showImportTokenModal = false)} />
   {/if}
 </div>
 
