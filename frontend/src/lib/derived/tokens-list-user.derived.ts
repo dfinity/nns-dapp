@@ -117,7 +117,7 @@ const convertToUserTokenData = ({
     }),
     actions: [
       ...(baseTokenData.universeId.toText() === OWN_CANISTER_ID_TEXT
-        ? [UserTokenAction.GoToDetail]
+        ? [UserTokenAction.Blank, UserTokenAction.GoToDetail]
         : [UserTokenAction.Receive, UserTokenAction.Send]),
     ],
     accountIdentifier,

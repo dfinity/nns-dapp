@@ -21,10 +21,6 @@ export class ApyCardPo extends BasePageObject {
     return this.getText("staking-power");
   }
 
-  getTotalStakingPowerUSD(): Promise<string> {
-    return this.getText("total-staking-power");
-  }
-
   getLinkPo(): LinkPo {
     return LinkPo.under({
       element: this.root,

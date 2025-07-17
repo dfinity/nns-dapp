@@ -11,3 +11,23 @@ div.split-pane + div.split-pane {
 [data-tid="bottom-sheet"] > span {
   display: contents !important;
 }
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--card-background) 0px,
+    var(--elements-divider) 50%,
+    var(--card-background) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
