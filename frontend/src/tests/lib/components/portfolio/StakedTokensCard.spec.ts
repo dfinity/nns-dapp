@@ -3,6 +3,7 @@ import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { TableProject } from "$lib/types/staking";
+import { APY_CALC_ERROR } from "$lib/utils/staking-rewards.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
@@ -493,8 +494,9 @@ describe("StakedTokensCard", () => {
           token: mockToken,
         }),
         apy: {
-          cur: 0.01,
-          max: 0.12,
+          cur: 0,
+          max: 0,
+          error: APY_CALC_ERROR.UNEXPECTED,
         },
       };
 
@@ -550,8 +552,8 @@ describe("StakedTokensCard", () => {
         expect(apys).toEqual([
           "5.00% (10.00%)",
           "5.00% (12.00%)",
-          "1.00% (12.00%)",
           "-/-",
+          "0.00% (0.00%)",
         ]);
         expect(stakesInUsd.length).toBe(4);
         expect(stakesInUsd).toEqual([

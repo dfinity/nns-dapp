@@ -21,7 +21,6 @@
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -42,11 +41,6 @@
   resetBalanceLoading();
   loadIcpSwapTickers();
   loadCkBTCTokens();
-
-  let stakingRewardData: ReturnType<typeof getStakingRewardData> = {
-    loading: true,
-  };
-  let debounceTimer: number;
 
   let userTokens: UserToken[];
   $: userTokens = $tokensListVisitorsStore;
@@ -77,12 +71,25 @@
   $: if ($snsProposalsStoreIsLoading) {
     loadProposalsSnsCF({ omitLargeFields: false });
   }
+
+  let stakingRewardData = getStakingRewardData({
+    auth: $authSignedInStore,
+    tokens: userTokens,
+    snsProjects: $snsAggregatorStore,
+    snsNeurons: $snsNeuronsStore,
+    nnsNeurons: $neuronsStore,
+    nnsEconomics: $networkEconomicsStore,
+    fxRates: $icpSwapUsdPricesStore,
+    governanceMetrics: $governanceMetricsStore,
+    nnsTotalVotingPower: $nnsTotalVotingPowerStore,
+  });
+
+  let debounceTimer: ReturnType<typeof setTimeout>;
+  let prevAuthState = $authSignedInStore;
   $: {
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      if (!$ENABLE_APY_PORTFOLIO) return;
-
-      stakingRewardData = getStakingRewardData({
+    const refreshData = () =>
+      (stakingRewardData = getStakingRewardData({
         auth: $authSignedInStore,
         tokens: userTokens,
         snsProjects: $snsAggregatorStore,
@@ -92,9 +99,17 @@
         fxRates: $icpSwapUsdPricesStore,
         governanceMetrics: $governanceMetricsStore,
         nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-      });
-    }, 700) as unknown as number;
+      }));
+
+    if ($authSignedInStore !== prevAuthState) {
+      // No debounce if auth state changes, refresh immediately
+      prevAuthState = $authSignedInStore;
+      refreshData();
+    } else {
+      debounceTimer = setTimeout(refreshData, 500);
+    }
   }
+
   onDestroy(() => {
     clearTimeout(debounceTimer);
   });
@@ -120,6 +135,6 @@
       projects: $snsProjectsActivePadStore,
     })}
     openSnsProposals={$openSnsProposalsStore}
-    {stakingRewardData}
+    stakingRewardResult={stakingRewardData}
   /></TestIdWrapper
 >

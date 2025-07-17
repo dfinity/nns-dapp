@@ -34,8 +34,10 @@
   } from "$lib/utils/portfolio.utils";
   import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import {
+    isStakingRewardDataError,
+    isStakingRewardDataLoading,
     isStakingRewardDataReady,
-    type StakingRewardData,
+    type StakingRewardResult,
   } from "$lib/utils/staking-rewards.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
@@ -49,7 +51,7 @@
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
     adoptedSnsProposals: SnsFullProject[];
-    stakingRewardData?: StakingRewardData;
+    stakingRewardResult: StakingRewardResult;
   };
 
   const {
@@ -58,7 +60,7 @@
     snsProjects,
     openSnsProposals,
     adoptedSnsProposals,
-    stakingRewardData,
+    stakingRewardResult,
   }: Props = $props();
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
   const hasUnpricedTokens = $derived(
@@ -141,10 +143,10 @@
   );
 
   const tableProjectsWithApy: TableProject[] = $derived(
-    nonNullish(stakingRewardData) && isStakingRewardDataReady(stakingRewardData)
+    isStakingRewardDataReady(stakingRewardResult)
       ? tableProjects.map((project) => ({
           ...project,
-          apy: stakingRewardData.apy.get(project.universeId) ?? undefined,
+          apy: stakingRewardResult.apy.get(project.universeId) ?? undefined,
         }))
       : tableProjects
   );
@@ -200,12 +202,6 @@
         })
       : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
   );
-
-  const hasApyCalculationErrored = $derived(
-    nonNullish(stakingRewardData) &&
-      !stakingRewardData.loading &&
-      "error" in stakingRewardData
-  );
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -228,18 +224,16 @@
       />
 
       {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
-        {#if nonNullish(stakingRewardData)}
-          {#if isStakingRewardDataReady(stakingRewardData)}
-            <ApyCard
-              rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
-              rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
-              stakingPower={stakingRewardData.stakingPower}
-              stakingPowerUSD={stakingRewardData.stakingPowerUSD}
-              totalAmountUSD={totalUsdAmount}
-            />
-          {:else}
-            <ApyFallbackCard {stakingRewardData} />
-          {/if}
+        {#if isStakingRewardDataReady(stakingRewardResult)}
+          <ApyCard
+            rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
+            rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
+            stakingPower={stakingRewardResult.stakingPower}
+            stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
+            totalAmountUSD={totalUsdAmount}
+          />
+        {:else}
+          <ApyFallbackCard stakingRewardData={stakingRewardResult} />
         {/if}
       {/if}
     {/if}
@@ -256,17 +250,17 @@
       {/if}
     {/if}
 
-    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalUsdAmount) && nonNullish(stakingRewardData)}
-      {#if isStakingRewardDataReady(stakingRewardData)}
+    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalUsdAmount) && nonNullish(stakingRewardResult)}
+      {#if isStakingRewardDataReady(stakingRewardResult)}
         <ApyCard
-          rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
-          rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
-          stakingPower={stakingRewardData.stakingPower}
-          stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+          rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
+          rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
+          stakingPower={stakingRewardResult.stakingPower}
+          stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
           totalAmountUSD={totalUsdAmount}
         />
       {:else}
-        <ApyFallbackCard {stakingRewardData} />
+        <ApyFallbackCard stakingRewardData={stakingRewardResult} />
       {/if}
     {/if}
   </div>
@@ -293,7 +287,8 @@
         {topStakedTokens}
         usdAmount={totalStakedInUsd}
         numberOfTopHeldTokens={topHeldTokens.length}
-        {hasApyCalculationErrored}
+        hasApyCalculationErrored={isStakingRewardDataError(stakingRewardResult)}
+        isApyLoading={isStakingRewardDataLoading(stakingRewardResult)}
       />
     {/if}
   </div>

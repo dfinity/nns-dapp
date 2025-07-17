@@ -61,7 +61,7 @@ type APY = Map<
   }
 >;
 
-type StakingRewardDataReady = {
+export type StakingRewardData = {
   loading: false;
   rewardBalanceUSD: number;
   rewardEstimateWeekUSD: number;
@@ -70,17 +70,13 @@ type StakingRewardDataReady = {
   apy: APY;
 };
 
-export type StakingRewardData =
+export type StakingRewardResult =
   | { loading: true }
-  | StakingRewardDataReady
+  | StakingRewardData
   | {
       loading: false;
       error: string;
     };
-
-export const isStakingRewardDataReady = (
-  data: StakingRewardData
-): data is StakingRewardDataReady => !data.loading && !("error" in data);
 
 export interface StakingRewardCalcParams {
   auth: boolean;
@@ -94,10 +90,20 @@ export interface StakingRewardCalcParams {
   nnsTotalVotingPower: bigint | undefined;
 }
 
+export const isStakingRewardDataReady = (
+  data?: StakingRewardResult
+): data is StakingRewardData => !!data && !data.loading && !("error" in data);
+
+export const isStakingRewardDataError = (data?: StakingRewardResult) =>
+  !!data && !data.loading && "error" in data;
+
+export const isStakingRewardDataLoading = (data?: StakingRewardResult) =>
+  !!data && data.loading;
+
 export const getStakingRewardData = (
   params: StakingRewardCalcParams,
   forceInitialDate?: Date // For testing purposes
-): StakingRewardData => {
+): StakingRewardResult => {
   if (!params.auth) {
     logWithTimestamp("Staking rewards: user is not logged in.");
     return { loading: false, error: "Not authorized." };
@@ -108,7 +114,7 @@ export const getStakingRewardData = (
     logWithTimestamp("Staking rewards: start calculation...");
 
     try {
-      const res: StakingRewardData = {
+      const res: StakingRewardResult = {
         loading: false,
         rewardBalanceUSD: getRewardBalanceUSD(params),
         rewardEstimateWeekUSD: getRewardEstimationForWeek(
@@ -656,17 +662,24 @@ const getTokenReward = (
     20
   );
 
-  const rawReward =
-    getPoolReward({
-      genesisTimestampSeconds: getGenesisTimestampSeconds(sns),
-      referenceDate: getDate(addDays, forceInitialDate),
-      transitionDurationSeconds: getRewardParams(params, sns).rewardTransition,
-      initialRewardRate: getRewardParams(params, sns).initialReward,
-      finalRewardRate: getRewardParams(params, sns).finalReward,
-      totalSupply: getRewardParams(params, sns).totalSupply,
-    }) * neuronRewardRatioForTheDay;
+  const poolReward = getPoolReward({
+    genesisTimestampSeconds: getGenesisTimestampSeconds(sns),
+    referenceDate: getDate(addDays, forceInitialDate),
+    transitionDurationSeconds: getRewardParams(params, sns).rewardTransition,
+    initialRewardRate: getRewardParams(params, sns).initialReward,
+    finalRewardRate: getRewardParams(params, sns).finalReward,
+    totalSupply: getRewardParams(params, sns).totalSupply,
+  });
 
-  return Math.trunc(rawReward * E8S_RATE) / E8S_RATE;
+  if (poolReward === 0) {
+    logWithTimestamp(
+      `Staking rewards: pool reward is 0 for ${sns ? sns.canister_ids.root_canister_id : OWN_CANISTER_ID_TEXT} in ${addDays} days.`
+    );
+  }
+
+  return (
+    Math.trunc(poolReward * E8S_RATE * neuronRewardRatioForTheDay) / E8S_RATE
+  );
 };
 
 const getNeuronBonus = (
