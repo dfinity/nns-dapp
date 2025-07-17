@@ -80,7 +80,7 @@ export type StakingRewardResult =
 
 export interface StakingRewardCalcParams {
   auth: boolean;
-  tokens: UserToken[];
+  tokens?: UserToken[];
   snsProjects: SnsAggregatorData;
   snsNeurons: SNSNeuronsStore;
   nnsNeurons: NeuronsStore;
@@ -204,7 +204,7 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
 
   let nnsTotalUSD = 0;
   let nnsStakedUSD = 0;
-  nnsTotalUSD += getToken(tokens, LEDGER_CANISTER_ID)?.balanceInUsd ?? 0;
+  nnsTotalUSD += getToken(tokens!, LEDGER_CANISTER_ID)?.balanceInUsd ?? 0;
   nnsNeurons.neurons?.forEach((neuron) => {
     try {
       nnsStakedUSD += getStaking(neuron, LEDGER_CANISTER_ID).stakedUSD;
@@ -223,7 +223,7 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
   snsProjects.data?.forEach((sns) => {
     const rootPrincipal = sns.canister_ids.root_canister_id;
     const ledgerPrincipal = sns.canister_ids.ledger_canister_id;
-    snsTotalUSD += getToken(tokens, ledgerPrincipal)?.balanceInUsd ?? 0;
+    snsTotalUSD += getToken(tokens!, ledgerPrincipal)?.balanceInUsd ?? 0;
     if (snsNeurons[rootPrincipal]) {
       snsNeurons[rootPrincipal].neurons.forEach((neuron) => {
         try {
@@ -462,7 +462,8 @@ const isDataReady = (params: StakingRewardCalcParams) => {
     nnsTotalVotingPower,
   } = params;
 
-  const areTokensReady = !tokens?.some((t) => t.balance === "loading");
+  const areTokensReady =
+    !!tokens && !tokens.some((t) => t.balance === "loading");
   const areSnsProjectsReady = Boolean(snsProjects?.data);
   const areSnsNeuronsReady = Boolean(Object.keys(snsNeurons).length);
   const areNnsNeuronsReady = Boolean(nnsNeurons?.neurons);

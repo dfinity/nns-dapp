@@ -146,7 +146,7 @@
                       minFraction: 2,
                       maxFraction: 2,
                     })})
-                    {#if apy.cur === 0 && apy.max === 0}
+                    {#if apy.max === 0}
                       <TooltipIcon
                         iconSize={16}
                         text={$i18n.portfolio.apy_card_tooltip_no_rewards}
@@ -360,8 +360,8 @@
           }
 
           .cell.skeleton {
-            height: 40px;
-            width: 60px;
+            height: 20px;
+            width: 80px;
             border-radius: 4px;
           }
 
