@@ -906,6 +906,7 @@
     "project_card_icp_in_treasury": "ICP in Treasury",
     "project_card_my_participation": "My Participation",
     "project_card_proposal_activity": "Proposal Activity",
+    "project_card_watch": "Watch",
     "upcoming_tag_upcoming": "Upcoming",
     "upcoming_link": "Link to project",
     "upcoming_sale_starts": "Sale starts in",
@@ -914,7 +915,8 @@
   },
   "fav_projects": {
     "adding": "Adding project to favorites",
-    "removing": "Removing project from favorites"
+    "removing": "Removing project from favorites",
+    "maximum_reached_tooltip": "You have reached the maximum number of favorite projects ($max). Please remove a project to add a new one."
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
