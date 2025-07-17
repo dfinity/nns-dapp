@@ -932,6 +932,7 @@ interface I18nLaunchpad {
   upcoming_launches: string;
   launched_projects: string;
   participated_projects: string;
+  toggle_fav_only: string;
 }
 
 interface I18nLaunchpad_cards {

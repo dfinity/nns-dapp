@@ -896,7 +896,8 @@
     "subheadline": "See upcoming and available SNS projects",
     "upcoming_launches": "New Launches and Proposals",
     "launched_projects": "Launched Projects",
-    "participated_projects": "My SNS Participation"
+    "participated_projects": "My SNS Participation",
+    "toggle_fav_only": "Toggle favorite projects"
   },
   "launchpad_cards": {
     "ongoing_funded_of_min": "Funded of Min",
@@ -916,7 +917,7 @@
   "fav_projects": {
     "adding": "Adding project to favorites",
     "removing": "Removing project from favorites",
-    "maximum_reached_tooltip": "You have reached the maximum number of favorite projects ($max). Please remove a project to add a new one."
+    "maximum_reached_tooltip": "You have reached the maximum number of favorite projects ($max). Please unselect a project to add a new one."
   },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
