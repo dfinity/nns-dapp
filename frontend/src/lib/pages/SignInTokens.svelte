@@ -7,7 +7,7 @@
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { filterTokens } from "$lib/utils/tokens-table.utils";
+  import { filterTokensByType } from "$lib/utils/tokens-table.utils";
   import { IconAccountsPage, PageBanner } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
@@ -35,17 +35,26 @@
     </PageBanner>
     <TokensTable
       on:nnsAction
-      userTokensData={filterTokens(userTokensData, "icp")}
+      userTokensData={filterTokensByType({
+        tokens: userTokensData,
+        type: "icp",
+      })}
       firstColumnHeader={$i18n.tokens.projects_header_icp}
     />
     <TokensTable
       on:nnsAction
-      userTokensData={filterTokens(userTokensData, "ck")}
+      userTokensData={filterTokensByType({
+        tokens: userTokensData,
+        type: "ck",
+      })}
       firstColumnHeader={$i18n.tokens.projects_header_ck}
     />
     <TokensTable
       on:nnsAction
-      userTokensData={filterTokens(userTokensData, "sns")}
+      userTokensData={filterTokensByType({
+        tokens: userTokensData,
+        type: "sns",
+      })}
       firstColumnHeader={$i18n.tokens.projects_header_sns}
     />
   </div>
