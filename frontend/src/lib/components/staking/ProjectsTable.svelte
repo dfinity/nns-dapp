@@ -36,17 +36,7 @@
   $: if ($authSignedInStore) {
     loadIcpSwapTickers();
   }
-
-  let columns: ProjectsTableColumn[] = [];
-  $: columns = [
-    {
-      id: "title",
-      title: $i18n.staking.nervous_systems,
-      cellComponent: ProjectTitleCell,
-      alignment: "left",
-      templateColumns: ["2fr"],
-      comparator: $authSignedInStore ? compareByProject : undefined,
-    },
+  const commonColumns: ProjectsTableColumn[] = [
     {
       id: "stake",
       title: $i18n.neuron_detail.stake,
@@ -75,6 +65,45 @@
       alignment: "right",
       templateColumns: ["1fr"],
     },
+  ];
+
+  let columns: ProjectsTableColumn[] = [];
+  $: columns = [
+    {
+      id: "title",
+      title: $i18n.staking.nervous_systems,
+      cellComponent: ProjectTitleCell,
+      alignment: "left",
+      templateColumns: ["2fr"],
+      comparator: $authSignedInStore ? compareByProject : undefined,
+    },
+    ...commonColumns,
+  ];
+
+  let nnsColumns: ProjectsTableColumn[] = [];
+  $: nnsColumns = [
+    {
+      id: "title",
+      title: $i18n.staking.nervous_systems_nns,
+      cellComponent: ProjectTitleCell,
+      alignment: "left",
+      templateColumns: ["2fr"],
+      comparator: $authSignedInStore ? compareByProject : undefined,
+    },
+    ...commonColumns,
+  ];
+
+  let snsColumns: ProjectsTableColumn[] = [];
+  $: snsColumns = [
+    {
+      id: "title",
+      title: $i18n.staking.nervous_systems_sns,
+      cellComponent: ProjectTitleCell,
+      alignment: "left",
+      templateColumns: ["2fr"],
+      comparator: $authSignedInStore ? compareByProject : undefined,
+    },
+    ...commonColumns,
   ];
 
   let tableProjects: TableProject[];
@@ -154,19 +183,19 @@
     {#if !$authSignedInStore}
       <ResponsiveTable
         tableData={nnsNeurons}
-        {columns}
+        columns={nnsColumns}
         on:nnsAction={handleAction}
       />
 
       <ResponsiveTable
         tableData={snsNeurons}
-        {columns}
+        columns={snsColumns}
         on:nnsAction={handleAction}
       />
     {:else}
       <ResponsiveTable
         tableData={nnsNeurons}
-        {columns}
+        columns={nnsColumns}
         on:nnsAction={handleAction}
         bind:order={$projectsTableOrderStore}
         displayTableSettings
@@ -199,7 +228,7 @@
       {#if snsNeurons.length > 0}
         <ResponsiveTable
           tableData={snsNeurons}
-          {columns}
+          columns={snsColumns}
           on:nnsAction={handleAction}
           bind:order={$projectsTableOrderStore}
           displayTableSettings
