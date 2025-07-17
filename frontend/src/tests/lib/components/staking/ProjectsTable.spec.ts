@@ -99,13 +99,7 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
-      [
-        "2fr", // gap
-        "1fr", // gap
-        "1fr", // gap
-        "1fr", // gap
-        "1fr", // gap
-      ].join(" ")
+      ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
       '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
