@@ -202,6 +202,13 @@
         })
       : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
   );
+
+  const showAnyApyCard = $derived(
+    (isStakingRewardDataReady(stakingRewardResult) &&
+      (totalUsdAmount ?? 0) > 0) ||
+      isStakingRewardDataError(stakingRewardResult) ||
+      isStakingRewardDataLoading(stakingRewardResult)
+  );
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -209,7 +216,7 @@
     class="top"
     class:signed-in={$authSignedInStore}
     class:launchpad={cards.length > 0}
-    class:apy-card={$ENABLE_APY_PORTFOLIO}
+    class:apy-card={$ENABLE_APY_PORTFOLIO && showAnyApyCard}
   >
     {#if !$authSignedInStore}
       <div class="login-card">
@@ -220,11 +227,13 @@
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
-        isFullWidth={cards.length === 0 && !$ENABLE_APY_PORTFOLIO}
+        isFullWidth={cards.length === 0 &&
+          !$ENABLE_APY_PORTFOLIO &&
+          !showAnyApyCard}
       />
 
       {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
-        {#if isStakingRewardDataReady(stakingRewardResult)}
+        {#if isStakingRewardDataReady(stakingRewardResult) && totalUsdAmount > 0}
           <ApyCard
             rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
             rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
@@ -232,7 +241,7 @@
             stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
             totalAmountUSD={totalUsdAmount}
           />
-        {:else}
+        {:else if isStakingRewardDataError(stakingRewardResult) || isStakingRewardDataLoading(stakingRewardResult)}
           <ApyFallbackCard stakingRewardData={stakingRewardResult} />
         {/if}
       {/if}
