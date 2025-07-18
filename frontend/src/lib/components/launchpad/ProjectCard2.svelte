@@ -10,7 +10,7 @@
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
   import {
-    formatCurrencyNumber,
+    compactCurrencyNumber,
     formatPercentage,
   } from "$lib/utils/format.utils";
   import {
@@ -51,7 +51,7 @@
 
     if (isNullish(marketCap)) return PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-    return formatCurrencyNumber(marketCap);
+    return compactCurrencyNumber(marketCap);
   });
   const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
@@ -98,6 +98,7 @@
           <span data-tid="token-market-cap">${formattedMarketCapUsd}</span>
         </div>
       </li>
+      <li class="stat-divider"></li>
       <li class="stat-item">
         <h6 class="stat-label"
           >{$i18n.launchpad_cards.project_card_icp_in_treasury}</h6
@@ -106,10 +107,12 @@
           <IconAccountBalance size="16px" />
           {#if nonNullish(icpInTreasury)}
             <span data-tid="icp-in-treasury-value"
-              >{formatPercentage(icpInTreasury, {
-                minFraction: 0,
-                maxFraction: 2,
-              })}</span
+              >{icpInTreasury > 1
+                ? ">100%"
+                : formatPercentage(icpInTreasury, {
+                    minFraction: 0,
+                    maxFraction: 2,
+                  })}</span
             >
           {:else}
             <span data-tid="icp-in-treasury-not-applicable"
@@ -118,6 +121,7 @@
           {/if}
         </div>
       </li>
+      <li class="stat-divider"></li>
       <li class="stat-item">
         {#if userHasParticipated && nonNullish(userCommitmentIcp)}
           <h6 class="stat-label"
@@ -177,6 +181,12 @@
     // Make the last row always be at the bottom of the card
     grid-template-rows: auto auto 1fr;
 
+    @include media.min-width(medium) {
+      // Make also the stats row always be at the bottom of the card
+      // so they looks aligned horizontally when a project has no/short description.
+      grid-template-rows: auto 1fr auto;
+    }
+
     &.userHasParticipated .stats .stat-item {
       border-right-color: var(--tertiary);
     }
@@ -223,22 +233,21 @@
         margin-top: 0;
       }
 
+      .stat-divider {
+        width: 0;
+        border-right: 1px solid var(--elements-divider);
+        margin: 0 var(--padding);
+      }
+
       .stat-item {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         gap: var(--padding-0_5x);
 
-        padding: 0 var(--padding);
-        border-right: 1px solid var(--elements-divider);
-
-        &:first-child {
-          padding-left: 0;
-        }
-        &:last-child {
-          padding-right: 0;
-          border-right: none;
-        }
+        // Make sure the stat item is at least as wide as the average entry
+        // so that the stats are visually aligned.
+        min-width: 78px;
 
         h6 {
           @include launchpad.text_h6;
