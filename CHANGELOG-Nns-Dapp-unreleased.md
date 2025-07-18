@@ -18,6 +18,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Split Tokens and Projects tables by type.
+
 #### Deprecated
 
 #### Removed
