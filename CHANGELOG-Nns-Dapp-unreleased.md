@@ -14,9 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-#### Changed
+* New staking reward card and table data in the portfolio page.
 
-* Enabled staking rewards feature-flag by default.
+#### Changed
 
 #### Deprecated
 
