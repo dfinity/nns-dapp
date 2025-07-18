@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Enabled staking rewards feature-flag by default.
+
 #### Deprecated
 
 #### Removed
