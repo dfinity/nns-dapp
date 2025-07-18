@@ -68,11 +68,8 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
     expect(await po.getDesktopColumnHeaders()).toEqual([
       "Nervous Systems",
-      "",
       "Stake",
-      "",
       "Maturity",
-      "",
       "Neurons",
       "", // No header for actions column.
     ]);
@@ -91,11 +88,8 @@ describe("ProjectsTable", () => {
     const rows = await po.getRows();
     expect(await rows[0].getCellAlignments()).toEqual([
       "desktop-align-left", // Nervous Systems
-      expect.any(String), // gap
       "desktop-align-right", // Stake
-      expect.any(String), // gap
       "desktop-align-right", // Maturity
-      expect.any(String), // gap
       "desktop-align-right", // Neurons
       "desktop-align-right", // Actions
     ]);
@@ -105,19 +99,10 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
-      [
-        "minmax(min-content, max-content)", // Nervous Systems
-        "1fr", // gap
-        "max-content", // Stake
-        "1fr", // gap
-        "max-content", // Maturity
-        "1fr", // gap
-        "max-content", // Neurons
-        "max-content", // Actions
-      ].join(" ")
+      ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
+      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
     );
   });
 
