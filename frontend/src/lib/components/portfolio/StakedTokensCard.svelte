@@ -383,7 +383,7 @@
             border-bottom: 2px solid var(--elements-divider);
           }
           .icp-logo {
-            filter: drop-shadow(0 0 4px #99c2ff);
+            filter: drop-shadow(0 0 1px #99c2ff);
           }
         }
       }
