@@ -1,4 +1,5 @@
 import {
+  compactCurrencyNumber,
   formatCurrencyNumber,
   formatNumber,
   formatPercentage,
@@ -118,6 +119,40 @@ describe("format.utils", () => {
       expect(formatCurrencyNumber(1000000000)).toBe("1.00B");
       expect(formatCurrencyNumber(9990000000)).toBe("9.99B");
       expect(formatCurrencyNumber(24800000000)).toBe("24.80B");
+    });
+  });
+
+  describe("compactCurrencyNumber", () => {
+    it("formats values less than 1,000 with 0 decimal points", () => {
+      expect(compactCurrencyNumber(0)).toBe("0");
+      expect(compactCurrencyNumber(1)).toBe("1");
+      expect(compactCurrencyNumber(99)).toBe("99");
+      expect(compactCurrencyNumber(123)).toBe("123");
+      expect(compactCurrencyNumber(999)).toBe("999");
+    });
+
+    it("formats values between 1,000 and 1,000,000 with k suffix and up to 1 decimal point", () => {
+      expect(compactCurrencyNumber(1000)).toBe("1k");
+      expect(compactCurrencyNumber(1200)).toBe("1.2k");
+      expect(compactCurrencyNumber(1500)).toBe("1.5k");
+      expect(compactCurrencyNumber(12300)).toBe("12.3k");
+      expect(compactCurrencyNumber(123000)).toBe("123k");
+      expect(compactCurrencyNumber(123400)).toBe("123.4k");
+      expect(compactCurrencyNumber(999900)).toBe("999.9k");
+    });
+
+    it("formats values 1,000,000 and above using formatCurrencyNumber logic", () => {
+      // These should delegate to formatCurrencyNumber, so they follow its rules
+      expect(compactCurrencyNumber(1000000)).toBe("1.00M");
+      expect(compactCurrencyNumber(1550000)).toBe("1.55M");
+      expect(compactCurrencyNumber(24800000)).toBe("24.80M");
+      expect(compactCurrencyNumber(1000000000)).toBe("1.00B");
+    });
+
+    it("handles edge cases correctly", () => {
+      expect(compactCurrencyNumber(999.9)).toBe("1’000");
+      expect(compactCurrencyNumber(999999)).toBe("1’000k");
+      expect(compactCurrencyNumber(999999.9)).toBe("1’000k");
     });
   });
 
