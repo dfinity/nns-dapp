@@ -103,8 +103,6 @@
           "ENABLE_NNS_TOPICS": false,
           "ENABLE_LAUNCHPAD_REDESIGN": false,
           "ENABLE_APY_PORTFOLIO": true,
-          "ENABLE_NEW_TABLES": false
-          "ENABLE_APY_PORTFOLIO": false,
           "ENABLE_NEW_TABLES": true
         }
       }
