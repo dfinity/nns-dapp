@@ -647,7 +647,7 @@ describe("Portfolio page", () => {
 
     it("should show first on going swaps, then open proposals, and then adopted proposals", async () => {
       const po = renderPage({
-        snsProjects: mockSnsProjects,
+        snsProjects: mockSnsProjects.slice(0, 1),
         openSnsProposals: mockSnsProposals.slice(0, 1),
         adoptedSnsProposals: mockSnsProjects.slice(1, 2),
       });
