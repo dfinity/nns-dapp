@@ -228,8 +228,7 @@
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
         isFullWidth={cards.length === 0 &&
-          !$ENABLE_APY_PORTFOLIO &&
-          !showAnyApyCard}
+          (!$ENABLE_APY_PORTFOLIO || !showAnyApyCard)}
       />
 
       {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}

@@ -495,11 +495,25 @@ describe("Portfolio page", () => {
     });
 
     it("should not show a full width TotalAssetsCard when no stacked cards but APY FF is on", async () => {
-      const po = renderPage();
+      const po = renderPage({
+        stakingRewardResult: {
+          loading: true,
+        },
+      });
       const totalAssetsCardPo = po.getTotalAssetsCardPo();
 
       expect(await totalAssetsCardPo.isPresent()).toBe(true);
       expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
+      expect(await po.getApyFallbackCardPo().isPresent()).toBe(true);
+    });
+
+    it("should show a full width TotalAssetsCard when no stacked cards, APY FF is on but no assets ", async () => {
+      const po = renderPage({ stakingRewardResult: null });
+      const totalAssetsCardPo = po.getTotalAssetsCardPo();
+
+      expect(await totalAssetsCardPo.isPresent()).toBe(true);
+      expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
+      expect(await po.getApyCardPo().isPresent()).toBe(false);
     });
 
     it("should show a not full width TotalAssetsCard when stacked cards is not empty", async () => {
