@@ -148,7 +148,7 @@ describe("ProjectCard2", () => {
 
       // totalTokenSupply / 10**8 * tokenPrice
       // 25_000_000_000_000 / 10**8 * 2 = 500_000
-      expect(await po.getMarketCapValue()).toEqual("$500’000");
+      expect(await po.getMarketCapValue()).toEqual("$500k");
     });
 
     it("should display '-' for market cap when price is not available", async () => {
@@ -274,6 +274,44 @@ describe("ProjectCard2", () => {
       const po = await renderCard(project);
 
       expect(await po.getIcpInTreasuryValueText()).toEqual("25.72%");
+      expect(await po.getIcpInTreasuryValueNotApplicable().isPresent()).toEqual(
+        false
+      );
+    });
+
+    it("should display ICP in treasury '>100%'", async () => {
+      const icpInTreasuryMetrics: TreasuryMetricsDto = {
+        name: "TOKEN_ICP",
+        original_amount_e8s: 314100000000,
+        amount_e8s: 314100000000,
+        account: {
+          owner: "7uieb-cx777-77776-qaaaq-cai",
+          subaccount: null,
+        },
+        ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
+        treasury: 1,
+        timestamp_seconds: 1752222478,
+      };
+      const project = createMockSnsFullProject({
+        rootCanisterId,
+        summaryParams: {
+          lifecycle: SnsSwapLifecycle.Open,
+        },
+        icpCommitment: undefined,
+        metrics: {
+          ...mockSnsMetrics,
+          treasury_metrics: [
+            {
+              ...icpInTreasuryMetrics,
+              amount_e8s: 2_571_600_000_000_000_000,
+              original_amount_e8s: 10_000_000_000,
+            },
+          ],
+        },
+      });
+      const po = await renderCard(project);
+
+      expect(await po.getIcpInTreasuryValueText()).toEqual(">100%");
       expect(await po.getIcpInTreasuryValueNotApplicable().isPresent()).toEqual(
         false
       );
