@@ -349,6 +349,7 @@ describe("Portfolio route", () => {
       it("should render assets cards with the provided data", async () => {
         const po = await renderPage();
         const portfolioPagePo = po.getPortfolioPagePo();
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
 
         // 1BTC -> $100_000
         // 1BTCTest -> $100_000

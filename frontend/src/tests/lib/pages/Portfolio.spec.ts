@@ -247,6 +247,7 @@ describe("Portfolio page", () => {
     it("should show a full width TotalAssetsCard when no stacked cards", async () => {
       const po = renderPage();
       const totalAssetsCardPo = po.getTotalAssetsCardPo();
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
 
       expect(await totalAssetsCardPo.isPresent()).toBe(true);
       expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
@@ -891,6 +892,7 @@ describe("Portfolio page", () => {
 
     describe("StakedTokensCard", () => {
       it("should display the top staked tokens by staked balance in Usd with InternetComputer as first", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
           tableProjects: [
             tableProject1,
@@ -942,6 +944,7 @@ describe("Portfolio page", () => {
       });
 
       it("should display the information row when the staked tokens card has less items than the held tokens card", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
           tableProjects: [tableProject1, tableProject2],
           userTokens: [token1, token2, token3, token4],
