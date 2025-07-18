@@ -260,7 +260,7 @@
     {/if}
 
     {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalUsdAmount) && nonNullish(stakingRewardResult)}
-      {#if isStakingRewardDataReady(stakingRewardResult)}
+      {#if isStakingRewardDataReady(stakingRewardResult) && totalUsdAmount > 0}
         <ApyCard
           rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
           rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
@@ -268,7 +268,7 @@
           stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
           totalAmountUSD={totalUsdAmount}
         />
-      {:else}
+      {:else if isStakingRewardDataError(stakingRewardResult) || isStakingRewardDataLoading(stakingRewardResult)}
         <ApyFallbackCard stakingRewardData={stakingRewardResult} />
       {/if}
     {/if}
