@@ -228,6 +228,7 @@
         on:nnsAction={handleAction}
         bind:order={$projectsTableOrderStore}
         displayTableSettings
+        testId="nns-projects-table-component"
       >
         <svelte:fragment slot="settings-popover">
           <HideZeroNeuronsToggle />
@@ -261,6 +262,7 @@
           on:nnsAction={handleAction}
           bind:order={$projectsTableOrderStore}
           displayTableSettings
+          testId="sns-projects-table-component"
         >
           <svelte:fragment slot="settings-popover">
             <HideZeroNeuronsToggle />
