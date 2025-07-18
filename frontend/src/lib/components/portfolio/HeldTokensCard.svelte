@@ -3,6 +3,7 @@
   import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -63,16 +64,19 @@
 
       <div class="list" role="rowgroup">
         {#each topHeldTokens as heldToken (heldToken.domKey)}
+          {@const isIcpToken =
+            heldToken.universeId.toText() === OWN_CANISTER_ID.toText()}
           <svelte:element
             this={$authSignedInStore ? "a" : "div"}
             href={$authSignedInStore ? heldToken.rowHref : undefined}
             class="row"
+            class:icp-row={isIcpToken}
             class:link={$authSignedInStore}
             data-tid="held-token-card-row"
             role="row"
           >
             <div class="info" role="cell">
-              <div>
+              <div class:icp-logo={isIcpToken}>
                 <Logo
                   src={heldToken.logo}
                   alt={heldToken.title}
@@ -221,6 +225,17 @@
 
           .balance-usd {
             grid-area: usd;
+          }
+
+          /* special styles for ICP rows */
+          &.icp-row {
+            font-weight: 500;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border-bottom: 2px solid var(--elements-divider);
+          }
+          .icp-logo {
+            filter: drop-shadow(0 0 1px #99c2ff);
           }
         }
       }
