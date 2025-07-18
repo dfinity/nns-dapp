@@ -11,7 +11,6 @@
   import { i18n } from "$lib/stores/i18n";
   import {
     compactCurrencyNumber,
-    formatCurrencyNumber,
     formatPercentage,
   } from "$lib/utils/format.utils";
   import {
