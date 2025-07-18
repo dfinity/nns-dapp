@@ -10,6 +10,7 @@
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
   import {
+    compactCurrencyNumber,
     formatCurrencyNumber,
     formatPercentage,
   } from "$lib/utils/format.utils";
@@ -51,7 +52,7 @@
 
     if (isNullish(marketCap)) return PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-    return formatCurrencyNumber(marketCap);
+    return compactCurrencyNumber(marketCap);
   });
   const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
