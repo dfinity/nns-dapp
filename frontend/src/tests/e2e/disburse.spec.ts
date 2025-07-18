@@ -27,7 +27,7 @@ test("Test disburse neuron", async ({ page, context }) => {
   const icpRowBeforeDisburse = await appPo
     .getTokensPo()
     .getTokensPagePo()
-    .getTokensTable()
+    .getIcpTokensTable()
     .getRowByName("Internet Computer");
   await icpRowBeforeDisburse.waitForBalance();
   const mainAccountBalanceBeforeDisburse =
@@ -57,7 +57,7 @@ test("Test disburse neuron", async ({ page, context }) => {
   const icpRowAfterDisburse = await appPo
     .getTokensPo()
     .getTokensPagePo()
-    .getTokensTable()
+    .getIcpTokensTable()
     .getRowByName("Internet Computer");
   await icpRowAfterDisburse.waitForBalance();
   const mainAccountBalanceAfterDisburse =

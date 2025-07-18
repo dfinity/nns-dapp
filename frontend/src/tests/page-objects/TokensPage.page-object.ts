@@ -10,6 +10,12 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class TokensPagePo extends BasePageObject {
   private static readonly TID = "tokens-page-component";
+  private static readonly tablesIds = [
+    "icp-tokens-table-component",
+    "ck-tokens-table-component",
+    "sns-tokens-table-component",
+    "imported-tokens-table-component",
+  ];
 
   static under(element: PageObjectElement): TokensPagePo {
     return new TokensPagePo(element.byTestId(TokensPagePo.TID));
@@ -24,13 +30,25 @@ export class TokensPagePo extends BasePageObject {
   }
 
   getAllTokensTable(): TokensTablePo[] {
-    const ids = [
-      "icp-tokens-table-component",
-      "ck-tokens-table-component",
-      "sns-tokens-table-component",
-      "imported-tokens-table-component",
-    ];
-    return ids.map((id) => TokensTablePo.under(this.root, id));
+    return TokensPagePo.tablesIds.map((id) =>
+      TokensTablePo.under(this.root, id)
+    );
+  }
+
+  getIcpTokensTable(): TokensTablePo {
+    return TokensTablePo.under(this.root, TokensPagePo.tablesIds[0]);
+  }
+
+  getCkTokensTable(): TokensTablePo {
+    return TokensTablePo.under(this.root, TokensPagePo.tablesIds[1]);
+  }
+
+  getSnsTokensTable(): TokensTablePo {
+    return TokensTablePo.under(this.root, TokensPagePo.tablesIds[2]);
+  }
+
+  getImportedTokensTable(): TokensTablePo {
+    return TokensTablePo.under(this.root, TokensPagePo.tablesIds[3]);
   }
 
   getSettingsButtonPo(): ButtonPo {
