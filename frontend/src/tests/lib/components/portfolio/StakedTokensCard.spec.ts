@@ -381,10 +381,6 @@ describe("StakedTokensCard", () => {
   });
 
   describe("APY feature flag", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
-    });
-
     describe("when not signed in", () => {
       const icpProject: TableProject = {
         ...mockTableProject,
