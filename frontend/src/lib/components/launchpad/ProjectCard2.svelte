@@ -107,10 +107,12 @@
           <IconAccountBalance size="16px" />
           {#if nonNullish(icpInTreasury)}
             <span data-tid="icp-in-treasury-value"
-              >{formatPercentage(icpInTreasury, {
-                minFraction: 0,
-                maxFraction: 2,
-              })}</span
+              >{icpInTreasury > 1
+                ? ">100%"
+                : formatPercentage(icpInTreasury, {
+                    minFraction: 0,
+                    maxFraction: 2,
+                  })}</span
             >
           {:else}
             <span data-tid="icp-in-treasury-not-applicable"
