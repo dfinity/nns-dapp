@@ -197,7 +197,7 @@
   const cards: ComponentWithProps[] = $derived(
     $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO
       ? getUpcomingLaunchesCards({
-          snsProjects,
+          snsProjects: [...snsProjects, ...adoptedSnsProposals],
           openSnsProposals,
         })
       : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
