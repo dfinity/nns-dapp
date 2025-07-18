@@ -1,3 +1,4 @@
+import { AGGREGATOR_METRICS_TIME_WINDOW_SECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import {
@@ -463,3 +464,39 @@ export const comparesByDecentralizationSaleOpenTimestampDesc =
   createDescendingComparator((sns: SnsFullProject): number =>
     Number(sns.summary.swap?.decentralization_sale_open_timestamp_seconds ?? 0)
   );
+
+/**
+ * Returns the number of proposals executed in the last week.
+ * The result is rounded to the nearest integer.
+ */
+export const snsProjectWeeklyProposalActivity = (
+  sns: SnsFullProject
+): number | undefined => {
+  const secondsInWeek = 7 * 24 * 3600;
+  const weeks = AGGREGATOR_METRICS_TIME_WINDOW_SECONDS / secondsInWeek;
+  const numRecentProposals = sns.metrics?.num_recently_executed_proposals;
+
+  if (!numRecentProposals) return undefined;
+
+  return Math.round(numRecentProposals / weeks);
+};
+
+// Returns the percentage [0..1] of ICP in the treasury compared to the original amount.
+// Returns undefined if the metrics are not available.
+export const snsProjectIcpInTreasuryPercentage = (
+  sns: SnsFullProject
+): number | undefined => {
+  const ICP_TREASURY_ID = 1;
+  const icpInTreasuryMetrics = sns.metrics?.treasury_metrics?.find(
+    ({ treasury }) => treasury === ICP_TREASURY_ID
+  );
+
+  if (!icpInTreasuryMetrics) return undefined;
+
+  const currentAmount = icpInTreasuryMetrics.amount_e8s;
+  const originalAmount = icpInTreasuryMetrics.original_amount_e8s;
+  if (isNullish(currentAmount) || isNullish(originalAmount)) return undefined;
+  if (originalAmount === 0) return 0;
+
+  return currentAmount / originalAmount;
+};

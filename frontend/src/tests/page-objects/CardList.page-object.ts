@@ -4,8 +4,14 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class CardListPo extends BasePageObject {
   static readonly TID = "card-list-component";
 
-  static under(element: PageObjectElement): CardListPo {
-    return new CardListPo(element.byTestId(CardListPo.TID));
+  static under({
+    element,
+    testId = CardListPo.TID,
+  }: {
+    element: PageObjectElement;
+    testId?: string;
+  }): CardListPo {
+    return new CardListPo(element.byTestId(testId));
   }
 
   static async allUnder(element: PageObjectElement): Promise<CardListPo[]> {
@@ -31,6 +37,14 @@ export class CardListEntryPo extends BasePageObject {
   ): Promise<CardListEntryPo[]> {
     return Array.from(await element.allByTestId(CardListEntryPo.TID)).map(
       (el) => new CardListEntryPo(el)
+    );
+  }
+
+  async getCardTitle(): Promise<string> {
+    return (
+      (await this.getText("project-name")) ??
+      (await this.getText("proposal-title")) ??
+      "getCardTitle: not found"
     );
   }
 }

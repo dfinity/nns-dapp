@@ -16,18 +16,11 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-* Updated and uniformed titles across pages
-* Improved accuracy of proposal voting progress indicators
-* Prioritize ICP in tokens and staking tables
-
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-* Increase open proposals fetch limit and display warning if reached
-* Improved disburse button feedback when neuron has insufficient stake
 
 #### Security
 

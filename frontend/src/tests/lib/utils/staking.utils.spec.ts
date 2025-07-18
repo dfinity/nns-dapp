@@ -750,6 +750,24 @@ describe("staking.utils", () => {
 
       expect(compareByStake(project1, project2)).toEqual(1);
     });
+
+    it("should push unavailable projects to the bottom", () => {
+      const failedProject = {
+        ...mockTableProject,
+        stake: new FailedTokenAmount(mockSnsToken),
+      };
+      const nonFailedProject = {
+        ...mockTableProject,
+        stake: TokenAmountV2.fromUlps({
+          amount: 100_000_000n,
+          token: ICPToken,
+        }),
+      };
+      expect(sortTableProjects([failedProject, nonFailedProject])).toEqual([
+        nonFailedProject,
+        failedProject,
+      ]);
+    });
   });
 
   describe("compareByNeuron", () => {
@@ -781,6 +799,26 @@ describe("staking.utils", () => {
       };
 
       expect(compareByNeuron(project1, project2)).toEqual(-1);
+    });
+
+    it("should push unavailable projects to the bottom", () => {
+      const failedProject = {
+        ...mockTableProject,
+        neuronCount: 10,
+        stake: new FailedTokenAmount(mockSnsToken),
+      };
+      const nonFailedProject = {
+        ...mockTableProject,
+        neuronCount: 0,
+        stake: TokenAmountV2.fromUlps({
+          amount: 100_000_000n,
+          token: ICPToken,
+        }),
+      };
+      expect(sortTableProjects([failedProject, nonFailedProject])).toEqual([
+        nonFailedProject,
+        failedProject,
+      ]);
     });
   });
 
@@ -818,6 +856,27 @@ describe("staking.utils", () => {
 
       expect(compareByNeuron(project1, project2)).toEqual(-1);
     });
+
+    it("should push unavailable projects to the bottom", () => {
+      const failedProject = {
+        ...mockTableProject,
+        title: "ZZZ",
+        stake: new FailedTokenAmount(mockSnsToken),
+      };
+      const nonFailedProject = {
+        ...mockTableProject,
+        title: "AAA",
+        stake: TokenAmountV2.fromUlps({
+          amount: 100_000_000n,
+          token: ICPToken,
+        }),
+      };
+
+      expect(sortTableProjects([failedProject, nonFailedProject])).toEqual([
+        nonFailedProject,
+        failedProject,
+      ]);
+    });
   });
 
   describe("sortTableProjects", () => {
@@ -853,6 +912,28 @@ describe("staking.utils", () => {
       expect(sortTableProjects([icpProject, snsProject])).toEqual([
         icpProject,
         snsProject,
+      ]);
+    });
+
+    it("should push unavailable projects to the bottom", () => {
+      const failedProject = {
+        ...defaultProject,
+        title: "ZZZ",
+        stake: new FailedTokenAmount(mockSnsToken),
+        neuronCount: 1,
+      };
+      const nonFailedProject = {
+        ...defaultProject,
+        title: "AAA",
+        stake: TokenAmountV2.fromUlps({
+          amount: 100_000_000n,
+          token: ICPToken,
+        }),
+        neuronCount: 0,
+      };
+      expect(sortTableProjects([failedProject, nonFailedProject])).toEqual([
+        nonFailedProject,
+        failedProject,
       ]);
     });
 

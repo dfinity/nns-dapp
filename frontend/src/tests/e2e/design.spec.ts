@@ -1,10 +1,6 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import {
-  replaceContent,
-  setFeatureFlag,
-  signInWithNewUser,
-} from "$tests/utils/e2e.test-utils";
+import { replaceContent, signInWithNewUser } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
 test.describe("Design", () => {
@@ -27,15 +23,6 @@ test.describe("Design", () => {
 
   test("App loading spinner is removed", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
-
-    await setFeatureFlag({
-      page,
-      featureFlag: "ENABLE_PORTFOLIO_PAGE",
-      value: true,
-    });
-
-    await page.reload();
     await expect(page).toHaveTitle("Portfolio | Network Nervous System");
 
     // Wait for the button to make sure the app is loaded
@@ -53,21 +40,9 @@ test.describe("Design", () => {
 
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage();
-      await page.goto("/");
-      await expect(page).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
-
-      await setFeatureFlag({
-        page,
-        featureFlag: "ENABLE_PORTFOLIO_PAGE",
-        value: true,
-      });
-
-      await page.reload();
-      await expect(page).toHaveTitle("Portfolio | Network Nervous System");
-      await signInWithNewUser({ page, context: browser.contexts()[0] });
-
       await page.goto("/tokens");
-      await expect(page).toHaveTitle("Tokens | Network Nervous System");
+
+      await signInWithNewUser({ page, context: browser.contexts()[0] });
     });
 
     test.afterAll(async () => {

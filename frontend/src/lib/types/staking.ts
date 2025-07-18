@@ -18,6 +18,10 @@ export type TableProject = {
   availableMaturity: bigint | undefined;
   stakedMaturity: bigint | undefined;
   isStakeLoading?: boolean;
+  apy?: {
+    cur: number;
+    max: number;
+  };
 };
 
 export type ProjectsTableColumnId = "title" | "stake" | "neurons";

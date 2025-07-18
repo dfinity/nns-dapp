@@ -56,7 +56,7 @@
     })
   );
 
-  const priceStore = $derived(tokenPriceStore(tokenAmount));
+  const priceStore = $derived(tokenPriceStore(tokenAmount.token));
   const tokenPrice = $derived($priceStore);
 
   const tokenAmountUsdValue = $derived.by(() => {

@@ -7,8 +7,10 @@ import * as actionableProposalsServices from "$lib/services/actionable-proposals
 import * as actionableSnsProposalsServices from "$lib/services/actionable-sns-proposals.services";
 import { initAppPrivateData } from "$lib/services/app.services";
 import * as importedTokensServices from "$lib/services/imported-tokens.services";
+import * as nnsTotalVotingPowerService from "$lib/services/nns-total-voting-power.service";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
+import { mockGovernanceMetrics } from "$tests/mocks/governance-metrics.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
@@ -48,6 +50,10 @@ describe("app-services", () => {
     });
     mockNNSDappCanister.getAccount.mockResolvedValue(mockAccountDetails);
     mockLedgerCanister.accountBalance.mockResolvedValue(100_000_000n);
+    vi.spyOn(
+      nnsTotalVotingPowerService,
+      "loadNnsTotalVotingPower"
+    ).mockResolvedValue();
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
 
@@ -96,6 +102,10 @@ describe("app-services", () => {
     const spyLoadActionableSnsProposals = vi
       .spyOn(actionableSnsProposalsServices, "loadActionableSnsProposals")
       .mockResolvedValue();
+    const spyLoadNnsTotalVotingPower = vi.spyOn(
+      nnsTotalVotingPowerService,
+      "loadNnsTotalVotingPower"
+    );
     let querySnsProjectsResolver;
     vi.spyOn(aggregatorApi, "querySnsProjects").mockImplementation(
       (): Promise<CachedSnsDto[]> =>
@@ -110,12 +120,14 @@ describe("app-services", () => {
 
     expect(spyLoadActionableProposals).toHaveBeenCalledTimes(0);
     expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(0);
+    expect(spyLoadNnsTotalVotingPower).toHaveBeenCalledTimes(0);
 
     querySnsProjectsResolver();
     await runResolvedPromises();
 
     expect(spyLoadActionableProposals).toHaveBeenCalledTimes(1);
     expect(spyLoadActionableSnsProposals).toHaveBeenCalledTimes(1);
+    expect(spyLoadNnsTotalVotingPower).toHaveBeenCalledTimes(1);
   });
 
   it("should call loadImportedTokens", async () => {
@@ -146,8 +158,34 @@ describe("app-services", () => {
     initAppPrivateData();
     await runResolvedPromises();
 
-    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(1);
-    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledWith({
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenCalledTimes(2);
+
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenNthCalledWith(1, {
+      identity: mockIdentity,
+      certified: false,
+    });
+    expect(spyGetNetworkEconomicsParameters).toHaveBeenNthCalledWith(2, {
+      identity: mockIdentity,
+      certified: true,
+    });
+  });
+
+  it("should load governance metrics", async () => {
+    const spyGovernanceMetrics = vi
+      .spyOn(governanceApi, "getGovernanceMetrics")
+      .mockResolvedValue(mockGovernanceMetrics);
+
+    expect(spyGovernanceMetrics).toHaveBeenCalledTimes(0);
+
+    initAppPrivateData();
+    await runResolvedPromises();
+
+    expect(spyGovernanceMetrics).toHaveBeenCalledTimes(2);
+    expect(spyGovernanceMetrics).toHaveBeenNthCalledWith(1, {
+      identity: mockIdentity,
+      certified: false,
+    });
+    expect(spyGovernanceMetrics).toHaveBeenNthCalledWith(2, {
       identity: mockIdentity,
       certified: true,
     });

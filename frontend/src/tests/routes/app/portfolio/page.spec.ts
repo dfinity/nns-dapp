@@ -11,9 +11,13 @@ import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.co
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { getAnonymousIdentity } from "$lib/services/auth.services";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
+import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
+import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
 import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
@@ -22,14 +26,17 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import PortfolioRoute from "$routes/(app)/(nns)/portfolio/+page.svelte";
+import * as fakeGovernanceApi from "$tests/fakes/governance-api.fake";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockCkBTCToken,
   mockCkTESTBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
+import { mockGovernanceMetrics } from "$tests/mocks/governance-metrics.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
+import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
@@ -56,7 +63,11 @@ import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
+vi.mock("$lib/api/governance.api");
+
 describe("Portfolio route", () => {
+  fakeGovernanceApi.install();
+
   const renderPage = async () => {
     const { container } = render(PortfolioRoute);
     await runResolvedPromises();
@@ -158,6 +169,9 @@ describe("Portfolio route", () => {
 
     expect(await portfolioPagePo.getLoginCard().isPresent()).toBe(true);
     expect(await portfolioPagePo.getTotalAssetsCardPo().isPresent()).toBe(
+      false
+    );
+    expect(await portfolioPagePo.getApyFallbackCardPo().isPresent()).toBe(
       false
     );
 
@@ -295,7 +309,7 @@ describe("Portfolio route", () => {
       });
     });
 
-    describe("should render the Portfolio page with the provided data", async () => {
+    describe("should render the Portfolio page", async () => {
       beforeEach(() => {
         setAccountsForTesting({
           main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
@@ -332,7 +346,7 @@ describe("Portfolio route", () => {
         });
       });
 
-      it("should render the Portfolio page with the provided data", async () => {
+      it("should render assets cards with the provided data", async () => {
         const po = await renderPage();
         const portfolioPagePo = po.getPortfolioPagePo();
 
@@ -354,6 +368,9 @@ describe("Portfolio route", () => {
         expect(
           await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
         ).toBe("20’323.10 ICP");
+        expect(await portfolioPagePo.getApyFallbackCardPo().isPresent()).toBe(
+          false
+        );
 
         const heldTokensCardPo = portfolioPagePo.getHeldTokensCardPo();
         const heldTokensTitles = await heldTokensCardPo.getHeldTokensTitles();
@@ -503,6 +520,31 @@ describe("Portfolio route", () => {
 
         expect(await stackedCardsPo.isPresent()).toBe(true);
         expect(cardWrappers.length).toBe(3);
+      });
+
+      it("should render apy card when all stores have the required data", async () => {
+        vi.useFakeTimers();
+
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
+        networkEconomicsStore.setParameters({
+          certified: true,
+          parameters: mockNetworkEconomics,
+        });
+        governanceMetricsStore.setMetrics({
+          metrics: mockGovernanceMetrics,
+          certified: true,
+        });
+        nnsTotalVotingPowerStore.set(0n);
+
+        const po = await renderPage();
+        const pagePo = po.getPortfolioPagePo();
+
+        // There is a debounce function that we have to wait for and then let svelte re-render
+        vi.advanceTimersByTime(1000);
+        await tick();
+
+        expect(await pagePo.getApyFallbackCardPo().isPresent()).toBe(false);
+        expect(await pagePo.getApyCardPo().isPresent()).toBe(true);
       });
     });
   });

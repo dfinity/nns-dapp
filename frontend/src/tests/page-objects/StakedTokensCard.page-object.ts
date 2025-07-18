@@ -33,6 +33,10 @@ class StakedTokensCardRowPo extends BasePageObject {
     return this.getText("maturity");
   }
 
+  async getStakedTokenApy(): Promise<string> {
+    return await this.getText("apy");
+  }
+
   getStakedTokenStakeInUsd(): Promise<string> {
     return this.getText("stake-in-usd");
   }
@@ -68,7 +72,16 @@ export class StakedTokensCardPo extends BasePageObject {
 
   async getStakedTokensMaturity(): Promise<string[]> {
     const rows = await this.getRows();
-    return Promise.all(rows.map((row) => row.getStakedTokenMaturity()));
+    return (
+      await Promise.all(rows.map((row) => row.getStakedTokenMaturity()))
+    ).filter(nonNullish);
+  }
+
+  async getStakedTokensApy(): Promise<string[]> {
+    const rows = await this.getRows();
+    return (
+      await Promise.all(rows.map((row) => row.getStakedTokenApy()))
+    ).filter(nonNullish);
   }
 
   async getStakedTokensStakeInUsd(): Promise<string[]> {

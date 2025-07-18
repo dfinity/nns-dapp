@@ -20,8 +20,17 @@ export const SECONDS_IN_FOUR_YEARS = SECONDS_IN_YEAR * 4;
 export const SECONDS_IN_EIGHT_YEARS = SECONDS_IN_YEAR * 8;
 
 export const DAYS_IN_NON_LEAP_YEAR = 365;
+export const DAYS_IN_AVG_YEAR = 365.25;
 
 export const NANO_SECONDS_IN_MILLISECOND = 1_000_000;
 export const NANO_SECONDS_IN_MINUTE = NANO_SECONDS_IN_MILLISECOND * 1_000 * 60;
 
 export const PRICE_NOT_AVAILABLE_PLACEHOLDER = "-/-";
+export const PRICE_NOT_AVAILABLE = "price-not-available";
+
+export const NNS_GENESIS_TIMESTAMP_SECONDS = 1_620_604_800; // May 10, 2021
+export const NNS_INITIAL_REWARD_RATE = 0.1; // 10%
+export const NNS_FINAL_REWARD_RATE = 0.05; // 5%
+
+export const E8S_PRECISION = 8;
+export const E8S_RATE = 10 ** E8S_PRECISION;

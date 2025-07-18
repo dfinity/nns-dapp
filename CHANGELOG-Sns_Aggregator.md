@@ -7,16 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The SNS Aggregator is released through proposals in the Network Nervous System. Therefore, each proposal is documented below, following the relevant changes.
 
 ## Unreleased
+* Include SNS Governance metrics.
+* Include latest reward events.
 
 ### Added
 ### Changed
 ### Deprecated
 ### Removed
 ### Fixed
-
-* Keep existing data when a call to an SNS canister fails.
-
 ### Security
+
+## [Proposal 132124](https://dashboard.internetcomputer.org/proposal/132124)
+### Fixed
+* Keep existing data when a call to an SNS canister fails.
 
 ## [Proposal 132124](https://dashboard.internetcomputer.org/proposal/132124)
 ### Security

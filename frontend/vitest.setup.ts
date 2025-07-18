@@ -111,6 +111,21 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
+// Default to desktop view (non-mobile)
+const defaultMatches = false;
+
+// Create a mock implementation of matchMedia
+window.matchMedia = vi.fn().mockImplementation((query) => ({
+  matches: defaultMatches,
+  media: query,
+  onchange: null,
+  addListener: vi.fn(),
+  removeListener: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  dispatchEvent: vi.fn(),
+}));
+
 Element.prototype.animate = (
   _keyframes: Keyframe[] | PropertyIndexedKeyframes,
   options?: number | KeyframeAnimationOptions
@@ -146,12 +161,12 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
       ENABLE_CKTESTBTC: true,
       ENABLE_DISBURSE_MATURITY: false,
       DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
-      ENABLE_PORTFOLIO_PAGE: false,
       TEST_FLAG_EDITABLE: true,
       TEST_FLAG_NOT_EDITABLE: true,
       ENABLE_SNS_TOPICS: false,
       ENABLE_NNS_TOPICS: false,
       ENABLE_LAUNCHPAD_REDESIGN: false,
+      ENABLE_APY_PORTFOLIO: false,
     }),
     fetchRootKey: "false",
     host: "https://icp-api.io",

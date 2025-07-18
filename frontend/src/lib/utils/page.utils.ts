@@ -1,8 +1,6 @@
 import { AppPath, ROUTE_ID_GROUPS } from "$lib/constants/routes.constants";
-import { ENABLE_PORTFOLIO_PAGE } from "$lib/stores/feature-flags.store";
 import { isNullish } from "@dfinity/utils";
 import type { AfterNavigate } from "@sveltejs/kit";
-import { get } from "svelte/store";
 
 /**
  * Returns an AppPath for a given path.
@@ -14,9 +12,7 @@ import { get } from "svelte/store";
  * @returns {AppPath}
  */
 export const pathForRouteId = (routeId: string | null | undefined): AppPath => {
-  const defaultPath = get(ENABLE_PORTFOLIO_PAGE)
-    ? AppPath.Portfolio
-    : AppPath.Accounts;
+  const defaultPath = AppPath.Portfolio;
 
   if (isNullish(routeId)) {
     return defaultPath;

@@ -10,7 +10,9 @@ import { render } from "@testing-library/svelte";
 describe("CardList", () => {
   const renderComponent = (props: { cards: ComponentWithProps[] }) => {
     const { container } = render(CardList, { props });
-    return CardListPo.under(new JestPageObjectElement(container));
+    return CardListPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   it("should render cards", async () => {

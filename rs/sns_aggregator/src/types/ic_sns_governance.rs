@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-26_03-25-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/fccfa2c7c7cba9e5485ad0b48823990e24a67f40/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -72,7 +72,32 @@ pub struct NervousSystemFunction {
     pub function_type: Option<FunctionType>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Subaccount {
+    pub subaccount: serde_bytes::ByteBuf,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Account {
+    pub owner: Option<Principal>,
+    pub subaccount: Option<Subaccount>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct TreasuryMetrics {
+    pub name: Option<String>,
+    pub original_amount_e8s: Option<u64>,
+    pub amount_e8s: Option<u64>,
+    pub account: Option<Account>,
+    pub ledger_canister_id: Option<Principal>,
+    pub treasury: i32,
+    pub timestamp_seconds: Option<u64>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct VotingPowerMetrics {
+    pub governance_total_potential_voting_power: Option<u64>,
+    pub timestamp_seconds: Option<u64>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GovernanceCachedMetrics {
+    pub treasury_metrics: Vec<TreasuryMetrics>,
     pub not_dissolving_neurons_e8s_buckets: Vec<(u64, f64)>,
     pub garbage_collectable_neurons_count: u64,
     pub neurons_with_invalid_stake_count: u64,
@@ -81,6 +106,7 @@ pub struct GovernanceCachedMetrics {
     pub dissolved_neurons_count: u64,
     pub total_staked_e8s: u64,
     pub total_supply_governance_tokens: u64,
+    pub voting_power_metrics: Option<VotingPowerMetrics>,
     pub not_dissolving_neurons_count: u64,
     pub dissolved_neurons_e8s: u64,
     pub neurons_with_less_than_6_months_dissolve_delay_e8s: u64,
@@ -228,15 +254,6 @@ pub struct PendingVersion {
 pub struct GovernanceError {
     pub error_message: String,
     pub error_type: i32,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct Subaccount {
-    pub subaccount: serde_bytes::ByteBuf,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct Account {
-    pub owner: Option<Principal>,
-    pub subaccount: Option<Subaccount>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Decimal {
@@ -722,8 +739,12 @@ pub struct GetMetricsRequest {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Metrics {
+    pub treasury_metrics: Option<Vec<TreasuryMetrics>>,
+    pub voting_power_metrics: Option<VotingPowerMetrics>,
     pub last_ledger_block_timestamp: Option<u64>,
+    pub num_recently_executed_proposals: Option<u64>,
     pub num_recently_submitted_proposals: Option<u64>,
+    pub genesis_timestamp_seconds: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum GetMetricsResult {
@@ -1003,6 +1024,9 @@ impl Service {
     }
     pub async fn get_metrics(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
         ic_cdk::call(self.0, "get_metrics", (arg0,)).await
+    }
+    pub async fn get_metrics_replicated(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
+        ic_cdk::call(self.0, "get_metrics_replicated", (arg0,)).await
     }
     pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
         ic_cdk::call(self.0, "get_mode", (arg0,)).await

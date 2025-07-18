@@ -7,6 +7,7 @@ use super::ic_sns_root::ListSnsCanistersResponse;
 use super::ic_sns_swap::{GetSaleParametersResponse, GetStateResponse};
 use super::ic_sns_wasm::DeployedSns;
 use super::{CandidType, Deserialize};
+use crate::types::ic_sns_governance::{GetMetricsResponse, RewardEvent};
 use crate::types::ic_sns_swap::{GetDerivedStateResponse, GetInitResponse, GetLifecycleResponse};
 use candid::Nat;
 use ic_cdk::api::management_canister::provisional::CanisterId;
@@ -44,6 +45,11 @@ pub struct UpstreamData {
     pub list_sns_canisters: ListSnsCanistersResponse,
     /// Governance metadata such as token name and logo.
     pub meta: GetMetadataResponse,
+    /// Governance metrics such as the last ledger block timestamp and
+    /// number of recently submitted proposals.
+    pub metrics: Option<GetMetricsResponse>,
+    /// Latest voting reward distribution data.
+    pub latest_reward_event: Option<RewardEvent>,
     /// Governance functions.
     pub parameters: ListNervousSystemFunctionsResponse,
     /// Governance parameters such as tokenomics.
