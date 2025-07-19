@@ -38,6 +38,10 @@ describe("StakedTokensCard", () => {
   };
 
   describe("when not signed in", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+    });
+
     const icpProject: TableProject = {
       ...mockTableProject,
       stakeInUsd: undefined,
@@ -134,6 +138,10 @@ describe("StakedTokensCard", () => {
   });
 
   describe("when signed in", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+    });
+
     const icpProject: TableProject = {
       ...mockTableProject,
       stakeInUsd: 100,
@@ -373,10 +381,6 @@ describe("StakedTokensCard", () => {
   });
 
   describe("APY feature flag", () => {
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
-    });
-
     describe("when not signed in", () => {
       const icpProject: TableProject = {
         ...mockTableProject,
