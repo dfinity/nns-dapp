@@ -935,6 +935,12 @@ interface I18nLaunchpad {
   upcoming_launches: string;
   launched_projects: string;
   participated_projects: string;
+  banner_title: string;
+  banner_text: string;
+  banner_link: string;
+  banner_raised_by: string;
+  banner_launched: string;
+  banner_proposals_executed: string;
 }
 
 interface I18nLaunchpad_cards {

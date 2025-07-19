@@ -899,7 +899,13 @@
     "subheadline": "See upcoming and available SNS projects",
     "upcoming_launches": "New Launches and Proposals",
     "launched_projects": "Launched Projects",
-    "participated_projects": "My SNS Participation"
+    "participated_projects": "My SNS Participation",
+    "banner_title": "Discover SNS Projects",
+    "banner_text": "Find upcoming projects and innovations, existing communities as products. Now featuring development over time, connecting communities. Get involved or realize your own idea!",
+    "banner_link": "Visit Launchpad",
+    "banner_raised_by": "Raised by projects",
+    "banner_launched": "SNS DAOs launched",
+    "banner_proposals_executed": "Proposals executed"
   },
   "launchpad_cards": {
     "ongoing_funded_of_min": "Funded of Min",
