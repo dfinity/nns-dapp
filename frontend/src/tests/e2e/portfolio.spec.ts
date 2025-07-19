@@ -40,6 +40,16 @@ test("Visual test Landing Page", async ({ page, browser }) => {
     replacements: ["3 days. 14 hours"],
   });
 
+  // Add CSS to disable skeleton animations
+  await page.addStyleTag({
+    content: `
+      [data-tid="apy-fallback-card"] .skeleton {
+        animation: none !important;
+        background: red !important;
+      }
+    `,
+  });
+
   // The governance metrics are only updated once a day so for the first 24h
   // after a snapshot is created, the metrics might be different than what
   // we expectand we need to replace them with the expected value.
@@ -58,6 +68,13 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   step("New user is signed in");
   await signInWithNewUser({ page, context: browser.contexts()[0] });
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="apy-fallback-card"]'],
+    pattern: /.*/,
+    replacements: ["<div>APY Fallback Card</div>"],
+  });
 
   step("Get some ICP and BTC");
   await page.goto("/tokens");
