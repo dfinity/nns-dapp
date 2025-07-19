@@ -58,6 +58,8 @@ export type BusyStateInitiatorType =
   | "refresh-voting-power"
   | "change-neuron-visibility"
   | "reporting-neurons"
+  | "fav-project-adding"
+  | "fav-project-removing"
   | "reporting-transactions";
 
 export interface BusyState {

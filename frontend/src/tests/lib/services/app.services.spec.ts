@@ -1,5 +1,6 @@
 import { clearSnsAggregatorCache } from "$lib/api-services/sns-aggregator.api-service";
 import * as agent from "$lib/api/agent.api";
+import * as favProjectsApi from "$lib/api/fav-projects.api";
 import * as governanceApi from "$lib/api/governance.api";
 import * as aggregatorApi from "$lib/api/sns-aggregator.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
@@ -19,6 +20,8 @@ import type { HttpAgent } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/ledger-icp";
 import { get } from "svelte/store";
+
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/sns-aggregator.api");
@@ -146,6 +149,46 @@ describe("app-services", () => {
     expect(spyLoadImportedTokens).toHaveBeenCalledWith({
       ignoreAccountNotFoundError: true,
     });
+  });
+
+  it("should load fav projects", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_LAUNCHPAD_REDESIGN", true);
+    const spyGetFavProjects = vi
+      .spyOn(favProjectsApi, "getFavProjects")
+      .mockResolvedValue({
+        fav_projects: [],
+      });
+
+    expect(spyGetFavProjects).toBeCalledTimes(0);
+
+    initAppPrivateData();
+    await runResolvedPromises();
+
+    expect(spyGetFavProjects).toHaveBeenCalledTimes(2);
+    expect(spyGetFavProjects).toHaveBeenCalledWith({
+      certified: false,
+      identity: mockIdentity,
+    });
+    expect(spyGetFavProjects).toHaveBeenCalledWith({
+      certified: true,
+      identity: mockIdentity,
+    });
+  });
+
+  it("should not load fav projects without feature flag", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_LAUNCHPAD_REDESIGN", false);
+    const spyGetFavProjects = vi
+      .spyOn(favProjectsApi, "getFavProjects")
+      .mockResolvedValue({
+        fav_projects: [],
+      });
+
+    expect(spyGetFavProjects).toBeCalledTimes(0);
+
+    initAppPrivateData();
+    await runResolvedPromises();
+
+    expect(spyGetFavProjects).toHaveBeenCalledTimes(0);
   });
 
   it("should load network economics", async () => {
