@@ -1,7 +1,6 @@
 <script lang="ts">
   import AddUserToHotkeys from "$lib/components/neurons/AddUserToHotkeys.svelte";
   import ConfirmDissolveDelay from "$lib/components/neurons/ConfirmDissolveDelay.svelte";
-  import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
   import NnsStakeNeuron from "$lib/components/neurons/NnsStakeNeuron.svelte";
   import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
@@ -9,10 +8,12 @@
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
+  import { ENABLE_NNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
+  import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import {
     WizardModal,
     wizardStepIndex,
@@ -39,10 +40,6 @@
     {
       name: "ConfirmDissolveDelay",
       title: $i18n.neurons.confirm_dissolve_delay,
-    },
-    {
-      name: "EditFollowNeurons",
-      title: $i18n.neurons.follow_neurons_screen,
     },
   ];
 
@@ -92,10 +89,6 @@
     },
     {
       stepName: "ConfirmDissolveDelay",
-      isNeuronInvalid: (neuron?: NeuronInfo) => neuron === undefined,
-    },
-    {
-      stepName: "EditFollowNeurons",
       isNeuronInvalid: (neuron?: NeuronInfo) => neuron === undefined,
     },
   ];
@@ -162,6 +155,13 @@
   const goEditFollowers = () => {
     modal.set(wizardStepIndex({ name: "EditFollowNeurons", steps }));
   };
+  const openEditFollowers = () => {
+    close();
+    openNnsNeuronModal({
+      type: $ENABLE_NNS_TOPICS ? "follow-by-topic" : "follow",
+      data: { neuron: newNeuron },
+    });
+  };
 </script>
 
 <WizardModal
@@ -170,9 +170,7 @@
   bind:currentStep
   bind:this={modal}
   on:nnsClose
-  --modal-content-overflow-y={currentStep?.name === "EditFollowNeurons"
-    ? "scroll"
-    : "auto"}
+  --modal-content-overflow-y={"auto"}
 >
   <svelte:fragment slot="title"
     >{currentStep?.title ?? $i18n.accounts.select_source}</svelte:fragment
@@ -216,14 +214,14 @@
         confirmButtonText={$i18n.neurons.confirm_set_delay}
         neuron={newNeuron}
         delayInSeconds={BigInt(Math.round(delayInSeconds))}
-        on:nnsUpdated={goNext}
+        on:nnsUpdated={openEditFollowers}
         on:nnsBack={modal.back}
       />
     {/if}
   {/if}
-  {#if currentStep?.name === "EditFollowNeurons"}
+  <!-- {#if currentStep?.name === "EditFollowNeurons"}
     {#if newNeuronId !== undefined}
       <EditFollowNeurons neuronId={newNeuronId} />
     {/if}
-  {/if}
+  {/if} -->
 </WizardModal>
