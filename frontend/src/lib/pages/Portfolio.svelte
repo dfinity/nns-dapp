@@ -4,6 +4,7 @@
   import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
   import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
+  import LaunchpadBanner from "$lib/components/portfolio/LaunchpadBanner.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
@@ -292,6 +293,10 @@
       />
     {/if}
   </div>
+
+  {#if $ENABLE_LAUNCHPAD_REDESIGN}
+    <LaunchpadBanner />
+  {/if}
 </main>
 
 <style lang="scss">
@@ -308,7 +313,7 @@
 
     @include media.min-width(large) {
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto auto auto 1fr;
       gap: var(--padding-3x);
       padding: var(--padding-3x);
     }
