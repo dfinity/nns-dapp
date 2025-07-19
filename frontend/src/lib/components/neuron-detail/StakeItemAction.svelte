@@ -15,13 +15,12 @@
 </script>
 
 <ItemAction testId="stake-item-action-component">
-  <UniverseLogo
-    slot="icon"
-    size="big"
-    {universe}
-    framed
-    horizontalPadding={false}
-  />
+  {#snippet icon()}<UniverseLogo
+      size="big"
+      {universe}
+      framed
+      horizontalPadding={false}
+    />{/snippet}
   <div class="content">
     <h4 class="token-value">
       <span data-tid="stake-value"
@@ -32,11 +31,11 @@
       {replacePlaceholders($i18n.neurons.ic_stake, { $token: token.symbol })}
     </p>
   </div>
-  <svelte:fragment slot="actions">
+  {#snippet actions()}
     {#if isIncreaseStakeAllowed}
       <IncreaseStakeButton on:increaseStake />
     {/if}
-  </svelte:fragment>
+  {/snippet}
 </ItemAction>
 
 <style lang="scss">

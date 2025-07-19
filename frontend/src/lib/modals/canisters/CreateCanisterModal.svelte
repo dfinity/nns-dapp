@@ -52,7 +52,7 @@
   ];
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
   let account: Account | undefined;
   let name = "";
   let amount: number | undefined;
@@ -108,12 +108,11 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  onClose={() => dispatcher("nnsClose")}
 >
-  <svelte:fragment slot="title"
-    ><span data-tid="create-canister-modal-title"
+  {#snippet title()}<span data-tid="create-canister-modal-title"
       >{currentStep?.title ?? $i18n.canisters.add_canister}</span
-    ></svelte:fragment
+    >{/snippet}
   >
   <svelte:fragment>
     {#if currentStep?.name === "SelectData"}

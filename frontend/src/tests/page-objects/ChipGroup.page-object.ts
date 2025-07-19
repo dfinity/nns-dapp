@@ -3,7 +3,7 @@ import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class ChipGroupPo extends BasePageObject {
-  private static TID = "chip-group-component";
+  private static TID = "gix-cmp-chip-group-component";
 
   static under(element: PageObjectElement): ChipGroupPo {
     return new ChipGroupPo(element.byTestId(ChipGroupPo.TID));

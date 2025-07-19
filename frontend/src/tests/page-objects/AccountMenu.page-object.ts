@@ -13,7 +13,7 @@ export class AccountMenuPo extends BasePageObject {
   }
 
   isOpen(): Promise<boolean> {
-    return this.isPresent("popover-component");
+    return this.isPresent("gix-cmp-popover-component");
   }
 
   openMenu(): Promise<void> {

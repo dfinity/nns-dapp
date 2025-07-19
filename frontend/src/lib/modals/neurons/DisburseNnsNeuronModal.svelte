@@ -52,7 +52,7 @@
   ];
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
   let loading = false;
   let amount: TokenAmountV2;
   $: amount = TokenAmountV2.fromUlps({
