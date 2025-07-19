@@ -40,6 +40,23 @@ test("Visual test Landing Page", async ({ page, browser }) => {
     replacements: ["3 days. 14 hours"],
   });
 
+  // Add CSS to disable skeleton animations
+  await page.addStyleTag({
+    content: `
+      *, *::before, *::after {
+        animation-duration: 0s !important;
+        animation-delay: 0s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0s !important;
+        transition-delay: 0s !important;
+      }
+
+      .skeleton {
+        background: #f0f0f0 !important;
+      }
+    `,
+  });
+
   // The governance metrics are only updated once a day so for the first 24h
   // after a snapshot is created, the metrics might be different than what
   // we expectand we need to replace them with the expected value.
