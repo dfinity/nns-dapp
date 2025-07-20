@@ -197,7 +197,7 @@
     !areWatchersSet
   ) {
     if (!derivedStateHasBuyersCount) {
-      // TODO: Remove once Dragginz, OC and SONIC support new fields in in SnsGetDerivedStateResponse
+      // TODO: Remove once Dragginz, OC and SONIC support new fields in SnsGetDerivedStateResponse
       loadSnsSwapMetrics({
         rootCanisterId: Principal.fromText(rootCanisterId),
         swapCanisterId,

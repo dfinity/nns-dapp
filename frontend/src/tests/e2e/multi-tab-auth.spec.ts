@@ -51,7 +51,7 @@ test("Test multi-tab auth", async ({ page: page1, context }) => {
   // When signed in, the landing page shows the portfolio page.
   await page1.goto("/");
 
-  //TODO: Remove once the the feature flag is in PROD
+  //TODO: Remove once the feature flag is in PROD
   await expect(page1).toHaveTitle(/.*\s\|\sNetwork Nervous System/);
 
   await page1.reload();

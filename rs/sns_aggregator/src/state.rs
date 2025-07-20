@@ -262,7 +262,7 @@ impl State {
 
     /// Creates a page of "slow data".
     ///
-    /// This shall be used for the the "latest" and paginated responses, so that the response is consistent.
+    /// This shall be used for the "latest" and paginated responses, so that the response is consistent.
     fn slow_data_asset_v1(slow_data: &[SlowSnsData]) -> Asset {
         let json_data = serde_json::to_string(&slow_data).unwrap_or_default();
         Asset {
