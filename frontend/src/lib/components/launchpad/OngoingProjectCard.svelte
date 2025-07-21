@@ -145,21 +145,21 @@
     right: -40px;
     bottom: -40px;
 
-    @include media.min-width(medium) {
+    @include media.min-width(small) {
       right: -60px;
       bottom: -60px;
     }
 
     &--mobile {
       display: block;
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         display: none;
       }
     }
 
     &--desktop {
       display: none;
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         display: block;
       }
     }
@@ -176,7 +176,7 @@
       @include portfolio.card-tag;
 
       --logo-size: var(--padding-4x);
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         --logo-size: 40px;
       }
 
@@ -252,7 +252,7 @@
         color: var(--button-secondary-color);
 
         display: none;
-        @include media.min-width(medium) {
+        @include media.min-width(small) {
           display: flex;
         }
 
