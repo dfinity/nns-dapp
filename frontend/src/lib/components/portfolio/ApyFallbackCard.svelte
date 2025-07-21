@@ -156,7 +156,7 @@
   .card {
     height: 100%;
     box-sizing: border-box;
-    background-color: var(--background);
+    background-color: var(--card-background-tint);
     box-shadow: var(--box-shadow);
     border-radius: 12px;
     overflow: hidden;

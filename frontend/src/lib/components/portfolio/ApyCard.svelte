@@ -123,7 +123,7 @@
           )}
         />
       </span>
-      <span class="main-value bigger" data-tid="staking-power"
+      <span class="main-value" data-tid="staking-power"
         >{stakingPowerPercentage}</span
       >
     </div>
@@ -178,19 +178,8 @@
         font-weight: 450;
         line-height: 32px;
 
-        &.bigger {
-          font-size: 30px;
-          line-height: 30px;
-          font-weight: 400;
-        }
-
         @include media.min-width(medium) {
           font-size: 27px;
-
-          &.bigger {
-            font-size: 40px;
-            line-height: 40px;
-          }
         }
       }
 
@@ -225,7 +214,7 @@
   .card {
     height: 100%;
     box-sizing: border-box;
-    background-color: var(--background);
+    background-color: var(--card-background-tint);
 
     box-shadow: var(--box-shadow);
 
