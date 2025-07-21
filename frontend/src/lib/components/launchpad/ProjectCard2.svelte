@@ -219,7 +219,7 @@
       @include launchpad.text_h5;
       @include text.clamp(2);
 
-      margin-top: 0;
+      margin: 0;
       color: var(--color-text-secondary);
     }
 
