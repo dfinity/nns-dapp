@@ -58,7 +58,7 @@
     </button>
   </div>
 
-  <ChipGroup {chips} onSelect={onNnsSelect} />
+  <ChipGroup {chips} {onSelect} />
 </div>
 
 <style lang="scss">
