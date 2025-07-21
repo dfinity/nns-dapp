@@ -97,7 +97,6 @@
         width: 100px;
 
         @include media.min-width(medium) {
-          height: 36px;
           max-width: 140px;
         }
       }
