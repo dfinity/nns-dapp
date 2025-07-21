@@ -86,7 +86,9 @@
       </div>
     </div>
 
-    <div class="description"><p>{description}</p></div>
+    <div class="description"
+      ><p data-tid="project-description">{description}</p></div
+    >
     <ul class="stats">
       <li class="stat-item">
         <h6 class="stat-label"
