@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test merge neurons", async ({ page, context }) => {
   await page.goto("/");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -93,7 +93,7 @@ test("Test merge neurons", async ({ page, context }) => {
   // Reload the page in case we would only know the neuron because it was still
   // in the store from before.
   await page.goto("/");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await appPo.goToNnsMainAccountWallet();
   const transactionList = appPo
     .getWalletPo()

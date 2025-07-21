@@ -12,7 +12,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test proposals", async ({ page, context }) => {
   await page.goto("/");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await expect(page).toHaveTitle("Portfolio | Network Nervous System");
 
   await signInWithNewUser({ page, context });

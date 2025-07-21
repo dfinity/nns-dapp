@@ -15,7 +15,7 @@ test("Test imported tokens", async ({ page, context }) => {
   const testIndexCanisterId = await dfxCanisterId("ckred_index");
 
   await page.goto("/tokens");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);

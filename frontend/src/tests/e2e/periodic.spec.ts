@@ -15,7 +15,7 @@ test("Test periodic confirmation", async ({ page, context }) => {
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
 
   await page.goto("/tokens");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await expect(page).toHaveTitle("Tokens | Network Nervous System");
 
   step("Sign in");

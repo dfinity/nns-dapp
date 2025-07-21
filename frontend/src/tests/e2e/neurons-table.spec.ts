@@ -26,7 +26,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const page = await context.newPage();
 
   await page.goto("/");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
@@ -66,7 +66,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
 
 test("Test neurons table", async ({ page, context, browser }) => {
   await page.goto("/canisters");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await expect(page).toHaveTitle("Canisters | Network Nervous System");
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));

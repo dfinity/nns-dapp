@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test canisters", async ({ page, context }) => {
   await page.goto("/");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);

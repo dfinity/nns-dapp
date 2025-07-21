@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test SNS governance", async ({ page, context }) => {
   await page.goto("/tokens");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);

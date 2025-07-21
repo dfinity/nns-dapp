@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test disburse neuron", async ({ page, context }) => {
   await page.goto("/");
-  await disableCssAnimations(page);
+  await await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);

@@ -10,7 +10,7 @@ import { expect, test, type Page } from "@playwright/test";
 test.describe("Design", () => {
   test("Login", async ({ page }) => {
     await page.goto("/accounts");
-    disableCssAnimations(page);
+    await disableCssAnimations(page);
     await expect(page).toHaveTitle("Account | Network Nervous System");
     // Wait for balance in the first row of the table to make sure the screenshot is taken after the app is loaded.
     const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -28,7 +28,7 @@ test.describe("Design", () => {
 
   test("App loading spinner is removed", async ({ page }) => {
     await page.goto("/");
-    disableCssAnimations(page);
+    await disableCssAnimations(page);
     await expect(page).toHaveTitle("Portfolio | Network Nervous System");
 
     // Wait for the button to make sure the app is loaded
@@ -47,7 +47,7 @@ test.describe("Design", () => {
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage();
       await page.goto("/tokens");
-      disableCssAnimations(page);
+      await disableCssAnimations(page);
 
       await signInWithNewUser({ page, context: browser.contexts()[0] });
     });

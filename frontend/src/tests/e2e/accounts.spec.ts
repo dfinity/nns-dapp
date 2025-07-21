@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test accounts requirements", async ({ page, context }) => {
   await page.goto("/accounts");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
   await expect(page).toHaveTitle("Account | Network Nervous System");
 
   await signInWithNewUser({ page, context });

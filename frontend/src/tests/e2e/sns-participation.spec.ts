@@ -9,7 +9,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test SNS participation", async ({ page, context }) => {
   await page.goto("/");
-  disableCssAnimations(page);
+  await disableCssAnimations(page);
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
