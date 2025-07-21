@@ -32,6 +32,8 @@ test_exchange_rate() {
   dfx canister install nns-dapp --wasm "$NNS_DAPP_WASM" --upgrade-unchanged --mode upgrade --yes -v --argument "$(cat "$NNS_DAPP_ARG")"
 
   actual_tvl="$(dfx canister call nns-dapp get_tvl | idl2json | jq -r '.Ok.tvl' | sed -e 's/_//g')"
+  raw="$(dfx canister call nns-dapp get_tvl)"
+  echo $raw
 
   if [[ "$actual_tvl" -ne "$expected_tvl" ]]; then
     echo "Expected TVL: $expected_tvl, Actual TVL: $actual_tvl"
