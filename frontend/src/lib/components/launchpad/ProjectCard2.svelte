@@ -86,9 +86,9 @@
       </div>
     </div>
 
-    <div class="description"
-      ><p data-tid="project-description">{description}</p></div
-    >
+    <div>
+      <p class="description" data-tid="project-description">{description}</p>
+    </div>
     <ul class="stats">
       <li class="stat-item">
         <h6 class="stat-label"
@@ -216,13 +216,11 @@
     }
 
     .description {
-      p {
-        @include launchpad.text_h5;
-        @include text.clamp(2);
+      @include launchpad.text_h5;
+      @include text.clamp(2);
 
-        margin-top: 0;
-        color: var(--color-text-secondary);
-      }
+      margin-top: 0;
+      color: var(--color-text-secondary);
     }
 
     .stats {
