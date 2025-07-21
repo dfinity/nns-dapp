@@ -34,7 +34,7 @@
 
   const orderBy = async (selectedColumnId: string) =>
     (order = selectPrimaryOrder({ order, selectedColumnId }));
-  const onNnsSelect = (selectedId: string) => orderBy(selectedId);
+  const onSelect = (selectedId: string) => orderBy(selectedId);
   const reverseOrder = () => orderBy(order[0].columnId);
 </script>
 
