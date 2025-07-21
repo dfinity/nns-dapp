@@ -59,7 +59,7 @@
   let steps: WizardSteps = [firstStep, ...lastSteps];
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
 
   let selectedAccount: Account | undefined;
 
@@ -169,14 +169,13 @@
   {steps}
   bind:currentStep
   bind:this={modal}
-  on:nnsClose
+  onClose={() => dispatcher("nnsClose")}
   --modal-content-overflow-y={currentStep?.name === "EditFollowNeurons"
     ? "scroll"
     : "auto"}
 >
-  <svelte:fragment slot="title"
-    >{currentStep?.title ?? $i18n.accounts.select_source}</svelte:fragment
-  >
+  {#snippet title()}{currentStep?.title ??
+      $i18n.accounts.select_source}{/snippet}
   {#if currentStep?.name === "StakeNeuron"}
     <NnsStakeNeuron
       bind:account={selectedAccount}

@@ -8,6 +8,7 @@
     type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@dfinity/principal";
+  import { createEventDispatcher } from "svelte";
 
   const steps: WizardSteps = [
     {
@@ -21,17 +22,23 @@
   ];
 
   let currentStep: WizardStep | undefined;
-  let modal: WizardModal;
+  let modal: WizardModal<string>;
   let principal: Principal | undefined = undefined;
 
   const next = () => modal.next();
+
+  const dispatcher = createEventDispatcher();
 </script>
 
-<WizardModal {steps} bind:currentStep bind:this={modal} on:nnsClose>
-  <svelte:fragment slot="title"
-    ><span data-tid="add-controller-canister-modal-title"
+<WizardModal
+  {steps}
+  bind:currentStep
+  bind:this={modal}
+  onClose={() => dispatcher("nnsClose")}
+>
+  {#snippet title()}<span data-tid="add-controller-canister-modal-title"
       >{currentStep?.title ?? $i18n.canister_detail.add_controller}</span
-    ></svelte:fragment
+    >{/snippet}
   >
   <svelte:fragment>
     {#if currentStep?.name === "EnterController"}
