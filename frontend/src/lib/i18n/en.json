@@ -338,6 +338,9 @@
     "title": "Stake and earn voting rewards",
     "text": "Earn voting rewards by staking your tokens in neurons. Neurons allow you to participate in governance of the Internet Computer, and DAOs deployed on the Internet Computer.",
     "nervous_systems": "Nervous Systems",
+    "nervous_systems_nns": "NNS DAO",
+    "nervous_systems_sns": "SNS DAOs",
+    "nervous_systems_sns_sunset": "Sunset SNS DAOs",
     "hide_no_neurons_header": "Neurons",
     "hide_no_neurons_toggle_label": "Hide projects with 0 neurons",
     "hide_no_neurons_table_hint": "Projects with 0 neurons are hidden.",
@@ -896,13 +899,19 @@
     "subheadline": "See upcoming and available SNS projects",
     "upcoming_launches": "New Launches and Proposals",
     "launched_projects": "Launched Projects",
-    "participated_projects": "My SNS Participation"
+    "participated_projects": "My SNS Participation",
+    "banner_title": "Discover SNS Projects",
+    "banner_text": "Find upcoming projects and innovations, existing communities as products. Now featuring development over time, connecting communities. Get involved or realize your own idea!",
+    "banner_link": "Visit Launchpad",
+    "banner_raised_by": "Raised by projects",
+    "banner_launched": "SNS DAOs launched",
+    "banner_proposals_executed": "Proposals executed"
   },
   "launchpad_cards": {
     "ongoing_funded_of_min": "Funded of Min",
     "ongoing_min_icp": "Min, ICP",
     "ongoing_cap_icp": "Cap, ICP",
-    "project_card_token_price": "Token Price",
+    "project_card_market_cap": "Market Cap",
     "project_card_icp_in_treasury": "ICP in Treasury",
     "project_card_my_participation": "My Participation",
     "project_card_proposal_activity": "Proposal Activity",
@@ -1060,6 +1069,9 @@
     "is_important": "This token is already in the token list.",
     "is_icp": "You cannot import ICP.",
     "invalid_canister_id": "Importing the token was unsuccessful because \"$canisterId\" is not a valid canister ID. Please verify the ID and retry."
+  },
+  "error__fav_projects": {
+    "too_many": "You can't add more than $limit favorite projects."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
@@ -1242,6 +1254,10 @@
   },
   "tokens": {
     "projects_header": "Projects",
+    "projects_header_icp": "ICP Token",
+    "projects_header_ck": "ckTokens",
+    "projects_header_sns": "SNS Tokens",
+    "projects_header_imported": "Imported Tokens",
     "balance_header": "Balance",
     "accounts_header": "Accounts",
     "settings_button": "Open tokens settings",
@@ -1306,7 +1322,7 @@
     "staked_tokens_card_list_second_column_apy_first": "APY",
     "staked_tokens_card_list_second_column_apy_second": "(max APY)",
     "staked_tokens_card_list_third_column": "Staked",
-    "staked_tokens_card_apy_tooltip": "APY (Annual Percentage Yield) shows how much you can earn in a year with your current setup. Max APY is the highest possible yearly return you could get if you optimized your participation.",
+    "staked_tokens_card_apy_tooltip": "APY (Annual Percentage Yield) shows how much you can earn in a year with your current setup. Max APY is the highest possible yearly return you could get if you optimized your settings.",
     "staked_tokens_card_info_row": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
     "total_assets_title": "Total Holdings",
     "project_status_open": "Ongoing",
@@ -1329,10 +1345,14 @@
     "apy_card_title": "Staking Rewards",
     "apy_card_reward_title": "Reward Balance",
     "apy_card_power_title": "Staking Ratio",
-    "apy_card_link": "View Staked",
+    "apy_card_link_view": "View Staked",
+    "apy_card_link_start": "Start Staking",
     "apy_card_estimation": "7d estimate",
     "apy_card_error": "Unable to load rewards",
-    "apy_card_tooltip": "Maturity is an attribute of a neuron; it is not a tradable asset. To generate ICP from maturity, users need to trigger a non-deterministic process subject to a changing maturity modulation function. The dollar value reflects an estimate assuming a modulation of 0%."
+    "apy_card_tooltip_reward_balance": "Rewards are given in maturity. Maturity is an attribute of a neuron, it is not a tradable asset. To generate tokens from maturity, users need to trigger a non-deterministic process subject to a changing maturity modulation function. The dollar value reflects an estimate assuming a modulation of 0%",
+    "apy_card_tooltip_staking_ratio": "The ratio of the total stake (including staked maturity), compared to all holdings and rewards:\n$totalStaked / ($totalHoldings + $totalRewards) = $ratio",
+    "apy_card_tooltip_no_rewards": "This project is currently not generating rewards.",
+    "apy_card_tooltip_error": "Unable to calculate the rewards for this project."
   },
   "highlight": {
     "disburse_maturity_title": "Farewell, Spawn Neuron!",

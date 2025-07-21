@@ -2,11 +2,16 @@
   import CardList from "$lib/components/launchpad/CardList.svelte";
   import ProjectCard2 from "$lib/components/launchpad/ProjectCard2.svelte";
   import SkeletonProjectCard from "$lib/components/launchpad/SkeletonProjectCard.svelte";
+  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { ComponentWithProps } from "$lib/types/svelte";
-  import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
+  import {
+    compareLaunchpadSnsProjects,
+    getUpcomingLaunchesCards,
+  } from "$lib/utils/launchpad.utils";
   import {
     comparesByDecentralizationSaleOpenTimestampDesc,
     filterProjectsStatus,
@@ -42,6 +47,12 @@
       .filter(
         ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
       )
+      .sort(
+        compareLaunchpadSnsProjects({
+          snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
+          icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
+        })
+      )
       .map((project) => ({
         Component: ProjectCard2 as unknown as Component,
         props: { project },
@@ -53,6 +64,12 @@
         ({ swapCommitment }) =>
           isNullish(getCommitmentE8s(swapCommitment)) ||
           getCommitmentE8s(swapCommitment) === 0n
+      )
+      .sort(
+        compareLaunchpadSnsProjects({
+          snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
+          icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
+        })
       )
       .map((project) => ({
         Component: ProjectCard2 as unknown as Component,

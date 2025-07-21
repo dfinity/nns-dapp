@@ -14,7 +14,7 @@ test("Test SNS governance", async ({ page, context }) => {
   const snsUniverseRows = await appPo
     .getTokensPo()
     .getTokensPagePo()
-    .getTokensTable()
+    .getSnsTokensTable()
     .getSnsRows();
   expect(snsUniverseRows.length).toBeGreaterThanOrEqual(1);
   const snsProjectName = await snsUniverseRows[0].getProjectName();
@@ -29,7 +29,7 @@ test("Test SNS governance", async ({ page, context }) => {
   const snsUniverseRow = await appPo
     .getTokensPo()
     .getTokensPagePo()
-    .getTokensTable()
+    .getSnsTokensTable()
     .getRowByName(snsProjectName);
   expect(await snsUniverseRow.getBalanceNumber()).toEqual(askedAmount);
 

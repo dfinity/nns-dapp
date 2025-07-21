@@ -4,7 +4,7 @@ import Portfolio from "$lib/pages/Portfolio.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { TableProject } from "$lib/types/staking";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
-import type { StakingRewardData } from "$lib/utils/staking-rewards.utils";
+import type { StakingRewardResult } from "$lib/utils/staking-rewards.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -37,14 +37,14 @@ describe("Portfolio page", () => {
     snsProjects = [],
     openSnsProposals = [],
     adoptedSnsProposals = [],
-    stakingRewardData = { loading: true },
+    stakingRewardResult = { loading: true },
   }: {
     userTokens?: UserToken[];
     tableProjects?: TableProject[];
     snsProjects?: SnsFullProject[];
     openSnsProposals?: ProposalInfo[];
     adoptedSnsProposals?: SnsFullProject[];
-    stakingRewardData?: StakingRewardData;
+    stakingRewardResult?: StakingRewardResult;
   } = {}) => {
     const { container } = render(Portfolio, {
       props: {
@@ -53,7 +53,7 @@ describe("Portfolio page", () => {
         snsProjects,
         openSnsProposals,
         adoptedSnsProposals,
-        stakingRewardData,
+        stakingRewardResult,
       },
     });
 
@@ -247,6 +247,7 @@ describe("Portfolio page", () => {
     it("should show a full width TotalAssetsCard when no stacked cards", async () => {
       const po = renderPage();
       const totalAssetsCardPo = po.getTotalAssetsCardPo();
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
 
       expect(await totalAssetsCardPo.isPresent()).toBe(true);
       expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
@@ -647,7 +648,7 @@ describe("Portfolio page", () => {
 
     it("should show first on going swaps, then open proposals, and then adopted proposals", async () => {
       const po = renderPage({
-        snsProjects: mockSnsProjects,
+        snsProjects: mockSnsProjects.slice(0, 1),
         openSnsProposals: mockSnsProposals.slice(0, 1),
         adoptedSnsProposals: mockSnsProjects.slice(1, 2),
       });
@@ -891,6 +892,7 @@ describe("Portfolio page", () => {
 
     describe("StakedTokensCard", () => {
       it("should display the top staked tokens by staked balance in Usd with InternetComputer as first", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
           tableProjects: [
             tableProject1,
@@ -942,6 +944,7 @@ describe("Portfolio page", () => {
       });
 
       it("should display the information row when the staked tokens card has less items than the held tokens card", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
           tableProjects: [tableProject1, tableProject2],
           userTokens: [token1, token2, token3, token4],
@@ -1102,7 +1105,7 @@ describe("Portfolio page", () => {
 
       it("should show fallback Apy card while data loads", async () => {
         const po = renderPage({
-          stakingRewardData: {
+          stakingRewardResult: {
             loading: true,
           },
         });
@@ -1120,7 +1123,7 @@ describe("Portfolio page", () => {
       it("should not show ApyCard if FF is off", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
-          stakingRewardData: {
+          stakingRewardResult: {
             loading: true,
           },
         });
@@ -1131,7 +1134,7 @@ describe("Portfolio page", () => {
 
       it("should show fallback Apy card with an error when calculation fails", async () => {
         const po = renderPage({
-          stakingRewardData: {
+          stakingRewardResult: {
             loading: false,
             error: "Failed to load data",
           },
@@ -1151,7 +1154,7 @@ describe("Portfolio page", () => {
         const po = renderPage({
           userTokens: [token1, token2],
           tableProjects: [icpProject, tableProject1],
-          stakingRewardData: {
+          stakingRewardResult: {
             loading: false,
             apy: new Map(),
             rewardBalanceUSD: 10,
@@ -1167,9 +1170,6 @@ describe("Portfolio page", () => {
         expect(await po.getApyCardPo().getProjectionAmount()).toBe("~$1.00");
         expect(await po.getApyCardPo().getStakingPowerPercentage()).toBe(
           "10.00%"
-        );
-        expect(await po.getApyCardPo().getTotalStakingPowerUSD()).toBe(
-          "$100.00 (of $600.00)"
         );
       });
     });

@@ -32,7 +32,7 @@ export const icpTokenBase: UserTokenBase = {
   actions: [],
 };
 const icpHref = `/accounts/?u=${OWN_CANISTER_ID_TEXT}`;
-const icpTokenNoBalance: UserTokenData = {
+export const icpTokenNoBalance: UserTokenData = {
   ...icpTokenBase,
   balance: new UnavailableTokenAmount(NNS_TOKEN_DATA),
   token: NNS_TOKEN_DATA,
@@ -143,6 +143,40 @@ export const userTokensPageMock: UserTokenData[] = [
     actions: [UserTokenAction.Send, UserTokenAction.Receive],
     rowHref: `/wallet/?u=${principal(1).toText()}`,
     domKey: `/wallet/?u=${principal(1).toText()}`,
+  },
+];
+
+export const newUserTokensPageMock: UserTokenData[] = [
+  {
+    ...icpTokenNoBalance,
+    actions: [UserTokenAction.GoToDetail],
+  },
+  {
+    ...ckBTCTokenBase,
+    balance: new UnavailableTokenAmount(mockCkBTCToken),
+    token: mockCkBTCToken,
+    fee: TokenAmountV2.fromUlps({
+      amount: mockCkBTCToken.fee,
+      token: mockCkBTCToken,
+    }),
+    actions: [UserTokenAction.Send, UserTokenAction.Receive],
+    rowHref: ckBTCHref,
+    domKey: ckBTCHref,
+  },
+  {
+    universeId: principal(0),
+    ledgerCanisterId: principal(2),
+    title: "Test SNS",
+    balance: new UnavailableTokenAmount(snsTetrisToken),
+    token: snsTetrisToken,
+    fee: TokenAmountV2.fromUlps({
+      amount: snsTetrisToken.fee,
+      token: snsTetrisToken,
+    }),
+    logo: "sns-logo.svg",
+    actions: [UserTokenAction.Send, UserTokenAction.Receive],
+    rowHref: `/wallet/?u=${principal(0).toText()}`,
+    domKey: `/wallet/?u=${principal(0).toText()}`,
   },
 ];
 

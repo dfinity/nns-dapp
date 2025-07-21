@@ -2,13 +2,22 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+  import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
-  import { formatUsdValue } from "$lib/utils/format.utils";
-  import { snsProjectWeeklyProposalActivity } from "$lib/utils/projects.utils";
+  import {
+    compactCurrencyNumber,
+    formatPercentage,
+  } from "$lib/utils/format.utils";
+  import {
+    snsProjectIcpInTreasuryPercentage,
+    snsProjectMarketCap,
+    snsProjectWeeklyProposalActivity,
+  } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
     IconAccountBalance,
@@ -29,28 +38,22 @@
   const { summary, swapCommitment, rootCanisterId } = $derived(project);
   const {
     metadata: { logo, name, description },
-    ledgerCanisterId,
   } = $derived(summary);
   const href = $derived(
     `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
   );
-  const formattedTokenPriceUsd = $derived.by(() => {
-    const tokenPriceUsd =
-      nonNullish(ledgerCanisterId) &&
-      nonNullish($icpSwapUsdPricesStore) &&
-      $icpSwapUsdPricesStore !== "error"
-        ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
-        : undefined;
+  const formattedMarketCapUsd = $derived.by(() => {
+    const marketCap = snsProjectMarketCap({
+      sns: project,
+      snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
+      icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
+    });
 
-    if (isNullish(tokenPriceUsd)) {
-      return "$-/-";
-    }
-    return formatUsdValue(tokenPriceUsd);
+    if (isNullish(marketCap)) return PRICE_NOT_AVAILABLE_PLACEHOLDER;
+
+    return compactCurrencyNumber(marketCap);
   });
-  const icpInTreasury = $derived.by(() => {
-    // TODO(launchpad2): should be available after aggregator upgrade
-    return "-/-%";
-  });
+  const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
     const myCommitment = getCommitmentE8s(swapCommitment);
     if (isNullish(myCommitment)) {
@@ -88,22 +91,37 @@
     <ul class="stats">
       <li class="stat-item">
         <h6 class="stat-label"
-          >{$i18n.launchpad_cards.project_card_token_price}</h6
+          >{$i18n.launchpad_cards.project_card_market_cap}</h6
         >
         <div class="stat-value">
           <IconCoin size="16px" />
-          <span data-tid="token-price-value">{formattedTokenPriceUsd}</span>
+          <span data-tid="token-market-cap">${formattedMarketCapUsd}</span>
         </div>
       </li>
+      <li class="stat-divider"></li>
       <li class="stat-item">
         <h6 class="stat-label"
           >{$i18n.launchpad_cards.project_card_icp_in_treasury}</h6
         >
         <div class="stat-value">
           <IconAccountBalance size="16px" />
-          <span data-tid="icp-in-treasury-value">{icpInTreasury}</span>
+          {#if nonNullish(icpInTreasury)}
+            <span data-tid="icp-in-treasury-value"
+              >{icpInTreasury > 1
+                ? ">100%"
+                : formatPercentage(icpInTreasury, {
+                    minFraction: 0,
+                    maxFraction: 2,
+                  })}</span
+            >
+          {:else}
+            <span data-tid="icp-in-treasury-not-applicable"
+              >{$i18n.core.not_applicable}</span
+            >
+          {/if}
         </div>
       </li>
+      <li class="stat-divider"></li>
       <li class="stat-item">
         {#if userHasParticipated && nonNullish(userCommitmentIcp)}
           <h6 class="stat-label"
@@ -163,6 +181,12 @@
     // Make the last row always be at the bottom of the card
     grid-template-rows: auto auto 1fr;
 
+    @include media.min-width(medium) {
+      // Make also the stats row always be at the bottom of the card
+      // so they looks aligned horizontally when a project has no/short description.
+      grid-template-rows: auto 1fr auto;
+    }
+
     &.userHasParticipated .stats .stat-item {
       border-right-color: var(--tertiary);
     }
@@ -183,6 +207,7 @@
       }
 
       .fav-icon {
+        display: none;
         @include media.min-width(medium) {
           display: none;
         }
@@ -208,22 +233,21 @@
         margin-top: 0;
       }
 
+      .stat-divider {
+        width: 0;
+        border-right: 1px solid var(--elements-divider);
+        margin: 0 var(--padding);
+      }
+
       .stat-item {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         gap: var(--padding-0_5x);
 
-        padding: 0 var(--padding);
-        border-right: 1px solid var(--elements-divider);
-
-        &:first-child {
-          padding-left: 0;
-        }
-        &:last-child {
-          padding-right: 0;
-          border-right: none;
-        }
+        // Make sure the stat item is at least as wide as the average entry
+        // so that the stats are visually aligned.
+        min-width: 78px;
 
         h6 {
           @include launchpad.text_h6;
@@ -254,6 +278,10 @@
 
       @include media.min-width(medium) {
         display: flex;
+      }
+
+      button {
+        visibility: hidden;
       }
 
       .link,

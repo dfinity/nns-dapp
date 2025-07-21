@@ -8,12 +8,16 @@
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import {
+    abandonedProjectsCanisterId,
+    OWN_CANISTER_ID_TEXT,
+  } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
+  import { ENABLE_NEW_TABLES } from "$lib/stores/feature-flags.store";
   import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
@@ -29,49 +33,26 @@
     sortTableProjects,
   } from "$lib/utils/staking.utils";
   import { IconNeuronsPage } from "@dfinity/gix-components";
-  import { TokenAmountV2, isNullish } from "@dfinity/utils";
+  import { isNullish, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
   $: if ($authSignedInStore) {
     loadIcpSwapTickers();
   }
-
-  const columns: ProjectsTableColumn[] = [
-    {
-      id: "title",
-      title: $i18n.staking.nervous_systems,
-      cellComponent: ProjectTitleCell,
-      alignment: "left",
-      templateColumns: ["minmax(min-content, max-content)"],
-      comparator: compareByProject,
-    },
-    {
-      title: "",
-      alignment: "left",
-      templateColumns: ["1fr"],
-    },
+  let commonColumns: ProjectsTableColumn[] = [];
+  $: commonColumns = [
     {
       id: "stake",
       title: $i18n.neuron_detail.stake,
       cellComponent: ProjectStakeCell,
       alignment: "right",
-      templateColumns: ["max-content"],
-      comparator: compareByStake,
-    },
-    {
-      title: "",
-      alignment: "left",
       templateColumns: ["1fr"],
+      comparator: $authSignedInStore ? compareByStake : undefined,
     },
     {
       title: $i18n.neuron_detail.maturity_title,
       cellComponent: ProjectMaturityCell,
       alignment: "right",
-      templateColumns: ["max-content"],
-    },
-    {
-      title: "",
-      alignment: "left",
       templateColumns: ["1fr"],
     },
     {
@@ -79,14 +60,69 @@
       title: $i18n.neurons.title,
       cellComponent: ProjectNeuronsCell,
       alignment: "right",
-      templateColumns: ["max-content"],
-      comparator: compareByNeuron,
+      templateColumns: ["1fr"],
+      comparator: $authSignedInStore ? compareByNeuron : undefined,
     },
     {
       title: "",
       cellComponent: ProjectActionsCell,
       alignment: "right",
-      templateColumns: ["max-content"],
+      templateColumns: ["1fr"],
+    },
+  ];
+
+  let columns: ProjectsTableColumn[] = [];
+  $: columns = [
+    {
+      id: "title",
+      title: $i18n.staking.nervous_systems,
+      cellComponent: ProjectTitleCell,
+      alignment: "left",
+      templateColumns: ["2fr"],
+      comparator: $authSignedInStore ? compareByProject : undefined,
+    },
+    ...commonColumns,
+  ];
+
+  let nnsColumns: ProjectsTableColumn[] = [];
+  $: nnsColumns = [
+    {
+      id: "title",
+      title: $i18n.staking.nervous_systems_nns,
+      cellComponent: ProjectTitleCell,
+      alignment: "left",
+      templateColumns: ["2fr"],
+      comparator: $authSignedInStore ? compareByProject : undefined,
+    },
+    ...commonColumns,
+  ];
+
+  let snsColumns: ProjectsTableColumn[] = [];
+  $: snsColumns = [
+    {
+      id: "title",
+      title: $i18n.staking.nervous_systems_sns,
+      cellComponent: ProjectTitleCell,
+      alignment: "left",
+      templateColumns: ["2fr"],
+      comparator: $authSignedInStore ? compareByProject : undefined,
+    },
+    ...commonColumns,
+  ];
+
+  let sunsettedSnsColumns: ProjectsTableColumn[] = [];
+  $: sunsettedSnsColumns = [
+    {
+      id: "title",
+      title: $i18n.staking.nervous_systems_sns_sunset,
+      cellComponent: ProjectTitleCell,
+      alignment: "left",
+      templateColumns: ["2fr"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
     },
   ];
 
@@ -131,6 +167,21 @@
       (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
   );
 
+  let nnsNeurons: TableProject[] = [];
+  $: nnsNeurons = sortedTableProjects.filter(
+    (project) => project.universeId === OWN_CANISTER_ID_TEXT
+  );
+
+  let snsNeurons: TableProject[] = [];
+  $: snsNeurons = sortedTableProjects
+    .filter((p) => p.universeId !== OWN_CANISTER_ID_TEXT)
+    .filter((p) => !abandonedProjectsCanisterId.includes(p.universeId));
+
+  let sunsetSns: TableProject[] = [];
+  $: sunsetSns = sortedTableProjects.filter((p) =>
+    abandonedProjectsCanisterId.includes(p.universeId)
+  );
+
   const dispatcher = createEventDispatcher();
 
   const handleAction = ({
@@ -153,39 +204,116 @@
     </UsdValueBanner>
   {/if}
 
-  <ResponsiveTable
-    tableData={sortedTableProjects}
-    {columns}
-    on:nnsAction={handleAction}
-    bind:order={$projectsTableOrderStore}
-    displayTableSettings
-  >
-    <div slot="settings-popover">
-      {#if $authSignedInStore}
-        <HideZeroNeuronsToggle />
-        <Separator spacing="medium" />
-      {/if}
-    </div>
+  {#if $ENABLE_NEW_TABLES}
+    {#if !$authSignedInStore}
+      <ResponsiveTable
+        tableData={nnsNeurons}
+        columns={nnsColumns}
+        on:nnsAction={handleAction}
+      />
 
-    <div
-      slot="last-row"
-      class="last-row"
-      class:hidden={!shouldHideProjectsWithoutNeurons}
-    >
-      {#if shouldHideProjectsWithoutNeurons}
-        <div class="show-all-button-container">
-          {$i18n.staking.hide_no_neurons_table_hint}
-          <button
-            data-tid="show-all-button"
-            class="ghost show-all"
-            on:click={showAll}
-          >
-            {$i18n.staking.show_all}</button
-          >
-        </div>
+      <ResponsiveTable
+        tableData={snsNeurons}
+        columns={snsColumns}
+        on:nnsAction={handleAction}
+      />
+
+      {#if sunsetSns.length > 0}
+        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
       {/if}
-    </div>
-  </ResponsiveTable>
+    {:else}
+      <ResponsiveTable
+        tableData={nnsNeurons}
+        columns={nnsColumns}
+        on:nnsAction={handleAction}
+        bind:order={$projectsTableOrderStore}
+        displayTableSettings
+        testId="nns-projects-table-component"
+      >
+        <svelte:fragment slot="settings-popover">
+          <HideZeroNeuronsToggle />
+          <Separator spacing="none" />
+        </svelte:fragment>
+
+        <div
+          slot="last-row"
+          class="last-row"
+          class:hidden={!shouldHideProjectsWithoutNeurons}
+        >
+          {#if shouldHideProjectsWithoutNeurons}
+            <div class="show-all-button-container">
+              {$i18n.staking.hide_no_neurons_table_hint}
+              <button
+                data-tid="show-all-button"
+                class="ghost show-all"
+                on:click={showAll}
+              >
+                {$i18n.staking.show_all}</button
+              >
+            </div>
+          {/if}
+        </div>
+      </ResponsiveTable>
+
+      {#if snsNeurons.length > 0}
+        <ResponsiveTable
+          tableData={snsNeurons}
+          columns={snsColumns}
+          on:nnsAction={handleAction}
+          bind:order={$projectsTableOrderStore}
+          displayTableSettings
+          testId="sns-projects-table-component"
+        >
+          <svelte:fragment slot="settings-popover">
+            <HideZeroNeuronsToggle />
+            <Separator spacing="none" />
+          </svelte:fragment>
+        </ResponsiveTable>
+      {/if}
+
+      {#if $hideZeroNeuronsStore !== "hide" && sunsetSns.length > 0}
+        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
+      {/if}
+    {/if}
+  {:else if !$authSignedInStore}
+    <ResponsiveTable
+      tableData={sortedTableProjects}
+      {columns}
+      on:nnsAction={handleAction}
+    />
+  {:else}
+    <ResponsiveTable
+      tableData={sortedTableProjects}
+      {columns}
+      on:nnsAction={handleAction}
+      bind:order={$projectsTableOrderStore}
+      displayTableSettings
+    >
+      <svelte:fragment slot="settings-popover">
+        <HideZeroNeuronsToggle />
+        <Separator spacing="none" />
+      </svelte:fragment>
+
+      <div
+        slot="last-row"
+        class="last-row"
+        class:hidden={!shouldHideProjectsWithoutNeurons}
+      >
+        {#if shouldHideProjectsWithoutNeurons}
+          <div class="show-all-button-container">
+            {$i18n.staking.hide_no_neurons_table_hint}
+            <button
+              data-tid="show-all-button"
+              class="ghost show-all"
+              on:click={showAll}
+            >
+              {$i18n.staking.show_all}</button
+            >
+          </div>
+        {/if}
+      </div>
+    </ResponsiveTable>
+  {/if}
 </div>
 
 <style lang="scss">

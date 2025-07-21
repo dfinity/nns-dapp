@@ -351,6 +351,9 @@ interface I18nStaking {
   title: string;
   text: string;
   nervous_systems: string;
+  nervous_systems_nns: string;
+  nervous_systems_sns: string;
+  nervous_systems_sns_sunset: string;
   hide_no_neurons_header: string;
   hide_no_neurons_toggle_label: string;
   hide_no_neurons_table_hint: string;
@@ -932,13 +935,19 @@ interface I18nLaunchpad {
   upcoming_launches: string;
   launched_projects: string;
   participated_projects: string;
+  banner_title: string;
+  banner_text: string;
+  banner_link: string;
+  banner_raised_by: string;
+  banner_launched: string;
+  banner_proposals_executed: string;
 }
 
 interface I18nLaunchpad_cards {
   ongoing_funded_of_min: string;
   ongoing_min_icp: string;
   ongoing_cap_icp: string;
-  project_card_token_price: string;
+  project_card_market_cap: string;
   project_card_icp_in_treasury: string;
   project_card_my_participation: string;
   project_card_proposal_activity: string;
@@ -1107,6 +1116,10 @@ interface I18nError__imported_tokens {
   is_important: string;
   is_icp: string;
   invalid_canister_id: string;
+}
+
+interface I18nError__fav_projects {
+  too_many: string;
 }
 
 interface I18nError__sns {
@@ -1310,6 +1323,10 @@ interface I18nSync {
 
 interface I18nTokens {
   projects_header: string;
+  projects_header_icp: string;
+  projects_header_ck: string;
+  projects_header_sns: string;
+  projects_header_imported: string;
   balance_header: string;
   accounts_header: string;
   settings_button: string;
@@ -1399,10 +1416,14 @@ interface I18nPortfolio {
   apy_card_title: string;
   apy_card_reward_title: string;
   apy_card_power_title: string;
-  apy_card_link: string;
+  apy_card_link_view: string;
+  apy_card_link_start: string;
   apy_card_estimation: string;
   apy_card_error: string;
-  apy_card_tooltip: string;
+  apy_card_tooltip_reward_balance: string;
+  apy_card_tooltip_staking_ratio: string;
+  apy_card_tooltip_no_rewards: string;
+  apy_card_tooltip_error: string;
 }
 
 interface I18nHighlight {
@@ -1683,6 +1704,7 @@ interface I18n {
   error__account: I18nError__account;
   error__canister: I18nError__canister;
   error__imported_tokens: I18nError__imported_tokens;
+  error__fav_projects: I18nError__fav_projects;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
   auth_report: I18nAuth_report;

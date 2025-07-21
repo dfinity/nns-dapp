@@ -5,6 +5,7 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -21,7 +22,8 @@
     topStakedTokens: TableProject[];
     usdAmount: number;
     numberOfTopHeldTokens: number;
-    hasApyCalculationErrored?: boolean;
+    hasApyCalculationErrored: boolean;
+    isApyLoading?: boolean;
   };
 
   const {
@@ -29,6 +31,7 @@
     usdAmount,
     numberOfTopHeldTokens,
     hasApyCalculationErrored,
+    isApyLoading,
   }: Props = $props();
 
   const href = AppPath.Staking;
@@ -66,14 +69,12 @@
         >
 
         {#if showApy}
-          <span
-            class="mobile-only justify-end text-right align-center"
-            role="columnheader"
+          <span class="apy-label" role="columnheader"
             ><span>
               {$i18n.portfolio
                 .staked_tokens_card_list_second_column_mobile_apy_first}
             </span><span class="description"
-              >/{$i18n.portfolio
+              >{$i18n.portfolio
                 .staked_tokens_card_list_second_column_mobile_apy_second}
             </span>
           </span>
@@ -112,16 +113,19 @@
       <div class="list" role="rowgroup">
         {#each topStakedTokens as stakedToken (stakedToken.domKey)}
           {@const apy = stakedToken.apy}
+          {@const isIcpToken =
+            stakedToken.universeId === OWN_CANISTER_ID.toText()}
           <svelte:element
             this={$authSignedInStore ? "a" : "div"}
             href={$authSignedInStore ? stakedToken.rowHref : undefined}
             class="row"
+            class:icp-row={isIcpToken}
             class:link={$authSignedInStore}
             data-tid="staked-tokens-card-row"
             role="row"
           >
             <div class="info" role="cell">
-              <div>
+              <div class:icp-logo={isIcpToken}>
                 <Logo
                   src={stakedToken.logo}
                   alt={stakedToken.title}
@@ -134,21 +138,35 @@
 
             {#if showApy}
               <div class="apy" data-tid="apy" role="cell">
-                {#if $authSignedInStore && nonNullish(apy) && apy.max > 0}
+                {#if nonNullish(apy) && !apy?.error}
                   <span
                     >{formatPercentage(apy.cur, {
                       minFraction: 2,
                       maxFraction: 2,
                     })}</span
                   >
-                  <span class="description"
+                  <span class="max cell-with-tooltip"
                     >({formatPercentage(apy.max, {
                       minFraction: 2,
                       maxFraction: 2,
-                    })})</span
-                  >
+                    })})
+                    {#if apy.max === 0}
+                      <TooltipIcon
+                        iconSize={16}
+                        text={$i18n.portfolio.apy_card_tooltip_no_rewards}
+                      />
+                    {/if}
+                  </span>
+                {:else if !isApyLoading}
+                  <span class="cell-with-tooltip">
+                    {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                    <TooltipIcon
+                      iconSize={16}
+                      text={$i18n.portfolio.apy_card_tooltip_error}
+                    />
+                  </span>
                 {:else}
-                  {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+                  <span class="cell skeleton"></span>
                 {/if}
               </div>
             {:else}
@@ -230,10 +248,21 @@
 
         font-size: 0.875rem;
         padding: 0 var(--padding-2x);
-        height: 20px;
+        align-items: center;
 
         @include media.min-width(medium) {
+          height: 20px;
           grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .apy-label {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+
+          @include media.min-width(medium) {
+            display: none;
+          }
         }
       }
 
@@ -276,23 +305,35 @@
             gap: var(--padding);
           }
 
-          .apy {
-            grid-area: maturity;
-            display: flex;
-            gap: var(--padding-0_5x);
-
-            @include media.min-width(medium) {
-              flex-direction: column;
-              gap: 0;
-            }
-          }
-
           .apy,
           .maturity,
           .stake-usd,
           .stake-native {
             justify-self: end;
             text-align: right;
+          }
+
+          .apy {
+            grid-area: maturity;
+            display: flex;
+            gap: var(--padding-0_5x);
+            font-size: 0.875rem;
+            color: var(--text-description);
+
+            @include media.min-width(medium) {
+              font-size: var(--font-size-standard);
+              flex-direction: column;
+              gap: 0;
+              color: var(--text-primary);
+            }
+
+            .max {
+              color: var(--text-description);
+
+              @include media.min-width(medium) {
+                font-size: 0.875rem;
+              }
+            }
           }
 
           .maturity {
@@ -308,6 +349,7 @@
 
           .stake-usd {
             grid-area: usd;
+            font-size: var(--font-size-standard);
           }
 
           .stake-native {
@@ -319,6 +361,29 @@
             @include media.min-width(medium) {
               display: block;
             }
+          }
+
+          .cell.skeleton {
+            height: 20px;
+            width: 80px;
+            border-radius: 4px;
+          }
+
+          .cell-with-tooltip {
+            display: flex;
+            align-items: center;
+            gap: var(--padding-0_5x);
+          }
+
+          /* special styles for ICP rows */
+          &.icp-row {
+            font-weight: 500;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border-bottom: 7px solid var(--elements-divider);
+          }
+          .icp-logo {
+            filter: drop-shadow(0 0 2px #99c2ff);
           }
         }
       }

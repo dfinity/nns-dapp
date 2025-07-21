@@ -15,6 +15,7 @@ import {
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import {
+  APY_CALC_ERROR,
   getStakingRewardData,
   type StakingRewardCalcParams,
 } from "$lib/utils/staking-rewards.utils";
@@ -709,7 +710,8 @@ describe("neuron-utils", () => {
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
 
     // In case of no voting power (e.g. data unavailable), the APY should be 0
-    const old = params.nnsTotalVotingPower;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let old: any = params.nnsTotalVotingPower;
     params.nnsTotalVotingPower = BigInt(0);
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 0)).toBe(true);
@@ -941,6 +943,25 @@ describe("neuron-utils", () => {
     );
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+
+    // Let's remove some vital data, the APY should be 0 and we should see an error
+    old = params.nnsTotalVotingPower;
+    params.nnsTotalVotingPower = 0n;
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 0)).toBe(true);
+    expect(getRewardData(params).apy.get(OWN_CANISTER_ID_TEXT).error).toBe(
+      APY_CALC_ERROR.MISSING_DATA
+    );
+    params.nnsTotalVotingPower = old;
+
+    old = params.fxRates[LEDGER_CANISTER_ID.toText()];
+    params.fxRates[LEDGER_CANISTER_ID.toText()] = undefined;
+    expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0)).toBe(true);
+    expect(checkApy(OWN_CANISTER_ID_TEXT, true, 0)).toBe(true);
+    expect(getRewardData(params).apy.get(OWN_CANISTER_ID_TEXT).error).toBe(
+      APY_CALC_ERROR.MISSING_DATA
+    );
+    params.fxRates[LEDGER_CANISTER_ID.toText()] = old;
   });
 
   it("Calculates the APYs (SNSs)", () => {
@@ -1021,7 +1042,8 @@ describe("neuron-utils", () => {
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
 
     // In case of no voting power (e.g. data unavailable), the APY should be 0
-    const old =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let old: any =
       params.snsProjects.data[0].metrics.get_metrics_result.Ok
         .voting_power_metrics.governance_total_potential_voting_power;
     params.snsProjects.data[0].metrics.get_metrics_result.Ok.voting_power_metrics.governance_total_potential_voting_power =
@@ -1278,6 +1300,48 @@ describe("neuron-utils", () => {
       BigInt(5 * E8S_RATE);
     expect(checkApy(TEST_SNS_IDS[0], false, 7.05)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
+
+    // Let's remove some vital data, the APY should be 0 and we should see an error
+    old =
+      params.snsProjects.data[0].metrics.get_metrics_result.Ok
+        .voting_power_metrics.governance_total_potential_voting_power;
+    params.snsProjects.data[0].metrics.get_metrics_result.Ok.voting_power_metrics.governance_total_potential_voting_power =
+      0n;
+    expect(checkApy(TEST_SNS_IDS[0], false, 0)).toBe(true);
+    expect(checkApy(TEST_SNS_IDS[0], true, 0)).toBe(true);
+    expect(getRewardData(params).apy.get(TEST_SNS_IDS[0]).error).toBe(
+      APY_CALC_ERROR.MISSING_DATA
+    );
+    params.snsProjects.data[0].metrics.get_metrics_result.Ok.voting_power_metrics.governance_total_potential_voting_power =
+      old;
+
+    old = params.fxRates[TEST_SNS_IDS[0]];
+    params.fxRates[TEST_SNS_IDS[0]] = undefined;
+    expect(checkApy(TEST_SNS_IDS[0], false, 0)).toBe(true);
+    expect(checkApy(TEST_SNS_IDS[0], true, 0)).toBe(true);
+    expect(getRewardData(params).apy.get(TEST_SNS_IDS[0]).error).toBe(
+      APY_CALC_ERROR.MISSING_DATA
+    );
+    params.fxRates[TEST_SNS_IDS[0]] = old;
+
+    // If a project is not giving out rewards, the APY should be 0, but without errors
+    const prevInitial =
+      params.snsProjects.data[0].nervous_system_parameters
+        .voting_rewards_parameters.initial_reward_rate_basis_points;
+    params.snsProjects.data[0].nervous_system_parameters.voting_rewards_parameters.initial_reward_rate_basis_points = 0;
+    const prevFinal =
+      params.snsProjects.data[0].nervous_system_parameters
+        .voting_rewards_parameters.final_reward_rate_basis_points;
+    params.snsProjects.data[0].nervous_system_parameters.voting_rewards_parameters.final_reward_rate_basis_points = 0;
+    expect(checkApy(TEST_SNS_IDS[0], false, 0)).toBe(true);
+    expect(checkApy(TEST_SNS_IDS[0], true, 0)).toBe(true);
+    expect(getRewardData(params).apy.get(TEST_SNS_IDS[0]).error).toBe(
+      undefined
+    );
+    params.snsProjects.data[0].nervous_system_parameters.voting_rewards_parameters.initial_reward_rate_basis_points =
+      prevInitial;
+    params.snsProjects.data[0].nervous_system_parameters.voting_rewards_parameters.final_reward_rate_basis_points =
+      prevFinal;
   });
 });
 
@@ -1411,5 +1475,5 @@ const getTestSns = (
       },
     },
   },
-  icrc1_total_supply: 135_000_000,
+  icrc1_total_supply: 135_000_000 * E8S_RATE,
 });

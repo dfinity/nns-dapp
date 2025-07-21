@@ -4,6 +4,7 @@
   import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
   import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
+  import LaunchpadBanner from "$lib/components/portfolio/LaunchpadBanner.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
@@ -34,8 +35,10 @@
   } from "$lib/utils/portfolio.utils";
   import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import {
+    isStakingRewardDataError,
+    isStakingRewardDataLoading,
     isStakingRewardDataReady,
-    type StakingRewardData,
+    type StakingRewardResult,
   } from "$lib/utils/staking-rewards.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
@@ -49,7 +52,7 @@
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
     adoptedSnsProposals: SnsFullProject[];
-    stakingRewardData?: StakingRewardData;
+    stakingRewardResult: StakingRewardResult;
   };
 
   const {
@@ -58,7 +61,7 @@
     snsProjects,
     openSnsProposals,
     adoptedSnsProposals,
-    stakingRewardData,
+    stakingRewardResult,
   }: Props = $props();
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
   const hasUnpricedTokens = $derived(
@@ -141,10 +144,10 @@
   );
 
   const tableProjectsWithApy: TableProject[] = $derived(
-    nonNullish(stakingRewardData) && isStakingRewardDataReady(stakingRewardData)
+    isStakingRewardDataReady(stakingRewardResult)
       ? tableProjects.map((project) => ({
           ...project,
-          apy: stakingRewardData.apy.get(project.universeId) ?? undefined,
+          apy: stakingRewardResult.apy.get(project.universeId) ?? undefined,
         }))
       : tableProjects
   );
@@ -195,16 +198,10 @@
   const cards: ComponentWithProps[] = $derived(
     $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO
       ? getUpcomingLaunchesCards({
-          snsProjects,
+          snsProjects: [...snsProjects, ...adoptedSnsProposals],
           openSnsProposals,
         })
       : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
-  );
-
-  const hasApyCalculationErrored = $derived(
-    nonNullish(stakingRewardData) &&
-      !stakingRewardData.loading &&
-      "error" in stakingRewardData
   );
 </script>
 
@@ -228,18 +225,16 @@
       />
 
       {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
-        {#if nonNullish(stakingRewardData)}
-          {#if isStakingRewardDataReady(stakingRewardData)}
-            <ApyCard
-              rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
-              rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
-              stakingPower={stakingRewardData.stakingPower}
-              stakingPowerUSD={stakingRewardData.stakingPowerUSD}
-              totalAmountUSD={totalUsdAmount}
-            />
-          {:else}
-            <ApyFallbackCard {stakingRewardData} />
-          {/if}
+        {#if isStakingRewardDataReady(stakingRewardResult)}
+          <ApyCard
+            rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
+            rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
+            stakingPower={stakingRewardResult.stakingPower}
+            stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
+            totalAmountUSD={totalUsdAmount}
+          />
+        {:else}
+          <ApyFallbackCard stakingRewardData={stakingRewardResult} />
         {/if}
       {/if}
     {/if}
@@ -256,17 +251,17 @@
       {/if}
     {/if}
 
-    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalUsdAmount) && nonNullish(stakingRewardData)}
-      {#if isStakingRewardDataReady(stakingRewardData)}
+    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalUsdAmount) && nonNullish(stakingRewardResult)}
+      {#if isStakingRewardDataReady(stakingRewardResult)}
         <ApyCard
-          rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
-          rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
-          stakingPower={stakingRewardData.stakingPower}
-          stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+          rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
+          rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
+          stakingPower={stakingRewardResult.stakingPower}
+          stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
           totalAmountUSD={totalUsdAmount}
         />
       {:else}
-        <ApyFallbackCard {stakingRewardData} />
+        <ApyFallbackCard stakingRewardData={stakingRewardResult} />
       {/if}
     {/if}
   </div>
@@ -293,10 +288,15 @@
         {topStakedTokens}
         usdAmount={totalStakedInUsd}
         numberOfTopHeldTokens={topHeldTokens.length}
-        {hasApyCalculationErrored}
+        hasApyCalculationErrored={isStakingRewardDataError(stakingRewardResult)}
+        isApyLoading={isStakingRewardDataLoading(stakingRewardResult)}
       />
     {/if}
   </div>
+
+  {#if $ENABLE_LAUNCHPAD_REDESIGN}
+    <LaunchpadBanner />
+  {/if}
 </main>
 
 <style lang="scss">
@@ -313,7 +313,7 @@
 
     @include media.min-width(large) {
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto auto auto 1fr;
       gap: var(--padding-3x);
       padding: var(--padding-3x);
     }

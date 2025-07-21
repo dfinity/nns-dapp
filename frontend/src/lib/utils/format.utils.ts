@@ -27,6 +27,20 @@ export const formatNumber = (
     .replace(",", ".");
 };
 
+// Formats a number to a compact representation, e.g., 123 becomes "123",  123456 becomes "123.4k", 1234567 becomes "1.23M"
+export const compactCurrencyNumber = (value: number): string => {
+  if (value < 1_000) {
+    return `${formatNumber(value, { minFraction: 0, maxFraction: 0 })}`;
+  }
+
+  if (value < 1_000_000) {
+    const thousands = value / 1_000;
+    return `${formatNumber(thousands, { minFraction: 0, maxFraction: 1 })}k`;
+  }
+
+  return formatCurrencyNumber(value);
+};
+
 /**
  * Formats a number according to the following rules:
  * - X < 1'000: Display 2 decimal points (e.g., $420.69)

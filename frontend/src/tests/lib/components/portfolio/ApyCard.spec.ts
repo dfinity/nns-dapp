@@ -12,7 +12,6 @@ describe("ApyCardPo", () => {
     stakingPower: 0.4567,
     stakingPowerUSD: 9876.54,
     totalAmountUSD: 12345.12,
-    loading: false,
   };
 
   const renderComponent = (props = defaultProps) => {
@@ -46,13 +45,6 @@ describe("ApyCardPo", () => {
     expect(stakingPower).toEqual("45.67%");
   });
 
-  it("should display total staking power USD", async () => {
-    const po = renderComponent(defaultProps);
-
-    const totalStakingPower = await po.getTotalStakingPowerUSD();
-    expect(totalStakingPower).toEqual("$9’877 (of $12’345)");
-  });
-
   it("should have project link", async () => {
     const po = renderComponent(defaultProps);
 
@@ -61,16 +53,28 @@ describe("ApyCardPo", () => {
     expect(await linkPo.getHref()).toBe("/staking");
   });
 
+  it("should show specific label when there is staking power", async () => {
+    const po = renderComponent(defaultProps);
+
+    const linkPo = po.getLinkPo();
+    expect(await linkPo.getText()).contains("View Staked");
+  });
+
+  it("should show specific label when no staking power", async () => {
+    const po = renderComponent({ ...defaultProps, stakingPowerUSD: 0 });
+
+    const linkPo = po.getLinkPo();
+    expect(await linkPo.getText()).contains("Start Staking");
+  });
+
   it("should display privacy placeholders when privacy mode is enabled", async () => {
     balancePrivacyOptionStore.set("hide");
     const po = renderComponent(defaultProps);
 
     const rewardAmount = await po.getRewardAmount();
-    const totalStakingPower = await po.getTotalStakingPowerUSD();
     const projectionAmount = await po.getProjectionAmount();
 
     expect(rewardAmount).toEqual("~$•••••");
     expect(projectionAmount).toEqual("~$•••");
-    expect(totalStakingPower).toEqual("$••• (of $•••)");
   });
 });
