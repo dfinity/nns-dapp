@@ -181,7 +181,7 @@
     // Make the last row always be at the bottom of the card
     grid-template-rows: auto auto 1fr;
 
-    @include media.min-width(medium) {
+    @include media.min-width(small) {
       // Make also the stats row always be at the bottom of the card
       // so they looks aligned horizontally when a project has no/short description.
       grid-template-rows: auto 1fr auto;
@@ -195,7 +195,7 @@
       @include launchpad.card_content_header;
 
       --logo-size: var(--padding-4x);
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         --logo-size: 40px;
       }
 
@@ -208,7 +208,7 @@
 
       .fav-icon {
         display: none;
-        @include media.min-width(medium) {
+        @include media.min-width(small) {
           display: none;
         }
       }
@@ -229,7 +229,7 @@
 
       // margin-bottom: auto;
       margin-top: auto;
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         margin-top: 0;
       }
 
@@ -276,7 +276,7 @@
       justify-content: space-between;
       align-items: end;
 
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         display: flex;
       }
 
