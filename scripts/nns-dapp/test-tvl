@@ -28,6 +28,8 @@ test_exchange_rate() {
 
   dfx canister call xrc set_exchange_rate "(record{base_asset=\"ICP\"; quote_asset=\"USD\"; rate=$exchange_rate_e8s:nat64})"
 
+  cat "$NNS_DAPP_ARG"
+
   # We upgrade nns-dapp to avoid waiting for its timer to update the TVL value.
   dfx canister install nns-dapp --wasm "$NNS_DAPP_WASM" --upgrade-unchanged --mode upgrade --yes -v --argument "$(cat "$NNS_DAPP_ARG")"
 
