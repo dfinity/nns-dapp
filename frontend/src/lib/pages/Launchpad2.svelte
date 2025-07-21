@@ -141,7 +141,7 @@
   }
 
   h3 {
-    font-family: "CircularXX TT";
+    font-family: "CircularXX";
     font-size: 20px;
     font-weight: 500;
     line-height: 32px;
@@ -172,7 +172,7 @@
   p {
     margin: 0;
 
-    font-family: "CircularXX TT";
+    font-family: "CircularXX";
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
