@@ -33,7 +33,7 @@ test_exchange_rate() {
 
   actual_tvl="$(dfx canister call nns-dapp get_tvl | idl2json | jq -r '.Ok.tvl' | sed -e 's/_//g')"
   raw="$(dfx canister call nns-dapp get_tvl)"
-  echo $raw
+  echo "$raw"
 
   if [[ "$actual_tvl" -ne "$expected_tvl" ]]; then
     echo "Expected TVL: $expected_tvl, Actual TVL: $actual_tvl"
