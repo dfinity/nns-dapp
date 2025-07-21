@@ -1,10 +1,15 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  disableCssAnimations,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test accounts requirements", async ({ page, context }) => {
   await page.goto("/tokens");
+  disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
