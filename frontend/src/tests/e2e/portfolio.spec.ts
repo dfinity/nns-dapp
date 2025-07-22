@@ -12,7 +12,7 @@ const VIEWPORT_SIZES = {
   mobile: { width: 375, height: 667 },
 } as const;
 
-test.skip("Visual test Landing Page", async ({ page, browser }) => {
+test("Visual test Landing Page", async ({ page, browser }) => {
   await page.addInitScript(() => {
     // @ts-expect-error: Overrides setinterval for tests
     window.setInterval = (_: TimerHandler, timeout: number) => {
@@ -32,6 +32,8 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
 
   await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
   await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
+
+  page.waitForTimeout(900);
 
   await replaceContent({
     page,
