@@ -19,6 +19,8 @@
     stakingPower: number;
     stakingPowerUSD: number;
     totalAmountUSD: number;
+    /// Whether to render the link and the header.
+    simpleMode?: boolean;
   };
   const {
     rewardBalanceUSD,
@@ -26,6 +28,7 @@
     stakingPower,
     stakingPowerUSD,
     totalAmountUSD,
+    simpleMode = false,
   }: Props = $props();
 
   const href = AppPath.Staking;
@@ -132,19 +135,26 @@
 
 {#if $isMobileViewportStore}
   <article class="card mobile" data-tid={dataTid}>
-    <a {href} class="link" aria-label={linkText} data-tid="project-link">
+    {#if simpleMode}
       {@render content()}
-    </a>
+    {:else}
+      <a {href} class="link" aria-label={linkText} data-tid="project-link"> </a>
+    {/if}
   </article>
 {:else}
-  <article class="card desktop" data-tid={dataTid}>
-    <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
+  <article class="card desktop" data-tid={dataTid} class:simpleMode>
+    {#if !simpleMode}
+      <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
+    {/if}
+
     {@render content()}
 
-    <a {href} class="link" aria-label={linkText} data-tid="project-link">
-      <span>{linkText}</span>
-      <IconRight />
-    </a>
+    {#if !simpleMode}
+      <a {href} class="link" aria-label={linkText} data-tid="project-link">
+        <span>{linkText}</span>
+        <IconRight />
+      </a>
+    {/if}
   </article>
 {/if}
 
@@ -238,6 +248,10 @@
     grid-template-rows: auto auto 1fr;
     padding: 24px;
     grid-gap: 16px;
+
+    &.simpleMode {
+      grid-template-rows: auto;
+    }
 
     .title {
       font-size: 18px;
