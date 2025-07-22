@@ -86,7 +86,7 @@
             className="value"
             tagName="span"
             testId="neuron-account"
-            text={neuron.fullNeuron.accountIdentifier}
+            text={neuron.fullNeuron?.accountIdentifier ?? ""}
             id="neuron-account"
             showCopy
           />{/snippet}
