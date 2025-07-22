@@ -22,7 +22,7 @@
     toggleContent = $bindable(),
   }: Props = $props();
 
-  let cmp: Collapsible | undefined;
+  let cmp = $state<Collapsible | undefined>(undefined);
 
   $effect(() => {
     toggleContent = cmp?.toggleContent;

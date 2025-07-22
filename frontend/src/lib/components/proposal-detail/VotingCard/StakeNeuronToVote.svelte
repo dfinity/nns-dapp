@@ -6,46 +6,62 @@
   import { nnsTokenStore } from "$lib/derived/universes-tokens.derived";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { Collapsible, IconExpandCircleDown } from "@dfinity/gix-components";
+  import {
+    Collapsible,
+    IconExpandCircleDown,
+    stopPropagation,
+  } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
+  import type { Snippet } from "svelte";
 
-  let toggleContent: () => void;
-  let expanded: boolean;
+  type Props = {
+    children: Snippet;
+  };
 
-  let token: string | undefined;
-  $: token = $isNnsUniverseStore
-    ? $nnsTokenStore.token.symbol
-    : $snsProjectSelectedStore?.summary?.token?.symbol;
+  let { children }: Props = $props();
 
-  let snsName: string | undefined;
-  $: snsName = $isNnsUniverseStore
-    ? undefined
-    : $snsProjectSelectedStore?.summary?.metadata?.name;
+  let cmp = $state<Collapsible | undefined>(undefined);
 
-  let title: string | undefined;
-  $: title = $isNnsUniverseStore
-    ? $i18n.proposal_detail__vote.no_nns_neurons
-    : snsName &&
-      replacePlaceholders($i18n.proposal_detail__vote.no_sns_neurons, {
-        $project: snsName,
-      });
+  const toggleContent = () => cmp?.toggleContent();
+  let expanded = $state(false);
 
-  let description: string | undefined;
-  $: description =
-    token &&
-    ($isNnsUniverseStore
-      ? replacePlaceholders(
-          $i18n.proposal_detail__vote.no_nns_neurons_description,
-          {
-            $token: token,
-          }
-        )
+  let token = $derived(
+    $isNnsUniverseStore
+      ? $nnsTokenStore.token.symbol
+      : $snsProjectSelectedStore?.summary?.token?.symbol
+  );
+
+  let snsName = $derived(
+    $isNnsUniverseStore
+      ? undefined
+      : $snsProjectSelectedStore?.summary?.metadata?.name
+  );
+
+  let title = $derived(
+    $isNnsUniverseStore
+      ? $i18n.proposal_detail__vote.no_nns_neurons
       : snsName &&
-        replacePlaceholders($i18n.sns_neurons.text, {
-          $tokenSymbol: token,
-          $project: snsName,
-        }));
+          replacePlaceholders($i18n.proposal_detail__vote.no_sns_neurons, {
+            $project: snsName,
+          })
+  );
+
+  let description = $derived(
+    token &&
+      ($isNnsUniverseStore
+        ? replacePlaceholders(
+            $i18n.proposal_detail__vote.no_nns_neurons_description,
+            {
+              $token: token,
+            }
+          )
+        : snsName &&
+          replacePlaceholders($i18n.sns_neurons.text, {
+            $tokenSymbol: token,
+            $project: snsName,
+          }))
+  );
 </script>
 
 <TestIdWrapper testId="stake-neuron-to-vote-component">
@@ -54,21 +70,22 @@
       <Collapsible
         expandButton={false}
         externalToggle={true}
-        bind:toggleContent
+        bind:this={cmp}
         bind:expanded
         wrapHeight
       >
-        <div slot="header" class="header" class:expanded>
-          <span class="value" data-tid="stake-neuron-title">{title}</span>
-          <button
-            class="icon"
-            class:expanded
-            on:click|stopPropagation={toggleContent}
-            data-tid="expand-icon"
-          >
-            <IconExpandCircleDown />
-          </button>
-        </div>
+        {#snippet header()}
+          <div class="header" class:expanded>
+            <span class="value" data-tid="stake-neuron-title">{title}</span>
+            <button
+              class="icon"
+              class:expanded
+              onclick={stopPropagation(toggleContent)}
+              data-tid="expand-icon"
+            >
+              <IconExpandCircleDown />
+            </button>
+          </div>{/snippet}
         <p class="description" data-tid="stake-neuron-description">
           {description}
         </p>
@@ -81,7 +98,7 @@
             $token: token,
           })}
         </a>
-        <slot />
+        {@render children()}
       </Collapsible>
     </div>
   {/if}

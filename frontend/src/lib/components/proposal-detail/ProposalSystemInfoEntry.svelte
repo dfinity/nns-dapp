@@ -3,12 +3,12 @@
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
-  interface Props {
+  type Props = {
     label: string;
     testId: string;
     value: string;
     description: string | undefined;
-  }
+  };
 
   let { label, testId, value: valueInfo, description }: Props = $props();
 </script>
