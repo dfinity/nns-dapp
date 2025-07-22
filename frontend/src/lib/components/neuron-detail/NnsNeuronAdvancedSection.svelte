@@ -46,68 +46,73 @@
 </script>
 
 <Section testId="nns-neuron-advanced-section-component">
-  <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
+  {#snippet title()}<h3>{$i18n.neuron_detail.advanced_settings_title}</h3
+    >{/snippet}
   <div class="content">
     <div class="visibility-action-container">
       <NnsNeuronPublicVisibilityAction {neuron} />
     </div>
     <KeyValuePair>
-      <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
-      <span slot="value" class="value" data-tid="neuron-id"
-        >{neuron.neuronId}</span
-      >
+      {#snippet key()}
+        <span class="label">{$i18n.neurons.neuron_id}</span>{/snippet}
+      {#snippet value()}<span class="value" data-tid="neuron-id"
+          >{neuron.neuronId}</span
+        >{/snippet}
     </KeyValuePair>
     <KeyValuePair>
-      <span slot="key" class="label">{$i18n.neuron_detail.created}</span>
-      <span slot="value" class="value" data-tid="neuron-created"
-        >{secondsToDateTime(neuron.createdTimestampSeconds)}</span
-      >
+      {#snippet key()}<span class="label">{$i18n.neuron_detail.created}</span
+        >{/snippet}
+      {#snippet value()}<span class="value" data-tid="neuron-created"
+          >{secondsToDateTime(neuron.createdTimestampSeconds)}</span
+        >{/snippet}
     </KeyValuePair>
     <NnsNeuronAge {neuron} />
     {#if nonNullish(dissolvingTimestamp)}
       <KeyValuePair>
-        <span slot="key" class="label">{$i18n.neuron_detail.dissolve_date}</span
-        >
-        <span slot="value" class="value" data-tid="neuron-dissolve-date"
-          >{secondsToDateTime(dissolvingTimestamp)}</span
-        >
+        {#snippet key()}<span class="label"
+            >{$i18n.neuron_detail.dissolve_date}</span
+          >{/snippet}
+        {#snippet value()}<span class="value" data-tid="neuron-dissolve-date"
+            >{secondsToDateTime(dissolvingTimestamp)}</span
+          >{/snippet}
       </KeyValuePair>
     {/if}
     {#if nonNullish(neuron.fullNeuron)}
       <KeyValuePair testId="neuron-account-row">
-        <span slot="key" class="label"
-          >{$i18n.neuron_detail.neuron_account}</span
-        >
-        <Hash
-          slot="value"
-          className="value"
-          tagName="span"
-          testId="neuron-account"
-          text={neuron.fullNeuron.accountIdentifier}
-          id="neuron-account"
-          showCopy
-        />
+        {#snippet key()}<span class="label"
+            >{$i18n.neuron_detail.neuron_account}</span
+          >{/snippet}
+        {#snippet value()}<Hash
+            className="value"
+            tagName="span"
+            testId="neuron-account"
+            text={neuron.fullNeuron.accountIdentifier}
+            id="neuron-account"
+            showCopy
+          />{/snippet}
       </KeyValuePair>
     {/if}
     {#if nonNullish($nnsLatestRewardEventStore)}
       <!-- Extra div to avoid the gap of the flex container to be applied between the collapsible header and its content -->
       <div>
         <KeyValuePairInfo>
-          <span slot="key" class="label"
-            >{$i18n.neuron_detail.maturity_last_distribution}</span
-          >
-          <span slot="value" class="value" data-tid="last-rewards-distribution"
-            >{secondsToDate(
-              Number(
-                maturityLastDistribution($nnsLatestRewardEventStore.rewardEvent)
-              )
-            )}</span
-          >
-          <svelte:fragment slot="info"
-            ><Html
+          {#snippet key()}<span class="label"
+              >{$i18n.neuron_detail.maturity_last_distribution}</span
+            >{/snippet}
+          {#snippet value()}<span
+              class="value"
+              data-tid="last-rewards-distribution"
+              >{secondsToDate(
+                Number(
+                  maturityLastDistribution(
+                    $nnsLatestRewardEventStore.rewardEvent
+                  )
+                )
+              )}</span
+            >{/snippet}
+          {#snippet info()}<Html
               text={$i18n.neuron_detail.maturity_last_distribution_info}
-            /></svelte:fragment
-          >
+            />{/snippet}
         </KeyValuePairInfo>
       </div>
     {/if}

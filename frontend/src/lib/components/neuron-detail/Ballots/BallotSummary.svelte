@@ -25,13 +25,14 @@
 <TestIdWrapper testId="ballot-summary-component">
   {#if proposal?.proposal !== undefined}
     <KeyValuePairInfo testId="ballot-summary">
-      <p slot="key" class="value" data-tid="proposal-id">{proposal.id}</p>
-      <p slot="value" class="vote value" data-tid="vote">
-        {getVoteDisplay(ballot.vote)}
-      </p>
-      <div slot="info" class="summary">
-        <ProposalSummary summary={proposal.proposal.summary} />
-      </div>
+      {#snippet key()}<p class="value" data-tid="proposal-id">{proposal.id}</p
+        >{/snippet}
+      {#snippet value()}<p class="vote value" data-tid="vote">
+          {getVoteDisplay(ballot.vote)}
+        </p>{/snippet}
+      {#snippet info()}<div class="summary">
+          <ProposalSummary summary={proposal.proposal.summary} />
+        </div>{/snippet}
     </KeyValuePairInfo>
   {:else}
     <SkeletonText />
