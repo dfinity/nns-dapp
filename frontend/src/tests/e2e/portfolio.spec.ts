@@ -5,12 +5,20 @@ import {
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 const VIEWPORT_SIZES = {
   desktop: { width: 1440, height: 900 },
   mobile: { width: 375, height: 667 },
 } as const;
+
+const mockTimeRemainingContent = async (page: Page) =>
+  replaceContent({
+    page,
+    selectors: ['[data-tid="time-remaining"]'],
+    pattern: /.*/,
+    replacements: ["64 days, 10 hours"],
+  });
 
 test("Visual test Landing Page", async ({ page, browser }) => {
   await page.addInitScript(() => {
@@ -33,13 +41,6 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
   await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
 
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
-
   // Add CSS to disable skeleton animations
   await page.addStyleTag({
     content: `
@@ -61,8 +62,10 @@ test("Visual test Landing Page", async ({ page, browser }) => {
       replacements: ["$4’500’001’000"],
     });
   }
+  await mockTimeRemainingContent(page);
   await expect(page).toHaveScreenshot(`initial_desktop.png`);
 
+  await mockTimeRemainingContent(page);
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
   await expect(page).toHaveScreenshot(`initial_mobile.png`);
 
@@ -106,17 +109,12 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await portfolioPo.getPortfolioPagePo().getHeldTokensCardPo().waitFor();
   await portfolioPo.getPortfolioPagePo().getStakedTokensCardPo().waitFor();
 
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
-
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
   await appPo.toggleSidebar();
+  await mockTimeRemainingContent(page);
   await expect(page).toHaveScreenshot(`final_assets_desktop.png`);
 
+  await mockTimeRemainingContent(page);
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
   await expect(page).toHaveScreenshot(`final_assets_mobile.png`);
 });
