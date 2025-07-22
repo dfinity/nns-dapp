@@ -82,14 +82,18 @@
         {#snippet key()}<span class="label"
             >{$i18n.neuron_detail.neuron_account}</span
           >{/snippet}
-        {#snippet value()}<Hash
+        {#snippet value()}
+          {#if nonNullish(neuron.fullNeuron)}
+          <Hash
             className="value"
             tagName="span"
             testId="neuron-account"
-            text={neuron.fullNeuron?.accountIdentifier ?? ""}
+            text={neuron.fullNeuron?.accountIdentifier ??}
             id="neuron-account"
             showCopy
-          />{/snippet}
+          />
+            {/if}
+            {/snippet}
       </KeyValuePair>
     {/if}
     {#if nonNullish($nnsLatestRewardEventStore)}
