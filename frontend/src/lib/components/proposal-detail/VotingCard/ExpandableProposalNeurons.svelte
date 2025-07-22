@@ -10,9 +10,11 @@
   type Props = {
     testId: string;
     children: Snippet;
+    start: Snippet;
+    end?: Snippet;
   };
 
-  let { testId, children }: Props = $props();
+  let { testId, children, start, end }: Props = $props();
 
   let cmp = $state<Collapsible | undefined>(undefined);
 
@@ -32,7 +34,7 @@
     {#snippet header()}<div class="header" class:expanded>
         <div class="header-entry">
           <span class="value">
-            <slot name="start" />
+            {@render start()}
           </span>
           <button
             class="icon"
@@ -44,7 +46,7 @@
         </div>
 
         <div class="header-entry">
-          <slot name="end" />
+          {@render end?.()}
         </div>
       </div>{/snippet}
 

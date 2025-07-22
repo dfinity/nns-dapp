@@ -16,7 +16,7 @@
   import type { Snippet } from "svelte";
 
   type Props = {
-    children: Snippet;
+    children?: Snippet;
   };
 
   let { children }: Props = $props();
@@ -98,7 +98,7 @@
             $token: token,
           })}
         </a>
-        {@render children()}
+        {@render children?.()}
       </Collapsible>
     </div>
   {/if}
