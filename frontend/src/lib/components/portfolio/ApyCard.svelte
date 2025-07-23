@@ -143,9 +143,7 @@
   </article>
 {:else}
   <article class="card desktop" data-tid={dataTid} class:simpleMode>
-    {#if !simpleMode}
-      <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
-    {/if}
+    <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
 
     {@render content()}
 
@@ -227,12 +225,16 @@
     background-color: var(--card-background-tint);
 
     box-shadow: var(--box-shadow);
-
     transition:
       color var(--animation-time-normal),
       box-shadow var(--animation-time-normal);
     border-radius: 12px;
     overflow: hidden;
+
+    &.simpleMode {
+      box-shadow: none;
+      border-radius: var(--padding);
+    }
   }
 
   .card.mobile {
