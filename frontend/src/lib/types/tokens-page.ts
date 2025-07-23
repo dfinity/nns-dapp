@@ -22,6 +22,7 @@ export enum UserTokenAction {
   Receive = "receive",
   GoToDashboard = "goToDashboard",
   Remove = "remove",
+  Blank = "blank",
 }
 
 export type UserTokenBase = {

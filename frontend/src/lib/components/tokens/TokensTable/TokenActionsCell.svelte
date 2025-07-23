@@ -4,6 +4,7 @@
   import ReceiveButton from "$lib/components/tokens/TokensTable/actions/ReceiveButton.svelte";
   import RemoveButton from "$lib/components/tokens/TokensTable/actions/RemoveButton.svelte";
   import SendButton from "$lib/components/tokens/TokensTable/actions/SendButton.svelte";
+  import VoidAction from "$lib/components/tokens/TokensTable/actions/VoidAction.svelte";
   import {
     UserTokenAction,
     type UserTokenData,
@@ -27,6 +28,7 @@
     [UserTokenAction.Send]: SendButton,
     [UserTokenAction.GoToDashboard]: GoToDashboardButton,
     [UserTokenAction.Remove]: RemoveButton,
+    [UserTokenAction.Blank]: VoidAction,
   };
 
   let userToken: UserTokenData | UserTokenFailed | undefined;

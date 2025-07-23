@@ -95,11 +95,9 @@
   testId="spawn-neuron-modal-component"
   {steps}
   bind:currentStep
-  on:nnsClose
+  onClose={() => dispatcher("nnsClose")}
 >
-  <svelte:fragment slot="title"
-    >{currentStep?.title ?? steps[0].title}</svelte:fragment
-  >
+  {#snippet title()}{currentStep?.title ?? steps[0].title}{/snippet}
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
       availableMaturityE8s={neuron.fullNeuron?.maturityE8sEquivalent ?? 0n}

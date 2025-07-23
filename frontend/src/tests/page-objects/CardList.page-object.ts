@@ -1,4 +1,5 @@
 import { BasePageObject } from "$tests/page-objects/base.page-object";
+import { LinkPo } from "$tests/page-objects/Link.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class CardListPo extends BasePageObject {
@@ -46,5 +47,16 @@ export class CardListEntryPo extends BasePageObject {
       (await this.getText("proposal-title")) ??
       "getCardTitle: not found"
     );
+  }
+
+  getLink(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "project-link",
+    });
+  }
+
+  async click(): Promise<void> {
+    await this.getLink().click();
   }
 }

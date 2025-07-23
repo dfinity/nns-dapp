@@ -9,9 +9,11 @@
 </script>
 
 <ItemAction {testId}>
-  <div class="icon" slot="icon">
-    <slot name="icon" />
-  </div>
+  {#snippet icon()}
+    <div class="icon">
+      <slot name="icon" />
+    </div>
+  {/snippet}
   <div class="content">
     <h4>
       <slot name="title" />
@@ -21,9 +23,11 @@
     </h4>
     <p class="description"><slot name="subtitle" /></p>
   </div>
-  <div slot="actions" class="actions">
-    <slot />
-  </div>
+  {#snippet actions()}
+    <div class="actions">
+      <slot />
+    </div>
+  {/snippet}
 </ItemAction>
 
 <style lang="scss">

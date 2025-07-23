@@ -61,7 +61,7 @@
     padding: var(--padding-2x) var(--padding-2x)
       var(--card-frame-padding-bottom, var(--padding-2x));
 
-    @include media.min-width(medium) {
+    @include media.min-width(small) {
       height: 230px;
       padding: var(--padding-3x) var(--padding-3x)
         var(--card-frame-padding-bottom, var(--padding-3x));

@@ -1323,6 +1323,25 @@ describe("neuron-utils", () => {
       APY_CALC_ERROR.MISSING_DATA
     );
     params.fxRates[TEST_SNS_IDS[0]] = old;
+
+    // If a project is not giving out rewards, the APY should be 0, but without errors
+    const prevInitial =
+      params.snsProjects.data[0].nervous_system_parameters
+        .voting_rewards_parameters.initial_reward_rate_basis_points;
+    params.snsProjects.data[0].nervous_system_parameters.voting_rewards_parameters.initial_reward_rate_basis_points = 0;
+    const prevFinal =
+      params.snsProjects.data[0].nervous_system_parameters
+        .voting_rewards_parameters.final_reward_rate_basis_points;
+    params.snsProjects.data[0].nervous_system_parameters.voting_rewards_parameters.final_reward_rate_basis_points = 0;
+    expect(checkApy(TEST_SNS_IDS[0], false, 0)).toBe(true);
+    expect(checkApy(TEST_SNS_IDS[0], true, 0)).toBe(true);
+    expect(getRewardData(params).apy.get(TEST_SNS_IDS[0]).error).toBe(
+      undefined
+    );
+    params.snsProjects.data[0].nervous_system_parameters.voting_rewards_parameters.initial_reward_rate_basis_points =
+      prevInitial;
+    params.snsProjects.data[0].nervous_system_parameters.voting_rewards_parameters.final_reward_rate_basis_points =
+      prevFinal;
   });
 });
 

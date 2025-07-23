@@ -1,6 +1,7 @@
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
 import {
   compareFailedTokensLast,
@@ -12,6 +13,7 @@ import {
   compareTokensByUsdBalance,
   compareTokensIcpFirst,
   compareTokensWithBalanceOrImportedFirst,
+  filterTokensByType,
 } from "$lib/utils/tokens-table.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import {
@@ -361,6 +363,97 @@ describe("tokens-table.utils", () => {
           importedTokenWithBalance
         )
       ).toEqual(0);
+    });
+  });
+  describe("filterTokensByType", () => {
+    const snsToken1 = createUserToken({
+      universeId: principal(10),
+      ledgerCanisterId: principal(100),
+      title: "SNS Token 1",
+    });
+    const snsToken2 = createUserToken({
+      universeId: principal(11),
+      ledgerCanisterId: principal(101),
+      title: "SNS Token 2",
+    });
+    const importedToken1 = createUserToken({
+      universeId: principal(20),
+      ledgerCanisterId: principal(200),
+      title: "Imported Token 1",
+    });
+    const importedToken2 = createUserToken({
+      universeId: principal(21),
+      ledgerCanisterId: principal(201),
+      title: "Imported Token 2",
+    });
+
+    const mockImportedTokensData: ImportedTokenData[] = [
+      {
+        ledgerCanisterId: principal(200),
+        indexCanisterId: principal(300),
+      },
+      {
+        ledgerCanisterId: principal(201),
+        indexCanisterId: undefined,
+      },
+    ];
+
+    const allTokens = [
+      icpToken,
+      ckBTCToken,
+      ckETHTToken,
+      ckUSDCToken,
+      snsToken1,
+      snsToken2,
+      importedToken1,
+      importedToken2,
+    ];
+
+    it("should filter ICP tokens", () => {
+      const result = filterTokensByType({ tokens: allTokens, type: "icp" });
+      expect(result).toEqual([icpToken]);
+    });
+
+    it("should filter ckTokens (important ck tokens)", () => {
+      const result = filterTokensByType({ tokens: allTokens, type: "ck" });
+      expect(result).toEqual([ckBTCToken, ckETHTToken, ckUSDCToken]);
+    });
+
+    it("should filter imported tokens", () => {
+      const result = filterTokensByType({
+        tokens: allTokens,
+        type: "imported",
+        importedTokens: mockImportedTokensData,
+      });
+      expect(result).toEqual([importedToken1, importedToken2]);
+    });
+
+    it("should filter imported tokens without providing importedTokens parameter", () => {
+      const result = filterTokensByType({
+        tokens: allTokens,
+        type: "imported",
+      });
+      expect(result).toEqual([]);
+    });
+
+    it("should filter SNS tokens (excluding ICP, ck, and imported)", () => {
+      const result = filterTokensByType({
+        tokens: allTokens,
+        type: "sns",
+        importedTokens: mockImportedTokensData,
+      });
+      expect(result).toEqual([snsToken1, snsToken2]);
+    });
+
+    it("should filter SNS tokens when no imported tokens are provided", () => {
+      const result = filterTokensByType({ tokens: allTokens, type: "sns" });
+      // Without imported tokens data, importedToken1 and importedToken2 should be classified as SNS
+      expect(result).toEqual([
+        snsToken1,
+        snsToken2,
+        importedToken1,
+        importedToken2,
+      ]);
     });
   });
 });

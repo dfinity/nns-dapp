@@ -44,26 +44,6 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
-  }
-
-  .skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--card-background) 0px,
-      var(--elements-divider) 50%,
-      var(--card-background) 100%
-    );
-    background-size: 1000px 100%;
-    animation: shimmer 2s infinite linear;
-  }
-
   .wrapper {
     display: flex;
     flex-direction: column;

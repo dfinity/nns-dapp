@@ -34,7 +34,6 @@
     <div class="content">
       <div class="subtitle skeleton"></div>
       <div class="main-value skeleton"></div>
-      <div class="secondary-value-single skeleton"></div>
     </div>
   </div>
 {/snippet}
@@ -75,30 +74,12 @@
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
 
-  @keyframes shimmer {
-    0% {
-      background-position: -1000px 0;
-    }
-    100% {
-      background-position: 1000px 0;
-    }
-  }
-
   .skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--card-background) 0px,
-      var(--elements-divider) 50%,
-      var(--card-background) 100%
-    );
-    background-size: 1000px 100%;
-    animation: shimmer 2s infinite linear;
     border-radius: 4px;
   }
 
   .content {
     display: flex;
-    justify-content: space-between;
 
     .content {
       display: flex;
@@ -113,11 +94,10 @@
 
       .main-value {
         height: 32px;
-        width: 120px;
+        width: 100px;
 
         @include media.min-width(medium) {
-          height: 36px;
-          width: 140px;
+          max-width: 140px;
         }
       }
 
@@ -132,7 +112,7 @@
 
           @include media.min-width(medium) {
             height: 20px;
-            width: 70px;
+            max-width: 70px;
           }
         }
 
@@ -142,18 +122,8 @@
 
           @include media.min-width(medium) {
             height: 20px;
-            width: 100px;
+            max-width: 100px;
           }
-        }
-      }
-
-      .secondary-value-single {
-        height: 16px;
-        width: 90px;
-
-        @include media.min-width(medium) {
-          height: 20px;
-          width: 110px;
         }
       }
     }
@@ -185,7 +155,7 @@
   .card {
     height: 100%;
     box-sizing: border-box;
-    background-color: var(--background);
+    background-color: var(--card-background-tint);
     box-shadow: var(--box-shadow);
     border-radius: 12px;
     overflow: hidden;

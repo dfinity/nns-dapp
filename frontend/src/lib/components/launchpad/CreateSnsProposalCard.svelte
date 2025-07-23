@@ -106,7 +106,7 @@
       @include portfolio.card-tag;
 
       --logo-size: var(--padding-4x);
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         --logo-size: 40px;
       }
 
@@ -137,7 +137,7 @@
           font-weight: 450;
           line-height: 20px;
 
-          @include media.min-width(medium) {
+          @include media.min-width(small) {
             font-size: 18px;
             line-height: 24px;
           }
@@ -152,7 +152,7 @@
           padding: 0;
           color: var(--color-text-secondary);
 
-          @include media.min-width(medium) {
+          @include media.min-width(small) {
             display: block;
             // To support -webkit-line-clamp
             display: -webkit-box;
@@ -179,7 +179,7 @@
         color: var(--button-secondary-color);
 
         display: none;
-        @include media.min-width(medium) {
+        @include media.min-width(small) {
           display: flex;
         }
 

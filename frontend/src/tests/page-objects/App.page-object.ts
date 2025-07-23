@@ -6,6 +6,7 @@ import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object";
 import { CanistersPo } from "$tests/page-objects/Canisters.page-object";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
+import { Launchpad2Po } from "$tests/page-objects/Launchpad2.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
@@ -73,8 +74,13 @@ export class AppPo extends BasePageObject {
     return ProposalDetailPo.under(this.root);
   }
 
+  // TODO: Delete after FF is removed
   getLaunchpadPo(): LaunchpadPo {
     return LaunchpadPo.under(this.root);
+  }
+
+  getLaunchpad2Po(): Launchpad2Po {
+    return Launchpad2Po.under(this.root);
   }
 
   getProjectDetailPo(): ProjectDetailPo {
@@ -144,7 +150,7 @@ export class AppPo extends BasePageObject {
     await (
       await this.getTokensPo()
         .getTokensPagePo()
-        .getTokensTable()
+        .getIcpTokensTable()
         .getRowByName("Internet Computer")
     ).click();
     await (

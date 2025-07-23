@@ -3,7 +3,6 @@
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
-  import { E8S_PER_ICP } from "$lib/constants/icp.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
@@ -11,11 +10,12 @@
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
   import {
-    formatCurrencyNumber,
+    compactCurrencyNumber,
     formatPercentage,
   } from "$lib/utils/format.utils";
   import {
     snsProjectIcpInTreasuryPercentage,
+    snsProjectMarketCap,
     snsProjectWeeklyProposalActivity,
   } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
@@ -38,28 +38,20 @@
   const { summary, swapCommitment, rootCanisterId } = $derived(project);
   const {
     metadata: { logo, name, description },
-    ledgerCanisterId,
   } = $derived(summary);
   const href = $derived(
     `${AppPath.Project}/?project=${project.rootCanisterId.toText()}`
   );
   const formattedMarketCapUsd = $derived.by(() => {
-    const totalSupplyE8s =
-      $snsTotalSupplyTokenAmountStore[rootCanisterId.toText()]?.toE8s();
-    const totalSupply = nonNullish(totalSupplyE8s)
-      ? Number(totalSupplyE8s) / E8S_PER_ICP
-      : undefined;
-    const tokenPriceUsd =
-      nonNullish(ledgerCanisterId) &&
-      nonNullish($icpSwapUsdPricesStore) &&
-      $icpSwapUsdPricesStore !== "error"
-        ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
-        : undefined;
+    const marketCap = snsProjectMarketCap({
+      sns: project,
+      snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
+      icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
+    });
 
-    if (isNullish(totalSupply) || isNullish(tokenPriceUsd))
-      return PRICE_NOT_AVAILABLE_PLACEHOLDER;
+    if (isNullish(marketCap)) return PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
-    return formatCurrencyNumber(totalSupply * tokenPriceUsd);
+    return compactCurrencyNumber(marketCap);
   });
   const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
@@ -94,8 +86,9 @@
       </div>
     </div>
 
-    <p data-tid="project-description" class="description">{description}</p>
-
+    <div>
+      <p class="description" data-tid="project-description">{description}</p>
+    </div>
     <ul class="stats">
       <li class="stat-item">
         <h6 class="stat-label"
@@ -106,6 +99,7 @@
           <span data-tid="token-market-cap">${formattedMarketCapUsd}</span>
         </div>
       </li>
+      <li class="stat-divider"></li>
       <li class="stat-item">
         <h6 class="stat-label"
           >{$i18n.launchpad_cards.project_card_icp_in_treasury}</h6
@@ -114,10 +108,12 @@
           <IconAccountBalance size="16px" />
           {#if nonNullish(icpInTreasury)}
             <span data-tid="icp-in-treasury-value"
-              >{formatPercentage(icpInTreasury, {
-                minFraction: 0,
-                maxFraction: 2,
-              })}</span
+              >{icpInTreasury > 1
+                ? ">100%"
+                : formatPercentage(icpInTreasury, {
+                    minFraction: 0,
+                    maxFraction: 2,
+                  })}</span
             >
           {:else}
             <span data-tid="icp-in-treasury-not-applicable"
@@ -126,6 +122,7 @@
           {/if}
         </div>
       </li>
+      <li class="stat-divider"></li>
       <li class="stat-item">
         {#if userHasParticipated && nonNullish(userCommitmentIcp)}
           <h6 class="stat-label"
@@ -185,6 +182,12 @@
     // Make the last row always be at the bottom of the card
     grid-template-rows: auto auto 1fr;
 
+    @include media.min-width(small) {
+      // Make also the stats row always be at the bottom of the card
+      // so they looks aligned horizontally when a project has no/short description.
+      grid-template-rows: auto 1fr auto;
+    }
+
     &.userHasParticipated .stats .stat-item {
       border-right-color: var(--tertiary);
     }
@@ -193,7 +196,7 @@
       @include launchpad.card_content_header;
 
       --logo-size: var(--padding-4x);
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         --logo-size: 40px;
       }
 
@@ -206,18 +209,18 @@
 
       .fav-icon {
         display: none;
-        @include media.min-width(medium) {
+        @include media.min-width(small) {
           display: none;
         }
       }
     }
 
     .description {
-      margin-top: 0;
-      color: var(--color-text-secondary);
-
       @include launchpad.text_h5;
       @include text.clamp(2);
+
+      margin: 0;
+      color: var(--color-text-secondary);
     }
 
     .stats {
@@ -227,8 +230,14 @@
 
       // margin-bottom: auto;
       margin-top: auto;
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         margin-top: 0;
+      }
+
+      .stat-divider {
+        width: 0;
+        border-right: 1px solid var(--elements-divider);
+        margin: 0 var(--padding);
       }
 
       .stat-item {
@@ -237,16 +246,9 @@
         justify-content: space-between;
         gap: var(--padding-0_5x);
 
-        padding: 0 var(--padding);
-        border-right: 1px solid var(--elements-divider);
-
-        &:first-child {
-          padding-left: 0;
-        }
-        &:last-child {
-          padding-right: 0;
-          border-right: none;
-        }
+        // Make sure the stat item is at least as wide as the average entry
+        // so that the stats are visually aligned.
+        min-width: 78px;
 
         h6 {
           @include launchpad.text_h6;
@@ -275,8 +277,12 @@
       justify-content: space-between;
       align-items: end;
 
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         display: flex;
+      }
+
+      button {
+        visibility: hidden;
       }
 
       .link,
@@ -285,8 +291,7 @@
 
         color: var(--button-secondary-color);
 
-        display: none;
-        // display: flex;
+        display: flex;
         align-items: center;
         gap: var(--padding-0_5x);
       }

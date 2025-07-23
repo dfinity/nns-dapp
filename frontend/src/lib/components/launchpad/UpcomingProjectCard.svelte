@@ -102,7 +102,7 @@
       // @include portfolio.card-tag;
 
       --logo-size: var(--padding-4x);
-      @include media.min-width(medium) {
+      @include media.min-width(small) {
         --logo-size: 40px;
       }
 
@@ -157,7 +157,7 @@
         color: var(--button-secondary-color);
 
         display: none;
-        @include media.min-width(medium) {
+        @include media.min-width(small) {
           display: flex;
         }
 
