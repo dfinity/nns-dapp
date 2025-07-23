@@ -316,18 +316,6 @@
             }
           }
 
-          .cell.skeleton {
-            height: 20px;
-            width: 80px;
-            border-radius: 4px;
-          }
-
-          .cell-with-tooltip {
-            display: flex;
-            align-items: center;
-            gap: var(--padding-0_5x);
-          }
-
           /* special styles for ICP rows */
           &.icp-row {
             font-weight: 500;
