@@ -52,7 +52,7 @@
     snsProjects: SnsFullProject[];
     openSnsProposals: ProposalInfo[];
     adoptedSnsProposals: SnsFullProject[];
-    stakingRewardResult: StakingRewardResult;
+    stakingRewardResult?: StakingRewardResult;
   };
 
   const {

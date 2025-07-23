@@ -1,4 +1,3 @@
-import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import * as proposalsApi from "$lib/api/proposals.api";
@@ -12,16 +11,13 @@ import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.
 import { getAnonymousIdentity } from "$lib/services/auth.services";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
 import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
 import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { snsProposalsStore } from "$lib/stores/sns.store";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -33,10 +29,7 @@ import {
   mockCkTESTBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
-import { mockGovernanceMetrics } from "$tests/mocks/governance-metrics.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
-import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
@@ -61,7 +54,6 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");
 
@@ -76,13 +68,6 @@ describe("Portfolio route", () => {
     return PortfolioRoutePo.under(new JestPageObjectElement(container));
   };
 
-  const tickers = [
-    {
-      ...mockIcpSwapTicker,
-      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-      last_price: "10.00",
-    },
-  ];
   const importedToken1Id = Principal.fromText(
     "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
   );
@@ -94,7 +79,6 @@ describe("Portfolio route", () => {
   } as IcrcTokenMetadata;
 
   beforeEach(() => {
-    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
       async ({ canisterId }) => {
         const tokenMap = {
@@ -111,16 +95,6 @@ describe("Portfolio route", () => {
 
     setCkETHCanisters();
     setCkUSDCCanisters();
-  });
-
-  it("should load ICP Swap tickers", async () => {
-    expect(get(icpSwapTickersStore)).toBeUndefined();
-    expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-    await renderPage();
-
-    expect(get(icpSwapTickersStore)).toEqual(tickers);
-    expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
   });
 
   it("should get ckBtc tokens", async () => {
@@ -523,26 +497,43 @@ describe("Portfolio route", () => {
         expect(cardWrappers.length).toBe(3);
       });
 
-      it("should render apy card when all stores have the required data", async () => {
-        vi.useFakeTimers();
-
-        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
-        networkEconomicsStore.setParameters({
-          certified: true,
-          parameters: mockNetworkEconomics,
+      it("should render APY fallback card when there is an error", async () => {
+        stakingRewardsStore.set({
+          loading: false,
+          error: "An error occurred.",
         });
-        governanceMetricsStore.setMetrics({
-          metrics: mockGovernanceMetrics,
-          certified: true,
-        });
-        nnsTotalVotingPowerStore.set(0n);
 
         const po = await renderPage();
         const pagePo = po.getPortfolioPagePo();
 
-        // There is a debounce function that we have to wait for and then let svelte re-render
-        vi.advanceTimersByTime(1000);
-        await tick();
+        expect(await pagePo.getApyFallbackCardPo().isPresent()).toBe(true);
+        expect(await pagePo.getApyCardPo().isPresent()).toBe(false);
+      });
+
+      it("should render APY fallback card when the data is still loading", async () => {
+        stakingRewardsStore.set({
+          loading: true,
+        });
+
+        const po = await renderPage();
+        const pagePo = po.getPortfolioPagePo();
+
+        expect(await pagePo.getApyFallbackCardPo().isPresent()).toBe(true);
+        expect(await pagePo.getApyCardPo().isPresent()).toBe(false);
+      });
+
+      it("should render APY card when the data is ready", async () => {
+        stakingRewardsStore.set({
+          loading: false,
+          rewardBalanceUSD: 100,
+          rewardEstimateWeekUSD: 10,
+          stakingPower: 1,
+          stakingPowerUSD: 1,
+          apy: new Map(),
+        });
+
+        const po = await renderPage();
+        const pagePo = po.getPortfolioPagePo();
 
         expect(await pagePo.getApyFallbackCardPo().isPresent()).toBe(false);
         expect(await pagePo.getApyCardPo().isPresent()).toBe(true);
