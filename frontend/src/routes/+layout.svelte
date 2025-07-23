@@ -61,6 +61,7 @@
 
   $: syncAuth($authStore);
 
+  // Load ICP swap tickers for the Staking Rewards
   loadIcpSwapTickers();
   const refreshStakingRewards = getRefreshStakingRewards();
   $: {

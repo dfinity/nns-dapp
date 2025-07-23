@@ -4,9 +4,13 @@ import {
   type StakingRewardCalcParams,
 } from "$lib/utils/staking-rewards.utils";
 
+// Encapusaling the variables below in a closure so that they are reset during the different tests
+// Otherwise, this function is supposed to be called only once, in the app root initialization
 export const getRefreshStakingRewards = () => {
   let debounceTimer: ReturnType<typeof setTimeout>;
+  // If the auth state changes, we want to refresh the data immediately to reflect that
   let prevAuthState = false;
+  // We also want to refresh it immediately the first time, in order to set the correct loading state
   let firstTime = true;
 
   return (params: StakingRewardCalcParams) => {
