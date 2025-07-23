@@ -281,24 +281,26 @@
 
 <div class="wrapper" data-tid="projects-table-component">
   <div class="top">
-    {#if $authSignedInStore && hasAnyNeurons}
-      <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
-        <IconNeuronsPage slot="icon" />
-      </UsdValueBanner>
-    {/if}
+    {#if $authSignedInStore}
+      {#if hasAnyNeurons}
+        <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
+          <IconNeuronsPage slot="icon" />
+        </UsdValueBanner>
+      {/if}
 
-    {#if $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount)}
-      {#if isStakingRewardDataReady(stakingRewardData)}
-        <ApyCard
-          simpleMode={true}
-          rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
-          rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
-          stakingPower={stakingRewardData.stakingPower}
-          stakingPowerUSD={stakingRewardData.stakingPowerUSD}
-          totalAmountUSD={totalUsdAmount}
-        />
-      {:else}
-        <ApyFallbackCard {stakingRewardData} />
+      {#if $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount)}
+        {#if isStakingRewardDataReady(stakingRewardData)}
+          <ApyCard
+            onStakingPage={true}
+            rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
+            rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
+            stakingPower={stakingRewardData.stakingPower}
+            stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+            totalAmountUSD={totalUsdAmount}
+          />
+        {:else}
+          <ApyFallbackCard {stakingRewardData} />
+        {/if}
       {/if}
     {/if}
   </div>

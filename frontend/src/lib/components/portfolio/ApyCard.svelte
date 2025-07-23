@@ -20,7 +20,7 @@
     stakingPowerUSD: number;
     totalAmountUSD: number;
     /// Whether to render the link and the header.
-    simpleMode?: boolean;
+    onStakingPage?: boolean;
   };
   const {
     rewardBalanceUSD,
@@ -28,7 +28,7 @@
     stakingPower,
     stakingPowerUSD,
     totalAmountUSD,
-    simpleMode = false,
+    onStakingPage = false,
   }: Props = $props();
 
   const href = AppPath.Staking;
@@ -135,19 +135,19 @@
 
 {#if $isMobileViewportStore}
   <article class="card mobile" data-tid={dataTid}>
-    {#if simpleMode}
+    {#if onStakingPage}
       {@render content()}
     {:else}
       <a {href} class="link" aria-label={linkText} data-tid="project-link"> </a>
     {/if}
   </article>
 {:else}
-  <article class="card desktop" data-tid={dataTid} class:simpleMode>
+  <article class="card desktop" data-tid={dataTid} class:onStakingPage>
     <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
 
     {@render content()}
 
-    {#if !simpleMode}
+    {#if !onStakingPage}
       <a {href} class="link" aria-label={linkText} data-tid="project-link">
         <span>{linkText}</span>
         <IconRight />
@@ -231,7 +231,7 @@
     border-radius: 12px;
     overflow: hidden;
 
-    &.simpleMode {
+    &.onStakingPage {
       box-shadow: none;
       border-radius: var(--padding);
     }
@@ -251,7 +251,7 @@
     padding: 24px;
     grid-gap: 16px;
 
-    &.simpleMode {
+    &.onStakingPage {
       grid-template-rows: auto;
     }
 
