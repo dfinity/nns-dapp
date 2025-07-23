@@ -160,11 +160,8 @@ export const disableCssAnimations = async (page: Page) => {
   await page.addStyleTag({
     content: `
       *, ::before, ::after {
-        animation-duration: 0s !important;
-        transition-duration: 0s !important;
-        animation-delay: 0s !important;
-        animation-play-state: paused !important;
-        transition-property: none !important;
+        animation: none !important;
+        transition: none !important;
         caret-color: transparent !important;
       }
     `,
