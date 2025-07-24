@@ -8,6 +8,7 @@ import {
 import {
   getSnsDissolvingTimeInSeconds,
   getSnsLockedTimeInSeconds,
+  getSnsNeuronIdAsHexString,
   getSnsNeuronState,
   hasAutoStakeMaturityOn as hasAutoStakeMaturityOnSns,
 } from "$lib/utils/sns-neuron.utils";
@@ -25,6 +26,14 @@ export const isNnsNeuron = (neuron: AgnosticNeuron): neuron is NeuronInfo => {
 
 export const isSnsNeuron = (neuron: AgnosticNeuron): neuron is SnsNeuron => {
   return !isNnsNeuron(neuron);
+};
+
+export const getNeuronId = (neuron: AgnosticNeuron): string => {
+  if (isNnsNeuron(neuron)) {
+    return String(neuron.neuronId);
+  } else {
+    return getSnsNeuronIdAsHexString(neuron);
+  }
 };
 
 export const getNeuronFreeMaturityE8s = (neuron: AgnosticNeuron): bigint => {
