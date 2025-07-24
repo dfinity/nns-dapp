@@ -15,9 +15,16 @@
     OWN_CANISTER_ID_TEXT,
   } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+  import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
+  import {
+    loadAccountsBalances,
+    loadSnsAccountsBalances,
+  } from "$lib/services/accounts-balances.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
   import {
@@ -29,6 +36,7 @@
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import {
@@ -43,14 +51,6 @@
   import { IconNeuronsPage } from "@dfinity/gix-components";
   import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
-  import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
-  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-  import {
-    loadAccountsBalances,
-    loadSnsAccountsBalances,
-  } from "$lib/services/accounts-balances.services";
-  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 
   $effect(() => {
     if ($authSignedInStore) {
