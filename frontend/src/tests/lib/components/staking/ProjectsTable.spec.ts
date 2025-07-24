@@ -4,6 +4,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
@@ -44,6 +45,8 @@ describe("ProjectsTable", () => {
   };
 
   beforeEach(() => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+
     vi.useFakeTimers();
     resetIdentity();
 
