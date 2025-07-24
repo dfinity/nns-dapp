@@ -45,6 +45,8 @@
     </span>
   {:else if isLoading}
     <span class="cell skeleton"></span>
+  {:else}
+    {PRICE_NOT_AVAILABLE_PLACEHOLDER}
   {/if}
 </div>
 
