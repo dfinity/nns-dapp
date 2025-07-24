@@ -1,6 +1,7 @@
 <script lang="ts">
   import HideZeroNeuronsToggle from "$lib/components/staking/HideZeroNeuronsToggle.svelte";
   import ProjectActionsCell from "$lib/components/staking/ProjectActionsCell.svelte";
+  import ProjectApyCell from "$lib/components/staking/ProjectApyCell.svelte";
   import ProjectMaturityCell from "$lib/components/staking/ProjectMaturityCell.svelte";
   import ProjectNeuronsCell from "$lib/components/staking/ProjectNeuronsCell.svelte";
   import ProjectStakeCell from "$lib/components/staking/ProjectStakeCell.svelte";
@@ -17,14 +18,19 @@
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { ENABLE_NEW_TABLES } from "$lib/stores/feature-flags.store";
+  import {
+    ENABLE_APY_PORTFOLIO,
+    ENABLE_NEW_TABLES,
+  } from "$lib/stores/feature-flags.store";
   import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import {
+    compareByApy,
     compareByNeuron,
     compareByProject,
     compareByStake,
@@ -49,6 +55,19 @@
       templateColumns: ["1fr"],
       comparator: $authSignedInStore ? compareByStake : undefined,
     },
+
+    ...($ENABLE_APY_PORTFOLIO
+      ? [
+          {
+            id: "apy",
+            title: $i18n.neuron_detail.apy_and_max,
+            cellComponent: ProjectApyCell,
+            alignment: "right",
+            templateColumns: ["1fr"],
+            comparator: $authSignedInStore ? compareByApy : undefined,
+          } as ProjectsTableColumn,
+        ]
+      : []),
     {
       title: $i18n.neuron_detail.maturity_title,
       cellComponent: ProjectMaturityCell,
@@ -134,6 +153,9 @@
     snsNeurons: $snsNeuronsStore,
     icpSwapUsdPrices: $icpSwapUsdPricesStore,
     failedActionableSnses: $failedActionableSnsesStore,
+    stakingRewardsResult: $ENABLE_APY_PORTFOLIO
+      ? $stakingRewardsStore
+      : undefined,
   });
 
   let shouldHideProjectsWithoutNeurons: boolean;
