@@ -1,10 +1,10 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
-  import TokensCardHeader from "./TokensCardHeader.svelte";
 
   const href = AppPath.Staking;
 </script>

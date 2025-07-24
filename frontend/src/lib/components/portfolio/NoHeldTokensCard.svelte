@@ -1,11 +1,11 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import { IconAccountsPage, IconHeldTokens } from "@dfinity/gix-components";
-  import TokensCardHeader from "./TokensCardHeader.svelte";
 
   const href = buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT });
 </script>
