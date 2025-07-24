@@ -124,13 +124,6 @@
           : "full"
   );
 
-  // Controls whether the staked tokens card should show a primary action
-  // Primary action is shown when there are tokens but no stakes
-  // This helps guide users to stake their tokens when possible
-  const hasNoStakedTokensCardAPrimaryAction = $derived(
-    stakedTokensCard === "empty" && heldTokensCard === "full"
-  );
-
   // Global loading state that tracks if either held or staked tokens are loading
   // TotalAssetsCard will show this if either held or staked are loading
   const isSomethingLoading = $derived(
