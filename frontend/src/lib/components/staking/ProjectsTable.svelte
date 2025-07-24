@@ -216,7 +216,6 @@
   // ==================================
   // Staking Rewards/APY related logic
   // ==================================
-  const stakingRewardData = $derived($stakingRewardsStore);
   const totalUsdAmount = $derived.by(() => {
     const userTokens = $tokensListVisitorsStore;
     const totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
@@ -250,16 +249,15 @@
     }
   });
 
-  const usdValueBannerVisible = $derived(hasAnyNeurons);
   const apyCardVisible = $derived(
     $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount)
   );
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
-  <div class="top" class:two-card={usdValueBannerVisible && apyCardVisible}>
+  <div class="top" class:two-card={hasAnyNeurons && apyCardVisible}>
     {#if $authSignedInStore}
-      {#if usdValueBannerVisible}
+      {#if hasAnyNeurons}
         <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
           <IconNeuronsPage slot="icon" />
         </UsdValueBanner>
@@ -267,17 +265,20 @@
 
       {#if apyCardVisible}
         {#if nonNullish(totalUsdAmount)}
-          {#if isStakingRewardDataReady(stakingRewardData)}
+          {#if isStakingRewardDataReady($stakingRewardsStore)}
             <ApyCard
               onStakingPage={true}
-              rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
-              rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
-              stakingPower={stakingRewardData.stakingPower}
-              stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+              rewardBalanceUSD={$stakingRewardsStore.rewardBalanceUSD}
+              rewardEstimateWeekUSD={$stakingRewardsStore.rewardEstimateWeekUSD}
+              stakingPower={$stakingRewardsStore.stakingPower}
+              stakingPowerUSD={$stakingRewardsStore.stakingPowerUSD}
               totalAmountUSD={totalUsdAmount}
             />
           {:else}
-            <ApyFallbackCard {stakingRewardData} onStakingPage={true} />
+            <ApyFallbackCard
+              stakingRewardData={$stakingRewardsStore}
+              onStakingPage={true}
+            />
           {/if}
         {/if}
       {/if}
