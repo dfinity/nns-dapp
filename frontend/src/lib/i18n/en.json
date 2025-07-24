@@ -1352,7 +1352,10 @@
     "apy_card_tooltip_reward_balance": "Rewards are given in maturity. Maturity is an attribute of a neuron, it is not a tradable asset. To generate tokens from maturity, users need to trigger a non-deterministic process subject to a changing maturity modulation function. The dollar value reflects an estimate assuming a modulation of 0%",
     "apy_card_tooltip_staking_ratio": "The ratio of the total stake (including staked maturity), compared to all holdings and rewards:\n$totalStaked / ($totalHoldings + $totalRewards) = $ratio",
     "apy_card_tooltip_no_rewards": "This project is currently not generating rewards.",
-    "apy_card_tooltip_error": "Unable to calculate the rewards for this project."
+    "apy_card_tooltip_error": "Unable to calculate the rewards for this project.",
+    "start_staking_card_title": "Start Staking",
+    "start_staking_card_content": "Earn rewards, participate in governance and join the communities. Login to gain optimal access of the platform.",
+    "start_staking_card_link": "View Staked"
   },
   "highlight": {
     "disburse_maturity_title": "Farewell, Spawn Neuron!",
