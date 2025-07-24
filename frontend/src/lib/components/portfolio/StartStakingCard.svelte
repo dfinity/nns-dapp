@@ -13,7 +13,7 @@
 
 {#snippet backgroundIcon()}
   <div class="background-icon-container" aria-hidden="true">
-    <div class="icon icon--mobile"><IconNeurons size="180px" /></div>
+    <div class="icon icon--mobile"><IconNeurons size="150px" /></div>
     <div class="icon icon--desktop"><IconNeurons size="200px" /></div>
   </div>
 {/snippet}
