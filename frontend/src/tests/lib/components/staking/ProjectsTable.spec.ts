@@ -1,20 +1,27 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsToken,
+  mockToken,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
@@ -62,6 +69,8 @@ describe("ProjectsTable", () => {
       },
     ]);
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
   });
 
   it("should render desktop headers", async () => {
@@ -1021,5 +1030,38 @@ describe("ProjectsTable", () => {
   it("should display settings button", async () => {
     const po = renderComponent();
     expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(true);
+  });
+
+  it("should display Staking Rewards banner", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
+    stakingRewardsStore.set({
+      loading: false,
+      rewardBalanceUSD: 100,
+      rewardEstimateWeekUSD: 10,
+      stakingPower: 1,
+      stakingPowerUSD: 1,
+      apy: new Map(),
+    });
+
+    const po = renderComponent();
+    const apyCardPo = po.getApyCardPo();
+    expect(await apyCardPo.isPresent()).toBe(true);
+    // Check that the link is not present
+    expect(await apyCardPo.getLinkPo().isPresent()).toBe(false);
+  });
+
+  it("should not display Staking Rewards banner w/o the feature flag", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+    stakingRewardsStore.set({
+      loading: false,
+      rewardBalanceUSD: 100,
+      rewardEstimateWeekUSD: 10,
+      stakingPower: 1,
+      stakingPowerUSD: 1,
+      apy: new Map(),
+    });
+
+    const po = renderComponent();
+    expect(await po.getApyCardPo().isPresent()).toBe(false);
   });
 });
