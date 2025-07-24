@@ -103,7 +103,7 @@
   );
   const heldTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "full"
+      ? "empty"
       : areHeldTokensLoading
         ? "skeleton"
         : totalTokensBalanceInUsd === 0
@@ -116,7 +116,7 @@
   );
   const stakedTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "full"
+      ? "empty"
       : areStakedTokensLoading
         ? "skeleton"
         : totalStakedInUsd === 0
@@ -257,7 +257,7 @@
     {#if stakedTokensCard === "skeleton"}
       <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
     {:else if stakedTokensCard === "empty"}
-      <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
+      <NoStakedTokensCard />
     {:else}
       <StakedTokensCard
         {topStakedTokens}
@@ -324,9 +324,10 @@
 
       @include media.min-width(large) {
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: minmax(345px, min-content);
+        grid-auto-rows: minmax(280px, min-content);
       }
     }
+
     .sns-section {
       display: grid;
       gap: 16px;
