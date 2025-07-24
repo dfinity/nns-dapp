@@ -10,10 +10,10 @@
           loading: false;
           error: string;
         };
-    onStakingPage: boolean;
+    onStakingPage?: boolean;
   };
 
-  const { stakingRewardData, onStakingPage }: Props = $props();
+  const { stakingRewardData, onStakingPage = false }: Props = $props();
 
   const isError = $derived(
     stakingRewardData &&
