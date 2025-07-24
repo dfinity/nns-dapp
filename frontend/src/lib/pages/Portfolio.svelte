@@ -144,17 +144,9 @@
     })
   );
 
-  const tableProjectsWithApy: TableProject[] = $derived(
-    isStakingRewardDataReady(stakingRewardResult)
-      ? tableProjects.map((project) => ({
-          ...project,
-          apy: stakingRewardResult.apy.get(project.universeId) ?? undefined,
-        }))
-      : tableProjects
-  );
   const topStakedTokens = $derived(
     getTopStakedTokens({
-      projects: tableProjectsWithApy,
+      projects: tableProjects,
       isSignedIn: $authSignedInStore,
     })
   );
