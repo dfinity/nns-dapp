@@ -52,11 +52,13 @@
   import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
-  $: if ($authSignedInStore) {
-    loadIcpSwapTickers();
-  }
-  let commonColumns: ProjectsTableColumn[] = [];
-  $: commonColumns = [
+  $effect(() => {
+    if ($authSignedInStore) {
+      loadIcpSwapTickers();
+    }
+  });
+
+  const commonColumns: ProjectsTableColumn[] = $derived([
     {
       id: "stake",
       title: $i18n.neuron_detail.stake,
@@ -85,10 +87,9 @@
       alignment: "right",
       templateColumns: ["1fr"],
     },
-  ];
+  ]);
 
-  let columns: ProjectsTableColumn[] = [];
-  $: columns = [
+  const columns: ProjectsTableColumn[] = $derived([
     {
       id: "title",
       title: $i18n.staking.nervous_systems,
@@ -98,10 +99,9 @@
       comparator: $authSignedInStore ? compareByProject : undefined,
     },
     ...commonColumns,
-  ];
+  ]);
 
-  let nnsColumns: ProjectsTableColumn[] = [];
-  $: nnsColumns = [
+  const nnsColumns: ProjectsTableColumn[] = $derived([
     {
       id: "title",
       title: $i18n.staking.nervous_systems_nns,
@@ -111,10 +111,9 @@
       comparator: $authSignedInStore ? compareByProject : undefined,
     },
     ...commonColumns,
-  ];
+  ]);
 
-  let snsColumns: ProjectsTableColumn[] = [];
-  $: snsColumns = [
+  const snsColumns: ProjectsTableColumn[] = $derived([
     {
       id: "title",
       title: $i18n.staking.nervous_systems_sns,
@@ -124,10 +123,9 @@
       comparator: $authSignedInStore ? compareByProject : undefined,
     },
     ...commonColumns,
-  ];
+  ]);
 
-  let sunsettedSnsColumns: ProjectsTableColumn[] = [];
-  $: sunsettedSnsColumns = [
+  const sunsettedSnsColumns: ProjectsTableColumn[] = $derived([
     {
       id: "title",
       title: $i18n.staking.nervous_systems_sns_sunset,
@@ -140,62 +138,65 @@
       alignment: "left",
       templateColumns: ["1fr"],
     },
-  ];
+  ]);
 
-  let tableProjects: undefined | TableProject[];
-  $: tableProjects = getTableProjects({
-    universes: $selectableUniversesStore,
-    isSignedIn: $authSignedInStore,
-    nnsNeurons: $neuronsStore?.neurons,
-    snsNeurons: $snsNeuronsStore,
-    icpSwapUsdPrices: $icpSwapUsdPricesStore,
-    failedActionableSnses: $failedActionableSnsesStore,
-  });
-
-  let shouldHideProjectsWithoutNeurons: boolean;
-  $: shouldHideProjectsWithoutNeurons =
-    $authSignedInStore && $hideZeroNeuronsStore === "hide";
-
-  let visibleTableProjects: TableProject[] = [];
-  $: visibleTableProjects = shouldHideProjectsWithoutNeurons
-    ? tableProjects.filter(
-        ({ neuronCount = 0, universeId }) =>
-          universeId === OWN_CANISTER_ID_TEXT || neuronCount > 0
-      )
-    : tableProjects;
-
-  let sortedTableProjects: TableProject[];
-  $: sortedTableProjects = sortTableProjects(visibleTableProjects);
-
-  let hasAnyNeurons: boolean;
-  $: hasAnyNeurons = tableProjects.some(
-    (project) => project.neuronCount ?? 0 > 0
+  const tableProjects = $derived(
+    getTableProjects({
+      universes: $selectableUniversesStore,
+      isSignedIn: $authSignedInStore,
+      nnsNeurons: $neuronsStore?.neurons,
+      snsNeurons: $snsNeuronsStore,
+      icpSwapUsdPrices: $icpSwapUsdPricesStore,
+      failedActionableSnses: $failedActionableSnsesStore,
+    })
   );
 
-  let totalStakeInUsd: number;
-  $: totalStakeInUsd = getTotalStakeInUsd(tableProjects);
-
-  let hasUnpricedTokens: boolean;
-  $: hasUnpricedTokens = tableProjects.some(
-    (project) =>
-      project.stake instanceof TokenAmountV2 &&
-      project.stake.toUlps() > 0n &&
-      (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
+  const shouldHideProjectsWithoutNeurons = $derived(
+    $authSignedInStore && $hideZeroNeuronsStore === "hide"
   );
 
-  let nnsNeurons: TableProject[] = [];
-  $: nnsNeurons = sortedTableProjects.filter(
-    (project) => project.universeId === OWN_CANISTER_ID_TEXT
+  const visibleTableProjects = $derived(
+    shouldHideProjectsWithoutNeurons
+      ? tableProjects.filter(
+          ({ neuronCount = 0, universeId }) =>
+            universeId === OWN_CANISTER_ID_TEXT || neuronCount > 0
+        )
+      : tableProjects
   );
 
-  let snsNeurons: TableProject[] = [];
-  $: snsNeurons = sortedTableProjects
-    .filter((p) => p.universeId !== OWN_CANISTER_ID_TEXT)
-    .filter((p) => !abandonedProjectsCanisterId.includes(p.universeId));
+  const sortedTableProjects = $derived(sortTableProjects(visibleTableProjects));
 
-  let sunsetSns: TableProject[] = [];
-  $: sunsetSns = sortedTableProjects.filter((p) =>
-    abandonedProjectsCanisterId.includes(p.universeId)
+  const hasAnyNeurons = $derived(
+    tableProjects.some((project) => (project.neuronCount ?? 0) > 0)
+  );
+
+  const totalStakeInUsd = $derived(getTotalStakeInUsd(tableProjects));
+
+  const hasUnpricedTokens = $derived(
+    tableProjects.some(
+      (project) =>
+        project.stake instanceof TokenAmountV2 &&
+        project.stake.toUlps() > 0n &&
+        (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
+    )
+  );
+
+  const nnsNeurons = $derived(
+    sortedTableProjects.filter(
+      (project) => project.universeId === OWN_CANISTER_ID_TEXT
+    )
+  );
+
+  const snsNeurons = $derived(
+    sortedTableProjects
+      .filter((p) => p.universeId !== OWN_CANISTER_ID_TEXT)
+      .filter((p) => !abandonedProjectsCanisterId.includes(p.universeId))
+  );
+
+  const sunsetSns = $derived(
+    sortedTableProjects.filter((p) =>
+      abandonedProjectsCanisterId.includes(p.universeId)
+    )
   );
 
   const dispatcher = createEventDispatcher();
@@ -215,38 +216,44 @@
   // ==================================
   // Staking Rewards/APY related logic
   // ==================================
-  let totalUsdAmount: number | undefined;
-  $: totalUsdAmount =
-    $ENABLE_APY_PORTFOLIO && $authSignedInStore
-      ? getTotalBalanceInUsd($tokensListVisitorsStore) +
-        getTotalStakeInUsd(tableProjects)
+  const stakingRewardData = $derived($stakingRewardsStore);
+  const totalUsdAmount = $derived.by(() => {
+    const userTokens = $tokensListVisitorsStore;
+    const totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
+    const totalStakedInUsd = getTotalStakeInUsd(tableProjects);
+    return $authSignedInStore
+      ? totalTokensBalanceInUsd + totalStakedInUsd
       : undefined;
-
+  });
   // load ckBTC
-  $: if ($ENABLE_APY_PORTFOLIO && $authSignedInStore) {
-    const ckBTCUniverseIds = $ckBTCUniversesStore.map(
-      (universe) => universe.canisterId
-    );
-    loadAccountsBalances(ckBTCUniverseIds);
-  }
-
+  $effect(() => {
+    if ($authSignedInStore) {
+      const ckBTCUniverseIds = $ckBTCUniversesStore.map(
+        (universe) => universe.canisterId
+      );
+      loadAccountsBalances(ckBTCUniverseIds);
+    }
+  });
   // load other ck and imported tokens
-  $: if ($ENABLE_APY_PORTFOLIO && $authSignedInStore) {
-    const icrcUniverseIds = Object.keys($icrcCanistersStore);
-    loadAccountsBalances(icrcUniverseIds);
-  }
+  $effect(() => {
+    if ($authSignedInStore) {
+      const icrcUniverseIds = Object.keys($icrcCanistersStore);
+      loadAccountsBalances(icrcUniverseIds);
+    }
+  });
+  $effect(() => {
+    if ($authSignedInStore) {
+      const snsRootCanisterIds = $snsProjectsCommittedStore.map(
+        ({ rootCanisterId }) => rootCanisterId
+      );
+      loadSnsAccountsBalances(snsRootCanisterIds);
+    }
+  });
 
-  $: if ($ENABLE_APY_PORTFOLIO && $authSignedInStore) {
-    const snsRootCanisterIds = $snsProjectsCommittedStore.map(
-      ({ rootCanisterId }) => rootCanisterId
-    );
-    loadSnsAccountsBalances(snsRootCanisterIds);
-  }
-
-  let usdValueBannerVisible: boolean;
-  $: usdValueBannerVisible = hasAnyNeurons;
-  let apyCardVisible: boolean;
-  $: apyCardVisible = $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount);
+  const usdValueBannerVisible = $derived(hasAnyNeurons);
+  const apyCardVisible = $derived(
+    $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount)
+  );
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
@@ -260,17 +267,17 @@
 
       {#if apyCardVisible}
         {#if nonNullish(totalUsdAmount)}
-          {#if isStakingRewardDataReady($stakingRewardsStore)}
+          {#if isStakingRewardDataReady(stakingRewardData)}
             <ApyCard
               onStakingPage={true}
-              rewardBalanceUSD={$stakingRewardsStore.rewardBalanceUSD}
-              rewardEstimateWeekUSD={$stakingRewardsStore.rewardEstimateWeekUSD}
-              stakingPower={$stakingRewardsStore.stakingPower}
-              stakingPowerUSD={$stakingRewardsStore.stakingPowerUSD}
+              rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
+              rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
+              stakingPower={stakingRewardData.stakingPower}
+              stakingPowerUSD={stakingRewardData.stakingPowerUSD}
               totalAmountUSD={totalUsdAmount}
             />
           {:else}
-            <ApyFallbackCard stakingRewardData={$stakingRewardsStore} />
+            <ApyFallbackCard {stakingRewardData} />
           {/if}
         {/if}
       {/if}
@@ -319,7 +326,7 @@
               <button
                 data-tid="show-all-button"
                 class="ghost show-all"
-                onclick={showAll}
+                on:click={showAll}
               >
                 {$i18n.staking.show_all}</button
               >
@@ -378,7 +385,7 @@
             <button
               data-tid="show-all-button"
               class="ghost show-all"
-              onclick={showAll}
+              on:click={showAll}
             >
               {$i18n.staking.show_all}</button
             >
