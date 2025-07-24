@@ -73,11 +73,52 @@ describe("ProjectsTable", () => {
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
   });
 
+  describe("table when ENABLE_APY_PORTFOLIO disabled", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+    });
+
+    it("should render desktop headers", async () => {
+      const po = renderComponent();
+      expect(await po.getDesktopColumnHeaders()).toEqual([
+        "Nervous Systems",
+        "Stake",
+        "Maturity",
+        "Neurons",
+        "", // No header for actions column.
+      ]);
+    });
+
+    it("should render cell alignment classes", async () => {
+      const po = renderComponent();
+      const rows = await po.getRows();
+      expect(await rows[0].getCellAlignments()).toEqual([
+        "desktop-align-left", // Nervous Systems
+        "desktop-align-right", // Stake
+        "desktop-align-right", // Maturity
+        "desktop-align-right", // Neurons
+        "desktop-align-right", // Actions
+      ]);
+    });
+
+    it("should use correct template columns", async () => {
+      const po = renderComponent();
+
+      expect(await po.getDesktopGridTemplateColumns()).toBe(
+        ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
+      );
+      expect(await po.getMobileGridTemplateAreas()).toBe(
+        '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
+      );
+    });
+  });
+
   it("should render desktop headers", async () => {
     const po = renderComponent();
     expect(await po.getDesktopColumnHeaders()).toEqual([
       "Nervous Systems",
       "Stake",
+      "APY (max APY)",
       "Maturity",
       "Neurons",
       "", // No header for actions column.
@@ -98,6 +139,7 @@ describe("ProjectsTable", () => {
     expect(await rows[0].getCellAlignments()).toEqual([
       "desktop-align-left", // Nervous Systems
       "desktop-align-right", // Stake
+      "desktop-align-right", // APY
       "desktop-align-right", // Maturity
       "desktop-align-right", // Neurons
       "desktop-align-right", // Actions
@@ -108,10 +150,10 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
-      ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
+      ["2fr", "1fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
+      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3"'
     );
   });
 
