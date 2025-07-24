@@ -6,6 +6,7 @@
 
 <style lang="scss">
   article {
+    position: relative;
     height: 100%;
     box-sizing: border-box;
     background: var(--card-background);
