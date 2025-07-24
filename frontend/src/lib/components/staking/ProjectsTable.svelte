@@ -1,4 +1,6 @@
 <script lang="ts">
+  import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
+  import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HideZeroNeuronsToggle from "$lib/components/staking/HideZeroNeuronsToggle.svelte";
   import ProjectActionsCell from "$lib/components/staking/ProjectActionsCell.svelte";
   import ProjectMaturityCell from "$lib/components/staking/ProjectMaturityCell.svelte";
@@ -34,7 +36,9 @@
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
+  import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import {
     compareByNeuron,
     compareByProject,
@@ -47,10 +51,6 @@
   import { IconNeuronsPage } from "@dfinity/gix-components";
   import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import { isStakingRewardDataReady } from "../../utils/staking-rewards.utils";
-  import { stakingRewardsStore } from "../../stores/staking-rewards.store";
-  import ApyCard from "../portfolio/ApyCard.svelte";
-  import ApyFallbackCard from "../portfolio/ApyFallbackCard.svelte";
 
   $: if ($authSignedInStore) {
     loadIcpSwapTickers();
