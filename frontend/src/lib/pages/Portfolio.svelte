@@ -13,6 +13,7 @@
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StackedCards from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
+  import StartStakingCard from "$lib/components/portfolio/StartStakingCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
@@ -206,22 +207,16 @@
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div
-    class="top"
-    class:signed-in={$authSignedInStore}
-    class:launchpad={cards.length > 0}
-    class:apy-card={$ENABLE_APY_PORTFOLIO}
-  >
+  <div class="top" class:apy-card={$ENABLE_APY_PORTFOLIO}>
     {#if !$authSignedInStore}
-      <div class="login-card">
-        <LoginCard />
-      </div>
+      <LoginCard />
+      <StartStakingCard />
     {:else}
       <TotalAssetsCard
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
-        isFullWidth={cards.length === 0 && !$ENABLE_APY_PORTFOLIO}
+        isFullWidth={!$ENABLE_APY_PORTFOLIO}
       />
 
       {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
@@ -236,18 +231,6 @@
         {:else}
           <ApyFallbackCard stakingRewardData={stakingRewardResult} />
         {/if}
-      {/if}
-    {/if}
-
-    {#if cards.length > 0}
-      {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
-        <CardList
-          testId="stacked-cards"
-          {cards}
-          mobileHorizontalScroll={cards.length > 1}
-        />
-      {:else}
-        <StackedCards {cards} />
       {/if}
     {/if}
 
@@ -294,9 +277,23 @@
     {/if}
   </div>
 
-  {#if $ENABLE_LAUNCHPAD_REDESIGN}
-    <LaunchpadBanner />
-  {/if}
+  <div class="sns-section">
+    {#if $ENABLE_LAUNCHPAD_REDESIGN}
+      <LaunchpadBanner />
+    {/if}
+
+    {#if cards.length > 0}
+      {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
+        <CardList
+          testId="stacked-cards"
+          {cards}
+          mobileHorizontalScroll={cards.length > 1}
+        />
+      {:else}
+        <StackedCards {cards} />
+      {/if}
+    {/if}
+  </div>
 </main>
 
 <style lang="scss">
@@ -324,41 +321,7 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
-        grid-template-columns: 1fr 2fr;
-
-        .login-card {
-          height: 100%;
-        }
-
-        // Case: not signed in, with projects
-        &:not(.signed-in).launchpad {
-          grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: not signed in, with no projects
-        &:not(.signed-in):not(.launchpad) {
-          grid-template-columns: 1fr;
-        }
-
-        // Case: signed in, no projects
-        &.signed-in {
-          grid-template-columns: 3fr;
-        }
-
-        // Case: signed in, with projects
-        &.signed-in.launchpad {
-          grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: signed in, with APY card
-        &.signed-in.apy-card {
-          grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: signed in, with APY card and projects
-        &.signed-in.apy-card.launchpad {
-          grid-template-columns: 1fr 1fr 1fr;
-        }
+        grid-template-columns: 2fr 1fr;
       }
     }
 
@@ -370,6 +333,15 @@
       @include media.min-width(large) {
         grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: minmax(345px, min-content);
+      }
+    }
+    .sns-section {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+
+      @include media.min-width(large) {
+        grid-template-columns: 2fr 1fr;
       }
     }
   }

@@ -19,6 +19,10 @@ export class PortfolioPagePo extends BasePageObject {
     return this.getElement("portfolio-login-card");
   }
 
+  getStartStakingCard(): PageObjectElement {
+    return this.getElement("start-staking-card");
+  }
+
   getNoHeldTokensCard(): PageObjectElement {
     return this.getElement("no-held-tokens-card");
   }
