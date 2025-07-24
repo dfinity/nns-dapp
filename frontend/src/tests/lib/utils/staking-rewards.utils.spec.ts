@@ -688,7 +688,7 @@ describe("neuron-utils", () => {
       );
 
   it("Calculates the APYs (NNS)", () => {
-    // Conficende range for APY calculations in respect to the reference value
+    // Confidence range for APY calculations in respect to the reference value
     // This is used to check if the calculated APY is within a reasonable range
     // Some small differences can occur due to rounding and different precision levels
     const confidence = 0.01; // 1%, it means that if the reference was 10, a value between 9.9 and 10.1 is also accepted
