@@ -56,6 +56,12 @@
     height: 100%;
     background-color: var(--card-background-tint);
 
+    h2,
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
     .title {
       font-family: CircularXX;
       font-size: 18px;
