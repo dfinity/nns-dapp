@@ -207,11 +207,7 @@
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div
-    class="top"
-    class:signed-in={$authSignedInStore}
-    class:apy-card={$ENABLE_APY_PORTFOLIO}
-  >
+  <div class="top" class:apy-card={$ENABLE_APY_PORTFOLIO}>
     {#if !$authSignedInStore}
       <LoginCard />
       <StartStakingCard />
@@ -220,7 +216,7 @@
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
-        isFullWidth={cards.length === 0 && !$ENABLE_APY_PORTFOLIO}
+        isFullWidth={!$ENABLE_APY_PORTFOLIO}
       />
 
       {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
@@ -325,32 +321,7 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
-        grid-template-columns: 1fr 2fr;
-
-        // Case: not signed in, login card and start-staking card
-        &:not(.signed-in) {
-          grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: signed in, no projects
-        &.signed-in {
-          grid-template-columns: 3fr;
-        }
-
-        // Case: signed in, with projects
-        &.signed-in.launchpad {
-          grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: signed in, with APY card
-        &.signed-in.apy-card {
-          grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: signed in, with APY card and projects
-        &.signed-in.apy-card.launchpad {
-          grid-template-columns: 1fr 1fr 1fr;
-        }
+        grid-template-columns: 2fr 1fr;
       }
     }
 
