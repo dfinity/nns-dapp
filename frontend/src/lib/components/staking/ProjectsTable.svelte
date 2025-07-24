@@ -277,7 +277,7 @@
               totalAmountUSD={totalUsdAmount}
             />
           {:else}
-            <ApyFallbackCard {stakingRewardData} />
+            <ApyFallbackCard {stakingRewardData} onStakingPage={true} />
           {/if}
         {/if}
       {/if}
