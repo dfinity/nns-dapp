@@ -17,7 +17,6 @@
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
-  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
@@ -25,20 +24,13 @@
     ENABLE_APY_PORTFOLIO,
     ENABLE_NEW_TABLES,
   } from "$lib/stores/feature-flags.store";
-  import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
   import { i18n } from "$lib/stores/i18n";
-  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
-  import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
   import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
-  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
-  import {
-    getStakingRewardData,
-    isStakingRewardDataReady,
-  } from "$lib/utils/staking-rewards.utils";
+  import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import {
     compareByNeuron,
     compareByProject,
@@ -50,7 +42,15 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { IconNeuronsPage } from "@dfinity/gix-components";
   import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
-  import { createEventDispatcher, onDestroy } from "svelte";
+  import { createEventDispatcher } from "svelte";
+  import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
+  import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import {
+    loadAccountsBalances,
+    loadSnsAccountsBalances,
+  } from "$lib/services/accounts-balances.services";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 
   $effect(() => {
     if ($authSignedInStore) {
@@ -213,93 +213,72 @@
     hideZeroNeuronsStore.set("show");
   };
 
-  // =============================
-  // APY CARD DATA
-  // =============================
-
-  const userTokens = $derived($tokensListVisitorsStore);
-  const totalStakedInUsd = $derived(getTotalStakeInUsd(tableProjects));
-  const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
-  const totalUsdAmount = $derived(
-    $authSignedInStore ? totalTokensBalanceInUsd + totalStakedInUsd : undefined
-  );
-
-  let stakingRewardData = $state(
-    getStakingRewardData({
-      auth: $authSignedInStore,
-      tokens: $tokensListUserStore,
-      snsProjects: $snsAggregatorStore,
-      snsNeurons: $snsNeuronsStore,
-      nnsNeurons: $neuronsStore,
-      nnsEconomics: $networkEconomicsStore,
-      fxRates: $icpSwapUsdPricesStore,
-      governanceMetrics: $governanceMetricsStore,
-      nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-    })
-  );
-
-  let debounceTimer: ReturnType<typeof setTimeout>;
-  let prevAuthState = $authSignedInStore;
-
+  // ==================================
+  // Staking Rewards/APY related logic
+  // ==================================
+  const stakingRewardData = $derived($stakingRewardsStore);
+  const totalUsdAmount = $derived.by(() => {
+    const userTokens = $tokensListVisitorsStore;
+    const totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
+    const totalStakedInUsd = getTotalStakeInUsd(tableProjects);
+    return $authSignedInStore
+      ? totalTokensBalanceInUsd + totalStakedInUsd
+      : undefined;
+  });
+  // load ckBTC
   $effect(() => {
-    clearTimeout(debounceTimer);
-    const refreshData = () =>
-      (stakingRewardData = getStakingRewardData({
-        auth: $authSignedInStore,
-        tokens: userTokens,
-        snsProjects: $snsAggregatorStore,
-        snsNeurons: $snsNeuronsStore,
-        nnsNeurons: $neuronsStore,
-        nnsEconomics: $networkEconomicsStore,
-        fxRates: $icpSwapUsdPricesStore,
-        governanceMetrics: $governanceMetricsStore,
-        nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-      }));
-
-    if ($authSignedInStore !== prevAuthState) {
-      // No debounce if auth state changes, refresh immediately
-      prevAuthState = $authSignedInStore;
-      refreshData();
-    } else {
-      debounceTimer = setTimeout(refreshData, 500);
+    if ($authSignedInStore) {
+      const ckBTCUniverseIds = $ckBTCUniversesStore.map(
+        (universe) => universe.canisterId
+      );
+      loadAccountsBalances(ckBTCUniverseIds);
+    }
+  });
+  // load other ck and imported tokens
+  $effect(() => {
+    if ($authSignedInStore) {
+      const icrcUniverseIds = Object.keys($icrcCanistersStore);
+      loadAccountsBalances(icrcUniverseIds);
+    }
+  });
+  $effect(() => {
+    if ($authSignedInStore) {
+      const snsRootCanisterIds = $snsProjectsCommittedStore.map(
+        ({ rootCanisterId }) => rootCanisterId
+      );
+      loadSnsAccountsBalances(snsRootCanisterIds);
     }
   });
 
-  onDestroy(() => {
-    clearTimeout(debounceTimer);
-  });
-
-  $effect(() => {
-    console.log({
-      stakingRewardData,
-      userTokens,
-      isStakingRewardDataReady: isStakingRewardDataReady(stakingRewardData),
-      totalUsdAmount,
-    });
-  });
+  const usdValueBannerVisible = $derived(hasAnyNeurons);
+  const apyCardVisible = $derived(
+    $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount)
+  );
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
-  <div class="top">
+  <div class="top" class:two-card={usdValueBannerVisible && apyCardVisible}>
     {#if $authSignedInStore}
-      {#if hasAnyNeurons}
+      {#if usdValueBannerVisible}
         <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
           <IconNeuronsPage slot="icon" />
         </UsdValueBanner>
       {/if}
 
-      {#if $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount)}
-        {#if isStakingRewardDataReady(stakingRewardData)}
-          <ApyCard
-            onStakingPage={true}
-            rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
-            rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
-            stakingPower={stakingRewardData.stakingPower}
-            stakingPowerUSD={stakingRewardData.stakingPowerUSD}
-            totalAmountUSD={totalUsdAmount}
-          />
-        {:else}
-          <ApyFallbackCard {stakingRewardData} />
+      {#if apyCardVisible}
+        {#if nonNullish(totalUsdAmount)}
+          {#if isStakingRewardDataReady(stakingRewardData)}
+            <ApyCard
+              onStakingPage={true}
+              rewardBalanceUSD={stakingRewardData.rewardBalanceUSD}
+              rewardEstimateWeekUSD={stakingRewardData.rewardEstimateWeekUSD}
+              stakingPower={stakingRewardData.stakingPower}
+              stakingPowerUSD={stakingRewardData.stakingPowerUSD}
+              totalAmountUSD={totalUsdAmount}
+            />
+          {:else}
+            <ApyFallbackCard {stakingRewardData} />
+          {/if}
         {/if}
       {/if}
     {/if}
@@ -424,6 +403,11 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
+
+    @include media.min-width(large) {
+      column-gap: var(--padding-2x);
+      row-gap: var(--padding-3x);
+    }
   }
 
   .top {
@@ -431,8 +415,10 @@
     grid-template-columns: 1fr;
     gap: var(--padding-2x);
 
-    @include media.min-width(large) {
-      grid-template-columns: 1fr 1fr;
+    &.two-card {
+      @include media.min-width(large) {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   }
 
