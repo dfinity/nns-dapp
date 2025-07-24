@@ -9,5 +9,7 @@
 <div data-tid="project-apy-cell-component">
   {#if nonNullish(rowData.apy)}
     <ApyDisplay apy={rowData.apy} isLoading={false} />
+  {:else}
+    -/-
   {/if}
 </div>
