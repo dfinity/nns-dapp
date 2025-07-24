@@ -1,3 +1,4 @@
+import { ApyCardPo } from "$tests/page-objects/ApyCard.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { HideZeroNeuronsTogglePo } from "$tests/page-objects/HideZeroNeuronsToggle.page-object";
@@ -52,5 +53,9 @@ export class ProjectsTablePo extends ResponsiveTablePo {
 
   getBackdropPo(): BackdropPo {
     return BackdropPo.under(this.root);
+  }
+
+  getApyCardPo(): ApyCardPo {
+    return ApyCardPo.under(this.root);
   }
 }

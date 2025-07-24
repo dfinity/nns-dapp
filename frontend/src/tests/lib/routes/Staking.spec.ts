@@ -37,6 +37,7 @@ import { fromNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
+
 describe("Staking", () => {
   const snsTitle = "SNS-1";
   const snsCanisterId = principal(1112);
@@ -52,6 +53,9 @@ describe("Staking", () => {
     setIcpSwapUsdPrices({
       [snsLedgerId.toText()]: 10,
     });
+
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
   });
 
   const renderComponent = () => {
