@@ -13,7 +13,6 @@
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
   import StackedCards from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
-  import StartStakingCard from "$lib/components/portfolio/StartStakingCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
@@ -217,7 +216,6 @@
       <div class="login-card">
         <LoginCard />
       </div>
-      <StartStakingCard />
     {:else}
       <TotalAssetsCard
         usdAmount={totalUsdAmount}
