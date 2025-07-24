@@ -2,15 +2,25 @@
   import Alfred from "$lib/components/alfred/Alfred.svelte";
   import Highlight from "$lib/components/ui/Highlight.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { initAnalytics } from "$lib/services/analytics.services";
+  import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
+  import { getRefreshStakingRewards } from "$lib/services/staking-rewards.service";
   import {
     initAuthWorker,
     type AuthWorker,
   } from "$lib/services/worker-auth.services";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
   import { ENABLE_DISBURSE_MATURITY } from "$lib/stores/feature-flags.store";
+  import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { i18n } from "$lib/stores/i18n";
+  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
+  import { neuronsStore } from "$lib/stores/neurons.store";
+  import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
+  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
+  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { toastsClean } from "$lib/stores/toasts.store";
   import { onMount } from "svelte";
 
@@ -50,6 +60,23 @@
   });
 
   $: syncAuth($authStore);
+
+  // Load ICP swap tickers for the Staking Rewards
+  loadIcpSwapTickers();
+  const refreshStakingRewards = getRefreshStakingRewards();
+  $: {
+    refreshStakingRewards({
+      auth: $authSignedInStore,
+      tokens: $tokensListUserStore,
+      snsProjects: $snsAggregatorStore,
+      snsNeurons: $snsNeuronsStore,
+      nnsNeurons: $neuronsStore,
+      nnsEconomics: $networkEconomicsStore,
+      fxRates: $icpSwapUsdPricesStore,
+      governanceMetrics: $governanceMetricsStore,
+      nnsTotalVotingPower: $nnsTotalVotingPowerStore,
+    });
+  }
 </script>
 
 <Alfred />

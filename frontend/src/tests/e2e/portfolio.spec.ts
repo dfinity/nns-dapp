@@ -1,6 +1,7 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
+  disableCssAnimations,
   replaceContent,
   signInWithNewUser,
   step,
@@ -26,6 +27,7 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
   const portfolioPo = appPo.getPortfolioPo();
 
   await page.goto("/");
+  await disableCssAnimations(page);
   await expect(page).toHaveTitle("Portfolio | Network Nervous System");
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
@@ -78,6 +80,7 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
 
   step("Get some ICP and BTC");
   await page.goto("/tokens");
+  await disableCssAnimations(page);
   await appPo.getIcpTokens(41);
   const ckBTCRow = await appPo
     .getTokensPo()
@@ -102,6 +105,7 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
 
   step("Total Assets");
   await page.goto("/");
+  await disableCssAnimations(page);
 
   await portfolioPo.getPortfolioPagePo().getHeldTokensCardPo().waitFor();
   await portfolioPo.getPortfolioPagePo().getStakedTokensCardPo().waitFor();
