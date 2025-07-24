@@ -57,9 +57,9 @@
 
       .title {
         font-family: CircularXX;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 450;
-        line-height: 24px;
+        line-height: 26px;
 
         @include media.min-width(small) {
           font-size: 24px;
