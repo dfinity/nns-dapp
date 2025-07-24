@@ -142,7 +142,9 @@
     {#if onStakingPage}
       {@render content()}
     {:else}
-      <a {href} class="link" aria-label={linkText} data-tid="project-link"> </a>
+      <a {href} class="link" aria-label={linkText} data-tid="project-link">
+        {@render content()}
+      </a>
     {/if}
   </article>
 {:else}
