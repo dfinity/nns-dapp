@@ -902,7 +902,7 @@
     "launched_projects": "Launched Projects",
     "participated_projects": "My SNS Participation",
     "banner_title": "Discover SNS Projects",
-    "banner_text": "Find upcoming projects and innovations, existing communities as products. Now featuring development over time, connecting communities. Get involved or realize your own idea!",
+    "banner_text": "Find upcoming and existing community dapps. Get involved by participating in launches or joining existing DAO communities!",
     "banner_link": "Visit Launchpad",
     "banner_raised_by": "Raised by projects",
     "banner_launched": "SNS DAOs launched",
@@ -1355,8 +1355,8 @@
     "apy_card_tooltip_no_rewards": "This project is currently not generating rewards.",
     "apy_card_tooltip_error": "Unable to calculate the rewards for this project.",
     "start_staking_card_title": "Start Staking",
-    "start_staking_card_content": "Earn rewards, participate in governance and join the communities. Login to gain optimal access of the platform.",
-    "start_staking_card_link": "View Staked"
+    "start_staking_card_content": "Stake ICP tokens and participate in NNS governance to earn up to 13% of yearly voting rewards",
+    "start_staking_card_link": "Open Staking"
   },
   "highlight": {
     "disburse_maturity_title": "Farewell, Spawn Neuron!",
