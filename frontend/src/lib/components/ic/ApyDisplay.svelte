@@ -9,12 +9,13 @@
   type Props = {
     apy?: ApyAmount;
     isLoading?: boolean;
+    forPortfolio?: boolean;
   };
 
-  const { apy, isLoading }: Props = $props();
+  const { apy, isLoading, forPortfolio }: Props = $props();
 </script>
 
-<div class="apy" data-tid="apy-display-component">
+<div class="apy" class:forPortfolio data-tid="apy-display-component">
   {#if nonNullish(apy) && isNullish(apy?.error)}
     <span
       >{formatPercentage(apy.cur, {
@@ -51,6 +52,13 @@
   @use "@dfinity/gix-components/dist/styles/mixins/media";
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
 
+  %standard-current-value {
+    gap: 0;
+    font-size: var(--font-size-standard);
+    flex-direction: column;
+    color: var(--text-primary);
+  }
+
   .apy {
     display: flex;
     gap: var(--padding-0_5x);
@@ -82,6 +90,21 @@
       display: flex;
       align-items: center;
       gap: var(--padding-0_5x);
+    }
+
+    &:not(.forPortfolio) {
+      display: flex;
+      flex-direction: column;
+      gap: var(--padding-0_5x);
+      align-items: flex-end;
+
+      // Set mobile font sizes for staking/neuron tables
+      font-size: var(--font-size-standard);
+      flex-direction: column;
+      color: var(--text-primary);
+      .max {
+        font-size: var(--font-size-small);
+      }
     }
   }
 </style>

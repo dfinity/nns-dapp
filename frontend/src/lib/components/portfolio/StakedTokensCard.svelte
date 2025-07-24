@@ -139,7 +139,7 @@
 
             {#if showApy}
               <div class="apy" data-tid="apy" role="cell">
-                <ApyDisplay {apy} isLoading={isApyLoading} />
+                <ApyDisplay {apy} isLoading={isApyLoading} forPortfolio />
               </div>
             {:else}
               <div class="maturity" data-tid="maturity" role="cell">
