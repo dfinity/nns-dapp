@@ -326,7 +326,7 @@
               <button
                 data-tid="show-all-button"
                 class="ghost show-all"
-                on:click={showAll}
+                onclick={showAll}
               >
                 {$i18n.staking.show_all}</button
               >
@@ -385,7 +385,7 @@
             <button
               data-tid="show-all-button"
               class="ghost show-all"
-              on:click={showAll}
+              onclick={showAll}
             >
               {$i18n.staking.show_all}</button
             >
