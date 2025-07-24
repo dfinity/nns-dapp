@@ -12,7 +12,7 @@
 </script>
 
 {#snippet backgroundIcon()}
-  <div class="background-icon-container">
+  <div class="background-icon-container" aria-hidden="true">
     <div class="icon icon--mobile"><IconNeurons size="180px" /></div>
     <div class="icon icon--desktop"><IconNeurons size="200px" /></div>
   </div>
@@ -24,7 +24,7 @@
     <a {href} class="wrapper mobile" aria-label={linkText}>
       <span class="header">
         <h2 class="title">{$i18n.portfolio.start_staking_card_title}</h2>
-        <span class="icon-link">
+        <span class="icon-link" aria-hidden={true}>
           <IconRight />
         </span>
       </span>
