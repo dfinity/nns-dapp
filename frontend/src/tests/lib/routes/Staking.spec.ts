@@ -37,7 +37,6 @@ import { fromNullable } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-
 describe("Staking", () => {
   const snsTitle = "SNS-1";
   const snsCanisterId = principal(1112);
