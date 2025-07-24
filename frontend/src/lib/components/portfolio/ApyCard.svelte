@@ -37,7 +37,8 @@
   const rewardBalanceUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(5)
-      : nonNullish(rewardBalanceUSD)
+      : // TODO: nonNullish check looks redundant
+        nonNullish(rewardBalanceUSD)
         ? formatCurrencyNumber(rewardBalanceUSD)
         : $i18n.core.not_applicable
   );
@@ -45,7 +46,8 @@
   const totalAmountUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(3)
-      : nonNullish(totalAmountUSD)
+      : // TODO: nonNullish check looks redundant
+        nonNullish(totalAmountUSD)
         ? formatCurrencyNumber(totalAmountUSD)
         : $i18n.core.not_applicable
   );
@@ -53,7 +55,8 @@
   const stakingPowerUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(3)
-      : nonNullish(stakingPowerUSD)
+      : // TODO: nonNullish check looks redundant
+        nonNullish(stakingPowerUSD)
         ? formatCurrencyNumber(stakingPowerUSD)
         : $i18n.core.not_applicable
   );
@@ -61,7 +64,8 @@
   const rewardEstimateWeekUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(3)
-      : nonNullish(rewardEstimateWeekUSD)
+      : // TODO: looks redundant
+        nonNullish(rewardEstimateWeekUSD)
         ? formatCurrencyNumber(rewardEstimateWeekUSD)
         : $i18n.core.not_applicable
   );
