@@ -777,6 +777,7 @@
     "disburse_maturity_confirmation_destination": "To Account:",
     "disburse_maturity_edit": "Edit Disbursement",
     "stake": "Stake",
+    "apy_and_max": "APY (max APY)",
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
     "disburse_stake_disabled_tooltip_zero": "Currently, you do not have any stake available to disburse.",

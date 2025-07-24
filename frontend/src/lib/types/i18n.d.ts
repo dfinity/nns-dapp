@@ -810,6 +810,7 @@ interface I18nNeuron_detail {
   disburse_maturity_confirmation_destination: string;
   disburse_maturity_edit: string;
   stake: string;
+  apy_and_max: string;
   spawn_neuron: string;
   spawn: string;
   disburse_stake_disabled_tooltip_zero: string;
