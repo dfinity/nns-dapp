@@ -4,7 +4,7 @@
   import { IconError } from "@dfinity/gix-components";
 
   type Props = {
-    stakingRewardData:
+    stakingRewardData?:
       | { loading: true }
       | {
           loading: false;
@@ -15,7 +15,9 @@
   const { stakingRewardData }: Props = $props();
 
   const isError = $derived(
-    !stakingRewardData.loading && "error" in stakingRewardData
+    stakingRewardData &&
+      !stakingRewardData.loading &&
+      "error" in stakingRewardData
   );
   const testId = "apy-fallback-card";
 </script>

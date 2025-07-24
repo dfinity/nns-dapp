@@ -2,6 +2,7 @@ import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
   dfxCanisterId,
+  disableCssAnimations,
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
@@ -14,6 +15,7 @@ test("Test imported tokens", async ({ page, context }) => {
   const testIndexCanisterId = await dfxCanisterId("ckred_index");
 
   await page.goto("/tokens");
+  await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
