@@ -19,6 +19,8 @@
     stakingPower: number;
     stakingPowerUSD: number;
     totalAmountUSD: number;
+    /// Whether to render the link and the header.
+    onStakingPage?: boolean;
   };
   const {
     rewardBalanceUSD,
@@ -26,6 +28,7 @@
     stakingPower,
     stakingPowerUSD,
     totalAmountUSD,
+    onStakingPage = false,
   }: Props = $props();
 
   const href = AppPath.Staking;
@@ -34,7 +37,8 @@
   const rewardBalanceUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(5)
-      : nonNullish(rewardBalanceUSD)
+      : // TODO: nonNullish check looks redundant
+        nonNullish(rewardBalanceUSD)
         ? formatCurrencyNumber(rewardBalanceUSD)
         : $i18n.core.not_applicable
   );
@@ -42,7 +46,8 @@
   const totalAmountUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(3)
-      : nonNullish(totalAmountUSD)
+      : // TODO: nonNullish check looks redundant
+        nonNullish(totalAmountUSD)
         ? formatCurrencyNumber(totalAmountUSD)
         : $i18n.core.not_applicable
   );
@@ -50,7 +55,8 @@
   const stakingPowerUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(3)
-      : nonNullish(stakingPowerUSD)
+      : // TODO: nonNullish check looks redundant
+        nonNullish(stakingPowerUSD)
         ? formatCurrencyNumber(stakingPowerUSD)
         : $i18n.core.not_applicable
   );
@@ -58,7 +64,8 @@
   const rewardEstimateWeekUSDFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(3)
-      : nonNullish(rewardEstimateWeekUSD)
+      : // TODO: looks redundant
+        nonNullish(rewardEstimateWeekUSD)
         ? formatCurrencyNumber(rewardEstimateWeekUSD)
         : $i18n.core.not_applicable
   );
@@ -132,19 +139,24 @@
 
 {#if $isMobileViewportStore}
   <article class="card mobile" data-tid={dataTid}>
-    <a {href} class="link" aria-label={linkText} data-tid="project-link">
+    {#if onStakingPage}
       {@render content()}
-    </a>
+    {:else}
+      <a {href} class="link" aria-label={linkText} data-tid="project-link"> </a>
+    {/if}
   </article>
 {:else}
-  <article class="card desktop" data-tid={dataTid}>
+  <article class="card desktop" data-tid={dataTid} class:onStakingPage>
     <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
+
     {@render content()}
 
-    <a {href} class="link" aria-label={linkText} data-tid="project-link">
-      <span>{linkText}</span>
-      <IconRight />
-    </a>
+    {#if !onStakingPage}
+      <a {href} class="link" aria-label={linkText} data-tid="project-link">
+        <span>{linkText}</span>
+        <IconRight />
+      </a>
+    {/if}
   </article>
 {/if}
 
@@ -217,12 +229,16 @@
     background-color: var(--card-background-tint);
 
     box-shadow: var(--box-shadow);
-
     transition:
       color var(--animation-time-normal),
       box-shadow var(--animation-time-normal);
     border-radius: 12px;
     overflow: hidden;
+
+    &.onStakingPage {
+      box-shadow: none;
+      border-radius: var(--padding);
+    }
   }
 
   .card.mobile {
@@ -238,6 +254,10 @@
     grid-template-rows: auto auto 1fr;
     padding: 24px;
     grid-gap: 16px;
+
+    &.onStakingPage {
+      grid-template-rows: auto;
+    }
 
     .title {
       font-size: 18px;

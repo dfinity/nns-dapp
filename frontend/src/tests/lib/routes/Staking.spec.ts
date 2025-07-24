@@ -52,6 +52,9 @@ describe("Staking", () => {
     setIcpSwapUsdPrices({
       [snsLedgerId.toText()]: 10,
     });
+
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
   });
 
   const renderComponent = () => {

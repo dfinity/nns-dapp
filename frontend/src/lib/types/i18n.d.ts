@@ -1425,6 +1425,9 @@ interface I18nPortfolio {
   apy_card_tooltip_staking_ratio: string;
   apy_card_tooltip_no_rewards: string;
   apy_card_tooltip_error: string;
+  start_staking_card_title: string;
+  start_staking_card_content: string;
+  start_staking_card_link: string;
 }
 
 interface I18nHighlight {
