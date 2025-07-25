@@ -6,6 +6,7 @@ import { definedSnsNeuronStore } from "$lib/derived/sns/sns-sorted-neurons.deriv
 import { authStore } from "$lib/stores/auth.store";
 import { i18n } from "$lib/stores/i18n";
 import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import { getSortedNeuronIds } from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import {
   compareById,
@@ -25,6 +26,7 @@ const snsTableNeuronsToSortStore = derived(
     pageStore,
     icpSwapUsdPricesStore,
     snsTopicsStore,
+    stakingRewardsStore,
   ],
   ([
     $authStore,
@@ -34,6 +36,7 @@ const snsTableNeuronsToSortStore = derived(
     $pageStore,
     $icpSwapUsdPricesStore,
     $snsTopicsStore,
+    $stakingRewardsStore,
   ]) => {
     const summary = $snsProjectSelectedStore?.summary;
     const topicInfos =
@@ -51,6 +54,7 @@ const snsTableNeuronsToSortStore = derived(
           icpSwapUsdPrices: $icpSwapUsdPricesStore,
           ledgerCanisterId: summary.ledgerCanisterId,
           topicInfos,
+          stakingRewardsResult: $stakingRewardsStore,
         })
       : [];
     return tableNeurons.sort(compareById);

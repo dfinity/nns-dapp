@@ -190,6 +190,24 @@ describe("ProjectsTable", () => {
     expect(await rowPos[1].getStake()).toBe("");
   });
 
+  it("should render apy as -/- when not loaded", async () => {
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(
+      await rowPos[0]
+        .getProjectApyCellPo()
+        .getApyDisplayPo()
+        .displaysPlaceholder()
+    ).toBe(true);
+    expect(
+      await rowPos[1]
+        .getProjectApyCellPo()
+        .getApyDisplayPo()
+        .displaysPlaceholder()
+    ).toBe(true);
+  });
+
   it("should render maturity as -/- when neurons not loaded", async () => {
     const po = renderComponent();
     const rowPos = await po.getProjectsTableRowPos();
@@ -302,6 +320,63 @@ describe("ProjectsTable", () => {
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getStake()).toBe("1.00 ICP");
       expect(await rowPos[1].getStake()).toBe("2.00 TOK");
+    });
+
+    it("should render apy", async () => {
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake],
+        certified: true,
+      });
+      stakingRewardsStore.set({
+        loading: false,
+        rewardBalanceUSD: 100,
+        rewardEstimateWeekUSD: 10,
+        stakingPower: 1,
+        stakingPowerUSD: 1,
+        apy: new Map([
+          // nns
+          [
+            OWN_CANISTER_ID_TEXT,
+            {
+              cur: 0.05,
+              max: 0.5,
+              neurons: new Map(),
+            },
+          ],
+          // sns
+          [
+            snsCanisterId.toText(),
+            {
+              cur: 0.1,
+              max: 0.5,
+              neurons: new Map(),
+            },
+          ],
+        ]),
+      });
+
+      const po = renderComponent();
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+      expect(
+        await rowPos[0]
+          .getProjectApyCellPo()
+          .getApyDisplayPo()
+          .getCurrentApy()
+          .getText()
+      ).toBe("5.00%");
+      expect(
+        await rowPos[1]
+          .getProjectApyCellPo()
+          .getApyDisplayPo()
+          .getCurrentApy()
+          .getText()
+      ).toBe("10.00%");
     });
 
     it("should render maturity", async () => {

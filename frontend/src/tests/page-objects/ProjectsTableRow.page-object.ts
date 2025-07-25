@@ -1,4 +1,5 @@
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
+import { ProjectApyCellPo } from "$tests/page-objects/ProjectApyCell.page-object";
 import { ProjectMaturityCellPo } from "$tests/page-objects/ProjectMaturityCell.page-object";
 import { ProjectNeuronsCellPo } from "$tests/page-objects/ProjectNeuronsCell.page-object";
 import { ProjectStakeCellPo } from "$tests/page-objects/ProjectStakeCell.page-object";
@@ -25,6 +26,10 @@ export class ProjectsTableRowPo extends ResponsiveTableRowPo {
 
   getProjectStakeCellPo(): ProjectStakeCellPo {
     return ProjectStakeCellPo.under(this.root);
+  }
+
+  getProjectApyCellPo(): ProjectApyCellPo {
+    return ProjectApyCellPo.under(this.root);
   }
 
   getProjectMaturityCellPo(): ProjectMaturityCellPo {

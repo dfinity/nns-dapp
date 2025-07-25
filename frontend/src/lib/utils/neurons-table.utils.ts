@@ -38,6 +38,10 @@ import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
+import {
+  isStakingRewardDataReady,
+  type StakingRewardResult,
+} from "$lib/utils/staking-rewards.utils";
 import { getUsdValue } from "$lib/utils/token.utils";
 import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
@@ -54,6 +58,7 @@ export const tableNeuronsFromNeuronInfos = ({
   i18n,
   startReducingVotingPowerAfterSeconds,
   minimumDissolveDelay,
+  stakingRewardsResult,
 }: {
   neuronInfos: NeuronInfo[];
   identity?: Identity | undefined | null;
@@ -62,6 +67,7 @@ export const tableNeuronsFromNeuronInfos = ({
   i18n: I18n;
   startReducingVotingPowerAfterSeconds: bigint | undefined;
   minimumDissolveDelay: bigint;
+  stakingRewardsResult: StakingRewardResult | undefined;
 }): TableNeuron[] => {
   return neuronInfos.map((neuronInfo) => {
     const { neuronId, dissolveDelaySeconds } = neuronInfo;
@@ -85,6 +91,11 @@ export const tableNeuronsFromNeuronInfos = ({
       amount: stake,
       tokenPrice: icpPrice,
     });
+    const apy = isStakingRewardDataReady(stakingRewardsResult)
+      ? stakingRewardsResult?.apy
+          .get(OWN_CANISTER_ID_TEXT)
+          ?.neurons?.get(neuronIdString)
+      : undefined;
 
     return {
       ...(rowHref && { rowHref }),
@@ -92,6 +103,7 @@ export const tableNeuronsFromNeuronInfos = ({
       neuronId: neuronIdString,
       stake,
       stakeInUsd,
+      apy,
       availableMaturity: neuronAvailableMaturity(neuronInfo),
       stakedMaturity: neuronStakedMaturity(neuronInfo),
       dissolveDelaySeconds,
@@ -174,6 +186,7 @@ export const tableNeuronsFromSnsNeurons = ({
   ledgerCanisterId,
   i18n,
   topicInfos,
+  stakingRewardsResult,
 }: {
   snsNeurons: SnsNeuron[];
   universe: UniverseCanisterIdText;
@@ -183,6 +196,7 @@ export const tableNeuronsFromSnsNeurons = ({
   ledgerCanisterId: Principal;
   i18n: I18n;
   topicInfos: TopicInfoWithUnknown[];
+  stakingRewardsResult: StakingRewardResult | undefined;
 }): TableNeuron[] => {
   return snsNeurons.map((snsNeuron) => {
     const dissolveDelaySeconds = getSnsDissolveDelaySeconds(snsNeuron) ?? 0n;
@@ -203,12 +217,17 @@ export const tableNeuronsFromSnsNeurons = ({
       amount: stake,
       tokenPrice,
     });
+    const apy = isStakingRewardDataReady(stakingRewardsResult)
+      ? stakingRewardsResult?.apy.get(universe)?.neurons?.get(neuronIdString)
+      : undefined;
+
     return {
       rowHref,
       domKey: neuronIdString,
       neuronId: neuronIdString,
       stake,
       stakeInUsd,
+      apy,
       availableMaturity: getSnsNeuronAvailableMaturity(snsNeuron),
       stakedMaturity: getSnsNeuronStakedMaturity(snsNeuron),
       dissolveDelaySeconds,
@@ -229,6 +248,10 @@ export const tableNeuronsFromSnsNeurons = ({
 
 export const compareByStake = createDescendingComparator(
   (neuron: TableNeuron) => neuron.stake.toUlps()
+);
+
+export const compareByApy = createDescendingComparator(
+  (neuron: TableNeuron) => neuron.apy?.cur ?? 0
 );
 
 export const compareByMaturity = createDescendingComparator(
@@ -270,6 +293,7 @@ export const comparatorsByColumnId: Partial<
   Record<NeuronsTableColumnId, TableNeuronComparator>
 > = {
   stake: compareByStake,
+  apy: compareByApy,
   maturity: compareByMaturity,
   dissolveDelay: compareByDissolveDelay,
   state: compareByState,

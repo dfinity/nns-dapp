@@ -14,8 +14,10 @@
   import { claimNextNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { syncSnsNeurons } from "$lib/services/sns-neurons.services";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import type { SnsSummary } from "$lib/types/sns";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
@@ -61,6 +63,9 @@
         icpSwapUsdPrices: $icpSwapUsdPricesStore,
         ledgerCanisterId: summary.ledgerCanisterId,
         topicInfos,
+        stakingRewardsResult: $ENABLE_APY_PORTFOLIO
+          ? $stakingRewardsStore
+          : undefined,
       })
     : [];
 
