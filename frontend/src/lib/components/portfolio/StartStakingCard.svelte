@@ -13,7 +13,7 @@
 
 {#snippet backgroundIcon()}
   <div class="background-icon-container" aria-hidden="true">
-    <div class="icon icon--mobile"><IconNeurons size="180px" /></div>
+    <div class="icon icon--mobile"><IconNeurons size="150px" /></div>
     <div class="icon icon--desktop"><IconNeurons size="200px" /></div>
   </div>
 {/snippet}
@@ -22,12 +22,7 @@
   <Card {testId}>
     {@render backgroundIcon()}
     <a {href} class="wrapper mobile" aria-label={linkText}>
-      <span class="header">
-        <h2 class="title">{$i18n.portfolio.start_staking_card_title}</h2>
-        <span class="icon-link" aria-hidden={true}>
-          <IconRight />
-        </span>
-      </span>
+      <h2 class="title">{$i18n.portfolio.start_staking_card_title}</h2>
       <p class="description">{$i18n.portfolio.start_staking_card_content}</p>
     </a>
   </Card>
@@ -80,26 +75,6 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .icon-link {
-        grid-area: link;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 35px;
-        height: 35px;
-        padding: 0;
-        color: var(--button-secondary-color);
-        font-weight: var(--font-weight-bold);
-        border: solid var(--button-border-size) var(--primary);
-        border-radius: 50%;
-      }
-    }
   }
 
   .desktop {
