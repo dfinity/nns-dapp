@@ -1,5 +1,6 @@
 <script lang="ts">
   import NeuronActionsCell from "$lib/components/neurons/NeuronsTable/NeuronActionsCell.svelte";
+  import NeuronApyCell from "$lib/components/neurons/NeuronsTable/NeuronApyCell.svelte";
   import NeuronDissolveDelayCell from "$lib/components/neurons/NeuronsTable/NeuronDissolveDelayCell.svelte";
   import NeuronIdCell from "$lib/components/neurons/NeuronsTable/NeuronIdCell.svelte";
   import NeuronMaturityCell from "$lib/components/neurons/NeuronsTable/NeuronMaturityCell.svelte";
@@ -52,6 +53,18 @@
           id: "stake",
           title: $i18n.neuron_detail.stake,
           cellComponent: NeuronStakeCell,
+          alignment: "right",
+          templateColumns: ["max-content"],
+        },
+        {
+          title: "",
+          alignment: "left",
+          templateColumns: ["1fr"],
+        },
+        {
+          id: "apy",
+          title: $i18n.neuron_detail.apy_and_max,
+          cellComponent: NeuronApyCell,
           alignment: "right",
           templateColumns: ["max-content"],
         },
