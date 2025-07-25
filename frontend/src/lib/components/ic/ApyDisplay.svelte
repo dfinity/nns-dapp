@@ -17,13 +17,13 @@
 
 <div class="apy" class:forPortfolio data-tid="apy-display-component">
   {#if nonNullish(apy) && isNullish(apy?.error)}
-    <span
+    <span data-tid="apy-current-value"
       >{formatPercentage(apy.cur, {
         minFraction: 2,
         maxFraction: 2,
       })}</span
     >
-    <span class="max cell-with-tooltip"
+    <span class="max cell-with-tooltip" data-tid="apy-max-value">
       >({formatPercentage(apy.max, {
         minFraction: 2,
         maxFraction: 2,
@@ -44,9 +44,9 @@
       />
     </span>
   {:else if isLoading}
-    <span class="cell skeleton"></span>
+    <span class="cell skeleton" data-tid="is-loading"></span>
   {:else}
-    {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+    <span data-tid="placeholder">{PRICE_NOT_AVAILABLE_PLACEHOLDER}</span>
   {/if}
 </div>
 
