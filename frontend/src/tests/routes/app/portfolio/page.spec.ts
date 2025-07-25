@@ -134,34 +134,20 @@ describe("Portfolio route", () => {
   it("should render the Portfolio page with visitor data", async () => {
     const po = await renderPage();
     const portfolioPagePo = po.getPortfolioPagePo();
-    const tokensCardPo = portfolioPagePo.getHeldTokensCardPo();
-
-    const titles = await tokensCardPo.getHeldTokensTitles();
-    const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
-    const nativeBalances =
-      await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
     expect(await portfolioPagePo.getLoginCard().isPresent()).toBe(true);
     expect(await portfolioPagePo.getTotalAssetsCardPo().isPresent()).toBe(
       false
     );
+    expect(await portfolioPagePo.getApyCardPo().isPresent()).toBe(false);
     expect(await portfolioPagePo.getApyFallbackCardPo().isPresent()).toBe(
       false
     );
-
-    expect(titles.length).toBe(4);
-    expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH", "ckUSDC"]);
-
-    expect(usdBalances.length).toBe(4);
-    expect(usdBalances).toEqual(["$0.00", "$0.00", "$0.00", "$0.00"]);
-
-    expect(nativeBalances.length).toBe(4);
-    expect(nativeBalances).toEqual([
-      "-/- ICP",
-      "-/- ckBTC",
-      "-/- ckETH",
-      "-/- ckUSDC",
-    ]);
+    expect(await portfolioPagePo.getStartStakingCard().isPresent()).toBe(true);
+    expect(await portfolioPagePo.getNoHeldTokensCard().isPresent()).toBe(true);
+    expect(await portfolioPagePo.getNoStakedTokensCarPo().isPresent()).toBe(
+      true
+    );
   });
 
   describe("when logged in", () => {
