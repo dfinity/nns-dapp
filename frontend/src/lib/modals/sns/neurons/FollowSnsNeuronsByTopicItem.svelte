@@ -59,7 +59,9 @@
     onNnsChange({ topicKey, checked });
   };
 
-  let toggleContent: () => void = $state(() => {});
+  let cmp = $state<Collapsible | undefined>(undefined);
+
+  let toggleContent = () => cmp?.toggleContent();
   let expanded: boolean = $state(false);
   const isFollowingByTopic = $derived(followees.length > 0);
 </script>
@@ -69,43 +71,43 @@
     testId="topic-collapsible"
     expandButton={false}
     externalToggle={true}
-    bind:toggleContent
+    bind:this={cmp}
     bind:expanded
     wrapHeight
   >
-    <div slot="header" class="header" class:expanded>
-      <Checkbox
-        inputId={topicKey}
-        text="block"
-        {checked}
-        on:nnsChange={onChange}
-        --checkbox-label-order="1"
-        --checkbox-padding="var(--padding) 0"
-      >
-        <span data-tid="topic-name">{name}</span>
-      </Checkbox>
+    {#snippet header()}<div class="header" class:expanded>
+        <Checkbox
+          inputId={topicKey}
+          text="block"
+          {checked}
+          on:nnsChange={onChange}
+          --checkbox-label-order="1"
+          --checkbox-padding="var(--padding) 0"
+        >
+          <span data-tid="topic-name">{name}</span>
+        </Checkbox>
 
-      <div
-        class="icon"
-        data-tid="topic-following-status"
-        class:isFollowingByTopic
-      >
-        {#if isFollowingByTopic}
-          <IconCheckCircleFill />
-        {:else}
-          <IconErrorOutline />
-        {/if}
-      </div>
+        <div
+          class="icon"
+          data-tid="topic-following-status"
+          class:isFollowingByTopic
+        >
+          {#if isFollowingByTopic}
+            <IconCheckCircleFill />
+          {:else}
+            <IconErrorOutline />
+          {/if}
+        </div>
 
-      <button
-        data-tid="expand-button"
-        class="expand-button"
-        class:expanded
-        onclick={toggleContent}
-      >
-        <IconExpandMore />
-      </button>
-    </div>
+        <button
+          data-tid="expand-button"
+          class="expand-button"
+          class:expanded
+          onclick={toggleContent}
+        >
+          <IconExpandMore />
+        </button>
+      </div>{/snippet}
     <div class="expandable-content">
       <p class="description" data-tid="topic-description">
         {description}

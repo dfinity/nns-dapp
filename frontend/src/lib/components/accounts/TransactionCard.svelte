@@ -63,15 +63,15 @@
 
   <div class="transaction">
     <KeyValuePair>
-      <h3 slot="key" class="value title" data-tid="headline">{headline}</h3>
-
-      <AmountDisplay
-        slot="value"
-        amount={tokenAmount}
-        sign={isIncoming ? "+" : "-"}
-        detailed
-        inline
-      />
+      {#snippet key()}
+        <h3 class="value title" data-tid="headline">{headline}</h3>{/snippet}
+      {#snippet value()}
+        <AmountDisplay
+          amount={tokenAmount}
+          sign={isIncoming ? "+" : "-"}
+          detailed
+          inline
+        />{/snippet}
     </KeyValuePair>
 
     <ColumnRow>

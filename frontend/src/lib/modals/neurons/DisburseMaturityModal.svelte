@@ -200,48 +200,47 @@
       {$i18n.neuron_detail.disburse_maturity_confirmation_description}
       <div class="confirm-container">
         <KeyValuePair>
-          <span slot="key" class="description"
-            >{$i18n.neuron_detail
-              .disburse_maturity_confirmation_percentage}</span
-          >
-          <span class="value" slot="value" data-tid="confirm-percentage"
-            >{formatPercentage(percentageToDisburse / 100, {
-              minFraction: 0,
-              maxFraction: 0,
-            })}</span
-          >
+          {#snippet key()}<span class="description"
+              >{$i18n.neuron_detail
+                .disburse_maturity_confirmation_percentage}</span
+            >{/snippet}
+          {#snippet value()}<span class="value" data-tid="confirm-percentage"
+              >{formatPercentage(percentageToDisburse / 100, {
+                minFraction: 0,
+                maxFraction: 0,
+              })}</span
+            >{/snippet}
         </KeyValuePair>
         <KeyValuePair>
-          <span slot="key" class="description"
-            >{$i18n.neuron_detail.disburse_maturity_confirmation_amount}</span
-          >
-          <span data-tid="confirm-amount" class="value" slot="value"
-            >{formatMaturity(maturityToDisburseE8s)}
-          </span>
+          {#snippet key()}<span class="description"
+              >{$i18n.neuron_detail.disburse_maturity_confirmation_amount}</span
+            >{/snippet}
+          {#snippet value()}<span data-tid="confirm-amount" class="value"
+              >{formatMaturity(maturityToDisburseE8s)}
+            </span>{/snippet}
         </KeyValuePair>
         <KeyValuePair>
-          <span slot="key" class="description"
-            >{replacePlaceholders(
-              $i18n.neuron_detail.disburse_maturity_confirmation_tokens,
-              { $symbol: token.symbol }
-            )}</span
-          >
-          <span data-tid="confirm-tokens" class="value" slot="value"
-            >{predictedMinimumTokens}-{predictedMaximumTokens}
-            {token.symbol}
-          </span>
+          {#snippet key()}<span class="description"
+              >{replacePlaceholders(
+                $i18n.neuron_detail.disburse_maturity_confirmation_tokens,
+                { $symbol: token.symbol }
+              )}</span
+            >{/snippet}
+          {#snippet value()}<span data-tid="confirm-tokens" class="value"
+              >{predictedMinimumTokens}-{predictedMaximumTokens}
+              {token.symbol}
+            </span>{/snippet}
         </KeyValuePair>
         <KeyValuePair>
-          <span slot="key" class="description destination-key"
-            >{$i18n.neuron_detail
-              .disburse_maturity_confirmation_destination}</span
-          >
-          <span
-            data-tid="confirm-destination"
-            class="value destination-value"
-            slot="value"
-            >{destinationAddressName}
-          </span>
+          {#snippet key()}<span class="description destination-key"
+              >{$i18n.neuron_detail
+                .disburse_maturity_confirmation_destination}</span
+            >{/snippet}
+          {#snippet value()}<span
+              data-tid="confirm-destination"
+              class="value destination-value"
+              >{destinationAddressName}
+            </span>{/snippet}
         </KeyValuePair>
       </div>
     </NeuronConfirmActionScreen>

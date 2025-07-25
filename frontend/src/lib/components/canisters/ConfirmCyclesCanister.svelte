@@ -31,8 +31,8 @@
 <div class="wrapper" data-tid="confirm-cycles-canister-screen">
   {#if nonNullish(name) && name !== ""}
     <KeyValuePair>
-      <span slot="key">{$i18n.canisters.name}</span>
-      <span slot="value">{name}</span>
+      {#snippet key()}<span>{$i18n.canisters.name}</span>{/snippet}
+      {#snippet value()}<span>{name}</span>{/snippet}
     </KeyValuePair>
   {/if}
   <p class="conversion">
