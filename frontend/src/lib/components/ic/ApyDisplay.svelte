@@ -9,7 +9,7 @@
   type Props = {
     apy?: ApyAmount;
     isLoading?: boolean;
-    forPortfolio?: boolean;
+    forPortfolio: boolean;
   };
 
   const { apy, isLoading, forPortfolio }: Props = $props();

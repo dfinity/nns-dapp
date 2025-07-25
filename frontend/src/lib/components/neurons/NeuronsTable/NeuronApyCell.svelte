@@ -9,5 +9,5 @@
 </script>
 
 <div data-tid="neuron-apy-cell-component">
-  <ApyDisplay apy={rowData.apy} isLoading={false} />
+  <ApyDisplay apy={rowData.apy} isLoading={false} forPortfolio={false} />
 </div>
