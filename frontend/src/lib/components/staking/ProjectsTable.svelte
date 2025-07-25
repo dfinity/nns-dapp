@@ -3,6 +3,7 @@
   import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HideZeroNeuronsToggle from "$lib/components/staking/HideZeroNeuronsToggle.svelte";
   import ProjectActionsCell from "$lib/components/staking/ProjectActionsCell.svelte";
+  import ProjectApyCell from "$lib/components/staking/ProjectApyCell.svelte";
   import ProjectMaturityCell from "$lib/components/staking/ProjectMaturityCell.svelte";
   import ProjectNeuronsCell from "$lib/components/staking/ProjectNeuronsCell.svelte";
   import ProjectStakeCell from "$lib/components/staking/ProjectStakeCell.svelte";
@@ -40,6 +41,7 @@
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
   import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import {
+    compareByApy,
     compareByNeuron,
     compareByProject,
     compareByStake,
@@ -67,6 +69,19 @@
       templateColumns: ["1fr"],
       comparator: $authSignedInStore ? compareByStake : undefined,
     },
+
+    ...($ENABLE_APY_PORTFOLIO
+      ? [
+          {
+            id: "apy",
+            title: $i18n.neuron_detail.apy_and_max,
+            cellComponent: ProjectApyCell,
+            alignment: "right",
+            templateColumns: ["1fr"],
+            comparator: $authSignedInStore ? compareByApy : undefined,
+          } as ProjectsTableColumn,
+        ]
+      : []),
     {
       title: $i18n.neuron_detail.maturity_title,
       cellComponent: ProjectMaturityCell,
@@ -148,6 +163,9 @@
       snsNeurons: $snsNeuronsStore,
       icpSwapUsdPrices: $icpSwapUsdPricesStore,
       failedActionableSnses: $failedActionableSnsesStore,
+      stakingRewardsResult: $ENABLE_APY_PORTFOLIO
+        ? $stakingRewardsStore
+        : undefined,
     })
   );
 

@@ -5,6 +5,7 @@ import {
 } from "$lib/constants/canister-ids.constants";
 import type { Universe } from "$lib/types/universe";
 import {
+  compareByApy,
   compareByNeuron,
   compareByNeuronCount,
   compareByStake,
@@ -137,6 +138,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -163,6 +165,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -199,6 +202,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -225,6 +229,7 @@ describe("staking.utils", () => {
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -267,6 +272,7 @@ describe("staking.utils", () => {
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -308,6 +314,7 @@ describe("staking.utils", () => {
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -337,6 +344,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -379,6 +387,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -418,6 +427,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -456,6 +466,7 @@ describe("staking.utils", () => {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -496,6 +507,7 @@ describe("staking.utils", () => {
           [snsUniverse.summary.ledgerCanisterId.toText()]: tokenPrice,
         },
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -524,6 +536,7 @@ describe("staking.utils", () => {
         snsNeurons: {},
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -557,6 +570,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -585,6 +599,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -619,6 +634,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -655,6 +671,7 @@ describe("staking.utils", () => {
         },
         icpSwapUsdPrices: undefined,
         failedActionableSnses: [universeId2],
+        stakingRewardsResult: undefined,
       });
 
       expect(tableProjects).toEqual([
@@ -767,6 +784,75 @@ describe("staking.utils", () => {
         nonFailedProject,
         failedProject,
       ]);
+    });
+  });
+
+  describe("compareByApy", () => {
+    it("should compare by APY", () => {
+      const project1 = {
+        ...mockTableProject,
+        apy: {
+          cur: 0.1,
+          max: 1,
+        },
+      };
+      const project2 = {
+        ...mockTableProject,
+        apy: {
+          cur: 0.2,
+          max: 1,
+        },
+      };
+
+      expect(compareByApy(project1, project2)).toEqual(1);
+      expect(compareByApy(project2, project1)).toEqual(-1);
+      expect(compareByApy(project1, project1)).toEqual(0);
+    });
+
+    it("should prioritize ICP first", () => {
+      const project1 = {
+        ...mockTableProject,
+        apy: {
+          cur: 0.1,
+          max: 1,
+        },
+        universeId: OWN_CANISTER_ID_TEXT,
+      };
+      const project2 = {
+        ...mockTableProject,
+        apy: {
+          cur: 0.9,
+          max: 1,
+        },
+        universeId: principal(2).toText(),
+      };
+
+      expect(compareByApy(project1, project2)).toEqual(-1);
+      expect(compareByApy(project2, project1)).toEqual(1);
+    });
+
+    it("should push unavailable projects to the bottom", () => {
+      const failedProject = {
+        ...mockTableProject,
+        apy: {
+          cur: 0.1,
+          max: 1,
+        },
+        stake: new FailedTokenAmount(mockSnsToken),
+      };
+      const nonFailedProject = {
+        ...mockTableProject,
+        apy: {
+          cur: 0.1,
+          max: 1,
+        },
+        stake: TokenAmountV2.fromUlps({
+          amount: 100_000_000n,
+          token: ICPToken,
+        }),
+      };
+      expect(compareByApy(failedProject, nonFailedProject)).toEqual(1);
+      expect(compareByApy(nonFailedProject, failedProject)).toEqual(-1);
     });
   });
 

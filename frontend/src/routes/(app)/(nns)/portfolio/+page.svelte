@@ -76,6 +76,7 @@
       snsNeurons: $snsNeuronsStore,
       icpSwapUsdPrices: $icpSwapUsdPricesStore,
       failedActionableSnses: $failedActionableSnsesStore,
+      stakingRewardsResult: $stakingRewardsStore,
     })}
     snsProjects={filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Open,
