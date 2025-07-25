@@ -21,7 +21,7 @@ export class Secp256k1PublicKey implements PublicKey {
     return this.fromDer(key.toDer());
   }
 
-  public static fromRaw(rawKey: ArrayBuffer): Secp256k1PublicKey {
+  public static fromRaw(rawKey: Uint8Array): Secp256k1PublicKey {
     return new Secp256k1PublicKey(rawKey);
   }
 
@@ -43,7 +43,7 @@ export class Secp256k1PublicKey implements PublicKey {
     0x00, // no padding
   ]);
 
-  private static derEncode(publicKey: ArrayBuffer): DerEncodedPublicKey {
+  private static derEncode(publicKey: Uint8Array): DerEncodedPublicKey {
     if (publicKey.byteLength !== Secp256k1PublicKey.RAW_KEY_LENGTH) {
       const bl = publicKey.byteLength;
       throw new TypeError(
@@ -60,7 +60,7 @@ export class Secp256k1PublicKey implements PublicKey {
     return derPublicKey;
   }
 
-  private static derDecode(key: DerEncodedPublicKey): ArrayBuffer {
+  private static derDecode(key: DerEncodedPublicKey): Uint8Array {
     const expectedLength =
       Secp256k1PublicKey.DER_PREFIX.length + Secp256k1PublicKey.RAW_KEY_LENGTH;
     if (key.byteLength !== expectedLength) {
@@ -81,9 +81,9 @@ export class Secp256k1PublicKey implements PublicKey {
     return rawKey;
   }
 
-  #rawKey: ArrayBuffer;
+  #rawKey: Uint8Array;
 
-  public get rawKey(): ArrayBuffer {
+  public get rawKey(): Uint8Array {
     return this.#rawKey;
   }
 
@@ -94,7 +94,7 @@ export class Secp256k1PublicKey implements PublicKey {
   }
 
   // `fromRaw` and `fromDer` should be used for instantiation, not this constructor.
-  private constructor(key: ArrayBuffer) {
+  private constructor(key: Uint8Array) {
     this.#rawKey = key;
     this.#derKey = Secp256k1PublicKey.derEncode(key);
   }
@@ -103,7 +103,7 @@ export class Secp256k1PublicKey implements PublicKey {
     return this.derKey;
   }
 
-  public toRaw(): ArrayBuffer {
+  public toRaw(): Uint8Array {
     return this.rawKey;
   }
 }

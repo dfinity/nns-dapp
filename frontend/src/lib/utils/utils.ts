@@ -392,8 +392,8 @@ export const expandObject = (value: unknown): unknown => {
 };
 
 export const sameBufferData = (
-  buffer1: ArrayBuffer,
-  buffer2: ArrayBuffer
+  buffer1: Uint8Array,
+  buffer2: Uint8Array
 ): boolean => {
   if (buffer1.byteLength !== buffer2.byteLength) {
     return false;

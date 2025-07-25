@@ -101,7 +101,7 @@ export class LedgerIdentity extends SignIdentity {
     }
   };
 
-  public override async sign(blob: ArrayBuffer): Promise<Signature> {
+  public override async sign(blob: Uint8Array): Promise<Signature> {
     await this.raiseIfVersionIsDeprecated();
 
     const callback = async (app: LedgerApp): Promise<Signature> => {
@@ -121,8 +121,8 @@ export class LedgerIdentity extends SignIdentity {
   }
 
   private async signWithReadState(
-    callBlob: ArrayBuffer,
-    readStateBlob: ArrayBuffer
+    callBlob: Uint8Array,
+    readStateBlob: Uint8Array
   ): Promise<RequestSignatures> {
     await this.raiseIfVersionIsDeprecated();
 
@@ -325,7 +325,7 @@ export class LedgerIdentity extends SignIdentity {
       // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
       request_type: "read_state" as ReadRequestType.ReadState,
       paths: createReadStatePaths(requestId).map((path) =>
-        path.map((bufferLike) => new Uint8Array(bufferLike).buffer)
+        path.map((bufferLike) => new Uint8Array(bufferLike))
       ),
       ingress_expiry: body.ingress_expiry,
       sender: body.sender,
@@ -359,7 +359,7 @@ export class LedgerIdentity extends SignIdentity {
    */
   private prepareCborForLedger = (
     request: ReadRequest | CallRequest
-  ): ArrayBuffer => Cbor.encode({ content: request });
+  ): Uint8Array => Cbor.encode({ content: request });
 
   private requestsMatch = (
     request1: ReadRequest,

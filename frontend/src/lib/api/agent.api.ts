@@ -1,21 +1,15 @@
 import { FETCH_ROOT_KEY } from "$lib/constants/environment.constants";
-import type {
-  Agent,
-  AgentLog,
-  ApiQueryResponse,
-  CallOptions,
-  HttpAgent,
-  Identity,
-  QueryFields,
-  ReadStateOptions,
-  ReadStateResponse,
-  SubmitResponse,
-} from "@dfinity/agent";
 import {
-  AgentCallError,
-  AgentQueryError,
-  AgentReadStateError,
-  IdentityInvalidError,
+  type Agent,
+  type ApiQueryResponse,
+  type CallOptions,
+  type HttpAgent,
+  type Identity,
+  IdentityInvalidErrorCode,
+  type QueryFields,
+  type ReadStateOptions,
+  type ReadStateResponse,
+  type SubmitResponse,
 } from "@dfinity/agent";
 import type { JsonObject } from "@dfinity/candid";
 import type { Principal } from "@dfinity/principal";
@@ -51,14 +45,12 @@ class IdentityAgentWrapper implements Agent {
     const usedIdentity =
       overrideIdentity !== undefined ? overrideIdentity : this.identity;
     if (isNullish(usedIdentity)) {
-      throw new IdentityInvalidError(
-        "This identity has expired due this application's security policy. Please refresh your authentication."
-      );
+      throw new IdentityInvalidErrorCode();
     }
     return usedIdentity;
   }
 
-  get rootKey(): ArrayBuffer | null {
+  get rootKey(): Uint8Array | null {
     return this.wrappedAgent.rootKey;
   }
 
@@ -120,7 +112,7 @@ class IdentityAgentWrapper implements Agent {
     );
   }
 
-  fetchRootKey(): Promise<ArrayBuffer> {
+  fetchRootKey(): Promise<Uint8Array> {
     return this.wrappedAgent.fetchRootKey();
   }
 
@@ -133,49 +125,50 @@ class IdentityAgentWrapper implements Agent {
   }
 }
 
-const INVALID_SIGNATURE_DEBUG_INFO_KEY = "invalidSignatureDebugInfo";
-
-const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
-  if (
-    logEntry.level != "error" ||
-    !logEntry.message.includes("Invalid signature") ||
-    !(
-      logEntry.error instanceof AgentCallError ||
-      logEntry.error instanceof AgentQueryError ||
-      logEntry.error instanceof AgentReadStateError
-    )
-  ) {
-    return;
-  }
-
-  localStorage.setItem(
-    INVALID_SIGNATURE_DEBUG_INFO_KEY,
-    JSON.stringify({
-      requestId: logEntry.error.requestId,
-      senderPubkey: logEntry.error.senderPubkey,
-      senderSig: logEntry.error.senderSig,
-      ingressExpiry: logEntry.error.ingressExpiry,
-      debugInfoRecordedTimestamp: new Date().toISOString(),
-    })
-  );
-  logRecordedInvalidSignatureDebugInfo();
-};
-
-const logRecordedInvalidSignatureDebugInfo = () => {
-  if (
-    typeof window !== "undefined" &&
-    window.localStorage &&
-    INVALID_SIGNATURE_DEBUG_INFO_KEY in localStorage
-  ) {
-    console.warn(
-      "Found invalid signature debug info:",
-      localStorage.getItem(INVALID_SIGNATURE_DEBUG_INFO_KEY)
-    );
-  }
-};
-
-// Also log on page load for easy discovery.
-logRecordedInvalidSignatureDebugInfo();
+// TODO: can be dropped?
+// const INVALID_SIGNATURE_DEBUG_INFO_KEY = "invalidSignatureDebugInfo";
+//
+// const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
+//   if (
+//     logEntry.level != "error" ||
+//     !logEntry.message.includes("Invalid signature") ||
+//     !(
+//       logEntry.error instanceof AgentCallError ||
+//       logEntry.error instanceof AgentQueryError ||
+//       logEntry.error instanceof AgentReadStateError
+//     )
+//   ) {
+//     return;
+//   }
+//
+//   localStorage.setItem(
+//     INVALID_SIGNATURE_DEBUG_INFO_KEY,
+//     JSON.stringify({
+//       requestId: logEntry.error.requestId,
+//       senderPubkey: logEntry.error.senderPubkey,
+//       senderSig: logEntry.error.senderSig,
+//       ingressExpiry: logEntry.error.ingressExpiry,
+//       debugInfoRecordedTimestamp: new Date().toISOString(),
+//     })
+//   );
+//   logRecordedInvalidSignatureDebugInfo();
+// };
+//
+// const logRecordedInvalidSignatureDebugInfo = () => {
+//   if (
+//     typeof window !== "undefined" &&
+//     window.localStorage &&
+//     INVALID_SIGNATURE_DEBUG_INFO_KEY in localStorage
+//   ) {
+//     console.warn(
+//       "Found invalid signature debug info:",
+//       localStorage.getItem(INVALID_SIGNATURE_DEBUG_INFO_KEY)
+//     );
+//   }
+// };
+//
+// // Also log on page load for easy discovery.
+// logRecordedInvalidSignatureDebugInfo();
 
 export const createAgent = async ({
   identity,
@@ -193,8 +186,6 @@ export const createAgent = async ({
       ...(host !== undefined && { host }),
       fetchRootKey: FETCH_ROOT_KEY,
     });
-
-    agent.log.subscribe(storeInvalidSignatureDebugInfo);
 
     agents = {
       ...(nonNullish(agents) && agents),
