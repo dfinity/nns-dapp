@@ -93,6 +93,7 @@ describe("neurons-table.utils", () => {
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
         minimumDissolveDelay,
+        stakingRewardsResult: undefined,
       });
 
     it("should convert default neuronInfo to tableNeuron", () => {
@@ -283,6 +284,7 @@ describe("neurons-table.utils", () => {
         i18n: en,
         startReducingVotingPowerAfterSeconds: undefined,
         minimumDissolveDelay,
+        stakingRewardsResult: undefined,
       });
       expect(tableNeurons).toEqual([
         {
@@ -492,6 +494,7 @@ describe("neurons-table.utils", () => {
         ledgerCanisterId,
         i18n: en,
         topicInfos: [],
+        stakingRewardsResult: undefined,
       });
 
     it("should convert SnsNeuron to TableNeuron", () => {
