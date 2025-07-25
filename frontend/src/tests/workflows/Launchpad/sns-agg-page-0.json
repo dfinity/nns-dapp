@@ -28,6 +28,43 @@
       "description": "A virtual pets game from the creators of Neopets.  Non-profit, 100% on-chain.  We've got baby dragons, crowdsourced world building, magic spells, and a prince in disguise!",
       "logo": "/v1/sns/root/zxeu2-7aaaa-aaaaq-aaafa-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 314100000000,
+              "amount_e8s": 500000000000,
+              "account": {
+                "owner": "zqfso-syaaa-aaaaq-aaafq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1752721260
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 910362516127113412,
+            "timestamp_seconds": 1752721260
+          },
+          "last_ledger_block_timestamp": 1752722855,
+          "num_recently_executed_proposals": 2,
+          "num_recently_submitted_proposals": 2,
+          "genesis_timestamp_seconds": 1669073902
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1752710401,
+      "end_timestamp_seconds": 1752710400,
+      "total_available_e8s_equivalent": 0,
+      "distributed_e8s_equivalent": 0,
+      "round": 20366,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [1001, 2005],
       "functions": [
@@ -459,7 +496,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 799999922345494000,
+    "icrc1_total_supply": 799999921412694000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 10000000,
@@ -906,6 +943,68 @@
       "name": "OpenChat",
       "description": "A decentralized chat app governed by the people for the people",
       "logo": "/v1/sns/root/3e3x2-xyaaa-aaaaq-aaalq-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 100000000000000,
+              "amount_e8s": 4747976553296,
+              "account": {
+                "owner": "2jvtu-yqaaa-aaaaq-aaama-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1752722816
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 4834585038852513,
+              "account": {
+                "owner": "2jvtu-yqaaa-aaaaq-aaama-cai",
+                "subaccount": {
+                  "subaccount": [
+                    209, 33, 111, 68, 62, 173, 136, 248, 249, 138, 128, 178,
+                    234, 89, 105, 119, 38, 241, 141, 255, 170, 88, 208, 160, 21,
+                    109, 12, 96, 90, 1, 182, 114
+                  ]
+                }
+              },
+              "ledger_canister_id": "2ouva-viaaa-aaaaq-aaamq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1752722816
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 7430814747268826,
+            "timestamp_seconds": 1752722816
+          },
+          "last_ledger_block_timestamp": 1752722572,
+          "num_recently_executed_proposals": 94,
+          "num_recently_submitted_proposals": 111,
+          "genesis_timestamp_seconds": 1677261213
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1752688420,
+      "end_timestamp_seconds": 1752688413,
+      "total_available_e8s_equivalent": 695848954326,
+      "distributed_e8s_equivalent": 695848953226,
+      "round": 873,
+      "settled_proposals": [
+        {
+          "id": 1988
+        },
+        {
+          "id": 1989
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [
@@ -1603,6 +1702,20 @@
           }
         },
         {
+          "id": 10000,
+          "name": "Update OpenChat frontend assets",
+          "description": "This will commit a newly prepared batch of assets which have been uploaded to the asset canister by a principal which has been granted the \"Prepare\" permission.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
+              "validator_canister_id": "6hsbt-vqaaa-aaaaf-aaafq-cai",
+              "target_canister_id": "6hsbt-vqaaa-aaaaf-aaafq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
           "id": 101000,
           "name": "Call trade_tokens on the CHAT/CYCLES trading pair canister at the CYCLES-TRANSFER-STATION.",
           "description": null,
@@ -1795,7 +1908,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10165573045911192,
+    "icrc1_total_supply": 10166373770351822,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2274,6 +2387,20 @@
                   "target_method_name": "upgrade_canister"
                 }
               }
+            },
+            {
+              "id": 10000,
+              "name": "Update OpenChat frontend assets",
+              "description": "This will commit a newly prepared batch of assets which have been uploaded to the asset canister by a principal which has been granted the \"Prepare\" permission.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "6hsbt-vqaaa-aaaaf-aaafq-cai",
+                  "target_canister_id": "6hsbt-vqaaa-aaaaf-aaafq-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
             }
           ]
         },
@@ -2686,6 +2813,8 @@
       "description": "The open DeFi suite on Internet Computer blockchain by the people for the people. Sonic unleashes the potential of crypto trading through innovative DeFi products. https://app.sonic.ooo",
       "logo": "/v1/sns/root/23ten-uaaaa-aaaaq-aaapa-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -2971,6 +3100,61 @@
       "name": "Kinic",
       "description": "The home of portable and verifiable AI.  A DAO for push to deploy vector DB, zkML, search, trading bots and much more.",
       "logo": "/v1/sns/root/7jkta-eyaaa-aaaaq-aaarq-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 50992351828093,
+              "amount_e8s": 32039044318093,
+              "account": {
+                "owner": "74ncn-fqaaa-aaaaq-aaasa-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1752722570
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 306643599500000,
+              "account": {
+                "owner": "74ncn-fqaaa-aaaaq-aaasa-cai",
+                "subaccount": {
+                  "subaccount": [
+                    65, 246, 130, 115, 197, 218, 13, 55, 202, 96, 0, 195, 144,
+                    52, 25, 194, 148, 205, 68, 16, 241, 105, 57, 105, 232, 244,
+                    242, 187, 127, 243, 220, 120
+                  ]
+                }
+              },
+              "ledger_canister_id": "73mez-iiaaa-aaaaq-aaasq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1752722570
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 492980069877757,
+            "timestamp_seconds": 1752722570
+          },
+          "last_ledger_block_timestamp": 1752720304,
+          "num_recently_executed_proposals": 4,
+          "num_recently_submitted_proposals": 6,
+          "genesis_timestamp_seconds": 1685678632
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1752638639,
+      "end_timestamp_seconds": 1752638632,
+      "total_available_e8s_equivalent": 424188659823,
+      "distributed_e8s_equivalent": 0,
+      "round": 775,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -3384,7 +3568,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 619849623123796,
+    "icrc1_total_supply": 619988879843368,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3804,6 +3988,61 @@
       "description": "World’s First AI-Powered Unstoppable Social Cloud",
       "logo": "/v1/sns/root/67bll-riaaa-aaaaq-aaauq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 107402789035875,
+              "amount_e8s": 45999077315875,
+              "account": {
+                "owner": "6wcax-haaaa-aaaaq-aaava-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1752722456
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 19861013699100000,
+              "account": {
+                "owner": "6wcax-haaaa-aaaaq-aaava-cai",
+                "subaccount": {
+                  "subaccount": [
+                    145, 123, 109, 245, 63, 222, 241, 135, 57, 204, 114, 207,
+                    200, 234, 11, 155, 25, 125, 148, 161, 144, 247, 151, 178,
+                    131, 188, 172, 144, 159, 154, 193, 97
+                  ]
+                }
+              },
+              "ledger_canister_id": "6rdgd-kyaaa-aaaaq-aaavq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1752722456
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 166625334446900325,
+            "timestamp_seconds": 1752722456
+          },
+          "last_ledger_block_timestamp": 1752719325,
+          "num_recently_executed_proposals": 15,
+          "num_recently_submitted_proposals": 14,
+          "genesis_timestamp_seconds": 1687191979
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1752683180,
+      "end_timestamp_seconds": 1752683179,
+      "total_available_e8s_equivalent": 329081463224896,
+      "distributed_e8s_equivalent": 0,
+      "round": 758,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -4144,7 +4383,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 105320710887929065,
+    "icrc1_total_supply": 105322451989154053,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -4487,6 +4726,8 @@
       "description": "The First Decentralized Meme Coin on IC",
       "logo": "/v1/sns/root/6kg2g-qaaaa-aaaaq-aaaxa-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -4772,6 +5013,61 @@
       "name": "Mimic",
       "description": "Description cooming soon",
       "logo": "/v1/sns/root/4m6il-zqaaa-aaaaq-aaa2a-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 2000000000000,
+              "amount_e8s": 100000000,
+              "account": {
+                "owner": "4l7o7-uiaaa-aaaaq-aaa2q-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1752722211
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 1605856616794068,
+              "account": {
+                "owner": "4l7o7-uiaaa-aaaaq-aaa2q-cai",
+                "subaccount": {
+                  "subaccount": [
+                    17, 44, 162, 242, 30, 254, 239, 180, 137, 10, 130, 128, 99,
+                    93, 131, 65, 225, 167, 149, 111, 236, 5, 182, 182, 135, 0,
+                    101, 1, 226, 106, 155, 190
+                  ]
+                }
+              },
+              "ledger_canister_id": "4c4fd-caaaa-aaaaq-aaa3a-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1752722211
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 450496270543914811,
+            "timestamp_seconds": 1752722211
+          },
+          "last_ledger_block_timestamp": 1752720863,
+          "num_recently_executed_proposals": 6,
+          "num_recently_submitted_proposals": 7,
+          "genesis_timestamp_seconds": 1689856131
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1752668938,
+      "end_timestamp_seconds": 1752668931,
+      "total_available_e8s_equivalent": 351011081586639,
+      "distributed_e8s_equivalent": 0,
+      "round": 727,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -5119,7 +5415,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 932295971157382150,
+    "icrc1_total_supply": 932618886969040576,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5461,6 +5757,8 @@
       "description": "Catalyze is a one-stop social-fi application for organising your Web3 experience",
       "logo": "/v1/sns/root/5psbn-niaaa-aaaaq-aaa4q-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -5775,6 +6073,8 @@
       "description": "The Next Generation of Decentralized Computing Network in AI Era",
       "logo": "/v1/sns/root/55uwu-byaaa-aaaaq-aaa7q-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -6049,6 +6349,8 @@
       "description": "Modclub is a decentralized crowdwork platform built on the IC that aims to support dApps by handing resource-intensive tasks such as moderation, user verification and data labeling.",
       "logo": "/v1/sns/root/w7g63-nqaaa-aaaaq-aabca-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
