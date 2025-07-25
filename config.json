@@ -18,8 +18,7 @@
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        },
-        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
+        }
       }
     },
     "beta": {
@@ -29,8 +28,7 @@
         "STATIC_HOST": "https://icp0.io",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        },
-        "PLAUSIBLE_DOMAIN": "test.nns.ic0.app"
+        }
       }
     },
     "devenv_llorenc": {
@@ -87,7 +85,8 @@
         "OWN_CANISTER_ID": "qsgjb-riaaa-aaaaa-aaaga-cai",
         "FEATURE_FLAGS": {
           "ENABLE_CKTESTBTC": false
-        }
+        },
+        "PLAUSIBLE_DOMAIN": "nns-test"
       }
     }
   },
