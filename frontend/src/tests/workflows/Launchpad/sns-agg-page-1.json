@@ -28,6 +28,61 @@
       "description": "DecideAI is an ecosystem, creating AI that benefit users, contributors, and developers.",
       "logo": "/v1/sns/root/x4kx5-ziaaa-aaaaq-aabeq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 65463447851118,
+              "amount_e8s": 3102681495221,
+              "account": {
+                "owner": "xvj4b-paaaa-aaaaq-aabfa-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753329020
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 19467767699920000,
+              "account": {
+                "owner": "xvj4b-paaaa-aaaaq-aabfa-cai",
+                "subaccount": {
+                  "subaccount": [
+                    90, 6, 93, 235, 172, 132, 172, 64, 24, 134, 16, 65, 195,
+                    193, 255, 54, 139, 183, 73, 48, 24, 183, 21, 217, 180, 86,
+                    110, 128, 161, 134, 4, 173
+                  ]
+                }
+              },
+              "ledger_canister_id": "xsi2v-cyaaa-aaaaq-aabfq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753329020
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 106472058779686911,
+            "timestamp_seconds": 1753329020
+          },
+          "last_ledger_block_timestamp": 1753328726,
+          "num_recently_executed_proposals": 3,
+          "num_recently_submitted_proposals": 4,
+          "genesis_timestamp_seconds": 1691588586
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753278189,
+      "end_timestamp_seconds": 1753278186,
+      "total_available_e8s_equivalent": 20197537964839,
+      "distributed_e8s_equivalent": 0,
+      "round": 714,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -364,7 +419,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98361997516517827,
+    "icrc1_total_supply": 98362028282703965,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -706,6 +761,61 @@
       "name": "BOOM DAO",
       "description": "BOOM DAO is an all-in-one web3 game platform and protocol running 100% on-chain on the Internet Computer",
       "logo": "/v1/sns/root/xjngq-yaaaa-aaaaq-aabha-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 40898495383898,
+              "amount_e8s": 2607834964445,
+              "account": {
+                "owner": "xomae-vyaaa-aaaaq-aabhq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753328897
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 4594959793900000,
+              "account": {
+                "owner": "xomae-vyaaa-aaaaq-aabhq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    139, 233, 242, 170, 28, 96, 95, 194, 153, 42, 51, 71, 79,
+                    254, 216, 214, 215, 255, 91, 4, 127, 112, 183, 252, 128, 92,
+                    169, 37, 221, 151, 33, 210
+                  ]
+                }
+              },
+              "ledger_canister_id": "vtrom-gqaaa-aaaaq-aabia-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753328897
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 231415615318737250,
+            "timestamp_seconds": 1753328897
+          },
+          "last_ledger_block_timestamp": 1753327869,
+          "num_recently_executed_proposals": 17,
+          "num_recently_submitted_proposals": 20,
+          "genesis_timestamp_seconds": 1692203741
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753288544,
+      "end_timestamp_seconds": 1753288541,
+      "total_available_e8s_equivalent": 51888174523053,
+      "distributed_e8s_equivalent": 0,
+      "round": 707,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -1179,7 +1289,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 126328486513164652,
+    "icrc1_total_supply": 126349388239027101,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1646,6 +1756,8 @@
       "description": "A web3 social network governed by the people for the people",
       "logo": "/v1/sns/root/v2sfq-qyaaa-aaaaq-aabjq-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -1962,6 +2074,61 @@
       "name": "Catalyze",
       "description": "Catalyze is a one-stop social-fi application for organising your Web3 experience",
       "logo": "/v1/sns/root/uly3p-iqaaa-aaaaq-aabma-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 60200554902099,
+              "amount_e8s": 10490035708324,
+              "account": {
+                "owner": "umz53-fiaaa-aaaaq-aabmq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753328656
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 24761089499000000,
+              "account": {
+                "owner": "umz53-fiaaa-aaaaq-aabmq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    78, 218, 132, 247, 131, 94, 68, 137, 74, 187, 135, 135, 117,
+                    209, 175, 86, 105, 252, 53, 63, 17, 137, 120, 254, 161, 45,
+                    55, 128, 212, 194, 174, 238
+                  ]
+                }
+              },
+              "ledger_canister_id": "uf2wh-taaaa-aaaaq-aabna-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753328656
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 54565474260551041,
+            "timestamp_seconds": 1753328656
+          },
+          "last_ledger_block_timestamp": 1753328219,
+          "num_recently_executed_proposals": 1,
+          "num_recently_submitted_proposals": 2,
+          "genesis_timestamp_seconds": 1692644557
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753297361,
+      "end_timestamp_seconds": 1753297357,
+      "total_available_e8s_equivalent": 83123588272042,
+      "distributed_e8s_equivalent": 0,
+      "round": 702,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [1001],
@@ -2290,7 +2457,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50767059406430688,
+    "icrc1_total_supply": 50767806372083415,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2618,6 +2785,8 @@
       "description": "---- please unlist ----",
       "logo": "/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -2947,7 +3116,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 9961545459755483,
+    "icrc1_total_supply": 9961544059755483,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3052,6 +3221,61 @@
       "name": "Nuance",
       "description": "Nuance is the world's first publishing platform built entirely on-chain. In the same way DeFi has taken the middleman out of finance Nuance does the same for the written word.\n",
       "logo": "/v1/sns/root/rzbmc-yiaaa-aaaaq-aabsq-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 26240775503592,
+              "amount_e8s": 10212058764072,
+              "account": {
+                "owner": "rqch6-oaaaa-aaaaq-aabta-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753328410
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 3878952694824260,
+              "account": {
+                "owner": "rqch6-oaaaa-aaaaq-aabta-cai",
+                "subaccount": {
+                  "subaccount": [
+                    102, 220, 17, 70, 218, 116, 14, 60, 212, 188, 181, 179, 119,
+                    252, 105, 10, 10, 131, 95, 223, 76, 125, 151, 200, 83, 208,
+                    10, 80, 18, 198, 50, 254
+                  ]
+                }
+              },
+              "ledger_canister_id": "rxdbk-dyaaa-aaaaq-aabtq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753328410
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 17524872962987871,
+            "timestamp_seconds": 1753328410
+          },
+          "last_ledger_block_timestamp": 1753328059,
+          "num_recently_executed_proposals": 10,
+          "num_recently_submitted_proposals": 19,
+          "genesis_timestamp_seconds": 1694946570
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753266573,
+      "end_timestamp_seconds": 1753266570,
+      "total_available_e8s_equivalent": 26568822912296,
+      "distributed_e8s_equivalent": 0,
+      "round": 675,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -3378,7 +3602,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10213818285988406,
+    "icrc1_total_supply": 10216580559559909,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3692,10 +3916,9 @@
       "dapps": [
         "3xwpq-ziaaa-aaaah-qcn4a-cai",
         "lfzsk-7qaaa-aaaah-adk2q-cai",
-        "aanaa-xaaaa-aaaah-aaeiq-cai",
+        "ltj2f-gaaaa-aaaah-adnea-cai",
         "utozz-siaaa-aaaam-qaaxq-cai",
-        "eo2vl-tyaaa-aaaah-adtfa-cai",
-        "ltj2f-gaaaa-aaaah-adnea-cai"
+        "eo2vl-tyaaa-aaaah-adtfa-cai"
       ],
       "archives": ["svw4v-tiaaa-aaaaq-aabyq-cai"]
     },
@@ -3704,6 +3927,65 @@
       "name": "SONIC",
       "description": "The Open Defi Suite on Internet Computer Blockchain governed by the people for the people.\n",
       "logo": "/v1/sns/root/qtooy-2yaaa-aaaaq-aabvq-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 51937543314834,
+              "amount_e8s": 11982648588353,
+              "account": {
+                "owner": "qgj7v-3qaaa-aaaaq-aabwa-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753328297
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 5336659016133260,
+              "account": {
+                "owner": "qgj7v-3qaaa-aaaaq-aabwa-cai",
+                "subaccount": {
+                  "subaccount": [
+                    190, 181, 56, 35, 105, 198, 54, 119, 128, 145, 100, 124, 51,
+                    69, 50, 91, 134, 209, 40, 60, 241, 74, 5, 125, 104, 78, 45,
+                    245, 182, 171, 193, 244
+                  ]
+                }
+              },
+              "ledger_canister_id": "qbizb-wiaaa-aaaaq-aabwq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753328297
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 36114122427874723,
+            "timestamp_seconds": 1753328297
+          },
+          "last_ledger_block_timestamp": 1753318157,
+          "num_recently_executed_proposals": 5,
+          "num_recently_submitted_proposals": 5,
+          "genesis_timestamp_seconds": 1695889829
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753259433,
+      "end_timestamp_seconds": 1753259429,
+      "total_available_e8s_equivalent": 1961261528933,
+      "distributed_e8s_equivalent": 1961261528670,
+      "round": 664,
+      "settled_proposals": [
+        {
+          "id": 275
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -4042,7 +4324,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12736728152396562,
+    "icrc1_total_supply": 12736780228922562,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4375,6 +4657,8 @@
       "description": "Querio stands as the first Web3 search engine that enables seamless discovery of dApps across multiple blockchains.\n",
       "logo": "/v1/sns/root/s4vxj-faaaa-aaaaq-aabza-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -4819,6 +5103,8 @@
       "description": "A decentralised music platform governed by artists and fans.\n",
       "logo": "/v1/sns/root/shqlm-7yaaa-aaaaq-aab3q-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": []
@@ -5072,6 +5358,16 @@
       "name": "Gold DAO",
       "description": "The Gold DAO project represents a groundbreaking fusion of traditional gold and modern blockchain technology, allowing anyone in the world to access  physical gold instantaneously, with no dependence upon the banking system. At its core, the project introduces two primary products: the Gold Token (GLDT) - a fungible token allowing fractional gold ownership; and a USD-pegged stablecoin (USDG) - backed by gold (GLDT). These components combine to unlock a reliable alternative to fiat-backed stablecoins and their inflationary underpinnings, eradicating the limitations of traditional gold transacting by enabling instant transferability and liquidity, leveraging blockchain's transparency and efficiency.\n",
       "logo": "/v1/sns/root/tw2vt-hqaaa-aaaaq-aab6a-cai/logo.png"
+    },
+    "metrics": null,
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753257708,
+      "end_timestamp_seconds": 1753257706,
+      "total_available_e8s_equivalent": 271792650771,
+      "distributed_e8s_equivalent": 0,
+      "round": 589,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -5821,7 +6117,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99293637601174046,
+    "icrc1_total_supply": 99270167930917018,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,
