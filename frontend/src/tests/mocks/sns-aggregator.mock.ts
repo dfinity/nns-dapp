@@ -81,6 +81,7 @@ export const aggregatorSnsMockWith = ({
   lifecycle = SnsSwapLifecycle.Committed,
   restrictedCountries,
   directParticipantCount,
+  buyerTotalIcpE8s,
   projectName,
   tokenMetadata,
   index,
@@ -108,6 +109,7 @@ export const aggregatorSnsMockWith = ({
   restrictedCountries?: string[];
   // TODO: Change to `undefined` or `number`.
   directParticipantCount?: [] | [bigint];
+  buyerTotalIcpE8s?: number;
   projectName?: string;
   tokenMetadata?: Partial<IcrcTokenMetadata>;
   index?: number;
@@ -165,6 +167,9 @@ export const aggregatorSnsMockWith = ({
       direct_participant_count: nonNullish(directParticipantCount?.[0])
         ? (Number(directParticipantCount[0]) ?? null)
         : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
+      buyer_total_icp_e8s: nonNullish(buyerTotalIcpE8s)
+        ? buyerTotalIcpE8s
+        : aggregatorSnsMockDto.swap_state.derived.buyer_total_icp_e8s,
     },
   },
   icrc1_total_supply: nonNullish(totalTokenSupply)
@@ -235,6 +240,9 @@ export const aggregatorSnsMockWith = ({
     direct_participant_count: nonNullish(directParticipantCount?.[0])
       ? (Number(directParticipantCount[0]) ?? null)
       : aggregatorSnsMockDto.swap_state.derived.direct_participant_count,
+    buyer_total_icp_e8s: nonNullish(buyerTotalIcpE8s)
+      ? buyerTotalIcpE8s
+      : aggregatorSnsMockDto.swap_state.derived.buyer_total_icp_e8s,
   },
   icrc1_metadata: nonNullish(tokenMetadata)
     ? createQueryMetadataResponse(tokenMetadata)
