@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ApyDisplay from "$lib/components/ic/ApyDisplay.svelte";
   import MaturityWithTooltip from "$lib/components/neurons/MaturityWithTooltip.svelte";
   import Card from "$lib/components/portfolio/Card.svelte";
   import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
@@ -12,11 +13,11 @@
   import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
-  import { formatNumber, formatPercentage } from "$lib/utils/format.utils";
+  import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
-  import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
+  import { TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {
     topStakedTokens: TableProject[];
@@ -138,36 +139,7 @@
 
             {#if showApy}
               <div class="apy" data-tid="apy" role="cell">
-                {#if nonNullish(apy) && !apy?.error}
-                  <span
-                    >{formatPercentage(apy.cur, {
-                      minFraction: 2,
-                      maxFraction: 2,
-                    })}</span
-                  >
-                  <span class="max cell-with-tooltip"
-                    >({formatPercentage(apy.max, {
-                      minFraction: 2,
-                      maxFraction: 2,
-                    })})
-                    {#if apy.max === 0}
-                      <TooltipIcon
-                        iconSize={16}
-                        text={$i18n.portfolio.apy_card_tooltip_no_rewards}
-                      />
-                    {/if}
-                  </span>
-                {:else if !isApyLoading}
-                  <span class="cell-with-tooltip">
-                    {PRICE_NOT_AVAILABLE_PLACEHOLDER}
-                    <TooltipIcon
-                      iconSize={16}
-                      text={$i18n.portfolio.apy_card_tooltip_error}
-                    />
-                  </span>
-                {:else}
-                  <span class="cell skeleton"></span>
-                {/if}
+                <ApyDisplay {apy} isLoading={isApyLoading} forPortfolio />
               </div>
             {:else}
               <div class="maturity" data-tid="maturity" role="cell">
@@ -315,25 +287,6 @@
 
           .apy {
             grid-area: maturity;
-            display: flex;
-            gap: var(--padding-0_5x);
-            font-size: 0.875rem;
-            color: var(--text-description);
-
-            @include media.min-width(medium) {
-              font-size: var(--font-size-standard);
-              flex-direction: column;
-              gap: 0;
-              color: var(--text-primary);
-            }
-
-            .max {
-              color: var(--text-description);
-
-              @include media.min-width(medium) {
-                font-size: 0.875rem;
-              }
-            }
           }
 
           .maturity {
@@ -361,18 +314,6 @@
             @include media.min-width(medium) {
               display: block;
             }
-          }
-
-          .cell.skeleton {
-            height: 20px;
-            width: 80px;
-            border-radius: 4px;
-          }
-
-          .cell-with-tooltip {
-            display: flex;
-            align-items: center;
-            gap: var(--padding-0_5x);
           }
 
           /* special styles for ICP rows */

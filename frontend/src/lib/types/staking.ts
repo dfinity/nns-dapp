@@ -6,6 +6,12 @@ import type { APY_CALC_ERROR } from "$lib/utils/staking-rewards.utils";
 import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import type { TokenAmountV2 } from "@dfinity/utils";
 
+export type ApyAmount = {
+  cur: number;
+  max: number;
+  error?: APY_CALC_ERROR;
+};
+
 export type TableProject = {
   rowHref?: string;
   domKey: string;
@@ -16,17 +22,13 @@ export type TableProject = {
   neuronCount: number | undefined;
   stake: TokenAmountV2 | UnavailableTokenAmount;
   stakeInUsd: number | undefined;
+  apy?: ApyAmount | undefined;
   availableMaturity: bigint | undefined;
   stakedMaturity: bigint | undefined;
   isStakeLoading?: boolean;
-  apy?: {
-    cur: number;
-    max: number;
-    error?: APY_CALC_ERROR;
-  };
 };
 
-export type ProjectsTableColumnId = "title" | "stake" | "neurons";
+export type ProjectsTableColumnId = "title" | "apy" | "stake" | "neurons";
 
 export type ProjectsTableColumn = ResponsiveTableColumn<
   TableProject,
