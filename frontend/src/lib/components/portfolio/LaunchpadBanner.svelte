@@ -152,6 +152,8 @@
     min-width: 100%;
     padding: 0;
 
+    box-shadow: var(--box-shadow);
+
     // Extra mode when rendering together with upcoming launches cards.
     &.withUpcomingLaunchesCards {
       @include media.min-width(large) {
