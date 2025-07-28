@@ -16,7 +16,7 @@
     IconHeldTokens,
     IconRight,
   } from "@dfinity/gix-components";
-  import { TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {
     topHeldTokens: UserTokenData[];
@@ -27,11 +27,10 @@
 
   const href = AppPath.Tokens;
 
-  const icp = $derived(topHeldTokens[0]);
+  const icp: UserTokenData | undefined = $derived(topHeldTokens[0]);
   const restOfTokens = $derived(topHeldTokens.slice(1));
   const numberOfTopHeldTokens = $derived(restOfTokens.length);
 
-  // TODO
   const showInfoRow = $derived(
     shouldShowInfoRow({
       currentCardNumberOfTokens: numberOfTopHeldTokens,
@@ -62,41 +61,48 @@
   </div>
 {/snippet}
 
-{#snippet row({ token }: { token: UserTokenData })}
-  <a href={token.rowHref} class="row" data-tid="held-token-card-row" role="row">
-    <div class="info" role="cell">
-      <div>
-        <Logo src={token.logo} alt={token.title} size="medium" framed />
-      </div>
-      <span data-tid="title">{token.title}</span>
-    </div>
-
-    <div class="balance-native" data-tid="balance-in-native" role="cell">
-      <PrivacyAwareAmount
-        value={token.balance instanceof TokenAmountV2
-          ? formatTokenV2({
-              value: token.balance,
-              detailed: false,
-            })
-          : PRICE_NOT_AVAILABLE_PLACEHOLDER}
-        length={3}
-      />
-      <span class="symbol">
-        {token.balance.token.symbol}
-      </span>
-    </div>
-    <div
-      class="balance-usd"
-      data-tid="balance-in-usd"
-      role="cell"
-      aria-label={`${token.title} USD: ${token?.balanceInUsd ?? 0}`}
+{#snippet row({ token }: { token: UserTokenData | undefined })}
+  {#if nonNullish(token)}
+    <a
+      href={token.rowHref}
+      class="row"
+      data-tid="held-token-card-row"
+      role="row"
     >
-      $<PrivacyAwareAmount
-        value={formatNumber(token?.balanceInUsd ?? 0)}
-        length={3}
-      />
-    </div>
-  </a>
+      <div class="info" role="cell">
+        <div>
+          <Logo src={token.logo} alt={token.title} size="medium" framed />
+        </div>
+        <span data-tid="title">{token.title}</span>
+      </div>
+
+      <div class="balance-native" data-tid="balance-in-native" role="cell">
+        <PrivacyAwareAmount
+          value={token.balance instanceof TokenAmountV2
+            ? formatTokenV2({
+                value: token.balance,
+                detailed: false,
+              })
+            : PRICE_NOT_AVAILABLE_PLACEHOLDER}
+          length={3}
+        />
+        <span class="symbol">
+          {token.balance.token.symbol}
+        </span>
+      </div>
+      <div
+        class="balance-usd"
+        data-tid="balance-in-usd"
+        role="cell"
+        aria-label={`${token.title} USD: ${token?.balanceInUsd ?? 0}`}
+      >
+        $<PrivacyAwareAmount
+          value={formatNumber(token?.balanceInUsd ?? 0)}
+          length={3}
+        />
+      </div>
+    </a>
+  {/if}
 {/snippet}
 
 {#snippet infoRow()}

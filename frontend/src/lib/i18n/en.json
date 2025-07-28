@@ -1329,7 +1329,7 @@
     "staked_tokens_card_list_second_column_apy_second": "(max APY)",
     "staked_tokens_card_list_third_column": "Staked",
     "staked_tokens_card_apy_tooltip": "APY (Annual Percentage Yield) shows how much you can earn in a year with your current setup. Max APY is the highest possible yearly return you could get if you optimized your settings.",
-    "staked_tokens_card_info_row": "Earn more voting rewards by staking your tokens in neurons and participating in the Internet Computer's on chain governance",
+    "staked_tokens_card_info_row": "Earn more voting rewards by staking your tokens in neurons and participating in the Internet Computer's onchain governance",
     "staked_tokens_card_link_row_text": "Only your main neurons are listed, navigate to",
     "staked_tokens_card_link_row_link": "Show all staked",
     "total_assets_title": "Total Holdings",

@@ -24,7 +24,7 @@
     IconRight,
     IconStakedTokens,
   } from "@dfinity/gix-components";
-  import { TokenAmountV2 } from "@dfinity/utils";
+  import { nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {
     topStakedTokens: TableProject[];
@@ -44,11 +44,10 @@
 
   const href = AppPath.Staking;
 
-  const icp = $derived(topStakedTokens[0]);
+  const icp: TableProject | undefined = $derived(topStakedTokens[0]);
   const restOfStakedTokens = $derived(topStakedTokens.slice(1));
   const numberOfTopStakedTokens = $derived(restOfStakedTokens.length);
 
-  // TODO
   const showInfoRow = $derived(
     shouldShowInfoRow({
       currentCardNumberOfTokens: numberOfTopStakedTokens,
@@ -115,71 +114,73 @@
   </div>
 {/snippet}
 
-{#snippet row({ stakedToken }: { stakedToken: TableProject })}
-  {@const apy = stakedToken.apy}
-  <a
-    href={stakedToken.rowHref}
-    class="row"
-    data-tid="staked-tokens-card-row"
-    role="row"
-  >
-    <div class="info" role="cell">
-      <div>
-        <Logo
-          src={stakedToken.logo}
-          alt={stakedToken.title}
-          size="medium"
-          framed
+{#snippet row({ stakedToken }: { stakedToken: TableProject | undefined })}
+  {@const apy = stakedToken?.apy}
+  {#if nonNullish(stakedToken)}
+    <a
+      href={stakedToken.rowHref}
+      class="row"
+      data-tid="staked-tokens-card-row"
+      role="row"
+    >
+      <div class="info" role="cell">
+        <div>
+          <Logo
+            src={stakedToken.logo}
+            alt={stakedToken.title}
+            size="medium"
+            framed
+          />
+        </div>
+        <span data-tid="title">{stakedToken.title}</span>
+      </div>
+
+      {#if showApy}
+        <div class="apy" data-tid="apy" role="cell">
+          <ApyDisplay {apy} isLoading={isApyLoading} forPortfolio />
+        </div>
+      {:else}
+        <div class="maturity" data-tid="maturity" role="cell">
+          {#if $authSignedInStore}
+            <MaturityWithTooltip
+              availableMaturity={stakedToken?.availableMaturity ?? 0n}
+              stakedMaturity={stakedToken?.stakedMaturity ?? 0n}
+            />
+          {:else}
+            {PRICE_NOT_AVAILABLE_PLACEHOLDER}
+          {/if}
+        </div>
+      {/if}
+      <div
+        class="stake-usd"
+        data-tid="stake-in-usd"
+        role="cell"
+        aria-label={`${stakedToken.title} USD: ${stakedToken?.stakeInUsd ?? 0}`}
+      >
+        $<PrivacyAwareAmount
+          value={formatNumber(stakedToken?.stakeInUsd ?? 0)}
+          length={3}
         />
       </div>
-      <span data-tid="title">{stakedToken.title}</span>
-    </div>
-
-    {#if showApy}
-      <div class="apy" data-tid="apy" role="cell">
-        <ApyDisplay {apy} isLoading={isApyLoading} forPortfolio />
+      <div
+        class="stake-native"
+        data-tid="stake-in-native"
+        role="cell"
+        aria-label={`${stakedToken.title} D: ${stakedToken?.stakeInUsd ?? 0}`}
+      >
+        <PrivacyAwareAmount
+          value={stakedToken.stake instanceof TokenAmountV2
+            ? formatTokenV2({
+                value: stakedToken.stake,
+                detailed: false,
+              })
+            : PRICE_NOT_AVAILABLE_PLACEHOLDER}
+          length={3}
+        />
+        {stakedToken.stake.token.symbol}
       </div>
-    {:else}
-      <div class="maturity" data-tid="maturity" role="cell">
-        {#if $authSignedInStore}
-          <MaturityWithTooltip
-            availableMaturity={stakedToken?.availableMaturity ?? 0n}
-            stakedMaturity={stakedToken?.stakedMaturity ?? 0n}
-          />
-        {:else}
-          {PRICE_NOT_AVAILABLE_PLACEHOLDER}
-        {/if}
-      </div>
-    {/if}
-    <div
-      class="stake-usd"
-      data-tid="stake-in-usd"
-      role="cell"
-      aria-label={`${stakedToken.title} USD: ${stakedToken?.stakeInUsd ?? 0}`}
-    >
-      $<PrivacyAwareAmount
-        value={formatNumber(stakedToken?.stakeInUsd ?? 0)}
-        length={3}
-      />
-    </div>
-    <div
-      class="stake-native"
-      data-tid="stake-in-native"
-      role="cell"
-      aria-label={`${stakedToken.title} D: ${stakedToken?.stakeInUsd ?? 0}`}
-    >
-      <PrivacyAwareAmount
-        value={stakedToken.stake instanceof TokenAmountV2
-          ? formatTokenV2({
-              value: stakedToken.stake,
-              detailed: false,
-            })
-          : PRICE_NOT_AVAILABLE_PLACEHOLDER}
-        length={3}
-      />
-      {stakedToken.stake.token.symbol}
-    </div>
-  </a>
+    </a>
+  {/if}
 {/snippet}
 
 {#snippet infoRow()}
