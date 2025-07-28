@@ -46,7 +46,7 @@
 
   const icp: TableProject | undefined = $derived(topStakedTokens[0]);
   const restOfStakedTokens = $derived(topStakedTokens.slice(1));
-  const numberOfTopStakedTokens = $derived(restOfStakedTokens.length);
+  const numberOfTopStakedTokens = $derived(topStakedTokens.length);
 
   const showInfoRow = $derived(
     shouldShowInfoRow({
@@ -56,7 +56,7 @@
   );
   // TODO: Do we still want to have the maturity as a fallback for the APY?
   const showApy = $derived($ENABLE_APY_PORTFOLIO && !hasApyCalculationErrored);
-  const showLinkRow = $derived(numberOfTopStakedTokens > 3);
+  const showLinkRow = $derived(numberOfTopStakedTokens >= 4);
 </script>
 
 {#snippet tableHeader({

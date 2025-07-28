@@ -380,7 +380,7 @@ describe("StakedTokensCard", () => {
       expect(await po.getLinkRow().isPresent()).toBe(false);
     });
 
-    it("should not show info row but show link row when tokens length is more than 4", async () => {
+    it("should not show info row but show link row when tokens length is 4 or more", async () => {
       const po = renderComponent({
         topStakedTokens: [
           ...mockStakedTokens,

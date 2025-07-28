@@ -29,7 +29,7 @@
 
   const icp: UserTokenData | undefined = $derived(topHeldTokens[0]);
   const restOfTokens = $derived(topHeldTokens.slice(1));
-  const numberOfTopHeldTokens = $derived(restOfTokens.length);
+  const numberOfTopHeldTokens = $derived(topHeldTokens.length);
 
   const showInfoRow = $derived(
     shouldShowInfoRow({
@@ -37,7 +37,7 @@
       otherCardNumberOfTokens: numberOfTopStakedTokens,
     })
   );
-  const showLinkRow = $derived(numberOfTopHeldTokens > 3);
+  const showLinkRow = $derived(numberOfTopHeldTokens >= 4);
 </script>
 
 {#snippet tableHeader({
