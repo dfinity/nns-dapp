@@ -9,10 +9,10 @@
   type Props = {
     apy?: ApyAmount;
     isLoading?: boolean;
-    forPortfolio: boolean;
+    forPortfolio?: boolean;
   };
 
-  const { apy, isLoading, forPortfolio }: Props = $props();
+  const { apy, isLoading, forPortfolio = true }: Props = $props();
 </script>
 
 <div class="apy" class:forPortfolio data-tid="apy-display-component">
@@ -24,7 +24,7 @@
       })}</span
     >
     <span class="max cell-with-tooltip" data-tid="apy-max-value">
-      >({formatPercentage(apy.max, {
+      ({formatPercentage(apy.max, {
         minFraction: 2,
         maxFraction: 2,
       })})
