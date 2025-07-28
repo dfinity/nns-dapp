@@ -126,8 +126,12 @@ export const decodeUpdateSignatures = async ({
   });
 
   return {
-    callSignature: arrayBufferToUint8Array(bufferToArrayBuffer(RequestSignatureRS)) as Signature,
-    readStateSignature: arrayBufferToUint8Array(bufferToArrayBuffer(StatusReadSignatureRS)) as Signature,
+    callSignature: arrayBufferToUint8Array(
+      bufferToArrayBuffer(RequestSignatureRS)
+    ) as Signature,
+    readStateSignature: arrayBufferToUint8Array(
+      bufferToArrayBuffer(StatusReadSignatureRS)
+    ) as Signature,
   };
 };
 

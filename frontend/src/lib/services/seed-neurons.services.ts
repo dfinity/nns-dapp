@@ -9,11 +9,8 @@ import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
 import { translate } from "$lib/utils/i18n.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import { GenesisTokenCanister } from "@dfinity/nns";
-import { get } from "svelte/store";
 import { uint8ArrayToHexString } from "@dfinity/utils";
-
-const buf2hex = (buffer: ArrayBuffer): string =>
-  bytesToHexString([...new Uint8Array(buffer)]);
+import { get } from "svelte/store";
 
 // TODO: Remove after all seed neurons have been claimed.
 // Method to be used only from the Dev Tools console.

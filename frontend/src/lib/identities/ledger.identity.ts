@@ -16,7 +16,6 @@ import {
   getRequestId,
   type RequestSignatures,
 } from "$lib/utils/ledger.utils";
-import { sameBufferData } from "$lib/utils/utils";
 import {
   Cbor,
   SignIdentity,
@@ -31,7 +30,12 @@ import {
   type RequestId,
   type Signature,
 } from "@dfinity/agent";
-import { isNullish, nonNullish, smallerVersion } from "@dfinity/utils";
+import {
+  isNullish,
+  nonNullish,
+  smallerVersion,
+  uint8ArraysEqual,
+} from "@dfinity/utils";
 import type Transport from "@ledgerhq/hw-transport";
 import type LedgerApp from "@zondax/ledger-icp";
 import type {
@@ -365,10 +369,10 @@ export class LedgerIdentity extends SignIdentity {
     request1: ReadRequest,
     request2: ReadRequest
   ): boolean => {
-    return sameBufferData(
-      this.prepareCborForLedger(request1),
-      this.prepareCborForLedger(request2)
-    );
+    return uint8ArraysEqual({
+      a: this.prepareCborForLedger(request1),
+      b: this.prepareCborForLedger(request2),
+    });
   };
 
   private async createSignAndStoreCallRequests(request: HttpAgentRequest) {

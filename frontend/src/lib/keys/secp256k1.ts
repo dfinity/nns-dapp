@@ -1,9 +1,5 @@
-import {
-  bufEquals,
-  concat,
-  type DerEncodedPublicKey,
-  type PublicKey,
-} from "@dfinity/agent";
+import type { DerEncodedPublicKey, PublicKey } from "@dfinity/agent";
+import { uint8ArraysEqual } from "@dfinity/utils";
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq the implementation is 100% similar
 
@@ -51,8 +47,9 @@ export class Secp256k1PublicKey implements PublicKey {
       );
     }
 
+    // TODO: basically concat two Uint8array into one
     const derPublicKey = concat(
-      Secp256k1PublicKey.DER_PREFIX.buffer,
+      Secp256k1PublicKey.DER_PREFIX,
       publicKey
     ) as DerEncodedPublicKey;
     derPublicKey.__derEncodedPublicKey__ = undefined;
@@ -71,7 +68,7 @@ export class Secp256k1PublicKey implements PublicKey {
     }
 
     const rawKey = key.slice(0, Secp256k1PublicKey.DER_PREFIX.length);
-    if (!bufEquals(this.derEncode(rawKey), key)) {
+    if (!uint8ArraysEqual({ a: this.derEncode(rawKey), b: key })) {
       throw new TypeError(
         "secp256k1 DER-encoded public key is invalid. A valid secp256k1 DER-encoded public key " +
           `must have the following prefix: ${Secp256k1PublicKey.DER_PREFIX}`
