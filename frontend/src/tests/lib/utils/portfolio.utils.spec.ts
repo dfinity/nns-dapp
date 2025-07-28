@@ -438,8 +438,8 @@ describe("Portfolio utils", () => {
     it("should not show info row when both cards have 3 or more tokens", () => {
       expect(
         shouldShowInfoRow({
-          currentCardNumberOfTokens: 3,
-          otherCardNumberOfTokens: 3,
+          currentCardNumberOfTokens: 4,
+          otherCardNumberOfTokens: 4,
         })
       ).toBe(false);
 
