@@ -67,7 +67,6 @@
         on:nnsAction
         {userTokensData}
         firstColumnHeader={$i18n.tokens.projects_header}
-        subtitle={$i18n.tokens.projects_header_imported_subtitle}
       />
     {/if}
   </div>
