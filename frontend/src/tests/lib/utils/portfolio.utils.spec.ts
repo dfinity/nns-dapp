@@ -68,6 +68,21 @@ describe("Portfolio utils", () => {
       expect(result).not.toContainEqual(mockNonUserToken);
     });
 
+    it("should return an empty array if no ICP", () => {
+      const tokens = [
+        mockOtherToken,
+        mockCkUSDCToken,
+        mockCkBTCToken,
+        mockNonUserToken,
+      ];
+
+      const result = getTopHeldTokens({
+        userTokens: tokens,
+      });
+
+      expect(result).toHaveLength(0);
+    });
+
     it("should respect the result limit", () => {
       const tokens: UserToken[] = [
         mockIcpToken,
@@ -197,6 +212,21 @@ describe("Portfolio utils", () => {
         mockProject2,
         mockProject3,
       ]);
+    });
+
+    it("should return an empty array if no ICP", () => {
+      const projects = [
+        mockProject1,
+        mockProject2,
+        mockProject3,
+        mockZeroStakeProject,
+      ];
+
+      const result = getTopStakedTokens({
+        projects,
+      });
+
+      expect(result).toHaveLength(0);
     });
 
     it("should exclude projects with zero stake", () => {
