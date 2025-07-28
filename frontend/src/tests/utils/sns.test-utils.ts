@@ -25,6 +25,7 @@ export const setSnsProjects = (
     certified?: boolean;
     restrictedCountries?: string[];
     directParticipantCount?: [] | [bigint];
+    buyerTotalIcpE8s?: number;
     projectName?: string;
     tokenMetadata?: Partial<IcrcTokenMetadata>;
     nervousFunctions?: SnsNervousSystemFunction[];
@@ -54,6 +55,7 @@ export const setSnsProjects = (
       lifecycle: params.lifecycle ?? SnsSwapLifecycle.Committed,
       restrictedCountries: params.restrictedCountries,
       directParticipantCount: params.directParticipantCount,
+      buyerTotalIcpE8s: params.buyerTotalIcpE8s,
       projectName: params.projectName,
       tokenMetadata: params.tokenMetadata,
       nervousFunctions: params.nervousFunctions,
