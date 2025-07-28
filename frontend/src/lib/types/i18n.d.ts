@@ -1534,6 +1534,7 @@ interface I18nActions {
   InstallCode: string;
   StopOrStartCanister: string;
   UpdateCanisterSettings: string;
+  FulfillSubnetRentalRequest: string;
 }
 
 interface I18nActions_description {
@@ -1552,6 +1553,7 @@ interface I18nActions_description {
   InstallCode: string;
   StopOrStartCanister: string;
   UpdateCanisterSettings: string;
+  FulfillSubnetRentalRequest: string;
 }
 
 interface I18nNns_functions {
