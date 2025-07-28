@@ -187,6 +187,7 @@
         })
       : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
   );
+  const withUpcomingLaunchesCards = $derived(cards.length > 0);
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -260,12 +261,12 @@
     {/if}
   </div>
 
-  <div class="sns-section" class:with-cards={cards.length > 0}>
+  <div class="sns-section" class:withUpcomingLaunchesCards>
     {#if $ENABLE_LAUNCHPAD_REDESIGN}
-      <LaunchpadBanner />
+      <LaunchpadBanner {withUpcomingLaunchesCards} />
     {/if}
 
-    {#if cards.length > 0}
+    {#if withUpcomingLaunchesCards}
       {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
         <CardList
           testId="stacked-cards"
@@ -324,8 +325,8 @@
       gap: 16px;
       grid-template-columns: 1fr;
 
-      &.with-cards {
-        @include media.min-width(large) {
+      @include media.min-width(large) {
+        &.withUpcomingLaunchesCards {
           grid-template-columns: 2fr 1fr;
         }
       }
