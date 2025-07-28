@@ -260,7 +260,7 @@
     {/if}
   </div>
 
-  <div class="sns-section" class:withCards={cards.length > 0}>
+  <div class="sns-section" class:with-cards={cards.length > 0}>
     {#if $ENABLE_LAUNCHPAD_REDESIGN}
       <LaunchpadBanner />
     {/if}
@@ -324,8 +324,8 @@
       gap: 16px;
       grid-template-columns: 1fr;
 
-      @include media.min-width(large) {
-        &.with-cards {
+      &.with-cards {
+        @include media.min-width(large) {
           grid-template-columns: 2fr 1fr;
         }
       }
