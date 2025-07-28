@@ -105,15 +105,15 @@
       <div class="icon" aria-hidden="true">
         <IconAccountsPage />
       </div>
-      <div class="message">
+      <p class="message">
         {$i18n.portfolio.held_tokens_card_info_row}
-      </div>
+      </p>
     </div>
   </div>
 {/snippet}
 
 {#snippet linkRow()}
-  <div class="link-row" role="note" data-tid="info-row">
+  <div class="link-row" role="note" data-tid="link-row">
     <div class="content">
       <p class="message">
         {$i18n.portfolio.held_tokens_card_link_row_text}
@@ -176,7 +176,9 @@
           {/if}
         </div>
       {:else if $isDesktopViewportStore}
-        {@render infoRow()}
+        <div class="list" role="rowgroup">
+          {@render infoRow()}
+        </div>
       {/if}
     </div>
   </div>
@@ -275,17 +277,33 @@
     border-bottom: 4px solid var(--elements-divider);
   }
 
-  .info-row {
-    flex-grow: 1;
+  .info-row,
+  .link-row {
     border-top: 1px solid var(--elements-divider);
 
     .content {
       display: flex;
-      justify-content: center;
       align-items: center;
       gap: var(--padding-2x);
-      padding: var(--padding-2x) 0;
+      padding: var(--padding-2x);
 
+      font-family: CircularXX;
+      font-size: 12px;
+      line-height: 14px;
+
+      .message {
+        margin: 0;
+        padding: 0;
+        color: var(--text-description);
+      }
+    }
+  }
+
+  .info-row {
+    flex-grow: 1;
+
+    .content {
+      justify-content: center;
       max-width: 90%;
       margin: 0 auto;
 
@@ -295,33 +313,19 @@
       }
 
       .message {
-        font-size: 0.875rem;
-        color: var(--text-description);
+        font-size: 14px;
         max-width: 400px;
       }
     }
   }
 
   .link-row {
-    border-top: 1px solid var(--elements-divider);
-
     .content {
-      display: flex;
       justify-content: flex-end;
-      align-items: center;
-      gap: var(--padding-2x);
-      padding: var(--padding-2x);
-
-      font-family: CircularXX;
-      font-size: 12px;
-      font-weight: 450;
-      line-height: 14px;
+      font-weight: var(--font-weight-bold);
 
       .message {
         display: none;
-        margin: 0;
-        padding: 0;
-        color: var(--text-description);
 
         @include media.min-width(medium) {
           display: block;
@@ -329,15 +333,10 @@
       }
 
       .link {
-        align-self: end;
-        justify-self: end;
-
         display: flex;
         align-items: center;
-        justify-content: center;
 
         color: var(--button-secondary-color);
-        font-weight: var(--font-weight-bold);
         text-decoration: none;
         font-size: 14px;
         line-height: 18px;

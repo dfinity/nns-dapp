@@ -196,7 +196,7 @@
 {/snippet}
 
 {#snippet linkRow()}
-  <div class="link-row" role="note" data-tid="info-row">
+  <div class="link-row" role="note" data-tid="link-row">
     <div class="content">
       <p class="message">
         {$i18n.portfolio.staked_tokens_card_link_row_text}
@@ -260,7 +260,9 @@
           {/if}
         </div>
       {:else if $isDesktopViewportStore}
-        {@render infoRow()}
+        <div class="list" role="rowgroup">
+          {@render infoRow()}
+        </div>
       {/if}
     </div>
   </div>
@@ -389,6 +391,73 @@
     border-bottom: 4px solid var(--elements-divider);
   }
 
+  .info-row,
+  .link-row {
+    border-top: 1px solid var(--elements-divider);
+
+    .content {
+      display: flex;
+      align-items: center;
+      gap: var(--padding-2x);
+      padding: var(--padding-2x);
+
+      font-family: CircularXX;
+      font-size: 12px;
+      line-height: 14px;
+
+      .message {
+        margin: 0;
+        padding: 0;
+        color: var(--text-description);
+      }
+    }
+  }
+
+  .info-row {
+    flex-grow: 1;
+
+    .content {
+      justify-content: center;
+      max-width: 90%;
+      margin: 0 auto;
+
+      .icon {
+        min-width: 50px;
+        height: 50px;
+      }
+
+      .message {
+        font-size: 14px;
+        max-width: 400px;
+      }
+    }
+  }
+
+  .link-row {
+    .content {
+      justify-content: flex-end;
+      font-weight: var(--font-weight-bold);
+
+      .message {
+        display: none;
+
+        @include media.min-width(medium) {
+          display: block;
+        }
+      }
+
+      .link {
+        display: flex;
+        align-items: center;
+
+        color: var(--button-secondary-color);
+        text-decoration: none;
+        font-size: 14px;
+        line-height: 18px;
+      }
+    }
+  }
+
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -408,32 +477,6 @@
 
         &.icp {
           flex-grow: 0;
-        }
-      }
-
-      .info-row {
-        flex-grow: 1;
-        border-top: 1px solid var(--elements-divider);
-
-        .content {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: var(--padding-2x);
-          padding: var(--padding-2x) 0;
-
-          max-width: 90%;
-          margin: 0 auto;
-          .icon {
-            min-width: 50px;
-            height: 50px;
-          }
-
-          .message {
-            font-size: 0.875rem;
-            color: var(--text-description);
-            max-width: 400px;
-          }
         }
       }
     }
