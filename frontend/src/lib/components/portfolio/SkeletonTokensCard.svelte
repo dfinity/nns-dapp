@@ -239,15 +239,5 @@
         flex-grow: 1;
       }
     }
-
-    .tablet-up {
-      display: none !important;
-    }
-
-    @include media.min-width(medium) {
-      .tablet-up {
-        display: block !important;
-      }
-    }
   }
 </style>
