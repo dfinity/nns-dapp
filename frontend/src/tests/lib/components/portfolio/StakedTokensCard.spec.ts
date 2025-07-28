@@ -554,10 +554,10 @@ describe("StakedTokensCard", () => {
 
         expect(apys.length).toBe(4);
         expect(apys).toEqual([
-          "5.00% >(10.00%)",
-          "5.00% >(12.00%)",
+          "5.00% (10.00%)",
+          "5.00% (12.00%)",
           "-/-",
-          "0.00% >(0.00%)",
+          "0.00% (0.00%)",
         ]);
         expect(stakesInUsd.length).toBe(4);
         expect(stakesInUsd).toEqual([
