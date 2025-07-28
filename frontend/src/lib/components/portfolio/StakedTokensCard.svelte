@@ -482,19 +482,12 @@
     }
 
     /* Utilities */
-    .mobile-only {
-      display: flex;
-    }
-
     .tablet-up,
     .desktop-only {
       display: none !important;
     }
 
     @include media.min-width(medium) {
-      .mobile-only {
-        display: none;
-      }
       .tablet-up {
         display: flex !important;
       }
@@ -508,10 +501,6 @@
 
     .justify-end {
       justify-self: end;
-    }
-
-    .align-center {
-      align-items: center;
     }
 
     .text-right {
