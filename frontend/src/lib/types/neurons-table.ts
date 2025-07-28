@@ -2,6 +2,7 @@ import type {
   ResponsiveTableColumn,
   ResponsiveTableOrder,
 } from "$lib/types/responsive-table";
+import type { ApyAmount } from "$lib/types/staking";
 import type { NeuronTagData } from "$lib/utils/neuron.utils";
 import type { Comparator } from "$lib/utils/sort.utils";
 import type { NeuronState } from "@dfinity/nns";
@@ -13,6 +14,7 @@ export type TableNeuron = {
   neuronId: string;
   stake: TokenAmountV2;
   stakeInUsd: number | undefined;
+  apy?: ApyAmount | undefined;
   availableMaturity: bigint;
   stakedMaturity: bigint;
   dissolveDelaySeconds: bigint;
@@ -25,6 +27,7 @@ export type TableNeuron = {
 export type NeuronsTableColumnId =
   | "id"
   | "stake"
+  | "apy"
   | "maturity"
   | "dissolveDelay"
   | "voteDelegation"
