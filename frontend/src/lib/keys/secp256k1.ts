@@ -1,4 +1,5 @@
 import type { DerEncodedPublicKey, PublicKey } from "@dfinity/agent";
+import { concat } from "@dfinity/candid";
 import { uint8ArraysEqual } from "@dfinity/utils";
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq the implementation is 100% similar
