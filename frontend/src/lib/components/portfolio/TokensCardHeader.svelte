@@ -76,17 +76,27 @@
       .text-content {
         display: flex;
         flex-direction: column;
-        gap: var(--padding-0_5x);
 
         .title {
-          font-size: 0.875rem;
-          font-weight: bold;
-          color: var(--text-description);
           margin: 0;
           padding: 0;
+          font-size: 12px;
+          font-weight: bold;
+          color: var(--text-description);
+
+          @include media.min-width(medium) {
+            font-size: 14px;
+          }
         }
         .amount {
-          font-size: 1.5rem;
+          margin: 0;
+          padding: 0;
+          font-size: 24px;
+          line-height: 32px;
+
+          @include media.min-width(medium) {
+            font-size: 27px;
+          }
         }
       }
     }
