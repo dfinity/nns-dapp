@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-26_03-25-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-24_03-31-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -34,6 +34,12 @@ pub struct KnownNeuronData {
 pub struct KnownNeuron {
     pub id: Option<NeuronId>,
     pub known_neuron_data: Option<KnownNeuronData>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct FulfillSubnetRentalRequest {
+    pub user: Option<Principal>,
+    pub replica_version_id: Option<String>,
+    pub node_ids: Option<Vec<Principal>>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Spawn {
@@ -475,6 +481,7 @@ pub struct Motion {
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum Action {
     RegisterKnownNeuron(KnownNeuron),
+    FulfillSubnetRentalRequest(FulfillSubnetRentalRequest),
     ManageNeuron(ManageNeuron),
     UpdateCanisterSettings(UpdateCanisterSettings),
     InstallCode(InstallCode),
@@ -560,6 +567,7 @@ pub struct GovernanceCachedMetrics {
     pub total_voting_power_non_self_authenticating_controller: Option<u64>,
     pub total_staked_maturity_e8s_equivalent: u64,
     pub not_dissolving_neurons_e8s_buckets_ect: Vec<(u64, f64)>,
+    pub spawning_neurons_count: u64,
     pub declining_voting_power_neuron_subset_metrics: Option<NeuronSubsetMetrics>,
     pub total_staked_e8s_ect: u64,
     pub not_dissolving_neurons_staked_maturity_e8s_equivalent_sum: u64,
@@ -980,6 +988,7 @@ pub struct InstallCodeRequest {
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum ProposalActionRequest {
     RegisterKnownNeuron(KnownNeuron),
+    FulfillSubnetRentalRequest(FulfillSubnetRentalRequest),
     ManageNeuron(Box<ManageNeuronRequest>),
     UpdateCanisterSettings(UpdateCanisterSettings),
     InstallCode(InstallCodeRequest),
