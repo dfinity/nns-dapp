@@ -23,6 +23,8 @@
       "description": "The Mora Protocol is a groundbreaking system facilitating the creation of decentralized content platforms, enabling the development of peer-to-peer alternatives to centralized platforms like Medium, YouTube, and Twitter. It serves as the foundation for the Mora Platform, a demonstration platform showcasing the full capabilities and advantages of leveraging the Mora Protocol.\nIn tandem with this protocol, the Light Plugin System has been developed as an accessible, no-programming-required solution operating within the Internet Computer (IC) ecosystem. Light functions as a peer-to-peer software system capable of seamless integration into any web page or content, thereby enabling interaction with IC smart contracts. Together, these innovations represent a significant leap forward in the decentralization of online content and services.\n",
       "logo": "/v1/sns/root/bxmkl-2iaaa-aaaaq-aac6q-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -1162,6 +1164,65 @@
       "description": "A community initiative aiming to drive awareness of the Motoko branding\n",
       "logo": "/v1/sns/root/ko36b-myaaa-aaaaq-aadbq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 10000000000,
+              "amount_e8s": 1195200041545,
+              "account": {
+                "owner": "k34pm-nqaaa-aaaaq-aadca-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753326484
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 1221819825430346,
+              "account": {
+                "owner": "k34pm-nqaaa-aaaaq-aadca-cai",
+                "subaccount": {
+                  "subaccount": [
+                    38, 128, 117, 91, 181, 165, 153, 190, 234, 167, 161, 198,
+                    140, 195, 55, 29, 155, 192, 82, 227, 197, 60, 4, 165, 54, 3,
+                    104, 1, 81, 224, 179, 129
+                  ]
+                }
+              },
+              "ledger_canister_id": "k45jy-aiaaa-aaaaq-aadcq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753326484
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 7565136173124050,
+            "timestamp_seconds": 1753326484
+          },
+          "last_ledger_block_timestamp": 1753326004,
+          "num_recently_executed_proposals": 171,
+          "num_recently_submitted_proposals": 193,
+          "genesis_timestamp_seconds": 1715000644
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753275847,
+      "end_timestamp_seconds": 1753275844,
+      "total_available_e8s_equivalent": 1456171338095,
+      "distributed_e8s_equivalent": 1456171337921,
+      "round": 443,
+      "settled_proposals": [
+        {
+          "id": 398
+        }
+      ]
+    },
     "parameters": {
       "reserved_ids": [1002],
       "functions": [
@@ -1392,6 +1453,34 @@
               "target_method_name": "icrc1_transfer"
             }
           }
+        },
+        {
+          "id": 1007,
+          "name": "commit_proposed_batch_frontend",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
+              "validator_canister_id": "ydpnf-caaaa-aaaag-abzvq-cai",
+              "target_canister_id": "ydpnf-caaaa-aaaag-abzvq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 1008,
+          "name": "Transfer ckBTC",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "mxzaz-hqaaa-aaaar-qaada-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
         }
       ]
     },
@@ -1561,7 +1650,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 5471342995057497,
+    "icrc1_total_supply": 5475480212730208,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1748,7 +1837,22 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1007,
+              "name": "commit_proposed_batch_frontend",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "ydpnf-caaaa-aaaag-abzvq-cai",
+                  "target_canister_id": "ydpnf-caaaa-aaaag-abzvq-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [],
@@ -1882,6 +1986,20 @@
                   "target_method_name": "icrc1_transfer"
                 }
               }
+            },
+            {
+              "id": 1008,
+              "name": "Transfer ckBTC",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "mxzaz-hqaaa-aaaar-qaada-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
             }
           ]
         },
@@ -1966,6 +2084,61 @@
       "name": "Swampies",
       "description": "🌿 Meet the Swampies! 🐸✨ Introducing Swampies — adorable, 3D-rendered creatures straight from the mysterious wetlands of Dragginz! These quirky little inhabitants bring the swamps of the Internet Computer (IC) to life, bursting with charm and personality.  Each Swampie is a unique NFT, lovingly crafted to live and breathe within the vibrant, immersive world of Dragginz. Whether you're exploring, collecting, or just vibing in the digital marshes, these critters are your must-have companions.  💧 Exclusive to the Internet Computer 🎨 Collectible, tradable, and totally cute 🌍 Living characters in a living world  Collect them all. Build your swamp squad. Let the adventure begin.",
       "logo": "/v1/sns/root/l7ra6-uqaaa-aaaaq-aadea-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 485974311779,
+              "amount_e8s": 500000000000,
+              "account": {
+                "owner": "lyqgk-ziaaa-aaaaq-aadeq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753326364
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 14139999920000,
+              "account": {
+                "owner": "lyqgk-ziaaa-aaaaq-aadeq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    179, 73, 3, 119, 160, 222, 82, 254, 194, 33, 35, 5, 197,
+                    155, 41, 66, 75, 188, 150, 230, 152, 212, 169, 253, 98, 167,
+                    13, 94, 185, 29, 88, 106
+                  ]
+                }
+              },
+              "ledger_canister_id": "lrtnw-paaaa-aaaaq-aadfa-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753326364
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 139763000540331,
+            "timestamp_seconds": 1753326364
+          },
+          "last_ledger_block_timestamp": 1753319485,
+          "num_recently_executed_proposals": 4,
+          "num_recently_submitted_proposals": 3,
+          "genesis_timestamp_seconds": 1715346239
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753275840,
+      "end_timestamp_seconds": 1753275839,
+      "total_available_e8s_equivalent": 32860826803,
+      "distributed_e8s_equivalent": 0,
+      "round": 439,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -2291,7 +2464,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100017143693025,
+    "icrc1_total_supply": 100022462642817,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2609,6 +2782,16 @@
       "name": "ORIGYN",
       "description": "The ORIGYN Protocol has been made possible thanks to the major contribution of the ORIGYN Foundation and embodies its vision of becoming the universal digital standard for certification, traceability, and authentication. Achieving standardization requires neutrality, and as a DAO, the ORIGYN Protocol fulfills this requirement.\nThe ORIGYN Protocol is the most advanced Real World Assets (RWA) infrastructure, enabling the creation of biometric digital certificates stored on the blockchain to prove the authenticity, identity, and ownership of valuable assets. This makes them secure, transparent, and immutable, thus opening infinite possibilities for partners to create their own solutions or markets. We are the building block, an open-source protocol to authenticate, certify, or trace RWA assets in the digital world. The technology has been developed in close collaboration with top industry leaders to ensure the highest level of operational standards for industrial-grade solutions in RWAs.\nThe ORIGYN token (OGY) is a deflationary utility token integral to the ORIGYN ecosystem. It is used to mint digital certificates that authenticate, certify, and trace the ownership of valuable assets. OGY tokens allow for DAO governance participation.\n",
       "logo": "/v1/sns/root/leu43-oiaaa-aaaaq-aadgq-cai/logo.png"
+    },
+    "metrics": null,
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753254301,
+      "end_timestamp_seconds": 1753254300,
+      "total_available_e8s_equivalent": 855539591111,
+      "distributed_e8s_equivalent": 0,
+      "round": 424,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -2937,7 +3120,7 @@
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041622704672558212,
+    "icrc1_total_supply": 1041618911687519832,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3266,6 +3449,35 @@
       "name": "WaterNeuron",
       "description": "WaterNeuron is a liquid staking protocol designed for the Internet Computer network. \nStaking ICP becomes straightforward and efficient. \n\nLearn more: https://docs.waterneuron.fi | https://x.com/waterneuron | https://t.me/waterneuron\n",
       "logo": "/v1/sns/root/jmod6-4iaaa-aaaaq-aadkq-cai/logo.png"
+    },
+    "metrics": null,
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753251770,
+      "end_timestamp_seconds": 1753251769,
+      "total_available_e8s_equivalent": 959992056078,
+      "distributed_e8s_equivalent": 959992055314,
+      "round": 400,
+      "settled_proposals": [
+        {
+          "id": 3964
+        },
+        {
+          "id": 3965
+        },
+        {
+          "id": 3966
+        },
+        {
+          "id": 3967
+        },
+        {
+          "id": 3968
+        },
+        {
+          "id": 3969
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -3792,7 +4004,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11683444839406476,
+    "icrc1_total_supply": 11687906970491586,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4324,6 +4536,8 @@
       "description": "          ",
       "logo": "/v1/sns/root/ibahq-taaaa-aaaaq-aadna-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -5232,6 +5446,61 @@
       "description": "A collection of 10,000 unique ROBOTS!  This DAO is going to serve as the controller for all PokedStudio collections on toko.app.  We will allow migration from Entrepot (web -1) to toko.app (web3) so don't worry, all NFTs will be safe.",
       "logo": "/v1/sns/root/nb7he-piaaa-aaaaq-aadqq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 1205131715865,
+              "amount_e8s": 500053695865,
+              "account": {
+                "owner": "ni4my-zaaaa-aaaaq-aadra-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753325882
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 170089476511688497,
+              "account": {
+                "owner": "ni4my-zaaaa-aaaaq-aadra-cai",
+                "subaccount": {
+                  "subaccount": [
+                    196, 165, 142, 62, 150, 250, 82, 23, 184, 45, 104, 76, 243,
+                    154, 145, 16, 243, 16, 102, 111, 225, 189, 230, 63, 132, 17,
+                    159, 224, 0, 255, 11, 123
+                  ]
+                }
+              },
+              "ledger_canister_id": "np5km-uyaaa-aaaaq-aadrq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753325882
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 1200767084326435715,
+            "timestamp_seconds": 1753325882
+          },
+          "last_ledger_block_timestamp": 1753318468,
+          "num_recently_executed_proposals": 3,
+          "num_recently_submitted_proposals": 3,
+          "genesis_timestamp_seconds": 1722453655
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753298462,
+      "end_timestamp_seconds": 1753298455,
+      "total_available_e8s_equivalent": 7622205301164,
+      "distributed_e8s_equivalent": 0,
+      "round": 357,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -5595,7 +5864,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 2320002248633981845,
+    "icrc1_total_supply": 2320017804395734989,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5954,6 +6223,61 @@
       "name": "ICVC",
       "description": "ICVC DAO is a community governed Web3 venture builder. \n",
       "logo": "/v1/sns/root/nuywj-oaaaa-aaaaq-aadta-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 124583869216673,
+              "amount_e8s": 86581468926670,
+              "account": {
+                "owner": "ntzq5-dyaaa-aaaaq-aadtq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753325761
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 0,
+              "account": {
+                "owner": "ntzq5-dyaaa-aaaaq-aadtq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    169, 120, 255, 216, 194, 28, 16, 3, 122, 13, 20, 95, 35,
+                    120, 68, 56, 154, 77, 71, 52, 152, 218, 19, 5, 40, 239, 74,
+                    54, 113, 31, 77, 195
+                  ]
+                }
+              },
+              "ledger_canister_id": "m6xut-mqaaa-aaaaq-aadua-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753325761
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 3192724295984382,
+            "timestamp_seconds": 1753325761
+          },
+          "last_ledger_block_timestamp": 1753261074,
+          "num_recently_executed_proposals": 0,
+          "num_recently_submitted_proposals": 2,
+          "genesis_timestamp_seconds": 1722750551
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753249756,
+      "end_timestamp_seconds": 1753249751,
+      "total_available_e8s_equivalent": 0,
+      "distributed_e8s_equivalent": 0,
+      "round": 353,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -6453,7 +6777,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999998777410000,
+    "icrc1_total_supply": 1999998776790000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -6946,6 +7270,8 @@
       "description": "Juno is a blockchain-as-a-service platform that empowers developers to build decentralized apps efficiently. It offers a comprehensive toolkit to scaffold secure and efficient projects.",
       "logo": "/v1/sns/root/mctoc-3qaaa-aaaaq-aadwa-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -8968,6 +9294,61 @@
       "description": "The one stop token shop - Trade tokens across all chains with ease using KongSwap\n",
       "logo": "/v1/sns/root/ormnc-tiaaa-aaaaq-aadyq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 25593625030875,
+              "amount_e8s": 16024212746881,
+              "account": {
+                "owner": "oypg6-faaaa-aaaaq-aadza-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753325520
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 54440721983910000,
+              "account": {
+                "owner": "oypg6-faaaa-aaaaq-aadza-cai",
+                "subaccount": {
+                  "subaccount": [
+                    14, 207, 215, 59, 142, 160, 161, 210, 76, 54, 161, 175, 254,
+                    137, 11, 129, 191, 37, 6, 228, 164, 241, 131, 89, 28, 150,
+                    0, 135, 42, 94, 220, 114
+                  ]
+                }
+              },
+              "ledger_canister_id": "o7oak-iyaaa-aaaaq-aadzq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753325520
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 60881957819815000,
+            "timestamp_seconds": 1753325520
+          },
+          "last_ledger_block_timestamp": 1753325289,
+          "num_recently_executed_proposals": 54,
+          "num_recently_submitted_proposals": 57,
+          "genesis_timestamp_seconds": 1729505013
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753265021,
+      "end_timestamp_seconds": 1753265013,
+      "total_available_e8s_equivalent": 13724295660627,
+      "distributed_e8s_equivalent": 0,
+      "round": 275,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -10062,7 +10443,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100218700331676865,
+    "icrc1_total_supply": 100256402715565490,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
