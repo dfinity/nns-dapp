@@ -1321,7 +1321,6 @@
     "staked_tokens_card_subtitle_rest": "Main staked SNS Tokens",
     "staked_tokens_card_list_first_column_icp": "Native Token on ICP",
     "staked_tokens_card_list_first_column_rest": "Dapp community projects",
-    "staked_tokens_card_list_first_column": "Projects",
     "staked_tokens_card_list_second_column_mobile": "Balance / Maturity",
     "staked_tokens_card_list_second_column_mobile_apy_first": "Staked",
     "staked_tokens_card_list_second_column_mobile_apy_second": "APY (max APY)",

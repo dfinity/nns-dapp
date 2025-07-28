@@ -1392,7 +1392,6 @@ interface I18nPortfolio {
   staked_tokens_card_subtitle_rest: string;
   staked_tokens_card_list_first_column_icp: string;
   staked_tokens_card_list_first_column_rest: string;
-  staked_tokens_card_list_first_column: string;
   staked_tokens_card_list_second_column_mobile: string;
   staked_tokens_card_list_second_column_mobile_apy_first: string;
   staked_tokens_card_list_second_column_mobile_apy_second: string;
