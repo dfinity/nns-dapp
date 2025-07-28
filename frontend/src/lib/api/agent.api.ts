@@ -45,7 +45,9 @@ class IdentityAgentWrapper implements Agent {
     const usedIdentity =
       overrideIdentity !== undefined ? overrideIdentity : this.identity;
     if (isNullish(usedIdentity)) {
-      throw new IdentityInvalidErrorCode();
+      throw new IdentityInvalidError(
+        "This identity has expired due this application's security policy. Please refresh your authentication."
+      );
     }
     return usedIdentity;
   }
@@ -125,50 +127,49 @@ class IdentityAgentWrapper implements Agent {
   }
 }
 
-// TODO: can be dropped?
-// const INVALID_SIGNATURE_DEBUG_INFO_KEY = "invalidSignatureDebugInfo";
-//
-// const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
-//   if (
-//     logEntry.level != "error" ||
-//     !logEntry.message.includes("Invalid signature") ||
-//     !(
-//       logEntry.error instanceof AgentCallError ||
-//       logEntry.error instanceof AgentQueryError ||
-//       logEntry.error instanceof AgentReadStateError
-//     )
-//   ) {
-//     return;
-//   }
-//
-//   localStorage.setItem(
-//     INVALID_SIGNATURE_DEBUG_INFO_KEY,
-//     JSON.stringify({
-//       requestId: logEntry.error.requestId,
-//       senderPubkey: logEntry.error.senderPubkey,
-//       senderSig: logEntry.error.senderSig,
-//       ingressExpiry: logEntry.error.ingressExpiry,
-//       debugInfoRecordedTimestamp: new Date().toISOString(),
-//     })
-//   );
-//   logRecordedInvalidSignatureDebugInfo();
-// };
-//
-// const logRecordedInvalidSignatureDebugInfo = () => {
-//   if (
-//     typeof window !== "undefined" &&
-//     window.localStorage &&
-//     INVALID_SIGNATURE_DEBUG_INFO_KEY in localStorage
-//   ) {
-//     console.warn(
-//       "Found invalid signature debug info:",
-//       localStorage.getItem(INVALID_SIGNATURE_DEBUG_INFO_KEY)
-//     );
-//   }
-// };
-//
-// // Also log on page load for easy discovery.
-// logRecordedInvalidSignatureDebugInfo();
+const INVALID_SIGNATURE_DEBUG_INFO_KEY = "invalidSignatureDebugInfo";
+
+const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
+  if (
+    logEntry.level != "error" ||
+    !logEntry.message.includes("Invalid signature") ||
+    !(
+      logEntry.error instanceof AgentCallError ||
+      logEntry.error instanceof AgentQueryError ||
+      logEntry.error instanceof AgentReadStateError
+    )
+  ) {
+    return;
+  }
+
+  localStorage.setItem(
+    INVALID_SIGNATURE_DEBUG_INFO_KEY,
+    JSON.stringify({
+      requestId: logEntry.error.requestId,
+      senderPubkey: logEntry.error.senderPubkey,
+      senderSig: logEntry.error.senderSig,
+      ingressExpiry: logEntry.error.ingressExpiry,
+      debugInfoRecordedTimestamp: new Date().toISOString(),
+    })
+  );
+  logRecordedInvalidSignatureDebugInfo();
+};
+
+const logRecordedInvalidSignatureDebugInfo = () => {
+  if (
+    typeof window !== "undefined" &&
+    window.localStorage &&
+    INVALID_SIGNATURE_DEBUG_INFO_KEY in localStorage
+  ) {
+    console.warn(
+      "Found invalid signature debug info:",
+      localStorage.getItem(INVALID_SIGNATURE_DEBUG_INFO_KEY)
+    );
+  }
+};
+
+// Also log on page load for easy discovery.
+logRecordedInvalidSignatureDebugInfo();
 
 export const createAgent = async ({
   identity,
@@ -186,6 +187,8 @@ export const createAgent = async ({
       ...(host !== undefined && { host }),
       fetchRootKey: FETCH_ROOT_KEY,
     });
+
+    agent.log.subscribe(storeInvalidSignatureDebugInfo);
 
     agents = {
       ...(nonNullish(agents) && agents),
