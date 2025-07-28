@@ -3,6 +3,7 @@ import { SECONDS_IN_HALF_YEAR } from "$lib/constants/constants";
 import { HOTKEY_PERMISSIONS } from "$lib/constants/sns-neurons.constants";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import {
+  compareByApy,
   compareByDissolveDelay,
   compareById,
   compareByMaturity,
@@ -651,6 +652,29 @@ describe("neurons-table.utils", () => {
       expect(compareByStake(neuron1, neuron1)).toBe(0);
       expect(compareByStake(neuron1, neuron2)).toBe(1);
       expect(compareByStake(neuron2, neuron1)).toBe(-1);
+    });
+  });
+
+  describe("compareByApy", () => {
+    it("should sort neurons by descending APY", () => {
+      const neuron1 = {
+        ...mockTableNeuron,
+        apy: {
+          cur: 0.1,
+          max: 0.5,
+        },
+      };
+      const neuron2 = {
+        ...mockTableNeuron,
+        apy: {
+          cur: 0.2,
+          max: 0.6,
+        },
+      };
+
+      expect(compareByApy(neuron1, neuron1)).toBe(0);
+      expect(compareByApy(neuron1, neuron2)).toBe(1);
+      expect(compareByApy(neuron2, neuron1)).toBe(-1);
     });
   });
 
