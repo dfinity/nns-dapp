@@ -353,7 +353,7 @@ describe("ProjectsTable", () => {
             snsCanisterId.toText(),
             {
               cur: 0.1,
-              max: 0.5,
+              max: 0.33,
               neurons: new Map(),
             },
           ],
@@ -371,12 +371,26 @@ describe("ProjectsTable", () => {
           .getText()
       ).toBe("5.00%");
       expect(
+        await rowPos[0]
+          .getProjectApyCellPo()
+          .getApyDisplayPo()
+          .getMaxApy()
+          .getText()
+      ).includes("50.00%");
+      expect(
         await rowPos[1]
           .getProjectApyCellPo()
           .getApyDisplayPo()
           .getCurrentApy()
           .getText()
       ).toBe("10.00%");
+      expect(
+        await rowPos[1]
+          .getProjectApyCellPo()
+          .getApyDisplayPo()
+          .getMaxApy()
+          .getText()
+      ).includes("33.00%");
     });
 
     it("should render maturity", async () => {
