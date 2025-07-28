@@ -42,5 +42,8 @@
     display: inline-flex;
     align-items: center;
     color: var(--tooltip-icon-color, var(--elements-icons));
+
+    height: var(--icon-size);
+    width: var(--icon-size);
   }
 </style>
