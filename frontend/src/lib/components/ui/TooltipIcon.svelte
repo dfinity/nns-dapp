@@ -14,6 +14,8 @@
     iconSize = 20,
     tooltipIdPrefix = "tooltip-icon",
   }: Props = $props();
+  const iconSizePx = $derived(`${iconSize}px`);
+
   const handleOnClick = (event: MouseEvent) => {
     event.preventDefault();
   };
@@ -21,11 +23,16 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="wrapper" data-tid="tooltip-icon-component" onclick={handleOnClick}>
+<div
+  class="wrapper"
+  data-tid="tooltip-icon-component"
+  onclick={handleOnClick}
+  style="--icon-size: {iconSizePx};"
+>
   <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
   <!-- svelte-ignore slot_element_deprecated -->
   <Tooltip id={tooltipId} idPrefix={tooltipIdPrefix} {text}>
-    <IconInfo size={`${iconSize}px`} />
+    <IconInfo size={iconSizePx} />
     <slot slot="tooltip-content" />
   </Tooltip>
 </div>
