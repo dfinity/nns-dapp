@@ -1384,6 +1384,8 @@ interface I18nPortfolio {
   held_tokens_card_list_second_column: string;
   held_tokens_card_list_third_column: string;
   held_tokens_card_info_row: string;
+  held_tokens_card_link_row_text: string;
+  held_tokens_card_link_row_link: string;
   staked_tokens_card_title: string;
   staked_tokens_card_link: string;
   staked_tokens_card_subtitle_icp: string;
@@ -1400,6 +1402,8 @@ interface I18nPortfolio {
   staked_tokens_card_list_third_column: string;
   staked_tokens_card_apy_tooltip: string;
   staked_tokens_card_info_row: string;
+  staked_tokens_card_link_row_text: string;
+  staked_tokens_card_link_row_link: string;
   total_assets_title: string;
   project_status_open: string;
   project_status_proposal: string;

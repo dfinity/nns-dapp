@@ -9,14 +9,21 @@
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
+  import {
+    isDesktopViewportStore,
+    isMobileViewportStore,
+  } from "$lib/derived/viewport.derived";
   import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
+  import {
+    IconNeuronsPage,
+    IconRight,
+    IconStakedTokens,
+  } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {
@@ -50,6 +57,7 @@
   );
   // TODO: Do we still want to have the maturity as a fallback for the APY?
   const showApy = $derived($ENABLE_APY_PORTFOLIO && !hasApyCalculationErrored);
+  const showLinkRow = $derived(numberOfTopStakedTokens > 3);
 </script>
 
 {#snippet tableHeader({
@@ -174,6 +182,35 @@
   </a>
 {/snippet}
 
+{#snippet infoRow()}
+  <div class="info-row desktop-only" role="note" data-tid="info-row">
+    <div class="content">
+      <div class="icon" aria-hidden="true">
+        <IconStakedTokens />
+      </div>
+      <div class="message">
+        {$i18n.portfolio.staked_tokens_card_info_row}
+      </div>
+    </div>
+  </div>
+{/snippet}
+
+{#snippet linkRow()}
+  <div class="link-row" role="note" data-tid="info-row">
+    <div class="content">
+      <p class="message">
+        {$i18n.portfolio.staked_tokens_card_link_row_text}
+      </p>
+      <a
+        {href}
+        class="link"
+        aria-label={$i18n.portfolio.staked_tokens_card_link_row_link}
+        >{$i18n.portfolio.staked_tokens_card_link_row_link}<IconRight /></a
+      >
+    </div>
+  </div>
+{/snippet}
+
 <Card testId="staked-tokens-card">
   <div
     class="wrapper"
@@ -213,19 +250,17 @@
           {#each restOfStakedTokens as stakedToken (stakedToken.domKey)}
             {@render row({ stakedToken })}
           {/each}
-          {#if showInfoRow}
-            <div class="info-row desktop-only" role="note" data-tid="info-row">
-              <div class="content">
-                <div class="icon" aria-hidden="true">
-                  <IconStakedTokens />
-                </div>
-                <div class="message">
-                  {$i18n.portfolio.staked_tokens_card_info_row}
-                </div>
-              </div>
-            </div>
+
+          {#if showInfoRow && $isDesktopViewportStore}
+            {@render infoRow()}
+          {/if}
+
+          {#if showLinkRow}
+            {@render linkRow()}
           {/if}
         </div>
+      {:else if $isDesktopViewportStore}
+        {@render infoRow()}
       {/if}
     </div>
   </div>

@@ -11,7 +11,11 @@
   import { formatNumber } from "$lib/utils/format.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
-  import { IconAccountsPage, IconHeldTokens } from "@dfinity/gix-components";
+  import {
+    IconAccountsPage,
+    IconHeldTokens,
+    IconRight,
+  } from "@dfinity/gix-components";
   import { TokenAmountV2 } from "@dfinity/utils";
 
   type Props = {
@@ -34,6 +38,7 @@
       otherCardNumberOfTokens: numberOfTopStakedTokens,
     })
   );
+  const showLinkRow = $derived(numberOfTopHeldTokens > 3);
 </script>
 
 {#snippet tableHeader({
@@ -94,6 +99,35 @@
   </a>
 {/snippet}
 
+{#snippet infoRow()}
+  <div class="info-row" role="note" data-tid="info-row">
+    <div class="content">
+      <div class="icon" aria-hidden="true">
+        <IconAccountsPage />
+      </div>
+      <div class="message">
+        {$i18n.portfolio.held_tokens_card_info_row}
+      </div>
+    </div>
+  </div>
+{/snippet}
+
+{#snippet linkRow()}
+  <div class="link-row" role="note" data-tid="info-row">
+    <div class="content">
+      <p class="message">
+        {$i18n.portfolio.held_tokens_card_link_row_text}
+      </p>
+      <a
+        {href}
+        class="link"
+        aria-label={$i18n.portfolio.held_tokens_card_link_row_link}
+        >{$i18n.portfolio.held_tokens_card_link_row_link}<IconRight /></a
+      >
+    </div>
+  </div>
+{/snippet}
+
 <Card testId="held-tokens-card">
   <div
     class="wrapper"
@@ -134,29 +168,15 @@
           {/each}
 
           {#if showInfoRow && $isDesktopViewportStore}
-            <div class="info-row" role="note" data-tid="info-row">
-              <div class="content">
-                <div class="icon" aria-hidden="true">
-                  <IconAccountsPage />
-                </div>
-                <div class="message">
-                  {$i18n.portfolio.held_tokens_card_info_row}
-                </div>
-              </div>
-            </div>
+            {@render infoRow()}
+          {/if}
+
+          {#if showLinkRow}
+            {@render linkRow()}
           {/if}
         </div>
       {:else if $isDesktopViewportStore}
-        <div class="info-row" role="note" data-tid="info-row">
-          <div class="content">
-            <div class="icon" aria-hidden="true">
-              <IconAccountsPage />
-            </div>
-            <div class="message">
-              {$i18n.portfolio.held_tokens_card_info_row}
-            </div>
-          </div>
-        </div>
+        {@render infoRow()}
       {/if}
     </div>
   </div>
@@ -255,6 +275,76 @@
     border-bottom: 4px solid var(--elements-divider);
   }
 
+  .info-row {
+    flex-grow: 1;
+    border-top: 1px solid var(--elements-divider);
+
+    .content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--padding-2x);
+      padding: var(--padding-2x) 0;
+
+      max-width: 90%;
+      margin: 0 auto;
+
+      .icon {
+        min-width: 50px;
+        height: 50px;
+      }
+
+      .message {
+        font-size: 0.875rem;
+        color: var(--text-description);
+        max-width: 400px;
+      }
+    }
+  }
+
+  .link-row {
+    border-top: 1px solid var(--elements-divider);
+
+    .content {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--padding-2x);
+      padding: var(--padding-2x);
+
+      font-family: CircularXX;
+      font-size: 12px;
+      font-weight: 450;
+      line-height: 14px;
+
+      .message {
+        display: none;
+        margin: 0;
+        padding: 0;
+        color: var(--text-description);
+
+        @include media.min-width(medium) {
+          display: block;
+        }
+      }
+
+      .link {
+        align-self: end;
+        justify-self: end;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        color: var(--button-secondary-color);
+        font-weight: var(--font-weight-bold);
+        text-decoration: none;
+        font-size: 14px;
+        line-height: 18px;
+      }
+    }
+  }
+
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -274,33 +364,6 @@
 
         &.icp {
           flex-grow: 0;
-        }
-      }
-
-      .info-row {
-        flex-grow: 1;
-        border-top: 1px solid var(--elements-divider);
-
-        .content {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: var(--padding-2x);
-          padding: var(--padding-2x) 0;
-
-          max-width: 90%;
-          margin: 0 auto;
-
-          .icon {
-            min-width: 50px;
-            height: 50px;
-          }
-
-          .message {
-            font-size: 0.875rem;
-            color: var(--text-description);
-            max-width: 400px;
-          }
         }
       }
     }
