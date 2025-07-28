@@ -50,6 +50,7 @@
   .wrapper {
     height: 100%;
     background-color: var(--card-background-tint);
+    box-sizing: border-box;
 
     h2,
     p {
@@ -88,6 +89,7 @@
       align-items: center;
       text-decoration: none;
       align-self: flex-end;
+      margin-top: auto;
       font-weight: var(--font-weight-bold);
 
       color: var(--button-secondary-color);
