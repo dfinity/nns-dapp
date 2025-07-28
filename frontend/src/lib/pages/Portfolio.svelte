@@ -133,14 +133,12 @@
   const topHeldTokens = $derived(
     getTopHeldTokens({
       userTokens: userTokens,
-      isSignedIn: $authSignedInStore,
     })
   );
 
   const topStakedTokens = $derived(
     getTopStakedTokens({
       projects: tableProjects,
-      isSignedIn: $authSignedInStore,
     })
   );
 
