@@ -4,6 +4,7 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
+import { page } from "$mocks/$app/stores";
 import {
   mockIdentity,
   mockPrincipal,
@@ -15,7 +16,7 @@ import {
   createMockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import { mockToken } from "$tests/mocks/sns-projects.mock";
+import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
@@ -40,6 +41,10 @@ describe("SnsNeuronAdvancedSection", () => {
           amount: 10_000n,
           token: ICPToken,
         }),
+        apy: {
+          cur: 0.1,
+          max: 0.2,
+        },
       },
     });
 
@@ -134,5 +139,19 @@ describe("SnsNeuronAdvancedSection", () => {
     const po = renderComponent(neuron);
 
     expect(await po.dissolveDate()).toBeNull();
+  });
+
+  it("should render neuron APY values", async () => {
+    const rootCanisterId = principal(0);
+    page.mock({ data: { universe: rootCanisterId.toText() } });
+    const neuron = createMockSnsNeuron({
+      id: [1],
+    });
+
+    const po = renderComponent(neuron);
+
+    expect(await po.getApyDisplayPo().isPresent()).toBe(true);
+    expect(await po.getCurrentApy()).toBe("10.00%");
+    expect(await po.getMaxApy()).includes("20.00%");
   });
 });
