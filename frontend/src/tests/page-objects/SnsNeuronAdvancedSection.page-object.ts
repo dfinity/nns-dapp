@@ -1,8 +1,8 @@
+import { ApyDisplayPo } from "$tests/page-objects/ApyDisplay.page-object";
 import { SnsNeuronAgePo } from "$tests/page-objects/SnsNeuronAge.page-object";
 import { SnsNeuronVestingPeriodRemainingPo } from "$tests/page-objects/SnsNeuronVestingPeriodRemaining.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import { ApyDisplayPo } from "./ApyDisplay.page-object";
 
 export class SnsNeuronAdvancedSectionPo extends BasePageObject {
   private static readonly TID = "sns-neuron-advanced-section-component";
