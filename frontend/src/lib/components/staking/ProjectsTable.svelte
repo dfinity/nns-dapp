@@ -146,7 +146,7 @@
     {
       id: "title",
       title: $i18n.staking.nervous_systems_sns_sunset,
-      subtitle: $i18n.tokens.projects_header_icp_subtitle,
+      subtitle: $i18n.staking.nervous_systems_sns_sunset_subtitle,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
