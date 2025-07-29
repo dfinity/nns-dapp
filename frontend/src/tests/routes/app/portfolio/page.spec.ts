@@ -8,6 +8,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import { getAnonymousIdentity } from "$lib/services/auth.services";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -307,6 +308,14 @@ describe("Portfolio route", () => {
       });
 
       it("should render assets cards with the provided data", async () => {
+        // TODO: Move this to a helper or similar
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
+
         const po = await renderPage();
         const portfolioPagePo = po.getPortfolioPagePo();
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
@@ -395,6 +404,13 @@ describe("Portfolio route", () => {
       });
 
       it("should not show failed SNS", async () => {
+        // TODO: Move this to a helper or similar
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
         failedActionableSnsesStore.add(tetrisSNS.rootCanisterId.toText());
 
         const po = await renderPage();
