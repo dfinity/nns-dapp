@@ -1,6 +1,7 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import SnsNeurons from "$lib/pages/SnsNeurons.svelte";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import { enumValues } from "$lib/utils/enum.utils";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -286,6 +287,33 @@ describe("SnsNeurons", () => {
       expect(
         await po.getUsdValueBannerPo().getTotalsTooltipIconPo().isPresent()
       ).toBe(true);
+    });
+
+    it("should display neuron APY", async () => {
+      const neuronIdString = "010206";
+      stakingRewardsStore.set({
+        loading: false,
+        rewardBalanceUSD: 100,
+        rewardEstimateWeekUSD: 10,
+        stakingPower: 1,
+        stakingPowerUSD: 1,
+        apy: new Map([
+          [
+            rootCanisterId.toText(),
+            {
+              cur: 0.1,
+              max: 0.2,
+              neurons: new Map([[neuronIdString, { cur: 0.01, max: 0.5 }]]),
+            },
+          ],
+        ]),
+      });
+
+      const po = await renderComponent();
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(await rows[0].getNeuronId()).toBe(neuronIdString);
+      expect(await rows[0].getCurrentApy()).toBe("1.00%");
+      expect(await rows[0].getMaxApy()).includes("50.00%");
     });
   });
 
