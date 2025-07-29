@@ -104,7 +104,7 @@
               class:with-subtitle={nonNullish(column.subtitle)}
             >
               {#if nonNullish(column.subtitle)}
-                <span class="title"> {column.title}</span>
+                <span class="title">{column.title}</span>
                 <span class="subtitle">{column.subtitle}</span>
               {:else}
                 {column.title}
@@ -122,7 +122,7 @@
               class:with-subtitle={nonNullish(column.subtitle)}
             >
               {#if nonNullish(column.subtitle)}
-                <span class="title"> {column.title}</span>
+                <span class="title">{column.title}</span>
                 <span class="subtitle"
                   >{column.subtitle}{#if !$isTableOrMobileViewportStore && order[0]?.columnId === column.id}
                     <span class="order-arrow">
@@ -238,14 +238,26 @@
       }
 
       .with-subtitle {
-        display: flex !important;
         gap: var(--padding-0_5x);
         flex-direction: column;
+        max-width: 80%;
+        display: flex;
 
         span.title {
           color: var(--text-description);
           font-size: var(--font-size-h5);
           font-weight: bold;
+        }
+
+        span.title,
+        span.subtitle {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        @include media.min-width(medium) {
+          max-width: none;
         }
       }
     }
