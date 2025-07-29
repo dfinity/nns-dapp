@@ -15,6 +15,7 @@ import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
+import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
@@ -85,6 +86,8 @@ describe("Neurons", () => {
     await loadSnsProjects();
 
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
   });
 
   it("should render NnsNeurons by default", async () => {

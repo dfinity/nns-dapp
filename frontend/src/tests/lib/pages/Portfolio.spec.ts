@@ -1,5 +1,6 @@
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import Portfolio from "$lib/pages/Portfolio.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { TableProject } from "$lib/types/staking";
@@ -854,7 +855,14 @@ describe("Portfolio page", () => {
         expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
       });
 
-      it("should display the information row when less then three tokens", async () => {
+      it("should display the information row when less then three tokens and desktop", async () => {
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
+
         const po = renderPage({
           userTokens: [icpToken, token2],
         });
@@ -934,6 +942,12 @@ describe("Portfolio page", () => {
       });
 
       it("should display the information row when the staked tokens card has less items than the held tokens card", async () => {
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
           tableProjects: [icpProject, tableProject2],

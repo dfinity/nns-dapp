@@ -120,6 +120,7 @@
     {
       id: "title",
       title: $i18n.staking.nervous_systems_nns,
+      subtitle: $i18n.staking.nervous_systems_nns_subtitle,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
@@ -132,6 +133,7 @@
     {
       id: "title",
       title: $i18n.staking.nervous_systems_sns,
+      subtitle: $i18n.staking.nervous_systems_sns_subtitle,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
@@ -144,6 +146,7 @@
     {
       id: "title",
       title: $i18n.staking.nervous_systems_sns_sunset,
+      subtitle: $i18n.tokens.projects_header_icp_subtitle,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
@@ -374,6 +377,10 @@
         <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
       {/if}
     {/if}
+
+    <div class="disclaimer">
+      {$i18n.staking.bottom_disclaimer}
+    </div>
   {:else if !$authSignedInStore}
     <ResponsiveTable
       tableData={sortedTableProjects}
@@ -417,6 +424,18 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  .disclaimer {
+    color: var(--text-description-tint);
+    padding: 0 0 var(--padding-2x);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+
+    @include media.min-width(small) {
+      white-space: pre-line;
+    }
+  }
 
   .wrapper {
     display: flex;

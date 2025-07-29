@@ -7,6 +7,7 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import ResponsiveTableRow from "$lib/components/ui/ResponsiveTableRow.svelte";
   import ResponsiveTableSortControl from "$lib/components/ui/ResponsiveTableSortControl.svelte";
+  import { isTableOrMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import type {
     ResponsiveTableColumn,
@@ -80,6 +81,8 @@
   const openSettings = () => (settingsPopoverVisible = true);
   const closeSettings = () => (settingsPopoverVisible = false);
 
+  const hasSubtitles = columns.some((column) => nonNullish(column.subtitle));
+
   // In mobile view, we only show the first column header and it should never be
   // sortable by clicking on it. So depending on whether the first column is
   // sortable we have or don't have separate first column headers for desktop
@@ -87,36 +90,59 @@
 </script>
 
 <TestIdWrapper {testId}>
-  <div role="table" style={tableStyle}>
+  <div role="table" style={tableStyle} class:has-subtitles={hasSubtitles}>
     <div role="rowgroup">
       <div role="row" class="header-row">
         {#each nonLastColumns as column, index}
-          {#if isNullish(column.comparator) || index === 0}
+          {#if isNullish(column.comparator)}
             <span
               role="columnheader"
               style="--column-span: {column.templateColumns.length}"
               data-tid="column-header-{index + 1}"
-              class={isNullish(column.comparator)
-                ? `desktop-align-${column.alignment}`
-                : ""}
+              class={`desktop-align-${column.alignment}`}
               class:desktop-only={index > 0}
-              class:mobile-only={nonNullish(column.comparator)}
-              >{column.title}
+              class:with-subtitle={nonNullish(column.subtitle)}
+            >
+              {#if nonNullish(column.subtitle)}
+                <span class="title">{column.title}</span>
+                <span class="subtitle">{column.subtitle}</span>
+              {:else}
+                {column.title}
+              {/if}
             </span>
           {/if}
           {#if nonNullish(column.comparator)}
             <button
               role="columnheader"
-              on:click={() => orderBy(column)}
+              on:click={() => !$isTableOrMobileViewportStore && orderBy(column)}
               style="--column-span: {column.templateColumns.length}"
               data-tid="column-header-{index + 1}"
-              class="desktop-only desktop-align-{column.alignment}"
-              >{column.title}{#if nonNullish(column.comparator) && order[0]?.columnId === column.id}
-                <span class="order-arrow">
-                  <span class="arrow-icon" class:reversed={order[0].reversed}>
-                    <IconSouth size="8" strokeWidth={2} />
-                  </span>
+              class="desktop-align-{column.alignment}"
+              class:desktop-only={index > 0}
+              class:with-subtitle={nonNullish(column.subtitle)}
+            >
+              {#if nonNullish(column.subtitle)}
+                <span class="title">{column.title}</span>
+                <span class="subtitle"
+                  >{column.subtitle}{#if !$isTableOrMobileViewportStore && order[0]?.columnId === column.id}
+                    <span class="order-arrow">
+                      <span
+                        class="arrow-icon"
+                        class:reversed={order[0].reversed}
+                      >
+                        <IconSouth size="8" strokeWidth={2} />
+                      </span>
+                    </span>
+                  {/if}
                 </span>
+              {:else}
+                {column.title}{#if !$isTableOrMobileViewportStore && order[0]?.columnId === column.id}
+                  <span class="order-arrow">
+                    <span class="arrow-icon" class:reversed={order[0].reversed}>
+                      <IconSouth size="8" strokeWidth={2} />
+                    </span>
+                  </span>
+                {/if}
               {/if}
             </button>
           {/if}
@@ -197,6 +223,43 @@
       display: grid;
       grid-template-columns: var(--desktop-grid-template-columns);
       column-gap: var(--padding-2x);
+    }
+
+    &.has-subtitles {
+      .header-row {
+        padding-bottom: var(--padding-2x);
+        padding-top: var(--padding-2x);
+        align-items: flex-end;
+
+        .settings-button {
+          position: relative;
+          top: 4px;
+        }
+      }
+
+      .with-subtitle {
+        gap: var(--padding-0_5x);
+        flex-direction: column;
+        max-width: 80%;
+        display: flex;
+
+        span.title {
+          color: var(--text-description);
+          font-size: var(--font-size-h5);
+          font-weight: bold;
+        }
+
+        span.title,
+        span.subtitle {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        @include media.min-width(medium) {
+          max-width: none;
+        }
+      }
     }
 
     .header-row {
