@@ -347,7 +347,7 @@ describe("Portfolio utils", () => {
       ).toBe(false);
     });
 
-    it("should show info row when both cards have fewer than 3 tokens", () => {
+    it("should show info row when both cards have fewer than 4 tokens", () => {
       expect(
         shouldShowInfoRow({
           currentCardNumberOfTokens: 2,
@@ -363,7 +363,7 @@ describe("Portfolio utils", () => {
       ).toBe(true);
     });
 
-    it("should not show info row when both cards have 3 or more tokens", () => {
+    it("should not show info row when both cards have 4 or more tokens", () => {
       expect(
         shouldShowInfoRow({
           currentCardNumberOfTokens: 4,
