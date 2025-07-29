@@ -35,6 +35,7 @@
     type SelectedSnsNeuronContext,
     type SelectedSnsNeuronStore,
   } from "$lib/types/sns-neuron-detail.context";
+  import type { ApyAmount } from "$lib/types/staking";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
@@ -181,12 +182,7 @@
     neuron: $selectedSnsNeuronStore.neuron,
   });
 
-  let apy:
-    | {
-        cur: number;
-        max: number;
-      }
-    | undefined = undefined;
+  let apy: ApyAmount | undefined = undefined;
   apy =
     nonNullish(rootCanisterId) &&
     nonNullish($selectedSnsNeuronStore.neuron) &&

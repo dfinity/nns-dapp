@@ -12,6 +12,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
+  import type { ApyAmount } from "$lib/types/staking";
   import { secondsToDate, secondsToDateTime } from "$lib/utils/date.utils";
   import {
     canUserManageNeuronFundParticipation,
@@ -48,12 +49,7 @@
   let dissolvingTimestamp: bigint | undefined;
   $: dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
 
-  let apy:
-    | {
-        cur: number;
-        max: number;
-      }
-    | undefined;
+  let apy: ApyAmount | undefined;
   apy =
     nonNullish(neuron) && isStakingRewardDataReady($stakingRewardsStore)
       ? $stakingRewardsStore.apy

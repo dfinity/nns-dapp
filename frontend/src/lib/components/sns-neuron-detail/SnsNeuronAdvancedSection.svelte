@@ -7,6 +7,7 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
+  import type { ApyAmount } from "$lib/types/staking";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import {
     getSnsDissolvingTimestampSeconds,
@@ -28,12 +29,7 @@
   export let parameters: SnsNervousSystemParameters;
   export let transactionFee: TokenAmountV2;
   export let token: Token;
-  export let apy:
-    | undefined
-    | {
-        cur: number;
-        max: number;
-      };
+  export let apy: undefined | ApyAmount;
 
   let neuronAccount: IcrcAccount | undefined;
   $: neuronAccount = nonNullish(governanceCanisterId)
