@@ -28,12 +28,15 @@
   import { refreshNeuronIfNeeded } from "$lib/services/sns-neurons-check-balances.services";
   import { getSnsNeuron } from "$lib/services/sns-neurons.services";
   import { queuedStore } from "$lib/stores/queued-store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import { toastsError } from "$lib/stores/toasts.store";
   import {
     SELECTED_SNS_NEURON_CONTEXT_KEY,
     type SelectedSnsNeuronContext,
     type SelectedSnsNeuronStore,
   } from "$lib/types/sns-neuron-detail.context";
+  import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
+  import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import { Island } from "@dfinity/gix-components";
   import { Principal } from "@dfinity/principal";
@@ -177,6 +180,23 @@
     rootCanisterId,
     neuron: $selectedSnsNeuronStore.neuron,
   });
+
+  let apy:
+    | {
+        cur: number;
+        max: number;
+      }
+    | undefined = undefined;
+  apy =
+    nonNullish(rootCanisterId) &&
+    nonNullish($selectedSnsNeuronStore.neuron) &&
+    isStakingRewardDataReady($stakingRewardsStore)
+      ? $stakingRewardsStore.apy
+          .get(rootCanisterId?.toString())
+          ?.neurons?.get(
+            getSnsNeuronIdAsHexString($selectedSnsNeuronStore.neuron)
+          )
+      : undefined;
 </script>
 
 <TestIdWrapper testId="sns-neuron-detail-component">
@@ -219,6 +239,7 @@
             {parameters}
             {token}
             {transactionFee}
+            {apy}
           />
           <Separator spacing="none" />
           <SnsNeuronHotkeysCard {parameters} />

@@ -1,14 +1,17 @@
 <script lang="ts">
+  import ApyDisplay from "$lib/components/ic/ApyDisplay.svelte";
   import NnsNeuronPublicVisibilityAction from "$lib/components/neuron-detail/NnsNeuronPublicVisibilityAction.svelte";
   import JoinCommunityFundCheckbox from "$lib/components/neuron-detail/actions/JoinCommunityFundCheckbox.svelte";
   import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
   import SplitNnsNeuronButton from "$lib/components/neuron-detail/actions/SplitNnsNeuronButton.svelte";
   import NnsNeuronAge from "$lib/components/neurons/NnsNeuronAge.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import { secondsToDate, secondsToDateTime } from "$lib/utils/date.utils";
   import {
     canUserManageNeuronFundParticipation,
@@ -16,6 +19,7 @@
     isNeuronControllable,
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
+  import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import {
     Html,
     KeyValuePair,
@@ -43,6 +47,19 @@
 
   let dissolvingTimestamp: bigint | undefined;
   $: dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
+
+  let apy:
+    | {
+        cur: number;
+        max: number;
+      }
+    | undefined;
+  apy =
+    nonNullish(neuron) && isStakingRewardDataReady($stakingRewardsStore)
+      ? $stakingRewardsStore.apy
+          .get(OWN_CANISTER_ID_TEXT)
+          ?.neurons?.get(neuron.neuronId.toString())
+      : undefined;
 </script>
 
 <Section testId="nns-neuron-advanced-section-component">
@@ -108,6 +125,16 @@
               text={$i18n.neuron_detail.maturity_last_distribution_info}
             /></svelte:fragment
           >
+        </KeyValuePairInfo>
+      </div>
+    {/if}
+    {#if nonNullish(apy)}
+      <div>
+        <KeyValuePairInfo>
+          <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
+          >
+          <span slot="value" class="value"><ApyDisplay {apy} /></span>
+          <span slot="info">{$i18n.neuron_detail.apy_and_max_tooltip}</span>
         </KeyValuePairInfo>
       </div>
     {/if}

@@ -16,6 +16,7 @@ import * as fakeSnsGovernanceApi from "$tests/fakes/sns-governance-api.fake";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
@@ -72,6 +73,7 @@ describe("NeuronDetail", () => {
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
     vi.spyOn(icpLedgerApi, "queryAccountBalance").mockResolvedValue(0n);
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
   });
 
   describe("nns neuron", () => {
