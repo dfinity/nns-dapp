@@ -1,57 +1,67 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
+  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { IconStakedTokens } from "@dfinity/gix-components";
+  import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
 
-  export let primaryCard = false;
   const href = AppPath.Staking;
 </script>
 
 <Card testId="no-staked-tokens-card">
   <div class="wrapper">
-    <div class="icon">
-      <IconStakedTokens />
-    </div>
-    <div class="text">
+    <TokensCardHeader
+      {href}
+      title={$i18n.portfolio.staked_tokens_card_title}
+      linkText={$i18n.portfolio.staked_tokens_card_link}
+    >
+      {#snippet icon()}
+        <IconNeuronsPage />
+      {/snippet}
+    </TokensCardHeader>
+
+    <div class="content">
+      {#if !$isMobileViewportStore}
+        <span class="icon">
+          <IconStakedTokens size="100px" />
+        </span>
+      {/if}
       <p>{$i18n.portfolio.no_neurons_card_description}</p>
     </div>
-    <a {href} class={`button ${primaryCard ? "primary" : "secondary"}`}
-      >{$i18n.portfolio.no_neurons_card_button}</a
-    >
   </div>
 </Card>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .wrapper {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--padding-2x);
-    padding: var(--padding-2x);
-    margin: 0 auto;
     height: 100%;
-    text-align: center;
-    @include media.min-width(medium) {
-      gap: var(--padding-4x);
-      padding: var(--padding-6x) var(--padding-4x);
-      max-width: 400px;
-    }
-    .icon {
-      width: 80px;
-      height: 80px;
-      @include media.min-width(medium) {
-        width: 144px;
-        height: 144px;
+
+    .content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-grow: 1;
+      padding: 16px;
+      gap: 32px;
+
+      @include media.min-width(small) {
+        padding: 24px;
       }
-    }
-    .text {
-      color: var(--text-description);
+
+      .icon {
+        flex-shrink: 0;
+        opacity: 0.7;
+      }
+
       p {
         margin: 0;
+        padding: 0;
+        color: var(--text-description);
       }
     }
   }

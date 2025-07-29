@@ -103,7 +103,7 @@
   );
   const heldTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "full"
+      ? "empty"
       : areHeldTokensLoading
         ? "skeleton"
         : totalTokensBalanceInUsd === 0
@@ -116,19 +116,12 @@
   );
   const stakedTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "full"
+      ? "empty"
       : areStakedTokensLoading
         ? "skeleton"
         : totalStakedInUsd === 0
           ? "empty"
           : "full"
-  );
-
-  // Controls whether the staked tokens card should show a primary action
-  // Primary action is shown when there are tokens but no stakes
-  // This helps guide users to stake their tokens when possible
-  const hasNoStakedTokensCardAPrimaryAction = $derived(
-    stakedTokensCard === "empty" && heldTokensCard === "full"
   );
 
   // Global loading state that tracks if either held or staked tokens are loading
@@ -140,14 +133,12 @@
   const topHeldTokens = $derived(
     getTopHeldTokens({
       userTokens: userTokens,
-      isSignedIn: $authSignedInStore,
     })
   );
 
   const topStakedTokens = $derived(
     getTopStakedTokens({
       projects: tableProjects,
-      isSignedIn: $authSignedInStore,
     })
   );
 
@@ -196,6 +187,7 @@
         })
       : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
   );
+  const withUpcomingLaunchesCards = $derived(cards.length > 0);
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -257,7 +249,7 @@
     {#if stakedTokensCard === "skeleton"}
       <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
     {:else if stakedTokensCard === "empty"}
-      <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
+      <NoStakedTokensCard />
     {:else}
       <StakedTokensCard
         {topStakedTokens}
@@ -269,12 +261,12 @@
     {/if}
   </div>
 
-  <div class="sns-section">
+  <div class="sns-section" class:withUpcomingLaunchesCards>
     {#if $ENABLE_LAUNCHPAD_REDESIGN}
-      <LaunchpadBanner />
+      <LaunchpadBanner {withUpcomingLaunchesCards} />
     {/if}
 
-    {#if cards.length > 0}
+    {#if withUpcomingLaunchesCards}
       {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
         <CardList
           testId="stacked-cards"
@@ -324,16 +316,19 @@
 
       @include media.min-width(large) {
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: minmax(345px, min-content);
+        grid-auto-rows: minmax(280px, min-content);
       }
     }
+
     .sns-section {
       display: grid;
       gap: 16px;
       grid-template-columns: 1fr;
 
       @include media.min-width(large) {
-        grid-template-columns: 2fr 1fr;
+        &.withUpcomingLaunchesCards {
+          grid-template-columns: 2fr 1fr;
+        }
       }
     }
   }
