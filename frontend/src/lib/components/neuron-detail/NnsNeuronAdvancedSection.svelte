@@ -50,7 +50,7 @@
   $: dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
 
   let apy: ApyAmount | undefined;
-  apy =
+  $: apy =
     nonNullish(neuron) && isStakingRewardDataReady($stakingRewardsStore)
       ? $stakingRewardsStore.apy
           .get(OWN_CANISTER_ID_TEXT)

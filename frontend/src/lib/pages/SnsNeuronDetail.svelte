@@ -183,7 +183,7 @@
   });
 
   let apy: ApyAmount | undefined = undefined;
-  apy =
+  $: apy =
     nonNullish(rootCanisterId) &&
     nonNullish($selectedSnsNeuronStore.neuron) &&
     isStakingRewardDataReady($stakingRewardsStore)
