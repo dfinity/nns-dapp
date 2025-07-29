@@ -781,6 +781,7 @@
     "disburse_maturity_edit": "Edit Disbursement",
     "stake": "Stake",
     "apy_and_max": "APY (max APY)",
+    "apy_and_max_tooltip": "APY (Annual Percentage Yield) shows how much you can earn in a year with your current setup. Max APY is the highest possible yearly return you could get if you optimized your settings.",
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
     "disburse_stake_disabled_tooltip_zero": "Currently, you do not have any stake available to disburse.",
@@ -1309,7 +1310,7 @@
   "portfolio": {
     "login_title": "Session expired",
     "login_description": "Sign in and start staking to earn voting rewards and participate in the Internet Computer’s onchain governance.",
-    "no_tokens_card_description": "Store your ICP, ckTokens, and SNS governance tokens safely in the NNS wallet, hosted 100% on the Internet Computer blockchain – Sign in to see tokens.",
+    "no_tokens_card_description": "Store your ICP, ckTokens, and SNS governance tokens safely in the NNS wallet, hosted 100% on the Internet Computer blockchain – sign in to see tokens.",
     "no_neurons_card_description": "Stake your ICP and SNS tokens in neurons to participate in governance and gain voting rewards – sign in to stake your neurons.",
     "held_tokens_card_title": "Total Token Balance",
     "held_tokens_card_link": "View tokens",
