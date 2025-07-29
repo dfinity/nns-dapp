@@ -101,9 +101,10 @@
 </script>
 
 <div class="wrapper" data-tid="tokens-page-component">
-  <UsdValueBanner usdAmount={totalBalanceInUsd} {hasUnpricedTokens}>
-    <IconHeldTokens slot="icon" />
-  </UsdValueBanner>
+  {#snippet icon()}
+    <IconHeldTokens />
+  {/snippet}
+  <UsdValueBanner usdAmount={totalBalanceInUsd} {hasUnpricedTokens} {icon} />
 
   {#if $ENABLE_NEW_TABLES}
     <TokensTable

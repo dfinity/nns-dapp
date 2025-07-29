@@ -279,9 +279,14 @@
   <div class="top" class:two-card={hasAnyNeurons && apyCardVisible}>
     {#if $authSignedInStore}
       {#if hasAnyNeurons}
-        <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
-          <IconNeuronsPage slot="icon" />
-        </UsdValueBanner>
+        {#snippet icon()}
+          <IconNeuronsPage />
+        {/snippet}
+        <UsdValueBanner
+          usdAmount={totalStakeInUsd}
+          {hasUnpricedTokens}
+          {icon}
+        />
       {/if}
 
       {#if apyCardVisible}
