@@ -4,7 +4,6 @@ import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
-import { runResolvedPromises } from "$lib/utils/timers.test-utils";
 import { page } from "$mocks/$app/stores";
 import {
   mockIdentity,
@@ -150,8 +149,6 @@ describe("SnsNeuronAdvancedSection", () => {
     });
 
     const po = renderComponent(neuron);
-
-    await runResolvedPromises();
 
     expect(await po.getApyDisplayPo().isPresent()).toBe(true);
     expect(await po.getCurrentApy()).toBe("10.00%");

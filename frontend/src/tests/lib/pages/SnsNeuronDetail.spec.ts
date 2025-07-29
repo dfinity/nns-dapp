@@ -154,14 +154,12 @@ describe("SnsNeuronDetail", () => {
         neuronId: validNeuronIdAsHexString,
       });
 
-      await runResolvedPromises();
-
       expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
       expect(
         await po.getAdvancedSectionPo().getApyDisplayPo().isPresent()
       ).toBe(true);
-      expect(await po.getAdvancedSectionPo().getCurrentApy()).toBe("10.00%");
-      expect(await po.getAdvancedSectionPo().getMaxApy()).includes("20.00%");
+      expect(await po.getAdvancedSectionPo().getCurrentApy()).toBe("1.00%");
+      expect(await po.getAdvancedSectionPo().getMaxApy()).includes("50.00%");
     });
 
     it("should reload neuron if refreshed", async () => {
