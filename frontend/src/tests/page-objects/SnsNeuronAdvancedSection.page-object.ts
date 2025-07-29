@@ -2,6 +2,7 @@ import { SnsNeuronAgePo } from "$tests/page-objects/SnsNeuronAge.page-object";
 import { SnsNeuronVestingPeriodRemainingPo } from "$tests/page-objects/SnsNeuronVestingPeriodRemaining.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
+import { ApyDisplayPo } from "./ApyDisplay.page-object";
 
 export class SnsNeuronAdvancedSectionPo extends BasePageObject {
   private static readonly TID = "sns-neuron-advanced-section-component";
@@ -52,5 +53,17 @@ export class SnsNeuronAdvancedSectionPo extends BasePageObject {
 
   hasSplitNeuronButton(): Promise<boolean> {
     return this.getButton("split-neuron-button").isPresent();
+  }
+
+  getApyDisplayPo(): ApyDisplayPo {
+    return ApyDisplayPo.under(this.root);
+  }
+
+  getCurrentApy(): Promise<string> {
+    return this.getApyDisplayPo().getCurrentApy().getText();
+  }
+
+  getMaxApy(): Promise<string> {
+    return this.getApyDisplayPo().getMaxApy().getText();
   }
 }
