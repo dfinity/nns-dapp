@@ -13,8 +13,10 @@
   import { nonEmptyNeuronStore } from "$lib/derived/neurons.derived";
   import { listNeurons } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { tableNeuronsFromNeuronInfos } from "$lib/utils/neurons-table.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
@@ -38,6 +40,9 @@
     startReducingVotingPowerAfterSeconds:
       $startReducingVotingPowerAfterSecondsStore,
     minimumDissolveDelay: $neuronMinimumDissolveDelayToVoteSeconds,
+    stakingRewardsResult: $ENABLE_APY_PORTFOLIO
+      ? $stakingRewardsStore
+      : undefined,
   });
 
   let totalStakeInUsd: number;
