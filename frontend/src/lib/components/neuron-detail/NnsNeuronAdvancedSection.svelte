@@ -133,12 +133,8 @@
         <KeyValuePairInfo>
           <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
           >
-          <span slot="value" class="value" data-tid="last-rewards-distribution">
-            <ApyDisplay {apy} />
-          </span>
-          <svelte:fragment slot="info"
-            >{$i18n.neuron_detail.apy_and_max_tooltip}</svelte:fragment
-          >
+          <span slot="value" class="value"><ApyDisplay {apy} /></span>
+          <span slot="info">{$i18n.neuron_detail.apy_and_max_tooltip}</span>
         </KeyValuePairInfo>
       </div>
     {/if}

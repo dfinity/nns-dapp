@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ApyDisplay from "$lib/components/ic/ApyDisplay.svelte";
   import SnsNeuronVestingPeriodRemaining from "$lib/components/sns-neuron-detail/SnsNeuronVestingPeriodRemaining.svelte";
   import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
@@ -12,7 +13,11 @@
     getSnsNeuronIdAsHexString,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
-  import { KeyValuePair, Section } from "@dfinity/gix-components";
+  import {
+    KeyValuePair,
+    KeyValuePairInfo,
+    Section,
+  } from "@dfinity/gix-components";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
@@ -23,6 +28,12 @@
   export let parameters: SnsNervousSystemParameters;
   export let transactionFee: TokenAmountV2;
   export let token: Token;
+  export let apy:
+    | undefined
+    | {
+        cur: number;
+        max: number;
+      };
 
   let neuronAccount: IcrcAccount | undefined;
   $: neuronAccount = nonNullish(governanceCanisterId)
@@ -63,6 +74,16 @@
         >{secondsToDateTime(neuron.created_timestamp_seconds)}</span
       >
     </KeyValuePair>
+    {#if nonNullish(apy)}
+      <div>
+        <KeyValuePairInfo>
+          <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
+          >
+          <span slot="value" class="value"><ApyDisplay {apy} /></span>
+          <span slot="info">{$i18n.neuron_detail.apy_and_max_tooltip}</span>
+        </KeyValuePairInfo>
+      </div>
+    {/if}
     <SnsNeuronAge {neuron} />
     {#if nonNullish(dissolvingTimestamp)}
       <KeyValuePair>
