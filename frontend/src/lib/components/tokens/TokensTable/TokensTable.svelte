@@ -20,6 +20,7 @@
   export let order: TokensTableOrder = [];
   export let displayTableSettings = false;
   export let testId: string = "tokens-table-component";
+  export let subtitle: string | undefined = undefined;
 
   let enableSorting: boolean;
   $: enableSorting = order.length > 0;
@@ -37,6 +38,7 @@
     {
       id: "title",
       title: firstColumnHeader,
+      subtitle,
       cellComponent: TokenTitleCell,
       alignment: "left",
       templateColumns: ["1fr"],

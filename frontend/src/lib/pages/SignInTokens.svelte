@@ -42,6 +42,7 @@
           type: "icp",
         })}
         firstColumnHeader={$i18n.tokens.projects_header_icp}
+        subtitle={$i18n.tokens.projects_header_icp_subtitle}
       />
       <TokensTable
         on:nnsAction
@@ -50,6 +51,7 @@
           type: "ck",
         })}
         firstColumnHeader={$i18n.tokens.projects_header_ck}
+        subtitle={$i18n.tokens.projects_header_ck_subtitle}
       />
       <TokensTable
         on:nnsAction
@@ -58,6 +60,7 @@
           type: "sns",
         })}
         firstColumnHeader={$i18n.tokens.projects_header_sns}
+        subtitle={$i18n.tokens.projects_header_sns_subtitle}
       />
     {:else}
       <TokensTable

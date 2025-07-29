@@ -352,12 +352,15 @@ interface I18nStaking {
   text: string;
   nervous_systems: string;
   nervous_systems_nns: string;
+  nervous_systems_nns_subtitle: string;
   nervous_systems_sns: string;
+  nervous_systems_sns_subtitle: string;
   nervous_systems_sns_sunset: string;
   hide_no_neurons_header: string;
   hide_no_neurons_toggle_label: string;
   hide_no_neurons_table_hint: string;
   show_all: string;
+  bottom_disclaimer: string;
 }
 
 interface I18nNeurons {
@@ -1325,9 +1328,13 @@ interface I18nSync {
 interface I18nTokens {
   projects_header: string;
   projects_header_icp: string;
+  projects_header_icp_subtitle: string;
   projects_header_ck: string;
+  projects_header_ck_subtitle: string;
   projects_header_sns: string;
+  projects_header_sns_subtitle: string;
   projects_header_imported: string;
+  projects_header_imported_subtitle: string;
   balance_header: string;
   accounts_header: string;
   settings_button: string;
