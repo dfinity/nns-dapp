@@ -28,7 +28,7 @@
   const href = AppPath.Tokens;
 
   const icp: UserTokenData | undefined = $derived(topHeldTokens[0]);
-  const restOfTokens = $derived(topHeldTokens.slice(1));
+  const restOfTokens: UserTokenData[] = []; // $derived(topHeldTokens.slice(1));
   const numberOfTopHeldTokens = $derived(topHeldTokens.length);
 
   const showInfoRow = $derived(
