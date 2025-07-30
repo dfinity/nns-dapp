@@ -1,7 +1,6 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import AccountDetails from "$lib/components/header/AccountDetails.svelte";
-  import LinkToCanisters from "$lib/components/header/LinkToCanisters.svelte";
   import LinkToReporting from "$lib/components/header/LinkToReporting.svelte";
   import LinkToSettings from "$lib/components/header/LinkToSettings.svelte";
   import Logout from "$lib/components/header/Logout.svelte";
@@ -42,7 +41,7 @@
 
         <LinkToSettings on:nnsLink={closeMenu} />
 
-        <LinkToCanisters on:nnsLink={closeMenu} />
+        <!-- <LinkToCanisters on:nnsLink={closeMenu} /> -->
 
         <LinkToReporting on:nnsLink={closeMenu} />
 
