@@ -12,11 +12,11 @@
   };
   const { children }: Props = $props();
 
-  const back = (): Promise<void> => goto($accountsPageOrigin);
+  // const back = (): Promise<void> => goto($accountsPageOrigin);
 </script>
 
 <Layout title={$i18n.navigation.tokens_account}>
-  <Content {back}>
+  <Content>
     <IslandWidthMain>
       {@render children()}
     </IslandWidthMain>
