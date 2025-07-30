@@ -70,6 +70,22 @@
         >{neuron.neuronId}</span
       >
     </KeyValuePair>
+    {#if nonNullish(neuron.fullNeuron)}
+      <KeyValuePair testId="neuron-account-row">
+        <span slot="key" class="label"
+          >{$i18n.neuron_detail.neuron_account}</span
+        >
+        <Hash
+          slot="value"
+          className="value"
+          tagName="span"
+          testId="neuron-account"
+          text={neuron.fullNeuron.accountIdentifier}
+          id="neuron-account"
+          showCopy
+        />
+      </KeyValuePair>
+    {/if}
     <KeyValuePair>
       <span slot="key" class="label">{$i18n.neuron_detail.created}</span>
       <span slot="value" class="value" data-tid="neuron-created"
@@ -86,21 +102,17 @@
         >
       </KeyValuePair>
     {/if}
-    {#if nonNullish(neuron.fullNeuron)}
-      <KeyValuePair testId="neuron-account-row">
-        <span slot="key" class="label"
-          >{$i18n.neuron_detail.neuron_account}</span
-        >
-        <Hash
-          slot="value"
-          className="value"
-          tagName="span"
-          testId="neuron-account"
-          text={neuron.fullNeuron.accountIdentifier}
-          id="neuron-account"
-          showCopy
-        />
-      </KeyValuePair>
+    {#if nonNullish(apy)}
+      <div>
+        <KeyValuePairInfo>
+          <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
+          >
+          <span slot="value" class="value"
+            ><ApyDisplay {apy} forPortfolio={false} /></span
+          >
+          <span slot="info">{$i18n.neuron_detail.apy_and_max_tooltip}</span>
+        </KeyValuePairInfo>
+      </div>
     {/if}
     {#if nonNullish($nnsLatestRewardEventStore)}
       <!-- Extra div to avoid the gap of the flex container to be applied between the collapsible header and its content -->
@@ -121,18 +133,6 @@
               text={$i18n.neuron_detail.maturity_last_distribution_info}
             /></svelte:fragment
           >
-        </KeyValuePairInfo>
-      </div>
-    {/if}
-    {#if nonNullish(apy)}
-      <div>
-        <KeyValuePairInfo>
-          <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
-          >
-          <span slot="value" class="value"
-            ><ApyDisplay {apy} forPortfolio={false} /></span
-          >
-          <span slot="info">{$i18n.neuron_detail.apy_and_max_tooltip}</span>
         </KeyValuePairInfo>
       </div>
     {/if}

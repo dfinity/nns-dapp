@@ -64,34 +64,6 @@
         id="neuron-id"
       />
     </KeyValuePair>
-    <KeyValuePair>
-      <span slot="key" class="label">{$i18n.neuron_detail.created}</span>
-      <span slot="value" class="value" data-tid="neuron-created"
-        >{secondsToDateTime(neuron.created_timestamp_seconds)}</span
-      >
-    </KeyValuePair>
-    {#if nonNullish(apy)}
-      <div>
-        <KeyValuePairInfo>
-          <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
-          >
-          <span slot="value" class="value"
-            ><ApyDisplay {apy} forPortfolio={false} /></span
-          >
-          <span slot="info">{$i18n.neuron_detail.apy_and_max_tooltip}</span>
-        </KeyValuePairInfo>
-      </div>
-    {/if}
-    <SnsNeuronAge {neuron} />
-    {#if nonNullish(dissolvingTimestamp)}
-      <KeyValuePair>
-        <span slot="key" class="label">{$i18n.neuron_detail.dissolve_date}</span
-        >
-        <span slot="value" class="value" data-tid="neuron-dissolve-date"
-          >{secondsToDateTime(dissolvingTimestamp)}</span
-        >
-      </KeyValuePair>
-    {/if}
     {#if nonNullish(neuronAccount)}
       <KeyValuePair>
         <span slot="key" class="label"
@@ -108,9 +80,36 @@
         />
       </KeyValuePair>
     {/if}
+    <KeyValuePair>
+      <span slot="key" class="label">{$i18n.neuron_detail.created}</span>
+      <span slot="value" class="value" data-tid="neuron-created"
+        >{secondsToDateTime(neuron.created_timestamp_seconds)}</span
+      >
+    </KeyValuePair>
+    <SnsNeuronAge {neuron} />
+    {#if nonNullish(apy)}
+      <div>
+        <KeyValuePairInfo>
+          <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
+          >
+          <span slot="value" class="value"
+            ><ApyDisplay {apy} forPortfolio={false} /></span
+          >
+          <span slot="info">{$i18n.neuron_detail.apy_and_max_tooltip}</span>
+        </KeyValuePairInfo>
+      </div>
+    {/if}
+    {#if nonNullish(dissolvingTimestamp)}
+      <KeyValuePair>
+        <span slot="key" class="label">{$i18n.neuron_detail.dissolve_date}</span
+        >
+        <span slot="value" class="value" data-tid="neuron-dissolve-date"
+          >{secondsToDateTime(dissolvingTimestamp)}</span
+        >
+      </KeyValuePair>
+    {/if}
     <SnsNeuronVestingPeriodRemaining {neuron} />
     <SnsAutoStakeMaturity />
-
     {#if allowedToSplit}
       <SplitSnsNeuronButton {neuron} {parameters} {transactionFee} {token} />
     {/if}
