@@ -87,16 +87,6 @@
       icon: IconVote,
       statusIcon: ActionableProposalTotalCountBadge,
     },
-    {
-      context: "launchpad",
-      href: `${AppPath.Launchpad}`,
-      selected: isSelectedPath({
-        currentPath: $pageStore.path,
-        paths: [AppPath.Launchpad, AppPath.Project],
-      }),
-      title: $i18n.navigation.launchpad,
-      icon: IconRocketLaunch,
-    },
   ];
 </script>
 
