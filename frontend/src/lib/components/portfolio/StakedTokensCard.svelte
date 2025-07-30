@@ -315,17 +315,6 @@
               display: block;
             }
           }
-
-          /* special styles for ICP rows */
-          &.icp-row {
-            font-weight: 500;
-            font-size: 1.1em;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            border-bottom: 7px solid var(--elements-divider);
-          }
-          .icp-logo {
-            filter: drop-shadow(0 0 2px #99c2ff);
-          }
         }
       }
 
