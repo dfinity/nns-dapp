@@ -1,19 +1,14 @@
 <script lang="ts">
-  import ApyDisplay from "$lib/components/ic/ApyDisplay.svelte";
   import NnsNeuronPublicVisibilityAction from "$lib/components/neuron-detail/NnsNeuronPublicVisibilityAction.svelte";
   import JoinCommunityFundCheckbox from "$lib/components/neuron-detail/actions/JoinCommunityFundCheckbox.svelte";
   import NnsAutoStakeMaturity from "$lib/components/neuron-detail/actions/NnsAutoStakeMaturity.svelte";
   import SplitNnsNeuronButton from "$lib/components/neuron-detail/actions/SplitNnsNeuronButton.svelte";
   import NnsNeuronAge from "$lib/components/neurons/NnsNeuronAge.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
-  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
-  import type { ApyAmount } from "$lib/types/staking";
   import { secondsToDate, secondsToDateTime } from "$lib/utils/date.utils";
   import {
     canUserManageNeuronFundParticipation,
@@ -21,7 +16,6 @@
     isNeuronControllable,
     maturityLastDistribution,
   } from "$lib/utils/neuron.utils";
-  import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import {
     Html,
     KeyValuePair,

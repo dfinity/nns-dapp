@@ -205,17 +205,5 @@
         grid-auto-rows: minmax(280px, min-content);
       }
     }
-
-    .sns-section {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: 1fr;
-
-      @include media.min-width(large) {
-        &.withUpcomingLaunchesCards {
-          grid-template-columns: 2fr 1fr;
-        }
-      }
-    }
   }
 </style>

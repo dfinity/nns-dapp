@@ -1,6 +1,5 @@
 <script lang="ts">
   import NeuronActionsCell from "$lib/components/neurons/NeuronsTable/NeuronActionsCell.svelte";
-  import NeuronApyCell from "$lib/components/neurons/NeuronsTable/NeuronApyCell.svelte";
   import NeuronDissolveDelayCell from "$lib/components/neurons/NeuronsTable/NeuronDissolveDelayCell.svelte";
   import NeuronIdCell from "$lib/components/neurons/NeuronsTable/NeuronIdCell.svelte";
   import NeuronMaturityCell from "$lib/components/neurons/NeuronsTable/NeuronMaturityCell.svelte";
@@ -8,7 +7,6 @@
   import NeuronStateCell from "$lib/components/neurons/NeuronsTable/NeuronStateCell.svelte";
   import NeuronVoteDelegationCell from "$lib/components/neurons/NeuronsTable/NeuronVoteDelegationCell.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
-  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
   import type {
