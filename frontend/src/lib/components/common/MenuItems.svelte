@@ -64,7 +64,7 @@
     },
     {
       context: "neurons",
-      href: AppPath.Staking,
+      href: AppPath.Neurons,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Staking, AppPath.Neurons, AppPath.Neuron],
