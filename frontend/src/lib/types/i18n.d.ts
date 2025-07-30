@@ -161,7 +161,6 @@ interface I18nNavigation {
   neurons: string;
   neurons_account: string;
   voting: string;
-  launchpad: string;
   manage_ii: string;
   source_code: string;
   settings: string;
