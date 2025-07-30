@@ -42,7 +42,7 @@
     isApyLoading,
   }: Props = $props();
 
-  const href = AppPath.Staking;
+  const href = AppPath.Neurons;
 
   const icp: TableProject | undefined = $derived(topStakedTokens[0]);
   const restOfStakedTokens: TableProject[] = []; // $derived(topStakedTokens.slice(1));

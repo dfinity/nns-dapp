@@ -25,7 +25,7 @@
   };
   const { topHeldTokens, usdAmount, numberOfTopStakedTokens }: Props = $props();
 
-  const href = AppPath.Tokens;
+  const href = AppPath.Accounts;
 
   const icp: UserTokenData | undefined = $derived(topHeldTokens[0]);
   const restOfTokens: UserTokenData[] = []; // $derived(topHeldTokens.slice(1));
