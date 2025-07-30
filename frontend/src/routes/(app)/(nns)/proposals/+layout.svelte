@@ -12,7 +12,7 @@
 </script>
 
 <Layout title={$i18n.navigation.voting}>
-  <!-- <UniverseSplitContent resetScrollPositionAfterNavigation> -->
+  <!-- TODO(icp): check this functionality if required <UniverseSplitContent resetScrollPositionAfterNavigation> -->
   <Content>
     <IslandWidthMain>
       {@render children()}

@@ -149,6 +149,7 @@
   },
   "navigation": {
     "tokens": "Tokens",
+    "accounts": "Accounts",
     "tokens_account": "Account",
     "canisters": "Canisters",
     "neurons": "Neuron Staking",

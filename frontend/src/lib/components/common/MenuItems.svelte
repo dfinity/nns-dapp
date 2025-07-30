@@ -54,12 +54,12 @@
     },
     {
       context: "accounts",
-      href: AppPath.Tokens,
+      href: AppPath.Accounts,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Accounts, AppPath.Wallet, AppPath.Tokens],
       }),
-      title: $i18n.navigation.tokens,
+      title: $i18n.navigation.accounts,
       icon: IconWallet,
     },
     {

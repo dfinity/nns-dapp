@@ -155,6 +155,7 @@ interface I18nWarning {
 
 interface I18nNavigation {
   tokens: string;
+  accounts: string;
   tokens_account: string;
   canisters: string;
   neurons: string;
