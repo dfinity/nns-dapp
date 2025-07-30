@@ -191,16 +191,20 @@
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div class="top" class:apy-card={$ENABLE_APY_PORTFOLIO}>
+  <div class="top" class:apy-card={$ENABLE_APY_PORTFOLIO || cards.length > 0}>
     {#if !$authSignedInStore}
       <LoginCard />
-      <StartStakingCard />
+      {#if $ENABLE_APY_PORTFOLIO}
+        <StartStakingCard />
+      {:else if cards.length > 0}
+        <StackedCards {cards} />
+      {/if}
     {:else}
       <TotalAssetsCard
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
-        isFullWidth={!$ENABLE_APY_PORTFOLIO}
+        isFullWidth={!$ENABLE_APY_PORTFOLIO || cards.length === 0}
       />
 
       {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
@@ -261,23 +265,25 @@
     {/if}
   </div>
 
-  <div class="sns-section" class:withUpcomingLaunchesCards>
-    {#if $ENABLE_LAUNCHPAD_REDESIGN}
-      <LaunchpadBanner {withUpcomingLaunchesCards} />
-    {/if}
-
-    {#if withUpcomingLaunchesCards}
-      {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
-        <CardList
-          testId="stacked-cards"
-          {cards}
-          mobileHorizontalScroll={cards.length > 1}
-        />
-      {:else}
-        <StackedCards {cards} />
+  {#if $ENABLE_APY_PORTFOLIO}
+    <div class="sns-section" class:withUpcomingLaunchesCards>
+      {#if $ENABLE_LAUNCHPAD_REDESIGN}
+        <LaunchpadBanner {withUpcomingLaunchesCards} />
       {/if}
-    {/if}
-  </div>
+
+      {#if withUpcomingLaunchesCards}
+        {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
+          <CardList
+            testId="stacked-cards"
+            {cards}
+            mobileHorizontalScroll={cards.length > 1}
+          />
+        {:else}
+          <StackedCards {cards} />
+        {/if}
+      {/if}
+    </div>
+  {/if}
 </main>
 
 <style lang="scss">
