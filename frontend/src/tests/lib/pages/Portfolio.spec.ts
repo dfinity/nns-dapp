@@ -471,7 +471,7 @@ describe("Portfolio page", () => {
 
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_LAUNCHPAD_REDESIGN", true);
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
       resetIdentity();
     });
 
@@ -485,6 +485,7 @@ describe("Portfolio page", () => {
     });
 
     it("should not show a full width TotalAssetsCard when there are cards", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
       const po = renderPage({ snsProjects: mockSnsProjects });
       const totalAssetsCardPo = po.getTotalAssetsCardPo();
 
