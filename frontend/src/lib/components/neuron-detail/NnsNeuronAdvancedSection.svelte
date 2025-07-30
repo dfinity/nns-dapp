@@ -49,14 +49,6 @@
 
   let dissolvingTimestamp: bigint | undefined;
   $: dissolvingTimestamp = getDissolvingTimestampSeconds(neuron);
-
-  let apy: ApyAmount | undefined;
-  $: apy =
-    nonNullish(neuron) && isStakingRewardDataReady($stakingRewardsStore)
-      ? $stakingRewardsStore.apy
-          .get(OWN_CANISTER_ID_TEXT)
-          ?.neurons?.get(neuron.neuronId.toString())
-      : undefined;
 </script>
 
 <Section testId="nns-neuron-advanced-section-component">
@@ -122,18 +114,6 @@
               text={$i18n.neuron_detail.maturity_last_distribution_info}
             /></svelte:fragment
           >
-        </KeyValuePairInfo>
-      </div>
-    {/if}
-    {#if nonNullish(apy) && $ENABLE_APY_PORTFOLIO}
-      <div>
-        <KeyValuePairInfo>
-          <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
-          >
-          <span slot="value" class="value"
-            ><ApyDisplay {apy} forPortfolio={false} /></span
-          >
-          <span slot="info">{$i18n.neuron_detail.apy_and_max_tooltip}</span>
         </KeyValuePairInfo>
       </div>
     {/if}
