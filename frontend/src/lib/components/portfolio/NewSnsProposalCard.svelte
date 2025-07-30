@@ -152,16 +152,15 @@
         h3 {
           margin: 0;
           padding: 0;
-
-          @include text.clamp(1);
         }
 
         .description {
           margin: 0;
           padding: 0;
           color: var(--color-text-secondary);
+          max-width: 95%;
 
-          @include text.clamp(1);
+          @include text.truncate;
         }
       }
     }

@@ -2,14 +2,12 @@
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
   type Props = {
-    usdAmount?: number;
+    usdAmount: number;
     href: string;
     title: string;
     linkText: string;
@@ -19,13 +17,13 @@
   const { usdAmount, href, title, linkText, icon }: Props = $props();
 
   const usdAmountFormatted = $derived(
-    $authSignedInStore && nonNullish(usdAmount)
+    $authSignedInStore
       ? formatCurrencyNumber(usdAmount)
       : PRICE_NOT_AVAILABLE_PLACEHOLDER
   );
 </script>
 
-{#snippet content()}
+<div class="header">
   <div class="header-wrapper">
     <div class="icon" aria-hidden="true">
       {@render icon()}
@@ -37,23 +35,15 @@
       </p>
     </div>
   </div>
-{/snippet}
-
-{#if $isMobileViewportStore}
-  <a {href} class="header mobile" aria-label={linkText}>
-    {@render content()}
-    <span class="icon-link">
+  <a {href} class="button secondary link" aria-label={linkText}>
+    <span class="icon">
       <IconRight />
     </span>
-  </a>
-{:else}
-  <div class="header">
-    {@render content()}
-    <a {href} class="button secondary link" aria-label={linkText}>
+    <span class="text">
       {linkText}
-    </a>
-  </div>
-{/if}
+    </span>
+  </a>
+</div>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
@@ -62,14 +52,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--padding-2x);
-    background-color: var(--card-background-tint);
-    border-bottom: 4px solid var(--elements-divider);
+    padding: var(--padding-3x) var(--padding-2x);
 
     .header-wrapper {
       display: flex;
       align-items: flex-start;
-      gap: var(--padding);
+      gap: var(--padding-2x);
 
       .icon {
         width: 50px;
@@ -82,46 +70,46 @@
         gap: var(--padding-0_5x);
 
         .title {
-          margin: 0;
-          padding: 0;
           font-size: 0.875rem;
           font-weight: bold;
           color: var(--text-description);
           margin: 0;
           padding: 0;
         }
-
         .amount {
-          margin: 0;
-          padding: 0;
           font-size: 1.5rem;
         }
       }
     }
 
     .link {
-      width: auto;
-      height: auto;
-      padding: var(--padding) var(--padding-2x);
-      border-radius: var(--border-radius);
-      min-height: var(--button-min-height);
-    }
-  }
-
-  .mobile {
-    text-decoration: none;
-
-    .icon-link {
-      display: flex;
-      justify-content: center;
-      align-items: center;
       width: 35px;
       height: 35px;
-      padding: 0;
-      color: var(--button-secondary-color);
-      font-weight: var(--font-weight-bold);
-      border: solid var(--button-border-size) var(--primary);
       border-radius: 50%;
+      min-height: auto;
+      padding: 0;
+
+      @include media.min-width(medium) {
+        width: auto;
+        height: auto;
+        padding: var(--padding) var(--padding-2x);
+        border-radius: var(--border-radius);
+        min-height: var(--button-min-height);
+      }
+
+      .icon {
+        display: flex;
+        @include media.min-width(medium) {
+          display: none;
+        }
+      }
+
+      .text {
+        display: none;
+        @include media.min-width(medium) {
+          display: inline;
+        }
+      }
     }
   }
 </style>

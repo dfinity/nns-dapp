@@ -22,11 +22,6 @@
   } from "@dfinity/gix-components";
   import { ICPToken, nonNullish, secondsToDuration } from "@dfinity/utils";
 
-  /**
-   * @deprecated
-   * Warning: This component is deprecated and will be replaced with OngoingProjectCard in the near future.
-   */
-
   export let summary: SnsSummaryWrapper;
   let swap: SnsSummarySwap;
   $: ({ swap } = summary);

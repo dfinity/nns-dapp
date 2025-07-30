@@ -1,8 +1,13 @@
 <script lang="ts" module>
   import { i18n } from "$lib/stores/i18n";
-  import type { ComponentWithProps } from "$lib/types/svelte";
   import { IconLeft, IconRight } from "@dfinity/gix-components";
+  import type { Component } from "svelte";
   import { onDestroy } from "svelte";
+
+  export type CardItem = {
+    component: Component;
+    props?: Record<string, unknown>;
+  };
 
   const REFRESH_INTERVAL = 5000;
   const SWIPE_THRESHOLD = 50;
@@ -10,7 +15,7 @@
 </script>
 
 <script lang="ts">
-  type Props = { cards: ComponentWithProps[] };
+  type Props = { cards: CardItem[] };
   const { cards = [] }: Props = $props();
 
   let activeIndex = $state(0);
@@ -87,7 +92,7 @@
           class:exiting={i === previousIndex}
           data-tid="project-card-wrapper"
         >
-          <card.Component {...card.props} />
+          <card.component {...card.props} />
         </div>
       {/each}
     </div>
@@ -162,9 +167,6 @@
     align-items: center;
     position: relative;
     touch-action: pan-y;
-
-    // Add extra pixels for the bottom buttons
-    --card-frame-padding-bottom: 28px;
 
     .cards-wrapper {
       position: relative;
