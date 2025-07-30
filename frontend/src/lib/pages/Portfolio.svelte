@@ -191,7 +191,7 @@
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div class="top" class:apy-card={$ENABLE_APY_PORTFOLIO || cards.length > 0}>
+  <div class="top" class:full={cards.length === 0}>
     {#if !$authSignedInStore}
       <LoginCard />
       {#if $ENABLE_APY_PORTFOLIO}
@@ -207,18 +207,22 @@
         isFullWidth={!$ENABLE_APY_PORTFOLIO || cards.length === 0}
       />
 
-      {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
-        {#if isStakingRewardDataReady(stakingRewardResult)}
-          <ApyCard
-            rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
-            rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
-            stakingPower={stakingRewardResult.stakingPower}
-            stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
-            totalAmountUSD={totalUsdAmount}
-          />
-        {:else}
-          <ApyFallbackCard stakingRewardData={stakingRewardResult} />
+      {#if $ENABLE_APY_PORTFOLIO}
+        {#if $isDesktopViewportStore && nonNullish(totalUsdAmount)}
+          {#if isStakingRewardDataReady(stakingRewardResult)}
+            <ApyCard
+              rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
+              rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
+              stakingPower={stakingRewardResult.stakingPower}
+              stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
+              totalAmountUSD={totalUsdAmount}
+            />
+          {:else}
+            <ApyFallbackCard stakingRewardData={stakingRewardResult} />
+          {/if}
         {/if}
+      {:else}
+        <StackedCards {cards} />
       {/if}
     {/if}
 
@@ -311,7 +315,9 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
-        grid-template-columns: 2fr 1fr;
+        &:not(.full) {
+          grid-template-columns: 2fr 1fr;
+        }
       }
     }
 

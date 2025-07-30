@@ -482,8 +482,8 @@ describe("Portfolio page", () => {
       expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
     });
 
-    it("should not show a full width TotalAssetsCard when APY FF is on", async () => {
-      const po = renderPage();
+    it("should not show a full width TotalAssetsCard when there are cards", async () => {
+      const po = renderPage({ snsProjects: mockSnsProjects });
       const totalAssetsCardPo = po.getTotalAssetsCardPo();
 
       expect(await totalAssetsCardPo.isPresent()).toBe(true);
