@@ -1,6 +1,7 @@
 <script lang="ts">
+  import Content from "$lib/components/layout/Content.svelte";
+  import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
   import Layout from "$lib/components/layout/Layout.svelte";
-  import UniverseSplitContent from "$lib/components/layout/UniverseSplitContent.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Snippet } from "svelte";
 
@@ -11,7 +12,10 @@
 </script>
 
 <Layout title={$i18n.navigation.voting}>
-  <UniverseSplitContent resetScrollPositionAfterNavigation>
-    {@render children()}
-  </UniverseSplitContent>
+  <!-- <UniverseSplitContent resetScrollPositionAfterNavigation> -->
+  <Content>
+    <IslandWidthMain>
+      {@render children()}
+    </IslandWidthMain>
+  </Content>
 </Layout>
