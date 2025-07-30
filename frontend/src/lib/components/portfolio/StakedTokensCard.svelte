@@ -6,6 +6,7 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -113,16 +114,19 @@
       <div class="list" role="rowgroup">
         {#each topStakedTokens as stakedToken (stakedToken.domKey)}
           {@const apy = stakedToken.apy}
+          {@const isIcpToken =
+            stakedToken.universeId === OWN_CANISTER_ID.toText()}
           <svelte:element
             this={$authSignedInStore ? "a" : "div"}
             href={$authSignedInStore ? stakedToken.rowHref : undefined}
             class="row"
+            class:icp-row={isIcpToken}
             class:link={$authSignedInStore}
             data-tid="staked-tokens-card-row"
             role="row"
           >
             <div class="info" role="cell">
-              <div>
+              <div class:icp-logo={isIcpToken}>
                 <Logo
                   src={stakedToken.logo}
                   alt={stakedToken.title}
@@ -207,6 +211,7 @@
     .body {
       display: flex;
       flex-direction: column;
+      gap: var(--padding);
       flex-grow: 1;
 
       .header {
@@ -214,9 +219,11 @@
         grid-template-columns: 1fr 1fr;
 
         font-size: 0.875rem;
-        padding: var(--padding-2x);
+        padding: 0 var(--padding-2x);
+        align-items: center;
 
         @include media.min-width(medium) {
+          height: 20px;
           grid-template-columns: 1fr 1fr 1fr;
         }
 
@@ -307,6 +314,17 @@
             @include media.min-width(medium) {
               display: block;
             }
+          }
+
+          /* special styles for ICP rows */
+          &.icp-row {
+            font-weight: 500;
+            font-size: 1.1em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border-bottom: 7px solid var(--elements-divider);
+          }
+          .icp-logo {
+            filter: drop-shadow(0 0 2px #99c2ff);
           }
         }
       }

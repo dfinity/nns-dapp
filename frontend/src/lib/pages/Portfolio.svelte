@@ -103,7 +103,7 @@
   );
   const heldTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "empty"
+      ? "full"
       : areHeldTokensLoading
         ? "skeleton"
         : totalTokensBalanceInUsd === 0
@@ -116,12 +116,19 @@
   );
   const stakedTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "empty"
+      ? "full"
       : areStakedTokensLoading
         ? "skeleton"
         : totalStakedInUsd === 0
           ? "empty"
           : "full"
+  );
+
+  // Controls whether the staked tokens card should show a primary action
+  // Primary action is shown when there are tokens but no stakes
+  // This helps guide users to stake their tokens when possible
+  const hasNoStakedTokensCardAPrimaryAction = $derived(
+    stakedTokensCard === "empty" && heldTokensCard === "full"
   );
 
   // Global loading state that tracks if either held or staked tokens are loading
@@ -257,7 +264,7 @@
     {#if stakedTokensCard === "skeleton"}
       <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
     {:else if stakedTokensCard === "empty"}
-      <NoStakedTokensCard />
+      <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
     {:else}
       <StakedTokensCard
         {topStakedTokens}
@@ -328,10 +335,9 @@
 
       @include media.min-width(large) {
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: minmax(280px, min-content);
+        grid-auto-rows: minmax(345px, min-content);
       }
     }
-
     .sns-section {
       display: grid;
       gap: 16px;
