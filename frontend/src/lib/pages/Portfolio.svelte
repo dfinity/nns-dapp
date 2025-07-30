@@ -1,5 +1,4 @@
 <script lang="ts">
-  import CardList from "$lib/components/launchpad/CardList.svelte";
   import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
   import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
@@ -17,10 +16,7 @@
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-  import {
-    isDesktopViewportStore,
-    isMobileViewportStore,
-  } from "$lib/derived/viewport.derived";
+  import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
   import {
     ENABLE_APY_PORTFOLIO,
     ENABLE_LAUNCHPAD_REDESIGN,
@@ -278,25 +274,11 @@
     {/if}
   </div>
 
-  {#if $ENABLE_APY_PORTFOLIO}
-    <div class="sns-section" class:withUpcomingLaunchesCards>
-      {#if $ENABLE_LAUNCHPAD_REDESIGN}
-        <LaunchpadBanner {withUpcomingLaunchesCards} />
-      {/if}
-
-      {#if withUpcomingLaunchesCards}
-        {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
-          <CardList
-            testId="stacked-cards"
-            {cards}
-            mobileHorizontalScroll={cards.length > 1}
-          />
-        {:else}
-          <StackedCards {cards} />
-        {/if}
-      {/if}
-    </div>
-  {/if}
+  <div class="sns-section">
+    {#if $ENABLE_LAUNCHPAD_REDESIGN}
+      <LaunchpadBanner />
+    {/if}
+  </div>
 </main>
 
 <style lang="scss">
