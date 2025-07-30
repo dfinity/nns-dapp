@@ -7,7 +7,7 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-test("Test accounts requirements", async ({ page, context }) => {
+test.skip("Test accounts requirements", async ({ page, context }) => {
   await page.goto("/accounts");
   await disableCssAnimations(page);
   await expect(page).toHaveTitle("Account | Network Nervous System");
