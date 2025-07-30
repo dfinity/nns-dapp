@@ -192,7 +192,6 @@
         })
       : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
   );
-  const withUpcomingLaunchesCards = $derived(cards.length > 0);
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -274,11 +273,11 @@
     {/if}
   </div>
 
-  <div class="sns-section">
-    {#if $ENABLE_LAUNCHPAD_REDESIGN}
+  {#if $ENABLE_LAUNCHPAD_REDESIGN}
+    <div class="sns-section">
       <LaunchpadBanner />
-    {/if}
-  </div>
+    </div>
+  {/if}
 </main>
 
 <style lang="scss">

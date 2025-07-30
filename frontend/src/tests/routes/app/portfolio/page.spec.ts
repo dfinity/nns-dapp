@@ -447,6 +447,7 @@ describe("Portfolio route", () => {
         const rootCanisterIdForOpenProject = Principal.from("aaaaa-aa");
         const rootCanisterIdForAdoptedProject = Principal.from("2vxsx-fae");
         const proposals = [{ ...mockProposalInfo, status: 1 }];
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
 
         snsAggregatorIncludingAbortedProjectsStore.setData([
           {
