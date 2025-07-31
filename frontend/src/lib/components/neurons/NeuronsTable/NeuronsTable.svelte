@@ -61,6 +61,13 @@
           templateColumns: ["1fr"],
         },
         {
+          id: "apy",
+          title: $i18n.neuron_detail.apy_and_max,
+          cellComponent: NeuronApyCell,
+          alignment: "right",
+          templateColumns: ["max-content"],
+        },
+        {
           title: "",
           alignment: "left",
           templateColumns: ["1fr"],
