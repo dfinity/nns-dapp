@@ -296,10 +296,6 @@
         {/if}
       {/if}
     </div>
-  {:else if $ENABLE_LAUNCHPAD_REDESIGN}
-    <div class="sns-section">
-      <LaunchpadBanner />
-    </div>
   {/if}
 </main>
 
