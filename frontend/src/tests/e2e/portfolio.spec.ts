@@ -85,7 +85,7 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
   const ckBTCRow = await appPo
     .getTokensPo()
     .getTokensPagePo()
-    .getCkTokensTable()
+    .getTokensTable()
     .getRowByName("ckBTC");
   await ckBTCRow.waitForBalance();
   await appPo.getBtc(1);
