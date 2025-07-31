@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
 
-  const href = AppPath.Staking;
+  const href = AppPath.Neurons;
 </script>
 
 <Card testId="no-staked-tokens-card">
