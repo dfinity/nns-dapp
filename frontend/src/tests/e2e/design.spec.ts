@@ -61,23 +61,15 @@ test.describe("Design", () => {
       const appPo = new AppPo(pageElement);
 
       await appPo.getTokensPo().waitFor();
-      const icpTokensTablePo = appPo
+      const tokensTablePo = appPo
         .getTokensPo()
         .getTokensPagePo()
-        .getIcpTokensTable();
-      await icpTokensTablePo.waitFor();
-
-      const ckTokensTablePo = appPo
-        .getTokensPo()
-        .getTokensPagePo()
-        .getCkTokensTable();
-      await ckTokensTablePo.waitFor();
-
-      const snsTokensTablePo = appPo
-        .getTokensPo()
-        .getTokensPagePo()
-        .getSnsTokensTable();
-      await snsTokensTablePo.waitFor();
+        .getTokensTable();
+      await tokensTablePo.waitFor();
+      const rows = await tokensTablePo.getRows();
+      for (const row of rows) {
+        await row.waitForBalance();
+      }
 
       await replaceContent({
         page,

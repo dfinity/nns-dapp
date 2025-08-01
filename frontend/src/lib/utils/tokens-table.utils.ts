@@ -14,10 +14,9 @@ import { TokenAmountV2 } from "@dfinity/utils";
 const getTokenBalanceOrZero = (token: UserToken) =>
   token.balance instanceof TokenAmountV2 ? token.balance.toUlps() : 0n;
 
-export const isIcpToken = (token: UserToken) =>
-  token.universeId.toText() === OWN_CANISTER_ID_TEXT;
-
-export const compareTokensIcpFirst = createDescendingComparator(isIcpToken);
+export const compareTokensIcpFirst = createDescendingComparator(
+  (token: UserToken) => token.universeId.toText() === OWN_CANISTER_ID_TEXT
+);
 
 export const compareFailedTokensLast = createAscendingComparator(
   (token: UserToken) => isUserTokenFailed(token)
@@ -108,6 +107,8 @@ export const compareTokensForTokensTable = ({
 const importantTokensText = IMPORTANT_CK_TOKEN_IDS.map((token) =>
   token.toText()
 );
+const isIcpToken = (token: UserToken) =>
+  token.universeId.toText() === OWN_CANISTER_ID_TEXT;
 const isCkToken = (token: UserToken) =>
   importantTokensText.includes(token.universeId.toText());
 

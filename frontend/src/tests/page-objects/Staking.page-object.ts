@@ -33,14 +33,6 @@ export class StakingPo extends BasePageObject {
     return ProjectsTablePo.under(this.root);
   }
 
-  getNnsProjectsTablePo(): ProjectsTablePo {
-    return ProjectsTablePo.under(this.root, "nns-projects-table-component");
-  }
-
-  getSnsProjectsTablePo(): ProjectsTablePo {
-    return ProjectsTablePo.under(this.root, "sns-projects-table-component");
-  }
-
   getNnsStakeNeuronModalPo(): NnsStakeNeuronModalPo {
     return NnsStakeNeuronModalPo.under(this.root);
   }

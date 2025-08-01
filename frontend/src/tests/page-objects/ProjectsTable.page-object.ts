@@ -10,11 +10,8 @@ import type { PageObjectElement } from "$tests/types/page-object.types";
 export class ProjectsTablePo extends ResponsiveTablePo {
   private static readonly TID = "projects-table-component";
 
-  static under(
-    element: PageObjectElement,
-    testId = ProjectsTablePo.TID
-  ): ProjectsTablePo {
-    return new ProjectsTablePo(element.byTestId(testId));
+  static under(element: PageObjectElement): ProjectsTablePo {
+    return new ProjectsTablePo(element.byTestId(ProjectsTablePo.TID));
   }
 
   getUsdValueBannerPo(): UsdValueBannerPo {

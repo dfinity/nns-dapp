@@ -238,10 +238,9 @@ export const getTableProjects = ({
   });
 };
 
-export const isIcpProject = (project: TableProject) =>
-  project.universeId === OWN_CANISTER_ID_TEXT;
-
-export const compareIcpFirst = createDescendingComparator(isIcpProject);
+export const compareIcpFirst = createDescendingComparator(
+  (project: TableProject) => project.universeId === OWN_CANISTER_ID_TEXT
+);
 
 export const compareNonFailedTokenAmountFirst = createAscendingComparator(
   (project: TableProject) => project.stake instanceof FailedTokenAmount

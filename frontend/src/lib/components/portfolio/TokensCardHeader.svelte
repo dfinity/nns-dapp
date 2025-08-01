@@ -5,11 +5,10 @@
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
   type Props = {
-    usdAmount?: number;
+    usdAmount: number;
     href: string;
     title: string;
     linkText: string;
@@ -19,7 +18,7 @@
   const { usdAmount, href, title, linkText, icon }: Props = $props();
 
   const usdAmountFormatted = $derived(
-    $authSignedInStore && nonNullish(usdAmount)
+    $authSignedInStore
       ? formatCurrencyNumber(usdAmount)
       : PRICE_NOT_AVAILABLE_PLACEHOLDER
   );
@@ -62,14 +61,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--padding-2x);
-    background-color: var(--card-background-tint);
-    border-bottom: 4px solid var(--elements-divider);
+    padding: var(--padding-3x) var(--padding-2x);
 
     .header-wrapper {
       display: flex;
       align-items: flex-start;
-      gap: var(--padding);
+      gap: var(--padding-2x);
 
       .icon {
         width: 50px;
@@ -82,18 +79,13 @@
         gap: var(--padding-0_5x);
 
         .title {
-          margin: 0;
-          padding: 0;
           font-size: 0.875rem;
           font-weight: bold;
           color: var(--text-description);
           margin: 0;
           padding: 0;
         }
-
         .amount {
-          margin: 0;
-          padding: 0;
           font-size: 1.5rem;
         }
       }

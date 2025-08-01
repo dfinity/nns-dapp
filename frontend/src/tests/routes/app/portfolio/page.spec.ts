@@ -8,7 +8,6 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
-import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import { getAnonymousIdentity } from "$lib/services/auth.services";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -135,20 +134,34 @@ describe("Portfolio route", () => {
   it("should render the Portfolio page with visitor data", async () => {
     const po = await renderPage();
     const portfolioPagePo = po.getPortfolioPagePo();
+    const tokensCardPo = portfolioPagePo.getHeldTokensCardPo();
+
+    const titles = await tokensCardPo.getHeldTokensTitles();
+    const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
+    const nativeBalances =
+      await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
     expect(await portfolioPagePo.getLoginCard().isPresent()).toBe(true);
     expect(await portfolioPagePo.getTotalAssetsCardPo().isPresent()).toBe(
       false
     );
-    expect(await portfolioPagePo.getApyCardPo().isPresent()).toBe(false);
     expect(await portfolioPagePo.getApyFallbackCardPo().isPresent()).toBe(
       false
     );
-    expect(await portfolioPagePo.getStartStakingCard().isPresent()).toBe(true);
-    expect(await portfolioPagePo.getNoHeldTokensCard().isPresent()).toBe(true);
-    expect(await portfolioPagePo.getNoStakedTokensCarPo().isPresent()).toBe(
-      true
-    );
+
+    expect(titles.length).toBe(4);
+    expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH", "ckUSDC"]);
+
+    expect(usdBalances.length).toBe(4);
+    expect(usdBalances).toEqual(["$0.00", "$0.00", "$0.00", "$0.00"]);
+
+    expect(nativeBalances.length).toBe(4);
+    expect(nativeBalances).toEqual([
+      "-/- ICP",
+      "-/- ckBTC",
+      "-/- ckETH",
+      "-/- ckUSDC",
+    ]);
   });
 
   describe("when logged in", () => {
@@ -308,14 +321,6 @@ describe("Portfolio route", () => {
       });
 
       it("should render assets cards with the provided data", async () => {
-        // TODO: Move this to a helper or similar
-        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
-          (fn) => {
-            fn(true);
-            return () => {};
-          }
-        );
-
         const po = await renderPage();
         const portfolioPagePo = po.getPortfolioPagePo();
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
@@ -404,13 +409,6 @@ describe("Portfolio route", () => {
       });
 
       it("should not show failed SNS", async () => {
-        // TODO: Move this to a helper or similar
-        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
-          (fn) => {
-            fn(true);
-            return () => {};
-          }
-        );
         failedActionableSnsesStore.add(tetrisSNS.rootCanisterId.toText());
 
         const po = await renderPage();
@@ -449,6 +447,7 @@ describe("Portfolio route", () => {
         const rootCanisterIdForOpenProject = Principal.from("aaaaa-aa");
         const rootCanisterIdForAdoptedProject = Principal.from("2vxsx-fae");
         const proposals = [{ ...mockProposalInfo, status: 1 }];
+        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
 
         snsAggregatorIncludingAbortedProjectsStore.setData([
           {
