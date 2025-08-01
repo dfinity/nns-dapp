@@ -6,6 +6,7 @@
   import SnsNeuronAge from "$lib/components/sns-neurons/SnsNeuronAge.svelte";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { ApyAmount } from "$lib/types/staking";
   import { secondsToDateTime } from "$lib/utils/date.utils";
@@ -70,7 +71,7 @@
         >{secondsToDateTime(neuron.created_timestamp_seconds)}</span
       >
     </KeyValuePair>
-    {#if nonNullish(apy)}
+    {#if nonNullish(apy) && $ENABLE_APY_PORTFOLIO}
       <div>
         <KeyValuePairInfo>
           <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span

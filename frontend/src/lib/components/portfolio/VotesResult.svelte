@@ -1,7 +1,6 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { formatPercentage } from "$lib/utils/format.utils";
-  import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
 
   type Props = {
     yes: number;
@@ -16,9 +15,8 @@
 </script>
 
 <div class="votes-info">
-  <div class="yes yes-percent percentage-container">
+  <div class="yes yes-percent">
     <span class="caption">{$i18n.portfolio.new_sns_proposal_card_adopt}</span>
-    <span class="icon"><IconThumbUp size="20px" /></span>
     <span class="percentage" data-tid="adopt-percentage"
       >{formatPercentage(yesProportion, {
         minFraction: 2,
@@ -26,9 +24,8 @@
       })}</span
     >
   </div>
-  <div class="no no-percent percentage-container">
+  <div class="no no-percent">
     <span class="caption">{$i18n.portfolio.new_sns_proposal_card_reject}</span>
-    <span class="icon"><IconThumbDown size="20px" /></span>
     <span class="percentage" data-tid="reject-percentage"
       >{formatPercentage(noProportion, {
         minFraction: 2,
@@ -89,49 +86,12 @@
       @include fonts.small;
     }
 
-    .yes {
-      .percentage,
-      .icon {
-        color: var(--positive-emphasis);
-      }
+    .yes .percentage {
+      color: var(--positive-emphasis);
     }
 
-    .no {
-      .percentage,
-      .icon {
-        color: var(--negative-emphasis);
-      }
-    }
-
-    .percentage-container {
-      .icon {
-        display: none;
-      }
-
-      @include media.min-width(medium) {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: var(--padding-0_5x);
-
-        .caption {
-          display: none;
-        }
-        &.no {
-          justify-self: end;
-        }
-
-        .icon {
-          display: flex;
-          align-items: center;
-        }
-        .percentage {
-          font-family: CircularXX;
-          font-size: 24px;
-          font-weight: 450;
-          line-height: 32px;
-        }
-      }
+    .no .percentage {
+      color: var(--negative-emphasis);
     }
   }
 

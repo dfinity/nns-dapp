@@ -51,10 +51,6 @@ export class HeldTokensCardPo extends BasePageObject {
     return this.getElement("info-row");
   }
 
-  getLinkRow(): PageObjectElement {
-    return this.getElement("link-row");
-  }
-
   async getHeldTokensTitles(): Promise<string[]> {
     const rowsPos = await this.getRows();
     return Promise.all(rowsPos.map((po) => po.getHeldTokenTitle()));
