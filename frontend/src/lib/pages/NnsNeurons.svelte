@@ -56,9 +56,14 @@
     <div class="container">
       <LosingRewardsBanner />
 
-      <UsdValueBanner usdAmount={totalStakeInUsd} hasUnpricedTokens={false}>
-        <IconNeuronsPage slot="icon" />
-      </UsdValueBanner>
+      {#snippet icon()}
+        <IconNeuronsPage />
+      {/snippet}
+      <UsdValueBanner
+        usdAmount={totalStakeInUsd}
+        hasUnpricedTokens={false}
+        {icon}
+      />
       <NeuronsTable neurons={tableNeurons} />
     </div>
   {:else}

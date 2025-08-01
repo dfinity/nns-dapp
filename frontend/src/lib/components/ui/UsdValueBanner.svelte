@@ -2,12 +2,21 @@
   import IcpExchangeRate from "$lib/components/ui/IcpExchangeRate.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import UsdValueHeadless from "$lib/components/ui/UsdValueHeadless.svelte";
+  import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { i18n } from "$lib/stores/i18n";
+  import { nonNullish } from "@dfinity/utils";
+  import type { Snippet } from "svelte";
 
-  export let usdAmount: number | undefined;
-  export let hasUnpricedTokens: boolean;
+  type Props = {
+    usdAmount: number | undefined;
+    hasUnpricedTokens: boolean;
+    // optional prop icon snippet
+    icon?: Snippet;
+  };
 
-  const absentValue = "-/-";
+  const { usdAmount, hasUnpricedTokens, icon }: Props = $props();
+
+  const absentValue = PRICE_NOT_AVAILABLE_PLACEHOLDER;
 </script>
 
 <UsdValueHeadless {usdAmount} {hasUnpricedTokens}>
@@ -19,9 +28,11 @@
     hasError,
   })}
     <div class="wrapper" data-tid="usd-value-banner-component">
-      <div class="table-banner-icon">
-        <slot name="icon" />
-      </div>
+      {#if nonNullish(icon)}
+        <div class="table-banner-icon">
+          {@render icon()}
+        </div>
+      {/if}
       <div class="text-content">
         <div class="totals">
           <div class="primary-amount-row">

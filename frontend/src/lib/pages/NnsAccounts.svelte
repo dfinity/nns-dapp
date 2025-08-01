@@ -80,9 +80,14 @@
 </script>
 
 <div class="wrapper" data-tid="accounts-body">
-  <UsdValueBanner usdAmount={totalBalanceInUsd} hasUnpricedTokens={false}>
-    <IconHeldTokens slot="icon" />
-  </UsdValueBanner>
+  {#snippet icon()}
+    <IconHeldTokens />
+  {/snippet}
+  <UsdValueBanner
+    usdAmount={totalBalanceInUsd}
+    hasUnpricedTokens={false}
+    {icon}
+  />
 
   <TokensTable
     {userTokensData}

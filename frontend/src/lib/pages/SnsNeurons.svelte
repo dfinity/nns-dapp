@@ -93,12 +93,14 @@
   {#if loading}
     <Spinner />
   {:else if tableNeurons.length > 0}
+    {#snippet icon()}
+      <IconNeuronsPage />
+    {/snippet}
     <UsdValueBanner
       usdAmount={totalStakeInUsd}
       hasUnpricedTokens={!isTokenPriceKnown}
-    >
-      <IconNeuronsPage slot="icon" />
-    </UsdValueBanner>
+      {icon}
+    />
     <NeuronsTable neurons={tableNeurons} />
   {:else if nonNullish(summary)}
     <EmptyMessage
