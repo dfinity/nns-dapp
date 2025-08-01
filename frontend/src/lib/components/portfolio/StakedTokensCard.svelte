@@ -42,10 +42,10 @@
     isApyLoading,
   }: Props = $props();
 
-  const href = AppPath.Staking;
+  const href = AppPath.Neurons;
 
   const icp: TableProject | undefined = $derived(topStakedTokens[0]);
-  const restOfStakedTokens = $derived(topStakedTokens.slice(1));
+  const restOfStakedTokens: TableProject[] = []; // $derived(topStakedTokens.slice(1));
   const numberOfTopStakedTokens = $derived(topStakedTokens.length);
 
   const showInfoRow = $derived(

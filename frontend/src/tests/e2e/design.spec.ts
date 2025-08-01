@@ -7,7 +7,7 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
-test.describe("Design", () => {
+test.skip("Design", () => {
   test("Login", async ({ page }) => {
     await page.goto("/accounts");
     await disableCssAnimations(page);

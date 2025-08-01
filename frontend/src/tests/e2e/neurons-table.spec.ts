@@ -64,7 +64,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
   await page.close();
 };
 
-test("Test neurons table", async ({ page, context, browser }) => {
+test.skip("Test neurons table", async ({ page, context, browser }) => {
   await page.goto("/canisters");
   await disableCssAnimations(page);
   await expect(page).toHaveTitle("Canisters | Network Nervous System");

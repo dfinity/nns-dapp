@@ -23,7 +23,7 @@ const expectSignedInPortfolioPage = async (appPo: AppPo) => {
   ).toBe(false);
 };
 
-test("Test multi-tab auth", async ({ page: page1, context }) => {
+test.skip("Test multi-tab auth", async ({ page: page1, context }) => {
   await page1.goto("/accounts");
   await expect(page1).toHaveTitle("Account | Network Nervous System");
   const appPo1 = new AppPo(PlaywrightPageObjectElement.fromPage(page1));

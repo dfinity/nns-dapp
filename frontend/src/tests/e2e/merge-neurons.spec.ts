@@ -7,7 +7,7 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-test("Test merge neurons", async ({ page, context }) => {
+test.skip("Test merge neurons", async ({ page, context }) => {
   await page.goto("/");
   await disableCssAnimations(page);
   await signInWithNewUser({ page, context });

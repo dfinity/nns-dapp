@@ -54,17 +54,17 @@
     },
     {
       context: "accounts",
-      href: AppPath.Tokens,
+      href: AppPath.Accounts,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Accounts, AppPath.Wallet, AppPath.Tokens],
       }),
-      title: $i18n.navigation.tokens,
+      title: $i18n.navigation.accounts,
       icon: IconWallet,
     },
     {
       context: "neurons",
-      href: AppPath.Staking,
+      href: AppPath.Neurons,
       selected: isSelectedPath({
         currentPath: $pageStore.path,
         paths: [AppPath.Staking, AppPath.Neurons, AppPath.Neuron],
@@ -86,16 +86,6 @@
       title: $i18n.navigation.voting,
       icon: IconVote,
       statusIcon: ActionableProposalTotalCountBadge,
-    },
-    {
-      context: "launchpad",
-      href: `${AppPath.Launchpad}`,
-      selected: isSelectedPath({
-        currentPath: $pageStore.path,
-        paths: [AppPath.Launchpad, AppPath.Project],
-      }),
-      title: $i18n.navigation.launchpad,
-      icon: IconRocketLaunch,
     },
   ];
 </script>

@@ -31,6 +31,7 @@
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 
   resetBalanceLoading();
   loadCkBTCTokens();
@@ -58,7 +59,10 @@
   }
 
   $: if ($authSignedInStore) {
-    userTokens = $tokensListUserStore;
+    // userTokens = $tokensListUserStore;
+    userTokens = $tokensListUserStore.filter(
+      (token) => token.universeId.toText() === OWN_CANISTER_ID_TEXT
+    );
   }
 
   $: if ($snsProposalsStoreIsLoading) {

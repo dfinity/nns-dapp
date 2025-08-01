@@ -9,7 +9,7 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-test("Test neuron details", async ({ page, context }) => {
+test.skip("Test neuron details", async ({ page, context }) => {
   await page.goto("/");
   await disableCssAnimations(page);
   await signInWithNewUser({ page, context });

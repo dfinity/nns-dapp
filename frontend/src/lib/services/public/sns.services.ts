@@ -1,4 +1,3 @@
-import { snsAggregatorApiService } from "$lib/api-services/sns-aggregator.api-service";
 import { queryProposals } from "$lib/api/proposals.api";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
@@ -38,8 +37,9 @@ export const getLoadedSnsAggregatorData = async (): Promise<CachedSnsDto[]> => {
 
 export const loadSnsProjects = async (): Promise<void> => {
   try {
-    const aggregatorData = await snsAggregatorApiService.querySnsProjects();
-    snsAggregatorIncludingAbortedProjectsStore.setData(aggregatorData);
+    // const aggregatorData = await snsAggregatorApiService.querySnsProjects();
+    // snsAggregatorIncludingAbortedProjectsStore.setData(aggregatorData);
+    snsAggregatorIncludingAbortedProjectsStore.setData([]);
     // TODO: PENDING to be implemented, load SNS parameters.
   } catch (err) {
     toastsError(

@@ -9,6 +9,7 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
+  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
@@ -51,7 +52,9 @@
 
   let apy: ApyAmount | undefined;
   $: apy =
-    nonNullish(neuron) && isStakingRewardDataReady($stakingRewardsStore)
+    $ENABLE_APY_PORTFOLIO &&
+    nonNullish(neuron) &&
+    isStakingRewardDataReady($stakingRewardsStore)
       ? $stakingRewardsStore.apy
           .get(OWN_CANISTER_ID_TEXT)
           ?.neurons?.get(neuron.neuronId.toString())
@@ -124,7 +127,7 @@
         </KeyValuePairInfo>
       </div>
     {/if}
-    {#if nonNullish(apy)}
+    {#if nonNullish(apy) && $ENABLE_APY_PORTFOLIO}
       <div>
         <KeyValuePairInfo>
           <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span

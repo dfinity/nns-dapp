@@ -1,5 +1,6 @@
 <script lang="ts">
   import Content from "$lib/components/layout/Content.svelte";
+  import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
   import Layout from "$lib/components/layout/Layout.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Snippet } from "svelte";
@@ -9,11 +10,13 @@
   };
   const { children }: Props = $props();
 
-  // const back = (): Promise<void> => goto($neuronsPageOrigin);
+  // const back = (): Promise<void> => goto($accountsPageOrigin);
 </script>
 
-<Layout title={$i18n.navigation.neurons_account}>
+<Layout title={$i18n.navigation.tokens_account}>
   <Content>
-    {@render children()}
+    <IslandWidthMain>
+      {@render children()}
+    </IslandWidthMain>
   </Content>
 </Layout>
