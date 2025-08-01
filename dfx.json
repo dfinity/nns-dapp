@@ -1,5 +1,5 @@
 {
-  "dfx": "0.27.0",
+  "dfx": "0.25.1",
   "canisters": {
     "nns-governance": {
       "type": "custom",
@@ -26,7 +26,9 @@
       }
     },
     "nns-index": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/nns-index.did",
       "wasm": "target/ic/nns-index.wasm",
       "type": "custom",
@@ -85,7 +87,9 @@
       }
     },
     "nns-sns-wasm": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/used_by_sns_aggregator/sns_wasm/sns_wasm.did",
       "wasm": "target/ic/sns-wasm-canister.wasm",
       "type": "custom",
@@ -97,43 +101,57 @@
       }
     },
     "sns_governance": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/used_by_sns_aggregator/sns_governance/sns_governance.did",
       "wasm": "target/ic/sns-governance-canister.wasm",
       "type": "custom"
     },
     "sns_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/used_by_sns_aggregator/sns_ledger/sns_ledger.did",
       "wasm": "target/ic/ic-icrc1-ledger.wasm",
       "type": "custom"
     },
     "sns_archive": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-archive.did",
       "wasm": "target/ic/ic-icrc1-archive.wasm",
       "type": "custom"
     },
     "sns_index": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ic-icrc1-index.did",
       "wasm": "target/ic/ic-icrc1-index.wasm",
       "type": "custom"
     },
     "sns_swap": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/used_by_sns_aggregator/sns_swap/sns_swap.did",
       "wasm": "target/ic/sns-swap-canister.wasm",
       "type": "custom"
     },
     "sns_root": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "declarations/used_by_sns_aggregator/sns_root/sns_root.did",
       "wasm": "target/ic/sns-root-canister.wasm",
       "type": "custom"
     },
     "sns_aggregator": {
-      "build": ["./build-sns-aggregator.sh"],
+      "build": [
+        "./build-sns-aggregator.sh"
+      ],
       "candid": "rs/sns_aggregator/sns_aggregator.did",
       "wasm": "sns_aggregator.wasm.gz",
       "type": "custom",
@@ -153,7 +171,9 @@
       }
     },
     "ckbtc_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ckbtc_ledger.did",
       "wasm": "target/ic/ckbtc_ledger.wasm",
       "type": "custom",
@@ -166,7 +186,9 @@
       }
     },
     "ckbtc_minter": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ckbtc_minter.did",
       "wasm": "target/ic/ckbtc_minter.wasm",
       "type": "custom",
@@ -179,7 +201,9 @@
       }
     },
     "ckbtc_index": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ckbtc_index.did",
       "wasm": "target/ic/ckbtc_index.wasm",
       "type": "custom",
@@ -192,7 +216,9 @@
       }
     },
     "cketh_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/cketh_ledger.did",
       "wasm": "target/ic/ckbtc_ledger.wasm",
       "type": "custom",
@@ -205,7 +231,9 @@
       }
     },
     "cketh_index": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ckbtc_index.did",
       "wasm": "target/ic/ckbtc_index.wasm",
       "type": "custom",
@@ -218,7 +246,9 @@
       }
     },
     "ckusdc_ledger": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ckusdc_ledger.did",
       "wasm": "target/ic/ckusdc_ledger.wasm",
       "type": "custom",
@@ -231,7 +261,9 @@
       }
     },
     "ckusdc_index": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "candid": "target/ic/ckusdc_index.did",
       "wasm": "target/ic/ckusdc_index.wasm",
       "type": "custom",
@@ -244,7 +276,9 @@
       }
     },
     "tvl": {
-      "build": ["true"],
+      "build": [
+        "true"
+      ],
       "type": "custom",
       "candid": "TODO-deploy-tvl-testnet",
       "wasm": "TODO-deploy-tvl-testnet",
@@ -266,39 +300,57 @@
   },
   "networks": {
     "mainnet": {
-      "providers": ["https://icp0.io"],
+      "providers": [
+        "https://icp0.io"
+      ],
       "type": "persistent"
     },
     "app": {
-      "providers": ["https://icp0.io"],
+      "providers": [
+        "https://icp0.io"
+      ],
       "type": "persistent"
     },
     "beta": {
-      "providers": ["https://icp0.io"],
+      "providers": [
+        "https://icp0.io"
+      ],
       "type": "persistent"
     },
     "devenv_llorenc": {
-      "providers": ["https://llorenc-ingress.devenv.dfinity.network"],
+      "providers": [
+        "https://llorenc-ingress.devenv.dfinity.network"
+      ],
       "type": "persistent"
     },
     "devenv_dskloet": {
-      "providers": ["https://dskloet-ingress.devenv.dfinity.network"],
+      "providers": [
+        "https://dskloet-ingress.devenv.dfinity.network"
+      ],
       "type": "persistent"
     },
     "devenv_mstr": {
-      "providers": ["https://mstr-ingress.devenv.dfinity.network"],
+      "providers": [
+        "https://mstr-ingress.devenv.dfinity.network"
+      ],
       "type": "persistent"
     },
     "devenv_cosku": {
-      "providers": ["https://cosku-ingress.devenv.dfinity.network"],
+      "providers": [
+        "https://cosku-ingress.devenv.dfinity.network"
+      ],
       "type": "persistent"
     },
     "devenv_yhabib": {
-      "providers": ["https://yhabib-ingress.devenv.dfinity.network"],
+      "providers": [
+        "https://yhabib-ingress.devenv.dfinity.network"
+      ],
       "type": "persistent"
     },
     "devenv_francesco": {
-      "providers": ["https://francesco-ingress.devenv.dfinity.network"],
+      "providers": [
+        "https://francesco-ingress.devenv.dfinity.network"
+      ],
       "type": "persistent"
     }
   },
