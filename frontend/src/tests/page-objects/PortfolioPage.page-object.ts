@@ -1,6 +1,7 @@
 import { ApyCardPo } from "$tests/page-objects/ApyCard.page-object";
 import { ApyFallbackCardPo } from "$tests/page-objects/ApyFallbackCard.page-object";
 import { HeldTokensCardPo } from "$tests/page-objects/HeldTokensCard.page-object";
+import { NoStakedTokensCardPo } from "$tests/page-objects/NoStakedTokensCard.page-object";
 import { StackedCardsPo } from "$tests/page-objects/StackedCards.page-object";
 import { StakedTokensCardPo } from "$tests/page-objects/StakedTokensCard.page-object";
 import { TotalAssetsCardPo } from "$tests/page-objects/TotalAssetsCard.page-object";
@@ -26,8 +27,8 @@ export class PortfolioPagePo extends BasePageObject {
     return this.getElement("no-held-tokens-card");
   }
 
-  getNoStakedTokensCarPo(): PageObjectElement {
-    return this.getElement("no-staked-tokens-card");
+  getNoStakedTokensCarPo(): NoStakedTokensCardPo {
+    return NoStakedTokensCardPo.under(this.root);
   }
 
   getTotalAssetsCardPo(): TotalAssetsCardPo {

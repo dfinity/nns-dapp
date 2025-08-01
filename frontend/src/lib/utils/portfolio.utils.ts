@@ -9,20 +9,22 @@ import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
-import { compareByProjectTitle, isIcpProject } from "$lib/utils/staking.utils";
+import {
+  compareByProjectTitle,
+  compareIcpFirst,
+} from "$lib/utils/staking.utils";
 import { ulpsToNumber } from "$lib/utils/token.utils";
 import {
   compareTokensByImportance,
-  isIcpToken,
+  compareTokensIcpFirst,
 } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
 import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import { ICPToken, isNullish } from "@dfinity/utils";
 
-// Tables contain 4 items: ICP and 3 other tokens/projects with the highest USD balance.
-const MAX_NUMBER_OF_ITEMS = 3;
+const MAX_NUMBER_OF_ITEMS = 4;
 
-const filterAbandonedProjects = ({
+const filterCyclesTransferStation = ({
   universeId,
 }: {
   universeId: string;
@@ -33,38 +35,37 @@ const compareTokensByUsdBalance = createDescendingComparator(
 );
 
 const compareTokens = mergeComparators([
+  compareTokensIcpFirst,
   compareTokensByUsdBalance,
   compareTokensByImportance,
 ]);
 
 /**
  * Filters and sorts user tokens based on specific criteria:
- * - ICP is always first
+ * - Always prioritizes ICP token first
  * - Sorts remaining tokens by USD balance
+ * - Sorts remaining tokens by importance
  * - Limits the number of returned tokens to MAX_NUMBER_OF_ITEMS
+ * - When isSigned true, filters out tokens with zero balance as we show only tokens with guaranteed balance
  */
 export const getTopHeldTokens = ({
   userTokens,
+  isSignedIn = false,
 }: {
   userTokens: UserToken[];
+  isSignedIn?: boolean;
 }): UserTokenData[] => {
-  // TODO: userTokens type can be narrowed to UserTokenData[] after updating Portfolio page
-  const userTokensData = userTokens.filter(isUserTokenData);
-
-  const icp = userTokensData.find(isIcpToken);
-  if (isNullish(icp)) return [];
-
-  const restOfTokens = userTokensData
-    .filter((t) => !isIcpToken(t))
+  const topTokens = userTokens
+    .filter(isUserTokenData)
     .filter(({ universeId }) =>
-      filterAbandonedProjects({ universeId: universeId.toText() })
+      filterCyclesTransferStation({ universeId: universeId.toText() })
     )
-    // TODO: Introduce alternative logic for when ICPSwap is down
-    .filter((t) => t?.balanceInUsd ?? 0 > 0)
     .sort(compareTokens)
     .slice(0, MAX_NUMBER_OF_ITEMS);
 
-  return [icp, ...restOfTokens];
+  if (!isSignedIn) return topTokens;
+
+  return topTokens.filter((token) => token?.balanceInUsd ?? 0 > 0);
 };
 
 const compareProjectsByUsdBalance = createDescendingComparator(
@@ -72,33 +73,34 @@ const compareProjectsByUsdBalance = createDescendingComparator(
 );
 
 const compareProjects = mergeComparators([
+  compareIcpFirst,
   compareProjectsByUsdBalance,
   compareByProjectTitle,
 ]);
 
 /**
  * Filters and sorts projects based on specific criteria:
- * - ICP is always first
- * - Sorts remaining tokens by USD balance
- * - Limits the number of returned tokens to MAX_NUMBER_OF_ITEMS
+ * - Always prioritizes ICP project first
+ * - Sorts remaining projects by USD stake value
+ * - Sorts remaining projects by title alphabetically
+ * - Limits the number of returned projects to MAX_NUMBER_OF_ITEMS
+ * - When isSignedIn true, filters out projects with zero stake as we show only projects with guaranteed stake
  */
 export const getTopStakedTokens = ({
   projects,
+  isSignedIn = false,
 }: {
   projects: TableProject[];
+  isSignedIn?: boolean;
 }): TableProject[] => {
-  const icpProject = projects.find(isIcpProject);
-  if (isNullish(icpProject)) return [];
-
-  const restOfProjects = [...projects]
-    .filter((p) => !isIcpProject(p))
-    .filter(filterAbandonedProjects)
-    // TODO: Introduce alternative logic for when ICPSwap is down
-    .filter((p) => p?.stakeInUsd ?? 0 > 0)
+  const topProjects = [...projects]
+    .filter(filterCyclesTransferStation)
     .sort(compareProjects)
     .slice(0, MAX_NUMBER_OF_ITEMS);
 
-  return [icpProject, ...restOfProjects];
+  if (!isSignedIn) return topProjects;
+
+  return topProjects.filter((project) => project?.stakeInUsd ?? 0 > 0);
 };
 
 /**

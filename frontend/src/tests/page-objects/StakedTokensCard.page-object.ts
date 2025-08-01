@@ -65,10 +65,6 @@ export class StakedTokensCardPo extends BasePageObject {
     return this.getElement("info-row");
   }
 
-  getLinkRow(): PageObjectElement {
-    return this.getElement("link-row");
-  }
-
   async getStakedTokensTitle(): Promise<string[]> {
     const rowsPos = await this.getRows();
     return Promise.all(rowsPos.map((po) => po.getStakedTokenTitle()));
