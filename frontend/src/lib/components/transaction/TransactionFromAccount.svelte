@@ -18,7 +18,7 @@
   <!-- TODO(yhabib): Remove once we have new designs for the Topup Canister modal. By default, it behaves as it used to behave. Consumers have to opt-in. -->
   {#if nonNullish(token)}
     <KeyValuePair>
-      <svelte:fragment slot="key">
+      {#snippet key()}
         {#if canSelectSource}
           <span class="label">{$i18n.accounts.source}</span>
         {:else}
@@ -27,11 +27,11 @@
               $i18n.accounts.main}</span
           >
         {/if}
-      </svelte:fragment>
+      {/snippet}
 
       <!-- svelte:fragment needed to avoid warnings -->
       <!-- Svelte issue: https://github.com/sveltejs/svelte/issues/5604 -->
-      <svelte:fragment slot="value">
+      {#snippet value()}
         {#if nonNullish(selectedAccount)}
           <AmountDisplay
             singleLine
@@ -41,7 +41,7 @@
             })}
           />
         {/if}
-      </svelte:fragment>
+      {/snippet}
     </KeyValuePair>
   {:else if canSelectSource}
     <span class="label">{$i18n.accounts.source}</span>

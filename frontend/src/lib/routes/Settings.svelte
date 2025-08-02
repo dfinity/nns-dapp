@@ -26,40 +26,45 @@
     <section>
       <div class="content-cell-details">
         <KeyValuePairInfo>
-          <p slot="key" class="label">{$i18n.settings.your_principal}</p>
-          <p slot="value" class="value principal">
-            <Hash
-              id="principal-id"
-              text={principalText}
-              tagName="p"
-              className="value"
-              showCopy
-            />
-          </p>
+          {#snippet key()}
+            <p class="label">{$i18n.settings.your_principal}</p>{/snippet}
+          {#snippet value()}<p class="value principal">
+              <Hash
+                id="principal-id"
+                text={principalText}
+                tagName="p"
+                className="value"
+                showCopy
+              />
+            </p>{/snippet}
 
-          <svelte:fragment slot="info">
+          {#snippet info()}
             {$i18n.settings.your_principal_description}
-          </svelte:fragment>
+          {/snippet}
         </KeyValuePairInfo>
 
         <KeyValuePairInfo>
-          <p slot="key" class="label">{$i18n.settings.your_session}</p>
-          <div slot="value" class="value session" data-tid="session-duration">
-            {#if nonNullish(remainingTimeMilliseconds)}
-              {remainingTimeMilliseconds <= 0
-                ? "0"
-                : secondsToDuration({
-                    seconds: BigInt(remainingTimeMilliseconds) / 1000n,
-                    i18n: $i18n.time,
-                  })}
-            {:else}
-              <div class="skeleton"><SkeletonText /></div>
-            {/if}
-          </div>
+          {#snippet key()}<p class="label">{$i18n.settings.your_session}</p
+            >{/snippet}
+          {#snippet value()}<div
+              class="value session"
+              data-tid="session-duration"
+            >
+              {#if nonNullish(remainingTimeMilliseconds)}
+                {remainingTimeMilliseconds <= 0
+                  ? "0"
+                  : secondsToDuration({
+                      seconds: BigInt(remainingTimeMilliseconds) / 1000n,
+                      i18n: $i18n.time,
+                    })}
+              {:else}
+                <div class="skeleton"><SkeletonText /></div>
+              {/if}
+            </div>{/snippet}
 
-          <svelte:fragment slot="info">
+          {#snippet info()}
             {$i18n.settings.your_session_description}
-          </svelte:fragment>
+          {/snippet}
         </KeyValuePairInfo>
       </div>
     </section>

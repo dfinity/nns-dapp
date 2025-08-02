@@ -25,46 +25,53 @@
 
 <Card {testId}>
   <KeyValuePair testId="neuron-id">
-    <span class="label" slot="key">{$i18n.neurons.neuron_id}</span>
-    <span class="value" slot="value">{neuron.neuronId}</span>
+    {#snippet key()}<span class="label">{$i18n.neurons.neuron_id}</span
+      >{/snippet}
+    {#snippet value()}<span class="value">{neuron.neuronId}</span>{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="stake">
-    <span class="label" slot="key"
-      >{replacePlaceholders($i18n.neurons.ic_stake, {
-        $token: ICPToken.symbol,
-      })}</span
-    >
-    <span class="value" slot="value"
-      ><AmountDisplay inline singleLine amount={stake} /></span
-    >
+    {#snippet key()}<span class="label"
+        >{replacePlaceholders($i18n.neurons.ic_stake, {
+          $token: ICPToken.symbol,
+        })}</span
+      >{/snippet}
+    {#snippet value()}<span class="value"
+        ><AmountDisplay inline singleLine amount={stake} /></span
+      >{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="dissolve-delay">
-    <span slot="key" class="label">{$i18n.neurons.dissolve_delay_title}</span>
-    <span slot="value" class="value"
-      >{secondsToDuration({
-        seconds: neuron.dissolveDelaySeconds,
-        i18n: $i18n.time,
-      })}</span
-    >
+    {#snippet key()}<span class="label"
+        >{$i18n.neurons.dissolve_delay_title}</span
+      >{/snippet}
+    {#snippet value()}<span class="value"
+        >{secondsToDuration({
+          seconds: neuron.dissolveDelaySeconds,
+          i18n: $i18n.time,
+        })}</span
+      >{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="age">
-    <span class="label" slot="key">{$i18n.neurons.age}</span>
-    <span class="value" slot="value" data-tid="nns-neuron-age">
-      {secondsToDuration({ seconds: neuronAge(neuron), i18n: $i18n.time })}
-    </span>
+    {#snippet key()}<span class="label">{$i18n.neurons.age}</span>{/snippet}
+    {#snippet value()}<span class="value" data-tid="nns-neuron-age">
+        {secondsToDuration({ seconds: neuronAge(neuron), i18n: $i18n.time })}
+      </span>{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="voting-power">
-    <span class="label" slot="key">{$i18n.neurons.voting_power}</span>
-    <span class="value" slot="value"
-      >{formatVotingPower(neuron.decidingVotingPower ?? 0n)}</span
-    >
+    {#snippet key()}<span class="label">{$i18n.neurons.voting_power}</span
+      >{/snippet}
+    {#snippet value()}<span class="value"
+        >{formatVotingPower(neuron.decidingVotingPower ?? 0n)}</span
+      >{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="maturity">
-    <span class="label" slot="key">{$i18n.neuron_detail.maturity_title}</span>
-    <span class="value" slot="value">{formattedTotalMaturity(neuron)}</span>
+    {#snippet key()}<span class="label"
+        >{$i18n.neuron_detail.maturity_title}</span
+      >{/snippet}
+    {#snippet value()}<span class="value">{formattedTotalMaturity(neuron)}</span
+      >{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="staked-maturity">
-    <span class="label" slot="key">{$i18n.neurons.staked}</span>
-    <span slot="value">{formattedStakedMaturity(neuron)}</span>
+    {#snippet key()}<span class="label">{$i18n.neurons.staked}</span>{/snippet}
+    {#snippet value()}<span>{formattedStakedMaturity(neuron)}</span>{/snippet}
   </KeyValuePair>
 </Card>
