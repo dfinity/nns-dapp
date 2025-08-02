@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/fccfa2c7c7cba9e5485ad0b48823990e24a67f40/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-24_03-31-base/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -23,10 +23,15 @@ pub struct Timers {
     pub requires_periodic_tasks: Option<bool>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct Extensions {
+    pub extension_canister_ids: Vec<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct SnsRootCanister {
     pub dapp_canister_ids: Vec<Principal>,
     pub timers: Option<Timers>,
     pub testflight: bool,
+    pub extensions: Option<Extensions>,
     pub archive_canister_ids: Vec<Principal>,
     pub governance_canister_id: Option<Principal>,
     pub index_canister_id: Option<Principal>,
@@ -158,6 +163,7 @@ pub struct ListSnsCanistersArg {}
 pub struct ListSnsCanistersResponse {
     pub root: Option<Principal>,
     pub swap: Option<Principal>,
+    pub extensions: Option<Extensions>,
     pub ledger: Option<Principal>,
     pub index: Option<Principal>,
     pub governance: Option<Principal>,
@@ -192,6 +198,24 @@ pub struct RegisterDappCanistersRequest {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterDappCanistersRet {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct RegisterExtensionRequest {
+    pub canister_id: Option<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct CanisterCallError {
+    pub code: Option<i32>,
+    pub description: String,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum RegisterExtensionResult {
+    Ok(EmptyRecord),
+    Err(CanisterCallError),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct RegisterExtensionResponse {
+    pub result: Option<RegisterExtensionResult>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ResetTimersArg {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ResetTimersRet {}
@@ -199,11 +223,6 @@ pub struct ResetTimersRet {}
 pub struct SetDappControllersRequest {
     pub canister_ids: Option<RegisterDappCanistersRequest>,
     pub controller_principal_ids: Vec<Principal>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct CanisterCallError {
-    pub code: Option<i32>,
-    pub description: String,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FailedUpdate {
@@ -255,6 +274,9 @@ impl Service {
         arg0: RegisterDappCanistersRequest,
     ) -> CallResult<(RegisterDappCanistersRet,)> {
         ic_cdk::call(self.0, "register_dapp_canisters", (arg0,)).await
+    }
+    pub async fn register_extension(&self, arg0: RegisterExtensionRequest) -> CallResult<(RegisterExtensionResponse,)> {
+        ic_cdk::call(self.0, "register_extension", (arg0,)).await
     }
     pub async fn reset_timers(&self, arg0: ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
         ic_cdk::call(self.0, "reset_timers", (arg0,)).await
