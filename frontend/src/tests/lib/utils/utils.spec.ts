@@ -12,7 +12,6 @@ import {
   mapEntries,
   poll,
   removeKeys,
-  sameBufferData,
   smallerVersion,
   splitE8sIntoChunks,
   stringifyJson,
@@ -26,6 +25,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { uint8ArraysEqual } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 describe("utils", () => {
@@ -895,19 +895,19 @@ describe("utils", () => {
 
   describe("sameBufferData", () => {
     it("returns true if same data", () => {
-      const a = new Uint16Array([1, 2, 3]).buffer;
-      const b = new Uint16Array([1, 2, 3]).buffer;
-      expect(sameBufferData(a, b)).toBe(true);
+      const a = new Uint8Array([1, 2, 3]);
+      const b = new Uint8Array([1, 2, 3]);
+      expect(uint8ArraysEqual({ a, b })).toBe(true);
     });
 
     it("returns false if not same data", () => {
-      const a = new Uint16Array([1, 2, 3]).buffer;
-      const b1 = new Uint16Array([1, 2, 4]).buffer;
-      expect(sameBufferData(a, b1)).toBe(false);
-      const b2 = new Uint16Array([1, 2]).buffer;
-      expect(sameBufferData(a, b2)).toBe(false);
-      const b3 = new Uint16Array([1, 2, 3, 4]).buffer;
-      expect(sameBufferData(a, b3)).toBe(false);
+      const a = new Uint8Array([1, 2, 3]);
+      const b1 = new Uint8Array([1, 2, 4]);
+      expect(uint8ArraysEqual({ a, b: b1 })).toBe(false);
+      const b2 = new Uint8Array([1, 2]);
+      expect(uint8ArraysEqual({ a, b: b2 })).toBe(false);
+      const b3 = new Uint8Array([1, 2, 3, 4]);
+      expect(uint8ArraysEqual({ a, b: b3 })).toBe(false);
     });
   });
 
