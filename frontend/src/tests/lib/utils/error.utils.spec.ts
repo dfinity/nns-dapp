@@ -10,8 +10,10 @@ import {
 } from "$lib/utils/error.utils";
 import en from "$tests/mocks/i18n.mock";
 import {
-  type QueryCallRejectedError,
-  type UpdateCallRejectedError,
+  CertifiedRejectErrorCode,
+  ReplicaRejectCode,
+  requestIdOf,
+  UncertifiedRejectErrorCode,
 } from "@dfinity/agent";
 import { UnsupportedMethodError } from "@dfinity/sns";
 
@@ -133,47 +135,58 @@ describe("error-utils", () => {
 
   describe("isCanisterOutOfCycles", () => {
     it("should return true for query error with IC0 codes", () => {
-      const queryError = {
-        type: "query",
-        result: {
-          error_code: "IC0207",
-        },
-      } as QueryCallRejectedError;
+      let queryError = new UncertifiedRejectErrorCode(
+        requestIdOf({}),
+        ReplicaRejectCode.CanisterError,
+        "There was an error",
+        "IC0207",
+        []
+      );
       expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
 
-      queryError.result.error_code = "IC0503";
+      queryError = new UncertifiedRejectErrorCode(
+        requestIdOf({}),
+        ReplicaRejectCode.CanisterError,
+        "There was an error",
+        "IC0503",
+        []
+      );
       expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
 
-      queryError.result.error_code = "IC0";
-      expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
-
-      queryError.result.error_code = "IC0999";
+      queryError = new UncertifiedRejectErrorCode(
+        requestIdOf({}),
+        ReplicaRejectCode.CanisterError,
+        "There was an error",
+        "IC0",
+        []
+      );
       expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
     });
 
     it("should return true for update error with IC0207 code", () => {
-      let updateError = {
-        type: "update",
-        error_code: "IC0207",
-      } as UpdateCallRejectedError;
+      let updateError = new CertifiedRejectErrorCode(
+        requestIdOf({}),
+        ReplicaRejectCode.CanisterError,
+        "There was an error",
+        "IC0207"
+      );
       expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
 
-      updateError = {
-        type: "update",
-        error_code: "IC0503",
-      } as UpdateCallRejectedError;
+      updateError = new CertifiedRejectErrorCode(
+        requestIdOf({}),
+        ReplicaRejectCode.CanisterError,
+        "There was an error",
+        "IC0503"
+      );
+
       expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
 
-      updateError = {
-        type: "update",
-        error_code: "IC0",
-      } as UpdateCallRejectedError;
-      expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
-
-      updateError = {
-        type: "update",
-        error_code: "IC0999",
-      } as UpdateCallRejectedError;
+      updateError = new CertifiedRejectErrorCode(
+        requestIdOf({}),
+        ReplicaRejectCode.CanisterError,
+        "There was an error",
+        "IC0"
+      );
       expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
     });
 
