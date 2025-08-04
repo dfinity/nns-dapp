@@ -1,8 +1,11 @@
 import { FETCH_ROOT_KEY } from "$lib/constants/environment.constants";
 import {
   type Agent,
+  type AgentLog,
   type ApiQueryResponse,
   type CallOptions,
+  ErrorKindEnum,
+  ExternalError,
   type HttpAgent,
   type Identity,
   IdentityInvalidErrorCode,
@@ -45,9 +48,7 @@ class IdentityAgentWrapper implements Agent {
     const usedIdentity =
       overrideIdentity !== undefined ? overrideIdentity : this.identity;
     if (isNullish(usedIdentity)) {
-      throw new IdentityInvalidError(
-        "This identity has expired due this application's security policy. Please refresh your authentication."
-      );
+      throw ExternalError.fromCode(new IdentityInvalidErrorCode());
     }
     return usedIdentity;
   }
@@ -133,11 +134,7 @@ const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
   if (
     logEntry.level != "error" ||
     !logEntry.message.includes("Invalid signature") ||
-    !(
-      logEntry.error instanceof AgentCallError ||
-      logEntry.error instanceof AgentQueryError ||
-      logEntry.error instanceof AgentReadStateError
-    )
+    logEntry.error.kind !== ErrorKindEnum.Trust
   ) {
     return;
   }
@@ -145,10 +142,10 @@ const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
   localStorage.setItem(
     INVALID_SIGNATURE_DEBUG_INFO_KEY,
     JSON.stringify({
-      requestId: logEntry.error.requestId,
-      senderPubkey: logEntry.error.senderPubkey,
-      senderSig: logEntry.error.senderSig,
-      ingressExpiry: logEntry.error.ingressExpiry,
+      requestId: logEntry.error.code.requestContext?.requestId,
+      senderPubkey: logEntry.error.code.requestContext?.senderPubKey,
+      senderSig: logEntry.error.code.requestContext?.senderSignature,
+      ingressExpiry: logEntry.error.code.requestContext?.ingressExpiry,
       debugInfoRecordedTimestamp: new Date().toISOString(),
     })
   );
