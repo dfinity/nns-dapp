@@ -139,13 +139,16 @@ const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
     return;
   }
 
+  const requestContext = logEntry.error.code.requestContext;
+  if (isNullish(requestContext)) return;
+
   localStorage.setItem(
     INVALID_SIGNATURE_DEBUG_INFO_KEY,
     JSON.stringify({
-      requestId: logEntry.error.code.requestContext?.requestId,
-      senderPubkey: logEntry.error.code.requestContext?.senderPubKey,
-      senderSig: logEntry.error.code.requestContext?.senderSignature,
-      ingressExpiry: logEntry.error.code.requestContext?.ingressExpiry,
+      requestId: requestContext.requestId,
+      senderPubkey: requestContext.senderPubKey,
+      senderSig: requestContext.senderSignature,
+      ingressExpiry: requestContext.ingressExpiry,
       debugInfoRecordedTimestamp: new Date().toISOString(),
     })
   );
