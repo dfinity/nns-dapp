@@ -4,7 +4,6 @@ import {
   type AgentLog,
   type ApiQueryResponse,
   type CallOptions,
-  ErrorKindEnum,
   ExternalError,
   type HttpAgent,
   type Identity,
@@ -133,8 +132,7 @@ const INVALID_SIGNATURE_DEBUG_INFO_KEY = "invalidSignatureDebugInfo";
 const storeInvalidSignatureDebugInfo = (logEntry: AgentLog) => {
   if (
     logEntry.level != "error" ||
-    !logEntry.message.includes("Invalid signature") ||
-    logEntry.error.kind !== ErrorKindEnum.Trust
+    !logEntry.message.includes("Invalid signature")
   ) {
     return;
   }

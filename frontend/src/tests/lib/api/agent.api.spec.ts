@@ -599,7 +599,7 @@ describe("agent-api", () => {
         senderSignature: newSenderSignature,
         ingressExpiry: newIngressExpiry,
       };
-      const newError = new AgentError(errorCode, ErrorKindEnum.Trust);
+      const newError = new AgentError(errorCode, ErrorKindEnum.Unknown);
 
       const newInvalidSignatureLogEntry: AgentLog = {
         message: invalidSignatureMessage,
