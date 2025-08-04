@@ -5,7 +5,10 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import {
+  getTestFeatureFlag,
+  overrideFeatureFlagsStore,
+} from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
@@ -82,8 +85,11 @@ describe("ProjectsTable", () => {
       const po = renderComponent();
       expect(await po.getDesktopColumnHeaders()).toEqual([
         "Nervous Systems",
+        "",
         "Stake",
+        "",
         "Maturity",
+        "",
         "Neurons",
         "", // No header for actions column.
       ]);
@@ -94,8 +100,11 @@ describe("ProjectsTable", () => {
       const rows = await po.getRows();
       expect(await rows[0].getCellAlignments()).toEqual([
         "desktop-align-left", // Nervous Systems
+        "desktop-align-left",
         "desktop-align-right", // Stake
+        "desktop-align-left",
         "desktop-align-right", // Maturity
+        "desktop-align-left",
         "desktop-align-right", // Neurons
         "desktop-align-right", // Actions
       ]);
@@ -105,10 +114,19 @@ describe("ProjectsTable", () => {
       const po = renderComponent();
 
       expect(await po.getDesktopGridTemplateColumns()).toBe(
-        ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
+        [
+          "minmax(min-content, max-content)",
+          "1fr",
+          "max-content",
+          "1fr",
+          "max-content",
+          "1fr",
+          "max-content",
+          "max-content",
+        ].join(" ")
       );
       expect(await po.getMobileGridTemplateAreas()).toBe(
-        '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
+        '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
       );
     });
   });
@@ -117,9 +135,11 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
     expect(await po.getDesktopColumnHeaders()).toEqual([
       "Nervous Systems",
+      "",
       "Stake",
-      "APY (max APY)",
+      "",
       "Maturity",
+      "",
       "Neurons",
       "", // No header for actions column.
     ]);
@@ -138,9 +158,11 @@ describe("ProjectsTable", () => {
     const rows = await po.getRows();
     expect(await rows[0].getCellAlignments()).toEqual([
       "desktop-align-left", // Nervous Systems
+      "desktop-align-left",
       "desktop-align-right", // Stake
-      "desktop-align-right", // APY
+      "desktop-align-left",
       "desktop-align-right", // Maturity
+      "desktop-align-left",
       "desktop-align-right", // Neurons
       "desktop-align-right", // Actions
     ]);
@@ -150,10 +172,19 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
-      ["2fr", "1fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
+      [
+        "minmax(min-content, max-content)",
+        "1fr",
+        "max-content",
+        "1fr",
+        "max-content",
+        "1fr",
+        "max-content",
+        "max-content",
+      ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3"'
+      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
     );
   });
 
@@ -190,10 +221,16 @@ describe("ProjectsTable", () => {
     expect(await rowPos[1].getStake()).toBe("");
   });
 
-  it("should render apy as -/- when not loaded", async () => {
+  it("should render apy as -/- when not loaded (in new tables)", async () => {
     const po = renderComponent();
     const rowPos = await po.getProjectsTableRowPos();
     expect(rowPos).toHaveLength(2);
+
+    if (getTestFeatureFlag("ENABLE_NEW_TABLES") === false) {
+      expect(await rowPos[0].getProjectApyCellPo().isPresent()).toBe(false);
+      return;
+    }
+
     expect(
       await rowPos[0]
         .getProjectApyCellPo()
@@ -322,7 +359,11 @@ describe("ProjectsTable", () => {
       expect(await rowPos[1].getStake()).toBe("2.00 TOK");
     });
 
-    it("should render apy", async () => {
+    it("should render apy (in new tables)", async () => {
+      if (getTestFeatureFlag("ENABLE_NEW_TABLES") === false) {
+        return;
+      }
+
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
