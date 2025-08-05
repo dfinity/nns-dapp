@@ -360,9 +360,7 @@ describe("ProjectsTable", () => {
     });
 
     it("should render apy (in new tables)", async () => {
-      if (getTestFeatureFlag("ENABLE_NEW_TABLES") === false) {
-        return;
-      }
+      overrideFeatureFlagsStore.setFlag("ENABLE_NEW_TABLES", true);
 
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
