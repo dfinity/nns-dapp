@@ -11,6 +11,7 @@ import {
 import type { ToastMsg } from "$lib/types/toast";
 import { translate, type I18nSubstitutions } from "$lib/utils/i18n.utils";
 import {
+  AgentError,
   CertifiedRejectErrorCode,
   UncertifiedRejectErrorCode,
 } from "@dfinity/agent";
@@ -189,13 +190,17 @@ export const isMethodNotSupportedError = (err: unknown): boolean =>
 
 // TOOD: Rename the function for generic errors
 export const isCanisterOutOfCyclesError = (error: unknown): boolean => {
+  if (!(error instanceof AgentError)) return false;
+
+  const { code } = error;
+
   if (
-    !(error instanceof UncertifiedRejectErrorCode) &&
-    !(error instanceof CertifiedRejectErrorCode)
+    !(code instanceof UncertifiedRejectErrorCode) &&
+    !(code instanceof CertifiedRejectErrorCode)
   )
     return false;
 
-  const { rejectErrorCode } = error;
+  const { rejectErrorCode } = code;
 
   if (isNullish(rejectErrorCode)) return false;
 

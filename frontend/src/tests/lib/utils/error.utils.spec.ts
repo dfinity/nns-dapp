@@ -10,7 +10,9 @@ import {
 } from "$lib/utils/error.utils";
 import en from "$tests/mocks/i18n.mock";
 import {
+  AgentError,
   CertifiedRejectErrorCode,
+  ErrorKindEnum,
   ReplicaRejectCode,
   requestIdOf,
   UncertifiedRejectErrorCode,
@@ -135,58 +137,64 @@ describe("error-utils", () => {
 
   describe("isCanisterOutOfCycles", () => {
     it("should return true for query error with IC0 codes", () => {
-      let queryError = new UncertifiedRejectErrorCode(
+      let queryErrorCode = new UncertifiedRejectErrorCode(
         requestIdOf({}),
         ReplicaRejectCode.CanisterError,
         "There was an error",
         "IC0207",
         []
       );
+      let queryError = new AgentError(queryErrorCode, ErrorKindEnum.Unknown);
       expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
 
-      queryError = new UncertifiedRejectErrorCode(
+      queryErrorCode = new UncertifiedRejectErrorCode(
         requestIdOf({}),
         ReplicaRejectCode.CanisterError,
         "There was an error",
         "IC0503",
         []
       );
+      queryError = new AgentError(queryErrorCode, ErrorKindEnum.Unknown);
       expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
 
-      queryError = new UncertifiedRejectErrorCode(
+      queryErrorCode = new UncertifiedRejectErrorCode(
         requestIdOf({}),
         ReplicaRejectCode.CanisterError,
         "There was an error",
         "IC0",
         []
       );
+      queryError = new AgentError(queryErrorCode, ErrorKindEnum.Unknown);
       expect(isCanisterOutOfCyclesError(queryError)).toBe(true);
     });
 
     it("should return true for update error with IC0207 code", () => {
-      let updateError = new CertifiedRejectErrorCode(
+      let updateErrorCode = new CertifiedRejectErrorCode(
         requestIdOf({}),
         ReplicaRejectCode.CanisterError,
         "There was an error",
         "IC0207"
       );
+      let updateError = new AgentError(updateErrorCode, ErrorKindEnum.Unknown);
       expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
 
-      updateError = new CertifiedRejectErrorCode(
+      updateErrorCode = new CertifiedRejectErrorCode(
         requestIdOf({}),
         ReplicaRejectCode.CanisterError,
         "There was an error",
         "IC0503"
       );
 
+      updateError = new AgentError(updateErrorCode, ErrorKindEnum.Unknown);
       expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
 
-      updateError = new CertifiedRejectErrorCode(
+      updateErrorCode = new CertifiedRejectErrorCode(
         requestIdOf({}),
         ReplicaRejectCode.CanisterError,
         "There was an error",
         "IC0"
       );
+      updateError = new AgentError(updateErrorCode, ErrorKindEnum.Unknown);
       expect(isCanisterOutOfCyclesError(updateError)).toBe(true);
     });
 
