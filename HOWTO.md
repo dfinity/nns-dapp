@@ -46,6 +46,8 @@ More information [here](https://dfinity.slack.com/archives/C039M7YS6F6/p17536961
 
 ### How To Update
 
+- Update [ic-js](https://github.com/dfinity/ic-js) to be aware of the new Action.
+- Bump ic-js in the nns-dapp to contain the new Action.
 - Upgrade the candid bindings to the latest version. A bot job runs automatically every week to perform this task. If you prefer to do it manually, you can run the action manually [here](https://github.com/dfinity/nns-dapp/actions/workflows/update-proposals.yml). This job updates both the candid files and the IC dependency.
 - Add the i18n label in `en.governance.json`.
 
