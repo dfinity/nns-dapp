@@ -1,25 +1,29 @@
 import * as agentApi from "$lib/api/agent.api";
 import { mockCreateAgent } from "$tests/mocks/agent.mock";
-import type {
-  Agent,
-  AgentLog,
-  ApiQueryResponse,
-  CallOptions,
-  HttpAgent,
-  Identity,
-  ObserveFunction,
-  QueryFields,
-  ReadStateOptions,
-  SubmitResponse,
+import {
+  AgentError,
+  ErrorKindEnum,
+  Expiry,
+  IdentityInvalidErrorCode,
+  type Agent,
+  type AgentLog,
+  type ApiQueryResponse,
+  type CallOptions,
+  type HttpAgent,
+  type Identity,
+  type ObserveFunction,
+  type QueryFields,
+  type ReadStateOptions,
+  type RequestId,
+  type SubmitResponse,
 } from "@dfinity/agent";
-import { AgentCallError } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
 import * as utils from "@dfinity/utils";
 import type { Mocked } from "vitest";
 
 const host = "http://localhost:8000";
-const testPrincipal1 = Principal.fromHex("123123123");
-const testPrincipal2 = Principal.fromHex("456456456");
+const testPrincipal1 = Principal.fromHex("12312312");
+const testPrincipal2 = Principal.fromHex("45645645");
 
 const createIdentity = (principal: Principal) =>
   ({
@@ -447,35 +451,25 @@ describe("agent-api", () => {
 
     const invalidSignatureMessage =
       "Error while making call: Server returned an error:\n Code: 400 (Bad Request)\n  Body: Invalid signature: Invalid basic signature: EcdsaP256 signature could not be verified: public key 04219a05346288ccd0a293a341790087152e8cf332219b6f66a69ebac3383a78e2aa8c14a7a944190ca1a0040e353f18056e9ec7fcb128860f4318c207d589c429, signature 9b9facce1f719d6dc177243df0a196f04c794b2d46b9b01c7723f3f58bf348addb3af491331af8785e25b1c2cd93afd4db627da3ec4183c566dec5fca0713341, error: verification failed\n";
-    const response = {
-      ok: false,
-      status: 400,
-      statusText: "Bad Request",
-      headers: [
-        ["content-length", "396"] as [string, string],
-        ["content-type", "text/plain; charset=utf-8"] as [string, string],
-      ],
-    };
-    const requestId =
-      "436fdf3d349c375f1018f8fa6612bed1988cc000ccdb26e5c0f292a75994cea1";
-    const senderPubkey =
-      "303c300c060a2b0601040183b8430102032c000a000000000000000b01013c658db985648bbc2f58bc796f82cc94e8695f790fa7f676788b37513116d68a";
-    const senderSig =
-      "9b9facce1f719d6dc177243df0a196f04c794b2d46b9b01c7723f3f58bf348addb3af491331af8785e25b1c2cd93afd4db627da3ec4183c566dec5fca0713341";
-    const ingressExpiry = "1738765560000000000";
 
-    const invalidSignatureError = new AgentCallError(
-      invalidSignatureMessage,
-      response,
+    const requestId = new Uint8Array(1) as RequestId;
+    const senderPubKey = new Uint8Array(1);
+    const senderSignature = new Uint8Array(1);
+    const ingressExpiry = Expiry.fromDeltaInMilliseconds(1);
+
+    const errorCode = new IdentityInvalidErrorCode();
+    errorCode.requestContext = {
       requestId,
-      senderPubkey,
-      senderSig,
-      ingressExpiry
-    );
+      senderPubKey,
+      senderSignature,
+      ingressExpiry,
+    };
+    const error = new AgentError(errorCode, ErrorKindEnum.Trust);
+
     const invalidSignatureLogEntry: AgentLog = {
       message: invalidSignatureMessage,
       level: "error",
-      error: invalidSignatureError,
+      error,
     };
 
     beforeEach(async () => {
@@ -508,8 +502,8 @@ describe("agent-api", () => {
 
       const expectedDebugInfo = JSON.stringify({
         requestId,
-        senderPubkey,
-        senderSig,
+        senderPubkey: senderPubKey,
+        senderSig: senderSignature,
         ingressExpiry,
         debugInfoRecordedTimestamp: new Date().toISOString(),
       });
@@ -583,8 +577,8 @@ describe("agent-api", () => {
 
       const expectedDebugInfo = JSON.stringify({
         requestId,
-        senderPubkey,
-        senderSig,
+        senderPubkey: senderPubKey,
+        senderSig: senderSignature,
         ingressExpiry,
         debugInfoRecordedTimestamp: new Date().toISOString(),
       });
@@ -593,32 +587,32 @@ describe("agent-api", () => {
         expectedDebugInfo
       );
 
-      const newRequestId = requestId + "new";
-      const newSenderPubkey = senderPubkey + "new";
-      const newSenderSig = senderSig + "new";
-      const newIngressExpiry = ingressExpiry + "new";
+      const newRequestId = new Uint8Array(2) as RequestId;
+      const newSenderPubKey = new Uint8Array(2);
+      const newSenderSignature = new Uint8Array(2);
+      const newIngressExpiry = Expiry.fromDeltaInMilliseconds(2);
 
-      const newInvalidSignatureError = new AgentCallError(
-        invalidSignatureMessage,
-        response,
-        newRequestId,
-        newSenderPubkey,
-        newSenderSig,
-        newIngressExpiry
-      );
+      const errorCode = new IdentityInvalidErrorCode();
+      errorCode.requestContext = {
+        requestId: newRequestId,
+        senderPubKey: newSenderPubKey,
+        senderSignature: newSenderSignature,
+        ingressExpiry: newIngressExpiry,
+      };
+      const newError = new AgentError(errorCode, ErrorKindEnum.Unknown);
 
       const newInvalidSignatureLogEntry: AgentLog = {
         message: invalidSignatureMessage,
         level: "error",
-        error: newInvalidSignatureError,
+        error: newError,
       };
 
       logSubscriber(newInvalidSignatureLogEntry);
 
       const newExpectedDebugInfo = JSON.stringify({
         requestId: newRequestId,
-        senderPubkey: newSenderPubkey,
-        senderSig: newSenderSig,
+        senderPubkey: newSenderPubKey,
+        senderSig: newSenderSignature,
         ingressExpiry: newIngressExpiry,
         debugInfoRecordedTimestamp: new Date().toISOString(),
       });

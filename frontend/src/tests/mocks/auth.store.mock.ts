@@ -23,7 +23,9 @@ export const mockIdentity = {
 } as unknown as Identity;
 
 export const createMockIdentity = (p: number) => {
-  const principal = Principal.fromHex(p.toString(16));
+  const hexString = p.toString(16);
+  const paddedHex = hexString.length % 2 === 0 ? hexString : "0" + hexString;
+  const principal = Principal.fromHex(paddedHex);
   return {
     getPrincipal: () => principal,
     transformRequest,
