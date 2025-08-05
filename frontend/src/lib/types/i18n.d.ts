@@ -352,12 +352,16 @@ interface I18nStaking {
   text: string;
   nervous_systems: string;
   nervous_systems_nns: string;
+  nervous_systems_nns_subtitle: string;
   nervous_systems_sns: string;
+  nervous_systems_sns_subtitle: string;
   nervous_systems_sns_sunset: string;
+  nervous_systems_sns_sunset_subtitle: string;
   hide_no_neurons_header: string;
   hide_no_neurons_toggle_label: string;
   hide_no_neurons_table_hint: string;
   show_all: string;
+  bottom_disclaimer: string;
 }
 
 interface I18nNeurons {
@@ -810,6 +814,8 @@ interface I18nNeuron_detail {
   disburse_maturity_confirmation_destination: string;
   disburse_maturity_edit: string;
   stake: string;
+  apy_and_max: string;
+  apy_and_max_tooltip: string;
   spawn_neuron: string;
   spawn: string;
   disburse_stake_disabled_tooltip_zero: string;
@@ -1324,9 +1330,13 @@ interface I18nSync {
 interface I18nTokens {
   projects_header: string;
   projects_header_icp: string;
+  projects_header_icp_subtitle: string;
   projects_header_ck: string;
+  projects_header_ck_subtitle: string;
   projects_header_sns: string;
+  projects_header_sns_subtitle: string;
   projects_header_imported: string;
+  projects_header_imported_subtitle: string;
   balance_header: string;
   accounts_header: string;
   settings_button: string;
@@ -1424,6 +1434,9 @@ interface I18nPortfolio {
   apy_card_tooltip_staking_ratio: string;
   apy_card_tooltip_no_rewards: string;
   apy_card_tooltip_error: string;
+  start_staking_card_title: string;
+  start_staking_card_content: string;
+  start_staking_card_link: string;
 }
 
 interface I18nHighlight {
@@ -1533,6 +1546,7 @@ interface I18nActions {
   InstallCode: string;
   StopOrStartCanister: string;
   UpdateCanisterSettings: string;
+  FulfillSubnetRentalRequest: string;
 }
 
 interface I18nActions_description {
@@ -1551,6 +1565,7 @@ interface I18nActions_description {
   InstallCode: string;
   StopOrStartCanister: string;
   UpdateCanisterSettings: string;
+  FulfillSubnetRentalRequest: string;
 }
 
 interface I18nNns_functions {

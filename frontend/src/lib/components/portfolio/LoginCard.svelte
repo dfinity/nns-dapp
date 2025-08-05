@@ -11,8 +11,8 @@
       <IconUserLogin />
     </div>
     <div class="content">
-      <h2>{$i18n.portfolio.login_title}</h2>
-      <p>{$i18n.portfolio.login_description}</p>
+      <h2 class="title">{$i18n.portfolio.login_title}</h2>
+      <p class="description">{$i18n.portfolio.login_description}</p>
     </div>
     <div class="action">
       <SignIn />
@@ -54,8 +54,17 @@
         margin: 0;
         padding: 0;
       }
-      p {
-        color: var(--color-text-secondary);
+
+      .title {
+        font-family: CircularXX;
+        font-size: 20px;
+        font-weight: 450;
+        line-height: 26px;
+
+        @include media.min-width(small) {
+          font-size: 24px;
+          line-height: 32px;
+        }
       }
     }
 

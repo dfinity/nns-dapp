@@ -1,4 +1,5 @@
 import type { NeuronsTableVoteDelegationState } from "$lib/types/neurons-table";
+import { NeuronApyCellPo } from "$tests/page-objects/NeuronApyCell.page-object";
 import { NeuronIdCellPo } from "$tests/page-objects/NeuronIdCell.page-object";
 import { NeuronMaturityCellPo } from "$tests/page-objects/NeuronMaturityCell.page-object";
 import { NeuronStakeCellPo } from "$tests/page-objects/NeuronStakeCell.page-object";
@@ -28,6 +29,10 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
     return NeuronStakeCellPo.under(this.root);
   }
 
+  getNeuronApyCellPo(): NeuronApyCellPo {
+    return NeuronApyCellPo.under(this.root);
+  }
+
   getNeuronMaturityCellPo(): NeuronMaturityCellPo {
     return NeuronMaturityCellPo.under(this.root);
   }
@@ -50,6 +55,17 @@ export class NeuronsTableRowPo extends ResponsiveTableRowPo {
 
   getStake(): Promise<string> {
     return this.getNeuronStakeCellPo().getStake();
+  }
+
+  getCurrentApy(): Promise<string> {
+    return this.getNeuronApyCellPo()
+      .getApyDisplayPo()
+      .getCurrentApy()
+      .getText();
+  }
+
+  getMaxApy(): Promise<string> {
+    return this.getNeuronApyCellPo().getApyDisplayPo().getMaxApy().getText();
   }
 
   getStakeInUsd(): Promise<string> {

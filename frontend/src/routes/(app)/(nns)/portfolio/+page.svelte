@@ -18,28 +18,21 @@
     resetBalanceLoading,
   } from "$lib/services/accounts-balances.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
-  import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
-  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
-  import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
-  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import {
     openSnsProposalsStore,
     snsProposalsStoreIsLoading,
   } from "$lib/stores/sns.store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { UserToken } from "$lib/types/tokens-page";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
-  import { getStakingRewardData } from "$lib/utils/staking-rewards.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
   import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { onDestroy } from "svelte";
 
   resetBalanceLoading();
-  loadIcpSwapTickers();
   loadCkBTCTokens();
 
   let userTokens: UserToken[];
@@ -71,48 +64,6 @@
   $: if ($snsProposalsStoreIsLoading) {
     loadProposalsSnsCF({ omitLargeFields: false });
   }
-
-  let stakingRewardData = getStakingRewardData({
-    auth: $authSignedInStore,
-    tokens: userTokens,
-    snsProjects: $snsAggregatorStore,
-    snsNeurons: $snsNeuronsStore,
-    nnsNeurons: $neuronsStore,
-    nnsEconomics: $networkEconomicsStore,
-    fxRates: $icpSwapUsdPricesStore,
-    governanceMetrics: $governanceMetricsStore,
-    nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-  });
-
-  let debounceTimer: ReturnType<typeof setTimeout>;
-  let prevAuthState = $authSignedInStore;
-  $: {
-    clearTimeout(debounceTimer);
-    const refreshData = () =>
-      (stakingRewardData = getStakingRewardData({
-        auth: $authSignedInStore,
-        tokens: userTokens,
-        snsProjects: $snsAggregatorStore,
-        snsNeurons: $snsNeuronsStore,
-        nnsNeurons: $neuronsStore,
-        nnsEconomics: $networkEconomicsStore,
-        fxRates: $icpSwapUsdPricesStore,
-        governanceMetrics: $governanceMetricsStore,
-        nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-      }));
-
-    if ($authSignedInStore !== prevAuthState) {
-      // No debounce if auth state changes, refresh immediately
-      prevAuthState = $authSignedInStore;
-      refreshData();
-    } else {
-      debounceTimer = setTimeout(refreshData, 500);
-    }
-  }
-
-  onDestroy(() => {
-    clearTimeout(debounceTimer);
-  });
 </script>
 
 <TestIdWrapper testId="portfolio-route-component"
@@ -125,6 +76,7 @@
       snsNeurons: $snsNeuronsStore,
       icpSwapUsdPrices: $icpSwapUsdPricesStore,
       failedActionableSnses: $failedActionableSnsesStore,
+      stakingRewardsResult: $stakingRewardsStore,
     })}
     snsProjects={filterProjectsStatus({
       swapLifecycle: SnsSwapLifecycle.Open,
@@ -135,6 +87,6 @@
       projects: $snsProjectsActivePadStore,
     })}
     openSnsProposals={$openSnsProposalsStore}
-    stakingRewardResult={stakingRewardData}
+    stakingRewardResult={$stakingRewardsStore}
   /></TestIdWrapper
 >

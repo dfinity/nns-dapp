@@ -22,6 +22,7 @@ export interface ResponsiveTableColumn<
 > {
   id?: IdType;
   title: string;
+  subtitle?: string;
   cellComponent?: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
   alignment: ColumnAlignment;
   templateColumns: TemplateItem[];

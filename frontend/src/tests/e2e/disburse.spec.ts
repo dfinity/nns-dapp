@@ -1,10 +1,15 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  disableCssAnimations,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test disburse neuron", async ({ page, context }) => {
   await page.goto("/");
+  await await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -27,7 +32,7 @@ test("Test disburse neuron", async ({ page, context }) => {
   const icpRowBeforeDisburse = await appPo
     .getTokensPo()
     .getTokensPagePo()
-    .getIcpTokensTable()
+    .getTokensTable()
     .getRowByName("Internet Computer");
   await icpRowBeforeDisburse.waitForBalance();
   const mainAccountBalanceBeforeDisburse =
@@ -57,7 +62,7 @@ test("Test disburse neuron", async ({ page, context }) => {
   const icpRowAfterDisburse = await appPo
     .getTokensPo()
     .getTokensPagePo()
-    .getIcpTokensTable()
+    .getTokensTable()
     .getRowByName("Internet Computer");
   await icpRowAfterDisburse.waitForBalance();
   const mainAccountBalanceAfterDisburse =

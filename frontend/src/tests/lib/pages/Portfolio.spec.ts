@@ -119,6 +119,12 @@ describe("Portfolio page", () => {
       expect(await po.getLoginCard().isPresent()).toBe(true);
     });
 
+    it("should display the StartStakingCard", async () => {
+      const po = renderPage();
+
+      expect(await po.getStartStakingCard().isPresent()).toBe(true);
+    });
+
     it("should not show TotalAssetsCard", async () => {
       const po = renderPage();
 
@@ -132,17 +138,7 @@ describe("Portfolio page", () => {
       expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
     });
 
-    it("should show StackedCards when snsProjects is not empty", async () => {
-      const mockSnsProjects: SnsFullProject[] = [mockSnsFullProject];
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(1);
-    });
-
-    it("should show both cards with default data", async () => {
+    it("should show empty cards", async () => {
       const po = renderPage({
         tableProjects: mockTableProjects,
         userTokens: mockTokens,
@@ -170,6 +166,16 @@ describe("Portfolio page", () => {
       expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
       expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(false);
       expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(false);
+    });
+
+    it("should show StackedCards when snsProjects is not empty", async () => {
+      const mockSnsProjects: SnsFullProject[] = [mockSnsFullProject];
+      const po = renderPage({ snsProjects: mockSnsProjects });
+      const stackedCardsPo = po.getStackedCardsPo();
+      const cardWrappers = await stackedCardsPo.getCardWrappers();
+
+      expect(await stackedCardsPo.isPresent()).toBe(true);
+      expect(cardWrappers.length).toBe(1);
     });
   });
 
@@ -242,25 +248,6 @@ describe("Portfolio page", () => {
       const stackedCardsPo = po.getStackedCardsPo();
 
       expect(await stackedCardsPo.isPresent()).toBe(false);
-    });
-
-    it("should show a full width TotalAssetsCard when no stacked cards", async () => {
-      const po = renderPage();
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
-
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
-    });
-
-    it("should show a not full width TotalAssetsCard when stacked cards is not empty", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
     });
 
     it("should display StackedCards when snsProjects is not empty", async () => {
@@ -484,8 +471,26 @@ describe("Portfolio page", () => {
 
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_LAUNCHPAD_REDESIGN", true);
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
       resetIdentity();
+    });
+
+    it("should show a full width TotalAssetsCard by default", async () => {
+      const po = renderPage();
+      const totalAssetsCardPo = po.getTotalAssetsCardPo();
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+
+      expect(await totalAssetsCardPo.isPresent()).toBe(true);
+      expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
+    });
+
+    it("should not show a full width TotalAssetsCard when there are cards", async () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+      const po = renderPage({ snsProjects: mockSnsProjects });
+      const totalAssetsCardPo = po.getTotalAssetsCardPo();
+
+      expect(await totalAssetsCardPo.isPresent()).toBe(true);
+      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
     });
 
     it("should not display StackedCards if no snsProjects nor proposals for new sns", async () => {
@@ -493,24 +498,6 @@ describe("Portfolio page", () => {
       const stackedCardsPo = po.getStackedCardsPo();
 
       expect(await stackedCardsPo.isPresent()).toBe(false);
-    });
-
-    it("should not show a full width TotalAssetsCard when no stacked cards but APY FF is on", async () => {
-      const po = renderPage();
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
-    });
-
-    it("should show a not full width TotalAssetsCard when stacked cards is not empty", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
     });
 
     it("should display StackedCards when snsProjects is not empty", async () => {
@@ -800,6 +787,12 @@ describe("Portfolio page", () => {
       const po = renderPage();
 
       expect(await po.getLoginCard().isPresent()).toBe(false);
+    });
+
+    it("should not display the StartStakingCard when the user is logged in", async () => {
+      const po = renderPage();
+
+      expect(await po.getStartStakingCard().isPresent()).toBe(false);
     });
 
     describe("NoHeldTokensCard", () => {

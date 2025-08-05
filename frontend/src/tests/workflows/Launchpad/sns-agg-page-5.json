@@ -27,6 +27,61 @@
       "description": "The TACO DAO introduces a transformative approach to digital asset  collaboration as a DAO that actively manages a diverse portfolio of digital assets.  By pooling the collective intelligence of its community, it ensures a well-informed  and stable management strategy. This innovative model not only encourages market  adaptability but cultivates a learning environment where both novice and seasoned  DAO members gain insights through collaborative decision-making, leading to  sustainable, long-term growth in the volatile world of cryptocurrency.\n",
       "logo": "/v1/sns/root/lacdn-3iaaa-aaaaq-aae3a-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 12707777371395,
+              "amount_e8s": 9966051381395,
+              "account": {
+                "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753928148
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 359056155929760,
+              "account": {
+                "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
+                "subaccount": {
+                  "subaccount": [
+                    171, 90, 170, 66, 11, 254, 250, 66, 68, 136, 94, 27, 89, 52,
+                    117, 105, 186, 250, 203, 20, 78, 203, 101, 120, 254, 58,
+                    237, 92, 215, 114, 220, 120
+                  ]
+                }
+              },
+              "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753928148
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 292845739083206,
+            "timestamp_seconds": 1753928148
+          },
+          "last_ledger_block_timestamp": 1753930351,
+          "num_recently_executed_proposals": 67,
+          "num_recently_submitted_proposals": 67,
+          "genesis_timestamp_seconds": 1746713375
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753884585,
+      "end_timestamp_seconds": 1753884575,
+      "total_available_e8s_equivalent": 0,
+      "distributed_e8s_equivalent": 0,
+      "round": 83,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -180,7 +235,7 @@
           "description": "Registers a token as trusted given its ledger id.",
           "function_type": {
             "GenericNervousSystemFunction": {
-              "topic": "CriticalDappOperations",
+              "topic": "DappCanisterManagement",
               "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
               "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
               "validator_method_name": "validate_addToken",
@@ -326,7 +381,7 @@
       [
         "icrc1:name",
         {
-          "Text": "TACO DAO Token"
+          "Text": "TACO"
         }
       ],
       [
@@ -361,7 +416,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777777383080000,
+    "icrc1_total_supply": 777777263420000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -547,7 +602,22 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1001,
+              "name": "addToken",
+              "description": "Registers a token as trusted given its ledger id.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
+                  "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
+                  "validator_method_name": "validate_addToken",
+                  "target_method_name": "addToken"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [],
@@ -646,22 +716,7 @@
           "is_critical": true,
           "name": "Critical Dapp Operations",
           "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
-          "custom_functions": [
-            {
-              "id": 1001,
-              "name": "addToken",
-              "description": "Registers a token as trusted given its ledger id.",
-              "function_type": {
-                "GenericNervousSystemFunction": {
-                  "topic": "CriticalDappOperations",
-                  "validator_canister_id": "th44n-iyaaa-aaaan-qzz5a-cai",
-                  "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
-                  "validator_method_name": "validate_addToken",
-                  "target_method_name": "addToken"
-                }
-              }
-            }
-          ]
+          "custom_functions": []
         }
       ]
     }

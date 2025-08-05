@@ -30,6 +30,65 @@
       "description": "A decentralised music platform governed by artists and fans.\n",
       "logo": "/v1/sns/root/ecu3s-hiaaa-aaaaq-aacaq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 31473381681860,
+              "amount_e8s": 1052874341860,
+              "account": {
+                "owner": "elxqo-raaaa-aaaaq-aacba-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753926397
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 50026666589400000,
+              "account": {
+                "owner": "elxqo-raaaa-aaaaq-aacba-cai",
+                "subaccount": {
+                  "subaccount": [
+                    48, 150, 127, 234, 133, 198, 11, 196, 194, 163, 48, 168,
+                    220, 135, 28, 193, 123, 224, 215, 159, 118, 124, 224, 134,
+                    113, 96, 3, 7, 130, 208, 177, 108
+                  ]
+                }
+              },
+              "ledger_canister_id": "emww2-4yaaa-aaaaq-aacbq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753926397
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 66090438440952523,
+            "timestamp_seconds": 1753926397
+          },
+          "last_ledger_block_timestamp": 1753928200,
+          "num_recently_executed_proposals": 15,
+          "num_recently_submitted_proposals": 16,
+          "genesis_timestamp_seconds": 1702635311
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753870519,
+      "end_timestamp_seconds": 1753870511,
+      "total_available_e8s_equivalent": 7013282967934,
+      "distributed_e8s_equivalent": 7013282967636,
+      "round": 593,
+      "settled_proposals": [
+        {
+          "id": 154
+        }
+      ]
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -1551,7 +1610,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102307841506725597,
+    "icrc1_total_supply": 102485701331121662,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3068,7 +3127,8 @@
         "eqtcs-jiaaa-aaaal-qdmia-cai",
         "6jvpj-sqaaa-aaaaj-azwnq-cai",
         "gpdxq-kqaaa-aaaae-qakya-cai",
-        "nzsmr-6iaaa-aaaal-qsnea-cai"
+        "nzsmr-6iaaa-aaaal-qsnea-cai",
+        "7ew52-sqaaa-aaaal-qsrda-cai"
       ],
       "archives": ["fbysu-tqaaa-aaaaq-aacga-cai"]
     },
@@ -3077,6 +3137,61 @@
       "name": "Neutrinite",
       "description": "Neutrinite SNS DAO for ICPCoins. This platform is dedicated to securely sourcing data from DEXes, DAOs, and other DeFi applications.\n",
       "logo": "/v1/sns/root/extk7-gaaaa-aaaaq-aacda-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 22452512222436,
+              "amount_e8s": 3072982491486,
+              "account": {
+                "owner": "eqsml-lyaaa-aaaaq-aacdq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753928179
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 48763325912554,
+              "account": {
+                "owner": "eqsml-lyaaa-aaaaq-aacdq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    97, 71, 75, 7, 26, 134, 11, 39, 149, 117, 201, 84, 206, 95,
+                    53, 152, 244, 248, 99, 248, 198, 244, 80, 134, 12, 211, 195,
+                    17, 67, 22, 239, 45
+                  ]
+                }
+              },
+              "ledger_canister_id": "f54if-eqaaa-aaaaq-aacea-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753928179
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 52000251829155,
+            "timestamp_seconds": 1753928179
+          },
+          "last_ledger_block_timestamp": 1753927007,
+          "num_recently_executed_proposals": 22,
+          "num_recently_submitted_proposals": 22,
+          "genesis_timestamp_seconds": 1702903688
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753879690,
+      "end_timestamp_seconds": 1753879688,
+      "total_available_e8s_equivalent": 5523497708,
+      "distributed_e8s_equivalent": 0,
+      "round": 590,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [88003],
@@ -3941,7 +4056,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100870502093202,
+    "icrc1_total_supply": 100872765664006,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4798,7 +4913,8 @@
         "ok64y-uiaaa-aaaag-qdcbq-cai",
         "iczfn-iiaaa-aaaan-qltcq-cai",
         "7tvr6-fqaaa-aaaan-qmira-cai",
-        "edypu-bqaaa-aaaak-afknq-cai"
+        "edypu-bqaaa-aaaak-afknq-cai",
+        "i2s4q-syaaa-aaaan-qz4sq-cai"
       ],
       "archives": ["h4f44-ayaaa-aaaaq-aacjq-cai"]
     },
@@ -4807,6 +4923,61 @@
       "name": "Sneed",
       "description": "A 'blank canvas' DAO designed to enable the community to innovate, Sneed offers an accessible, open platform for creative and technological exploration on the Internet Computer Protocol.\n",
       "logo": "/v1/sns/root/fp274-iaaaa-aaaaq-aacha-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 3000000000000,
+              "amount_e8s": 759869380704,
+              "account": {
+                "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753925311
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 163576711147,
+              "account": {
+                "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    139, 8, 5, 148, 44, 72, 179, 66, 13, 110, 223, 254, 203,
+                    182, 133, 232, 195, 158, 245, 116, 97, 42, 93, 138, 145, 31,
+                    176, 104, 191, 102, 72, 222
+                  ]
+                }
+              },
+              "ledger_canister_id": "hvgxa-wqaaa-aaaaq-aacia-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753925311
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 754718108963,
+            "timestamp_seconds": 1753925311
+          },
+          "last_ledger_block_timestamp": 1753928255,
+          "num_recently_executed_proposals": 25,
+          "num_recently_submitted_proposals": 31,
+          "genesis_timestamp_seconds": 1705799268
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1746666469,
+      "end_timestamp_seconds": 1746666468,
+      "total_available_e8s_equivalent": 0,
+      "distributed_e8s_equivalent": 0,
+      "round": 473,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [10000],
@@ -5080,6 +5251,34 @@
               "target_method_name": "icrc55_command"
             }
           }
+        },
+        {
+          "id": 3003,
+          "name": "claim_fees_sonic",
+          "description": "Calls claim on the Sonic Sneed/ICP canister for the position specified",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "target_canister_id": "ni6i4-cqaaa-aaaak-qtsbq-cai",
+              "validator_method_name": "validate_claim_fees_sonic_lp_position",
+              "target_method_name": "claim"
+            }
+          }
+        },
+        {
+          "id": 3004,
+          "name": "withdraw_sonic",
+          "description": "Withdraws tokens from the Sonic Sneed/ICP swap canister",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+              "target_canister_id": "ni6i4-cqaaa-aaaak-qtsbq-cai",
+              "validator_method_name": "validate_withdraw_sonic_lp",
+              "target_method_name": "withdraw"
+            }
+          }
         }
       ]
     },
@@ -5229,7 +5428,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 994864844847,
+    "icrc1_total_supply": 994812282524,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5552,6 +5751,34 @@
                   "target_method_name": "icrc55_command"
                 }
               }
+            },
+            {
+              "id": 3003,
+              "name": "claim_fees_sonic",
+              "description": "Calls claim on the Sonic Sneed/ICP canister for the position specified",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+                  "target_canister_id": "ni6i4-cqaaa-aaaak-qtsbq-cai",
+                  "validator_method_name": "validate_claim_fees_sonic_lp_position",
+                  "target_method_name": "claim"
+                }
+              }
+            },
+            {
+              "id": 3004,
+              "name": "withdraw_sonic",
+              "description": "Withdraws tokens from the Sonic Sneed/ICP swap canister",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "ok64y-uiaaa-aaaag-qdcbq-cai",
+                  "target_canister_id": "ni6i4-cqaaa-aaaak-qtsbq-cai",
+                  "validator_method_name": "validate_withdraw_sonic_lp",
+                  "target_method_name": "withdraw"
+                }
+              }
             }
           ]
         },
@@ -5653,6 +5880,61 @@
       "name": "ICLighthouse DAO",
       "description": "Defi infrastructure based on IC.",
       "logo": "/v1/sns/root/hjcnr-bqaaa-aaaaq-aacka-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 44070419644239,
+              "amount_e8s": 22072781134234,
+              "account": {
+                "owner": "hodlf-miaaa-aaaaq-aackq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753926519
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 5021826584000000,
+              "account": {
+                "owner": "hodlf-miaaa-aaaaq-aackq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    206, 98, 10, 68, 232, 73, 94, 102, 16, 94, 34, 170, 177,
+                    238, 74, 10, 238, 166, 213, 19, 234, 182, 136, 59, 209, 103,
+                    2, 77, 59, 209, 168, 70
+                  ]
+                }
+              },
+              "ledger_canister_id": "hhaaz-2aaaa-aaaaq-aacla-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753926519
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 12629134141742574,
+            "timestamp_seconds": 1753926519
+          },
+          "last_ledger_block_timestamp": 1753922299,
+          "num_recently_executed_proposals": 24,
+          "num_recently_submitted_proposals": 23,
+          "genesis_timestamp_seconds": 1708958305
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753886309,
+      "end_timestamp_seconds": 1753886305,
+      "total_available_e8s_equivalent": 705891107425,
+      "distributed_e8s_equivalent": 0,
+      "round": 520,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [1015, 1098],
@@ -8609,7 +8891,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 19230774303016256,
+    "icrc1_total_supply": 18238614740547703,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11567,6 +11849,61 @@
       "description": "Community-driven decentralised AI Agent creation platform on Internet computer \n",
       "logo": "/v1/sns/root/gkoex-viaaa-aaaaq-aacmq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 23971017262369,
+              "amount_e8s": 7659108222371,
+              "account": {
+                "owner": "gdnpl-daaaa-aaaaq-aacna-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753926371
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 11665499999200000,
+              "account": {
+                "owner": "gdnpl-daaaa-aaaaq-aacna-cai",
+                "subaccount": {
+                  "subaccount": [
+                    116, 56, 1, 79, 106, 164, 62, 78, 222, 205, 87, 145, 24,
+                    112, 48, 112, 186, 52, 44, 170, 119, 124, 170, 243, 199,
+                    104, 197, 248, 64, 163, 12, 15
+                  ]
+                }
+              },
+              "ledger_canister_id": "gemj7-oyaaa-aaaaq-aacnq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753926371
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 59530833655386260,
+            "timestamp_seconds": 1753926371
+          },
+          "last_ledger_block_timestamp": 1753921948,
+          "num_recently_executed_proposals": 3,
+          "num_recently_submitted_proposals": 3,
+          "genesis_timestamp_seconds": 1709209147
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753877957,
+      "end_timestamp_seconds": 1753877947,
+      "total_available_e8s_equivalent": 63848262475084,
+      "distributed_e8s_equivalent": 0,
+      "round": 517,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -12213,7 +12550,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25650958315356330,
+    "icrc1_total_supply": 25651962158533739,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -12852,6 +13189,61 @@
       "name": "ICFC",
       "description": "The ICFC football ecosystem designed to reward fans for their love of football.",
       "logo": "/v1/sns/root/gyito-zyaaa-aaaaq-aacpq-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 8129418390315,
+              "amount_e8s": 6010610313,
+              "account": {
+                "owner": "detjl-sqaaa-aaaaq-aacqa-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753928041
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 3812499999700000,
+              "account": {
+                "owner": "detjl-sqaaa-aaaaq-aacqa-cai",
+                "subaccount": {
+                  "subaccount": [
+                    195, 188, 178, 205, 19, 218, 239, 146, 67, 68, 182, 127,
+                    214, 185, 117, 138, 172, 113, 187, 110, 32, 154, 255, 231,
+                    230, 70, 95, 243, 77, 214, 196, 249
+                  ]
+                }
+              },
+              "ledger_canister_id": "ddsp7-7iaaa-aaaaq-aacqq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753928041
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 8561585612011062,
+            "timestamp_seconds": 1753928041
+          },
+          "last_ledger_block_timestamp": 1753926848,
+          "num_recently_executed_proposals": 2,
+          "num_recently_submitted_proposals": 1,
+          "genesis_timestamp_seconds": 1710522988
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753895791,
+      "end_timestamp_seconds": 1753895788,
+      "total_available_e8s_equivalent": 1655065577475,
+      "distributed_e8s_equivalent": 0,
+      "round": 502,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [
@@ -13849,7 +14241,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10074816911747070,
+    "icrc1_total_supply": 10075218103208449,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -14855,6 +15247,65 @@
       "description": "A technical panda fully running on the Internet Computer blockchain, building chain-native infrastructures and practical Web3 apps. About us: https://dmsg.net/panda",
       "logo": "/v1/sns/root/d7wvo-iiaaa-aaaaq-aacsq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 1328107981470,
+              "amount_e8s": 86395661469,
+              "account": {
+                "owner": "dwv6s-6aaaa-aaaaq-aacta-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753928232
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 18751501099870000,
+              "account": {
+                "owner": "dwv6s-6aaaa-aaaaq-aacta-cai",
+                "subaccount": {
+                  "subaccount": [
+                    246, 204, 36, 221, 54, 130, 53, 219, 223, 43, 60, 121, 46,
+                    57, 154, 193, 15, 0, 160, 0, 51, 115, 222, 109, 9, 96, 174,
+                    85, 202, 135, 62, 187
+                  ]
+                }
+              },
+              "ledger_canister_id": "druyg-tyaaa-aaaaq-aactq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753928232
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 103345039828168524,
+            "timestamp_seconds": 1753928232
+          },
+          "last_ledger_block_timestamp": 1753925846,
+          "num_recently_executed_proposals": 50,
+          "num_recently_submitted_proposals": 51,
+          "genesis_timestamp_seconds": 1710783210
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753896811,
+      "end_timestamp_seconds": 1753896810,
+      "total_available_e8s_equivalent": 60000245171105,
+      "distributed_e8s_equivalent": 60000245170844,
+      "round": 499,
+      "settled_proposals": [
+        {
+          "id": 404
+        }
+      ]
+    },
     "parameters": {
       "reserved_ids": [1001, 1002, 1003, 1004],
       "functions": [
@@ -15626,7 +16077,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 104426766953850043,
+    "icrc1_total_supply": 104526045352806278,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -16401,6 +16852,65 @@
       "name": "ICPSwap",
       "description": "ICPSwap stands as the native, pioneering, and premier Decentralized Exchange (DEX) within the Internet Computer Protocol (ICP) ecosystem, providing an extensive array of financial and market services. Our users and fans may immerse themselves in the ultimate Decentralized Finance (DeFi) experience, featuring a broad spectrum of token standards trading, dedicated staking pools, robust yield farming, innovative Claim features, and more. With ICPSwap, we are nearly exploring every facet of DeFi!\n",
       "logo": "/v1/sns/root/csyra-haaaa-aaaaq-aacva-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 39564075409460,
+              "amount_e8s": 13055259320457,
+              "account": {
+                "owner": "cvzxu-kyaaa-aaaaq-aacvq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753928131
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 45700000092000000,
+              "account": {
+                "owner": "cvzxu-kyaaa-aaaaq-aacvq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    253, 39, 46, 88, 100, 213, 156, 205, 235, 204, 112, 85, 113,
+                    70, 200, 217, 121, 221, 64, 68, 218, 134, 209, 150, 234, 44,
+                    41, 208, 133, 152, 201, 210
+                  ]
+                }
+              },
+              "ledger_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753928131
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 52027102303662482,
+            "timestamp_seconds": 1753928131
+          },
+          "last_ledger_block_timestamp": 1753922804,
+          "num_recently_executed_proposals": 97,
+          "num_recently_submitted_proposals": 103,
+          "genesis_timestamp_seconds": 1711034480
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753888890,
+      "end_timestamp_seconds": 1753888880,
+      "total_available_e8s_equivalent": 4043438086310,
+      "distributed_e8s_equivalent": 4043438085461,
+      "round": 496,
+      "settled_proposals": [
+        {
+          "id": 782
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -17482,7 +17992,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98585389573593087,
+    "icrc1_total_supply": 98457717335667873,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -18569,6 +19079,61 @@
       "description": "Yuku AI is a groundbreaking platform at the intersection of AI and Web3, empowering users with decentralized AI agents, immersive 3D spaces, and a dynamic marketplace for AI assets. By combining AI Agent DID, Social and Payment on-chain Protocols, Yuku AI enables seamless collaboration and innovation across digital and real-world ecosystems. It's not just a platform—it's a launchpad for the next era of AI-driven civilization.",
       "logo": "/v1/sns/root/cj5nf-5yaaa-aaaaq-aacxq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 17669006017185,
+              "amount_e8s": 84587185,
+              "account": {
+                "owner": "auadn-oqaaa-aaaaq-aacya-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753925029
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 66899999989000000,
+              "account": {
+                "owner": "auadn-oqaaa-aaaaq-aacya-cai",
+                "subaccount": {
+                  "subaccount": [
+                    37, 160, 215, 228, 40, 124, 117, 186, 192, 252, 88, 189,
+                    182, 156, 171, 101, 48, 101, 219, 72, 54, 144, 85, 9, 14,
+                    29, 149, 49, 50, 146, 50, 36
+                  ]
+                }
+              },
+              "ledger_canister_id": "atbfz-diaaa-aaaaq-aacyq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1753925029
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 35518217837703836,
+            "timestamp_seconds": 1753925029
+          },
+          "last_ledger_block_timestamp": 1753925388,
+          "num_recently_executed_proposals": 2,
+          "num_recently_submitted_proposals": 4,
+          "genesis_timestamp_seconds": 1711451121
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753873525,
+      "end_timestamp_seconds": 1753873521,
+      "total_available_e8s_equivalent": 273017433674,
+      "distributed_e8s_equivalent": 0,
+      "round": 491,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -19260,7 +19825,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99822535076235110,
+    "icrc1_total_supply": 99719617635565995,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -19954,6 +20519,43 @@
       "name": "EstateDAO",
       "description": "A vacation real estate tokenization and rental platform on Internet Computer, enabling users to invest in vacation real estate with investments as low as USD 100.\n",
       "logo": "/v1/sns/root/abhsa-pyaaa-aaaaq-aac3q-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 13508027072751,
+              "amount_e8s": 9707921102750,
+              "account": {
+                "owner": "bmjwo-aqaaa-aaaaq-aac4a-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1753593540
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 67158614165999695,
+            "timestamp_seconds": 1753593540
+          },
+          "last_ledger_block_timestamp": 1753595964,
+          "num_recently_executed_proposals": 9,
+          "num_recently_submitted_proposals": 9,
+          "genesis_timestamp_seconds": 1712478412
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1753518417,
+      "end_timestamp_seconds": 1753518412,
+      "total_available_e8s_equivalent": 99012581051582,
+      "distributed_e8s_equivalent": 0,
+      "round": 475,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -20666,7 +21268,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100417785659807414,
+    "icrc1_total_supply": 100460903558072208,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -21151,200 +21753,6 @@
       "lifecycle": 3,
       "decentralization_swap_termination_timestamp_seconds": 1713787201
     },
-    "topics": {
-      "uncategorized_functions": [],
-      "topics": [
-        {
-          "native_functions": [
-            {
-              "id": 2,
-              "name": "Manage nervous system parameters",
-              "description": "Proposal to change the core parameters of SNS governance.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 13,
-              "name": "Manage ledger parameters",
-              "description": "Proposal to change some parameters in the ledger canister.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 8,
-              "name": "Manage SNS metadata",
-              "description": "Proposal to change the metadata associated with an SNS.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            }
-          ],
-          "topic": "DaoCommunitySettings",
-          "is_critical": true,
-          "name": "DAO community settings",
-          "description": "Proposals to set the direction of the DAO by tokenomics & branding, such as the name and description, token name etc",
-          "custom_functions": []
-        },
-        {
-          "native_functions": [
-            {
-              "id": 7,
-              "name": "Upgrade SNS to next version",
-              "description": "Proposal to upgrade the WASM of a core SNS canister.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 15,
-              "name": "Advance SNS target version",
-              "description": "Proposal to advance the target version of this SNS.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            }
-          ],
-          "topic": "SnsFrameworkManagement",
-          "is_critical": false,
-          "name": "SNS framework management",
-          "description": "Proposals to upgrade and manage the SNS DAO framework.",
-          "custom_functions": []
-        },
-        {
-          "native_functions": [
-            {
-              "id": 3,
-              "name": "Upgrade SNS controlled canister",
-              "description": "Proposal to upgrade the wasm of an SNS controlled canister.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 10,
-              "name": "Register dapp canisters",
-              "description": "Proposal to register a dapp canister with the SNS.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 14,
-              "name": "Manage dapp canister settings",
-              "description": "Proposal to change canister settings for some dapp canisters.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            }
-          ],
-          "topic": "DappCanisterManagement",
-          "is_critical": false,
-          "name": "Dapp canister management",
-          "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
-        },
-        {
-          "native_functions": [],
-          "topic": "ApplicationBusinessLogic",
-          "is_critical": false,
-          "name": "Application Business Logic",
-          "description": "Proposals that are custom to what the governed dapp requires.",
-          "custom_functions": []
-        },
-        {
-          "native_functions": [
-            {
-              "id": 1,
-              "name": "Motion",
-              "description": "Side-effect-less proposals to set general governance direction.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            }
-          ],
-          "topic": "Governance",
-          "is_critical": false,
-          "name": "Governance",
-          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
-          "custom_functions": []
-        },
-        {
-          "native_functions": [
-            {
-              "id": 9,
-              "name": "Transfer SNS treasury funds",
-              "description": "Proposal to transfer funds from an SNS Governance controlled treasury account",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 12,
-              "name": "Mint SNS tokens",
-              "description": "Proposal to mint SNS tokens to a specified recipient.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            }
-          ],
-          "topic": "TreasuryAssetManagement",
-          "is_critical": true,
-          "name": "Treasury & asset management",
-          "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
-        },
-        {
-          "native_functions": [
-            {
-              "id": 11,
-              "name": "Deregister Dapp Canisters",
-              "description": "Proposal to deregister a previously-registered dapp canister from the SNS.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 4,
-              "name": "Add nervous system function",
-              "description": "Proposal to add a new, user-defined, nervous system function: a canister call which can then be executed by proposal.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 5,
-              "name": "Remove nervous system function",
-              "description": "Proposal to remove a user-defined nervous system function, which will be no longer executable by proposal.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 16,
-              "name": "Set topics for custom proposals",
-              "description": "Proposal to set the topics for custom SNS proposals.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            },
-            {
-              "id": 17,
-              "name": "Register SNS extension",
-              "description": "Proposal to register a new SNS extension.",
-              "function_type": {
-                "NativeNervousSystemFunction": {}
-              }
-            }
-          ],
-          "topic": "CriticalDappOperations",
-          "is_critical": true,
-          "name": "Critical Dapp Operations",
-          "description": "Proposals to execute critical operations on dapps, such as adding or removing dapps from the SNS, or executing custom logic on dapps.",
-          "custom_functions": []
-        }
-      ]
-    }
+    "topics": null
   }
 ]

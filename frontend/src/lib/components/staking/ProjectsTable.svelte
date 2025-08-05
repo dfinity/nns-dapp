@@ -1,6 +1,9 @@
 <script lang="ts">
+  import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
+  import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HideZeroNeuronsToggle from "$lib/components/staking/HideZeroNeuronsToggle.svelte";
   import ProjectActionsCell from "$lib/components/staking/ProjectActionsCell.svelte";
+  import ProjectApyCell from "$lib/components/staking/ProjectApyCell.svelte";
   import ProjectMaturityCell from "$lib/components/staking/ProjectMaturityCell.svelte";
   import ProjectNeuronsCell from "$lib/components/staking/ProjectNeuronsCell.svelte";
   import ProjectStakeCell from "$lib/components/staking/ProjectStakeCell.svelte";
@@ -13,18 +16,32 @@
     OWN_CANISTER_ID_TEXT,
   } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+  import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
+  import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
+  import {
+    loadAccountsBalances,
+    loadSnsAccountsBalances,
+  } from "$lib/services/accounts-balances.services";
   import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { ENABLE_NEW_TABLES } from "$lib/stores/feature-flags.store";
+  import {
+    ENABLE_APY_PORTFOLIO,
+    ENABLE_NEW_TABLES,
+  } from "$lib/stores/feature-flags.store";
   import { hideZeroNeuronsStore } from "$lib/stores/hide-zero-neurons.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { ProjectsTableColumn, TableProject } from "$lib/types/staking";
+  import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import {
+    compareByApy,
     compareByNeuron,
     compareByProject,
     compareByStake,
@@ -32,15 +49,18 @@
     getTotalStakeInUsd,
     sortTableProjects,
   } from "$lib/utils/staking.utils";
+  import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { IconNeuronsPage } from "@dfinity/gix-components";
-  import { isNullish, TokenAmountV2 } from "@dfinity/utils";
+  import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
-  $: if ($authSignedInStore) {
-    loadIcpSwapTickers();
-  }
-  let commonColumns: ProjectsTableColumn[] = [];
-  $: commonColumns = [
+  $effect(() => {
+    if ($authSignedInStore) {
+      loadIcpSwapTickers();
+    }
+  });
+
+  const commonColumns: ProjectsTableColumn[] = $derived([
     {
       id: "stake",
       title: $i18n.neuron_detail.stake,
@@ -49,6 +69,19 @@
       templateColumns: ["1fr"],
       comparator: $authSignedInStore ? compareByStake : undefined,
     },
+
+    ...($ENABLE_APY_PORTFOLIO
+      ? [
+          {
+            id: "apy",
+            title: $i18n.neuron_detail.apy_and_max,
+            cellComponent: ProjectApyCell,
+            alignment: "right",
+            templateColumns: ["1fr"],
+            comparator: $authSignedInStore ? compareByApy : undefined,
+          } as ProjectsTableColumn,
+        ]
+      : []),
     {
       title: $i18n.neuron_detail.maturity_title,
       cellComponent: ProjectMaturityCell,
@@ -69,10 +102,9 @@
       alignment: "right",
       templateColumns: ["1fr"],
     },
-  ];
+  ]);
 
-  let columns: ProjectsTableColumn[] = [];
-  $: columns = [
+  const columns: ProjectsTableColumn[] = $derived([
     {
       id: "title",
       title: $i18n.staking.nervous_systems,
@@ -82,39 +114,39 @@
       comparator: $authSignedInStore ? compareByProject : undefined,
     },
     ...commonColumns,
-  ];
+  ]);
 
-  let nnsColumns: ProjectsTableColumn[] = [];
-  $: nnsColumns = [
+  const nnsColumns: ProjectsTableColumn[] = $derived([
     {
       id: "title",
       title: $i18n.staking.nervous_systems_nns,
+      subtitle: $i18n.staking.nervous_systems_nns_subtitle,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
       comparator: $authSignedInStore ? compareByProject : undefined,
     },
     ...commonColumns,
-  ];
+  ]);
 
-  let snsColumns: ProjectsTableColumn[] = [];
-  $: snsColumns = [
+  const snsColumns: ProjectsTableColumn[] = $derived([
     {
       id: "title",
       title: $i18n.staking.nervous_systems_sns,
+      subtitle: $i18n.staking.nervous_systems_sns_subtitle,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
       comparator: $authSignedInStore ? compareByProject : undefined,
     },
     ...commonColumns,
-  ];
+  ]);
 
-  let sunsettedSnsColumns: ProjectsTableColumn[] = [];
-  $: sunsettedSnsColumns = [
+  const sunsettedSnsColumns: ProjectsTableColumn[] = $derived([
     {
       id: "title",
       title: $i18n.staking.nervous_systems_sns_sunset,
+      subtitle: $i18n.staking.nervous_systems_sns_sunset_subtitle,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
@@ -124,62 +156,68 @@
       alignment: "left",
       templateColumns: ["1fr"],
     },
-  ];
+  ]);
 
-  let tableProjects: TableProject[];
-  $: tableProjects = getTableProjects({
-    universes: $selectableUniversesStore,
-    isSignedIn: $authSignedInStore,
-    nnsNeurons: $neuronsStore?.neurons,
-    snsNeurons: $snsNeuronsStore,
-    icpSwapUsdPrices: $icpSwapUsdPricesStore,
-    failedActionableSnses: $failedActionableSnsesStore,
-  });
-
-  let shouldHideProjectsWithoutNeurons: boolean;
-  $: shouldHideProjectsWithoutNeurons =
-    $authSignedInStore && $hideZeroNeuronsStore === "hide";
-
-  let visibleTableProjects: TableProject[] = [];
-  $: visibleTableProjects = shouldHideProjectsWithoutNeurons
-    ? tableProjects.filter(
-        ({ neuronCount = 0, universeId }) =>
-          universeId === OWN_CANISTER_ID_TEXT || neuronCount > 0
-      )
-    : tableProjects;
-
-  let sortedTableProjects: TableProject[];
-  $: sortedTableProjects = sortTableProjects(visibleTableProjects);
-
-  let hasAnyNeurons: boolean;
-  $: hasAnyNeurons = tableProjects.some(
-    (project) => project.neuronCount ?? 0 > 0
+  const tableProjects = $derived(
+    getTableProjects({
+      universes: $selectableUniversesStore,
+      isSignedIn: $authSignedInStore,
+      nnsNeurons: $neuronsStore?.neurons,
+      snsNeurons: $snsNeuronsStore,
+      icpSwapUsdPrices: $icpSwapUsdPricesStore,
+      failedActionableSnses: $failedActionableSnsesStore,
+      stakingRewardsResult: $ENABLE_APY_PORTFOLIO
+        ? $stakingRewardsStore
+        : undefined,
+    })
   );
 
-  let totalStakeInUsd: number;
-  $: totalStakeInUsd = getTotalStakeInUsd(tableProjects);
-
-  let hasUnpricedTokens: boolean;
-  $: hasUnpricedTokens = tableProjects.some(
-    (project) =>
-      project.stake instanceof TokenAmountV2 &&
-      project.stake.toUlps() > 0n &&
-      (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
+  const shouldHideProjectsWithoutNeurons = $derived(
+    $authSignedInStore && $hideZeroNeuronsStore === "hide"
   );
 
-  let nnsNeurons: TableProject[] = [];
-  $: nnsNeurons = sortedTableProjects.filter(
-    (project) => project.universeId === OWN_CANISTER_ID_TEXT
+  const visibleTableProjects = $derived(
+    shouldHideProjectsWithoutNeurons
+      ? tableProjects.filter(
+          ({ neuronCount = 0, universeId }) =>
+            universeId === OWN_CANISTER_ID_TEXT || neuronCount > 0
+        )
+      : tableProjects
   );
 
-  let snsNeurons: TableProject[] = [];
-  $: snsNeurons = sortedTableProjects
-    .filter((p) => p.universeId !== OWN_CANISTER_ID_TEXT)
-    .filter((p) => !abandonedProjectsCanisterId.includes(p.universeId));
+  const sortedTableProjects = $derived(sortTableProjects(visibleTableProjects));
 
-  let sunsetSns: TableProject[] = [];
-  $: sunsetSns = sortedTableProjects.filter((p) =>
-    abandonedProjectsCanisterId.includes(p.universeId)
+  const hasAnyNeurons = $derived(
+    tableProjects.some((project) => (project.neuronCount ?? 0) > 0)
+  );
+
+  const totalStakeInUsd = $derived(getTotalStakeInUsd(tableProjects));
+
+  const hasUnpricedTokens = $derived(
+    tableProjects.some(
+      (project) =>
+        project.stake instanceof TokenAmountV2 &&
+        project.stake.toUlps() > 0n &&
+        (!("stakeInUsd" in project) || isNullish(project.stakeInUsd))
+    )
+  );
+
+  const nnsNeurons = $derived(
+    sortedTableProjects.filter(
+      (project) => project.universeId === OWN_CANISTER_ID_TEXT
+    )
+  );
+
+  const snsNeurons = $derived(
+    sortedTableProjects
+      .filter((p) => p.universeId !== OWN_CANISTER_ID_TEXT)
+      .filter((p) => !abandonedProjectsCanisterId.includes(p.universeId))
+  );
+
+  const sunsetSns = $derived(
+    sortedTableProjects.filter((p) =>
+      abandonedProjectsCanisterId.includes(p.universeId)
+    )
   );
 
   const dispatcher = createEventDispatcher();
@@ -195,14 +233,78 @@
   const showAll = () => {
     hideZeroNeuronsStore.set("show");
   };
+
+  // ==================================
+  // Staking Rewards/APY related logic
+  // ==================================
+  const totalUsdAmount = $derived.by(() => {
+    const userTokens = $tokensListVisitorsStore;
+    const totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
+    const totalStakedInUsd = getTotalStakeInUsd(tableProjects);
+    return $authSignedInStore
+      ? totalTokensBalanceInUsd + totalStakedInUsd
+      : undefined;
+  });
+  // load ckBTC
+  $effect(() => {
+    if ($authSignedInStore) {
+      const ckBTCUniverseIds = $ckBTCUniversesStore.map(
+        (universe) => universe.canisterId
+      );
+      loadAccountsBalances(ckBTCUniverseIds);
+    }
+  });
+  // load other ck and imported tokens
+  $effect(() => {
+    if ($authSignedInStore) {
+      const icrcUniverseIds = Object.keys($icrcCanistersStore);
+      loadAccountsBalances(icrcUniverseIds);
+    }
+  });
+  $effect(() => {
+    if ($authSignedInStore) {
+      const snsRootCanisterIds = $snsProjectsCommittedStore.map(
+        ({ rootCanisterId }) => rootCanisterId
+      );
+      loadSnsAccountsBalances(snsRootCanisterIds);
+    }
+  });
+
+  const apyCardVisible = $derived(
+    $ENABLE_APY_PORTFOLIO && nonNullish(totalUsdAmount)
+  );
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
-  {#if $authSignedInStore && hasAnyNeurons}
-    <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
-      <IconNeuronsPage slot="icon" />
-    </UsdValueBanner>
-  {/if}
+  <div class="top" class:two-card={hasAnyNeurons && apyCardVisible}>
+    {#if $authSignedInStore}
+      {#if hasAnyNeurons}
+        <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
+          <IconNeuronsPage slot="icon" />
+        </UsdValueBanner>
+      {/if}
+
+      {#if apyCardVisible}
+        {#if nonNullish(totalUsdAmount)}
+          {#if isStakingRewardDataReady($stakingRewardsStore)}
+            <ApyCard
+              onStakingPage={true}
+              rewardBalanceUSD={$stakingRewardsStore.rewardBalanceUSD}
+              rewardEstimateWeekUSD={$stakingRewardsStore.rewardEstimateWeekUSD}
+              stakingPower={$stakingRewardsStore.stakingPower}
+              stakingPowerUSD={$stakingRewardsStore.stakingPowerUSD}
+              totalAmountUSD={totalUsdAmount}
+            />
+          {:else}
+            <ApyFallbackCard
+              stakingRewardData={$stakingRewardsStore}
+              onStakingPage={true}
+            />
+          {/if}
+        {/if}
+      {/if}
+    {/if}
+  </div>
 
   {#if $ENABLE_NEW_TABLES}
     {#if !$authSignedInStore}
@@ -246,7 +348,7 @@
               <button
                 data-tid="show-all-button"
                 class="ghost show-all"
-                on:click={showAll}
+                onclick={showAll}
               >
                 {$i18n.staking.show_all}</button
               >
@@ -275,6 +377,10 @@
         <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
       {/if}
     {/if}
+
+    <div class="disclaimer">
+      {$i18n.staking.bottom_disclaimer}
+    </div>
   {:else if !$authSignedInStore}
     <ResponsiveTable
       tableData={sortedTableProjects}
@@ -305,7 +411,7 @@
             <button
               data-tid="show-all-button"
               class="ghost show-all"
-              on:click={showAll}
+              onclick={showAll}
             >
               {$i18n.staking.show_all}</button
             >
@@ -317,10 +423,41 @@
 </div>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
+  .disclaimer {
+    color: var(--text-description-tint);
+    padding: 0 0 var(--padding-2x);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+
+    @include media.min-width(small) {
+      white-space: pre-line;
+    }
+  }
+
   .wrapper {
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
+
+    @include media.min-width(large) {
+      column-gap: var(--padding-2x);
+      row-gap: var(--padding-3x);
+    }
+  }
+
+  .top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--padding-2x);
+
+    &.two-card {
+      @include media.min-width(large) {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
   }
 
   .last-row {

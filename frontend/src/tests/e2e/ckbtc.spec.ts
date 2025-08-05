@@ -1,19 +1,27 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  disableCssAnimations,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test accounts requirements", async ({ page, context }) => {
   await page.goto("/tokens");
+  await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
 
   step("Check BTC balance");
-  const ckTable = appPo.getTokensPo().getTokensPagePo().getCkTokensTable();
-  await ckTable.waitFor();
-  const ckBTCRow = await ckTable.getRowByName("ckBTC");
+  const tokensTablePo = await appPo
+    .getTokensPo()
+    .getTokensPagePo()
+    .getTokensTable();
+  await tokensTablePo.waitFor();
+  const ckBTCRow = await tokensTablePo.getRowByName("ckBTC");
   await ckBTCRow.waitForBalance();
   expect(await ckBTCRow.getBalance()).toBe("0 ckBTC");
 

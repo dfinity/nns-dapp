@@ -102,8 +102,8 @@
           "ENABLE_SNS_TOPICS": true,
           "ENABLE_NNS_TOPICS": false,
           "ENABLE_LAUNCHPAD_REDESIGN": true,
-          "ENABLE_APY_PORTFOLIO": true,
-          "ENABLE_NEW_TABLES": true
+          "ENABLE_APY_PORTFOLIO": false,
+          "ENABLE_NEW_TABLES": false
         }
       }
     },
@@ -119,7 +119,7 @@
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
         "SNSDEMO_RELEASE": "release-2025-06-25",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2025-06-26_03-25-base",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2025-07-31_03-32-base",
         "IC_COMMIT_FOR_SNS_AGGREGATOR": "fccfa2c7c7cba9e5485ad0b48823990e24a67f40"
       },
       "packtool": ""

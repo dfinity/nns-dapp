@@ -155,3 +155,15 @@ export const closeHighlight = async (page: Page) => {
 
   await highlightPo.clickClose();
 };
+
+export const disableCssAnimations = async (page: Page) => {
+  await page.addStyleTag({
+    content: `
+      *, ::before, ::after {
+        animation: none !important;
+        transition: none !important;
+        caret-color: transparent !important;
+      }
+    `,
+  });
+};

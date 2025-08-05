@@ -18,12 +18,6 @@ export class SignInAccountsPo extends BasePageObject {
     return TokensTablePo.under(this.root);
   }
 
-  getIcpTokensTablePo(): TokensTablePo {
-    return TokensTablePo.under(
-      this.root.byTestId("icp-tokens-table-component")
-    );
-  }
-
   hasTokensTable(): Promise<boolean> {
     return TokensTablePo.under(this.root).isPresent();
   }
