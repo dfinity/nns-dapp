@@ -5,10 +5,7 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-import {
-  getTestFeatureFlag,
-  overrideFeatureFlagsStore,
-} from "$lib/stores/feature-flags.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
@@ -79,6 +76,14 @@ describe("ProjectsTable", () => {
   describe("table when ENABLE_APY_PORTFOLIO disabled", () => {
     beforeEach(() => {
       overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+    });
+
+    it("should not render APY", async () => {
+      const po = renderComponent();
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+
+      expect(await rowPos[0].getProjectApyCellPo().isPresent()).toBe(false);
     });
 
     it("should render desktop headers", async () => {
@@ -222,14 +227,10 @@ describe("ProjectsTable", () => {
   });
 
   it("should render apy as -/- when not loaded (in new tables)", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_NEW_TABLES", true);
     const po = renderComponent();
     const rowPos = await po.getProjectsTableRowPos();
     expect(rowPos).toHaveLength(2);
-
-    if (getTestFeatureFlag("ENABLE_NEW_TABLES") === false) {
-      expect(await rowPos[0].getProjectApyCellPo().isPresent()).toBe(false);
-      return;
-    }
 
     expect(
       await rowPos[0]
