@@ -22,8 +22,8 @@ import * as utils from "@dfinity/utils";
 import type { Mocked } from "vitest";
 
 const host = "http://localhost:8000";
-const testPrincipal1 = Principal.fromHex("123123123");
-const testPrincipal2 = Principal.fromHex("456456456");
+const testPrincipal1 = Principal.fromHex("12312312");
+const testPrincipal2 = Principal.fromHex("45645645");
 
 const createIdentity = (principal: Principal) =>
   ({
