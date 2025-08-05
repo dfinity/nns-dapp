@@ -14,13 +14,13 @@
 </script>
 
 <Section testId="nns-neuron-maturity-section-component">
-  <h3 slot="title">{$i18n.neuron_detail.maturity_title}</h3>
-  <p slot="end" class="title-value" data-tid="total-maturity">
-    {formattedTotalMaturity(neuron)}
-  </p>
-  <p slot="description" class="description">
-    {$i18n.neuron_detail.maturity_section_description}
-  </p>
+  {#snippet title()}<h3>{$i18n.neuron_detail.maturity_title}</h3>{/snippet}
+  {#snippet end()}<p class="title-value" data-tid="total-maturity">
+      {formattedTotalMaturity(neuron)}
+    </p>{/snippet}
+  {#snippet description()}<p class="description">
+      {$i18n.neuron_detail.maturity_section_description}
+    </p>{/snippet}
   <ul class="content">
     <NnsStakedMaturityItemAction {neuron} />
     <NnsAvailableMaturityItemAction {neuron} />

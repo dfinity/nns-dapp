@@ -37,28 +37,23 @@
           in:fade
         >
           <KeyValuePair>
-            <span
-              slot="key"
-              class="value"
-              data-tid="neuron-id"
-              title={neuron.idString}
-            >
-              {shortenWithMiddleEllipsis(
-                neuron.idString,
-                SNS_NEURON_ID_DISPLAY_LENGTH
-              )}
-            </span>
-            <span
-              slot="value"
-              class="vote-details"
-              class:rejected={neuron.vote === Vote.No}
-            >
-              <VotingPowerDisplay
-                valueTestId="my-votes-voting-power"
-                votingPowerE8s={neuron.votingPower}
-              />
-              <VoteResultIcon vote={neuron.vote} />
-            </span>
+            {#snippet key()}
+              <span class="value" data-tid="neuron-id" title={neuron.idString}>
+                {shortenWithMiddleEllipsis(
+                  neuron.idString,
+                  SNS_NEURON_ID_DISPLAY_LENGTH
+                )}
+              </span>{/snippet}
+            {#snippet value()}<span
+                class="vote-details"
+                class:rejected={neuron.vote === Vote.No}
+              >
+                <VotingPowerDisplay
+                  valueTestId="my-votes-voting-power"
+                  votingPowerE8s={neuron.votingPower}
+                />
+                <VoteResultIcon vote={neuron.vote} />
+              </span>{/snippet}
           </KeyValuePair>
         </li>
       {/each}

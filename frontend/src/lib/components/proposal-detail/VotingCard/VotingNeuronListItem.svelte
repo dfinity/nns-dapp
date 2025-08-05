@@ -17,42 +17,44 @@
 
 <li in:fade data-tid="voting-neuron-list-item-component">
   <KeyValuePair>
-    <span slot="key" class="label">
-      <span
-        data-tid="neuron-id"
-        aria-label={replacePlaceholders(
-          $i18n.proposal_detail__vote.cast_vote_neuronId,
-          {
-            $neuronId: neuron.neuronIdString,
-          }
-        )}
-        title={neuron.neuronIdString}
-        >{shortenWithMiddleEllipsis(
-          neuron.neuronIdString,
-          SNS_NEURON_ID_DISPLAY_LENGTH
-        )}</span
-      >
-    </span>
-    <span slot="value" class="value">
-      <Checkbox
-        inputId={neuron.neuronIdString}
-        checked={$votingNeuronSelectStore.selectedIds.includes(
-          neuron.neuronIdString
-        )}
-        on:nnsChange={() => toggleSelection(neuron.neuronIdString)}
-        {disabled}
-      >
-        <VotingPowerDisplay
-          valueTestId="voting-neuron-select-voting-power"
-          valueAriaLabel={replacePlaceholders(
-            $i18n.proposal_detail__vote.cast_vote_votingPower,
+    {#snippet key()}
+      <span class="label">
+        <span
+          data-tid="neuron-id"
+          aria-label={replacePlaceholders(
+            $i18n.proposal_detail__vote.cast_vote_neuronId,
             {
-              $votingPower: formatVotingPower(neuron.votingPower),
+              $neuronId: neuron.neuronIdString,
             }
           )}
-          votingPowerE8s={neuron.votingPower}
-        />
-      </Checkbox>
-    </span>
+          title={neuron.neuronIdString}
+          >{shortenWithMiddleEllipsis(
+            neuron.neuronIdString,
+            SNS_NEURON_ID_DISPLAY_LENGTH
+          )}</span
+        >
+      </span>{/snippet}
+    {#snippet value()}
+      <span class="value">
+        <Checkbox
+          inputId={neuron.neuronIdString}
+          checked={$votingNeuronSelectStore.selectedIds.includes(
+            neuron.neuronIdString
+          )}
+          on:nnsChange={() => toggleSelection(neuron.neuronIdString)}
+          {disabled}
+        >
+          <VotingPowerDisplay
+            valueTestId="voting-neuron-select-voting-power"
+            valueAriaLabel={replacePlaceholders(
+              $i18n.proposal_detail__vote.cast_vote_votingPower,
+              {
+                $votingPower: formatVotingPower(neuron.votingPower),
+              }
+            )}
+            votingPowerE8s={neuron.votingPower}
+          />
+        </Checkbox>
+      </span>{/snippet}
   </KeyValuePair>
 </li>

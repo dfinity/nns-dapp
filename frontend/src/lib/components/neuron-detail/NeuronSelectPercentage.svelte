@@ -23,12 +23,12 @@
 
 <TestIdWrapper testId="neuron-select-percentage-component">
   <KeyValuePair>
-    <span slot="key" class="label"
-      >{$i18n.neuron_detail.available_maturity}</span
-    >
-    <span class="value" slot="value" data-tid="available-maturity"
-      >{formatMaturity(availableMaturityE8s)}</span
-    >
+    {#snippet key()}
+      <span class="label">{$i18n.neuron_detail.available_maturity}</span
+      >{/snippet}
+    {#snippet value()}<span class="value" data-tid="available-maturity"
+        >{formatMaturity(availableMaturityE8s)}</span
+      >{/snippet}
   </KeyValuePair>
 
   <slot name="description" />

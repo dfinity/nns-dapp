@@ -10,11 +10,12 @@
 
 {#if nonNullish(fee)}
   <KeyValuePair {testId}>
-    <span class="label" slot="key"><slot /></span>
-    <span class="value tabular-num" slot="value">
-      {formatEstimatedFee(fee)}
-      <span class="label">{$i18n.ckbtc.btc}</span>
-    </span>
+    {#snippet key()}<span class="label"><slot /></span>{/snippet}
+    {#snippet value()}
+      <span class="value tabular-num">
+        {formatEstimatedFee(fee)}
+        <span class="label">{$i18n.ckbtc.btc}</span>
+      </span>{/snippet}
   </KeyValuePair>
 {/if}
 
