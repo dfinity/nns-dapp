@@ -1,9 +1,6 @@
-import {
-  bufEquals,
-  concat,
-  type DerEncodedPublicKey,
-  type PublicKey,
-} from "@dfinity/agent";
+import type { DerEncodedPublicKey, PublicKey } from "@dfinity/agent";
+import { concat } from "@dfinity/candid";
+import { uint8ArraysEqual } from "@dfinity/utils";
 
 // TODO(L2-433): should we use @dfinity/identity-ledgerhq the implementation is 100% similar
 
@@ -21,7 +18,7 @@ export class Secp256k1PublicKey implements PublicKey {
     return this.fromDer(key.toDer());
   }
 
-  public static fromRaw(rawKey: ArrayBuffer): Secp256k1PublicKey {
+  public static fromRaw(rawKey: Uint8Array): Secp256k1PublicKey {
     return new Secp256k1PublicKey(rawKey);
   }
 
@@ -43,7 +40,7 @@ export class Secp256k1PublicKey implements PublicKey {
     0x00, // no padding
   ]);
 
-  private static derEncode(publicKey: ArrayBuffer): DerEncodedPublicKey {
+  private static derEncode(publicKey: Uint8Array): DerEncodedPublicKey {
     if (publicKey.byteLength !== Secp256k1PublicKey.RAW_KEY_LENGTH) {
       const bl = publicKey.byteLength;
       throw new TypeError(
@@ -51,8 +48,9 @@ export class Secp256k1PublicKey implements PublicKey {
       );
     }
 
+    // TODO: basically concat two Uint8array into one
     const derPublicKey = concat(
-      Secp256k1PublicKey.DER_PREFIX.buffer,
+      Secp256k1PublicKey.DER_PREFIX,
       publicKey
     ) as DerEncodedPublicKey;
     derPublicKey.__derEncodedPublicKey__ = undefined;
@@ -60,7 +58,7 @@ export class Secp256k1PublicKey implements PublicKey {
     return derPublicKey;
   }
 
-  private static derDecode(key: DerEncodedPublicKey): ArrayBuffer {
+  private static derDecode(key: DerEncodedPublicKey): Uint8Array {
     const expectedLength =
       Secp256k1PublicKey.DER_PREFIX.length + Secp256k1PublicKey.RAW_KEY_LENGTH;
     if (key.byteLength !== expectedLength) {
@@ -71,7 +69,7 @@ export class Secp256k1PublicKey implements PublicKey {
     }
 
     const rawKey = key.slice(0, Secp256k1PublicKey.DER_PREFIX.length);
-    if (!bufEquals(this.derEncode(rawKey), key)) {
+    if (!uint8ArraysEqual({ a: this.derEncode(rawKey), b: key })) {
       throw new TypeError(
         "secp256k1 DER-encoded public key is invalid. A valid secp256k1 DER-encoded public key " +
           `must have the following prefix: ${Secp256k1PublicKey.DER_PREFIX}`
@@ -81,9 +79,9 @@ export class Secp256k1PublicKey implements PublicKey {
     return rawKey;
   }
 
-  #rawKey: ArrayBuffer;
+  #rawKey: Uint8Array;
 
-  public get rawKey(): ArrayBuffer {
+  public get rawKey(): Uint8Array {
     return this.#rawKey;
   }
 
@@ -94,7 +92,7 @@ export class Secp256k1PublicKey implements PublicKey {
   }
 
   // `fromRaw` and `fromDer` should be used for instantiation, not this constructor.
-  private constructor(key: ArrayBuffer) {
+  private constructor(key: Uint8Array) {
     this.#rawKey = key;
     this.#derKey = Secp256k1PublicKey.derEncode(key);
   }
@@ -103,7 +101,7 @@ export class Secp256k1PublicKey implements PublicKey {
     return this.derKey;
   }
 
-  public toRaw(): ArrayBuffer {
+  public toRaw(): Uint8Array {
     return this.rawKey;
   }
 }

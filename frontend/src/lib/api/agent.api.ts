@@ -1,21 +1,15 @@
 import { FETCH_ROOT_KEY } from "$lib/constants/environment.constants";
-import type {
-  Agent,
-  AgentLog,
-  ApiQueryResponse,
-  CallOptions,
-  HttpAgent,
-  Identity,
-  QueryFields,
-  ReadStateOptions,
-  ReadStateResponse,
-  SubmitResponse,
-} from "@dfinity/agent";
 import {
-  AgentCallError,
-  AgentQueryError,
-  AgentReadStateError,
-  IdentityInvalidError,
+  type Agent,
+  type ApiQueryResponse,
+  type CallOptions,
+  type HttpAgent,
+  type Identity,
+  IdentityInvalidErrorCode,
+  type QueryFields,
+  type ReadStateOptions,
+  type ReadStateResponse,
+  type SubmitResponse,
 } from "@dfinity/agent";
 import type { JsonObject } from "@dfinity/candid";
 import type { Principal } from "@dfinity/principal";
@@ -58,7 +52,7 @@ class IdentityAgentWrapper implements Agent {
     return usedIdentity;
   }
 
-  get rootKey(): ArrayBuffer | null {
+  get rootKey(): Uint8Array | null {
     return this.wrappedAgent.rootKey;
   }
 
@@ -120,7 +114,7 @@ class IdentityAgentWrapper implements Agent {
     );
   }
 
-  fetchRootKey(): Promise<ArrayBuffer> {
+  fetchRootKey(): Promise<Uint8Array> {
     return this.wrappedAgent.fetchRootKey();
   }
 

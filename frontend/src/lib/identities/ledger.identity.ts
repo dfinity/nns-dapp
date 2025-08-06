@@ -16,7 +16,6 @@ import {
   getRequestId,
   type RequestSignatures,
 } from "$lib/utils/ledger.utils";
-import { sameBufferData } from "$lib/utils/utils";
 import {
   Cbor,
   SignIdentity,
@@ -31,7 +30,12 @@ import {
   type RequestId,
   type Signature,
 } from "@dfinity/agent";
-import { isNullish, nonNullish, smallerVersion } from "@dfinity/utils";
+import {
+  isNullish,
+  nonNullish,
+  smallerVersion,
+  uint8ArraysEqual,
+} from "@dfinity/utils";
 import type Transport from "@ledgerhq/hw-transport";
 import type LedgerApp from "@zondax/ledger-icp";
 import type {
@@ -101,7 +105,7 @@ export class LedgerIdentity extends SignIdentity {
     }
   };
 
-  public override async sign(blob: ArrayBuffer): Promise<Signature> {
+  public override async sign(blob: Uint8Array): Promise<Signature> {
     await this.raiseIfVersionIsDeprecated();
 
     const callback = async (app: LedgerApp): Promise<Signature> => {
@@ -121,8 +125,8 @@ export class LedgerIdentity extends SignIdentity {
   }
 
   private async signWithReadState(
-    callBlob: ArrayBuffer,
-    readStateBlob: ArrayBuffer
+    callBlob: Uint8Array,
+    readStateBlob: Uint8Array
   ): Promise<RequestSignatures> {
     await this.raiseIfVersionIsDeprecated();
 
@@ -325,7 +329,7 @@ export class LedgerIdentity extends SignIdentity {
       // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
       request_type: "read_state" as ReadRequestType.ReadState,
       paths: createReadStatePaths(requestId).map((path) =>
-        path.map((bufferLike) => new Uint8Array(bufferLike).buffer)
+        path.map((bufferLike) => new Uint8Array(bufferLike))
       ),
       ingress_expiry: body.ingress_expiry,
       sender: body.sender,
@@ -359,16 +363,16 @@ export class LedgerIdentity extends SignIdentity {
    */
   private prepareCborForLedger = (
     request: ReadRequest | CallRequest
-  ): ArrayBuffer => Cbor.encode({ content: request });
+  ): Uint8Array => Cbor.encode({ content: request });
 
   private requestsMatch = (
     request1: ReadRequest,
     request2: ReadRequest
   ): boolean => {
-    return sameBufferData(
-      this.prepareCborForLedger(request1),
-      this.prepareCborForLedger(request2)
-    );
+    return uint8ArraysEqual({
+      a: this.prepareCborForLedger(request1),
+      b: this.prepareCborForLedger(request2),
+    });
   };
 
   private async createSignAndStoreCallRequests(request: HttpAgentRequest) {

@@ -7,12 +7,9 @@ import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
 import { translate } from "$lib/utils/i18n.utils";
-import { bytesToHexString } from "$lib/utils/utils";
 import { GenesisTokenCanister } from "@dfinity/nns";
+import { uint8ArrayToHexString } from "@dfinity/utils";
 import { get } from "svelte/store";
-
-const buf2hex = (buffer: ArrayBuffer): string =>
-  bytesToHexString([...new Uint8Array(buffer)]);
 
 // TODO: Remove after all seed neurons have been claimed.
 // Method to be used only from the Dev Tools console.
@@ -41,7 +38,7 @@ export const claimSeedNeurons = async () => {
     });
 
     const bufferKey = Secp256k1PublicKey.from(identity.getPublicKey());
-    const hexPubKey = buf2hex(bufferKey.toRaw());
+    const hexPubKey = uint8ArrayToHexString(bufferKey.toRaw());
     const isHex = hexPubKey.match("^[0-9a-fA-F]+$");
     if (!isHex) {
       toastsError({
