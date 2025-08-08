@@ -48,7 +48,7 @@ test -n "${PROD_WASM:-}" || {
   # There was an issue with the prodm wasm and it was not built -> https://github.com/dfinity/nns-dapp/releases/tag/untagged-a9cd9aed86e4d5861ab6
   # curl -sL https://github.com/dfinity/nns-dapp/releases/download/aggregator-prod/sns_aggregator.wasm.gz >"$PROD_WASM"
   # Im manually targeting the version was released. To be fixed in the next iteration.
-  curl -sL https://github.com/dfinity/nns-dapp/releases/download/aggregator-release-candidate/sns_aggregator.wasm.gz >"$PROD_WASM"
+  curl -sL https://github.com/dfinity/nns-dapp/releases/download/nightly-2025-08-08/sns_aggregator.wasm.gz >"$PROD_WASM"
 }
 # This is wrong. We should check that download works not that file exists. It current doesnt' complain when we get a 404.
 test -e "$PROD_WASM" || {
