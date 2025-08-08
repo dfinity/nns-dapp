@@ -1,72 +1,71 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
+  import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import { buildAccountsUrl } from "$lib/utils/navigation.utils";
-  import { IconAccountsPage } from "@dfinity/gix-components";
+  import { IconAccountsPage, IconHeldTokens } from "@dfinity/gix-components";
 
   const href = buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT });
 </script>
 
 <Card testId="no-held-tokens-card">
-  <div class="wrapper">
-    <div class="icon">
-      <IconAccountsPage />
-    </div>
-    <div class="text">
-      <h5>{$i18n.portfolio.no_tokens_card_title}</h5>
+  <div
+    class="wrapper"
+    role="region"
+    aria-label={$i18n.portfolio.held_tokens_card_title}
+  >
+    <TokensCardHeader
+      {href}
+      title={$i18n.portfolio.held_tokens_card_title}
+      linkText={$i18n.portfolio.held_tokens_card_link}
+    >
+      {#snippet icon()}
+        <IconHeldTokens />
+      {/snippet}
+    </TokensCardHeader>
+    <div class="content">
+      {#if !$isMobileViewportStore}
+        <span class="icon">
+          <IconAccountsPage size="100px" />
+        </span>
+      {/if}
       <p>{$i18n.portfolio.no_tokens_card_description}</p>
     </div>
-    <a {href} class="button primary">{$i18n.portfolio.no_tokens_card_button}</a>
   </div>
 </Card>
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .wrapper {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: var(--padding-2x);
-    padding: var(--padding-3x) var(--padding-2x);
-    margin: 0 auto;
     height: 100%;
-    @include media.min-width(medium) {
-      gap: var(--padding-4x);
-      padding: var(--padding-6x) var(--padding-4x);
-      max-width: 450px;
-    }
 
-    .icon {
-      width: 80px;
-      height: 80px;
-      @include media.min-width(medium) {
-        width: 144px;
-        height: 144px;
+    .content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-grow: 1;
+      padding: 16px;
+      gap: 32px;
+
+      @include media.min-width(small) {
+        padding: 24px;
       }
-    }
 
-    .text {
-      text-align: center;
-      color: var(--text-description);
+      .icon {
+        flex-shrink: 0;
+        opacity: 0.7;
+      }
 
-      h5,
       p {
         margin: 0;
         padding: 0;
-        color: inherit;
-      }
-
-      h5 {
-        font-weight: bold;
-        text-wrap: pretty;
-      }
-
-      p {
-        margin-top: var(--padding);
-        text-wrap: balance;
+        color: var(--text-description);
       }
     }
   }

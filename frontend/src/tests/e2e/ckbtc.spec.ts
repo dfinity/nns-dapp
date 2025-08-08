@@ -16,12 +16,9 @@ test("Test accounts requirements", async ({ page, context }) => {
   const appPo = new AppPo(pageElement);
 
   step("Check BTC balance");
-  const tokensTablePo = await appPo
-    .getTokensPo()
-    .getTokensPagePo()
-    .getTokensTable();
-  await tokensTablePo.waitFor();
-  const ckBTCRow = await tokensTablePo.getRowByName("ckBTC");
+  const ckTable = appPo.getTokensPo().getTokensPagePo().getCkTokensTable();
+  await ckTable.waitFor();
+  const ckBTCRow = await ckTable.getRowByName("ckBTC");
   await ckBTCRow.waitForBalance();
   expect(await ckBTCRow.getBalance()).toBe("0 ckBTC");
 

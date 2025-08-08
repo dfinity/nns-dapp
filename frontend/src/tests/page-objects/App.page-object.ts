@@ -150,7 +150,7 @@ export class AppPo extends BasePageObject {
     await (
       await this.getTokensPo()
         .getTokensPagePo()
-        .getTokensTable()
+        .getIcpTokensTable()
         .getRowByName("Internet Computer")
     ).click();
     await (

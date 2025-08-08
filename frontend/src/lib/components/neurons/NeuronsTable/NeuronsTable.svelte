@@ -8,7 +8,6 @@
   import NeuronStateCell from "$lib/components/neurons/NeuronsTable/NeuronStateCell.svelte";
   import NeuronVoteDelegationCell from "$lib/components/neurons/NeuronsTable/NeuronVoteDelegationCell.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
-  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
   import type {
@@ -62,17 +61,13 @@
           alignment: "left",
           templateColumns: ["1fr"],
         },
-        ...($ENABLE_APY_PORTFOLIO
-          ? [
-              {
-                id: "apy",
-                title: $i18n.neuron_detail.apy_and_max,
-                cellComponent: NeuronApyCell,
-                alignment: "right",
-                templateColumns: ["max-content"],
-              },
-            ]
-          : []),
+        {
+          id: "apy",
+          title: $i18n.neuron_detail.apy_and_max,
+          cellComponent: NeuronApyCell,
+          alignment: "right",
+          templateColumns: ["max-content"],
+        },
         {
           title: "",
           alignment: "left",

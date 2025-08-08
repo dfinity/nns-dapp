@@ -103,7 +103,7 @@
   );
   const heldTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "full"
+      ? "empty"
       : areHeldTokensLoading
         ? "skeleton"
         : totalTokensBalanceInUsd === 0
@@ -116,19 +116,12 @@
   );
   const stakedTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "full"
+      ? "empty"
       : areStakedTokensLoading
         ? "skeleton"
         : totalStakedInUsd === 0
           ? "empty"
           : "full"
-  );
-
-  // Controls whether the staked tokens card should show a primary action
-  // Primary action is shown when there are tokens but no stakes
-  // This helps guide users to stake their tokens when possible
-  const hasNoStakedTokensCardAPrimaryAction = $derived(
-    stakedTokensCard === "empty" && heldTokensCard === "full"
   );
 
   // Global loading state that tracks if either held or staked tokens are loading
@@ -140,14 +133,12 @@
   const topHeldTokens = $derived(
     getTopHeldTokens({
       userTokens: userTokens,
-      isSignedIn: $authSignedInStore,
     })
   );
 
   const topStakedTokens = $derived(
     getTopStakedTokens({
       projects: tableProjects,
-      isSignedIn: $authSignedInStore,
     })
   );
 
@@ -200,38 +191,30 @@
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div class="top" class:full={cards.length === 0}>
+  <div class="top" class:apy-card={$ENABLE_APY_PORTFOLIO}>
     {#if !$authSignedInStore}
       <LoginCard />
-      {#if $ENABLE_APY_PORTFOLIO}
-        <StartStakingCard />
-      {:else if cards.length > 0}
-        <StackedCards {cards} />
-      {/if}
+      <StartStakingCard />
     {:else}
       <TotalAssetsCard
         usdAmount={totalUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
-        isFullWidth={!$ENABLE_APY_PORTFOLIO && cards.length === 0}
+        isFullWidth={!$ENABLE_APY_PORTFOLIO}
       />
 
-      {#if $ENABLE_APY_PORTFOLIO}
-        {#if $isDesktopViewportStore && nonNullish(totalUsdAmount)}
-          {#if isStakingRewardDataReady(stakingRewardResult)}
-            <ApyCard
-              rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
-              rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
-              stakingPower={stakingRewardResult.stakingPower}
-              stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
-              totalAmountUSD={totalUsdAmount}
-            />
-          {:else}
-            <ApyFallbackCard stakingRewardData={stakingRewardResult} />
-          {/if}
+      {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
+        {#if isStakingRewardDataReady(stakingRewardResult)}
+          <ApyCard
+            rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
+            rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
+            stakingPower={stakingRewardResult.stakingPower}
+            stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
+            totalAmountUSD={totalUsdAmount}
+          />
+        {:else}
+          <ApyFallbackCard stakingRewardData={stakingRewardResult} />
         {/if}
-      {:else if cards.length > 0}
-        <StackedCards {cards} />
       {/if}
     {/if}
 
@@ -266,7 +249,7 @@
     {#if stakedTokensCard === "skeleton"}
       <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
     {:else if stakedTokensCard === "empty"}
-      <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
+      <NoStakedTokensCard />
     {:else}
       <StakedTokensCard
         {topStakedTokens}
@@ -278,25 +261,23 @@
     {/if}
   </div>
 
-  {#if $ENABLE_APY_PORTFOLIO}
-    <div class="sns-section" class:withUpcomingLaunchesCards>
-      {#if $ENABLE_LAUNCHPAD_REDESIGN}
-        <LaunchpadBanner {withUpcomingLaunchesCards} />
-      {/if}
+  <div class="sns-section" class:withUpcomingLaunchesCards>
+    {#if $ENABLE_LAUNCHPAD_REDESIGN}
+      <LaunchpadBanner {withUpcomingLaunchesCards} />
+    {/if}
 
-      {#if withUpcomingLaunchesCards}
-        {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
-          <CardList
-            testId="stacked-cards"
-            {cards}
-            mobileHorizontalScroll={cards.length > 1}
-          />
-        {:else}
-          <StackedCards {cards} />
-        {/if}
+    {#if withUpcomingLaunchesCards}
+      {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
+        <CardList
+          testId="stacked-cards"
+          {cards}
+          mobileHorizontalScroll={cards.length > 1}
+        />
+      {:else}
+        <StackedCards {cards} />
       {/if}
-    </div>
-  {/if}
+    {/if}
+  </div>
 </main>
 
 <style lang="scss">
@@ -324,9 +305,7 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
-        &:not(.full) {
-          grid-template-columns: 2fr 1fr;
-        }
+        grid-template-columns: 2fr 1fr;
       }
     }
 
@@ -337,9 +316,10 @@
 
       @include media.min-width(large) {
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: minmax(345px, min-content);
+        grid-auto-rows: minmax(280px, min-content);
       }
     }
+
     .sns-section {
       display: grid;
       gap: 16px;
