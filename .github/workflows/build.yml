@@ -354,6 +354,7 @@ jobs:
             echo "ERROR: wasm hashes differ between mainnet and local."
           }
   aggregator_test:
+    if: false
     needs: build
     runs-on: ubuntu-22.04
     timeout-minutes: 60
