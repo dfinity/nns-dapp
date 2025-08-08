@@ -3,6 +3,7 @@ import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
 import * as analytics from "$lib/services/analytics.services";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import App from "$routes/+layout.svelte";
@@ -101,6 +102,20 @@ describe("Layout", () => {
     const po = HighlightPo.under(new JestPageObjectElement(container));
 
     expect(await po.isPresent()).toBe(false);
+  });
+
+  it("should show the Highlight component if the user is signed in and the feature is on", async () => {
+    const renderComponent = () => {
+      const { container } = render(App);
+      return HighlightPo.under(new JestPageObjectElement(container));
+    };
+
+    setNoIdentity();
+    expect(await renderComponent().isPresent()).toBe(false);
+
+    resetIdentity();
+    overrideFeatureFlagsStore.setFlag("ENABLE_DISBURSE_MATURITY", true);
+    expect(await renderComponent().isPresent()).toBe(true);
   });
 
   it("should load ICP Swap tickers", async () => {
