@@ -14,7 +14,6 @@
       <IconStakedTokens />
     </div>
     <div class="text">
-      <h5>{$i18n.portfolio.no_neurons_card_title}</h5>
       <p>{$i18n.portfolio.no_neurons_card_description}</p>
     </div>
     <a {href} class={`button ${primaryCard ? "primary" : "secondary"}`}
@@ -51,22 +50,8 @@
     }
     .text {
       color: var(--text-description);
-
-      h5,
       p {
         margin: 0;
-        padding: 0;
-        color: inherit;
-      }
-
-      h5 {
-        font-weight: bold;
-        text-wrap: pretty;
-      }
-
-      p {
-        margin-top: var(--padding);
-        text-wrap: balance;
       }
     }
   }

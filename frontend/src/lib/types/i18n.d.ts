@@ -1385,7 +1385,6 @@ interface I18nPortfolio {
   no_tokens_card_title: string;
   no_tokens_card_description: string;
   no_tokens_card_button: string;
-  no_neurons_card_title: string;
   no_neurons_card_description: string;
   no_neurons_card_button: string;
   held_tokens_card_title: string;
@@ -1440,7 +1439,10 @@ interface I18nPortfolio {
   start_staking_card_link: string;
 }
 
-interface I18nHighlight {}
+interface I18nHighlight {
+  disburse_maturity_title: string;
+  disburse_maturity_description: string;
+}
 
 interface I18nNeuron_state {
   Unspecified: string;

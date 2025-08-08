@@ -1312,10 +1312,9 @@
     "login_title": "Session expired",
     "login_description": "Sign in and start staking to earn voting rewards and participate in the Internet Computer’s onchain governance.",
     "no_tokens_card_title": "Store and transfer tokens securely in the NNS wallet",
-    "no_tokens_card_description": "running 100% on the Internet Computer blockchain, ready to get started?",
+    "no_tokens_card_description": "running 100% on the Internet Computer blockchain — Ready to get started?",
     "no_tokens_card_button": "Buy ICP",
-    "no_neurons_card_title": "Earn voting rewards by staking your tokens",
-    "no_neurons_card_description": "create neurons and participate in the Internet Computer's on-chain governance!",
+    "no_neurons_card_description": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
     "no_neurons_card_button": "Start Staking",
     "held_tokens_card_title": "Total Token Balance",
     "held_tokens_card_link": "View tokens",
@@ -1368,5 +1367,8 @@
     "start_staking_card_content": "Stake ICP tokens and participate in NNS governance to earn up to 13% of yearly voting rewards",
     "start_staking_card_link": "Open Staking"
   },
-  "highlight": {}
+  "highlight": {
+    "disburse_maturity_title": "Farewell, Spawn Neuron!",
+    "disburse_maturity_description": "Now you can directly disburse your NNS neurons' maturity to the account of your choice."
+  }
 }
