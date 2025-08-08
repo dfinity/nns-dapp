@@ -21,8 +21,12 @@ test("Test imported tokens", async ({ page, context }) => {
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
   const tokensPagePo = appPo.getTokensPo().getTokensPagePo();
+
+  await tokensPagePo.getSettingsButtonPo().click();
+
   const importButtonPo = tokensPagePo.getImportTokenButtonPo();
-  const tokenNames = () => tokensPagePo.getTokenNames();
+  const tokenNames = () =>
+    tokensPagePo.getImportedTokensTable().getTokenNames();
 
   step("Wait for the import token button is present");
 
@@ -78,16 +82,24 @@ test("Test imported tokens", async ({ page, context }) => {
   );
 
   await appPo.goBack();
-  await appPo.getTokensPo().getTokensPagePo().getTokensTable().waitFor();
+  await appPo
+    .getTokensPo()
+    .getTokensPagePo()
+    .getImportedTokensTable()
+    .waitFor();
 
   expect(await tokenNames()).toContain(TEST_TOKEN_NAME);
 
   step("The user can navigate to the imported token page");
 
-  const importedTokenRowPo = tokensPagePo
-    .getTokensTable()
+  const importedTokenRowPo = await appPo
+    .getTokensPo()
+    .getTokensPagePo()
+    .getImportedTokensTable()
     .getRowByName(TEST_TOKEN_NAME);
-  (await importedTokenRowPo).click();
+
+  await importedTokenRowPo.click();
+
   await walletPo.waitFor();
 
   step("First import / The user can remove the imported token");
@@ -101,11 +113,11 @@ test("Test imported tokens", async ({ page, context }) => {
 
   step("The imported token should not be present in the tokens table anymore");
 
-  await tokensPagePo.waitFor();
   expect(await tokenNames()).toEqual(initialTokenNames);
 
   step("Second import / Import the token without index canister");
 
+  await tokensPagePo.getSettingsButtonPo().click();
   await importButtonPo.waitFor();
   expect(initialTokenNames).not.toContain(TEST_TOKEN_NAME);
 
@@ -144,7 +156,11 @@ test("Test imported tokens", async ({ page, context }) => {
   );
 
   await appPo.goBack();
-  await appPo.getTokensPo().getTokensPagePo().getTokensTable().waitFor();
+  await appPo
+    .getTokensPo()
+    .getTokensPagePo()
+    .getImportedTokensTable()
+    .waitFor();
 
   expect(await tokenNames()).toContain(TEST_TOKEN_NAME);
 });
