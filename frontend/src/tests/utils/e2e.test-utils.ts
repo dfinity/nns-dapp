@@ -153,7 +153,9 @@ export const closeHighlight = async (page: Page) => {
     PlaywrightPageObjectElement.fromPage(page)
   );
 
-  await highlightPo.clickClose();
+  (await highlightPo.isPresent())
+    ? highlightPo.clickClose()
+    : Promise.resolve();
 };
 
 export const disableCssAnimations = async (page: Page) => {
