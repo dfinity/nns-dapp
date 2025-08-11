@@ -21,7 +21,7 @@
   import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-  import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
+  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import {
     loadAccountsBalances,
     loadSnsAccountsBalances,
@@ -216,7 +216,7 @@
   // Staking Rewards/APY related logic
   // ==================================
   const totalUsdAmount = $derived.by(() => {
-    const userTokens = $tokensListVisitorsStore;
+    const userTokens = $tokensListUserStore;
     const totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
     const totalStakedInUsd = getTotalStakeInUsd(tableProjects);
     return $authSignedInStore
