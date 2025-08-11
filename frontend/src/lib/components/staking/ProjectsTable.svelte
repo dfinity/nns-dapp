@@ -60,6 +60,61 @@
     }
   });
 
+  // Old columns definition if ENABLE_NEW_TABLES is false
+  const oldColumns: ProjectsTableColumn[] = $derived([
+    {
+      id: "title",
+      title: $i18n.staking.nervous_systems,
+      cellComponent: ProjectTitleCell,
+      alignment: "left",
+      templateColumns: ["minmax(min-content, max-content)"],
+      comparator: $authSignedInStore ? compareByProject : undefined,
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
+      id: "stake",
+      title: $i18n.neuron_detail.stake,
+      cellComponent: ProjectStakeCell,
+      alignment: "right",
+      templateColumns: ["max-content"],
+      comparator: $authSignedInStore ? compareByStake : undefined,
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
+      title: $i18n.neuron_detail.maturity_title,
+      cellComponent: ProjectMaturityCell,
+      alignment: "right",
+      templateColumns: ["max-content"],
+    },
+    {
+      title: "",
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
+      id: "neurons",
+      title: $i18n.neurons.title,
+      cellComponent: ProjectNeuronsCell,
+      alignment: "right",
+      templateColumns: ["max-content"],
+      comparator: $authSignedInStore ? compareByNeuron : undefined,
+    },
+    {
+      title: "",
+      cellComponent: ProjectActionsCell,
+      alignment: "right",
+      templateColumns: ["max-content"],
+    },
+  ]);
+
   const commonColumns: ProjectsTableColumn[] = $derived([
     {
       id: "stake",
@@ -102,18 +157,6 @@
       alignment: "right",
       templateColumns: ["1fr"],
     },
-  ]);
-
-  const columns: ProjectsTableColumn[] = $derived([
-    {
-      id: "title",
-      title: $i18n.staking.nervous_systems,
-      cellComponent: ProjectTitleCell,
-      alignment: "left",
-      templateColumns: ["2fr"],
-      comparator: $authSignedInStore ? compareByProject : undefined,
-    },
-    ...commonColumns,
   ]);
 
   const nnsColumns: ProjectsTableColumn[] = $derived([
@@ -276,35 +319,33 @@
 </script>
 
 <div class="wrapper" data-tid="projects-table-component">
-  <div class="top" class:two-card={hasAnyNeurons && apyCardVisible}>
-    {#if $authSignedInStore}
+  {#if $authSignedInStore && (hasAnyNeurons || (apyCardVisible && nonNullish(totalUsdAmount)))}
+    <div class="top" class:two-card={hasAnyNeurons && apyCardVisible}>
       {#if hasAnyNeurons}
         <UsdValueBanner usdAmount={totalStakeInUsd} {hasUnpricedTokens}>
           <IconNeuronsPage slot="icon" />
         </UsdValueBanner>
       {/if}
 
-      {#if apyCardVisible}
-        {#if nonNullish(totalUsdAmount)}
-          {#if isStakingRewardDataReady($stakingRewardsStore)}
-            <ApyCard
-              onStakingPage={true}
-              rewardBalanceUSD={$stakingRewardsStore.rewardBalanceUSD}
-              rewardEstimateWeekUSD={$stakingRewardsStore.rewardEstimateWeekUSD}
-              stakingPower={$stakingRewardsStore.stakingPower}
-              stakingPowerUSD={$stakingRewardsStore.stakingPowerUSD}
-              totalAmountUSD={totalUsdAmount}
-            />
-          {:else}
-            <ApyFallbackCard
-              stakingRewardData={$stakingRewardsStore}
-              onStakingPage={true}
-            />
-          {/if}
+      {#if apyCardVisible && nonNullish(totalUsdAmount)}
+        {#if isStakingRewardDataReady($stakingRewardsStore)}
+          <ApyCard
+            onStakingPage={true}
+            rewardBalanceUSD={$stakingRewardsStore.rewardBalanceUSD}
+            rewardEstimateWeekUSD={$stakingRewardsStore.rewardEstimateWeekUSD}
+            stakingPower={$stakingRewardsStore.stakingPower}
+            stakingPowerUSD={$stakingRewardsStore.stakingPowerUSD}
+            totalAmountUSD={totalUsdAmount}
+          />
+        {:else}
+          <ApyFallbackCard
+            stakingRewardData={$stakingRewardsStore}
+            onStakingPage={true}
+          />
         {/if}
       {/if}
-    {/if}
-  </div>
+    </div>
+  {/if}
 
   {#if $ENABLE_NEW_TABLES}
     {#if !$authSignedInStore}
@@ -384,13 +425,13 @@
   {:else if !$authSignedInStore}
     <ResponsiveTable
       tableData={sortedTableProjects}
-      {columns}
+      columns={oldColumns}
       on:nnsAction={handleAction}
     />
   {:else}
     <ResponsiveTable
       tableData={sortedTableProjects}
-      {columns}
+      columns={oldColumns}
       on:nnsAction={handleAction}
       bind:order={$projectsTableOrderStore}
       displayTableSettings
@@ -444,7 +485,6 @@
 
     @include media.min-width(large) {
       column-gap: var(--padding-2x);
-      row-gap: var(--padding-3x);
     }
   }
 
