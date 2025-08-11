@@ -74,6 +74,7 @@
 <CardFrame
   testId="project-card-component"
   highlighted={userHasParticipated}
+  dimmed
   mobileHref={href}
 >
   <div class="card-content" class:userHasParticipated>
