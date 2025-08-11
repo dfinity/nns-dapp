@@ -68,6 +68,12 @@ test("Test neuron details", async ({ page, context }) => {
     pattern: /\b[A-Za-z]{3} \d{1,2}, \d{4}\b/,
     replacements: ["Sep 26, 2024"],
   });
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="apy-current-value"]'],
+    pattern: /\d+\.\d+%/,
+    replacements: ["12.25%"],
+  });
 
   // set viewport to capture the entire advanced section
   const advancedSectionElement = await page.locator(
