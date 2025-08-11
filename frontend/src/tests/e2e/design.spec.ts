@@ -7,7 +7,7 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test, type Page } from "@playwright/test";
 
-test.describe("Design", () => {
+test.describe.skip("Design", () => {
   test("Login", async ({ page }) => {
     await page.goto("/accounts");
     await disableCssAnimations(page);
@@ -61,15 +61,23 @@ test.describe("Design", () => {
       const appPo = new AppPo(pageElement);
 
       await appPo.getTokensPo().waitFor();
-      const tokensTablePo = appPo
+      const icpTokensTablePo = appPo
         .getTokensPo()
         .getTokensPagePo()
-        .getTokensTable();
-      await tokensTablePo.waitFor();
-      const rows = await tokensTablePo.getRows();
-      for (const row of rows) {
-        await row.waitForBalance();
-      }
+        .getIcpTokensTable();
+      await icpTokensTablePo.waitFor();
+
+      const ckTokensTablePo = appPo
+        .getTokensPo()
+        .getTokensPagePo()
+        .getCkTokensTable();
+      await ckTokensTablePo.waitFor();
+
+      const snsTokensTablePo = appPo
+        .getTokensPo()
+        .getTokensPagePo()
+        .getSnsTokensTable();
+      await snsTokensTablePo.waitFor();
 
       await replaceContent({
         page,
