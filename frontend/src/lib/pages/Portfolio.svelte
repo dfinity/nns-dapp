@@ -320,8 +320,13 @@
     }
 
     .sns-cards {
-      display: flex;
+      display: grid;
       gap: var(--padding-2x);
+      grid-template-columns: 1fr;
+
+      @include media.min-width(large) {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
   }
 </style>
