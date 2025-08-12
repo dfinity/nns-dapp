@@ -142,22 +142,6 @@
     ...commonColumns,
   ]);
 
-  const sunsettedSnsColumns: ProjectsTableColumn[] = $derived([
-    {
-      id: "title",
-      title: $i18n.staking.nervous_systems_sns_sunset,
-      subtitle: $i18n.staking.nervous_systems_sns_sunset_subtitle,
-      cellComponent: ProjectTitleCell,
-      alignment: "left",
-      templateColumns: ["2fr"],
-    },
-    {
-      title: "",
-      alignment: "left",
-      templateColumns: ["1fr"],
-    },
-  ]);
-
   const tableProjects = $derived(
     getTableProjects({
       universes: $selectableUniversesStore,
@@ -212,12 +196,6 @@
     sortedTableProjects
       .filter((p) => p.universeId !== OWN_CANISTER_ID_TEXT)
       .filter((p) => !abandonedProjectsCanisterId.includes(p.universeId))
-  );
-
-  const sunsetSns = $derived(
-    sortedTableProjects.filter((p) =>
-      abandonedProjectsCanisterId.includes(p.universeId)
-    )
   );
 
   const dispatcher = createEventDispatcher();
@@ -319,10 +297,6 @@
         columns={snsColumns}
         on:nnsAction={handleAction}
       />
-
-      {#if sunsetSns.length > 0}
-        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
-      {/if}
     {:else}
       <ResponsiveTable
         tableData={nnsNeurons}
@@ -371,10 +345,6 @@
             <Separator spacing="none" />
           </svelte:fragment>
         </ResponsiveTable>
-      {/if}
-
-      {#if $hideZeroNeuronsStore !== "hide" && sunsetSns.length > 0}
-        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
       {/if}
     {/if}
   {:else if !$authSignedInStore}
