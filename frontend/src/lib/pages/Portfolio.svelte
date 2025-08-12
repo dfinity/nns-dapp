@@ -1,39 +1,23 @@
 <script lang="ts">
-  import CardList from "$lib/components/launchpad/CardList.svelte";
-  import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
   import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
-  import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
-  import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
-  import StackedCards from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
   import StartStakingCard from "$lib/components/portfolio/StartStakingCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-  import {
-    isDesktopViewportStore,
-    isMobileViewportStore,
-  } from "$lib/derived/viewport.derived";
-  import {
-    ENABLE_APY_PORTFOLIO,
-    ENABLE_LAUNCHPAD_REDESIGN,
-  } from "$lib/stores/feature-flags.store";
+  import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
+  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import type { TableProject } from "$lib/types/staking";
-  import type { ComponentWithProps } from "$lib/types/svelte";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
   import {
-    compareProposalInfoByDeadlineTimestampSeconds,
     getTopHeldTokens,
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
-  import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import {
     isStakingRewardDataError,
     isStakingRewardDataLoading,
@@ -42,25 +26,17 @@
   } from "$lib/utils/staking-rewards.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import type { ProposalInfo } from "@dfinity/nns";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
-  import { type Component } from "svelte";
 
   type Props = {
     userTokens: UserToken[];
     tableProjects: TableProject[];
-    snsProjects: SnsFullProject[];
-    openSnsProposals: ProposalInfo[];
-    adoptedSnsProposals: SnsFullProject[];
     stakingRewardResult?: StakingRewardResult;
   };
 
   const {
     userTokens = [],
     tableProjects,
-    snsProjects,
-    openSnsProposals,
-    adoptedSnsProposals,
     stakingRewardResult,
   }: Props = $props();
   const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
@@ -140,53 +116,6 @@
       projects: tableProjects,
     })
   );
-
-  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
-  const launchpadCards = $derived(
-    [...snsProjects]
-      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-      .reverse()
-      .map((project) => project.summary)
-      .map<ComponentWithProps>((summary) => ({
-        // TODO: Svelte v5 migration - fix type
-        Component: LaunchProjectCard as unknown as Component,
-        props: { summary },
-      }))
-  );
-
-  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
-  const openProposalCards = $derived(
-    [...openSnsProposals]
-      .sort(compareProposalInfoByDeadlineTimestampSeconds)
-      .map((proposalInfo) => ({
-        // TODO: Svelte v5 migration - fix type
-        Component: NewSnsProposalCard as unknown as Component,
-        props: { proposalInfo },
-      }))
-  );
-
-  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
-  const adoptedSnsProposalsCards = $derived(
-    [...adoptedSnsProposals]
-      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-      .reverse()
-      .map((project) => project.summary)
-      .map<ComponentWithProps>((summary) => ({
-        // TODO: Svelte v5 migration - fix type
-        Component: AdoptedProposalCard as unknown as Component,
-        props: { summary },
-      }))
-  );
-
-  const cards: ComponentWithProps[] = $derived(
-    $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO
-      ? getUpcomingLaunchesCards({
-          snsProjects: [...snsProjects, ...adoptedSnsProposals],
-          openSnsProposals,
-        })
-      : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
-  );
-  const withUpcomingLaunchesCards = $derived(cards.length > 0);
 </script>
 
 <main data-tid="portfolio-page-component">
@@ -259,24 +188,6 @@
       />
     {/if}
   </div>
-
-  {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && withUpcomingLaunchesCards}
-    <div class="sns-cards">
-      {#if $isMobileViewportStore}
-        <CardList
-          testId="stacked-cards"
-          {cards}
-          mobileHorizontalScroll={cards.length > 1}
-        />
-      {:else if cards.length > 2}
-        <StackedCards {cards} />
-      {:else}
-        {#each cards as { Component, props }}
-          <Component {...props} />
-        {/each}
-      {/if}
-    </div>
-  {/if}
 </main>
 
 <style lang="scss">
@@ -316,16 +227,6 @@
       @include media.min-width(large) {
         grid-template-columns: repeat(2, 1fr);
         grid-auto-rows: minmax(280px, min-content);
-      }
-    }
-
-    .sns-cards {
-      display: grid;
-      gap: var(--padding-2x);
-      grid-template-columns: 1fr;
-
-      @include media.min-width(large) {
-        grid-template-columns: repeat(3, 1fr);
       }
     }
   }
