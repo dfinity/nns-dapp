@@ -36,7 +36,7 @@ test("Test SNS participation", async ({ page, context }) => {
   await page.waitForTimeout(100);
   let committedProjectsCards = await appPo
     .getLaunchpad2Po()
-    .getLaunchedProjectsCardListPo()
+    .getRestProjectsCardListPo()
     .getCardEntries();
   expect(committedProjectsCards.length).toBeGreaterThan(1);
 

@@ -70,8 +70,8 @@ test("Test neuron details", async ({ page, context }) => {
   });
   await replaceContent({
     page,
-    selectors: ['[data-tid="apy-current-value"]'],
-    pattern: /\d+\.\d+%/,
+    selectors: ['[data-tid="apy-current-value"]', '[data-tid="apy-max-value"]'],
+    pattern: /\(?\d+\.\d+%\)?/,
     replacements: ["12.25%"],
   });
 
