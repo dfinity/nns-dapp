@@ -338,6 +338,11 @@ describe("ProjectsTable", () => {
         rewardEstimateWeekUSD: 10,
         stakingPower: 1,
         stakingPowerUSD: 1,
+        icpOnly: {
+          maturityBalance: 1,
+          estimatedMaturityOneMonth: 1,
+          stakingPower: 1,
+        },
         apy: new Map([
           // nns
           [
@@ -1171,6 +1176,11 @@ describe("ProjectsTable", () => {
       rewardEstimateWeekUSD: 10,
       stakingPower: 1,
       stakingPowerUSD: 1,
+      icpOnly: {
+        maturityBalance: 1,
+        estimatedMaturityOneMonth: 1,
+        stakingPower: 1,
+      },
       apy: new Map(),
     });
 
@@ -1189,6 +1199,11 @@ describe("ProjectsTable", () => {
       rewardEstimateWeekUSD: 10,
       stakingPower: 1,
       stakingPowerUSD: 1,
+      icpOnly: {
+        maturityBalance: 1,
+        estimatedMaturityOneMonth: 1,
+        stakingPower: 1,
+      },
       apy: new Map(),
     });
 

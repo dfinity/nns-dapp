@@ -1158,6 +1158,11 @@ describe("Portfolio page", () => {
             rewardEstimateWeekUSD: 1,
             stakingPower: 0.1,
             stakingPowerUSD: 100,
+            icpOnly: {
+              maturityBalance: 1,
+              estimatedMaturityOneMonth: 1,
+              stakingPower: 1,
+            },
           },
         });
 
