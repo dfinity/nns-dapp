@@ -2,7 +2,10 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
-  import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
+  import {
+    abandonedProjectsCanisterId,
+    OWN_CANISTER_ID_TEXT,
+  } from "$lib/constants/canister-ids.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
@@ -38,6 +41,9 @@
         selected={universe.canisterId === selectedUniverse}
         on:click={() => dispatch("nnsSelectUniverse", universe.canisterId)}
       />
+      {#if universe.canisterId === OWN_CANISTER_ID_TEXT}
+        <Separator spacing="medium" testId="own-canister-separator" />
+      {/if}
     {/if}
   {/each}
 </TestIdWrapper>
