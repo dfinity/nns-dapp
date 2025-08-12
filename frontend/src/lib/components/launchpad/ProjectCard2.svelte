@@ -73,7 +73,7 @@
       <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
       <h3 data-tid="project-name">{name}</h3>
       {#if userHasParticipated}
-        <div class="participation-mark">
+        <div data-tid="participation-mark" class="participation-mark">
           <Tooltip id="participated" text={$i18n.sns_launchpad.participated}>
             <IconCheckCircleFill size="24px" />
           </Tooltip>
