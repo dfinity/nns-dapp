@@ -934,10 +934,9 @@ interface I18nSns_launchpad {
 
 interface I18nLaunchpad {
   headline: string;
-  subheadline: string;
   upcoming_launches: string;
-  launched_projects: string;
-  participated_projects: string;
+  featured_projects: string;
+  all_projects: string;
   banner_title: string;
   banner_text: string;
   banner_link: string;
