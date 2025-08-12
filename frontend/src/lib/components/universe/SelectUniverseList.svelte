@@ -3,8 +3,8 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import SelectUniverseCard from "$lib/components/universe/SelectUniverseCard.svelte";
   import {
-      abandonedProjectsCanisterId,
-      OWN_CANISTER_ID_TEXT,
+    abandonedProjectsCanisterId,
+    OWN_CANISTER_ID_TEXT,
   } from "$lib/constants/canister-ids.constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
