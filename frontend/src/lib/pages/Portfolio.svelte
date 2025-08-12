@@ -4,7 +4,6 @@
   import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
   import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
-  import LaunchpadBanner from "$lib/components/portfolio/LaunchpadBanner.svelte";
   import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
   import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
@@ -261,23 +260,23 @@
     {/if}
   </div>
 
-  <div class="sns-section" class:withUpcomingLaunchesCards>
-    {#if $ENABLE_LAUNCHPAD_REDESIGN}
-      <LaunchpadBanner {withUpcomingLaunchesCards} />
-    {/if}
-
-    {#if withUpcomingLaunchesCards}
-      {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
+  {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && withUpcomingLaunchesCards}
+    <div class="sns-cards">
+      {#if $isMobileViewportStore}
         <CardList
           testId="stacked-cards"
           {cards}
           mobileHorizontalScroll={cards.length > 1}
         />
-      {:else}
+      {:else if cards.length > 2}
         <StackedCards {cards} />
+      {:else}
+        {#each cards as { Component, props }}
+          <Component {...props} />
+        {/each}
       {/if}
-    {/if}
-  </div>
+    </div>
+  {/if}
 </main>
 
 <style lang="scss">
@@ -320,16 +319,9 @@
       }
     }
 
-    .sns-section {
-      display: grid;
-      gap: 16px;
-      grid-template-columns: 1fr;
-
-      @include media.min-width(large) {
-        &.withUpcomingLaunchesCards {
-          grid-template-columns: 2fr 1fr;
-        }
-      }
+    .sns-cards {
+      display: flex;
+      gap: var(--padding-2x);
     }
   }
 </style>
