@@ -75,6 +75,11 @@ export type StakingRewardData = {
   rewardEstimateWeekUSD: number;
   stakingPower: number;
   stakingPowerUSD: number;
+  icpOnly: {
+    maturityBalance: number;
+    estimatedMaturityOneMonth: number;
+    stakingPower: number;
+  };
   apy: APY;
 };
 
@@ -131,6 +136,7 @@ export const getStakingRewardData = (
         ),
         stakingPower: getStakingPower(params).value,
         stakingPowerUSD: getStakingPower(params).valueUSD,
+        icpOnly: getIcpOnlyStakingRewardsData(params),
         apy: getAPYs(params, forceInitialDate),
       };
       logWithTimestamp("Staking rewards: calculation completed, fields ready.");
@@ -188,6 +194,44 @@ const getRewardBalanceUSD = (params: StakingRewardCalcParams): number => {
   });
 
   return nnsTotalRewardUSD + snsTotalRewardUSD;
+};
+
+const getIcpOnlyStakingRewardsData = (
+  params: StakingRewardCalcParams,
+  forceInitialDate?: Date
+) => {
+  const { nnsNeurons, fxRates } = params;
+
+  const icpOnly = {
+    maturityBalance: 0,
+    estimatedMaturityOneMonth: 0,
+    stakingPower: 0,
+  };
+
+  try {
+    icpOnly.maturityBalance = bigIntDiv(
+      nnsNeurons.neurons?.reduce((acc, neuron) => {
+        return acc + getNeuronTotalMaturityE8s(neuron);
+      }, 0n) || 0n,
+      BigInt(E8S_RATE)
+    );
+
+    icpOnly.stakingPower = getStakingPower(params).valueIcpOnly;
+
+    const fxRate = getFXRate(fxRates, LEDGER_CANISTER_ID.toText());
+    icpOnly.estimatedMaturityOneMonth = fxRate
+      ? getNnsRewardEstimationUSD(params, 30, false, forceInitialDate).total /
+        fxRate
+      : 0;
+  } catch (e) {
+    let message = `Staking rewards: unexpected error calculating ICP only staking rewards data.`;
+    if (e instanceof ApyMissingDataError) {
+      message = `Staking rewards: error calculating ICP only staking rewards data, missing information.`;
+    }
+    logWithTimestamp(message, e);
+  }
+
+  return icpOnly;
 };
 
 const getStakingPower = (params: StakingRewardCalcParams) => {
@@ -254,6 +298,7 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
   return {
     value: totalValueUSD ? totalStakedUSD / totalValueUSD : 0,
     valueUSD: totalStakedUSD,
+    valueIcpOnly: nnsTotalUSD ? nnsStakedUSD / nnsTotalUSD : 0,
   };
 };
 
