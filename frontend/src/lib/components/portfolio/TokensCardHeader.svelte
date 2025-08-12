@@ -79,22 +79,28 @@
       .text-content {
         display: flex;
         flex-direction: column;
-        gap: var(--padding-0_5x);
 
         .title {
           margin: 0;
           padding: 0;
-          font-size: 0.875rem;
+          font-size: 12px;
           font-weight: bold;
           color: var(--text-description);
-          margin: 0;
-          padding: 0;
+
+          @include media.min-width(medium) {
+            font-size: 14px;
+          }
         }
 
         .amount {
           margin: 0;
           padding: 0;
-          font-size: 1.5rem;
+          font-size: 24px;
+          line-height: 32px;
+
+          @include media.min-width(medium) {
+            font-size: 27px;
+          }
         }
       }
     }
