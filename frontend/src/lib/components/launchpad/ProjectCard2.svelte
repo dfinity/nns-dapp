@@ -103,29 +103,25 @@
       <li class="stat-divider"></li>
       <li class="stat-item">
         <h6 class="stat-label"
-          >{$i18n.launchpad_cards.project_card_icp_in_treasury}</h6
+          >{$i18n.launchpad_cards.project_card_proposal_activity}</h6
         >
-        <div class="stat-value">
-          <IconAccountBalance size="16px" />
-          {#if nonNullish(icpInTreasury)}
-            <span data-tid="icp-in-treasury-value"
-              >{icpInTreasury > 1
-                ? ">100%"
-                : formatPercentage(icpInTreasury, {
-                    minFraction: 0,
-                    maxFraction: 2,
-                  })}</span
-            >
-          {:else}
-            <span data-tid="icp-in-treasury-not-applicable"
-              >{$i18n.core.not_applicable}</span
-            >
-          {/if}
+        <div class="stat-value" data-tid="proposal-activity">
+          <IconWallet size="16px" />
+          <span class="proposal-activity">
+            {#if nonNullish(proposalActivity)}
+              <span data-tid="proposal-activity-value">{proposalActivity}</span
+              ><span class="unit">/{$i18n.core.week}</span>
+            {:else}
+              <span data-tid="proposal-activity-not-available"
+                >{$i18n.core.not_applicable}</span
+              >
+            {/if}
+          </span>
         </div>
       </li>
-      <li class="stat-divider"></li>
-      <li class="stat-item">
-        {#if userHasParticipated && nonNullish(userCommitmentIcp)}
+      {#if userHasParticipated && nonNullish(userCommitmentIcp)}
+        <li class="stat-divider"></li>
+        <li class="stat-item">
           <h6 class="stat-label"
             >{$i18n.launchpad_cards.project_card_my_participation}</h6
           >
@@ -133,26 +129,8 @@
             <IconVote size="16px" />
             <AmountDisplay amount={userCommitmentIcp} singleLine inline />
           </div>
-        {:else}
-          <h6 class="stat-label"
-            >{$i18n.launchpad_cards.project_card_proposal_activity}</h6
-          >
-          <div class="stat-value" data-tid="proposal-activity">
-            <IconWallet size="16px" />
-            <span class="proposal-activity">
-              {#if nonNullish(proposalActivity)}
-                <span data-tid="proposal-activity-value"
-                  >{proposalActivity}</span
-                ><span class="unit">/{$i18n.core.week}</span>
-              {:else}
-                <span data-tid="proposal-activity-not-available"
-                  >{$i18n.core.not_applicable}</span
-                >
-              {/if}
-            </span>
-          </div>
-        {/if}
-      </li>
+        </li>
+      {/if}
     </ul>
 
     <div class="footer">
