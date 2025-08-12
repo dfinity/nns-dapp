@@ -158,10 +158,7 @@ describe("neuron-utils", () => {
       roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
     ).toBe(0);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
     ).toBe(0);
   });
 
@@ -333,11 +330,8 @@ describe("neuron-utils", () => {
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(1.13);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(0.54);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.13);
 
     // Double the stake, the reward estimate should double
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
@@ -347,11 +341,8 @@ describe("neuron-utils", () => {
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(2.26);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.08);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // In case of no voting power (e.g. data unavailable), the reward estimate should be 0
     const old = params.nnsTotalVotingPower;
@@ -361,10 +352,7 @@ describe("neuron-utils", () => {
     ).toBe(0);
 
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
     ).toBe(0);
     params.nnsTotalVotingPower = old;
 
@@ -374,10 +362,7 @@ describe("neuron-utils", () => {
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(0);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
     ).toBe(0);
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       50 * E8S_RATE
@@ -390,22 +375,16 @@ describe("neuron-utils", () => {
     ).toBe(0.15);
     // But not the maturity
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(0.54);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.13);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 500;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(62.82);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(0.54);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.13);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 0;
     expect(
@@ -413,10 +392,7 @@ describe("neuron-utils", () => {
     ).toBe(0);
     // Unless it is zero, since it is used in the calculation
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
     ).toBe(0);
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 9;
 
@@ -437,11 +413,8 @@ describe("neuron-utils", () => {
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(4.52);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(2.14);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.5);
 
     // Remove the last neuron, the reward estimate should be 3/4 of before
     params.nnsNeurons.neurons.pop();
@@ -449,11 +422,8 @@ describe("neuron-utils", () => {
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.61);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     // Token balance should not affect the reward estimate
     params.tokens[0].balanceInUsd = 1000;
@@ -461,22 +431,16 @@ describe("neuron-utils", () => {
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.61);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     params.tokens[0].balanceInUsd = 0;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.61);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     // Add a SNS project without a neuron
     params.snsProjects.data.push(getTestSns());
@@ -489,11 +453,8 @@ describe("neuron-utils", () => {
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.61);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     // Neuron fees should affect the reward estimate
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(50 * E8S_RATE);
@@ -501,11 +462,8 @@ describe("neuron-utils", () => {
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(2.26);
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.07);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // Add a couple of SNS neuron with a stake
     params.snsNeurons[TEST_SNS_IDS[0]] = {
@@ -526,11 +484,8 @@ describe("neuron-utils", () => {
     ).toBe(37.59);
     // SNSs should not affect the ICP-only reward estimates
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.07);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // Change the stake of one of the SNS neurons
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
@@ -540,11 +495,8 @@ describe("neuron-utils", () => {
     ).toBe(49.36);
     // SNSs should not affect the ICP-only reward estimates
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.07);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
       BigInt(400 * E8S_RATE);
@@ -553,11 +505,8 @@ describe("neuron-utils", () => {
     ).toBe(72.92);
     // SNSs should not affect the ICP-only reward estimates
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.07);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // Change the FX rate of the SNS project
     params.fxRates[TEST_SNS_IDS[0]] = 1.23;
@@ -566,11 +515,8 @@ describe("neuron-utils", () => {
     ).toBe(3.13);
     // SNSs should not affect the ICP-only reward estimates
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.07);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // Add fees to the SNS neuron
     params.snsNeurons[TEST_SNS_IDS[0]].neurons.forEach((n) => {
@@ -581,11 +527,8 @@ describe("neuron-utils", () => {
     ).toBe(2.26);
     // SNSs should not affect the ICP-only reward estimates
     expect(
-      roundToDecimals(
-        getRewardData(params).icpOnly.estimatedMaturityOneMonth,
-        2
-      )
-    ).toBe(1.07);
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
   });
 
   /////////////////

@@ -77,7 +77,7 @@ export type StakingRewardData = {
   stakingPowerUSD: number;
   icpOnly: {
     maturityBalance: number;
-    estimatedMaturityOneMonth: number;
+    maturityEstimateWeek: number;
     stakingPower: number;
   };
   apy: APY;
@@ -204,7 +204,7 @@ const getIcpOnlyStakingRewardsData = (
 
   const icpOnly = {
     maturityBalance: 0,
-    estimatedMaturityOneMonth: 0,
+    maturityEstimateWeek: 0,
     stakingPower: 0,
   };
 
@@ -219,8 +219,8 @@ const getIcpOnlyStakingRewardsData = (
     icpOnly.stakingPower = getStakingPower(params).valueIcpOnly;
 
     const fxRate = getFXRate(fxRates, LEDGER_CANISTER_ID.toText());
-    icpOnly.estimatedMaturityOneMonth = fxRate
-      ? getNnsRewardEstimationUSD(params, 30, false, forceInitialDate).total /
+    icpOnly.maturityEstimateWeek = fxRate
+      ? getNnsRewardEstimationUSD(params, 7, false, forceInitialDate).total /
         fxRate
       : 0;
   } catch (e) {

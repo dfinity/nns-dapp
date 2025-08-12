@@ -299,7 +299,7 @@ describe("SnsNeurons", () => {
         stakingPowerUSD: 1,
         icpOnly: {
           maturityBalance: 1,
-          estimatedMaturityOneMonth: 1,
+          maturityEstimateWeek: 1,
           stakingPower: 1,
         },
         apy: new Map([
