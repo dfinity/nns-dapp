@@ -9,23 +9,20 @@
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
+  import { compactCurrencyNumber } from "$lib/utils/format.utils";
   import {
-    compactCurrencyNumber,
-    formatPercentage,
-  } from "$lib/utils/format.utils";
-  import {
-    snsProjectIcpInTreasuryPercentage,
     snsProjectMarketCap,
     snsProjectWeeklyProposalActivity,
   } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
-    IconAccountBalance,
+    IconCheckCircleFill,
     IconCoin,
     IconRight,
     IconStar,
     IconVote,
     IconWallet,
+    Tooltip,
   } from "@dfinity/gix-components";
   import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
   import { onMount } from "svelte";
@@ -53,7 +50,6 @@
 
     return compactCurrencyNumber(marketCap);
   });
-  const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
     const myCommitment = getCommitmentE8s(swapCommitment);
     if (isNullish(myCommitment)) {
@@ -71,20 +67,18 @@
   });
 </script>
 
-<CardFrame
-  testId="project-card-component"
-  highlighted={userHasParticipated}
-  dimmed
-  mobileHref={href}
->
+<CardFrame testId="project-card-component" dimmed mobileHref={href}>
   <div class="card-content" class:userHasParticipated>
     <div class="header">
       <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
       <h3 data-tid="project-name">{name}</h3>
-      <div class="fav-icon">
-        <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
-        <IconStar size="20px" />
-      </div>
+      {#if userHasParticipated}
+        <div class="participation-mark">
+          <Tooltip id="participated" text={$i18n.sns_launchpad.participated}>
+            <IconCheckCircleFill size="24px" />
+          </Tooltip>
+        </div>
+      {/if}
     </div>
 
     <div>
@@ -186,11 +180,9 @@
         @include text.truncate;
       }
 
-      .fav-icon {
-        display: none;
-        @include media.min-width(small) {
-          display: none;
-        }
+      .participation-mark {
+        align-self: start;
+        color: var(--positive-emphasis);
       }
     }
 

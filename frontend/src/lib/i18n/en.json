@@ -898,7 +898,8 @@
     "no_open_projects": "Looks like there are no SNS decentralisation swaps running right now. Hopefully one is coming soon! <a href=\"https://internetcomputer.org/sns\" rel=\"noopener noreferrer\" aria-label=\"more info about launching an SNS\" target=\"_blank\">Read more about how SNSs are created</a>.",
     "proposals": "Proposals",
     "project_logo": "project logo",
-    "no_proposals": "There are no decentralisation swap proposals open at the moment."
+    "no_proposals": "There are no decentralisation swap proposals open at the moment.",
+    "participated": "Participated"
   },
   "launchpad": {
     "headline": "Discover SNS Projects",

@@ -933,6 +933,7 @@ interface I18nSns_launchpad {
   proposals: string;
   project_logo: string;
   no_proposals: string;
+  participated: string;
 }
 
 interface I18nLaunchpad {
