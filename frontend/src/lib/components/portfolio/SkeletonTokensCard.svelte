@@ -1,7 +1,10 @@
 <script lang="ts">
   import Card from "$lib/components/portfolio/Card.svelte";
 
-  export let testId: string;
+  type Props = {
+    testId?: string;
+  };
+  const { testId }: Props = $props();
 </script>
 
 <Card {testId}>
@@ -19,13 +22,37 @@
 
     <div class="body">
       <div class="header">
-        <span class="skeleton"></span>
-        <span class="skeleton justify-end"></span>
-        <span class="skeleton justify-end tablet-up"></span>
+        <span class="title skeleton"></span>
+        <div class="columnheaders">
+          <span class="skeleton"></span>
+          <span class="skeleton"></span>
+          <span class="skeleton"></span>
+        </div>
       </div>
 
       <div class="list">
-        {#each Array(4) as _, i (i)}
+        <div class="row">
+          <div class="info">
+            <div class="logo-skeleton skeleton"></div>
+            <div class="title-skeleton skeleton"></div>
+          </div>
+
+          <div class="balance-native skeleton"></div>
+          <div class="balance-usd skeleton"></div>
+        </div>
+      </div>
+
+      <div class="header">
+        <span class="title skeleton"></span>
+        <div class="columnheaders">
+          <span class="skeleton"></span>
+          <span class="skeleton"></span>
+          <span class="skeleton"></span>
+        </div>
+      </div>
+
+      <div class="list grow">
+        {#each Array(3) as _}
           <div class="row">
             <div class="info">
               <div class="logo-skeleton skeleton"></div>
@@ -54,12 +81,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: var(--padding-3x) var(--padding-2x);
+      padding: var(--padding-2x);
 
       .header-wrapper {
         display: flex;
         align-items: flex-start;
-        gap: var(--padding-2x);
+        gap: var(--padding);
 
         .icon {
           width: 50px;
@@ -73,14 +100,14 @@
           gap: var(--padding-0_5x);
 
           .title {
-            height: 20px;
+            height: 14px;
             width: 120px;
             border-radius: 4px;
           }
 
           .amount {
-            height: 42px;
-            width: 100px;
+            height: 32px;
+            width: 80px;
             border-radius: 4px;
           }
         }
@@ -102,27 +129,52 @@
     .body {
       display: flex;
       flex-direction: column;
-      gap: var(--padding);
       flex-grow: 1;
 
       .header {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        padding: 0 var(--padding-2x);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: var(--padding-2x);
+        padding-bottom: var(--padding);
+        gap: var(--padding);
+        border-top: 4px solid var(--elements-divider);
 
-        span {
-          height: 14px;
-          border-radius: 4px;
-          &:first-child {
-            width: 80px;
-          }
-          &:not(:first-child) {
-            width: 60px;
-          }
+        .title {
+          height: 20px;
+          width: 90px;
         }
 
-        @include media.min-width(medium) {
-          grid-template-columns: 1fr 1fr 1fr;
+        .columnheaders {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          width: 100%;
+
+          @include media.min-width(medium) {
+            grid-template-columns: 1fr 1fr 1fr;
+          }
+
+          span {
+            height: 16px;
+            border-radius: 4px;
+
+            &:first-child {
+              width: 80px;
+            }
+
+            &:not(:first-child) {
+              width: 60px;
+              justify-self: flex-end;
+            }
+
+            &:last-child {
+              display: none;
+
+              @include media.min-width(medium) {
+                display: block;
+              }
+            }
+          }
         }
       }
 
@@ -130,7 +182,6 @@
         display: flex;
         flex-direction: column;
         background-color: var(--card-background);
-        flex-grow: 1;
 
         .row {
           display: grid;
@@ -144,7 +195,7 @@
           }
 
           align-items: center;
-          padding: var(--padding-3x) var(--padding-2x);
+          padding: var(--padding-2x);
           border-top: 1px solid var(--elements-divider);
 
           .info {
@@ -183,20 +234,10 @@
           }
         }
       }
-    }
 
-    .tablet-up {
-      display: none !important;
-    }
-
-    @include media.min-width(medium) {
-      .tablet-up {
-        display: block !important;
+      .grow {
+        flex-grow: 1;
       }
-    }
-
-    .justify-end {
-      justify-self: end;
     }
   }
 </style>

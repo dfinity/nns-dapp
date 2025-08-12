@@ -16,10 +16,17 @@ export class Launchpad2Po extends BasePageObject {
     });
   }
 
-  getLaunchedProjectsCardListPo(): CardListPo {
+  getFeaturedProjectsCardListPo(): CardListPo {
     return CardListPo.under({
       element: this.root,
-      testId: "launched-projects-list",
+      testId: "featured-projects-list",
+    });
+  }
+
+  getRestProjectsCardListPo(): CardListPo {
+    return CardListPo.under({
+      element: this.root,
+      testId: "rest-projects-list",
     });
   }
 

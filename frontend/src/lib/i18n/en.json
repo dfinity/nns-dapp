@@ -899,10 +899,9 @@
   },
   "launchpad": {
     "headline": "Discover SNS Projects",
-    "subheadline": "See upcoming and available SNS projects",
     "upcoming_launches": "New Launches and Proposals",
-    "launched_projects": "Launched Projects",
-    "participated_projects": "My SNS Participation",
+    "featured_projects": "Featured Projects",
+    "all_projects": "All Projects",
     "banner_title": "Discover SNS Projects",
     "banner_text": "Find upcoming and existing community dapps. Get involved by participating in launches or joining existing DAO communities!",
     "banner_link": "Visit Launchpad",
