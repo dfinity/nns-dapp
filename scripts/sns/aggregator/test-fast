@@ -55,7 +55,7 @@ wait_for_latest_sns() {
 
   echo Wait for the SNS to be listed in the aggregator
   printf "Waiting for the aggregator to list the SNS..."
-  for ((i = 30; i >= 0; i--)); do
+  for ((i = 60; i >= 0; i--)); do
     if curl -sSL --fail "$AGGREGATOR_URL" 2>/dev/null >/dev/null; then
       echo OK
       break
