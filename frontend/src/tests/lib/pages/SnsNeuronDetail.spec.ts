@@ -137,6 +137,11 @@ describe("SnsNeuronDetail", () => {
         rewardEstimateWeekUSD: 10,
         stakingPower: 1,
         stakingPowerUSD: 1,
+        icpOnly: {
+          maturityBalance: 1,
+          maturityEstimateWeek: 1,
+          stakingPower: 1,
+        },
         apy: new Map([
           [
             rootCanisterId.toText(),
