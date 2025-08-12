@@ -1,3 +1,4 @@
+import { SEERS_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
@@ -169,6 +170,27 @@ describe("project-utils", () => {
           },
         ])?.length
       ).toEqual(3);
+    });
+
+    it("should filter abandoned projects", () => {
+      expect(
+        filterActiveProjects([
+          {
+            ...mockSnsFullProject,
+            summary: summaryForLifecycle(SnsSwapLifecycle.Committed),
+          },
+          {
+            ...mockSnsFullProject,
+            summary: summaryForLifecycle(SnsSwapLifecycle.Adopted),
+          },
+          {
+            ...mockSnsFullProject,
+            summary: summaryForLifecycle(SnsSwapLifecycle.Adopted).override({
+              rootCanisterId: Principal.from(SEERS_ROOT_CANISTER_ID),
+            }),
+          },
+        ])?.length
+      ).toEqual(2);
     });
   });
 

@@ -62,16 +62,16 @@ export const filterActiveProjects = (
   projects: SnsFullProject[]
 ): SnsFullProject[] =>
   projects
-    ?.filter(({ summary }) =>
+    ?.filter(
+      ({ summary }) =>
+        !abandonedProjectsCanisterId.includes(summary.rootCanisterId.toText())
+    )
+    .filter(({ summary }) =>
       [
         SnsSwapLifecycle.Committed,
         SnsSwapLifecycle.Open,
         SnsSwapLifecycle.Adopted,
       ].includes(summary.getLifecycle())
-    )
-    .filter(
-      ({ summary }) =>
-        !abandonedProjectsCanisterId.includes(summary.rootCanisterId.toText())
     );
 
 /**
