@@ -924,6 +924,10 @@
     "create_sns_proposal_title": "Create Service Nervous System (SNS)",
     "create_sns_proposal_vote": "Vote"
   },
+  "fav_projects": {
+    "adding": "Adding project to favorites",
+    "removing": "Removing project from favorites"
+  },
   "sns_project_detail": {
     "swap_proposal": "Swap Proposal",
     "link_to_dashboard": "ICP Dashboard",
@@ -1074,7 +1078,9 @@
     "invalid_canister_id": "Importing the token was unsuccessful because \"$canisterId\" is not a valid canister ID. Please verify the ID and retry."
   },
   "error__fav_projects": {
-    "too_many": "You can't add more than $limit favorite projects."
+    "too_many": "You can't add more than $limit favorite projects.",
+    "adding_error": "There was an error while adding the project to favorites.",
+    "removing_error": "There was an error while removing the project from favorites."
   },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
