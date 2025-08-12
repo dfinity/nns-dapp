@@ -4,7 +4,10 @@
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
-  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+  import {
+    abandonedProjectsCanisterId,
+    OWN_CANISTER_ID_TEXT,
+  } from "$lib/constants/canister-ids.constants";
   import { MAX_IMPORTED_TOKENS } from "$lib/constants/imported-tokens.constants";
   import { pageStore } from "$lib/derived/page.derived";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
@@ -20,7 +23,7 @@
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
   import { filterTokensByType } from "$lib/utils/tokens-table.utils";
   import { IconHeldTokens, IconPlus, Tooltip } from "@dfinity/gix-components";
-  import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish, TokenAmountV2 } from "@dfinity/utils";
 
   export let userTokensData: UserToken[];
 
@@ -88,7 +91,9 @@
     tokens: shownTokensData,
     type: "sns",
     importedTokens: $importedTokensStore.importedTokens,
-  });
+  }).filter(
+    (token) => !abandonedProjectsCanisterId.includes(token.universeId.toText())
+  );
 
   const showAll = () => {
     hideZeroBalancesStore.set("show");

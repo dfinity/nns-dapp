@@ -142,22 +142,6 @@
     ...commonColumns,
   ]);
 
-  const sunsettedSnsColumns: ProjectsTableColumn[] = $derived([
-    {
-      id: "title",
-      title: $i18n.staking.nervous_systems_sns_sunset,
-      subtitle: $i18n.staking.nervous_systems_sns_sunset_subtitle,
-      cellComponent: ProjectTitleCell,
-      alignment: "left",
-      templateColumns: ["2fr"],
-    },
-    {
-      title: "",
-      alignment: "left",
-      templateColumns: ["1fr"],
-    },
-  ]);
-
   const tableProjects = $derived(
     getTableProjects({
       universes: $selectableUniversesStore,
@@ -212,12 +196,6 @@
     sortedTableProjects
       .filter((p) => p.universeId !== OWN_CANISTER_ID_TEXT)
       .filter((p) => !abandonedProjectsCanisterId.includes(p.universeId))
-  );
-
-  const sunsetSns = $derived(
-    sortedTableProjects.filter((p) =>
-      abandonedProjectsCanisterId.includes(p.universeId)
-    )
   );
 
   const dispatcher = createEventDispatcher();
@@ -319,10 +297,6 @@
         columns={snsColumns}
         on:nnsAction={handleAction}
       />
-
-      {#if sunsetSns.length > 0}
-        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
-      {/if}
     {:else}
       <ResponsiveTable
         tableData={nnsNeurons}
@@ -372,15 +346,7 @@
           </svelte:fragment>
         </ResponsiveTable>
       {/if}
-
-      {#if $hideZeroNeuronsStore !== "hide" && sunsetSns.length > 0}
-        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
-      {/if}
     {/if}
-
-    <div class="disclaimer">
-      {$i18n.staking.bottom_disclaimer}
-    </div>
   {:else if !$authSignedInStore}
     <ResponsiveTable
       tableData={sortedTableProjects}
@@ -424,18 +390,6 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
-
-  .disclaimer {
-    color: var(--text-description-tint);
-    padding: 0 0 var(--padding-2x);
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
-
-    @include media.min-width(small) {
-      white-space: pre-line;
-    }
-  }
 
   .wrapper {
     display: flex;
