@@ -355,8 +355,6 @@ interface I18nStaking {
   nervous_systems_nns_subtitle: string;
   nervous_systems_sns: string;
   nervous_systems_sns_subtitle: string;
-  nervous_systems_sns_sunset: string;
-  nervous_systems_sns_sunset_subtitle: string;
   hide_no_neurons_header: string;
   hide_no_neurons_toggle_label: string;
   hide_no_neurons_table_hint: string;
