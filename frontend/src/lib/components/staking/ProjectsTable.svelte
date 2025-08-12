@@ -377,10 +377,6 @@
         <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
       {/if}
     {/if}
-
-    <div class="disclaimer">
-      {$i18n.staking.bottom_disclaimer}
-    </div>
   {:else if !$authSignedInStore}
     <ResponsiveTable
       tableData={sortedTableProjects}
@@ -424,18 +420,6 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/media";
-
-  .disclaimer {
-    color: var(--text-description-tint);
-    padding: 0 0 var(--padding-2x);
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
-
-    @include media.min-width(small) {
-      white-space: pre-line;
-    }
-  }
 
   .wrapper {
     display: flex;

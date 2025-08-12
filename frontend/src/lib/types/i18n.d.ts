@@ -361,7 +361,6 @@ interface I18nStaking {
   hide_no_neurons_toggle_label: string;
   hide_no_neurons_table_hint: string;
   show_all: string;
-  bottom_disclaimer: string;
 }
 
 interface I18nNeurons {

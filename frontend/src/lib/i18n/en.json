@@ -347,8 +347,7 @@
     "hide_no_neurons_header": "Neurons",
     "hide_no_neurons_toggle_label": "Hide projects with 0 neurons",
     "hide_no_neurons_table_hint": "Projects with 0 neurons are hidden.",
-    "show_all": "Show all",
-    "bottom_disclaimer": "You can hold ckTokens and imported tokens in your wallet,\n but staking is only available for ICP and SNS tokens."
+    "show_all": "Show all"
   },
   "neurons": {
     "title": "Neurons",
