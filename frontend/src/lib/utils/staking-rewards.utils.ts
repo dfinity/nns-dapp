@@ -213,7 +213,8 @@ const getIcpOnlyStakingRewardsData = (
       nnsNeurons.neurons?.reduce((acc, neuron) => {
         return acc + getNeuronTotalMaturityE8s(neuron);
       }, 0n) || 0n,
-      BigInt(E8S_RATE)
+      BigInt(E8S_RATE),
+      20
     );
 
     icpOnly.stakingPower = getStakingPower(params).valueIcpOnly;
