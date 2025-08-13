@@ -22,13 +22,19 @@
     topHeldTokens: UserTokenData[];
     usdAmount: number;
     numberOfTopStakedTokens: number;
+    icpOnlyTable?: boolean;
   };
-  const { topHeldTokens, usdAmount, numberOfTopStakedTokens }: Props = $props();
+  const {
+    topHeldTokens,
+    usdAmount,
+    numberOfTopStakedTokens,
+    icpOnlyTable = false,
+  }: Props = $props();
 
-  const href = AppPath.Tokens;
+  const href = icpOnlyTable ? topHeldTokens[0].rowHref : AppPath.Tokens;
 
   const icp: UserTokenData | undefined = $derived(topHeldTokens[0]);
-  const restOfTokens = $derived(topHeldTokens.slice(1));
+  const restOfTokens = $derived(topHeldTokens);
   const numberOfTopHeldTokens = $derived(topHeldTokens.length);
 
   const showInfoRow = $derived(
@@ -138,31 +144,35 @@
   <div
     class="wrapper"
     role="region"
-    aria-label={$i18n.portfolio.held_tokens_card_title}
+    aria-label={icpOnlyTable
+      ? $i18n.portfolio.held_icp_card_title
+      : $i18n.portfolio.held_tokens_card_title}
   >
     <TokensCardHeader
       {href}
       {usdAmount}
-      title={$i18n.portfolio.held_tokens_card_title}
-      linkText={$i18n.portfolio.held_tokens_card_link}
+      title={icpOnlyTable
+        ? $i18n.portfolio.held_icp_card_title
+        : $i18n.portfolio.held_tokens_card_title}
+      linkText={icpOnlyTable
+        ? $i18n.portfolio.held_icp_card_link
+        : $i18n.portfolio.held_tokens_card_link}
     >
       {#snippet icon()}
         <IconHeldTokens />
       {/snippet}
     </TokensCardHeader>
     <div class="body" role="table">
-      {@render tableHeader({
-        title: $i18n.portfolio.held_tokens_card_subtitle_icp,
-        firstColumnTitle:
-          $i18n.portfolio.held_tokens_card_list_first_column_icp,
-      })}
-      <div class="list icp" role="rowgroup">
-        {@render row({ token: icp })}
-      </div>
-
-      {#if restOfTokens.length > 0}
-        <div class="divider"></div>
-
+      {#if icpOnlyTable}
+        {@render tableHeader({
+          title: $i18n.portfolio.held_tokens_card_subtitle_icp,
+          firstColumnTitle:
+            $i18n.portfolio.held_tokens_card_list_first_column_icp,
+        })}
+        <div class="list icp" role="rowgroup">
+          {@render row({ token: icp })}
+        </div>
+      {:else if restOfTokens.length > 0}
         {@render tableHeader({
           title: $i18n.portfolio.held_tokens_card_subtitle_rest,
           firstColumnTitle:
@@ -276,11 +286,6 @@
     .balance-usd {
       grid-area: usd;
     }
-  }
-
-  .divider {
-    width: 100%;
-    border-bottom: 4px solid var(--elements-divider);
   }
 
   .info-row,
