@@ -294,6 +294,7 @@ export class LedgerIdentity extends SignIdentity {
     const requestId = getRequestId(body);
     const requestIdHex = Buffer.from(requestId).toString("hex");
     const requestData = this.readStateMap.get(requestIdHex);
+
     if (isNullish(requestData)) {
       console.warn(
         `No cached data for read state request with id ${requestIdHex}.`
@@ -369,9 +370,22 @@ export class LedgerIdentity extends SignIdentity {
     request1: ReadRequest,
     request2: ReadRequest
   ): boolean => {
+    // CBOR encoding is sensitive to property order - different orders produce different encodings.
+    // This helper function normalizes property order before encoding to ensure consistent comparison.
+    const normalizeRequests = (request: ReadRequest): ReadRequest => {
+      return Object.keys(request)
+        .sort()
+        .reduce<ReadRequest>((acc, key) => {
+          acc[key] = request[key];
+          return acc;
+        }, {} as ReadRequest);
+    };
+    const sortedRequest1 = normalizeRequests(request1);
+    const sortedRequest2 = normalizeRequests(request2);
+
     return uint8ArraysEqual({
-      a: this.prepareCborForLedger(request1),
-      b: this.prepareCborForLedger(request2),
+      a: this.prepareCborForLedger(sortedRequest1),
+      b: this.prepareCborForLedger(sortedRequest2),
     });
   };
 
