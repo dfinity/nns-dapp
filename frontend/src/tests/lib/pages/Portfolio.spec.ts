@@ -639,15 +639,15 @@ describe("Portfolio page", () => {
             icpOnly: {
               maturityBalance: 1,
               maturityEstimateWeek: 1,
-              stakingPower: 1,
+              stakingPower: 0.1,
             },
           },
         });
 
         expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
         expect(await po.getApyCardPo().isPresent()).toBe(true);
-        expect(await po.getApyCardPo().getRewardAmount()).toBe("~1.00");
-        expect(await po.getApyCardPo().getProjectionAmount()).toBe("~1.00");
+        expect(await po.getApyCardPo().getRewardAmount()).toBe("1.00");
+        expect(await po.getApyCardPo().getProjectionAmount()).toBe("1.000");
         expect(await po.getApyCardPo().getStakingPowerPercentage()).toBe(
           "10.00%"
         );
