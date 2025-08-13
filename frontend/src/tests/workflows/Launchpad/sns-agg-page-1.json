@@ -28,6 +28,61 @@
       "description": "DecideAI is an ecosystem, creating AI that benefit users, contributors, and developers.",
       "logo": "/v1/sns/root/x4kx5-ziaaa-aaaaq-aabeq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 65463447851118,
+              "amount_e8s": 2327081515221,
+              "account": {
+                "owner": "xvj4b-paaaa-aaaaq-aabfa-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1754535727
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 19467767699920000,
+              "account": {
+                "owner": "xvj4b-paaaa-aaaaq-aabfa-cai",
+                "subaccount": {
+                  "subaccount": [
+                    90, 6, 93, 235, 172, 132, 172, 64, 24, 134, 16, 65, 195,
+                    193, 255, 54, 139, 183, 73, 48, 24, 183, 21, 217, 180, 86,
+                    110, 128, 161, 134, 4, 173
+                  ]
+                }
+              },
+              "ledger_canister_id": "xsi2v-cyaaa-aaaaq-aabfq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1754535727
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 106781272740691981,
+            "timestamp_seconds": 1754535727
+          },
+          "last_ledger_block_timestamp": 1754537507,
+          "num_recently_executed_proposals": 4,
+          "num_recently_submitted_proposals": 5,
+          "genesis_timestamp_seconds": 1691588586
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1754487792,
+      "end_timestamp_seconds": 1754487786,
+      "total_available_e8s_equivalent": 40410796134996,
+      "distributed_e8s_equivalent": 0,
+      "round": 728,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -171,6 +226,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -361,10 +424,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "xaonm-oiaaa-aaaaq-aabgq-cai"
+        }
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98361997516517827,
+    "icrc1_total_supply": 98408060315623796,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -583,6 +652,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "TreasuryAssetManagement",
@@ -697,7 +774,9 @@
         "j474s-uqaaa-aaaap-abf6q-cai",
         "7p3gx-jaaaa-aaaal-acbda-cai",
         "awcae-maaaa-aaaam-abmyq-cai",
-        "d6dgo-aaaaa-aaaap-akpqq-cai"
+        "d6dgo-aaaaa-aaaap-akpqq-cai",
+        "imqio-gaaaa-aaaal-adlxa-cai",
+        "z6ggl-cqaaa-aaaap-abv2a-cai"
       ],
       "archives": ["r6akw-vqaaa-aaaaq-aabsa-cai"]
     },
@@ -706,6 +785,65 @@
       "name": "BOOM DAO",
       "description": "BOOM DAO is an all-in-one web3 game platform and protocol running 100% on-chain on the Internet Computer",
       "logo": "/v1/sns/root/xjngq-yaaaa-aaaaq-aabha-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 40898495383898,
+              "amount_e8s": 2607834964445,
+              "account": {
+                "owner": "xomae-vyaaa-aaaaq-aabhq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1754536283
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 4594959793900000,
+              "account": {
+                "owner": "xomae-vyaaa-aaaaq-aabhq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    139, 233, 242, 170, 28, 96, 95, 194, 153, 42, 51, 71, 79,
+                    254, 216, 214, 215, 255, 91, 4, 127, 112, 183, 252, 128, 92,
+                    169, 37, 221, 151, 33, 210
+                  ]
+                }
+              },
+              "ledger_canister_id": "vtrom-gqaaa-aaaaq-aabia-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1754536283
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 234442317908738910,
+            "timestamp_seconds": 1754536283
+          },
+          "last_ledger_block_timestamp": 1754535407,
+          "num_recently_executed_proposals": 14,
+          "num_recently_submitted_proposals": 17,
+          "genesis_timestamp_seconds": 1692203741
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1754498152,
+      "end_timestamp_seconds": 1754498141,
+      "total_available_e8s_equivalent": 86499330704248,
+      "distributed_e8s_equivalent": 86499330703748,
+      "round": 721,
+      "settled_proposals": [
+        {
+          "id": 693
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -850,6 +988,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1176,10 +1322,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "v5tde-5aaaa-aaaaq-aabja-cai"
+        }
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 126328486513164652,
+    "icrc1_total_supply": 126394524119135188,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1562,6 +1714,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "TreasuryAssetManagement",
@@ -1646,6 +1806,8 @@
       "description": "A web3 social network governed by the people for the people",
       "logo": "/v1/sns/root/v2sfq-qyaaa-aaaaq-aabjq-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -1963,6 +2125,61 @@
       "description": "Catalyze is a one-stop social-fi application for organising your Web3 experience",
       "logo": "/v1/sns/root/uly3p-iqaaa-aaaaq-aabma-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 60200554902099,
+              "amount_e8s": 10490266748771,
+              "account": {
+                "owner": "umz53-fiaaa-aaaaq-aabmq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1754534062
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 24761089499000000,
+              "account": {
+                "owner": "umz53-fiaaa-aaaaq-aabmq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    78, 218, 132, 247, 131, 94, 68, 137, 74, 187, 135, 135, 117,
+                    209, 175, 86, 105, 252, 53, 63, 17, 137, 120, 254, 161, 45,
+                    55, 128, 212, 194, 174, 238
+                  ]
+                }
+              },
+              "ledger_canister_id": "uf2wh-taaaa-aaaaq-aabna-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1754534062
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 55059033985417819,
+            "timestamp_seconds": 1754534062
+          },
+          "last_ledger_block_timestamp": 1754523809,
+          "num_recently_executed_proposals": 1,
+          "num_recently_submitted_proposals": 2,
+          "genesis_timestamp_seconds": 1692644557
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1754506965,
+      "end_timestamp_seconds": 1754506957,
+      "total_available_e8s_equivalent": 137783313255177,
+      "distributed_e8s_equivalent": 0,
+      "round": 716,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [1001],
       "functions": [
@@ -2106,6 +2323,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2287,10 +2512,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "ux4b6-7qaaa-aaaaq-aaboa-cai"
+        }
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50767059406430688,
+    "icrc1_total_supply": 50772104336472238,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2491,6 +2722,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "TreasuryAssetManagement",
@@ -2618,6 +2857,8 @@
       "description": "---- please unlist ----",
       "logo": "/v1/sns/root/u67kc-jyaaa-aaaaq-aabpq-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -2947,7 +3188,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 9961545459755483,
+    "icrc1_total_supply": 9961542759755483,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3052,6 +3293,61 @@
       "name": "Nuance",
       "description": "Nuance is the world's first publishing platform built entirely on-chain. In the same way DeFi has taken the middleman out of finance Nuance does the same for the written word.\n",
       "logo": "/v1/sns/root/rzbmc-yiaaa-aaaaq-aabsq-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 26240775503592,
+              "amount_e8s": 10212058764072,
+              "account": {
+                "owner": "rqch6-oaaaa-aaaaq-aabta-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1754534172
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 3879159062904260,
+              "account": {
+                "owner": "rqch6-oaaaa-aaaaq-aabta-cai",
+                "subaccount": {
+                  "subaccount": [
+                    102, 220, 17, 70, 218, 116, 14, 60, 212, 188, 181, 179, 119,
+                    252, 105, 10, 10, 131, 95, 223, 76, 125, 151, 200, 83, 208,
+                    10, 80, 18, 198, 50, 254
+                  ]
+                }
+              },
+              "ledger_canister_id": "rxdbk-dyaaa-aaaaq-aabtq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1754534172
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 17525528611711544,
+            "timestamp_seconds": 1754534172
+          },
+          "last_ledger_block_timestamp": 1754522044,
+          "num_recently_executed_proposals": 10,
+          "num_recently_submitted_proposals": 19,
+          "genesis_timestamp_seconds": 1694946570
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1754476171,
+      "end_timestamp_seconds": 1754476170,
+      "total_available_e8s_equivalent": 46148931984817,
+      "distributed_e8s_equivalent": 0,
+      "round": 689,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -3196,6 +3492,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3375,10 +3679,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "q5mdq-biaaa-aaaaq-aabuq-cai"
+        }
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10213818285988406,
+    "icrc1_total_supply": 10216679105579670,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3614,6 +3924,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "TreasuryAssetManagement",
@@ -3692,10 +4010,9 @@
       "dapps": [
         "3xwpq-ziaaa-aaaah-qcn4a-cai",
         "lfzsk-7qaaa-aaaah-adk2q-cai",
-        "aanaa-xaaaa-aaaah-aaeiq-cai",
+        "ltj2f-gaaaa-aaaah-adnea-cai",
         "utozz-siaaa-aaaam-qaaxq-cai",
-        "eo2vl-tyaaa-aaaah-adtfa-cai",
-        "ltj2f-gaaaa-aaaah-adnea-cai"
+        "eo2vl-tyaaa-aaaah-adtfa-cai"
       ],
       "archives": ["svw4v-tiaaa-aaaaq-aabyq-cai"]
     },
@@ -3704,6 +4021,61 @@
       "name": "SONIC",
       "description": "The Open Defi Suite on Internet Computer Blockchain governed by the people for the people.\n",
       "logo": "/v1/sns/root/qtooy-2yaaa-aaaaq-aabvq-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 51937543314834,
+              "amount_e8s": 11982776407872,
+              "account": {
+                "owner": "qgj7v-3qaaa-aaaaq-aabwa-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1754534935
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 5336659016133260,
+              "account": {
+                "owner": "qgj7v-3qaaa-aaaaq-aabwa-cai",
+                "subaccount": {
+                  "subaccount": [
+                    190, 181, 56, 35, 105, 198, 54, 119, 128, 145, 100, 124, 51,
+                    69, 50, 91, 134, 209, 40, 60, 241, 74, 5, 125, 104, 78, 45,
+                    245, 182, 171, 193, 244
+                  ]
+                }
+              },
+              "ledger_canister_id": "qbizb-wiaaa-aaaaq-aabwq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1754534935
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 36950863148344676,
+            "timestamp_seconds": 1754534935
+          },
+          "last_ledger_block_timestamp": 1754522044,
+          "num_recently_executed_proposals": 4,
+          "num_recently_submitted_proposals": 4,
+          "genesis_timestamp_seconds": 1695889829
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1754469031,
+      "end_timestamp_seconds": 1754469029,
+      "total_available_e8s_equivalent": 6835797043308,
+      "distributed_e8s_equivalent": 0,
+      "round": 678,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -3848,6 +4220,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -4039,10 +4419,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "qpkuj-nyaaa-aaaaq-aabxq-cai"
+        }
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12736728152396562,
+    "icrc1_total_supply": 12741522367593775,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4291,6 +4677,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "TreasuryAssetManagement",
@@ -4375,6 +4769,8 @@
       "description": "Querio stands as the first Web3 search engine that enables seamless discovery of dApps across multiple blockchains.\n",
       "logo": "/v1/sns/root/s4vxj-faaaa-aaaaq-aabza-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -4819,6 +5215,8 @@
       "description": "A decentralised music platform governed by artists and fans.\n",
       "logo": "/v1/sns/root/shqlm-7yaaa-aaaaq-aab3q-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": []
@@ -5072,6 +5470,16 @@
       "name": "Gold DAO",
       "description": "The Gold DAO project represents a groundbreaking fusion of traditional gold and modern blockchain technology, allowing anyone in the world to access  physical gold instantaneously, with no dependence upon the banking system. At its core, the project introduces two primary products: the Gold Token (GLDT) - a fungible token allowing fractional gold ownership; and a USD-pegged stablecoin (USDG) - backed by gold (GLDT). These components combine to unlock a reliable alternative to fiat-backed stablecoins and their inflationary underpinnings, eradicating the limitations of traditional gold transacting by enabling instant transferability and liquidity, leveraging blockchain's transparency and efficiency.\n",
       "logo": "/v1/sns/root/tw2vt-hqaaa-aaaaq-aab6a-cai/logo.png"
+    },
+    "metrics": null,
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1754467308,
+      "end_timestamp_seconds": 1754467306,
+      "total_available_e8s_equivalent": 1086913121828,
+      "distributed_e8s_equivalent": 0,
+      "round": 603,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -5821,7 +6229,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99293637601174046,
+    "icrc1_total_supply": 99245185212626740,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

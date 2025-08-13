@@ -15,6 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 * New staking reward card and table data in the portfolio page.
+* New tables subtitles in staking and tokens pages.
 
 #### Changed
 

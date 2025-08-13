@@ -1,5 +1,5 @@
 import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
-import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import Portfolio from "$lib/pages/Portfolio.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { TableProject } from "$lib/types/staking";
@@ -7,12 +7,7 @@ import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import type { StakingRewardResult } from "$lib/utils/staking-rewards.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import {
-  createSummary,
-  mockSnsFullProject,
-  mockToken,
-  principal,
-} from "$tests/mocks/sns-projects.mock";
+import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
   ckBTCTokenBase,
@@ -25,8 +20,6 @@ import {
 import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
-import type { ProposalInfo } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -34,25 +27,16 @@ describe("Portfolio page", () => {
   const renderPage = ({
     userTokens = [],
     tableProjects = [],
-    snsProjects = [],
-    openSnsProposals = [],
-    adoptedSnsProposals = [],
     stakingRewardResult = { loading: true },
   }: {
     userTokens?: UserToken[];
     tableProjects?: TableProject[];
-    snsProjects?: SnsFullProject[];
-    openSnsProposals?: ProposalInfo[];
-    adoptedSnsProposals?: SnsFullProject[];
     stakingRewardResult?: StakingRewardResult;
   } = {}) => {
     const { container } = render(Portfolio, {
       props: {
         userTokens,
         tableProjects,
-        snsProjects,
-        openSnsProposals,
-        adoptedSnsProposals,
         stakingRewardResult,
       },
     });
@@ -163,511 +147,6 @@ describe("Portfolio page", () => {
       expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
       expect(await po.getHeldTokensSkeletonCard().isPresent()).toEqual(false);
       expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(false);
-    });
-
-    it("should show StackedCards when snsProjects is not empty", async () => {
-      const mockSnsProjects: SnsFullProject[] = [mockSnsFullProject];
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(1);
-    });
-  });
-
-  describe("StackedCards", () => {
-    const mockSnsProjects: SnsFullProject[] = [
-      mockSnsFullProject,
-      {
-        ...mockSnsFullProject,
-        rootCanisterId: principal(2),
-        summary: createSummary({
-          lifecycle: SnsSwapLifecycle.Adopted,
-          projectName: "AdoptedProject",
-        }),
-      },
-    ];
-
-    const mockSnsProposals = [
-      {
-        proposal: {
-          title: "Proposal to create new SNS",
-          summary: "",
-          url: "url",
-          action: {
-            CreateServiceNervousSystem: {
-              name: "TestDAO1",
-              governanceParameters: {},
-              fallbackControllerPrincipalIds: [],
-              logo: {},
-              url: "url",
-              ledgerParameters: {},
-              description: "",
-              dappCanisters: [],
-              swapParameters: {},
-              initialTokenDistribution: {},
-            },
-          },
-        },
-        deadlineTimestampSeconds: 168_000_000n,
-      },
-      {
-        proposal: {
-          title: "Proposal to create new SNS",
-          summary: "",
-          url: "url",
-          action: {
-            CreateServiceNervousSystem: {
-              name: "TestDAO2",
-              governanceParameters: {},
-              fallbackControllerPrincipalIds: [],
-              logo: {},
-              url: "url",
-              ledgerParameters: {},
-              description: "",
-              dappCanisters: [],
-              swapParameters: {},
-              initialTokenDistribution: {},
-            },
-          },
-        },
-        deadlineTimestampSeconds: 68_000_000n,
-      },
-    ] as ProposalInfo[];
-
-    beforeEach(() => {
-      resetIdentity();
-    });
-
-    it("should not display StackedCards if no snsProjects nor proposals for new sns", async () => {
-      const po = renderPage();
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await stackedCardsPo.isPresent()).toBe(false);
-    });
-
-    it("should display StackedCards when snsProjects is not empty", async () => {
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should display StackedCards when openSnsProposals is not empty", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should display StackedCards when adoptedSnsProposals is not empty", async () => {
-      const po = renderPage({ adoptedSnsProposals: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should show all cards when snsProjects, openSnsProposals, and adoptedSnsProposals are not empty", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects,
-        adoptedSnsProposals: mockSnsProjects,
-        openSnsProposals: mockSnsProposals,
-      });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(6); // 2 snsProjects + 2 adoptedSnsProposals + 2 openSnsProposals
-    });
-
-    it("should sort launchpadCards", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("EarlierTimestampProject");
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampProject");
-    });
-
-    it("should sort openSnsProposal", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO2");
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO1");
-    });
-
-    it("should sort adoptedSnsProposals", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({ adoptedSnsProposals: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe(
-        "EarlierTimestampAdoptedProject"
-      );
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampAdoptedProject");
-    });
-
-    it("should show first on going swaps, then open proposals, and then adopted proposals", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects.slice(0, 1),
-        openSnsProposals: mockSnsProposals.slice(0, 1),
-        adoptedSnsProposals: mockSnsProjects.slice(1, 2),
-      });
-
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(3);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("Tetris"); // First sns project
-
-      await dotsPo[1].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO1"); // Open proposal
-
-      await dotsPo[2].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("AdoptedProject"); // Adopted proposal
-    });
-  });
-
-  describe("StackedCards when feature flags enabled", () => {
-    const mockSnsProjects: SnsFullProject[] = [
-      mockSnsFullProject,
-      {
-        ...mockSnsFullProject,
-        rootCanisterId: principal(2),
-        summary: createSummary({
-          lifecycle: SnsSwapLifecycle.Adopted,
-          projectName: "AdoptedProject",
-        }),
-      },
-    ];
-
-    const mockSnsProposals = [
-      {
-        proposal: {
-          title: "Proposal to create new SNS",
-          summary: "",
-          url: "url",
-          action: {
-            CreateServiceNervousSystem: {
-              name: "TestDAO1",
-              governanceParameters: {},
-              fallbackControllerPrincipalIds: [],
-              logo: {},
-              url: "url",
-              ledgerParameters: {},
-              description: "",
-              dappCanisters: [],
-              swapParameters: {},
-              initialTokenDistribution: {},
-            },
-          },
-        },
-        deadlineTimestampSeconds: 168_000_000n,
-      },
-      {
-        proposal: {
-          title: "Proposal to create new SNS",
-          summary: "",
-          url: "url",
-          action: {
-            CreateServiceNervousSystem: {
-              name: "TestDAO2",
-              governanceParameters: {},
-              fallbackControllerPrincipalIds: [],
-              logo: {},
-              url: "url",
-              ledgerParameters: {},
-              description: "",
-              dappCanisters: [],
-              swapParameters: {},
-              initialTokenDistribution: {},
-            },
-          },
-        },
-        deadlineTimestampSeconds: 68_000_000n,
-      },
-    ] as ProposalInfo[];
-
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_LAUNCHPAD_REDESIGN", true);
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
-      resetIdentity();
-    });
-
-    it("should show a full width TotalAssetsCard by default", async () => {
-      const po = renderPage();
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
-
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
-    });
-
-    it("should not show a full width TotalAssetsCard when APY FF is on", async () => {
-      const po = renderPage();
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
-    });
-
-    it("should not display StackedCards if no snsProjects nor proposals for new sns", async () => {
-      const po = renderPage();
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await stackedCardsPo.isPresent()).toBe(false);
-    });
-
-    it("should display StackedCards when snsProjects is not empty", async () => {
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should display StackedCards when openSnsProposals is not empty", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should display StackedCards when adoptedSnsProposals is not empty", async () => {
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should show all cards when snsProjects, openSnsProposals, and adoptedSnsProposals are not empty", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects,
-        openSnsProposals: mockSnsProposals,
-      });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(4); // 1 Open Sns Project + 2 adoptedSnsProposals + 1 Adopted Sns Project
-    });
-
-    it("should sort launchpadCards", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("EarlierTimestampProject");
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampProject");
-    });
-
-    it("should sort openSnsProposal", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO2");
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO1");
-    });
-
-    it("should sort adoptedSnsProposals", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({
-        snsProjects: mockSnsProjects,
-      });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe(
-        "EarlierTimestampAdoptedProject"
-      );
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampAdoptedProject");
-    });
-
-    it("should show first on going swaps, then open proposals, and then adopted proposals", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects.slice(0, 1),
-        openSnsProposals: mockSnsProposals.slice(0, 1),
-        adoptedSnsProposals: mockSnsProjects.slice(1, 2),
-      });
-
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(3);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("Tetris"); // First sns project
-
-      await dotsPo[1].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO1"); // Open proposal
-
-      await dotsPo[2].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("AdoptedProject"); // Adopted proposal
-    });
-
-    it("should hide TotalAssetsCard when not signed", async () => {
-      setNoIdentity();
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await po.getTotalAssetsCardPo().isPresent()).toBe(false);
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-    });
-
-    it("should show TotalAssetsCard when signed in, even with sns projects", async () => {
-      const po = renderPage({ snsProjects: mockSnsProjects });
-
-      expect(await po.getTotalAssetsCardPo().isPresent()).toBe(true);
     });
   });
 
@@ -854,7 +333,14 @@ describe("Portfolio page", () => {
         expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
       });
 
-      it("should display the information row when less then three tokens", async () => {
+      it("should display the information row when less then three tokens and desktop", async () => {
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
+
         const po = renderPage({
           userTokens: [icpToken, token2],
         });
@@ -934,6 +420,12 @@ describe("Portfolio page", () => {
       });
 
       it("should display the information row when the staked tokens card has less items than the held tokens card", async () => {
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
           tableProjects: [icpProject, tableProject2],
@@ -1144,6 +636,11 @@ describe("Portfolio page", () => {
             rewardEstimateWeekUSD: 1,
             stakingPower: 0.1,
             stakingPowerUSD: 100,
+            icpOnly: {
+              maturityBalance: 1,
+              maturityEstimateWeek: 1,
+              stakingPower: 1,
+            },
           },
         });
 

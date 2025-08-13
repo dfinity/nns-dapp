@@ -2,10 +2,10 @@
   import CardList from "$lib/components/launchpad/CardList.svelte";
   import ProjectCard2 from "$lib/components/launchpad/ProjectCard2.svelte";
   import SkeletonProjectCard from "$lib/components/launchpad/SkeletonProjectCard.svelte";
+  import { FEATURED_SNS_PROJECTS } from "$lib/constants/sns.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
-  import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { ComponentWithProps } from "$lib/types/svelte";
   import {
@@ -16,10 +16,8 @@
     comparesByDecentralizationSaleOpenTimestampDesc,
     filterProjectsStatus,
   } from "$lib/utils/projects.utils";
-  import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import type { ProposalInfo } from "@dfinity/nns";
   import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { isNullish } from "@dfinity/utils";
   import type { Component } from "svelte";
 
   type Props = {
@@ -42,10 +40,10 @@
       projects: snsProjects,
     }).sort(comparesByDecentralizationSaleOpenTimestampDesc)
   );
-  const userCommittedSnsProjects = $derived(
+  const featuredCards = $derived(
     launchedSnsProjects
-      .filter(
-        ({ swapCommitment }) => getCommitmentE8s(swapCommitment) ?? 0n > 0n
+      .filter((project) =>
+        FEATURED_SNS_PROJECTS.includes(project.rootCanisterId.toText())
       )
       .sort(
         compareLaunchpadSnsProjects({
@@ -58,12 +56,11 @@
         props: { project },
       }))
   );
-  const notCommittedSnsProjects = $derived(
+  const restProjectCards = $derived(
     launchedSnsProjects
       .filter(
-        ({ swapCommitment }) =>
-          isNullish(getCommitmentE8s(swapCommitment)) ||
-          getCommitmentE8s(swapCommitment) === 0n
+        (project) =>
+          !FEATURED_SNS_PROJECTS.includes(project.rootCanisterId.toText())
       )
       .sort(
         compareLaunchpadSnsProjects({
@@ -76,10 +73,6 @@
         props: { project },
       }))
   );
-  const launchedSnsProjectsCards: ComponentWithProps[] = $derived([
-    ...userCommittedSnsProjects,
-    ...notCommittedSnsProjects,
-  ]);
   const skeletonCards: ComponentWithProps[] = $derived(
     Array.from({ length: 3 }, () => ({
       Component: SkeletonProjectCard as unknown as Component,
@@ -89,10 +82,7 @@
 </script>
 
 <main data-tid="launchpad2-component">
-  <div class="header">
-    <h3>{$i18n.launchpad.headline}</h3>
-    <p>{$i18n.launchpad.subheadline}</p>
-  </div>
+  <h3>{$i18n.launchpad.headline}</h3>
 
   {#if upcomingLaunchesCards.length > 0}
     <section>
@@ -105,28 +95,21 @@
     </section>
   {/if}
 
-  {#if $isMobileViewportStore && userCommittedSnsProjects.length > 0}
-    <section>
-      <h4>{$i18n.launchpad.participated_projects}</h4>
-      <CardList
-        testId="user-committed-projects-list"
-        cards={userCommittedSnsProjects}
-        mobileHorizontalScroll={userCommittedSnsProjects.length > 1}
-      />
-    </section>
-  {/if}
-
   <section>
-    <h4>{$i18n.launchpad.launched_projects}</h4>
+    <h4>{$i18n.launchpad.featured_projects}</h4>
     {#if isLoading}
       <CardList testId="skeleton-projects-list" cards={skeletonCards} />
     {:else}
-      <CardList
-        testId="launched-projects-list"
-        cards={$isMobileViewportStore
-          ? notCommittedSnsProjects
-          : launchedSnsProjectsCards}
-      />
+      <CardList testId="featured-projects-list" cards={featuredCards} />
+    {/if}
+  </section>
+
+  <section>
+    <h4>{$i18n.launchpad.all_projects}</h4>
+    {#if isLoading}
+      <CardList testId="skeleton-projects-list" cards={skeletonCards} />
+    {:else}
+      <CardList testId="rest-projects-list" cards={restProjectCards} />
     {/if}
   </section>
 </main>
@@ -167,16 +150,5 @@
       font-size: 16px;
       line-height: 20px;
     }
-  }
-
-  p {
-    margin: 0;
-
-    font-family: "CircularXX";
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 24px;
-    color: var(--text-description);
   }
 </style>

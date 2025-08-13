@@ -1,4 +1,5 @@
 import * as api from "$lib/api/governance.api";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_YEAR,
@@ -6,6 +7,7 @@ import {
 import NnsNeurons from "$lib/pages/NnsNeurons.svelte";
 import * as authServices from "$lib/services/auth.services";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
@@ -204,6 +206,46 @@ describe("NnsNeurons", () => {
       const po = await renderComponent();
       const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
       expect(await rows[0].getTags()).toEqual(["Missing rewards"]);
+    });
+
+    it("should display neuron APY", async () => {
+      vi.spyOn(api, "queryNeurons").mockResolvedValue([
+        {
+          ...mockNeuron,
+          neuronId: 123n,
+          fullNeuron: {
+            ...mockFullNeuron,
+            cachedNeuronStake: 300_000_000n,
+          },
+        },
+      ]);
+      stakingRewardsStore.set({
+        loading: false,
+        rewardBalanceUSD: 100,
+        rewardEstimateWeekUSD: 10,
+        stakingPower: 1,
+        stakingPowerUSD: 1,
+        icpOnly: {
+          maturityBalance: 1,
+          maturityEstimateWeek: 1,
+          stakingPower: 1,
+        },
+        apy: new Map([
+          [
+            OWN_CANISTER_ID_TEXT,
+            {
+              cur: 0.1,
+              max: 0.2,
+              neurons: new Map([["123", { cur: 0.01, max: 0.5 }]]),
+            },
+          ],
+        ]),
+      });
+
+      const po = await renderComponent();
+      const rows = await po.getNeuronsTablePo().getNeuronsTableRowPos();
+      expect(await rows[0].getCurrentApy()).toBe("1.00%");
+      expect(await rows[0].getMaxApy()).includes("50.00%");
     });
   });
 

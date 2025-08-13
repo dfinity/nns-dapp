@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-11_03-31-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-31_03-32-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -179,6 +179,7 @@ pub struct KeyConfigRequest {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct InitialChainKeyConfig {
+    pub max_parallel_pre_signature_transcripts_in_creation: Option<u32>,
     pub signature_request_timeout_ns: Option<u64>,
     pub key_configs: Vec<KeyConfigRequest>,
     pub idkg_key_rotation_period_ms: Option<u64>,
@@ -469,6 +470,7 @@ pub struct UpdateSshReadOnlyAccessForAllUnassignedNodesPayload {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ChainKeyConfig {
+    pub max_parallel_pre_signature_transcripts_in_creation: Option<u32>,
     pub signature_request_timeout_ns: Option<u64>,
     pub key_configs: Vec<KeyConfig>,
     pub idkg_key_rotation_period_ms: Option<u64>,

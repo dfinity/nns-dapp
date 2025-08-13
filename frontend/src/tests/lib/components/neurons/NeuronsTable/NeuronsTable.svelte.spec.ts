@@ -92,6 +92,8 @@ describe("NeuronsTable", () => {
       "",
       "Stake",
       "",
+      "APY (max APY)",
+      "",
       "Maturity",
       "",
       "Vote Delegation",
@@ -111,6 +113,8 @@ describe("NeuronsTable", () => {
       "Neurons",
       "",
       "Stake",
+      "",
+      "APY (max APY)",
       "",
       "Maturity",
       "",
@@ -139,6 +143,8 @@ describe("NeuronsTable", () => {
       expect.any(String), // gap
       "desktop-align-right", // Stake
       expect.any(String), // gap
+      "desktop-align-right", // APY
+      expect.any(String), // gap
       "desktop-align-right", // Maturity
       expect.any(String), // gap
       "desktop-align-left", // Vote Delegation
@@ -159,6 +165,8 @@ describe("NeuronsTable", () => {
         "1fr", // gap
         "max-content", // Stake
         "1fr", // gap
+        "max-content", // APY
+        "1fr", // gap
         "max-content", // Maturity
         "1fr", // gap
         "max-content", // State
@@ -170,7 +178,7 @@ describe("NeuronsTable", () => {
       ].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5" "cell-7 cell-7" "cell-9 cell-9"'
+      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5" "cell-7 cell-7" "cell-9 cell-9" "cell-11 cell-11"'
     );
   });
 

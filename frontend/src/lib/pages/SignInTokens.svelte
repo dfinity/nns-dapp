@@ -2,6 +2,7 @@
   import SignIn from "$lib/components/common/SignIn.svelte";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import TokensTable from "$lib/components/tokens/TokensTable/TokensTable.svelte";
+  import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import ImportTokenModal from "$lib/modals/accounts/ImportTokenModal.svelte";
@@ -42,6 +43,7 @@
           type: "icp",
         })}
         firstColumnHeader={$i18n.tokens.projects_header_icp}
+        subtitle={$i18n.tokens.projects_header_icp_subtitle}
       />
       <TokensTable
         on:nnsAction
@@ -50,14 +52,19 @@
           type: "ck",
         })}
         firstColumnHeader={$i18n.tokens.projects_header_ck}
+        subtitle={$i18n.tokens.projects_header_ck_subtitle}
       />
       <TokensTable
         on:nnsAction
         userTokensData={filterTokensByType({
           tokens: userTokensData,
           type: "sns",
-        })}
+        }).filter(
+          (token) =>
+            !abandonedProjectsCanisterId.includes(token.universeId.toText())
+        )}
         firstColumnHeader={$i18n.tokens.projects_header_sns}
+        subtitle={$i18n.tokens.projects_header_sns_subtitle}
       />
     {:else}
       <TokensTable

@@ -2,6 +2,7 @@ import { browser } from "$app/environment";
 import { writable, type Readable } from "svelte/store";
 
 export const BREAKPOINT_SMALL = 576;
+export const BREAKPOINT_MEDIUM = 768;
 export const BREAKPOINT_LARGE = 1024;
 
 const createMediaQueryStore = (query: string): Readable<boolean> => {
@@ -22,6 +23,15 @@ const createMediaQueryStore = (query: string): Readable<boolean> => {
 export const isMobileViewportStore = createMediaQueryStore(
   `(max-width: ${BREAKPOINT_SMALL - 1}px)`
 );
+
+export const isTabletViewportStore = createMediaQueryStore(
+  `(min-width: ${BREAKPOINT_SMALL}px) and (max-width: ${BREAKPOINT_MEDIUM - 1}px)`
+);
+
+export const isTableOrMobileViewportStore = createMediaQueryStore(
+  `(max-width: ${BREAKPOINT_MEDIUM - 1}px)`
+);
+
 export const isDesktopViewportStore = createMediaQueryStore(
   `(min-width: ${BREAKPOINT_LARGE}px)`
 );

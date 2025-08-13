@@ -1,9 +1,11 @@
 import NnsNeuronAdvancedSection from "$lib/components/neuron-detail/NnsNeuronAdvancedSection.svelte";
+import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
   SECONDS_IN_FOUR_YEARS,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
 import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/NeuronContextActionsTest.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
@@ -85,6 +87,41 @@ describe("NnsNeuronAdvancedSection", () => {
     const po = renderComponent(mockNeuron);
 
     expect(await po.lastRewardsDistribution()).toBe("May 19, 1992");
+  });
+
+  it("should render APY values", async () => {
+    const neuronId = 123n;
+    const neuron: NeuronInfo = {
+      ...mockNeuron,
+      neuronId,
+    };
+    stakingRewardsStore.set({
+      loading: false,
+      rewardBalanceUSD: 100,
+      rewardEstimateWeekUSD: 10,
+      stakingPower: 1,
+      stakingPowerUSD: 1,
+      icpOnly: {
+        maturityBalance: 1,
+        maturityEstimateWeek: 1,
+        stakingPower: 1,
+      },
+      apy: new Map([
+        [
+          OWN_CANISTER_ID_TEXT,
+          {
+            cur: 0.1,
+            max: 0.2,
+            neurons: new Map([[neuronId.toString(), { cur: 0.01, max: 0.5 }]]),
+          },
+        ],
+      ]),
+    });
+
+    const po = renderComponent(neuron);
+
+    expect(await po.getCurrentApy()).toBe("1.00%");
+    expect(await po.getMaxApy()).includes("50.00%");
   });
 
   it("should render actions if user is the controller", async () => {

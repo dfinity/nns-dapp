@@ -21,7 +21,7 @@
   import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
-  import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
+  import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import {
     loadAccountsBalances,
     loadSnsAccountsBalances,
@@ -120,6 +120,7 @@
     {
       id: "title",
       title: $i18n.staking.nervous_systems_nns,
+      subtitle: $i18n.staking.nervous_systems_nns_subtitle,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
@@ -132,27 +133,13 @@
     {
       id: "title",
       title: $i18n.staking.nervous_systems_sns,
+      subtitle: $i18n.staking.nervous_systems_sns_subtitle,
       cellComponent: ProjectTitleCell,
       alignment: "left",
       templateColumns: ["2fr"],
       comparator: $authSignedInStore ? compareByProject : undefined,
     },
     ...commonColumns,
-  ]);
-
-  const sunsettedSnsColumns: ProjectsTableColumn[] = $derived([
-    {
-      id: "title",
-      title: $i18n.staking.nervous_systems_sns_sunset,
-      cellComponent: ProjectTitleCell,
-      alignment: "left",
-      templateColumns: ["2fr"],
-    },
-    {
-      title: "",
-      alignment: "left",
-      templateColumns: ["1fr"],
-    },
   ]);
 
   const tableProjects = $derived(
@@ -211,12 +198,6 @@
       .filter((p) => !abandonedProjectsCanisterId.includes(p.universeId))
   );
 
-  const sunsetSns = $derived(
-    sortedTableProjects.filter((p) =>
-      abandonedProjectsCanisterId.includes(p.universeId)
-    )
-  );
-
   const dispatcher = createEventDispatcher();
 
   const handleAction = ({
@@ -235,7 +216,7 @@
   // Staking Rewards/APY related logic
   // ==================================
   const totalUsdAmount = $derived.by(() => {
-    const userTokens = $tokensListVisitorsStore;
+    const userTokens = $tokensListUserStore;
     const totalTokensBalanceInUsd = getTotalBalanceInUsd(userTokens);
     const totalStakedInUsd = getTotalStakeInUsd(tableProjects);
     return $authSignedInStore
@@ -316,10 +297,6 @@
         columns={snsColumns}
         on:nnsAction={handleAction}
       />
-
-      {#if sunsetSns.length > 0}
-        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
-      {/if}
     {:else}
       <ResponsiveTable
         tableData={nnsNeurons}
@@ -368,10 +345,6 @@
             <Separator spacing="none" />
           </svelte:fragment>
         </ResponsiveTable>
-      {/if}
-
-      {#if $hideZeroNeuronsStore !== "hide" && sunsetSns.length > 0}
-        <ResponsiveTable tableData={sunsetSns} columns={sunsettedSnsColumns} />
       {/if}
     {/if}
   {:else if !$authSignedInStore}
