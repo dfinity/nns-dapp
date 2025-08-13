@@ -1,5 +1,4 @@
 import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
-import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { ApyCardPo } from "$tests/page-objects/ApyCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -63,16 +62,5 @@ describe("ApyCardPo", () => {
 
     const linkPo = po.getLinkPo();
     expect(await linkPo.getText()).contains("Start Staking");
-  });
-
-  it("should display privacy placeholders when privacy mode is enabled", async () => {
-    balancePrivacyOptionStore.set("hide");
-    const po = renderComponent(defaultProps);
-
-    const rewardAmount = await po.getRewardAmount();
-    const projectionAmount = await po.getProjectionAmount();
-
-    expect(rewardAmount).toEqual("•••••");
-    expect(projectionAmount).toEqual("•••••");
   });
 });

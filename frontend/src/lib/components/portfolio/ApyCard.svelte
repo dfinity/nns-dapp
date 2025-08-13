@@ -1,13 +1,11 @@
 <script lang="ts">
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import {
     formatCurrencyNumber,
     formatPercentage,
-    renderPrivacyModeBalance,
   } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
@@ -29,25 +27,15 @@
   const href = AppPath.Staking;
   const dataTid = "apy-card-component";
 
-  const maturityBalanceFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(5)
-      : // TODO: nonNullish check looks redundant
-        nonNullish(icpOnlyMaturityBalance)
-        ? formatCurrencyNumber(icpOnlyMaturityBalance)
-        : $i18n.core.not_applicable
-  );
+  const maturityBalanceFormatted = nonNullish(icpOnlyMaturityBalance)
+    ? formatCurrencyNumber(icpOnlyMaturityBalance)
+    : $i18n.core.not_applicable;
 
-  const maturityEstimateWeekFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(5)
-      : // TODO: looks redundant
-        nonNullish(icpOnlyMaturityEstimateWeek)
-        ? formatCurrencyNumber(icpOnlyMaturityEstimateWeek, {
-            smallValueDecimalPlaces: 3,
-          })
-        : $i18n.core.not_applicable
-  );
+  const maturityEstimateWeekFormatted = nonNullish(icpOnlyMaturityEstimateWeek)
+    ? formatCurrencyNumber(icpOnlyMaturityEstimateWeek, {
+        smallValueDecimalPlaces: 3,
+      })
+    : $i18n.core.not_applicable;
 
   const stakingPowerPercentage = $derived(
     formatPercentage(icpOnlyStakingPower, {
