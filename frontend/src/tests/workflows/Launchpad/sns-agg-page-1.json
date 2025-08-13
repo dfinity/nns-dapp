@@ -35,14 +35,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 65463447851118,
-              "amount_e8s": 3102681495221,
+              "amount_e8s": 2327081515221,
               "account": {
                 "owner": "xvj4b-paaaa-aaaaq-aabfa-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1753929927
+              "timestamp_seconds": 1754535727
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -60,27 +60,27 @@
               },
               "ledger_canister_id": "xsi2v-cyaaa-aaaaq-aabfq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1753929927
+              "timestamp_seconds": 1754535727
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 106579252335170856,
-            "timestamp_seconds": 1753929927
+            "governance_total_potential_voting_power": 106781272740691981,
+            "timestamp_seconds": 1754535727
           },
-          "last_ledger_block_timestamp": 1753929062,
-          "num_recently_executed_proposals": 3,
-          "num_recently_submitted_proposals": 4,
+          "last_ledger_block_timestamp": 1754537507,
+          "num_recently_executed_proposals": 4,
+          "num_recently_submitted_proposals": 5,
           "genesis_timestamp_seconds": 1691588586
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1753882988,
-      "end_timestamp_seconds": 1753882986,
-      "total_available_e8s_equivalent": 12122639139080,
+      "actual_timestamp_seconds": 1754487792,
+      "end_timestamp_seconds": 1754487786,
+      "total_available_e8s_equivalent": 40410796134996,
       "distributed_e8s_equivalent": 0,
-      "round": 721,
+      "round": 728,
       "settled_proposals": []
     },
     "parameters": {
@@ -226,6 +226,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -416,10 +424,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "xaonm-oiaaa-aaaaq-aabgq-cai"
+        }
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 98397972043892543,
+    "icrc1_total_supply": 98408060315623796,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000278,
@@ -638,6 +652,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "TreasuryAssetManagement",
@@ -752,7 +774,9 @@
         "j474s-uqaaa-aaaap-abf6q-cai",
         "7p3gx-jaaaa-aaaal-acbda-cai",
         "awcae-maaaa-aaaam-abmyq-cai",
-        "d6dgo-aaaaa-aaaap-akpqq-cai"
+        "d6dgo-aaaaa-aaaap-akpqq-cai",
+        "imqio-gaaaa-aaaal-adlxa-cai",
+        "z6ggl-cqaaa-aaaap-abv2a-cai"
       ],
       "archives": ["r6akw-vqaaa-aaaaq-aabsa-cai"]
     },
@@ -776,7 +800,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1753926856
+              "timestamp_seconds": 1754536283
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -794,15 +818,15 @@
               },
               "ledger_canister_id": "vtrom-gqaaa-aaaaq-aabia-cai",
               "treasury": 2,
-              "timestamp_seconds": 1753926856
+              "timestamp_seconds": 1754536283
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 232810169782939476,
-            "timestamp_seconds": 1753926856
+            "governance_total_potential_voting_power": 234442317908738910,
+            "timestamp_seconds": 1754536283
           },
-          "last_ledger_block_timestamp": 1753929296,
-          "num_recently_executed_proposals": 15,
+          "last_ledger_block_timestamp": 1754535407,
+          "num_recently_executed_proposals": 14,
           "num_recently_submitted_proposals": 17,
           "genesis_timestamp_seconds": 1692203741
         }
@@ -810,12 +834,16 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1753893347,
-      "end_timestamp_seconds": 1753893341,
-      "total_available_e8s_equivalent": 25947174229714,
-      "distributed_e8s_equivalent": 0,
-      "round": 714,
-      "settled_proposals": []
+      "actual_timestamp_seconds": 1754498152,
+      "end_timestamp_seconds": 1754498141,
+      "total_available_e8s_equivalent": 86499330704248,
+      "distributed_e8s_equivalent": 86499330703748,
+      "round": 721,
+      "settled_proposals": [
+        {
+          "id": 693
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -960,6 +988,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -1286,10 +1322,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "v5tde-5aaaa-aaaaq-aabja-cai"
+        }
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 126362747661767953,
+    "icrc1_total_supply": 126394524119135188,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1669,6 +1711,14 @@
               "id": 12,
               "name": "Mint SNS tokens",
               "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -2082,14 +2132,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 60200554902099,
-              "amount_e8s": 10490158144208,
+              "amount_e8s": 10490266748771,
               "account": {
                 "owner": "umz53-fiaaa-aaaaq-aabmq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1753928163
+              "timestamp_seconds": 1754534062
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -2107,14 +2157,14 @@
               },
               "ledger_canister_id": "uf2wh-taaaa-aaaaq-aabna-cai",
               "treasury": 2,
-              "timestamp_seconds": 1753928163
+              "timestamp_seconds": 1754534062
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 54821203235223099,
-            "timestamp_seconds": 1753928163
+            "governance_total_potential_voting_power": 55059033985417819,
+            "timestamp_seconds": 1754534062
           },
-          "last_ledger_block_timestamp": 1753922202,
+          "last_ledger_block_timestamp": 1754523809,
           "num_recently_executed_proposals": 1,
           "num_recently_submitted_proposals": 2,
           "genesis_timestamp_seconds": 1692644557
@@ -2123,11 +2173,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1753902163,
-      "end_timestamp_seconds": 1753902157,
-      "total_available_e8s_equivalent": 110532644239139,
+      "actual_timestamp_seconds": 1754506965,
+      "end_timestamp_seconds": 1754506957,
+      "total_available_e8s_equivalent": 137783313255177,
       "distributed_e8s_equivalent": 0,
-      "round": 709,
+      "round": 716,
       "settled_proposals": []
     },
     "parameters": {
@@ -2273,6 +2323,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2454,10 +2512,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "ux4b6-7qaaa-aaaaq-aaboa-cai"
+        }
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 50771674196256080,
+    "icrc1_total_supply": 50772104336472238,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2655,6 +2719,14 @@
               "id": 12,
               "name": "Mint SNS tokens",
               "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -3116,7 +3188,7 @@
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 9961544059755483,
+    "icrc1_total_supply": 9961542759755483,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3236,12 +3308,12 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1753928150
+              "timestamp_seconds": 1754534172
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 3879070611904260,
+              "amount_e8s": 3879159062904260,
               "account": {
                 "owner": "rqch6-oaaaa-aaaaq-aabta-cai",
                 "subaccount": {
@@ -3254,14 +3326,14 @@
               },
               "ledger_canister_id": "rxdbk-dyaaa-aaaaq-aabtq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1753928150
+              "timestamp_seconds": 1754534172
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 17527818671753175,
-            "timestamp_seconds": 1753928150
+            "governance_total_potential_voting_power": 17525528611711544,
+            "timestamp_seconds": 1754534172
           },
-          "last_ledger_block_timestamp": 1753922013,
+          "last_ledger_block_timestamp": 1754522044,
           "num_recently_executed_proposals": 10,
           "num_recently_submitted_proposals": 19,
           "genesis_timestamp_seconds": 1694946570
@@ -3270,11 +3342,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1753871377,
-      "end_timestamp_seconds": 1753871370,
-      "total_available_e8s_equivalent": 36358851156228,
+      "actual_timestamp_seconds": 1754476171,
+      "end_timestamp_seconds": 1754476170,
+      "total_available_e8s_equivalent": 46148931984817,
       "distributed_e8s_equivalent": 0,
-      "round": 682,
+      "round": 689,
       "settled_proposals": []
     },
     "parameters": {
@@ -3420,6 +3492,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3599,10 +3679,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "q5mdq-biaaa-aaaaq-aabuq-cai"
+        }
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10216601473876609,
+    "icrc1_total_supply": 10216679105579670,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -3838,6 +3924,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "TreasuryAssetManagement",
@@ -3935,14 +4029,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 51937543314834,
-              "amount_e8s": 11982716635478,
+              "amount_e8s": 11982776407872,
               "account": {
                 "owner": "qgj7v-3qaaa-aaaaq-aabwa-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1753929150
+              "timestamp_seconds": 1754534935
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -3960,14 +4054,14 @@
               },
               "ledger_canister_id": "qbizb-wiaaa-aaaaq-aabwq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1753929150
+              "timestamp_seconds": 1754534935
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 36535747390094982,
-            "timestamp_seconds": 1753929150
+            "governance_total_potential_voting_power": 36950863148344676,
+            "timestamp_seconds": 1754534935
           },
-          "last_ledger_block_timestamp": 1753907642,
+          "last_ledger_block_timestamp": 1754522044,
           "num_recently_executed_proposals": 4,
           "num_recently_submitted_proposals": 4,
           "genesis_timestamp_seconds": 1695889829
@@ -3976,11 +4070,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1753864237,
-      "end_timestamp_seconds": 1753864229,
-      "total_available_e8s_equivalent": 3423496107269,
+      "actual_timestamp_seconds": 1754469031,
+      "end_timestamp_seconds": 1754469029,
+      "total_available_e8s_equivalent": 6835797043308,
       "distributed_e8s_equivalent": 0,
-      "round": 671,
+      "round": 678,
       "settled_proposals": []
     },
     "parameters": {
@@ -4126,6 +4220,14 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -4317,10 +4419,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "qpkuj-nyaaa-aaaaq-aabxq-cai"
+        }
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 12741494516254887,
+    "icrc1_total_supply": 12741522367593775,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4566,6 +4674,14 @@
               "id": 12,
               "name": "Mint SNS tokens",
               "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -5358,11 +5474,11 @@
     "metrics": null,
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1753862507,
-      "end_timestamp_seconds": 1753862506,
-      "total_available_e8s_equivalent": 1087053086929,
+      "actual_timestamp_seconds": 1754467308,
+      "end_timestamp_seconds": 1754467306,
+      "total_available_e8s_equivalent": 1086913121828,
       "distributed_e8s_equivalent": 0,
-      "round": 596,
+      "round": 603,
       "settled_proposals": []
     },
     "parameters": {
@@ -6113,7 +6229,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 99256863870632583,
+    "icrc1_total_supply": 99245185212626740,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 800000000,

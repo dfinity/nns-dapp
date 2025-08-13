@@ -1,3 +1,4 @@
+import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
 import {
   snsAggregatorIncludingAbortedProjectsStore,
   snsAggregatorStore,
@@ -134,8 +135,8 @@ describe("sns-aggregator store", () => {
     });
   });
 
-  describe("brokenSnsOverrides", () => {
-    const withBrokenSns = ({
+  describe("sunset SNSs", () => {
+    const withSunsetSns = ({
       sns,
       rootCanisterId,
     }: {
@@ -150,7 +151,7 @@ describe("sns-aggregator store", () => {
     });
 
     const mockedSns = aggregatorMockSnsesDataDto[0];
-    const brokenSns = withBrokenSns({
+    const sunsetSns = withSunsetSns({
       sns: {
         ...mockedSns,
         meta: {
@@ -169,120 +170,14 @@ describe("sns-aggregator store", () => {
           return [name, value];
         }),
       },
-      rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
+      rootCanisterId: abandonedProjectsCanisterId[0],
     });
 
-    const fixedBrokenSns = withBrokenSns({
-      sns: {
-        ...mockedSns,
-        meta: {
-          ...mockedSns.meta,
-          name: "CYCLES-TRANSFER-STATION",
-        },
-        icrc1_metadata: [...mockedSns.icrc1_metadata].map(([name, value]) => {
-          if (name === "icrc1:symbol" && "Text" in value) {
-            return [
-              name,
-              {
-                Text: "CTS",
-              },
-            ];
-          }
-          return [name, value];
-        }),
-      },
-      rootCanisterId: "ibahq-taaaa-aaaaq-aadna-cai",
-    });
-
-    it("should override information for SNS with rootCanisterId ibahq-taaaa-aaaaq-aadna-cai", () => {
-      const data = [brokenSns];
+    it("should filter out SNS if present in abandonedProjects", () => {
+      const data = [sunsetSns];
       snsAggregatorIncludingAbortedProjectsStore.setData(data);
-      expect(
-        get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name
-      ).toBe("---");
-      expect(
-        get(snsAggregatorIncludingAbortedProjectsStore).data[0]
-          .icrc1_metadata[3][1]
-      ).toEqual({ Text: "---" });
 
-      const result = get(snsAggregatorStore).data[0];
-      expect(result.meta.name).toBe(
-        "\u200B--- (formerly CYCLES-TRANSFER-STATION)"
-      );
-      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
-    });
-
-    it("should override information for SNS with rootCanisterId u67kc-jyaaa-aaaaq-aabpq-cai", () => {
-      const brokenSns = withBrokenSns({
-        sns: {
-          ...mockedSns,
-          meta: {
-            ...mockedSns.meta,
-            name: "---",
-          },
-          icrc1_metadata: [...mockedSns.icrc1_metadata].map(([name, value]) => {
-            if (name === "icrc1:symbol" && "Text" in value) {
-              return [
-                name,
-                {
-                  Text: "---",
-                },
-              ];
-            }
-            return [name, value];
-          }),
-        },
-        rootCanisterId: "u67kc-jyaaa-aaaaq-aabpq-cai",
-      });
-      const data = [brokenSns];
-      snsAggregatorIncludingAbortedProjectsStore.setData(data);
-      expect(
-        get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name
-      ).toBe("---");
-      expect(
-        get(snsAggregatorIncludingAbortedProjectsStore).data[0]
-          .icrc1_metadata[3][1]
-      ).toEqual({ Text: "---" });
-
-      const result = get(snsAggregatorStore).data[0];
-      expect(result.meta.name).toBe("\u200B--- (formerly SEERS)");
-      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (SEER)" });
-    });
-
-    it("should send the CTS SNS to the bottom of the store", () => {
-      const data = [brokenSns, ...aggregatorMockSnsesDataDto];
-      snsAggregatorIncludingAbortedProjectsStore.setData(data);
-      expect(
-        get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name
-      ).toBe("---");
-      expect(
-        get(snsAggregatorIncludingAbortedProjectsStore).data[0]
-          .icrc1_metadata[3][1]
-      ).toEqual({ Text: "---" });
-
-      const result =
-        get(snsAggregatorStore).data[get(snsAggregatorStore).data.length - 1];
-      expect(result.meta.name).toBe(
-        "\u200B--- (formerly CYCLES-TRANSFER-STATION)"
-      );
-      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "--- (CTS)" });
-    });
-
-    it("should not override CTS SNS if the metadata returns to its original value", () => {
-      const data = [fixedBrokenSns, ...aggregatorMockSnsesDataDto];
-      snsAggregatorIncludingAbortedProjectsStore.setData(data);
-      expect(
-        get(snsAggregatorIncludingAbortedProjectsStore).data[0].meta.name
-      ).toBe("CYCLES-TRANSFER-STATION");
-      expect(
-        get(snsAggregatorIncludingAbortedProjectsStore).data[0]
-          .icrc1_metadata[3][1]
-      ).toEqual({ Text: "CTS" });
-
-      const result =
-        get(snsAggregatorStore).data[get(snsAggregatorStore).data.length - 1];
-      expect(result.meta.name).toBe("CYCLES-TRANSFER-STATION");
-      expect(result.icrc1_metadata[3][1]).toEqual({ Text: "CTS" });
+      expect(get(snsAggregatorStore).data).toEqual([]);
     });
   });
 });
