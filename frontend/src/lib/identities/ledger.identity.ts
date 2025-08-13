@@ -24,6 +24,7 @@ import {
   type HttpAgentReadStateRequest,
   type HttpAgentRequest,
   type PublicKey,
+  type QueryRequest,
   type ReadRequest,
   type ReadRequestType,
   type ReadStateRequest,
@@ -294,6 +295,7 @@ export class LedgerIdentity extends SignIdentity {
     const requestId = getRequestId(body);
     const requestIdHex = Buffer.from(requestId).toString("hex");
     const requestData = this.readStateMap.get(requestIdHex);
+
     if (isNullish(requestData)) {
       console.warn(
         `No cached data for read state request with id ${requestIdHex}.`
@@ -369,9 +371,46 @@ export class LedgerIdentity extends SignIdentity {
     request1: ReadRequest,
     request2: ReadRequest
   ): boolean => {
+    if (request1.request_type !== request2.request_type) {
+      return false;
+    }
+
+    // Normalize based on the request type
+    const normalizeRequest = (req: ReadRequest): ReadRequest => {
+      if (req.request_type === "read_state") {
+        // ReadStateRequest normalization
+        const readStateReq = req as ReadStateRequest;
+        return {
+          request_type: readStateReq.request_type,
+          paths: readStateReq.paths,
+          ingress_expiry: readStateReq.ingress_expiry,
+          sender: readStateReq.sender,
+        } as ReadStateRequest;
+      } else {
+        // QueryRequest normalization
+        const queryReq = req as QueryRequest;
+        const normalized: QueryRequest = {
+          request_type: queryReq.request_type,
+          canister_id: queryReq.canister_id,
+          method_name: queryReq.method_name,
+          arg: queryReq.arg,
+          sender: queryReq.sender,
+          ingress_expiry: queryReq.ingress_expiry,
+        };
+
+        if (nonNullish(queryReq.nonce)) {
+          normalized.nonce = queryReq.nonce;
+        }
+        return normalized;
+      }
+    };
+
+    const normalized1 = normalizeRequest(request1);
+    const normalized2 = normalizeRequest(request2);
+
     return uint8ArraysEqual({
-      a: this.prepareCborForLedger(request1),
-      b: this.prepareCborForLedger(request2),
+      a: this.prepareCborForLedger(normalized1),
+      b: this.prepareCborForLedger(normalized2),
     });
   };
 
