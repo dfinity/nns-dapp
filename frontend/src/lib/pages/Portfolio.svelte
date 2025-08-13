@@ -159,11 +159,10 @@
       {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalAssetsUsdAmount)}
         {#if isStakingRewardDataReady(stakingRewardResult)}
           <ApyCard
-            rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
-            rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
-            stakingPower={stakingRewardResult.stakingPower}
-            stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
-            totalAmountUSD={totalAssetsUsdAmount}
+            icpOnlyMaturityBalance={stakingRewardResult.icpOnly.maturityBalance}
+            icpOnlyMaturityEstimateWeek={stakingRewardResult.icpOnly
+              .maturityEstimateWeek}
+            icpOnlyStakingPower={stakingRewardResult.icpOnly.stakingPower}
           />
         {:else}
           <ApyFallbackCard stakingRewardData={stakingRewardResult} />
@@ -174,11 +173,10 @@
     {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalAssetsUsdAmount) && nonNullish(stakingRewardResult)}
       {#if isStakingRewardDataReady(stakingRewardResult)}
         <ApyCard
-          rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
-          rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
-          stakingPower={stakingRewardResult.stakingPower}
-          stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
-          totalAmountUSD={totalAssetsUsdAmount}
+          icpOnlyMaturityBalance={stakingRewardResult.icpOnly.maturityBalance}
+          icpOnlyMaturityEstimateWeek={stakingRewardResult.icpOnly
+            .maturityEstimateWeek}
+          icpOnlyStakingPower={stakingRewardResult.icpOnly.stakingPower}
         />
       {:else}
         <ApyFallbackCard stakingRewardData={stakingRewardResult} />

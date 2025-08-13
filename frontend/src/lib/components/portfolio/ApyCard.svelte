@@ -9,75 +9,55 @@
     formatPercentage,
     renderPrivacyModeBalance,
   } from "$lib/utils/format.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {
-    rewardBalanceUSD: number;
-    rewardEstimateWeekUSD: number;
-    stakingPower: number;
-    stakingPowerUSD: number;
-    totalAmountUSD: number;
+    icpOnlyMaturityBalance: number;
+    icpOnlyMaturityEstimateWeek: number;
+    icpOnlyStakingPower: number;
     /// Whether to render the link and the header.
     onStakingPage?: boolean;
   };
   const {
-    rewardBalanceUSD,
-    rewardEstimateWeekUSD,
-    stakingPower,
-    stakingPowerUSD,
-    totalAmountUSD,
+    icpOnlyMaturityBalance,
+    icpOnlyMaturityEstimateWeek,
+    icpOnlyStakingPower,
     onStakingPage = false,
   }: Props = $props();
 
   const href = AppPath.Staking;
   const dataTid = "apy-card-component";
 
-  const rewardBalanceUSDFormatted = $derived(
+  const maturityBalanceFormatted = $derived(
     $isBalancePrivacyOptionStore
       ? renderPrivacyModeBalance(5)
       : // TODO: nonNullish check looks redundant
-        nonNullish(rewardBalanceUSD)
-        ? formatCurrencyNumber(rewardBalanceUSD)
+        nonNullish(icpOnlyMaturityBalance)
+        ? formatCurrencyNumber(icpOnlyMaturityBalance)
         : $i18n.core.not_applicable
   );
 
-  const totalAmountUSDFormatted = $derived(
+  const maturityEstimateWeekFormatted = $derived(
     $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(3)
-      : // TODO: nonNullish check looks redundant
-        nonNullish(totalAmountUSD)
-        ? formatCurrencyNumber(totalAmountUSD)
-        : $i18n.core.not_applicable
-  );
-
-  const stakingPowerUSDFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(3)
-      : // TODO: nonNullish check looks redundant
-        nonNullish(stakingPowerUSD)
-        ? formatCurrencyNumber(stakingPowerUSD)
-        : $i18n.core.not_applicable
-  );
-
-  const rewardEstimateWeekUSDFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(3)
+      ? renderPrivacyModeBalance(5)
       : // TODO: looks redundant
-        nonNullish(rewardEstimateWeekUSD)
-        ? formatCurrencyNumber(rewardEstimateWeekUSD)
+        nonNullish(icpOnlyMaturityEstimateWeek)
+        ? formatCurrencyNumber(icpOnlyMaturityEstimateWeek, {
+            smallValueDecimalPlaces: 3,
+          })
         : $i18n.core.not_applicable
   );
+
   const stakingPowerPercentage = $derived(
-    formatPercentage(stakingPower, {
+    formatPercentage(icpOnlyStakingPower, {
       minFraction: 2,
       maxFraction: 2,
     })
   );
 
   const linkText = $derived(
-    stakingPowerUSD > 0
+    icpOnlyStakingPower > 0
       ? $i18n.portfolio.apy_card_link_view
       : $i18n.portfolio.apy_card_link_start
   );
@@ -94,7 +74,7 @@
         />
       </span>
       <span class="main-value" data-tid="reward"
-        >~${rewardBalanceUSDFormatted}</span
+        >{maturityBalanceFormatted}</span
       >
       <span class="secondary-value"
         ><span class="projection" data-tid="projection">
@@ -109,7 +89,7 @@
               d="M4.5 0.5L8.39711 7.25H0.602886L4.5 0.5Z"
               fill="currentColor"
             />
-          </svg>~${rewardEstimateWeekUSDFormatted}</span
+          </svg>{maturityEstimateWeekFormatted}</span
         >{$i18n.portfolio.apy_card_estimation}</span
       >
     </div>
@@ -119,15 +99,7 @@
         {$i18n.portfolio.apy_card_power_title}
         <TooltipIcon
           iconSize={16}
-          text={replacePlaceholders(
-            $i18n.portfolio.apy_card_tooltip_staking_ratio,
-            {
-              $totalStaked: String(stakingPowerUSDFormatted),
-              $totalHoldings: String(totalAmountUSDFormatted),
-              $totalRewards: String(rewardBalanceUSDFormatted),
-              $ratio: String(stakingPowerPercentage),
-            }
-          )}
+          text={$i18n.portfolio.apy_card_tooltip_staking_ratio}
         />
       </span>
       <span class="main-value" data-tid="staking-power"
@@ -139,6 +111,8 @@
 
 {#if $isMobileViewportStore}
   <article class="card mobile" data-tid={dataTid}>
+    <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
+
     {#if onStakingPage}
       {@render content()}
     {:else}

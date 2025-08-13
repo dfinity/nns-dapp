@@ -7,11 +7,9 @@ import { render } from "@testing-library/svelte";
 
 describe("ApyCardPo", () => {
   const defaultProps = {
-    rewardBalanceUSD: 1234.56,
-    rewardEstimateWeekUSD: 78.9,
-    stakingPower: 0.4567,
-    stakingPowerUSD: 9876.54,
-    totalAmountUSD: 12345.12,
+    icpOnlyMaturityBalance: 1234.56,
+    icpOnlyMaturityEstimateWeek: 78.9,
+    icpOnlyStakingPower: 0.4567,
   };
 
   const renderComponent = (props = defaultProps) => {
@@ -28,14 +26,14 @@ describe("ApyCardPo", () => {
     const po = renderComponent(defaultProps);
 
     const rewardAmount = await po.getRewardAmount();
-    expect(rewardAmount).toEqual("~$1’235");
+    expect(rewardAmount).toEqual("1’235");
   });
 
   it("should display projection amount", async () => {
     const po = renderComponent(defaultProps);
 
     const projectionAmount = await po.getProjectionAmount();
-    expect(projectionAmount).toEqual("~$78.90");
+    expect(projectionAmount).toEqual("78.900");
   });
 
   it("should display staking power percentage", async () => {
@@ -61,7 +59,7 @@ describe("ApyCardPo", () => {
   });
 
   it("should show specific label when no staking power", async () => {
-    const po = renderComponent({ ...defaultProps, stakingPowerUSD: 0 });
+    const po = renderComponent({ ...defaultProps, icpOnlyStakingPower: 0 });
 
     const linkPo = po.getLinkPo();
     expect(await linkPo.getText()).contains("Start Staking");
@@ -74,7 +72,7 @@ describe("ApyCardPo", () => {
     const rewardAmount = await po.getRewardAmount();
     const projectionAmount = await po.getProjectionAmount();
 
-    expect(rewardAmount).toEqual("~$•••••");
-    expect(projectionAmount).toEqual("~$•••");
+    expect(rewardAmount).toEqual("•••••");
+    expect(projectionAmount).toEqual("•••••");
   });
 });
