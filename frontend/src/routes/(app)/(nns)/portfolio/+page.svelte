@@ -5,10 +5,7 @@
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
-  import {
-    snsProjectsActivePadStore,
-    snsProjectsCommittedStore,
-  } from "$lib/derived/sns/sns-projects.derived";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
   import Portfolio from "$lib/pages/Portfolio.svelte";
@@ -22,15 +19,10 @@
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-  import {
-    openSnsProposalsStore,
-    snsProposalsStoreIsLoading,
-  } from "$lib/stores/sns.store";
+  import { snsProposalsStoreIsLoading } from "$lib/stores/sns.store";
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
 
   resetBalanceLoading();
   loadCkBTCTokens();
@@ -78,15 +70,6 @@
       failedActionableSnses: $failedActionableSnsesStore,
       stakingRewardsResult: $stakingRewardsStore,
     })}
-    snsProjects={filterProjectsStatus({
-      swapLifecycle: SnsSwapLifecycle.Open,
-      projects: $snsProjectsActivePadStore,
-    })}
-    adoptedSnsProposals={filterProjectsStatus({
-      swapLifecycle: SnsSwapLifecycle.Adopted,
-      projects: $snsProjectsActivePadStore,
-    })}
-    openSnsProposals={$openSnsProposalsStore}
     stakingRewardResult={$stakingRewardsStore}
   /></TestIdWrapper
 >

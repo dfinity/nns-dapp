@@ -78,23 +78,12 @@ describe("ProjectsTable", () => {
       overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
     });
 
-    it("should not render APY", async () => {
-      const po = renderComponent();
-      const rowPos = await po.getProjectsTableRowPos();
-      expect(rowPos).toHaveLength(2);
-
-      expect(await rowPos[0].getProjectApyCellPo().isPresent()).toBe(false);
-    });
-
     it("should render desktop headers", async () => {
       const po = renderComponent();
       expect(await po.getDesktopColumnHeaders()).toEqual([
         "Nervous Systems",
-        "",
         "Stake",
-        "",
         "Maturity",
-        "",
         "Neurons",
         "", // No header for actions column.
       ]);
@@ -105,11 +94,8 @@ describe("ProjectsTable", () => {
       const rows = await po.getRows();
       expect(await rows[0].getCellAlignments()).toEqual([
         "desktop-align-left", // Nervous Systems
-        "desktop-align-left",
         "desktop-align-right", // Stake
-        "desktop-align-left",
         "desktop-align-right", // Maturity
-        "desktop-align-left",
         "desktop-align-right", // Neurons
         "desktop-align-right", // Actions
       ]);
@@ -119,19 +105,10 @@ describe("ProjectsTable", () => {
       const po = renderComponent();
 
       expect(await po.getDesktopGridTemplateColumns()).toBe(
-        [
-          "minmax(min-content, max-content)",
-          "1fr",
-          "max-content",
-          "1fr",
-          "max-content",
-          "1fr",
-          "max-content",
-          "max-content",
-        ].join(" ")
+        ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
       );
       expect(await po.getMobileGridTemplateAreas()).toBe(
-        '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
+        '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
       );
     });
   });
@@ -140,11 +117,9 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
     expect(await po.getDesktopColumnHeaders()).toEqual([
       "Nervous Systems",
-      "",
       "Stake",
-      "",
+      "APY (max APY)",
       "Maturity",
-      "",
       "Neurons",
       "", // No header for actions column.
     ]);
@@ -163,11 +138,9 @@ describe("ProjectsTable", () => {
     const rows = await po.getRows();
     expect(await rows[0].getCellAlignments()).toEqual([
       "desktop-align-left", // Nervous Systems
-      "desktop-align-left",
       "desktop-align-right", // Stake
-      "desktop-align-left",
+      "desktop-align-right", // APY
       "desktop-align-right", // Maturity
-      "desktop-align-left",
       "desktop-align-right", // Neurons
       "desktop-align-right", // Actions
     ]);
@@ -177,19 +150,10 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
-      [
-        "minmax(min-content, max-content)",
-        "1fr",
-        "max-content",
-        "1fr",
-        "max-content",
-        "1fr",
-        "max-content",
-        "max-content",
-      ].join(" ")
+      ["2fr", "1fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-1 cell-1" "cell-3 cell-3" "cell-5 cell-5"'
+      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3"'
     );
   });
 
@@ -226,12 +190,10 @@ describe("ProjectsTable", () => {
     expect(await rowPos[1].getStake()).toBe("");
   });
 
-  it("should render apy as -/- when not loaded (in new tables)", async () => {
-    overrideFeatureFlagsStore.setFlag("ENABLE_NEW_TABLES", true);
+  it("should render apy as -/- when not loaded", async () => {
     const po = renderComponent();
     const rowPos = await po.getProjectsTableRowPos();
     expect(rowPos).toHaveLength(2);
-
     expect(
       await rowPos[0]
         .getProjectApyCellPo()
@@ -360,9 +322,7 @@ describe("ProjectsTable", () => {
       expect(await rowPos[1].getStake()).toBe("2.00 TOK");
     });
 
-    it("should render apy (in new tables)", async () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_NEW_TABLES", true);
-
+    it("should render apy", async () => {
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
@@ -378,6 +338,11 @@ describe("ProjectsTable", () => {
         rewardEstimateWeekUSD: 10,
         stakingPower: 1,
         stakingPowerUSD: 1,
+        icpOnly: {
+          maturityBalance: 1,
+          maturityEstimateWeek: 1,
+          stakingPower: 1,
+        },
         apy: new Map([
           // nns
           [
@@ -1211,6 +1176,11 @@ describe("ProjectsTable", () => {
       rewardEstimateWeekUSD: 10,
       stakingPower: 1,
       stakingPowerUSD: 1,
+      icpOnly: {
+        maturityBalance: 1,
+        maturityEstimateWeek: 1,
+        stakingPower: 1,
+      },
       apy: new Map(),
     });
 
@@ -1229,6 +1199,11 @@ describe("ProjectsTable", () => {
       rewardEstimateWeekUSD: 10,
       stakingPower: 1,
       stakingPowerUSD: 1,
+      icpOnly: {
+        maturityBalance: 1,
+        maturityEstimateWeek: 1,
+        stakingPower: 1,
+      },
       apy: new Map(),
     });
 

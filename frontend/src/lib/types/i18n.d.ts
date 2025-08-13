@@ -355,13 +355,10 @@ interface I18nStaking {
   nervous_systems_nns_subtitle: string;
   nervous_systems_sns: string;
   nervous_systems_sns_subtitle: string;
-  nervous_systems_sns_sunset: string;
-  nervous_systems_sns_sunset_subtitle: string;
   hide_no_neurons_header: string;
   hide_no_neurons_toggle_label: string;
   hide_no_neurons_table_hint: string;
   show_all: string;
-  bottom_disclaimer: string;
 }
 
 interface I18nNeurons {
@@ -933,14 +930,14 @@ interface I18nSns_launchpad {
   proposals: string;
   project_logo: string;
   no_proposals: string;
+  participated: string;
 }
 
 interface I18nLaunchpad {
   headline: string;
-  subheadline: string;
   upcoming_launches: string;
-  launched_projects: string;
-  participated_projects: string;
+  featured_projects: string;
+  all_projects: string;
   banner_title: string;
   banner_text: string;
   banner_link: string;
@@ -954,7 +951,6 @@ interface I18nLaunchpad_cards {
   ongoing_min_icp: string;
   ongoing_cap_icp: string;
   project_card_market_cap: string;
-  project_card_icp_in_treasury: string;
   project_card_my_participation: string;
   project_card_proposal_activity: string;
   upcoming_tag_upcoming: string;
@@ -1382,21 +1378,25 @@ interface I18nImport_token {
 interface I18nPortfolio {
   login_title: string;
   login_description: string;
-  no_tokens_card_title: string;
   no_tokens_card_description: string;
-  no_tokens_card_button: string;
-  no_neurons_card_title: string;
   no_neurons_card_description: string;
-  no_neurons_card_button: string;
   held_tokens_card_title: string;
   held_tokens_card_link: string;
-  held_tokens_card_list_first_column: string;
+  held_tokens_card_subtitle_icp: string;
+  held_tokens_card_subtitle_rest: string;
+  held_tokens_card_list_first_column_icp: string;
+  held_tokens_card_list_first_column_rest: string;
   held_tokens_card_list_second_column: string;
   held_tokens_card_list_third_column: string;
   held_tokens_card_info_row: string;
+  held_tokens_card_link_row_text: string;
+  held_tokens_card_link_row_link: string;
   staked_tokens_card_title: string;
   staked_tokens_card_link: string;
-  staked_tokens_card_list_first_column: string;
+  staked_tokens_card_subtitle_icp: string;
+  staked_tokens_card_subtitle_rest: string;
+  staked_tokens_card_list_first_column_icp: string;
+  staked_tokens_card_list_first_column_rest: string;
   staked_tokens_card_list_second_column_mobile: string;
   staked_tokens_card_list_second_column_mobile_apy_first: string;
   staked_tokens_card_list_second_column_mobile_apy_second: string;
@@ -1406,6 +1406,8 @@ interface I18nPortfolio {
   staked_tokens_card_list_third_column: string;
   staked_tokens_card_apy_tooltip: string;
   staked_tokens_card_info_row: string;
+  staked_tokens_card_link_row_text: string;
+  staked_tokens_card_link_row_link: string;
   total_assets_title: string;
   project_status_open: string;
   project_status_proposal: string;
@@ -1440,7 +1442,10 @@ interface I18nPortfolio {
   start_staking_card_link: string;
 }
 
-interface I18nHighlight {}
+interface I18nHighlight {
+  disburse_maturity_title: string;
+  disburse_maturity_description: string;
+}
 
 interface I18nNeuron_state {
   Unspecified: string;

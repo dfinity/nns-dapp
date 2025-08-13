@@ -8,15 +8,13 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import { getAnonymousIdentity } from "$lib/services/auth.services";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
-import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsProposalsStore } from "$lib/stores/sns.store";
 import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
@@ -31,14 +29,8 @@ import {
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import {
-  mockLifecycleResponse,
-  mockSnsToken,
-  principal,
-} from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { PortfolioRoutePo } from "$tests/page-objects/PortfolioRoute.page-object";
@@ -134,34 +126,20 @@ describe("Portfolio route", () => {
   it("should render the Portfolio page with visitor data", async () => {
     const po = await renderPage();
     const portfolioPagePo = po.getPortfolioPagePo();
-    const tokensCardPo = portfolioPagePo.getHeldTokensCardPo();
-
-    const titles = await tokensCardPo.getHeldTokensTitles();
-    const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
-    const nativeBalances =
-      await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
     expect(await portfolioPagePo.getLoginCard().isPresent()).toBe(true);
     expect(await portfolioPagePo.getTotalAssetsCardPo().isPresent()).toBe(
       false
     );
+    expect(await portfolioPagePo.getApyCardPo().isPresent()).toBe(false);
     expect(await portfolioPagePo.getApyFallbackCardPo().isPresent()).toBe(
       false
     );
-
-    expect(titles.length).toBe(4);
-    expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH", "ckUSDC"]);
-
-    expect(usdBalances.length).toBe(4);
-    expect(usdBalances).toEqual(["$0.00", "$0.00", "$0.00", "$0.00"]);
-
-    expect(nativeBalances.length).toBe(4);
-    expect(nativeBalances).toEqual([
-      "-/- ICP",
-      "-/- ckBTC",
-      "-/- ckETH",
-      "-/- ckUSDC",
-    ]);
+    expect(await portfolioPagePo.getStartStakingCard().isPresent()).toBe(true);
+    expect(await portfolioPagePo.getNoHeldTokensCard().isPresent()).toBe(true);
+    expect(await portfolioPagePo.getNoStakedTokensCarPo().isPresent()).toBe(
+      true
+    );
   });
 
   describe("when logged in", () => {
@@ -321,6 +299,14 @@ describe("Portfolio route", () => {
       });
 
       it("should render assets cards with the provided data", async () => {
+        // TODO: Move this to a helper or similar
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
+
         const po = await renderPage();
         const portfolioPagePo = po.getPortfolioPagePo();
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
@@ -409,6 +395,13 @@ describe("Portfolio route", () => {
       });
 
       it("should not show failed SNS", async () => {
+        // TODO: Move this to a helper or similar
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
         failedActionableSnsesStore.add(tetrisSNS.rootCanisterId.toText());
 
         const po = await renderPage();
@@ -443,61 +436,6 @@ describe("Portfolio route", () => {
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
 
-      it("should render cards for on-going swaps, open sns proposals and adopted sns proposals", async () => {
-        const rootCanisterIdForOpenProject = Principal.from("aaaaa-aa");
-        const rootCanisterIdForAdoptedProject = Principal.from("2vxsx-fae");
-        const proposals = [{ ...mockProposalInfo, status: 1 }];
-        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
-
-        snsAggregatorIncludingAbortedProjectsStore.setData([
-          {
-            ...aggregatorSnsMockDto,
-            canister_ids: {
-              ...aggregatorSnsMockDto.canister_ids,
-              root_canister_id: rootCanisterIdForOpenProject.toText(),
-            },
-          },
-          {
-            ...aggregatorSnsMockDto,
-            canister_ids: {
-              ...aggregatorSnsMockDto.canister_ids,
-              root_canister_id: rootCanisterIdForAdoptedProject.toText(),
-            },
-          },
-        ]);
-
-        snsLifecycleStore.setData({
-          certified: true,
-          rootCanisterId: rootCanisterIdForOpenProject,
-          data: {
-            ...mockLifecycleResponse,
-            lifecycle: [SnsSwapLifecycle.Open],
-          },
-        });
-
-        snsLifecycleStore.setData({
-          certified: true,
-          rootCanisterId: rootCanisterIdForAdoptedProject,
-          data: {
-            ...mockLifecycleResponse,
-            lifecycle: [SnsSwapLifecycle.Adopted],
-          },
-        });
-
-        snsProposalsStore.setProposals({
-          proposals,
-          certified: false,
-        });
-
-        const po = await renderPage();
-        const pagePo = po.getPortfolioPagePo();
-        const stackedCardsPo = pagePo.getStackedCardsPo();
-        const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-        expect(await stackedCardsPo.isPresent()).toBe(true);
-        expect(cardWrappers.length).toBe(3);
-      });
-
       it("should render APY fallback card when there is an error", async () => {
         stakingRewardsStore.set({
           loading: false,
@@ -530,6 +468,11 @@ describe("Portfolio route", () => {
           rewardEstimateWeekUSD: 10,
           stakingPower: 1,
           stakingPowerUSD: 1,
+          icpOnly: {
+            maturityBalance: 1,
+            maturityEstimateWeek: 1,
+            stakingPower: 1,
+          },
           apy: new Map(),
         });
 

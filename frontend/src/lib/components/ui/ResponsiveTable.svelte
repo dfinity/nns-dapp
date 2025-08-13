@@ -82,6 +82,7 @@
   const closeSettings = () => (settingsPopoverVisible = false);
 
   const hasSubtitles = columns.some((column) => nonNullish(column.subtitle));
+
   // In mobile view, we only show the first column header and it should never be
   // sortable by clicking on it. So depending on whether the first column is
   // sortable we have or don't have separate first column headers for desktop

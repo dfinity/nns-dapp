@@ -9,7 +9,6 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
-  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { nnsLatestRewardEventStore } from "$lib/stores/nns-latest-reward-event.store";
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
@@ -134,7 +133,7 @@
         </KeyValuePairInfo>
       </div>
     {/if}
-    {#if nonNullish(apy) && $ENABLE_APY_PORTFOLIO}
+    {#if nonNullish(apy)}
       <div>
         <KeyValuePairInfo>
           <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
