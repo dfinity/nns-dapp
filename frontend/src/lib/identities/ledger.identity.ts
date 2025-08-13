@@ -370,16 +370,18 @@ export class LedgerIdentity extends SignIdentity {
     request1: ReadRequest,
     request2: ReadRequest
   ): boolean => {
-    const sortRequest = (request: ReadRequest): ReadRequest => {
+    // CBOR encoding is sensitive to property order - different orders produce different encodings.
+    // This helper function normalizes property order before encoding to ensure consistent comparison.
+    const normalizeRequests = (request: ReadRequest): ReadRequest => {
       return Object.keys(request)
         .sort()
-        .reduce((acc, key) => {
+        .reduce<ReadRequest>((acc, key) => {
           acc[key] = request[key];
           return acc;
         }, {} as ReadRequest);
     };
-    const sortedRequest1 = sortRequest(request1);
-    const sortedRequest2 = sortRequest(request2);
+    const sortedRequest1 = normalizeRequests(request1);
+    const sortedRequest2 = normalizeRequests(request2);
 
     return uint8ArraysEqual({
       a: this.prepareCborForLedger(sortedRequest1),
