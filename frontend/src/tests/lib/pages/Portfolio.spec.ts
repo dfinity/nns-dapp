@@ -646,8 +646,8 @@ describe("Portfolio page", () => {
 
         expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
         expect(await po.getApyCardPo().isPresent()).toBe(true);
-        expect(await po.getApyCardPo().getRewardAmount()).toBe("~$10.00");
-        expect(await po.getApyCardPo().getProjectionAmount()).toBe("~$1.00");
+        expect(await po.getApyCardPo().getRewardAmount()).toBe("~1.00");
+        expect(await po.getApyCardPo().getProjectionAmount()).toBe("~1.00");
         expect(await po.getApyCardPo().getStakingPowerPercentage()).toBe(
           "10.00%"
         );

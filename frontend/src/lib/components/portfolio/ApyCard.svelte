@@ -40,7 +40,7 @@
 
   const maturityEstimateWeekFormatted = $derived(
     $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(4)
+      ? renderPrivacyModeBalance(5)
       : // TODO: looks redundant
         nonNullish(icpOnlyMaturityEstimateWeek)
         ? formatCurrencyNumber(icpOnlyMaturityEstimateWeek, {
@@ -74,7 +74,7 @@
         />
       </span>
       <span class="main-value" data-tid="reward"
-        >~{maturityBalanceFormatted}</span
+        >{maturityBalanceFormatted}</span
       >
       <span class="secondary-value"
         ><span class="projection" data-tid="projection">
@@ -89,7 +89,7 @@
               d="M4.5 0.5L8.39711 7.25H0.602886L4.5 0.5Z"
               fill="currentColor"
             />
-          </svg>~{maturityEstimateWeekFormatted}</span
+          </svg>{maturityEstimateWeekFormatted}</span
         >{$i18n.portfolio.apy_card_estimation}</span
       >
     </div>
