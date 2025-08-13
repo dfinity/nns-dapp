@@ -3,8 +3,9 @@
 
   type Props = {
     testId?: string;
+    icpOnlyTable?: boolean;
   };
-  const { testId }: Props = $props();
+  const { testId, icpOnlyTable = false }: Props = $props();
 </script>
 
 <Card {testId}>
@@ -21,38 +22,16 @@
     </div>
 
     <div class="body">
-      <div class="header">
-        <span class="title skeleton"></span>
-        <div class="columnheaders">
-          <span class="skeleton"></span>
-          <span class="skeleton"></span>
-          <span class="skeleton"></span>
-        </div>
-      </div>
-
-      <div class="list">
-        <div class="row">
-          <div class="info">
-            <div class="logo-skeleton skeleton"></div>
-            <div class="title-skeleton skeleton"></div>
+      {#if icpOnlyTable}
+        <div class="header">
+          <span class="title skeleton"></span>
+          <div class="columnheaders">
+            <span class="skeleton"></span>
+            <span class="skeleton"></span>
+            <span class="skeleton"></span>
           </div>
-
-          <div class="balance-native skeleton"></div>
-          <div class="balance-usd skeleton"></div>
         </div>
-      </div>
-
-      <div class="header">
-        <span class="title skeleton"></span>
-        <div class="columnheaders">
-          <span class="skeleton"></span>
-          <span class="skeleton"></span>
-          <span class="skeleton"></span>
-        </div>
-      </div>
-
-      <div class="list grow">
-        {#each Array(3) as _}
+        <div class="list">
           <div class="row">
             <div class="info">
               <div class="logo-skeleton skeleton"></div>
@@ -62,8 +41,31 @@
             <div class="balance-native skeleton"></div>
             <div class="balance-usd skeleton"></div>
           </div>
-        {/each}
-      </div>
+        </div>
+      {:else}
+        <div class="header">
+          <span class="title skeleton"></span>
+          <div class="columnheaders">
+            <span class="skeleton"></span>
+            <span class="skeleton"></span>
+            <span class="skeleton"></span>
+          </div>
+        </div>
+
+        <div class="list grow">
+          {#each Array(3) as _}
+            <div class="row">
+              <div class="info">
+                <div class="logo-skeleton skeleton"></div>
+                <div class="title-skeleton skeleton"></div>
+              </div>
+
+              <div class="balance-native skeleton"></div>
+              <div class="balance-usd skeleton"></div>
+            </div>
+          {/each}
+        </div>
+      {/if}
     </div>
   </div>
 </Card>

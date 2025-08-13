@@ -9,12 +9,9 @@ import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
-import { compareByProjectTitle, isIcpProject } from "$lib/utils/staking.utils";
+import { compareByProjectTitle } from "$lib/utils/staking.utils";
 import { ulpsToNumber } from "$lib/utils/token.utils";
-import {
-  compareTokensByImportance,
-  isIcpToken,
-} from "$lib/utils/tokens-table.utils";
+import { compareTokensByImportance } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
 import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import { ICPToken, isNullish } from "@dfinity/utils";
@@ -39,7 +36,6 @@ const compareTokens = mergeComparators([
 
 /**
  * Filters and sorts user tokens based on specific criteria:
- * - ICP is always first
  * - Sorts remaining tokens by USD balance
  * - Limits the number of returned tokens to MAX_NUMBER_OF_ITEMS
  */
@@ -51,11 +47,7 @@ export const getTopHeldTokens = ({
   // TODO: userTokens type can be narrowed to UserTokenData[] after updating Portfolio page
   const userTokensData = userTokens.filter(isUserTokenData);
 
-  const icp = userTokensData.find(isIcpToken);
-  if (isNullish(icp)) return [];
-
   const restOfTokens = userTokensData
-    .filter((t) => !isIcpToken(t))
     .filter(({ universeId }) =>
       filterAbandonedProjects({ universeId: universeId.toText() })
     )
@@ -64,7 +56,7 @@ export const getTopHeldTokens = ({
     .sort(compareTokens)
     .slice(0, MAX_NUMBER_OF_ITEMS);
 
-  return [icp, ...restOfTokens];
+  return restOfTokens;
 };
 
 const compareProjectsByUsdBalance = createDescendingComparator(
@@ -78,7 +70,6 @@ const compareProjects = mergeComparators([
 
 /**
  * Filters and sorts projects based on specific criteria:
- * - ICP is always first
  * - Sorts remaining tokens by USD balance
  * - Limits the number of returned tokens to MAX_NUMBER_OF_ITEMS
  */
@@ -87,18 +78,14 @@ export const getTopStakedTokens = ({
 }: {
   projects: TableProject[];
 }): TableProject[] => {
-  const icpProject = projects.find(isIcpProject);
-  if (isNullish(icpProject)) return [];
-
   const restOfProjects = [...projects]
-    .filter((p) => !isIcpProject(p))
     .filter(filterAbandonedProjects)
     // TODO: Introduce alternative logic for when ICPSwap is down
     .filter((p) => p?.stakeInUsd ?? 0 > 0)
     .sort(compareProjects)
     .slice(0, MAX_NUMBER_OF_ITEMS);
 
-  return [icpProject, ...restOfProjects];
+  return restOfProjects;
 };
 
 /**

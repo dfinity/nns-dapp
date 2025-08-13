@@ -32,6 +32,7 @@
     numberOfTopHeldTokens: number;
     hasApyCalculationErrored: boolean;
     isApyLoading?: boolean;
+    icpOnlyTable?: boolean;
   };
 
   const {
@@ -40,12 +41,15 @@
     numberOfTopHeldTokens,
     hasApyCalculationErrored,
     isApyLoading,
+    icpOnlyTable = false,
   }: Props = $props();
 
-  const href = AppPath.Staking;
+  const href = icpOnlyTable
+    ? (topStakedTokens[0].rowHref ?? "#")
+    : AppPath.Staking;
 
   const icp: TableProject | undefined = $derived(topStakedTokens[0]);
-  const restOfStakedTokens = $derived(topStakedTokens.slice(1));
+  const restOfStakedTokens = $derived(topStakedTokens);
   const numberOfTopStakedTokens = $derived(topStakedTokens.length);
 
   const showInfoRow = $derived(
@@ -216,12 +220,16 @@
   <div
     class="wrapper"
     role="region"
-    aria-label={$i18n.portfolio.staked_tokens_card_title}
+    aria-label={icpOnlyTable
+      ? $i18n.portfolio.staked_icp_card_title
+      : $i18n.portfolio.staked_tokens_card_title}
   >
     <TokensCardHeader
       {href}
       {usdAmount}
-      title={$i18n.portfolio.staked_tokens_card_title}
+      title={icpOnlyTable
+        ? $i18n.portfolio.staked_icp_card_title
+        : $i18n.portfolio.staked_tokens_card_title}
       linkText={$i18n.portfolio.staked_tokens_card_link}
     >
       {#snippet icon()}
@@ -230,18 +238,16 @@
     </TokensCardHeader>
 
     <div class="body" role="table">
-      {@render tableHeader({
-        title: $i18n.portfolio.staked_tokens_card_subtitle_icp,
-        firstColumnTitle:
-          $i18n.portfolio.staked_tokens_card_list_first_column_icp,
-      })}
-      <div class="list icp" role="rowgroup">
-        {@render row({ stakedToken: icp })}
-      </div>
-
-      {#if restOfStakedTokens.length > 0}
-        <div class="divider"></div>
-
+      {#if icpOnlyTable}
+        {@render tableHeader({
+          title: $i18n.portfolio.staked_tokens_card_subtitle_icp,
+          firstColumnTitle:
+            $i18n.portfolio.staked_tokens_card_list_first_column_icp,
+        })}
+        <div class="list icp" role="rowgroup">
+          {@render row({ stakedToken: icp })}
+        </div>
+      {:else if restOfStakedTokens.length > 0}
         {@render tableHeader({
           title: $i18n.portfolio.staked_tokens_card_subtitle_rest,
           firstColumnTitle:
@@ -385,11 +391,6 @@
         display: block;
       }
     }
-  }
-
-  .divider {
-    width: 100%;
-    border-bottom: 4px solid var(--elements-divider);
   }
 
   .info-row,
