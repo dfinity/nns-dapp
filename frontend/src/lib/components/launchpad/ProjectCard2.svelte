@@ -181,7 +181,6 @@
       }
 
       .participation-mark {
-        align-self: start;
         color: var(--tooltip-icon-color, var(--elements-icons));
       }
     }
