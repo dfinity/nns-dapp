@@ -242,14 +242,6 @@ describe.skip("Portfolio page", () => {
         token: mockToken,
       }),
     };
-    const tableProject4: TableProject = {
-      ...mockTableProject,
-      title: "Project 4",
-      stakeInUsd: undefined,
-      domKey: "/staking/4",
-      universeId: principal(5).toText(),
-      stake: new UnavailableTokenAmount(mockToken),
-    };
 
     beforeEach(() => {
       resetIdentity();
