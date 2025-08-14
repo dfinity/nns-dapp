@@ -94,8 +94,6 @@ export const getTopStakedTokens = ({
  * with a message instead of leaving a blank space.
  * Rules for showing the info row:
  * 1. When the other card has more tokens than the current card
- * 2. When the other card is empty (has 0 tokens) AND current card has fewer than 4 tokens
- * 3. When both cards have fewer than 4 tokens (for visual balance)
  */
 export const shouldShowInfoRow = ({
   currentCardNumberOfTokens,
@@ -104,14 +102,7 @@ export const shouldShowInfoRow = ({
   currentCardNumberOfTokens: number;
   otherCardNumberOfTokens: number;
 }) => {
-  const MAX_NUMBER_OF_ITEMS = 4;
-
-  return (
-    otherCardNumberOfTokens > currentCardNumberOfTokens ||
-    (otherCardNumberOfTokens === 0 && currentCardNumberOfTokens < 4) ||
-    (currentCardNumberOfTokens < MAX_NUMBER_OF_ITEMS &&
-      otherCardNumberOfTokens < MAX_NUMBER_OF_ITEMS)
-  );
+  return otherCardNumberOfTokens > currentCardNumberOfTokens;
 };
 
 export const formatParticipation = (ulps: bigint) => {
