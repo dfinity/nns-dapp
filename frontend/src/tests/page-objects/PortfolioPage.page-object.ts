@@ -42,12 +42,26 @@ export class PortfolioPagePo extends BasePageObject {
     return ApyCardPo.under(this.root);
   }
 
-  getHeldTokensCardPo(): HeldTokensCardPo {
-    return HeldTokensCardPo.under(this.root);
+  getHeldICPCardPo(): HeldTokensCardPo {
+    return HeldTokensCardPo.under({
+      element: this.root,
+      testId: "held-icp-card",
+    });
   }
 
-  getStakedTokensCardPo(): StakedTokensCardPo {
-    return StakedTokensCardPo.under(this.root);
+  getHeldRestTokensCardPo(): HeldTokensCardPo {
+    return HeldTokensCardPo.under({ element: this.root });
+  }
+
+  getStakedICPCardPo(): StakedTokensCardPo {
+    return StakedTokensCardPo.under({
+      element: this.root,
+      testId: "staked-icp-card",
+    });
+  }
+
+  getStakedRestTokensCardPo(): StakedTokensCardPo {
+    return StakedTokensCardPo.under({ element: this.root });
   }
 
   getHeldTokensSkeletonCard(): PageObjectElement {

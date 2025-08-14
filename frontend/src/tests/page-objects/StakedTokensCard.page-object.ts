@@ -49,8 +49,16 @@ class StakedTokensCardRowPo extends BasePageObject {
 export class StakedTokensCardPo extends BasePageObject {
   private static readonly TID = "staked-tokens-card";
 
-  static under(element: PageObjectElement): StakedTokensCardPo {
-    return new StakedTokensCardPo(element.byTestId(StakedTokensCardPo.TID));
+  static under({
+    element,
+    testId,
+  }: {
+    element: PageObjectElement;
+    testId?: string;
+  }): StakedTokensCardPo {
+    return new StakedTokensCardPo(
+      element.byTestId(testId ?? StakedTokensCardPo.TID)
+    );
   }
 
   async getRows(): Promise<StakedTokensCardRowPo[]> {

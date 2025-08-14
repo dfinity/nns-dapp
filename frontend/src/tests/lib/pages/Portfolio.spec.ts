@@ -23,20 +23,26 @@ import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
-describe.skip("Portfolio page", () => {
+describe("Portfolio page", () => {
   const renderPage = ({
-    userTokens = [],
-    tableProjects = [],
+    icpToken = undefined,
+    nonIcpTokens = [],
+    icpTableProject = undefined,
+    nonIcpTableProjects = [],
     stakingRewardResult = { loading: true },
   }: {
-    userTokens?: UserToken[];
-    tableProjects?: TableProject[];
+    icpToken?: UserToken;
+    nonIcpTokens?: UserToken[];
+    icpTableProject?: TableProject;
+    nonIcpTableProjects?: TableProject[];
     stakingRewardResult?: StakingRewardResult;
   } = {}) => {
     const { container } = render(Portfolio, {
       props: {
-        userTokens,
-        tableProjects,
+        icpToken,
+        nonIcpTokens,
+        icpTableProject,
+        nonIcpTableProjects,
         stakingRewardResult,
       },
     });
@@ -86,8 +92,7 @@ describe.skip("Portfolio page", () => {
       stake: new UnavailableTokenAmount(mockToken),
     };
 
-    const mockTableProjects: TableProject[] = [
-      icpProject,
+    const mockNonIcpTableProjects: TableProject[] = [
       tableProject1,
       tableProject2,
       tableProject3,
@@ -124,12 +129,12 @@ describe.skip("Portfolio page", () => {
 
     it("should show empty cards for top holdings", async () => {
       const po = renderPage({
-        tableProjects: mockTableProjects,
-        userTokens: mockTokens,
+        nonIcpTableProjects: mockNonIcpTableProjects,
+        nonIcpTokens: mockTokens,
       });
 
-      const heldTokensCardPo = po.getHeldTokensCardPo();
-      const stakedTokensCardPo = po.getStakedTokensCardPo();
+      const heldTokensCardPo = po.getHeldRestTokensCardPo();
+      const stakedTokensCardPo = po.getStakedRestTokensCardPo();
 
       expect(await po.getNoHeldTokensCard().isPresent()).toBe(true);
       expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
@@ -140,8 +145,8 @@ describe.skip("Portfolio page", () => {
 
     it("should not show any loading state", async () => {
       const po = renderPage({
-        tableProjects: mockTableProjects,
-        userTokens: mockTokens,
+        nonIcpTableProjects: mockNonIcpTableProjects,
+        nonIcpTokens: mockTokens,
       });
 
       expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
@@ -273,12 +278,19 @@ describe.skip("Portfolio page", () => {
 
     describe("NoHeldTokensCard", () => {
       it("should display the card when the tokens accounts balance is zero", async () => {
-        const po = renderPage();
+        const po = renderPage({
+          // we need some non-ICP neurons, otherwise both rest-tables are hidden
+          nonIcpTableProjects: [tableProject1, tableProject2, tableProject3],
+        });
+
+        // await runResolvedPromises();
+
+        // console.log(await po.root.innerHtmlForDebugging());
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(true);
-        expect(await po.getHeldTokensCardPo().isPresent()).toBe(false);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toBe(false);
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
-          "$0.00"
+          "$900.00"
         );
       });
 
@@ -287,10 +299,10 @@ describe.skip("Portfolio page", () => {
           universeId: principal(1),
           balanceInUsd: 2,
         });
-        const po = renderPage({ userTokens: [token] });
+        const po = renderPage({ nonIcpTokens: [token] });
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
-        expect(await po.getHeldTokensCardPo().isPresent()).toBe(true);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toBe(true);
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
           "$2.00"
         );
@@ -300,9 +312,10 @@ describe.skip("Portfolio page", () => {
     describe("HeldTokensCard", () => {
       it("should display the top four tokens by balanceInUsd", async () => {
         const po = renderPage({
-          userTokens: [icpToken, token1, token2, token3, token4, token5],
+          icpToken: icpToken,
+          nonIcpTokens: [token1, token2, token3, token4, token5],
         });
-        const tokensCardPo = po.getHeldTokensCardPo();
+        const tokensCardPo = po.getHeldRestTokensCardPo();
 
         const titles = await tokensCardPo.getHeldTokensTitles();
         const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
@@ -311,24 +324,14 @@ describe.skip("Portfolio page", () => {
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
 
-        expect(titles.length).toBe(4);
-        expect(titles).toEqual([
-          "Internet Computer",
-          "Token5",
-          "Token4",
-          "Token3",
-        ]);
+        expect(titles.length).toBe(3);
+        expect(titles).toEqual(["Token5", "Token4", "Token3"]);
 
-        expect(usdBalances.length).toBe(4);
-        expect(usdBalances).toEqual(["$0.00", "$500.00", "$400.00", "$300.00"]);
+        expect(usdBalances.length).toBe(3);
+        expect(usdBalances).toEqual(["$500.00", "$400.00", "$300.00"]);
 
-        expect(nativeBalances.length).toBe(4);
-        expect(nativeBalances).toEqual([
-          "-/- ICP",
-          "21.60 TET",
-          "21.60 TET",
-          "21.60 TET",
-        ]);
+        expect(nativeBalances.length).toBe(3);
+        expect(nativeBalances).toEqual(["21.60 TET", "21.60 TET", "21.60 TET"]);
 
         expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
       });
@@ -342,9 +345,10 @@ describe.skip("Portfolio page", () => {
         );
 
         const po = renderPage({
-          userTokens: [icpToken, token2],
+          icpToken: icpToken,
+          nonIcpTokens: [token2, token3],
         });
-        const tokensCardPo = po.getHeldTokensCardPo();
+        const tokensCardPo = po.getHeldRestTokensCardPo();
 
         const titles = await tokensCardPo.getHeldTokensTitles();
         const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
@@ -354,31 +358,26 @@ describe.skip("Portfolio page", () => {
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
 
         expect(titles.length).toBe(2);
-        expect(titles).toEqual(["Internet Computer", "Token2"]);
+        expect(titles).toEqual(["Token3", "Token2"]);
 
         expect(usdBalances.length).toBe(2);
-        expect(usdBalances).toEqual(["$0.00", "$200.00"]);
+        expect(usdBalances).toEqual(["$300.00", "$200.00"]);
 
         expect(nativeBalances.length).toBe(2);
-        expect(nativeBalances).toEqual(["-/- ICP", "21.60 TET"]);
+        expect(nativeBalances).toEqual(["21.60 TET", "21.60 TET"]);
 
         expect(await tokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
     });
 
     describe("StakedTokensCard", () => {
-      it("should display the top staked tokens by staked balance in Usd with InternetComputer as first", async () => {
+      it("should display the top staked tokens by staked balance in Usd", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
-          tableProjects: [
-            tableProject1,
-            tableProject2,
-            tableProject3,
-            tableProject4,
-            icpProject,
-          ],
+          icpTableProject: icpProject,
+          nonIcpTableProjects: [tableProject1, tableProject2, tableProject3],
         });
-        const stakedTokensCardPo = po.getStakedTokensCardPo();
+        const stakedTokensCardPo = po.getStakedRestTokensCardPo();
 
         const titles = await stakedTokensCardPo.getStakedTokensTitle();
         const maturities = await stakedTokensCardPo.getStakedTokensMaturity();
@@ -389,28 +388,16 @@ describe.skip("Portfolio page", () => {
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
 
-        expect(titles.length).toBe(4);
-        expect(titles).toEqual([
-          "Internet Computer",
-          "Project 3",
-          "Project 2",
-          "Project 1",
-        ]);
+        expect(titles.length).toBe(3);
+        expect(titles).toEqual(["Project 3", "Project 2", "Project 1"]);
 
-        expect(maturities.length).toBe(4);
-        expect(maturities).toEqual(["20.00", "1.00", "0", "0"]);
+        expect(maturities.length).toBe(3);
+        expect(maturities).toEqual(["1.00", "0", "0"]);
+        expect(stakesInUsd.length).toBe(3);
+        expect(stakesInUsd).toEqual(["$400.00", "$300.00", "$200.00"]);
 
-        expect(stakesInUsd.length).toBe(4);
-        expect(stakesInUsd).toEqual([
-          "$100.00",
-          "$400.00",
-          "$300.00",
-          "$200.00",
-        ]);
-
-        expect(stakesInNativeCurrency.length).toBe(4);
+        expect(stakesInNativeCurrency.length).toBe(3);
         expect(stakesInNativeCurrency).toEqual([
-          "0.01 ICP",
           "0 TET",
           "0.01 TET",
           "0.01 TET",
@@ -428,10 +415,11 @@ describe.skip("Portfolio page", () => {
         );
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
-          tableProjects: [icpProject, tableProject2],
-          userTokens: [icpToken, token2, token3, token4],
+          icpTableProject: icpProject,
+          nonIcpTableProjects: [tableProject2, tableProject3],
+          nonIcpTokens: [icpToken, token2, token3, token4],
         });
-        const stakedTokensCardPo = po.getStakedTokensCardPo();
+        const stakedTokensCardPo = po.getStakedRestTokensCardPo();
 
         const titles = await stakedTokensCardPo.getStakedTokensTitle();
         const maturities = await stakedTokensCardPo.getStakedTokensMaturity();
@@ -443,16 +431,16 @@ describe.skip("Portfolio page", () => {
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
 
         expect(titles.length).toBe(2);
-        expect(titles).toEqual(["Internet Computer", "Project 2"]);
+        expect(titles).toEqual(["Project 3", "Project 2"]);
 
         expect(maturities.length).toBe(2);
-        expect(maturities).toEqual(["20.00", "0"]);
+        expect(maturities).toEqual(["1.00", "0"]);
 
         expect(stakesInUsd.length).toBe(2);
-        expect(stakesInUsd).toEqual(["$100.00", "$300.00"]);
+        expect(stakesInUsd).toEqual(["$400.00", "$300.00"]);
 
         expect(stakesInNativeCurrency.length).toBe(2);
-        expect(stakesInNativeCurrency).toEqual(["0.01 ICP", "0.01 TET"]);
+        expect(stakesInNativeCurrency).toEqual(["0 TET", "0.01 TET"]);
 
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
@@ -473,11 +461,14 @@ describe.skip("Portfolio page", () => {
           ...mockTableProject,
           stakeInUsd: 2,
         };
-        const po = renderPage({ tableProjects: [tableProject] });
+        const po = renderPage({
+          icpTableProject: tableProject,
+          nonIcpTableProjects: [tableProject1],
+        });
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
-          "$2.00"
+          "$202.00"
         );
       });
 
@@ -486,7 +477,7 @@ describe.skip("Portfolio page", () => {
           universeId: principal(1),
           balanceInUsd: 2,
         });
-        const po = renderPage({ userTokens: [token] });
+        const po = renderPage({ nonIcpTokens: [token] });
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
@@ -507,8 +498,8 @@ describe.skip("Portfolio page", () => {
         const loadingToken = createUserTokenLoading({});
 
         const po = renderPage({
-          userTokens: [loadingToken],
-          tableProjects: [],
+          nonIcpTokens: [loadingToken],
+          nonIcpTableProjects: [],
         });
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toEqual(true);
@@ -518,8 +509,8 @@ describe.skip("Portfolio page", () => {
     describe("TotalAssetsCard", () => {
       it("should display total assets", async () => {
         const po = renderPage({
-          userTokens: [token1, token2],
-          tableProjects: [icpProject, tableProject1],
+          nonIcpTokens: [token1, token2],
+          nonIcpTableProjects: [icpProject, tableProject1],
         });
 
         // There are two tokens with a balance of 100$ and 200$, and two projects with a staked balance of 100$ and 200$ -> 600$
@@ -539,7 +530,9 @@ describe.skip("Portfolio page", () => {
         const tokenNoBalance = createUserToken({
           balanceInUsd: undefined,
         });
-        const po = renderPage({ userTokens: [token1, token2, tokenNoBalance] });
+        const po = renderPage({
+          nonIcpTokens: [token1, token2, tokenNoBalance],
+        });
 
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
           "$300.00"
@@ -558,7 +551,7 @@ describe.skip("Portfolio page", () => {
           stakeInUsd: undefined,
         };
         const po = renderPage({
-          tableProjects: [tableProject1, tableProject2, projectNoBalance],
+          nonIcpTableProjects: [tableProject1, tableProject2, projectNoBalance],
         });
 
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
@@ -627,8 +620,8 @@ describe.skip("Portfolio page", () => {
 
       it("should show Apy card with all information", async () => {
         const po = renderPage({
-          userTokens: [token1, token2],
-          tableProjects: [icpProject, tableProject1],
+          nonIcpTokens: [token1, token2],
+          nonIcpTableProjects: [icpProject, tableProject1],
           stakingRewardResult: {
             loading: false,
             apy: new Map(),
@@ -674,8 +667,8 @@ describe.skip("Portfolio page", () => {
 
       it("should show the inital loading state - both tokens and projects loading", async () => {
         const po = renderPage({
-          userTokens: [loadingToken],
-          tableProjects: [loadingProject],
+          nonIcpTokens: [loadingToken],
+          nonIcpTableProjects: [loadingProject],
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
@@ -683,14 +676,14 @@ describe.skip("Portfolio page", () => {
         expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
           true
         );
-        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
-        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getStakedRestTokensCardPo().isPresent()).toEqual(false);
       });
 
       it("should show a partial loading state - tokens loaded, projects still loading", async () => {
         const po = renderPage({
-          userTokens: [loadedToken],
-          tableProjects: [loadingProject],
+          nonIcpTokens: [loadedToken],
+          nonIcpTableProjects: [loadingProject],
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
@@ -698,14 +691,14 @@ describe.skip("Portfolio page", () => {
         expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
           true
         );
-        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(true);
-        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getStakedRestTokensCardPo().isPresent()).toEqual(false);
       });
 
       it("should show a partial loading state - projects loaded, tokens still loading", async () => {
         const po = renderPage({
-          userTokens: [loadingToken],
-          tableProjects: [loadedProject],
+          nonIcpTokens: [loadingToken],
+          nonIcpTableProjects: [loadedProject],
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
@@ -713,14 +706,14 @@ describe.skip("Portfolio page", () => {
         expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
           false
         );
-        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
-        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getStakedRestTokensCardPo().isPresent()).toEqual(true);
       });
 
       it("should show a fully loaded state - both tokens and projects loaded", async () => {
         const po = renderPage({
-          userTokens: [loadedToken],
-          tableProjects: [loadedProject],
+          nonIcpTokens: [loadedToken],
+          nonIcpTableProjects: [loadedProject],
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
@@ -728,8 +721,8 @@ describe.skip("Portfolio page", () => {
         expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
           false
         );
-        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(true);
-        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getStakedRestTokensCardPo().isPresent()).toEqual(true);
       });
     });
   });

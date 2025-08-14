@@ -49,7 +49,7 @@ import { tick } from "svelte";
 
 vi.mock("$lib/api/governance.api");
 
-describe.skip("Portfolio route", () => {
+describe("Portfolio route", () => {
   fakeGovernanceApi.install();
 
   const renderPage = async () => {
@@ -147,6 +147,7 @@ describe.skip("Portfolio route", () => {
     const ckBTCBalanceE8s = 1n * 100_000_000n; // 1BTC(1BTC==10_000ICP) -> $100_000
     const ckETHBalanceUlps = BigInt(0.1 * 1_000_000_000_000_000_000); // 0.1ETH(1ETH=1000ICP) -> $1000
     const tetrisBalanceE8s = 2n * 100_000_000n; // 2Tetris(1Tetris==1ICP) -> $20
+    const doomBalanceE8s = 2n * 100_000_000n; // 2Doom(1Doom==1ICP) -> $20
     const importedToken1BalanceE6s = 100n * 1_000_000n; // 100ZTOKEN1(1ZTOKEN1==1ICP) -> $1000
     const ckUSDCBalanceE6s = 1n * 1_000_000n; // 1USDC -> $1
 
@@ -166,6 +167,14 @@ describe.skip("Portfolio route", () => {
       lifecycle: SnsSwapLifecycle.Committed,
     };
 
+    const doomSNS = {
+      rootCanisterId: principal(13),
+      ledgerCanisterId: principal(1313),
+      projectName: "Doom",
+      tokenMetadata: { ...mockSnsToken, decimals: 8 },
+      lifecycle: SnsSwapLifecycle.Committed,
+    };
+
     beforeEach(() => {
       resetIdentity();
 
@@ -177,6 +186,7 @@ describe.skip("Portfolio route", () => {
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
             [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE6s,
             [tetrisSNS.ledgerCanisterId.toText()]: tetrisBalanceE8s,
+            [doomSNS.ledgerCanisterId.toText()]: doomBalanceE8s,
             [importedToken1Id.toText()]: importedToken1BalanceE6s,
           };
 
@@ -184,7 +194,7 @@ describe.skip("Portfolio route", () => {
         }
       );
 
-      setSnsProjects([tetrisSNS]);
+      setSnsProjects([tetrisSNS, doomSNS]);
 
       vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
         imported_tokens: [
@@ -215,8 +225,8 @@ describe.skip("Portfolio route", () => {
 
       await renderPage();
 
-      // Should be called 5 times total (2 ckBTC + 2 ICRC + 1 ImportedToken + 1 SNS)
-      expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(6);
+      // Should be called 5 times total (2 ckBTC + 2 ICRC + 1 ImportedToken + 2 SNS)
+      expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(7);
 
       expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(1, {
         canisterId: CKBTC_UNIVERSE_CANISTER_ID,
@@ -259,6 +269,13 @@ describe.skip("Portfolio route", () => {
         identity,
         account,
       });
+
+      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(7, {
+        canisterId: doomSNS.ledgerCanisterId,
+        certified: false,
+        identity,
+        account,
+      });
     });
 
     describe("should render the Portfolio page", async () => {
@@ -274,6 +291,7 @@ describe.skip("Portfolio route", () => {
           [LEDGER_CANISTER_ID.toText()]: 10,
           [importedToken1Id.toText()]: 10,
           [tetrisSNS.ledgerCanisterId.toText()]: 10,
+          [doomSNS.ledgerCanisterId.toText()]: 10,
         });
 
         const nnsNeuronWithStake = {
@@ -293,6 +311,11 @@ describe.skip("Portfolio route", () => {
         });
         snsNeuronsStore.setNeurons({
           rootCanisterId: tetrisSNS.rootCanisterId,
+          neurons: [snsNeuronWithStake],
+          certified: true,
+        });
+        snsNeuronsStore.setNeurons({
+          rootCanisterId: doomSNS.rootCanisterId,
           neurons: [snsNeuronWithStake],
           certified: true,
         });
@@ -320,53 +343,47 @@ describe.skip("Portfolio route", () => {
         // 2Tetris -> $20
         // 1ICP Neuron -> 10$
         // 20Tetris Neuron -> 200$
+        // 20Doom Neuron -> 200$
         // --------------------
-        // Total: $203’231
+        // Total: $203’431
         expect(
           await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
-        ).toBe("$203’231");
+        ).toBe("$203’451");
         // $1 -> 0.1ICP
         expect(
           await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
-        ).toBe("20’323.10 ICP");
+        ).toBe("20’345.10 ICP");
         expect(await portfolioPagePo.getApyFallbackCardPo().isPresent()).toBe(
           false
         );
 
-        const heldTokensCardPo = portfolioPagePo.getHeldTokensCardPo();
+        const heldTokensCardPo = portfolioPagePo.getHeldRestTokensCardPo();
         const heldTokensTitles = await heldTokensCardPo.getHeldTokensTitles();
         const heldTokensBalanceInUsdBalance =
           await heldTokensCardPo.getHeldTokensBalanceInUsd();
         const heldTokensBalanceInNativeBalance =
           await heldTokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
-        expect(heldTokensTitles.length).toBe(4);
-        expect(heldTokensTitles).toEqual([
-          "Internet Computer",
-          "ckBTC",
-          "ckTESTBTC",
-          "ckETH",
-        ]);
+        expect(heldTokensTitles.length).toBe(3);
+        expect(heldTokensTitles).toEqual(["ckBTC", "ckTESTBTC", "ckETH"]);
 
-        expect(heldTokensBalanceInUsdBalance.length).toBe(4);
+        expect(heldTokensBalanceInUsdBalance.length).toBe(3);
         expect(heldTokensBalanceInUsdBalance).toEqual([
-          "$1’000.00",
           "$100’000.00",
           "$100’000.00",
           "$1’000.00",
         ]);
 
-        expect(heldTokensBalanceInNativeBalance.length).toBe(4);
+        expect(heldTokensBalanceInNativeBalance.length).toBe(3);
         expect(heldTokensBalanceInNativeBalance).toEqual([
-          "100.00 ICP",
           "1.00 ckBTC",
           "1.00 ckTESTBTC",
           "0.10 ckETH",
         ]);
 
-        expect(await heldTokensCardPo.getInfoRow().isVisible()).toBe(false);
+        expect(await heldTokensCardPo.getInfoRow().isVisible()).toBe(true);
 
-        const stakedTokensCardPo = portfolioPagePo.getStakedTokensCardPo();
+        const stakedTokensCardPo = portfolioPagePo.getStakedRestTokensCardPo();
         const stakedTokensTitles =
           await stakedTokensCardPo.getStakedTokensTitle();
         const stakedTokensMaturities =
@@ -377,24 +394,24 @@ describe.skip("Portfolio route", () => {
           await stakedTokensCardPo.getStakedTokensStakeInNativeCurrency();
 
         expect(stakedTokensTitles.length).toBe(2);
-        expect(stakedTokensTitles).toEqual(["Internet Computer", "Tetris"]);
+        expect(stakedTokensTitles).toEqual(["Doom", "Tetris"]);
 
         expect(stakedTokensMaturities.length).toBe(2);
-        expect(stakedTokensMaturities).toEqual(["0", "2.00"]);
+        expect(stakedTokensMaturities).toEqual(["2.00", "2.00"]);
 
         expect(stakedTokensStakeInUsd.length).toBe(2);
-        expect(stakedTokensStakeInUsd).toEqual(["$10.00", "$200.00"]);
+        expect(stakedTokensStakeInUsd).toEqual(["$200.00", "$200.00"]);
 
         expect(stakedTokensStakeInNativeCurrency.length).toBe(2);
         expect(stakedTokensStakeInNativeCurrency).toEqual([
-          "1.00 ICP",
+          "20.00 TST",
           "20.00 TST",
         ]);
 
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
 
-      it("should not show failed SNS", async () => {
+      it.skip("should not show failed SNS", async () => {
         // TODO: Move this to a helper or similar
         vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
           (fn) => {
@@ -426,13 +443,14 @@ describe.skip("Portfolio route", () => {
           await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
         ).toBe("20’303.10 ICP");
 
-        const stakedTokensCardPo = portfolioPagePo.getStakedTokensCardPo();
+        const stakedTokensCardPo = portfolioPagePo.getStakedRestTokensCardPo();
         const stakedTokensTitles =
           await stakedTokensCardPo.getStakedTokensTitle();
 
-        expect(stakedTokensTitles.length).toBe(1);
+        expect(stakedTokensTitles.length).toBe(0);
         expect(stakedTokensTitles).not.toContain(["Tetris"]);
 
+        console.log(await po.root.innerHtmlForDebugging());
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
 

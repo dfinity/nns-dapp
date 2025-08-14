@@ -33,7 +33,9 @@ describe("StakedTokensCard", () => {
       },
     });
 
-    return StakedTokensCardPo.under(new JestPageObjectElement(container));
+    return StakedTokensCardPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   beforeEach(() => {

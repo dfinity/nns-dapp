@@ -34,7 +34,9 @@ describe("HeldTokensCard", () => {
       },
     });
 
-    return HeldTokensCardPo.under(new JestPageObjectElement(container));
+    return HeldTokensCardPo.under({
+      element: new JestPageObjectElement(container),
+    });
   };
 
   const mockIcpToken = createIcpUserToken();
