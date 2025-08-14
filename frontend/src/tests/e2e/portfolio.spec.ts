@@ -107,8 +107,8 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
   await page.goto("/");
   await disableCssAnimations(page);
 
-  await portfolioPo.getPortfolioPagePo().getHeldTokensCardPo().waitFor();
-  await portfolioPo.getPortfolioPagePo().getStakedTokensCardPo().waitFor();
+  await portfolioPo.getPortfolioPagePo().getHeldRestTokensCardPo().waitFor();
+  await portfolioPo.getPortfolioPagePo().getStakedRestTokensCardPo().waitFor();
 
   await replaceContent({
     page,
