@@ -6,6 +6,7 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -17,6 +18,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
   import { formatNumber } from "$lib/utils/format.utils";
+  import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import {
@@ -45,7 +47,7 @@
   }: Props = $props();
 
   const href = icpOnlyTable
-    ? (topStakedTokens[0].rowHref ?? "#")
+    ? buildNeuronsUrl({ universe: OWN_CANISTER_ID_TEXT })
     : AppPath.Staking;
 
   const icp: TableProject | undefined = $derived(topStakedTokens[0]);

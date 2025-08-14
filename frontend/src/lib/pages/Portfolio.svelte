@@ -37,8 +37,6 @@
     stakingRewardResult?: StakingRewardResult;
   };
 
-  // {icpTableProject}
-  // {nonIcpTableProjects}
   const {
     icpToken,
     nonIcpTokens = [],

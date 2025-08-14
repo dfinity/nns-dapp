@@ -3,12 +3,14 @@
   import TokensCardHeader from "$lib/components/portfolio/TokensCardHeader.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import type { UserTokenData } from "$lib/types/tokens-page";
   import { formatNumber } from "$lib/utils/format.utils";
+  import { buildAccountsUrl } from "$lib/utils/navigation.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import {
@@ -31,7 +33,9 @@
     icpOnlyTable = false,
   }: Props = $props();
 
-  const href = icpOnlyTable ? topHeldTokens[0].rowHref : AppPath.Tokens;
+  const href = icpOnlyTable
+    ? buildAccountsUrl({ universe: OWN_CANISTER_ID_TEXT })
+    : AppPath.Tokens;
 
   const icp: UserTokenData | undefined = $derived(topHeldTokens[0]);
   const restOfTokens = $derived(topHeldTokens);
