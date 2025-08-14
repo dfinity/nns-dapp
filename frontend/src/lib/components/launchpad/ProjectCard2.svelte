@@ -16,7 +16,6 @@
   } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
-    IconCheckCircleFill,
     IconCoin,
     IconRight,
     IconStar,
@@ -26,6 +25,7 @@
   } from "@dfinity/gix-components";
   import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
   import { onMount } from "svelte";
+  import IconParticpated from "../ui/icons/IconParticpated.svelte";
 
   type Props = {
     project: SnsFullProject;
@@ -75,7 +75,7 @@
       {#if userHasParticipated}
         <div data-tid="participation-mark" class="participation-mark">
           <Tooltip id="participated" text={$i18n.sns_launchpad.participated}>
-            <IconCheckCircleFill size="24px" />
+            <IconParticpated />
           </Tooltip>
         </div>
       {/if}
@@ -182,7 +182,7 @@
 
       .participation-mark {
         align-self: start;
-        color: var(--positive-emphasis);
+        color: var(--tooltip-icon-color, var(--elements-icons));
       }
     }
 
