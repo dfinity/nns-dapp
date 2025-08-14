@@ -266,12 +266,12 @@
         {#if nonNullish(totalUsdAmount)}
           {#if isStakingRewardDataReady($stakingRewardsStore)}
             <ApyCard
+              icpOnlyMaturityBalance={$stakingRewardsStore.icpOnly
+                .maturityBalance}
+              icpOnlyMaturityEstimateWeek={$stakingRewardsStore.icpOnly
+                .maturityEstimateWeek}
+              icpOnlyStakingPower={$stakingRewardsStore.icpOnly.stakingPower}
               onStakingPage={true}
-              rewardBalanceUSD={$stakingRewardsStore.rewardBalanceUSD}
-              rewardEstimateWeekUSD={$stakingRewardsStore.rewardEstimateWeekUSD}
-              stakingPower={$stakingRewardsStore.stakingPower}
-              stakingPowerUSD={$stakingRewardsStore.stakingPowerUSD}
-              totalAmountUSD={totalUsdAmount}
             />
           {:else}
             <ApyFallbackCard
@@ -398,7 +398,6 @@
 
     @include media.min-width(large) {
       column-gap: var(--padding-2x);
-      row-gap: var(--padding-3x);
     }
   }
 
