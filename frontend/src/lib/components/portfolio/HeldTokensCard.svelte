@@ -140,7 +140,7 @@
   </div>
 {/snippet}
 
-<Card testId="held-tokens-card">
+<Card testId={icpOnlyTable ? "held-icp-card" : "held-tokens-card"}>
   <div
     class="wrapper"
     role="region"

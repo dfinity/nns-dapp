@@ -216,7 +216,7 @@
   </div>
 {/snippet}
 
-<Card testId="staked-tokens-card">
+<Card testId={icpOnlyTable ? "staked-icp-card" : "staked-tokens-card"}>
   <div
     class="wrapper"
     role="region"
