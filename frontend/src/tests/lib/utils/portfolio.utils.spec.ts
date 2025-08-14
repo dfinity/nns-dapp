@@ -19,7 +19,6 @@ import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
-  createIcpUserToken,
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
@@ -29,9 +28,6 @@ import { Principal } from "@dfinity/principal";
 describe.skip("Portfolio utils", () => {
   describe("getTopTokens", () => {
     const mockNonUserToken = createUserTokenLoading();
-    const mockIcpToken = createIcpUserToken({
-      balanceInUsd: 1,
-    });
 
     const mockCkBTCToken = createUserToken({
       universeId: CKBTC_UNIVERSE_CANISTER_ID,

@@ -1,4 +1,3 @@
-import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
 import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import Portfolio from "$lib/pages/Portfolio.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
@@ -63,12 +62,6 @@ describe.skip("Portfolio page", () => {
       mockCkETHToken,
     ] as UserTokenData[];
 
-    const icpProject: TableProject = {
-      ...mockTableProject,
-      stakeInUsd: undefined,
-      domKey: "/staking/icp",
-      stake: new UnavailableTokenAmount(NNS_TOKEN_DATA),
-    };
     const tableProject1: TableProject = {
       ...mockTableProject,
       title: "Project 1",
