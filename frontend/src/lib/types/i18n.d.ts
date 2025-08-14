@@ -930,6 +930,7 @@ interface I18nSns_launchpad {
   proposals: string;
   project_logo: string;
   no_proposals: string;
+  participated: string;
 }
 
 interface I18nLaunchpad {
@@ -950,7 +951,6 @@ interface I18nLaunchpad_cards {
   ongoing_min_icp: string;
   ongoing_cap_icp: string;
   project_card_market_cap: string;
-  project_card_icp_in_treasury: string;
   project_card_my_participation: string;
   project_card_proposal_activity: string;
   upcoming_tag_upcoming: string;

@@ -137,10 +137,10 @@ export const compareLaunchpadSnsProjects = ({
       snsTotalSupplyTokenAmountStore,
       icpSwapUsdPricesStore,
     }),
-    compareSnsProjectsByProposalActivity,
     compareSnsProjectsByMarketCap({
       snsTotalSupplyTokenAmountStore,
       icpSwapUsdPricesStore,
     }),
+    compareSnsProjectsByProposalActivity,
     compareSnsProjectsByIcpTreasury,
   ]);
