@@ -48,10 +48,13 @@ export const compactCurrencyNumber = (value: number): string => {
  * - 1'000'000 ≤ X < 1'000'000'000: Display millions with "M" and 2 decimal points (e.g., $1.50M)
  * - 1'000'000'000 ≤ X: Display billions with "B" and 2 decimal points (e.g., $1.50B)
  */
-export const formatCurrencyNumber = (value: number): string => {
+export const formatCurrencyNumber = (
+  value: number,
+  options?: { smallValueDecimalPlaces?: number }
+): string => {
   // For values less than 1'000
   if (value < 1_000) {
-    return `${formatNumber(value, { minFraction: 2, maxFraction: 2 })}`;
+    return `${formatNumber(value, { minFraction: options?.smallValueDecimalPlaces ?? 2, maxFraction: options?.smallValueDecimalPlaces ?? 2 })}`;
   }
 
   // For values between 1'000 and 1'000'000
