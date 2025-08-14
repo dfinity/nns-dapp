@@ -1,6 +1,7 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
+  import IconParticpated from "$lib/components/ui/icons/IconParticpated.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -25,7 +26,6 @@
   } from "@dfinity/gix-components";
   import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import IconParticpated from "../ui/icons/IconParticpated.svelte";
 
   type Props = {
     project: SnsFullProject;
