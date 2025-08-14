@@ -6,6 +6,7 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import PrivacyAwareAmount from "$lib/components/ui/PrivacyAwareAmount.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
@@ -17,6 +18,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { TableProject } from "$lib/types/staking";
   import { formatNumber } from "$lib/utils/format.utils";
+  import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
   import { shouldShowInfoRow } from "$lib/utils/portfolio.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import {
@@ -32,6 +34,7 @@
     numberOfTopHeldTokens: number;
     hasApyCalculationErrored: boolean;
     isApyLoading?: boolean;
+    icpOnlyTable?: boolean;
   };
 
   const {
@@ -40,12 +43,15 @@
     numberOfTopHeldTokens,
     hasApyCalculationErrored,
     isApyLoading,
+    icpOnlyTable = false,
   }: Props = $props();
 
-  const href = AppPath.Staking;
+  const href = icpOnlyTable
+    ? buildNeuronsUrl({ universe: OWN_CANISTER_ID_TEXT })
+    : AppPath.Staking;
 
   const icp: TableProject | undefined = $derived(topStakedTokens[0]);
-  const restOfStakedTokens = $derived(topStakedTokens.slice(1));
+  const restOfStakedTokens = $derived(topStakedTokens);
   const numberOfTopStakedTokens = $derived(topStakedTokens.length);
 
   const showInfoRow = $derived(
@@ -212,16 +218,20 @@
   </div>
 {/snippet}
 
-<Card testId="staked-tokens-card">
+<Card testId={icpOnlyTable ? "staked-icp-card" : "staked-tokens-card"}>
   <div
     class="wrapper"
     role="region"
-    aria-label={$i18n.portfolio.staked_tokens_card_title}
+    aria-label={icpOnlyTable
+      ? $i18n.portfolio.staked_icp_card_title
+      : $i18n.portfolio.staked_tokens_card_title}
   >
     <TokensCardHeader
       {href}
       {usdAmount}
-      title={$i18n.portfolio.staked_tokens_card_title}
+      title={icpOnlyTable
+        ? $i18n.portfolio.staked_icp_card_title
+        : $i18n.portfolio.staked_tokens_card_title}
       linkText={$i18n.portfolio.staked_tokens_card_link}
     >
       {#snippet icon()}
@@ -230,18 +240,16 @@
     </TokensCardHeader>
 
     <div class="body" role="table">
-      {@render tableHeader({
-        title: $i18n.portfolio.staked_tokens_card_subtitle_icp,
-        firstColumnTitle:
-          $i18n.portfolio.staked_tokens_card_list_first_column_icp,
-      })}
-      <div class="list icp" role="rowgroup">
-        {@render row({ stakedToken: icp })}
-      </div>
-
-      {#if restOfStakedTokens.length > 0}
-        <div class="divider"></div>
-
+      {#if icpOnlyTable}
+        {@render tableHeader({
+          title: $i18n.portfolio.staked_tokens_card_subtitle_icp,
+          firstColumnTitle:
+            $i18n.portfolio.staked_tokens_card_list_first_column_icp,
+        })}
+        <div class="list icp" role="rowgroup">
+          {@render row({ stakedToken: icp })}
+        </div>
+      {:else if restOfStakedTokens.length > 0}
         {@render tableHeader({
           title: $i18n.portfolio.staked_tokens_card_subtitle_rest,
           firstColumnTitle:
@@ -385,11 +393,6 @@
         display: block;
       }
     }
-  }
-
-  .divider {
-    width: 100%;
-    border-bottom: 4px solid var(--elements-divider);
   }
 
   .info-row,
