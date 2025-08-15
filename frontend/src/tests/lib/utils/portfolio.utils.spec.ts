@@ -25,7 +25,7 @@ import {
 import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 
-describe.skip("Portfolio utils", () => {
+describe("Portfolio utils", () => {
   describe("getTopTokens", () => {
     const mockNonUserToken = createUserTokenLoading();
 
@@ -221,73 +221,34 @@ describe.skip("Portfolio utils", () => {
   });
 
   describe("shouldShowInfoRow", () => {
-    it("should show info row when other card has more tokens", () => {
+    it("should show info row when other card has more entries", () => {
       expect(
         shouldShowInfoRow({
-          currentCardNumberOfTokens: 1,
-          otherCardNumberOfTokens: 4,
-        })
-      ).toBe(true);
-    });
-
-    it("should show info row when other card is empty and current card has less than 4 tokens", () => {
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 2,
-          otherCardNumberOfTokens: 0,
-        })
-      ).toBe(true);
-
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 3,
-          otherCardNumberOfTokens: 0,
-        })
-      ).toBe(true);
-
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 4,
-          otherCardNumberOfTokens: 0,
-        })
-      ).toBe(false);
-
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 5,
-          otherCardNumberOfTokens: 0,
-        })
-      ).toBe(false);
-    });
-
-    it("should show info row when both cards have fewer than 4 tokens", () => {
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 2,
-          otherCardNumberOfTokens: 2,
+          currentCardNumberOfTokens: 0,
+          otherCardNumberOfTokens: 1,
         })
       ).toBe(true);
 
       expect(
         shouldShowInfoRow({
           currentCardNumberOfTokens: 1,
-          otherCardNumberOfTokens: 2,
-        })
-      ).toBe(true);
-    });
-
-    it("should not show info row when both cards have 4 or more tokens", () => {
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 4,
-          otherCardNumberOfTokens: 4,
-        })
-      ).toBe(false);
-
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 4,
           otherCardNumberOfTokens: 3,
+        })
+      ).toBe(true);
+    });
+
+    it("should not show info row when both cards have same amount of entries", () => {
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 0,
+          otherCardNumberOfTokens: 0,
+        })
+      ).toBe(false);
+
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 2,
+          otherCardNumberOfTokens: 2,
         })
       ).toBe(false);
     });

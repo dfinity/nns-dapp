@@ -175,40 +175,35 @@ describe("HeldTokensCard", () => {
       });
     });
 
-    it("should show info row when tokens length is 1", async () => {
+    it("should show info row when tokens length is different", async () => {
       const po = renderComponent({
         topHeldTokens: mockTokens.slice(0, 1),
         usdAmount: 100,
+        numberOfTopStakedTokens: 3,
       });
 
       expect(await po.getInfoRow().isPresent()).toBe(true);
       expect(await po.getLinkRow().isPresent()).toBe(false);
     });
 
-    it("should show info row when tokens length is 2", async () => {
-      const po = renderComponent({
-        topHeldTokens: mockTokens.slice(0, 2),
-        usdAmount: 300,
-      });
-
-      expect(await po.getInfoRow().isPresent()).toBe(true);
-      expect(await po.getLinkRow().isPresent()).toBe(false);
-    });
-
-    it("should not show info row but show link row when tokens length is 4 or more", async () => {
+    it("should not show info row but show link row when tokens length is 3 or more", async () => {
       const po = renderComponent({
         topHeldTokens: [
-          ...mockTokens,
           createUserToken({
             balanceInUsd: 300,
             rowHref: "/tokens/test1",
           }),
           createUserToken({
-            balanceInUsd: 100,
+            balanceInUsd: 300,
             rowHref: "/tokens/test2",
+          }),
+          createUserToken({
+            balanceInUsd: 300,
+            rowHref: "/tokens/test3",
           }),
         ],
         usdAmount: 300,
+        numberOfTopStakedTokens: 3,
       });
 
       expect(await po.getInfoRow().isPresent()).toBe(false);

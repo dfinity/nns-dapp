@@ -1374,8 +1374,5 @@
     "start_staking_card_content": "Stake ICP tokens and participate in NNS governance to earn up to 13% of yearly voting rewards",
     "start_staking_card_link": "Open Staking"
   },
-  "highlight": {
-    "disburse_maturity_title": "Farewell, Spawn Neuron!",
-    "disburse_maturity_description": "Now you can directly disburse your NNS neurons' maturity to the account of your choice."
-  }
+  "highlight": {}
 }
