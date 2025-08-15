@@ -10,9 +10,10 @@ import {
 } from "$lib/types/neurons.errors";
 import type { ToastMsg } from "$lib/types/toast";
 import { translate, type I18nSubstitutions } from "$lib/utils/i18n.utils";
-import type {
-  QueryCallRejectedError,
-  UpdateCallRejectedError,
+import {
+  AgentError,
+  CertifiedRejectErrorCode,
+  UncertifiedRejectErrorCode,
 } from "@dfinity/agent";
 import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
 import {
@@ -27,7 +28,7 @@ import {
   InsufficientAmountError as InsufficientAmountNNSError,
 } from "@dfinity/nns";
 import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
-import { InvalidPercentageError, nonNullish } from "@dfinity/utils";
+import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
 
 export const errorToString = (err?: unknown): string | undefined => {
   const text =
@@ -187,36 +188,22 @@ export const isPayloadSizeError = (err: unknown): boolean => {
 export const isMethodNotSupportedError = (err: unknown): boolean =>
   err instanceof UnsupportedMethodError;
 
-// https://github.com/dfinity/agent-js/blob/86a16f77868240de0918255f9d3dd18c4c984856/packages/agent/src/errors.ts#L47
-const isQueryCallRejectedError = (
-  error: unknown
-): error is QueryCallRejectedError =>
-  nonNullish(error) &&
-  typeof error === "object" &&
-  "type" in error &&
-  error.type === "query";
-
-// https://github.com/dfinity/agent-js/blob/86a16f77868240de0918255f9d3dd18c4c984856/packages/agent/src/errors.ts#L65
-const isUpdateCallRejectedError = (
-  error: unknown
-): error is UpdateCallRejectedError =>
-  nonNullish(error) &&
-  typeof error === "object" &&
-  "type" in error &&
-  error.type === "update";
-
 // TOOD: Rename the function for generic errors
 export const isCanisterOutOfCyclesError = (error: unknown): boolean => {
-  // https://github.com/dfinity/ic/blob/6e327863fd0e72d8cf9c5c46fc1263f548fad4f5/rs/protobuf/src/gen/state/state.ingress.v1.rs#L146
+  if (!(error instanceof AgentError)) return false;
+
+  const { code } = error;
+
+  if (
+    !(code instanceof UncertifiedRejectErrorCode) &&
+    !(code instanceof CertifiedRejectErrorCode)
+  )
+    return false;
+
+  const { rejectErrorCode } = code;
+
+  if (isNullish(rejectErrorCode)) return false;
+
   const errorPrefix = "IC0";
-
-  if (isQueryCallRejectedError(error)) {
-    return error.result.error_code.startsWith(errorPrefix);
-  }
-
-  if (isUpdateCallRejectedError(error)) {
-    return error.error_code?.startsWith(errorPrefix) ?? false;
-  }
-
-  return false;
+  return rejectErrorCode.startsWith(errorPrefix);
 };

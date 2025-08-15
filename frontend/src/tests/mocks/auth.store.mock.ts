@@ -23,7 +23,11 @@ export const mockIdentity = {
 } as unknown as Identity;
 
 export const createMockIdentity = (p: number) => {
-  const principal = Principal.fromHex(p.toString(16));
+  const hexString = p.toString(16);
+  // Required by the library used underneath
+  // https://github.com/paulmillr/noble-hashes/blob/47ed742b9dc3d82c1ca1fcea57bcbff83b4c9ac6/src/utils.ts#L177
+  const paddedHex = hexString.length % 2 === 0 ? hexString : "0" + hexString;
+  const principal = Principal.fromHex(paddedHex);
   return {
     getPrincipal: () => principal,
     transformRequest,

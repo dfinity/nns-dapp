@@ -9,8 +9,8 @@ import {
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
-  CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
+  CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -51,7 +51,13 @@ import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { QueryCallRejectedError, ReplicaRejectCode } from "@dfinity/agent";
+import {
+  AgentError,
+  ErrorKindEnum,
+  ReplicaRejectCode,
+  requestIdOf,
+  UncertifiedRejectErrorCode,
+} from "@dfinity/agent";
 import { AuthClient } from "@dfinity/auth-client";
 import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
 import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
@@ -728,13 +734,14 @@ describe("Tokens route", () => {
             };
 
             if (canisterId.toText() === ledgerCanisterIdTetris.toText()) {
-              throw new QueryCallRejectedError(canisterId, "getTransactions", {
-                error_code: "IC0207",
-                // @ts-expect-error: We can't use the enum from agent-js as it was exported as a const.
-                status: "rejected",
-                reject_message: "Canister out of cycles",
-                reject_code: ReplicaRejectCode.CanisterError,
-              });
+              const errorCode = new UncertifiedRejectErrorCode(
+                requestIdOf({}),
+                ReplicaRejectCode.CanisterError,
+                "Canister out of Cycles",
+                "IC0207",
+                []
+              );
+              throw new AgentError(errorCode, ErrorKindEnum.Unknown);
             }
             return balancesMap[canisterId.toText()];
           }
