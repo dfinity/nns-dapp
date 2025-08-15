@@ -77,34 +77,35 @@
 
 <article class="container" data-tid="transaction-summary-component">
   <KeyValuePair testId="transaction-summary-sending-amount">
-    <span class="label" slot="key">{$i18n.accounts.sending_amount}</span>
-    <div slot="value" class="value">
-      <AmountDisplay
-        singleLine
-        detailed
-        amount={tokenAmount}
-      />{#if nonNullish(tokenAmountUsdValue)}
-        <span class="fiat" data-tid="fiat-value">
-          (~{tokenAmountUsdValue})
-        </span>
-      {/if}
-    </div>
+    {#snippet key()}<span class="label">{$i18n.accounts.sending_amount}</span
+      >{/snippet}
+    {#snippet value()}<div class="value">
+        <AmountDisplay
+          singleLine
+          detailed
+          amount={tokenAmount}
+        />{#if nonNullish(tokenAmountUsdValue)}
+          <span class="fiat" data-tid="fiat-value">
+            (~{tokenAmountUsdValue})
+          </span>
+        {/if}
+      </div>{/snippet}
   </KeyValuePair>
 
   {#if showLedgerFee}
     <KeyValuePair testId="transaction-summary-fee">
-      <span class="label" slot="key">{ledgerFeeLabel}</span>
-      <div class="value" slot="value">
-        <AmountDisplay
-          singleLine
-          detailed
-          amount={transactionFee}
-        />{#if nonNullish(transactionFeeUsdValue)}
-          <span class="fiat" data-tid="fiat-value">
-            ({transactionFeeUsdValue})
-          </span>
-        {/if}
-      </div>
+      {#snippet key()}<span class="label">{ledgerFeeLabel}</span>{/snippet}
+      {#snippet value()}<div class="value">
+          <AmountDisplay
+            singleLine
+            detailed
+            amount={transactionFee}
+          />{#if nonNullish(transactionFeeUsdValue)}
+            <span class="fiat" data-tid="fiat-value">
+              ({transactionFeeUsdValue})
+            </span>
+          {/if}
+        </div>{/snippet}
     </KeyValuePair>
 
     <div class="deducted" data-tid="transaction-summary-total-deducted">

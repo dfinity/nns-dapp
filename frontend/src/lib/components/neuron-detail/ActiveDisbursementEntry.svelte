@@ -13,21 +13,22 @@
   </span>
   <div class="content description">
     <KeyValuePair>
-      <span slot="key"
-        >{$i18n.neuron_detail.active_maturity_disbursements_amount}</span
-      >
-      <span slot="value" class="value" data-tid="maturity">{amount}</span>
+      {#snippet key()}<span
+          >{$i18n.neuron_detail.active_maturity_disbursements_amount}</span
+        >{/snippet}
+      {#snippet value()}<span class="value" data-tid="maturity">{amount}</span
+        >{/snippet}
     </KeyValuePair>
     <KeyValuePair>
-      <span slot="key" class="description"
-        >{$i18n.neuron_detail.view_active_disbursements_to}&nbsp;<span
-          data-tid="destination"
-          class="destination">{destination}</span
-        ></span
-      >
-      <span slot="value" class="description timestamp" data-tid="timestamp"
-        >{dateTime}</span
-      >
+      {#snippet key()}<span class="description"
+          >{$i18n.neuron_detail.view_active_disbursements_to}&nbsp;<span
+            data-tid="destination"
+            class="destination">{destination}</span
+          ></span
+        >{/snippet}
+      {#snippet value()}<span class="description timestamp" data-tid="timestamp"
+          >{dateTime}</span
+        >{/snippet}
     </KeyValuePair>
   </div>
 </div>

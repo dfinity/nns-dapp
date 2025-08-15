@@ -73,8 +73,9 @@
 
 <CardInfo noMargin testId="sns-neuron-following-card-component">
   <KeyValuePairInfo testId="sns-neuron-following">
-    <h3 slot="key">{$i18n.neuron_detail.following_title}</h3>
-    <svelte:fragment slot="info">
+    {#snippet key()}<h3>{$i18n.neuron_detail.following_title}</h3>{/snippet}
+    {#snippet value()}{/snippet}
+    {#snippet info()}
       <div class="key-value-pair-info-wrapper">
         {#if $ENABLE_SNS_TOPICS}
           <span>
@@ -89,7 +90,7 @@
           </span>
         {/if}
       </div>
-    </svelte:fragment>
+    {/snippet}
   </KeyValuePairInfo>
 
   {#if !isFollowByTopic && followees.length > 0}

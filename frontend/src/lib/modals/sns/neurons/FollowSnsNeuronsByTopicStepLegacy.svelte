@@ -70,7 +70,8 @@
   </ul>
 
   <Collapsible testId="collapsible">
-    <h5 slot="header">{$i18n.follow_sns_topics.legacy_followees_header}</h5>
+    {#snippet header()}<h5>{$i18n.follow_sns_topics.legacy_followees_header}</h5
+      >{/snippet}
 
     <ul class="list legacy-followings">
       {#each legacyFollowees as followees (followees.nsFunction.id)}

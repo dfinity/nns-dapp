@@ -12,13 +12,15 @@
 <TestIdWrapper testId="sns-vesting-period-remaining-component">
   {#if isVesting(neuron)}
     <KeyValuePair testId="sns-neuron-vesting-period">
-      <span class="label" slot="key">{$i18n.neurons.vestion_period}</span>
-      <span class="value" slot="value">
-        {secondsToDuration({
-          seconds: vestingInSeconds(neuron),
-          i18n: $i18n.time,
-        })}
-      </span>
+      {#snippet key()}<span class="label">{$i18n.neurons.vestion_period}</span
+        >{/snippet}
+      {#snippet value()}
+        <span class="value">
+          {secondsToDuration({
+            seconds: vestingInSeconds(neuron),
+            i18n: $i18n.time,
+          })}
+        </span>{/snippet}
     </KeyValuePair>
   {/if}
 </TestIdWrapper>

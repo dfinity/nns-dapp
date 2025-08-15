@@ -15,10 +15,10 @@
 <TestIdWrapper testId="sns-neuron-age-component">
   {#if age > 0}
     <KeyValuePair testId="sns-neuron-age">
-      <span class="label" slot="key">{$i18n.neurons.age}</span>
-      <span class="value" slot="value">
-        {secondsToDuration({ seconds: age, i18n: $i18n.time })}
-      </span>
+      {#snippet key()}<span class="label">{$i18n.neurons.age}</span>{/snippet}
+      {#snippet value()}<span class="value">
+          {secondsToDuration({ seconds: age, i18n: $i18n.time })}
+        </span>{/snippet}
     </KeyValuePair>
   {/if}
 </TestIdWrapper>

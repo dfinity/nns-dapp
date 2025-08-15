@@ -34,12 +34,13 @@
 
   <div class="content">
     <KeyValuePair>
-      <span slot="key" class="label"
-        >{$i18n.neuron_detail.view_active_disbursements_total}</span
-      >
-      <span class="value" slot="value" data-tid="total-maturity"
-        >{formatMaturity(totalMaturity)}</span
-      >
+      {#snippet key()}
+        <span class="label"
+          >{$i18n.neuron_detail.view_active_disbursements_total}</span
+        >{/snippet}
+      {#snippet value()}<span class="value" data-tid="total-maturity"
+          >{formatMaturity(totalMaturity)}</span
+        >{/snippet}
     </KeyValuePair>
 
     <div class="disbursements">

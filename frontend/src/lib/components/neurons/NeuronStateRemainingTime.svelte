@@ -26,13 +26,14 @@
       </p>
     {:else}
       <KeyValuePair>
-        <span slot="key" class="label">{$i18n.neurons.remaining}</span>
-        <span slot="value" class="value"
-          >{secondsToDuration({
-            seconds: timeInSeconds,
-            i18n: $i18n.time,
-          })}</span
-        >
+        {#snippet key()}
+          <span class="label">{$i18n.neurons.remaining}</span>{/snippet}
+        {#snippet value()}<span class="value"
+            >{secondsToDuration({
+              seconds: timeInSeconds,
+              i18n: $i18n.time,
+            })}</span
+          >{/snippet}
       </KeyValuePair>
     {/if}
   {:else if state === NeuronState.Locked}
@@ -43,15 +44,15 @@
       </p>
     {:else}
       <KeyValuePair>
-        <span slot="key" class="label"
-          >{$i18n.neurons.dissolve_delay_title}</span
-        >
-        <span slot="value" class="value"
-          >{secondsToDuration({
-            seconds: timeInSeconds,
-            i18n: $i18n.time,
-          })}</span
-        >
+        {#snippet key()}<span class="label"
+            >{$i18n.neurons.dissolve_delay_title}</span
+          >{/snippet}
+        {#snippet value()}<span class="value"
+            >{secondsToDuration({
+              seconds: timeInSeconds,
+              i18n: $i18n.time,
+            })}</span
+          >{/snippet}
       </KeyValuePair>
     {/if}
   {/if}
