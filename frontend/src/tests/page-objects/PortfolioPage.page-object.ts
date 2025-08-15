@@ -22,7 +22,7 @@ export class PortfolioPagePo extends BasePageObject {
     return this.getElement("start-staking-card");
   }
 
-  getNoHeldIcpCard(): PageObjectElement {
+  getNoHeldIcpCardPo(): PageObjectElement {
     return this.getElement("no-held-icp-card");
   }
 
