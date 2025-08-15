@@ -35,13 +35,6 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
   await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
 
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
-
   // Add CSS to disable skeleton animations
   await page.addStyleTag({
     content: `
@@ -107,15 +100,8 @@ test("Visual test Landing Page", async ({ page, browser }) => {
   await page.goto("/");
   await disableCssAnimations(page);
 
-  await portfolioPo.getPortfolioPagePo().getHeldRestTokensCardPo().waitFor();
-  await portfolioPo.getPortfolioPagePo().getStakedRestTokensCardPo().waitFor();
-
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
+  await portfolioPo.getPortfolioPagePo().getHeldICPCardPo().waitFor();
+  await portfolioPo.getPortfolioPagePo().getStakedICPCardPo().waitFor();
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
   await appPo.toggleSidebar();
