@@ -129,7 +129,7 @@ describe("Portfolio page", () => {
       const heldTokensCardPo = po.getHeldRestTokensCardPo();
       const stakedTokensCardPo = po.getStakedRestTokensCardPo();
 
-      expect(await po.getNoHeldIcpCard().isPresent()).toBe(true);
+      expect(await po.getNoHeldIcpCardPo().isPresent()).toBe(true);
       expect(await po.getNoStakedIcpCardPo().isPresent()).toBe(true);
 
       expect(await heldTokensCardPo.isPresent()).toBe(false);
