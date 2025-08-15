@@ -1445,10 +1445,7 @@ interface I18nPortfolio {
   start_staking_card_link: string;
 }
 
-interface I18nHighlight {
-  disburse_maturity_title: string;
-  disburse_maturity_description: string;
-}
+interface I18nHighlight {}
 
 interface I18nNeuron_state {
   Unspecified: string;
