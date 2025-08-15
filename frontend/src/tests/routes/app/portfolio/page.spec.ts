@@ -49,7 +49,7 @@ import { tick } from "svelte";
 
 vi.mock("$lib/api/governance.api");
 
-describe.skip("Portfolio route", () => {
+describe("Portfolio route", () => {
   fakeGovernanceApi.install();
 
   const renderPage = async () => {
@@ -136,10 +136,8 @@ describe.skip("Portfolio route", () => {
       false
     );
     expect(await portfolioPagePo.getStartStakingCard().isPresent()).toBe(true);
-    expect(await portfolioPagePo.getNoHeldTokensCard().isPresent()).toBe(true);
-    expect(await portfolioPagePo.getNoStakedTokensCarPo().isPresent()).toBe(
-      true
-    );
+    expect(await portfolioPagePo.getNoHeldIcpCardPo().isPresent()).toBe(true);
+    expect(await portfolioPagePo.getNoStakedIcpCardPo().isPresent()).toBe(true);
   });
 
   describe("when logged in", () => {
@@ -381,8 +379,6 @@ describe.skip("Portfolio route", () => {
           "0.10 ckETH",
         ]);
 
-        expect(await heldTokensCardPo.getInfoRow().isVisible()).toBe(true);
-
         const stakedTokensCardPo = portfolioPagePo.getStakedRestTokensCardPo();
         const stakedTokensTitles =
           await stakedTokensCardPo.getStakedTokensTitle();
@@ -392,6 +388,10 @@ describe.skip("Portfolio route", () => {
           await stakedTokensCardPo.getStakedTokensStakeInUsd();
         const stakedTokensStakeInNativeCurrency =
           await stakedTokensCardPo.getStakedTokensStakeInNativeCurrency();
+
+        // Because there are more held entries than staked entries
+        expect(await stakedTokensCardPo.getInfoRow().isVisible()).toBe(true);
+        expect(await heldTokensCardPo.getInfoRow().isVisible()).toBe(false);
 
         expect(stakedTokensTitles.length).toBe(2);
         expect(stakedTokensTitles).toEqual(["Doom", "Tetris"]);
