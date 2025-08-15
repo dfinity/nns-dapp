@@ -80,8 +80,6 @@ export const signInWithNewUser = async ({
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);
 
-  await closeHighlight(page);
-
   await step("Running the main test");
 };
 
