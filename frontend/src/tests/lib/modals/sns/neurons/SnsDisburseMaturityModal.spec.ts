@@ -20,7 +20,6 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { extractHrefFromText } from "$tests/utils/utils.test-utils";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { SnsNeuron } from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
 import { waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/api/sns-governance.api");
@@ -86,24 +85,6 @@ describe("SnsDisburseMaturityModal", () => {
     );
   });
 
-  it("should disable next button when destination address is not selected", async () => {
-    const po = await renderSnsDisburseMaturityModal();
-    await po.setPercentage(10);
-    const destinationPo = po.getSelectDestinationAddressPo();
-    await destinationPo.enterAddress("");
-    await destinationPo.blurInput();
-    expect(await po.isNextButtonDisabled()).toBe(true);
-  });
-
-  it("should disable next button when destination address is valid", async () => {
-    const po = await renderSnsDisburseMaturityModal();
-    await po.setPercentage(10);
-    const destinationPo = po.getSelectDestinationAddressPo();
-    await destinationPo.enterAddress("INVALID_ADDRESS");
-    await destinationPo.blurInput();
-    expect(await po.isNextButtonDisabled()).toBe(true);
-  });
-
   it("should enable next button when not 0 selected", async () => {
     const po = await renderSnsDisburseMaturityModal();
     await po.setPercentage(1);
@@ -143,19 +124,6 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.getText()).toContain(`13%`);
   });
 
-  it("should show error if account is not ICRC", async () => {
-    const po = await renderSnsDisburseMaturityModal(mockSnsNeuron);
-    const destinationPo = po.getSelectDestinationAddressPo();
-    // This is a valid ICP address, but not valid ICRC address.
-    await destinationPo.enterAddress(
-      "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f"
-    );
-    await destinationPo.blurInput();
-    expect(await destinationPo.getErrorMessage()).toBe(
-      "Please enter a valid address."
-    );
-  });
-
   it("should display summary information in the last step", async () => {
     const neuron = createMockSnsNeuron({
       id: [1],
@@ -185,12 +153,9 @@ describe("SnsDisburseMaturityModal", () => {
     expect(await po.getConfirmTokens()).toBe("1.16-1.30 TST");
   });
 
-  const disburse = async (neuron: SnsNeuron, accountAddress?: string) => {
+  const disburse = async (neuron: SnsNeuron) => {
     const po = await renderSnsDisburseMaturityModal(neuron);
-    if (nonNullish(accountAddress)) {
-      const destinationPo = po.getSelectDestinationAddressPo();
-      await destinationPo.enterAddress(accountAddress);
-    }
+
     await po.setPercentage(50);
     await po.clickNextButton();
 
@@ -206,11 +171,7 @@ describe("SnsDisburseMaturityModal", () => {
       rootCanisterId: mockPrincipal,
       percentageToDisburse: 50,
       identity: mockIdentity,
-      toAccount: decodeIcrcAccount(
-        nonNullish(accountAddress)
-          ? accountAddress
-          : mockSnsMainAccount.identifier
-      ),
+      toAccount: decodeIcrcAccount(mockSnsMainAccount.identifier),
     });
     await waitFor(() => expect(reloadNeuron).toBeCalledTimes(1));
 
@@ -227,12 +188,5 @@ describe("SnsDisburseMaturityModal", () => {
       maturity: 110_000_000_000n,
     });
     await disburse(neuron1100maturity);
-  });
-
-  it("should disburse maturity to an SNS account", async () => {
-    const accountAddress = principal(1).toText();
-    const po = await disburse(mockSnsNeuron, accountAddress);
-
-    expect(await po.getConfirmDestination()).toBe(accountAddress);
   });
 });
