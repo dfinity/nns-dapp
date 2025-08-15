@@ -19,8 +19,6 @@
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
-  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
-  import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { toastsClean } from "$lib/stores/toasts.store";
   import { onMount } from "svelte";
 
@@ -68,8 +66,10 @@
     refreshStakingRewards({
       auth: $authSignedInStore,
       tokens: $tokensListUserStore,
-      snsProjects: $snsAggregatorStore,
-      snsNeurons: $snsNeuronsStore,
+      snsProjects: { data: [] },
+      snsNeurons: {
+        fake: { neurons: [], certified: true },
+      },
       nnsNeurons: $neuronsStore,
       nnsEconomics: $networkEconomicsStore,
       fxRates: $icpSwapUsdPricesStore,
