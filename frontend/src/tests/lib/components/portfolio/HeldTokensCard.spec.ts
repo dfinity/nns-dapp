@@ -186,16 +186,24 @@ describe("HeldTokensCard", () => {
       expect(await po.getLinkRow().isPresent()).toBe(false);
     });
 
-    it("should not show info row but show link row when tokens length the same", async () => {
+    it("should not show info row but show link row when tokens length is 3 or more", async () => {
       const po = renderComponent({
         topHeldTokens: [
           createUserToken({
             balanceInUsd: 300,
             rowHref: "/tokens/test1",
           }),
+          createUserToken({
+            balanceInUsd: 300,
+            rowHref: "/tokens/test2",
+          }),
+          createUserToken({
+            balanceInUsd: 300,
+            rowHref: "/tokens/test3",
+          }),
         ],
         usdAmount: 300,
-        numberOfTopStakedTokens: 1,
+        numberOfTopStakedTokens: 3,
       });
 
       expect(await po.getInfoRow().isPresent()).toBe(false);
