@@ -185,7 +185,7 @@
   <div class="content">
     <!-- ICP TOKEN -->
     {#if !$authSignedInStore}
-      <NoHeldTokensCard />
+      <NoHeldTokensCard icpOnlyTable />
     {:else if isNullish(icpHeldToken)}
       <SkeletonTokensCard testId="held-icp-skeleton-card" icpOnlyTable />
     {:else}
@@ -199,7 +199,7 @@
 
     <!-- ICP NEURONS -->
     {#if !$authSignedInStore || isNullish(icpTableProject)}
-      <NoStakedTokensCard />
+      <NoStakedTokensCard icpOnlyTable />
     {:else if icpTableProject?.isStakeLoading}
       <SkeletonTokensCard testId="staked-icp-skeleton-card" icpOnlyTable />
     {:else}
