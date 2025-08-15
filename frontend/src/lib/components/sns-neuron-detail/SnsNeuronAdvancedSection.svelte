@@ -76,12 +76,14 @@
     {#if nonNullish(apy)}
       <div>
         <KeyValuePairInfo>
-          <span slot="key" class="label">{$i18n.neuron_detail.apy_and_max}</span
-          >
-          <span slot="value" class="value"
-            ><ApyDisplay {apy} forPortfolio={false} /></span
-          >
-          <span slot="info">{$i18n.neuron_detail.apy_and_max_tooltip}</span>
+          {#snippet key()}<span class="label"
+              >{$i18n.neuron_detail.apy_and_max}</span
+            >{/snippet}
+          {#snippet value()}<span class="value"
+              ><ApyDisplay {apy} forPortfolio={false} /></span
+            >{/snippet}
+          {#snippet info()}<span>{$i18n.neuron_detail.apy_and_max_tooltip}</span
+            >{/snippet}
         </KeyValuePairInfo>
       </div>
     {/if}
