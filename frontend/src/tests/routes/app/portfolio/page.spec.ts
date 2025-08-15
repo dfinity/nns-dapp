@@ -49,7 +49,7 @@ import { tick } from "svelte";
 
 vi.mock("$lib/api/governance.api");
 
-describe.skip("Portfolio route", () => {
+describe("Portfolio route", () => {
   fakeGovernanceApi.install();
 
   const renderPage = async () => {

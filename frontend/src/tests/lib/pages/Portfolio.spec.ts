@@ -22,7 +22,7 @@ import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
-describe.skip("Portfolio page", () => {
+describe("Portfolio page", () => {
   const renderPage = ({
     icpToken = undefined,
     nonIcpTokens = [],

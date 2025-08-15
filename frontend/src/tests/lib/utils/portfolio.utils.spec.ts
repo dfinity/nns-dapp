@@ -25,7 +25,7 @@ import {
 import type { ProposalInfo } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
 
-describe.skip("Portfolio utils", () => {
+describe("Portfolio utils", () => {
   describe("getTopTokens", () => {
     const mockNonUserToken = createUserTokenLoading();
 
