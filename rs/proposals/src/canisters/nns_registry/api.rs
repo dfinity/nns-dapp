@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-31_03-32-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/1db8f933fdadc81a90e7db2389b081e21263a9b6/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -367,11 +367,24 @@ pub struct RerouteCanisterRangesPayload {
     pub destination_subnet: Principal,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct GuestLaunchMeasurementsGuestLaunchMeasurementsItemMetadataInner {
+    pub kernel_cmdline: String,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GuestLaunchMeasurementsGuestLaunchMeasurementsItem {
+    pub metadata: Option<GuestLaunchMeasurementsGuestLaunchMeasurementsItemMetadataInner>,
+    pub measurement: serde_bytes::ByteBuf,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GuestLaunchMeasurements {
+    pub guest_launch_measurements: Vec<GuestLaunchMeasurementsGuestLaunchMeasurementsItem>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct ReviseElectedGuestosVersionsPayload {
     pub release_package_urls: Vec<String>,
     pub replica_versions_to_unelect: Vec<String>,
     pub replica_version_to_elect: Option<String>,
-    pub guest_launch_measurement_sha256_hex: Option<String>,
+    pub guest_launch_measurements: Option<GuestLaunchMeasurements>,
     pub release_package_sha256_hex: Option<String>,
 }
 #[derive(Serialize, CandidType, Deserialize)]

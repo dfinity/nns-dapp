@@ -47,7 +47,7 @@
       otherCardNumberOfTokens: numberOfTopStakedTokens,
     })
   );
-  const showLinkRow = $derived(numberOfTopHeldTokens >= 4);
+  const showLinkRow = $derived(numberOfTopHeldTokens >= 3);
 </script>
 
 {#snippet tableHeader({

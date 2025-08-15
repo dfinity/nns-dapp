@@ -398,6 +398,7 @@
 
     @include media.min-width(large) {
       column-gap: var(--padding-2x);
+      row-gap: var(--padding-3x);
     }
   }
 

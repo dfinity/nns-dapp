@@ -1,4 +1,4 @@
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-31_03-32-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/1db8f933fdadc81a90e7db2389b081e21263a9b6/rs/registry/canister/canister/registry.did>
 // A brief note about the history of this file: This file used to be
 // automatically generated, but now, it is hand-crafted, because the
 // auto-generator has some some pretty degenerate behaviors. The worst of those
@@ -163,20 +163,7 @@ type VetKdCurve = variant { bls12_381_g2 };
 
 type EcdsaCurve = variant { secp256k1 };
 
-type EcdsaInitialConfig = record {
-  quadruples_to_create_in_advance : nat32;
-  max_queue_size : opt nat32;
-  keys : vec EcdsaKeyRequest;
-  signature_request_timeout_ns : opt nat64;
-  idkg_key_rotation_period_ms : opt nat64;
-};
-
 type EcdsaKeyId = record { name : text; curve : EcdsaCurve };
-
-type EcdsaKeyRequest = record {
-  key_id : EcdsaKeyId;
-  subnet_id : opt principal;
-};
 
 type FirewallRule = record {
   ipv4_prefixes : vec text;
@@ -329,8 +316,15 @@ type ReviseElectedGuestosVersionsPayload = record {
   release_package_urls : vec text;
   replica_versions_to_unelect : vec text;
   replica_version_to_elect : opt text;
-  guest_launch_measurement_sha256_hex : opt text;
+  guest_launch_measurements : opt GuestLaunchMeasurements;
   release_package_sha256_hex : opt text;
+};
+
+type GuestLaunchMeasurements = record {
+ guest_launch_measurements : vec record {
+   metadata : opt record { kernel_cmdline : text };
+   measurement : blob;
+ };
 };
 
 type SetFirewallConfigPayload = record {

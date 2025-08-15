@@ -62,7 +62,7 @@
   );
   // TODO: Do we still want to have the maturity as a fallback for the APY?
   const showApy = $derived($ENABLE_APY_PORTFOLIO && !hasApyCalculationErrored);
-  const showLinkRow = $derived(numberOfTopStakedTokens >= 4);
+  const showLinkRow = $derived(numberOfTopStakedTokens >= 3);
 </script>
 
 {#snippet tableHeader({

@@ -362,19 +362,9 @@ describe("StakedTokensCard", () => {
       });
     });
 
-    it("should show info row when the number of topStakedTokens is less than numberOfTopHeldTokens like 1", async () => {
+    it("should show info row when the number of topStakedTokens is different than numberOfTopHeldTokens ", async () => {
       const po = renderComponent({
         topStakedTokens: mockStakedTokens.slice(0, 2),
-        numberOfTopHeldTokens: 4,
-      });
-
-      expect(await po.getInfoRow().isPresent()).toBe(true);
-      expect(await po.getLinkRow().isPresent()).toBe(false);
-    });
-
-    it("should show info row when the number of topStakedTokens is less than numberOfTopHeldTokens like 2", async () => {
-      const po = renderComponent({
-        topStakedTokens: mockStakedTokens.slice(0, 1),
         numberOfTopHeldTokens: 3,
       });
 
@@ -382,21 +372,10 @@ describe("StakedTokensCard", () => {
       expect(await po.getLinkRow().isPresent()).toBe(false);
     });
 
-    it("should not show info row but show link row when tokens length is 4 or more", async () => {
+    it("should not show info row but show link row when tokens length is 3 or more", async () => {
       const po = renderComponent({
-        topStakedTokens: [
-          ...mockStakedTokens,
-          {
-            ...mockTableProject,
-            title: "Project 5",
-            stakeInUsd: 200,
-            domKey: "/staking/5",
-            stake: TokenAmountV2.fromUlps({
-              amount: 1000_000n,
-              token: mockToken,
-            }),
-          },
-        ],
+        topStakedTokens: [...mockStakedTokens],
+        numberOfTopHeldTokens: 3,
       });
 
       expect(await po.getInfoRow().isPresent()).toBe(false);

@@ -80,9 +80,16 @@
 </TestIdWrapper>
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .content {
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
+
+    @include media.min-width(large) {
+      column-gap: var(--padding-2x);
+      row-gap: var(--padding-3x);
+    }
   }
 </style>
