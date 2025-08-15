@@ -137,7 +137,7 @@ describe("Portfolio route", () => {
     );
     expect(await portfolioPagePo.getStartStakingCard().isPresent()).toBe(true);
     expect(await portfolioPagePo.getNoHeldTokensCard().isPresent()).toBe(true);
-    expect(await portfolioPagePo.getNoStakedTokensCarPo().isPresent()).toBe(
+    expect(await portfolioPagePo.getNoStakedTokensCardPo().isPresent()).toBe(
       true
     );
   });
