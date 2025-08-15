@@ -1,6 +1,7 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
+  import IconParticpated from "$lib/components/ui/icons/IconParticpated.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
@@ -16,7 +17,6 @@
   } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
-    IconCheckCircleFill,
     IconCoin,
     IconRight,
     IconStar,
@@ -75,7 +75,7 @@
       {#if userHasParticipated}
         <div data-tid="participation-mark" class="participation-mark">
           <Tooltip id="participated" text={$i18n.sns_launchpad.participated}>
-            <IconCheckCircleFill size="24px" />
+            <IconParticpated />
           </Tooltip>
         </div>
       {/if}
@@ -181,8 +181,7 @@
       }
 
       .participation-mark {
-        align-self: start;
-        color: var(--positive-emphasis);
+        color: var(--tooltip-icon-color, var(--elements-icons));
       }
     }
 

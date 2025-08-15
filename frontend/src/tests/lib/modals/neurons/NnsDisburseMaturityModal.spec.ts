@@ -6,10 +6,7 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
-import {
-  mockHardwareWalletAccount,
-  mockMainAccount,
-} from "$tests/mocks/icp-accounts.store.mock";
+import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityModal.page-object";
@@ -124,45 +121,6 @@ describe("NnsDisburseMaturityModal", () => {
     expect(await po.getConfirmPercentage()).toEqual("50%");
     expect(await po.getConfirmTokens()).toBe("50.00-55.27 ICP");
     expect(await po.getConfirmDestination()).toEqual("Main");
-  });
-
-  it("should disburse maturity to entered destination", async () => {
-    const neuron = testNeuron();
-    const close = vi.fn();
-    const spyDisburseMaturity = vi
-      .spyOn(api, "disburseMaturity")
-      .mockResolvedValue();
-    // Add the neuron to the store to avoid extra query from getIdentityOfControllerByNeuronId
-    neuronsStore.setNeurons({
-      neurons: [neuron],
-      certified: true,
-    });
-    const po = await renderNnsDisburseMaturityModal({ neuron, close });
-
-    await po.setPercentage(50);
-    await po.getSelectDestinationAddressPo().toggleSelect();
-    await po
-      .getSelectDestinationAddressPo()
-      .enterAddress(mockHardwareWalletAccount.identifier);
-
-    await po.clickNextButton();
-
-    expect(
-      await po.getNeuronConfirmActionScreenPo().getConfirmButton().isDisabled()
-    ).toEqual(false);
-    expect(spyDisburseMaturity).toHaveBeenCalledTimes(0);
-
-    await po.clickConfirmButton();
-    await runResolvedPromises();
-
-    expect(spyDisburseMaturity).toHaveBeenCalledTimes(1);
-    expect(spyDisburseMaturity).toHaveBeenCalledWith({
-      neuronId: neuron.neuronId,
-      percentageToDisburse: 50,
-      identity: mockIdentity,
-      toAccountIdentifier: mockHardwareWalletAccount.identifier,
-    });
-    expect(close).toHaveBeenCalledTimes(1);
   });
 
   // FIXME: This test makes other tests fail if it runs first.

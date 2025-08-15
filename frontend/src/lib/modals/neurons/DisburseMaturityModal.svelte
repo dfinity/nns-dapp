@@ -183,6 +183,7 @@
           bind:selectedDestinationAddress
           bind:showManualAddress
           {selectedNetwork}
+          selectMethods="dropdown"
           on:nnsOpenQRCodeReader={goQRCode}
         />
       </div>

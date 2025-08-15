@@ -679,10 +679,10 @@ describe("Launchpad utils", () => {
       );
 
       expect(sortedProjectNames).toEqual([
-        "Project With 100 Proposals",
-        "Project With 50 Proposals",
         "Project With Large Market Cap",
         "Project With Small Market Cap",
+        "Project With 100 Proposals",
+        "Project With 50 Proposals",
         "Project Treasury 100%",
         "Project Treasury 25%",
         "Project Without Metrics",

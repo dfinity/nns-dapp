@@ -1380,7 +1380,9 @@ interface I18nPortfolio {
   login_description: string;
   no_tokens_card_description: string;
   no_neurons_card_description: string;
+  held_icp_card_title: string;
   held_tokens_card_title: string;
+  held_icp_card_link: string;
   held_tokens_card_link: string;
   held_tokens_card_subtitle_icp: string;
   held_tokens_card_subtitle_rest: string;
@@ -1391,6 +1393,7 @@ interface I18nPortfolio {
   held_tokens_card_info_row: string;
   held_tokens_card_link_row_text: string;
   held_tokens_card_link_row_link: string;
+  staked_icp_card_title: string;
   staked_tokens_card_title: string;
   staked_tokens_card_link: string;
   staked_tokens_card_subtitle_icp: string;
@@ -1442,10 +1445,7 @@ interface I18nPortfolio {
   start_staking_card_link: string;
 }
 
-interface I18nHighlight {
-  disburse_maturity_title: string;
-  disburse_maturity_description: string;
-}
+interface I18nHighlight {}
 
 interface I18nNeuron_state {
   Unspecified: string;
