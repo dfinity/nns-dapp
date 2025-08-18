@@ -13,7 +13,7 @@ const VIEWPORT_SIZES = {
   mobile: { width: 375, height: 667 },
 } as const;
 
-test.skip("Visual test Landing Page", async ({ page, browser }) => {
+test("Visual test Landing Page", async ({ page, browser }) => {
   await page.addInitScript(() => {
     // @ts-expect-error: Overrides setinterval for tests
     window.setInterval = (_: TimerHandler, timeout: number) => {
@@ -34,13 +34,6 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
 
   await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
   await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
-
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
 
   // Add CSS to disable skeleton animations
   await page.addStyleTag({
@@ -107,20 +100,27 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
   await page.goto("/");
   await disableCssAnimations(page);
 
-  await portfolioPo.getPortfolioPagePo().getHeldRestTokensCardPo().waitFor();
-  await portfolioPo.getPortfolioPagePo().getStakedRestTokensCardPo().waitFor();
-
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
+  await portfolioPo.getPortfolioPagePo().getHeldICPCardPo().waitFor();
+  await portfolioPo.getPortfolioPagePo().getStakedICPCardPo().waitFor();
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
   await appPo.toggleSidebar();
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="projection"]'],
+    pattern: /\(?\d+\.\d+\)?/,
+    replacements: ["2.25"],
+  });
   await expect(page).toHaveScreenshot(`final_assets_desktop.png`);
 
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="projection"]'],
+    pattern: /\(?\d+\.\d+\)?/,
+    replacements: ["2.25"],
+  });
   await expect(page).toHaveScreenshot(`final_assets_mobile.png`);
 });
