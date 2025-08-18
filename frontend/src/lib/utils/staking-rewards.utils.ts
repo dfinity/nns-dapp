@@ -136,7 +136,7 @@ export const getStakingRewardData = (
         ),
         stakingPower: getStakingPower(params).value,
         stakingPowerUSD: getStakingPower(params).valueUSD,
-        icpOnly: getIcpOnlyStakingRewardsData(params),
+        icpOnly: getIcpOnlyStakingRewardsData(params, forceInitialDate),
         apy: getAPYs(params, forceInitialDate),
       };
       logWithTimestamp("Staking rewards: calculation completed, fields ready.");
