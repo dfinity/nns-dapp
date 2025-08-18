@@ -105,8 +105,22 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
   await appPo.toggleSidebar();
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="projection"]'],
+    pattern: /\(?\d+\.\d+\)?/,
+    replacements: ["2.25"],
+  });
   await expect(page).toHaveScreenshot(`final_assets_desktop.png`);
 
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="projection"]'],
+    pattern: /\(?\d+\.\d+\)?/,
+    replacements: ["2.25"],
+  });
   await expect(page).toHaveScreenshot(`final_assets_mobile.png`);
 });
