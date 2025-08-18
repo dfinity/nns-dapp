@@ -20,7 +20,7 @@ jobs:
         with:
           app-id: ${{ vars.PR_AUTOMATION_BOT_PUBLIC_APP_ID }}
           private-key: ${{ secrets.PR_AUTOMATION_BOT_PUBLIC_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Update to match the snsdemo repo
         id: update
         run: |
@@ -38,7 +38,7 @@ jobs:
             fi
           } >> "$GITHUB_OUTPUT"
       - name: Get snsdemo repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         if: ${{ steps.update.outputs.updated == '1' }}
         with:
           repository: 'dfinity/snsdemo'
