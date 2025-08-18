@@ -26,22 +26,30 @@
   } from "$lib/utils/staking-rewards.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
+  import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
 
   type Props = {
-    userTokens: UserToken[];
-    tableProjects: TableProject[];
+    icpToken: UserToken | undefined;
+    nonIcpTokens: UserToken[];
+    icpTableProject: TableProject | undefined;
+    nonIcpTableProjects: TableProject[];
     stakingRewardResult?: StakingRewardResult;
   };
 
   const {
-    userTokens = [],
-    tableProjects,
+    icpToken,
+    nonIcpTokens = [],
+    icpTableProject,
+    nonIcpTableProjects,
     stakingRewardResult,
   }: Props = $props();
-  const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
-  const hasUnpricedTokens = $derived(
-    userTokens.some(
+  const icpBalanceInUsd = $derived(
+    nonNullish(icpToken) ? getTotalBalanceInUsd([icpToken]) : 0
+  );
+  const nonIcpTokensBalanceInUsd = $derived(getTotalBalanceInUsd(nonIcpTokens));
+  const hasUnpricedNonIcpTokens = $derived(
+    nonIcpTokens.some(
       (token) =>
         token.balance instanceof TokenAmountV2 &&
         token.balance.toUlps() > 0n &&
@@ -49,9 +57,12 @@
     )
   );
 
-  const totalStakedInUsd = $derived(getTotalStakeInUsd(tableProjects));
-  const hasUpricedStake = $derived(
-    tableProjects.some(
+  const icpStakedInUsd = $derived(
+    nonNullish(icpTableProject) ? getTotalStakeInUsd([icpTableProject]) : 0
+  );
+  const nonIcpStakedInUsd = $derived(getTotalStakeInUsd(nonIcpTableProjects));
+  const hasUnpricedNonIcpStake = $derived(
+    nonIcpTableProjects.some(
       (project) =>
         project.stake instanceof TokenAmountV2 &&
         project.stake.toUlps() > 0n &&
@@ -60,11 +71,16 @@
   );
 
   const hasUnpricedTokensOrStake = $derived(
-    hasUnpricedTokens || hasUpricedStake
+    hasUnpricedNonIcpTokens || hasUnpricedNonIcpStake
   );
 
-  const totalUsdAmount = $derived(
-    $authSignedInStore ? totalTokensBalanceInUsd + totalStakedInUsd : undefined
+  const totalAssetsUsdAmount = $derived(
+    $authSignedInStore
+      ? icpBalanceInUsd +
+          icpStakedInUsd +
+          nonIcpTokensBalanceInUsd +
+          nonIcpStakedInUsd
+      : undefined
   );
 
   // Determines the display state of the held tokens card
@@ -74,27 +90,27 @@
   type TokensCardType = "empty" | "skeleton" | "full";
 
   const areHeldTokensLoading = $derived(
-    userTokens.some((token) => token.balance === "loading")
+    nonIcpTokens.some((token) => token.balance === "loading")
   );
-  const heldTokensCard: TokensCardType = $derived(
+  const heldNonIcpTokensCard: TokensCardType = $derived(
     !$authSignedInStore
       ? "empty"
       : areHeldTokensLoading
         ? "skeleton"
-        : totalTokensBalanceInUsd === 0
+        : nonIcpTokensBalanceInUsd === 0
           ? "empty"
           : "full"
   );
 
   const areStakedTokensLoading = $derived(
-    tableProjects.some((project) => project.isStakeLoading)
+    nonIcpTableProjects.some((project) => project.isStakeLoading)
   );
   const stakedTokensCard: TokensCardType = $derived(
     !$authSignedInStore
       ? "empty"
       : areStakedTokensLoading
         ? "skeleton"
-        : totalStakedInUsd === 0
+        : nonIcpStakedInUsd === 0
           ? "empty"
           : "full"
   );
@@ -105,16 +121,23 @@
     areHeldTokensLoading || areStakedTokensLoading
   );
 
-  const topHeldTokens = $derived(
+  const icpHeldToken = $derived(
+    nonNullish(icpToken) && isUserTokenData(icpToken) ? icpToken : undefined
+  );
+  const topHeldNonIcpTokens = $derived(
     getTopHeldTokens({
-      userTokens: userTokens,
+      userTokens: nonIcpTokens,
     })
   );
 
-  const topStakedTokens = $derived(
+  const topStakedNonIcpTokens = $derived(
     getTopStakedTokens({
-      projects: tableProjects,
+      projects: nonIcpTableProjects,
     })
+  );
+
+  const hasNonIcpBalance = $derived(
+    nonIcpTokensBalanceInUsd + nonIcpStakedInUsd > 0
   );
 </script>
 
@@ -125,20 +148,19 @@
       <StartStakingCard />
     {:else}
       <TotalAssetsCard
-        usdAmount={totalUsdAmount}
+        usdAmount={totalAssetsUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
         isFullWidth={!$ENABLE_APY_PORTFOLIO}
       />
 
-      {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
+      {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalAssetsUsdAmount)}
         {#if isStakingRewardDataReady(stakingRewardResult)}
           <ApyCard
-            rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
-            rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
-            stakingPower={stakingRewardResult.stakingPower}
-            stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
-            totalAmountUSD={totalUsdAmount}
+            icpOnlyMaturityBalance={stakingRewardResult.icpOnly.maturityBalance}
+            icpOnlyMaturityEstimateWeek={stakingRewardResult.icpOnly
+              .maturityEstimateWeek}
+            icpOnlyStakingPower={stakingRewardResult.icpOnly.stakingPower}
           />
         {:else}
           <ApyFallbackCard stakingRewardData={stakingRewardResult} />
@@ -146,14 +168,13 @@
       {/if}
     {/if}
 
-    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalUsdAmount) && nonNullish(stakingRewardResult)}
+    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalAssetsUsdAmount) && nonNullish(stakingRewardResult)}
       {#if isStakingRewardDataReady(stakingRewardResult)}
         <ApyCard
-          rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
-          rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
-          stakingPower={stakingRewardResult.stakingPower}
-          stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
-          totalAmountUSD={totalUsdAmount}
+          icpOnlyMaturityBalance={stakingRewardResult.icpOnly.maturityBalance}
+          icpOnlyMaturityEstimateWeek={stakingRewardResult.icpOnly
+            .maturityEstimateWeek}
+          icpOnlyStakingPower={stakingRewardResult.icpOnly.stakingPower}
         />
       {:else}
         <ApyFallbackCard stakingRewardData={stakingRewardResult} />
@@ -162,30 +183,70 @@
   </div>
 
   <div class="content">
-    {#if heldTokensCard === "skeleton"}
-      <SkeletonTokensCard testId="held-tokens-skeleton-card" />
-    {:else if heldTokensCard === "empty"}
+    <!-- ICP TOKEN -->
+    {#if !$authSignedInStore}
       <NoHeldTokensCard />
+    {:else if isNullish(icpHeldToken)}
+      <SkeletonTokensCard testId="held-icp-skeleton-card" icpOnlyTable />
     {:else}
       <HeldTokensCard
-        {topHeldTokens}
-        usdAmount={totalTokensBalanceInUsd}
-        numberOfTopStakedTokens={topStakedTokens.length}
+        topHeldTokens={[icpHeldToken]}
+        usdAmount={icpBalanceInUsd}
+        numberOfTopStakedTokens={1}
+        icpOnlyTable
       />
     {/if}
 
-    {#if stakedTokensCard === "skeleton"}
-      <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
-    {:else if stakedTokensCard === "empty"}
+    <!-- ICP NEURONS -->
+    {#if !$authSignedInStore || isNullish(icpTableProject)}
       <NoStakedTokensCard />
+    {:else if icpTableProject?.isStakeLoading}
+      <SkeletonTokensCard testId="staked-icp-skeleton-card" icpOnlyTable />
     {:else}
       <StakedTokensCard
-        {topStakedTokens}
-        usdAmount={totalStakedInUsd}
-        numberOfTopHeldTokens={topHeldTokens.length}
+        topStakedTokens={[icpTableProject]}
+        usdAmount={icpStakedInUsd}
+        numberOfTopHeldTokens={1}
         hasApyCalculationErrored={isStakingRewardDataError(stakingRewardResult)}
         isApyLoading={isStakingRewardDataLoading(stakingRewardResult)}
+        icpOnlyTable
       />
+    {/if}
+
+    {#if hasNonIcpBalance}
+      <!-- REST TOKENS -->
+      {#if heldNonIcpTokensCard === "skeleton"}
+        <SkeletonTokensCard testId="held-tokens-skeleton-card" />
+      {:else if heldNonIcpTokensCard === "empty"}
+        {#if $authSignedInStore}
+          <NoHeldTokensCard />
+        {/if}
+      {:else}
+        <HeldTokensCard
+          topHeldTokens={topHeldNonIcpTokens}
+          usdAmount={nonIcpTokensBalanceInUsd}
+          numberOfTopStakedTokens={topStakedNonIcpTokens.length}
+        />
+      {/if}
+
+      <!-- REST NEURONS -->
+      {#if stakedTokensCard === "skeleton"}
+        <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
+      {:else if stakedTokensCard === "empty"}
+        {#if $authSignedInStore}
+          <NoStakedTokensCard />
+        {/if}
+      {:else}
+        <StakedTokensCard
+          topStakedTokens={topStakedNonIcpTokens}
+          usdAmount={nonIcpStakedInUsd}
+          numberOfTopHeldTokens={topHeldNonIcpTokens.length}
+          hasApyCalculationErrored={isStakingRewardDataError(
+            stakingRewardResult
+          )}
+          isApyLoading={isStakingRewardDataLoading(stakingRewardResult)}
+        />
+      {/if}
     {/if}
   </div>
 </main>
@@ -225,8 +286,12 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
+        row-gap: var(--padding-3x);
+        column-gap: var(--padding-2x);
+
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: minmax(280px, min-content);
+        // minimum height with the icp only row
+        grid-auto-rows: minmax(224px, min-content);
       }
     }
   }

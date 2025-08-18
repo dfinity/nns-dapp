@@ -19,7 +19,6 @@ import type { FullProjectCommitmentSplit } from "$lib/utils/projects.utils";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
-  createIcpUserToken,
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
@@ -29,9 +28,6 @@ import { Principal } from "@dfinity/principal";
 describe("Portfolio utils", () => {
   describe("getTopTokens", () => {
     const mockNonUserToken = createUserTokenLoading();
-    const mockIcpToken = createIcpUserToken({
-      balanceInUsd: 1,
-    });
 
     const mockCkBTCToken = createUserToken({
       universeId: CKBTC_UNIVERSE_CANISTER_ID,
@@ -55,7 +51,6 @@ describe("Portfolio utils", () => {
 
     it("should exclude non-UserTokenData tokens", () => {
       const tokens: UserToken[] = [
-        mockIcpToken,
         mockOtherToken,
         mockCkUSDCToken,
         mockCkBTCToken,
@@ -64,28 +59,12 @@ describe("Portfolio utils", () => {
 
       const result = getTopHeldTokens({ userTokens: tokens });
 
-      expect(result).toHaveLength(4);
+      expect(result).toHaveLength(3);
       expect(result).not.toContainEqual(mockNonUserToken);
-    });
-
-    it("should return an empty array if no ICP", () => {
-      const tokens = [
-        mockOtherToken,
-        mockCkUSDCToken,
-        mockCkBTCToken,
-        mockNonUserToken,
-      ];
-
-      const result = getTopHeldTokens({
-        userTokens: tokens,
-      });
-
-      expect(result).toHaveLength(0);
     });
 
     it("should respect the result limit", () => {
       const tokens: UserToken[] = [
-        mockIcpToken,
         mockOtherToken,
         mockCkUSDCToken,
         mockCkBTCToken,
@@ -95,38 +74,23 @@ describe("Portfolio utils", () => {
         userTokens: tokens,
       });
 
-      expect(result).toHaveLength(4);
+      expect(result).toHaveLength(3);
     });
 
-    it("should exclude tokens with zero balance but not ICP", () => {
-      const mockZeroIcp = createIcpUserToken({
-        balanceInUsd: 0,
-      });
-      const tokens: UserToken[] = [mockZeroBalanceUserTokenData, mockZeroIcp];
-      const result = getTopHeldTokens({
-        userTokens: tokens,
-      });
-
-      expect(result).toHaveLength(1);
-      expect(result).not.toContainEqual(mockZeroBalanceUserTokenData);
-      expect(result).toContainEqual(mockZeroIcp);
-    });
-
-    it("should order tokens: ICP first, then by descending USD balance", () => {
+    it("should order tokens: by descending USD balance", () => {
       const tokens: UserToken[] = [
-        mockOtherToken,
         mockCkUSDCToken,
+        mockOtherToken,
         mockCkBTCToken,
         mockNonUserToken,
         mockZeroBalanceUserTokenData,
-        mockIcpToken,
       ];
       const result = getTopHeldTokens({
         userTokens: tokens,
       });
 
+      expect(result).toHaveLength(3);
       expect(result).toEqual([
-        mockIcpToken, // 1$
         mockOtherToken, // 2000$
         mockCkUSDCToken, // 1000$
         mockCkBTCToken, // 10$
@@ -140,7 +104,7 @@ describe("Portfolio utils", () => {
         ),
         balanceInUsd: 0,
       });
-      const tokens: UserToken[] = [mockCSTProject, mockIcpToken];
+      const tokens: UserToken[] = [mockCSTProject, mockCkBTCToken];
       const result = getTopHeldTokens({
         userTokens: tokens,
       });
@@ -151,12 +115,6 @@ describe("Portfolio utils", () => {
   });
 
   describe("getTopProjects", () => {
-    const mockIcpProject: TableProject = {
-      ...mockTableProject,
-      title: "Internet Computer",
-      stakeInUsd: 1,
-    };
-
     const mockProject1: TableProject = {
       ...mockTableProject,
       title: "Alpha Project",
@@ -180,9 +138,9 @@ describe("Portfolio utils", () => {
 
     const mockProject4: TableProject = {
       ...mockTableProject,
-      title: "Gamma Project",
+      title: "Delta Project",
       stakeInUsd: 1,
-      universeId: "3",
+      universeId: "4",
     };
 
     const mockZeroStakeProject: TableProject = {
@@ -193,40 +151,14 @@ describe("Portfolio utils", () => {
     };
 
     it("should respect the result limit", () => {
-      const projects = [
-        mockIcpProject,
-        mockProject1,
-        mockProject2,
-        mockProject3,
-        mockProject4,
-      ];
+      const projects = [mockProject1, mockProject2, mockProject3, mockProject4];
 
       const result = getTopStakedTokens({
         projects,
       });
 
-      expect(result).toHaveLength(4);
-      expect(result).toEqual([
-        mockIcpProject,
-        mockProject1,
-        mockProject2,
-        mockProject3,
-      ]);
-    });
-
-    it("should return an empty array if no ICP", () => {
-      const projects = [
-        mockProject1,
-        mockProject2,
-        mockProject3,
-        mockZeroStakeProject,
-      ];
-
-      const result = getTopStakedTokens({
-        projects,
-      });
-
-      expect(result).toHaveLength(0);
+      expect(result).toHaveLength(3);
+      expect(result).toEqual([mockProject1, mockProject2, mockProject3]);
     });
 
     it("should exclude projects with zero stake", () => {
@@ -235,24 +167,22 @@ describe("Portfolio utils", () => {
         mockProject1,
         mockProject2,
         mockProject3,
-        mockIcpProject,
       ];
 
       const result = getTopStakedTokens({
         projects,
       });
 
-      expect(result).toHaveLength(4);
+      expect(result).toHaveLength(3);
       expect(result).not.toContainEqual(mockZeroStakeProject);
     });
 
-    it("should order projects: ICP first, then by descending USD stake", () => {
+    it("should order projects: by descending USD stake", () => {
       const projects = [
         mockProject3,
         mockProject2,
         mockProject1,
         mockZeroStakeProject,
-        mockIcpProject,
       ];
 
       const result = getTopStakedTokens({
@@ -260,27 +190,10 @@ describe("Portfolio utils", () => {
       });
 
       expect(result).toEqual([
-        mockIcpProject, // ICP first, 1$
         mockProject1, // 2000$
         mockProject2, // 1000$
         mockProject3, // 10$
       ]);
-    });
-
-    it("should exclude projects with zero balance but not ICP", () => {
-      const zeroIcpProject: TableProject = {
-        ...mockTableProject,
-        stakeInUsd: 0,
-      };
-
-      const projects = [mockZeroStakeProject, zeroIcpProject];
-
-      const result = getTopStakedTokens({
-        projects,
-      });
-
-      expect(result).toHaveLength(1);
-      expect(result).toContainEqual(zeroIcpProject);
     });
 
     it("should filter abandoned project", () => {
@@ -295,7 +208,7 @@ describe("Portfolio utils", () => {
         universeId: SEERS_ROOT_CANISTER_ID,
       };
 
-      const projects = [mockCTSProject, mockSeersProject, mockIcpProject];
+      const projects = [mockCTSProject, mockSeersProject, mockProject1];
 
       const result = getTopStakedTokens({
         projects,
@@ -308,73 +221,34 @@ describe("Portfolio utils", () => {
   });
 
   describe("shouldShowInfoRow", () => {
-    it("should show info row when other card has more tokens", () => {
+    it("should show info row when other card has more entries", () => {
       expect(
         shouldShowInfoRow({
-          currentCardNumberOfTokens: 1,
-          otherCardNumberOfTokens: 4,
-        })
-      ).toBe(true);
-    });
-
-    it("should show info row when other card is empty and current card has less than 4 tokens", () => {
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 2,
-          otherCardNumberOfTokens: 0,
-        })
-      ).toBe(true);
-
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 3,
-          otherCardNumberOfTokens: 0,
-        })
-      ).toBe(true);
-
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 4,
-          otherCardNumberOfTokens: 0,
-        })
-      ).toBe(false);
-
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 5,
-          otherCardNumberOfTokens: 0,
-        })
-      ).toBe(false);
-    });
-
-    it("should show info row when both cards have fewer than 4 tokens", () => {
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 2,
-          otherCardNumberOfTokens: 2,
+          currentCardNumberOfTokens: 0,
+          otherCardNumberOfTokens: 1,
         })
       ).toBe(true);
 
       expect(
         shouldShowInfoRow({
           currentCardNumberOfTokens: 1,
-          otherCardNumberOfTokens: 2,
-        })
-      ).toBe(true);
-    });
-
-    it("should not show info row when both cards have 4 or more tokens", () => {
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 4,
-          otherCardNumberOfTokens: 4,
-        })
-      ).toBe(false);
-
-      expect(
-        shouldShowInfoRow({
-          currentCardNumberOfTokens: 4,
           otherCardNumberOfTokens: 3,
+        })
+      ).toBe(true);
+    });
+
+    it("should not show info row when both cards have same amount of entries", () => {
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 0,
+          otherCardNumberOfTokens: 0,
+        })
+      ).toBe(false);
+
+      expect(
+        shouldShowInfoRow({
+          currentCardNumberOfTokens: 2,
+          otherCardNumberOfTokens: 2,
         })
       ).toBe(false);
     });

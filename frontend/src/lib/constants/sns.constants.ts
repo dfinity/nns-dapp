@@ -16,4 +16,5 @@ export const FEATURED_SNS_PROJECTS = [
   "x4kx5-ziaaa-aaaaq-aabeq-cai",
   "7jkta-eyaaa-aaaaq-aaarq-cai",
   "jmod6-4iaaa-aaaaq-aadkq-cai",
+  "3e3x2-xyaaa-aaaaq-aaalq-cai",
 ];

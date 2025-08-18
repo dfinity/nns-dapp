@@ -62,6 +62,8 @@ export const signInWithNewUser = async ({
   const iiPage = await iiPagePromise;
   await expect(iiPage).toHaveTitle("Internet Identity");
 
+  await iiPage.waitForLoadState("networkidle");
+
   await iiPage
     .getByRole("button", { name: "Create Internet Identity" })
     .click();
@@ -77,8 +79,6 @@ export const signInWithNewUser = async ({
   step("Sign in > finalizing authentication");
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);
-
-  await closeHighlight(page);
 
   await step("Running the main test");
 };

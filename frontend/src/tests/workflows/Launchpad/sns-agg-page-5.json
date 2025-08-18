@@ -34,19 +34,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 12707777371395,
-              "amount_e8s": 9966051381395,
+              "amount_e8s": 8730495924395,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1753928148
+              "timestamp_seconds": 1755140029
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 359056155929760,
+              "amount_e8s": 352945055909760,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": {
@@ -59,28 +59,38 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1753928148
+              "timestamp_seconds": 1755140029
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 292845739083206,
-            "timestamp_seconds": 1753928148
+            "governance_total_potential_voting_power": 303777106502850,
+            "timestamp_seconds": 1755140029
           },
-          "last_ledger_block_timestamp": 1753930351,
-          "num_recently_executed_proposals": 67,
-          "num_recently_submitted_proposals": 67,
+          "last_ledger_block_timestamp": 1755138296,
+          "num_recently_executed_proposals": 70,
+          "num_recently_submitted_proposals": 70,
           "genesis_timestamp_seconds": 1746713375
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1753884585,
-      "end_timestamp_seconds": 1753884575,
+      "actual_timestamp_seconds": 1755094184,
+      "end_timestamp_seconds": 1755094175,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 83,
-      "settled_proposals": []
+      "round": 97,
+      "settled_proposals": [
+        {
+          "id": 85
+        },
+        {
+          "id": 86
+        },
+        {
+          "id": 87
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -230,6 +240,14 @@
           }
         },
         {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1001,
           "name": "addToken",
           "description": "Registers a token as trusted given its ledger id.",
@@ -240,6 +258,20 @@
               "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
               "validator_method_name": "validate_addToken",
               "target_method_name": "addToken"
+            }
+          }
+        },
+        {
+          "id": 3000,
+          "name": "Neuron Pylon: ICRC55 Command",
+          "description": "Manage vectors in the neuron pylon.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+              "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+              "validator_method_name": "icrc55_command_validate",
+              "target_method_name": "icrc55_command"
             }
           }
         }
@@ -413,10 +445,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "kepm7-ciaaa-aaaaq-aae5a-cai"
+        }
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777777263420000,
+    "icrc1_total_supply": 777777201580000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -661,13 +699,36 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "TreasuryAssetManagement",
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 3000,
+              "name": "Neuron Pylon: ICRC55 Command",
+              "description": "Manage vectors in the neuron pylon.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+                  "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+                  "validator_method_name": "icrc55_command_validate",
+                  "target_method_name": "icrc55_command"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [

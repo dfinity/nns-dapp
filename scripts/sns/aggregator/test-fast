@@ -139,20 +139,20 @@ title If we buy 1 ICP, the ICP and participant count should increase
 dfx-sns-sale-buy --icp 1
 EXPECTED_FIELDS='{"buyer_total_icp_e8s":100000000,"direct_participant_count":1,"lifecycle":2}'
 printf "Waiting for ICP and participant  count to increase..."
-wait_for_aggregator_to_contain "$EXPECTED_FIELDS"
+wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 300
 
 title If we buy more, only the ICP should increase
 dfx-sns-sale-buy --icp 2
 EXPECTED_FIELDS='{"buyer_total_icp_e8s":300000000,"direct_participant_count":1,"lifecycle":2}'
 printf "Waiting for the ICP to increase..."
-wait_for_aggregator_to_contain "$EXPECTED_FIELDS"
+wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 300
 
 title If we increase participation the maximum available, the SNS lifecycle should change as the SNS configuration allows one buyer to buy all tokens.
 MAY_BUY="$(curl -sSL --fail "$AGGREGATOR_URL" | jq '(.swap_params.params.max_participant_icp_e8s - .derived_state.buyer_total_icp_e8s)/100000000')"
 dfx-sns-sale-buy --icp "$MAY_BUY"
 EXPECTED_FIELDS="$(curl -sSL --fail "$AGGREGATOR_URL" | jq -c '{buyer_total_icp_e8s: .swap_params.params.max_participant_icp_e8s, direct_participant_count: 1, lifecycle: 3}')"
 printf "Waiting for the SNS lifecycle to change..."
-wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 120
+wait_for_aggregator_to_contain "$EXPECTED_FIELDS" 300
 
 : TODO: Make a slow update counter. Verify that the last number of slow updates is as expected.
 : TODO: Make a fast update counter. Verify that the number of fast updates is as expected.
