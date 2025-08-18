@@ -355,7 +355,7 @@ jobs:
           }
   aggregator_test:
     needs: build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest-m
     timeout-minutes: 60
     steps:
       - name: Checkout nns-dapp
