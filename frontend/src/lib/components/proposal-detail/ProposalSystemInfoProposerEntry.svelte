@@ -16,11 +16,11 @@
 <TestIdWrapper testId="proposal-system-info-proposer-entry-component">
   {#if proposer !== undefined}
     <KeyValuePairInfo testId="proposal-system-info-proposer" alignIconRight>
-      <span class="description" slot="key"
-        >{$i18n.proposal_detail.proposer_prefix}</span
-      >
+      {#snippet key()}
+        <span class="description">{$i18n.proposal_detail.proposer_prefix}</span
+        >{/snippet}
 
-      <svelte:fragment slot="value">
+      {#snippet value()}
         <Hash
           id="proposal-system-info-proposer-value"
           testId="proposal-system-info-proposer-value"
@@ -31,12 +31,11 @@
           tooltipTop
           isClickable={$authSignedInStore}
           on:nnsHash={() => (modalOpen = true)}
-        />
-      </svelte:fragment>
+        />{/snippet}
 
-      <svelte:fragment slot="info">
+      {#snippet info()}
         <Html text={$i18n.proposal_detail.proposer_description} />
-      </svelte:fragment>
+      {/snippet}
     </KeyValuePairInfo>
 
     {#if modalOpen}

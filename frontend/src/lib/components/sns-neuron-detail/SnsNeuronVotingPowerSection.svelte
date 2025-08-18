@@ -40,73 +40,77 @@
 </script>
 
 <Section testId="sns-neuron-voting-power-section-component">
-  <KeyValuePairInfo slot="description">
-    <h3 slot="key">{$i18n.neurons.voting_power}</h3>
-    <p slot="value" class="title-value" data-tid="voting-power">
-      {#if votingPower > 0}
-        {formatVotingPower(votingPower)}
-      {:else}
-        {$i18n.neuron_detail.voting_power_zero}
-      {/if}
-    </p>
-    <span slot="info">
-      {#if canVote}
-        <span class="description">
-          {$i18n.neuron_detail.calculated_as}
+  {#snippet description()}
+    <KeyValuePairInfo>
+      {#snippet key()}<h3>{$i18n.neurons.voting_power}</h3>{/snippet}
+      {#snippet value()}<p class="title-value" data-tid="voting-power">
+          {#if votingPower > 0}
+            {formatVotingPower(votingPower)}
+          {:else}
+            {$i18n.neuron_detail.voting_power_zero}
+          {/if}
+        </p>{/snippet}
+      {#snippet info()}
+        <span>
+          {#if canVote}
+            <span class="description">
+              {$i18n.neuron_detail.calculated_as}
+            </span>
+            <span class="description calculation">
+              {$i18n.neuron_detail.voting_power_section_calculation_generic}
+            </span>
+            <span class="description">
+              {$i18n.neuron_detail.this_neuron_calculation}
+            </span>
+            <span
+              class="description calculation"
+              data-tid="voting-power-description"
+            >
+              {replacePlaceholders(
+                $i18n.neuron_detail.voting_power_section_calculation_specific,
+                {
+                  $stake: formatTokenE8s({
+                    value: getSnsNeuronStake(neuron),
+                  }),
+                  $maturityStaked: formattedStakedMaturity(neuron),
+                  $ageMultiplier: ageMultiplier({
+                    neuron,
+                    snsParameters: parameters,
+                  }).toFixed(2),
+                  $dissolveMultiplier: dissolveDelayMultiplier({
+                    neuron,
+                    snsParameters: parameters,
+                  }).toFixed(2),
+                  $votingPower: formatVotingPower(votingPower),
+                }
+              )}
+            </span>
+          {:else}
+            <span class="description" data-tid="voting-power-description">
+              <Html
+                text={replacePlaceholders(
+                  $i18n.neuron_detail
+                    .voting_power_section_description_expanded_zero,
+                  {
+                    $minDuration: secondsToDuration({
+                      seconds: fromDefinedNullable(
+                        parameters.neuron_minimum_dissolve_delay_to_vote_seconds
+                      ),
+                      i18n: $i18n.time,
+                    }),
+                    $dashboardLink: neuronDashboardUrl({
+                      neuron,
+                      rootCanisterId: Principal.fromText(universe.canisterId),
+                    }),
+                  }
+                )}
+              />
+            </span>
+          {/if}
         </span>
-        <span class="description calculation">
-          {$i18n.neuron_detail.voting_power_section_calculation_generic}
-        </span>
-        <span class="description">
-          {$i18n.neuron_detail.this_neuron_calculation}
-        </span>
-        <span
-          class="description calculation"
-          data-tid="voting-power-description"
-        >
-          {replacePlaceholders(
-            $i18n.neuron_detail.voting_power_section_calculation_specific,
-            {
-              $stake: formatTokenE8s({
-                value: getSnsNeuronStake(neuron),
-              }),
-              $maturityStaked: formattedStakedMaturity(neuron),
-              $ageMultiplier: ageMultiplier({
-                neuron,
-                snsParameters: parameters,
-              }).toFixed(2),
-              $dissolveMultiplier: dissolveDelayMultiplier({
-                neuron,
-                snsParameters: parameters,
-              }).toFixed(2),
-              $votingPower: formatVotingPower(votingPower),
-            }
-          )}
-        </span>
-      {:else}
-        <span class="description" data-tid="voting-power-description">
-          <Html
-            text={replacePlaceholders(
-              $i18n.neuron_detail
-                .voting_power_section_description_expanded_zero,
-              {
-                $minDuration: secondsToDuration({
-                  seconds: fromDefinedNullable(
-                    parameters.neuron_minimum_dissolve_delay_to_vote_seconds
-                  ),
-                  i18n: $i18n.time,
-                }),
-                $dashboardLink: neuronDashboardUrl({
-                  neuron,
-                  rootCanisterId: Principal.fromText(universe.canisterId),
-                }),
-              }
-            )}
-          />
-        </span>
-      {/if}
-    </span>
-  </KeyValuePairInfo>
+      {/snippet}
+    </KeyValuePairInfo>
+  {/snippet}
 
   <ul class="content">
     <SnsStakeItemAction {neuron} {token} {universe} />

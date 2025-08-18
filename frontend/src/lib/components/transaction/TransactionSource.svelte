@@ -31,8 +31,8 @@
 </p>
 
 <KeyValuePair>
-  <span class="label" slot="key">{$i18n.accounts.balance}</span>
-  <AmountDisplay slot="value" singleLine detailed {amount} />
+  {#snippet key()}<span class="label">{$i18n.accounts.balance}</span>{/snippet}
+  {#snippet value()}<AmountDisplay singleLine detailed {amount} />{/snippet}
 </KeyValuePair>
 
 <style lang="scss">

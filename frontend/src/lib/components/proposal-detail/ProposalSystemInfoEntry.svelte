@@ -3,19 +3,26 @@
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
-  export let label: string;
-  export let testId: string;
-  export let value: string;
-  export let description: string | undefined;
+  type Props = {
+    label: string;
+    testId: string;
+    value: string;
+    description: string | undefined;
+  };
+
+  let { label, testId, value: valueInfo, description }: Props = $props();
 </script>
 
 <KeyValuePairInfo {testId} alignIconRight>
-  <span slot="key" class="description">{label}</span>
-  <span class="value" slot="value" data-tid={`${testId}-value`}>{value}</span>
+  {#snippet key()}
+    <span class="description">{label}</span>{/snippet}
+  {#snippet value()}<span class="value" data-tid={`${testId}-value`}
+      >{valueInfo}</span
+    >{/snippet}
 
-  <svelte:fragment slot="info">
+  {#snippet info()}
     <TestIdWrapper testId="info">
       <Html text={description ?? $i18n.proposal_detail.no_more_info} />
     </TestIdWrapper>
-  </svelte:fragment>
+  {/snippet}
 </KeyValuePairInfo>

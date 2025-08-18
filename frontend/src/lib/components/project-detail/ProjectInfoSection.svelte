@@ -31,24 +31,18 @@
     class="content-cell-details content-cell-island"
   >
     <KeyValuePair>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.token_name}</svelte:fragment
-      >
-      <span
-        class="value"
-        slot="value"
-        data-tid="sns-project-detail-info-token-name">{token.name}</span
-      >
+      {#snippet key()}{$i18n.sns_project_detail.token_name}{/snippet}
+      {#snippet value()}
+        <span class="value" data-tid="sns-project-detail-info-token-name"
+          >{token.name}</span
+        >{/snippet}
     </KeyValuePair>
     <KeyValuePair>
-      <svelte:fragment slot="key"
-        >{$i18n.sns_project_detail.token_symbol}</svelte:fragment
-      >
-      <span
-        class="value"
-        slot="value"
-        data-tid="sns-project-detail-info-token-symbol">{token.symbol}</span
-      >
+      {#snippet key()}>{$i18n.sns_project_detail.token_symbol}{/snippet}
+      {#snippet value()}
+        <span class="value" data-tid="sns-project-detail-info-token-symbol"
+          >{token.symbol}</span
+        >{/snippet}
     </KeyValuePair>
 
     <ProjectSwapDetails />

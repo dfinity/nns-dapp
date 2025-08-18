@@ -30,7 +30,7 @@
 
 {#if votedNeuronCount > 0}
   <ExpandableProposalNeurons testId="voted-neurons">
-    <svelte:fragment slot="start">
+    {#snippet start()}
       <span
         data-tid="voted-neurons-headline"
         class="headline"
@@ -47,15 +47,15 @@
         )}
         <VoteResultIcon vote={allVotedVote} />
       </span>
-    </svelte:fragment>
-    <svelte:fragment slot="end">
+    {/snippet}
+    {#snippet end()}
       <span class="label">{$i18n.proposal_detail__vote.voting_power_label}</span
       >
       <VotingPowerDisplay
         valueTestId="voted-voting-power"
         votingPowerE8s={votedVotingPower}
       />
-    </svelte:fragment>
+    {/snippet}
     <MyVotes {neuronsVotedForProposal} />
   </ExpandableProposalNeurons>
 {/if}

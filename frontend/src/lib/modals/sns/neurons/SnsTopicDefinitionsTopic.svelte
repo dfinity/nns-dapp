@@ -19,7 +19,9 @@
 
 <div class="topic-item" data-tid="sns-topic-definitions-topic-component">
   <Collapsible testId="topic-collapsible" wrapHeight>
-    <div slot="header" class="header" data-tid="topic-name">{name} </div>
+    {#snippet header()}<div class="header" data-tid="topic-name"
+        >{name}
+      </div>{/snippet}
     <div class="expandable-content">
       <div>
         <p class="description" data-tid="topic-description">

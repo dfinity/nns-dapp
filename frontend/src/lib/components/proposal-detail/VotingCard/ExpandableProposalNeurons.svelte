@@ -1,11 +1,25 @@
 <script lang="ts">
-  import { Collapsible, IconExpandCircleDown } from "@dfinity/gix-components";
+  import {
+    Collapsible,
+    IconExpandCircleDown,
+    stopPropagation,
+  } from "@dfinity/gix-components";
   import { fade } from "svelte/transition";
+  import type { Snippet } from "svelte";
 
-  export let testId: string;
+  type Props = {
+    testId: string;
+    children: Snippet;
+    start: Snippet;
+    end?: Snippet;
+  };
 
-  let toggleContent: () => void;
-  let expanded: boolean;
+  let { testId, children, start, end }: Props = $props();
+
+  let cmp = $state<Collapsible | undefined>(undefined);
+
+  const toggleContent = () => cmp?.toggleContent();
+  let expanded = $state(false);
 </script>
 
 <div class="container" in:fade>
@@ -13,30 +27,30 @@
     {testId}
     expandButton={false}
     externalToggle={true}
-    bind:toggleContent
+    bind:this={cmp}
     bind:expanded
     wrapHeight
   >
-    <div slot="header" class="header" class:expanded>
-      <div class="header-entry">
-        <span class="value">
-          <slot name="start" />
-        </span>
-        <button
-          class="icon"
-          class:expanded
-          on:click|stopPropagation={toggleContent}
-        >
-          <IconExpandCircleDown />
-        </button>
-      </div>
+    {#snippet header()}<div class="header" class:expanded>
+        <div class="header-entry">
+          <span class="value">
+            {@render start()}
+          </span>
+          <button
+            class="icon"
+            class:expanded
+            onclick={stopPropagation(toggleContent)}
+          >
+            <IconExpandCircleDown />
+          </button>
+        </div>
 
-      <div class="header-entry">
-        <slot name="end" />
-      </div>
-    </div>
+        <div class="header-entry">
+          {@render end?.()}
+        </div>
+      </div>{/snippet}
 
-    <slot />
+    {@render children()}
   </Collapsible>
 </div>
 

@@ -30,12 +30,14 @@
 
 <article data-tid={`follow-topic-${id}-section`}>
   <Collapsible {id} iconSize="medium" {testId}>
-    <div class="wrapper" slot="header">
-      <span class="value" data-tid="topic-title">{title}</span>
-      <span class="badge" data-tid={`topic-${id}-followees-badge`}>
-        {count}
-      </span>
-    </div>
+    {#snippet header()}
+      <div class="wrapper">
+        <span class="value" data-tid="topic-title">{title}</span>
+        <span class="badge" data-tid={`topic-${id}-followees-badge`}>
+          {count}
+        </span>
+      </div>
+    {/snippet}
     <div class="content" data-tid="follow-topic-section-current">
       {#if nonNullish(subtitle)}
         <p class="subtitle description">{subtitle}</p>

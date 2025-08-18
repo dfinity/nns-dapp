@@ -120,12 +120,12 @@
   );
 
   let expanded = $state(false);
-  let toggleParticipationContent = $state(() => {});
-  let toggleMajorityContent = $state(() => {});
+  let toggleParticipationContent = $state<(() => void) | undefined>(undefined);
+  let toggleMajorityContent = $state<(() => void) | undefined>(undefined);
   let toggleAllContent = $derived(() => {
     expanded = !expanded;
-    toggleParticipationContent();
-    toggleMajorityContent();
+    toggleParticipationContent?.();
+    toggleMajorityContent?.();
   });
 </script>
 
