@@ -35,7 +35,7 @@ jobs:
       DFX_WARNING: -mainnet_plaintext_identity
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         # TODO: This builds, it doesn't use a release.  We probably want at least the option of using releases.
       - name: Get versions
         id: tool_versions

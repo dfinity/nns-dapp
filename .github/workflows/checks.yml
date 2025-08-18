@@ -14,7 +14,7 @@ jobs:
       DFX_NETWORK: mainnet
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Get cargo sort version
         run: jq -r '"CARGO_SORT_VERSION=\(.defaults.build.config.CARGO_SORT_VERSION)"' config.json >> $GITHUB_ENV
       - name: Get node version
@@ -43,14 +43,14 @@ jobs:
       DFX_NETWORK: mainnet
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Checks for the presence of relative imports
         run: ./scripts/check-relative-imports
   spelling:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install spellcheck
         run: |
           sudo apt-get update
@@ -63,7 +63,7 @@ jobs:
   cargo-tests:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/cache@v4
         with:
           path: |
@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest-m
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Run vitest shard 1/2
         uses: ./.github/actions/vitest
         with:
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest-m
     steps:
       - name: Checkout nns-dapp
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Run vitest shard 2/2
         uses: ./.github/actions/vitest
         with:
@@ -110,7 +110,7 @@ jobs:
       DFX_NETWORK: mainnet
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
       - uses: actions/setup-node@v4
@@ -126,7 +126,7 @@ jobs:
     name: ShellCheck
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run ShellCheck
         run: |
           sudo apt-get update
@@ -136,7 +136,7 @@ jobs:
     name: IC Commit
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install didc
         run: scripts/install-didc
       - name: Check didc
@@ -160,7 +160,7 @@ jobs:
     name: Release template
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Install didc
@@ -182,7 +182,7 @@ jobs:
     name: Config is as expected
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install dfx
         uses: dfinity/setup-dfx@main
       - name: Install cargo binstall
@@ -196,7 +196,7 @@ jobs:
     name: Migration test utilities work
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install cargo binstall
         uses: ./.github/actions/install_binstall
       - name: Install idl2json
@@ -211,7 +211,7 @@ jobs:
     name: Can get NNS proposal args
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install didc
         run: scripts/install-didc
       - name: Install cargo binstall
@@ -227,7 +227,7 @@ jobs:
   minor-version-bump-works:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install yq
         run: sudo snap install yq
       - name: Install sponge
@@ -259,7 +259,7 @@ jobs:
     name: The nns-dapp npm and cargo versions should match
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Backend and frontend have the same version
         run: |
           backend_version="$(cargo metadata | jq -r '.packages[] | select(.name == "nns-dapp").version')"
@@ -280,7 +280,7 @@ jobs:
       # Used by download-ci-wasm.test
       GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install tools on Linux
         run: |
           if command -v apt-get; then
@@ -364,7 +364,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/needs_success
         with:
           needs: "${{ toJson(needs) }}"

@@ -1,4 +1,4 @@
-//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/1db8f933fdadc81a90e7db2389b081e21263a9b6/rs/nns/sns-wasm/canister/sns-wasm.did>
+//! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-14_03-27-base/rs/nns/sns-wasm/canister/sns-wasm.did>
 type AddWasmRequest = record {
   hash : blob;
   wasm : opt SnsWasm;

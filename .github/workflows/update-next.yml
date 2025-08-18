@@ -22,7 +22,7 @@ jobs:
         with:
           app-id: ${{ vars.PR_AUTOMATION_BOT_PUBLIC_APP_ID }}
           private-key: ${{ secrets.PR_AUTOMATION_BOT_PUBLIC_PRIVATE_KEY }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Get node version
         run: jq -r '"NODE_VERSION=\(.defaults.build.config.NODE_VERSION)"' config.json >> $GITHUB_ENV
       - name: Set up Node.js
