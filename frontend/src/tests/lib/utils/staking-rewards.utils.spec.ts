@@ -421,29 +421,26 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
-    // TODO: check why returns 0.37
-    // expect(
-    //   roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    // ).toBe(0.38);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     // Token balance should not affect the reward estimate
     params.tokens[0].balanceInUsd = 1000;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
-    // TODO: check why returns 0.37
-    // expect(
-    //   roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    // ).toBe(0.38);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     params.tokens[0].balanceInUsd = 0;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
-    // TODO: check why returns 0.37
-    // expect(
-    //   roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    // ).toBe(0.38);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     // Add a SNS project without a neuron
     params.snsProjects.data.push(getTestSns());
@@ -455,10 +452,9 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
-    // TODO: check why returns 0.37
-    // expect(
-    //   roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
-    // ).toBe(0.38);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     // Neuron fees should affect the reward estimate
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(50 * E8S_RATE);
