@@ -170,10 +170,6 @@
   bind:currentStep
   bind:this={modal}
   onClose={() => dispatcher("nnsClose")}
-  --modal-content-overflow-y={currentStep?.name === "EditFollowNeurons"
-    ? "scroll"
-    : "auto"}
-  on:nnsClose
   --modal-content-overflow-y={"auto"}
 >
   {#snippet title()}{currentStep?.title ??
