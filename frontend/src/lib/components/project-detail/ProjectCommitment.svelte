@@ -77,12 +77,13 @@
 <TestIdWrapper testId="project-commitment-component">
   {#if nonNullish(saleBuyerCount)}
     <KeyValuePair>
-      <span slot="key" class="description">
-        {$i18n.sns_project_detail.current_sale_buyer_count}
-      </span>
-      <span slot="value" data-tid="sns-project-current-sale-buyer-count"
-        >{saleBuyerCount}</span
-      >
+      {#snippet key()}
+        <span class="description">
+          {$i18n.sns_project_detail.current_sale_buyer_count}
+        </span>{/snippet}
+      {#snippet value()}<span data-tid="sns-project-current-sale-buyer-count"
+          >{saleBuyerCount}</span
+        >{/snippet}
     </KeyValuePair>
   {/if}
   {#if isMinParticipationReached && isMinParticipantsReached}
@@ -96,20 +97,19 @@
   {#if isCommitmentSplitWithNeuronsFund(projectCommitments)}
     <div class="commitment-progress-container">
       <KeyValuePair testId="sns-project-current-direct-commitment">
-        <span slot="key" class="commitment-progress-bar-title">
-          <span class="description"
-            >{$i18n.sns_project_detail.current_direct_commitment}</span
-          >
-        </span>
+        {#snippet key()}<span class="commitment-progress-bar-title">
+            <span class="description"
+              >{$i18n.sns_project_detail.current_direct_commitment}</span
+            >
+          </span>{/snippet}
 
-        <AmountDisplay
-          slot="value"
-          amount={TokenAmountV2.fromUlps({
-            amount: projectCommitments.directCommitmentE8s,
-            token: ICPToken,
-          })}
-          singleLine
-        />
+        {#snippet value()}<AmountDisplay
+            amount={TokenAmountV2.fromUlps({
+              amount: projectCommitments.directCommitmentE8s,
+              token: ICPToken,
+            })}
+            singleLine
+          />{/snippet}
       </KeyValuePair>
       <div data-tid="sns-project-commitment-progress">
         <CommitmentProgressBar
@@ -125,22 +125,21 @@
     <!-- The spacing between component is set using flex in the parent. -->
     <div class="commitment-progress-container">
       <KeyValuePairInfo testId="sns-project-current-nf-commitment">
-        <span
-          slot="key"
-          class="commitment-progress-bar-title commitment-progress-bar-title__nf"
-        >
-          <span class="description"
-            >{$i18n.sns_project_detail.current_nf_commitment}</span
+        {#snippet key()}<span
+            class="commitment-progress-bar-title commitment-progress-bar-title__nf"
           >
-        </span>
+            <span class="description"
+              >{$i18n.sns_project_detail.current_nf_commitment}</span
+            >
+          </span>{/snippet}
 
-        <div slot="info" class="description">
-          <Html
-            text={$i18n.sns_project_detail.current_nf_commitment_description}
-          />
-        </div>
+        {#snippet info()}<div class="description">
+            <Html
+              text={$i18n.sns_project_detail.current_nf_commitment_description}
+            />
+          </div>{/snippet}
 
-        <svelte:fragment slot="value">
+        {#snippet value()}
           {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s)}
             <AmountDisplay
               amount={TokenAmountV2.fromUlps({
@@ -152,7 +151,7 @@
           {:else}
             <span>{$i18n.sns_project_detail.not_participating}</span>
           {/if}
-        </svelte:fragment>
+        {/snippet}
       </KeyValuePairInfo>
       {#if projectCommitments.isNFParticipating && nonNullish(projectCommitments.nfCommitmentE8s) && nonNullish(maxNfParticipation)}
         <NfCommitmentProgressBar
@@ -163,10 +162,13 @@
     </div>
   {/if}
   <KeyValuePair testId="sns-project-current-commitment">
-    <span slot="key" class="description">
-      {$i18n.sns_project_detail.current_overall_commitment}
-    </span>
-    <AmountDisplay slot="value" amount={buyersTotalCommitmentIcp} singleLine />
+    {#snippet key()}<span class="description">
+        {$i18n.sns_project_detail.current_overall_commitment}
+      </span>{/snippet}
+    {#snippet value()}<AmountDisplay
+        amount={buyersTotalCommitmentIcp}
+        singleLine
+      />{/snippet}
   </KeyValuePair>
   <!-- deprecated -->
   {#if !isCommitmentSplitWithNeuronsFund(projectCommitments)}

@@ -12,6 +12,7 @@ import {
 } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { AnonymousIdentity } from "@dfinity/agent";
 import {
   ProposalRewardStatus,
@@ -171,11 +172,10 @@ describe("Proposal detail page when not logged in user", () => {
         },
       });
 
-      await waitFor(() =>
-        expect(
-          queryByTestId("proposal-system-info-details")
-        ).toBeInTheDocument()
-      );
+      await runResolvedPromises();
+      await tick();
+
+      expect(queryByTestId("proposal-system-info-details")).toBeInTheDocument();
       expect(queryByTestId("proposal-summary-title")).toBeInTheDocument();
       expect(queryByTestId("login-button")).toBeInTheDocument();
       expect(

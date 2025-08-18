@@ -35,68 +35,74 @@
 </script>
 
 <Section testId="nns-neuron-voting-power-section-component">
-  <KeyValuePairInfo slot="description">
-    <h3 slot="key">{$i18n.neurons.voting_power}</h3>
-    <p
-      slot="value"
-      class="title-value"
-      class:isReducedVotingPower
-      data-tid="voting-power"
-    >
-      {#if canVote}
-        {formatVotingPower(neuron.decidingVotingPower ?? 0n)}
-      {:else}
-        {$i18n.neuron_detail.voting_power_zero}
-      {/if}
-    </p>
+  {#snippet description()}
+    <KeyValuePairInfo>
+      {#snippet key()}<h3>{$i18n.neurons.voting_power}</h3>{/snippet}
+      {#snippet value()}<p
+          class="title-value"
+          class:isReducedVotingPower
+          data-tid="voting-power"
+        >
+          {#if canVote}
+            {formatVotingPower(neuron.decidingVotingPower ?? 0n)}
+          {:else}
+            {$i18n.neuron_detail.voting_power_zero}
+          {/if}
+        </p>{/snippet}
 
-    <span class="info" slot="info">
-      {#if canVote}
-        <span class="info-item">
-          <span class="label">
-            {$i18n.neuron_detail.calculated_as}
-          </span>
-          <span class="calculation" data-tid="voting-power-generic-description">
-            {$i18n.neuron_detail.voting_power_section_calculation_generic_new}
-          </span>
-        </span>
-        <span class="info-item">
-          <span class="label">
-            {$i18n.neuron_detail.this_neuron_calculation}
-          </span>
-          <span class="calculation" data-tid="voting-power-description">
-            {replacePlaceholders(
-              $i18n.neuron_detail.voting_power_section_calculation_specific_new,
-              {
-                $stake: formatTokenE8s({
-                  value: neuronStake(neuron),
-                }),
-                $maturityStaked: formattedStakedMaturity(neuron),
-                $ageMultiplier: ageMultiplier(neuron.ageSeconds).toFixed(2),
-                $dissolveMultiplier: dissolveDelayMultiplier(
-                  neuron.dissolveDelaySeconds
-                ).toFixed(2),
-                $activityMultiplier: activityMultiplier(neuron).toFixed(2),
-                $votingPower: formatVotingPower(
-                  neuron.decidingVotingPower ?? 0n
-                ),
-              }
-            )}
-          </span>
-        </span>
-      {:else}
-        <span data-tid="voting-power-description">
-          <Html
-            text={replacePlaceholders(
-              $i18n.neuron_detail
-                .voting_power_section_description_expanded_zero_nns,
-              { $dashboardLink: neuronDashboardUrl(neuron) }
-            )}
-          />
-        </span>
-      {/if}
-    </span>
-  </KeyValuePairInfo>
+      {#snippet info()}<span class="info">
+          {#if canVote}
+            <span class="info-item">
+              <span class="label">
+                {$i18n.neuron_detail.calculated_as}
+              </span>
+              <span
+                class="calculation"
+                data-tid="voting-power-generic-description"
+              >
+                {$i18n.neuron_detail
+                  .voting_power_section_calculation_generic_new}
+              </span>
+            </span>
+            <span class="info-item">
+              <span class="label">
+                {$i18n.neuron_detail.this_neuron_calculation}
+              </span>
+              <span class="calculation" data-tid="voting-power-description">
+                {replacePlaceholders(
+                  $i18n.neuron_detail
+                    .voting_power_section_calculation_specific_new,
+                  {
+                    $stake: formatTokenE8s({
+                      value: neuronStake(neuron),
+                    }),
+                    $maturityStaked: formattedStakedMaturity(neuron),
+                    $ageMultiplier: ageMultiplier(neuron.ageSeconds).toFixed(2),
+                    $dissolveMultiplier: dissolveDelayMultiplier(
+                      neuron.dissolveDelaySeconds
+                    ).toFixed(2),
+                    $activityMultiplier: activityMultiplier(neuron).toFixed(2),
+                    $votingPower: formatVotingPower(
+                      neuron.decidingVotingPower ?? 0n
+                    ),
+                  }
+                )}
+              </span>
+            </span>
+          {:else}
+            <span data-tid="voting-power-description">
+              <Html
+                text={replacePlaceholders(
+                  $i18n.neuron_detail
+                    .voting_power_section_description_expanded_zero_nns,
+                  { $dashboardLink: neuronDashboardUrl(neuron) }
+                )}
+              />
+            </span>
+          {/if}
+        </span>{/snippet}
+    </KeyValuePairInfo>
+  {/snippet}
 
   <ul class="content">
     <NnsStakeItemAction {neuron} />

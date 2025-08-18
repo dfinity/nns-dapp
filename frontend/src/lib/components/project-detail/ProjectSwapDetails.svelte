@@ -67,60 +67,78 @@
 <TestIdWrapper testId="project-swap-details-component">
   {#if nonNullish(snsTotalTokenSupply)}
     <KeyValuePair testId="sns-total-token-supply">
-      <span slot="key">{$i18n.sns_project_detail.total_tokens_supply} </span>
-      <AmountDisplay slot="value" amount={snsTotalTokenSupply} singleLine />
+      {#snippet key()}<span
+          >{$i18n.sns_project_detail.total_tokens_supply}
+        </span>{/snippet}
+      {#snippet value()}<AmountDisplay
+          amount={snsTotalTokenSupply}
+          singleLine
+        />{/snippet}
     </KeyValuePair>
   {/if}
   <KeyValuePair testId="sns-tokens-distributed">
-    <span slot="key">{$i18n.sns_project_detail.total_tokens} </span>
-    <AmountDisplay slot="value" amount={snsTokens} singleLine />
+    {#snippet key()}<span
+        >{$i18n.sns_project_detail.total_tokens}
+      </span>{/snippet}
+    {#snippet value()}<AmountDisplay amount={snsTokens} singleLine />{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="project-swap-min-participants">
-    <span slot="key">{$i18n.sns_project_detail.min_participants} </span>
-    <span slot="value"
-      >{formatNumber(summary.getMinParticipants(), {
-        minFraction: 0,
-        maxFraction: 0,
-      })}</span
-    >
+    {#snippet key()}<span
+        >{$i18n.sns_project_detail.min_participants}
+      </span>{/snippet}
+    {#snippet value()}<span
+        >{formatNumber(summary.getMinParticipants(), {
+          minFraction: 0,
+          maxFraction: 0,
+        })}</span
+      >{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="sns-min-participant-commitment">
-    <span slot="key"
-      >{$i18n.sns_project_detail.min_participant_commitment}
-    </span>
-    <AmountDisplay slot="value" amount={minCommitmentIcp} detailed singleLine />
+    {#snippet key()}<span
+        >{$i18n.sns_project_detail.min_participant_commitment}
+      </span>{/snippet}
+    {#snippet value()}<AmountDisplay
+        amount={minCommitmentIcp}
+        detailed
+        singleLine
+      />{/snippet}
   </KeyValuePair>
   <KeyValuePair testId="sns-max-participant-commitment">
-    <span slot="key"
-      >{$i18n.sns_project_detail.max_participant_commitment}
-    </span>
-    <AmountDisplay slot="value" amount={maxCommitmentIcp} singleLine />
+    {#snippet key()}<span
+        >{$i18n.sns_project_detail.max_participant_commitment}
+      </span>{/snippet}
+    {#snippet value()}<AmountDisplay
+        amount={maxCommitmentIcp}
+        singleLine
+      />{/snippet}
   </KeyValuePair>
   {#if nonNullish(maxNFParticipation)}
     <KeyValuePair testId="sns-max-nf-commitment">
-      <span slot="key">{$i18n.sns_project_detail.max_nf_commitment} </span>
-      <AmountDisplay
-        slot="value"
-        amount={TokenAmountV2.fromUlps({
-          amount: maxNFParticipation,
-          token: ICPToken,
-        })}
-        singleLine
-      />
+      {#snippet key()}<span
+          >{$i18n.sns_project_detail.max_nf_commitment}
+        </span>{/snippet}
+      {#snippet value()}<AmountDisplay
+          amount={TokenAmountV2.fromUlps({
+            amount: maxNFParticipation,
+            token: ICPToken,
+          })}
+          singleLine
+        />{/snippet}
     </KeyValuePair>
   {/if}
   <KeyValuePair testId="sns-sale-end">
-    <span slot="key">{$i18n.sns_project_detail.sale_end} </span>
-    <DateSeconds
-      slot="value"
-      seconds={Number(summary.getSwapDueTimestampSeconds() ?? 0n)}
-      tagName="span"
-    />
+    {#snippet key()}<span>{$i18n.sns_project_detail.sale_end} </span>{/snippet}
+    {#snippet value()}<DateSeconds
+        seconds={Number(summary.getSwapDueTimestampSeconds() ?? 0n)}
+        tagName="span"
+      />{/snippet}
   </KeyValuePair>
   {#if hasDeniedCountries}
     <KeyValuePair testId="excluded-countries">
-      <span slot="key">{$i18n.sns_project_detail.persons_excluded} </span>
-      <span slot="value">{formattedDeniedCountryCodes}</span>
+      {#snippet key()}<span
+          >{$i18n.sns_project_detail.persons_excluded}
+        </span>{/snippet}
+      {#snippet value()}<span>{formattedDeniedCountryCodes}</span>{/snippet}
     </KeyValuePair>
   {/if}
 </TestIdWrapper>
