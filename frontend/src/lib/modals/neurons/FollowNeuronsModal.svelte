@@ -9,7 +9,6 @@
     onClose: () => void;
   };
   const { neuronId, onClose }: Props = $props();
-  console.log("hi");
 </script>
 
 <Modal

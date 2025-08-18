@@ -170,7 +170,7 @@
   bind:currentStep
   bind:this={modal}
   onClose={() => dispatcher("nnsClose")}
-  --modal-content-overflow-y={"auto"}
+  --modal-content-overflow-y="auto"
 >
   {#snippet title()}{currentStep?.title ??
       $i18n.accounts.select_source}{/snippet}
