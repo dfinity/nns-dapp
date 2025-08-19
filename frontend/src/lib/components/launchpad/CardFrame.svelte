@@ -7,7 +7,6 @@
     testId: string;
     children: Snippet;
     backgroundIcon?: Snippet;
-    highlighted?: boolean;
     dimmed?: boolean;
     mobileHref?: string;
   };
@@ -16,7 +15,6 @@
     testId,
     children,
     backgroundIcon,
-    highlighted = false,
     dimmed = false,
     mobileHref,
   }: Props = $props();
@@ -25,7 +23,7 @@
 </script>
 
 {#snippet content()}
-  <article data-tid={testId} class:highlighted class:dimmed>
+  <article data-tid={testId} class:dimmed>
     {#if nonNullish(backgroundIcon)}
       <div class="background-icon-container" data-tid="background-icon">
         {@render backgroundIcon()}
@@ -71,10 +69,6 @@
 
     &.dimmed {
       --card-frame-background: var(--table-background);
-    }
-
-    &.highlighted {
-      background-color: var(--background);
     }
   }
 
