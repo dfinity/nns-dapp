@@ -1,4 +1,7 @@
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  OWN_CANISTER_ID_TEXT,
+  uninstalledIndexCanistersId,
+} from "$lib/constants/canister-ids.constants";
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
 import {
   icpSwapUsdPricesStore,
@@ -73,6 +76,7 @@ const convertToUserTokenData = ({
   const isLedgerCanisterOutOfCycles = outOfCyclesCanisters.includes(
     baseTokenData.ledgerCanisterId.toText()
   );
+
   if (isLedgerCanisterOutOfCycles) {
     return {
       ...baseTokenData,
@@ -101,6 +105,11 @@ const convertToUserTokenData = ({
       : mainAccount.balanceUlps,
     token,
   });
+
+  const isIndexCanisterUninstalled = uninstalledIndexCanistersId.includes(
+    baseTokenData.universeId.toText()
+  );
+
   // For ICP, the row represents all the ICP accounts. Therefore, we don't want to set the accountIdentifier.
   const accountIdentifier = isUniverseNns(baseTokenData.universeId)
     ? undefined
@@ -121,7 +130,7 @@ const convertToUserTokenData = ({
         : [UserTokenAction.Receive, UserTokenAction.Send]),
     ],
     accountIdentifier,
-    rowHref,
+    rowHref: isIndexCanisterUninstalled ? undefined : rowHref,
     domKey: rowHref,
   };
 };

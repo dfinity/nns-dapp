@@ -1346,6 +1346,7 @@ interface I18nTokens {
   ledger_canister: string;
   index_canister: string;
   ledger_canister_error_tooltip: string;
+  index_canister_uninstalled_tooltip: string;
 }
 
 interface I18nImport_token {
