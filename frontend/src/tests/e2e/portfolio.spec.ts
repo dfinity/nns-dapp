@@ -108,7 +108,7 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   await replaceContent({
     page,
-    selectors: ['[data-tid="projection"]'],
+    selectors: ['[data-tid="projection"]', '[data-tid="apy-current-value"]'],
     pattern: /\(?\d+\.\d+\)?/,
     replacements: ["2.25"],
   });
@@ -118,7 +118,7 @@ test("Visual test Landing Page", async ({ page, browser }) => {
 
   await replaceContent({
     page,
-    selectors: ['[data-tid="projection"]'],
+    selectors: ['[data-tid="projection"]', '[data-tid="apy-current-value"]'],
     pattern: /\(?\d+\.\d+\)?/,
     replacements: ["2.25"],
   });
