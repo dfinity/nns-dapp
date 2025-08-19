@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-11_03-31-base/rs/ledger_suite/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-14_03-27-base/rs/ledger_suite/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -290,10 +290,7 @@ pub struct Icrc21ConsentMessageMetadata {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Icrc21ConsentMessageSpecDeviceSpecInner {
     GenericDisplay,
-    LineDisplay {
-        characters_per_line: u16,
-        lines_per_page: u16,
-    },
+    FieldsDisplay,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc21ConsentMessageSpec {
@@ -307,14 +304,20 @@ pub struct Icrc21ConsentMessageRequest {
     pub user_preferences: Icrc21ConsentMessageSpec,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct Icrc21ConsentMessageLineDisplayMessagePagesItem {
-    pub lines: Vec<String>,
+pub enum Icrc21Value {
+    Text { content: String },
+    TokenAmount { decimals: u8, amount: u64, symbol: String },
+    TimestampSeconds { amount: u64 },
+    DurationSeconds { amount: u64 },
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct FieldsDisplay {
+    pub fields: Vec<(String, Icrc21Value)>,
+    pub intent: String,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Icrc21ConsentMessage {
-    LineDisplayMessage {
-        pages: Vec<Icrc21ConsentMessageLineDisplayMessagePagesItem>,
-    },
+    FieldsDisplayMessage(FieldsDisplay),
     GenericDisplayMessage(String),
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
