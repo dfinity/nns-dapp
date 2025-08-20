@@ -81,7 +81,9 @@ describe("ledger-utils", () => {
       } as ResponseAddress);
 
       const expectedDerPublicKey = fromHexString(derEncodedPublicKeyHex);
-      expect(publicKey.toDer()).toEqual(expectedDerPublicKey);
+      expect(Array.from(publicKey.toDer())).toEqual(
+        Array.from(expectedDerPublicKey)
+      );
     });
   });
 
