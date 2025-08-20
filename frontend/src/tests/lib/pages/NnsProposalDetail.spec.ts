@@ -18,6 +18,7 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { ProposalRewardStatus, Vote, type NeuronInfo } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
+import { tick } from "svelte";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");
@@ -160,6 +161,7 @@ describe("NnsProposalDetail", () => {
       const po = renderComponent();
       const votingCardPo = po.getVotingCardPo();
       await runResolvedPromises();
+      await tick();
 
       expect(await votingCardPo.isPresent()).toBe(true);
       expect(
@@ -245,6 +247,7 @@ describe("NnsProposalDetail", () => {
       resolveListNeuronsUpdate(testNeurons);
       resolveListNeuronsQuery(testNeurons);
       await runResolvedPromises();
+      await tick();
 
       const votingCardPo = po.getVotingCardPo();
       expect(await votingCardPo.isPresent()).toBe(true);
@@ -293,6 +296,7 @@ describe("NnsProposalDetail", () => {
     it("should render proposal detail if not signed in", async () => {
       const po = renderComponent();
       await runResolvedPromises();
+      await tick();
 
       expect(await po.isPresent("proposal-details-grid")).toBe(true);
       expect(await po.isContentLoaded()).toBe(true);

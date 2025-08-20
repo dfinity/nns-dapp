@@ -20,6 +20,7 @@ const MAX_CANISTERS_PER_ACCOUNT: u64 = 2; // Toy accounts have between 0 and thi
 /// A specification for how large a toy account should be.
 ///
 /// Note: The keys correspond to those in the `AccountsStoreHistogram`.
+#[allow(dead_code)]
 #[derive(Default, Debug, Copy, Clone, Eq, PartialEq)]
 pub struct ToyAccountSize {
     /// The number of sub-accounts

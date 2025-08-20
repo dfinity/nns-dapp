@@ -41,12 +41,12 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754530429
+              "timestamp_seconds": 1755507792
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 352945055909760,
+              "amount_e8s": 352167278199760,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": {
@@ -59,44 +59,28 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754530429
+              "timestamp_seconds": 1755507792
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 297700442084802,
-            "timestamp_seconds": 1754530429
+            "governance_total_potential_voting_power": 305834090865015,
+            "timestamp_seconds": 1755507792
           },
-          "last_ledger_block_timestamp": 1754531810,
-          "num_recently_executed_proposals": 70,
-          "num_recently_submitted_proposals": 71,
+          "last_ledger_block_timestamp": 1755506061,
+          "num_recently_executed_proposals": 72,
+          "num_recently_submitted_proposals": 57,
           "genesis_timestamp_seconds": 1746713375
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754489379,
-      "end_timestamp_seconds": 1754489375,
+      "actual_timestamp_seconds": 1755439782,
+      "end_timestamp_seconds": 1755439775,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 90,
-      "settled_proposals": [
-        {
-          "id": 74
-        },
-        {
-          "id": 75
-        },
-        {
-          "id": 76
-        },
-        {
-          "id": 77
-        },
-        {
-          "id": 78
-        }
-      ]
+      "round": 101,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -264,6 +248,20 @@
               "target_canister_id": "vxqw7-iqaaa-aaaan-qzziq-cai",
               "validator_method_name": "validate_addToken",
               "target_method_name": "addToken"
+            }
+          }
+        },
+        {
+          "id": 3000,
+          "name": "Neuron Pylon: ICRC55 Command",
+          "description": "Manage vectors in the neuron pylon.",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+              "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+              "validator_method_name": "icrc55_command_validate",
+              "target_method_name": "icrc55_command"
             }
           }
         }
@@ -446,7 +444,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777777245310000,
+    "icrc1_total_supply": 777777194110000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -705,7 +703,22 @@
           "is_critical": true,
           "name": "Treasury & asset management",
           "description": "Proposals to move and manage assets that are DAO-owned, including tokens in the treasury, tokens in liquidity pools, or DAO-owned neurons.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 3000,
+              "name": "Neuron Pylon: ICRC55 Command",
+              "description": "Manage vectors in the neuron pylon.",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+                  "target_canister_id": "6jvpj-sqaaa-aaaaj-azwnq-cai",
+                  "validator_method_name": "icrc55_command_validate",
+                  "target_method_name": "icrc55_command"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [

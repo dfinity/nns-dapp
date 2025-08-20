@@ -6,6 +6,7 @@
   import { KeyValuePairInfo, SkeletonText } from "@dfinity/gix-components";
   import type { BallotInfo, ProposalId, ProposalInfo } from "@dfinity/nns";
   import { onMount } from "svelte";
+  import { nonNullish } from "@dfinity/utils";
 
   export let ballot: Required<BallotInfo>;
 
@@ -25,13 +26,21 @@
 <TestIdWrapper testId="ballot-summary-component">
   {#if proposal?.proposal !== undefined}
     <KeyValuePairInfo testId="ballot-summary">
-      <p slot="key" class="value" data-tid="proposal-id">{proposal.id}</p>
-      <p slot="value" class="vote value" data-tid="vote">
-        {getVoteDisplay(ballot.vote)}
-      </p>
-      <div slot="info" class="summary">
-        <ProposalSummary summary={proposal.proposal.summary} />
-      </div>
+      {#snippet key()}
+        {#if nonNullish(proposal?.proposal)}
+          <p class="value" data-tid="proposal-id">{proposal?.id}</p>
+        {/if}
+      {/snippet}
+      {#snippet value()}<p class="vote value" data-tid="vote">
+          {getVoteDisplay(ballot.vote)}
+        </p>{/snippet}
+      {#snippet info()}
+        {#if nonNullish(proposal?.proposal)}
+          <div class="summary">
+            <ProposalSummary summary={proposal.proposal.summary} />
+          </div>
+        {/if}
+      {/snippet}
     </KeyValuePairInfo>
   {:else}
     <SkeletonText />

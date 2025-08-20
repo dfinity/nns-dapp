@@ -107,6 +107,7 @@
 
     .link {
       width: auto;
+      min-width: 142px;
       height: auto;
       padding: var(--padding) var(--padding-2x);
       border-radius: var(--border-radius);

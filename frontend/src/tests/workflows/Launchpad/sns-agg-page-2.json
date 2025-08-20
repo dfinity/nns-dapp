@@ -44,7 +44,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754535900
+              "timestamp_seconds": 1755505869
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -62,27 +62,27 @@
               },
               "ledger_canister_id": "emww2-4yaaa-aaaaq-aacbq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754535900
+              "timestamp_seconds": 1755505869
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 66097765561168629,
-            "timestamp_seconds": 1754535900
+            "governance_total_potential_voting_power": 66105380136384274,
+            "timestamp_seconds": 1755505869
           },
-          "last_ledger_block_timestamp": 1754534673,
-          "num_recently_executed_proposals": 15,
-          "num_recently_submitted_proposals": 16,
+          "last_ledger_block_timestamp": 1755505585,
+          "num_recently_executed_proposals": 13,
+          "num_recently_submitted_proposals": 14,
           "genesis_timestamp_seconds": 1702635311
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754475314,
-      "end_timestamp_seconds": 1754475311,
-      "total_available_e8s_equivalent": 49105669918048,
+      "actual_timestamp_seconds": 1755425716,
+      "end_timestamp_seconds": 1755425711,
+      "total_available_e8s_equivalent": 126297384202232,
       "distributed_e8s_equivalent": 0,
-      "round": 600,
+      "round": 611,
       "settled_proposals": []
     },
     "parameters": {
@@ -1620,7 +1620,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 102524499200994939,
+    "icrc1_total_supply": 102525176789564778,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3163,14 +3163,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 22452512222436,
-              "amount_e8s": 3073153120102,
+              "amount_e8s": 3073366878862,
               "account": {
                 "owner": "eqsml-lyaaa-aaaaq-aacdq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754534014
+              "timestamp_seconds": 1755504048
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -3188,27 +3188,27 @@
               },
               "ledger_canister_id": "f54if-eqaaa-aaaaq-aacea-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754534014
+              "timestamp_seconds": 1755504048
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 52162975509759,
-            "timestamp_seconds": 1754534014
+            "governance_total_potential_voting_power": 52286749413864,
+            "timestamp_seconds": 1755504048
           },
-          "last_ledger_block_timestamp": 1754535358,
-          "num_recently_executed_proposals": 21,
-          "num_recently_submitted_proposals": 22,
+          "last_ledger_block_timestamp": 1755502856,
+          "num_recently_executed_proposals": 9,
+          "num_recently_submitted_proposals": 10,
           "genesis_timestamp_seconds": 1702903688
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754484489,
-      "end_timestamp_seconds": 1754484488,
-      "total_available_e8s_equivalent": 16570485258,
+      "actual_timestamp_seconds": 1755434895,
+      "end_timestamp_seconds": 1755434888,
+      "total_available_e8s_equivalent": 77328935295,
       "distributed_e8s_equivalent": 0,
-      "round": 597,
+      "round": 608,
       "settled_proposals": []
     },
     "parameters": {
@@ -4088,7 +4088,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100872987539466,
+    "icrc1_total_supply": 100872676265767,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -4971,19 +4971,19 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 3000000000000,
-              "amount_e8s": 760587424140,
+              "amount_e8s": 761726794854,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754534839
+              "timestamp_seconds": 1755504946
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 163589384832,
+              "amount_e8s": 163610680569,
               "account": {
                 "owner": "fi3zi-fyaaa-aaaaq-aachq-cai",
                 "subaccount": {
@@ -4996,16 +4996,16 @@
               },
               "ledger_canister_id": "hvgxa-wqaaa-aaaaq-aacia-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754534839
+              "timestamp_seconds": 1755504946
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 755759266220,
-            "timestamp_seconds": 1754534839
+            "governance_total_potential_voting_power": 752536552823,
+            "timestamp_seconds": 1755504946
           },
-          "last_ledger_block_timestamp": 1754535057,
-          "num_recently_executed_proposals": 24,
-          "num_recently_submitted_proposals": 28,
+          "last_ledger_block_timestamp": 1755505950,
+          "num_recently_executed_proposals": 18,
+          "num_recently_submitted_proposals": 21,
           "genesis_timestamp_seconds": 1705799268
         }
       }
@@ -5482,7 +5482,7 @@
       ]
     ],
     "icrc1_fee": [1000],
-    "icrc1_total_supply": 994797281839,
+    "icrc1_total_supply": 994772852102,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5957,7 +5957,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754532403
+              "timestamp_seconds": 1755506054
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -5975,27 +5975,27 @@
               },
               "ledger_canister_id": "hhaaz-2aaaa-aaaaq-aacla-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754532403
+              "timestamp_seconds": 1755506054
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 12589254153738153,
-            "timestamp_seconds": 1754532403
+            "governance_total_potential_voting_power": 12592533289301270,
+            "timestamp_seconds": 1755506054
           },
-          "last_ledger_block_timestamp": 1754526768,
-          "num_recently_executed_proposals": 17,
-          "num_recently_submitted_proposals": 19,
+          "last_ledger_block_timestamp": 1755498032,
+          "num_recently_executed_proposals": 18,
+          "num_recently_submitted_proposals": 24,
           "genesis_timestamp_seconds": 1708958305
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754491111,
-      "end_timestamp_seconds": 1754491105,
-      "total_available_e8s_equivalent": 2805215081459,
+      "actual_timestamp_seconds": 1755441511,
+      "end_timestamp_seconds": 1755441505,
+      "total_available_e8s_equivalent": 10451174625366,
       "distributed_e8s_equivalent": 0,
-      "round": 527,
+      "round": 538,
       "settled_proposals": []
     },
     "parameters": {
@@ -8967,7 +8967,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 18240868262174495,
+    "icrc1_total_supply": 18242929477419075,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11947,7 +11947,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754535798
+              "timestamp_seconds": 1755505907
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -11965,27 +11965,27 @@
               },
               "ledger_canister_id": "gemj7-oyaaa-aaaaq-aacnq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754535798
+              "timestamp_seconds": 1755505907
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 60124739525243051,
-            "timestamp_seconds": 1754535798
+            "governance_total_potential_voting_power": 61011644609037013,
+            "timestamp_seconds": 1755505907
           },
-          "last_ledger_block_timestamp": 1754530809,
+          "last_ledger_block_timestamp": 1755504764,
           "num_recently_executed_proposals": 2,
-          "num_recently_submitted_proposals": 2,
+          "num_recently_submitted_proposals": 1,
           "genesis_timestamp_seconds": 1709209147
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754482750,
-      "end_timestamp_seconds": 1754482747,
-      "total_available_e8s_equivalent": 10063189522517,
+      "actual_timestamp_seconds": 1755433155,
+      "end_timestamp_seconds": 1755433147,
+      "total_available_e8s_equivalent": 28540842254860,
       "distributed_e8s_equivalent": 0,
-      "round": 524,
+      "round": 535,
       "settled_proposals": []
     },
     "parameters": {
@@ -12639,10 +12639,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "gwk6g-ciaaa-aaaaq-aacoq-cai"
+        }
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 25652230835542203,
+    "icrc1_total_supply": 25716482868631081,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 500000000,
@@ -13304,7 +13310,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754533930
+              "timestamp_seconds": 1755503892
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -13322,14 +13328,14 @@
               },
               "ledger_canister_id": "ddsp7-7iaaa-aaaaq-aacqq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754533930
+              "timestamp_seconds": 1755503892
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 8627383271968396,
-            "timestamp_seconds": 1754533930
+            "governance_total_potential_voting_power": 8553894167770668,
+            "timestamp_seconds": 1755503892
           },
-          "last_ledger_block_timestamp": 1754528679,
+          "last_ledger_block_timestamp": 1755498364,
           "num_recently_executed_proposals": 1,
           "num_recently_submitted_proposals": 1,
           "genesis_timestamp_seconds": 1710522988
@@ -13338,11 +13344,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754500600,
-      "end_timestamp_seconds": 1754500588,
-      "total_available_e8s_equivalent": 3586078903995,
+      "actual_timestamp_seconds": 1755450997,
+      "end_timestamp_seconds": 1755450988,
+      "total_available_e8s_equivalent": 6620655842990,
       "distributed_e8s_equivalent": 0,
-      "round": 509,
+      "round": 520,
       "settled_proposals": []
     },
     "parameters": {
@@ -14355,7 +14361,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 10075935324784943,
+    "icrc1_total_supply": 10076563894993574,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -15383,7 +15389,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754534175
+              "timestamp_seconds": 1755504280
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -15401,32 +15407,28 @@
               },
               "ledger_canister_id": "druyg-tyaaa-aaaaq-aactq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754534175
+              "timestamp_seconds": 1755504280
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 104170641276267697,
-            "timestamp_seconds": 1754534175
+            "governance_total_potential_voting_power": 105385816779861867,
+            "timestamp_seconds": 1755504280
           },
-          "last_ledger_block_timestamp": 1754533522,
-          "num_recently_executed_proposals": 48,
-          "num_recently_submitted_proposals": 49,
+          "last_ledger_block_timestamp": 1755506054,
+          "num_recently_executed_proposals": 40,
+          "num_recently_submitted_proposals": 41,
           "genesis_timestamp_seconds": 1710783210
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754501612,
-      "end_timestamp_seconds": 1754501610,
-      "total_available_e8s_equivalent": 22086051411514,
-      "distributed_e8s_equivalent": 22086051411284,
-      "round": 506,
-      "settled_proposals": [
-        {
-          "id": 406
-        }
-      ]
+      "actual_timestamp_seconds": 1755452016,
+      "end_timestamp_seconds": 1755452010,
+      "total_available_e8s_equivalent": 14409960968895,
+      "distributed_e8s_equivalent": 0,
+      "round": 517,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [1001, 1002, 1003, 1004],
@@ -16213,7 +16215,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 104561724671456998,
+    "icrc1_total_supply": 104699519282528325,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -17011,7 +17013,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754533923
+              "timestamp_seconds": 1755503895
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -17029,27 +17031,27 @@
               },
               "ledger_canister_id": "ca6gz-lqaaa-aaaaq-aacwa-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754533923
+              "timestamp_seconds": 1755503895
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 50727911770918417,
-            "timestamp_seconds": 1754533923
+            "governance_total_potential_voting_power": 50735089191519533,
+            "timestamp_seconds": 1755503895
           },
-          "last_ledger_block_timestamp": 1754533534,
-          "num_recently_executed_proposals": 86,
-          "num_recently_submitted_proposals": 87,
+          "last_ledger_block_timestamp": 1755505108,
+          "num_recently_executed_proposals": 57,
+          "num_recently_submitted_proposals": 61,
           "genesis_timestamp_seconds": 1711034480
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754493688,
-      "end_timestamp_seconds": 1754493680,
-      "total_available_e8s_equivalent": 4043808498769,
+      "actual_timestamp_seconds": 1755444081,
+      "end_timestamp_seconds": 1755444080,
+      "total_available_e8s_equivalent": 4044410240334,
       "distributed_e8s_equivalent": 0,
-      "round": 503,
+      "round": 514,
       "settled_proposals": []
     },
     "parameters": {
@@ -18146,7 +18148,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 98468492726078520,
+    "icrc1_total_supply": 98481996335168549,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -19255,7 +19257,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754534437
+              "timestamp_seconds": 1755504672
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -19273,14 +19275,14 @@
               },
               "ledger_canister_id": "atbfz-diaaa-aaaaq-aacyq-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754534437
+              "timestamp_seconds": 1755504672
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 35623452903042633,
-            "timestamp_seconds": 1754534437
+            "governance_total_potential_voting_power": 35816082127342635,
+            "timestamp_seconds": 1755504672
           },
-          "last_ledger_block_timestamp": 1754532805,
+          "last_ledger_block_timestamp": 1755497977,
           "num_recently_executed_proposals": 3,
           "num_recently_submitted_proposals": 4,
           "genesis_timestamp_seconds": 1711451121
@@ -19289,11 +19291,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754478326,
-      "end_timestamp_seconds": 1754478321,
-      "total_available_e8s_equivalent": 1630846483378,
+      "actual_timestamp_seconds": 1755428724,
+      "end_timestamp_seconds": 1755428721,
+      "total_available_e8s_equivalent": 4611346574452,
       "distributed_e8s_equivalent": 0,
-      "round": 498,
+      "round": 509,
       "settled_proposals": []
     },
     "parameters": {
@@ -20001,7 +20003,7 @@
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 99101658074119954,
+    "icrc1_total_supply": 98941187486718114,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -20718,7 +20720,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1754531947
+              "timestamp_seconds": 1755505619
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -20736,27 +20738,27 @@
               },
               "ledger_canister_id": "bliq2-niaaa-aaaaq-aac4q-cai",
               "treasury": 2,
-              "timestamp_seconds": 1754531947
+              "timestamp_seconds": 1755505619
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 67342487319253373,
-            "timestamp_seconds": 1754531947
+            "governance_total_potential_voting_power": 67539519227965221,
+            "timestamp_seconds": 1755505619
           },
-          "last_ledger_block_timestamp": 1754533768,
-          "num_recently_executed_proposals": 7,
-          "num_recently_submitted_proposals": 7,
+          "last_ledger_block_timestamp": 1755499342,
+          "num_recently_executed_proposals": 8,
+          "num_recently_submitted_proposals": 8,
           "genesis_timestamp_seconds": 1712478412
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1754468814,
-      "end_timestamp_seconds": 1754468812,
-      "total_available_e8s_equivalent": 57760157386892,
+      "actual_timestamp_seconds": 1755505619,
+      "end_timestamp_seconds": 1755505612,
+      "total_available_e8s_equivalent": 8252687557289,
       "distributed_e8s_equivalent": 0,
-      "round": 486,
+      "round": 498,
       "settled_proposals": []
     },
     "parameters": {
@@ -21484,7 +21486,7 @@
       ]
     ],
     "icrc1_fee": [100000],
-    "icrc1_total_supply": 100461449754465239,
+    "icrc1_total_supply": 100476471009996213,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,

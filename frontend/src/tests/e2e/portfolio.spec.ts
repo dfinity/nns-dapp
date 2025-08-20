@@ -35,13 +35,6 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
   await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
   await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
 
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
-
   // Add CSS to disable skeleton animations
   await page.addStyleTag({
     content: `
@@ -107,20 +100,27 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
   await page.goto("/");
   await disableCssAnimations(page);
 
-  await portfolioPo.getPortfolioPagePo().getHeldTokensCardPo().waitFor();
-  await portfolioPo.getPortfolioPagePo().getStakedTokensCardPo().waitFor();
-
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
+  await portfolioPo.getPortfolioPagePo().getHeldICPCardPo().waitFor();
+  await portfolioPo.getPortfolioPagePo().getStakedICPCardPo().waitFor();
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
   await appPo.toggleSidebar();
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="projection"]', '[data-tid="apy-current-value"]'],
+    pattern: /\(?\d+\.\d+\)?/,
+    replacements: ["2.25"],
+  });
   await expect(page).toHaveScreenshot(`final_assets_desktop.png`);
 
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="projection"]', '[data-tid="apy-current-value"]'],
+    pattern: /\(?\d+\.\d+\)?/,
+    replacements: ["2.25"],
+  });
   await expect(page).toHaveScreenshot(`final_assets_mobile.png`);
 });

@@ -49,29 +49,33 @@
 {/if}
 {#if isOpen && nonNullish(durationTillDeadline)}
   <KeyValuePair>
-    <span slot="key" class="description">
-      {$i18n.sns_project_detail.deadline}
-    </span>
-    <Value slot="value">
-      {secondsToDuration({ seconds: durationTillDeadline, i18n: $i18n.time })}
-    </Value>
+    {#snippet key()}<span class="description">
+        {$i18n.sns_project_detail.deadline}
+      </span>{/snippet}
+    {#snippet value()}<Value>
+        {secondsToDuration({ seconds: durationTillDeadline, i18n: $i18n.time })}
+      </Value>{/snippet}
   </KeyValuePair>
 {/if}
 {#if isAdopted && nonNullish(durationTillStart)}
   <KeyValuePair>
-    <span slot="key" class="description">
-      {$i18n.sns_project_detail.starts}
-    </span>
-    <Value slot="value">
-      {secondsToDuration({ seconds: durationTillStart, i18n: $i18n.time })}
-    </Value>
+    {#snippet key()}<span class="description">
+        {$i18n.sns_project_detail.starts}
+      </span>{/snippet}
+    {#snippet value()}<Value>
+        {secondsToDuration({ seconds: durationTillStart, i18n: $i18n.time })}
+      </Value>{/snippet}
   </KeyValuePair>
 {/if}
 {#if hasParticipated && nonNullish(myCommitment)}
   <div>
     <KeyValuePair testId="sns-user-commitment">
-      <ProjectUserCommitmentLabel slot="key" {summary} {swapCommitment} />
-      <AmountDisplay slot="value" amount={myCommitment} singleLine />
+      {#snippet key()}
+        <ProjectUserCommitmentLabel {summary} {swapCommitment} />{/snippet}
+      {#snippet value()}<AmountDisplay
+          amount={myCommitment}
+          singleLine
+        />{/snippet}
     </KeyValuePair>
   </div>
 {/if}

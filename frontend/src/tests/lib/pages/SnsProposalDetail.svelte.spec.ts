@@ -192,9 +192,11 @@ describe("SnsProposalDetail", () => {
 
       const po = await renderComponent();
 
-      await waitFor(async () =>
-        expect(await (await po.getPayloadText()).trim()).toBe(payload)
-      );
+      await runResolvedPromises();
+      await tick();
+      await runResolvedPromises();
+
+      expect((await po.getPayloadText()).trim()).toBe(payload);
     });
 
     it("should redirect to the list of sns proposals if proposal id is not a valid id", async () => {
@@ -619,6 +621,8 @@ describe("SnsProposalDetail", () => {
 
       resetIdentity();
       await runResolvedPromises();
+      await tick();
+      await runResolvedPromises();
 
       expect(await po.hasVotingToolbar()).toBe(true);
     });
@@ -751,6 +755,7 @@ describe("SnsProposalDetail", () => {
       );
 
       await runResolvedPromises();
+      await tick();
 
       expect(get(toastsStore)).toEqual([]);
       expect(await po.isContentLoaded()).toBe(true);
@@ -804,6 +809,7 @@ describe("SnsProposalDetail", () => {
         new JestPageObjectElement(container)
       );
       await runResolvedPromises();
+      await tick();
 
       expect(get(toastsStore)).toEqual([]);
       expect(await po.isContentLoaded()).toBe(true);
