@@ -99,7 +99,6 @@
 
     .header {
       @include launchpad.card_content_header();
-      // @include portfolio.card-tag;
 
       --logo-size: var(--padding-4x);
       @include media.min-width(small) {
@@ -108,7 +107,6 @@
 
       h3 {
         @include launchpad.text_h3;
-        // TODO(launchpad2): think about moving to _launchpad mixin
         @include text.truncate;
 
         margin: 0;
