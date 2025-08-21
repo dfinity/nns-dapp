@@ -15,6 +15,10 @@ here after a successful release.
 
 ### Application
 
+#### Changed
+
+* Improved handling of SNSes with an uninstalled index canister.
+
 ### Operations
 
 ## Proposal 137911
