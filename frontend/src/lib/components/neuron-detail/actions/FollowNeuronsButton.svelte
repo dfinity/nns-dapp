@@ -7,7 +7,18 @@
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { getContext } from "svelte";
 
-  export let variant: "primary" | "secondary" = "primary";
+  type Props = {
+    variant?: "primary" | "secondary";
+    isFollowByTopic?: boolean;
+  };
+  const { variant = "primary", isFollowByTopic = false }: Props = $props();
+
+  const onClick = () => {
+    openNnsNeuronModal({
+      type: isFollowByTopic ? "follow-by-topic" : "follow",
+      data: { neuron: $store.neuron },
+    });
+  };
 
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
@@ -17,7 +28,5 @@
 <button
   data-tid="follow-neurons-button-component"
   class={variant}
-  on:click={() =>
-    openNnsNeuronModal({ type: "follow", data: { neuron: $store.neuron } })}
-  >{$i18n.neuron_detail.follow_neurons}</button
+  onclick={onClick}>{$i18n.neuron_detail.follow_neurons}</button
 >
