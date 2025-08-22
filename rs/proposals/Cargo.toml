@@ -6,7 +6,7 @@ version = { workspace = true }
 
 [dependencies]
 candid = "0.10.10"
-candid_parser = "0.1.4"
+candid_parser = "0.2.1"
 hex = "0.4.3"
 ic_principal = "0.1.1"
 serde = "1.0.219"
