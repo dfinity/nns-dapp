@@ -2121,7 +2121,7 @@ dependencies = [
  "ic-ledger-canister-core",
  "ic-ledger-core",
  "ic-metrics-encoder",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icrc-ledger-types",
  "num-traits",
  "scopeguard",
@@ -2150,7 +2150,7 @@ dependencies = [
  "ic-ledger-core",
  "ic-ledger-hash-of",
  "ic-metrics-encoder",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icrc-ledger-types",
  "leb128",
  "minicbor",
@@ -2166,7 +2166,7 @@ source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1d
 dependencies = [
  "candid",
  "ic-ledger-core",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "minicbor",
  "num-traits",
  "serde",
@@ -2186,7 +2186,7 @@ dependencies = [
  "ic-ledger-hash-of",
  "ic-limits",
  "ic-management-canister-types-private",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-utils",
  "serde",
 ]
@@ -2198,7 +2198,7 @@ source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1d
 dependencies = [
  "candid",
  "ic-ledger-hash-of",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "minicbor",
  "num-traits",
  "serde",
@@ -2284,7 +2284,7 @@ version = "0.9.0"
 source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1db8f933fdadc81a90e7db2389b081e21263a9b6"
 dependencies = [
  "ic-crypto-sha2",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "lazy_static",
  "prost",
 ]
@@ -2339,7 +2339,7 @@ dependencies = [
  "ic-metrics-encoder",
  "ic-nervous-system-runtime",
  "ic-nns-constants",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icp-ledger",
  "icrc-ledger-types",
  "json5",
@@ -2383,7 +2383,7 @@ version = "0.0.1"
 source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1db8f933fdadc81a90e7db2389b081e21263a9b6"
 dependencies = [
  "ic-base-types",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic_principal",
  "maplit",
  "num-traits",
@@ -2559,7 +2559,7 @@ dependencies = [
  "ic-protobuf",
  "ic-registry-keys",
  "ic-registry-transport",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-types",
  "lazy_static",
  "num-traits",
@@ -2631,7 +2631,7 @@ dependencies = [
  "ic-sns-root",
  "ic-sns-swap",
  "ic-sns-wasm",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-types",
  "ic-utils",
  "icp-ledger",
@@ -2770,7 +2770,7 @@ dependencies = [
  "ic-cdk",
  "ic-nervous-system-chunks",
  "ic-registry-transport",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "prost",
 ]
 
@@ -3082,7 +3082,7 @@ dependencies = [
  "ic-nervous-system-runtime",
  "ic-neurons-fund",
  "ic-sns-governance",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-utils",
  "icp-ledger",
  "icrc-ledger-types",
@@ -3151,6 +3151,15 @@ name = "ic-stable-structures"
 version = "0.6.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4d30d4cf17aff1024e13133897048bcba580e063c9000571ab766ca37e2996f4"
+dependencies = [
+ "ic_principal",
+]
+
+[[package]]
+name = "ic-stable-structures"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e54aeb082293c69def5ab34c70593ba85ff000386f7d0eacdf73514daaeca031"
 dependencies = [
  "ic_principal",
 ]
@@ -3309,7 +3318,7 @@ dependencies = [
  "ic-ledger-core",
  "ic-ledger-hash-of",
  "ic-nns-constants",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icrc-ledger-types",
  "lazy_static",
  "on_wire",
@@ -3362,7 +3371,7 @@ dependencies = [
  "candid",
  "crc32fast",
  "hex",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icrc-cbor",
  "itertools 0.12.1",
  "minicbor",
@@ -3953,7 +3962,7 @@ dependencies = [
  "ic-nns-constants",
  "ic-nns-governance",
  "ic-sns-swap",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.0",
  "ic_principal",
  "icp-ledger",
  "itertools 0.14.0",
@@ -4767,7 +4776,7 @@ dependencies = [
  "ic-registry-subnet-features",
  "ic-registry-subnet-type",
  "ic-registry-transport",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-types",
  "ic-utils",
  "idna",
