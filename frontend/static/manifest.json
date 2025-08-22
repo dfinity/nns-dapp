@@ -5,7 +5,7 @@
   "display": "standalone",
   "theme_color": "#352652",
   "background_color": "#352652",
-  "description": "Dapp for Staking Neurons + Voting On-Chain",
+  "description": "Dapp for Staking Neurons + Voting Onchain",
   "orientation": "portrait-primary",
   "prefer_related_applications": false,
   "icons": [
