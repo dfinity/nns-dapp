@@ -48,14 +48,6 @@ fn serializing_and_deserializing_returns_original() {
                 assets: RefCell::new(Assets::default()),
             },
         },
-        /* Disabled because serde is broken for Nat in Candid 0.8.4.  Should be fixed in 0.9.0 when that is released.
-           Tests for the Nat serialization issue are included in this file but marked "ignore".  See "nat_serde_XXX_works".
-           To test a new Canid library, bump the version and run the Nat tests.  If those pass, re-enable this test.
-        StateSerdeTestVector {
-            name: "Sample stable data",
-            state: serde_json::from_str(include_str!("stable_data.json")).expect("Failed to parse stable state as JSON"),
-        },
-        */
     ];
     for StateSerdeTestVector { name, state } in test_vectors.iter() {
         let serialized = state

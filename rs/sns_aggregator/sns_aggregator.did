@@ -41,6 +41,5 @@ service : (opt Config) -> {
   health_check : () -> (text) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   reconfigure : (opt Config) -> ();
-  stable_data : () -> (text) query;
   tail_log : (opt nat16) -> (text) query;
 }
