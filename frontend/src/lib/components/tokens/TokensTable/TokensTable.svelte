@@ -43,6 +43,7 @@
       alignment: "left",
       templateColumns: ["1fr"],
       comparator: enableSorting ? compareTokensByProject : undefined,
+      overrideSortLabel: $i18n.tokens.token_name,
     },
     {
       id: "balance",
