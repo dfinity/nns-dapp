@@ -69,7 +69,6 @@
       templateColumns: ["1fr"],
       comparator: $authSignedInStore ? compareByStake : undefined,
     },
-
     ...($ENABLE_APY_PORTFOLIO
       ? [
           {
@@ -125,6 +124,7 @@
       alignment: "left",
       templateColumns: ["2fr"],
       comparator: $authSignedInStore ? compareByProject : undefined,
+      overrideSortLabel: $i18n.tokens.token_name,
     },
     ...commonColumns,
   ]);
@@ -138,6 +138,7 @@
       alignment: "left",
       templateColumns: ["2fr"],
       comparator: $authSignedInStore ? compareByProject : undefined,
+      overrideSortLabel: $i18n.tokens.token_name,
     },
     ...commonColumns,
   ]);

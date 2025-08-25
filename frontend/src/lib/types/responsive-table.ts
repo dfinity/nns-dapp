@@ -27,6 +27,7 @@ export interface ResponsiveTableColumn<
   alignment: ColumnAlignment;
   templateColumns: TemplateItem[];
   comparator?: Comparator<RowDataType>;
+  overrideSortLabel?: string;
 }
 
 export type ResponsiveTableOrder<ColumnIdType = string> = Array<{

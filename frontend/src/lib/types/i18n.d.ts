@@ -1324,6 +1324,7 @@ interface I18nSync {
 }
 
 interface I18nTokens {
+  token_name: string;
   projects_header: string;
   projects_header_icp: string;
   projects_header_icp_subtitle: string;

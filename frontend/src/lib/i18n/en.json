@@ -1255,6 +1255,7 @@
     "status_in_progress_detailed": "Checking for new transactions."
   },
   "tokens": {
+    "token_name": "Token Name",
     "projects_header": "Projects",
     "projects_header_icp": "ICP Tokens",
     "projects_header_icp_subtitle": "Native utility token of the Internet Computer",
