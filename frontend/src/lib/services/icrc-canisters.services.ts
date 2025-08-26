@@ -1,3 +1,4 @@
+import { allCkTokens } from "$lib/constants/ck-canister-ids.constants";
 import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
   CKETHSEPOLIA_LEDGER_CANISTER_ID,
@@ -36,6 +37,14 @@ export const loadIcrcCanisters = async () => {
     defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
       indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
+    });
+  }
+  if (isNullish(storeData[allCkTokens[0].ledgerCanisterId.toText()])) {
+    allCkTokens.forEach(({ ledgerCanisterId, indexCanisterId }) => {
+      defaultIcrcCanistersStore.setCanisters({
+        ledgerCanisterId,
+        indexCanisterId,
+      });
     });
   }
 };
