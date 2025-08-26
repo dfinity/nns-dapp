@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_governance --out ic_sns_governance.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-07-11_03-31-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-21_03-19-snapshot-feature/rs/sns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -328,16 +328,6 @@ pub struct ManageDappCanisterSettings {
     pub compute_allocation: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct SetTopicsForCustomProposals {
-    pub custom_function_id_to_topic: Vec<(u64, Topic)>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct ChunkedCanisterWasm {
-    pub wasm_module_hash: serde_bytes::ByteBuf,
-    pub chunk_hashes_list: Vec<serde_bytes::ByteBuf>,
-    pub store_canister_id: Option<Principal>,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum PreciseValue {
     Int(i64),
     Map(Vec<(String, Box<PreciseValue>)>),
@@ -346,6 +336,26 @@ pub enum PreciseValue {
     Bool(bool),
     Text(String),
     Array(Vec<Box<PreciseValue>>),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ExtensionOperationArg {
+    pub value: Option<Box<PreciseValue>>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ExecuteExtensionOperation {
+    pub extension_canister_id: Option<Principal>,
+    pub operation_name: Option<String>,
+    pub operation_arg: Option<ExtensionOperationArg>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct SetTopicsForCustomProposals {
+    pub custom_function_id_to_topic: Vec<(u64, Topic)>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct ChunkedCanisterWasm {
+    pub wasm_module_hash: serde_bytes::ByteBuf,
+    pub chunk_hashes_list: Vec<serde_bytes::ByteBuf>,
+    pub store_canister_id: Option<Principal>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ExtensionInit {
@@ -420,6 +430,7 @@ pub enum Action {
     ManageNervousSystemParameters(NervousSystemParameters),
     AddGenericNervousSystemFunction(NervousSystemFunction),
     ManageDappCanisterSettings(ManageDappCanisterSettings),
+    ExecuteExtensionOperation(ExecuteExtensionOperation),
     RemoveGenericNervousSystemFunction(u64),
     SetTopicsForCustomProposals(SetTopicsForCustomProposals),
     RegisterExtension(RegisterExtension),
@@ -788,6 +799,17 @@ pub struct GetProposalResponse {
     pub result: Option<Result1>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct MemoryMetrics {
+    pub wasm_binary_size: Option<candid::Nat>,
+    pub wasm_chunk_store_size: Option<candid::Nat>,
+    pub canister_history_size: Option<candid::Nat>,
+    pub stable_memory_size: Option<candid::Nat>,
+    pub snapshots_size: Option<candid::Nat>,
+    pub wasm_memory_size: Option<candid::Nat>,
+    pub global_memory_size: Option<candid::Nat>,
+    pub custom_sections_size: Option<candid::Nat>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum CanisterStatusType {
     #[serde(rename = "stopped")]
     Stopped,
@@ -814,6 +836,7 @@ pub struct QueryStats {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CanisterStatusResultV2 {
+    pub memory_metrics: Option<MemoryMetrics>,
     pub status: CanisterStatusType,
     pub memory_size: candid::Nat,
     pub cycles: candid::Nat,
