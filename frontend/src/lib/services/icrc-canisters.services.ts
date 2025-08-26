@@ -9,6 +9,7 @@ import {
   CKUSDC_INDEX_CANISTER_ID,
   CKUSDC_LEDGER_CANISTER_ID,
 } from "$lib/constants/ckusdc-canister-ids.constants";
+import { IS_TESTNET } from "$lib/constants/environment.constants";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import { ENABLE_CKTESTBTC } from "$lib/stores/feature-flags.store";
 import { isNullish } from "@dfinity/utils";
@@ -39,7 +40,11 @@ export const loadIcrcCanisters = async () => {
       indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
     });
   }
-  if (isNullish(storeData[allCkTokens[0].ledgerCanisterId.toText()])) {
+  // Skip for test environment, because these canisters do not exist there.
+  if (
+    !IS_TESTNET &&
+    isNullish(storeData[allCkTokens[0].ledgerCanisterId.toText()])
+  ) {
     allCkTokens.forEach(({ ledgerCanisterId, indexCanisterId }) => {
       defaultIcrcCanistersStore.setCanisters({
         ledgerCanisterId,
