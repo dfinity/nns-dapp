@@ -23,9 +23,9 @@
   let chips: ChipGroupItem[] = [];
   $: chips = columns
     .filter(({ comparator }) => nonNullish(comparator))
-    .map(({ id, title }) => ({
+    .map(({ id, title, overrideSortLabel }) => ({
       id: id ?? title,
-      label: title,
+      label: overrideSortLabel ?? title,
       selected: order[0]?.columnId === id,
     }));
 
