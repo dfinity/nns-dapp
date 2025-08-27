@@ -44,7 +44,7 @@
           on:click={() => dispatch("nnsRemove")}
         >
           <IconBin />
-          {$i18n.core.remove}
+          {$i18n.import_token.remove_imported}
         </button>
       {/if}
     </div>
