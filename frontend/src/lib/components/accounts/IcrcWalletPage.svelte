@@ -158,6 +158,13 @@
     importedTokens: $importedTokensStore.importedTokens,
   });
 
+  let showRemoveButton = false;
+  $: showRemoveButton = checkImportedToken({
+    ledgerCanisterId,
+    importedTokens: $importedTokensStore.importedTokens,
+    filterOutImportantCkToken: false,
+  });
+
   let removeImportedTokenConfirmationVisible = false;
   let universe: Universe | undefined;
   $: universe = $selectableUniversesStore.find(
@@ -251,7 +258,7 @@
     anchor={moreButton}
     {ledgerCanisterId}
     {indexCanisterId}
-    showRemoveButton={isImportedToken}
+    {showRemoveButton}
   />
 
   {#if removeImportedTokenConfirmationVisible && nonNullish(universe)}
