@@ -2,8 +2,8 @@ import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
+import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
 import { derived } from "svelte/store";
-import { isImportantCkToken } from "../utils/icrc-tokens.utils";
 
 /**
  * A store that contains the existing ledger canister IDs of imported tokens that
