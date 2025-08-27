@@ -113,7 +113,6 @@
   {#snippet title()}<span data-tid="create-canister-modal-title"
       >{currentStep?.title ?? $i18n.canisters.add_canister}</span
     >{/snippet}
-  >
   <svelte:fragment>
     {#if currentStep?.name === "SelectData"}
       <div class="from">
