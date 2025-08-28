@@ -328,7 +328,7 @@
     "transaction_time_seconds": "Seconds",
     "token_price_error": "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment.",
     "unpriced_tokens_warning": "Value may be inaccurate as some prices could not be fetched.",
-    "token_price_source": "Token prices are based on data provided by ICPSwap."
+    "token_price_source": "Token prices are given in USD and based on data provided by ICPSwap."
   },
   "neuron_types": {
     "seed": "Seed",
@@ -1119,7 +1119,7 @@
     "sns_amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of $minimum $token to stake."
   },
   "auth_accounts": {
-    "title": "100% on-chain governance",
+    "title": "100% onchain governance",
     "text": "Manage your ICP, ckBTC, and SNS governance tokens within the NNS wallet — hosted 100% on the Internet Computer blockchain. Transfer tokens, secure them with Ledger devices, or participate in governance to earn voting rewards."
   },
   "auth_report": {
@@ -1260,7 +1260,7 @@
     "projects_header_icp": "ICP Tokens",
     "projects_header_icp_subtitle": "Native utility token of the Internet Computer",
     "projects_header_ck": "Chain-key Tokens",
-    "projects_header_ck_subtitle": "On-chain digital twins of assets on other chains",
+    "projects_header_ck_subtitle": "Onchain digital twins of assets on other chains",
     "projects_header_sns": "SNS Tokens",
     "projects_header_sns_subtitle": "Dapp community projects",
     "projects_header_imported": "Imported Tokens",
@@ -1370,7 +1370,7 @@
     "apy_card_estimation": "7d estimate",
     "apy_card_error": "Unable to load rewards",
     "apy_card_tooltip_reward_balance": "Rewards are given in maturity. Maturity is an attribute of a neuron, it is not a tradable asset. To generate tokens from maturity, users need to trigger a non-deterministic process subject to a changing maturity modulation function.",
-    "apy_card_tooltip_staking_ratio": "The ratio of the total stake (including staked maturity), compared to all holdings and rewards (ICP only).",
+    "apy_card_tooltip_staking_ratio": "The ratio of the total stake (including staked maturity), compared to the user’s liquid ICP, staked ICP, and NNS rewards.",
     "apy_card_tooltip_no_rewards": "This project is currently not generating rewards.",
     "apy_card_tooltip_error": "Unable to calculate the rewards for this project.",
     "start_staking_card_title": "Start Staking",
