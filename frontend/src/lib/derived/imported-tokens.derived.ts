@@ -2,6 +2,7 @@ import {
   failedImportedTokenLedgerIdsStore,
   importedTokensStore,
 } from "$lib/stores/imported-tokens.store";
+import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
 import { derived } from "svelte/store";
 
 /**
@@ -26,7 +27,9 @@ export const loadedImportedTokensStore = derived(
   ([importedTokensStore, failedImportedTokenLedgerIds]) => {
     return (importedTokensStore.importedTokens ?? []).filter(
       ({ ledgerCanisterId }) =>
-        !failedImportedTokenLedgerIds.includes(ledgerCanisterId.toText())
+        !failedImportedTokenLedgerIds.includes(ledgerCanisterId.toText()) &&
+        // To avoid confusion, the imported tokens should not include important CK tokens.
+        !isImportantCkToken({ ledgerCanisterId })
     );
   }
 );

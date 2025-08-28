@@ -1,4 +1,5 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
+import { allCkTokens } from "$lib/constants/ck-canister-ids.constants";
 import {
   CKBTC_LEDGER_CANISTER_ID,
   CKTESTBTC_LEDGER_CANISTER_ID,
@@ -80,6 +81,14 @@ describe("ICRC tokens utils", () => {
       expect(
         isImportantCkToken({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID })
       ).toEqual(true);
+      expect(
+        isImportantCkToken({ ledgerCanisterId: CKTESTBTC_LEDGER_CANISTER_ID })
+      ).toEqual(true);
+      expect(
+        isImportantCkToken({
+          ledgerCanisterId: allCkTokens[0].ledgerCanisterId,
+        })
+      ).toEqual(true);
     });
 
     it("should return false for not important token ledger canisters", () => {
@@ -89,9 +98,6 @@ describe("ICRC tokens utils", () => {
       expect(isImportantCkToken({ ledgerCanisterId: OWN_CANISTER_ID })).toEqual(
         false
       );
-      expect(
-        isImportantCkToken({ ledgerCanisterId: CKTESTBTC_LEDGER_CANISTER_ID })
-      ).toEqual(false);
     });
   });
 });

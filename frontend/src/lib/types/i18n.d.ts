@@ -1375,6 +1375,7 @@ interface I18nImport_token {
   failed_tooltip: string;
   maximum_reached_tooltip: string;
   doc_link_label: string;
+  remove_imported: string;
 }
 
 interface I18nPortfolio {
