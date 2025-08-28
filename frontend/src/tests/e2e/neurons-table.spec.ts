@@ -123,6 +123,9 @@ test("Test neurons table", async ({ page, context, browser }) => {
     replacements: replacementNeuronIds,
   });
 
+  // wait because of the flaky screenshot test (https://github.com/dfinity/nns-dapp/pull/7306/commits/31ee26a1e0e242eed350b35c2d187377991b6fc1)
+  await page.waitForTimeout(1000);
+
   await expect(page).toHaveScreenshot("desktop.png");
   await page.setViewportSize({ width: 480, height: 960 });
   await expect(page).toHaveScreenshot("mobile.png");
