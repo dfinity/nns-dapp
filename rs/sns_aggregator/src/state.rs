@@ -167,7 +167,7 @@ impl State {
             STATE.with(|state| {
                 if state.stable.borrow().sns_cache.borrow().max_index < index {
                     state.stable.borrow().sns_cache.borrow_mut().max_index = index;
-                    Self::ensure_last_page_is_not_full_v1(state);
+                    Self::ensure_last_page_exists_and_is_not_full_v1(state);
                 }
             });
         }
@@ -270,10 +270,11 @@ impl State {
             bytes: json_data.into_bytes(),
         }
     }
+    /// If the last page does not exist, create an empty page.
     /// If the last page is full, create an empty next page.
-    fn ensure_last_page_is_not_full_v1(state: &State) {
+    fn ensure_last_page_exists_and_is_not_full_v1(state: &State) {
         let (last_page, last_page_entries) = {
-            let num_entries = state.stable.borrow().sns_cache.borrow().max_index + 1;
+            let num_entries = state.stable.borrow().sns_cache.borrow().upstream_data.len() as u64;
             (num_entries / State::PAGE_SIZE, num_entries % State::PAGE_SIZE)
         };
         if last_page_entries == 0 {
@@ -286,8 +287,8 @@ impl State {
 
     /// Commands to call on `init` or `post_upgrade`.
     pub fn setup() {
-        // Establish the invariant that the last page is not full.
-        STATE.with(Self::ensure_last_page_is_not_full_v1);
+        // Establish the invariant that the last page exists and is not full.
+        STATE.with(Self::ensure_last_page_exists_and_is_not_full_v1);
     }
 }
 
