@@ -106,17 +106,6 @@ fn get_canister_config() -> Config {
     STATE.with(|state| state.stable.borrow().config.borrow().clone())
 }
 
-/// API method to dump stable data, preserved across upgrades, as JSON.
-#[candid_method(query)]
-#[ic_cdk_macros::query]
-#[allow(clippy::expect_used)] // This is a query call, no real damage can ensue to this canister.
-fn stable_data() -> String {
-    STATE.with(|state| {
-        let to_serialize: &StableState = &state.stable.borrow();
-        serde_json::to_string(to_serialize).expect("Failed to serialize")
-    })
-}
-
 /// Get most recent log data
 #[candid_method(query)]
 #[ic_cdk_macros::query]
