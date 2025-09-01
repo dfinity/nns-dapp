@@ -14,8 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Added support for additional chain-key tokens.
-
 #### Changed
 
 #### Deprecated

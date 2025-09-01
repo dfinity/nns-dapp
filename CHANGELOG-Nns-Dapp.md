@@ -11,6 +11,16 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 138285
+
+### Application
+
+#### Added
+
+* Added support for additional chain-key tokens.
+
+### Operations
+
 ## Proposal 138051
 
 ### Application
