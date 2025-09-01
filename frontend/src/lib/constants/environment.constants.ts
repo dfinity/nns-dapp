@@ -15,6 +15,7 @@ export const PLAUSIBLE_DOMAIN = envVars.plausibleDomain;
 
 export interface FeatureFlags<T> {
   ENABLE_CKTESTBTC: T;
+  DISABLE_CKTOKENS: T;
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: T;
   ENABLE_DISBURSE_MATURITY: T;
   // Used only in tests and set up in jest-setup.ts
@@ -28,6 +29,7 @@ export interface FeatureFlags<T> {
 }
 export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_CKTESTBTC: false,
+  DISABLE_CKTOKENS: false,
   DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING: false,
   ENABLE_DISBURSE_MATURITY: false,
   TEST_FLAG_EDITABLE: false,
