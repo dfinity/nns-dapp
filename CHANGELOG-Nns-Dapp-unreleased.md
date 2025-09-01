@@ -24,6 +24,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+* Remove extra character from a Project's page details.
+
 #### Security
 
 #### Not Published
