@@ -16,13 +16,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Chain-key tokens sorting.
+
 #### Deprecated
 
 #### Removed
 
 #### Fixed
 
-* Remove extra character from a Project's page details.
+- Remove extra character from a Project's page details.
 
 #### Security
 
