@@ -13,7 +13,7 @@ export const loadCkBTCTokens = async () => {
   const enableCkBTCTest = get(ENABLE_CKTESTBTC);
   const disableCkTokens = get(DISABLE_CKTOKENS);
 
-  if (disableCkTokens) return undefined;
+  if (disableCkTokens) return;
 
   return Promise.all([
     loadIcrcToken({ ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID }),
