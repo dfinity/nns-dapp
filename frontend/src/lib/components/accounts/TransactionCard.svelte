@@ -4,6 +4,7 @@
   import ColumnRow from "$lib/components/ui/ColumnRow.svelte";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
+  import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import { i18n } from "$lib/stores/i18n";
   import type {
     TransactionIconType,
@@ -26,6 +27,7 @@
   let isFailed: boolean | undefined;
   let isReimbursement: boolean | undefined;
   let otherParty: string | undefined;
+  let memoText: string | undefined;
   let timestamp: Date | undefined;
   $: ({
     headline,
@@ -35,6 +37,7 @@
     isFailed,
     isReimbursement,
     otherParty,
+    memoText,
     timestamp,
   } = transaction);
 
@@ -78,6 +81,9 @@
       <div slot="start" class="identifier">
         {#if nonNullish(otherParty)}
           <Identifier size="medium" {label} identifier={otherParty} />
+        {/if}
+        {#if nonNullish(memoText) && $transactionMemoOptionStore === "show"}
+          <p class="value memo" data-tid="transaction-memo">Memo: {memoText}</p>
         {/if}
       </div>
 
@@ -143,5 +149,10 @@
 
   .icon {
     margin: var(--padding-0_5x) 0;
+  }
+
+  .memo {
+    margin-top: var(--padding-0_5x);
+    word-break: break-word;
   }
 </style>

@@ -41,6 +41,7 @@ export const sendICP = async ({
 }): Promise<BlockHeight> => {
   logWithTimestamp(`Sending icp call...`);
   const { canister } = await ledgerCanister({ identity });
+  console.log(memo);
 
   const response = await canister.transfer({
     to: AccountIdentifier.fromHex(to),

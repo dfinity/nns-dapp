@@ -288,6 +288,7 @@ export const transferICP = async ({
   sourceAccount,
   destinationAddress: to,
   amount,
+  memo,
 }: NewTransaction): Promise<{ success: boolean; err?: string }> => {
   try {
     const { identifier, subAccount } = sourceAccount;
@@ -322,6 +323,7 @@ export const transferICP = async ({
           to,
           fromSubAccount: subAccount,
           amount: tokenAmount.toE8s(),
+          memo,
           fee: feeE8s,
         }));
 

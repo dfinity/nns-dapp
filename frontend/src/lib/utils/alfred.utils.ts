@@ -5,6 +5,7 @@ import {
   type BalancePrivacyOptionData,
 } from "$lib/stores/balance-privacy-option.store";
 import { i18n } from "$lib/stores/i18n";
+import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
 import {
   IconCopy,
   IconDarkMode,
@@ -169,6 +170,22 @@ const getAlfredItems = (): AlfredItem[] => {
       action: () => balancePrivacyOptionStore.set("show"),
       contextFilter: (context) =>
         context.balancePrivacyOption === "hide" && context.isSignedIn,
+    },
+    {
+      id: "show-transaction-memo",
+      type: "action",
+      title: "Show transaction memo",
+      description: "Display memo input in transaction forms",
+      icon: IconDocument,
+      action: () => transactionMemoOptionStore.set("show"),
+    },
+    {
+      id: "hide-transaction-memo",
+      type: "action",
+      title: "Hide transaction memo",
+      description: "Hide memo input in transaction forms",
+      icon: IconDocument,
+      action: () => transactionMemoOptionStore.set("hide"),
     },
     {
       id: "log-in",
