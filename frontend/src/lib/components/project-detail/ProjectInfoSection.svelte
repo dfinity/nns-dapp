@@ -38,7 +38,7 @@
         >{/snippet}
     </KeyValuePair>
     <KeyValuePair>
-      {#snippet key()}>{$i18n.sns_project_detail.token_symbol}{/snippet}
+      {#snippet key()}{$i18n.sns_project_detail.token_symbol}{/snippet}
       {#snippet value()}
         <span class="value" data-tid="sns-project-detail-info-token-symbol"
           >{token.symbol}</span
