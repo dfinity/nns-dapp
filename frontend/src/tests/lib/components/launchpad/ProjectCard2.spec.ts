@@ -121,7 +121,7 @@ describe("ProjectCard2", () => {
       expect(await po.getParticipatedIcon().isPresent()).toBe(false);
     });
 
-    it("should display market cap", async () => {
+    it("should display fully diluted valuation", async () => {
       const totalTokenSupply = 25_000_000_000_000n;
       const tokenPrice = 2;
       setSnsProjects([
@@ -150,7 +150,7 @@ describe("ProjectCard2", () => {
       expect(await po.getMarketCapValue()).toEqual("$500k");
     });
 
-    it("should display '-' for market cap when price is not available", async () => {
+    it("should display '-' for fully diluted valuation when price is not available", async () => {
       const totalTokenSupply = 25_000_000_000_000n;
       const tokenPrice = undefined;
       setSnsProjects([
