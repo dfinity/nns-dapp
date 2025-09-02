@@ -1,4 +1,8 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import { CKUSDT_LEDGER_CANISTER_ID_TEXT } from "$lib/constants/ck-canister-ids.constants";
+import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
+import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/tokens.constants";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import type { UserToken } from "$lib/types/tokens-page";
@@ -18,6 +22,22 @@ export const isIcpToken = (token: UserToken) =>
   token.universeId.toText() === OWN_CANISTER_ID_TEXT;
 
 export const compareTokensIcpFirst = createDescendingComparator(isIcpToken);
+export const compareTokensCKBTCFirst = createDescendingComparator(
+  (token: UserToken) =>
+    token.universeId.toText() === CKBTC_UNIVERSE_CANISTER_ID.toText()
+);
+export const compareTokensCKUSDTFirst = createDescendingComparator(
+  (token: UserToken) =>
+    token.universeId.toText() === CKUSDT_LEDGER_CANISTER_ID_TEXT
+);
+export const compareTokensCKUSDCFirst = createDescendingComparator(
+  (token: UserToken) =>
+    token.universeId.toText() === CKUSDC_UNIVERSE_CANISTER_ID.toText()
+);
+export const compareTokensCKETHFirst = createDescendingComparator(
+  (token: UserToken) =>
+    token.universeId.toText() === CKETH_UNIVERSE_CANISTER_ID.toText()
+);
 
 export const compareFailedTokensLast = createAscendingComparator(
   (token: UserToken) => isUserTokenFailed(token)
@@ -55,8 +75,13 @@ export const compareTokensByImportance = createDescendingComparator(
   (token: UserToken) => ImportantCkTokenIds.indexOf(token.universeId.toText())
 );
 
+export const compareTokensImportantFirst = createDescendingComparator(
+  (token: UserToken) =>
+    ImportantCkTokenIds.indexOf(token.universeId.toText()) >= 0
+);
+
 export const compareTokensAlphabetically = createAscendingComparator(
-  ({ title }: UserToken) => title.toLowerCase()
+  (token: UserToken) => token.title?.toLowerCase() ?? ""
 );
 
 export const compareTokensByUsdBalance = createDescendingComparator(
@@ -74,6 +99,14 @@ export const compareTokensByProject = mergeComparators([
   compareTokensAlphabetically,
 ]);
 
+export const compareCkTokensByDefault = mergeComparators([
+  compareTokensCKBTCFirst,
+  compareTokensCKUSDTFirst,
+  compareTokensCKUSDCFirst,
+  compareTokensCKETHFirst,
+  compareTokensAlphabetically,
+]);
+
 // This is used when clicking the "Balance" header, but in addition to sorting
 // by balance, it has a number of tie breakers.
 // Note that it tries to sort by USD balance but also sorts tokens with balance
@@ -87,9 +120,14 @@ export const compareTokensByBalance = ({
     compareTokensIcpFirst,
     compareTokensByUsdBalance,
     compareTokenHasBalance,
-    compareTokensByImportance,
+    compareTokensImportantFirst,
+    compareTokensCKBTCFirst,
+    compareTokensCKUSDTFirst,
+    compareTokensCKUSDCFirst,
+    compareTokensCKETHFirst,
     compareTokensIsImported({ importedTokenIds }),
     compareFailedTokensLast,
+    compareTokensAlphabetically,
   ]);
 
 export const compareTokensForTokensTable = ({
