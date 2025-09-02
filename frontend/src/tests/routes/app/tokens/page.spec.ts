@@ -275,8 +275,8 @@ describe("Tokens route", () => {
           expect(await tokensPagePo.getTokenNames()).toEqual([
             "Internet Computer",
             "ckBTC",
-            "ckETH",
             "ckUSDC",
+            "ckETH",
             "Pacman",
             "Tetris",
           ]);
@@ -289,8 +289,8 @@ describe("Tokens route", () => {
           expect(await tokensPagePo.getRowsData()).toEqual([
             { projectName: "Internet Computer", balance: "1.23 ICP" },
             { projectName: "ckBTC", balance: "4.45 ckBTC" },
-            { projectName: "ckETH", balance: "4.14 ckETH" },
             { projectName: "ckUSDC", balance: "111.00 ckUSDC" },
+            { projectName: "ckETH", balance: "4.14 ckETH" },
             { projectName: "Pacman", balance: "3.14 PCMN" },
             { projectName: "Tetris", balance: "2.22 TST" },
           ]);
@@ -593,8 +593,8 @@ describe("Tokens route", () => {
           expect(await tokensPagePo.getTokenNames()).toEqual([
             "Internet Computer",
             "ckBTC",
-            "ckETH",
             "ckUSDC",
+            "ckETH",
             "Pacman",
             "Tetris",
           ]);

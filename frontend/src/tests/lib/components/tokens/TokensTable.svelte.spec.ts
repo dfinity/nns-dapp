@@ -509,8 +509,8 @@ describe("TokensTable", () => {
 
       expect(await getProjectNames(po)).toEqual([
         "Internet Computer",
-        "B",
         "A",
+        "B",
       ]);
 
       tokensTableOrderStore.set([
