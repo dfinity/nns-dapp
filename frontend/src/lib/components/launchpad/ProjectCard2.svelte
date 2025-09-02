@@ -3,6 +3,7 @@
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
   import IconParticpated from "$lib/components/ui/icons/IconParticpated.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
@@ -26,7 +27,6 @@
   } from "@dfinity/gix-components";
   import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
   import { onMount } from "svelte";
-  import TooltipIcon from "../ui/TooltipIcon.svelte";
 
   type Props = {
     project: SnsFullProject;
