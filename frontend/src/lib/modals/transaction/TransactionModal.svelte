@@ -58,6 +58,9 @@
   export let validateAmount: ValidateAmountFn = () => undefined;
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
+  // Optional transaction memo to include in the submission payload
+  export let memo: bigint | undefined = undefined;
+
   // Init configuration only once when component is mounting. The configuration should not vary when user interact with the form.
   let canSelectDestination = isNullish(transactionInit.destinationAddress);
   let canSelectSource = isNullish(transactionInit.sourceAccount);
@@ -169,6 +172,7 @@
         destinationAddress: selectedDestinationAddress,
         sourceAccount,
         amount,
+        memo,
       }}
       handleGoBack={goBack}
       {transactionFee}

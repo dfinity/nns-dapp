@@ -13,6 +13,8 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { ICPToken } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import Input from "$lib/components/ui/Input.svelte";
+  import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
 
   export let selectedAccount: Account | undefined = undefined;
 
@@ -21,6 +23,7 @@
   };
 
   let currentStep: WizardStep | undefined;
+  let memo: string = "";
 
   $: title =
     currentStep?.name === "Form"
@@ -33,7 +36,7 @@
 
   const dispatcher = createEventDispatcher();
   const transfer = async ({
-    detail: { sourceAccount, amount, destinationAddress },
+    detail: { sourceAccount, amount, destinationAddress, memo },
   }: CustomEvent<NewTransaction>) => {
     startBusy({
       initiator: "accounts",
@@ -46,6 +49,7 @@
       sourceAccount,
       destinationAddress,
       amount,
+      memo,
     });
 
     if (success) {
@@ -70,9 +74,32 @@
   bind:currentStep
   {transactionInit}
   transactionFee={$mainTransactionFeeStoreAsToken}
+  memo={memo ? BigInt(memo) : undefined}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value no-margin">
     {$i18n.accounts.icp_transaction_description}
   </p>
+  <svelte:fragment slot="additional-info-form">
+    {#if $transactionMemoOptionStore === "show"}
+      <Input
+        testId="transaction-memo-input"
+        name="memo"
+        inputType="number"
+        step={1}
+        minLength={1}
+        placeholderLabelKey="core.optional"
+        bind:value={memo}
+        autocomplete="off"
+        showInfo={false}
+      >
+        <div slot="label">Memo</div>
+      </Input>
+    {/if}
+  </svelte:fragment>
+  <svelte:fragment slot="additional-info-review">
+    {#if $transactionMemoOptionStore === "show" && memo}
+      <p class="value">Memo: {memo}</p>
+    {/if}
+  </svelte:fragment>
 </TransactionModal>
