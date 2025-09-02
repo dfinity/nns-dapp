@@ -26,6 +26,7 @@
   } from "@dfinity/gix-components";
   import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
   import { onMount } from "svelte";
+  import TooltipIcon from "../ui/TooltipIcon.svelte";
 
   type Props = {
     project: SnsFullProject;
@@ -86,9 +87,14 @@
     </div>
     <ul class="stats">
       <li class="stat-item">
-        <h6 class="stat-label"
-          >{$i18n.launchpad_cards.project_card_market_cap}</h6
-        >
+        <h6 class="stat-label fdv">
+          {$i18n.launchpad_cards.project_card_fully_diluted_valuation}
+          <TooltipIcon
+            iconSize={16}
+            text={$i18n.launchpad_cards
+              .project_card_fully_diluted_valuation_tooltip}
+          />
+        </h6>
         <div class="stat-value">
           <IconCoin size="16px" />
           <span data-tid="token-market-cap">${formattedMarketCapUsd}</span>
@@ -223,6 +229,12 @@
         h6 {
           @include launchpad.text_h6;
           margin: 0;
+        }
+
+        .stat-label.fdv {
+          display: flex;
+          align-items: center;
+          gap: var(--padding-0_5x);
         }
 
         .stat-value {

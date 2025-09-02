@@ -24,7 +24,7 @@ export const NNS_TOKEN: TokensStoreUniverseData = {
 };
 
 // Tokens that have significance within the Internet Computer ecosystem.
-// The fixed order maps to a descending order in the market cap of the underlying native tokens.
+// The fixed order maps to a descending order in the fully diluted valuation of the underlying native tokens.
 export const IMPORTANT_CK_TOKEN_IDS = [
   CKBTC_UNIVERSE_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
