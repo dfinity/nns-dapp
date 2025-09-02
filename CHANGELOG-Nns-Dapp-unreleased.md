@@ -16,6 +16,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Changed Project's card stat Market Cap to Fully Diluted Valuation.
+
 #### Deprecated
 
 #### Removed
