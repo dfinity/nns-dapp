@@ -566,6 +566,9 @@ export const convertDtoTopicInfo = ({
   native_functions: toNullable(native_functions.map(convertNervousFunction)),
   custom_functions: toNullable(custom_functions.map(convertNervousFunction)),
   is_critical: toNullable(is_critical),
+  // NOTE: This field has been initialized to [] as we don't use it for now.
+  // It was added to ic-js in https://github.com/dfinity/ic-js/pull/1032/files
+  extension_operations: [],
 });
 
 export const convertDtoToListTopicsResponse = ({
