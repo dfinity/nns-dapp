@@ -71,6 +71,7 @@ describe("ProposalSystemInfoSection", () => {
       name: [topicName],
       description: [topicDescription],
       custom_functions: [],
+      extension_operations: [],
     };
     const {
       rewardStatusString,

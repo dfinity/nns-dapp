@@ -25,6 +25,7 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     name: ["Known topic name"],
     description: ["Known topic description"],
     custom_functions: [[]],
+    extension_operations: [],
   };
   const neuronId1: SnsNeuronId = { id: Uint8Array.from([1, 2, 3]) };
   const neuronId2: SnsNeuronId = { id: Uint8Array.from([4, 5, 6]) };

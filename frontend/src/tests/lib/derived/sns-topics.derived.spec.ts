@@ -88,6 +88,7 @@ describe("sns topics store", () => {
               description: ["This is a description"],
               is_critical: [false],
               name: ["Topic1"],
+              extension_operations: [],
               native_functions: [
                 [
                   {
