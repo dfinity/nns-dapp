@@ -1070,6 +1070,8 @@ describe("sns aggregator converters utils", () => {
           is_critical: [false],
           name: ["DAO community settings"],
           description: ["Description 2"],
+
+          extension_operations: [],
           custom_functions: [
             [
               {
@@ -1173,6 +1175,7 @@ describe("sns aggregator converters utils", () => {
                     },
                   ],
                 ],
+                extension_operations: [],
               },
               // Unknown TopicInfo
               {
@@ -1186,6 +1189,7 @@ describe("sns aggregator converters utils", () => {
                 name: ["Unknown topic name"],
                 description: ["Unknown topic description"],
                 custom_functions: [[]],
+                extension_operations: [],
               },
             ],
           ],
