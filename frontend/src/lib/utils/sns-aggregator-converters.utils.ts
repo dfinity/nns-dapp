@@ -567,7 +567,7 @@ export const convertDtoTopicInfo = ({
   custom_functions: toNullable(custom_functions.map(convertNervousFunction)),
   is_critical: toNullable(is_critical),
   // NOTE: This field has been initialized to [] as we don't use it for now.
-  // It was added to ic-js in https://github.com/dfinity/ic-js/pull/1032/files
+  // It was added to ic-js in https://github.com/dfinity/ic-js/pull/1032/files#diff-684ab36c5e16fec984732ec9c53e9fe5690f4dddf1ddd713d7fd48a210de5707R1051
   extension_operations: [],
 });
 
