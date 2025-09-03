@@ -1658,7 +1658,7 @@ describe("snsProjectIcpInTreasuryPercentage", () => {
 });
 
 describe("snsProjectMarketCap", () => {
-  it("should calculate project market cap", () => {
+  it("should calculate project fully diluted valuation", () => {
     const rootCanisterId = rootCanisterIdMock;
     const totalTokenSupply = 25_000_000_000_000n;
     const tokenPrice = 2;

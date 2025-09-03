@@ -65,7 +65,7 @@ export const compareTokensIsImported = ({
 
 // These tokens should be placed before others (but after ICP)
 // because they have significance within the Internet Computer ecosystem and deserve to be highlighted.
-// Where the fixed order maps to a descending order in the market cap of the underlying native tokens.
+// Where the fixed order maps to a descending order in the fully diluted valuation of the underlying native tokens.
 const ImportantCkTokenIds = IMPORTANT_CK_TOKEN_IDS.map((token) =>
   token.toText()
 )

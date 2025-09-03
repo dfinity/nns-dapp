@@ -511,8 +511,8 @@ export const snsProjectIcpInTreasuryPercentage = (
 };
 
 /**
- * Calculates the market cap of the SNS project.
- * Market cap is calculated as:
+ * Calculates the fully diluted valuation of the SNS project.
+ * FDV is calculated as:
  * total supply of the SNS token * token price of the token in USD
  */
 export const snsProjectMarketCap = ({
