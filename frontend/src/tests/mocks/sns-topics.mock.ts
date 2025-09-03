@@ -63,4 +63,5 @@ export const topicInfoMock: SnsTopicInfo = {
   name: ["Topic name"],
   description: ["Topic description"],
   custom_functions: [],
+  extension_operations: [],
 };

@@ -1113,6 +1113,7 @@ describe("sns aggregator converters utils", () => {
           name: ["Unknown topic name"],
           description: ["Unknown topic description"],
           custom_functions: [[]],
+          extension_operations: [],
         };
         expect(convertDtoTopicInfo(unknownTopicInfo)).toEqual(
           expectedUnknownTopicInfo
