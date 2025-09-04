@@ -16,6 +16,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+* Chain-key tokens sorting.
 * Changed Project's card stat Market Cap to Fully Diluted Valuation.
 
 #### Deprecated
