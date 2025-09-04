@@ -22,11 +22,19 @@ export class PortfolioPagePo extends BasePageObject {
     return this.getElement("start-staking-card");
   }
 
+  getNoHeldIcpCardPo(): PageObjectElement {
+    return this.getElement("no-held-icp-card");
+  }
+
   getNoHeldTokensCard(): PageObjectElement {
     return this.getElement("no-held-tokens-card");
   }
 
-  getNoStakedTokensCarPo(): PageObjectElement {
+  getNoStakedIcpCardPo(): PageObjectElement {
+    return this.getElement("no-staked-icp-card");
+  }
+
+  getNoStakedTokensCardPo(): PageObjectElement {
     return this.getElement("no-staked-tokens-card");
   }
 
@@ -64,12 +72,20 @@ export class PortfolioPagePo extends BasePageObject {
     return StakedTokensCardPo.under({ element: this.root });
   }
 
+  getHeldIcpSkeletonCard(): PageObjectElement {
+    return this.getElement("held-icp-skeleton-card");
+  }
+
   getHeldTokensSkeletonCard(): PageObjectElement {
     return this.getElement("held-tokens-skeleton-card");
   }
 
   getStakedTokensSkeletonCard(): PageObjectElement {
     return this.getElement("staked-tokens-skeleton-card");
+  }
+
+  getStakedIcpSkeletonCard(): PageObjectElement {
+    return this.getElement("staked-icp-skeleton-card");
   }
 
   getStackedCardsPo(): StackedCardsPo {
