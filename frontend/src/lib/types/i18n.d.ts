@@ -199,6 +199,7 @@ interface I18nAlfred {
   log_in_description: string;
   log_out_title: string;
   log_out_description: string;
+  search_placeholder: string;
 }
 
 interface I18nHeader {

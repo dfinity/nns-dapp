@@ -147,7 +147,7 @@
           <Input
             inputType="text"
             name="alfred-search"
-            placeholder="Search for pages or actions..."
+            placeholder={$i18n.alfred.search_placeholder}
             autocomplete="off"
             spellcheck={false}
             testId="alfred-input"

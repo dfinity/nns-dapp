@@ -191,7 +191,8 @@
     "log_in_title": "Log In",
     "log_in_description": "Log in to your account",
     "log_out_title": "Log Out",
-    "log_out_description": "Log out of your account"
+    "log_out_description": "Log out of your account",
+    "search_placeholder": "Search for pages or actions..."
   },
   "header": {
     "menu": "Open menu to access navigation options",
