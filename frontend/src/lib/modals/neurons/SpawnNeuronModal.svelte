@@ -97,7 +97,9 @@
   bind:currentStep
   onClose={() => dispatcher("nnsClose")}
 >
-  {#snippet title()}{currentStep?.title ?? steps[0].title}{/snippet}
+  {#snippet title()}
+    {currentStep?.title ?? steps[0].title}
+  {/snippet}
   {#if currentStep?.name === "SelectPercentage"}
     <NeuronSelectPercentage
       availableMaturityE8s={neuron.fullNeuron?.maturityE8sEquivalent ?? 0n}

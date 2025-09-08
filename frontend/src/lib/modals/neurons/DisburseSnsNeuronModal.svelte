@@ -115,10 +115,12 @@
   {steps}
   testId="disburse-sns-neuron-modal-component"
 >
-  {#snippet title()}<span data-tid="disburse-sns-neuron-modal"
-      >{currentStep?.title}</span
-    >{/snippet}
-  >
+  {#snippet title()}
+    <span data-tid="disburse-sns-neuron-modal">
+      {currentStep?.title}
+    </span>
+  {/snippet}
+
   {#if currentStep?.name === "ConfirmDisburse" && destinationAddress !== undefined}
     <ConfirmDisburseNeuron
       on:nnsClose
