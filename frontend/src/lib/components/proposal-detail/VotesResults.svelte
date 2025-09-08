@@ -8,6 +8,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
   import { Html, IconExpandMore } from "@dfinity/gix-components";
+  import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
 
   const formatVotingPower = (value: number) =>
@@ -59,6 +60,7 @@
     deadlineTimestampSeconds?: bigint;
     immediateMajorityPercent: number;
     standardMajorityPercent: number;
+    status?: ProposalInfo["status"];
   };
   const {
     yes,
@@ -67,6 +69,7 @@
     deadlineTimestampSeconds,
     immediateMajorityPercent,
     standardMajorityPercent,
+    status,
   }: Props = $props();
 
   const yesProportion = $derived(total ? yes / total : 0);
@@ -100,6 +103,11 @@
           }
         )
       : $i18n.proposal_detail__vote.immediate_majority_description
+  );
+  const remainingTimeLabel = $derived(
+    nonNullish(status) && status === ProposalStatus.Executed
+      ? $i18n.proposal_detail__vote.expiration_after_execution
+      : $i18n.proposal_detail__vote.expiration
   );
 
   const standardMajorityTitle = $derived(
@@ -222,7 +230,7 @@
     <div class="remain" data-tid="remain">
       {#if canStillVote}
         <span class="caption description">
-          {$i18n.proposal_detail__vote.expiration}
+          {remainingTimeLabel}
         </span>
         <div class="caption value">
           <Countdown {deadlineTimestampSeconds} />

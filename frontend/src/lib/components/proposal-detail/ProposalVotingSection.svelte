@@ -31,6 +31,7 @@
   const standardMajorityPercent = $derived(
     basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER)
   );
+  const status = $derived(proposalInfo?.status);
 </script>
 
 <VotesResults
@@ -40,6 +41,7 @@
   deadlineTimestampSeconds={proposalInfo.deadlineTimestampSeconds}
   {immediateMajorityPercent}
   {standardMajorityPercent}
+  {status}
 />
 
 {#if !settled}

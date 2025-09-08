@@ -721,6 +721,7 @@ interface I18nProposal_detail__vote {
   vote_status_registering: string;
   vote_status_updating: string;
   expiration: string;
+  expiration_after_execution: string;
   decision_intro: string;
   standard_majority: string;
   standard_majority_description: string;
