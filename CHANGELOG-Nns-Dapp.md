@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 138366
+
+### Application
+
+#### Changed
+
+* Chain-key tokens sorting.
+* Changed Project's card stat Market Cap to Fully Diluted Valuation.
+
+#### Fixed
+
+* Remove extra character from a Project's page details.
+
+### Operations
+
 ## Proposal 138285
 
 ### Application
