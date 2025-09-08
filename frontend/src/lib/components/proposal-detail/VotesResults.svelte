@@ -104,7 +104,7 @@
         )
       : $i18n.proposal_detail__vote.immediate_majority_description
   );
-  const remainingTimeLabel = $derived(
+  const expirationLabel = $derived(
     nonNullish(status) && status === ProposalStatus.Executed
       ? $i18n.proposal_detail__vote.expiration_after_execution
       : $i18n.proposal_detail__vote.expiration
@@ -230,10 +230,10 @@
     <div class="remain" data-tid="remain">
       {#if canStillVote}
         <span class="caption description">
-          {remainingTimeLabel}
+          {expirationLabel}
         </span>
         <div class="caption value">
-          <Countdown {deadlineTimestampSeconds} />
+          <Countdown {deadlineTimestampSeconds} withLabel={false} />
         </div>
       {/if}
     </div>
