@@ -11,7 +11,7 @@ version = "2.0.126"
 
 [workspace.dependencies]
 ic-cdk = "0.18.4"
-ic-cdk-macros = "0.17.0"
+ic-cdk-macros = "0.18.5"
 ic-cdk-timers = "0.12.0"
 ic-management-canister-types = "0.1.0"
 

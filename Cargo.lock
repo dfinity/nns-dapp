@@ -1755,7 +1755,7 @@ checksum = "4efb278f5d3ef033b3eed7f01f1096eaf67701896aa5ef69f5eddf5a84833dc0"
 dependencies = [
  "candid",
  "ic-cdk-executor",
- "ic-cdk-macros 0.18.7",
+ "ic-cdk-macros",
  "ic-error-types 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ic-management-canister-types 0.3.3",
  "ic0",
@@ -1773,20 +1773,6 @@ checksum = "99f4ee8930fd2e491177e2eb7fff53ee1c407c13b9582bdc7d6920cf83109a2d"
 dependencies = [
  "ic0",
  "slotmap",
-]
-
-[[package]]
-name = "ic-cdk-macros"
-version = "0.17.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "84cbaa50fa36d3e0616114becf81faa95a099e0d60948ed6978f30f1c77399fd"
-dependencies = [
- "candid",
- "proc-macro2",
- "quote",
- "serde",
- "serde_tokenstream",
- "syn 2.0.106",
 ]
 
 [[package]]
@@ -4055,7 +4041,7 @@ dependencies = [
  "hex",
  "ic-base-types",
  "ic-cdk",
- "ic-cdk-macros 0.17.2",
+ "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-certified-map 0.3.4",
  "ic-crypto-sha2",
@@ -4569,7 +4555,7 @@ dependencies = [
  "ic-base-types",
  "ic-btc-interface",
  "ic-cdk",
- "ic-cdk-macros 0.17.2",
+ "ic-cdk-macros",
  "ic-crypto-sha2",
  "ic-management-canister-types 0.1.0",
  "ic-nervous-system-common",
@@ -5155,18 +5141,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "serde_tokenstream"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "64060d864397305347a78851c51588fd283767e7e7589829e8121d65512340f1"
-dependencies = [
- "proc-macro2",
- "quote",
- "serde",
- "syn 2.0.106",
-]
-
-[[package]]
 name = "serde_with"
 version = "1.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5311,7 +5285,7 @@ dependencies = [
  "dfn_candid",
  "ic-base-types",
  "ic-cdk",
- "ic-cdk-macros 0.17.2",
+ "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-certified-map 0.3.2",
  "ic-management-canister-types 0.1.0",
