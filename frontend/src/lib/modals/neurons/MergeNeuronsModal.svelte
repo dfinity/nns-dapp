@@ -67,8 +67,9 @@
   bind:this={modal}
   onClose={() => dispatcher("nnsClose")}
 >
-  {#snippet title()}{currentStep?.title ??
-      $i18n.neurons.merge_neurons_modal_title}{/snippet}
+  {#snippet title()}
+    {currentStep?.title ?? $i18n.neurons.merge_neurons_modal_title}
+  {/snippet}
   {#if currentStep?.name === "SelectNeurons"}
     <SelectNeuronsToMerge on:nnsSelect={handleNeuronSelection} on:nnsClose />
   {/if}
