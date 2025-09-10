@@ -29,8 +29,7 @@
 </script>
 
 <Modal testId="sns-topic-definitions-modal-component" {onClose}>
-  {#snippet title()}{$i18n.follow_sns_topics.topic_definitions_title}
-  {/snippet}
+  {#snippet title()}{$i18n.follow_sns_topics.topic_definitions_title}{/snippet}
 
   <p class="description"
     >{$i18n.follow_sns_topics.topic_definitions_description}</p

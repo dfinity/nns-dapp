@@ -36,8 +36,7 @@
 </script>
 
 <Modal testId="buy-icp-modal-component" onClose={close}>
-  {#snippet title()}{$i18n.accounts.buy_icp}
-  {/snippet}
+  {#snippet title()}<span>{$i18n.accounts.buy_icp}</span>{/snippet}
 
   <div class="content">
     <div>

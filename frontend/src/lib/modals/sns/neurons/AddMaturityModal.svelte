@@ -49,8 +49,7 @@
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
 <Modal role="alert" onClose={close}>
-  {#snippet title()}<span>{`Add Sns Neuron Maturity`}</span>
-  {/snippet}
+  {#snippet title()}<span>{`Add Sns Neuron Maturity`}</span>{/snippet}
 
   <form
     id="get-icp-form"

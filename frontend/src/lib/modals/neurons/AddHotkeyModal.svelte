@@ -37,8 +37,7 @@
 </script>
 
 <Modal onClose={close} testId="add-hotkey-neuron-modal">
-  {#snippet title()}{$i18n.neuron_detail.add_hotkey_modal_title}
-  {/snippet}
+  {#snippet title()}{$i18n.neuron_detail.add_hotkey_modal_title}{/snippet}
 
   <AddPrincipal bind:principal on:nnsSelectPrincipal={add} on:nnsClose>
     <span slot="title">{$i18n.neuron_detail.enter_hotkey}</span>

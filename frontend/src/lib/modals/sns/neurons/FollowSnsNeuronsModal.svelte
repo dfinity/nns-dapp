@@ -25,8 +25,7 @@
   testId="follow-sns-neurons-modal"
   --modal-content-overflow-y="scroll"
 >
-  {#snippet title()}{$i18n.neurons.follow_neurons_screen}
-  {/snippet}
+  {#snippet title()}{$i18n.neurons.follow_neurons_screen}{/snippet}
   <p class="description">{$i18n.follow_neurons.description}</p>
 
   <Separator spacing="medium" />

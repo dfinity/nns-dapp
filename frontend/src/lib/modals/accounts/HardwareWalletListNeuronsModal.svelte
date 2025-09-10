@@ -9,8 +9,7 @@
 </script>
 
 <Modal onClose={close}>
-  {#snippet title()}{$i18n.neurons.title}
-  {/snippet}
+  {#snippet title()}<span>{$i18n.neurons.title}</span>{/snippet}
 
   <div>
     <HardwareWalletNeurons />
