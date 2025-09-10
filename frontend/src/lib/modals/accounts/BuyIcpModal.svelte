@@ -4,6 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { Html, Modal } from "@dfinity/gix-components";
+  import { createEventDispatcher } from "svelte";
 
   export let account: Account;
 
@@ -29,10 +30,14 @@
   $: url = `https://checkout.banxa.com/?${Object.entries(queryParams)
     .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
     .join("&")}`;
+
+  const dispatch = createEventDispatcher();
+  const close = () => dispatch("nnsClose");
 </script>
 
-<Modal testId="buy-icp-modal-component" on:nnsClose>
-  <span slot="title">{$i18n.accounts.buy_icp}</span>
+<Modal testId="buy-icp-modal-component" onClose={close}>
+  {#snippet title()}{$i18n.accounts.buy_icp}
+  {/snippet}
 
   <div class="content">
     <div>

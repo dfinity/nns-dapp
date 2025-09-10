@@ -24,6 +24,8 @@
 
   const dispatcher = createEventDispatcher();
 
+  const close = () => dispatcher("nnsClose");
+
   let votingPowerRefreshedTimestampSeconds: bigint;
   $: votingPowerRefreshedTimestampSeconds =
     // the value should always be defined
@@ -76,18 +78,20 @@
     } finally {
       updating = false;
       stopBusy("dev-update-voting-power-refreshed");
-      dispatcher("nnsClose");
+      close();
     }
   };
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
 <Modal
+  onClose={close}
   role="alert"
-  on:nnsClose
   testId="update-voting-power-refreshed-modal-component"
 >
-  <span slot="title">Voting Power Refreshed Timestamp</span>
+  {#snippet title()}
+    <span>Voting Power Refreshed Timestamp</span>
+  {/snippet}
 
   <form
     class="form"
@@ -127,11 +131,11 @@
     </div>
   </form>
 
+    {#snippet footer()}
   <button
     data-tid="confirm-update-voting-power-refreshed-button"
     form="dev-update-voting-power-refreshed"
     class="primary"
-    slot="footer"
     disabled={isNullish(toBigInt(secondsValue)) || updating}
     on:click={onSubmit}
   >
@@ -141,6 +145,7 @@
       Update
     {/if}
   </button>
+    {/snippet}
 </Modal>
 
 <style lang="scss">

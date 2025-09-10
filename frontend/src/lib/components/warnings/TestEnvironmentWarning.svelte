@@ -13,16 +13,18 @@
 </script>
 
 <Modal
-  bind:visible
+  {visible}
   role="alert"
-  on:nnsClose={close}
+  onClose={close}
   testId="test-env-warning"
   disablePointerEvents={true}
 >
-  <div class="title" slot="title">
-    <IconWarning />
-    {$i18n.warning.test_env_title}
-  </div>
+  {#snippet title()}
+    <div class="title">
+      <IconWarning />
+      {$i18n.warning.test_env_title}
+    </div>
+  {/snippet}
 
   <p>
     <Html text={$i18n.warning.test_env_note} />

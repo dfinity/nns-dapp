@@ -26,11 +26,9 @@
   const close = () => dispatch("nnsClose");
 </script>
 
-<Modal on:nnsClose testId="sns-active-disbursements-modal">
-  <svelte:fragment slot="title"
-    >{$i18n.neuron_detail
-      .view_active_disbursements_modal_title}</svelte:fragment
-  >
+<Modal onClose={close} testId="sns-active-disbursements-modal">
+  {#snippet title()}{$i18n.neuron_detail
+      .view_active_disbursements_modal_title}{/snippet}
 
   <div class="content">
     <KeyValuePair>

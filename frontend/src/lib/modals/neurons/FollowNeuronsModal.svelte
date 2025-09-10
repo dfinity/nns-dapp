@@ -13,12 +13,11 @@
 
 <Modal
   testId="follow-neurons-modal-component"
-  on:nnsClose={onClose}
+  {onClose}
   --modal-content-overflow-y="scroll"
 >
-  <svelte:fragment slot="title"
-    >{$i18n.neurons.follow_neurons_screen}</svelte:fragment
-  >
+  {#snippet title()}{$i18n.neurons.follow_neurons_screen}
+  {/snippet}
   <EditFollowNeurons {neuronId} />
   <div class="toolbar">
     <button data-tid="close-button" class="secondary" onclick={onClose}>

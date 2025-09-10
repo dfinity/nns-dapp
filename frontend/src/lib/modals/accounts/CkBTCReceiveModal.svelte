@@ -80,19 +80,21 @@
 
   const dispatcher = createEventDispatcher();
 
+  const close = () => dispatcher("nnsClose");
+
   const reloadAccountAndClose = async () => {
     startBusy({
       initiator: "reload-receive-account",
     });
 
     await reload?.();
-    dispatcher("nnsClose");
+    close();
 
     stopBusy("reload-receive-account");
   };
 
-  let title: string;
-  $: title = replacePlaceholders($i18n.wallet.token_address, {
+  let titleStr: string;
+  $: titleStr = replacePlaceholders($i18n.wallet.token_address, {
     $tokenSymbol: tokenLabel,
   });
 
@@ -120,12 +122,14 @@
   $: loadBitcoinAddress(account?.identifier);
 </script>
 
-<Modal testId="ckbtc-receive-modal" on:nnsClose on:introend={onIntroEnd}>
-  <span slot="title"
-    >{replacePlaceholders($i18n.core.receive_with_token, {
-      $token: tokenLabel,
-    })}</span
-  >
+<Modal testId="ckbtc-receive-modal" onClose={close} {onIntroEnd}>
+  {#snippet title()}
+    <span
+      >{replacePlaceholders($i18n.core.receive_with_token, {
+        $token: tokenLabel,
+      })}</span
+    >
+  {/snippet}
 
   <div class="receive">
     <Segment bind:selectedSegmentId bind:this={segment}>
@@ -156,7 +160,7 @@
       logoArialLabel={tokenLabel}
       bind:qrCodeRendered
     >
-      <svelte:fragment slot="address-label">{title}</svelte:fragment>
+      <svelte:fragment slot="address-label">{titleStr}</svelte:fragment>
 
       <svelte:fragment slot="additional-information">
         {#if bitcoin}
