@@ -131,21 +131,21 @@
     </div>
   </form>
 
-    {#snippet footer()}
-  <button
-    data-tid="confirm-update-voting-power-refreshed-button"
-    form="dev-update-voting-power-refreshed"
-    class="primary"
-    disabled={isNullish(toBigInt(secondsValue)) || updating}
-    on:click={onSubmit}
-  >
-    {#if updating}
-      <Spinner />
-    {:else}
-      Update
-    {/if}
-  </button>
-    {/snippet}
+  {#snippet footer()}
+    <button
+      data-tid="confirm-update-voting-power-refreshed-button"
+      form="dev-update-voting-power-refreshed"
+      class="primary"
+      disabled={isNullish(toBigInt(secondsValue)) || updating}
+      on:click={onSubmit}
+    >
+      {#if updating}
+        <Spinner />
+      {:else}
+        Update
+      {/if}
+    </button>
+  {/snippet}
 </Modal>
 
 <style lang="scss">

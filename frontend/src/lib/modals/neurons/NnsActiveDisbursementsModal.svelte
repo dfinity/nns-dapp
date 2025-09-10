@@ -24,7 +24,7 @@
 
 <Modal onClose={close} testId="nns-active-disbursements-modal">
   {#snippet title()}
-      {$i18n.neuron_detail.view_active_disbursements_modal_title}
+    {$i18n.neuron_detail.view_active_disbursements_modal_title}
   {/snippet}
 
   <div class="content">
