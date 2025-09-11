@@ -32,7 +32,7 @@ const IC_00: CanisterId = CanisterId::ic_00();
 ///
 /// TODO: Provide useful metrics at `http://${canister_domain}/metrics`
 #[candid_method(query)]
-#[ic_cdk_macros::query]
+#[ic_cdk::query]
 fn health_check() -> String {
     STATE.with(|state| {
         let last_partial_update = state.stable.borrow().sns_cache.borrow().last_partial_update / 1_000_000_000;
@@ -84,7 +84,7 @@ struct CanisterStatusResultV2 {
 
 /// API method to get cycle balance and burn rate.
 #[candid_method(update)]
-#[ic_cdk_macros::update]
+#[ic_cdk::update]
 #[allow(clippy::panic)] // This is a readonly function, only a rather arcane reason prevents it from being a query call.
 async fn get_canister_status() -> CanisterStatusResultV2 {
     let own_canister_id = ic_cdk::api::id();
@@ -100,7 +100,7 @@ async fn get_canister_status() -> CanisterStatusResultV2 {
 
 /// API method to get the current configuration.
 #[candid_method(query)]
-#[ic_cdk_macros::query]
+#[ic_cdk::query]
 #[allow(clippy::expect_used)] // This is a query call, no real damage can ensue to this canister.
 fn get_canister_config() -> Config {
     STATE.with(|state| state.stable.borrow().config.borrow().clone())
@@ -108,7 +108,7 @@ fn get_canister_config() -> Config {
 
 /// Get most recent log data
 #[candid_method(query)]
-#[ic_cdk_macros::query]
+#[ic_cdk::query]
 fn tail_log(limit: Option<u16>) -> String {
     let limit = limit.unwrap_or(200) as usize;
     STATE.with(|state| {
@@ -130,7 +130,7 @@ fn tail_log(limit: Option<u16>) -> String {
 /// see the Candid [cost model](https://github.com/dfinity/candid/blob/f324a1686d6f2bd4fba9307a37f8e3f90cc7222b/rust/candid/src/de.rs#L170)
 /// for more details.
 #[candid_method(query)]
-#[ic_cdk_macros::query(decoding_quota = 10000)]
+#[ic_cdk::query(decoding_quota = 10000)]
 fn http_request(req: HttpRequest) -> HttpResponse {
     match req.url.as_ref() {
         "/__candid" => HttpResponse::from(__export_service()),
@@ -143,7 +143,7 @@ fn http_request(req: HttpRequest) -> HttpResponse {
 ///
 /// Note: If the canister is created with e.g. `dfx canister create`
 ///       and then `dfx deploy`, `init(..)` is never called.
-#[ic_cdk_macros::init]
+#[ic_cdk::init]
 #[candid_method(init)]
 fn init(config: Option<Config>) {
     crate::state::log("Calling init...".to_string());
@@ -151,7 +151,7 @@ fn init(config: Option<Config>) {
 }
 
 /// Function called before upgrade to a new WASM.
-#[ic_cdk_macros::pre_upgrade]
+#[ic_cdk::pre_upgrade]
 fn pre_upgrade() {
     // Make an effort to save state.  If it doesn't work, it doesn't matter much
     // as the data will be fetched from upstream anew.  There will be a period in
@@ -174,7 +174,7 @@ fn pre_upgrade() {
 }
 
 /// Function called after a canister has been upgraded to a new WASM.
-#[ic_cdk_macros::post_upgrade]
+#[ic_cdk::post_upgrade]
 fn post_upgrade(config: Option<Config>) {
     crate::state::log("Calling post_upgrade...".to_string());
     // Make an effort to restore state.  If it doesn't work, give up.
@@ -201,7 +201,7 @@ fn post_upgrade(config: Option<Config>) {
 /// Note: This _could_ be exposed in production if limited to the controllers
 ///  - Controllers can be obtained by the async call: `agent.read_state_canister_info(canister_id, "controllers")`
 #[cfg(feature = "reconfigurable")]
-#[ic_cdk_macros::update]
+#[ic_cdk::update]
 #[candid_method(update)]
 fn reconfigure(config: Option<Config>) {
     setup(config);
@@ -271,7 +271,7 @@ fn setup(config: Option<Config>) {
 export_service!();
 
 /// Returns candid describing the interface.
-#[ic_cdk_macros::query]
+#[ic_cdk::query]
 fn interface() -> String {
     __export_service()
 }

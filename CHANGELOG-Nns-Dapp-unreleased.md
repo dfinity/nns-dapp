@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Adds contextual labels to a proposal expiration section
+
 #### Changed
 
 #### Deprecated
