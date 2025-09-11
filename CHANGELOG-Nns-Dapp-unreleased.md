@@ -18,6 +18,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Extend session timeout to 60 minutes (from 30 minutes).
+
 #### Deprecated
 
 #### Removed
