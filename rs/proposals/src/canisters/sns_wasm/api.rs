@@ -29,6 +29,7 @@ pub struct SnsWasm {
     pub proposal_id: Option<u64>,
     pub canister_type: i32,
 }
+/// ! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-28_03-17-snapshot-feature/rs/nns/sns-wasm/canister/sns-wasm.did>
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddWasmRequest {
     pub hash: serde_bytes::ByteBuf,
@@ -63,10 +64,13 @@ pub struct DappCanisters {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct LinearScalingCoefficient {
     pub slope_numerator: Option<u64>,
-    pub intercept_icp_e8s: Option<u64>,
-    pub from_direct_participation_icp_e8s: Option<u64>,
+    #[serde(rename = "intercept_icp_e8s")]
+    pub intercept_icp_e_8_s: Option<u64>,
+    #[serde(rename = "from_direct_participation_icp_e8s")]
+    pub from_direct_participation_icp_e_8_s: Option<u64>,
     pub slope_denominator: Option<u64>,
-    pub to_direct_participation_icp_e8s: Option<u64>,
+    #[serde(rename = "to_direct_participation_icp_e8s")]
+    pub to_direct_participation_icp_e_8_s: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct IdealMatchedParticipationFunction {
@@ -75,20 +79,24 @@ pub struct IdealMatchedParticipationFunction {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronsFundParticipationConstraints {
     pub coefficient_intervals: Vec<LinearScalingCoefficient>,
-    pub max_neurons_fund_participation_icp_e8s: Option<u64>,
-    pub min_direct_participation_threshold_icp_e8s: Option<u64>,
+    #[serde(rename = "max_neurons_fund_participation_icp_e8s")]
+    pub max_neurons_fund_participation_icp_e_8_s: Option<u64>,
+    #[serde(rename = "min_direct_participation_threshold_icp_e8s")]
+    pub min_direct_participation_threshold_icp_e_8_s: Option<u64>,
     pub ideal_matched_participation_function: Option<IdealMatchedParticipationFunction>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct TreasuryDistribution {
-    pub total_e8s: u64,
+    #[serde(rename = "total_e8s")]
+    pub total_e_8_s: u64,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronDistribution {
     pub controller: Option<Principal>,
     pub dissolve_delay_seconds: u64,
     pub memo: u64,
-    pub stake_e8s: u64,
+    #[serde(rename = "stake_e8s")]
+    pub stake_e_8_s: u64,
     pub vesting_period_seconds: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -97,8 +105,10 @@ pub struct DeveloperDistribution {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct SwapDistribution {
-    pub total_e8s: u64,
-    pub initial_swap_amount_e8s: u64,
+    #[serde(rename = "total_e8s")]
+    pub total_e_8_s: u64,
+    #[serde(rename = "initial_swap_amount_e8s")]
+    pub initial_swap_amount_e_8_s: u64,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct FractionalDeveloperVotingPower {
@@ -121,13 +131,16 @@ pub struct SnsInitPayload {
     pub max_dissolve_delay_bonus_percentage: Option<u64>,
     pub nns_proposal_id: Option<u64>,
     pub neurons_fund_participation: Option<bool>,
-    pub min_participant_icp_e8s: Option<u64>,
+    #[serde(rename = "min_participant_icp_e8s")]
+    pub min_participant_icp_e_8_s: Option<u64>,
     pub neuron_basket_construction_parameters: Option<NeuronBasketConstructionParameters>,
     pub fallback_controller_principal_ids: Vec<String>,
     pub token_symbol: Option<String>,
     pub final_reward_rate_basis_points: Option<u64>,
-    pub max_icp_e8s: Option<u64>,
-    pub neuron_minimum_stake_e8s: Option<u64>,
+    #[serde(rename = "max_icp_e8s")]
+    pub max_icp_e_8_s: Option<u64>,
+    #[serde(rename = "neuron_minimum_stake_e8s")]
+    pub neuron_minimum_stake_e_8_s: Option<u64>,
     pub confirmation_text: Option<String>,
     pub logo: Option<String>,
     pub name: Option<String>,
@@ -140,7 +153,8 @@ pub struct SnsInitPayload {
     pub min_participants: Option<u64>,
     pub initial_reward_rate_basis_points: Option<u64>,
     pub wait_for_quiet_deadline_increase_seconds: Option<u64>,
-    pub transaction_fee_e8s: Option<u64>,
+    #[serde(rename = "transaction_fee_e8s")]
+    pub transaction_fee_e_8_s: Option<u64>,
     pub dapp_canisters: Option<DappCanisters>,
     pub neurons_fund_participation_constraints: Option<NeuronsFundParticipationConstraints>,
     pub max_age_bonus_percentage: Option<u64>,
@@ -148,12 +162,17 @@ pub struct SnsInitPayload {
     pub reward_rate_transition_duration_seconds: Option<u64>,
     pub token_logo: Option<String>,
     pub token_name: Option<String>,
-    pub max_participant_icp_e8s: Option<u64>,
-    pub min_direct_participation_icp_e8s: Option<u64>,
-    pub proposal_reject_cost_e8s: Option<u64>,
+    #[serde(rename = "max_participant_icp_e8s")]
+    pub max_participant_icp_e_8_s: Option<u64>,
+    #[serde(rename = "min_direct_participation_icp_e8s")]
+    pub min_direct_participation_icp_e_8_s: Option<u64>,
+    #[serde(rename = "proposal_reject_cost_e8s")]
+    pub proposal_reject_cost_e_8_s: Option<u64>,
     pub restricted_countries: Option<Countries>,
-    pub min_icp_e8s: Option<u64>,
-    pub max_direct_participation_icp_e8s: Option<u64>,
+    #[serde(rename = "min_icp_e8s")]
+    pub min_icp_e_8_s: Option<u64>,
+    #[serde(rename = "max_direct_participation_icp_e8s")]
+    pub max_direct_participation_icp_e_8_s: Option<u64>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DeployNewSnsRequest {
@@ -340,69 +359,69 @@ pub struct UpdateSnsSubnetListResponse {
 
 pub struct Service(pub Principal);
 impl Service {
-    pub async fn add_wasm(&self, arg0: AddWasmRequest) -> CallResult<(AddWasmResponse,)> {
+    pub async fn add_wasm(&self, arg0: &AddWasmRequest) -> CallResult<(AddWasmResponse,)> {
         ic_cdk::call(self.0, "add_wasm", (arg0,)).await
     }
-    pub async fn deploy_new_sns(&self, arg0: DeployNewSnsRequest) -> CallResult<(DeployNewSnsResponse,)> {
+    pub async fn deploy_new_sns(&self, arg0: &DeployNewSnsRequest) -> CallResult<(DeployNewSnsResponse,)> {
         ic_cdk::call(self.0, "deploy_new_sns", (arg0,)).await
     }
     pub async fn get_allowed_principals(
         &self,
-        arg0: GetAllowedPrincipalsArg,
+        arg0: &GetAllowedPrincipalsArg,
     ) -> CallResult<(GetAllowedPrincipalsResponse,)> {
         ic_cdk::call(self.0, "get_allowed_principals", (arg0,)).await
     }
     pub async fn get_deployed_sns_by_proposal_id(
         &self,
-        arg0: GetDeployedSnsByProposalIdRequest,
+        arg0: &GetDeployedSnsByProposalIdRequest,
     ) -> CallResult<(GetDeployedSnsByProposalIdResponse,)> {
         ic_cdk::call(self.0, "get_deployed_sns_by_proposal_id", (arg0,)).await
     }
-    pub async fn get_latest_sns_version_pretty(&self, arg0: ()) -> CallResult<(Vec<(String, String)>,)> {
+    pub async fn get_latest_sns_version_pretty(&self, arg0: &()) -> CallResult<(Vec<(String, String)>,)> {
         ic_cdk::call(self.0, "get_latest_sns_version_pretty", (arg0,)).await
     }
     pub async fn get_next_sns_version(
         &self,
-        arg0: GetNextSnsVersionRequest,
+        arg0: &GetNextSnsVersionRequest,
     ) -> CallResult<(GetNextSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_next_sns_version", (arg0,)).await
     }
     pub async fn get_proposal_id_that_added_wasm(
         &self,
-        arg0: GetProposalIdThatAddedWasmRequest,
+        arg0: &GetProposalIdThatAddedWasmRequest,
     ) -> CallResult<(GetProposalIdThatAddedWasmResponse,)> {
         ic_cdk::call(self.0, "get_proposal_id_that_added_wasm", (arg0,)).await
     }
-    pub async fn get_sns_subnet_ids(&self, arg0: GetSnsSubnetIdsArg) -> CallResult<(GetSnsSubnetIdsResponse,)> {
+    pub async fn get_sns_subnet_ids(&self, arg0: &GetSnsSubnetIdsArg) -> CallResult<(GetSnsSubnetIdsResponse,)> {
         ic_cdk::call(self.0, "get_sns_subnet_ids", (arg0,)).await
     }
-    pub async fn get_wasm(&self, arg0: GetWasmRequest) -> CallResult<(GetWasmResponse,)> {
+    pub async fn get_wasm(&self, arg0: &GetWasmRequest) -> CallResult<(GetWasmResponse,)> {
         ic_cdk::call(self.0, "get_wasm", (arg0,)).await
     }
-    pub async fn get_wasm_metadata(&self, arg0: GetWasmMetadataRequest) -> CallResult<(GetWasmMetadataResponse,)> {
+    pub async fn get_wasm_metadata(&self, arg0: &GetWasmMetadataRequest) -> CallResult<(GetWasmMetadataResponse,)> {
         ic_cdk::call(self.0, "get_wasm_metadata", (arg0,)).await
     }
     pub async fn insert_upgrade_path_entries(
         &self,
-        arg0: InsertUpgradePathEntriesRequest,
+        arg0: &InsertUpgradePathEntriesRequest,
     ) -> CallResult<(InsertUpgradePathEntriesResponse,)> {
         ic_cdk::call(self.0, "insert_upgrade_path_entries", (arg0,)).await
     }
-    pub async fn list_deployed_snses(&self, arg0: ListDeployedSnsesArg) -> CallResult<(ListDeployedSnsesResponse,)> {
+    pub async fn list_deployed_snses(&self, arg0: &ListDeployedSnsesArg) -> CallResult<(ListDeployedSnsesResponse,)> {
         ic_cdk::call(self.0, "list_deployed_snses", (arg0,)).await
     }
-    pub async fn list_upgrade_steps(&self, arg0: ListUpgradeStepsRequest) -> CallResult<(ListUpgradeStepsResponse,)> {
+    pub async fn list_upgrade_steps(&self, arg0: &ListUpgradeStepsRequest) -> CallResult<(ListUpgradeStepsResponse,)> {
         ic_cdk::call(self.0, "list_upgrade_steps", (arg0,)).await
     }
     pub async fn update_allowed_principals(
         &self,
-        arg0: UpdateAllowedPrincipalsRequest,
+        arg0: &UpdateAllowedPrincipalsRequest,
     ) -> CallResult<(UpdateAllowedPrincipalsResponse,)> {
         ic_cdk::call(self.0, "update_allowed_principals", (arg0,)).await
     }
     pub async fn update_sns_subnet_list(
         &self,
-        arg0: UpdateSnsSubnetListRequest,
+        arg0: &UpdateSnsSubnetListRequest,
     ) -> CallResult<(UpdateSnsSubnetListResponse,)> {
         ic_cdk::call(self.0, "update_sns_subnet_list", (arg0,)).await
     }
