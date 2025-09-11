@@ -215,15 +215,14 @@ pub struct RegisterExtensionRequest {
     pub canister_id: Option<Principal>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct RegisterExtensionResultOk {}
+/// ! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-28_03-17-snapshot-feature/rs/sns/root/canister/root.did>
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CanisterCallError {
     pub code: Option<i32>,
     pub description: String,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum RegisterExtensionResult {
-    Ok(EmptyRecord),
-    Err(CanisterCallError),
-}
+pub type RegisterExtensionResult = std::result::Result<RegisterExtensionResultOk, CanisterCallError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct RegisterExtensionResponse {
     pub result: Option<RegisterExtensionResult>,
@@ -249,10 +248,10 @@ pub struct SetDappControllersResponse {
 
 pub struct Service(pub Principal);
 impl Service {
-    pub async fn canister_status(&self, arg0: CanisterIdRecord) -> CallResult<(CanisterStatusResult,)> {
+    pub async fn canister_status(&self, arg0: &CanisterIdRecord) -> CallResult<(CanisterStatusResult,)> {
         ic_cdk::call(self.0, "canister_status", (arg0,)).await
     }
-    pub async fn change_canister(&self, arg0: ChangeCanisterRequest) -> CallResult<()> {
+    pub async fn change_canister(&self, arg0: &ChangeCanisterRequest) -> CallResult<()> {
         ic_cdk::call(self.0, "change_canister", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
@@ -260,43 +259,46 @@ impl Service {
     }
     pub async fn get_sns_canisters_summary(
         &self,
-        arg0: GetSnsCanistersSummaryRequest,
+        arg0: &GetSnsCanistersSummaryRequest,
     ) -> CallResult<(GetSnsCanistersSummaryResponse,)> {
         ic_cdk::call(self.0, "get_sns_canisters_summary", (arg0,)).await
     }
-    pub async fn get_timers(&self, arg0: GetTimersArg) -> CallResult<(GetTimersResponse,)> {
+    pub async fn get_timers(&self, arg0: &GetTimersArg) -> CallResult<(GetTimersResponse,)> {
         ic_cdk::call(self.0, "get_timers", (arg0,)).await
     }
-    pub async fn list_sns_canisters(&self, arg0: ListSnsCanistersArg) -> CallResult<(ListSnsCanistersResponse,)> {
+    pub async fn list_sns_canisters(&self, arg0: &ListSnsCanistersArg) -> CallResult<(ListSnsCanistersResponse,)> {
         ic_cdk::call(self.0, "list_sns_canisters", (arg0,)).await
     }
     pub async fn manage_dapp_canister_settings(
         &self,
-        arg0: ManageDappCanisterSettingsRequest,
+        arg0: &ManageDappCanisterSettingsRequest,
     ) -> CallResult<(ManageDappCanisterSettingsResponse,)> {
         ic_cdk::call(self.0, "manage_dapp_canister_settings", (arg0,)).await
     }
     pub async fn register_dapp_canister(
         &self,
-        arg0: RegisterDappCanisterRequest,
+        arg0: &RegisterDappCanisterRequest,
     ) -> CallResult<(RegisterDappCanisterRet,)> {
         ic_cdk::call(self.0, "register_dapp_canister", (arg0,)).await
     }
     pub async fn register_dapp_canisters(
         &self,
-        arg0: RegisterDappCanistersRequest,
+        arg0: &RegisterDappCanistersRequest,
     ) -> CallResult<(RegisterDappCanistersRet,)> {
         ic_cdk::call(self.0, "register_dapp_canisters", (arg0,)).await
     }
-    pub async fn register_extension(&self, arg0: RegisterExtensionRequest) -> CallResult<(RegisterExtensionResponse,)> {
+    pub async fn register_extension(
+        &self,
+        arg0: &RegisterExtensionRequest,
+    ) -> CallResult<(RegisterExtensionResponse,)> {
         ic_cdk::call(self.0, "register_extension", (arg0,)).await
     }
-    pub async fn reset_timers(&self, arg0: ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
+    pub async fn reset_timers(&self, arg0: &ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
         ic_cdk::call(self.0, "reset_timers", (arg0,)).await
     }
     pub async fn set_dapp_controllers(
         &self,
-        arg0: SetDappControllersRequest,
+        arg0: &SetDappControllersRequest,
     ) -> CallResult<(SetDappControllersResponse,)> {
         ic_cdk::call(self.0, "set_dapp_controllers", (arg0,)).await
     }
