@@ -15,6 +15,8 @@
 
   const dispatcher = createEventDispatcher();
 
+  const close = () => dispatcher("nnsClose");
+
   let inputValue: number | undefined = undefined;
   let transferring = false;
 
@@ -40,14 +42,14 @@
     await reloadNeuron();
 
     transferring = false;
-    dispatcher("nnsClose");
+    close();
     stopBusy("dev-add-sns-neuron-maturity");
   };
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<Modal role="alert" on:nnsClose>
-  <span slot="title">{`Add Sns Neuron Maturity`}</span>
+<Modal role="alert" onClose={close}>
+  {#snippet title()}<span>{`Add Sns Neuron Maturity`}</span>{/snippet}
 
   <form
     id="get-icp-form"
@@ -65,18 +67,19 @@
     />
   </form>
 
-  <button
-    form="get-icp-form"
-    data-tid="get-icp-submit"
-    type="submit"
-    class="primary"
-    slot="footer"
-    disabled={invalidForm || transferring}
-  >
-    {#if transferring}
-      <Spinner />
-    {:else}
-      Add Maturity
-    {/if}
-  </button>
+  {#snippet footer()}
+    <button
+      form="get-icp-form"
+      data-tid="get-icp-submit"
+      type="submit"
+      class="primary"
+      disabled={invalidForm || transferring}
+    >
+      {#if transferring}
+        <Spinner />
+      {:else}
+        Add Maturity
+      {/if}
+    </button>
+  {/snippet}
 </Modal>

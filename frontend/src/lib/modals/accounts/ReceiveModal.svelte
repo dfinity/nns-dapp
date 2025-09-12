@@ -27,24 +27,28 @@
 
   const dispatcher = createEventDispatcher();
 
+  const close = () => dispatcher("nnsClose");
+
   const reloadAccountAndClose = async () => {
     startBusy({
       initiator: "reload-receive-account",
     });
 
     await reload?.();
-    dispatcher("nnsClose");
+    close();
 
     stopBusy("reload-receive-account");
   };
 </script>
 
-<Modal testId="receive-modal" on:nnsClose on:introend={onIntroEnd}>
-  <span slot="title"
-    >{replacePlaceholders($i18n.core.receive_with_token, {
-      $token: tokenSymbol,
-    })}</span
-  >
+<Modal testId="receive-modal" onClose={close} {onIntroEnd}>
+  {#snippet title()}
+    <span
+      >{replacePlaceholders($i18n.core.receive_with_token, {
+        $token: tokenSymbol,
+      })}</span
+    >
+  {/snippet}
 
   <ReceiveSelectAccountDropdown
     {account}

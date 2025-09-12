@@ -10,11 +10,15 @@
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import { Modal, Spinner } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
 
   type ModalKey = "stake-neuron";
   let showModal: ModalKey | undefined = undefined;
   const openModal = (key: ModalKey) => (showModal = key);
   const closeModal = () => (showModal = undefined);
+
+  const dispatch = createEventDispatcher();
+  const close = () => dispatch("nnsClose");
 </script>
 
 <TestIdWrapper testId="sns-neurons-footer-component">
@@ -47,13 +51,13 @@
       <!-- A toast error is shown if there is an error fetching any of the needed data -->
       <!-- TODO: replace with busy spinner pattern as in <SnsIncreateStakeNeuronModal /> -->
       {#if nonNullish($snsTokenSymbolSelectedStore)}
-        <Modal on:nnsClose>
-          <svelte:fragment slot="title"
-            >{replacePlaceholders($i18n.neurons.stake_token, {
+        <Modal onClose={close}>
+          {#snippet title()}
+            {replacePlaceholders($i18n.neurons.stake_token, {
               $token: $snsTokenSymbolSelectedStore.symbol,
-            })}</svelte:fragment
-          ><Spinner /></Modal
-        >
+            })}
+          {/snippet}<Spinner />
+        </Modal>
       {/if}
     {/if}
   {/if}

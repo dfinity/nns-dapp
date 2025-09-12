@@ -12,6 +12,8 @@
 
   const dispatcher = createEventDispatcher();
 
+  const close = () => dispatcher("nnsClose");
+
   let inputValue: number | undefined = undefined;
   let transferring = false;
 
@@ -33,14 +35,14 @@
       amountE8s: numberToE8s(inputValue),
     });
 
-    dispatcher("nnsClose");
+    close();
     stopBusy("dev-add-nns-neuron-maturity");
   };
 </script>
 
 <!-- ONLY FOR TESTNET. NO UNIT TESTS -->
-<Modal testId="nns-add-maturity-modal-component" role="alert" on:nnsClose>
-  <span slot="title">Add Nns Neuron Maturity</span>
+<Modal testId="nns-add-maturity-modal-component" role="alert" onClose={close}>
+  {#snippet title()}<span>Add Nns Neuron Maturity</span>{/snippet}
 
   <form id="get-maturity-form" on:submit|preventDefault={onSubmit}>
     <span class="label">How much?</span>
@@ -54,18 +56,19 @@
     />
   </form>
 
-  <button
-    data-tid="confirm-add-maturity-button"
-    form="get-maturity-form"
-    type="submit"
-    class="primary"
-    slot="footer"
-    disabled={invalidForm || transferring}
-  >
-    {#if transferring}
-      <Spinner />
-    {:else}
-      Add Maturity
-    {/if}
-  </button>
+  {#snippet footer()}
+    <button
+      data-tid="confirm-add-maturity-button"
+      form="get-maturity-form"
+      type="submit"
+      class="primary"
+      disabled={invalidForm || transferring}
+    >
+      {#if transferring}
+        <Spinner />
+      {:else}
+        Add Maturity
+      {/if}
+    </button>
+  {/snippet}
 </Modal>

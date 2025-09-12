@@ -7,9 +7,11 @@
   export let yesLabel: string | undefined = undefined;
 
   const dispatch = createEventDispatcher();
+
+  const close = () => dispatch("nnsClose");
 </script>
 
-<Modal role="alert" on:nnsClose {testId}>
+<Modal role="alert" onClose={close} {testId}>
   <div class="wrapper">
     <article data-tid="confirmation-modal-content">
       <slot />
