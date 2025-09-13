@@ -227,7 +227,7 @@ async fn get_sns_data(index: u64, sns_canister_ids: DeployedSns) -> anyhow::Resu
             .or(existing_data.nervous_system_parameters);
 
     let list_topics_response = sns_gov::Service(governance_canister_id)
-        .list_topics(ListTopicsRequest {})
+        .list_topics(&ListTopicsRequest {})
         .await
         .map_err(|err| crate::state::log(format!("Call to Swap.list_topics failed: {err:?}")))
         .map(|response: (_,)| response.0)

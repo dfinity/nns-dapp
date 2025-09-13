@@ -1,0 +1,9 @@
+@@ -129,7 +129,7 @@
+     pub start: BlockIndex,
+     pub length: candid::Nat,
+ }
+-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
++#[derive(CandidType, Deserialize)]
+ pub struct GetBlocksResponse {
+     pub certificate: Option<serde_bytes::ByteBuf>,
+     pub first_index: BlockIndex,
