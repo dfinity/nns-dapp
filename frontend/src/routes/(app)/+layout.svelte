@@ -63,5 +63,5 @@
 
 <Warnings testEnvironmentWarning />
 
-<Toasts />
+<Toasts maxVisible={3} />
 <BusyScreen />
