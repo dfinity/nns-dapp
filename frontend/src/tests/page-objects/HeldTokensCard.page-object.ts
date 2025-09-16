@@ -35,8 +35,16 @@ class HeldTokensCardRowPo extends BasePageObject {
 export class HeldTokensCardPo extends BasePageObject {
   private static readonly TID = "held-tokens-card";
 
-  static under(element: PageObjectElement): HeldTokensCardPo {
-    return new HeldTokensCardPo(element.byTestId(HeldTokensCardPo.TID));
+  static under({
+    testId,
+    element,
+  }: {
+    testId?: string;
+    element: PageObjectElement;
+  }): HeldTokensCardPo {
+    return new HeldTokensCardPo(
+      element.byTestId(testId ?? HeldTokensCardPo.TID)
+    );
   }
 
   async getRows(): Promise<HeldTokensCardRowPo[]> {
@@ -49,6 +57,10 @@ export class HeldTokensCardPo extends BasePageObject {
 
   getInfoRow(): PageObjectElement {
     return this.getElement("info-row");
+  }
+
+  getLinkRow(): PageObjectElement {
+    return this.getElement("link-row");
   }
 
   async getHeldTokensTitles(): Promise<string[]> {

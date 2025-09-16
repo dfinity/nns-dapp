@@ -14,6 +14,8 @@
 
   const dispatch = createEventDispatcher();
 
+  const close = () => dispatch("nnsClose");
+
   onMount(async () => {
     if (!$authStore.identity) {
       toastsError({ labelKey: "error.missing_identity" });
@@ -26,14 +28,16 @@
       setNeuron: ({ neuron: neuronInfo }) => (neuron = neuronInfo),
       handleError: () => {
         neuron = undefined;
-        dispatch("nnsClose");
+        close();
       },
     });
   });
 </script>
 
-<Modal testId="voting-history-modal" on:nnsClose>
-  <span slot="title">{$i18n.neuron_detail.title}</span>
+<Modal testId="voting-history-modal" onClose={close}>
+  {#snippet title()}
+    <span>{$i18n.neuron_detail.title}</span>
+  {/snippet}
 
   {#if neuron !== undefined}
     <div class="content legacy">

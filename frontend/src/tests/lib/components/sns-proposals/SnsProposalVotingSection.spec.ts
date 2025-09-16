@@ -65,7 +65,7 @@ describe("SnsProposalVotingSection", () => {
     const po = await renderComponent();
 
     expect(await po.getExpirationDateText()).toEqual(
-      "Expiration date 2 hours, 46 minutes remaining"
+      "Voting open until 2 hours, 46 minutes"
     );
   });
 });

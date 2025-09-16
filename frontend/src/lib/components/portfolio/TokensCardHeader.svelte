@@ -5,10 +5,11 @@
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { formatCurrencyNumber } from "$lib/utils/format.utils";
   import { IconRight } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
   type Props = {
-    usdAmount: number;
+    usdAmount?: number;
     href: string;
     title: string;
     linkText: string;
@@ -18,7 +19,7 @@
   const { usdAmount, href, title, linkText, icon }: Props = $props();
 
   const usdAmountFormatted = $derived(
-    $authSignedInStore
+    $authSignedInStore && nonNullish(usdAmount)
       ? formatCurrencyNumber(usdAmount)
       : PRICE_NOT_AVAILABLE_PLACEHOLDER
   );
@@ -61,12 +62,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--padding-3x) var(--padding-2x);
+    padding: var(--padding-2x);
+    background-color: var(--card-background-tint);
+    border-bottom: 4px solid var(--elements-divider);
 
     .header-wrapper {
       display: flex;
       align-items: flex-start;
-      gap: var(--padding-2x);
+      gap: var(--padding);
 
       .icon {
         width: 50px;
@@ -76,23 +79,35 @@
       .text-content {
         display: flex;
         flex-direction: column;
-        gap: var(--padding-0_5x);
 
         .title {
-          font-size: 0.875rem;
-          font-weight: bold;
-          color: var(--text-description);
           margin: 0;
           padding: 0;
+          font-size: 12px;
+          font-weight: bold;
+          color: var(--text-description);
+
+          @include media.min-width(medium) {
+            font-size: 14px;
+          }
         }
+
         .amount {
-          font-size: 1.5rem;
+          margin: 0;
+          padding: 0;
+          font-size: 24px;
+          line-height: 32px;
+
+          @include media.min-width(medium) {
+            font-size: 27px;
+          }
         }
       }
     }
 
     .link {
       width: auto;
+      min-width: 142px;
       height: auto;
       padding: var(--padding) var(--padding-2x);
       border-radius: var(--border-radius);

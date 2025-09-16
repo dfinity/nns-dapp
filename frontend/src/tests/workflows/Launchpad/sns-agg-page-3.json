@@ -23,6 +23,8 @@
       "description": "The Mora Protocol is a groundbreaking system facilitating the creation of decentralized content platforms, enabling the development of peer-to-peer alternatives to centralized platforms like Medium, YouTube, and Twitter. It serves as the foundation for the Mora Platform, a demonstration platform showcasing the full capabilities and advantages of leveraging the Mora Protocol.\nIn tandem with this protocol, the Light Plugin System has been developed as an accessible, no-programming-required solution operating within the Internet Computer (IC) ecosystem. Light functions as a peer-to-peer software system capable of seamless integration into any web page or content, thereby enabling interaction with IC smart contracts. Together, these innovations represent a significant leap forward in the decentralization of online content and services.\n",
       "logo": "/v1/sns/root/bxmkl-2iaaa-aaaaq-aac6q-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -1162,6 +1164,65 @@
       "description": "A community initiative aiming to drive awareness of the Motoko branding\n",
       "logo": "/v1/sns/root/ko36b-myaaa-aaaaq-aadbq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 10000000000,
+              "amount_e8s": 448284832045,
+              "account": {
+                "owner": "k34pm-nqaaa-aaaaq-aadca-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1757556765
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 1041169688942117,
+              "account": {
+                "owner": "k34pm-nqaaa-aaaaq-aadca-cai",
+                "subaccount": {
+                  "subaccount": [
+                    38, 128, 117, 91, 181, 165, 153, 190, 234, 167, 161, 198,
+                    140, 195, 55, 29, 155, 192, 82, 227, 197, 60, 4, 165, 54, 3,
+                    104, 1, 81, 224, 179, 129
+                  ]
+                }
+              },
+              "ledger_canister_id": "k45jy-aiaaa-aaaaq-aadcq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1757556765
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 7838303414877537,
+            "timestamp_seconds": 1757556765
+          },
+          "last_ledger_block_timestamp": 1757558947,
+          "num_recently_executed_proposals": 27,
+          "num_recently_submitted_proposals": 27,
+          "genesis_timestamp_seconds": 1715000644
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1757509453,
+      "end_timestamp_seconds": 1757509444,
+      "total_available_e8s_equivalent": 662081104096,
+      "distributed_e8s_equivalent": 662081103905,
+      "round": 492,
+      "settled_proposals": [
+        {
+          "id": 419
+        }
+      ]
+    },
     "parameters": {
       "reserved_ids": [1002],
       "functions": [
@@ -1310,6 +1371,22 @@
           }
         },
         {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 19,
+          "name": "Upgrade SNS extension",
+          "description": "Proposal to upgrade the WASM of a registered SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 1000,
           "name": "transferPosition",
           "description": null,
@@ -1388,6 +1465,34 @@
               "topic": "TreasuryAssetManagement",
               "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
               "target_canister_id": "n6tkf-tqaaa-aaaal-qsneq-cai",
+              "validator_method_name": "validate_icrc1_transfer",
+              "target_method_name": "icrc1_transfer"
+            }
+          }
+        },
+        {
+          "id": 1007,
+          "name": "commit_proposed_batch_frontend",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "DappCanisterManagement",
+              "validator_canister_id": "ydpnf-caaaa-aaaag-abzvq-cai",
+              "target_canister_id": "ydpnf-caaaa-aaaag-abzvq-cai",
+              "validator_method_name": "validate_commit_proposed_batch",
+              "target_method_name": "commit_proposed_batch"
+            }
+          }
+        },
+        {
+          "id": 1008,
+          "name": "Transfer ckBTC",
+          "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "TreasuryAssetManagement",
+              "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+              "target_canister_id": "mxzaz-hqaaa-aaaar-qaada-cai",
               "validator_method_name": "validate_icrc1_transfer",
               "target_method_name": "icrc1_transfer"
             }
@@ -1558,10 +1663,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "ks7eq-3yaaa-aaaaq-aaddq-cai"
+        }
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 5471342995057497,
+    "icrc1_total_supply": 5501961923431890,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -1748,7 +1859,22 @@
           "is_critical": false,
           "name": "Dapp canister management",
           "description": "Proposals to upgrade the registered dapp canisters and dapp upgrades via built-in or custom logic and updates to frontend assets.",
-          "custom_functions": []
+          "custom_functions": [
+            {
+              "id": 1007,
+              "name": "commit_proposed_batch_frontend",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "DappCanisterManagement",
+                  "validator_canister_id": "ydpnf-caaaa-aaaag-abzvq-cai",
+                  "target_canister_id": "ydpnf-caaaa-aaaag-abzvq-cai",
+                  "validator_method_name": "validate_commit_proposed_batch",
+                  "target_method_name": "commit_proposed_batch"
+                }
+              }
+            }
+          ]
         },
         {
           "native_functions": [],
@@ -1772,7 +1898,7 @@
           "topic": "Governance",
           "is_critical": false,
           "name": "Governance",
-          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "description": "Proposals that represent community polls or other forms of community opinion but don't have any immediate effect in terms of code changes.",
           "custom_functions": []
         },
         {
@@ -1882,6 +2008,20 @@
                   "target_method_name": "icrc1_transfer"
                 }
               }
+            },
+            {
+              "id": 1008,
+              "name": "Transfer ckBTC",
+              "description": "Transfer tokens from the SNS treasury via icrc1_transfer",
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "TreasuryAssetManagement",
+                  "validator_canister_id": "xho54-tyaaa-aaaap-antuq-cai",
+                  "target_canister_id": "mxzaz-hqaaa-aaaar-qaada-cai",
+                  "validator_method_name": "validate_icrc1_transfer",
+                  "target_method_name": "icrc1_transfer"
+                }
+              }
             }
           ]
         },
@@ -1926,6 +2066,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 19,
+              "name": "Upgrade SNS extension",
+              "description": "Proposal to upgrade the WASM of a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "CriticalDappOperations",
@@ -1966,6 +2114,61 @@
       "name": "Swampies",
       "description": "🌿 Meet the Swampies! 🐸✨ Introducing Swampies — adorable, 3D-rendered creatures straight from the mysterious wetlands of Dragginz! These quirky little inhabitants bring the swamps of the Internet Computer (IC) to life, bursting with charm and personality.  Each Swampie is a unique NFT, lovingly crafted to live and breathe within the vibrant, immersive world of Dragginz. Whether you're exploring, collecting, or just vibing in the digital marshes, these critters are your must-have companions.  💧 Exclusive to the Internet Computer 🎨 Collectible, tradable, and totally cute 🌍 Living characters in a living world  Collect them all. Build your swamp squad. Let the adventure begin.",
       "logo": "/v1/sns/root/l7ra6-uqaaa-aaaaq-aadea-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 485974311779,
+              "amount_e8s": 500000000000,
+              "account": {
+                "owner": "lyqgk-ziaaa-aaaaq-aadeq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1757556880
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 14139999920000,
+              "account": {
+                "owner": "lyqgk-ziaaa-aaaaq-aadeq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    179, 73, 3, 119, 160, 222, 82, 254, 194, 33, 35, 5, 197,
+                    155, 41, 66, 75, 188, 150, 230, 152, 212, 169, 253, 98, 167,
+                    13, 94, 185, 29, 88, 106
+                  ]
+                }
+              },
+              "ledger_canister_id": "lrtnw-paaaa-aaaaq-aadfa-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1757556880
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 141728109547120,
+            "timestamp_seconds": 1757556880
+          },
+          "last_ledger_block_timestamp": 1757545350,
+          "num_recently_executed_proposals": 0,
+          "num_recently_submitted_proposals": 0,
+          "genesis_timestamp_seconds": 1715346239
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1757509443,
+      "end_timestamp_seconds": 1757509439,
+      "total_available_e8s_equivalent": 167050195040,
+      "distributed_e8s_equivalent": 0,
+      "round": 488,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -2110,6 +2313,22 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 19,
+          "name": "Upgrade SNS extension",
+          "description": "Proposal to upgrade the WASM of a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2288,10 +2507,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "ldv2p-dqaaa-aaaaq-aadga-cai"
+        }
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100017143693025,
+    "icrc1_total_supply": 100027434871579,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -2477,7 +2702,7 @@
           "topic": "Governance",
           "is_critical": false,
           "name": "Governance",
-          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "description": "Proposals that represent community polls or other forms of community opinion but don't have any immediate effect in terms of code changes.",
           "custom_functions": []
         },
         {
@@ -2575,6 +2800,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 19,
+              "name": "Upgrade SNS extension",
+              "description": "Proposal to upgrade the WASM of a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "CriticalDappOperations",
@@ -2609,6 +2842,61 @@
       "name": "ORIGYN",
       "description": "The ORIGYN Protocol has been made possible thanks to the major contribution of the ORIGYN Foundation and embodies its vision of becoming the universal digital standard for certification, traceability, and authentication. Achieving standardization requires neutrality, and as a DAO, the ORIGYN Protocol fulfills this requirement.\nThe ORIGYN Protocol is the most advanced Real World Assets (RWA) infrastructure, enabling the creation of biometric digital certificates stored on the blockchain to prove the authenticity, identity, and ownership of valuable assets. This makes them secure, transparent, and immutable, thus opening infinite possibilities for partners to create their own solutions or markets. We are the building block, an open-source protocol to authenticate, certify, or trace RWA assets in the digital world. The technology has been developed in close collaboration with top industry leaders to ensure the highest level of operational standards for industrial-grade solutions in RWAs.\nThe ORIGYN token (OGY) is a deflationary utility token integral to the ORIGYN ecosystem. It is used to mint digital certificates that authenticate, certify, and trace the ownership of valuable assets. OGY tokens allow for DAO governance participation.\n",
       "logo": "/v1/sns/root/leu43-oiaaa-aaaaq-aadgq-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 8800000000,
+              "amount_e8s": 8799120000,
+              "account": {
+                "owner": "lnxxh-yaaaa-aaaaq-aadha-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1757557641
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 0,
+              "account": {
+                "owner": "lnxxh-yaaaa-aaaaq-aadha-cai",
+                "subaccount": {
+                  "subaccount": [
+                    154, 112, 59, 116, 93, 145, 130, 84, 46, 177, 111, 45, 146,
+                    44, 159, 69, 201, 50, 242, 159, 116, 172, 236, 108, 43, 128,
+                    123, 84, 63, 238, 35, 131
+                  ]
+                }
+              },
+              "ledger_canister_id": "lkwrt-vyaaa-aaaaq-aadhq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1757557641
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 418294117612973033,
+            "timestamp_seconds": 1757557641
+          },
+          "last_ledger_block_timestamp": 1757559146,
+          "num_recently_executed_proposals": 13,
+          "num_recently_submitted_proposals": 13,
+          "genesis_timestamp_seconds": 1716620700
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1757487905,
+      "end_timestamp_seconds": 1757487900,
+      "total_available_e8s_equivalent": 1140707776060,
+      "distributed_e8s_equivalent": 0,
+      "round": 473,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -2745,6 +3033,30 @@
           "id": 16,
           "name": "Set topics for custom proposals",
           "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 17,
+          "name": "Register SNS extension",
+          "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 19,
+          "name": "Upgrade SNS extension",
+          "description": "Proposal to upgrade the WASM of a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -2934,10 +3246,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "jqkzp-liaaa-aaaaq-aadiq-cai"
+        }
       ]
     ],
     "icrc1_fee": [200000],
-    "icrc1_total_supply": 1041622704672558212,
+    "icrc1_total_supply": 1041608102705325625,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -3163,7 +3481,7 @@
           "topic": "Governance",
           "is_critical": false,
           "name": "Governance",
-          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "description": "Proposals that represent community polls or other forms of community opinion but don't have any immediate effect in terms of code changes.",
           "custom_functions": []
         },
         {
@@ -3224,6 +3542,22 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 17,
+              "name": "Register SNS extension",
+              "description": "Proposal to register a new SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 19,
+              "name": "Upgrade SNS extension",
+              "description": "Proposal to upgrade the WASM of a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "CriticalDappOperations",
@@ -3266,6 +3600,122 @@
       "name": "WaterNeuron",
       "description": "WaterNeuron is a liquid staking protocol designed for the Internet Computer network. \nStaking ICP becomes straightforward and efficient. \n\nLearn more: https://docs.waterneuron.fi | https://x.com/waterneuron | https://t.me/waterneuron\n",
       "logo": "/v1/sns/root/jmod6-4iaaa-aaaaq-aadkq-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 43596332755075,
+              "amount_e8s": 10000,
+              "account": {
+                "owner": "jfnic-kaaaa-aaaaq-aadla-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1757558744
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 565437865000000,
+              "account": {
+                "owner": "jfnic-kaaaa-aaaaq-aadla-cai",
+                "subaccount": {
+                  "subaccount": [
+                    41, 121, 1, 90, 154, 184, 3, 121, 40, 213, 126, 42, 198, 99,
+                    199, 124, 21, 145, 130, 2, 173, 120, 133, 0, 172, 151, 253,
+                    30, 24, 64, 251, 255
+                  ]
+                }
+              },
+              "ledger_canister_id": "jcmow-hyaaa-aaaaq-aadlq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1757558744
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 22380107501830250,
+            "timestamp_seconds": 1757558744
+          },
+          "last_ledger_block_timestamp": 1757554428,
+          "num_recently_executed_proposals": 103,
+          "num_recently_submitted_proposals": 111,
+          "genesis_timestamp_seconds": 1718691769
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1757485372,
+      "end_timestamp_seconds": 1757485369,
+      "total_available_e8s_equivalent": 961073904271,
+      "distributed_e8s_equivalent": 961073903564,
+      "round": 449,
+      "settled_proposals": [
+        {
+          "id": 4681
+        },
+        {
+          "id": 4682
+        },
+        {
+          "id": 4683
+        },
+        {
+          "id": 4684
+        },
+        {
+          "id": 4685
+        },
+        {
+          "id": 4686
+        },
+        {
+          "id": 4687
+        },
+        {
+          "id": 4688
+        },
+        {
+          "id": 4689
+        },
+        {
+          "id": 4690
+        },
+        {
+          "id": 4691
+        },
+        {
+          "id": 4692
+        },
+        {
+          "id": 4693
+        },
+        {
+          "id": 4694
+        },
+        {
+          "id": 4695
+        },
+        {
+          "id": 4696
+        },
+        {
+          "id": 4697
+        },
+        {
+          "id": 4698
+        },
+        {
+          "id": 4699
+        },
+        {
+          "id": 4700
+        }
+      ]
     },
     "parameters": {
       "reserved_ids": [],
@@ -3402,6 +3852,22 @@
           "id": 16,
           "name": "Set topics for custom proposals",
           "description": "Proposal to set the topics for custom SNS proposals.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 17,
+          "name": "Register SNS extension",
+          "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -3789,10 +4255,28 @@
         {
           "Nat": [32]
         }
+      ],
+      [
+        "icrc103:public_allowances",
+        {
+          "Text": "true"
+        }
+      ],
+      [
+        "icrc103:max_take_value",
+        {
+          "Nat": [500]
+        }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "iidmm-fiaaa-aaaaq-aadmq-cai"
+        }
       ]
     ],
     "icrc1_fee": [1000000],
-    "icrc1_total_supply": 11683444839406476,
+    "icrc1_total_supply": 11701083436308030,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 1000000000,
@@ -4248,6 +4732,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "TreasuryAssetManagement",
@@ -4289,6 +4781,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 17,
+              "name": "Register SNS extension",
+              "description": "Proposal to register a new SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "CriticalDappOperations",
@@ -4324,6 +4824,8 @@
       "description": "          ",
       "logo": "/v1/sns/root/ibahq-taaaa-aaaaq-aadna-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -5232,6 +5734,61 @@
       "description": "A collection of 10,000 unique ROBOTS!  This DAO is going to serve as the controller for all PokedStudio collections on toko.app.  We will allow migration from Entrepot (web -1) to toko.app (web3) so don't worry, all NFTs will be safe.",
       "logo": "/v1/sns/root/nb7he-piaaa-aaaaq-aadqq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 1205131715865,
+              "amount_e8s": 500053695865,
+              "account": {
+                "owner": "ni4my-zaaaa-aaaaq-aadra-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1757555446
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 170089476511688497,
+              "account": {
+                "owner": "ni4my-zaaaa-aaaaq-aadra-cai",
+                "subaccount": {
+                  "subaccount": [
+                    196, 165, 142, 62, 150, 250, 82, 23, 184, 45, 104, 76, 243,
+                    154, 145, 16, 243, 16, 102, 111, 225, 189, 230, 63, 132, 17,
+                    159, 224, 0, 255, 11, 123
+                  ]
+                }
+              },
+              "ledger_canister_id": "np5km-uyaaa-aaaaq-aadrq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1757555446
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 1326039930370939064,
+            "timestamp_seconds": 1757555446
+          },
+          "last_ledger_block_timestamp": 1757557786,
+          "num_recently_executed_proposals": 0,
+          "num_recently_submitted_proposals": 0,
+          "genesis_timestamp_seconds": 1722453655
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1757532058,
+      "end_timestamp_seconds": 1757532055,
+      "total_available_e8s_equivalent": 38747847506297,
+      "distributed_e8s_equivalent": 0,
+      "round": 406,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -5375,6 +5932,22 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 19,
+          "name": "Upgrade SNS extension",
+          "description": "Proposal to upgrade the WASM of a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -5592,10 +6165,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "n535v-yiaaa-aaaaq-aadsq-cai"
+        }
       ]
     ],
     "icrc1_fee": [100000000],
-    "icrc1_total_supply": 2320002248633981845,
+    "icrc1_total_supply": 2320293686831795805,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -5807,7 +6386,7 @@
           "topic": "Governance",
           "is_critical": false,
           "name": "Governance",
-          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "description": "Proposals that represent community polls or other forms of community opinion but don't have any immediate effect in terms of code changes.",
           "custom_functions": [
             {
               "id": 10000,
@@ -5920,6 +6499,14 @@
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
+            },
+            {
+              "id": 19,
+              "name": "Upgrade SNS extension",
+              "description": "Proposal to upgrade the WASM of a registered SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
             }
           ],
           "topic": "CriticalDappOperations",
@@ -5946,7 +6533,11 @@
       "ledger": "m6xut-mqaaa-aaaaq-aadua-cai",
       "index": "mqvz3-xaaaa-aaaaq-aadva-cai",
       "governance": "ntzq5-dyaaa-aaaaq-aadtq-cai",
-      "dapps": ["zwxjr-7aaaa-aaaap-qhodq-cai", "mnc6b-aaaaa-aaaap-qhnrq-cai"],
+      "dapps": [
+        "zwxjr-7aaaa-aaaap-qhodq-cai",
+        "mnc6b-aaaaa-aaaap-qhnrq-cai",
+        "oat7s-ziaaa-aaaaj-qnsca-cai"
+      ],
       "archives": ["odk23-7yaaa-aaaaq-aad3q-cai"]
     },
     "meta": {
@@ -5954,6 +6545,61 @@
       "name": "ICVC",
       "description": "ICVC DAO is a community governed Web3 venture builder. \n",
       "logo": "/v1/sns/root/nuywj-oaaaa-aaaaq-aadta-cai/logo.png"
+    },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 124583869216673,
+              "amount_e8s": 84089768926670,
+              "account": {
+                "owner": "ntzq5-dyaaa-aaaaq-aadtq-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1757556905
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 0,
+              "account": {
+                "owner": "ntzq5-dyaaa-aaaaq-aadtq-cai",
+                "subaccount": {
+                  "subaccount": [
+                    169, 120, 255, 216, 194, 28, 16, 3, 122, 13, 20, 95, 35,
+                    120, 68, 56, 154, 77, 71, 52, 152, 218, 19, 5, 40, 239, 74,
+                    54, 113, 31, 77, 195
+                  ]
+                }
+              },
+              "ledger_canister_id": "m6xut-mqaaa-aaaaq-aadua-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1757556905
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 3241543158633802,
+            "timestamp_seconds": 1757556905
+          },
+          "last_ledger_block_timestamp": 1757535270,
+          "num_recently_executed_proposals": 6,
+          "num_recently_submitted_proposals": 8,
+          "genesis_timestamp_seconds": 1722750551
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1757483354,
+      "end_timestamp_seconds": 1757483351,
+      "total_available_e8s_equivalent": 0,
+      "distributed_e8s_equivalent": 0,
+      "round": 402,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -6103,6 +6749,14 @@
           }
         },
         {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
           "id": 2001,
           "name": "Update canister config",
           "description": "Update canister configuration",
@@ -6127,6 +6781,34 @@
               "target_canister_id": "zwxjr-7aaaa-aaaap-qhodq-cai",
               "validator_method_name": "validate_project_vote_proposal",
               "target_method_name": "execute_project_vote_proposal"
+            }
+          }
+        },
+        {
+          "id": 5100,
+          "name": "Approve Project",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "oat7s-ziaaa-aaaaj-qnsca-cai",
+              "target_canister_id": "oat7s-ziaaa-aaaaj-qnsca-cai",
+              "validator_method_name": "validate_project_approval_proposal",
+              "target_method_name": "execute_project_approval_proposal"
+            }
+          }
+        },
+        {
+          "id": 5200,
+          "name": "Finalize Project",
+          "description": null,
+          "function_type": {
+            "GenericNervousSystemFunction": {
+              "topic": "ApplicationBusinessLogic",
+              "validator_canister_id": "oat7s-ziaaa-aaaaj-qnsca-cai",
+              "target_canister_id": "oat7s-ziaaa-aaaaj-qnsca-cai",
+              "validator_method_name": "validate_project_finalization_proposal",
+              "target_method_name": "execute_project_finalization_proposal"
             }
           }
         },
@@ -6453,7 +7135,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 1999998777410000,
+    "icrc1_total_supply": 1999998774140000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000000,
@@ -6813,6 +7495,34 @@
               }
             },
             {
+              "id": 5100,
+              "name": "Approve Project",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "oat7s-ziaaa-aaaaj-qnsca-cai",
+                  "target_canister_id": "oat7s-ziaaa-aaaaj-qnsca-cai",
+                  "validator_method_name": "validate_project_approval_proposal",
+                  "target_method_name": "execute_project_approval_proposal"
+                }
+              }
+            },
+            {
+              "id": 5200,
+              "name": "Finalize Project",
+              "description": null,
+              "function_type": {
+                "GenericNervousSystemFunction": {
+                  "topic": "ApplicationBusinessLogic",
+                  "validator_canister_id": "oat7s-ziaaa-aaaaj-qnsca-cai",
+                  "target_canister_id": "oat7s-ziaaa-aaaaj-qnsca-cai",
+                  "validator_method_name": "validate_project_finalization_proposal",
+                  "target_method_name": "execute_project_finalization_proposal"
+                }
+              }
+            },
+            {
               "id": 24000,
               "name": "Commit Frontend Canister Update",
               "description": "Commit updated frontend canister with computed evidence",
@@ -6859,6 +7569,14 @@
               "id": 12,
               "name": "Mint SNS tokens",
               "description": "Proposal to mint SNS tokens to a specified recipient.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 18,
+              "name": "Execute SNS extension operation",
+              "description": "Proposal to execute an operation on a registered SNS extension.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }
@@ -6946,6 +7664,8 @@
       "description": "Juno is a blockchain-as-a-service platform that empowers developers to build decentralized apps efficiently. It offers a comprehensive toolkit to scaffold secure and efficient projects.",
       "logo": "/v1/sns/root/mctoc-3qaaa-aaaaq-aadwa-cai/logo.png"
     },
+    "metrics": null,
+    "latest_reward_event": null,
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -8968,6 +9688,61 @@
       "description": "The one stop token shop - Trade tokens across all chains with ease using KongSwap\n",
       "logo": "/v1/sns/root/ormnc-tiaaa-aaaaq-aadyq-cai/logo.png"
     },
+    "metrics": {
+      "get_metrics_result": {
+        "Ok": {
+          "treasury_metrics": [
+            {
+              "name": "TOKEN_ICP",
+              "original_amount_e8s": 25593625030875,
+              "amount_e8s": 16024346554081,
+              "account": {
+                "owner": "oypg6-faaaa-aaaaq-aadza-cai",
+                "subaccount": null
+              },
+              "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+              "treasury": 1,
+              "timestamp_seconds": 1757558501
+            },
+            {
+              "name": "TOKEN_SNS_TOKEN",
+              "original_amount_e8s": 0,
+              "amount_e8s": 54432221983870000,
+              "account": {
+                "owner": "oypg6-faaaa-aaaaq-aadza-cai",
+                "subaccount": {
+                  "subaccount": [
+                    14, 207, 215, 59, 142, 160, 161, 210, 76, 54, 161, 175, 254,
+                    137, 11, 129, 191, 37, 6, 228, 164, 241, 131, 89, 28, 150,
+                    0, 135, 42, 94, 220, 114
+                  ]
+                }
+              },
+              "ledger_canister_id": "o7oak-iyaaa-aaaaq-aadzq-cai",
+              "treasury": 2,
+              "timestamp_seconds": 1757558501
+            }
+          ],
+          "voting_power_metrics": {
+            "governance_total_potential_voting_power": 62420661553113234,
+            "timestamp_seconds": 1757558501
+          },
+          "last_ledger_block_timestamp": 1757558685,
+          "num_recently_executed_proposals": 6,
+          "num_recently_submitted_proposals": 6,
+          "genesis_timestamp_seconds": 1729505013
+        }
+      }
+    },
+    "latest_reward_event": {
+      "rounds_since_last_distribution": 1,
+      "actual_timestamp_seconds": 1757498615,
+      "end_timestamp_seconds": 1757498613,
+      "total_available_e8s_equivalent": 34344058904010,
+      "distributed_e8s_equivalent": 0,
+      "round": 324,
+      "settled_proposals": []
+    },
     "parameters": {
       "reserved_ids": [],
       "functions": [
@@ -9111,6 +9886,22 @@
           "id": 17,
           "name": "Register SNS extension",
           "description": "Proposal to register a new SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 18,
+          "name": "Execute SNS extension operation",
+          "description": "Proposal to execute an operation on a registered SNS extension.",
+          "function_type": {
+            "NativeNervousSystemFunction": {}
+          }
+        },
+        {
+          "id": 19,
+          "name": "Upgrade SNS extension",
+          "description": "Proposal to upgrade the WASM of a registered SNS extension.",
           "function_type": {
             "NativeNervousSystemFunction": {}
           }
@@ -10059,10 +10850,16 @@
         {
           "Nat": [500]
         }
+      ],
+      [
+        "icrc106:index_principal",
+        {
+          "Text": "onixt-eiaaa-aaaaq-aad2q-cai"
+        }
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 100218700331676865,
+    "icrc1_total_supply": 100353592008205316,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 100000000,
@@ -11047,7 +11844,7 @@
           "topic": "Governance",
           "is_critical": false,
           "name": "Governance",
-          "description": "Proposals that represent community polls or other forms of community opinion but don’t have any immediate effect in terms of code changes.",
+          "description": "Proposals that represent community polls or other forms of community opinion but don't have any immediate effect in terms of code changes.",
           "custom_functions": []
         },
         {
@@ -11113,6 +11910,14 @@
               "id": 17,
               "name": "Register SNS extension",
               "description": "Proposal to register a new SNS extension.",
+              "function_type": {
+                "NativeNervousSystemFunction": {}
+              }
+            },
+            {
+              "id": 19,
+              "name": "Upgrade SNS extension",
+              "description": "Proposal to upgrade the WASM of a registered SNS extension.",
               "function_type": {
                 "NativeNervousSystemFunction": {}
               }

@@ -1,14 +1,25 @@
+import * as icpSwapApi from "$lib/api/icp-swap.api";
+import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
 import * as analytics from "$lib/services/analytics.services";
 import { initAuthWorker } from "$lib/services/worker-auth.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import App from "$routes/+layout.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import { HighlightPo } from "$tests/page-objects/Highlight.page-object";
-import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
+
+const tickers = [
+  {
+    ...mockIcpSwapTicker,
+    base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+    last_price: "10.00",
+  },
+];
 
 vi.mock("$lib/services/worker-auth.services", () => ({
   initAuthWorker: vi.fn(() =>
@@ -29,6 +40,7 @@ vi.mock("$lib/proxy/app.services.proxy");
 describe("Layout", () => {
   beforeEach(() => {
     setNoIdentity();
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
   });
 
   it("should init the app after sign in", async () => {
@@ -80,26 +92,33 @@ describe("Layout", () => {
     expect(initAnalyticsSpy).toHaveBeenCalledTimes(1);
   });
 
-  it("should not show the Highlight component by default", async () => {
-    const { container } = render(App);
+  it("should load ICP Swap tickers", async () => {
+    expect(get(icpSwapTickersStore)).toBeUndefined();
+    expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
 
-    setNoIdentity();
-    const po = HighlightPo.under(new JestPageObjectElement(container));
+    render(App);
+    await runResolvedPromises();
 
-    expect(await po.isPresent()).toBe(false);
+    expect(get(icpSwapTickersStore)).toEqual(tickers);
+    expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
   });
 
-  it("should show the Highlight component if the user is signed in and the feature is on", async () => {
-    const renderComponent = () => {
-      const { container } = render(App);
-      return HighlightPo.under(new JestPageObjectElement(container));
-    };
+  it("should load Staking Rewards", async () => {
+    expect(get(stakingRewardsStore)).toBeUndefined();
 
-    setNoIdentity();
-    expect(await renderComponent().isPresent()).toBe(false);
+    render(App);
+    await runResolvedPromises();
+
+    expect(get(stakingRewardsStore)).toEqual({
+      error: "Not authorized.",
+      loading: false,
+    });
 
     resetIdentity();
-    overrideFeatureFlagsStore.setFlag("ENABLE_DISBURSE_MATURITY", true);
-    expect(await renderComponent().isPresent()).toBe(true);
+    await runResolvedPromises();
+
+    expect(get(stakingRewardsStore)).toEqual({
+      loading: true,
+    });
   });
 });

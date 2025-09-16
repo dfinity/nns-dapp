@@ -1,6 +1,10 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  disableCssAnimations,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 const SECONDS_IN_DAY = 24 * 60 * 60;
@@ -11,6 +15,7 @@ test("Test periodic confirmation", async ({ page, context }) => {
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
 
   await page.goto("/tokens");
+  await disableCssAnimations(page);
   await expect(page).toHaveTitle("Tokens | Network Nervous System");
 
   step("Sign in");

@@ -1,6 +1,7 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
+  disableCssAnimations,
   replaceContent,
   signInWithNewUser,
   step,
@@ -25,6 +26,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
   const page = await context.newPage();
 
   await page.goto("/");
+  await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
@@ -64,6 +66,7 @@ const createHotkeyNeuronsInOtherAccount = async ({
 
 test("Test neurons table", async ({ page, context, browser }) => {
   await page.goto("/canisters");
+  await disableCssAnimations(page);
   await expect(page).toHaveTitle("Canisters | Network Nervous System");
 
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
@@ -119,6 +122,9 @@ test("Test neurons table", async ({ page, context, browser }) => {
     pattern: /[0-9a-f]{7}...[0-9a-f]{7}/,
     replacements: replacementNeuronIds,
   });
+
+  // wait because of the flaky screenshot test (https://github.com/dfinity/nns-dapp/pull/7306/commits/31ee26a1e0e242eed350b35c2d187377991b6fc1)
+  await page.waitForTimeout(1000);
 
   await expect(page).toHaveScreenshot("desktop.png");
   await page.setViewportSize({ width: 480, height: 960 });

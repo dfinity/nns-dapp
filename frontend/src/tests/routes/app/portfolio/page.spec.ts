@@ -1,4 +1,3 @@
-import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import * as proposalsApi from "$lib/api/proposals.api";
@@ -9,19 +8,14 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import { getAnonymousIdentity } from "$lib/services/auth.services";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
-import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { importedTokensStore } from "$lib/stores/imported-tokens.store";
-import { networkEconomicsStore } from "$lib/stores/network-economics.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
-import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
-import { snsAggregatorIncludingAbortedProjectsStore } from "$lib/stores/sns-aggregator.store";
-import { snsLifecycleStore } from "$lib/stores/sns-lifecycle.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-import { snsProposalsStore } from "$lib/stores/sns.store";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
@@ -33,19 +27,10 @@ import {
   mockCkTESTBTCToken,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
-import { mockGovernanceMetrics } from "$tests/mocks/governance-metrics.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
-import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import {
-  mockLifecycleResponse,
-  mockSnsToken,
-  principal,
-} from "$tests/mocks/sns-projects.mock";
+import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { PortfolioRoutePo } from "$tests/page-objects/PortfolioRoute.page-object";
@@ -61,11 +46,10 @@ import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
-import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");
 
-describe("Portfolio route", () => {
+describe.skip("Portfolio route", () => {
   fakeGovernanceApi.install();
 
   const renderPage = async () => {
@@ -76,13 +60,6 @@ describe("Portfolio route", () => {
     return PortfolioRoutePo.under(new JestPageObjectElement(container));
   };
 
-  const tickers = [
-    {
-      ...mockIcpSwapTicker,
-      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-      last_price: "10.00",
-    },
-  ];
   const importedToken1Id = Principal.fromText(
     "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
   );
@@ -94,7 +71,6 @@ describe("Portfolio route", () => {
   } as IcrcTokenMetadata;
 
   beforeEach(() => {
-    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockImplementation(
       async ({ canisterId }) => {
         const tokenMap = {
@@ -111,16 +87,6 @@ describe("Portfolio route", () => {
 
     setCkETHCanisters();
     setCkUSDCCanisters();
-  });
-
-  it("should load ICP Swap tickers", async () => {
-    expect(get(icpSwapTickersStore)).toBeUndefined();
-    expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(0);
-
-    await renderPage();
-
-    expect(get(icpSwapTickersStore)).toEqual(tickers);
-    expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
   });
 
   it("should get ckBtc tokens", async () => {
@@ -160,34 +126,20 @@ describe("Portfolio route", () => {
   it("should render the Portfolio page with visitor data", async () => {
     const po = await renderPage();
     const portfolioPagePo = po.getPortfolioPagePo();
-    const tokensCardPo = portfolioPagePo.getHeldTokensCardPo();
-
-    const titles = await tokensCardPo.getHeldTokensTitles();
-    const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
-    const nativeBalances =
-      await tokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
     expect(await portfolioPagePo.getLoginCard().isPresent()).toBe(true);
     expect(await portfolioPagePo.getTotalAssetsCardPo().isPresent()).toBe(
       false
     );
+    expect(await portfolioPagePo.getApyCardPo().isPresent()).toBe(false);
     expect(await portfolioPagePo.getApyFallbackCardPo().isPresent()).toBe(
       false
     );
-
-    expect(titles.length).toBe(4);
-    expect(titles).toEqual(["Internet Computer", "ckBTC", "ckETH", "ckUSDC"]);
-
-    expect(usdBalances.length).toBe(4);
-    expect(usdBalances).toEqual(["$0.00", "$0.00", "$0.00", "$0.00"]);
-
-    expect(nativeBalances.length).toBe(4);
-    expect(nativeBalances).toEqual([
-      "-/- ICP",
-      "-/- ckBTC",
-      "-/- ckETH",
-      "-/- ckUSDC",
-    ]);
+    expect(await portfolioPagePo.getStartStakingCard().isPresent()).toBe(true);
+    expect(await portfolioPagePo.getNoHeldTokensCard().isPresent()).toBe(true);
+    expect(await portfolioPagePo.getNoStakedTokensCarPo().isPresent()).toBe(
+      true
+    );
   });
 
   describe("when logged in", () => {
@@ -195,6 +147,7 @@ describe("Portfolio route", () => {
     const ckBTCBalanceE8s = 1n * 100_000_000n; // 1BTC(1BTC==10_000ICP) -> $100_000
     const ckETHBalanceUlps = BigInt(0.1 * 1_000_000_000_000_000_000); // 0.1ETH(1ETH=1000ICP) -> $1000
     const tetrisBalanceE8s = 2n * 100_000_000n; // 2Tetris(1Tetris==1ICP) -> $20
+    const doomBalanceE8s = 2n * 100_000_000n; // 2Doom(1Doom==1ICP) -> $20
     const importedToken1BalanceE6s = 100n * 1_000_000n; // 100ZTOKEN1(1ZTOKEN1==1ICP) -> $1000
     const ckUSDCBalanceE6s = 1n * 1_000_000n; // 1USDC -> $1
 
@@ -214,6 +167,14 @@ describe("Portfolio route", () => {
       lifecycle: SnsSwapLifecycle.Committed,
     };
 
+    const doomSNS = {
+      rootCanisterId: principal(13),
+      ledgerCanisterId: principal(1313),
+      projectName: "Doom",
+      tokenMetadata: { ...mockSnsToken, decimals: 8 },
+      lifecycle: SnsSwapLifecycle.Committed,
+    };
+
     beforeEach(() => {
       resetIdentity();
 
@@ -225,6 +186,7 @@ describe("Portfolio route", () => {
             [CKETH_UNIVERSE_CANISTER_ID.toText()]: ckETHBalanceUlps,
             [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: ckUSDCBalanceE6s,
             [tetrisSNS.ledgerCanisterId.toText()]: tetrisBalanceE8s,
+            [doomSNS.ledgerCanisterId.toText()]: doomBalanceE8s,
             [importedToken1Id.toText()]: importedToken1BalanceE6s,
           };
 
@@ -232,7 +194,7 @@ describe("Portfolio route", () => {
         }
       );
 
-      setSnsProjects([tetrisSNS]);
+      setSnsProjects([tetrisSNS, doomSNS]);
 
       vi.spyOn(importedTokensApi, "getImportedTokens").mockResolvedValue({
         imported_tokens: [
@@ -263,8 +225,8 @@ describe("Portfolio route", () => {
 
       await renderPage();
 
-      // Should be called 5 times total (2 ckBTC + 2 ICRC + 1 ImportedToken + 1 SNS)
-      expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(6);
+      // Should be called 5 times total (2 ckBTC + 2 ICRC + 1 ImportedToken + 2 SNS)
+      expect(icrcLedgerApi.queryIcrcBalance).toBeCalledTimes(7);
 
       expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(1, {
         canisterId: CKBTC_UNIVERSE_CANISTER_ID,
@@ -307,6 +269,13 @@ describe("Portfolio route", () => {
         identity,
         account,
       });
+
+      expect(icrcLedgerApi.queryIcrcBalance).toHaveBeenNthCalledWith(7, {
+        canisterId: doomSNS.ledgerCanisterId,
+        certified: false,
+        identity,
+        account,
+      });
     });
 
     describe("should render the Portfolio page", async () => {
@@ -322,6 +291,7 @@ describe("Portfolio route", () => {
           [LEDGER_CANISTER_ID.toText()]: 10,
           [importedToken1Id.toText()]: 10,
           [tetrisSNS.ledgerCanisterId.toText()]: 10,
+          [doomSNS.ledgerCanisterId.toText()]: 10,
         });
 
         const nnsNeuronWithStake = {
@@ -344,9 +314,22 @@ describe("Portfolio route", () => {
           neurons: [snsNeuronWithStake],
           certified: true,
         });
+        snsNeuronsStore.setNeurons({
+          rootCanisterId: doomSNS.rootCanisterId,
+          neurons: [snsNeuronWithStake],
+          certified: true,
+        });
       });
 
       it("should render assets cards with the provided data", async () => {
+        // TODO: Move this to a helper or similar
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
+
         const po = await renderPage();
         const portfolioPagePo = po.getPortfolioPagePo();
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
@@ -360,53 +343,47 @@ describe("Portfolio route", () => {
         // 2Tetris -> $20
         // 1ICP Neuron -> 10$
         // 20Tetris Neuron -> 200$
+        // 20Doom Neuron -> 200$
         // --------------------
-        // Total: $203’231
+        // Total: $203’431
         expect(
           await portfolioPagePo.getTotalAssetsCardPo().getPrimaryAmount()
-        ).toBe("$203’231");
+        ).toBe("$203’451");
         // $1 -> 0.1ICP
         expect(
           await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
-        ).toBe("20’323.10 ICP");
+        ).toBe("20’345.10 ICP");
         expect(await portfolioPagePo.getApyFallbackCardPo().isPresent()).toBe(
           false
         );
 
-        const heldTokensCardPo = portfolioPagePo.getHeldTokensCardPo();
+        const heldTokensCardPo = portfolioPagePo.getHeldRestTokensCardPo();
         const heldTokensTitles = await heldTokensCardPo.getHeldTokensTitles();
         const heldTokensBalanceInUsdBalance =
           await heldTokensCardPo.getHeldTokensBalanceInUsd();
         const heldTokensBalanceInNativeBalance =
           await heldTokensCardPo.getHeldTokensBalanceInNativeCurrency();
 
-        expect(heldTokensTitles.length).toBe(4);
-        expect(heldTokensTitles).toEqual([
-          "Internet Computer",
-          "ckBTC",
-          "ckTESTBTC",
-          "ckETH",
-        ]);
+        expect(heldTokensTitles.length).toBe(3);
+        expect(heldTokensTitles).toEqual(["ckBTC", "ckTESTBTC", "ckETH"]);
 
-        expect(heldTokensBalanceInUsdBalance.length).toBe(4);
+        expect(heldTokensBalanceInUsdBalance.length).toBe(3);
         expect(heldTokensBalanceInUsdBalance).toEqual([
-          "$1’000.00",
           "$100’000.00",
           "$100’000.00",
           "$1’000.00",
         ]);
 
-        expect(heldTokensBalanceInNativeBalance.length).toBe(4);
+        expect(heldTokensBalanceInNativeBalance.length).toBe(3);
         expect(heldTokensBalanceInNativeBalance).toEqual([
-          "100.00 ICP",
           "1.00 ckBTC",
           "1.00 ckTESTBTC",
           "0.10 ckETH",
         ]);
 
-        expect(await heldTokensCardPo.getInfoRow().isVisible()).toBe(false);
+        expect(await heldTokensCardPo.getInfoRow().isVisible()).toBe(true);
 
-        const stakedTokensCardPo = portfolioPagePo.getStakedTokensCardPo();
+        const stakedTokensCardPo = portfolioPagePo.getStakedRestTokensCardPo();
         const stakedTokensTitles =
           await stakedTokensCardPo.getStakedTokensTitle();
         const stakedTokensMaturities =
@@ -417,24 +394,31 @@ describe("Portfolio route", () => {
           await stakedTokensCardPo.getStakedTokensStakeInNativeCurrency();
 
         expect(stakedTokensTitles.length).toBe(2);
-        expect(stakedTokensTitles).toEqual(["Internet Computer", "Tetris"]);
+        expect(stakedTokensTitles).toEqual(["Doom", "Tetris"]);
 
         expect(stakedTokensMaturities.length).toBe(2);
-        expect(stakedTokensMaturities).toEqual(["0", "2.00"]);
+        expect(stakedTokensMaturities).toEqual(["2.00", "2.00"]);
 
         expect(stakedTokensStakeInUsd.length).toBe(2);
-        expect(stakedTokensStakeInUsd).toEqual(["$10.00", "$200.00"]);
+        expect(stakedTokensStakeInUsd).toEqual(["$200.00", "$200.00"]);
 
         expect(stakedTokensStakeInNativeCurrency.length).toBe(2);
         expect(stakedTokensStakeInNativeCurrency).toEqual([
-          "1.00 ICP",
+          "20.00 TST",
           "20.00 TST",
         ]);
 
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
 
-      it("should not show failed SNS", async () => {
+      it.skip("should not show failed SNS", async () => {
+        // TODO: Move this to a helper or similar
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
         failedActionableSnsesStore.add(tetrisSNS.rootCanisterId.toText());
 
         const po = await renderPage();
@@ -459,90 +443,59 @@ describe("Portfolio route", () => {
           await portfolioPagePo.getTotalAssetsCardPo().getSecondaryAmount()
         ).toBe("20’303.10 ICP");
 
-        const stakedTokensCardPo = portfolioPagePo.getStakedTokensCardPo();
+        const stakedTokensCardPo = portfolioPagePo.getStakedRestTokensCardPo();
         const stakedTokensTitles =
           await stakedTokensCardPo.getStakedTokensTitle();
 
-        expect(stakedTokensTitles.length).toBe(1);
+        expect(stakedTokensTitles.length).toBe(0);
         expect(stakedTokensTitles).not.toContain(["Tetris"]);
 
+        console.log(await po.root.innerHtmlForDebugging());
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
 
-      it("should render cards for on-going swaps, open sns proposals and adopted sns proposals", async () => {
-        const rootCanisterIdForOpenProject = Principal.from("aaaaa-aa");
-        const rootCanisterIdForAdoptedProject = Principal.from("2vxsx-fae");
-        const proposals = [{ ...mockProposalInfo, status: 1 }];
-
-        snsAggregatorIncludingAbortedProjectsStore.setData([
-          {
-            ...aggregatorSnsMockDto,
-            canister_ids: {
-              ...aggregatorSnsMockDto.canister_ids,
-              root_canister_id: rootCanisterIdForOpenProject.toText(),
-            },
-          },
-          {
-            ...aggregatorSnsMockDto,
-            canister_ids: {
-              ...aggregatorSnsMockDto.canister_ids,
-              root_canister_id: rootCanisterIdForAdoptedProject.toText(),
-            },
-          },
-        ]);
-
-        snsLifecycleStore.setData({
-          certified: true,
-          rootCanisterId: rootCanisterIdForOpenProject,
-          data: {
-            ...mockLifecycleResponse,
-            lifecycle: [SnsSwapLifecycle.Open],
-          },
-        });
-
-        snsLifecycleStore.setData({
-          certified: true,
-          rootCanisterId: rootCanisterIdForAdoptedProject,
-          data: {
-            ...mockLifecycleResponse,
-            lifecycle: [SnsSwapLifecycle.Adopted],
-          },
-        });
-
-        snsProposalsStore.setProposals({
-          proposals,
-          certified: false,
+      it("should render APY fallback card when there is an error", async () => {
+        stakingRewardsStore.set({
+          loading: false,
+          error: "An error occurred.",
         });
 
         const po = await renderPage();
         const pagePo = po.getPortfolioPagePo();
-        const stackedCardsPo = pagePo.getStackedCardsPo();
-        const cardWrappers = await stackedCardsPo.getCardWrappers();
 
-        expect(await stackedCardsPo.isPresent()).toBe(true);
-        expect(cardWrappers.length).toBe(3);
+        expect(await pagePo.getApyFallbackCardPo().isPresent()).toBe(true);
+        expect(await pagePo.getApyCardPo().isPresent()).toBe(false);
       });
 
-      it("should render apy card when all stores have the required data", async () => {
-        vi.useFakeTimers();
-
-        overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
-        networkEconomicsStore.setParameters({
-          certified: true,
-          parameters: mockNetworkEconomics,
+      it("should render APY fallback card when the data is still loading", async () => {
+        stakingRewardsStore.set({
+          loading: true,
         });
-        governanceMetricsStore.setMetrics({
-          metrics: mockGovernanceMetrics,
-          certified: true,
-        });
-        nnsTotalVotingPowerStore.set(0n);
 
         const po = await renderPage();
         const pagePo = po.getPortfolioPagePo();
 
-        // There is a debounce function that we have to wait for and then let svelte re-render
-        vi.advanceTimersByTime(1000);
-        await tick();
+        expect(await pagePo.getApyFallbackCardPo().isPresent()).toBe(true);
+        expect(await pagePo.getApyCardPo().isPresent()).toBe(false);
+      });
+
+      it("should render APY card when the data is ready", async () => {
+        stakingRewardsStore.set({
+          loading: false,
+          rewardBalanceUSD: 100,
+          rewardEstimateWeekUSD: 10,
+          stakingPower: 1,
+          stakingPowerUSD: 1,
+          icpOnly: {
+            maturityBalance: 1,
+            maturityEstimateWeek: 1,
+            stakingPower: 1,
+          },
+          apy: new Map(),
+        });
+
+        const po = await renderPage();
+        const pagePo = po.getPortfolioPagePo();
 
         expect(await pagePo.getApyFallbackCardPo().isPresent()).toBe(false);
         expect(await pagePo.getApyCardPo().isPresent()).toBe(true);

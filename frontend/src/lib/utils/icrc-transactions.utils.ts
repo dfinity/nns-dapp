@@ -264,9 +264,7 @@ const isCkbtcReimbursementMintMemo = (
     return false;
   }
   try {
-    const decodedMemo = Cbor.decode(
-      new Uint8Array(memo).buffer
-    ) as CkbtcMintMemo;
+    const decodedMemo = Cbor.decode(new Uint8Array(memo)) as CkbtcMintMemo;
     const mintType = decodedMemo[0];
     return mintType === MINT_TYPE_KYT_FAIL;
   } catch (err) {
@@ -324,9 +322,7 @@ export const mapCkbtcTransaction = (params: {
     }
     const memo = transaction.burn[0].memo[0] as Uint8Array;
     try {
-      const decodedMemo = Cbor.decode(
-        new Uint8Array(memo).buffer
-      ) as CkbtcBurnMemo;
+      const decodedMemo = Cbor.decode(new Uint8Array(memo)) as CkbtcBurnMemo;
       const withdrawalAddress = decodedMemo[1][0];
       mappedTransaction.otherParty = withdrawalAddress;
     } catch (err) {

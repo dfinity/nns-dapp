@@ -22,10 +22,12 @@ export interface ResponsiveTableColumn<
 > {
   id?: IdType;
   title: string;
+  subtitle?: string;
   cellComponent?: ComponentType<SvelteComponent<{ rowData: RowDataType }>>;
   alignment: ColumnAlignment;
   templateColumns: TemplateItem[];
   comparator?: Comparator<RowDataType>;
+  overrideSortLabel?: string;
 }
 
 export type ResponsiveTableOrder<ColumnIdType = string> = Array<{

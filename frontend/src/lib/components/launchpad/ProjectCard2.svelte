@@ -1,7 +1,9 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import CardFrame from "$lib/components/launchpad/CardFrame.svelte";
+  import IconParticpated from "$lib/components/ui/icons/IconParticpated.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
@@ -9,23 +11,19 @@
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
+  import { compactCurrencyNumber } from "$lib/utils/format.utils";
   import {
-    compactCurrencyNumber,
-    formatPercentage,
-  } from "$lib/utils/format.utils";
-  import {
-    snsProjectIcpInTreasuryPercentage,
     snsProjectMarketCap,
     snsProjectWeeklyProposalActivity,
   } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import {
-    IconAccountBalance,
     IconCoin,
     IconRight,
     IconStar,
     IconVote,
     IconWallet,
+    Tooltip,
   } from "@dfinity/gix-components";
   import { ICPToken, isNullish, nonNullish, TokenAmount } from "@dfinity/utils";
   import { onMount } from "svelte";
@@ -53,7 +51,6 @@
 
     return compactCurrencyNumber(marketCap);
   });
-  const icpInTreasury = $derived(snsProjectIcpInTreasuryPercentage(project));
   const userCommitmentIcp = $derived.by(() => {
     const myCommitment = getCommitmentE8s(swapCommitment);
     if (isNullish(myCommitment)) {
@@ -71,19 +68,18 @@
   });
 </script>
 
-<CardFrame
-  testId="project-card-component"
-  highlighted={userHasParticipated}
-  mobileHref={href}
->
+<CardFrame testId="project-card-component" dimmed mobileHref={href}>
   <div class="card-content" class:userHasParticipated>
     <div class="header">
       <Logo src={logo} alt={$i18n.sns_launchpad.project_logo} size="big" />
       <h3 data-tid="project-name">{name}</h3>
-      <div class="fav-icon">
-        <!-- TODO(launchpad2): Should be clickable and toggle favorite state -->
-        <IconStar size="20px" />
-      </div>
+      {#if userHasParticipated}
+        <div data-tid="participation-mark" class="participation-mark">
+          <Tooltip id="participated" text={$i18n.sns_launchpad.participated}>
+            <IconParticpated />
+          </Tooltip>
+        </div>
+      {/if}
     </div>
 
     <div>
@@ -91,9 +87,14 @@
     </div>
     <ul class="stats">
       <li class="stat-item">
-        <h6 class="stat-label"
-          >{$i18n.launchpad_cards.project_card_market_cap}</h6
-        >
+        <h6 class="stat-label fdv">
+          {$i18n.launchpad_cards.project_card_fully_diluted_valuation}
+          <TooltipIcon
+            iconSize={16}
+            text={$i18n.launchpad_cards
+              .project_card_fully_diluted_valuation_tooltip}
+          />
+        </h6>
         <div class="stat-value">
           <IconCoin size="16px" />
           <span data-tid="token-market-cap">${formattedMarketCapUsd}</span>
@@ -102,29 +103,25 @@
       <li class="stat-divider"></li>
       <li class="stat-item">
         <h6 class="stat-label"
-          >{$i18n.launchpad_cards.project_card_icp_in_treasury}</h6
+          >{$i18n.launchpad_cards.project_card_proposal_activity}</h6
         >
-        <div class="stat-value">
-          <IconAccountBalance size="16px" />
-          {#if nonNullish(icpInTreasury)}
-            <span data-tid="icp-in-treasury-value"
-              >{icpInTreasury > 1
-                ? ">100%"
-                : formatPercentage(icpInTreasury, {
-                    minFraction: 0,
-                    maxFraction: 2,
-                  })}</span
-            >
-          {:else}
-            <span data-tid="icp-in-treasury-not-applicable"
-              >{$i18n.core.not_applicable}</span
-            >
-          {/if}
+        <div class="stat-value" data-tid="proposal-activity">
+          <IconWallet size="16px" />
+          <span class="proposal-activity">
+            {#if nonNullish(proposalActivity)}
+              <span data-tid="proposal-activity-value">{proposalActivity}</span
+              ><span class="unit">/{$i18n.core.week}</span>
+            {:else}
+              <span data-tid="proposal-activity-not-available"
+                >{$i18n.core.not_applicable}</span
+              >
+            {/if}
+          </span>
         </div>
       </li>
-      <li class="stat-divider"></li>
-      <li class="stat-item">
-        {#if userHasParticipated && nonNullish(userCommitmentIcp)}
+      {#if userHasParticipated && nonNullish(userCommitmentIcp)}
+        <li class="stat-divider"></li>
+        <li class="stat-item">
           <h6 class="stat-label"
             >{$i18n.launchpad_cards.project_card_my_participation}</h6
           >
@@ -132,26 +129,8 @@
             <IconVote size="16px" />
             <AmountDisplay amount={userCommitmentIcp} singleLine inline />
           </div>
-        {:else}
-          <h6 class="stat-label"
-            >{$i18n.launchpad_cards.project_card_proposal_activity}</h6
-          >
-          <div class="stat-value" data-tid="proposal-activity">
-            <IconWallet size="16px" />
-            <span class="proposal-activity">
-              {#if nonNullish(proposalActivity)}
-                <span data-tid="proposal-activity-value"
-                  >{proposalActivity}</span
-                ><span class="unit">/{$i18n.core.week}</span>
-              {:else}
-                <span data-tid="proposal-activity-not-available"
-                  >{$i18n.core.not_applicable}</span
-                >
-              {/if}
-            </span>
-          </div>
-        {/if}
-      </li>
+        </li>
+      {/if}
     </ul>
 
     <div class="footer">
@@ -207,11 +186,8 @@
         @include text.truncate;
       }
 
-      .fav-icon {
-        display: none;
-        @include media.min-width(small) {
-          display: none;
-        }
+      .participation-mark {
+        color: var(--tooltip-icon-color, var(--elements-icons));
       }
     }
 
@@ -253,6 +229,12 @@
         h6 {
           @include launchpad.text_h6;
           margin: 0;
+        }
+
+        .stat-label.fdv {
+          display: flex;
+          align-items: center;
+          gap: var(--padding-0_5x);
         }
 
         .stat-value {

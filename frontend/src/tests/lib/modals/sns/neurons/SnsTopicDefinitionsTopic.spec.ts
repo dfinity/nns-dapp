@@ -38,6 +38,7 @@ describe("SnsTopicDefinitionsTopic", () => {
     name: [topicName],
     description: [topicDescription],
     custom_functions: [[genericNsFunction]],
+    extension_operations: [],
   };
 
   const renderComponent = (props: { topicInfo: TopicInfoWithUnknown }) => {

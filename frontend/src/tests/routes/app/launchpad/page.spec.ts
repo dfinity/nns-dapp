@@ -116,8 +116,4 @@ describe("Launchpad page", () => {
       omitLargeFields: false,
     });
   });
-
-  it("displays sns projects", async () => {
-    // TODO(launchpad2): Add more tests for the Launchpad2 component.
-  });
 });

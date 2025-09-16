@@ -7,11 +7,16 @@
   import { snsProjectsActivePadStore } from "$lib/derived/sns/sns-projects.derived";
   import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
-  import { compactCurrencyNumber } from "$lib/utils/format.utils";
+  import { compactCurrencyNumber, formatNumber } from "$lib/utils/format.utils";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { IconRight } from "@dfinity/gix-components";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { fade } from "svelte/transition";
+
+  type Props = {
+    withUpcomingLaunchesCards?: boolean;
+  };
+  const { withUpcomingLaunchesCards = false }: Props = $props();
 
   const snsProjects = $derived($snsProjectsActivePadStore);
   const launchedSnsProjects = $derived(
@@ -64,18 +69,20 @@
     </div>
 
     <div class="stats">
-      <div class="stat-item">
+      <div class="stat-item stat-item--a">
         <h6>
           {$i18n.launchpad.banner_raised_by}
         </h6>
         <span class="value">
           <span data-tid="launchpad-banner-raised-value"
-            >{compactCurrencyNumber(raisedFunds)}</span
+            >{withUpcomingLaunchesCards
+              ? formatNumber(raisedFunds, { minFraction: 0, maxFraction: 0 })
+              : compactCurrencyNumber(raisedFunds)}</span
           >&nbsp;{$i18n.core.icp}
         </span>
       </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
+      <div class="stat-divider stat-divider--a"></div>
+      <div class="stat-item stat-item--b">
         <h6>
           {$i18n.launchpad.banner_launched}
         </h6>
@@ -83,8 +90,8 @@
           >{snsDaoLaunched}</span
         >
       </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
+      <div class="stat-divider stat-divider--b"></div>
+      <div class="stat-item stat-item--c">
         <h6>
           {$i18n.launchpad.banner_proposals_executed}
         </h6>
@@ -99,7 +106,12 @@
 <TestIdWrapper testId="launchpad-banner-component">
   {#if snsDaoLaunched > 0}
     {#if $isDesktopViewportStore}
-      <section class="launchpad-banner" role="alert" aria-live="polite">
+      <section
+        class="launchpad-banner"
+        role="alert"
+        aria-live="polite"
+        class:withUpcomingLaunchesCards
+      >
         <div class="background">
           {#each logos as logo, index (logo)}
             <div
@@ -138,6 +150,60 @@
     border-radius: var(--border-radius-2x);
     min-width: 100%;
     padding: 0;
+
+    box-shadow: var(--box-shadow);
+
+    // Extra mode when rendering together with upcoming launches cards.
+    &.withUpcomingLaunchesCards {
+      @include media.min-width(large) {
+        .background {
+          --bg-width: 50%;
+        }
+
+        .stats {
+          flex: 2;
+          padding: 30px 52px;
+          gap: var(--padding-2x);
+
+          grid-template-columns: 1fr auto 1fr;
+          grid-template-rows: auto auto;
+          grid-template-areas:
+            "a a a"
+            "b sep c";
+        }
+
+        .stat-item.stat-item--a {
+          grid-area: a;
+
+          .value {
+            font-size: 27px;
+            font-weight: 450;
+            line-height: 31px;
+          }
+        }
+        .stat-item.stat-item--b {
+          grid-area: b;
+        }
+        .stat-item.stat-item--c {
+          grid-area: c;
+        }
+        .stat-divider.stat-divider--a {
+          grid-area: sep;
+        }
+        .stat-divider.stat-divider--b {
+          display: none;
+        }
+
+        .stat-item--b,
+        .stat-item--c {
+          .value {
+            font-size: 18px;
+            font-weight: 450;
+            line-height: 24px;
+          }
+        }
+      }
+    }
   }
   a.launchpad-banner {
     text-decoration: none;
@@ -172,6 +238,7 @@
 
   .info {
     flex: 2;
+    z-index: 1;
 
     display: flex;
     flex-direction: column;
@@ -234,13 +301,19 @@
     gap: var(--padding);
 
     @include media.min-width(large) {
-      justify-content: space-around;
-      gap: var(--padding-3x);
       padding: var(--padding-2x) var(--padding-3x);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      justify-content: space-around;
+      align-items: center;
+      gap: var(--padding-3x);
 
       border-radius: var(--border-radius);
       background: rgba(#fff, 0.45);
       backdrop-filter: blur(11.5px);
+    }
+    @include media.min-width(xlarge) {
+      flex: 1;
     }
 
     .stat-divider {
@@ -308,6 +381,9 @@
     display: none;
     @include media.min-width(large) {
       display: block;
+    }
+    @include media.min-width(xlarge) {
+      --bg-width: 40%;
     }
 
     .logo {

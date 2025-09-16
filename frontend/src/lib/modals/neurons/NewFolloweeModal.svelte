@@ -85,8 +85,8 @@
   };
 </script>
 
-<Modal on:nnsClose testId="new-followee-modal-component">
-  <svelte:fragment slot="title">{$i18n.new_followee.title}</svelte:fragment>
+<Modal onClose={close} testId="new-followee-modal-component">
+  {#snippet title()}{$i18n.new_followee.title}{/snippet}
 
   <form on:submit|preventDefault={addFolloweeByAddress}>
     <Input

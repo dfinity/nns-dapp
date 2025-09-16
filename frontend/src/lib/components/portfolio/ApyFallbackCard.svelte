@@ -4,18 +4,21 @@
   import { IconError } from "@dfinity/gix-components";
 
   type Props = {
-    stakingRewardData:
+    stakingRewardData?:
       | { loading: true }
       | {
           loading: false;
           error: string;
         };
+    onStakingPage?: boolean;
   };
 
-  const { stakingRewardData }: Props = $props();
+  const { stakingRewardData, onStakingPage = false }: Props = $props();
 
   const isError = $derived(
-    !stakingRewardData.loading && "error" in stakingRewardData
+    stakingRewardData &&
+      !stakingRewardData.loading &&
+      "error" in stakingRewardData
   );
   const testId = "apy-fallback-card";
 </script>
@@ -66,7 +69,9 @@
     {:else}
       <div class="title skeleton"></div>
       {@render loadingContent()}
-      <div class="link skeleton"></div>
+      {#if !onStakingPage}
+        <div class="link skeleton"></div>
+      {/if}
     {/if}
   </article>
 {/if}
@@ -97,7 +102,6 @@
         width: 100px;
 
         @include media.min-width(medium) {
-          height: 36px;
           max-width: 140px;
         }
       }
@@ -156,7 +160,7 @@
   .card {
     height: 100%;
     box-sizing: border-box;
-    background-color: var(--background);
+    background-color: var(--card-background-tint);
     box-shadow: var(--box-shadow);
     border-radius: 12px;
     overflow: hidden;

@@ -10,6 +10,7 @@ import { pageStore } from "$lib/derived/page.derived";
 import SnsNeuronDetail from "$lib/pages/SnsNeuronDetail.svelte";
 import * as checkNeuronsService from "$lib/services/sns-neurons-check-balances.services";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import {
   getSnsNeuronIdAsHexString,
   subaccountToHexString,
@@ -24,6 +25,7 @@ import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
+import { principal } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -121,6 +123,48 @@ describe("SnsNeuronDetail", () => {
       expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
       expect(await po.getFollowingCardPo().isPresent()).toBe(true);
       expect(await po.getHotkeysCardPo().isPresent()).toBe(true);
+    });
+
+    it("should render APY in advanced section", async () => {
+      const rootCanisterId = principal(0);
+      page.mock({
+        data: { universe: rootCanisterId.toText() },
+        routeId: AppPath.Neuron,
+      });
+      stakingRewardsStore.set({
+        loading: false,
+        rewardBalanceUSD: 100,
+        rewardEstimateWeekUSD: 10,
+        stakingPower: 1,
+        stakingPowerUSD: 1,
+        icpOnly: {
+          maturityBalance: 1,
+          maturityEstimateWeek: 1,
+          stakingPower: 1,
+        },
+        apy: new Map([
+          [
+            rootCanisterId.toText(),
+            {
+              cur: 0.1,
+              max: 0.2,
+              neurons: new Map([
+                [validNeuronIdAsHexString, { cur: 0.01, max: 0.5 }],
+              ]),
+            },
+          ],
+        ]),
+      });
+      const po = await renderComponent({
+        neuronId: validNeuronIdAsHexString,
+      });
+
+      expect(await po.getAdvancedSectionPo().isPresent()).toBe(true);
+      expect(
+        await po.getAdvancedSectionPo().getApyDisplayPo().isPresent()
+      ).toBe(true);
+      expect(await po.getAdvancedSectionPo().getCurrentApy()).toBe("1.00%");
+      expect(await po.getAdvancedSectionPo().getMaxApy()).includes("50.00%");
     });
 
     it("should reload neuron if refreshed", async () => {

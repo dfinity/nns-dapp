@@ -29,7 +29,14 @@ export const CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID =
 // This project has been abandoned https://dfinity.slack.com/archives/C03H6QEPW5D/p1745829568330499
 export const SEERS_ROOT_CANISTER_ID = "u67kc-jyaaa-aaaaq-aabpq-cai";
 
+// Sunset projects: https://dfinity.slack.com/archives/C039M7YS6F6/p1754945177342759
+const FUEL_EV_ROOT_CANISTER_ID = "nllv2-byaaa-aaaaq-aaema-cai";
+
 export const abandonedProjectsCanisterId = [
   CYCLES_TRANSFER_STATION_ROOT_CANISTER_ID,
   SEERS_ROOT_CANISTER_ID,
+  FUEL_EV_ROOT_CANISTER_ID,
 ];
+
+const ICVC_ROOT_CANISTER_ID = "nuywj-oaaaa-aaaaq-aadta-cai";
+export const uninstalledIndexCanistersId = [ICVC_ROOT_CANISTER_ID];

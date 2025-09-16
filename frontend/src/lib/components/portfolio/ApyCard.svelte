@@ -1,76 +1,51 @@
 <script lang="ts">
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
   import { isMobileViewportStore } from "$lib/derived/viewport.derived";
   import { i18n } from "$lib/stores/i18n";
   import {
     formatCurrencyNumber,
     formatPercentage,
-    renderPrivacyModeBalance,
   } from "$lib/utils/format.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { IconRight } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {
-    rewardBalanceUSD: number;
-    rewardEstimateWeekUSD: number;
-    stakingPower: number;
-    stakingPowerUSD: number;
-    totalAmountUSD: number;
+    icpOnlyMaturityBalance: number;
+    icpOnlyMaturityEstimateWeek: number;
+    icpOnlyStakingPower: number;
+    /// Whether to render the link and the header.
+    onStakingPage?: boolean;
   };
   const {
-    rewardBalanceUSD,
-    rewardEstimateWeekUSD,
-    stakingPower,
-    stakingPowerUSD,
-    totalAmountUSD,
+    icpOnlyMaturityBalance,
+    icpOnlyMaturityEstimateWeek,
+    icpOnlyStakingPower,
+    onStakingPage = false,
   }: Props = $props();
 
   const href = AppPath.Staking;
   const dataTid = "apy-card-component";
 
-  const rewardBalanceUSDFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(5)
-      : nonNullish(rewardBalanceUSD)
-        ? formatCurrencyNumber(rewardBalanceUSD)
-        : $i18n.core.not_applicable
-  );
+  const maturityBalanceFormatted = nonNullish(icpOnlyMaturityBalance)
+    ? formatCurrencyNumber(icpOnlyMaturityBalance)
+    : $i18n.core.not_applicable;
 
-  const totalAmountUSDFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(3)
-      : nonNullish(totalAmountUSD)
-        ? formatCurrencyNumber(totalAmountUSD)
-        : $i18n.core.not_applicable
-  );
+  const maturityEstimateWeekFormatted = nonNullish(icpOnlyMaturityEstimateWeek)
+    ? formatCurrencyNumber(icpOnlyMaturityEstimateWeek, {
+        smallValueDecimalPlaces: 3,
+      })
+    : $i18n.core.not_applicable;
 
-  const stakingPowerUSDFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(3)
-      : nonNullish(stakingPowerUSD)
-        ? formatCurrencyNumber(stakingPowerUSD)
-        : $i18n.core.not_applicable
-  );
-
-  const rewardEstimateWeekUSDFormatted = $derived(
-    $isBalancePrivacyOptionStore
-      ? renderPrivacyModeBalance(3)
-      : nonNullish(rewardEstimateWeekUSD)
-        ? formatCurrencyNumber(rewardEstimateWeekUSD)
-        : $i18n.core.not_applicable
-  );
   const stakingPowerPercentage = $derived(
-    formatPercentage(stakingPower, {
+    formatPercentage(icpOnlyStakingPower, {
       minFraction: 2,
       maxFraction: 2,
     })
   );
 
   const linkText = $derived(
-    stakingPowerUSD > 0
+    icpOnlyStakingPower > 0
       ? $i18n.portfolio.apy_card_link_view
       : $i18n.portfolio.apy_card_link_start
   );
@@ -87,7 +62,7 @@
         />
       </span>
       <span class="main-value" data-tid="reward"
-        >~${rewardBalanceUSDFormatted}</span
+        >{maturityBalanceFormatted}</span
       >
       <span class="secondary-value"
         ><span class="projection" data-tid="projection">
@@ -102,7 +77,7 @@
               d="M4.5 0.5L8.39711 7.25H0.602886L4.5 0.5Z"
               fill="currentColor"
             />
-          </svg>~${rewardEstimateWeekUSDFormatted}</span
+          </svg>{maturityEstimateWeekFormatted}</span
         >{$i18n.portfolio.apy_card_estimation}</span
       >
     </div>
@@ -112,18 +87,10 @@
         {$i18n.portfolio.apy_card_power_title}
         <TooltipIcon
           iconSize={16}
-          text={replacePlaceholders(
-            $i18n.portfolio.apy_card_tooltip_staking_ratio,
-            {
-              $totalStaked: String(stakingPowerUSDFormatted),
-              $totalHoldings: String(totalAmountUSDFormatted),
-              $totalRewards: String(rewardBalanceUSDFormatted),
-              $ratio: String(stakingPowerPercentage),
-            }
-          )}
+          text={$i18n.portfolio.apy_card_tooltip_staking_ratio}
         />
       </span>
-      <span class="main-value bigger" data-tid="staking-power"
+      <span class="main-value" data-tid="staking-power"
         >{stakingPowerPercentage}</span
       >
     </div>
@@ -132,19 +99,28 @@
 
 {#if $isMobileViewportStore}
   <article class="card mobile" data-tid={dataTid}>
-    <a {href} class="link" aria-label={linkText} data-tid="project-link">
+    <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
+
+    {#if onStakingPage}
       {@render content()}
-    </a>
+    {:else}
+      <a {href} class="link" aria-label={linkText} data-tid="project-link">
+        {@render content()}
+      </a>
+    {/if}
   </article>
 {:else}
-  <article class="card desktop" data-tid={dataTid}>
+  <article class="card desktop" data-tid={dataTid} class:onStakingPage>
     <h5 class="title">{$i18n.portfolio.apy_card_title}</h5>
+
     {@render content()}
 
-    <a {href} class="link" aria-label={linkText} data-tid="project-link">
-      <span>{linkText}</span>
-      <IconRight />
-    </a>
+    {#if !onStakingPage}
+      <a {href} class="link" aria-label={linkText} data-tid="project-link">
+        <span>{linkText}</span>
+        <IconRight />
+      </a>
+    {/if}
   </article>
 {/if}
 
@@ -178,19 +154,8 @@
         font-weight: 450;
         line-height: 32px;
 
-        &.bigger {
-          font-size: 30px;
-          line-height: 30px;
-          font-weight: 400;
-        }
-
         @include media.min-width(medium) {
           font-size: 27px;
-
-          &.bigger {
-            font-size: 40px;
-            line-height: 40px;
-          }
         }
       }
 
@@ -225,15 +190,19 @@
   .card {
     height: 100%;
     box-sizing: border-box;
-    background-color: var(--background);
+    background-color: var(--card-background-tint);
 
     box-shadow: var(--box-shadow);
-
     transition:
       color var(--animation-time-normal),
       box-shadow var(--animation-time-normal);
     border-radius: 12px;
     overflow: hidden;
+
+    &.onStakingPage {
+      box-shadow: none;
+      border-radius: var(--padding);
+    }
   }
 
   .card.mobile {
@@ -249,6 +218,10 @@
     grid-template-rows: auto auto 1fr;
     padding: 24px;
     grid-gap: 16px;
+
+    &.onStakingPage {
+      grid-template-rows: auto;
+    }
 
     .title {
       font-size: 18px;

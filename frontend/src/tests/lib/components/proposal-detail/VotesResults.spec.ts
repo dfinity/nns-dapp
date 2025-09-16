@@ -8,6 +8,7 @@ import { basisPointsToPercent } from "$lib/utils/utils";
 import en from "$tests/mocks/i18n.mock";
 import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { ProposalStatus } from "@dfinity/nns";
 import { render } from "@testing-library/svelte";
 
 const now = nowInSeconds();
@@ -29,6 +30,7 @@ describe("VotesResults", () => {
     yes?: number;
     no?: number;
     total?: number;
+    status?: ProposalStatus;
   }) => {
     const { container } = render(VotesResults, {
       props: {
@@ -40,6 +42,7 @@ describe("VotesResults", () => {
           props?.immediateMajorityPercent ?? defaultImmediateMajorityPercent,
         standardMajorityPercent:
           props?.standardMajorityPercent ?? defaultStandardMajorityPercent,
+        status: props?.status,
       },
     });
 
@@ -90,12 +93,22 @@ describe("VotesResults", () => {
     expect(await votesResultPo.getProgressMaxValue()).toBe(totalValue);
   });
 
-  it("should render Expiration date", async () => {
+  it("should render Expiration date for non-executed proposals", async () => {
     const votesResultPo = renderComponent({
       deadlineTimestampSeconds: BigInt(now + 100000),
     });
     expect(await votesResultPo.getExpirationDateText()).toEqual(
-      "Expiration date 1 day, 3 hours remaining"
+      "Voting open until 1 day, 3 hours"
+    );
+  });
+
+  it("should render Expiration date for non-executed proposals", async () => {
+    const votesResultPo = renderComponent({
+      deadlineTimestampSeconds: BigInt(now + 100000),
+      status: ProposalStatus.Executed,
+    });
+    expect(await votesResultPo.getExpirationDateText()).toEqual(
+      "Proposal decided, voting for reward collection still open until 1 day, 3 hours"
     );
   });
 

@@ -31,9 +31,9 @@ describe("LedgerIdentity", () => {
     paths: [],
     canister_id: mockCanisterId,
     method_name: "get_balance",
-    arg: new Uint8Array(new TextEncoder().encode("")).buffer,
+    arg: new Uint8Array(new TextEncoder().encode("")),
     sender: mockPrincipal,
-    ingress_expiry: new Expiry(100000),
+    ingress_expiry: Expiry.fromDeltaInMilliseconds(100000),
   };
   const mockHttpRequest1: HttpAgentRequest = {
     endpoint: "call" as Endpoint.Call,
@@ -44,13 +44,10 @@ describe("LedgerIdentity", () => {
   const readStateBody1 = {
     request_type: "read_state" as ReadRequestType.ReadState,
     paths: [
-      [
-        new Uint8Array(new TextEncoder().encode("request_status")).buffer,
-        requestId1,
-      ],
+      [new Uint8Array(new TextEncoder().encode("request_status")), requestId1],
     ],
     sender: mockPrincipal,
-    ingress_expiry: new Expiry(100000),
+    ingress_expiry: Expiry.fromDeltaInMilliseconds(100000),
   };
   const mockReadStateRequest1: HttpAgentRequest = {
     endpoint: "read_state" as Endpoint.ReadState,
@@ -176,7 +173,7 @@ describe("LedgerIdentity", () => {
         ...readStateBody1,
         paths: [
           [
-            new Uint8Array(new TextEncoder().encode("request_status")).buffer,
+            new Uint8Array(new TextEncoder().encode("request_status")),
             requestId2,
           ],
         ],

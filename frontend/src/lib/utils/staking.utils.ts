@@ -23,6 +23,10 @@ import {
   mergeComparators,
 } from "$lib/utils/sort.utils";
 import {
+  isStakingRewardDataReady,
+  type StakingRewardResult,
+} from "$lib/utils/staking-rewards.utils";
+import {
   FailedTokenAmount,
   UnavailableTokenAmount,
   getUsdValue,
@@ -165,6 +169,7 @@ export const getTableProjects = ({
   snsNeurons,
   icpSwapUsdPrices,
   failedActionableSnses,
+  stakingRewardsResult,
 }: {
   universes: Universe[];
   isSignedIn: boolean;
@@ -172,6 +177,7 @@ export const getTableProjects = ({
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
   icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
   failedActionableSnses: FailedActionableSnsesStoreData;
+  stakingRewardsResult: StakingRewardResult | undefined;
 }): TableProject[] => {
   return universes.map((universe) => {
     const token =
@@ -210,6 +216,10 @@ export const getTableProjects = ({
             tokenPrice,
           })
         : undefined;
+    const apy = isStakingRewardDataReady(stakingRewardsResult)
+      ? stakingRewardsResult?.apy.get(universeId)
+      : undefined;
+
     return {
       rowHref,
       domKey: universeId,
@@ -220,6 +230,7 @@ export const getTableProjects = ({
       neuronCount,
       stake,
       stakeInUsd,
+      apy,
       availableMaturity,
       stakedMaturity,
       isStakeLoading,
@@ -227,9 +238,10 @@ export const getTableProjects = ({
   });
 };
 
-export const compareIcpFirst = createDescendingComparator(
-  (project: TableProject) => project.universeId === OWN_CANISTER_ID_TEXT
-);
+export const isIcpProject = (project: TableProject) =>
+  project.universeId === OWN_CANISTER_ID_TEXT;
+
+export const compareIcpFirst = createDescendingComparator(isIcpProject);
 
 export const compareNonFailedTokenAmountFirst = createAscendingComparator(
   (project: TableProject) => project.stake instanceof FailedTokenAmount
@@ -251,6 +263,10 @@ export const compareByStakeInUsd = createDescendingComparator(
   (project: TableProject) => getUsdStake(project)
 );
 
+const compareByApyCurrent = createDescendingComparator(
+  (project: TableProject) => project.apy?.cur ?? 0
+);
+
 export const compareByNeuron = mergeComparators([
   compareIcpFirst,
   compareNonFailedTokenAmountFirst,
@@ -270,6 +286,13 @@ export const compareByProject = mergeComparators([
 export const compareByStake = mergeComparators([
   compareIcpFirst,
   compareByStakeInUsd,
+  compareNonFailedTokenAmountFirst,
+  comparePositiveNeuronsFirst,
+]);
+
+export const compareByApy = mergeComparators([
+  compareIcpFirst,
+  compareByApyCurrent,
   compareNonFailedTokenAmountFirst,
   comparePositiveNeuronsFirst,
 ]);

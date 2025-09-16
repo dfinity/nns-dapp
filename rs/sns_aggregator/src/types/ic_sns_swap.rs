@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_swap --out ic_sns_swap.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/fccfa2c7c7cba9e5485ad0b48823990e24a67f40/rs/sns/swap/canister/swap.did>
+//! Candid for canister `sns_swap` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-28_03-17-snapshot-feature/rs/sns/swap/canister/swap.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -222,6 +222,17 @@ pub struct GetBuyersTotalResponse {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetCanisterStatusArg {}
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct MemoryMetrics {
+    pub wasm_binary_size: Option<candid::Nat>,
+    pub wasm_chunk_store_size: Option<candid::Nat>,
+    pub canister_history_size: Option<candid::Nat>,
+    pub stable_memory_size: Option<candid::Nat>,
+    pub snapshots_size: Option<candid::Nat>,
+    pub wasm_memory_size: Option<candid::Nat>,
+    pub global_memory_size: Option<candid::Nat>,
+    pub custom_sections_size: Option<candid::Nat>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum CanisterStatusType {
     #[serde(rename = "stopped")]
     Stopped,
@@ -248,6 +259,7 @@ pub struct QueryStats {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct CanisterStatusResultV2 {
+    pub memory_metrics: Option<MemoryMetrics>,
     pub status: CanisterStatusType,
     pub memory_size: candid::Nat,
     pub cycles: candid::Nat,

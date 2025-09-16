@@ -1,3 +1,4 @@
+import { ApyDisplayPo } from "$tests/page-objects/ApyDisplay.page-object";
 import { CheckboxPo } from "$tests/page-objects/Checkbox.page-object";
 import { HashPo } from "$tests/page-objects/Hash.page-object";
 import { NnsNeuronAgePo } from "$tests/page-objects/NnsNeuronAge.page-object";
@@ -36,6 +37,18 @@ export class NnsNeuronAdvancedSectionPo extends BasePageObject {
 
   neuronAccount(): Promise<string> {
     return HashPo.under(this.root.byTestId("neuron-account-row")).getFullText();
+  }
+
+  getApyDisplayPo(): ApyDisplayPo {
+    return ApyDisplayPo.under(this.root);
+  }
+
+  getCurrentApy(): Promise<string> {
+    return this.getApyDisplayPo().getCurrentApy().getText();
+  }
+
+  getMaxApy(): Promise<string> {
+    return this.getApyDisplayPo().getMaxApy().getText();
   }
 
   lastRewardsDistribution(): Promise<string> {

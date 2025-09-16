@@ -509,8 +509,8 @@ describe("TokensTable", () => {
 
       expect(await getProjectNames(po)).toEqual([
         "Internet Computer",
-        "B",
         "A",
+        "B",
       ]);
 
       tokensTableOrderStore.set([
@@ -657,7 +657,7 @@ describe("TokensTable", () => {
 
       expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(true);
       await po.openSettings();
-      await po.sortFromSettingsByLabel("Projects");
+      await po.sortFromSettingsByLabel("Token Name");
       expect(get(tokensTableOrderStore)).toEqual([
         {
           columnId: "title",

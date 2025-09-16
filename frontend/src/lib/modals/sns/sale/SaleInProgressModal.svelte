@@ -8,8 +8,6 @@
 </script>
 
 <Modal disablePointerEvents testId="sale-in-progress-modal">
-  <svelte:fragment slot="title"
-    >{$i18n.sns_sale.participation_in_progress}</svelte:fragment
-  >
+  {#snippet title()}{$i18n.sns_sale.participation_in_progress}{/snippet}
   <SaleInProgress {progressStep} />
 </Modal>

@@ -1,20 +1,27 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
+import {
+  mockSnsToken,
+  mockToken,
+  principal,
+} from "$tests/mocks/sns-projects.mock";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
@@ -62,6 +69,48 @@ describe("ProjectsTable", () => {
       },
     ]);
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
+    vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
+    vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
+  });
+
+  describe("table when ENABLE_APY_PORTFOLIO disabled", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+    });
+
+    it("should render desktop headers", async () => {
+      const po = renderComponent();
+      expect(await po.getDesktopColumnHeaders()).toEqual([
+        "Nervous Systems",
+        "Stake",
+        "Maturity",
+        "Neurons",
+        "", // No header for actions column.
+      ]);
+    });
+
+    it("should render cell alignment classes", async () => {
+      const po = renderComponent();
+      const rows = await po.getRows();
+      expect(await rows[0].getCellAlignments()).toEqual([
+        "desktop-align-left", // Nervous Systems
+        "desktop-align-right", // Stake
+        "desktop-align-right", // Maturity
+        "desktop-align-right", // Neurons
+        "desktop-align-right", // Actions
+      ]);
+    });
+
+    it("should use correct template columns", async () => {
+      const po = renderComponent();
+
+      expect(await po.getDesktopGridTemplateColumns()).toBe(
+        ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
+      );
+      expect(await po.getMobileGridTemplateAreas()).toBe(
+        '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
+      );
+    });
   });
 
   it("should render desktop headers", async () => {
@@ -69,6 +118,7 @@ describe("ProjectsTable", () => {
     expect(await po.getDesktopColumnHeaders()).toEqual([
       "Nervous Systems",
       "Stake",
+      "APY (max APY)",
       "Maturity",
       "Neurons",
       "", // No header for actions column.
@@ -89,6 +139,7 @@ describe("ProjectsTable", () => {
     expect(await rows[0].getCellAlignments()).toEqual([
       "desktop-align-left", // Nervous Systems
       "desktop-align-right", // Stake
+      "desktop-align-right", // APY
       "desktop-align-right", // Maturity
       "desktop-align-right", // Neurons
       "desktop-align-right", // Actions
@@ -99,10 +150,10 @@ describe("ProjectsTable", () => {
     const po = renderComponent();
 
     expect(await po.getDesktopGridTemplateColumns()).toBe(
-      ["2fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
+      ["2fr", "1fr", "1fr", "1fr", "1fr", "1fr"].join(" ")
     );
     expect(await po.getMobileGridTemplateAreas()).toBe(
-      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2"'
+      '"first-cell last-cell" "cell-0 cell-0" "cell-1 cell-1" "cell-2 cell-2" "cell-3 cell-3"'
     );
   });
 
@@ -137,6 +188,24 @@ describe("ProjectsTable", () => {
     expect(rowPos).toHaveLength(2);
     expect(await rowPos[0].getStake()).toBe("");
     expect(await rowPos[1].getStake()).toBe("");
+  });
+
+  it("should render apy as -/- when not loaded", async () => {
+    const po = renderComponent();
+    const rowPos = await po.getProjectsTableRowPos();
+    expect(rowPos).toHaveLength(2);
+    expect(
+      await rowPos[0]
+        .getProjectApyCellPo()
+        .getApyDisplayPo()
+        .displaysPlaceholder()
+    ).toBe(true);
+    expect(
+      await rowPos[1]
+        .getProjectApyCellPo()
+        .getApyDisplayPo()
+        .displaysPlaceholder()
+    ).toBe(true);
   });
 
   it("should render maturity as -/- when neurons not loaded", async () => {
@@ -251,6 +320,82 @@ describe("ProjectsTable", () => {
       expect(rowPos).toHaveLength(2);
       expect(await rowPos[0].getStake()).toBe("1.00 ICP");
       expect(await rowPos[1].getStake()).toBe("2.00 TOK");
+    });
+
+    it("should render apy", async () => {
+      neuronsStore.setNeurons({
+        neurons: [nnsNeuronWithStake],
+        certified: true,
+      });
+      snsNeuronsStore.setNeurons({
+        rootCanisterId: snsCanisterId,
+        neurons: [snsNeuronWithStake],
+        certified: true,
+      });
+      stakingRewardsStore.set({
+        loading: false,
+        rewardBalanceUSD: 100,
+        rewardEstimateWeekUSD: 10,
+        stakingPower: 1,
+        stakingPowerUSD: 1,
+        icpOnly: {
+          maturityBalance: 1,
+          maturityEstimateWeek: 1,
+          stakingPower: 1,
+        },
+        apy: new Map([
+          // nns
+          [
+            OWN_CANISTER_ID_TEXT,
+            {
+              cur: 0.05,
+              max: 0.5,
+              neurons: new Map(),
+            },
+          ],
+          // sns
+          [
+            snsCanisterId.toText(),
+            {
+              cur: 0.1,
+              max: 0.33,
+              neurons: new Map(),
+            },
+          ],
+        ]),
+      });
+
+      const po = renderComponent();
+      const rowPos = await po.getProjectsTableRowPos();
+      expect(rowPos).toHaveLength(2);
+      expect(
+        await rowPos[0]
+          .getProjectApyCellPo()
+          .getApyDisplayPo()
+          .getCurrentApy()
+          .getText()
+      ).toBe("5.00%");
+      expect(
+        await rowPos[0]
+          .getProjectApyCellPo()
+          .getApyDisplayPo()
+          .getMaxApy()
+          .getText()
+      ).includes("50.00%");
+      expect(
+        await rowPos[1]
+          .getProjectApyCellPo()
+          .getApyDisplayPo()
+          .getCurrentApy()
+          .getText()
+      ).toBe("10.00%");
+      expect(
+        await rowPos[1]
+          .getProjectApyCellPo()
+          .getApyDisplayPo()
+          .getMaxApy()
+          .getText()
+      ).includes("33.00%");
     });
 
     it("should render maturity", async () => {
@@ -1021,5 +1166,48 @@ describe("ProjectsTable", () => {
   it("should display settings button", async () => {
     const po = renderComponent();
     expect(await po.getOpenSettingsButtonPo().isPresent()).toBe(true);
+  });
+
+  it("should display Staking Rewards banner", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
+    stakingRewardsStore.set({
+      loading: false,
+      rewardBalanceUSD: 100,
+      rewardEstimateWeekUSD: 10,
+      stakingPower: 1,
+      stakingPowerUSD: 1,
+      icpOnly: {
+        maturityBalance: 1,
+        maturityEstimateWeek: 1,
+        stakingPower: 1,
+      },
+      apy: new Map(),
+    });
+
+    const po = renderComponent();
+    const apyCardPo = po.getApyCardPo();
+    expect(await apyCardPo.isPresent()).toBe(true);
+    // Check that the link is not present
+    expect(await apyCardPo.getLinkPo().isPresent()).toBe(false);
+  });
+
+  it("should not display Staking Rewards banner w/o the feature flag", async () => {
+    overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
+    stakingRewardsStore.set({
+      loading: false,
+      rewardBalanceUSD: 100,
+      rewardEstimateWeekUSD: 10,
+      stakingPower: 1,
+      stakingPowerUSD: 1,
+      icpOnly: {
+        maturityBalance: 1,
+        maturityEstimateWeek: 1,
+        stakingPower: 1,
+      },
+      apy: new Map(),
+    });
+
+    const po = renderComponent();
+    expect(await po.getApyCardPo().isPresent()).toBe(false);
   });
 });

@@ -24,10 +24,12 @@
 </script>
 
 <div class="container">
-  <Modal testId="select-universe-modal" on:nnsClose>
-    <span slot="title" data-tid="select-universe-modal-title"
-      >{$titleTokenSelectorStore}</span
-    >
+  <Modal testId="select-universe-modal" onClose={close}>
+    {#snippet title()}
+      <span data-tid="select-universe-modal-title"
+        >{$titleTokenSelectorStore}</span
+      >
+    {/snippet}
 
     <SelectUniverseList
       role="button"

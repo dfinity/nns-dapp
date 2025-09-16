@@ -61,19 +61,25 @@
 
     // Content header font size should not be larger than the summary header font size
     --summary-header-font-size: var(--font-size-h2);
-    :global(h1) {
+    :global(h1),
+    :global(h1 a) {
       font-size: calc(var(--summary-header-font-size) * 0.9);
     }
 
-    :global(h2) {
+    :global(h2),
+    :global(h2 a) {
       font-size: calc(var(--summary-header-font-size) * 0.8);
     }
 
     // H3-H6 looks the same
     :global(h3),
+    :global(h3 a),
     :global(h4),
+    :global(h4 a),
     :global(h5),
-    :global(h6) {
+    :global(h5 a),
+    :global(h6),
+    :global(h6 a) {
       @include fonts.h5;
       font-size: var(--font-size-standard);
       font-weight: var(--font-weight-bold);

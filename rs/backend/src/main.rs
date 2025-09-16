@@ -14,7 +14,7 @@ use crate::tvl::TvlResponse;
 
 pub use candid::{CandidType, Deserialize};
 use ic_cdk::println;
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade};
+use ic_cdk::{init, post_upgrade, pre_upgrade};
 use icp_ledger::AccountIdentifier;
 pub use serde::Serialize;
 

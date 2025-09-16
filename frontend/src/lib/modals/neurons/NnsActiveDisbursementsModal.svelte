@@ -22,19 +22,20 @@
   const totalMaturity = $derived(totalMaturityDisbursementsInProgress(neuron));
 </script>
 
-<Modal on:nnsClose={close} testId="nns-active-disbursements-modal">
-  <svelte:fragment slot="title">
-    {$i18n.neuron_detail.view_active_disbursements_modal_title}</svelte:fragment
-  >
+<Modal onClose={close} testId="nns-active-disbursements-modal">
+  {#snippet title()}
+    {$i18n.neuron_detail.view_active_disbursements_modal_title}
+  {/snippet}
 
   <div class="content">
     <KeyValuePair>
-      <span slot="key" class="label"
-        >{$i18n.neuron_detail.view_active_disbursements_total}</span
-      >
-      <span class="value" slot="value" data-tid="total-maturity"
-        >{formatMaturity(totalMaturity)}</span
-      >
+      {#snippet key()}
+        <span class="label"
+          >{$i18n.neuron_detail.view_active_disbursements_total}</span
+        >{/snippet}
+      {#snippet value()}<span class="value" data-tid="total-maturity"
+          >{formatMaturity(totalMaturity)}</span
+        >{/snippet}
     </KeyValuePair>
 
     <div class="disbursements">

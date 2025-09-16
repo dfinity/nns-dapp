@@ -36,10 +36,12 @@
   bind:this={modal}
   onClose={() => dispatcher("nnsClose")}
 >
-  {#snippet title()}<span data-tid="add-controller-canister-modal-title"
-      >{currentStep?.title ?? $i18n.canister_detail.add_controller}</span
-    >{/snippet}
-  >
+  {#snippet title()}
+    <span data-tid="add-controller-canister-modal-title">
+      {currentStep?.title ?? $i18n.canister_detail.add_controller}
+    </span>
+  {/snippet}
+
   <svelte:fragment>
     {#if currentStep?.name === "EnterController"}
       <AddPrincipal bind:principal on:nnsSelectPrincipal={next} on:nnsClose>

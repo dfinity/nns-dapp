@@ -1,10 +1,15 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
-import { signInWithNewUser, step } from "$tests/utils/e2e.test-utils";
+import {
+  disableCssAnimations,
+  signInWithNewUser,
+  step,
+} from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
 test("Test SNS participation", async ({ page, context }) => {
   await page.goto("/");
+  await disableCssAnimations(page);
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
   const appPo = new AppPo(pageElement);
@@ -31,7 +36,7 @@ test("Test SNS participation", async ({ page, context }) => {
   await page.waitForTimeout(100);
   let committedProjectsCards = await appPo
     .getLaunchpad2Po()
-    .getLaunchedProjectsCardListPo()
+    .getRestProjectsCardListPo()
     .getCardEntries();
   expect(committedProjectsCards.length).toBeGreaterThan(1);
 

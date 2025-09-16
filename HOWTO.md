@@ -42,29 +42,14 @@ Adding a new `Action` variant breaks backwards compatibility.
 
 This means that we need to upgrade the candid files and related, and synchronize the release with the Governance canister.
 
+More information [here](https://dfinity.slack.com/archives/C039M7YS6F6/p1753696102949419?thread_ts=1752675655.965359&cid=C039M7YS6F6)
+
 ### How To Update
 
-- Upgrade candid file.
+- Update [ic-js](https://github.com/dfinity/ic-js) to be aware of the new Action.
+- Bump ic-js in the nns-dapp to contain the new Action.
+- Upgrade the candid bindings to the latest version. A bot job runs automatically every week to perform this task. If you prefer to do it manually, you can run the action manually [here](https://github.com/dfinity/nns-dapp/actions/workflows/update-proposals.yml). This job updates both the candid files and the IC dependency.
 - Add the i18n label in `en.governance.json`.
-- Upgrade the IC dependencies in nns-dapp canister.
-
-#### How To Upgrade IC Dependencies
-
-The Internet Computer dependencies are in the [`Cargo.toml`](./rs/backend/Cargo.toml) of the `backend` project. They are the ones that point to `git = "https://github.com/dfinity/ic"`. For example:
-
-```
-ic-nns-governance = { git = "https://github.com/dfinity/ic", rev = "89129b8212791d7e05cab62ff08eece2888a86e0" }
-```
-
-Upgrading them means change the commit in `rev = ...`.
-
-Normally, upgrading the dependency of `ic-nns-governance` is enough. But sometimes this library depends on the others and you need to upgrade the others.
-
-**Which commit?**
-
-Ideally, you should update to the upcoming commit that the NNS team is planning on releasing. You need to ask the NNS Team about their upcoming release.
-
-Otherwise, you need to find the commit that added the new Action. Check the blame of the file in the IC repo or ask the NNS Team.
 
 ## New Proposal Topic
 
@@ -99,7 +84,7 @@ Yet, a proposal of that topic won't be rendered properly until the changes are m
 
 ### How To Update
 
-**Changes in nns-js:**
+**Changes in ic-js:**
 
 - Add to topic entry in the [governance enum](https://github.com/dfinity/ic-js/blob/main/packages/nns/src/enums/governance.enums.ts#L15).
 - Add topic entry in the `Topic` for [protobuf files](https://github.com/dfinity/ic-js/tree/main/packages/nns/proto). You can search for `TOPIC_NEURON_MANAGEMENT` to better see where to add them.

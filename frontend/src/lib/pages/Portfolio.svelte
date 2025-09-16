@@ -1,39 +1,23 @@
 <script lang="ts">
-  import CardList from "$lib/components/launchpad/CardList.svelte";
-  import AdoptedProposalCard from "$lib/components/portfolio/AdoptedProposalCard.svelte";
   import ApyCard from "$lib/components/portfolio/ApyCard.svelte";
   import ApyFallbackCard from "$lib/components/portfolio/ApyFallbackCard.svelte";
   import HeldTokensCard from "$lib/components/portfolio/HeldTokensCard.svelte";
-  import LaunchpadBanner from "$lib/components/portfolio/LaunchpadBanner.svelte";
-  import LaunchProjectCard from "$lib/components/portfolio/LaunchProjectCard.svelte";
   import LoginCard from "$lib/components/portfolio/LoginCard.svelte";
-  import NewSnsProposalCard from "$lib/components/portfolio/NewSnsProposalCard.svelte";
   import NoHeldTokensCard from "$lib/components/portfolio/NoHeldTokensCard.svelte";
   import NoStakedTokensCard from "$lib/components/portfolio/NoStakedTokensCard.svelte";
   import SkeletonTokensCard from "$lib/components/portfolio/SkeletonTokensCard.svelte";
-  import StackedCards from "$lib/components/portfolio/StackedCards.svelte";
   import StakedTokensCard from "$lib/components/portfolio/StakedTokensCard.svelte";
+  import StartStakingCard from "$lib/components/portfolio/StartStakingCard.svelte";
   import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-  import {
-    isDesktopViewportStore,
-    isMobileViewportStore,
-  } from "$lib/derived/viewport.derived";
-  import {
-    ENABLE_APY_PORTFOLIO,
-    ENABLE_LAUNCHPAD_REDESIGN,
-  } from "$lib/stores/feature-flags.store";
+  import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
+  import { ENABLE_APY_PORTFOLIO } from "$lib/stores/feature-flags.store";
   import type { TableProject } from "$lib/types/staking";
-  import type { ComponentWithProps } from "$lib/types/svelte";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { getUpcomingLaunchesCards } from "$lib/utils/launchpad.utils";
   import {
-    compareProposalInfoByDeadlineTimestampSeconds,
     getTopHeldTokens,
     getTopStakedTokens,
   } from "$lib/utils/portfolio.utils";
-  import { comparesByDecentralizationSaleOpenTimestampDesc } from "$lib/utils/projects.utils";
   import {
     isStakingRewardDataError,
     isStakingRewardDataLoading,
@@ -42,30 +26,30 @@
   } from "$lib/utils/staking-rewards.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { getTotalBalanceInUsd } from "$lib/utils/token.utils";
-  import type { ProposalInfo } from "@dfinity/nns";
+  import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { TokenAmountV2, isNullish, nonNullish } from "@dfinity/utils";
-  import { type Component } from "svelte";
 
   type Props = {
-    userTokens: UserToken[];
-    tableProjects: TableProject[];
-    snsProjects: SnsFullProject[];
-    openSnsProposals: ProposalInfo[];
-    adoptedSnsProposals: SnsFullProject[];
-    stakingRewardResult: StakingRewardResult;
+    icpToken: UserToken | undefined;
+    nonIcpTokens: UserToken[];
+    icpTableProject: TableProject | undefined;
+    nonIcpTableProjects: TableProject[];
+    stakingRewardResult?: StakingRewardResult;
   };
 
   const {
-    userTokens = [],
-    tableProjects,
-    snsProjects,
-    openSnsProposals,
-    adoptedSnsProposals,
+    icpToken,
+    nonIcpTokens = [],
+    icpTableProject,
+    nonIcpTableProjects,
     stakingRewardResult,
   }: Props = $props();
-  const totalTokensBalanceInUsd = $derived(getTotalBalanceInUsd(userTokens));
-  const hasUnpricedTokens = $derived(
-    userTokens.some(
+  const icpBalanceInUsd = $derived(
+    nonNullish(icpToken) ? getTotalBalanceInUsd([icpToken]) : 0
+  );
+  const nonIcpTokensBalanceInUsd = $derived(getTotalBalanceInUsd(nonIcpTokens));
+  const hasUnpricedNonIcpTokens = $derived(
+    nonIcpTokens.some(
       (token) =>
         token.balance instanceof TokenAmountV2 &&
         token.balance.toUlps() > 0n &&
@@ -73,9 +57,12 @@
     )
   );
 
-  const totalStakedInUsd = $derived(getTotalStakeInUsd(tableProjects));
-  const hasUpricedStake = $derived(
-    tableProjects.some(
+  const icpStakedInUsd = $derived(
+    nonNullish(icpTableProject) ? getTotalStakeInUsd([icpTableProject]) : 0
+  );
+  const nonIcpStakedInUsd = $derived(getTotalStakeInUsd(nonIcpTableProjects));
+  const hasUnpricedNonIcpStake = $derived(
+    nonIcpTableProjects.some(
       (project) =>
         project.stake instanceof TokenAmountV2 &&
         project.stake.toUlps() > 0n &&
@@ -84,11 +71,16 @@
   );
 
   const hasUnpricedTokensOrStake = $derived(
-    hasUnpricedTokens || hasUpricedStake
+    hasUnpricedNonIcpTokens || hasUnpricedNonIcpStake
   );
 
-  const totalUsdAmount = $derived(
-    $authSignedInStore ? totalTokensBalanceInUsd + totalStakedInUsd : undefined
+  const totalAssetsUsdAmount = $derived(
+    $authSignedInStore
+      ? icpBalanceInUsd +
+          icpStakedInUsd +
+          nonIcpTokensBalanceInUsd +
+          nonIcpStakedInUsd
+      : undefined
   );
 
   // Determines the display state of the held tokens card
@@ -98,36 +90,29 @@
   type TokensCardType = "empty" | "skeleton" | "full";
 
   const areHeldTokensLoading = $derived(
-    userTokens.some((token) => token.balance === "loading")
+    nonIcpTokens.some((token) => token.balance === "loading")
   );
-  const heldTokensCard: TokensCardType = $derived(
+  const heldNonIcpTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "full"
+      ? "empty"
       : areHeldTokensLoading
         ? "skeleton"
-        : totalTokensBalanceInUsd === 0
+        : nonIcpTokensBalanceInUsd === 0
           ? "empty"
           : "full"
   );
 
   const areStakedTokensLoading = $derived(
-    tableProjects.some((project) => project.isStakeLoading)
+    nonIcpTableProjects.some((project) => project.isStakeLoading)
   );
   const stakedTokensCard: TokensCardType = $derived(
     !$authSignedInStore
-      ? "full"
+      ? "empty"
       : areStakedTokensLoading
         ? "skeleton"
-        : totalStakedInUsd === 0
+        : nonIcpStakedInUsd === 0
           ? "empty"
           : "full"
-  );
-
-  // Controls whether the staked tokens card should show a primary action
-  // Primary action is shown when there are tokens but no stakes
-  // This helps guide users to stake their tokens when possible
-  const hasNoStakedTokensCardAPrimaryAction = $derived(
-    stakedTokensCard === "empty" && heldTokensCard === "full"
   );
 
   // Global loading state that tracks if either held or staked tokens are loading
@@ -136,102 +121,46 @@
     areHeldTokensLoading || areStakedTokensLoading
   );
 
-  const topHeldTokens = $derived(
+  const icpHeldToken = $derived(
+    nonNullish(icpToken) && isUserTokenData(icpToken) ? icpToken : undefined
+  );
+  const topHeldNonIcpTokens = $derived(
     getTopHeldTokens({
-      userTokens: userTokens,
-      isSignedIn: $authSignedInStore,
+      userTokens: nonIcpTokens,
     })
   );
 
-  const tableProjectsWithApy: TableProject[] = $derived(
-    isStakingRewardDataReady(stakingRewardResult)
-      ? tableProjects.map((project) => ({
-          ...project,
-          apy: stakingRewardResult.apy.get(project.universeId) ?? undefined,
-        }))
-      : tableProjects
-  );
-  const topStakedTokens = $derived(
+  const topStakedNonIcpTokens = $derived(
     getTopStakedTokens({
-      projects: tableProjectsWithApy,
-      isSignedIn: $authSignedInStore,
+      projects: nonIcpTableProjects,
     })
   );
 
-  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
-  const launchpadCards = $derived(
-    [...snsProjects]
-      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-      .reverse()
-      .map((project) => project.summary)
-      .map<ComponentWithProps>((summary) => ({
-        // TODO: Svelte v5 migration - fix type
-        Component: LaunchProjectCard as unknown as Component,
-        props: { summary },
-      }))
-  );
-
-  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
-  const openProposalCards = $derived(
-    [...openSnsProposals]
-      .sort(compareProposalInfoByDeadlineTimestampSeconds)
-      .map((proposalInfo) => ({
-        // TODO: Svelte v5 migration - fix type
-        Component: NewSnsProposalCard as unknown as Component,
-        props: { proposalInfo },
-      }))
-  );
-
-  // TODO: Remove once ENABLE_LAUNCHPAD_REDESIGN && ENABLE_APY_PORTFOLIO are removed
-  const adoptedSnsProposalsCards = $derived(
-    [...adoptedSnsProposals]
-      .sort(comparesByDecentralizationSaleOpenTimestampDesc)
-      .reverse()
-      .map((project) => project.summary)
-      .map<ComponentWithProps>((summary) => ({
-        // TODO: Svelte v5 migration - fix type
-        Component: AdoptedProposalCard as unknown as Component,
-        props: { summary },
-      }))
-  );
-
-  const cards: ComponentWithProps[] = $derived(
-    $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO
-      ? getUpcomingLaunchesCards({
-          snsProjects: [...snsProjects, ...adoptedSnsProposals],
-          openSnsProposals,
-        })
-      : [...launchpadCards, ...openProposalCards, ...adoptedSnsProposalsCards]
+  const hasNonIcpBalance = $derived(
+    nonIcpTokensBalanceInUsd + nonIcpStakedInUsd > 0
   );
 </script>
 
 <main data-tid="portfolio-page-component">
-  <div
-    class="top"
-    class:signed-in={$authSignedInStore}
-    class:launchpad={cards.length > 0}
-    class:apy-card={$ENABLE_APY_PORTFOLIO}
-  >
+  <div class="top" class:apy-card={$ENABLE_APY_PORTFOLIO}>
     {#if !$authSignedInStore}
-      <div class="login-card">
-        <LoginCard />
-      </div>
+      <LoginCard />
+      <StartStakingCard />
     {:else}
       <TotalAssetsCard
-        usdAmount={totalUsdAmount}
+        usdAmount={totalAssetsUsdAmount}
         hasUnpricedTokens={hasUnpricedTokensOrStake}
         isLoading={isSomethingLoading}
-        isFullWidth={cards.length === 0 && !$ENABLE_APY_PORTFOLIO}
+        isFullWidth={!$ENABLE_APY_PORTFOLIO}
       />
 
-      {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalUsdAmount)}
+      {#if $ENABLE_APY_PORTFOLIO && $isDesktopViewportStore && nonNullish(totalAssetsUsdAmount)}
         {#if isStakingRewardDataReady(stakingRewardResult)}
           <ApyCard
-            rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
-            rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
-            stakingPower={stakingRewardResult.stakingPower}
-            stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
-            totalAmountUSD={totalUsdAmount}
+            icpOnlyMaturityBalance={stakingRewardResult.icpOnly.maturityBalance}
+            icpOnlyMaturityEstimateWeek={stakingRewardResult.icpOnly
+              .maturityEstimateWeek}
+            icpOnlyStakingPower={stakingRewardResult.icpOnly.stakingPower}
           />
         {:else}
           <ApyFallbackCard stakingRewardData={stakingRewardResult} />
@@ -239,26 +168,13 @@
       {/if}
     {/if}
 
-    {#if cards.length > 0}
-      {#if $ENABLE_LAUNCHPAD_REDESIGN && $ENABLE_APY_PORTFOLIO && $isMobileViewportStore}
-        <CardList
-          testId="stacked-cards"
-          {cards}
-          mobileHorizontalScroll={cards.length > 1}
-        />
-      {:else}
-        <StackedCards {cards} />
-      {/if}
-    {/if}
-
-    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalUsdAmount) && nonNullish(stakingRewardResult)}
+    {#if $ENABLE_APY_PORTFOLIO && !$isDesktopViewportStore && $authSignedInStore && nonNullish(totalAssetsUsdAmount) && nonNullish(stakingRewardResult)}
       {#if isStakingRewardDataReady(stakingRewardResult)}
         <ApyCard
-          rewardBalanceUSD={stakingRewardResult.rewardBalanceUSD}
-          rewardEstimateWeekUSD={stakingRewardResult.rewardEstimateWeekUSD}
-          stakingPower={stakingRewardResult.stakingPower}
-          stakingPowerUSD={stakingRewardResult.stakingPowerUSD}
-          totalAmountUSD={totalUsdAmount}
+          icpOnlyMaturityBalance={stakingRewardResult.icpOnly.maturityBalance}
+          icpOnlyMaturityEstimateWeek={stakingRewardResult.icpOnly
+            .maturityEstimateWeek}
+          icpOnlyStakingPower={stakingRewardResult.icpOnly.stakingPower}
         />
       {:else}
         <ApyFallbackCard stakingRewardData={stakingRewardResult} />
@@ -267,36 +183,72 @@
   </div>
 
   <div class="content">
-    {#if heldTokensCard === "skeleton"}
-      <SkeletonTokensCard testId="held-tokens-skeleton-card" />
-    {:else if heldTokensCard === "empty"}
+    <!-- ICP TOKEN -->
+    {#if !$authSignedInStore}
       <NoHeldTokensCard />
+    {:else if isNullish(icpHeldToken)}
+      <SkeletonTokensCard testId="held-icp-skeleton-card" icpOnlyTable />
     {:else}
       <HeldTokensCard
-        {topHeldTokens}
-        usdAmount={totalTokensBalanceInUsd}
-        numberOfTopStakedTokens={topStakedTokens.length}
+        topHeldTokens={[icpHeldToken]}
+        usdAmount={icpBalanceInUsd}
+        numberOfTopStakedTokens={1}
+        icpOnlyTable
       />
     {/if}
 
-    {#if stakedTokensCard === "skeleton"}
-      <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
-    {:else if stakedTokensCard === "empty"}
-      <NoStakedTokensCard primaryCard={hasNoStakedTokensCardAPrimaryAction} />
+    <!-- ICP NEURONS -->
+    {#if !$authSignedInStore || isNullish(icpTableProject)}
+      <NoStakedTokensCard />
+    {:else if icpTableProject?.isStakeLoading}
+      <SkeletonTokensCard testId="staked-icp-skeleton-card" icpOnlyTable />
     {:else}
       <StakedTokensCard
-        {topStakedTokens}
-        usdAmount={totalStakedInUsd}
-        numberOfTopHeldTokens={topHeldTokens.length}
+        topStakedTokens={[icpTableProject]}
+        usdAmount={icpStakedInUsd}
+        numberOfTopHeldTokens={1}
         hasApyCalculationErrored={isStakingRewardDataError(stakingRewardResult)}
         isApyLoading={isStakingRewardDataLoading(stakingRewardResult)}
+        icpOnlyTable
       />
     {/if}
-  </div>
 
-  {#if $ENABLE_LAUNCHPAD_REDESIGN}
-    <LaunchpadBanner />
-  {/if}
+    {#if hasNonIcpBalance}
+      <!-- REST TOKENS -->
+      {#if heldNonIcpTokensCard === "skeleton"}
+        <SkeletonTokensCard testId="held-tokens-skeleton-card" />
+      {:else if heldNonIcpTokensCard === "empty"}
+        {#if $authSignedInStore}
+          <NoHeldTokensCard />
+        {/if}
+      {:else}
+        <HeldTokensCard
+          topHeldTokens={topHeldNonIcpTokens}
+          usdAmount={nonIcpTokensBalanceInUsd}
+          numberOfTopStakedTokens={topStakedNonIcpTokens.length}
+        />
+      {/if}
+
+      <!-- REST NEURONS -->
+      {#if stakedTokensCard === "skeleton"}
+        <SkeletonTokensCard testId="staked-tokens-skeleton-card" />
+      {:else if stakedTokensCard === "empty"}
+        {#if $authSignedInStore}
+          <NoStakedTokensCard />
+        {/if}
+      {:else}
+        <StakedTokensCard
+          topStakedTokens={topStakedNonIcpTokens}
+          usdAmount={nonIcpStakedInUsd}
+          numberOfTopHeldTokens={topHeldNonIcpTokens.length}
+          hasApyCalculationErrored={isStakingRewardDataError(
+            stakingRewardResult
+          )}
+          isApyLoading={isStakingRewardDataLoading(stakingRewardResult)}
+        />
+      {/if}
+    {/if}
+  </div>
 </main>
 
 <style lang="scss">
@@ -324,41 +276,7 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
-        grid-template-columns: 1fr 2fr;
-
-        .login-card {
-          height: 100%;
-        }
-
-        // Case: not signed in, with projects
-        &:not(.signed-in).launchpad {
-          grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: not signed in, with no projects
-        &:not(.signed-in):not(.launchpad) {
-          grid-template-columns: 1fr;
-        }
-
-        // Case: signed in, no projects
-        &.signed-in {
-          grid-template-columns: 3fr;
-        }
-
-        // Case: signed in, with projects
-        &.signed-in.launchpad {
-          grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: signed in, with APY card
-        &.signed-in.apy-card {
-          grid-template-columns: 2fr 1fr;
-        }
-
-        // Case: signed in, with APY card and projects
-        &.signed-in.apy-card.launchpad {
-          grid-template-columns: 1fr 1fr 1fr;
-        }
+        grid-template-columns: 2fr 1fr;
       }
     }
 
@@ -368,8 +286,12 @@
       gap: var(--padding-2x);
 
       @include media.min-width(large) {
+        row-gap: var(--padding-3x);
+        column-gap: var(--padding-2x);
+
         grid-template-columns: repeat(2, 1fr);
-        grid-auto-rows: minmax(345px, min-content);
+        // minimum height with the icp only row
+        grid-auto-rows: minmax(224px, min-content);
       }
     }
   }

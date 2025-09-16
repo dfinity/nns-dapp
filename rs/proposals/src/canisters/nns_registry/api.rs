@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-06-26_03-25-base/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-28_03-17-snapshot-feature/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -124,6 +124,11 @@ pub struct SubnetFeatures {
     pub sev_enabled: Option<bool>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub enum CanisterCyclesCostSchedule {
+    Free,
+    Normal,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub enum SchnorrAlgorithm {
     #[serde(rename = "ed25519")]
     Ed25519,
@@ -174,6 +179,7 @@ pub struct KeyConfigRequest {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct InitialChainKeyConfig {
+    pub max_parallel_pre_signature_transcripts_in_creation: Option<u32>,
     pub signature_request_timeout_ns: Option<u64>,
     pub key_configs: Vec<KeyConfigRequest>,
     pub idkg_key_rotation_period_ms: Option<u64>,
@@ -200,6 +206,7 @@ pub struct CreateSubnetPayload {
     pub gossip_pfn_evaluation_period_ms: u32,
     pub max_ingress_messages_per_block: u64,
     pub max_number_of_canisters: u64,
+    pub canister_cycles_cost_schedule: Option<CanisterCyclesCostSchedule>,
     pub gossip_max_artifact_streams_per_peer: u32,
     pub replica_version_id: String,
     pub gossip_max_duplicity: u32,
@@ -216,6 +223,11 @@ pub struct CreateSubnetPayload {
     pub gossip_retransmission_request_ms: u32,
     pub gossip_receive_check_cache_size: u32,
     pub node_ids: Vec<Principal>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum CreateSubnetResponse {
+    Ok { new_subnet_id: Option<Principal> },
+    Err(String),
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct DeployGuestosToAllSubnetNodesPayload {
@@ -355,11 +367,24 @@ pub struct RerouteCanisterRangesPayload {
     pub destination_subnet: Principal,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct GuestLaunchMeasurementsGuestLaunchMeasurementsItemMetadataInner {
+    pub kernel_cmdline: String,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GuestLaunchMeasurementsGuestLaunchMeasurementsItem {
+    pub metadata: Option<GuestLaunchMeasurementsGuestLaunchMeasurementsItemMetadataInner>,
+    pub measurement: serde_bytes::ByteBuf,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct GuestLaunchMeasurements {
+    pub guest_launch_measurements: Vec<GuestLaunchMeasurementsGuestLaunchMeasurementsItem>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct ReviseElectedGuestosVersionsPayload {
     pub release_package_urls: Vec<String>,
     pub replica_versions_to_unelect: Vec<String>,
     pub replica_version_to_elect: Option<String>,
-    pub guest_launch_measurement_sha256_hex: Option<String>,
+    pub guest_launch_measurements: Option<GuestLaunchMeasurements>,
     pub release_package_sha256_hex: Option<String>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -458,6 +483,7 @@ pub struct UpdateSshReadOnlyAccessForAllUnassignedNodesPayload {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ChainKeyConfig {
+    pub max_parallel_pre_signature_transcripts_in_creation: Option<u32>,
     pub signature_request_timeout_ns: Option<u64>,
     pub key_configs: Vec<KeyConfig>,
     pub idkg_key_rotation_period_ms: Option<u64>,
@@ -528,7 +554,7 @@ impl Service {
     pub async fn complete_canister_migration(&self, arg0: CompleteCanisterMigrationPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "complete_canister_migration", (arg0,)).await
     }
-    pub async fn create_subnet(&self, arg0: CreateSubnetPayload) -> CallResult<()> {
+    pub async fn create_subnet(&self, arg0: CreateSubnetPayload) -> CallResult<(CreateSubnetResponse,)> {
         ic_cdk::call(self.0, "create_subnet", (arg0,)).await
     }
     pub async fn deploy_guestos_to_all_subnet_nodes(

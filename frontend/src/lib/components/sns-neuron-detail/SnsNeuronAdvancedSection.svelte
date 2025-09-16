@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ApyDisplay from "$lib/components/ic/ApyDisplay.svelte";
   import SnsNeuronVestingPeriodRemaining from "$lib/components/sns-neuron-detail/SnsNeuronVestingPeriodRemaining.svelte";
   import SnsAutoStakeMaturity from "$lib/components/sns-neuron-detail/actions/SnsAutoStakeMaturity.svelte";
   import SplitSnsNeuronButton from "$lib/components/sns-neuron-detail/actions/SplitSnsNeuronButton.svelte";
@@ -6,13 +7,18 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
+  import type { ApyAmount } from "$lib/types/staking";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import {
     getSnsDissolvingTimestampSeconds,
     getSnsNeuronIdAsHexString,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
-  import { KeyValuePair, Section } from "@dfinity/gix-components";
+  import {
+    KeyValuePair,
+    KeyValuePairInfo,
+    Section,
+  } from "@dfinity/gix-components";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
@@ -23,6 +29,7 @@
   export let parameters: SnsNervousSystemParameters;
   export let transactionFee: TokenAmountV2;
   export let token: Token;
+  export let apy: undefined | ApyAmount;
 
   let neuronAccount: IcrcAccount | undefined;
   $: neuronAccount = nonNullish(governanceCanisterId)
@@ -43,50 +50,67 @@
 </script>
 
 <Section testId="sns-neuron-advanced-section-component">
-  <h3 slot="title">{$i18n.neuron_detail.advanced_settings_title}</h3>
+  {#snippet title()}
+    <h3>{$i18n.neuron_detail.advanced_settings_title}</h3>
+  {/snippet}
   <div class="content">
     <KeyValuePair>
-      <span slot="key" class="label">{$i18n.neurons.neuron_id}</span>
-      <Hash
-        slot="value"
-        className="value"
-        tagName="span"
-        testId="neuron-id"
-        text={getSnsNeuronIdAsHexString(neuron)}
-        showCopy
-        id="neuron-id"
-      />
+      {#snippet key()}<span class="label">{$i18n.neurons.neuron_id}</span
+        >{/snippet}
+      {#snippet value()}<Hash
+          className="value"
+          tagName="span"
+          testId="neuron-id"
+          text={getSnsNeuronIdAsHexString(neuron)}
+          showCopy
+          id="neuron-id"
+        />{/snippet}
     </KeyValuePair>
     <KeyValuePair>
-      <span slot="key" class="label">{$i18n.neuron_detail.created}</span>
-      <span slot="value" class="value" data-tid="neuron-created"
-        >{secondsToDateTime(neuron.created_timestamp_seconds)}</span
-      >
+      {#snippet key()}<span class="label">{$i18n.neuron_detail.created}</span
+        >{/snippet}
+      {#snippet value()}<span class="value" data-tid="neuron-created"
+          >{secondsToDateTime(neuron.created_timestamp_seconds)}</span
+        >{/snippet}
     </KeyValuePair>
+    {#if nonNullish(apy)}
+      <div>
+        <KeyValuePairInfo>
+          {#snippet key()}<span class="label"
+              >{$i18n.neuron_detail.apy_and_max}</span
+            >{/snippet}
+          {#snippet value()}<span class="value"
+              ><ApyDisplay {apy} forPortfolio={false} /></span
+            >{/snippet}
+          {#snippet info()}<span>{$i18n.neuron_detail.apy_and_max_tooltip}</span
+            >{/snippet}
+        </KeyValuePairInfo>
+      </div>
+    {/if}
     <SnsNeuronAge {neuron} />
     {#if nonNullish(dissolvingTimestamp)}
       <KeyValuePair>
-        <span slot="key" class="label">{$i18n.neuron_detail.dissolve_date}</span
-        >
-        <span slot="value" class="value" data-tid="neuron-dissolve-date"
-          >{secondsToDateTime(dissolvingTimestamp)}</span
-        >
+        {#snippet key()}<span class="label"
+            >{$i18n.neuron_detail.dissolve_date}</span
+          >{/snippet}
+        {#snippet value()}<span class="value" data-tid="neuron-dissolve-date"
+            >{secondsToDateTime(dissolvingTimestamp)}</span
+          >{/snippet}
       </KeyValuePair>
     {/if}
     {#if nonNullish(neuronAccount)}
       <KeyValuePair>
-        <span slot="key" class="label"
-          >{$i18n.neuron_detail.neuron_account}</span
-        >
-        <Hash
-          slot="value"
-          className="value"
-          tagName="span"
-          testId="neuron-account"
-          text={encodeIcrcAccount(neuronAccount)}
-          id="neuron-account"
-          showCopy
-        />
+        {#snippet key()}<span class="label"
+            >{$i18n.neuron_detail.neuron_account}</span
+          >{/snippet}
+        {#snippet value()}<Hash
+            className="value"
+            tagName="span"
+            testId="neuron-account"
+            text={encodeIcrcAccount(neuronAccount)}
+            id="neuron-account"
+            showCopy
+          />{/snippet}
       </KeyValuePair>
     {/if}
     <SnsNeuronVestingPeriodRemaining {neuron} />

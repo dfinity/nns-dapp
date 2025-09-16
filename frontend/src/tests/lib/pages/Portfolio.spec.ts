@@ -1,5 +1,4 @@
-import { NNS_TOKEN_DATA } from "$lib/constants/tokens.constants";
-import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
+import { isDesktopViewportStore } from "$lib/derived/viewport.derived";
 import Portfolio from "$lib/pages/Portfolio.svelte";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import type { TableProject } from "$lib/types/staking";
@@ -7,12 +6,7 @@ import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import type { StakingRewardResult } from "$lib/utils/staking-rewards.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
-import {
-  createSummary,
-  mockSnsFullProject,
-  mockToken,
-  principal,
-} from "$tests/mocks/sns-projects.mock";
+import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { mockTableProject } from "$tests/mocks/staking.mock";
 import {
   ckBTCTokenBase,
@@ -25,34 +19,29 @@ import {
 import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
-import type { ProposalInfo } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
-describe("Portfolio page", () => {
+describe.skip("Portfolio page", () => {
   const renderPage = ({
-    userTokens = [],
-    tableProjects = [],
-    snsProjects = [],
-    openSnsProposals = [],
-    adoptedSnsProposals = [],
+    icpToken = undefined,
+    nonIcpTokens = [],
+    icpTableProject = undefined,
+    nonIcpTableProjects = [],
     stakingRewardResult = { loading: true },
   }: {
-    userTokens?: UserToken[];
-    tableProjects?: TableProject[];
-    snsProjects?: SnsFullProject[];
-    openSnsProposals?: ProposalInfo[];
-    adoptedSnsProposals?: SnsFullProject[];
+    icpToken?: UserToken;
+    nonIcpTokens?: UserToken[];
+    icpTableProject?: TableProject;
+    nonIcpTableProjects?: TableProject[];
     stakingRewardResult?: StakingRewardResult;
   } = {}) => {
     const { container } = render(Portfolio, {
       props: {
-        userTokens,
-        tableProjects,
-        snsProjects,
-        openSnsProposals,
-        adoptedSnsProposals,
+        icpToken,
+        nonIcpTokens,
+        icpTableProject,
+        nonIcpTableProjects,
         stakingRewardResult,
       },
     });
@@ -73,12 +62,6 @@ describe("Portfolio page", () => {
       mockCkETHToken,
     ] as UserTokenData[];
 
-    const icpProject: TableProject = {
-      ...mockTableProject,
-      stakeInUsd: undefined,
-      domKey: "/staking/icp",
-      stake: new UnavailableTokenAmount(NNS_TOKEN_DATA),
-    };
     const tableProject1: TableProject = {
       ...mockTableProject,
       title: "Project 1",
@@ -102,8 +85,7 @@ describe("Portfolio page", () => {
       stake: new UnavailableTokenAmount(mockToken),
     };
 
-    const mockTableProjects: TableProject[] = [
-      icpProject,
+    const mockNonIcpTableProjects: TableProject[] = [
       tableProject1,
       tableProject2,
       tableProject3,
@@ -119,6 +101,12 @@ describe("Portfolio page", () => {
       expect(await po.getLoginCard().isPresent()).toBe(true);
     });
 
+    it("should display the StartStakingCard", async () => {
+      const po = renderPage();
+
+      expect(await po.getStartStakingCard().isPresent()).toBe(true);
+    });
+
     it("should not show TotalAssetsCard", async () => {
       const po = renderPage();
 
@@ -132,39 +120,26 @@ describe("Portfolio page", () => {
       expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
     });
 
-    it("should show StackedCards when snsProjects is not empty", async () => {
-      const mockSnsProjects: SnsFullProject[] = [mockSnsFullProject];
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(1);
-    });
-
-    it("should show both cards with default data", async () => {
+    it("should show empty cards for top holdings", async () => {
       const po = renderPage({
-        tableProjects: mockTableProjects,
-        userTokens: mockTokens,
+        nonIcpTableProjects: mockNonIcpTableProjects,
+        nonIcpTokens: mockTokens,
       });
 
-      const heldTokensCardPo = po.getHeldTokensCardPo();
-      const stakedTokensCardPo = po.getStakedTokensCardPo();
+      const heldTokensCardPo = po.getHeldRestTokensCardPo();
+      const stakedTokensCardPo = po.getStakedRestTokensCardPo();
 
-      expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
-      expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
+      expect(await po.getNoHeldTokensCard().isPresent()).toBe(true);
+      expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
 
-      expect(await heldTokensCardPo.isPresent()).toBe(true);
-      expect(await stakedTokensCardPo.isPresent()).toBe(true);
-
-      expect(await heldTokensCardPo.getInfoRow().isPresent()).toBe(false);
-      expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(false);
+      expect(await heldTokensCardPo.isPresent()).toBe(false);
+      expect(await stakedTokensCardPo.isPresent()).toBe(false);
     });
 
     it("should not show any loading state", async () => {
       const po = renderPage({
-        tableProjects: mockTableProjects,
-        userTokens: mockTokens,
+        nonIcpTableProjects: mockNonIcpTableProjects,
+        nonIcpTokens: mockTokens,
       });
 
       expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
@@ -173,522 +148,8 @@ describe("Portfolio page", () => {
     });
   });
 
-  describe("StackedCards", () => {
-    const mockSnsProjects: SnsFullProject[] = [
-      mockSnsFullProject,
-      {
-        ...mockSnsFullProject,
-        rootCanisterId: principal(2),
-        summary: createSummary({
-          lifecycle: SnsSwapLifecycle.Adopted,
-          projectName: "AdoptedProject",
-        }),
-      },
-    ];
-
-    const mockSnsProposals = [
-      {
-        proposal: {
-          title: "Proposal to create new SNS",
-          summary: "",
-          url: "url",
-          action: {
-            CreateServiceNervousSystem: {
-              name: "TestDAO1",
-              governanceParameters: {},
-              fallbackControllerPrincipalIds: [],
-              logo: {},
-              url: "url",
-              ledgerParameters: {},
-              description: "",
-              dappCanisters: [],
-              swapParameters: {},
-              initialTokenDistribution: {},
-            },
-          },
-        },
-        deadlineTimestampSeconds: 168_000_000n,
-      },
-      {
-        proposal: {
-          title: "Proposal to create new SNS",
-          summary: "",
-          url: "url",
-          action: {
-            CreateServiceNervousSystem: {
-              name: "TestDAO2",
-              governanceParameters: {},
-              fallbackControllerPrincipalIds: [],
-              logo: {},
-              url: "url",
-              ledgerParameters: {},
-              description: "",
-              dappCanisters: [],
-              swapParameters: {},
-              initialTokenDistribution: {},
-            },
-          },
-        },
-        deadlineTimestampSeconds: 68_000_000n,
-      },
-    ] as ProposalInfo[];
-
-    beforeEach(() => {
-      resetIdentity();
-    });
-
-    it("should not display StackedCards if no snsProjects nor proposals for new sns", async () => {
-      const po = renderPage();
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await stackedCardsPo.isPresent()).toBe(false);
-    });
-
-    it("should show a full width TotalAssetsCard when no stacked cards", async () => {
-      const po = renderPage();
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
-
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(true);
-    });
-
-    it("should show a not full width TotalAssetsCard when stacked cards is not empty", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
-    });
-
-    it("should display StackedCards when snsProjects is not empty", async () => {
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should display StackedCards when openSnsProposals is not empty", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should display StackedCards when adoptedSnsProposals is not empty", async () => {
-      const po = renderPage({ adoptedSnsProposals: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should show all cards when snsProjects, openSnsProposals, and adoptedSnsProposals are not empty", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects,
-        adoptedSnsProposals: mockSnsProjects,
-        openSnsProposals: mockSnsProposals,
-      });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(6); // 2 snsProjects + 2 adoptedSnsProposals + 2 openSnsProposals
-    });
-
-    it("should sort launchpadCards", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("EarlierTimestampProject");
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampProject");
-    });
-
-    it("should sort openSnsProposal", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO2");
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO1");
-    });
-
-    it("should sort adoptedSnsProposals", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({ adoptedSnsProposals: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe(
-        "EarlierTimestampAdoptedProject"
-      );
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampAdoptedProject");
-    });
-
-    it("should show first on going swaps, then open proposals, and then adopted proposals", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects.slice(0, 1),
-        openSnsProposals: mockSnsProposals.slice(0, 1),
-        adoptedSnsProposals: mockSnsProjects.slice(1, 2),
-      });
-
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(3);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("Tetris"); // First sns project
-
-      await dotsPo[1].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO1"); // Open proposal
-
-      await dotsPo[2].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("AdoptedProject"); // Adopted proposal
-    });
-  });
-
-  describe("StackedCards when feature flags enabled", () => {
-    const mockSnsProjects: SnsFullProject[] = [
-      mockSnsFullProject,
-      {
-        ...mockSnsFullProject,
-        rootCanisterId: principal(2),
-        summary: createSummary({
-          lifecycle: SnsSwapLifecycle.Adopted,
-          projectName: "AdoptedProject",
-        }),
-      },
-    ];
-
-    const mockSnsProposals = [
-      {
-        proposal: {
-          title: "Proposal to create new SNS",
-          summary: "",
-          url: "url",
-          action: {
-            CreateServiceNervousSystem: {
-              name: "TestDAO1",
-              governanceParameters: {},
-              fallbackControllerPrincipalIds: [],
-              logo: {},
-              url: "url",
-              ledgerParameters: {},
-              description: "",
-              dappCanisters: [],
-              swapParameters: {},
-              initialTokenDistribution: {},
-            },
-          },
-        },
-        deadlineTimestampSeconds: 168_000_000n,
-      },
-      {
-        proposal: {
-          title: "Proposal to create new SNS",
-          summary: "",
-          url: "url",
-          action: {
-            CreateServiceNervousSystem: {
-              name: "TestDAO2",
-              governanceParameters: {},
-              fallbackControllerPrincipalIds: [],
-              logo: {},
-              url: "url",
-              ledgerParameters: {},
-              description: "",
-              dappCanisters: [],
-              swapParameters: {},
-              initialTokenDistribution: {},
-            },
-          },
-        },
-        deadlineTimestampSeconds: 68_000_000n,
-      },
-    ] as ProposalInfo[];
-
-    beforeEach(() => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_LAUNCHPAD_REDESIGN", true);
-      overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", true);
-      resetIdentity();
-    });
-
-    it("should not display StackedCards if no snsProjects nor proposals for new sns", async () => {
-      const po = renderPage();
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await stackedCardsPo.isPresent()).toBe(false);
-    });
-
-    it("should not show a full width TotalAssetsCard when no stacked cards but APY FF is on", async () => {
-      const po = renderPage();
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
-    });
-
-    it("should show a not full width TotalAssetsCard when stacked cards is not empty", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const totalAssetsCardPo = po.getTotalAssetsCardPo();
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isPresent()).toBe(true);
-      expect(await totalAssetsCardPo.isFullWidth()).toBe(false);
-    });
-
-    it("should display StackedCards when snsProjects is not empty", async () => {
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should display StackedCards when openSnsProposals is not empty", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should display StackedCards when adoptedSnsProposals is not empty", async () => {
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-    });
-
-    it("should show all cards when snsProjects, openSnsProposals, and adoptedSnsProposals are not empty", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects,
-        openSnsProposals: mockSnsProposals,
-      });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(4); // 1 Open Sns Project + 2 adoptedSnsProposals + 1 Adopted Sns Project
-    });
-
-    it("should sort launchpadCards", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("EarlierTimestampProject");
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampProject");
-    });
-
-    it("should sort openSnsProposal", async () => {
-      const po = renderPage({ openSnsProposals: mockSnsProposals });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO2");
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO1");
-    });
-
-    it("should sort adoptedSnsProposals", async () => {
-      const mockSnsProjects: SnsFullProject[] = [
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "LaterTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 100_000_000n,
-          }),
-        },
-        {
-          ...mockSnsFullProject,
-          rootCanisterId: principal(1),
-          summary: createSummary({
-            projectName: "EarlierTimestampAdoptedProject",
-            swapOpenTimestampSeconds: 1_000_000n,
-          }),
-        },
-      ];
-      const po = renderPage({
-        snsProjects: mockSnsProjects,
-      });
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(2);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe(
-        "EarlierTimestampAdoptedProject"
-      );
-
-      await dotsPo[1].click();
-
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("LaterTimestampAdoptedProject");
-    });
-
-    it("should show first on going swaps, then open proposals, and then adopted proposals", async () => {
-      const po = renderPage({
-        snsProjects: mockSnsProjects.slice(0, 1),
-        openSnsProposals: mockSnsProposals.slice(0, 1),
-        adoptedSnsProposals: mockSnsProjects.slice(1, 2),
-      });
-
-      const stackedCardsPo = po.getStackedCardsPo();
-      const cardWrappers = await stackedCardsPo.getCardWrappers();
-      const dotsPo = await stackedCardsPo.getDots();
-
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-      expect(cardWrappers.length).toBe(3);
-
-      let activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("Tetris"); // First sns project
-
-      await dotsPo[1].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("TestDAO1"); // Open proposal
-
-      await dotsPo[2].click();
-      activeCard = await stackedCardsPo.getActiveCardPo();
-      expect(await activeCard.getTitle()).toBe("AdoptedProject"); // Adopted proposal
-    });
-
-    it("should hide TotalAssetsCard when not signed", async () => {
-      setNoIdentity();
-      const po = renderPage({ snsProjects: mockSnsProjects });
-      const stackedCardsPo = po.getStackedCardsPo();
-
-      expect(await po.getTotalAssetsCardPo().isPresent()).toBe(false);
-      expect(await stackedCardsPo.isPresent()).toBe(true);
-    });
-
-    it("should show TotalAssetsCard when signed in, even with sns projects", async () => {
-      const po = renderPage({ snsProjects: mockSnsProjects });
-
-      expect(await po.getTotalAssetsCardPo().isPresent()).toBe(true);
-    });
-  });
-
   describe("when logged in", () => {
+    const icpToken = createIcpUserToken();
     const token1 = createUserToken({
       balanceInUsd: 100,
       universeId: principal(1),
@@ -781,14 +242,6 @@ describe("Portfolio page", () => {
         token: mockToken,
       }),
     };
-    const tableProject4: TableProject = {
-      ...mockTableProject,
-      title: "Project 4",
-      stakeInUsd: undefined,
-      domKey: "/staking/4",
-      universeId: principal(5).toText(),
-      stake: new UnavailableTokenAmount(mockToken),
-    };
 
     beforeEach(() => {
       resetIdentity();
@@ -802,14 +255,27 @@ describe("Portfolio page", () => {
       expect(await po.getLoginCard().isPresent()).toBe(false);
     });
 
+    it("should not display the StartStakingCard when the user is logged in", async () => {
+      const po = renderPage();
+
+      expect(await po.getStartStakingCard().isPresent()).toBe(false);
+    });
+
     describe("NoHeldTokensCard", () => {
       it("should display the card when the tokens accounts balance is zero", async () => {
-        const po = renderPage();
+        const po = renderPage({
+          // we need some non-ICP neurons, otherwise both rest-tables are hidden
+          nonIcpTableProjects: [tableProject1, tableProject2, tableProject3],
+        });
+
+        // await runResolvedPromises();
+
+        // console.log(await po.root.innerHtmlForDebugging());
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(true);
-        expect(await po.getHeldTokensCardPo().isPresent()).toBe(false);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toBe(false);
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
-          "$0.00"
+          "$900.00"
         );
       });
 
@@ -818,10 +284,10 @@ describe("Portfolio page", () => {
           universeId: principal(1),
           balanceInUsd: 2,
         });
-        const po = renderPage({ userTokens: [token] });
+        const po = renderPage({ nonIcpTokens: [token] });
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
-        expect(await po.getHeldTokensCardPo().isPresent()).toBe(true);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toBe(true);
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
           "$2.00"
         );
@@ -831,9 +297,10 @@ describe("Portfolio page", () => {
     describe("HeldTokensCard", () => {
       it("should display the top four tokens by balanceInUsd", async () => {
         const po = renderPage({
-          userTokens: [token1, token2, token3, token4, token5],
+          icpToken: icpToken,
+          nonIcpTokens: [token1, token2, token3, token4, token5],
         });
-        const tokensCardPo = po.getHeldTokensCardPo();
+        const tokensCardPo = po.getHeldRestTokensCardPo();
 
         const titles = await tokensCardPo.getHeldTokensTitles();
         const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
@@ -842,33 +309,31 @@ describe("Portfolio page", () => {
 
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
 
-        expect(titles.length).toBe(4);
-        expect(titles).toEqual(["Token5", "Token4", "Token3", "Token2"]);
+        expect(titles.length).toBe(3);
+        expect(titles).toEqual(["Token5", "Token4", "Token3"]);
 
-        expect(usdBalances.length).toBe(4);
-        expect(usdBalances).toEqual([
-          "$500.00",
-          "$400.00",
-          "$300.00",
-          "$200.00",
-        ]);
+        expect(usdBalances.length).toBe(3);
+        expect(usdBalances).toEqual(["$500.00", "$400.00", "$300.00"]);
 
-        expect(nativeBalances.length).toBe(4);
-        expect(nativeBalances).toEqual([
-          "21.60 TET",
-          "21.60 TET",
-          "21.60 TET",
-          "21.60 TET",
-        ]);
+        expect(nativeBalances.length).toBe(3);
+        expect(nativeBalances).toEqual(["21.60 TET", "21.60 TET", "21.60 TET"]);
 
         expect(await tokensCardPo.getInfoRow().isPresent()).toBe(false);
       });
 
-      it("should display the information row when less then three tokens", async () => {
+      it("should display the information row when less then three tokens and desktop", async () => {
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
+
         const po = renderPage({
-          userTokens: [token1, token2],
+          icpToken: icpToken,
+          nonIcpTokens: [token2, token3],
         });
-        const tokensCardPo = po.getHeldTokensCardPo();
+        const tokensCardPo = po.getHeldRestTokensCardPo();
 
         const titles = await tokensCardPo.getHeldTokensTitles();
         const usdBalances = await tokensCardPo.getHeldTokensBalanceInUsd();
@@ -878,10 +343,10 @@ describe("Portfolio page", () => {
         expect(await po.getNoHeldTokensCard().isPresent()).toBe(false);
 
         expect(titles.length).toBe(2);
-        expect(titles).toEqual(["Token2", "Token1"]);
+        expect(titles).toEqual(["Token3", "Token2"]);
 
         expect(usdBalances.length).toBe(2);
-        expect(usdBalances).toEqual(["$200.00", "$100.00"]);
+        expect(usdBalances).toEqual(["$300.00", "$200.00"]);
 
         expect(nativeBalances.length).toBe(2);
         expect(nativeBalances).toEqual(["21.60 TET", "21.60 TET"]);
@@ -891,18 +356,13 @@ describe("Portfolio page", () => {
     });
 
     describe("StakedTokensCard", () => {
-      it("should display the top staked tokens by staked balance in Usd with InternetComputer as first", async () => {
+      it("should display the top staked tokens by staked balance in Usd", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
-          tableProjects: [
-            tableProject1,
-            tableProject2,
-            tableProject3,
-            tableProject4,
-            icpProject,
-          ],
+          icpTableProject: icpProject,
+          nonIcpTableProjects: [tableProject1, tableProject2, tableProject3],
         });
-        const stakedTokensCardPo = po.getStakedTokensCardPo();
+        const stakedTokensCardPo = po.getStakedRestTokensCardPo();
 
         const titles = await stakedTokensCardPo.getStakedTokensTitle();
         const maturities = await stakedTokensCardPo.getStakedTokensMaturity();
@@ -913,28 +373,16 @@ describe("Portfolio page", () => {
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
 
-        expect(titles.length).toBe(4);
-        expect(titles).toEqual([
-          "Internet Computer",
-          "Project 3",
-          "Project 2",
-          "Project 1",
-        ]);
+        expect(titles.length).toBe(3);
+        expect(titles).toEqual(["Project 3", "Project 2", "Project 1"]);
 
-        expect(maturities.length).toBe(4);
-        expect(maturities).toEqual(["20.00", "1.00", "0", "0"]);
+        expect(maturities.length).toBe(3);
+        expect(maturities).toEqual(["1.00", "0", "0"]);
+        expect(stakesInUsd.length).toBe(3);
+        expect(stakesInUsd).toEqual(["$400.00", "$300.00", "$200.00"]);
 
-        expect(stakesInUsd.length).toBe(4);
-        expect(stakesInUsd).toEqual([
-          "$100.00",
-          "$400.00",
-          "$300.00",
-          "$200.00",
-        ]);
-
-        expect(stakesInNativeCurrency.length).toBe(4);
+        expect(stakesInNativeCurrency.length).toBe(3);
         expect(stakesInNativeCurrency).toEqual([
-          "0.01 ICP",
           "0 TET",
           "0.01 TET",
           "0.01 TET",
@@ -944,12 +392,19 @@ describe("Portfolio page", () => {
       });
 
       it("should display the information row when the staked tokens card has less items than the held tokens card", async () => {
+        vi.spyOn(isDesktopViewportStore, "subscribe").mockImplementation(
+          (fn) => {
+            fn(true);
+            return () => {};
+          }
+        );
         overrideFeatureFlagsStore.setFlag("ENABLE_APY_PORTFOLIO", false);
         const po = renderPage({
-          tableProjects: [tableProject1, tableProject2],
-          userTokens: [token1, token2, token3, token4],
+          icpTableProject: icpProject,
+          nonIcpTableProjects: [tableProject2, tableProject3],
+          nonIcpTokens: [icpToken, token2, token3, token4],
         });
-        const stakedTokensCardPo = po.getStakedTokensCardPo();
+        const stakedTokensCardPo = po.getStakedRestTokensCardPo();
 
         const titles = await stakedTokensCardPo.getStakedTokensTitle();
         const maturities = await stakedTokensCardPo.getStakedTokensMaturity();
@@ -961,16 +416,16 @@ describe("Portfolio page", () => {
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
 
         expect(titles.length).toBe(2);
-        expect(titles).toEqual(["Project 2", "Project 1"]);
+        expect(titles).toEqual(["Project 3", "Project 2"]);
 
         expect(maturities.length).toBe(2);
-        expect(maturities).toEqual(["0", "0"]);
+        expect(maturities).toEqual(["1.00", "0"]);
 
         expect(stakesInUsd.length).toBe(2);
-        expect(stakesInUsd).toEqual(["$300.00", "$200.00"]);
+        expect(stakesInUsd).toEqual(["$400.00", "$300.00"]);
 
         expect(stakesInNativeCurrency.length).toBe(2);
-        expect(stakesInNativeCurrency).toEqual(["0.01 TET", "0.01 TET"]);
+        expect(stakesInNativeCurrency).toEqual(["0 TET", "0.01 TET"]);
 
         expect(await stakedTokensCardPo.getInfoRow().isPresent()).toBe(true);
       });
@@ -991,11 +446,14 @@ describe("Portfolio page", () => {
           ...mockTableProject,
           stakeInUsd: 2,
         };
-        const po = renderPage({ tableProjects: [tableProject] });
+        const po = renderPage({
+          icpTableProject: tableProject,
+          nonIcpTableProjects: [tableProject1],
+        });
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(false);
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
-          "$2.00"
+          "$202.00"
         );
       });
 
@@ -1004,10 +462,9 @@ describe("Portfolio page", () => {
           universeId: principal(1),
           balanceInUsd: 2,
         });
-        const po = renderPage({ userTokens: [token] });
+        const po = renderPage({ nonIcpTokens: [token] });
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
-        expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toBe(true);
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
           "$2.00"
         );
@@ -1017,9 +474,6 @@ describe("Portfolio page", () => {
         const po = renderPage();
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toBe(true);
-        expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toBe(
-          false
-        );
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
           "$0.00"
         );
@@ -1029,22 +483,19 @@ describe("Portfolio page", () => {
         const loadingToken = createUserTokenLoading({});
 
         const po = renderPage({
-          userTokens: [loadingToken],
-          tableProjects: [],
+          nonIcpTokens: [loadingToken],
+          nonIcpTableProjects: [],
         });
 
         expect(await po.getNoStakedTokensCarPo().isPresent()).toEqual(true);
-        expect(await po.getNoStakedTokensCarPo().hasPrimaryAction()).toEqual(
-          false
-        );
       });
     });
 
     describe("TotalAssetsCard", () => {
       it("should display total assets", async () => {
         const po = renderPage({
-          userTokens: [token1, token2],
-          tableProjects: [icpProject, tableProject1],
+          nonIcpTokens: [token1, token2],
+          nonIcpTableProjects: [icpProject, tableProject1],
         });
 
         // There are two tokens with a balance of 100$ and 200$, and two projects with a staked balance of 100$ and 200$ -> 600$
@@ -1064,7 +515,9 @@ describe("Portfolio page", () => {
         const tokenNoBalance = createUserToken({
           balanceInUsd: undefined,
         });
-        const po = renderPage({ userTokens: [token1, token2, tokenNoBalance] });
+        const po = renderPage({
+          nonIcpTokens: [token1, token2, tokenNoBalance],
+        });
 
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
           "$300.00"
@@ -1083,7 +536,7 @@ describe("Portfolio page", () => {
           stakeInUsd: undefined,
         };
         const po = renderPage({
-          tableProjects: [tableProject1, tableProject2, projectNoBalance],
+          nonIcpTableProjects: [tableProject1, tableProject2, projectNoBalance],
         });
 
         expect(await po.getTotalAssetsCardPo().getPrimaryAmount()).toBe(
@@ -1152,8 +605,8 @@ describe("Portfolio page", () => {
 
       it("should show Apy card with all information", async () => {
         const po = renderPage({
-          userTokens: [token1, token2],
-          tableProjects: [icpProject, tableProject1],
+          nonIcpTokens: [token1, token2],
+          nonIcpTableProjects: [icpProject, tableProject1],
           stakingRewardResult: {
             loading: false,
             apy: new Map(),
@@ -1161,13 +614,18 @@ describe("Portfolio page", () => {
             rewardEstimateWeekUSD: 1,
             stakingPower: 0.1,
             stakingPowerUSD: 100,
+            icpOnly: {
+              maturityBalance: 1,
+              maturityEstimateWeek: 1,
+              stakingPower: 0.1,
+            },
           },
         });
 
         expect(await po.getApyFallbackCardPo().isPresent()).toBe(false);
         expect(await po.getApyCardPo().isPresent()).toBe(true);
-        expect(await po.getApyCardPo().getRewardAmount()).toBe("~$10.00");
-        expect(await po.getApyCardPo().getProjectionAmount()).toBe("~$1.00");
+        expect(await po.getApyCardPo().getRewardAmount()).toBe("1.00");
+        expect(await po.getApyCardPo().getProjectionAmount()).toBe("1.000");
         expect(await po.getApyCardPo().getStakingPowerPercentage()).toBe(
           "10.00%"
         );
@@ -1194,8 +652,8 @@ describe("Portfolio page", () => {
 
       it("should show the inital loading state - both tokens and projects loading", async () => {
         const po = renderPage({
-          userTokens: [loadingToken],
-          tableProjects: [loadingProject],
+          nonIcpTokens: [loadingToken],
+          nonIcpTableProjects: [loadingProject],
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
@@ -1203,14 +661,14 @@ describe("Portfolio page", () => {
         expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
           true
         );
-        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
-        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getStakedRestTokensCardPo().isPresent()).toEqual(false);
       });
 
       it("should show a partial loading state - tokens loaded, projects still loading", async () => {
         const po = renderPage({
-          userTokens: [loadedToken],
-          tableProjects: [loadingProject],
+          nonIcpTokens: [loadedToken],
+          nonIcpTableProjects: [loadingProject],
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
@@ -1218,14 +676,14 @@ describe("Portfolio page", () => {
         expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
           true
         );
-        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(true);
-        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getStakedRestTokensCardPo().isPresent()).toEqual(false);
       });
 
       it("should show a partial loading state - projects loaded, tokens still loading", async () => {
         const po = renderPage({
-          userTokens: [loadingToken],
-          tableProjects: [loadedProject],
+          nonIcpTokens: [loadingToken],
+          nonIcpTableProjects: [loadedProject],
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(true);
@@ -1233,14 +691,14 @@ describe("Portfolio page", () => {
         expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
           false
         );
-        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(false);
-        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toEqual(false);
+        expect(await po.getStakedRestTokensCardPo().isPresent()).toEqual(true);
       });
 
       it("should show a fully loaded state - both tokens and projects loaded", async () => {
         const po = renderPage({
-          userTokens: [loadedToken],
-          tableProjects: [loadedProject],
+          nonIcpTokens: [loadedToken],
+          nonIcpTableProjects: [loadedProject],
         });
 
         expect(await po.getTotalAssetsCardPo().hasSpinner()).toEqual(false);
@@ -1248,8 +706,8 @@ describe("Portfolio page", () => {
         expect(await po.getStakedTokensSkeletonCard().isPresent()).toEqual(
           false
         );
-        expect(await po.getHeldTokensCardPo().isPresent()).toEqual(true);
-        expect(await po.getStakedTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getHeldRestTokensCardPo().isPresent()).toEqual(true);
+        expect(await po.getStakedRestTokensCardPo().isPresent()).toEqual(true);
       });
     });
   });

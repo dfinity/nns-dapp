@@ -1,3 +1,4 @@
+import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
 import { AGGREGATOR_METRICS_TIME_WINDOW_SECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
 import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
@@ -54,18 +55,24 @@ export const filterCommittedProjects = (
  * - status is Pending and time window is defined - i.e. related proposal has been accepted (if not accepted, time window is undefined)
  * - open
  * - complete - we display completed project for a while to make the screen user-friendly
+ * - Sunset projects are hidden as they are no longer supported
  * @param projects
  */
 export const filterActiveProjects = (
   projects: SnsFullProject[]
 ): SnsFullProject[] =>
-  projects?.filter(({ summary }) =>
-    [
-      SnsSwapLifecycle.Committed,
-      SnsSwapLifecycle.Open,
-      SnsSwapLifecycle.Adopted,
-    ].includes(summary.getLifecycle())
-  );
+  projects
+    ?.filter(
+      ({ summary }) =>
+        !abandonedProjectsCanisterId.includes(summary.rootCanisterId.toText())
+    )
+    .filter(({ summary }) =>
+      [
+        SnsSwapLifecycle.Committed,
+        SnsSwapLifecycle.Open,
+        SnsSwapLifecycle.Adopted,
+      ].includes(summary.getLifecycle())
+    );
 
 /**
  * Duration in seconds until the end of the swap if defined.
@@ -504,8 +511,8 @@ export const snsProjectIcpInTreasuryPercentage = (
 };
 
 /**
- * Calculates the market cap of the SNS project.
- * Market cap is calculated as:
+ * Calculates the fully diluted valuation of the SNS project.
+ * FDV is calculated as:
  * total supply of the SNS token * token price of the token in USD
  */
 export const snsProjectMarketCap = ({

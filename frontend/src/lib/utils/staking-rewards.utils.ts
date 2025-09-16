@@ -28,6 +28,7 @@ import {
   cloneNeurons,
   getNeuronBonusRatio,
   getNeuronFreeMaturityE8s,
+  getNeuronId,
   getNeuronTotalMaturityE8s,
   getNeuronTotalStakeAfterFeesE8s,
   getNeuronTotalValueAfterFeesE8s,
@@ -57,6 +58,13 @@ type APY = Map<
   {
     cur: number;
     max: number;
+    neurons: Map<
+      string,
+      {
+        cur: number;
+        max: number;
+      }
+    >;
     error?: APY_CALC_ERROR;
   }
 >;
@@ -67,6 +75,11 @@ export type StakingRewardData = {
   rewardEstimateWeekUSD: number;
   stakingPower: number;
   stakingPowerUSD: number;
+  icpOnly: {
+    maturityBalance: number;
+    maturityEstimateWeek: number;
+    stakingPower: number;
+  };
   apy: APY;
 };
 
@@ -123,6 +136,7 @@ export const getStakingRewardData = (
         ),
         stakingPower: getStakingPower(params).value,
         stakingPowerUSD: getStakingPower(params).valueUSD,
+        icpOnly: getIcpOnlyStakingRewardsData(params, forceInitialDate),
         apy: getAPYs(params, forceInitialDate),
       };
       logWithTimestamp("Staking rewards: calculation completed, fields ready.");
@@ -180,6 +194,45 @@ const getRewardBalanceUSD = (params: StakingRewardCalcParams): number => {
   });
 
   return nnsTotalRewardUSD + snsTotalRewardUSD;
+};
+
+const getIcpOnlyStakingRewardsData = (
+  params: StakingRewardCalcParams,
+  forceInitialDate?: Date
+) => {
+  const { nnsNeurons, fxRates } = params;
+
+  const icpOnly = {
+    maturityBalance: 0,
+    maturityEstimateWeek: 0,
+    stakingPower: 0,
+  };
+
+  try {
+    icpOnly.maturityBalance = bigIntDiv(
+      nnsNeurons.neurons?.reduce((acc, neuron) => {
+        return acc + getNeuronTotalMaturityE8s(neuron);
+      }, 0n) || 0n,
+      BigInt(E8S_RATE),
+      20
+    );
+
+    icpOnly.stakingPower = getStakingPower(params).valueIcpOnly;
+
+    const fxRate = getFXRate(fxRates, LEDGER_CANISTER_ID.toText());
+    icpOnly.maturityEstimateWeek = fxRate
+      ? getNnsRewardEstimationUSD(params, 7, false, forceInitialDate).total /
+        fxRate
+      : 0;
+  } catch (e) {
+    let message = `Staking rewards: unexpected error calculating ICP only staking rewards data.`;
+    if (e instanceof ApyMissingDataError) {
+      message = `Staking rewards: error calculating ICP only staking rewards data, missing information.`;
+    }
+    logWithTimestamp(message, e);
+  }
+
+  return icpOnly;
 };
 
 const getStakingPower = (params: StakingRewardCalcParams) => {
@@ -246,6 +299,7 @@ const getStakingPower = (params: StakingRewardCalcParams) => {
   return {
     value: totalValueUSD ? totalStakedUSD / totalValueUSD : 0,
     valueUSD: totalStakedUSD,
+    valueIcpOnly: nnsTotalUSD ? nnsStakedUSD / nnsTotalUSD : 0,
   };
 };
 
@@ -255,7 +309,12 @@ const getRewardEstimationForWeek = (
 ) => {
   let nnsReward = 0;
   try {
-    nnsReward = getNnsRewardEstimationUSD(params, 7, false, forceInitialDate);
+    nnsReward = getNnsRewardEstimationUSD(
+      params,
+      7,
+      false,
+      forceInitialDate
+    ).total;
   } catch (e) {
     let message =
       "Staking rewards: unexpected error calculating NNS reward estimation, ignoring NNS reward.";
@@ -273,6 +332,7 @@ const getRewardEstimationForWeek = (
         return (
           total +
           getSnsRewardEstimationUSD(params, 7, sns, false, forceInitialDate)
+            .total
         );
       } catch (e) {
         let message = `Staking rewards: unexpected error calculating SNS reward estimation for ${sns.canister_ids.root_canister_id}, ignoring SNS reward.`;
@@ -292,7 +352,7 @@ const getNnsRewardEstimationUSD = (
   days: number,
   maximiseParams: boolean = false,
   forceInitialDate?: Date
-): number => {
+): { total: number; neurons: Map<string, number> } => {
   return getNeuronsRewardEstimationUSD({
     neurons: params.nnsNeurons.neurons ?? [],
     maximiseParams,
@@ -308,7 +368,7 @@ const getSnsRewardEstimationUSD = (
   sns: CachedSnsDto,
   maximiseParams: boolean = false,
   forceInitialDate?: Date
-): number => {
+): { total: number; neurons: Map<string, number> } => {
   return getNeuronsRewardEstimationUSD({
     neurons:
       params.snsNeurons[sns.canister_ids.root_canister_id]?.neurons ?? [],
@@ -346,6 +406,7 @@ const getAPYs = (params: StakingRewardCalcParams, forceInitialDate?: Date) => {
     apy.set(OWN_CANISTER_ID_TEXT, {
       cur: 0,
       max: 0,
+      neurons: new Map(),
       error,
     });
   }
@@ -382,6 +443,7 @@ const getAPYs = (params: StakingRewardCalcParams, forceInitialDate?: Date) => {
       apy.set(rootPrincipal, {
         cur: 0,
         max: 0,
+        neurons: new Map(),
         error,
       });
     }
@@ -399,25 +461,22 @@ const getAPY = (
     days: number,
     maximiseParams?: boolean,
     forceInitialDate?: Date
-  ) => number,
+  ) => { total: number; neurons: Map<string, number> },
   forceInitialDate?: Date
 ) => {
-  const yearEstimatedRewardUSD = rewardEstimationFunction(
-    params,
-    365,
-    false,
-    forceInitialDate
-  );
-  const yearEstimatedMaxRewardUSD = rewardEstimationFunction(
-    params,
-    365,
-    true,
-    forceInitialDate
-  );
+  const {
+    total: yearEstimatedRewardTotalUSD,
+    neurons: yearEstimatedRewardNeuronsUSD,
+  } = rewardEstimationFunction(params, 365, false, forceInitialDate);
+  const {
+    total: yearEstimatedMaxRewardTotalUSD,
+    neurons: yearEstimatedMaxRewardNeuronsUSD,
+  } = rewardEstimationFunction(params, 365, true, forceInitialDate);
 
   let totalUSD = 0;
   let totalMaxUSD = 0;
   const fxRate = getFXRate(params.fxRates, ledgerPrincipal);
+  const singleNeuronsApy = new Map<string, { cur: number; max: number }>();
 
   neurons.forEach((neuron) => {
     const neuronTotalStake = bigIntDiv(
@@ -425,7 +484,8 @@ const getAPY = (
       BigInt(E8S_RATE),
       8
     );
-    totalUSD += neuronTotalStake * fxRate;
+    const neuronTotalStakeUSD = neuronTotalStake * fxRate;
+    totalUSD += neuronTotalStakeUSD;
 
     const neuronTotalMaxStake = bigIntDiv(
       // Considering the un-staked maturity as well
@@ -433,16 +493,26 @@ const getAPY = (
       BigInt(E8S_RATE),
       8
     );
-    totalMaxUSD += neuronTotalMaxStake * fxRate;
+    const neuronTotalMaxStakeUSD = neuronTotalMaxStake * fxRate;
+    totalMaxUSD += neuronTotalMaxStakeUSD;
+
+    const neuronId = getNeuronId(neuron);
+    singleNeuronsApy.set(neuronId, {
+      cur: neuronTotalStakeUSD
+        ? (yearEstimatedRewardNeuronsUSD.get(neuronId) ?? 0) /
+          neuronTotalStakeUSD
+        : 0,
+      max: neuronTotalMaxStakeUSD
+        ? (yearEstimatedMaxRewardNeuronsUSD.get(neuronId) ?? 0) /
+          neuronTotalMaxStakeUSD
+        : 0,
+    });
   });
 
-  if (totalUSD === 0 || totalMaxUSD === 0) {
-    return { cur: 0, max: 0 };
-  }
-
   return {
-    cur: yearEstimatedRewardUSD / totalUSD,
-    max: yearEstimatedMaxRewardUSD / totalMaxUSD,
+    cur: totalUSD ? yearEstimatedRewardTotalUSD / totalUSD : 0,
+    max: totalMaxUSD ? yearEstimatedMaxRewardTotalUSD / totalMaxUSD : 0,
+    neurons: singleNeuronsApy,
   };
 };
 
@@ -491,7 +561,7 @@ const getNeuronsRewardEstimationUSD = (params: {
   sns?: CachedSnsDto;
   forceInitialDate?: Date;
   otherParams: StakingRewardCalcParams;
-}) => {
+}): { total: number; neurons: Map<string, number> } => {
   const {
     neurons: _neurons,
     maximiseParams,
@@ -502,7 +572,7 @@ const getNeuronsRewardEstimationUSD = (params: {
   } = params;
 
   if (!_neurons || _neurons.length === 0) {
-    return 0;
+    return { total: 0, neurons: new Map() };
   }
   const neurons = cloneNeurons(_neurons);
 
@@ -517,6 +587,7 @@ const getNeuronsRewardEstimationUSD = (params: {
   }
 
   let neuronsTotalRewardUSD = 0;
+  const singleNeuronRewardsUSD = new Map<string, number>();
   for (let i = 0; i < days; i++) {
     const projectDayRewardUSD = neurons.reduce((acc, neuron) => {
       let neuronVotingPower = 0n;
@@ -552,6 +623,11 @@ const getNeuronsRewardEstimationUSD = (params: {
             otherParams.fxRates,
             sns ? sns.canister_ids.ledger_canister_id : LEDGER_CANISTER_ID
           );
+
+        const neuronId = getNeuronId(neuron);
+        const prev = singleNeuronRewardsUSD.get(neuronId) ?? 0;
+        singleNeuronRewardsUSD.set(neuronId, prev + rewardUSD);
+
         increaseNeuronMaturity(
           neuron,
           BigInt(Math.floor(tokenReward * Number(E8S_RATE)))
@@ -564,7 +640,8 @@ const getNeuronsRewardEstimationUSD = (params: {
 
     neuronsTotalRewardUSD += projectDayRewardUSD;
   }
-  return neuronsTotalRewardUSD;
+
+  return { total: neuronsTotalRewardUSD, neurons: singleNeuronRewardsUSD };
 };
 
 const getFXRate = (

@@ -15,6 +15,10 @@ import {
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import type { UserTokenData } from "$lib/types/tokens-page";
 import {
+  getNeuronId,
+  type AgnosticNeuron,
+} from "$lib/utils/agnostic-neuron.utils";
+import {
   APY_CALC_ERROR,
   getStakingRewardData,
   type StakingRewardCalcParams,
@@ -64,6 +68,7 @@ type TestStakingRewardCalcParams = {
     [rootCanisterId: string]: {
       neurons: Pick<
         SnsNeuron,
+        | "id"
         | "maturity_e8s_equivalent"
         | "staked_maturity_e8s_equivalent"
         | "cached_neuron_stake_e8s"
@@ -145,6 +150,16 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).apy.get(TEST_SNS_IDS[0]).max, 2)
     ).toBe(0);
+
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0
+    );
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(0);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0);
   });
 
   //////////////////
@@ -166,6 +181,9 @@ describe("neuron-utils", () => {
     expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       50 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(50);
 
     // Increase the staked maturity
     params.nnsNeurons.neurons[0].fullNeuron.stakedMaturityE8sEquivalent =
@@ -173,6 +191,9 @@ describe("neuron-utils", () => {
     expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       500 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(500);
 
     // Add un-staked maturity, it should also affect the reward balance
     params.nnsNeurons.neurons[0].fullNeuron.maturityE8sEquivalent = BigInt(
@@ -181,12 +202,18 @@ describe("neuron-utils", () => {
     expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1400 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(1400);
 
     // Add neuron fees, it should not affect the reward balance (it is subtracted from the stake, not the maturity)
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(100 * E8S_RATE);
     expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1400 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(1400);
 
     // Add a second neuron, it should add up the reward balance
     params.nnsNeurons.neurons.push(getTestNeuronNns());
@@ -198,6 +225,9 @@ describe("neuron-utils", () => {
     expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(1800);
 
     // Dissolve delay should not affect the reward balance
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
@@ -206,6 +236,9 @@ describe("neuron-utils", () => {
     expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(1800);
 
     // Dissolve state should not affect the reward balance
     params.nnsNeurons.neurons[0].state = NeuronState.Dissolving;
@@ -220,6 +253,9 @@ describe("neuron-utils", () => {
     expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(1800);
 
     // Add an SNS project, without a neuron, it should not affect the reward balance
     params.snsProjects.data.push(getTestSns());
@@ -231,6 +267,9 @@ describe("neuron-utils", () => {
     expect(roundToDecimals(getRewardData(params).rewardBalanceUSD, 2)).toBe(
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()]
     );
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(1800);
 
     // Add 2 SNS neurons with maturities and stake, it should add up the reward balance
     params.snsNeurons[TEST_SNS_IDS[0]] = {
@@ -253,6 +292,11 @@ describe("neuron-utils", () => {
         200 * params.fxRates[TEST_SNS_IDS[0]]
     );
 
+    // SNSs should not affect the ICP-only reward balance
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(1800);
+
     // Add fees to the SNS neurons, it should not affect the reward balance
     params.snsNeurons[TEST_SNS_IDS[0]].neurons.forEach((n) => {
       n.neuron_fees_e8s = BigInt(50 * E8S_RATE);
@@ -261,6 +305,11 @@ describe("neuron-utils", () => {
       1800 * params.fxRates[LEDGER_CANISTER_ID.toText()] +
         200 * params.fxRates[TEST_SNS_IDS[0]]
     );
+
+    // SNSs should not affect the ICP-only reward balance
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityBalance, 2)
+    ).toBe(1800);
   });
 
   ///////////////////
@@ -280,6 +329,9 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(1.13);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.13);
 
     // Double the stake, the reward estimate should double
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
@@ -288,6 +340,9 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(2.26);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // In case of no voting power (e.g. data unavailable), the reward estimate should be 0
     const old = params.nnsTotalVotingPower;
@@ -295,12 +350,19 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(0);
+
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0);
     params.nnsTotalVotingPower = old;
 
     // No stake, no reward estimate
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(0);
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(0);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
     ).toBe(0);
     params.nnsNeurons.neurons[0].fullNeuron.cachedNeuronStake = BigInt(
       50 * E8S_RATE
@@ -311,15 +373,26 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(0.15);
+    // But not the maturity
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.13);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 500;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(62.82);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.13);
 
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 0;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
+    ).toBe(0);
+    // Unless it is zero, since it is used in the calculation
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
     ).toBe(0);
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 9;
 
@@ -339,23 +412,35 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(4.52);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.5);
 
     // Remove the last neuron, the reward estimate should be 3/4 of before
     params.nnsNeurons.neurons.pop();
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     // Token balance should not affect the reward estimate
     params.tokens[0].balanceInUsd = 1000;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     params.tokens[0].balanceInUsd = 0;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     // Add a SNS project without a neuron
     params.snsProjects.data.push(getTestSns());
@@ -367,12 +452,18 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.39);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.38);
 
     // Neuron fees should affect the reward estimate
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(50 * E8S_RATE);
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(2.26);
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // Add a couple of SNS neuron with a stake
     params.snsNeurons[TEST_SNS_IDS[0]] = {
@@ -391,6 +482,10 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(37.59);
+    // SNSs should not affect the ICP-only reward estimates
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // Change the stake of one of the SNS neurons
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
@@ -398,18 +493,30 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(49.36);
+    // SNSs should not affect the ICP-only reward estimates
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].cached_neuron_stake_e8s =
       BigInt(400 * E8S_RATE);
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(72.92);
+    // SNSs should not affect the ICP-only reward estimates
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // Change the FX rate of the SNS project
     params.fxRates[TEST_SNS_IDS[0]] = 1.23;
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(3.13);
+    // SNSs should not affect the ICP-only reward estimates
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
 
     // Add fees to the SNS neuron
     params.snsNeurons[TEST_SNS_IDS[0]].neurons.forEach((n) => {
@@ -418,6 +525,10 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).rewardEstimateWeekUSD, 2)
     ).toBe(2.26);
+    // SNSs should not affect the ICP-only reward estimates
+    expect(
+      roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
+    ).toBe(0.25);
   });
 
   /////////////////
@@ -428,11 +539,17 @@ describe("neuron-utils", () => {
     // Initial state with a single NNS neuron, equally split between balance and stake
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.5
+    );
 
     // Account for neuron fees
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(50 * E8S_RATE);
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0
+    );
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = 0n;
 
     // Account for neuron staked maturitiy
@@ -440,6 +557,9 @@ describe("neuron-utils", () => {
       BigInt(50 * E8S_RATE);
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.67);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(900);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.67
+    );
     params.nnsNeurons.neurons[0].fullNeuron.stakedMaturityE8sEquivalent = 0n;
 
     // Account for neuron un-staked maturitiy
@@ -448,36 +568,57 @@ describe("neuron-utils", () => {
     );
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.33
+    );
     params.nnsNeurons.neurons[0].fullNeuron.maturityE8sEquivalent = 0n;
 
     // Other cases with different balances
     params.tokens[0].balanceInUsd = 900;
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.33
+    );
 
     params.tokens[0].balanceInUsd = 1350;
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.25);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.25
+    );
 
     params.tokens[0].balanceInUsd = 13500;
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.03);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.03
+    );
 
     // Other cases with multiple neurons and different stakes
     params.nnsNeurons.neurons.push(getTestNeuronNns());
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.06);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(900);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.06
+    );
 
     params.nnsNeurons.neurons.push(getTestNeuronNns());
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.09);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
       1350
     );
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.09
+    );
 
     params.nnsNeurons.neurons.push(getTestNeuronNns());
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.12);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
       1800
+    );
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.12
     );
 
     params.nnsNeurons.neurons = [getTestNeuronNns(), getTestNeuronNns()];
@@ -488,11 +629,17 @@ describe("neuron-utils", () => {
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
       450 + 10 ** 10 * 9
     );
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      1
+    );
 
     // Test with no neurons
     params.nnsNeurons.neurons = [];
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0
+    );
 
     // Test with a neuron that has no a negligible stake
     params.nnsNeurons.neurons.push(getTestNeuronNns());
@@ -501,11 +648,17 @@ describe("neuron-utils", () => {
     );
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(9);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0
+    );
   });
 
   it("Calculates the Staking power (with SNSs)", () => {
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.5
+    );
 
     // Add a SNS project without a neuron
     params.snsProjects.data.push(getTestSns());
@@ -515,6 +668,9 @@ describe("neuron-utils", () => {
     });
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.5
+    );
 
     // Add an SNS neuron with a stake
     params.snsNeurons[TEST_SNS_IDS[0]] = {
@@ -525,6 +681,9 @@ describe("neuron-utils", () => {
     params.fxRates[TEST_SNS_IDS[0]] = 10;
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(900);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.5
+    );
 
     // Modify the FX rate
     params.tokens[1].balanceInUsd = 45 * 1.23;
@@ -532,6 +691,9 @@ describe("neuron-utils", () => {
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(
       450 + 45 * 1.23
+    );
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.5
     );
 
     // Account for neuron fees
@@ -541,24 +703,39 @@ describe("neuron-utils", () => {
     );
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.5
+    );
 
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].neuron_fees_e8s = BigInt(
       90 * E8S_RATE
     );
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.5
+    );
 
     params.tokens[1].balanceInUsd = 0;
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.5);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(450);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.5
+    );
 
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(25 * E8S_RATE);
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0.33);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(225);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0.33
+    );
 
     params.nnsNeurons.neurons[0].fullNeuron.neuronFees = BigInt(50 * E8S_RATE);
     expect(roundToDecimals(getRewardData(params).stakingPower, 2)).toBe(0);
     expect(roundToDecimals(getRewardData(params).stakingPowerUSD, 2)).toBe(0);
+    expect(roundToDecimals(getRewardData(params).icpOnly.stakingPower, 2)).toBe(
+      0
+    );
   });
 
   it("Calculates the Staking power (complex cases: multiple SNSs, multiple neurons, fees, maturities)", () => {
@@ -654,13 +831,8 @@ describe("neuron-utils", () => {
   /// APY
   ///////
 
-  it("Calculates the APYs (NNS)", () => {
-    // Conficende range for APY calculations in respect to the reference value
-    // This is used to check if the calculated APY is within a reasonable range
-    // Some small differences can occur due to rounding and different precision levels
-    const confidence = 0.01; // 1%, it means that if the reference was 10, a value between 9.9 and 10.1 is also accepted
-
-    const checkApy = (id: string, max: boolean, value) =>
+  const bindCheckApy =
+    (params, confidence) => (id: string, max: boolean, value) =>
       inConfidenceRange(
         roundToDecimals(
           getRewardData(params).apy.get(id)[max ? "max" : "cur"] * 100,
@@ -669,6 +841,32 @@ describe("neuron-utils", () => {
         value,
         confidence
       );
+
+  const bindCheckNeuronApy =
+    (params, confidence) =>
+    // Unknown neuron type, to make TS happy since we are picking props manually
+    (projectId: string, neuron: unknown, max: boolean, value) =>
+      inConfidenceRange(
+        roundToDecimals(
+          getRewardData(params)
+            .apy.get(projectId)
+            .neurons.get(getNeuronId(neuron as AgnosticNeuron))[
+            max ? "max" : "cur"
+          ] * 100,
+          2
+        ),
+        value,
+        confidence
+      );
+
+  it("Calculates the APYs (NNS)", () => {
+    // Confidence range for APY calculations in respect to the reference value
+    // This is used to check if the calculated APY is within a reasonable range
+    // Some small differences can occur due to rounding and different precision levels
+    const confidence = 0.01; // 1%, it means that if the reference was 10, a value between 9.9 and 10.1 is also accepted
+    const checkApy = bindCheckApy(params, confidence);
+    const checkNeuronApy = bindCheckNeuronApy(params, confidence);
+    const getNeuron = (index: number) => params.nnsNeurons.neurons[index];
 
     // Dissolving neuron (6 months dissolve delay)
     params.tokens[0].balanceInUsd = 0;
@@ -685,6 +883,14 @@ describe("neuron-utils", () => {
     };
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 0.02)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+
+    // The neuron APY should be the same as the NNS total APY since there is only one neuron
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 0.02)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+    ).toBe(true);
 
     // Locked neuron (6 months dissolve delay)
     params.nnsNeurons.neurons[0].state = NeuronState.Locked;
@@ -743,6 +949,12 @@ describe("neuron-utils", () => {
     params.nnsNeurons.neurons[0].fullNeuron.autoStakeMaturity = true;
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.1)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 7.1)).toBe(
+      true
+    );
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+    ).toBe(true);
 
     // 1 Week of dissolve delay
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
@@ -785,6 +997,12 @@ describe("neuron-utils", () => {
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 0.000001;
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 13.75)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 13.75)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+    ).toBe(true);
     params.fxRates[LEDGER_CANISTER_ID.toText()] = 9;
 
     // Changes in the minimium dissolve delay are accounted
@@ -793,6 +1011,12 @@ describe("neuron-utils", () => {
     };
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 10.15)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 10.15)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+    ).toBe(true);
     params.nnsEconomics.parameters.votingPowerEconomics = {
       neuronMinimumDissolveDelayToVoteSeconds: BigInt(
         4 * SECONDS_IN_YEAR + SECONDS_IN_DAY
@@ -898,6 +1122,24 @@ describe("neuron-utils", () => {
     // Same neurons, same APY
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 7.25)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), false, 7.25)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), true, 13.75)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), false, 7.25)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), true, 13.75)
+    ).toBe(true);
 
     // Let's modify the 1st neuron in order not to generate rewards
     params.nnsNeurons.neurons[0].fullNeuron.dissolveState = {
@@ -912,6 +1154,24 @@ describe("neuron-utils", () => {
     };
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25 / 3)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
+    expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 0)).toBe(
+      true
+    );
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+    ).toBe(true);
+    expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), false, 0)).toBe(
+      true
+    );
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), true, 13.75)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), false, 7.25)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), true, 13.75)
+    ).toBe(true);
 
     // All of them are not generating rewards
     params.nnsNeurons.neurons[2].fullNeuron.dissolveState = {
@@ -944,6 +1204,26 @@ describe("neuron-utils", () => {
     expect(checkApy(OWN_CANISTER_ID_TEXT, false, 7.25)).toBe(true);
     expect(checkApy(OWN_CANISTER_ID_TEXT, true, 13.75)).toBe(true);
 
+    // The changes of a single neuron should not affect the APY of the others
+    expect(checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), false, 7.5)).toBe(
+      true
+    );
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(0), true, 13.75)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), false, 7.25)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(1), true, 13.75)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), false, 7.25)
+    ).toBe(true);
+    expect(
+      checkNeuronApy(OWN_CANISTER_ID_TEXT, getNeuron(2), true, 13.75)
+    ).toBe(true);
+
     // Let's remove some vital data, the APY should be 0 and we should see an error
     old = params.nnsTotalVotingPower;
     params.nnsTotalVotingPower = 0n;
@@ -966,16 +1246,10 @@ describe("neuron-utils", () => {
 
   it("Calculates the APYs (SNSs)", () => {
     const confidence = 0.01; // 1%, it means that if the reference was 10, a value between 9.9 and 10.1 is also accepted
-
-    const checkApy = (id: string, max: boolean, value) =>
-      inConfidenceRange(
-        roundToDecimals(
-          getRewardData(params).apy.get(id)[max ? "max" : "cur"] * 100,
-          2
-        ),
-        value,
-        confidence
-      );
+    const checkApy = bindCheckApy(params, confidence);
+    const checkNeuronApy = bindCheckNeuronApy(params, confidence);
+    const getNeuron = (index: number) =>
+      params.snsNeurons[TEST_SNS_IDS[0]].neurons[index];
 
     // Add a SNS project without a neuron, base and reward parameters different from NNS!
     params.tokens.push({
@@ -1015,6 +1289,12 @@ describe("neuron-utils", () => {
     ];
     expect(checkApy(TEST_SNS_IDS[0], false, 2.05)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
+
+    // The neuron APY should be the same as the Project total APY since there is only one neuron
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), false, 2.05)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), true, 7.3)).toBe(true);
 
     // Locked neuron (1 year dissolve delay)
     params.snsNeurons[
@@ -1076,6 +1356,10 @@ describe("neuron-utils", () => {
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].auto_stake_maturity = [true];
     expect(checkApy(TEST_SNS_IDS[0], false, 7.3)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), false, 7.3)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), true, 7.3)).toBe(true);
 
     // 1 Week of dissolve delay
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].dissolve_state = [
@@ -1131,6 +1415,10 @@ describe("neuron-utils", () => {
     params.fxRates[TEST_SNS_IDS[0]] = 0.000001;
     expect(checkApy(TEST_SNS_IDS[0], false, 6.81)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), false, 6.81)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), true, 7.3)).toBe(true);
     params.fxRates[TEST_SNS_IDS[0]] = 1.5;
 
     // Changes in the minimium dissolve delay are accounted
@@ -1155,6 +1443,10 @@ describe("neuron-utils", () => {
       1 * E8S_RATE;
     expect(checkApy(TEST_SNS_IDS[0], false, 6.81)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), false, 6.81)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), true, 7.3)).toBe(true);
 
     // Dissolving neuron with 10 years dissolve delay
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].dissolve_state = [
@@ -1249,6 +1541,18 @@ describe("neuron-utils", () => {
     // Same neurons, same APY
     expect(checkApy(TEST_SNS_IDS[0], false, 7.05)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), false, 7.05)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(1), false, 7.05)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(1), true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(2), false, 7.05)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(2), true, 7.3)).toBe(true);
 
     // Let's modify the 1st neuron in order not to generate rewards
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[0].dissolve_state = [
@@ -1267,6 +1571,14 @@ describe("neuron-utils", () => {
     ];
     expect(checkApy(TEST_SNS_IDS[0], false, 7.05 / 3)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), false, 0)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(1), false, 0)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(1), true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(2), false, 7.05)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(2), true, 7.3)).toBe(true);
 
     // All of them are not generating rewards
     params.snsNeurons[TEST_SNS_IDS[0]].neurons[2].dissolve_state = [
@@ -1300,6 +1612,20 @@ describe("neuron-utils", () => {
       BigInt(5 * E8S_RATE);
     expect(checkApy(TEST_SNS_IDS[0], false, 7.05)).toBe(true);
     expect(checkApy(TEST_SNS_IDS[0], true, 7.3)).toBe(true);
+
+    // The changes of a single neuron should not affect the APY of the others
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), false, 7.26)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(0), true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(1), false, 7.05)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(1), true, 7.3)).toBe(true);
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(2), false, 7.05)).toBe(
+      true
+    );
+    expect(checkNeuronApy(TEST_SNS_IDS[0], getNeuron(2), true, 7.3)).toBe(true);
 
     // Let's remove some vital data, the APY should be 0 and we should see an error
     old =
@@ -1426,6 +1752,7 @@ const getTestNeuronNns =
 
 const getTestNeuronSns =
   (): TestStakingRewardCalcParams["snsNeurons"]["0"]["neurons"][0] => ({
+    id: [{ id: [Number(neuronCounter++)] }],
     maturity_e8s_equivalent: BigInt(0),
     staked_maturity_e8s_equivalent: [BigInt(0)],
     cached_neuron_stake_e8s: BigInt(10 * E8S_RATE),

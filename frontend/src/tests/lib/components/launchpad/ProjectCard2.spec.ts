@@ -2,7 +2,6 @@ import * as saleApi from "$lib/api/sns-sale.api";
 import ProjectCard2 from "$lib/components/launchpad/ProjectCard2.svelte";
 import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
-import type { TreasuryMetricsDto } from "$lib/types/sns-aggregator";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { createFinalizationStatusMock } from "$tests/mocks/sns-finalization-status.mock";
 import {
@@ -95,7 +94,7 @@ describe("ProjectCard2", () => {
       );
     });
 
-    it("should be highlighted if user committed", async () => {
+    it("should display participated mark when user has participated", async () => {
       const project = createMockSnsFullProject({
         rootCanisterId,
         summaryParams: {
@@ -106,10 +105,10 @@ describe("ProjectCard2", () => {
 
       const po = await renderCard(project);
 
-      expect(await po.isHighlighted()).toBe(true);
+      expect(await po.getParticipatedIcon().isPresent()).toBe(true);
     });
 
-    it("should not be highlighted without commitment", async () => {
+    it("should not display participated mark when user has not participated", async () => {
       const project = createMockSnsFullProject({
         rootCanisterId,
         summaryParams: {
@@ -119,10 +118,10 @@ describe("ProjectCard2", () => {
       });
       const po = await renderCard(project);
 
-      expect(await po.isHighlighted()).toBe(false);
+      expect(await po.getParticipatedIcon().isPresent()).toBe(false);
     });
 
-    it("should display market cap", async () => {
+    it("should display fully diluted valuation", async () => {
       const totalTokenSupply = 25_000_000_000_000n;
       const tokenPrice = 2;
       setSnsProjects([
@@ -151,7 +150,7 @@ describe("ProjectCard2", () => {
       expect(await po.getMarketCapValue()).toEqual("$500k");
     });
 
-    it("should display '-' for market cap when price is not available", async () => {
+    it("should display '-' for fully diluted valuation when price is not available", async () => {
       const totalTokenSupply = 25_000_000_000_000n;
       const tokenPrice = undefined;
       setSnsProjects([
@@ -190,7 +189,7 @@ describe("ProjectCard2", () => {
 
       const po = await renderCard(project);
 
-      expect(await po.getProposalActivity().isPresent()).toBe(false);
+      expect(await po.getProposalActivity().isPresent()).toBe(true);
       expect(await po.getUserCommitmentIcp().isPresent()).toBe(true);
       expect(await po.getUserCommitmentIcp().getAmount()).toBe("3.14");
     });
@@ -239,102 +238,6 @@ describe("ProjectCard2", () => {
       expect(await po.getProposalActivity().isPresent()).toBe(true);
       expect(await po.getProposalActivityValue().isPresent()).toBe(false);
       expect(await po.getProposalActivityNotAvailable().isPresent()).toBe(true);
-    });
-
-    it("should display ICP in treasury", async () => {
-      const icpInTreasuryMetrics: TreasuryMetricsDto = {
-        name: "TOKEN_ICP",
-        original_amount_e8s: 314100000000,
-        amount_e8s: 314099990000,
-        account: {
-          owner: "7uieb-cx777-77776-qaaaq-cai",
-          subaccount: null,
-        },
-        ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
-        treasury: 1,
-        timestamp_seconds: 1752222478,
-      };
-      const project = createMockSnsFullProject({
-        rootCanisterId,
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-        icpCommitment: undefined,
-        metrics: {
-          ...mockSnsMetrics,
-          treasury_metrics: [
-            {
-              ...icpInTreasuryMetrics,
-              amount_e8s: 2_571_600_000,
-              original_amount_e8s: 10_000_000_000,
-            },
-          ],
-        },
-      });
-      const po = await renderCard(project);
-
-      expect(await po.getIcpInTreasuryValueText()).toEqual("25.72%");
-      expect(await po.getIcpInTreasuryValueNotApplicable().isPresent()).toEqual(
-        false
-      );
-    });
-
-    it("should display ICP in treasury '>100%'", async () => {
-      const icpInTreasuryMetrics: TreasuryMetricsDto = {
-        name: "TOKEN_ICP",
-        original_amount_e8s: 314100000000,
-        amount_e8s: 314100000000,
-        account: {
-          owner: "7uieb-cx777-77776-qaaaq-cai",
-          subaccount: null,
-        },
-        ledger_canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
-        treasury: 1,
-        timestamp_seconds: 1752222478,
-      };
-      const project = createMockSnsFullProject({
-        rootCanisterId,
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-        icpCommitment: undefined,
-        metrics: {
-          ...mockSnsMetrics,
-          treasury_metrics: [
-            {
-              ...icpInTreasuryMetrics,
-              amount_e8s: 2_571_600_000_000_000_000,
-              original_amount_e8s: 10_000_000_000,
-            },
-          ],
-        },
-      });
-      const po = await renderCard(project);
-
-      expect(await po.getIcpInTreasuryValueText()).toEqual(">100%");
-      expect(await po.getIcpInTreasuryValueNotApplicable().isPresent()).toEqual(
-        false
-      );
-    });
-
-    it("should display N/A when no ICP in treasury available", async () => {
-      const project = createMockSnsFullProject({
-        rootCanisterId,
-        summaryParams: {
-          lifecycle: SnsSwapLifecycle.Open,
-        },
-        icpCommitment: undefined,
-        metrics: {
-          ...mockSnsMetrics,
-          treasury_metrics: [],
-        },
-      });
-      const po = await renderCard(project);
-
-      expect(await po.getIcpInTreasuryValue().isPresent()).toEqual(false);
-      expect(await po.getIcpInTreasuryValueNotApplicable().isPresent()).toEqual(
-        true
-      );
     });
   });
 });

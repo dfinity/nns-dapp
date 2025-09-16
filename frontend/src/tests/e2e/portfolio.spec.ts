@@ -1,6 +1,7 @@
 import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import {
+  disableCssAnimations,
   replaceContent,
   signInWithNewUser,
   step,
@@ -26,19 +27,13 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
   const portfolioPo = appPo.getPortfolioPo();
 
   await page.goto("/");
+  await disableCssAnimations(page);
   await expect(page).toHaveTitle("Portfolio | Network Nervous System");
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
 
   await portfolioPo.getPortfolioPagePo().getTotalAssetsCardPo().waitForLoaded();
   await appPo.getMenuItemsPo().getTotalValueLockedLinkPo().waitFor();
-
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
 
   // Add CSS to disable skeleton animations
   await page.addStyleTag({
@@ -78,6 +73,7 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
 
   step("Get some ICP and BTC");
   await page.goto("/tokens");
+  await disableCssAnimations(page);
   await appPo.getIcpTokens(41);
   const ckBTCRow = await appPo
     .getTokensPo()
@@ -102,21 +98,29 @@ test.skip("Visual test Landing Page", async ({ page, browser }) => {
 
   step("Total Assets");
   await page.goto("/");
+  await disableCssAnimations(page);
 
-  await portfolioPo.getPortfolioPagePo().getHeldTokensCardPo().waitFor();
-  await portfolioPo.getPortfolioPagePo().getStakedTokensCardPo().waitFor();
-
-  await replaceContent({
-    page,
-    selectors: ['[data-tid="time-remaining"]'],
-    pattern: /.*/,
-    replacements: ["3 days. 14 hours"],
-  });
+  await portfolioPo.getPortfolioPagePo().getHeldICPCardPo().waitFor();
+  await portfolioPo.getPortfolioPagePo().getStakedICPCardPo().waitFor();
 
   await page.setViewportSize(VIEWPORT_SIZES.desktop);
   await appPo.toggleSidebar();
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="projection"]', '[data-tid="apy-current-value"]'],
+    pattern: /\(?\d+\.\d+\)?/,
+    replacements: ["2.25"],
+  });
   await expect(page).toHaveScreenshot(`final_assets_desktop.png`);
 
   await page.setViewportSize(VIEWPORT_SIZES.mobile);
+
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="projection"]', '[data-tid="apy-current-value"]'],
+    pattern: /\(?\d+\.\d+\)?/,
+    replacements: ["2.25"],
+  });
   await expect(page).toHaveScreenshot(`final_assets_mobile.png`);
 });

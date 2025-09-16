@@ -93,7 +93,8 @@
     "CreateServiceNervousSystem": "Create Service Nervous System (SNS)",
     "InstallCode": "Install Code",
     "StopOrStartCanister": "Stop or Start Canister",
-    "UpdateCanisterSettings": "Update Canister Settings"
+    "UpdateCanisterSettings": "Update Canister Settings",
+    "FulfillSubnetRentalRequest": "Subnet Rental Agreement"
   },
   "actions_description": {
     "RegisterKnownNeuron": "This proposal registers an existing neuron as a “known neuron,” giving it a name and an optional description, and adding the neuron to the list of known neurons.",
@@ -110,7 +111,8 @@
     "CreateServiceNervousSystem": "Create a new Service Nervous System (SNS).",
     "InstallCode": "Install, reinstall or upgrade the code of a canister that is controlled by the NNS.",
     "StopOrStartCanister": "Stop or start a canister that is controlled by the NNS.",
-    "UpdateCanisterSettings": "Update the settings of a canister that is controlled by the NNS."
+    "UpdateCanisterSettings": "Update the settings of a canister that is controlled by the NNS.",
+    "FulfillSubnetRentalRequest": "A proposal to create a rented subnet with a subnet rental agreement, based on a previously executed Subnet Rental Request proposal. The resulting subnet allows only the user of the rental agreement to create canisters, and canisters are not charged cycles for computation and storage."
   },
   "nns_functions": {
     "Unspecified": "Unspecified",

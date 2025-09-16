@@ -191,7 +191,8 @@
     "log_in_title": "Log In",
     "log_in_description": "Log in to your account",
     "log_out_title": "Log Out",
-    "log_out_description": "Log out of your account"
+    "log_out_description": "Log out of your account",
+    "search_placeholder": "Search for pages or actions..."
   },
   "header": {
     "menu": "Open menu to access navigation options",
@@ -328,7 +329,7 @@
     "transaction_time_seconds": "Seconds",
     "token_price_error": "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment.",
     "unpriced_tokens_warning": "Value may be inaccurate as some prices could not be fetched.",
-    "token_price_source": "Token prices are based on data provided by ICPSwap."
+    "token_price_source": "Token prices are given in USD and based on data provided by ICPSwap."
   },
   "neuron_types": {
     "seed": "Seed",
@@ -338,9 +339,10 @@
     "title": "Stake and earn voting rewards",
     "text": "Earn voting rewards by staking your tokens in neurons. Neurons allow you to participate in governance of the Internet Computer, and DAOs deployed on the Internet Computer.",
     "nervous_systems": "Nervous Systems",
-    "nervous_systems_nns": "NNS DAO",
-    "nervous_systems_sns": "SNS DAOs",
-    "nervous_systems_sns_sunset": "Sunset SNS DAOs",
+    "nervous_systems_nns": "Staked ICP",
+    "nervous_systems_nns_subtitle": "Native utility token of the Internet Computer",
+    "nervous_systems_sns": "Staked SNS Tokens",
+    "nervous_systems_sns_subtitle": "Dapp community projects",
     "hide_no_neurons_header": "Neurons",
     "hide_no_neurons_toggle_label": "Hide projects with 0 neurons",
     "hide_no_neurons_table_hint": "Projects with 0 neurons are hidden.",
@@ -687,7 +689,8 @@
     "vote_reject_in_progress": "Rejecting proposal $proposalType ($proposalId). $status",
     "vote_status_registering": "Neurons registered: $completed/$amount. Keep the dapp open until completed.",
     "vote_status_updating": "Updating proposal state...",
-    "expiration": "Expiration date",
+    "expiration": "Voting open until",
+    "expiration_after_execution": "Proposal decided, voting for reward collection still open until",
     "decision_intro": "The two following conditions have to be met for a proposal to be adopted:",
     "standard_majority": "Participation: at least 3% of the overall voting power voted yes",
     "standard_majority_description": "This condition is met when the yes-bar reaches $icon_standard_majority",
@@ -777,6 +780,8 @@
     "disburse_maturity_confirmation_destination": "To Account:",
     "disburse_maturity_edit": "Edit Disbursement",
     "stake": "Stake",
+    "apy_and_max": "APY (max APY)",
+    "apy_and_max_tooltip": "APY (Annual Percentage Yield) shows your estimated accrued reward in a year, calculated via a simulation of your current setup over the next year. Max APY is the highest possible yearly reward if you optimized the neurons' settings, that is: set them to non-dissolving state, set the dissolve time to max, and turn on auto-staking. The values provided are an estimation, actual values may differ.",
     "spawn_neuron": "Spawn Neuron",
     "spawn": "Spawn",
     "disburse_stake_disabled_tooltip_zero": "Currently, you do not have any stake available to disburse.",
@@ -892,16 +897,16 @@
     "no_open_projects": "Looks like there are no SNS decentralisation swaps running right now. Hopefully one is coming soon! <a href=\"https://internetcomputer.org/sns\" rel=\"noopener noreferrer\" aria-label=\"more info about launching an SNS\" target=\"_blank\">Read more about how SNSs are created</a>.",
     "proposals": "Proposals",
     "project_logo": "project logo",
-    "no_proposals": "There are no decentralisation swap proposals open at the moment."
+    "no_proposals": "There are no decentralisation swap proposals open at the moment.",
+    "participated": "Participated"
   },
   "launchpad": {
     "headline": "Discover SNS Projects",
-    "subheadline": "See upcoming and available SNS projects",
     "upcoming_launches": "New Launches and Proposals",
-    "launched_projects": "Launched Projects",
-    "participated_projects": "My SNS Participation",
+    "featured_projects": "Featured Projects",
+    "all_projects": "All Projects",
     "banner_title": "Discover SNS Projects",
-    "banner_text": "Find upcoming projects and innovations, existing communities as products. Now featuring development over time, connecting communities. Get involved or realize your own idea!",
+    "banner_text": "Find upcoming and existing community dapps. Get involved by participating in launches or joining existing DAO communities!",
     "banner_link": "Visit Launchpad",
     "banner_raised_by": "Raised by projects",
     "banner_launched": "SNS DAOs launched",
@@ -911,8 +916,8 @@
     "ongoing_funded_of_min": "Funded of Min",
     "ongoing_min_icp": "Min, ICP",
     "ongoing_cap_icp": "Cap, ICP",
-    "project_card_market_cap": "Market Cap",
-    "project_card_icp_in_treasury": "ICP in Treasury",
+    "project_card_fully_diluted_valuation": "FDV",
+    "project_card_fully_diluted_valuation_tooltip": "Fully Diluted Valuation, which is computed as the total token supply times the token price (price taken from ICPSwap).",
     "project_card_my_participation": "My Participation",
     "project_card_proposal_activity": "Proposal Activity",
     "upcoming_tag_upcoming": "Upcoming",
@@ -1117,7 +1122,7 @@
     "sns_amount_not_enough_stake_neuron": "Sorry, the amount is too small. You need a minimum of $minimum $token to stake."
   },
   "auth_accounts": {
-    "title": "100% on-chain governance",
+    "title": "100% onchain governance",
     "text": "Manage your ICP, ckBTC, and SNS governance tokens within the NNS wallet — hosted 100% on the Internet Computer blockchain. Transfer tokens, secure them with Ledger devices, or participate in governance to earn voting rewards."
   },
   "auth_report": {
@@ -1253,11 +1258,16 @@
     "status_in_progress_detailed": "Checking for new transactions."
   },
   "tokens": {
+    "token_name": "Token Name",
     "projects_header": "Projects",
-    "projects_header_icp": "ICP Token",
-    "projects_header_ck": "ckTokens",
+    "projects_header_icp": "ICP Tokens",
+    "projects_header_icp_subtitle": "Native utility token of the Internet Computer",
+    "projects_header_ck": "Chain-key Tokens",
+    "projects_header_ck_subtitle": "Onchain digital twins of assets on other chains",
     "projects_header_sns": "SNS Tokens",
+    "projects_header_sns_subtitle": "Dapp community projects",
     "projects_header_imported": "Imported Tokens",
+    "projects_header_imported_subtitle": "Tokens imported to the wallet by the user",
     "balance_header": "Balance",
     "accounts_header": "Accounts",
     "settings_button": "Open tokens settings",
@@ -1270,7 +1280,8 @@
     "update_imported_token_success": "The token has been successfully updated!",
     "ledger_canister": "Ledger Canister",
     "index_canister": "Index Canister",
-    "ledger_canister_error_tooltip": "The ledger canister is not responding. This may be because it ran out of cycles. Please check back later."
+    "ledger_canister_error_tooltip": "The ledger canister is not responding. This may be because it ran out of cycles. Please check back later.",
+    "index_canister_uninstalled_tooltip": "The index canister has been unistalled. Transaction details are not available."
   },
   "import_token": {
     "import_token": "Import Token",
@@ -1296,25 +1307,35 @@
     "add_index_description": "Transaction history is not available. To see this token’s transaction history in the NNS dapp, you need to provide an index canister. <strong>Note:</strong> not all tokens have index canisters.",
     "failed_tooltip": "The NNS dapp couldn’t load an imported token. Please try again later, or contact the developers.",
     "maximum_reached_tooltip": "You've already imported the maximum number of $max tokens. You need to remove another token before you can import more.",
-    "doc_link_label": "How to find ICRC token ledger"
+    "doc_link_label": "How to find ICRC token ledger",
+    "remove_imported": "Remove from imported"
   },
   "portfolio": {
     "login_title": "Session expired",
     "login_description": "Sign in and start staking to earn voting rewards and participate in the Internet Computer’s onchain governance.",
-    "no_tokens_card_title": "Store and transfer tokens securely in the NNS wallet",
-    "no_tokens_card_description": "running 100% on the Internet Computer blockchain — Ready to get started?",
-    "no_tokens_card_button": "Buy ICP",
-    "no_neurons_card_description": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
-    "no_neurons_card_button": "Start Staking",
-    "held_tokens_card_title": "Total Token Balance",
+    "no_tokens_card_description": "Store your ICP, ckTokens, and SNS governance tokens safely in the NNS wallet, hosted 100% on the Internet Computer blockchain – sign in to see tokens.",
+    "no_neurons_card_description": "Stake your ICP and SNS tokens in neurons to participate in governance and gain voting rewards – sign in to stake your neurons.",
+    "held_icp_card_title": "ICP Balance",
+    "held_tokens_card_title": "Tokens Balance",
+    "held_icp_card_link": "View accounts",
     "held_tokens_card_link": "View tokens",
-    "held_tokens_card_list_first_column": "Tokens",
+    "held_tokens_card_subtitle_icp": "ICP Tokens",
+    "held_tokens_card_subtitle_rest": "Other Tokens Held",
+    "held_tokens_card_list_first_column_icp": "Native Token on ICP",
+    "held_tokens_card_list_first_column_rest": "Community & Chain Fusion tokens",
     "held_tokens_card_list_second_column": "Balance",
     "held_tokens_card_list_third_column": "Value $",
-    "held_tokens_card_info_row": "Store and transfer tokens securely in the NNS wallet — running 100% on the Internet Computer blockchain. Tokens allow you to participate in ICP's onchain governance systems.",
-    "staked_tokens_card_title": "Total Staking Balance",
+    "held_tokens_card_info_row": "Want to store and transfer more tokens securely in the NNS wallet? Navigate to tokens page.",
+    "held_tokens_card_link_row_text": "Only your main tokens are listed, navigate to",
+    "held_tokens_card_link_row_link": "Show all tokens",
+    "staked_icp_card_title": "ICP Staking Balance",
+    "staked_tokens_card_title": "Staking Balance",
     "staked_tokens_card_link": "Stake neurons",
-    "staked_tokens_card_list_first_column": "Projects",
+    "staked_tokens_card_subtitle_icp": "Staked ICP",
+    "staked_tokens_card_subtitle_rest": "Other Tokens Staked",
+
+    "staked_tokens_card_list_first_column_icp": "Native Token on ICP",
+    "staked_tokens_card_list_first_column_rest": "Decentralized community projects",
     "staked_tokens_card_list_second_column_mobile": "Balance / Maturity",
     "staked_tokens_card_list_second_column_mobile_apy_first": "Staked",
     "staked_tokens_card_list_second_column_mobile_apy_second": "APY (max APY)",
@@ -1322,8 +1343,10 @@
     "staked_tokens_card_list_second_column_apy_first": "APY",
     "staked_tokens_card_list_second_column_apy_second": "(max APY)",
     "staked_tokens_card_list_third_column": "Staked",
-    "staked_tokens_card_apy_tooltip": "APY (Annual Percentage Yield) shows how much you can earn in a year with your current setup. Max APY is the highest possible yearly return you could get if you optimized your settings.",
-    "staked_tokens_card_info_row": "Earn voting rewards by staking your tokens in neurons and participating in the Internet Computer’s onchain governance",
+    "staked_tokens_card_apy_tooltip": "APY (Annual Percentage Yield) shows your estimated accrued reward in a year, calculated via a simulation of your current setup over the next year. Max APY is the highest possible yearly reward if you optimized the neurons' settings, that is: set them to non-dissolving state, set the dissolve time to max, and turn on auto-staking. The values provided are an estimation, actual values may differ.",
+    "staked_tokens_card_info_row": "Earn more voting rewards by staking your tokens in neurons and participating in the Internet Computer's onchain governance",
+    "staked_tokens_card_link_row_text": "Only your main neurons are listed, navigate to",
+    "staked_tokens_card_link_row_link": "Show all staked",
     "total_assets_title": "Total Holdings",
     "project_status_open": "Ongoing",
     "project_status_proposal": "Open",
@@ -1342,20 +1365,20 @@
     "new_sns_proposal_card_reject": "Reject",
     "next_card": "Next Card",
     "previous_card": "Previous Card",
-    "apy_card_title": "Staking Rewards",
+    "apy_card_title": "ICP Governance Rewards",
     "apy_card_reward_title": "Reward Balance",
     "apy_card_power_title": "Staking Ratio",
     "apy_card_link_view": "View Staked",
     "apy_card_link_start": "Start Staking",
     "apy_card_estimation": "7d estimate",
     "apy_card_error": "Unable to load rewards",
-    "apy_card_tooltip_reward_balance": "Rewards are given in maturity. Maturity is an attribute of a neuron, it is not a tradable asset. To generate tokens from maturity, users need to trigger a non-deterministic process subject to a changing maturity modulation function. The dollar value reflects an estimate assuming a modulation of 0%",
-    "apy_card_tooltip_staking_ratio": "The ratio of the total stake (including staked maturity), compared to all holdings and rewards:\n$totalStaked / ($totalHoldings + $totalRewards) = $ratio",
+    "apy_card_tooltip_reward_balance": "Rewards are given in maturity. Maturity is an attribute of a neuron, it is not a tradable asset. To generate tokens from maturity, users need to trigger a non-deterministic process subject to a changing maturity modulation function.",
+    "apy_card_tooltip_staking_ratio": "The ratio of the total stake (including staked maturity), compared to the user’s liquid ICP, staked ICP, and NNS rewards.",
     "apy_card_tooltip_no_rewards": "This project is currently not generating rewards.",
-    "apy_card_tooltip_error": "Unable to calculate the rewards for this project."
+    "apy_card_tooltip_error": "Unable to calculate the rewards for this project.",
+    "start_staking_card_title": "Start Staking",
+    "start_staking_card_content": "Stake ICP tokens and participate in NNS governance to earn up to 13% of yearly voting rewards",
+    "start_staking_card_link": "Open Staking"
   },
-  "highlight": {
-    "disburse_maturity_title": "Farewell, Spawn Neuron!",
-    "disburse_maturity_description": "Now you can directly disburse your NNS neurons' maturity to the account of your choice."
-  }
+  "highlight": {}
 }

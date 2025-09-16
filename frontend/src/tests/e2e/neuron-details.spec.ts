@@ -2,6 +2,7 @@ import { AppPo } from "$tests/page-objects/App.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { getNnsNeuronCardsIds } from "$tests/utils/e2e.nns-neuron.test-utils";
 import {
+  disableCssAnimations,
   replaceContent,
   signInWithNewUser,
   step,
@@ -10,6 +11,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test neuron details", async ({ page, context }) => {
   await page.goto("/");
+  await disableCssAnimations(page);
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -65,6 +67,12 @@ test("Test neuron details", async ({ page, context }) => {
     selectors: ['[data-tid="last-rewards-distribution"]'],
     pattern: /\b[A-Za-z]{3} \d{1,2}, \d{4}\b/,
     replacements: ["Sep 26, 2024"],
+  });
+  await replaceContent({
+    page,
+    selectors: ['[data-tid="apy-current-value"]', '[data-tid="apy-max-value"]'],
+    pattern: /\(?\d+\.\d+%\)?/,
+    replacements: ["12.25%"],
   });
 
   // set viewport to capture the entire advanced section

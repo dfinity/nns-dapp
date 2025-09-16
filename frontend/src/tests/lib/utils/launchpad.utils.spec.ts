@@ -485,7 +485,7 @@ describe("Launchpad utils", () => {
       });
     });
 
-    it("Returns 1 if `a` has a smaller market cap than `b`", () => {
+    it("Returns 1 if `a` has a smaller fully diluted valuation than `b`", () => {
       const comparator = compareSnsProjectsByMarketCap({
         icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
@@ -495,7 +495,7 @@ describe("Launchpad utils", () => {
       ).toBe(1);
     });
 
-    it("Returns -1 if `a` has a larger market cap than `b`", () => {
+    it("Returns -1 if `a` has a larger fully diluted valuation than `b`", () => {
       const comparator = compareSnsProjectsByMarketCap({
         icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
@@ -505,7 +505,7 @@ describe("Launchpad utils", () => {
       ).toBe(-1);
     });
 
-    it("Returns 0 if `a` has the same market cap as `b`", () => {
+    it("Returns 0 if `a` has the same fully diluted valuation as `b`", () => {
       const comparator = compareSnsProjectsByMarketCap({
         icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
@@ -623,14 +623,14 @@ describe("Launchpad utils", () => {
     const projectWithSmallMarketCap = createMockSnsFullProject({
       rootCanisterId: moreTokenSupplyRootCanisterId2,
       summaryParams: sameTokenPriceSummaryParams(
-        "Project With Small Market Cap"
+        "Project With Small Fully Diluted Valuation"
       ),
       metrics: mockMetrics(2, 10),
     });
     const projectWithLargeMarketCap = createMockSnsFullProject({
       rootCanisterId: mostTokenSupplyRootCanisterId2,
       summaryParams: sameTokenPriceSummaryParams(
-        "Project With Large Market Cap"
+        "Project With Large Fully Diluted Valuation"
       ),
       metrics: mockMetrics(2, 10),
     });
@@ -679,10 +679,10 @@ describe("Launchpad utils", () => {
       );
 
       expect(sortedProjectNames).toEqual([
+        "Project With Large Fully Diluted Valuation",
+        "Project With Small Fully Diluted Valuation",
         "Project With 100 Proposals",
         "Project With 50 Proposals",
-        "Project With Large Market Cap",
-        "Project With Small Market Cap",
         "Project Treasury 100%",
         "Project Treasury 25%",
         "Project Without Metrics",

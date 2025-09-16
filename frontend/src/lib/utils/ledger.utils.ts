@@ -9,7 +9,7 @@ import { LedgerErrorKey, LedgerErrorMessage } from "$lib/types/ledger.errors";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { ReadRequest, RequestId, Signature } from "@dfinity/agent";
 import { Principal } from "@dfinity/principal";
-import { isNullish } from "@dfinity/utils";
+import { arrayBufferToUint8Array, isNullish } from "@dfinity/utils";
 import type {
   LedgerError,
   ResponseAddress,
@@ -41,7 +41,7 @@ export const decodePublicKey = async ({
   }
 
   const publicKey: Secp256k1PublicKey = Secp256k1PublicKey.fromRaw(
-    new Uint8Array(responsePublicKey).buffer
+    new Uint8Array(responsePublicKey)
   );
 
   if (
@@ -102,7 +102,7 @@ export const decodeSignature = async ({
   await checkResponseCode(returnCode);
   checkSignature({ signature: signatureRS, returnCode, errorMessage });
 
-  return bufferToArrayBuffer(signatureRS) as Signature;
+  return arrayBufferToUint8Array(bufferToArrayBuffer(signatureRS)) as Signature;
 };
 
 export type RequestSignatures = {
@@ -126,8 +126,12 @@ export const decodeUpdateSignatures = async ({
   });
 
   return {
-    callSignature: bufferToArrayBuffer(RequestSignatureRS) as Signature,
-    readStateSignature: bufferToArrayBuffer(StatusReadSignatureRS) as Signature,
+    callSignature: arrayBufferToUint8Array(
+      bufferToArrayBuffer(RequestSignatureRS)
+    ) as Signature,
+    readStateSignature: arrayBufferToUint8Array(
+      bufferToArrayBuffer(StatusReadSignatureRS)
+    ) as Signature,
   };
 };
 

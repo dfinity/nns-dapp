@@ -9,7 +9,10 @@
     UserTokenLoading,
   } from "$lib/types/tokens-page";
   import { isImportedToken } from "$lib/utils/imported-tokens.utils";
-  import { isUserTokenFailed } from "$lib/utils/user-token.utils";
+  import {
+    isIndexCanisterOfTokenUninstalled,
+    isUserTokenFailed,
+  } from "$lib/utils/user-token.utils";
   import { IconError, Tag, Tooltip } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
@@ -42,13 +45,15 @@
     <Tag testId="imported-token-tag">{$i18n.import_token.imported_token}</Tag>
   {/if}
 
-  {#if isUserTokenFailed(rowData)}
+  {#if isUserTokenFailed(rowData) || isIndexCanisterOfTokenUninstalled(rowData)}
     <div data-tid="failed-token-info" class="failed-token-info">
       <Tooltip
         id="failed-token-info"
         text={importedToken
           ? $i18n.import_token.failed_tooltip
-          : $i18n.tokens.ledger_canister_error_tooltip}
+          : isIndexCanisterOfTokenUninstalled(rowData)
+            ? $i18n.tokens.index_canister_uninstalled_tooltip
+            : $i18n.tokens.ledger_canister_error_tooltip}
       >
         <IconError size="20px" />
       </Tooltip>

@@ -33,8 +33,14 @@
   }
 
   .title {
-    white-space: pre-wrap;
-    display: initial;
+    display: flex;
+    align-items: center;
     text-align: left;
+
+    span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 </style>

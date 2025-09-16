@@ -17,6 +17,9 @@
   $: errorMessage = errorCanisterNameMessage(name);
 
   const dispatcher = createEventDispatcher();
+
+  const close = () => dispatcher("nnsClose");
+
   const attach = async () => {
     // Edge case: button is only enabled when principal is defined
     if (principal === undefined) {
@@ -39,17 +42,17 @@
         },
       });
       // Leave modal open if not successful in case the error can be fixed.
-      dispatcher("nnsClose");
+      close();
     }
   };
 </script>
 
-<Modal testId="link-canister-modal-component" on:nnsClose>
-  <svelte:fragment slot="title"
-    ><span data-tid="link-canister-modal-title"
+<Modal testId="link-canister-modal-component" onClose={close}>
+  {#snippet title()}
+    <span data-tid="link-canister-modal-title"
       >{$i18n.canisters.link_canister}</span
-    ></svelte:fragment
-  >
+    >
+  {/snippet}
 
   <form on:submit|preventDefault={attach}>
     <div class="fields">

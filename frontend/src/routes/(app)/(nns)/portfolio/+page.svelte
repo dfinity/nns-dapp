@@ -1,14 +1,12 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
+  import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
-  import {
-    snsProjectsActivePadStore,
-    snsProjectsCommittedStore,
-  } from "$lib/derived/sns/sns-projects.derived";
+  import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
   import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import { tokensListVisitorsStore } from "$lib/derived/tokens-list-visitors.derived";
   import Portfolio from "$lib/pages/Portfolio.svelte";
@@ -18,32 +16,28 @@
     resetBalanceLoading,
   } from "$lib/services/accounts-balances.services";
   import { loadCkBTCTokens } from "$lib/services/ckbtc-tokens.services";
-  import { loadIcpSwapTickers } from "$lib/services/icp-swap.services";
   import { loadProposalsSnsCF } from "$lib/services/public/sns.services";
   import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
-  import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
-  import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
-  import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
-  import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
-  import {
-    openSnsProposalsStore,
-    snsProposalsStoreIsLoading,
-  } from "$lib/stores/sns.store";
+  import { snsProposalsStoreIsLoading } from "$lib/stores/sns.store";
+  import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
+  import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { filterProjectsStatus } from "$lib/utils/projects.utils";
-  import { getStakingRewardData } from "$lib/utils/staking-rewards.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
-  import { onDestroy } from "svelte";
 
   resetBalanceLoading();
-  loadIcpSwapTickers();
   loadCkBTCTokens();
 
-  let userTokens: UserToken[];
-  $: userTokens = $tokensListVisitorsStore;
+  let icpToken: UserToken | undefined;
+  $: icpToken = $tokensListUserStore.find(
+    ({ universeId }) => universeId.toText() === OWN_CANISTER_ID_TEXT
+  );
+
+  let nonIcpTokens: UserToken[];
+  $: nonIcpTokens = $tokensListVisitorsStore.filter(
+    ({ universeId }) => universeId.toText() !== OWN_CANISTER_ID_TEXT
+  );
 
   $: if ($authSignedInStore) {
     const ckBTCUniverseIds = $ckBTCUniversesStore.map(
@@ -65,76 +59,50 @@
   }
 
   $: if ($authSignedInStore) {
-    userTokens = $tokensListUserStore;
+    icpToken = $tokensListUserStore.find(
+      ({ universeId }) => universeId.toText() === OWN_CANISTER_ID_TEXT
+    );
+    nonIcpTokens = $tokensListUserStore.filter(
+      (token) => token.universeId.toText() !== OWN_CANISTER_ID_TEXT
+    );
   }
 
   $: if ($snsProposalsStoreIsLoading) {
     loadProposalsSnsCF({ omitLargeFields: false });
   }
 
-  let stakingRewardData = getStakingRewardData({
-    auth: $authSignedInStore,
-    tokens: userTokens,
-    snsProjects: $snsAggregatorStore,
+  let icpTableProject: TableProject;
+  $: icpTableProject = getTableProjects({
+    universes: $selectableUniversesStore.filter(
+      ({ canisterId }) => canisterId === OWN_CANISTER_ID_TEXT
+    ),
+    isSignedIn: $authSignedInStore,
+    nnsNeurons: $neuronsStore?.neurons,
     snsNeurons: $snsNeuronsStore,
-    nnsNeurons: $neuronsStore,
-    nnsEconomics: $networkEconomicsStore,
-    fxRates: $icpSwapUsdPricesStore,
-    governanceMetrics: $governanceMetricsStore,
-    nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-  });
-
-  let debounceTimer: ReturnType<typeof setTimeout>;
-  let prevAuthState = $authSignedInStore;
-  $: {
-    clearTimeout(debounceTimer);
-    const refreshData = () =>
-      (stakingRewardData = getStakingRewardData({
-        auth: $authSignedInStore,
-        tokens: userTokens,
-        snsProjects: $snsAggregatorStore,
-        snsNeurons: $snsNeuronsStore,
-        nnsNeurons: $neuronsStore,
-        nnsEconomics: $networkEconomicsStore,
-        fxRates: $icpSwapUsdPricesStore,
-        governanceMetrics: $governanceMetricsStore,
-        nnsTotalVotingPower: $nnsTotalVotingPowerStore,
-      }));
-
-    if ($authSignedInStore !== prevAuthState) {
-      // No debounce if auth state changes, refresh immediately
-      prevAuthState = $authSignedInStore;
-      refreshData();
-    } else {
-      debounceTimer = setTimeout(refreshData, 500);
-    }
-  }
-
-  onDestroy(() => {
-    clearTimeout(debounceTimer);
+    icpSwapUsdPrices: $icpSwapUsdPricesStore,
+    failedActionableSnses: $failedActionableSnsesStore,
+    stakingRewardsResult: $stakingRewardsStore,
+  })[0];
+  let nonIcpTableProjects: TableProject[];
+  $: nonIcpTableProjects = getTableProjects({
+    universes: $selectableUniversesStore.filter(
+      ({ canisterId }) => canisterId !== OWN_CANISTER_ID_TEXT
+    ),
+    isSignedIn: $authSignedInStore,
+    nnsNeurons: $neuronsStore?.neurons,
+    snsNeurons: $snsNeuronsStore,
+    icpSwapUsdPrices: $icpSwapUsdPricesStore,
+    failedActionableSnses: $failedActionableSnsesStore,
+    stakingRewardsResult: $stakingRewardsStore,
   });
 </script>
 
 <TestIdWrapper testId="portfolio-route-component"
   ><Portfolio
-    {userTokens}
-    tableProjects={getTableProjects({
-      universes: $selectableUniversesStore,
-      isSignedIn: $authSignedInStore,
-      nnsNeurons: $neuronsStore?.neurons,
-      snsNeurons: $snsNeuronsStore,
-      icpSwapUsdPrices: $icpSwapUsdPricesStore,
-      failedActionableSnses: $failedActionableSnsesStore,
-    })}
-    snsProjects={filterProjectsStatus({
-      swapLifecycle: SnsSwapLifecycle.Open,
-      projects: $snsProjectsActivePadStore,
-    })}
-    adoptedSnsProposals={filterProjectsStatus({
-      swapLifecycle: SnsSwapLifecycle.Adopted,
-      projects: $snsProjectsActivePadStore,
-    })}
-    openSnsProposals={$openSnsProposalsStore}
-    stakingRewardResult={stakingRewardData}
+    {icpToken}
+    {nonIcpTokens}
+    {icpTableProject}
+    {nonIcpTableProjects}
+    stakingRewardResult={$stakingRewardsStore}
   /></TestIdWrapper
 >

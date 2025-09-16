@@ -12,11 +12,11 @@
 </script>
 
 <KeyValuePairInfo testId="proposal-system-info-proposer" alignIconRight>
-  <span class="description" slot="key"
-    >{$i18n.proposal_detail.proposer_prefix}</span
-  >
+  {#snippet key()}<span class="description"
+      >{$i18n.proposal_detail.proposer_prefix}</span
+    >{/snippet}
 
-  <svelte:fragment slot="value">
+  {#snippet value()}
     <Hash
       className="value"
       tagName="span"
@@ -24,9 +24,9 @@
       id="proposer-id"
       showCopy
     />
-  </svelte:fragment>
+  {/snippet}
 
-  <svelte:fragment slot="info">
+  {#snippet info()}
     <Html text={$i18n.proposal_detail.proposer_description} />
-  </svelte:fragment>
+  {/snippet}
 </KeyValuePairInfo>

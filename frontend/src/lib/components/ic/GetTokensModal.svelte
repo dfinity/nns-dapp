@@ -169,8 +169,10 @@
   $: invalidForm = inputValue === undefined || inputValue <= 0;
 </script>
 
-<Modal visible role="alert" on:nnsClose={close}>
-  <span slot="title">{`Get ${selectedToken?.symbol ?? "Tokens"}`}</span>
+<Modal visible role="alert" onClose={close}>
+  {#snippet title()}
+    <span>{`Get ${selectedToken?.symbol ?? "Tokens"}`}</span>
+  {/snippet}
 
   <form
     id="get-icp-form"
@@ -197,20 +199,21 @@
     />
   </form>
 
-  <button
-    form="get-icp-form"
-    data-tid="get-icp-submit"
-    type="submit"
-    class="primary"
-    slot="footer"
-    disabled={invalidForm || transferring}
-  >
-    {#if transferring}
-      <Spinner />
-    {:else}
-      Get tokens
-    {/if}
-  </button>
+  {#snippet footer()}
+    <button
+      form="get-icp-form"
+      data-tid="get-icp-submit"
+      type="submit"
+      class="primary"
+      disabled={invalidForm || transferring}
+    >
+      {#if transferring}
+        <Spinner />
+      {:else}
+        Get tokens
+      {/if}
+    </button>
+  {/snippet}
 </Modal>
 
 <style lang="scss">

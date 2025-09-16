@@ -1,3 +1,4 @@
+import { allCkTokens } from "$lib/constants/ck-canister-ids.constants";
 import {
   CKETHSEPOLIA_INDEX_CANISTER_ID,
   CKETHSEPOLIA_LEDGER_CANISTER_ID,
@@ -8,22 +9,32 @@ import {
   CKUSDC_INDEX_CANISTER_ID,
   CKUSDC_LEDGER_CANISTER_ID,
 } from "$lib/constants/ckusdc-canister-ids.constants";
+import { IS_TESTNET } from "$lib/constants/environment.constants";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
-import { ENABLE_CKTESTBTC } from "$lib/stores/feature-flags.store";
+import {
+  DISABLE_CKTOKENS,
+  ENABLE_CKTESTBTC,
+} from "$lib/stores/feature-flags.store";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 export const loadIcrcCanisters = async () => {
   const storeData = get(defaultIcrcCanistersStore);
+  const disableCkTokens = get(DISABLE_CKTOKENS);
+
   // To avoid rerendering the UI and possibly triggering new requests
   // We don't change the store if it's already filled.
-  if (isNullish(storeData[CKETH_LEDGER_CANISTER_ID.toText()])) {
+  if (
+    !disableCkTokens &&
+    isNullish(storeData[CKETH_LEDGER_CANISTER_ID.toText()])
+  ) {
     defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
       indexCanisterId: CKETH_INDEX_CANISTER_ID,
     });
   }
   if (
+    !disableCkTokens &&
     get(ENABLE_CKTESTBTC) &&
     isNullish(storeData[CKETHSEPOLIA_LEDGER_CANISTER_ID.toText()])
   ) {
@@ -32,10 +43,26 @@ export const loadIcrcCanisters = async () => {
       indexCanisterId: CKETHSEPOLIA_INDEX_CANISTER_ID,
     });
   }
-  if (isNullish(storeData[CKUSDC_LEDGER_CANISTER_ID.toText()])) {
+  if (
+    !disableCkTokens &&
+    isNullish(storeData[CKUSDC_LEDGER_CANISTER_ID.toText()])
+  ) {
     defaultIcrcCanistersStore.setCanisters({
       ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
       indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
+    });
+  }
+  // Skip for test environment, because these canisters do not exist there.
+  if (
+    !disableCkTokens &&
+    !IS_TESTNET &&
+    isNullish(storeData[allCkTokens[0].ledgerCanisterId.toText()])
+  ) {
+    allCkTokens.forEach(({ ledgerCanisterId, indexCanisterId }) => {
+      defaultIcrcCanistersStore.setCanisters({
+        ledgerCanisterId,
+        indexCanisterId,
+      });
     });
   }
 };
