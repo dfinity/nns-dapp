@@ -23,6 +23,7 @@ const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
  */
 
 export const toastsShow = (msg: ToastMsg): symbol => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { labelKey, substitutions, detail, ...rest } = msg;
 
   const toastData = {
