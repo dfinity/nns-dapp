@@ -27,7 +27,6 @@ ic-protobuf = { workspace = true }
 registry-canister = { workspace = true }
 
 ic-cdk = { workspace = true }
-ic-cdk-macros = { workspace = true }
 idl2json = "0.10.1"
 
 [dev-dependencies]

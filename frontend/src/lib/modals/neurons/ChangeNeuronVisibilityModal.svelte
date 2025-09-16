@@ -52,12 +52,12 @@
   };
 </script>
 
-<Modal on:nnsClose testId="change-neuron-visibility-modal">
-  <svelte:fragment slot="title">
+<Modal onClose={close} testId="change-neuron-visibility-modal">
+  {#snippet title()}
     {makePublic
       ? $i18n.neuron_detail.change_neuron_make_neuron_public
       : $i18n.neuron_detail.change_neuron_make_neuron_private}
-  </svelte:fragment>
+  {/snippet}
 
   <h4>
     {makePublic

@@ -14,6 +14,8 @@
 
   const dispatch = createEventDispatcher();
 
+  const close = () => dispatch("nnsClose");
+
   let indexCanisterId: Principal | undefined;
 
   const nnsSubmit = async () => {
@@ -47,7 +49,7 @@
         importedTokens: $importedTokensStore.importedTokens,
       });
       if (success) {
-        dispatch("nnsClose");
+        close();
       }
     } finally {
       stopBusy("import-token-updating");
@@ -55,10 +57,8 @@
   };
 </script>
 
-<Modal testId="add-index-canister-modal-component" on:nnsClose>
-  <svelte:fragment slot="title"
-    >{$i18n.import_token.add_index_canister}</svelte:fragment
-  >
+<Modal testId="add-index-canister-modal-component" onClose={close}>
+  {#snippet title()}{$i18n.import_token.add_index_canister}{/snippet}
   <ImportTokenForm
     addIndexCanisterMode
     bind:ledgerCanisterId

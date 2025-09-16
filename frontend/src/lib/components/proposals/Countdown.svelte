@@ -6,6 +6,7 @@
   import { onDestroy, onMount } from "svelte";
 
   export let deadlineTimestampSeconds: bigint | undefined;
+  export let withLabel: boolean = true;
 
   const ZERO = 0n;
 
@@ -68,8 +69,9 @@
 
 {#if countdown !== undefined && countdown > ZERO}
   <p data-tid="countdown">
-    {secondsToDuration({ seconds: countdown, i18n: $i18n.time })}
-    {$i18n.proposal_detail.remaining}
+    {secondsToDuration({ seconds: countdown, i18n: $i18n.time })}{#if withLabel}
+      {" "}{$i18n.proposal_detail.remaining}
+    {/if}
   </p>
 {/if}
 
