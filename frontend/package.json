@@ -85,7 +85,6 @@
     "@dfinity/principal": "^3.2.4",
     "@dfinity/sns": "next",
     "@dfinity/utils": "next",
-    "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.8",
     "@ledgerhq/hw-transport-webhid": "^6.27.8",
     "@zondax/ledger-icp": "^0.6.1",
     "buffer": "^6.0.3",
