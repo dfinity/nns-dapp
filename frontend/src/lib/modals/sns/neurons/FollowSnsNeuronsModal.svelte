@@ -21,13 +21,11 @@
 </script>
 
 <Modal
-  on:nnsClose
+  onClose={close}
   testId="follow-sns-neurons-modal"
   --modal-content-overflow-y="scroll"
 >
-  <svelte:fragment slot="title"
-    >{$i18n.neurons.follow_neurons_screen}</svelte:fragment
-  >
+  {#snippet title()}{$i18n.neurons.follow_neurons_screen}{/snippet}
   <p class="description">{$i18n.follow_neurons.description}</p>
 
   <Separator spacing="medium" />

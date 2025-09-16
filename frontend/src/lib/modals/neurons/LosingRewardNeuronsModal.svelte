@@ -47,10 +47,10 @@
   $: neuronIds = neurons.map(({ neuronId }) => neuronId);
 </script>
 
-<Modal on:nnsClose testId="losing-reward-neurons-modal-component">
-  <svelte:fragment slot="title">
+<Modal onClose={close} testId="losing-reward-neurons-modal-component">
+  {#snippet title()}
     {$i18n.missing_rewards_modal.title}
-  </svelte:fragment>
+  {/snippet}
 
   <div class="wrapper">
     {#if nonNullish($startReducingVotingPowerAfterSecondsStore)}

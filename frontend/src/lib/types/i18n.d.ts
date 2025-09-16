@@ -199,6 +199,7 @@ interface I18nAlfred {
   log_in_description: string;
   log_out_title: string;
   log_out_description: string;
+  search_placeholder: string;
 }
 
 interface I18nHeader {
@@ -720,6 +721,7 @@ interface I18nProposal_detail__vote {
   vote_status_registering: string;
   vote_status_updating: string;
   expiration: string;
+  expiration_after_execution: string;
   decision_intro: string;
   standard_majority: string;
   standard_majority_description: string;

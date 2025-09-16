@@ -191,7 +191,8 @@
     "log_in_title": "Log In",
     "log_in_description": "Log in to your account",
     "log_out_title": "Log Out",
-    "log_out_description": "Log out of your account"
+    "log_out_description": "Log out of your account",
+    "search_placeholder": "Search for pages or actions..."
   },
   "header": {
     "menu": "Open menu to access navigation options",
@@ -688,7 +689,8 @@
     "vote_reject_in_progress": "Rejecting proposal $proposalType ($proposalId). $status",
     "vote_status_registering": "Neurons registered: $completed/$amount. Keep the dapp open until completed.",
     "vote_status_updating": "Updating proposal state...",
-    "expiration": "Expiration date",
+    "expiration": "Voting open until",
+    "expiration_after_execution": "Proposal decided, voting for reward collection still open until",
     "decision_intro": "The two following conditions have to be met for a proposal to be adopted:",
     "standard_majority": "Participation: at least 3% of the overall voting power voted yes",
     "standard_majority_description": "This condition is met when the yes-bar reaches $icon_standard_majority",
