@@ -1,4 +1,3 @@
-import inject from "@rollup/plugin-inject";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { readFileSync } from "fs";
 import { dirname } from "path";
@@ -46,25 +45,10 @@ const config: UserConfig = {
           return "index";
         },
       },
-      // Polyfill Buffer for production build. The hardware wallet needs Buffer.
-      plugins: [
-        inject({
-          include: ["node_modules/@ledgerhq/**"],
-          modules: { Buffer: ["buffer", "Buffer"] },
-        }),
-      ],
     },
   },
   define: {
     VITE_APP_VERSION: JSON.stringify(version),
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      // Node.js global to browser globalThis
-      define: {
-        global: "globalThis",
-      },
-    },
   },
   worker: {
     format: "es",
