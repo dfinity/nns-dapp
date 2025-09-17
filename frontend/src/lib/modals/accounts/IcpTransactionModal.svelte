@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Input from "$lib/components/ui/Input.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
@@ -6,6 +7,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import type { Account } from "$lib/types/account";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
@@ -13,8 +15,6 @@
   import type { WizardStep } from "@dfinity/gix-components";
   import { ICPToken } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import Input from "$lib/components/ui/Input.svelte";
-  import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
 
   export let selectedAccount: Account | undefined = undefined;
 
@@ -88,18 +88,39 @@
         inputType="number"
         step={1}
         minLength={1}
-        placeholderLabelKey="core.optional"
+        placeholderLabelKey={$i18n.accounts.icp_transaction_memo_label}
         bind:value={memo}
         autocomplete="off"
-        showInfo={false}
       >
-        <div slot="label">Memo</div>
+        <span class="input-label" slot="label"
+          >{$i18n.accounts.icp_transaction_memo_label}</span
+        >
       </Input>
     {/if}
   </svelte:fragment>
   <svelte:fragment slot="additional-info-review">
     {#if $transactionMemoOptionStore === "show" && memo}
-      <p class="value">Memo: {memo}</p>
+      <p class="summary-label">{$i18n.accounts.icp_transaction_memo}</p>
+      <p class="summary-value no-margin">{memo}</p>
     {/if}
   </svelte:fragment>
 </TransactionModal>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  .input-label {
+    display: inline-block;
+    margin-top: var(--padding-2x);
+    @include fonts.small();
+    color: var(--text-description);
+  }
+
+  .summary-label {
+    color: var(--label-color);
+    margin: var(--padding) 0 0 0;
+  }
+  .summary-value {
+    color: var(--value-color);
+  }
+</style>

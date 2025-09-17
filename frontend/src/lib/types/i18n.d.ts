@@ -273,6 +273,8 @@ interface I18nAccounts {
   buy_icp_note: string;
   banxa_logo_alt: string;
   icp_transaction_description: string;
+  icp_transaction_memo_label: string;
+  icp_transaction_memo: string;
   sns_transaction_description: string;
   ckbtc_transaction_description: string;
   ckbtc_to_btc_transaction_description: string;
