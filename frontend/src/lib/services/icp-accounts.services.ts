@@ -315,7 +315,7 @@ export const transferICP = async ({
     }
 
     const feeE8s = get(mainTransactionFeeE8sStore);
-    const icrc1Memo = memo ? bigIntToUint8Array(memo) : undefined;
+    const icrc1Memo = nonNullish(memo) ? bigIntToUint8Array(memo) : undefined;
 
     await (validIcrcAddress
       ? sendIcpIcrc1({
