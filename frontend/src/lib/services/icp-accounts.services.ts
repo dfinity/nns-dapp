@@ -53,7 +53,13 @@ import {
 import type { Identity } from "@dfinity/agent";
 import { TxCreatedInFutureError, TxTooOldError } from "@dfinity/ledger-icp";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  ICPToken,
+  TokenAmount,
+  bigIntToUint8Array,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { get } from "svelte/store";
 
 type AccountStoresData = {
@@ -309,6 +315,7 @@ export const transferICP = async ({
     }
 
     const feeE8s = get(mainTransactionFeeE8sStore);
+    const icrc1Memo = memo ? bigIntToUint8Array(memo) : undefined;
 
     await (validIcrcAddress
       ? sendIcpIcrc1({
@@ -317,6 +324,7 @@ export const transferICP = async ({
           fromSubAccount: subAccount && new Uint8Array(subAccount),
           amount: tokenAmount,
           fee: feeE8s,
+          icrc1Memo,
         })
       : sendICP({
           identity,

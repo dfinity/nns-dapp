@@ -193,7 +193,7 @@ const getAlfredItems = (): AlfredItem[] => {
       icon: IconDocument,
       action: () => transactionMemoOptionStore.set("hide"),
       contextFilter: (context) =>
-        context.memoOption === "hide" && context.isSignedIn,
+        context.memoOption === "show" && context.isSignedIn,
     },
     {
       id: "log-in",

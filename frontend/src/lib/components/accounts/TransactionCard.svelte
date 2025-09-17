@@ -84,7 +84,7 @@
         {/if}
         {#if nonNullish(memoText) && $transactionMemoOptionStore === "show"}
           <p class="value memo" data-tid="transaction-memo"
-            >{$i18n.accounts.icp_transaction_memo}{memoText}</p
+            >{$i18n.accounts.icp_transaction_memo}: {memoText}</p
           >
         {/if}
       </div>
