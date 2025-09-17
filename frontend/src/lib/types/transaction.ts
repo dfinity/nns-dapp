@@ -82,11 +82,10 @@ export interface UiTransaction {
   headline: string;
   // Where the amount is going to or coming from.
   otherParty?: string;
-  // Human-readable memo for display (ICP memo bigint, ICRC decoded/hex summary)
-  memoText?: string;
   // Always positive.
   tokenAmount: TokenAmount | TokenAmountV2;
   timestamp?: Date;
+  memoText?: string;
 }
 
 export enum TransactionNetwork {

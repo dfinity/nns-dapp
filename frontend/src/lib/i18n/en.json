@@ -192,7 +192,15 @@
     "log_in_description": "Log in to your account",
     "log_out_title": "Log Out",
     "log_out_description": "Log out of your account",
-    "search_placeholder": "Search for pages or actions..."
+    "search_placeholder": "Search for pages or actions...",
+    "hide_balance_title": "Hide Balance",
+    "hide_balance_description": "Privacy mode for your balance",
+    "show_balance_title": "Show Balance",
+    "show_balance_description": "Display your balances",
+    "hide_memo_title": "Hide transaction memo",
+    "hide_memo_description": "Hide memo input in transaction forms",
+    "show_memo_title": "Show transaction memo",
+    "show_memo_description": "Show memo input in transaction forms"
   },
   "header": {
     "menu": "Open menu to access navigation options",
