@@ -101,7 +101,9 @@
   <svelte:fragment slot="additional-info-review">
     {#if $transactionMemoOptionStore === "show" && memo}
       <p class="summary-label">{$i18n.accounts.icp_transaction_memo}</p>
-      <p class="summary-value no-margin">{memo}</p>
+      <p class="summary-value no-margin" data-tid="transaction-summary-memo"
+        >{memo}</p
+      >
     {/if}
   </svelte:fragment>
 </TransactionModal>
