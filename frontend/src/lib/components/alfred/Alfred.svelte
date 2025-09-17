@@ -4,6 +4,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
   import { i18n } from "$lib/stores/i18n";
+  import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
   import { Backdrop, Input, themeStore } from "@dfinity/gix-components";
   import { debounce } from "@dfinity/utils";
@@ -22,6 +23,7 @@
       isSignedIn: $authSignedInStore,
       theme: $themeStore,
       balancePrivacyOption: $balancePrivacyOptionStore,
+      memoOption: $transactionMemoOptionStore,
     })
   );
 

@@ -4,8 +4,8 @@
   import ColumnRow from "$lib/components/ui/ColumnRow.svelte";
   import DateSeconds from "$lib/components/ui/DateSeconds.svelte";
   import Identifier from "$lib/components/ui/Identifier.svelte";
-  import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import { i18n } from "$lib/stores/i18n";
+  import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import type {
     TransactionIconType,
     UiTransaction,
@@ -83,7 +83,9 @@
           <Identifier size="medium" {label} identifier={otherParty} />
         {/if}
         {#if nonNullish(memoText) && $transactionMemoOptionStore === "show"}
-          <p class="value memo" data-tid="transaction-memo">Memo: {memoText}</p>
+          <p class="value memo" data-tid="transaction-memo"
+            >{$i18n.accounts.icp_transaction_memo}{memoText}</p
+          >
         {/if}
       </div>
 
