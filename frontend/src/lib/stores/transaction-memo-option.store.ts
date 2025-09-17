@@ -6,5 +6,3 @@ export type TransactionMemoOptionStore = Writable<TransactionMemoOption>;
 
 export const transactionMemoOptionStore: Writable<TransactionMemoOption> =
   writable("hide");
-
-
