@@ -49,6 +49,7 @@ describe("icp-transactions.utils", () => {
     isFailed: false,
     headline: "Sent",
     timestamp: defaultTimestamp,
+    memoText: "0",
   };
   const toSelfOperation: Operation = {
     Transfer: {
@@ -308,6 +309,7 @@ describe("icp-transactions.utils", () => {
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
         headline: "Staked",
+        memoText: transaction.transaction.memo.toString(),
       };
 
       expect(
@@ -352,6 +354,7 @@ describe("icp-transactions.utils", () => {
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
         headline: "Create Canister",
+        memoText: transaction.transaction.memo.toString(),
       };
 
       expect(
@@ -374,6 +377,7 @@ describe("icp-transactions.utils", () => {
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
         headline: "Top-up Canister",
+        memoText: transaction.transaction.memo.toString(),
       };
 
       expect(
