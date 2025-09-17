@@ -42,8 +42,15 @@ export const errorToString = (err?: unknown): string | undefined => {
             ? (err as Error).message
             : undefined;
 
+  if (typeof text !== "string") return text;
+
   // replace with i18n version if available
-  return typeof text === "string" ? translate({ labelKey: text }) : text;
+  const translatedText = translate({ labelKey: text });
+  // Instead of showing all the underlying error details,
+  // we display only the “Body” section of the error (if any),
+  // as it typically contains the information most relevant to the user.
+  const matchBody = translatedText.match(/Body:\s*([\s\S]*)/);
+  return matchBody ? matchBody[1].trim() : translatedText;
 };
 
 const factoryMappingErrorToToastMessage =
