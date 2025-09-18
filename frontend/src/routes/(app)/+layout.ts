@@ -7,11 +7,13 @@ import {
   UNIVERSE_PARAM,
 } from "$lib/constants/routes.constants";
 import type { Page } from "$lib/derived/page.derived";
+import { logOnSafariMacOS } from "$lib/utils/dev.utils";
 import { nonNullish } from "@dfinity/utils";
 import type { LoadEvent } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
 
 export const load: LayoutLoad = ($event: LoadEvent): Partial<Page> => {
+  logOnSafariMacOS("t2:load");
   if (!browser) {
     return {
       universe: OWN_CANISTER_ID_TEXT,

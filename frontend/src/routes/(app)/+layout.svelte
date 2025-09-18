@@ -12,6 +12,7 @@
   import { referrerPathStore } from "$lib/stores/routes.store";
   import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
   import { confirmCloseApp } from "$lib/utils/before-unload.utils";
+  import { logOnSafariMacOS } from "$lib/utils/dev.utils";
   import { referrerPathForNav } from "$lib/utils/page.utils";
   import { voteRegistrationActive } from "$lib/utils/proposals.utils";
   import { BusyScreen, Toasts } from "@dfinity/gix-components";
@@ -24,8 +25,11 @@
     )
   );
 
+  logOnSafariMacOS("s2");
+
   // Use the top level layout to set the `referrerPath` because anything under `{#if isNullish($navigating)}` will miss the `afterNavigate` events
   afterNavigate(async (nav: AfterNavigate) => {
+    logOnSafariMacOS("s2:after navigation");
     // TODO: e2e to test this
     if (!browser) return;
 
@@ -42,6 +46,7 @@
   // To improve the UX while the app is loading on mainnet we display a spinner which is attached statically in the index.html files.
   // Once the authentication has been initialized we know most JavaScript resources has been loaded and therefore we can hide the spinner, the loading information.
   $: (() => {
+    logOnSafariMacOS("s2:$", !!browser);
     if (!browser) {
       return;
     }
@@ -52,6 +57,7 @@
     }
 
     const spinner = document.querySelector("body > #app-spinner");
+    logOnSafariMacOS("s2:$:remove spinner");
     spinner?.remove();
   })();
 </script>

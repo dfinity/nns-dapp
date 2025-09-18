@@ -19,10 +19,13 @@
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { toastsClean } from "$lib/stores/toasts.store";
+  import { logOnSafariMacOS } from "$lib/utils/dev.utils";
   import { onMount } from "svelte";
 
   let ready = false;
   let worker: AuthWorker | undefined;
+
+  logOnSafariMacOS("s1");
 
   const syncAuth = async (auth: AuthStoreData) => {
     worker?.syncAuthIdle(auth);

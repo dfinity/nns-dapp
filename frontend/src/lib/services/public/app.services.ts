@@ -6,6 +6,7 @@ import { loadSnsProjects } from "$lib/services/public/sns.services";
 import { authStore } from "$lib/stores/auth.store";
 import { layoutAuthReady } from "$lib/stores/layout.store";
 import { toastsError } from "$lib/stores/toasts.store";
+import { logOnSafariMacOS } from "$lib/utils/dev.utils";
 
 /**
  * Load the application public data that are available globally ("global stores").
@@ -23,6 +24,7 @@ export const initAppPublicData = (): Promise<
 
 const syncAuthStore = async () => {
   try {
+    logOnSafariMacOS("syncAuthStore", !!browser);
     await authStore.sync();
   } catch (err) {
     toastsError({ labelKey: "error.auth_sync", err });
@@ -42,6 +44,8 @@ export const initAppAuth = async () => {
   if (!browser) {
     return;
   }
+
+  logOnSafariMacOS("initAppAuth", !!browser);
 
   await syncAuthStore();
 
