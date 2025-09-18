@@ -39,3 +39,26 @@ export const digestText = async (text: string): Promise<string> => {
     .join("");
   return hashHex;
 };
+
+export const isMacOSSafari = (): boolean => {
+  if (typeof navigator === "undefined") return false;
+
+  const ua = navigator.userAgent || "";
+  const vendor = navigator.vendor || "";
+
+  return (
+    /Macintosh/.test(ua) &&
+    vendor === "Apple Computer, Inc." &&
+    ua.includes("Safari") &&
+    !ua.includes("Chrome") &&
+    !ua.includes("Chromium") &&
+    !ua.includes("Edg")
+  );
+};
+
+// Log only on Safari MacOS with "safari" prefix
+export const logOnSafariMacOS = (...args: Array<unknown>): void => {
+  if (isMacOSSafari()) {
+    console.log("safari", ...args);
+  }
+};
