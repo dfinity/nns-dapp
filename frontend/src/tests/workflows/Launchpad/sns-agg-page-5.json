@@ -41,12 +41,12 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1757556827
+              "timestamp_seconds": 1758162612
             },
             {
               "name": "TOKEN_SNS_TOKEN",
               "original_amount_e8s": 0,
-              "amount_e8s": 345667278189760,
+              "amount_e8s": 347957278159760,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": {
@@ -59,15 +59,15 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1757556827
+              "timestamp_seconds": 1758162612
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 315473934667673,
-            "timestamp_seconds": 1757556827
+            "governance_total_potential_voting_power": 315861570447819,
+            "timestamp_seconds": 1758162612
           },
-          "last_ledger_block_timestamp": 1757555446,
-          "num_recently_executed_proposals": 54,
+          "last_ledger_block_timestamp": 1758162595,
+          "num_recently_executed_proposals": 52,
           "num_recently_submitted_proposals": 53,
           "genesis_timestamp_seconds": 1746713375
         }
@@ -75,11 +75,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1757513382,
-      "end_timestamp_seconds": 1757513375,
+      "actual_timestamp_seconds": 1758118183,
+      "end_timestamp_seconds": 1758118175,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 125,
+      "round": 132,
       "settled_proposals": []
     },
     "parameters": {
@@ -452,7 +452,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777777155600000,
+    "icrc1_total_supply": 777777149430000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
