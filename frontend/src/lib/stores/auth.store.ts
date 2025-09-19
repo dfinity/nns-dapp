@@ -6,6 +6,7 @@ import {
   createAuthClient,
   getIdentityProviderUrl,
 } from "$lib/utils/auth.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
 import type { Identity } from "@dfinity/agent";
 import type { AuthClient } from "@dfinity/auth-client";
@@ -64,8 +65,11 @@ const initAuthStore = (): AuthStore => {
     },
 
     sync: async () => {
+      logWithTimestamp("#4124:authStore:sync:0", !!authClient);
       authClient = authClient ?? (await createAuthClient());
+      logWithTimestamp("#4124:authStore:sync:1", !!authClient);
       const isAuthenticated = await authClient.isAuthenticated();
+      logWithTimestamp("#4124:authStore:sync:2", isAuthenticated);
 
       set({
         identity: isAuthenticated ? authClient.getIdentity() : null,
