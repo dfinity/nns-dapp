@@ -19,13 +19,13 @@
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { toastsClean } from "$lib/stores/toasts.store";
-  import { logOnSafariMacOS } from "$lib/utils/dev.utils";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
   import { onMount } from "svelte";
 
   let ready = false;
   let worker: AuthWorker | undefined;
 
-  logOnSafariMacOS("s1");
+  logWithTimestamp("#4124:s1");
 
   const syncAuth = async (auth: AuthStoreData) => {
     worker?.syncAuthIdle(auth);
@@ -55,12 +55,12 @@
   onMount(async () => {
     initAnalytics();
 
-    logOnSafariMacOS("s1:before worker");
+    logWithTimestamp("#4124:s1:before worker");
     worker = await initAuthWorker();
-    logOnSafariMacOS("s1:worker initialized", worker);
+    logWithTimestamp("#4124:s1:worker initialized", worker);
 
     await syncAuth($authStore);
-    logOnSafariMacOS("s1:syncAuth");
+    logWithTimestamp("#4124:s1:syncAuth");
   });
 
   $: syncAuth($authStore);

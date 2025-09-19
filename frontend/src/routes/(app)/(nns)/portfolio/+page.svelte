@@ -24,7 +24,7 @@
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { logOnSafariMacOS } from "$lib/utils/dev.utils";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
 
   resetBalanceLoading();
@@ -69,7 +69,7 @@
   }
 
   $: if ($snsProposalsStoreIsLoading) {
-    logOnSafariMacOS("Loading SNS proposals...");
+    logWithTimestamp("#4124:Loading SNS proposals...");
     loadProposalsSnsCF({ omitLargeFields: false });
   }
 

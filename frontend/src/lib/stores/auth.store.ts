@@ -6,7 +6,7 @@ import {
   createAuthClient,
   getIdentityProviderUrl,
 } from "$lib/utils/auth.utils";
-import { logOnSafariMacOS } from "$lib/utils/dev.utils";
+import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
 import type { Identity } from "@dfinity/agent";
 import type { AuthClient } from "@dfinity/auth-client";
@@ -65,11 +65,11 @@ const initAuthStore = (): AuthStore => {
     },
 
     sync: async () => {
-      logOnSafariMacOS("authStore:sync:0", !!authClient);
+      logWithTimestamp("#4124:authStore:sync:0", !!authClient);
       authClient = authClient ?? (await createAuthClient());
-      logOnSafariMacOS("authStore:sync:1", !!authClient);
+      logWithTimestamp("#4124:authStore:sync:1", !!authClient);
       const isAuthenticated = await authClient.isAuthenticated();
-      logOnSafariMacOS("authStore:sync:2", isAuthenticated);
+      logWithTimestamp("#4124:authStore:sync:2", isAuthenticated);
 
       set({
         identity: isAuthenticated ? authClient.getIdentity() : null,
