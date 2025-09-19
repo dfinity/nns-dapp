@@ -219,6 +219,8 @@ export const mapIcrcTransaction = ({
     // Timestamp is in nano seconds
     const timestampMilliseconds =
       Number(transaction.transaction.timestamp) / NANO_SECONDS_IN_MILLISECOND;
+    const memo = txInfo.memo;
+
     return {
       domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
       isIncoming: isReceive,
@@ -230,6 +232,7 @@ export const mapIcrcTransaction = ({
         token,
       }),
       timestamp: new Date(timestampMilliseconds),
+      memoText: nonNullish(memo) ? uint8ArrayToHexString(memo) : undefined,
     };
   } catch (err) {
     toastsError({
