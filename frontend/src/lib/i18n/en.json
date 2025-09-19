@@ -1281,7 +1281,7 @@
     "ledger_canister": "Ledger Canister",
     "index_canister": "Index Canister",
     "ledger_canister_error_tooltip": "The ledger canister is not responding. This may be because it ran out of cycles. Please check back later.",
-    "index_canister_uninstalled_tooltip": "The index canister has been unistalled. Transaction details are not available."
+    "index_canister_uninstalled_tooltip": "The index canister has been uninstalled. Transaction details are not available."
   },
   "import_token": {
     "import_token": "Import Token",
