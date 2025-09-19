@@ -57,7 +57,7 @@ pub async fn get_proposal_payload(proposal_id: u64) -> Result<Json, String> {
         Ok(result)
     } else {
         match crate::canisters::nns_governance::api::Service(GOVERNANCE_CANISTER_ID.into())
-            .get_proposal_info(proposal_id)
+            .get_proposal_info(&proposal_id)
             .await
             .map(|result| result.0)
         {
