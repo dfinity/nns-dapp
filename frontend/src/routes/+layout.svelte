@@ -55,8 +55,12 @@
   onMount(async () => {
     initAnalytics();
 
+    logOnSafariMacOS("s1:before worker");
     worker = await initAuthWorker();
+    logOnSafariMacOS("s1:worker initialized", worker);
+
     await syncAuth($authStore);
+    logOnSafariMacOS("s1:syncAuth");
   });
 
   $: syncAuth($authStore);
