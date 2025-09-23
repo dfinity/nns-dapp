@@ -335,7 +335,7 @@ jobs:
       - name: Get SNS tool
         run: |
           diff <(scripts/sns/aggregator/get-sns PokedBots) <(echo "Name:   PokedBots
-          Symbol: POKED
+          Symbol: PHASMA
           Aggregator URL:         https://3r4gx-wqaaa-aaaaq-aaaia-cai.icp0.io/v1/sns/root/nb7he-piaaa-aaaaq-aadqq-cai/slow.json
           Root canister ID:       nb7he-piaaa-aaaaq-aadqq-cai
           Governance canister ID: ni4my-zaaaa-aaaaq-aadra-cai
