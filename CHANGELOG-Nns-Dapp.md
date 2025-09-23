@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 138593
+
+### Application
+
+#### Added
+
+- Adds contextual labels to a proposal expiration section
+
+#### Changed
+
+- Extend session timeout to 60 minutes (from 30 minutes).
+- Improve toast display: max 3 visible, no duplicates.
+
+### Operations
+
 ## Proposal 138366
 
 ### Application

@@ -14,12 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Adds contextual labels to a proposal expiration section
-
 #### Changed
-
-- Extend session timeout to 60 minutes (from 30 minutes).
-- Improve toast display: max 3 visible, no duplicates.
 
 #### Deprecated
 
