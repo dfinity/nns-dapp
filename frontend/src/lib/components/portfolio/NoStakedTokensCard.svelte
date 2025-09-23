@@ -6,10 +6,16 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconNeuronsPage, IconStakedTokens } from "@dfinity/gix-components";
 
+  type Props = {
+    icpOnlyTable?: boolean;
+  };
+
+  const { icpOnlyTable = false }: Props = $props();
+
   const href = AppPath.Staking;
 </script>
 
-<Card testId="no-staked-tokens-card">
+<Card testId={icpOnlyTable ? "no-staked-icp-card" : "no-staked-tokens-card"}>
   <div class="wrapper">
     <TokensCardHeader
       {href}
