@@ -72,26 +72,30 @@
 </script>
 
 {#if !loading}
-  <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+  <Modal {visible} onClose={close} role="alert" testId="filter-modal">
     <!-- TODO: To fix once Modal slots are migrated in gix -->
     <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
     <!-- svelte-ignore slot_element_deprecated -->
-    <slot slot="title" name="title" />
+    {#snippet title()}
+      <slot name="title" />
+    {/snippet}
 
-    <div slot="sub-title" class="toggle-all-wrapper">
-      <button
-        class="text"
-        data-tid="filter-modal-select-all"
-        aria-label={$i18n.core.filter_select_all}
-        onclick={selectAll}>{$i18n.voting.check_all}</button
-      >
-      <button
-        class="text"
-        data-tid="filter-modal-clear"
-        aria-label={$i18n.core.filter_clear_all}
-        onclick={clearSelection}>{$i18n.voting.uncheck_all}</button
-      >
-    </div>
+    {#snippet subTitle()}
+      <div class="toggle-all-wrapper">
+        <button
+          class="text"
+          data-tid="filter-modal-select-all"
+          aria-label={$i18n.core.filter_select_all}
+          onclick={selectAll}>{$i18n.voting.check_all}</button
+        >
+        <button
+          class="text"
+          data-tid="filter-modal-clear"
+          aria-label={$i18n.core.filter_clear_all}
+          onclick={clearSelection}>{$i18n.voting.uncheck_all}</button
+        >
+      </div>
+    {/snippet}
 
     {#if filters}
       <div class="filters">
@@ -111,7 +115,7 @@
       <Spinner />
     {/if}
 
-    <svelte:fragment slot="footer">
+    {#snippet footer()}
       <button
         class="secondary"
         type="button"
@@ -130,14 +134,16 @@
       >
         {$i18n.core.filter}
       </button>
-    </svelte:fragment>
+    {/snippet}
   </Modal>
 {:else}
-  <Modal {visible} on:nnsClose role="alert" testId="filter-modal">
+  <Modal {visible} onClose={close} role="alert" testId="filter-modal">
     <!-- TODO: To fix once Modal slots are migrated in gix -->
     <!-- eslint-disable-next-line svelte/no-unused-svelte-ignore -->
     <!-- svelte-ignore slot_element_deprecated -->
-    <slot slot="title" name="title" />
+    {#snippet title()}
+      <slot name="title" />
+    {/snippet}
 
     <div class="spinner-wrapper">
       <Spinner />

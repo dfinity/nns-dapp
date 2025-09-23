@@ -52,6 +52,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     name: [criticalTopicName1],
     description: [criticalTopicDescription1],
     custom_functions: [[]],
+    extension_operations: [],
   };
   const criticalTopicKey2: SnsTopicKey = "TreasuryAssetManagement";
   const criticalTopicName2 = "Treasury Asset Management";
@@ -67,6 +68,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     name: [criticalTopicName2],
     description: [criticalTopicDescription2],
     custom_functions: [[]],
+    extension_operations: [],
   };
   const topicKey1: SnsTopicKey = "DaoCommunitySettings";
   const topicName1 = "Dao Community Settings";
@@ -82,6 +84,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     name: [topicName1],
     description: [topicDescription1],
     custom_functions: [[]],
+    extension_operations: [],
   };
   const topicKey2: SnsTopicKey = "ApplicationBusinessLogic";
   const topicName2 = "Application Business Logic";
@@ -97,6 +100,7 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
     name: [topicName2],
     description: [topicDescription2],
     custom_functions: [[]],
+    extension_operations: [],
   };
 
   const renderComponent = (props: {

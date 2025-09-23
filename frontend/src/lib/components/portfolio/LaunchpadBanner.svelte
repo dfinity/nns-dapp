@@ -58,9 +58,9 @@
 </script>
 
 {#snippet banner()}
-  <div class="content">
+  <div data-tid="content" class="content">
     <div class="info">
-      <h3 data-tid="launchpad-banner-title">{$i18n.launchpad.banner_title}</h3>
+      <h3>{$i18n.launchpad.banner_title}</h3>
       <p>{$i18n.launchpad.banner_text}</p>
       <a href={AppPath.Launchpad} class="link" aria-label={$i18n.core.view}>
         <span>{$i18n.launchpad.banner_link}</span>
@@ -70,19 +70,20 @@
 
     <div class="stats">
       <div class="stat-item stat-item--a">
-        <h6 data-tid="launchpad-banner-raised-by">
+        <h6>
           {$i18n.launchpad.banner_raised_by}
         </h6>
-        <span class="value" data-tid="launchpad-banner-raised-value">
-          {withUpcomingLaunchesCards
-            ? formatNumber(raisedFunds, { minFraction: 0, maxFraction: 0 })
-            : compactCurrencyNumber(raisedFunds)}
-          {$i18n.core.icp}
+        <span class="value">
+          <span data-tid="launchpad-banner-raised-value"
+            >{withUpcomingLaunchesCards
+              ? formatNumber(raisedFunds, { minFraction: 0, maxFraction: 0 })
+              : compactCurrencyNumber(raisedFunds)}</span
+          >&nbsp;{$i18n.core.icp}
         </span>
       </div>
       <div class="stat-divider stat-divider--a"></div>
       <div class="stat-item stat-item--b">
-        <h6 data-tid="launchpad-banner-launched">
+        <h6>
           {$i18n.launchpad.banner_launched}
         </h6>
         <span class="value" data-tid="launchpad-banner-launched-value"
@@ -91,7 +92,7 @@
       </div>
       <div class="stat-divider stat-divider--b"></div>
       <div class="stat-item stat-item--c">
-        <h6 data-tid="launchpad-banner-proposals-executed">
+        <h6>
           {$i18n.launchpad.banner_proposals_executed}
         </h6>
         <span class="value" data-tid="launchpad-banner-proposals-executed-value"
@@ -109,7 +110,6 @@
         class="launchpad-banner"
         role="alert"
         aria-live="polite"
-        data-tid="launchpad-banner-desktop-component"
         class:withUpcomingLaunchesCards
       >
         <div class="background">
@@ -133,7 +133,6 @@
       <a
         href={AppPath.Launchpad}
         class="launchpad-banner"
-        data-tid="launchpad-banner-mobile-component"
         aria-label={$i18n.core.view}
       >
         {@render banner()}

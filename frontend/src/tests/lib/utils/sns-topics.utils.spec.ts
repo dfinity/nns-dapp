@@ -86,6 +86,7 @@ describe("sns-topics utils", () => {
     name: ["Known topic name"],
     description: ["Known topic description"],
     custom_functions: [[genericNsFunction]],
+    extension_operations: [],
   };
   const completelyUnknownTopicInfo: TopicInfoWithUnknown = {
     native_functions: [[nativeNsFunction]],
@@ -98,6 +99,7 @@ describe("sns-topics utils", () => {
     name: ["Unknown topic name"],
     description: ["Unknown topic description"],
     custom_functions: [[]],
+    extension_operations: [],
   };
   const listTopics: ListTopicsResponseWithUnknown = {
     topics: [[knownTopicInfo, completelyUnknownTopicInfo]],

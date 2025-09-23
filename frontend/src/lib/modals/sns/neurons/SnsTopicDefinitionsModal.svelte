@@ -28,10 +28,8 @@
   );
 </script>
 
-<Modal testId="sns-topic-definitions-modal-component" on:nnsClose={onClose}>
-  <svelte:fragment slot="title"
-    >{$i18n.follow_sns_topics.topic_definitions_title}</svelte:fragment
-  >
+<Modal testId="sns-topic-definitions-modal-component" {onClose}>
+  {#snippet title()}{$i18n.follow_sns_topics.topic_definitions_title}{/snippet}
 
   <p class="description"
     >{$i18n.follow_sns_topics.topic_definitions_description}</p

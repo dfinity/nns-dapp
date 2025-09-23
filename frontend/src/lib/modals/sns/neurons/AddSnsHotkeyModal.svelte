@@ -17,7 +17,10 @@
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
   let principal: Principal | undefined = undefined;
+
   const dispatcher = createEventDispatcher();
+
+  const close = () => dispatcher("nnsClose");
 
   const add = async () => {
     // Edge case: button is only enabled when principal is defined
@@ -43,15 +46,13 @@
     }
     stopBusy("add-sns-hotkey-neuron");
     if (success) {
-      dispatcher("nnsClose");
+      close();
     }
   };
 </script>
 
-<Modal on:nnsClose testId="add-hotkey-neuron-modal">
-  <svelte:fragment slot="title"
-    >{$i18n.neuron_detail.add_hotkey_modal_title}</svelte:fragment
-  >
+<Modal onClose={close} testId="add-hotkey-neuron-modal">
+  {#snippet title()}{$i18n.neuron_detail.add_hotkey_modal_title}{/snippet}
 
   <AddPrincipal bind:principal on:nnsSelectPrincipal={add} on:nnsClose>
     <span slot="title">{$i18n.neuron_detail.enter_hotkey}</span>

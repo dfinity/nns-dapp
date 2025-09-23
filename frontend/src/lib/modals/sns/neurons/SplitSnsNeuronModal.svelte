@@ -88,10 +88,8 @@
   };
 </script>
 
-<Modal on:nnsClose>
-  <svelte:fragment slot="title"
-    >{$i18n.neuron_detail.split_neuron}</svelte:fragment
-  >
+<Modal onClose={close}>
+  {#snippet title()}{$i18n.neuron_detail.split_neuron}{/snippet}
   <div class="wrapper" data-tid="split-neuron-modal">
     <CurrentBalance {balance} />
     <AmountInput bind:amount on:nnsMax={onMax} {max} {token} {errorMessage} />

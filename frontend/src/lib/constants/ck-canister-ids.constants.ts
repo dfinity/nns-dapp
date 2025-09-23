@@ -22,7 +22,7 @@ const CKXAUT_LEDGER_CANISTER_ID_TEXT = "nza5v-qaaaa-aaaar-qahzq-cai";
 const CKXAUT_INDEX_CANISTER_ID_TEXT = "nmhmy-riaaa-aaaar-qah2a-cai";
 
 // ckPEPE
-const CKPEPE_LEDGER_CANISTER_ID_TEXT = "etik7-oiaaa-aaaar-qagia-cai";
+export const CKPEPE_LEDGER_CANISTER_ID_TEXT = "etik7-oiaaa-aaaar-qagia-cai";
 const CKPEPE_INDEX_CANISTER_ID_TEXT = "eujml-dqaaa-aaaar-qagiq-cai";
 
 // ckWSTETH
@@ -34,11 +34,11 @@ const CKSHIB_LEDGER_CANISTER_ID_TEXT = "fxffn-xiaaa-aaaar-qagoa-cai";
 const CKSHIB_INDEX_CANISTER_ID_TEXT = "fqedz-2qaaa-aaaar-qagoq-cai";
 
 // ckUSDT
-const CKUSDT_LEDGER_CANISTER_ID_TEXT = "cngnf-vqaaa-aaaar-qag4q-cai";
+export const CKUSDT_LEDGER_CANISTER_ID_TEXT = "cngnf-vqaaa-aaaar-qag4q-cai";
 const CKUSDT_INDEX_CANISTER_ID_TEXT = "cefgz-dyaaa-aaaar-qag5a-cai";
 
 // ckOCT
-const CKOCT_LEDGER_CANISTER_ID_TEXT = "ebo5g-cyaaa-aaaar-qagla-cai";
+export const CKOCT_LEDGER_CANISTER_ID_TEXT = "ebo5g-cyaaa-aaaar-qagla-cai";
 const CKOCT_INDEX_CANISTER_ID_TEXT = "egp3s-paaaa-aaaar-qaglq-cai";
 
 export const allCkTokens: DefaultIcrcCanisters[] = [

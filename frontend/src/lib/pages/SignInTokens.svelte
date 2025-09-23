@@ -9,7 +9,10 @@
   import { ENABLE_NEW_TABLES } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { UserToken } from "$lib/types/tokens-page";
-  import { filterTokensByType } from "$lib/utils/tokens-table.utils";
+  import {
+    compareCkTokensByDefault,
+    filterTokensByType,
+  } from "$lib/utils/tokens-table.utils";
   import { IconAccountsPage, PageBanner } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
@@ -50,7 +53,7 @@
         userTokensData={filterTokensByType({
           tokens: userTokensData,
           type: "ck",
-        })}
+        }).sort(compareCkTokensByDefault)}
         firstColumnHeader={$i18n.tokens.projects_header_ck}
         subtitle={$i18n.tokens.projects_header_ck_subtitle}
       />

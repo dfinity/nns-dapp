@@ -9,29 +9,29 @@
   import { basisPointsToPercent } from "$lib/utils/utils";
   import { ProposalRewardStatus, type ProposalInfo } from "@dfinity/nns";
 
-  export let proposalInfo: ProposalInfo;
+  type Props = {
+    proposalInfo: ProposalInfo;
+  };
+  const { proposalInfo }: Props = $props();
 
-  let rewardStatus: ProposalRewardStatus;
-  $: ({ rewardStatus } = proposalInfo);
+  const rewardStatus = $derived(proposalInfo.rewardStatus);
+  const settled = $derived(rewardStatus === ProposalRewardStatus.Settled);
+  const yes = $derived(
+    Number(proposalInfo?.latestTally?.yes ?? 0) / E8S_PER_ICP
+  );
+  const no = $derived(Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP);
+  const total = $derived(
+    Number(proposalInfo?.latestTally?.total ?? 0) / E8S_PER_ICP
+  );
 
-  let settled: boolean;
-  $: settled = rewardStatus === ProposalRewardStatus.Settled;
-
-  let yes: number;
-  $: yes = Number(proposalInfo?.latestTally?.yes ?? 0) / E8S_PER_ICP;
-  let no: number;
-  $: no = Number(proposalInfo?.latestTally?.no ?? 0) / E8S_PER_ICP;
-  let total: number;
-  $: total = Number(proposalInfo?.latestTally?.total ?? 0) / E8S_PER_ICP;
   // Use default majority proportion values for nns for now
-  let immediateMajorityPercent = 0;
-  $: immediateMajorityPercent = basisPointsToPercent(
-    MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER
+  const immediateMajorityPercent = $derived(
+    basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_EXERCISED_VOTING_POWER)
   );
-  let standardMajorityPercent = 0;
-  $: standardMajorityPercent = basisPointsToPercent(
-    MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER
+  const standardMajorityPercent = $derived(
+    basisPointsToPercent(MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER)
   );
+  const status = $derived(proposalInfo?.status);
 </script>
 
 <VotesResults
@@ -41,6 +41,7 @@
   deadlineTimestampSeconds={proposalInfo.deadlineTimestampSeconds}
   {immediateMajorityPercent}
   {standardMajorityPercent}
+  {status}
 />
 
 {#if !settled}

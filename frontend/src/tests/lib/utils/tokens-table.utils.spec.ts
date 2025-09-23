@@ -1,9 +1,14 @@
+import {
+  CKOCT_LEDGER_CANISTER_ID_TEXT,
+  CKPEPE_LEDGER_CANISTER_ID_TEXT,
+} from "$lib/constants/ck-canister-ids.constants";
 import { CKBTC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import { CKETH_UNIVERSE_CANISTER_ID } from "$lib/constants/cketh-canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
 import {
+  compareCkTokensByDefault,
   compareFailedTokensLast,
   compareTokenHasBalance,
   compareTokensAlphabetically,
@@ -12,6 +17,7 @@ import {
   compareTokensByProject,
   compareTokensByUsdBalance,
   compareTokensIcpFirst,
+  compareTokensImportantFirst,
   compareTokensWithBalanceOrImportedFirst,
   filterTokensByType,
 } from "$lib/utils/tokens-table.utils";
@@ -22,6 +28,7 @@ import {
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
+import { Principal } from "@dfinity/principal";
 import { TokenAmountV2 } from "@dfinity/utils";
 
 describe("tokens-table.utils", () => {
@@ -33,6 +40,14 @@ describe("tokens-table.utils", () => {
   });
   const ckUSDCToken = createUserToken({
     universeId: CKUSDC_UNIVERSE_CANISTER_ID,
+  });
+  const ckPepeToken = createUserToken({
+    universeId: Principal.fromText(CKPEPE_LEDGER_CANISTER_ID_TEXT),
+    title: "ckPEPE",
+  });
+  const ckOctToken = createUserToken({
+    universeId: Principal.fromText(CKOCT_LEDGER_CANISTER_ID_TEXT),
+    title: "ckOCT",
   });
   const createTokenWithBalance = ({
     id,
@@ -97,6 +112,46 @@ describe("tokens-table.utils", () => {
           compareTokensByImportance
         )
       ).toEqual(expectedOrder);
+    });
+  });
+
+  describe("compareCkTokensByDefault", () => {
+    it("should sort tokens by importance", () => {
+      const expectedOrder = [
+        ckBTCToken,
+        ckUSDCToken,
+        ckETHTToken,
+        ckOctToken,
+        ckPepeToken,
+      ];
+      expect(
+        [ckOctToken, ckPepeToken, ckUSDCToken, ckETHTToken, ckBTCToken].sort(
+          compareCkTokensByDefault
+        )
+      ).toEqual(expectedOrder);
+      expect(
+        [ckPepeToken, ckBTCToken, ckETHTToken, ckOctToken, ckUSDCToken].sort(
+          compareCkTokensByDefault
+        )
+      ).toEqual(expectedOrder);
+      expect(
+        [ckETHTToken, ckBTCToken, ckUSDCToken, ckPepeToken, ckOctToken].sort(
+          compareCkTokensByDefault
+        )
+      ).toEqual(expectedOrder);
+    });
+  });
+
+  describe("compareTokensImportantFirst", () => {
+    it("should sort tokens by importance", () => {
+      const token0 = createTokenWithBalance({ id: 0, amount: 0n });
+      const expectedOrder = [ckBTCToken, token0];
+      expect([token0, ckBTCToken].sort(compareTokensImportantFirst)).toEqual(
+        expectedOrder
+      );
+      expect([ckBTCToken, token0].sort(compareTokensImportantFirst)).toEqual(
+        expectedOrder
+      );
     });
   });
 
