@@ -219,7 +219,7 @@ export const mapIcrcTransaction = ({
     // Timestamp is in nano seconds
     const timestampMilliseconds =
       Number(transaction.transaction.timestamp) / NANO_SECONDS_IN_MILLISECOND;
-    const memo = txInfo.memo;
+    const memo = txInfo.;
 
     return {
       domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
