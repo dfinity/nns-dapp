@@ -231,7 +231,9 @@ export const buildTransactionsDatasets = ({
   swapCanisterAccounts: Set<string>;
 }): CsvDataset<TransactionsCsvData>[] => {
   return transactions.map(({ entity, transactions }) => {
-    const accountIdentifier = entity.identifier;
+    const accountId = entity.identifier;
+    let neuronId: string;
+
     const amount = TokenAmountV2.fromUlps({
       amount: entity.balance,
       token: ICPToken,
@@ -240,7 +242,7 @@ export const buildTransactionsDatasets = ({
     const metadata = [
       {
         label: i18n.reporting.account_id,
-        value: accountIdentifier,
+        value: accountId,
       },
     ];
 
@@ -252,9 +254,10 @@ export const buildTransactionsDatasets = ({
     }
 
     if (entity.type === "neuron") {
+      neuronId = wrapAsExcelStringFormula(entity.originalData.neuronId);
       metadata.push({
         label: i18n.reporting.neuron_id,
-        value: wrapAsExcelStringFormula(entity.originalData.neuronId),
+        value: neuronId,
       });
     }
 
@@ -294,7 +297,7 @@ export const buildTransactionsDatasets = ({
           timestampNanos,
           transactionDirection,
         } = mapIcpTransactionToReport({
-          accountIdentifier,
+          accountIdentifier: accountId,
           transaction,
           neuronAccounts,
           swapCanisterAccounts,
@@ -310,6 +313,8 @@ export const buildTransactionsDatasets = ({
           id: transaction.id.toString(),
           project: ICPToken.name,
           symbol: ICPToken.symbol,
+          accountId,
+          neuronId,
           to,
           from,
           type: transactionName({ type, i18n }),

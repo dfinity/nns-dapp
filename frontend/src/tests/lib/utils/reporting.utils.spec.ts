@@ -257,6 +257,8 @@ describe("reporting utils", () => {
               amount: "+1.00",
               from: "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
               id: "1234",
+              accountId: "1",
+              neuronId: undefined,
               project: "Internet Computer",
               symbol: "ICP",
               timestamp: "Jan 1, 2023 12:00 AM",
@@ -266,7 +268,7 @@ describe("reporting utils", () => {
           ],
           metadata: [
             {
-              label: "Account ID",
+              label: "Account Id",
               value: "1",
             },
             {
@@ -278,7 +280,7 @@ describe("reporting utils", () => {
               value: "0.000001",
             },
             {
-              label: "Controller Principal ID",
+              label: "Controller Principal Id",
               value:
                 "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
             },
@@ -316,7 +318,7 @@ describe("reporting utils", () => {
       });
 
       expect(datasets[0].metadata[1]).toEqual({
-        label: "Neuron ID",
+        label: "Neuron Id",
         value: '="1"',
       });
     });
@@ -325,7 +327,7 @@ describe("reporting utils", () => {
   describe("buildNeuronsDatasets", () => {
     const expectedMetadata = [
       {
-        label: "NNS Account Principal ID",
+        label: "NNS Account Principal Id",
         value:
           "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
       },
