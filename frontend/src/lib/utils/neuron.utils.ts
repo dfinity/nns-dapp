@@ -1206,7 +1206,7 @@ export const validTopUpAmount = ({
 }): boolean => {
   const amountUlps = numberToUlps({ amount, token: ICPToken });
   const neuronStakeUlps = neuron.fullNeuron?.cachedNeuronStake ?? 0n;
-  return amountUlps + neuronStakeUlps > MIN_NEURON_STAKE;
+  return amountUlps + neuronStakeUlps >= MIN_NEURON_STAKE;
 };
 
 export const neuronAge = ({ ageSeconds }: NeuronInfo): bigint =>
