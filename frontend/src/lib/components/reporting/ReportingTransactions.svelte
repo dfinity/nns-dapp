@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { ReportingPeriod } from "$lib/types/reporting";
 
-  let period: ReportingPeriod = "all";
+  let period: ReportingPeriod = $state("all");
 </script>
 
 <div class="wrapper" data-tid="reporting-transactions-component">

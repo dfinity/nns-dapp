@@ -2,7 +2,10 @@
   import { i18n } from "$lib/stores/i18n";
   import type { ReportingPeriod } from "$lib/types/reporting";
 
-  export let period: ReportingPeriod = "all";
+  type Props = {
+    period: ReportingPeriod;
+  };
+  let { period = $bindable() }: Props = $props();
 
   const options: Array<{
     value: ReportingPeriod;
@@ -30,7 +33,7 @@
             value={option.value}
             checked={period === option.value}
             aria-checked={period === option.value}
-            on:change={() => handleChange(option.value)}
+            onchange={() => handleChange(option.value)}
           />
           <span class="label">{option.label}</span>
         </label>
