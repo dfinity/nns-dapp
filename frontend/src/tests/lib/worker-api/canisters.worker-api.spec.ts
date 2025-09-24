@@ -41,6 +41,8 @@ describe("canisters-worker-api", () => {
       request_payload_bytes_total: 3n,
       response_payload_bytes_total: 4n,
     },
+    ready_for_migration: true,
+    version: 42n,
   };
 
   beforeEach(async () => {

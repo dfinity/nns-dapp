@@ -89,6 +89,7 @@ describe("Followee", () => {
         id: followee.neuronId,
         name: neuronName,
         description: "test-description",
+        links: undefined,
       },
     ]);
 
@@ -143,6 +144,7 @@ describe("Followee", () => {
           id: followee.neuronId,
           name: neuronName,
           description: "test-description",
+          links: undefined,
         },
       ]);
 
