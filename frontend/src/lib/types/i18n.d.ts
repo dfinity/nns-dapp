@@ -240,7 +240,7 @@ interface I18nReporting {
   numer_of_transactions: string;
   timestamp: string;
   to: string;
-  transaction_id: string;
+  transaction_index: string;
   transaction_type: string;
   error_csv_generation: string;
   error_file_system_access: string;

@@ -231,7 +231,7 @@
     "numer_of_transactions": "Transactions",
     "timestamp": "Date Time",
     "to": "To",
-    "transaction_id": "TX ID",
+    "transaction_index": "TX Index",
     "transaction_type": "TX Type",
     "error_csv_generation": "Failed to generate CSV file",
     "error_file_system_access": "Unable to save file. Please check your permissions.",

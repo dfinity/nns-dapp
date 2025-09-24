@@ -90,7 +90,7 @@
       const headers: CsvHeader<TransactionsCsvData>[] = [
         {
           id: "id",
-          label: $i18n.reporting.transaction_id,
+          label: $i18n.reporting.transaction_index,
         },
         {
           id: "project",
@@ -99,6 +99,14 @@
         {
           id: "symbol",
           label: $i18n.reporting.symbol,
+        },
+        {
+          id: "accountId",
+          label: $i18n.reporting.account_id,
+        },
+        {
+          id: "neuronId",
+          label: $i18n.reporting.neuron_id,
         },
         {
           id: "to",
@@ -123,7 +131,7 @@
           label: $i18n.reporting.timestamp,
         },
       ];
-      const fileName = `icp_transactions_export_${formatDateCompact(new Date())}`;
+      const fileName = `icp_transactions_export_${formatDateCompact(new Date())}_${period}`;
 
       await generateCsvFileToSave({
         datasets,

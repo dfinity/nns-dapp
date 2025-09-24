@@ -208,6 +208,8 @@ export type TransactionsCsvData = {
   id: string;
   project: string;
   symbol: string;
+  accountId: string;
+  neuronId?: string;
   to: string | undefined;
   from: string | undefined;
   type: string;
