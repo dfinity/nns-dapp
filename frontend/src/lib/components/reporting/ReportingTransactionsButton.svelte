@@ -7,7 +7,6 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
-  import type { Account } from "$lib/types/account";
   import type { ReportingPeriod } from "$lib/types/reporting";
   import { formatDateCompact } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
@@ -27,22 +26,21 @@
   import { IconDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import { ICPToken, nonNullish } from "@dfinity/utils";
-  import type { Readable } from "svelte/store";
 
-  export let period: ReportingPeriod = "all";
+  type Props = {
+    period: ReportingPeriod;
+  };
+  const { period }: Props = $props();
 
-  let identity: Identity | null | undefined;
-  let swapCanisterAccounts: Set<string>;
-  let nnsAccounts: Account[];
-  let swapCanisterAccountsStore: Readable<Set<string>>;
-  let loading = false;
-
-  $: identity = $authStore.identity;
-  $: nnsAccounts = $nnsAccountsListStore;
-  $: swapCanisterAccountsStore = createSwapCanisterAccountsStore(
-    identity?.getPrincipal()
+  const identity = $derived($authStore.identity);
+  const nnsAccounts = $derived($nnsAccountsListStore);
+  const swapCanisterAccountsStore = $derived(
+    createSwapCanisterAccountsStore(identity?.getPrincipal())
   );
-  $: swapCanisterAccounts = $swapCanisterAccountsStore ?? new Set();
+  const swapCanisterAccounts = $derived(
+    $swapCanisterAccountsStore ?? new Set()
+  );
+  let loading = $state(false);
 
   const fetchAllNnsNeuronsAndSortThemByStake = async (
     identity: Identity
@@ -157,7 +155,7 @@
 
 <button
   data-tid="reporting-transactions-button-component"
-  on:click={exportIcpTransactions}
+  onclick={exportIcpTransactions}
   class="primary with-icon"
   disabled={loading}
   aria-label={$i18n.reporting.transactions_download}
