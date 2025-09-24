@@ -75,6 +75,7 @@ pub struct NervousSystemFunction {
 pub struct Subaccount {
     pub subaccount: serde_bytes::ByteBuf,
 }
+/// ! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-28_03-17-snapshot-feature/rs/sns/governance/canister/governance.did>
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Account {
     pub owner: Option<Principal>,
@@ -82,37 +83,51 @@ pub struct Account {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TreasuryMetrics {
+    /// A human-readable identified for this treasury, e.g., "ICP".
     pub name: Option<String>,
-    pub original_amount_e8s: Option<u64>,
-    pub amount_e8s: Option<u64>,
+    /// The amount of tokens in this treasury at the end of swap finalization.
+    #[serde(rename = "original_amount_e8s")]
+    pub original_amount_e_8_s: Option<u64>,
+    /// The regularly updated amount of tokens in this treasury.
+    #[serde(rename = "amount_e8s")]
+    pub amount_e_8_s: Option<u64>,
     pub account: Option<Account>,
+    /// The source of truth for the treasury balance is this ledger canister / account.
     pub ledger_canister_id: Option<Principal>,
+    /// Same as, e.g., `TransferSnsTreasuryFunds.from_treasury`.
     pub treasury: i32,
+    /// When the metrics were last updated.
     pub timestamp_seconds: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct VotingPowerMetrics {
     pub governance_total_potential_voting_power: Option<u64>,
+    /// When the metrics were last updated.
     pub timestamp_seconds: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GovernanceCachedMetrics {
     pub treasury_metrics: Vec<TreasuryMetrics>,
-    pub not_dissolving_neurons_e8s_buckets: Vec<(u64, f64)>,
+    #[serde(rename = "not_dissolving_neurons_e8s_buckets")]
+    pub not_dissolving_neurons_e_8_s_buckets: Vec<(u64, f64)>,
     pub garbage_collectable_neurons_count: u64,
     pub neurons_with_invalid_stake_count: u64,
     pub not_dissolving_neurons_count_buckets: Vec<(u64, u64)>,
     pub neurons_with_less_than_6_months_dissolve_delay_count: u64,
     pub dissolved_neurons_count: u64,
-    pub total_staked_e8s: u64,
+    #[serde(rename = "total_staked_e8s")]
+    pub total_staked_e_8_s: u64,
     pub total_supply_governance_tokens: u64,
     pub voting_power_metrics: Option<VotingPowerMetrics>,
     pub not_dissolving_neurons_count: u64,
-    pub dissolved_neurons_e8s: u64,
-    pub neurons_with_less_than_6_months_dissolve_delay_e8s: u64,
+    #[serde(rename = "dissolved_neurons_e8s")]
+    pub dissolved_neurons_e_8_s: u64,
+    #[serde(rename = "neurons_with_less_than_6_months_dissolve_delay_e8s")]
+    pub neurons_with_less_than_6_months_dissolve_delay_e_8_s: u64,
     pub dissolving_neurons_count_buckets: Vec<(u64, u64)>,
     pub dissolving_neurons_count: u64,
-    pub dissolving_neurons_e8s_buckets: Vec<(u64, f64)>,
+    #[serde(rename = "dissolving_neurons_e8s_buckets")]
+    pub dissolving_neurons_e_8_s_buckets: Vec<(u64, f64)>,
     pub timestamp_seconds: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -217,15 +232,18 @@ pub struct NervousSystemParameters {
     pub max_followees_per_function: Option<u64>,
     pub automatically_advance_target_version: Option<bool>,
     pub neuron_claimer_permissions: Option<NeuronPermissionList>,
-    pub neuron_minimum_stake_e8s: Option<u64>,
+    #[serde(rename = "neuron_minimum_stake_e8s")]
+    pub neuron_minimum_stake_e_8_s: Option<u64>,
     pub max_neuron_age_for_age_bonus: Option<u64>,
     pub initial_voting_period_seconds: Option<u64>,
     pub neuron_minimum_dissolve_delay_to_vote_seconds: Option<u64>,
-    pub reject_cost_e8s: Option<u64>,
+    #[serde(rename = "reject_cost_e8s")]
+    pub reject_cost_e_8_s: Option<u64>,
     pub max_proposals_to_keep_per_action: Option<u32>,
     pub wait_for_quiet_deadline_increase_seconds: Option<u64>,
     pub max_number_of_neurons: Option<u64>,
-    pub transaction_fee_e8s: Option<u64>,
+    #[serde(rename = "transaction_fee_e8s")]
+    pub transaction_fee_e_8_s: Option<u64>,
     pub max_number_of_proposals_with_ballots: Option<u64>,
     pub max_age_bonus_percentage: Option<u64>,
     pub neuron_grantable_permissions: Option<NeuronPermissionList>,
@@ -238,8 +256,10 @@ pub struct RewardEvent {
     pub rounds_since_last_distribution: Option<u64>,
     pub actual_timestamp_seconds: u64,
     pub end_timestamp_seconds: Option<u64>,
-    pub total_available_e8s_equivalent: Option<u64>,
-    pub distributed_e8s_equivalent: u64,
+    #[serde(rename = "total_available_e8s_equivalent")]
+    pub total_available_e_8_s_equivalent: Option<u64>,
+    #[serde(rename = "distributed_e8s_equivalent")]
+    pub distributed_e_8_s_equivalent: u64,
     pub round: u64,
     pub settled_proposals: Vec<ProposalId>,
 }
@@ -261,7 +281,8 @@ pub struct Decimal {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Tokens {
-    pub e8s: Option<u64>,
+    #[serde(rename = "e8s")]
+    pub e_8_s: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ValuationFactors {
@@ -327,6 +348,20 @@ pub struct ManageDappCanisterSettings {
     pub memory_allocation: Option<u64>,
     pub compute_allocation: Option<u64>,
 }
+/// This type is equivalant to `ICRC3Value`, but we give it another name since it is used here not
+/// in the context of the ICRC-3 ledger standard. The justification is the same: The candid format
+/// supports sharing information even when the client and the server involved do not have the same
+/// schema (see the Upgrading and subtyping section of the candid spec). While this mechanism allows
+/// to evolve services and clients independently without breaking them, it also means that a client
+/// may not receive all the information that the server is sending, e.g. in case the client schema
+/// lacks some fields that the server schema has.
+///
+/// This loss of information is not an option for SNS voters deciding if an extension with particular
+/// init args should be installed or if an extension function with particular arguments should be
+/// called. The client must receive the same exact data the server sent in order to verify it.
+///
+/// Verification of a priorly installed extension is done by hashing the extension's init arg data
+/// and checking that the result is consistent with what has been certified by the SNS.
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum PreciseValue {
     Int(i64),
@@ -391,7 +426,8 @@ pub struct TransferSnsTreasuryFunds {
     pub to_principal: Option<Principal>,
     pub to_subaccount: Option<Subaccount>,
     pub memo: Option<u64>,
-    pub amount_e8s: u64,
+    #[serde(rename = "amount_e8s")]
+    pub amount_e_8_s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpgradeSnsControlledCanister {
@@ -411,7 +447,8 @@ pub struct MintSnsTokens {
     pub to_principal: Option<Principal>,
     pub to_subaccount: Option<Subaccount>,
     pub memo: Option<u64>,
-    pub amount_e8s: Option<u64>,
+    #[serde(rename = "amount_e8s")]
+    pub amount_e_8_s: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct AdvanceSnsTargetVersion {
@@ -489,7 +526,8 @@ pub struct ProposalData {
     pub reward_event_end_timestamp_seconds: Option<u64>,
     pub proposal_creation_timestamp_seconds: u64,
     pub initial_voting_period_seconds: u64,
-    pub reject_cost_e8s: u64,
+    #[serde(rename = "reject_cost_e8s")]
+    pub reject_cost_e_8_s: u64,
     pub latest_tally: Option<Tally>,
     pub wait_for_quiet_deadline_increase_seconds: u64,
     pub decided_timestamp_seconds: u64,
@@ -503,7 +541,8 @@ pub struct ProposalData {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Split {
     pub memo: u64,
-    pub amount_e8s: u64,
+    #[serde(rename = "amount_e8s")]
+    pub amount_e_8_s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Follow {
@@ -560,7 +599,8 @@ pub struct SetFollowing {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FinalizeDisburseMaturity {
-    pub amount_to_be_disbursed_e8s: u64,
+    #[serde(rename = "amount_to_be_disbursed_e8s")]
+    pub amount_to_be_disbursed_e_8_s: u64,
     pub to_account: Option<Account>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -593,7 +633,8 @@ pub struct MergeMaturity {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Amount {
-    pub e8s: u64,
+    #[serde(rename = "e8s")]
+    pub e_8_s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Disburse {
@@ -639,17 +680,21 @@ pub enum DissolveState {
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DisburseMaturityInProgress {
     pub timestamp_of_disbursement_seconds: u64,
-    pub amount_e8s: u64,
+    #[serde(rename = "amount_e8s")]
+    pub amount_e_8_s: u64,
     pub account_to_disburse_to: Option<Account>,
     pub finalize_disbursement_timestamp_seconds: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Neuron {
     pub id: Option<NeuronId>,
-    pub staked_maturity_e8s_equivalent: Option<u64>,
+    #[serde(rename = "staked_maturity_e8s_equivalent")]
+    pub staked_maturity_e_8_s_equivalent: Option<u64>,
     pub permissions: Vec<NeuronPermission>,
-    pub maturity_e8s_equivalent: u64,
-    pub cached_neuron_stake_e8s: u64,
+    #[serde(rename = "maturity_e8s_equivalent")]
+    pub maturity_e_8_s_equivalent: u64,
+    #[serde(rename = "cached_neuron_stake_e8s")]
+    pub cached_neuron_stake_e_8_s: u64,
     pub created_timestamp_seconds: u64,
     pub topic_followees: Option<NeuronTopicFolloweesInner>,
     pub source_nns_neuron_id: Option<u64>,
@@ -660,7 +705,8 @@ pub struct Neuron {
     pub vesting_period_seconds: Option<u64>,
     pub disburse_maturity_in_progress: Vec<DisburseMaturityInProgress>,
     pub followees: Vec<(u64, Followees)>,
-    pub neuron_fees_e8s: u64,
+    #[serde(rename = "neuron_fees_e8s")]
+    pub neuron_fees_e_8_s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Governance {
@@ -711,7 +757,8 @@ pub struct NeuronRecipe {
     pub controller: Option<Principal>,
     pub dissolve_delay_seconds: Option<u64>,
     pub participant: Option<Participant>,
-    pub stake_e8s: Option<u64>,
+    #[serde(rename = "stake_e8s")]
+    pub stake_e_8_s: Option<u64>,
     pub followees: Option<NeuronIds>,
     pub neuron_id: Option<NeuronId>,
 }
@@ -732,11 +779,7 @@ pub struct SwapNeuron {
 pub struct ClaimedSwapNeurons {
     pub swap_neurons: Vec<SwapNeuron>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum ClaimSwapNeuronsResult {
-    Ok(ClaimedSwapNeurons),
-    Err(i32),
-}
+pub type ClaimSwapNeuronsResult = std::result::Result<ClaimedSwapNeurons, i32>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ClaimSwapNeuronsResponse {
     pub claim_swap_neurons_result: Option<ClaimSwapNeuronsResult>,
@@ -766,6 +809,7 @@ pub struct GetMetricsRequest {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Metrics {
+    /// The metrics below are cached (albeit this is an implementation detail).
     pub treasury_metrics: Option<Vec<TreasuryMetrics>>,
     pub voting_power_metrics: Option<VotingPowerMetrics>,
     pub last_ledger_block_timestamp: Option<u64>,
@@ -773,11 +817,7 @@ pub struct Metrics {
     pub num_recently_submitted_proposals: Option<u64>,
     pub genesis_timestamp_seconds: Option<u64>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum GetMetricsResult {
-    Ok(Metrics),
-    Err(GovernanceError),
-}
+pub type GetMetricsResult = std::result::Result<Metrics, GovernanceError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetMetricsResponse {
     pub get_metrics_result: Option<GetMetricsResult>,
@@ -1004,8 +1044,10 @@ pub struct SplitResponse {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DisburseMaturityResponse {
-    pub amount_disbursed_e8s: u64,
-    pub amount_deducted_e8s: Option<u64>,
+    #[serde(rename = "amount_disbursed_e8s")]
+    pub amount_disbursed_e_8_s: u64,
+    #[serde(rename = "amount_deducted_e8s")]
+    pub amount_deducted_e_8_s: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ClaimOrRefreshResponse {
@@ -1013,13 +1055,17 @@ pub struct ClaimOrRefreshResponse {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct StakeMaturityResponse {
-    pub maturity_e8s: u64,
-    pub staked_maturity_e8s: u64,
+    #[serde(rename = "maturity_e8s")]
+    pub maturity_e_8_s: u64,
+    #[serde(rename = "staked_maturity_e8s")]
+    pub staked_maturity_e_8_s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct MergeMaturityResponse {
-    pub merged_maturity_e8s: u64,
-    pub new_stake_e8s: u64,
+    #[serde(rename = "merged_maturity_e8s")]
+    pub merged_maturity_e_8_s: u64,
+    #[serde(rename = "new_stake_e8s")]
+    pub new_stake_e_8_s: u64,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DisburseResponse {
@@ -1059,12 +1105,12 @@ pub struct SetModeRet {}
 
 pub struct Service(pub Principal);
 impl Service {
-    pub async fn claim_swap_neurons(&self, arg0: ClaimSwapNeuronsRequest) -> CallResult<(ClaimSwapNeuronsResponse,)> {
+    pub async fn claim_swap_neurons(&self, arg0: &ClaimSwapNeuronsRequest) -> CallResult<(ClaimSwapNeuronsResponse,)> {
         ic_cdk::call(self.0, "claim_swap_neurons", (arg0,)).await
     }
     pub async fn fail_stuck_upgrade_in_progress(
         &self,
-        arg0: FailStuckUpgradeInProgressArg,
+        arg0: &FailStuckUpgradeInProgressArg,
     ) -> CallResult<(FailStuckUpgradeInProgressRet,)> {
         ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
     }
@@ -1076,74 +1122,74 @@ impl Service {
     }
     pub async fn get_maturity_modulation(
         &self,
-        arg0: GetMaturityModulationArg,
+        arg0: &GetMaturityModulationArg,
     ) -> CallResult<(GetMaturityModulationResponse,)> {
         ic_cdk::call(self.0, "get_maturity_modulation", (arg0,)).await
     }
-    pub async fn get_metadata(&self, arg0: GetMetadataArg) -> CallResult<(GetMetadataResponse,)> {
+    pub async fn get_metadata(&self, arg0: &GetMetadataArg) -> CallResult<(GetMetadataResponse,)> {
         ic_cdk::call(self.0, "get_metadata", (arg0,)).await
     }
-    pub async fn get_metrics(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
+    pub async fn get_metrics(&self, arg0: &GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
         ic_cdk::call(self.0, "get_metrics", (arg0,)).await
     }
-    pub async fn get_metrics_replicated(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
+    pub async fn get_metrics_replicated(&self, arg0: &GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
         ic_cdk::call(self.0, "get_metrics_replicated", (arg0,)).await
     }
-    pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
+    pub async fn get_mode(&self, arg0: &GetModeArg) -> CallResult<(GetModeResponse,)> {
         ic_cdk::call(self.0, "get_mode", (arg0,)).await
     }
-    pub async fn get_nervous_system_parameters(&self, arg0: ()) -> CallResult<(NervousSystemParameters,)> {
+    pub async fn get_nervous_system_parameters(&self, arg0: &()) -> CallResult<(NervousSystemParameters,)> {
         ic_cdk::call(self.0, "get_nervous_system_parameters", (arg0,)).await
     }
-    pub async fn get_neuron(&self, arg0: GetNeuron) -> CallResult<(GetNeuronResponse,)> {
+    pub async fn get_neuron(&self, arg0: &GetNeuron) -> CallResult<(GetNeuronResponse,)> {
         ic_cdk::call(self.0, "get_neuron", (arg0,)).await
     }
-    pub async fn get_proposal(&self, arg0: GetProposal) -> CallResult<(GetProposalResponse,)> {
+    pub async fn get_proposal(&self, arg0: &GetProposal) -> CallResult<(GetProposalResponse,)> {
         ic_cdk::call(self.0, "get_proposal", (arg0,)).await
     }
-    pub async fn get_root_canister_status(&self, arg0: ()) -> CallResult<(CanisterStatusResultV2,)> {
+    pub async fn get_root_canister_status(&self, arg0: &()) -> CallResult<(CanisterStatusResultV2,)> {
         ic_cdk::call(self.0, "get_root_canister_status", (arg0,)).await
     }
     pub async fn get_running_sns_version(
         &self,
-        arg0: GetRunningSnsVersionArg,
+        arg0: &GetRunningSnsVersionArg,
     ) -> CallResult<(GetRunningSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_running_sns_version", (arg0,)).await
     }
     pub async fn get_sns_initialization_parameters(
         &self,
-        arg0: GetSnsInitializationParametersArg,
+        arg0: &GetSnsInitializationParametersArg,
     ) -> CallResult<(GetSnsInitializationParametersResponse,)> {
         ic_cdk::call(self.0, "get_sns_initialization_parameters", (arg0,)).await
     }
-    pub async fn get_timers(&self, arg0: GetTimersArg) -> CallResult<(GetTimersResponse,)> {
+    pub async fn get_timers(&self, arg0: &GetTimersArg) -> CallResult<(GetTimersResponse,)> {
         ic_cdk::call(self.0, "get_timers", (arg0,)).await
     }
     pub async fn get_upgrade_journal(
         &self,
-        arg0: GetUpgradeJournalRequest,
+        arg0: &GetUpgradeJournalRequest,
     ) -> CallResult<(GetUpgradeJournalResponse,)> {
         ic_cdk::call(self.0, "get_upgrade_journal", (arg0,)).await
     }
     pub async fn list_nervous_system_functions(&self) -> CallResult<(ListNervousSystemFunctionsResponse,)> {
         ic_cdk::call(self.0, "list_nervous_system_functions", ()).await
     }
-    pub async fn list_neurons(&self, arg0: ListNeurons) -> CallResult<(ListNeuronsResponse,)> {
+    pub async fn list_neurons(&self, arg0: &ListNeurons) -> CallResult<(ListNeuronsResponse,)> {
         ic_cdk::call(self.0, "list_neurons", (arg0,)).await
     }
-    pub async fn list_proposals(&self, arg0: ListProposals) -> CallResult<(ListProposalsResponse,)> {
+    pub async fn list_proposals(&self, arg0: &ListProposals) -> CallResult<(ListProposalsResponse,)> {
         ic_cdk::call(self.0, "list_proposals", (arg0,)).await
     }
-    pub async fn list_topics(&self, arg0: ListTopicsRequest) -> CallResult<(ListTopicsResponse,)> {
+    pub async fn list_topics(&self, arg0: &ListTopicsRequest) -> CallResult<(ListTopicsResponse,)> {
         ic_cdk::call(self.0, "list_topics", (arg0,)).await
     }
-    pub async fn manage_neuron(&self, arg0: ManageNeuron) -> CallResult<(ManageNeuronResponse,)> {
+    pub async fn manage_neuron(&self, arg0: &ManageNeuron) -> CallResult<(ManageNeuronResponse,)> {
         ic_cdk::call(self.0, "manage_neuron", (arg0,)).await
     }
-    pub async fn reset_timers(&self, arg0: ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
+    pub async fn reset_timers(&self, arg0: &ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
         ic_cdk::call(self.0, "reset_timers", (arg0,)).await
     }
-    pub async fn set_mode(&self, arg0: SetMode) -> CallResult<(SetModeRet,)> {
+    pub async fn set_mode(&self, arg0: &SetMode) -> CallResult<(SetModeRet,)> {
         ic_cdk::call(self.0, "set_mode", (arg0,)).await
     }
 }

@@ -27,6 +27,7 @@ pub struct ChangeArchiveOptions {
     pub node_max_memory_size_bytes: Option<u64>,
     pub controller_id: Option<Principal>,
 }
+/// The value returned from the [icrc1_metadata] endpoint.
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum MetadataValue {
     Int(candid::Int),
@@ -47,7 +48,8 @@ pub enum ChangeFeeCollector {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct FeatureFlags {
-    pub icrc2: bool,
+    #[serde(rename = "icrc2")]
+    pub icrc_2: bool,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct UpgradeArgs {
@@ -72,6 +74,7 @@ pub struct InitArgsArchiveOptions {
     pub node_max_memory_size_bytes: Option<u64>,
     pub controller_id: Principal,
 }
+/// The initialization parameters of the Ledger
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct InitArgs {
     pub decimals: Option<u8>,
@@ -92,6 +95,7 @@ pub enum LedgerArg {
     Upgrade(Option<UpgradeArgs>),
     Init(InitArgs),
 }
+/// ! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-28_03-17-snapshot-feature/rs/ledger_suite/icrc1/ledger/ledger.did>
 pub type BlockIndex = candid::Nat;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ArchiveInfo {
@@ -101,7 +105,9 @@ pub struct ArchiveInfo {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetBlocksArgs {
+    /// The index of the first block to fetch.
     pub start: BlockIndex,
+    /// Max number of blocks to fetch.
     pub length: candid::Nat,
 }
 pub type Map = Vec<(String, Box<Value>)>;
@@ -116,25 +122,60 @@ pub enum Value {
     Array(Vec<Box<Value>>),
 }
 pub type Block = Box<Value>;
+/// A prefix of the block range specified in the [GetBlocksArgs] request.
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct BlockRange {
+    /// A prefix of the requested block range.
+    /// The index of the first block is equal to [GetBlocksArgs.start].
+    ///
+    /// Note that the number of blocks might be less than the requested
+    /// [GetBlocksArgs.length] for various reasons, for example:
+    ///
+    /// 1. The query might have hit the replica with an outdated state
+    /// that doesn't have the whole range yet.
+    /// 2. The requested range is too large to fit into a single reply.
+    ///
+    /// NOTE: the list of blocks can be empty if:
+    ///
+    /// 1. [GetBlocksArgs.length] was zero.
+    /// 2. [GetBlocksArgs.start] was larger than the last block known to
+    /// the canister.
     pub blocks: Vec<Block>,
 }
 pub type QueryBlockArchiveFn = candid::Func;
 #[derive(CandidType, Deserialize)]
 pub struct GetBlocksResponseArchivedBlocksItem {
+    /// Callback to fetch the archived blocks.
     pub callback: QueryBlockArchiveFn,
+    /// The index of the first archived block.
     pub start: BlockIndex,
+    /// The number of blocks that can be fetched.
     pub length: candid::Nat,
 }
-#[derive(CandidType, Deserialize)]
+/// The result of a "get_blocks" call.
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetBlocksResponse {
+    /// System certificate for the hash of the latest block in the chain.
+    /// Only present if `get_blocks` is called in a non-replicated query context.
     pub certificate: Option<serde_bytes::ByteBuf>,
+    /// The index of the first block in "blocks".
+    /// If the blocks vector is empty, the exact value of this field is not specified.
     pub first_index: BlockIndex,
+    /// List of blocks that were available in the ledger when it processed the call.
+    ///
+    /// The blocks form a contiguous range, with the first block having index
+    /// [first_block_index] (see below), and the last block having index
+    /// [first_block_index] + len(blocks) - 1.
+    ///
+    /// The block range can be an arbitrary sub-range of the originally requested range.
     pub blocks: Vec<Block>,
+    /// The total number of blocks in the chain.
+    /// If the chain length is positive, the index of the last block is `chain_len - 1`.
     pub chain_length: u64,
+    /// Encoding of instructions for fetching archived blocks.
     pub archived_blocks: Vec<GetBlocksResponseArchivedBlocksItem>,
 }
+/// Certificate for the block at `block_index`.
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct DataCertificate {
     pub certificate: Option<serde_bytes::ByteBuf>,
@@ -143,9 +184,12 @@ pub struct DataCertificate {
 pub type TxIndex = candid::Nat;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetTransactionsRequest {
+    /// The index of the first tx to fetch.
     pub start: TxIndex,
+    /// The number of transactions to fetch.
     pub length: candid::Nat,
 }
+/// Number of nanoseconds since the UNIX epoch in UTC timezone.
 pub type Timestamp = u64;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Burn {
@@ -192,22 +236,58 @@ pub struct Transaction {
     pub timestamp: Timestamp,
     pub transfer: Option<Transfer>,
 }
+/// A prefix of the transaction range specified in the [GetTransactionsRequest] request.
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TransactionRange {
+    /// A prefix of the requested transaction range.
+    /// The index of the first transaction is equal to [GetTransactionsRequest.from].
+    ///
+    /// Note that the number of transactions might be less than the requested
+    /// [GetTransactionsRequest.length] for various reasons, for example:
+    ///
+    /// 1. The query might have hit the replica with an outdated state
+    /// that doesn't have the whole range yet.
+    /// 2. The requested range is too large to fit into a single reply.
+    ///
+    /// NOTE: the list of transactions can be empty if:
+    ///
+    /// 1. [GetTransactionsRequest.length] was zero.
+    /// 2. [GetTransactionsRequest.from] was larger than the last transaction known to
+    /// the canister.
     pub transactions: Vec<Transaction>,
 }
 pub type QueryArchiveFn = candid::Func;
 #[derive(CandidType, Deserialize)]
 pub struct GetTransactionsResponseArchivedTransactionsItem {
+    /// The function you should call to fetch the archived transactions.
+    /// The range of the transaction accessible using this function is given by [from]
+    /// and [len] fields above.
     pub callback: QueryArchiveFn,
+    /// The index of the first archived transaction you can fetch using the [callback].
     pub start: TxIndex,
+    /// The number of transactions you can fetch using the callback.
     pub length: candid::Nat,
 }
 #[derive(CandidType, Deserialize)]
 pub struct GetTransactionsResponse {
+    /// The index of the first transaction in [transactions].
+    /// If the transaction vector is empty, the exact value of this field is not specified.
     pub first_index: TxIndex,
+    /// The total number of transactions in the log.
     pub log_length: candid::Nat,
+    /// List of transaction that were available in the ledger when it processed the call.
+    ///
+    /// The transactions form a contiguous range, with the first transaction having index
+    /// [first_index] (see below), and the last transaction having index
+    /// [first_index] + len(transactions) - 1.
+    ///
+    /// The transaction range can be an arbitrary sub-range of the originally requested range.
     pub transactions: Vec<Transaction>,
+    /// Encoding of instructions for fetching archived transactions whose indices fall into the
+    /// requested range.
+    ///
+    /// For each entry `e` in [archived_transactions], `[e.from, e.from + len)` is a sub-range
+    /// of the originally requested transaction range.
     pub archived_transactions: Vec<GetTransactionsResponseArchivedTransactionsItem>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -228,24 +308,17 @@ pub enum GetAllowancesError {
     GenericError { message: String, error_code: candid::Nat },
     AccessDenied { reason: String },
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Icrc103GetAllowancesResponse {
-    Ok(Vec<Allowance103>),
-    Err(GetAllowancesError),
-}
+pub type Icrc103GetAllowancesResponse = std::result::Result<Vec<Allowance103>, GetAllowancesError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum GetIndexPrincipalError {
+    /// Any error not covered by the above variants.
     GenericError {
         description: String,
         error_code: candid::Nat,
     },
     IndexPrincipalNotSet,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum GetIndexPrincipalResult {
-    Ok(Principal),
-    Err(GetIndexPrincipalError),
-}
+pub type GetIndexPrincipalResult = std::result::Result<Principal, GetIndexPrincipalError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc10SupportedStandardsRetItem {
     pub url: String,
@@ -277,11 +350,7 @@ pub enum TransferError {
     TooOld,
     InsufficientFunds { balance: Tokens },
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum TransferResult {
-    Ok(BlockIndex),
-    Err(TransferError),
-}
+pub type TransferResult = std::result::Result<BlockIndex, TransferError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc21ConsentMessageMetadata {
     pub utc_offset_minutes: Option<i16>,
@@ -331,6 +400,7 @@ pub struct Icrc21ErrorInfo {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum Icrc21Error {
+    /// Any error not covered by the above variants.
     GenericError {
         description: String,
         error_code: candid::Nat,
@@ -339,11 +409,7 @@ pub enum Icrc21Error {
     UnsupportedCanisterCall(Icrc21ErrorInfo),
     ConsentMessageUnavailable(Icrc21ErrorInfo),
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Icrc21ConsentMessageResponse {
-    Ok(Icrc21ConsentInfo),
-    Err(Icrc21Error),
-}
+pub type Icrc21ConsentMessageResponse = std::result::Result<Icrc21ConsentInfo, Icrc21Error>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct AllowanceArgs {
     pub account: Account,
@@ -377,11 +443,7 @@ pub enum ApproveError {
     Expired { ledger_time: Timestamp },
     InsufficientFunds { balance: candid::Nat },
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum ApproveResult {
-    Ok(BlockIndex),
-    Err(ApproveError),
-}
+pub type ApproveResult = std::result::Result<BlockIndex, ApproveError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TransferFromArgs {
     pub to: Account,
@@ -404,19 +466,22 @@ pub enum TransferFromError {
     TooOld,
     InsufficientFunds { balance: Tokens },
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum TransferFromResult {
-    Ok(BlockIndex),
-    Err(TransferFromError),
-}
+pub type TransferFromResult = std::result::Result<BlockIndex, TransferFromError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetArchivesArgs {
+    /// The last archive seen by the client.
+    /// The Ledger will return archives coming
+    /// after this one if set, otherwise it
+    /// will return the first archives.
     pub from: Option<Principal>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetArchivesResultItem {
+    /// The last block in the archive
     pub end: candid::Nat,
+    /// The id of the archive
     pub canister_id: Principal,
+    /// The first block in the archive
     pub start: candid::Nat,
 }
 pub type GetArchivesResult = Vec<GetArchivesResultItem>;
@@ -442,13 +507,17 @@ pub struct GetBlocksResultArchivedBlocksItem {
 }
 #[derive(CandidType, Deserialize)]
 pub struct GetBlocksResult {
+    /// Total number of blocks in the
+    /// block log
     pub log_length: candid::Nat,
     pub blocks: Vec<GetBlocksResultBlocksItem>,
     pub archived_blocks: Vec<GetBlocksResultArchivedBlocksItem>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Icrc3DataCertificate {
+    /// See https://internetcomputer.org/docs/current/references/ic-interface-spec#certification
     pub certificate: serde_bytes::ByteBuf,
+    /// CBOR encoded hash_tree
     pub hash_tree: serde_bytes::ByteBuf,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -462,18 +531,18 @@ impl Service {
     pub async fn archives(&self) -> CallResult<(Vec<ArchiveInfo>,)> {
         ic_cdk::call(self.0, "archives", ()).await
     }
-    pub async fn get_blocks(&self, arg0: GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
+    pub async fn get_blocks(&self, arg0: &GetBlocksArgs) -> CallResult<(GetBlocksResponse,)> {
         ic_cdk::call(self.0, "get_blocks", (arg0,)).await
     }
     pub async fn get_data_certificate(&self) -> CallResult<(DataCertificate,)> {
         ic_cdk::call(self.0, "get_data_certificate", ()).await
     }
-    pub async fn get_transactions(&self, arg0: GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
+    pub async fn get_transactions(&self, arg0: &GetTransactionsRequest) -> CallResult<(GetTransactionsResponse,)> {
         ic_cdk::call(self.0, "get_transactions", (arg0,)).await
     }
     pub async fn icrc_103_get_allowances(
         &self,
-        arg0: GetAllowancesArgs,
+        arg0: &GetAllowancesArgs,
     ) -> CallResult<(Icrc103GetAllowancesResponse,)> {
         ic_cdk::call(self.0, "icrc103_get_allowances", (arg0,)).await
     }
@@ -483,7 +552,7 @@ impl Service {
     pub async fn icrc_10_supported_standards(&self) -> CallResult<(Vec<Icrc10SupportedStandardsRetItem>,)> {
         ic_cdk::call(self.0, "icrc10_supported_standards", ()).await
     }
-    pub async fn icrc_1_balance_of(&self, arg0: Account) -> CallResult<(Tokens,)> {
+    pub async fn icrc_1_balance_of(&self, arg0: &Account) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_balance_of", (arg0,)).await
     }
     pub async fn icrc_1_decimals(&self) -> CallResult<(u8,)> {
@@ -510,28 +579,28 @@ impl Service {
     pub async fn icrc_1_total_supply(&self) -> CallResult<(Tokens,)> {
         ic_cdk::call(self.0, "icrc1_total_supply", ()).await
     }
-    pub async fn icrc_1_transfer(&self, arg0: TransferArg) -> CallResult<(TransferResult,)> {
+    pub async fn icrc_1_transfer(&self, arg0: &TransferArg) -> CallResult<(TransferResult,)> {
         ic_cdk::call(self.0, "icrc1_transfer", (arg0,)).await
     }
     pub async fn icrc_21_canister_call_consent_message(
         &self,
-        arg0: Icrc21ConsentMessageRequest,
+        arg0: &Icrc21ConsentMessageRequest,
     ) -> CallResult<(Icrc21ConsentMessageResponse,)> {
         ic_cdk::call(self.0, "icrc21_canister_call_consent_message", (arg0,)).await
     }
-    pub async fn icrc_2_allowance(&self, arg0: AllowanceArgs) -> CallResult<(Allowance,)> {
+    pub async fn icrc_2_allowance(&self, arg0: &AllowanceArgs) -> CallResult<(Allowance,)> {
         ic_cdk::call(self.0, "icrc2_allowance", (arg0,)).await
     }
-    pub async fn icrc_2_approve(&self, arg0: ApproveArgs) -> CallResult<(ApproveResult,)> {
+    pub async fn icrc_2_approve(&self, arg0: &ApproveArgs) -> CallResult<(ApproveResult,)> {
         ic_cdk::call(self.0, "icrc2_approve", (arg0,)).await
     }
-    pub async fn icrc_2_transfer_from(&self, arg0: TransferFromArgs) -> CallResult<(TransferFromResult,)> {
+    pub async fn icrc_2_transfer_from(&self, arg0: &TransferFromArgs) -> CallResult<(TransferFromResult,)> {
         ic_cdk::call(self.0, "icrc2_transfer_from", (arg0,)).await
     }
-    pub async fn icrc_3_get_archives(&self, arg0: GetArchivesArgs) -> CallResult<(GetArchivesResult,)> {
+    pub async fn icrc_3_get_archives(&self, arg0: &GetArchivesArgs) -> CallResult<(GetArchivesResult,)> {
         ic_cdk::call(self.0, "icrc3_get_archives", (arg0,)).await
     }
-    pub async fn icrc_3_get_blocks(&self, arg0: Vec<GetBlocksArgs>) -> CallResult<(GetBlocksResult,)> {
+    pub async fn icrc_3_get_blocks(&self, arg0: &Vec<GetBlocksArgs>) -> CallResult<(GetBlocksResult,)> {
         ic_cdk::call(self.0, "icrc3_get_blocks", (arg0,)).await
     }
     pub async fn icrc_3_get_tip_certificate(&self) -> CallResult<(Option<Icrc3DataCertificate>,)> {
