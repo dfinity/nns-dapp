@@ -60,6 +60,8 @@ describe("ICManagementCanister", () => {
           request_payload_bytes_total: 3n,
           response_payload_bytes_total: 4n,
         },
+        ready_for_migration: true,
+        version: 42n,
       };
       const service = mock<IcManagementService>();
       service.canister_status.mockResolvedValue(response);
