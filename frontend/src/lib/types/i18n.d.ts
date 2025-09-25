@@ -1541,6 +1541,7 @@ interface I18nStatus_description {
 
 interface I18nActions {
   RegisterKnownNeuron: string;
+  DeregisterKnownNeuron: string;
   NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
@@ -1560,6 +1561,7 @@ interface I18nActions {
 
 interface I18nActions_description {
   RegisterKnownNeuron: string;
+  DeregisterKnownNeuron: string;
   NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
