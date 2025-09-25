@@ -129,7 +129,7 @@
 
 <button
   data-tid="reporting-neurons-button-component"
-  on:click={exportNeurons}
+  onclick={exportNeurons}
   class="primary with-icon"
   disabled={loading}
   aria-label={$i18n.reporting.neurons_download}

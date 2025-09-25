@@ -237,7 +237,7 @@ interface I18nReporting {
   amount: string;
   balance: string;
   from: string;
-  numer_of_transactions: string;
+  number_of_transactions: string;
   timestamp: string;
   to: string;
   transaction_index: string;

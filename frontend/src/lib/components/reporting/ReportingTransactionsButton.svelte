@@ -139,7 +139,7 @@
         fileName,
       });
     } catch (error) {
-      console.error("Error exporting neurons:", error);
+      console.error("Error exporting transactions:", error);
 
       if (error instanceof FileSystemAccessError) {
         toastsError({

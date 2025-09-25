@@ -277,7 +277,7 @@ export const buildTransactionsDatasets = ({
         value: principal.toText() ?? i18n.core.not_applicable,
       },
       {
-        label: i18n.reporting.numer_of_transactions,
+        label: i18n.reporting.number_of_transactions,
         value: transactions.length.toString(),
       },
       {
