@@ -135,7 +135,7 @@ describe("ReportingTransactionsButton", () => {
       "Transactions,2",
       'Export Date Time,"Oct 14, 2023 12:00 AM"',
       "",
-      ",,TX Index,Project Name,Symbol,Account Id,Neuron Id,To,From,TX Type,Amount(ICP),Date Time",
+      ",,Index,Project Name,Symbol,Account Id,Neuron Id,To,From,Type,Amount(ICP),Date Time",
       ',,1234,Internet Computer,ICP,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
       ',,1,Internet Computer,ICP,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
     ].join("\n");
