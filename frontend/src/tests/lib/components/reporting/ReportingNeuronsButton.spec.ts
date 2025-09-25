@@ -73,7 +73,7 @@ describe("ReportingNeuronsButton", () => {
     return po;
   };
 
-  it("should name the file with the date of the export and the rage selected", async () => {
+  it("should name the file with the date of the export and the range selected", async () => {
     const po = renderComponent();
 
     expect(spySaveGeneratedCsv).toBeCalledTimes(0);
