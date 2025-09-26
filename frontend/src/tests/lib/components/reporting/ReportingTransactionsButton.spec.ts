@@ -110,7 +110,7 @@ describe("ReportingTransactionsButton", () => {
     await po.click();
     await runResolvedPromises();
 
-    const expectedFileName = `icp_transactions_export_20231014`;
+    const expectedFileName = `icp_transactions_export_20231014_all`;
     expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
@@ -128,16 +128,16 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     const expectedCsvContent = [
-      "Account ID,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+      "Account Id,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
       "Account Name,Main",
       "Balance(ICP),1'234'567.8901",
-      "Controller Principal ID,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+      "Controller Principal Id,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
       "Transactions,2",
       'Export Date Time,"Oct 14, 2023 12:00 AM"',
       "",
-      ",,TX ID,Project Name,Symbol,To,From,TX Type,Amount(ICP),Date Time",
-      ',,1234,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
-      ',,1,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
+      ",,Index,Project Name,Symbol,Account Id,Neuron Id,To,From,Type,Amount(ICP),Date Time",
+      ',,1234,Internet Computer,ICP,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
+      ',,1,Internet Computer,ICP,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
     ].join("\n");
 
     expect(spySaveGeneratedCsv).toBeCalledWith(
@@ -170,6 +170,9 @@ describe("ReportingTransactionsButton", () => {
                 id: "1234",
                 project: "Internet Computer",
                 symbol: "ICP",
+                accountId:
+                  "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+                neuronId: undefined,
                 timestamp: "Jan 1, 2023 12:00 AM",
                 to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
                 type: "Sent",
@@ -177,7 +180,7 @@ describe("ReportingTransactionsButton", () => {
             ]),
             metadata: [
               {
-                label: "Account ID",
+                label: "Account Id",
                 value:
                   "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
               },
@@ -190,7 +193,7 @@ describe("ReportingTransactionsButton", () => {
                 value: "1'234'567.8901",
               },
               {
-                label: "Controller Principal ID",
+                label: "Controller Principal Id",
                 value:
                   "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
               },

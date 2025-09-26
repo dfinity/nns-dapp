@@ -38,8 +38,8 @@
           <span class="label">{option.label}</span>
         </label>
       {/each}
-    </div></div
-  >
+    </div>
+  </div>
 </fieldset>
 
 <style lang="scss">

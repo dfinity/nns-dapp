@@ -208,6 +208,8 @@ export type TransactionsCsvData = {
   id: string;
   project: string;
   symbol: string;
+  accountId: string;
+  neuronId?: string;
   to: string | undefined;
   from: string | undefined;
   type: string;
@@ -229,7 +231,9 @@ export const buildTransactionsDatasets = ({
   swapCanisterAccounts: Set<string>;
 }): CsvDataset<TransactionsCsvData>[] => {
   return transactions.map(({ entity, transactions }) => {
-    const accountIdentifier = entity.identifier;
+    const accountId = entity.identifier;
+    let neuronId: string;
+
     const amount = TokenAmountV2.fromUlps({
       amount: entity.balance,
       token: ICPToken,
@@ -238,7 +242,7 @@ export const buildTransactionsDatasets = ({
     const metadata = [
       {
         label: i18n.reporting.account_id,
-        value: accountIdentifier,
+        value: accountId,
       },
     ];
 
@@ -250,9 +254,10 @@ export const buildTransactionsDatasets = ({
     }
 
     if (entity.type === "neuron") {
+      neuronId = wrapAsExcelStringFormula(entity.originalData.neuronId);
       metadata.push({
         label: i18n.reporting.neuron_id,
-        value: wrapAsExcelStringFormula(entity.originalData.neuronId),
+        value: neuronId,
       });
     }
 
@@ -272,7 +277,7 @@ export const buildTransactionsDatasets = ({
         value: principal.toText() ?? i18n.core.not_applicable,
       },
       {
-        label: i18n.reporting.numer_of_transactions,
+        label: i18n.reporting.number_of_transactions,
         value: transactions.length.toString(),
       },
       {
@@ -292,7 +297,7 @@ export const buildTransactionsDatasets = ({
           timestampNanos,
           transactionDirection,
         } = mapIcpTransactionToReport({
-          accountIdentifier,
+          accountIdentifier: accountId,
           transaction,
           neuronAccounts,
           swapCanisterAccounts,
@@ -308,6 +313,8 @@ export const buildTransactionsDatasets = ({
           id: transaction.id.toString(),
           project: ICPToken.name,
           symbol: ICPToken.symbol,
+          accountId,
+          neuronId,
           to,
           from,
           type: transactionName({ type, i18n }),
