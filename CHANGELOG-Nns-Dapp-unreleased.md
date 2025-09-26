@@ -14,7 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-* Support for the new proposal action `DereisterKnownNeuron`.
+- Support for the new proposal action `DereisterKnownNeuron`.
+- Two new columns for the transactions report `accountId` and `neuronId`.
 
 #### Changed
 
