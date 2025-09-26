@@ -4,20 +4,49 @@
 
   type Props = {
     period: ReportingPeriod;
+    customFrom?: string;
+    customTo?: string;
   };
-  let { period = $bindable() }: Props = $props();
+  let {
+    period = $bindable(),
+    customFrom = $bindable(),
+    customTo = $bindable(),
+  }: Props = $props();
 
   const options: Array<{
     value: ReportingPeriod;
     label: string;
   }> = [
     { value: "all", label: $i18n.reporting.range_filter_all },
-    { value: "last-year", label: $i18n.reporting.range_last_year },
     { value: "year-to-date", label: $i18n.reporting.range_year_to_date },
+    { value: "last-year", label: $i18n.reporting.range_last_year },
+    { value: "custom", label: $i18n.reporting.range_custom },
   ];
 
   function handleChange(value: ReportingPeriod) {
     period = value;
+  }
+
+  const isCustom = () => period === "custom";
+
+  const formatLocalDateYmd = (date: Date): string => {
+    const y = date.getFullYear();
+    const m = (date.getMonth() + 1).toString().padStart(2, "0");
+    const d = date.getDate().toString().padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  };
+  const today = formatLocalDateYmd(new Date());
+
+  function handleStartDateChange(value: string) {
+    customFrom = value;
+    if (!value) return;
+    const [y, m, d] = value.split("-").map((v) => Number(v));
+    if (!y || m === undefined || !d) return;
+    // Add one year using local time to match input semantics
+    const tentative = new Date(y + 1, m - 1, d);
+    const now = new Date();
+    const capped = tentative > now ? now : tentative;
+    customTo = formatLocalDateYmd(capped);
   }
 </script>
 
@@ -39,6 +68,31 @@
         </label>
       {/each}
     </div>
+
+    {#if isCustom()}
+      <div class="custom-range">
+        <label>
+          <span>{$i18n.reporting.custom_start_date}</span>
+          <input
+            type="date"
+            value={customFrom}
+            max={customTo || today}
+            onchange={(e) =>
+              handleStartDateChange((e.target as HTMLInputElement).value)}
+          />
+        </label>
+        <label>
+          <span>{$i18n.reporting.custom_end_date}</span>
+          <input
+            type="date"
+            value={customTo}
+            min={customFrom || ""}
+            max={today}
+            onchange={(e) => (customTo = (e.target as HTMLInputElement).value)}
+          />
+        </label>
+      </div>
+    {/if}
   </div>
 </fieldset>
 
@@ -98,5 +152,11 @@
         }
       }
     }
+  }
+
+  .custom-range {
+    display: flex;
+    gap: var(--padding-2x);
+    flex-wrap: wrap;
   }
 </style>

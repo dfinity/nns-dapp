@@ -17,8 +17,9 @@
   } from "$lib/utils/reporting.save-csv-to-file.utils";
   import {
     buildTransactionsDatasets,
-    convertPeriodToNanosecondRange,
+    buildTransactionsDateRange,
     generateCsvFileToSave,
+    isCustomRangeTooLong,
     type CsvHeader,
     type TransactionsCsvData,
   } from "$lib/utils/reporting.utils";
@@ -29,8 +30,10 @@
 
   type Props = {
     period: ReportingPeriod;
+    customFrom?: string;
+    customTo?: string;
   };
-  const { period }: Props = $props();
+  let { period, customFrom, customTo }: Props = $props();
 
   const identity = $derived($authStore.identity);
   const nnsAccounts = $derived($nnsAccountsListStore);
@@ -41,6 +44,33 @@
     $swapCanisterAccountsStore ?? new Set()
   );
   let loading = $state(false);
+
+  const MAX_CUSTOM_DAYS = 366;
+  const isCustomInvalid = $derived(
+    period === "custom" && !(customFrom && customTo)
+  );
+  const isCustomTooLong = $derived(
+    period === "custom" &&
+      isCustomRangeTooLong({ customFrom, customTo, maxDays: MAX_CUSTOM_DAYS })
+  );
+
+  const isCustomOrderInvalid = $derived(() => {
+    if (period !== "custom" || !customFrom || !customTo) return false;
+    const [fy, fm, fd] = customFrom.split("-").map(Number);
+    const [ty, tm, td] = customTo.split("-").map(Number);
+    const fromMs = Date.UTC(fy, fm - 1, fd);
+    const toMs = Date.UTC(ty, tm - 1, td);
+    return fromMs > toMs;
+  });
+
+  const isDisabled = $derived(() => {
+    if (loading) return true;
+    if (period !== "custom") return false;
+    if (!(customFrom && customTo)) return true;
+    if (isCustomOrderInvalid()) return true;
+    if (isCustomTooLong) return true;
+    return false;
+  });
 
   const fetchAllNnsNeuronsAndSortThemByStake = async (
     identity: Identity
@@ -55,6 +85,18 @@
   };
 
   const exportIcpTransactions = async () => {
+    if (isCustomInvalid) {
+      toastsError({ labelKey: "reporting.error_custom_range_missing" });
+      return;
+    }
+    if (isCustomOrderInvalid()) {
+      toastsError({ labelKey: "reporting.error_custom_range_order" });
+      return;
+    }
+    if (isCustomTooLong) {
+      toastsError({ labelKey: "reporting.error_range_too_long" });
+      return;
+    }
     try {
       loading = true;
       startBusy({
@@ -74,7 +116,11 @@
       );
 
       const entities = [...nnsAccounts, ...nnsNeurons];
-      const range = convertPeriodToNanosecondRange(period);
+      const range = buildTransactionsDateRange({
+        period,
+        customFrom,
+        customTo,
+      });
       const transactions = await getAccountTransactionsConcurrently({
         entities,
         identity: signIdentity,
@@ -165,7 +211,7 @@
   data-tid="reporting-transactions-button-component"
   onclick={exportIcpTransactions}
   class="primary with-icon"
-  disabled={loading}
+  disabled={isDisabled()}
   aria-label={$i18n.reporting.transactions_download}
 >
   <IconDown />

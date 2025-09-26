@@ -240,7 +240,13 @@
     "range_filter_title": "Reporting Date Range",
     "range_filter_all": "All transactions",
     "range_last_year": "Last year",
-    "range_year_to_date": "Year to date"
+    "range_year_to_date": "Year to date",
+    "range_custom": "Custom",
+    "custom_start_date": "Start date",
+    "custom_end_date": "End date",
+    "error_custom_range_missing": "Please select both start and end dates.",
+    "error_range_too_long": "The selected date range is too long. Maximum is 1 year.",
+    "error_custom_range_order": "Start date must be on or before end date."
   },
   "auth": {
     "login": "Sign in with Internet Identity",

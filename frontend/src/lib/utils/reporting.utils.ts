@@ -404,7 +404,7 @@ export const convertPeriodToNanosecondRange = (
   period: ReportingPeriod
 ): TransactionsDateRange => {
   const now = new Date();
-  const currentYear = now.getFullYear();
+  const currentYear = now.getUTCFullYear();
   const toNanoseconds = (milliseconds: number): bigint =>
     BigInt(milliseconds) * BigInt(1_000_000);
 
@@ -414,13 +414,96 @@ export const convertPeriodToNanosecondRange = (
 
     case "last-year":
       return {
-        from: toNanoseconds(new Date(currentYear - 1, 0, 1).getTime()),
-        to: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
+        from: toNanoseconds(Date.UTC(currentYear - 1, 0, 1)),
+        to: toNanoseconds(Date.UTC(currentYear, 0, 1)),
       };
 
     case "year-to-date":
       return {
-        from: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
+        from: toNanoseconds(Date.UTC(currentYear, 0, 1)),
       };
   }
+};
+
+// Date helpers and custom range utilities
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+const NANOSECONDS_PER_MILLISECOND = BigInt(1_000_000);
+const NANOSECONDS_PER_DAY =
+  BigInt(MILLISECONDS_PER_DAY) * NANOSECONDS_PER_MILLISECOND;
+
+const millisecondsToNanoseconds = (ms: number): bigint =>
+  BigInt(ms) * NANOSECONDS_PER_MILLISECOND;
+
+const startOfUtcDayMs = (
+  year: number,
+  monthZeroBased: number,
+  day: number
+): number => Date.UTC(year, monthZeroBased, day);
+
+const parseDateInputToStartOfDayUtcMs = (yyyyMmDd: string): number | null => {
+  if (!yyyyMmDd) return null;
+  const [y, m, d] = yyyyMmDd.split("-").map((v) => Number(v));
+  if (!y || m === undefined || !d) return null;
+  return startOfUtcDayMs(y, m - 1, d);
+};
+
+export const isCustomRangeTooLong = ({
+  customFrom,
+  customTo,
+  maxDays = 366,
+}: {
+  customFrom?: string;
+  customTo?: string;
+  maxDays?: number;
+}): boolean => {
+  if (!customFrom || !customTo) return false;
+
+  const fromMs = parseDateInputToStartOfDayUtcMs(customFrom);
+  const toStartMs = parseDateInputToStartOfDayUtcMs(customTo);
+  if (fromMs === null || toStartMs === null) return false;
+
+  // Exclusive end
+  const toExclusiveMs = toStartMs + MILLISECONDS_PER_DAY;
+  if (fromMs >= toExclusiveMs) return false;
+
+  const fromNs = millisecondsToNanoseconds(fromMs);
+  const toExclusiveNs = millisecondsToNanoseconds(toExclusiveMs);
+  const durationNs = toExclusiveNs - fromNs;
+
+  return durationNs > BigInt(maxDays) * NANOSECONDS_PER_DAY;
+};
+
+export const buildTransactionsDateRange = ({
+  period,
+  customFrom,
+  customTo,
+}: {
+  period: ReportingPeriod;
+  customFrom?: string;
+  customTo?: string;
+}): TransactionsDateRange => {
+  if (period !== "custom") {
+    return convertPeriodToNanosecondRange(period);
+  }
+
+  const range: TransactionsDateRange = {};
+  const fromMs = customFrom
+    ? parseDateInputToStartOfDayUtcMs(customFrom)
+    : null;
+  const toStartMs = customTo ? parseDateInputToStartOfDayUtcMs(customTo) : null;
+
+  if (fromMs !== null && toStartMs !== null && fromMs > toStartMs) {
+    // If start is after end, return empty range; caller should validate and prevent export
+    return {};
+  }
+
+  if (fromMs !== null) {
+    range.from = millisecondsToNanoseconds(fromMs);
+  }
+  if (toStartMs !== null) {
+    // Exclusive end: add one day
+    range.to = millisecondsToNanoseconds(toStartMs + MILLISECONDS_PER_DAY);
+  }
+
+  return range;
 };
