@@ -250,6 +250,12 @@ interface I18nReporting {
   range_filter_all: string;
   range_last_year: string;
   range_year_to_date: string;
+  range_custom: string;
+  custom_start_date: string;
+  custom_end_date: string;
+  error_custom_range_missing: string;
+  error_range_too_long: string;
+  error_custom_range_order: string;
 }
 
 interface I18nAuth {
