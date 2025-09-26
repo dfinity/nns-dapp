@@ -103,7 +103,7 @@ type TestStakingRewardCalcParams = {
       >;
     };
   };
-  fxRates: Record<string, number>;
+  fxRates: Record<string, number> | "error";
   governanceMetrics: {
     metrics: Pick<GovernanceCachedMetrics, "totalSupplyIcp">;
   };
@@ -160,6 +160,12 @@ describe("neuron-utils", () => {
     expect(
       roundToDecimals(getRewardData(params).icpOnly.maturityEstimateWeek, 2)
     ).toBe(0);
+  });
+
+  it("Errors when some condition is not met", () => {
+    // FX provider fails
+    params.fxRates = "error";
+    expect(() => getRewardData(params)).toThrow();
   });
 
   //////////////////
