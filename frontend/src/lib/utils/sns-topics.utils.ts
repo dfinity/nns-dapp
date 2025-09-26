@@ -11,7 +11,6 @@ import type {
   UnknownTopic,
 } from "$lib/types/sns-aggregator";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-import type { Principal } from "@dfinity/principal";
 import type {
   SnsNervousSystemFunction,
   SnsNeuron,
@@ -24,6 +23,7 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export const snsTopicToTopicKey = (
   topic: SnsTopic | UnknownTopic

@@ -28,12 +28,12 @@ import {
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { Principal } from "@dfinity/principal";
 import type {
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsTopic,
 } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("sns-topics utils", () => {

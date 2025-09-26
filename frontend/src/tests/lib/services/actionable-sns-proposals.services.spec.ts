@@ -15,7 +15,6 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
-import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
@@ -28,6 +27,7 @@ import {
   type SnsNeuronId,
   type SnsProposalData,
 } from "@dfinity/sns";
+import type { Principal } from "@icp-sdk/core/principal";
 import type { MockInstance } from "@vitest/spy";
 import { get } from "svelte/store";
 

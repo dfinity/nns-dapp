@@ -16,7 +16,7 @@
   } from "@dfinity/sns";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
-  import { Principal } from "@dfinity/principal";
+  import { Principal } from "@icp-sdk/core/principal";
   import { get } from "svelte/store";
 
   export let proposalData: SnsProposalData;

@@ -4,7 +4,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenFormPo } from "$tests/page-objects/ImportTokenForm.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 
 describe("ImportTokenForm", () => {
   const renderComponent = (props: {

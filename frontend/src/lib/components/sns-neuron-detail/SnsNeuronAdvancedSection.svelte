@@ -20,7 +20,7 @@
     Section,
   } from "@dfinity/gix-components";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
 

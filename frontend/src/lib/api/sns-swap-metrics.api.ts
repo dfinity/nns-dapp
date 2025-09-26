@@ -1,5 +1,5 @@
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export const querySnsSwapMetrics = async ({
   swapCanisterId,

@@ -3,9 +3,9 @@ import type {
   _SERVICE as TVLService,
   TvlResult,
 } from "$lib/canisters/tvl/tvl.types";
-import type { Agent } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
 import type { QueryParams } from "@dfinity/utils";
+import type { Agent } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export interface TVLCanisterOptions {
   // The agent to use when communicating with the governance canister.

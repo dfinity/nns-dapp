@@ -15,7 +15,7 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("tokens.derived", () => {

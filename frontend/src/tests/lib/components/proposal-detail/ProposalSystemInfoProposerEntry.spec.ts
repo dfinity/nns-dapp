@@ -2,7 +2,7 @@ import * as agent from "$lib/api/agent.api";
 import ProposalSystemInfoProposerEntry from "$lib/components/proposal-detail/ProposalSystemInfoProposerEntry.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import type { HttpAgent } from "@dfinity/agent";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 

@@ -4,7 +4,7 @@ import {
   getCurrentIdentity,
 } from "$lib/services/auth.services";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { Identity } from "@dfinity/agent";
+import type { Identity } from "@icp-sdk/core/agent";
 
 export type QueryAndUpdateOnResponse<R> = (options: {
   certified: boolean;

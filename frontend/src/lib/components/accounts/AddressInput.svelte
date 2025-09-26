@@ -4,7 +4,7 @@
   import type { TransactionNetwork } from "$lib/types/transaction";
   import { invalidAddress } from "$lib/utils/accounts.utils";
   import { IconQRCodeScanner } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher } from "svelte";
 
   export let address = "";

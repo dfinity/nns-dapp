@@ -3,7 +3,7 @@ import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { createSummary } from "$tests/mocks/sns-projects.mock";
 import { LaunchProjectCardPo } from "$tests/page-objects/LaunchProjectCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
 describe("LaunchProjectCard", () => {

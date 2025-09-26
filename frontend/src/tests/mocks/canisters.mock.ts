@@ -9,7 +9,7 @@ import {
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import type { SelectCanisterDetailsStore } from "$lib/types/canister-detail.context";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { writable } from "svelte/store";
 
 export const mockCanisterId = Principal.fromText("ryjl3-tyaaa-aaaaa-aaaba-cai");

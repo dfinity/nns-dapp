@@ -40,7 +40,7 @@
   import { isStakingRewardDataReady } from "$lib/utils/staking-rewards.utils";
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import { Island } from "@dfinity/gix-components";
-  import { Principal } from "@dfinity/principal";
+  import { Principal } from "@icp-sdk/core/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     isNullish,

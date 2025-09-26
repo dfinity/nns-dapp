@@ -1,6 +1,6 @@
 import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
-import type { Agent } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
+import type { Agent } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export interface NNSDappCanisterOptions {
   // The agent to use when communicating with the governance canister.

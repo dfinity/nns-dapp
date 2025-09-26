@@ -28,7 +28,7 @@
   } from "$lib/types/sns-neuron-detail.modal";
   import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
   import type { E8s, NeuronState } from "@dfinity/nns";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type {
     SnsNervousSystemParameters,
     SnsNeuron,

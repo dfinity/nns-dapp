@@ -5,7 +5,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isUniverseNns } from "$lib/utils/universe.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import { Principal } from "@dfinity/principal";
+  import { Principal } from "@icp-sdk/core/principal";
   import { cubicOut } from "svelte/easing";
   import { scale } from "svelte/transition";
 

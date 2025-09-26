@@ -10,7 +10,7 @@
     CanisterDetailModalRemoveController,
     CanisterDetailModalType,
   } from "$lib/types/canister-detail.modal";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
 
   let modal: CanisterDetailModal | undefined = undefined;
   const close = () => (modal = undefined);

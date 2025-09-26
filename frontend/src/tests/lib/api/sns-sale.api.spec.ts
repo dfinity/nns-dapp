@@ -16,7 +16,6 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
 import type { SnsWrapper } from "@dfinity/sns";
 import * as dfinitySns from "@dfinity/sns";
 import {
@@ -24,6 +23,7 @@ import {
   UnsupportedMethodError,
   type SnsGetAutoFinalizationStatusResponse,
 } from "@dfinity/sns";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");

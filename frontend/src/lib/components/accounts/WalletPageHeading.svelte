@@ -10,7 +10,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatTokenV2 } from "$lib/utils/token.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
 
   export let balance: TokenAmountV2 | undefined = undefined;

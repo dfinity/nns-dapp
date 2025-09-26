@@ -14,12 +14,12 @@ import {
   mockCkBTCMinterInfo,
   mockUpdateBalanceOk,
 } from "$tests/mocks/ckbtc-minter.mock";
-import type { HttpAgent } from "@dfinity/agent";
 import {
   CkBTCMinterCanister,
   type RetrieveBtcOk,
   type RetrieveBtcStatusV2WithId,
 } from "@dfinity/ckbtc";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-minter api", () => {

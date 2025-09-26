@@ -1,7 +1,7 @@
 import { querySnsSwapMetrics } from "$lib/api/sns-swap-metrics.api";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { parseSnsSwapSaleBuyerCount } from "$lib/utils/sns.utils";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 /**

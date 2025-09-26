@@ -9,7 +9,7 @@ import {
   ICManagementCanister as ICMgmtCanister,
   type CanisterStatusResponse,
 } from "@dfinity/ic-management";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 
 /**
  * The ICManagementCanister was initially implemented here, but it has since been moved to ic-js and packaged as a standalone library.

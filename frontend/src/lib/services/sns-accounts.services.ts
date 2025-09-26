@@ -2,7 +2,7 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
 import { loadAccounts } from "$lib/services/icrc-accounts.services";
 import type { QueryAndUpdateStrategy } from "$lib/services/utils.services";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 export const loadSnsAccounts = async ({

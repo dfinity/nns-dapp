@@ -11,7 +11,7 @@
   import type { SnsSummaryMetadata } from "$lib/types/sns";
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { snsProjectDashboardUrl } from "$lib/utils/projects.utils";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { isNullish } from "@dfinity/utils";
   import { getContext } from "svelte";

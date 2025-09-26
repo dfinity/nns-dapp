@@ -8,9 +8,9 @@ import { authStore } from "$lib/stores/auth.store";
 import * as busyStore from "$lib/stores/busy.store";
 import * as routeUtils from "$lib/utils/route.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { AnonymousIdentity } from "@dfinity/agent";
-import { AuthClient, IdbStorage } from "@dfinity/auth-client";
 import { toastsStore } from "@dfinity/gix-components";
+import { AuthClient, IdbStorage } from "@icp-sdk/auth/client";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { waitFor } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 

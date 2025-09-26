@@ -6,8 +6,8 @@ import type {
 import { idlFactory as certifiedIdlFactory } from "$lib/canisters/tvl/tvl.certified.idl";
 import { idlFactory } from "$lib/canisters/tvl/tvl.idl";
 import type { _SERVICE as TVLService } from "$lib/canisters/tvl/tvl.types";
-import { Actor } from "@dfinity/agent";
 import { Canister, nonNullish, toNullable } from "@dfinity/utils";
+import { Actor } from "@icp-sdk/core/agent";
 
 export class TVLCanister extends Canister<TVLService> {
   public static create(options: TVLCanisterOptions): TVLCanister {

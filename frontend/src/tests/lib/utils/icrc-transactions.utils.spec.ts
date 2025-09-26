@@ -29,7 +29,6 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { Cbor } from "@dfinity/agent";
 import type {
   RetrieveBtcStatusV2,
   RetrieveBtcStatusV2WithId,
@@ -41,6 +40,7 @@ import {
   TokenAmountV2,
   toNullable,
 } from "@dfinity/utils";
+import { Cbor } from "@icp-sdk/core/agent";
 
 describe("icrc-transaction utils", () => {
   const subAccount = {

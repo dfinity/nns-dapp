@@ -6,10 +6,10 @@ import {
   mockCanisterId,
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
-import type { ActorSubclass, HttpAgent } from "@dfinity/agent";
 import type { CanisterStatusResponse } from "@dfinity/ic-management";
 import type { _SERVICE as IcManagementService } from "@dfinity/ic-management/dist/candid/ic-management";
-import { Principal } from "@dfinity/principal";
+import type { ActorSubclass, HttpAgent } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
 
 describe("ICManagementCanister", () => {

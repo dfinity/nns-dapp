@@ -69,7 +69,6 @@ import {
   validTopUpAmount,
 } from "$lib/utils/neuron.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
-import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import type {
   AccountIdentifierHex,
   TransactionWithId,
@@ -82,8 +81,9 @@ import {
   type NeuronId,
   type NeuronInfo,
 } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 const getIdentityAndNeuronHelper = async (

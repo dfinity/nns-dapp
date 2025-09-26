@@ -2,7 +2,7 @@ import * as snsSwapMetrics from "$lib/api/sns-swap-metrics.api";
 import { loadSnsSwapMetrics } from "$lib/services/sns-swap-metrics.services";
 import { snsSwapMetricsStore } from "$lib/stores/sns-swap-metrics.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("sns-swap-metrics", () => {

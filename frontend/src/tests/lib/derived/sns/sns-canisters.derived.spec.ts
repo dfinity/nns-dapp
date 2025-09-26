@@ -1,6 +1,6 @@
 import { snsLedgerCanisterIdsStore } from "$lib/derived/sns/sns-canisters.derived";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("sns-canisters.derived", () => {

@@ -17,7 +17,7 @@ import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 

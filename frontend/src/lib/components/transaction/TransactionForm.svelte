@@ -23,7 +23,7 @@
     getMaxTransactionAmount,
     toTokenAmountV2,
   } from "$lib/utils/token.utils";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import {
     isNullish,
     TokenAmount,

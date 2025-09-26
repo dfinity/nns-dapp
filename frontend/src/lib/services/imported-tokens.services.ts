@@ -23,8 +23,8 @@ import {
   fromImportedTokenData,
   toImportedTokenData,
 } from "$lib/utils/imported-tokens.utils";
-import type { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 /** Load imported tokens from the `nns-dapp` backend and update the `importedTokensStore` store.

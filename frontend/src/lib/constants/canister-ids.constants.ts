@@ -1,6 +1,6 @@
 import { getEnvVars } from "$lib/utils/env-vars.utils";
-import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 
 const envVars = getEnvVars();
 

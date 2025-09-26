@@ -1,8 +1,8 @@
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { snsSelectedTransactionFeeStore } from "$lib/derived/sns/sns-selected-transaction-fee.store";
 import { snsTokenSymbolSelectedStore } from "$lib/derived/sns/sns-token-symbol-selected.store";
-import type { Principal } from "@dfinity/principal";
 import type { Token, TokenAmount } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 interface SnsNewTxData {

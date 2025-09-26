@@ -11,9 +11,9 @@ import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { smallerVersion } from "$lib/utils/utils";
-import type { Identity } from "@dfinity/agent";
 import type { NeuronInfo } from "@dfinity/nns";
 import { principalToAccountIdentifier } from "@dfinity/nns";
+import type { Identity } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 
 export interface ConnectToHardwareWalletParams {

@@ -2,8 +2,8 @@ import {
   IDENTITY_SERVICE_URL,
   OLD_MAINNET_IDENTITY_SERVICE_URL,
 } from "$lib/constants/identity.constants";
-import type { Identity } from "@dfinity/agent";
-import { AuthClient } from "@dfinity/auth-client";
+import { AuthClient } from "@icp-sdk/auth/client";
+import type { Identity } from "@icp-sdk/core/agent";
 
 /**
  * The user is signed in when the identity is not undefined and not null.

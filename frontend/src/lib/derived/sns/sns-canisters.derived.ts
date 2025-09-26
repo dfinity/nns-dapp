@@ -1,6 +1,6 @@
 import { snsSummariesStore } from "$lib/stores/sns.store";
 import type { SnsSummary } from "$lib/types/sns";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 // Holds a Record mapping root canister ids ledger canister ids.

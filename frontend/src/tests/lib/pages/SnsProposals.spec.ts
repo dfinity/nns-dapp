@@ -17,13 +17,13 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { AnonymousIdentity } from "@dfinity/agent";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";

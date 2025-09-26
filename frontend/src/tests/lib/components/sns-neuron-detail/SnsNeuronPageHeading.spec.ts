@@ -18,8 +18,8 @@ import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { NeuronState } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
+import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronPageHeading", () => {

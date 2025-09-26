@@ -5,8 +5,8 @@ import { tokensStore } from "$lib/stores/tokens.store";
 import { page } from "$mocks/$app/stores";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { Principal } from "@dfinity/principal";
 import { ICPToken } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("selectedTokenStore", () => {

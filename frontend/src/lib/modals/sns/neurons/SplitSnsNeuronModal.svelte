@@ -11,7 +11,7 @@
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
   import { busy, Modal } from "@dfinity/gix-components";
   import type { E8s } from "@dfinity/nns";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     fromDefinedNullable,

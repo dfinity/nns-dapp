@@ -2,8 +2,8 @@ import * as governanceApiService from "$lib/api-services/governance.api-service"
 import { createAgent } from "$lib/api/agent.api";
 import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
-import type { Identity } from "@dfinity/agent";
 import { GovernanceTestCanister, type Neuron } from "@dfinity/nns";
+import type { Identity } from "@icp-sdk/core/agent";
 
 const governanceTestCanister = async (identity: Identity) => {
   const agent = await createAgent({

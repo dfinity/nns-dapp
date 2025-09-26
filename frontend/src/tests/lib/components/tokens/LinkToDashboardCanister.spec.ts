@@ -1,7 +1,7 @@
 import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
 import { LinkToDashboardCanisterPo } from "$tests/page-objects/LinkToDashboardCanister.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
 describe("LinkToDashboardCanister", () => {

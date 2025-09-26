@@ -8,7 +8,7 @@ import {
   resetSnsProjects,
   setProdSnsProjects,
 } from "$tests/utils/sns.test-utils";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("SNS Parameters store", () => {

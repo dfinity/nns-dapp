@@ -7,8 +7,8 @@ import type {
 } from "$lib/types/filters";
 import { mapEntries } from "$lib/utils/utils";
 import type { CanisterIdString } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import type { SnsProposalDecisionStatus } from "@dfinity/sns";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 export interface ProjectFiltersStoreData {

@@ -1,5 +1,5 @@
 import type { SnsSummary } from "$lib/types/sns";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export type UniverseCanisterIdText = string;
 export type UniverseCanisterId = Principal;

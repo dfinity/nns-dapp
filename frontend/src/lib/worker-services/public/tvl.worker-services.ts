@@ -4,7 +4,7 @@ import type {
 } from "$lib/canisters/tvl/tvl.canister.types";
 import type { CanisterActorParams } from "$lib/types/worker";
 import { queryTVL as queryTVLApi } from "$lib/worker-api/tvl.worker-api";
-import { AnonymousIdentity } from "@dfinity/agent";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 
 export const queryTVL = async (
   params: Omit<CanisterActorParams, "identity"> & {

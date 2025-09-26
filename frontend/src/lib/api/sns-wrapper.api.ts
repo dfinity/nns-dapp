@@ -2,15 +2,15 @@ import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
-import type { Agent, Identity } from "@dfinity/agent";
 import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
 import {
   SnsGovernanceCanister,
   SnsRootCanister,
   SnsSwapCanister,
   SnsWrapper,
 } from "@dfinity/sns";
+import type { Agent, Identity } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 // The API layer should not depend on the services layer.
 // Wrappers don't really fit into the API layer, but a lot of API functions
 // currently use wrappers. Ideally they would use SNS canisters directly.

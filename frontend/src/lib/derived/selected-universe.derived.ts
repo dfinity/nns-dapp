@@ -18,8 +18,8 @@ import {
   isUniverseCkTESTBTC,
   isUniverseNns,
 } from "$lib/utils/universe.utils";
-import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 /**

@@ -33,8 +33,8 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { ckBTCUniverseMock, nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("selected universe derived stores", () => {

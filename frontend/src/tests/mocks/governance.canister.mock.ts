@@ -9,7 +9,7 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 
 // eslint-disable-next-line
 // @ts-ignore: test file

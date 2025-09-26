@@ -7,12 +7,12 @@ import {
   generateSnsProposalTopicsFilterData,
   generateSnsProposalTypesFilterData,
 } from "$lib/utils/sns-proposals.utils";
-import type { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
   type SnsNervousSystemFunction,
 } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 const defaultFiltersProjectData = {

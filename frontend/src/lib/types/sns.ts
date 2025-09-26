@@ -1,7 +1,6 @@
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UnknownTopic } from "$lib/types/sns-aggregator";
-import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
   SnsGetLifecycleResponse,
@@ -16,6 +15,7 @@ import type {
   SnsTopic,
 } from "@dfinity/sns";
 import type { FinalizeSwapResponse } from "@dfinity/sns/dist/candid/sns_swap";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export type RootCanisterId = Principal;
 export type RootCanisterIdText = string;

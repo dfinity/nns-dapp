@@ -6,8 +6,8 @@ import type {
   IcrcTransaction,
   IcrcTransactionWithId,
 } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
 import { toNullable } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 
 export interface IcrcCandidAccount {

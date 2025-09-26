@@ -15,7 +15,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { SnsNeuronPermissionType, type SnsNeuronId } from "@dfinity/sns";
   import { createEventDispatcher } from "svelte";
 

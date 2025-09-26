@@ -19,8 +19,8 @@ import {
 import { UiTransactionsListPo } from "$tests/page-objects/UiTransactionsList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { Cbor } from "@dfinity/agent";
 import type { RetrieveBtcStatusV2 } from "@dfinity/ckbtc";
+import { Cbor } from "@icp-sdk/core/agent";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/services/icrc-transactions.services", () => {

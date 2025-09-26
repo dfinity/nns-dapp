@@ -27,11 +27,11 @@ import { getCanisterCreationCmcAccountIdentifierHex } from "$lib/utils/canisters
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, pollingLimit } from "$lib/utils/utils";
-import type { Identity } from "@dfinity/agent";
 import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
-import type { Principal } from "@dfinity/principal";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 // This way, TS understands that if it's invalid, then the name is a string
 type LongName = string;

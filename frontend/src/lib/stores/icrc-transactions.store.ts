@@ -7,8 +7,8 @@ import type {
 import { getUniqueTransactions } from "$lib/utils/transactions.utils";
 import { removeKeys } from "$lib/utils/utils";
 import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 
 // Each Icrc Account - Sns or ckBTC - is an entry in this store.

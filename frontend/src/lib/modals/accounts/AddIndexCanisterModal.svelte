@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { importedTokensStore } from "$lib/stores/imported-tokens.store";
   import { Modal } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

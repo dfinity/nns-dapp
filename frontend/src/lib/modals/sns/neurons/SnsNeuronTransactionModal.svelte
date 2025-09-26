@@ -6,7 +6,7 @@
     ValidateAmountFn,
   } from "$lib/types/transaction";
   import type { WizardStep } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";
 
   export let testId: string | undefined = undefined;

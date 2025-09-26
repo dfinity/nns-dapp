@@ -45,7 +45,6 @@ import {
   pollingCancelled,
   pollingLimit,
 } from "$lib/utils/utils";
-import type { Identity } from "@dfinity/agent";
 import {
   InsufficientFundsError,
   TransferError,
@@ -54,7 +53,6 @@ import {
   TxTooOldError,
   type BlockHeight,
 } from "@dfinity/ledger-icp";
-import type { Principal } from "@dfinity/principal";
 import type {
   SnsInvalidUserAmount,
   SnsRefreshBuyerTokensResponse,
@@ -75,6 +73,8 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 let toastId: symbol | undefined;

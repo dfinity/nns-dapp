@@ -1,7 +1,7 @@
 <script lang="ts">
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import type { UserTokenData, UserTokenFailed } from "$lib/types/tokens-page";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
 
   export let userToken: UserTokenData | UserTokenFailed;
 

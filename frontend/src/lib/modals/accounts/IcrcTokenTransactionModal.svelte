@@ -9,7 +9,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { numberToUlps } from "$lib/utils/token.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

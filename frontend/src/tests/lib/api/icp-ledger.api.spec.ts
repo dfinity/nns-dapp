@@ -7,9 +7,9 @@ import {
 } from "$lib/api/icp-ledger.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
-import type { HttpAgent } from "@dfinity/agent";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 describe("icp-ledger.api", () => {

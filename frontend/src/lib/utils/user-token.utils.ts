@@ -6,7 +6,7 @@ import {
   type UserTokenFailed,
   type UserTokenLoading,
 } from "$lib/types/tokens-page";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 
 export const isUserTokenLoading = (
   userToken: UserTokenData | UserTokenLoading | UserTokenFailed

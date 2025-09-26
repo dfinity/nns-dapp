@@ -8,8 +8,8 @@ import type {
 } from "$lib/types/sns-aggregator";
 import { convertDtoToListTopicsResponse } from "$lib/utils/sns-aggregator-converters.utils";
 import { getSnsTopicsByProject } from "$lib/utils/sns-topics.utils";
-import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 export interface SnsTopicsStore {

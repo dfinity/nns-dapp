@@ -3,7 +3,7 @@ import {
   fromHexString,
   testSecp256k1Vectors,
 } from "$tests/mocks/ledger.identity.mock";
-import type { DerEncodedPublicKey } from "@dfinity/agent";
+import type { DerEncodedPublicKey } from "@icp-sdk/core/agent";
 
 // Copied from @dfinity/identity-ledgerhq
 

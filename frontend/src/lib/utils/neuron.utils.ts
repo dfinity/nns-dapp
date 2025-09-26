@@ -45,7 +45,6 @@ import {
 } from "$lib/utils/sort.utils";
 import { formatTokenE8s, numberToUlps } from "$lib/utils/token.utils";
 import { isDefined } from "$lib/utils/utils";
-import type { Identity } from "@dfinity/agent";
 import type { WizardStep } from "@dfinity/gix-components";
 import {
   IconDissolving,
@@ -78,6 +77,7 @@ import {
   nonNullish,
   secondsToDuration,
 } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
 import type { Component } from "svelte";
 
 export type StateInfo = {

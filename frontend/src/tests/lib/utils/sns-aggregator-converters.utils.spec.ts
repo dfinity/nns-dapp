@@ -21,12 +21,12 @@ import {
   convertNervousSystemParameters,
 } from "$lib/utils/sns-aggregator-converters.utils";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
-import { Principal } from "@dfinity/principal";
 import type {
   SnsNervousSystemParameters,
   SnsRewardEvent,
   SnsTopicInfo,
 } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 
 describe("sns aggregator converters utils", () => {
   describe("convertDtoData", () => {

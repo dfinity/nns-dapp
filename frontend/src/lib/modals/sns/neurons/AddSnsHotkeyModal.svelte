@@ -10,7 +10,7 @@
     type SelectedSnsNeuronContext,
   } from "$lib/types/sns-neuron-detail.context";
   import { Modal } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher, getContext } from "svelte";
 
   const { reload, store }: SelectedSnsNeuronContext =

@@ -1,7 +1,7 @@
 import { getLedgerId as getLedgerIdApi } from "$lib/api/icrc-index.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { toastsError } from "$lib/stores/toasts.store";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 
 const getLedgerId = async ({
   indexCanisterId,

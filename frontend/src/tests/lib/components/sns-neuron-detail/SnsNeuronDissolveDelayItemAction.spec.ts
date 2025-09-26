@@ -15,12 +15,12 @@ import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/SnsNeuronDissolveDelayItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   type SnsNervousSystemParameters,
   type SnsNeuron,
 } from "@dfinity/sns";
+import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
 describe("SnsNeuronDissolveDelayItemAction", () => {

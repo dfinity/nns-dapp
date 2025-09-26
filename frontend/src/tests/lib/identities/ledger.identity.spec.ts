@@ -15,7 +15,7 @@ import {
   type HttpAgentRequest,
   type ReadRequest,
   type ReadRequestType,
-} from "@dfinity/agent";
+} from "@icp-sdk/core/agent";
 import type TransportWebHID from "@ledgerhq/hw-transport-webhid";
 import type InternetComputerApp from "@zondax/ledger-icp";
 import { LedgerError } from "@zondax/ledger-icp";

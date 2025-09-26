@@ -4,8 +4,8 @@ import {
   IdbStorage,
   KEY_STORAGE_DELEGATION,
   type AuthClient,
-} from "@dfinity/auth-client";
-import { DelegationChain, isDelegationValid } from "@dfinity/identity";
+} from "@icp-sdk/auth/client";
+import { DelegationChain, isDelegationValid } from "@icp-sdk/core/identity";
 
 onmessage = ({ data }: MessageEvent<PostMessage<PostMessageData>>) => {
   const { msg } = data;

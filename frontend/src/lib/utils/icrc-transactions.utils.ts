@@ -10,7 +10,6 @@ import type {
 import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { transactionName } from "$lib/utils/transactions.utils";
-import { Cbor } from "@dfinity/agent";
 import type {
   PendingUtxo,
   RetrieveBtcStatusV2,
@@ -21,7 +20,6 @@ import type {
   IcrcTransactionWithId,
 } from "@dfinity/ledger-icrc";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
 import {
   TokenAmount,
   TokenAmountV2,
@@ -31,6 +29,8 @@ import {
   uint8ArrayToHexString,
   type Token,
 } from "@dfinity/utils";
+import { Cbor } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 const isToSelf = (transaction: IcrcTransaction): boolean => {
   if (transaction.transfer.length !== 1) {

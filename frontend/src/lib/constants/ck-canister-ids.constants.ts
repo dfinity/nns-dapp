@@ -1,5 +1,5 @@
 import type { DefaultIcrcCanisters } from "$lib/stores/default-icrc-canisters.store";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 
 // ckEURC
 const CKEURC_LEDGER_CANISTER_ID_TEXT = "pe5t5-diaaa-aaaar-qahwa-cai";

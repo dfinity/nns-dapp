@@ -29,8 +29,8 @@ import {
   type NetworkEconomics,
   type NeuronInfo,
 } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 
 type TestStakingRewardCalcParams = {
   auth: boolean;

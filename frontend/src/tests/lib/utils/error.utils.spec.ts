@@ -9,6 +9,7 @@ import {
   toToastError,
 } from "$lib/utils/error.utils";
 import en from "$tests/mocks/i18n.mock";
+import { UnsupportedMethodError } from "@dfinity/sns";
 import {
   AgentError,
   CertifiedRejectErrorCode,
@@ -16,8 +17,7 @@ import {
   ReplicaRejectCode,
   requestIdOf,
   UncertifiedRejectErrorCode,
-} from "@dfinity/agent";
-import { UnsupportedMethodError } from "@dfinity/sns";
+} from "@icp-sdk/core/agent";
 
 class TestError extends Error {
   constructor(msg: string) {

@@ -29,13 +29,13 @@ import { mockSubAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { createUserToken, icpTokenBase } from "$tests/mocks/tokens-page.mock";
 import { nnsUniverseMock } from "$tests/mocks/universe.mock";
-import { Principal } from "@dfinity/principal";
 import {
   ICPToken,
   TokenAmount,
   TokenAmountV2,
   type Token,
 } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 
 describe("token-utils", () => {
   it("should format token", () => {

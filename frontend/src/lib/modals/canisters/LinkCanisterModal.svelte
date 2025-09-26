@@ -7,7 +7,7 @@
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { errorCanisterNameMessage } from "$lib/utils/canisters.utils";
   import { Modal, busy } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
