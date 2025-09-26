@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Input from "$lib/components/ui/Input.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
@@ -6,6 +7,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import type { Account } from "$lib/types/account";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
@@ -21,6 +23,7 @@
   };
 
   let currentStep: WizardStep | undefined;
+  let memo: string = "";
 
   $: title =
     currentStep?.name === "Form"
@@ -33,7 +36,7 @@
 
   const dispatcher = createEventDispatcher();
   const transfer = async ({
-    detail: { sourceAccount, amount, destinationAddress },
+    detail: { sourceAccount, amount, destinationAddress, memo },
   }: CustomEvent<NewTransaction>) => {
     startBusy({
       initiator: "accounts",
@@ -46,6 +49,7 @@
       sourceAccount,
       destinationAddress,
       amount,
+      memo,
     });
 
     if (success) {
@@ -70,9 +74,55 @@
   bind:currentStep
   {transactionInit}
   transactionFee={$mainTransactionFeeStoreAsToken}
+  memo={memo ? BigInt(memo) : undefined}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value no-margin">
     {$i18n.accounts.icp_transaction_description}
   </p>
+  <svelte:fragment slot="additional-info-form">
+    {#if $transactionMemoOptionStore === "show"}
+      <Input
+        testId="transaction-memo-input"
+        name="memo"
+        inputType="number"
+        step={1}
+        minLength={1}
+        placeholderLabelKey={$i18n.accounts.icp_transaction_memo_label}
+        bind:value={memo}
+        autocomplete="off"
+      >
+        <span class="input-label" slot="label"
+          >{$i18n.accounts.icp_transaction_memo_label}</span
+        >
+      </Input>
+    {/if}
+  </svelte:fragment>
+  <svelte:fragment slot="additional-info-review">
+    {#if $transactionMemoOptionStore === "show" && memo}
+      <p class="summary-label">{$i18n.accounts.icp_transaction_memo}</p>
+      <p class="summary-value no-margin" data-tid="transaction-summary-memo"
+        >{memo}</p
+      >
+    {/if}
+  </svelte:fragment>
 </TransactionModal>
+
+<style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/fonts";
+
+  .input-label {
+    display: inline-block;
+    margin-top: var(--padding-2x);
+    @include fonts.small();
+    color: var(--text-description);
+  }
+
+  .summary-label {
+    color: var(--label-color);
+    margin: var(--padding) 0 0 0;
+  }
+  .summary-value {
+    color: var(--value-color);
+  }
+</style>

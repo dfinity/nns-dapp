@@ -28,6 +28,7 @@ describe("Alfred Component", () => {
     "Settings",
     "Copy principal ID",
     "Hide Balance",
+    "Show transaction memo",
     "Log Out",
   ];
 
