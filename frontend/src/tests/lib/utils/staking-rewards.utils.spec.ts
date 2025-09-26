@@ -162,7 +162,7 @@ describe("neuron-utils", () => {
     ).toBe(0);
   });
 
-  it("Errors when some condition is not met", () => {
+  it("Errors when some conditions are not met", () => {
     // FX provider fails
     params.fxRates = "error";
     expect(() => getRewardData(params)).toThrow();
