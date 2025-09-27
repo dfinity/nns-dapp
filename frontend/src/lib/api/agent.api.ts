@@ -1,5 +1,10 @@
 import { FETCH_ROOT_KEY } from "$lib/constants/environment.constants";
 import {
+  createAgent as createAgentUtil,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
+import {
   type Agent,
   type AgentLog,
   type ApiQueryResponse,
@@ -12,14 +17,9 @@ import {
   type ReadStateOptions,
   type ReadStateResponse,
   type SubmitResponse,
-} from "@dfinity/agent";
-import type { JsonObject } from "@dfinity/candid";
-import type { Principal } from "@dfinity/principal";
-import {
-  createAgent as createAgentUtil,
-  isNullish,
-  nonNullish,
-} from "@dfinity/utils";
+} from "@icp-sdk/core/agent";
+import type { JsonObject } from "@icp-sdk/core/candid";
+import type { Principal } from "@icp-sdk/core/principal";
 
 type PrincipalAsText = string;
 let agents: Record<PrincipalAsText, HttpAgent> | undefined | null = undefined;

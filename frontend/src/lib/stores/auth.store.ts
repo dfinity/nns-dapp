@@ -8,8 +8,8 @@ import {
 } from "$lib/utils/auth.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isNnsAlternativeOrigin } from "$lib/utils/env.utils";
-import type { Identity } from "@dfinity/agent";
-import type { AuthClient } from "@dfinity/auth-client";
+import type { AuthClient } from "@icp-sdk/auth/client";
+import type { Identity } from "@icp-sdk/core/agent";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 

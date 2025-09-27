@@ -7,9 +7,9 @@ import { BallotSummaryPo } from "$tests/page-objects/BallotSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
 import type { BallotInfo } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 

@@ -12,7 +12,7 @@ import { nnsUniverseMock } from "$tests/mocks/universe.mock";
 import { UniverseSummaryPo } from "$tests/page-objects/UniverseSummary.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import type { MockInstance } from "vitest";

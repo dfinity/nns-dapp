@@ -1,5 +1,5 @@
-import type { Principal } from "@dfinity/principal";
 import type { SnsGetLifecycleResponse } from "@dfinity/sns";
+import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 
 interface SnsLifecycleProjectData {

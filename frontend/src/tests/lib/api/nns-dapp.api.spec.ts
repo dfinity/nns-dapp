@@ -3,7 +3,7 @@ import { addAccount, queryAccount } from "$lib/api/nns-dapp.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
-import type { HttpAgent } from "@dfinity/agent";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 describe("nns-dapp api", () => {

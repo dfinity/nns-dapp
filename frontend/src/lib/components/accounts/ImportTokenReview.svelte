@@ -4,7 +4,7 @@
   import Logo from "$lib/components/ui/Logo.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher } from "svelte";
 
   export let ledgerCanisterId: Principal;

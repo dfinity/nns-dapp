@@ -20,12 +20,12 @@ import { ProposalNavigationPo } from "$tests/page-objects/ProposalNavigation.pag
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
 } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

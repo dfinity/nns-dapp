@@ -8,7 +8,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { NeuronState } from "@dfinity/nns";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsNeuronId } from "@dfinity/sns";
   import { createEventDispatcher } from "svelte";
 

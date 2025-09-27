@@ -11,8 +11,8 @@ import type { CanisterId } from "$lib/types/canister";
 import { formatNumber } from "$lib/utils/format.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
-import { Principal } from "@dfinity/principal";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 export const getCanisterFromStore = ({

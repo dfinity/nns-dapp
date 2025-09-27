@@ -32,14 +32,14 @@ import {
 } from "$lib/utils/error.utils";
 import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
-import type { Identity } from "@dfinity/agent";
 import {
   decodeIcrcAccount,
   encodeIcrcAccount,
   type IcrcBlockIndex,
 } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 export const getIcrcAccountIdentity = (_: Account): Promise<Identity> => {

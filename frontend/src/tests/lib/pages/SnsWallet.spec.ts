@@ -31,8 +31,8 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

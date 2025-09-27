@@ -45,7 +45,6 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import type { Agent, Identity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import {
   InsufficientFundsError,
@@ -54,7 +53,6 @@ import {
   TxDuplicateError,
   TxTooOldError,
 } from "@dfinity/ledger-icp";
-import { Principal } from "@dfinity/principal";
 import type { SnsWrapper } from "@dfinity/sns";
 import * as dfinitySns from "@dfinity/sns";
 import {
@@ -70,6 +68,8 @@ import {
   arrayOfNumberToUint8Array,
   toNullable,
 } from "@dfinity/utils";
+import type { Agent, Identity } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 

@@ -1,8 +1,8 @@
 import { LEDGER_DEFAULT_DERIVE_PATH } from "$lib/constants/ledger.constants";
 import { LedgerIdentity } from "$lib/identities/ledger.identity";
 import { Secp256k1PublicKey } from "$lib/keys/secp256k1";
-import type { Principal } from "@dfinity/principal";
 import { hexStringToUint8Array } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import type { ResponseVersion } from "@zondax/ledger-icp";
 
 export const fromHexString = (hexString: string): Uint8Array => {

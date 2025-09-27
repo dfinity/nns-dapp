@@ -1,7 +1,7 @@
 import { isSnsFinalizing } from "$lib/utils/sns.utils";
-import type { Principal } from "@dfinity/principal";
 import type { SnsGetAutoFinalizationStatusResponse } from "@dfinity/sns";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, writable, type Readable } from "svelte/store";
 
 interface SnsFinalizationStatusData {

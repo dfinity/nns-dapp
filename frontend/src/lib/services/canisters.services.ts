@@ -45,13 +45,11 @@ import {
   mapCanisterErrorToToastMessage,
   toToastError,
 } from "$lib/utils/error.utils";
-import { AnonymousIdentity } from "@dfinity/agent";
 import {
   AccountIdentifier,
   SubAccount,
   type TransactionWithId,
 } from "@dfinity/ledger-icp";
-import type { Principal } from "@dfinity/principal";
 import {
   ICPToken,
   TokenAmountV2,
@@ -60,6 +58,8 @@ import {
   nonNullish,
   principalToSubAccount,
 } from "@dfinity/utils";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 export const listCanisters = async ({

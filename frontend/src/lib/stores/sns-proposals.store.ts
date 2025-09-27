@@ -1,6 +1,6 @@
-import type { Principal } from "@dfinity/principal";
 import type { SnsProposalData } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 
 export interface ProjectProposalData {

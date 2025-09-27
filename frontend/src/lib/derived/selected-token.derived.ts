@@ -2,9 +2,9 @@ import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { selectedUniverseIdStore } from "$lib/derived/selected-universe.derived";
 import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
-import type { Principal } from "@dfinity/principal";
 import type { Token } from "@dfinity/utils";
 import { ICPToken } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 // Holds the token corresponding to the selected universe.
