@@ -824,7 +824,7 @@ describe("IcrcWallet", () => {
         expect(get(toastsStore)).toMatchObject([
           {
             level: "error",
-            text: "There was an unexpected issue while updating the imported token. test",
+            text: "There was an unexpected issue while updating the imported token.",
           },
         ]);
         expect(get(busyStore)).toEqual([]);

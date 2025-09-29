@@ -358,7 +358,7 @@ describe("icrc-accounts-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "An error occurred while loading the accounts. test",
+          text: "An error occurred while loading the accounts.",
         },
       ]);
     });
@@ -607,7 +607,7 @@ describe("icrc-accounts-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Sorry, there was an error loading the token metadata information. test",
+          text: "Sorry, there was an error loading the token metadata information.",
         },
       ]);
       expect(consoleSpy).toBeCalledWith(error);
@@ -662,7 +662,7 @@ describe("icrc-accounts-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Sorry, there was an error loading the token metadata information. test",
+          text: "Sorry, there was an error loading the token metadata information.",
         },
       ]);
       expect(consoleSpy).toBeCalledWith(error);
