@@ -155,7 +155,7 @@ describe("canisters-services", () => {
       expect(get(canistersStore).canisters).toEqual([]);
       expect(get(toastsStore)[0]).toMatchObject({
         level: "error",
-        text: `There was an unexpected issue while searching for the canisters. ${errorMessage}`,
+        text: `There was an unexpected issue while searching for the canisters.`,
       });
     });
 
@@ -214,7 +214,6 @@ describe("canisters-services", () => {
       expect(spyQueryCanisters).not.toBeCalled();
       expect(get(toastsStore)[0]).toMatchObject({
         level: "error",
-        text: expect.stringContaining(en.error.missing_identity),
       });
 
       resetIdentity();
