@@ -483,7 +483,7 @@ describe("neurons-services", () => {
 
       expect(get(definedNeuronsStore)).toEqual([]);
       expectToastError(
-        `There was an unexpected issue while searching for the neurons. ${errorMessage}`
+        `There was an unexpected issue while searching for the neurons.`
       );
     });
 
@@ -2144,9 +2144,7 @@ describe("neurons-services", () => {
         setNeuron: vi.fn(),
       });
 
-      expectToastError(
-        `An error occurred while loading the neuron. ${errorMessage}`
-      );
+      expectToastError(`An error occurred while loading the neuron.`);
     });
 
     it("should not show a toast on uncertified error", async () => {

@@ -139,7 +139,7 @@ describe("sns-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `There was an unexpected error while loading the commitment of the project. ${errorMessage}`,
+          text: `There was an unexpected error while loading the commitment of the project.`,
         },
       ]);
 
@@ -402,7 +402,7 @@ describe("sns-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `There was an unexpected error while loading the commitment of the project. ${errorMessage}`,
+          text: `There was an unexpected error while loading the commitment of the project.`,
         },
       ]);
     });

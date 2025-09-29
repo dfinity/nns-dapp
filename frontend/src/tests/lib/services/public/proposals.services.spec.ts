@@ -146,7 +146,8 @@ describe("proposals-services", () => {
       });
 
       it("show error message from api", async () => {
-        const errorMessage = "Error message from api.";
+        const errorMessage =
+          "There was an unexpected issue while searching for the proposals.";
         vi.spyOn(api, "queryProposals").mockRejectedValue(
           new Error(errorMessage)
         );
