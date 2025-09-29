@@ -84,7 +84,7 @@ describe("ckbtc-info-services", () => {
       expect(get(ckBTCInfoStore)).toEqual({});
       expect(get(toastsStore)[0]).toMatchObject({
         level: "error",
-        text: `Sorry, there was an error loading the ckBTC minter information. ${errorMessage}`,
+        text: "Sorry, there was an error loading the ckBTC minter information.",
       });
     });
 

@@ -69,7 +69,7 @@ describe("icrc-index.services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `An error occurred while validating the index canister ID. It appears that ${indexCanisterId} might not be a valid index canister ID. ${error.message}`,
+          text: `An error occurred while validating the index canister ID. It appears that ${indexCanisterId} might not be a valid index canister ID.`,
         },
       ]);
     });

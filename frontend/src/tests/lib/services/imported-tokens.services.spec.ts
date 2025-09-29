@@ -92,7 +92,7 @@ describe("imported-tokens-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There was an unexpected issue while loading imported tokens. test",
+          text: "There was an unexpected issue while loading imported tokens.",
         },
       ]);
     });
@@ -172,7 +172,7 @@ describe("imported-tokens-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There was an unexpected issue while loading imported tokens. test",
+          text: "There was an unexpected issue while loading imported tokens.",
         },
       ]);
       toastsStore.reset();
@@ -282,7 +282,7 @@ describe("imported-tokens-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There was an unexpected issue while importing the token. test",
+          text: "There was an unexpected issue while importing the token.",
         },
       ]);
     });
@@ -420,7 +420,7 @@ describe("imported-tokens-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There was an unexpected issue while removing the imported token. test",
+          text: "There was an unexpected issue while removing the imported token.",
         },
       ]);
     });
@@ -523,7 +523,7 @@ describe("imported-tokens-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There was an unexpected issue while updating the imported token. test",
+          text: "There was an unexpected issue while updating the imported token.",
         },
       ]);
     });

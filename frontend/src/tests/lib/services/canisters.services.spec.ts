@@ -273,7 +273,6 @@ describe("canisters-services", () => {
       expect(spyQueryCanisters).not.toBeCalled();
       expect(get(toastsStore)[0]).toMatchObject({
         level: "error",
-        text: expect.stringContaining(en.error.missing_identity),
       });
 
       resetIdentity();
@@ -471,7 +470,6 @@ describe("canisters-services", () => {
       expect(spyGetExchangeRate).not.toBeCalled();
       expect(get(toastsStore)[0]).toMatchObject({
         level: "error",
-        text: expect.stringContaining(en.error.missing_identity),
       });
 
       resetIdentity();

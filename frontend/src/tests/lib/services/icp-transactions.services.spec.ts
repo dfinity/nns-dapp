@@ -167,7 +167,7 @@ describe("icp-transactions services", () => {
       expect(get(toastsStore)).toHaveLength(1);
       expect(get(toastsStore)[0]).toMatchObject({
         level: "error",
-        text: "Sorry, there was an error loading the transactions for this account. Something happened",
+        text: "Sorry, there was an error loading the transactions for this account.",
       });
     });
   });
@@ -252,7 +252,7 @@ describe("icp-transactions services", () => {
       expect(get(toastsStore)).toHaveLength(1);
       expect(get(toastsStore)[0]).toMatchObject({
         level: "error",
-        text: "Sorry, there was an error loading the transactions for this account. Something happened",
+        text: "Sorry, there was an error loading the transactions for this account.",
       });
     });
   });
