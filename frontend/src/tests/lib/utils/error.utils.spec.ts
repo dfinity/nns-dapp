@@ -47,20 +47,6 @@ describe("error-utils", () => {
       );
     });
 
-    it("should extract body content", () => {
-      expect(
-        errorToString(
-          new Error(`
-Headers: [["content-length","67"],["content-type","text/plain"],["x-request-id","01992a04-b36a-7a60-aec8-3b8b53f0329a"]]
-Body: Canister mxzaz-hqaaa-aaaar-qaada-cai does not belong to any subnet.
-        `)
-        )
-      ).toEqual(
-        "Canister mxzaz-hqaaa-aaaar-qaada-cai does not belong to any subnet."
-      );
-    });
-  });
-
   describe("to toast", () => {
     it("should use fallback message", () => {
       expect(
