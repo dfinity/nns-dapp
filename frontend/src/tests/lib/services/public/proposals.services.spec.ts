@@ -160,7 +160,7 @@ describe("proposals-services", () => {
         expect(get(toastsStore)[0].text).toMatch(errorMessage);
         expect(get(toastsStore)[0]).toMatchObject({
           level: "error",
-          text: "There was an unexpected issue while searching for the proposals. Error message from api.",
+          text: "There was an unexpected issue while searching for the proposals.",
         });
       });
 
