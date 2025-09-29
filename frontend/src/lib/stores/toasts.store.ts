@@ -1,5 +1,6 @@
 import { DEFAULT_TOAST_DURATION_MILLIS } from "$lib/constants/constants";
 import type { ToastLabelKey, ToastMsg } from "$lib/types/toast";
+import { errorToString } from "$lib/utils/error.utils";
 import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
 import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
 import { stringifyJson } from "$lib/utils/utils";
@@ -61,11 +62,13 @@ export const toastsError = ({
   err,
   substitutions,
   renderAsHtml,
+  showDetails = false,
 }: {
   labelKey: ToastLabelKey;
   err?: unknown;
   substitutions?: I18nSubstitutions;
   renderAsHtml?: boolean;
+  showDetails?: boolean;
 }): symbol => {
   if (err !== undefined) {
     console.error(err);
@@ -74,9 +77,7 @@ export const toastsError = ({
   return toastsShow({
     labelKey,
     level: "error",
-    // Hiding errors detail to make the dApp more user friendly (feedback received).
-    // Leaving this part commented in case of debugging needs.
-    // detail: errorToString(err),
+    detail: showDetails ? errorToString(err) : undefined,
     substitutions,
     renderAsHtml,
   });
