@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 138714
+
+### Application
+
+#### Added
+
+- Support for the new proposal action `DeregisterKnownNeuron`.
+- Two new columns for the transactions report `accountId` and `neuronId`.
+
+#### Fixed
+
+- Minimum stake required for a neuron top-up.
+
+### Operations
+
 ## Proposal 138593
 
 ### Application
