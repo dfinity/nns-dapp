@@ -46,6 +46,7 @@ describe("error-utils", () => {
         en.error__sns.undefined_project
       );
     });
+  });
 
   describe("to toast", () => {
     it("should use fallback message", () => {
