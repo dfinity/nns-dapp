@@ -282,7 +282,7 @@ describe("ckbtc-convert-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Insufficient funds. ",
+          text: "Insufficient funds.",
         },
       ]);
     });

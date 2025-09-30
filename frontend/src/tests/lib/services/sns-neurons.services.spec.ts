@@ -572,7 +572,7 @@ describe("sns-neurons-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There was an error while staking the neuron. The caller should make sure the amount is at least the minimum stake",
+          text: "There was an error while staking the neuron.",
         },
       ]);
     });
@@ -715,7 +715,7 @@ describe("sns-neurons-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There was an error while disbursing the maturity of the neuron. Invalid account. Invalid checksum.",
+          text: "There was an error while disbursing the maturity of the neuron.",
         },
       ]);
     });
@@ -1094,7 +1094,7 @@ describe("sns-neurons-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There was an error while unfollowing the neuron. Test Error",
+          text: "There was an error while unfollowing the neuron.",
         },
       ]);
     });

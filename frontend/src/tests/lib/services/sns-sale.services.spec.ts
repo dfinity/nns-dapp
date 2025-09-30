@@ -573,7 +573,7 @@ describe("sns-api", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Sorry, the swap was already closed. Please reload the page. ",
+          text: "Sorry, the swap was already closed. Please reload the page.",
         },
       ]);
       expect(ticketFromStore()?.ticket).toEqual(null);
@@ -597,7 +597,7 @@ describe("sns-api", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Sorry, the swap is not yet open. Please reload the page. ",
+          text: "Sorry, the swap is not yet open. Please reload the page.",
         },
       ]);
       expect(ticketFromStore()?.ticket).toEqual(null);
@@ -1329,7 +1329,7 @@ describe("sns-api", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Sorry, There was an unexpected error while participating. Please refresh the page and try again. test",
+          text: "Sorry, There was an unexpected error while participating. Please refresh the page and try again.",
         },
       ]);
       expect(ticketFromStore().ticket).toEqual(null);
@@ -1354,7 +1354,7 @@ describe("sns-api", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Sorry, the account doesn't have enough funds for this transaction. ",
+          text: "Sorry, the account doesn't have enough funds for this transaction.",
         },
       ]);
       expect(ticketFromStore().ticket).toEqual(null);
@@ -1419,7 +1419,7 @@ describe("sns-api", () => {
         expect(get(toastsStore)).toMatchObject([
           {
             level: "error",
-            text: "Sorry, There was an unexpected error while participating. Please refresh and try again The token amount can only be refreshed when the canister is in the OPEN state",
+            text: "Sorry, There was an unexpected error while participating. Please refresh and try again",
           },
         ]);
         // the button/increase_participation should not be enabled

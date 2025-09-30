@@ -430,7 +430,7 @@ describe("vote-registration-services", () => {
         },
         {
           level: "error",
-          text: "Sorry, there was an unexpected error while registering the vote. Please try again later. test",
+          text: "Sorry, there was an unexpected error while registering the vote. Please try again later.",
         },
       ]);
     });
@@ -554,7 +554,7 @@ describe("vote-registration-services", () => {
         },
         {
           level: "error",
-          text: "Sorry, there was an unexpected error while registering the vote. Please try again later. The operation cannot be executed without any identity.",
+          text: "Sorry, there was an unexpected error while registering the vote. Please try again later.",
         },
       ]);
     });

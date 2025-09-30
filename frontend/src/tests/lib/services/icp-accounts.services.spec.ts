@@ -247,7 +247,7 @@ describe("icp-accounts.services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `${en.error.accounts_not_found} ${errorTest}`,
+          text: en.error.accounts_not_found,
         },
       ]);
     });
@@ -435,7 +435,6 @@ describe("icp-accounts.services", () => {
       expect(queryAccountBalanceSpy).toBeCalledTimes(2);
       expect(get(toastsStore)[0]).toMatchObject({
         level: "error",
-        text: expect.stringContaining(error.message),
       });
     });
 
@@ -559,7 +558,7 @@ describe("icp-accounts.services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Sorry, there was an unexpected error when creating your linked account, please try again. The operation cannot be executed without any identity.",
+          text: "Sorry, there was an unexpected error when creating your linked account, please try again.",
         },
       ]);
       resetIdentity();
@@ -688,7 +687,7 @@ describe("icp-accounts.services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Sorry, there was an error trying to execute the transaction. ",
+          text: "Sorry, there was an error trying to execute the transaction.",
         },
       ]);
 
@@ -705,7 +704,7 @@ describe("icp-accounts.services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Transaction is too old, could not be completed. Make sure your computer’s clock is set correctly, and try again. ",
+          text: "Transaction is too old, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
         },
       ]);
 
@@ -722,7 +721,7 @@ describe("icp-accounts.services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "Transaction was created in the future, could not be completed. Make sure your computer’s clock is set correctly, and try again. ",
+          text: "Transaction was created in the future, could not be completed. Make sure your computer’s clock is set correctly, and try again.",
         },
       ]);
 
@@ -804,7 +803,7 @@ describe("icp-accounts.services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "An error occurred while renaming your linked account. The operation cannot be executed without any identity.",
+          text: "An error occurred while renaming your linked account.",
         },
       ]);
 

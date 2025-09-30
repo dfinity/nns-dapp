@@ -209,7 +209,7 @@ describe("ImportTokenModal", () => {
       await runResolvedPromises();
 
       expectToastError(
-        "Unable to load token details using the provided ledger canister ID. Not a ledger canister"
+        "Unable to load token details using the provided ledger canister ID."
       );
 
       // Stays on the form.

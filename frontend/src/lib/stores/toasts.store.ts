@@ -62,11 +62,13 @@ export const toastsError = ({
   err,
   substitutions,
   renderAsHtml,
+  showDetails = false,
 }: {
   labelKey: ToastLabelKey;
   err?: unknown;
   substitutions?: I18nSubstitutions;
   renderAsHtml?: boolean;
+  showDetails?: boolean;
 }): symbol => {
   if (err !== undefined) {
     console.error(err);
@@ -75,7 +77,7 @@ export const toastsError = ({
   return toastsShow({
     labelKey,
     level: "error",
-    detail: errorToString(err),
+    detail: showDetails ? errorToString(err) : undefined,
     substitutions,
     renderAsHtml,
   });

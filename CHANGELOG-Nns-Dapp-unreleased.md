@@ -14,18 +14,15 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Support for the new proposal action `DeregisterKnownNeuron`.
-- Two new columns for the transactions report `accountId` and `neuronId`.
-
 #### Changed
+
+- Hide technical error details.
 
 #### Deprecated
 
 #### Removed
 
 #### Fixed
-
-- Minimum stake required for a neuron top-up.
 
 #### Security
 

@@ -57,7 +57,7 @@ describe("sns-accounts-balance.services", () => {
     expect(get(toastsStore)).toMatchObject([
       {
         level: "error",
-        text: "An error occurred while loading the accounts. ",
+        text: "An error occurred while loading the accounts.",
       },
     ]);
   });
