@@ -6,6 +6,7 @@ export type NnsNeuronModalType =
   | "disburse"
   | "dissolve"
   | "follow"
+  | "follow-by-topic"
   | "add-hotkey"
   | "split-neuron"
   | "increase-stake"
