@@ -34,28 +34,28 @@ export class ReportingDateRangeSelectorPo extends SimpleBasePageObject {
   }
 
   getCustomRangeSection() {
-    return this.getElement().byTestId("custom-range-section");
+    return this.getElement().byTestId("range-selection");
   }
 
   getFromDateInput() {
-    return this.getElement().byTestId("custom-from-date");
+    return this.getElement("from-date");
   }
 
   getToDateInput() {
-    return this.getElement().byTestId("custom-to-date");
+    return this.getElement().byTestId("to-date");
+  }
+
+  async setFromDate(date: string): Promise<void> {
+    const field = this.getFromDateInput();
+    await field.input(date, "change");
+  }
+
+  async setToDate(date: string): Promise<void> {
+    const field = this.getToDateInput();
+    await field.input(date, "change");
   }
 
   async isCustomRangeVisible(): Promise<boolean> {
     return this.getCustomRangeSection().isPresent();
-  }
-
-  async setFromDate(date: string): Promise<void> {
-    const input = this.getFromDateInput();
-    await input.typeText(date);
-  }
-
-  async setToDate(date: string): Promise<void> {
-    const input = this.getToDateInput();
-    await input.typeText(date);
   }
 }
