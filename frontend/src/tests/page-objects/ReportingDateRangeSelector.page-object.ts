@@ -32,4 +32,30 @@ export class ReportingDateRangeSelectorPo extends SimpleBasePageObject {
 
     throw new Error(`Option ${option} not found`);
   }
+
+  getCustomRangeSection() {
+    return this.getElement().byTestId("custom-range-section");
+  }
+
+  getFromDateInput() {
+    return this.getElement().byTestId("custom-from-date");
+  }
+
+  getToDateInput() {
+    return this.getElement().byTestId("custom-to-date");
+  }
+
+  async isCustomRangeVisible(): Promise<boolean> {
+    return this.getCustomRangeSection().isPresent();
+  }
+
+  async setFromDate(date: string): Promise<void> {
+    const input = this.getFromDateInput();
+    await input.typeText(date);
+  }
+
+  async setToDate(date: string): Promise<void> {
+    const input = this.getToDateInput();
+    await input.typeText(date);
+  }
 }

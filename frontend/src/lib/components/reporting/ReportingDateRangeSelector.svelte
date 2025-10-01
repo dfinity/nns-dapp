@@ -106,12 +106,13 @@
     </div>
 
     {#if isCustom()}
-      <div class="custom-range">
+      <div class="custom-range" data-tid="custom-range-section">
         <label class="date-input">
           <span>{$i18n.reporting.custom_start_date}</span>
           <input
             type="date"
             name="from"
+            data-tid="custom-from-date"
             value={customFrom}
             max={today}
             onchange={handleFromDateChange}
@@ -122,14 +123,17 @@
           <input
             type="date"
             name="to"
+            data-tid="custom-to-date"
             value={customTo}
             min={customFrom || ""}
             max={today}
             onchange={handleToDateChange}
           />
         </label>
-        <p class="range-hint">{$i18n.reporting.range_max_one_year} </p></div
-      >
+        <p class="range-hint" data-tid="range-hint"
+          >{$i18n.reporting.range_max_one_year}</p
+        >
+      </div>
     {/if}
   </div>
 </fieldset>
