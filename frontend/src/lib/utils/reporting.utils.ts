@@ -1,3 +1,4 @@
+import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type {
   ReportingPeriod,
   TransactionResults,
@@ -400,11 +401,17 @@ export const buildNeuronsDatasets = ({
   return [{ metadata, data }];
 };
 
-export const convertPeriodToNanosecondRange = (
-  period: ReportingPeriod
-): TransactionsDateRange => {
+export const convertPeriodToNanosecondRange = ({
+  period,
+  from,
+  to,
+}: {
+  period: ReportingPeriod;
+  from?: string;
+  to?: string;
+}): TransactionsDateRange => {
   const now = new Date();
-  const currentYear = now.getFullYear();
+  const currentYear = now.getUTCFullYear();
   const toNanoseconds = (milliseconds: number): bigint =>
     BigInt(milliseconds) * BigInt(1_000_000);
 
@@ -412,15 +419,29 @@ export const convertPeriodToNanosecondRange = (
     case "all":
       return {};
 
-    case "last-year":
-      return {
-        from: toNanoseconds(new Date(currentYear - 1, 0, 1).getTime()),
-        to: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
-      };
-
     case "year-to-date":
       return {
-        from: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
+        from: toNanoseconds(Date.UTC(currentYear, 0, 1)),
       };
+
+    case "last-year":
+      return {
+        from: toNanoseconds(Date.UTC(currentYear - 1, 0, 1)),
+        to: toNanoseconds(Date.UTC(currentYear, 0, 1)),
+      };
+
+    case "custom": {
+      if (isNullish(from) || isNullish(to) || from > to) {
+        return {};
+      }
+
+      const fromMs = Date.parse(from);
+      const toMs = Date.parse(to) + SECONDS_IN_DAY * 1000 - 1;
+
+      return {
+        from: toNanoseconds(fromMs),
+        to: toNanoseconds(toMs),
+      };
+    }
   }
 };

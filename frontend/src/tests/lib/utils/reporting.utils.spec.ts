@@ -440,12 +440,12 @@ describe("reporting utils", () => {
     });
 
     it('returns empty object for "all" period', () => {
-      const result = convertPeriodToNanosecondRange("all");
+      const result = convertPeriodToNanosecondRange({ period: "all" });
       expect(result).toEqual({});
     });
 
     it('returns correct range for "last-year"', () => {
-      const result = convertPeriodToNanosecondRange("last-year");
+      const result = convertPeriodToNanosecondRange({ period: "last-year" });
 
       expect(result).toEqual({
         from: BigInt(new Date("2023-01-01T00:00:00Z").getTime()) * NANOS_IN_MS,
@@ -454,10 +454,93 @@ describe("reporting utils", () => {
     });
 
     it('returns correct range for "year-to-date"', () => {
-      const result = convertPeriodToNanosecondRange("year-to-date");
+      const result = convertPeriodToNanosecondRange({
+        period: "year-to-date",
+      });
 
       expect(result).toEqual({
         from: BigInt(new Date("2024-01-01T00:00:00Z").getTime()) * NANOS_IN_MS,
+      });
+    });
+
+    describe("custom period", () => {
+      it("returns correct date range including end of day for 'to' date", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-01-01",
+          to: "2024-01-31",
+        });
+
+        expect(result).toEqual({
+          from:
+            BigInt(new Date("2024-01-01T00:00:00.000Z").getTime()) *
+            NANOS_IN_MS,
+          to:
+            BigInt(new Date("2024-01-31T23:59:59.999Z").getTime()) *
+            NANOS_IN_MS,
+        });
+      });
+
+      it("handles single day range correctly", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-01-15",
+          to: "2024-01-15",
+        });
+
+        expect(result).toEqual({
+          from:
+            BigInt(new Date("2024-01-15T00:00:00.000Z").getTime()) *
+            NANOS_IN_MS,
+          to:
+            BigInt(new Date("2024-01-15T23:59:59.999Z").getTime()) *
+            NANOS_IN_MS,
+        });
+      });
+
+      it("handles leap year correctly", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-02-28",
+          to: "2024-03-01",
+        });
+
+        expect(result).toEqual({
+          from:
+            BigInt(new Date("2024-02-28T00:00:00.000Z").getTime()) *
+            NANOS_IN_MS,
+          to:
+            BigInt(new Date("2024-03-01T23:59:59.999Z").getTime()) *
+            NANOS_IN_MS,
+        });
+      });
+
+      it("returns empty object when 'from' is missing", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          to: "2024-01-31",
+        });
+
+        expect(result).toEqual({});
+      });
+
+      it("returns empty object when 'to' is missing", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-01-01",
+        });
+
+        expect(result).toEqual({});
+      });
+
+      it("returns empty object when 'from' is after 'to'", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-01-31",
+          to: "2024-01-01",
+        });
+
+        expect(result).toEqual({});
       });
     });
   });
