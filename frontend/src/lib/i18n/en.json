@@ -240,7 +240,11 @@
     "range_filter_title": "Reporting Date Range",
     "range_filter_all": "All transactions",
     "range_last_year": "Last year",
-    "range_year_to_date": "Year to date"
+    "range_year_to_date": "Year to date",
+    "range_custom": "Custom",
+    "custom_start_date": "From Date:",
+    "custom_end_date": "To Date:",
+    "range_max_one_year": "Maximum range is one year"
   },
   "auth": {
     "login": "Sign in with Internet Identity",
@@ -622,8 +626,8 @@
   },
   "wallet": {
     "title": "Account",
-    "direction_from": "From:",
-    "direction_to": "To:",
+    "direction_from": "From",
+    "direction_to": "To",
     "no_transactions": "Transactions will appear here.",
     "icp_qrcode_aria_label": "A QR code that renders the address to receive ICP",
     "icrc_qrcode_aria_label": "A QR code that renders the address to receive $tokenSymbol",

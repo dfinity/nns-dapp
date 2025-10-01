@@ -1,30 +1,95 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import type { ReportingPeriod } from "$lib/types/reporting";
+  import { formatDateCompact } from "$lib/utils/date.utils";
 
   type Props = {
     period: ReportingPeriod;
+    customFrom?: string;
+    customTo?: string;
   };
-  let { period = $bindable() }: Props = $props();
+  let {
+    period = $bindable(),
+    customFrom = $bindable(),
+    customTo = $bindable(),
+  }: Props = $props();
 
   const options: Array<{
     value: ReportingPeriod;
     label: string;
   }> = [
     { value: "all", label: $i18n.reporting.range_filter_all },
-    { value: "last-year", label: $i18n.reporting.range_last_year },
     { value: "year-to-date", label: $i18n.reporting.range_year_to_date },
+    { value: "last-year", label: $i18n.reporting.range_last_year },
+    { value: "custom", label: $i18n.reporting.range_custom },
   ];
 
   function handleChange(value: ReportingPeriod) {
     period = value;
   }
+
+  const today = formatDateCompact(new Date(), "-");
+
+  const isCustom = () => period === "custom";
+
+  const addYears = (dateString: string, years: number): string => {
+    const date = new Date(dateString);
+    date.setFullYear(date.getFullYear() + years);
+    return formatDateCompact(date, "-");
+  };
+
+  const isRangeWithinOneYear = (fromDate: string, toDate: string): boolean => {
+    const oneYearFromStart = addYears(fromDate, 1);
+    return toDate <= oneYearFromStart;
+  };
+
+  const handleFromDateChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (!target?.value) return;
+
+    const newFromDate = target.value;
+    customFrom = newFromDate;
+
+    // If there's no 'to' date yet, set a default value
+    if (!customTo) {
+      const maxAllowedToDate = addYears(newFromDate, 1);
+      customTo = maxAllowedToDate > today ? today : maxAllowedToDate;
+    } else {
+      // If there's already a 'to' date, apply the existing validation logic
+      if (customTo < newFromDate) {
+        // If 'to' is before 'from', set 'to' to 'from'
+        customTo = newFromDate;
+      } else if (!isRangeWithinOneYear(newFromDate, customTo)) {
+        const maxToDate = addYears(newFromDate, 1);
+        customTo = maxToDate > today ? today : maxToDate;
+      }
+    }
+  };
+
+  const handleToDateChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (!target?.value) return;
+
+    const newToDate = target.value;
+    customTo = newToDate;
+
+    // If there's a 'from' date, check if range exceeds 1 year
+    if (customFrom) {
+      if (newToDate < customFrom) {
+        // If 'to' is before 'from', set 'from' to 'to'
+        customFrom = newToDate;
+      } else if (!isRangeWithinOneYear(customFrom, newToDate)) {
+        // If range exceeds 1 year, set 'from' to 'to' - 1 year
+        customFrom = addYears(newToDate, -1);
+      }
+    }
+  };
 </script>
 
 <fieldset data-tid="reporting-data-range-selector-component">
   <div class="wrapper">
     <legend>{$i18n.reporting.range_filter_title}</legend>
-    <div role="radiogroup">
+    <div role="radiogroup" class="options">
       {#each options as option}
         <label class="radio-option">
           <input
@@ -39,6 +104,33 @@
         </label>
       {/each}
     </div>
+
+    {#if isCustom()}
+      <div class="custom-range">
+        <label class="date-input">
+          <span>{$i18n.reporting.custom_start_date}</span>
+          <input
+            type="date"
+            name="from"
+            value={customFrom}
+            max={today}
+            onchange={handleFromDateChange}
+          />
+        </label>
+        <label class="date-input">
+          <span>{$i18n.reporting.custom_end_date}</span>
+          <input
+            type="date"
+            name="to"
+            value={customTo}
+            min={customFrom || ""}
+            max={today}
+            onchange={handleToDateChange}
+          />
+        </label>
+        <p class="range-hint">{$i18n.reporting.range_max_one_year} </p></div
+      >
+    {/if}
   </div>
 </fieldset>
 
@@ -61,7 +153,7 @@
         @include fonts.h5;
       }
 
-      div {
+      .options {
         display: flex;
         flex-direction: column;
         gap: var(--padding-3x);
@@ -96,6 +188,34 @@
             }
           }
         }
+      }
+    }
+
+    .custom-range {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--padding-2x);
+
+      .date-input {
+        display: flex;
+        flex-direction: column;
+        gap: var(--padding);
+        color: var(--text-description);
+
+        input[type="date"] {
+          padding: var(--padding-0_5x);
+          border: 1px solid var(--primary);
+          color: var(--text-primary);
+          background: var(--background-secondary);
+        }
+      }
+
+      .range-hint {
+        width: 100%;
+        font-size: var(--font-size-small);
+        color: var(--text-description);
+        margin: 0;
+        font-style: italic;
       }
     }
   }

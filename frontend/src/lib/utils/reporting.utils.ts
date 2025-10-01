@@ -4,6 +4,7 @@ import type {
   TransactionsDateRange,
 } from "$lib/types/reporting";
 import {
+  formatDateCompact,
   getFutureDateFromDelayInSeconds,
   nanoSecondsToDateTime,
   nowInBigIntNanoSeconds,
@@ -448,4 +449,20 @@ export const convertPeriodToNanosecondRange = ({
       };
     }
   }
+};
+
+export const buildFileName = ({
+  period,
+  from,
+  to,
+}: {
+  period: ReportingPeriod;
+  from?: string;
+  to?: string;
+}) => {
+  const prefix = "icp_transactions_export_";
+  const date = formatDateCompact(new Date());
+  const suffix =
+    period === "custom" ? `_${period}_${from}_${to}` : `_${period}`;
+  return `${prefix}${date}${suffix}`;
 };
