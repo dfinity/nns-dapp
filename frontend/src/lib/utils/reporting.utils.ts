@@ -1,4 +1,3 @@
-import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type {
   ReportingPeriod,
   TransactionResults,
@@ -411,7 +410,7 @@ export const convertPeriodToNanosecondRange = ({
   to?: string;
 }): TransactionsDateRange => {
   const now = new Date();
-  const currentYear = now.getUTCFullYear();
+  const currentYear = now.getFullYear();
   const toNanoseconds = (milliseconds: number): bigint =>
     BigInt(milliseconds) * BigInt(1_000_000);
 
