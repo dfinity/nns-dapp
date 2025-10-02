@@ -241,7 +241,7 @@ describe("daysToSeconds", () => {
       expect(formatDateCompact(date)).toBe("20240101");
     });
 
-    it("should add delimiter when providedpad single digit month and day", () => {
+    it("should add delimiter when provided and pad single digit month and day", () => {
       const date = new Date("2024-01-01");
       expect(formatDateCompact(date, "-")).toBe("2024-01-01");
     });
