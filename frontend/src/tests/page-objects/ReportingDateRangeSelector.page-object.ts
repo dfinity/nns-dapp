@@ -34,7 +34,7 @@ export class ReportingDateRangeSelectorPo extends SimpleBasePageObject {
   }
 
   getCustomRangeSection() {
-    return this.getElement().byTestId("range-selection");
+    return this.getElement("range-selection");
   }
 
   getFromDateInput() {
@@ -42,7 +42,7 @@ export class ReportingDateRangeSelectorPo extends SimpleBasePageObject {
   }
 
   getToDateInput() {
-    return this.getElement().byTestId("to-date");
+    return this.getElement("to-date");
   }
 
   async setFromDate(date: string): Promise<void> {
@@ -53,9 +53,5 @@ export class ReportingDateRangeSelectorPo extends SimpleBasePageObject {
   async setToDate(date: string): Promise<void> {
     const field = this.getToDateInput();
     await field.input(date, "change");
-  }
-
-  async isCustomRangeVisible(): Promise<boolean> {
-    return this.getCustomRangeSection().isPresent();
   }
 }

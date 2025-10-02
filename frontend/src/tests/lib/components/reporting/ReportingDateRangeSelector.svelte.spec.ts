@@ -78,14 +78,14 @@ describe("ReportingDateRangeSelector", () => {
     });
 
     const { po } = renderComponent(testProps);
-    const allOptions = await po.getAllOptions();
+    const options = await po.getAllOptions();
 
     expect(testProps.period).toBe("all");
 
-    await allOptions[3].click();
+    await options[3].click();
     await tick();
 
-    expect(await po.isCustomRangeVisible()).toBe(true);
+    expect(await po.getCustomRangeSection().isPresent()).toBe(true);
     expect(await po.getFromDateInput().isPresent()).toBe(true);
     expect(await po.getToDateInput().isPresent()).toBe(true);
   });
@@ -108,8 +108,8 @@ describe("ReportingDateRangeSelector", () => {
       await po.setFromDate("2025-01-01");
       await tick();
 
-      expect(testProps.customFrom).toBe("01-01-2025");
-      expect(testProps.customTo).toBe("2025-06-15"); // Today (mock date)
+      expect(testProps.customFrom).toBe("2025-01-01");
+      expect(testProps.customTo).toBe("2025-10-01"); // Today (mock date)
     });
 
     it("should limit 'to' date to 1 year when 'from' exceeds range", async () => {
@@ -122,7 +122,7 @@ describe("ReportingDateRangeSelector", () => {
       const { po } = renderComponent(testProps);
 
       // Set 'from' date more than 1 year ago
-      await po.setFromDate("2043-01-01");
+      await po.setFromDate("2024-01-01");
       await tick();
 
       expect(testProps.customFrom).toBe("2024-01-01");
@@ -139,7 +139,7 @@ describe("ReportingDateRangeSelector", () => {
       const { po } = renderComponent(testProps);
 
       // Change 'from' to create >1 year range
-      await po.setFromDate("2043-06-01");
+      await po.setFromDate("2024-06-01");
       await tick();
 
       expect(testProps.customFrom).toBe("2024-06-01");
@@ -150,7 +150,7 @@ describe("ReportingDateRangeSelector", () => {
       const testProps = $state({
         period: "custom" as const,
         customFrom: "2024-01-01",
-        customTo: "2043-06-01",
+        customTo: "2024-06-01",
       });
 
       const { po } = renderComponent(testProps);
