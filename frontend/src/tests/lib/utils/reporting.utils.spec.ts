@@ -476,7 +476,7 @@ describe("reporting utils", () => {
             BigInt(new Date("2024-01-01T00:00:00.000Z").getTime()) *
             NANOS_IN_MS,
           to:
-            BigInt(new Date("2024-01-31T23:59:59.999Z").getTime()) *
+            BigInt(new Date("2024-02-01T00:00:00.000Z").getTime()) *
             NANOS_IN_MS,
         });
       });
@@ -493,7 +493,7 @@ describe("reporting utils", () => {
             BigInt(new Date("2024-01-15T00:00:00.000Z").getTime()) *
             NANOS_IN_MS,
           to:
-            BigInt(new Date("2024-01-15T23:59:59.999Z").getTime()) *
+            BigInt(new Date("2024-01-16T00:00:00.000Z").getTime()) *
             NANOS_IN_MS,
         });
       });
@@ -510,7 +510,7 @@ describe("reporting utils", () => {
             BigInt(new Date("2024-02-28T00:00:00.000Z").getTime()) *
             NANOS_IN_MS,
           to:
-            BigInt(new Date("2024-03-01T23:59:59.999Z").getTime()) *
+            BigInt(new Date("2024-03-02T00:00:00.000Z").getTime()) *
             NANOS_IN_MS,
         });
       });

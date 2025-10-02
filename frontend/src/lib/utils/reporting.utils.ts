@@ -1,4 +1,3 @@
-import { SECONDS_IN_DAY } from "$lib/constants/constants";
 import type {
   ReportingPeriod,
   TransactionResults,
@@ -411,9 +410,12 @@ export const convertPeriodToNanosecondRange = ({
   to?: string;
 }): TransactionsDateRange => {
   const now = new Date();
-  const currentYear = now.getUTCFullYear();
+  const currentYear = now.getFullYear();
   const toNanoseconds = (milliseconds: number): bigint =>
     BigInt(milliseconds) * BigInt(1_000_000);
+
+  const startOfLocalDayMs = (y: number, mZero: number, d: number): number =>
+    new Date(y, mZero, d).getTime();
 
   switch (period) {
     case "all":
@@ -421,13 +423,13 @@ export const convertPeriodToNanosecondRange = ({
 
     case "year-to-date":
       return {
-        from: toNanoseconds(Date.UTC(currentYear, 0, 1)),
+        from: toNanoseconds(startOfLocalDayMs(currentYear, 0, 1)),
       };
 
     case "last-year":
       return {
-        from: toNanoseconds(Date.UTC(currentYear - 1, 0, 1)),
-        to: toNanoseconds(Date.UTC(currentYear, 0, 1)),
+        from: toNanoseconds(startOfLocalDayMs(currentYear - 1, 0, 1)),
+        to: toNanoseconds(startOfLocalDayMs(currentYear, 0, 1)),
       };
 
     case "custom": {
@@ -435,12 +437,14 @@ export const convertPeriodToNanosecondRange = ({
         return {};
       }
 
-      const fromMs = Date.parse(from);
-      const toMs = Date.parse(to) + SECONDS_IN_DAY * 1000 - 1;
+      const [fy, fm, fd] = from.split("-").map(Number);
+      const [ty, tm, td] = to.split("-").map(Number);
+      const fromMs = startOfLocalDayMs(fy, fm - 1, fd);
+      const toExclusiveMs = startOfLocalDayMs(ty, tm - 1, td + 1);
 
       return {
         from: toNanoseconds(fromMs),
-        to: toNanoseconds(toMs),
+        to: toNanoseconds(toExclusiveMs),
       };
     }
   }
