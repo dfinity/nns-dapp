@@ -32,15 +32,25 @@
 
   const isCustom = () => period === "custom";
 
+  // Build dates in LOCAL time to match <input type="date"> semantics
   const addYears = (dateString: string, years: number): string => {
-    const date = new Date(dateString);
-    date.setFullYear(date.getFullYear() + years);
-    return formatDateCompact(date, "-");
+    // Parse 'yyyy-mm-dd' parts (avoid Date.parse which treats date-only as UTC)
+    const [y, m, d] = dateString.split("-").map(Number);
+    const local = new Date(y, (m ?? 1) - 1, d ?? 1);
+    local.setFullYear(local.getFullYear() + years);
+    return formatDateCompact(local, "-");
   };
 
+  // Compare range in LOCAL time to avoid timezone drift
   const isRangeWithinOneYear = (fromDate: string, toDate: string): boolean => {
-    const oneYearFromStart = addYears(fromDate, 1);
-    return new Date(toDate) <= new Date(oneYearFromStart);
+    const [fy, fm, fd] = fromDate.split("-").map(Number);
+    const [ty, tm, td] = toDate.split("-").map(Number);
+    const fromLocal = new Date(fy, (fm ?? 1) - 1, fd ?? 1).getTime();
+    const toLocal = new Date(ty, (tm ?? 1) - 1, td ?? 1).getTime();
+    const oneYearLater = new Date(fy, (fm ?? 1) - 1, fd ?? 1);
+    oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+    const oneYearLaterMs = oneYearLater.getTime();
+    return toLocal <= oneYearLaterMs;
   };
 
   const handleFromDateChange = (event: Event) => {

@@ -44,12 +44,10 @@
   );
   let loading = $state(false);
 
-  const isDisabled = $derived(() => {
-    if (loading) return true;
-    if (period !== "custom") return false;
-    if (!(customFrom && customTo)) return true;
-    return false;
-  });
+  const isCustomPeriodIncomplete = $derived(
+    period === "custom" && (!customFrom || !customTo)
+  );
+  const isDisabled = $derived(loading || isCustomPeriodIncomplete);
 
   const fetchAllNnsNeuronsAndSortThemByStake = async (
     identity: Identity
@@ -182,7 +180,7 @@
   data-tid="reporting-transactions-button-component"
   onclick={exportIcpTransactions}
   class="primary with-icon"
-  disabled={isDisabled()}
+  disabled={isDisabled}
   aria-label={$i18n.reporting.transactions_download}
 >
   <IconDown />

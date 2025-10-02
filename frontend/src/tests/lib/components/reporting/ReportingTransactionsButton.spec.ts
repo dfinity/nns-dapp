@@ -464,7 +464,7 @@ describe("ReportingTransactionsButton", () => {
       const expectedFromNanos =
         BigInt(new Date("2024-01-01T00:00:00.000Z").getTime()) * NANOS_IN_MS;
       const expectedToNanos =
-        BigInt(new Date("2024-01-31T23:59:59.999Z").getTime()) * NANOS_IN_MS;
+        BigInt(new Date("2024-02-01T00:00:00.000Z").getTime()) * NANOS_IN_MS;
 
       expect(spyExportDataService).toHaveBeenCalledWith({
         entities: expect.any(Array),
