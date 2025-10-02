@@ -40,7 +40,7 @@
 
   const isRangeWithinOneYear = (fromDate: string, toDate: string): boolean => {
     const oneYearFromStart = addYears(fromDate, 1);
-    return toDate <= oneYearFromStart;
+    return new Date(toDate) <= new Date(oneYearFromStart);
   };
 
   const handleFromDateChange = (event: Event) => {
@@ -60,8 +60,8 @@
         // If 'to' is before 'from', set 'to' to 'from'
         customTo = newFromDate;
       } else if (!isRangeWithinOneYear(newFromDate, customTo)) {
-        const maxToDate = addYears(newFromDate, 1);
-        customTo = maxToDate > today ? today : maxToDate;
+        const maxAllowedToDate = addYears(newFromDate, 1);
+        customTo = maxAllowedToDate > today ? today : maxAllowedToDate;
       }
     }
   };
