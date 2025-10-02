@@ -45,12 +45,9 @@
   const isRangeWithinOneYear = (fromDate: string, toDate: string): boolean => {
     const [fy, fm, fd] = fromDate.split("-").map(Number);
     const [ty, tm, td] = toDate.split("-").map(Number);
-    const fromLocal = new Date(fy, (fm ?? 1) - 1, fd ?? 1).getTime();
     const toLocal = new Date(ty, (tm ?? 1) - 1, td ?? 1).getTime();
-    const oneYearLater = new Date(fy, (fm ?? 1) - 1, fd ?? 1);
-    oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
-    const oneYearLaterMs = oneYearLater.getTime();
-    return toLocal <= oneYearLaterMs;
+    const oneYearLater = new Date(fy + 1, (fm ?? 1) - 1, fd ?? 1).getTime();
+    return toLocal <= oneYearLater;
   };
 
   const handleFromDateChange = (event: Event) => {
