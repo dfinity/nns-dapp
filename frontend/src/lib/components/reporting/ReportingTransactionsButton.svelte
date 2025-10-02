@@ -74,7 +74,7 @@
       );
 
       const entities = [...nnsAccounts, ...nnsNeurons];
-      const range = convertPeriodToNanosecondRange(period);
+      const range = convertPeriodToNanosecondRange({ period });
       const transactions = await getAccountTransactionsConcurrently({
         entities,
         identity: signIdentity,

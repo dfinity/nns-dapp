@@ -400,27 +400,52 @@ export const buildNeuronsDatasets = ({
   return [{ metadata, data }];
 };
 
-export const convertPeriodToNanosecondRange = (
-  period: ReportingPeriod
-): TransactionsDateRange => {
+export const convertPeriodToNanosecondRange = ({
+  period,
+  from,
+  to,
+}: {
+  period: ReportingPeriod;
+  from?: string;
+  to?: string;
+}): TransactionsDateRange => {
   const now = new Date();
   const currentYear = now.getFullYear();
   const toNanoseconds = (milliseconds: number): bigint =>
     BigInt(milliseconds) * BigInt(1_000_000);
 
+  const startOfLocalDayMs = (y: number, mZero: number, d: number): number =>
+    new Date(y, mZero, d).getTime();
+
   switch (period) {
     case "all":
       return {};
 
-    case "last-year":
-      return {
-        from: toNanoseconds(new Date(currentYear - 1, 0, 1).getTime()),
-        to: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
-      };
-
     case "year-to-date":
       return {
-        from: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
+        from: toNanoseconds(startOfLocalDayMs(currentYear, 0, 1)),
       };
+
+    case "last-year":
+      return {
+        from: toNanoseconds(startOfLocalDayMs(currentYear - 1, 0, 1)),
+        to: toNanoseconds(startOfLocalDayMs(currentYear, 0, 1)),
+      };
+
+    case "custom": {
+      if (isNullish(from) || isNullish(to) || from > to) {
+        return {};
+      }
+
+      const [fy, fm, fd] = from.split("-").map(Number);
+      const [ty, tm, td] = to.split("-").map(Number);
+      const fromMs = startOfLocalDayMs(fy, fm - 1, fd);
+      const toExclusiveMs = startOfLocalDayMs(ty, tm - 1, td + 1);
+
+      return {
+        from: toNanoseconds(fromMs),
+        to: toNanoseconds(toExclusiveMs),
+      };
+    }
   }
 };
