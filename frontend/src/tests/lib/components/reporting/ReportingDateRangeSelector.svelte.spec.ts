@@ -96,7 +96,7 @@ describe("ReportingDateRangeSelector", () => {
       vi.setSystemTime(new Date("2025-10-01T12:00:00Z"));
     });
 
-    it.only("should auto-set 'to' date when 'from' date is selected and no 'to' exists", async () => {
+    it("should auto-set 'to' date when 'from' date is selected and no 'to' exists", async () => {
       const testProps = $state({
         period: "custom" as const,
         customFrom: undefined,
