@@ -41,15 +41,19 @@
     return formatDateCompact(local, "-");
   };
 
+  const stringToDate = (value: string): Date => {
+    const [y, m, d] = value.split("-").map(Number);
+    return new Date(y, (m ?? 1) - 1, d ?? 1);
+  };
+
   // Compare range in LOCAL time to avoid timezone drift
   const isRangeWithinOneYear = (fromDate: string, toDate: string): boolean => {
-    const [ty, tm, td] = toDate.split("-").map(Number);
-    const toLocal = new Date(ty, (tm ?? 1) - 1, td ?? 1).getTime();
+    const toLocal = stringToDate(toDate);
 
-    const [fy, fm, fd] = fromDate.split("-").map(Number);
-    const oneYearLater = new Date(fy + 1, (fm ?? 1) - 1, fd ?? 1).getTime();
+    const oneYearLater = stringToDate(fromDate);
+    oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
 
-    return toLocal <= oneYearLater;
+    return toLocal.getTime() <= oneYearLater.getTime();
   };
 
   const handleFromDateChange = (event: Event) => {
