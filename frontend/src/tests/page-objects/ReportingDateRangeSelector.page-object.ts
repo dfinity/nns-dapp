@@ -32,4 +32,26 @@ export class ReportingDateRangeSelectorPo extends SimpleBasePageObject {
 
     throw new Error(`Option ${option} not found`);
   }
+
+  getCustomRangeSection() {
+    return this.getElement("range-selection");
+  }
+
+  getFromDateInput() {
+    return this.getElement("from-date");
+  }
+
+  getToDateInput() {
+    return this.getElement("to-date");
+  }
+
+  async setFromDate(date: string): Promise<void> {
+    const field = this.getFromDateInput();
+    await field.input(date, "change");
+  }
+
+  async setToDate(date: string): Promise<void> {
+    const field = this.getToDateInput();
+    await field.input(date, "change");
+  }
 }

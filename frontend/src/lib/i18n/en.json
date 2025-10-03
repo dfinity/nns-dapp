@@ -240,7 +240,11 @@
     "range_filter_title": "Reporting Date Range",
     "range_filter_all": "All transactions",
     "range_last_year": "Last year",
-    "range_year_to_date": "Year to date"
+    "range_year_to_date": "Year to date",
+    "range_custom": "Custom",
+    "custom_start_date": "From Date:",
+    "custom_end_date": "To Date:",
+    "range_max_one_year": "Maximum range is one year"
   },
   "auth": {
     "login": "Sign in with Internet Identity",

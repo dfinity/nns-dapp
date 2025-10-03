@@ -8,7 +8,6 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import type { ReportingPeriod } from "$lib/types/reporting";
-  import { formatDateCompact } from "$lib/utils/date.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
   import {
@@ -16,6 +15,7 @@
     FileSystemAccessError,
   } from "$lib/utils/reporting.save-csv-to-file.utils";
   import {
+    buildFileName,
     buildTransactionsDatasets,
     convertPeriodToNanosecondRange,
     generateCsvFileToSave,
@@ -29,8 +29,10 @@
 
   type Props = {
     period: ReportingPeriod;
+    customFrom?: string;
+    customTo?: string;
   };
-  const { period }: Props = $props();
+  let { period, customFrom, customTo }: Props = $props();
 
   const identity = $derived($authStore.identity);
   const nnsAccounts = $derived($nnsAccountsListStore);
@@ -41,6 +43,11 @@
     $swapCanisterAccountsStore ?? new Set()
   );
   let loading = $state(false);
+
+  const isCustomPeriodIncomplete = $derived(
+    period === "custom" && (!customFrom || !customTo)
+  );
+  const isDisabled = $derived(loading || isCustomPeriodIncomplete);
 
   const fetchAllNnsNeuronsAndSortThemByStake = async (
     identity: Identity
@@ -74,7 +81,11 @@
       );
 
       const entities = [...nnsAccounts, ...nnsNeurons];
-      const range = convertPeriodToNanosecondRange({ period });
+      const range = convertPeriodToNanosecondRange({
+        period,
+        from: customFrom,
+        to: customTo,
+      });
       const transactions = await getAccountTransactionsConcurrently({
         entities,
         identity: signIdentity,
@@ -131,7 +142,11 @@
           label: $i18n.reporting.timestamp,
         },
       ];
-      const fileName = `icp_transactions_export_${formatDateCompact(new Date())}_${period}`;
+      const fileName = buildFileName({
+        period,
+        from: customFrom,
+        to: customTo,
+      });
 
       await generateCsvFileToSave({
         datasets,
@@ -165,7 +180,7 @@
   data-tid="reporting-transactions-button-component"
   onclick={exportIcpTransactions}
   class="primary with-icon"
-  disabled={loading}
+  disabled={isDisabled}
   aria-label={$i18n.reporting.transactions_download}
 >
   <IconDown />
