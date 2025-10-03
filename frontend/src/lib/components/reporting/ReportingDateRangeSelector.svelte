@@ -43,10 +43,12 @@
 
   // Compare range in LOCAL time to avoid timezone drift
   const isRangeWithinOneYear = (fromDate: string, toDate: string): boolean => {
-    const [fy, fm, fd] = fromDate.split("-").map(Number);
     const [ty, tm, td] = toDate.split("-").map(Number);
     const toLocal = new Date(ty, (tm ?? 1) - 1, td ?? 1).getTime();
+
+    const [fy, fm, fd] = fromDate.split("-").map(Number);
     const oneYearLater = new Date(fy + 1, (fm ?? 1) - 1, fd ?? 1).getTime();
+
     return toLocal <= oneYearLater;
   };
 
