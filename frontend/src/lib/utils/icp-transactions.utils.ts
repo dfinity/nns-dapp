@@ -252,6 +252,7 @@ export const mapIcpTransactionToUi = ({
     const timestamp = nonNullish(timestampMilliseconds)
       ? new Date(timestampMilliseconds)
       : undefined;
+    const memo = transaction.transaction.memo;
     return {
       domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
       isIncoming: isReceive,
@@ -265,6 +266,7 @@ export const mapIcpTransactionToUi = ({
       timestamp,
       isFailed: false,
       isReimbursement: false,
+      memoText: nonNullish(memo) ? memo.toString() : undefined,
     };
   } catch (err) {
     toastsError({
