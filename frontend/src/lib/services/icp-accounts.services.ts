@@ -315,7 +315,10 @@ export const transferICP = async ({
     }
 
     const feeE8s = get(mainTransactionFeeE8sStore);
-    const icrc1Memo = nonNullish(memo) ? bigIntToUint8Array(memo) : undefined;
+    const icpMemo = nonNullish(memo) ? BigInt(memo) : undefined;
+    const icrc1Memo = nonNullish(icpMemo)
+      ? bigIntToUint8Array(icpMemo)
+      : undefined;
 
     await (validIcrcAddress
       ? sendIcpIcrc1({
@@ -331,7 +334,7 @@ export const transferICP = async ({
           to,
           fromSubAccount: subAccount,
           amount: tokenAmount.toE8s(),
-          memo,
+          memo: icpMemo,
           fee: feeE8s,
         }));
 

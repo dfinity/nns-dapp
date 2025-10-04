@@ -198,9 +198,9 @@
     "show_balance_title": "Show Balance",
     "show_balance_description": "Display your balances",
     "hide_memo_title": "Hide transaction memo",
-    "hide_memo_description": "Hide memo input in transaction forms",
+    "hide_memo_description": "Hide the memo input for ICP transaction forms",
     "show_memo_title": "Show transaction memo",
-    "show_memo_description": "Show memo input in transaction forms"
+    "show_memo_description": "Show the memo input for ICP transaction forms"
   },
   "header": {
     "menu": "Open menu to access navigation options",
@@ -271,6 +271,7 @@
     "banxa_logo_alt": "Banxa logo",
     "icp_transaction_description": "ICP Transaction",
     "icp_transaction_memo_label": "Transaction Memo (Optional)",
+    "icp_transaction_memo_hint": "* This is an advanced feature. Do not provide a value if you don't understand its meaning.",
     "icp_transaction_memo": "Memo",
     "sns_transaction_description": "$token Transaction",
     "ckbtc_transaction_description": "$token Transaction",

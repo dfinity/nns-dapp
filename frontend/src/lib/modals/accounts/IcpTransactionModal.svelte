@@ -74,7 +74,7 @@
   bind:currentStep
   {transactionInit}
   transactionFee={$mainTransactionFeeStoreAsToken}
-  memo={memo ? BigInt(memo) : undefined}
+  {memo}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value no-margin">
@@ -87,15 +87,19 @@
         name="memo"
         inputType="number"
         step={1}
-        minLength={1}
         placeholderLabelKey={$i18n.accounts.icp_transaction_memo_label}
         bind:value={memo}
         autocomplete="off"
+        showInfo
       >
         <span class="input-label" slot="label"
           >{$i18n.accounts.icp_transaction_memo_label}</span
         >
       </Input>
+
+      <span class="summary-hint"
+        >{$i18n.accounts.icp_transaction_memo_hint}</span
+      >
     {/if}
   </svelte:fragment>
   <svelte:fragment slot="additional-info-review">
@@ -121,6 +125,11 @@
   .summary-label {
     color: var(--label-color);
     margin: var(--padding) 0 0 0;
+  }
+  .summary-hint {
+    @include fonts.small();
+    color: var(--text-description);
+    margin: 0 0 var(--padding) 0;
   }
   .summary-value {
     color: var(--value-color);

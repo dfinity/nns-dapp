@@ -6,7 +6,7 @@ export type NewTransaction = {
   sourceAccount: Account;
   destinationAddress: string;
   amount: number;
-  memo?: bigint;
+  memo?: string;
 };
 
 export interface TransactionInit {

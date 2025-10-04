@@ -20,6 +20,7 @@ import {
   fromNullable,
   isNullish,
   nonNullish,
+  uint8ArrayToHexString,
 } from "@dfinity/utils";
 
 const isToSelf = (transaction: Transaction): boolean => {
@@ -252,7 +253,16 @@ export const mapIcpTransactionToUi = ({
     const timestamp = nonNullish(timestampMilliseconds)
       ? new Date(timestampMilliseconds)
       : undefined;
+
     const memo = transaction.transaction.memo;
+    const icrc1Memo = transaction.transaction.icrc1_memo?.[0];
+
+    const memoText = nonNullish(icrc1Memo)
+      ? uint8ArrayToHexString(icrc1Memo)
+      : !isNullish(memo)
+        ? memo.toString()
+        : undefined;
+
     return {
       domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
       isIncoming: isReceive,
@@ -266,7 +276,7 @@ export const mapIcpTransactionToUi = ({
       timestamp,
       isFailed: false,
       isReimbursement: false,
-      memoText: nonNullish(memo) ? memo.toString() : undefined,
+      memoText,
     };
   } catch (err) {
     toastsError({
