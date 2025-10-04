@@ -23,7 +23,7 @@
   };
 
   let currentStep: WizardStep | undefined;
-  let memo: string = "";
+  let memo: string | undefined = undefined;
 
   $: title =
     currentStep?.name === "Form"

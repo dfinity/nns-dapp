@@ -40,7 +40,6 @@ import {
   TokenAmount,
   TokenAmountV2,
   toNullable,
-  uint8ArrayToHexString,
 } from "@dfinity/utils";
 
 describe("icrc-transaction utils", () => {
@@ -239,7 +238,6 @@ describe("icrc-transaction utils", () => {
           owner: governanceCanisterId,
           subaccount: governanceSubaccount,
         }),
-        memoText: "",
       });
     });
 
@@ -396,7 +394,6 @@ describe("icrc-transaction utils", () => {
       const kytFee = 1333;
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
       const memo = new Uint8Array(Cbor.encode(decodedMemo));
-      const memoText = uint8ArrayToHexString(memo);
 
       const data = mapCkbtcTransaction({
         transaction: {
@@ -419,7 +416,6 @@ describe("icrc-transaction utils", () => {
         isPending: false,
         otherParty: btcWithdrawalAddress,
         timestamp: new Date(0),
-        memoText,
         tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: mockCkBTCToken,
@@ -503,7 +499,6 @@ describe("icrc-transaction utils", () => {
       const kytFee = 1331;
       const decodedMemo = [2, [kytFee, 1, 123]];
       const memo = new Uint8Array(Cbor.encode(decodedMemo));
-      const memoText = uint8ArrayToHexString(memo);
 
       const data = mapCkbtcTransaction({
         transaction: {
@@ -527,7 +522,6 @@ describe("icrc-transaction utils", () => {
         isReimbursement: true,
         otherParty: "BTC Network",
         timestamp: new Date(0),
-        memoText,
         tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: mockCkBTCToken,
@@ -541,7 +535,6 @@ describe("icrc-transaction utils", () => {
       const kytFee = 1333;
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
       const memo = new Uint8Array(Cbor.encode(decodedMemo));
-      const memoText = uint8ArrayToHexString(memo);
 
       const data = mapCkbtcTransaction({
         transaction: {
@@ -565,7 +558,6 @@ describe("icrc-transaction utils", () => {
         isPending: true,
         otherParty: btcWithdrawalAddress,
         timestamp: new Date(0),
-        memoText,
         tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: mockCkBTCToken,
@@ -579,7 +571,6 @@ describe("icrc-transaction utils", () => {
       const kytFee = 1333;
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
       const memo = new Uint8Array(Cbor.encode(decodedMemo));
-      const memoText = uint8ArrayToHexString(memo);
 
       const data = mapCkbtcTransaction({
         transaction: {
@@ -603,7 +594,6 @@ describe("icrc-transaction utils", () => {
         isPending: false,
         otherParty: btcWithdrawalAddress,
         timestamp: new Date(0),
-        memoText,
         tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: mockCkBTCToken,
@@ -617,7 +607,6 @@ describe("icrc-transaction utils", () => {
       const kytFee = 1333;
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
       const memo = new Uint8Array(Cbor.encode(decodedMemo));
-      const memoText = uint8ArrayToHexString(memo);
 
       const retrieveBtcStatus = retrieveBtcStatusReimbursed(amount);
 
@@ -643,7 +632,6 @@ describe("icrc-transaction utils", () => {
         isPending: false,
         isFailed: true,
         otherParty: btcWithdrawalAddress,
-        memoText,
         timestamp: new Date(0),
         tokenAmount: TokenAmountV2.fromUlps({
           amount,
@@ -655,7 +643,6 @@ describe("icrc-transaction utils", () => {
     it("Renders a legacy mint memo as standard incoming BTC", () => {
       const amount = 41_000_000n;
       const txIdMemo = new Uint8Array(32).fill(99);
-      const memoText = uint8ArrayToHexString(txIdMemo);
 
       const data = mapCkbtcTransaction({
         transaction: {
@@ -678,7 +665,6 @@ describe("icrc-transaction utils", () => {
         isPending: false,
         otherParty: "BTC Network",
         timestamp: new Date(0),
-        memoText,
         tokenAmount: TokenAmountV2.fromUlps({
           amount,
           token: mockCkBTCToken,
@@ -840,7 +826,6 @@ describe("icrc-transaction utils", () => {
       const kytFee = 1333;
       const decodedMemo = [0, [btcWithdrawalAddress, kytFee, undefined]];
       const memo = new Uint8Array(Cbor.encode(decodedMemo));
-      const memoText = uint8ArrayToHexString(memo);
 
       const failedTxId = 131n;
       const failedAmount = 170_000_000n;
@@ -913,7 +898,6 @@ describe("icrc-transaction utils", () => {
           isPending: false,
           otherParty: btcWithdrawalAddress,
           timestamp: new Date(0),
-          memoText,
           tokenAmount: TokenAmountV2.fromUlps({
             amount: confirmedAmount,
             token: mockCkBTCToken,
@@ -926,7 +910,6 @@ describe("icrc-transaction utils", () => {
           isPending: true,
           otherParty: btcWithdrawalAddress,
           timestamp: new Date(0),
-          memoText,
           tokenAmount: TokenAmountV2.fromUlps({
             amount: pendingAmount,
             token: mockCkBTCToken,
@@ -940,7 +923,6 @@ describe("icrc-transaction utils", () => {
           isFailed: true,
           otherParty: btcWithdrawalAddress,
           timestamp: new Date(0),
-          memoText,
           tokenAmount: TokenAmountV2.fromUlps({
             amount: failedAmount,
             token: mockCkBTCToken,

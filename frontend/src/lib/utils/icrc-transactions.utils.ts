@@ -219,7 +219,6 @@ export const mapIcrcTransaction = ({
     // Timestamp is in nano seconds
     const timestampMilliseconds =
       Number(transaction.transaction.timestamp) / NANO_SECONDS_IN_MILLISECOND;
-
     return {
       domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
       isIncoming: isReceive,
