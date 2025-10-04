@@ -13,8 +13,8 @@ import {
   tableNeuronsFromSnsNeurons,
 } from "$lib/utils/neurons-table.utils";
 import { getSnsTopicsByProject } from "$lib/utils/sns-topics.utils";
-import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { derived } from "svelte/store";
 
 const snsTableNeuronsToSortStore = derived(

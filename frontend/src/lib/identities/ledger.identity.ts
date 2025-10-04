@@ -17,6 +17,12 @@ import {
   type RequestSignatures,
 } from "$lib/utils/ledger.utils";
 import {
+  isNullish,
+  nonNullish,
+  smallerVersion,
+  uint8ArraysEqual,
+} from "@dfinity/utils";
+import {
   Cbor,
   SignIdentity,
   requestIdOf,
@@ -29,13 +35,7 @@ import {
   type ReadStateRequest,
   type RequestId,
   type Signature,
-} from "@dfinity/agent";
-import {
-  isNullish,
-  nonNullish,
-  smallerVersion,
-  uint8ArraysEqual,
-} from "@dfinity/utils";
+} from "@icp-sdk/core/agent";
 import type Transport from "@ledgerhq/hw-transport";
 import type LedgerApp from "@zondax/ledger-icp";
 import type {
@@ -327,7 +327,7 @@ export class LedgerIdentity extends SignIdentity {
   ): Promise<{ readStateBody: ReadStateRequest; requestId: RequestId }> {
     const requestId = await requestIdOf(body);
     const readStateBody: ReadRequest = {
-      // Can't import ReadRequestType as value from @dfinity/agent because it's const enum
+      // Can't import ReadRequestType as value from @icp-sdk/core/agent because it's const enum
       request_type: "read_state" as ReadRequestType.ReadState,
       paths: createReadStatePaths(requestId).map((path) =>
         path.map((bufferLike) => new Uint8Array(bufferLike))
@@ -425,7 +425,7 @@ export class LedgerIdentity extends SignIdentity {
     request: HttpAgentRequest
   ): Promise<Record<string, unknown>> {
     if (
-      // "read_state" is a value from Endpoint enum from @dfinity/agent but it's const enum and can't be imported as value with `isolatedModules` flag.
+      // "read_state" is a value from Endpoint enum from @icp-sdk/core/agent but it's const enum and can't be imported as value with `isolatedModules` flag.
       // More info: https://github.com/microsoft/TypeScript/issues/40344#issuecomment-956368612
       request.endpoint === "read_state"
     ) {

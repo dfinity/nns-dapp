@@ -9,8 +9,8 @@ import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import type { HttpAgent } from "@dfinity/agent";
 import { IcrcIndexNgCanister } from "@dfinity/ledger-icrc";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 describe("icrc-index api", () => {

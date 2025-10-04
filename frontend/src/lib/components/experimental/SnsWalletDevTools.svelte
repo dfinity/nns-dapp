@@ -21,9 +21,9 @@
   import { authStore } from "$lib/stores/auth.store";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
-  import type { SignIdentity } from "@dfinity/agent";
+  import type { SignIdentity } from "@icp-sdk/core/agent";
   import type { IcrcTokenMetadata } from "@dfinity/ledger-icrc";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish } from "@dfinity/utils";
 
   type Props = {

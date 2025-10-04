@@ -5,8 +5,8 @@ import {
 } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { RootCanisterIdText } from "$lib/types/sns";
-import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 interface SnsAccount {

@@ -30,7 +30,6 @@ import {
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { Agent } from "@dfinity/agent";
 import { LedgerCanister } from "@dfinity/ledger-icp";
 import {
   GovernanceCanister,
@@ -38,7 +37,8 @@ import {
   Topic,
   Vote,
 } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
+import type { Agent } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/api/agent.api", () => {

@@ -8,7 +8,7 @@ import {
   resetIdentity,
   setNoIdentity,
 } from "$tests/mocks/auth.store.mock";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 
