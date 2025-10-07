@@ -302,6 +302,8 @@ export const isValidIcpMemo = (memo: string): boolean => {
 
 // it should be less than 32 bytes when encoded as UTF-8
 export const isValidIcrc1Memo = (memo: string): boolean => {
+  if (memo.length === 0) return false;
+
   try {
     return new TextEncoder().encode(memo).length <= 32;
   } catch {
