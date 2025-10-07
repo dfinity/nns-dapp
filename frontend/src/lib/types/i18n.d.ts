@@ -200,6 +200,14 @@ interface I18nAlfred {
   log_out_title: string;
   log_out_description: string;
   search_placeholder: string;
+  hide_balance_title: string;
+  hide_balance_description: string;
+  show_balance_title: string;
+  show_balance_description: string;
+  hide_memo_title: string;
+  hide_memo_description: string;
+  show_memo_title: string;
+  show_memo_description: string;
 }
 
 interface I18nHeader {
