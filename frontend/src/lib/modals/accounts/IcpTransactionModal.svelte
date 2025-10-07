@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Input from "$lib/components/ui/Input.svelte";
   import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { mainTransactionFeeStoreAsToken } from "$lib/derived/main-transaction-fee.derived";
   import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
@@ -23,7 +22,6 @@
   };
 
   let currentStep: WizardStep | undefined;
-  let memo: string | undefined = undefined;
 
   $: title =
     currentStep?.name === "Form"
@@ -49,7 +47,7 @@
       sourceAccount,
       destinationAddress,
       amount,
-      memo,
+      memo: $transactionMemoOptionStore === "show" ? memo : undefined,
     });
 
     if (success) {
@@ -74,42 +72,12 @@
   bind:currentStep
   {transactionInit}
   transactionFee={$mainTransactionFeeStoreAsToken}
-  {memo}
+  withMemo={$transactionMemoOptionStore === "show"}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value no-margin">
     {$i18n.accounts.icp_transaction_description}
   </p>
-  <svelte:fragment slot="additional-info-form">
-    {#if $transactionMemoOptionStore === "show"}
-      <Input
-        testId="transaction-memo-input"
-        name="memo"
-        inputType="number"
-        step={1}
-        placeholderLabelKey={$i18n.accounts.icp_transaction_memo_label}
-        bind:value={memo}
-        autocomplete="off"
-        showInfo
-      >
-        <span class="input-label" slot="label"
-          >{$i18n.accounts.icp_transaction_memo_label}</span
-        >
-      </Input>
-
-      <span class="summary-hint"
-        >{$i18n.accounts.icp_transaction_memo_hint}</span
-      >
-    {/if}
-  </svelte:fragment>
-  <svelte:fragment slot="additional-info-review">
-    {#if $transactionMemoOptionStore === "show" && memo}
-      <p class="summary-label">{$i18n.accounts.icp_transaction_memo}</p>
-      <p class="summary-value no-margin" data-tid="transaction-summary-memo"
-        >{memo}</p
-      >
-    {/if}
-  </svelte:fragment>
 </TransactionModal>
 
 <style lang="scss">
@@ -120,18 +88,5 @@
     margin-top: var(--padding-2x);
     @include fonts.small();
     color: var(--text-description);
-  }
-
-  .summary-label {
-    color: var(--label-color);
-    margin: var(--padding) 0 0 0;
-  }
-  .summary-hint {
-    @include fonts.small();
-    color: var(--text-description);
-    margin: 0 0 var(--padding) 0;
-  }
-  .summary-value {
-    color: var(--value-color);
   }
 </style>

@@ -259,7 +259,7 @@ export const mapIcpTransactionToUi = ({
 
     const memoText = nonNullish(icrc1Memo)
       ? uint8ArrayToHexString(icrc1Memo)
-      : !isNullish(memo)
+      : nonNullish(memo)
         ? memo.toString()
         : undefined;
 

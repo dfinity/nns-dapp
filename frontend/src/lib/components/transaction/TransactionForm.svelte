@@ -3,6 +3,7 @@
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import TransactionFormItemNetwork from "$lib/components/transaction/TransactionFormItemNetwork.svelte";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
+  import TransactionMemo from "$lib/components/transaction/TransactionMemo.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
@@ -23,9 +24,11 @@
     getMaxTransactionAmount,
     toTokenAmountV2,
   } from "$lib/utils/token.utils";
+  import { validateTransactionMemo } from "$lib/utils/transactions.utils";
   import type { Principal } from "@dfinity/principal";
   import {
     isNullish,
+    nonNullish,
     TokenAmount,
     TokenAmountV2,
     type Token,
@@ -55,6 +58,8 @@
   export let networkReadonly: boolean | undefined = undefined;
 
   export let validateAmount: ValidateAmountFn = () => undefined;
+  export let withMemo: boolean = false;
+  export let memo: string | undefined = undefined;
 
   let filterSourceAccounts: (account: Account) => boolean;
   $: filterSourceAccounts = (account: Account) => {
@@ -117,6 +122,44 @@
       }
     }
   })();
+
+  let memoErrorMessage: string | undefined = undefined;
+  $: (() => {
+    if (!withMemo) {
+      memo = undefined;
+      memoErrorMessage = undefined;
+      return;
+    }
+
+    if (isNullish(memo) || memo === "") {
+      memoErrorMessage = undefined;
+      return;
+    }
+
+    if (
+      withMemo &&
+      nonNullish(memo) &&
+      nonNullish(selectedDestinationAddress)
+    ) {
+      const memoError = validateTransactionMemo({
+        memo,
+        destinationAddress: selectedDestinationAddress,
+      });
+
+      if (isNullish(memoError)) {
+        memoErrorMessage = undefined;
+        return;
+      }
+
+      memoErrorMessage = translate({
+        labelKey:
+          memoError === "ICP_MEMO_ERROR"
+            ? "error.transaction_invalid_memo_icp"
+            : "error.transaction_invalid_memo_icrc",
+      });
+    }
+  })();
+
   const dispatcher = createEventDispatcher();
   const close = () => {
     dispatcher("nnsClose");
@@ -177,6 +220,10 @@
     {/if}
 
     <slot name="additional-info" />
+
+    {#if withMemo}
+      <TransactionMemo bind:memo errorMessage={memoErrorMessage} />
+    {/if}
   </div>
 
   <div class="toolbar">

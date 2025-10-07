@@ -2,7 +2,8 @@ import {
   AccountTransactionType,
   TransactionNetwork,
 } from "$lib/types/transaction";
-import { isNullish } from "@dfinity/utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
+import { invalidIcpAddress, invalidIcrcAddress } from "./accounts.utils";
 
 export const transactionDisplayAmount = ({
   useFee,
@@ -79,4 +80,44 @@ export const getUniqueTransactions = <TransactionWithId extends { id: bigint }>(
     }
   }
   return result;
+};
+
+// it should only contain numbers and limit to 64bits
+export const isValidIcpMemo = (memo: string): boolean => {
+  if (!/^\d+$/.test(memo)) return false;
+
+  try {
+    const UINT64_MAX = 2n ** 64n - 1n;
+    const memoBigInt = BigInt(memo);
+    return memoBigInt >= 0n && memoBigInt <= UINT64_MAX;
+  } catch {
+    return false;
+  }
+};
+
+// it should be less than 32 bytes when encoded as UTF-8
+export const isValidIcrc1Memo = (memo: string): boolean => {
+  try {
+    return new TextEncoder().encode(memo).length <= 32;
+  } catch {
+    return false;
+  }
+};
+
+export const validateTransactionMemo = ({
+  memo,
+  destinationAddress,
+}: {
+  memo: string;
+  destinationAddress: string;
+}): "ICP_MEMO_ERROR" | "ICRC_MEMO_ERROR" | undefined => {
+  const isValidIcpAddress = !invalidIcpAddress(destinationAddress);
+  if (nonNullish(memo) && isValidIcpAddress && !isValidIcpMemo(memo)) {
+    return "ICP_MEMO_ERROR";
+  }
+
+  const isValidIcrcAddress = !invalidIcrcAddress(destinationAddress);
+  if (nonNullish(memo) && isValidIcrcAddress && !isValidIcrc1Memo(memo)) {
+    return "ICRC_MEMO_ERROR";
+  }
 };

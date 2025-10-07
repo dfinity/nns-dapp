@@ -18,12 +18,14 @@
     destinationInfo: Snippet;
     disableSubmit: boolean;
     handleGoBack: () => void;
+    memo?: string;
     receivedAmount: Snippet;
     selectedNetwork?: TransactionNetwork;
     showLedgerFee?: boolean;
     token: Token;
     transaction: NewTransaction;
     transactionFee: TokenAmountV2 | TokenAmount;
+    withMemo?: boolean;
   };
 
   const {
@@ -32,12 +34,14 @@
     destinationInfo,
     disableSubmit,
     handleGoBack,
+    memo,
     receivedAmount,
     selectedNetwork = undefined,
     showLedgerFee = true,
     token,
     transaction,
     transactionFee,
+    withMemo,
   }: Props = $props();
 
   const { sourceAccount, amount, destinationAddress } = $derived(transaction);
@@ -68,6 +72,15 @@
     />
 
     {@render additionalInfo()}
+
+    {#if withMemo}
+      <div class="memo">
+        <p class="label">{$i18n.accounts.icp_transaction_memo}</p>
+        <p class="value no-margin" data-tid="transaction-summary-memo">
+          {memo}
+        </p>
+      </div>
+    {/if}
   </div>
 
   <div class="toolbar">
@@ -92,6 +105,17 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-0_5x);
+  }
+
+  .memo {
+    .label {
+      color: var(--label-color);
+      margin: var(--padding) 0 0 0;
+    }
+
+    .value {
+      color: var(--value-color);
+    }
   }
 
   .toolbar {

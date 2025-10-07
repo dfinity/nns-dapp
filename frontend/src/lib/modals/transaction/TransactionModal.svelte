@@ -59,12 +59,13 @@
   // TODO: Add transaction fee as a Token parameter https://dfinity.atlassian.net/browse/L2-990
 
   // Optional transaction memo to include in the submission payload
-  export let memo: string | undefined = undefined;
+  export let withMemo: boolean = false;
 
   // Init configuration only once when component is mounting. The configuration should not vary when user interact with the form.
   let canSelectDestination = isNullish(transactionInit.destinationAddress);
   let canSelectSource = isNullish(transactionInit.sourceAccount);
   let mustSelectNetwork = transactionInit.mustSelectNetwork ?? false;
+  let memo: string | undefined = undefined;
 
   let selectedDestinationAddress: string | undefined = destinationAddress;
 
@@ -152,6 +153,7 @@
       bind:amount
       bind:showManualAddress
       bind:selectDestinationMethods
+      bind:memo
       {skipHardwareWallets}
       {maxAmount}
       {token}
@@ -162,8 +164,9 @@
       {networkReadonly}
       {showLedgerFee}
       on:nnsOpenQRCodeReader={goQRCode}
+      {withMemo}
     >
-      <slot name="additional-info-form" slot="additional-info" />
+      <slot name="additional-info-form" slot="additional-info" destination />
     </TransactionForm>
   {/if}
   {#if currentStep?.name === "Review" && nonNullish(sourceAccount) && nonNullish(amount) && nonNullish(selectedDestinationAddress)}
@@ -182,6 +185,8 @@
       {showLedgerFee}
       on:nnsSubmit
       on:nnsClose
+      {withMemo}
+      {memo}
     >
       {#snippet additionalInfo()}
         <slot name="additional-info-review" />

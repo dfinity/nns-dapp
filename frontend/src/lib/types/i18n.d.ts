@@ -93,6 +93,8 @@ interface I18nError {
   transaction_error: string;
   transaction_too_old: string;
   transaction_created_in_future: string;
+  transaction_invalid_memo_icp: string;
+  transaction_invalid_memo_icrc: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
   not_authorized_neuron_action: string;
