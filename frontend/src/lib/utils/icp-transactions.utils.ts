@@ -263,9 +263,7 @@ export const mapIcpTransactionToUi = ({
 
     const memoText = nonNullish(icrc1Memo)
       ? uint8ArrayToHexString(icrc1Memo)
-      : nonNullish(memo)
-        ? memo.toString()
-        : undefined;
+      : memo.toString();
 
     return {
       domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
@@ -291,9 +289,9 @@ export const mapIcpTransactionToUi = ({
   }
 };
 
-// it should only contain numbers and limit to 64bits
+// it should only contain positive numbers and limit to 64bits
 export const isValidIcpMemo = (memo: string): boolean => {
-  if (!/^\d+$/.test(memo)) return false;
+  if (memo.length === 0) return false;
 
   try {
     const UINT64_MAX = 2n ** 64n - 1n;
@@ -306,6 +304,8 @@ export const isValidIcpMemo = (memo: string): boolean => {
 
 // it should be less than 32 bytes when encoded as UTF-8
 export const isValidIcrc1Memo = (memo: string): boolean => {
+  if (memo.length === 0) return false;
+
   try {
     return new TextEncoder().encode(memo).length <= 32;
   } catch {
