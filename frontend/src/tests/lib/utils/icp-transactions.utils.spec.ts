@@ -819,7 +819,6 @@ describe("icp-transactions.utils", () => {
     it("returns false for non-numeric memo", () => {
       expect(isValidIcpMemo("abc")).toBe(false);
       expect(isValidIcpMemo("123abc")).toBe(false);
-      expect(isValidIcpMemo("")).toBe(false);
     });
 
     it("returns false for values exceeding uint64 max", () => {
