@@ -727,6 +727,88 @@ describe("icp-accounts.services", () => {
 
       expect(queryAccountBalanceSpy).not.toHaveBeenCalled();
     });
+
+    it("should transfer ICP with valid memo for ICP address", async () => {
+      await transferICP({
+        ...transferICPParams,
+        memo: "123",
+      });
+
+      expect(spySendICP).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        to: transferICPParams.destinationAddress,
+        fromSubAccount: undefined,
+        amount: TokenAmount.fromNumber({
+          amount: transferICPParams.amount,
+          token: ICPToken,
+        }).toE8s(),
+        fee: get(mainTransactionFeeE8sStore),
+        memo: 123n,
+      });
+    });
+
+    it("should transfer ICP with valid memo for ICRC address", async () => {
+      const spy = vi.spyOn(ledgerApi, "sendIcpIcrc1").mockResolvedValue(1n);
+
+      await transferICP({
+        ...transferICPParams,
+        destinationAddress: mockSnsMainAccount.identifier,
+        memo: "test memo",
+      });
+
+      expect(spy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        to: decodeIcrcAccount(mockSnsMainAccount.identifier),
+        fromSubAccount: undefined,
+        amount: TokenAmount.fromNumber({
+          amount: transferICPParams.amount,
+          token: ICPToken,
+        }),
+        fee: get(mainTransactionFeeE8sStore),
+        icrc1Memo: new TextEncoder().encode("test memo"),
+      });
+    });
+
+    it("should transfer ICP without memo for invalid ICP memo", async () => {
+      await transferICP({
+        ...transferICPParams,
+        memo: "invalid",
+      });
+
+      expect(spySendICP).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        to: transferICPParams.destinationAddress,
+        fromSubAccount: undefined,
+        amount: TokenAmount.fromNumber({
+          amount: transferICPParams.amount,
+          token: ICPToken,
+        }).toE8s(),
+        fee: get(mainTransactionFeeE8sStore),
+        memo: undefined,
+      });
+    });
+
+    it("should transfer ICP without memo for invalid ICRC memo", async () => {
+      const spy = vi.spyOn(ledgerApi, "sendIcpIcrc1").mockResolvedValue(1n);
+
+      await transferICP({
+        ...transferICPParams,
+        destinationAddress: mockSnsMainAccount.identifier,
+        memo: "a".repeat(33), // exceeds 32 bytes
+      });
+
+      expect(spy).toHaveBeenCalledWith({
+        identity: mockIdentity,
+        to: decodeIcrcAccount(mockSnsMainAccount.identifier),
+        fromSubAccount: undefined,
+        amount: TokenAmount.fromNumber({
+          amount: transferICPParams.amount,
+          token: ICPToken,
+        }),
+        fee: get(mainTransactionFeeE8sStore),
+        icrc1Memo: undefined,
+      });
+    });
   });
 
   describe("rename", () => {

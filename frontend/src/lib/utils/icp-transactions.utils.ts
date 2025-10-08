@@ -289,21 +289,29 @@ export const mapIcpTransactionToUi = ({
   }
 };
 
-// it should only contain positive numbers and limit to 64 bits
+export const encodeMemoToIcp = (memo: string): bigint => {
+  return BigInt(memo);
+};
+
+// it should only contain positive numbers and limit to 64bits
 export const isValidIcpMemo = (memo: string): boolean => {
   try {
     const UINT64_MAX = 2n ** 64n - 1n;
-    const memoBigInt = BigInt(memo);
+    const memoBigInt = encodeMemoToIcp(memo);
     return memoBigInt >= 0n && memoBigInt <= UINT64_MAX;
   } catch {
     return false;
   }
 };
 
+export const encodeMemoToIcrc1 = (memo: string): Uint8Array => {
+  return new TextEncoder().encode(memo);
+};
+
 // it should be less than 32 bytes when encoded as UTF-8
 export const isValidIcrc1Memo = (memo: string): boolean => {
   try {
-    return new TextEncoder().encode(memo).length <= 32;
+    return encodeMemoToIcrc1(memo).length <= 32;
   } catch {
     return false;
   }
