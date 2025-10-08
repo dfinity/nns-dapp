@@ -18,6 +18,7 @@
     placeholderLabelKey={$i18n.accounts.icp_transaction_memo_label}
     bind:value={memo}
     autocomplete="off"
+    required={false}
     {errorMessage}
   >
     <span class="label" slot="label">
