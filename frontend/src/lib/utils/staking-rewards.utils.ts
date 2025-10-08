@@ -117,6 +117,11 @@ export const getStakingRewardData = (
   params: StakingRewardCalcParams,
   forceInitialDate?: Date // For testing purposes
 ): StakingRewardResult => {
+  if (params.fxRates === "error") {
+    logWithTimestamp("FX provider is failing");
+    return { loading: false, error: "FX provider is failing" };
+  }
+
   if (!params.auth) {
     logWithTimestamp("Staking rewards: user is not logged in.");
     return { loading: false, error: "Not authorized." };

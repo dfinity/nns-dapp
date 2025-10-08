@@ -560,7 +560,7 @@ describe("sns-proposals services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: "There was an error while registering vote (Neuron: 010203). ",
+          text: "There was an error while registering vote (Neuron: 010203).",
         },
       ]);
     });

@@ -13,4 +13,8 @@ export class ReportingTransactionsButtonPo extends ButtonPo {
       element.byTestId(ReportingTransactionsButtonPo.TID)
     );
   }
+
+  async isEnabled(): Promise<boolean> {
+    return !(await this.isDisabled());
+  }
 }

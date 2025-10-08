@@ -73,7 +73,7 @@ describe("ReportingNeuronsButton", () => {
     return po;
   };
 
-  it("should name the file with the date of the export", async () => {
+  it("should name the file with the date of the export and the range selected", async () => {
     const po = renderComponent();
 
     expect(spySaveGeneratedCsv).toBeCalledTimes(0);
@@ -180,10 +180,10 @@ describe("ReportingNeuronsButton", () => {
     await runResolvedPromises();
 
     const expectedCsv = [
-      "NNS Account Principal ID,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+      "NNS Account Principal Id,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
       'Export Date Time,"Oct 14, 2023 12:00 AM"',
       "",
-      ",,Neuron ID,Project Name,Symbol,Neuron Account ID,Controller Principal ID,Stake,Available Maturity,Staked Maturity,Dissolve Delay,Dissolve Date,Creation Date,State",
+      ",,Neuron Id,Project Name,Symbol,Neuron Account Id,Controller Principal Id,Stake,Available Maturity,Staked Maturity,Dissolve Delay,Dissolve Date,Creation Date,State",
       ',,="1",Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,1,30.00,0.0000001,0,"3 hours, 5 minutes",N/A,"Jan 1, 1970",Locked',
     ].join("\n");
 

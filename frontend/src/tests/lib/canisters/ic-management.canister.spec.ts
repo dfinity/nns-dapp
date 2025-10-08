@@ -25,6 +25,7 @@ describe("ICManagementCanister", () => {
       const settings = {
         wasm_memory_threshold: 1_000_000_000n,
         freezing_threshold: 2n,
+        environment_variables: [],
         controllers: [
           Principal.fromText(
             "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"
@@ -60,6 +61,8 @@ describe("ICManagementCanister", () => {
           request_payload_bytes_total: 3n,
           response_payload_bytes_total: 4n,
         },
+        ready_for_migration: true,
+        version: 42n,
       };
       const service = mock<IcManagementService>();
       service.canister_status.mockResolvedValue(response);

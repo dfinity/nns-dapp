@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_registry --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-08-28_03-17-snapshot-feature/rs/registry/canister/canister/registry.did>
+//! Candid for canister `nns_registry` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-10-02_03-13-base/rs/registry/canister/canister/registry.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -316,7 +316,9 @@ pub struct MigrateCanistersPayload {
     pub target_subnet_id: Principal,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct MigrateCanistersResponse {}
+pub struct MigrateCanistersResponse {
+    pub registry_version: u64,
+}
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct PrepareCanisterMigrationPayload {
     pub canister_id_ranges: Vec<CanisterIdRange>,
@@ -399,6 +401,11 @@ pub struct SetFirewallConfigPayload {
     pub ipv4_prefixes: Vec<String>,
     pub firewall_config: String,
     pub ipv6_prefixes: Vec<String>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct SwapNodeInSubnetDirectlyPayload {
+    pub new_node_id: Option<Principal>,
+    pub old_node_id: Option<Principal>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct UpdateApiBoundaryNodesVersionPayload {
@@ -649,6 +656,9 @@ impl Service {
     }
     pub async fn set_firewall_config(&self, arg0: SetFirewallConfigPayload) -> CallResult<()> {
         ic_cdk::call(self.0, "set_firewall_config", (arg0,)).await
+    }
+    pub async fn swap_node_in_subnet_directly(&self, arg0: SwapNodeInSubnetDirectlyPayload) -> CallResult<()> {
+        ic_cdk::call(self.0, "swap_node_in_subnet_directly", (arg0,)).await
     }
     pub async fn update_api_boundary_nodes_version(
         &self,

@@ -24,6 +24,7 @@
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
   import { getTableProjects } from "$lib/utils/staking.utils";
 
   resetBalanceLoading();
@@ -68,6 +69,7 @@
   }
 
   $: if ($snsProposalsStoreIsLoading) {
+    logWithTimestamp("#4124:Loading SNS proposals...");
     loadProposalsSnsCF({ omitLargeFields: false });
   }
 

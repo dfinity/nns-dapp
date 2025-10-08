@@ -6,10 +6,16 @@
   import { i18n } from "$lib/stores/i18n";
   import { IconAccountsPage, IconHeldTokens } from "@dfinity/gix-components";
 
+  type Props = {
+    icpOnlyTable?: boolean;
+  };
+
+  const { icpOnlyTable = false }: Props = $props();
+
   const href = AppPath.Tokens;
 </script>
 
-<Card testId="no-held-tokens-card">
+<Card testId={icpOnlyTable ? "no-held-icp-card" : "no-held-tokens-card"}>
   <div
     class="wrapper"
     role="region"

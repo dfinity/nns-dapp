@@ -3021,6 +3021,22 @@ describe("neuron-utils", () => {
       ).toBe(true);
     });
 
+    it("should return true if amount to top is the minimum", () => {
+      const neuron = {
+        ...mockNeuron,
+        fullNeuron: {
+          ...mockFullNeuron,
+          cachedNeuronStake: 0n,
+        },
+      };
+      expect(
+        validTopUpAmount({
+          neuron,
+          amount: 1,
+        })
+      ).toBe(true);
+    });
+
     it("should return false if amount and stake are not big enough", () => {
       const neuron = {
         ...mockNeuron,

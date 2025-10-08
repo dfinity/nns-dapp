@@ -257,6 +257,8 @@ describe("reporting utils", () => {
               amount: "+1.00",
               from: "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
               id: "1234",
+              accountId: "1",
+              neuronId: undefined,
               project: "Internet Computer",
               symbol: "ICP",
               timestamp: "Jan 1, 2023 12:00 AM",
@@ -266,7 +268,7 @@ describe("reporting utils", () => {
           ],
           metadata: [
             {
-              label: "Account ID",
+              label: "Account Id",
               value: "1",
             },
             {
@@ -278,7 +280,7 @@ describe("reporting utils", () => {
               value: "0.000001",
             },
             {
-              label: "Controller Principal ID",
+              label: "Controller Principal Id",
               value:
                 "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
             },
@@ -316,7 +318,7 @@ describe("reporting utils", () => {
       });
 
       expect(datasets[0].metadata[1]).toEqual({
-        label: "Neuron ID",
+        label: "Neuron Id",
         value: '="1"',
       });
     });
@@ -325,7 +327,7 @@ describe("reporting utils", () => {
   describe("buildNeuronsDatasets", () => {
     const expectedMetadata = [
       {
-        label: "NNS Account Principal ID",
+        label: "NNS Account Principal Id",
         value:
           "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
       },
@@ -438,12 +440,12 @@ describe("reporting utils", () => {
     });
 
     it('returns empty object for "all" period', () => {
-      const result = convertPeriodToNanosecondRange("all");
+      const result = convertPeriodToNanosecondRange({ period: "all" });
       expect(result).toEqual({});
     });
 
     it('returns correct range for "last-year"', () => {
-      const result = convertPeriodToNanosecondRange("last-year");
+      const result = convertPeriodToNanosecondRange({ period: "last-year" });
 
       expect(result).toEqual({
         from: BigInt(new Date("2023-01-01T00:00:00Z").getTime()) * NANOS_IN_MS,
@@ -452,10 +454,93 @@ describe("reporting utils", () => {
     });
 
     it('returns correct range for "year-to-date"', () => {
-      const result = convertPeriodToNanosecondRange("year-to-date");
+      const result = convertPeriodToNanosecondRange({
+        period: "year-to-date",
+      });
 
       expect(result).toEqual({
         from: BigInt(new Date("2024-01-01T00:00:00Z").getTime()) * NANOS_IN_MS,
+      });
+    });
+
+    describe("custom period", () => {
+      it("returns correct date range including end of day for 'to' date", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-01-01",
+          to: "2024-01-31",
+        });
+
+        expect(result).toEqual({
+          from:
+            BigInt(new Date("2024-01-01T00:00:00.000Z").getTime()) *
+            NANOS_IN_MS,
+          to:
+            BigInt(new Date("2024-02-01T00:00:00.000Z").getTime()) *
+            NANOS_IN_MS,
+        });
+      });
+
+      it("handles single day range correctly", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-01-15",
+          to: "2024-01-15",
+        });
+
+        expect(result).toEqual({
+          from:
+            BigInt(new Date("2024-01-15T00:00:00.000Z").getTime()) *
+            NANOS_IN_MS,
+          to:
+            BigInt(new Date("2024-01-16T00:00:00.000Z").getTime()) *
+            NANOS_IN_MS,
+        });
+      });
+
+      it("handles leap year correctly", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-02-28",
+          to: "2024-03-01",
+        });
+
+        expect(result).toEqual({
+          from:
+            BigInt(new Date("2024-02-28T00:00:00.000Z").getTime()) *
+            NANOS_IN_MS,
+          to:
+            BigInt(new Date("2024-03-02T00:00:00.000Z").getTime()) *
+            NANOS_IN_MS,
+        });
+      });
+
+      it("returns empty object when 'from' is missing", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          to: "2024-01-31",
+        });
+
+        expect(result).toEqual({});
+      });
+
+      it("returns empty object when 'to' is missing", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-01-01",
+        });
+
+        expect(result).toEqual({});
+      });
+
+      it("returns empty object when 'from' is after 'to'", () => {
+        const result = convertPeriodToNanosecondRange({
+          period: "custom",
+          from: "2024-01-31",
+          to: "2024-01-01",
+        });
+
+        expect(result).toEqual({});
       });
     });
   });

@@ -79,7 +79,7 @@ describe("icp-index.api", () => {
         });
       });
 
-      it("should return undefined old tx index if not present in response", async () => {
+      it("should return undefined old index if not present in response", async () => {
         const maxResults = 20n;
         currentResponse = {
           ...defaultResponse,

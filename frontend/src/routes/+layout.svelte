@@ -19,10 +19,13 @@
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { toastsClean } from "$lib/stores/toasts.store";
+  import { logWithTimestamp } from "$lib/utils/dev.utils";
   import { onMount } from "svelte";
 
   let ready = false;
   let worker: AuthWorker | undefined;
+
+  logWithTimestamp("#4124:s1");
 
   const syncAuth = async (auth: AuthStoreData) => {
     worker?.syncAuthIdle(auth);
@@ -52,8 +55,12 @@
   onMount(async () => {
     initAnalytics();
 
+    logWithTimestamp("#4124:s1:before worker");
     worker = await initAuthWorker();
+    logWithTimestamp("#4124:s1:worker initialized", worker);
+
     await syncAuth($authStore);
+    logWithTimestamp("#4124:s1:syncAuth");
   });
 
   $: syncAuth($authStore);

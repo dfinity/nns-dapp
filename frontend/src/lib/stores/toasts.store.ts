@@ -3,7 +3,9 @@ import type { ToastLabelKey, ToastMsg } from "$lib/types/toast";
 import { errorToString } from "$lib/utils/error.utils";
 import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
 import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
+import { stringifyJson } from "$lib/utils/utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { get } from "svelte/store";
 
 const mapToastText = ({ labelKey, substitutions, detail }: ToastMsg): string =>
   `${replacePlaceholders(translate({ labelKey }), substitutions ?? {})}${
@@ -24,10 +26,24 @@ export const toastsShow = (msg: ToastMsg): symbol => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { labelKey, substitutions, detail, ...rest } = msg;
 
-  return toastsStore.show({
+  const toastData = {
     text: mapToastText(msg),
     ...rest,
-  });
+  };
+
+  // Prevent showing duplicate messages
+  const currentMessages = get(toastsStore);
+  if (
+    currentMessages.some(
+      (currentMsg) =>
+        stringifyJson({ ...currentMsg, id: null }) ===
+        stringifyJson({ ...toastData, id: null })
+    )
+  ) {
+    return currentMessages[0]?.id ?? Symbol();
+  }
+
+  return toastsStore.show(toastData);
 };
 
 export const toastsSuccess = ({
@@ -46,11 +62,13 @@ export const toastsError = ({
   err,
   substitutions,
   renderAsHtml,
+  showDetails = false,
 }: {
   labelKey: ToastLabelKey;
   err?: unknown;
   substitutions?: I18nSubstitutions;
   renderAsHtml?: boolean;
+  showDetails?: boolean;
 }): symbol => {
   if (err !== undefined) {
     console.error(err);
@@ -59,7 +77,7 @@ export const toastsError = ({
   return toastsShow({
     labelKey,
     level: "error",
-    detail: errorToString(err),
+    detail: showDetails ? errorToString(err) : undefined,
     substitutions,
     renderAsHtml,
   });

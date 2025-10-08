@@ -82,11 +82,20 @@ describe("ReportingTransactionsButton", () => {
     {
       onTrigger,
       period,
-    }: { onTrigger?: () => void; period: ReportingPeriod } = { period: "all" }
+      customFrom,
+      customTo,
+    }: {
+      onTrigger?: () => void;
+      period: ReportingPeriod;
+      customFrom?: string;
+      customTo?: string;
+    } = { period: "all" }
   ) => {
     const { container } = render(ReportingTransactionsButton, {
       props: {
         period,
+        customFrom,
+        customTo,
       },
       events: {
         ...(nonNullish(onTrigger) && {
@@ -110,7 +119,7 @@ describe("ReportingTransactionsButton", () => {
     await po.click();
     await runResolvedPromises();
 
-    const expectedFileName = `icp_transactions_export_20231014`;
+    const expectedFileName = `icp_transactions_export_20231014_all`;
     expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
@@ -128,16 +137,16 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     const expectedCsvContent = [
-      "Account ID,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+      "Account Id,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
       "Account Name,Main",
       "Balance(ICP),1'234'567.8901",
-      "Controller Principal ID,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+      "Controller Principal Id,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
       "Transactions,2",
       'Export Date Time,"Oct 14, 2023 12:00 AM"',
       "",
-      ",,TX ID,Project Name,Symbol,To,From,TX Type,Amount(ICP),Date Time",
-      ',,1234,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
-      ',,1,Internet Computer,ICP,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
+      ",,Index,Project Name,Symbol,Account Id,Neuron Id,To,From,Type,Amount(ICP),Date Time",
+      ',,1234,Internet Computer,ICP,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
+      ',,1,Internet Computer,ICP,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,,d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32,d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f,Sent,-1.0001,"Jan 1, 2023 12:00 AM"',
     ].join("\n");
 
     expect(spySaveGeneratedCsv).toBeCalledWith(
@@ -170,6 +179,9 @@ describe("ReportingTransactionsButton", () => {
                 id: "1234",
                 project: "Internet Computer",
                 symbol: "ICP",
+                accountId:
+                  "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
+                neuronId: undefined,
                 timestamp: "Jan 1, 2023 12:00 AM",
                 to: "d0654c53339c85e0e5fff46a2d800101bc3d896caef34e1a0597426792ff9f32",
                 type: "Sent",
@@ -177,7 +189,7 @@ describe("ReportingTransactionsButton", () => {
             ]),
             metadata: [
               {
-                label: "Account ID",
+                label: "Account Id",
                 value:
                   "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",
               },
@@ -190,7 +202,7 @@ describe("ReportingTransactionsButton", () => {
                 value: "1'234'567.8901",
               },
               {
-                label: "Controller Principal ID",
+                label: "Controller Principal Id",
                 value:
                   "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
               },
@@ -393,5 +405,149 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     expect(get(busyStore)).toEqual([]);
+  });
+
+  describe("Button state based on custom period", () => {
+    it("should be enabled when period is not custom", async () => {
+      const po = renderComponent({ period: "all" });
+      expect(await po.isEnabled()).toBe(true);
+    });
+
+    it("should be enabled when period is custom and both dates are provided", async () => {
+      const po = renderComponent({
+        period: "custom",
+        customFrom: "2024-01-01",
+        customTo: "2024-01-31",
+      });
+      expect(await po.isEnabled()).toBe(true);
+    });
+
+    it("should be disabled when period is custom and values are missing", async () => {
+      let po = renderComponent({ period: "custom" });
+      expect(await po.isDisabled()).toBe(true);
+
+      po = renderComponent({
+        period: "custom",
+        customTo: "2024-01-31",
+      });
+      expect(await po.isDisabled()).toBe(true);
+
+      po = renderComponent({
+        period: "custom",
+        customFrom: "2024-01-01",
+      });
+      expect(await po.isDisabled()).toBe(true);
+    });
+  });
+
+  describe("Custom date range values", () => {
+    it("should pass correct date range to convertPeriodToNanosecondRange for custom period", async () => {
+      const NANOS_IN_MS = BigInt(1_000_000);
+      const fromDate = "2024-01-01";
+      const toDate = "2024-01-31";
+
+      setAccountsForTesting({
+        main: mockMainAccount,
+      });
+
+      const po = renderComponent({
+        period: "custom",
+        customFrom: fromDate,
+        customTo: toDate,
+      });
+
+      expect(spyExportDataService).toBeCalledTimes(0);
+
+      await po.click();
+      await runResolvedPromises();
+
+      const expectedFromNanos =
+        BigInt(new Date("2024-01-01T00:00:00.000Z").getTime()) * NANOS_IN_MS;
+      const expectedToNanos =
+        BigInt(new Date("2024-02-01T00:00:00.000Z").getTime()) * NANOS_IN_MS;
+
+      expect(spyExportDataService).toHaveBeenCalledWith({
+        entities: expect.any(Array),
+        identity: mockIdentity,
+        range: {
+          from: expectedFromNanos,
+          to: expectedToNanos,
+        },
+      });
+    });
+
+    it("should handle empty custom dates gracefully", async () => {
+      setAccountsForTesting({
+        main: mockMainAccount,
+      });
+
+      const po = renderComponent({
+        period: "custom",
+        customFrom: "",
+        customTo: "",
+      });
+
+      // Should be disabled due to empty dates
+      expect(await po.isDisabled()).toBe(true);
+    });
+  });
+
+  describe("Filename generation", () => {
+    it("should generate correct filename for all period", async () => {
+      const po = renderComponent({ period: "all" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName: "icp_transactions_export_20231014_all",
+        })
+      );
+    });
+
+    it("should generate correct filename for year-to-date period", async () => {
+      const po = renderComponent({ period: "year-to-date" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName: "icp_transactions_export_20231014_year-to-date",
+        })
+      );
+    });
+
+    it("should generate correct filename for last-year period", async () => {
+      const po = renderComponent({ period: "last-year" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName: "icp_transactions_export_20231014_last-year",
+        })
+      );
+    });
+
+    it("should generate correct filename for custom period with dates", async () => {
+      const po = renderComponent({
+        period: "custom",
+        customFrom: "2024-01-01",
+        customTo: "2024-01-31",
+      });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName:
+            "icp_transactions_export_20231014_custom_2024-01-01_2024-01-31",
+        })
+      );
+    });
   });
 });

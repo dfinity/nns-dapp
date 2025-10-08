@@ -237,10 +237,10 @@ interface I18nReporting {
   amount: string;
   balance: string;
   from: string;
-  numer_of_transactions: string;
+  number_of_transactions: string;
   timestamp: string;
   to: string;
-  transaction_id: string;
+  transaction_index: string;
   transaction_type: string;
   error_csv_generation: string;
   error_file_system_access: string;
@@ -250,6 +250,10 @@ interface I18nReporting {
   range_filter_all: string;
   range_last_year: string;
   range_year_to_date: string;
+  range_custom: string;
+  custom_start_date: string;
+  custom_end_date: string;
+  range_max_one_year: string;
 }
 
 interface I18nAuth {
@@ -1541,6 +1545,7 @@ interface I18nStatus_description {
 
 interface I18nActions {
   RegisterKnownNeuron: string;
+  DeregisterKnownNeuron: string;
   NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;
@@ -1560,6 +1565,7 @@ interface I18nActions {
 
 interface I18nActions_description {
   RegisterKnownNeuron: string;
+  DeregisterKnownNeuron: string;
   NeuronManagement: string;
   ApproveGenesisKyc: string;
   ManageNetworkEconomics: string;

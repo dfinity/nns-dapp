@@ -4,6 +4,7 @@ import type {
   TransactionsDateRange,
 } from "$lib/types/reporting";
 import {
+  formatDateCompact,
   getFutureDateFromDelayInSeconds,
   nanoSecondsToDateTime,
   nowInBigIntNanoSeconds,
@@ -208,6 +209,8 @@ export type TransactionsCsvData = {
   id: string;
   project: string;
   symbol: string;
+  accountId: string;
+  neuronId?: string;
   to: string | undefined;
   from: string | undefined;
   type: string;
@@ -229,7 +232,9 @@ export const buildTransactionsDatasets = ({
   swapCanisterAccounts: Set<string>;
 }): CsvDataset<TransactionsCsvData>[] => {
   return transactions.map(({ entity, transactions }) => {
-    const accountIdentifier = entity.identifier;
+    const accountId = entity.identifier;
+    let neuronId: string;
+
     const amount = TokenAmountV2.fromUlps({
       amount: entity.balance,
       token: ICPToken,
@@ -238,7 +243,7 @@ export const buildTransactionsDatasets = ({
     const metadata = [
       {
         label: i18n.reporting.account_id,
-        value: accountIdentifier,
+        value: accountId,
       },
     ];
 
@@ -250,9 +255,10 @@ export const buildTransactionsDatasets = ({
     }
 
     if (entity.type === "neuron") {
+      neuronId = wrapAsExcelStringFormula(entity.originalData.neuronId);
       metadata.push({
         label: i18n.reporting.neuron_id,
-        value: wrapAsExcelStringFormula(entity.originalData.neuronId),
+        value: neuronId,
       });
     }
 
@@ -272,7 +278,7 @@ export const buildTransactionsDatasets = ({
         value: principal.toText() ?? i18n.core.not_applicable,
       },
       {
-        label: i18n.reporting.numer_of_transactions,
+        label: i18n.reporting.number_of_transactions,
         value: transactions.length.toString(),
       },
       {
@@ -292,7 +298,7 @@ export const buildTransactionsDatasets = ({
           timestampNanos,
           transactionDirection,
         } = mapIcpTransactionToReport({
-          accountIdentifier,
+          accountIdentifier: accountId,
           transaction,
           neuronAccounts,
           swapCanisterAccounts,
@@ -308,6 +314,8 @@ export const buildTransactionsDatasets = ({
           id: transaction.id.toString(),
           project: ICPToken.name,
           symbol: ICPToken.symbol,
+          accountId,
+          neuronId,
           to,
           from,
           type: transactionName({ type, i18n }),
@@ -393,27 +401,68 @@ export const buildNeuronsDatasets = ({
   return [{ metadata, data }];
 };
 
-export const convertPeriodToNanosecondRange = (
-  period: ReportingPeriod
-): TransactionsDateRange => {
+export const convertPeriodToNanosecondRange = ({
+  period,
+  from,
+  to,
+}: {
+  period: ReportingPeriod;
+  from?: string;
+  to?: string;
+}): TransactionsDateRange => {
   const now = new Date();
   const currentYear = now.getFullYear();
   const toNanoseconds = (milliseconds: number): bigint =>
     BigInt(milliseconds) * BigInt(1_000_000);
 
+  const startOfLocalDayMs = (y: number, mZero: number, d: number): number =>
+    new Date(y, mZero, d).getTime();
+
   switch (period) {
     case "all":
       return {};
 
-    case "last-year":
-      return {
-        from: toNanoseconds(new Date(currentYear - 1, 0, 1).getTime()),
-        to: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
-      };
-
     case "year-to-date":
       return {
-        from: toNanoseconds(new Date(currentYear, 0, 1).getTime()),
+        from: toNanoseconds(startOfLocalDayMs(currentYear, 0, 1)),
       };
+
+    case "last-year":
+      return {
+        from: toNanoseconds(startOfLocalDayMs(currentYear - 1, 0, 1)),
+        to: toNanoseconds(startOfLocalDayMs(currentYear, 0, 1)),
+      };
+
+    case "custom": {
+      if (isNullish(from) || isNullish(to) || from > to) {
+        return {};
+      }
+
+      const [fy, fm, fd] = from.split("-").map(Number);
+      const [ty, tm, td] = to.split("-").map(Number);
+      const fromMs = startOfLocalDayMs(fy, fm - 1, fd);
+      const toExclusiveMs = startOfLocalDayMs(ty, tm - 1, td + 1);
+
+      return {
+        from: toNanoseconds(fromMs),
+        to: toNanoseconds(toExclusiveMs),
+      };
+    }
   }
+};
+
+export const buildFileName = ({
+  period,
+  from,
+  to,
+}: {
+  period: ReportingPeriod;
+  from?: string;
+  to?: string;
+}) => {
+  const prefix = "icp_transactions_export_";
+  const date = formatDateCompact(new Date());
+  const suffix =
+    period === "custom" ? `_${period}_${from}_${to}` : `_${period}`;
+  return `${prefix}${date}${suffix}`;
 };
