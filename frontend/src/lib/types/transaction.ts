@@ -84,6 +84,7 @@ export interface UiTransaction {
   // Always positive.
   tokenAmount: TokenAmount | TokenAmountV2;
   timestamp?: Date;
+  memoText?: string;
 }
 
 export enum TransactionNetwork {

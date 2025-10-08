@@ -8,6 +8,10 @@ import {
   AccountTransactionType,
   type UiTransaction,
 } from "$lib/types/transaction";
+import {
+  invalidIcpAddress,
+  invalidIcrcAddress,
+} from "$lib/utils/accounts.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
 import type {
   Operation,
@@ -20,6 +24,7 @@ import {
   fromNullable,
   isNullish,
   nonNullish,
+  uint8ArrayToHexString,
 } from "@dfinity/utils";
 
 const isToSelf = (transaction: Transaction): boolean => {
@@ -252,6 +257,14 @@ export const mapIcpTransactionToUi = ({
     const timestamp = nonNullish(timestampMilliseconds)
       ? new Date(timestampMilliseconds)
       : undefined;
+
+    const memo = transaction.transaction.memo;
+    const icrc1Memo = transaction.transaction.icrc1_memo?.[0];
+
+    const memoText = nonNullish(icrc1Memo)
+      ? uint8ArrayToHexString(icrc1Memo)
+      : memo.toString();
+
     return {
       domKey: `${transaction.id}-${toSelfTransaction ? "0" : "1"}`,
       isIncoming: isReceive,
@@ -265,6 +278,7 @@ export const mapIcpTransactionToUi = ({
       timestamp,
       isFailed: false,
       isReimbursement: false,
+      memoText,
     };
   } catch (err) {
     toastsError({
@@ -272,5 +286,43 @@ export const mapIcpTransactionToUi = ({
       substitutions: { $txId: String(transaction.id) },
       err,
     });
+  }
+};
+
+// it should only contain positive numbers and limit to 64 bits
+export const isValidIcpMemo = (memo: string): boolean => {
+  try {
+    const UINT64_MAX = 2n ** 64n - 1n;
+    const memoBigInt = BigInt(memo);
+    return memoBigInt >= 0n && memoBigInt <= UINT64_MAX;
+  } catch {
+    return false;
+  }
+};
+
+// it should be less than 32 bytes when encoded as UTF-8
+export const isValidIcrc1Memo = (memo: string): boolean => {
+  try {
+    return new TextEncoder().encode(memo).length <= 32;
+  } catch {
+    return false;
+  }
+};
+
+export const validateTransactionMemo = ({
+  memo,
+  destinationAddress,
+}: {
+  memo?: string;
+  destinationAddress: string;
+}): "ICP_MEMO_ERROR" | "ICRC_MEMO_ERROR" | undefined => {
+  const isValidIcpAddress = !invalidIcpAddress(destinationAddress);
+  if (nonNullish(memo) && isValidIcpAddress && !isValidIcpMemo(memo)) {
+    return "ICP_MEMO_ERROR";
+  }
+
+  const isValidIcrcAddress = !invalidIcrcAddress(destinationAddress);
+  if (nonNullish(memo) && isValidIcrcAddress && !isValidIcrc1Memo(memo)) {
+    return "ICRC_MEMO_ERROR";
   }
 };

@@ -6,10 +6,13 @@ import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { type UiTransaction } from "$lib/types/transaction";
 import {
+  isValidIcpMemo,
+  isValidIcrc1Memo,
   mapIcpTransactionToReport,
   mapIcpTransactionToUi,
   mapToSelfTransactions,
   sortTransactionsByIdDescendingOrder,
+  validateTransactionMemo,
 } from "$lib/utils/icp-transactions.utils";
 import en from "$tests/mocks/i18n.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
@@ -49,6 +52,7 @@ describe("icp-transactions.utils", () => {
     isFailed: false,
     headline: "Sent",
     timestamp: defaultTimestamp,
+    memoText: "0",
   };
   const toSelfOperation: Operation = {
     Transfer: {
@@ -308,6 +312,7 @@ describe("icp-transactions.utils", () => {
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
         headline: "Staked",
+        memoText: transaction.transaction.memo.toString(),
       };
 
       expect(
@@ -352,6 +357,7 @@ describe("icp-transactions.utils", () => {
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
         headline: "Create Canister",
+        memoText: transaction.transaction.memo.toString(),
       };
 
       expect(
@@ -374,6 +380,7 @@ describe("icp-transactions.utils", () => {
       const expectedUiTransaction: UiTransaction = {
         ...defaultUiTransaction,
         headline: "Top-up Canister",
+        memoText: transaction.transaction.memo.toString(),
       };
 
       expect(
@@ -795,6 +802,91 @@ describe("icp-transactions.utils", () => {
         secondTransaction,
         firstTransaction,
       ]);
+    });
+  });
+
+  describe("isValidIcpMemo", () => {
+    it("returns true for valid numeric memo", () => {
+      expect(isValidIcpMemo("")).toBe(true);
+      expect(isValidIcpMemo("123")).toBe(true);
+      expect(isValidIcpMemo("0")).toBe(true);
+    });
+
+    it("returns true for max uint64 value", () => {
+      expect(isValidIcpMemo("18446744073709551615")).toBe(true);
+    });
+
+    it("returns false for non-numeric memo", () => {
+      expect(isValidIcpMemo("abc")).toBe(false);
+      expect(isValidIcpMemo("123abc")).toBe(false);
+    });
+
+    it("returns false for values exceeding uint64 max", () => {
+      expect(isValidIcpMemo("18446744073709551616")).toBe(false);
+    });
+
+    it("returns false for negative values", () => {
+      expect(isValidIcpMemo("-1")).toBe(false);
+    });
+  });
+
+  describe("isValidIcrc1Memo", () => {
+    it("returns true for memo within 32 bytes", () => {
+      expect(isValidIcrc1Memo("")).toBe(true);
+      expect(isValidIcrc1Memo("short memo")).toBe(true);
+    });
+
+    it("returns true for memo exactly 32 bytes", () => {
+      expect(isValidIcrc1Memo("a".repeat(32))).toBe(true);
+    });
+
+    it("returns false for memo exceeding 32 bytes", () => {
+      expect(isValidIcrc1Memo("a".repeat(33))).toBe(false);
+    });
+
+    it("handles unicode characters correctly", () => {
+      expect(isValidIcrc1Memo("💎")).toBe(true); // 4 bytes
+      expect(isValidIcrc1Memo("💎".repeat(8))).toBe(true); // 32 bytes
+      expect(isValidIcrc1Memo("💎".repeat(9))).toBe(false); // 36 bytes
+    });
+  });
+
+  describe("validateTransactionMemo", () => {
+    const icpAddress =
+      "5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087";
+    const icrcAddress = "rrkah-fqaaa-aaaaa-aaaaq-cai";
+
+    it("returns undefined for valid ICP memo", () => {
+      expect(
+        validateTransactionMemo({ memo: "123", destinationAddress: icpAddress })
+      ).toBeUndefined();
+    });
+
+    it("returns undefined for valid ICRC memo", () => {
+      expect(
+        validateTransactionMemo({
+          memo: "valid memo",
+          destinationAddress: icrcAddress,
+        })
+      ).toBeUndefined();
+    });
+
+    it("returns ICP_MEMO_ERROR for invalid ICP memo", () => {
+      expect(
+        validateTransactionMemo({
+          memo: "invalid",
+          destinationAddress: icpAddress,
+        })
+      ).toBe("ICP_MEMO_ERROR");
+    });
+
+    it("returns ICRC_MEMO_ERROR for invalid ICRC memo", () => {
+      expect(
+        validateTransactionMemo({
+          memo: "a".repeat(33),
+          destinationAddress: icrcAddress,
+        })
+      ).toBe("ICRC_MEMO_ERROR");
     });
   });
 });
