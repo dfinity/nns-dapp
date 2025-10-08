@@ -925,9 +925,15 @@ describe("icp-transactions.utils", () => {
     });
 
     it("should handle number array input", () => {
-      const numberArray = [116, 101, 115, 116];
+      const numberArray = [116, 101, 115, 116]; // test in UTF-8
       const decoded = decodeIcrc1Memo(numberArray);
-      expect(decoded).toBe("74657374");
+      expect(decoded).toBe("test");
+    });
+
+    it("should return hex string for invalid UTF-8", () => {
+      const invalidUtf8 = new Uint8Array([0xff, 0xfe, 0xfd]);
+      const decoded = decodeIcrc1Memo(invalidUtf8);
+      expect(decoded).toBe("fffefd");
     });
   });
 });

@@ -292,8 +292,8 @@ export const mapIcpTransactionToUi = ({
 export const encodeMemoToIcp = (memo: string): bigint => {
   return BigInt(memo);
 };
-export const decodeIcpMemo = (memo: bigint): string => {
-  return memo.toString();
+export const decodeIcpMemo = (encodedMemo: bigint): string => {
+  return encodedMemo.toString();
 };
 
 // it should only contain positive numbers and limit to 64bits
@@ -311,14 +311,17 @@ export const encodeMemoToIcrc1 = (memo: string): Uint8Array => {
   return new TextEncoder().encode(memo);
 };
 
-export const decodeIcrc1Memo = (
-  memo: Uint8Array<ArrayBufferLike> | number[]
-): string => {
-  if (memo instanceof Uint8Array) {
-    return new TextDecoder().decode(memo);
-  }
+export const decodeIcrc1Memo = (encodedMemo: Uint8Array | number[]): string => {
+  const bytes =
+    encodedMemo instanceof Uint8Array
+      ? encodedMemo
+      : Uint8Array.from(encodedMemo);
 
-  return uint8ArrayToHexString(memo);
+  try {
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    return uint8ArrayToHexString(encodedMemo);
+  }
 };
 
 // it should be less than 32 bytes when encoded as UTF-8
