@@ -20,6 +20,7 @@ import type {
 } from "@dfinity/nns";
 import {
   GovernanceCanister,
+  GovernanceError,
   NeuronVisibility,
   type RewardEvent,
 } from "@dfinity/nns";
@@ -392,6 +393,12 @@ export const setFollowees = async ({
 }: ApiSetFolloweesParams): Promise<void> => {
   logWithTimestamp(`Setting Followees (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
+
+  throw new GovernanceError({
+    // error_message: `${followees.map((followee) => followee.toString()).join()}: Followee (${neuronId.toString()}) does not exist.\n`,
+    error_message: `${followees.map((followee) => followee.toString()).join()}: Not authorized to follow private neuron: ${neuronId.toString()}\n\t\To follow a private neuron, you must be the controller or a hotkey of it.\n`,
+    error_type: 501,
+  });
 
   await canister.setFollowees({
     neuronId,

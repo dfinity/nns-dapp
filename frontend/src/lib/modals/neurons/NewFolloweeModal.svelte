@@ -16,6 +16,9 @@
   import { Modal, Spinner, busy } from "@dfinity/gix-components";
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
   import { createEventDispatcher, onMount } from "svelte";
+  import InputWithError from "../../components/ui/InputWithError.svelte";
+  import { toastsError, toastsShow } from "../../stores/toasts.store";
+  import { mapNeuronErrorToToastMessage } from "../../utils/error.utils";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;
@@ -42,6 +45,8 @@
   let topicFollowees: NeuronId[];
   $: topicFollowees = followeesByTopic({ neuron, topic }) ?? [];
 
+  let errorMessage: string | undefined = undefined;
+
   onMount(() => listKnownNeurons());
 
   const followsKnownNeuron = ({
@@ -56,6 +61,34 @@
   const close = () => {
     dispatcher("nnsClose");
   };
+  const handleAddFolloweeError = ({
+    followee,
+    error,
+  }: {
+    followee: bigint;
+    error: unknown;
+  }) => {
+    const toastMessage = mapNeuronErrorToToastMessage(error);
+    const errorDetail = toastMessage.detail ?? "";
+    if (/\d+: Followee \(\d+\) does not exist\./.test(errorDetail)) {
+      // ref. https://github.com/dfinity/ic/blob/e06dd63694ceed999499c14271617c03633da758/rs/nns/governance/src/governance.rs#L3378
+      errorMessage = $i18n.new_followee.followee_does_not_exist.replace(
+        "$neuronId",
+        followee.toString()
+      );
+    } else if (
+      /you must be the controller or a hotkey of it/.test(errorDetail)
+    ) {
+      // ref. https://github.com/dfinity/ic/blob/e06dd63694ceed999499c14271617c03633da758/rs/nns/governance/src/governance.rs#L3370
+      toastsError({
+        labelKey: $i18n.new_followee.followee_not_permit,
+        renderAsHtml: true,
+      });
+      errorMessage = ""; // To display the error state of InputWithError
+    } else {
+      toastsShow(toastMessage);
+    }
+  };
   const addFolloweeByAddress = async () => {
     let followee: bigint;
     if (followeeAddress.length === 0) {
@@ -65,44 +98,67 @@
     try {
       followee = BigInt(followeeAddress);
     } catch (_) {
-      // TODO: Show error in Input - https://dfinity.atlassian.net/browse/L2-408
-      alert(`Incorrect followee address ${followeeAddress}`);
+      errorMessage = $i18n.new_followee.followee_incorrect_id_format;
+      return;
+    }
+
+    if (BigInt(followeeAddress) === neuron.neuronId) {
+      errorMessage = $i18n.new_followee.followee_no_self_following;
       return;
     }
 
     startBusy({ initiator: "add-followee" });
 
-    await addFollowee({
-      neuronId: neuron.neuronId,
-      topic,
-      followee,
-    });
+    let addFolloweeError = true;
+    try {
+      await addFollowee({
+        neuronId: neuron.neuronId,
+        topic,
+        followee,
+      });
+      addFolloweeError = false;
+    } catch (err) {
+      handleAddFolloweeError({ followee, error: err });
+    }
 
     stopBusy("add-followee");
-    close();
 
-    followeeAddress = "";
+    if (!addFolloweeError) {
+      close();
+      followeeAddress = "";
+    }
   };
+
+  const clearError = () => (errorMessage = undefined);
+  let disabled: boolean;
+  $: disabled =
+    errorMessage !== undefined ||
+    followeeAddress.length === 0 ||
+    !isUserAuthorized ||
+    $busy;
 </script>
 
 <Modal onClose={close} testId="new-followee-modal-component">
   {#snippet title()}{$i18n.new_followee.title}{/snippet}
 
   <form on:submit|preventDefault={addFolloweeByAddress}>
-    <Input
+    <InputWithError
       inputType="text"
       autocomplete="off"
       placeholderLabelKey="new_followee.placeholder"
       name="new-followee-address"
       bind:value={followeeAddress}
+      {errorMessage}
+      required
+      on:nnsInput={clearError}
     >
       <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
-    </Input>
+    </InputWithError>
     <button
       data-tid="follow-neuron-button"
       class="primary"
       type="submit"
-      disabled={followeeAddress.length === 0 || !isUserAuthorized || $busy}
+      {disabled}
     >
       {$i18n.new_followee.follow_neuron}
     </button>

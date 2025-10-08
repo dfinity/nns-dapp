@@ -500,7 +500,10 @@
     "options_title": "Options for Following",
     "follow": "Follow",
     "unfollow": "Unfollow",
+    "followee_no_self_following": "A neuron is not allowed to follow itself.",
+    "followee_incorrect_id_format": "Incorrect followee format.",
     "followee_does_not_exist": "Neuron with id $neuronId does not exist.",
+    "followee_not_permit": "To follow a private neuron, you must be the controller or a hotkey of it. More info <a href=\"https://internetcomputer.org/docs/building-apps/governing-apps/nns/using-the-nns-dapp/nns-dapp-following-other-neurons\" rel=\"noopener noreferrer\" aria-label=\"more info about following neurons\" target=\"_blank\">here</a>.",
     "neuron_not_followee": "Sorry, you can't unfollow neuron $neuronId because you are not following it.",
     "already_followed": "You are already following this neuron."
   },

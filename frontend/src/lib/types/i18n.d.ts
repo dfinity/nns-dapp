@@ -519,7 +519,10 @@ interface I18nNew_followee {
   options_title: string;
   follow: string;
   unfollow: string;
+  followee_no_self_following: string;
+  followee_incorrect_id_format: string;
   followee_does_not_exist: string;
+  followee_not_permit: string;
   neuron_not_followee: string;
   already_followed: string;
 }

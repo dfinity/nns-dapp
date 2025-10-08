@@ -907,31 +907,27 @@ const setFolloweesHelper = async ({
   topic: Topic;
   followees: NeuronId[];
 }) => {
-  try {
-    if (neuron === undefined) {
-      throw new NotFoundError(
-        "Neuron not found in store. We can't check authorization to set followees."
-      );
-    }
-    // We try to control by hotkey by default
-    let identity: Identity = await getAuthenticatedIdentity();
-    if (!isHotKeyControllable({ neuron, identity })) {
-      identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
-    }
-    // ManageNeuron topic followes can only be handled by controllers
-    if (topic === Topic.NeuronManagement) {
-      identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
-    }
-    await governanceApiService.setFollowees({
-      identity,
-      neuronId: neuron.neuronId,
-      topic,
-      followees,
-    });
-    await getAndLoadNeuron(neuron.neuronId);
-  } catch (err) {
-    toastsShow(mapNeuronErrorToToastMessage(err));
+  if (neuron === undefined) {
+    throw new NotFoundError(
+      "Neuron not found in store. We can't check authorization to set followees."
+    );
   }
+  // We try to control by hotkey by default
+  let identity: Identity = await getAuthenticatedIdentity();
+  if (!isHotKeyControllable({ neuron, identity })) {
+    identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
+  }
+  // ManageNeuron topic followes can only be handled by controllers
+  if (topic === Topic.NeuronManagement) {
+    identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
+  }
+  await governanceApiService.setFollowees({
+    identity,
+    neuronId: neuron.neuronId,
+    topic,
+    followees,
+  });
+  await getAndLoadNeuron(neuron.neuronId);
 };
 
 export const addFollowee = async ({
