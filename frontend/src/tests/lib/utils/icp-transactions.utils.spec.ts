@@ -806,11 +806,8 @@ describe("icp-transactions.utils", () => {
   });
 
   describe("isValidIcpMemo", () => {
-    it("returns false for empty memo", () => {
-      expect(isValidIcpMemo("")).toBe(false);
-    });
-
     it("returns true for valid numeric memo", () => {
+      expect(isValidIcpMemo("")).toBe(true);
       expect(isValidIcpMemo("123")).toBe(true);
       expect(isValidIcpMemo("0")).toBe(true);
     });
@@ -835,11 +832,8 @@ describe("icp-transactions.utils", () => {
   });
 
   describe("isValidIcrc1Memo", () => {
-    it("returns false for empty memo", () => {
-      expect(isValidIcrc1Memo("")).toBe(false);
-    });
-
     it("returns true for memo within 32 bytes", () => {
+      expect(isValidIcrc1Memo("")).toBe(true);
       expect(isValidIcrc1Memo("short memo")).toBe(true);
     });
 
@@ -893,15 +887,6 @@ describe("icp-transactions.utils", () => {
           memo: "a".repeat(33),
           destinationAddress: icrcAddress,
         })
-      ).toBe("ICRC_MEMO_ERROR");
-    });
-
-    it("returns errors for empty memo", () => {
-      expect(
-        validateTransactionMemo({ memo: "", destinationAddress: icpAddress })
-      ).toBe("ICP_MEMO_ERROR");
-      expect(
-        validateTransactionMemo({ memo: "", destinationAddress: icrcAddress })
       ).toBe("ICRC_MEMO_ERROR");
     });
   });

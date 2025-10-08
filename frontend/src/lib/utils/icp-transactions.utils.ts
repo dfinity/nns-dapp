@@ -289,10 +289,8 @@ export const mapIcpTransactionToUi = ({
   }
 };
 
-// it should only contain positive numbers and limit to 64bits
+// it should only contain positive numbers and limit to 64 bits
 export const isValidIcpMemo = (memo: string): boolean => {
-  if (memo.length === 0) return false;
-
   try {
     const UINT64_MAX = 2n ** 64n - 1n;
     const memoBigInt = BigInt(memo);
@@ -304,8 +302,6 @@ export const isValidIcpMemo = (memo: string): boolean => {
 
 // it should be less than 32 bytes when encoded as UTF-8
 export const isValidIcrc1Memo = (memo: string): boolean => {
-  if (memo.length === 0) return false;
-
   try {
     return new TextEncoder().encode(memo).length <= 32;
   } catch {
@@ -317,7 +313,7 @@ export const validateTransactionMemo = ({
   memo,
   destinationAddress,
 }: {
-  memo: string;
+  memo?: string;
   destinationAddress: string;
 }): "ICP_MEMO_ERROR" | "ICRC_MEMO_ERROR" | undefined => {
   const isValidIcpAddress = !invalidIcpAddress(destinationAddress);
