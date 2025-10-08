@@ -185,6 +185,7 @@
       on:nnsSubmit
       on:nnsClose
       {withMemo}
+      {memo}
     >
       {#snippet additionalInfo()}
         <slot name="additional-info-review" />
