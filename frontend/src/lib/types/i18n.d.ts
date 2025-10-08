@@ -93,6 +93,8 @@ interface I18nError {
   transaction_error: string;
   transaction_too_old: string;
   transaction_created_in_future: string;
+  transaction_invalid_memo_icp: string;
+  transaction_invalid_memo_icrc: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
   not_authorized_neuron_action: string;
@@ -281,6 +283,9 @@ interface I18nAccounts {
   buy_icp_note: string;
   banxa_logo_alt: string;
   icp_transaction_description: string;
+  icp_transaction_memo_label: string;
+  icp_transaction_memo_hint: string;
+  icp_transaction_memo: string;
   sns_transaction_description: string;
   ckbtc_transaction_description: string;
   ckbtc_to_btc_transaction_description: string;
