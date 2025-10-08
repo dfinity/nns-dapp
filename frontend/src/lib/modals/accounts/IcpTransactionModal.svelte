@@ -6,6 +6,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
+  import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import type { Account } from "$lib/types/account";
   import type { NewTransaction, TransactionInit } from "$lib/types/transaction";
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
@@ -33,7 +34,7 @@
 
   const dispatcher = createEventDispatcher();
   const transfer = async ({
-    detail: { sourceAccount, amount, destinationAddress },
+    detail: { sourceAccount, amount, destinationAddress, memo },
   }: CustomEvent<NewTransaction>) => {
     startBusy({
       initiator: "accounts",
@@ -46,6 +47,7 @@
       sourceAccount,
       destinationAddress,
       amount,
+      memo: $transactionMemoOptionStore === "show" ? memo : undefined,
     });
 
     if (success) {
@@ -70,6 +72,7 @@
   bind:currentStep
   {transactionInit}
   transactionFee={$mainTransactionFeeStoreAsToken}
+  withMemo={$transactionMemoOptionStore === "show"}
 >
   <svelte:fragment slot="title">{title ?? $i18n.accounts.send}</svelte:fragment>
   <p slot="description" class="value no-margin">
