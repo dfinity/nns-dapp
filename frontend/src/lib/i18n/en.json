@@ -501,7 +501,7 @@
     "follow": "Follow",
     "unfollow": "Unfollow",
     "followee_incorrect_id_format": "This is not a correctly formatted neuron ID. Please make sure you copied the full ID.",
-    "followee_no_self_following": "A neuron is not allowed to follow itself. Please enter a neuron ID of a different neuron.",
+    "followee_no_self_following": "A neuron is not allowed to follow itself. Please enter a neuron ID of a different neuron or choose one of the known neurons below to follow.",
     "followee_does_not_exist": "There is no neuron with ID $neuronId. Please choose a neuron ID from an existing neuron.",
     "followee_not_permit": "Neuron $neuronId is a private neuron. If you control neuron $neuronId, you can follow it after adding your principal <small>$principalId</small> to its list of hotkeys or setting the neuron to public.",
     "neuron_not_followee": "Sorry, you can't unfollow neuron $neuronId because you are not following it.",
