@@ -273,7 +273,7 @@
     "banxa_logo_alt": "Banxa logo",
     "icp_transaction_description": "ICP Transaction",
     "icp_transaction_memo_label": "Transaction Memo (Optional)",
-    "icp_transaction_memo_hint": "* This is an advanced feature. Do not provide a value if you don't understand its meaning.",
+    "icp_transaction_memo_hint": "* This is an advanced feature. Do not provide a value if you don't need it.",
     "icp_transaction_memo": "Memo",
     "sns_transaction_description": "$token Transaction",
     "ckbtc_transaction_description": "$token Transaction",
