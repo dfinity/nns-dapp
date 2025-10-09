@@ -81,7 +81,7 @@
         {#if nonNullish(otherParty)}
           <Identifier size="medium" {label} identifier={otherParty} />
         {/if}
-        {#if nonNullish(memoText) && $transactionMemoOptionStore === "show"}
+        {#if $transactionMemoOptionStore === "show"}
           <p class="value memo" data-tid="transaction-memo"
             >{$i18n.accounts.icp_transaction_memo}: {memoText}</p
           >

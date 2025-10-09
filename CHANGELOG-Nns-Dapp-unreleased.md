@@ -15,7 +15,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Custom date range selection for reporting.
-- Advance mode with transaction memo field for ICP transactions.
+- Optional memo field for ICP transactions (available in Advanced mode).
 
 #### Changed
 
