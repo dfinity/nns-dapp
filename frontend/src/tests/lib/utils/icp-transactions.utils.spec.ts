@@ -902,6 +902,7 @@ describe("icp-transactions.utils", () => {
         const encoded = encodeMemoToIcp(memo);
         const decoded = decodeIcpMemo(encoded);
         expect(decoded).toBe(memo);
+        expect(encoded).not.toEqual(decoded);
       });
     });
   });
@@ -914,6 +915,7 @@ describe("icp-transactions.utils", () => {
         const encoded = encodeMemoToIcrc1(memo);
         const decoded = decodeIcrc1Memo(encoded);
         expect(decoded).toBe(memo);
+        expect(encoded).not.toEqual(decoded);
       });
     });
 
