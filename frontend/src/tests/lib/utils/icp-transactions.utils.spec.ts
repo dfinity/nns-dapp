@@ -6,6 +6,10 @@ import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { type UiTransaction } from "$lib/types/transaction";
 import {
+  decodeIcpMemo,
+  decodeIcrc1Memo,
+  encodeMemoToIcp,
+  encodeMemoToIcrc1,
   isValidIcpMemo,
   isValidIcrc1Memo,
   mapIcpTransactionToReport,
@@ -887,6 +891,51 @@ describe("icp-transactions.utils", () => {
           destinationAddress: icrcAddress,
         })
       ).toBe("ICRC_MEMO_ERROR");
+    });
+  });
+
+  describe("ICP memo encoding/decoding", () => {
+    it("should round-trip encode and decode ICP memo", () => {
+      const testCases = ["0", "123", "18446744073709551615"];
+
+      testCases.forEach((memo) => {
+        const encoded = encodeMemoToIcp(memo);
+        const decoded = decodeIcpMemo(encoded);
+        expect(decoded).toBe(memo);
+        expect(encoded).not.toEqual(decoded);
+      });
+    });
+  });
+
+  describe("ICRC1 memo encoding/decoding", () => {
+    it("should round-trip encode and decode ICRC1 memo", () => {
+      const testCases = ["", "hello", "test memo", "💎", "a".repeat(32)];
+
+      testCases.forEach((memo) => {
+        const encoded = encodeMemoToIcrc1(memo);
+        const decoded = decodeIcrc1Memo(encoded);
+        expect(decoded).toBe(memo);
+        expect(encoded).not.toEqual(decoded);
+      });
+    });
+
+    it("should handle Uint8Array input", () => {
+      const memo = "test";
+      const uint8Array = new Uint8Array([116, 101, 115, 116]); // "test" in UTF-8
+      const decoded = decodeIcrc1Memo(uint8Array);
+      expect(decoded).toBe(memo);
+    });
+
+    it("should handle number array input", () => {
+      const numberArray = [116, 101, 115, 116]; // test in UTF-8
+      const decoded = decodeIcrc1Memo(numberArray);
+      expect(decoded).toBe("test");
+    });
+
+    it("should return hex string for invalid UTF-8", () => {
+      const invalidUtf8 = new Uint8Array([0xff, 0xfe, 0xfd]);
+      const decoded = decodeIcrc1Memo(invalidUtf8);
+      expect(decoded).toBe("fffefd");
     });
   });
 });
