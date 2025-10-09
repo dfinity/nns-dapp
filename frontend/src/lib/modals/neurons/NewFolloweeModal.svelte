@@ -1,6 +1,6 @@
 <script lang="ts">
   import KnownNeuronFollowItem from "$lib/components/neurons/KnownNeuronFollowItem.svelte";
-  import Input from "$lib/components/ui/Input.svelte";
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { addFollowee } from "$lib/services/neurons.services";
@@ -8,17 +8,18 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { sortedknownNeuronsStore } from "$lib/stores/known-neurons.store";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     followeesByTopic,
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import { Modal, Spinner, busy } from "@dfinity/gix-components";
+  import { Html, Modal, Spinner, busy } from "@dfinity/gix-components";
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+  import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher, onMount } from "svelte";
-  import InputWithError from "../../components/ui/InputWithError.svelte";
-  import { toastsError, toastsShow } from "../../stores/toasts.store";
-  import { mapNeuronErrorToToastMessage } from "../../utils/error.utils";
 
   export let neuron: NeuronInfo;
   export let topic: Topic;
@@ -46,6 +47,7 @@
   $: topicFollowees = followeesByTopic({ neuron, topic }) ?? [];
 
   let errorMessage: string | undefined = undefined;
+  let customErrorMessage: string | undefined = undefined;
 
   onMount(() => listKnownNeurons());
 
@@ -72,24 +74,31 @@
     const errorDetail = toastMessage.detail ?? "";
     if (/\d+: Followee \(\d+\) does not exist\./.test(errorDetail)) {
       // ref. https://github.com/dfinity/ic/blob/e06dd63694ceed999499c14271617c03633da758/rs/nns/governance/src/governance.rs#L3378
-      errorMessage = $i18n.new_followee.followee_does_not_exist.replace(
-        "$neuronId",
-        followee.toString()
+      errorMessage = replacePlaceholders(
+        $i18n.new_followee.followee_does_not_exist,
+        {
+          $neuronId: followee.toString(),
+        }
       );
     } else if (
       /you must be the controller or a hotkey of it/.test(errorDetail)
     ) {
       // ref. https://github.com/dfinity/ic/blob/e06dd63694ceed999499c14271617c03633da758/rs/nns/governance/src/governance.rs#L3370
-      toastsError({
-        labelKey: $i18n.new_followee.followee_not_permit,
-        renderAsHtml: true,
-      });
+      customErrorMessage = replacePlaceholders(
+        $i18n.new_followee.followee_not_permit,
+        {
+          $neuronId: followee.toString(),
+          $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
+        }
+      );
       errorMessage = ""; // To display the error state of InputWithError
     } else {
       toastsShow(toastMessage);
     }
   };
   const addFolloweeByAddress = async () => {
+    clearError();
+
     let followee: bigint;
     if (followeeAddress.length === 0) {
       return;
@@ -129,7 +138,10 @@
     }
   };
 
-  const clearError = () => (errorMessage = undefined);
+  const clearError = () => {
+    errorMessage = undefined;
+    customErrorMessage = undefined;
+  };
   let disabled: boolean;
   $: disabled =
     errorMessage !== undefined ||
@@ -154,6 +166,11 @@
     >
       <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
     </InputWithError>
+    {#if nonNullish(customErrorMessage)}
+      <p class="custom-error-message">
+        <Html text={customErrorMessage} />
+      </p>
+    {/if}
     <button
       data-tid="follow-neuron-button"
       class="primary"
@@ -192,6 +209,14 @@
 <style lang="scss">
   form {
     gap: var(--padding-2x);
+
+    .custom-error-message {
+      // mock InputWithError error message style
+      margin-top: calc(-1 * var(--padding));
+      color: var(--negative-emphasis);
+      font-size: var(--font-size-ultra-small);
+      line-height: var(--line-height-1_25x);
+    }
   }
 
   button {
