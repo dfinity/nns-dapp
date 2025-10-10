@@ -19,7 +19,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 - Hide technical error details.
-- Replaced unlimited date range with customizable 365-day period for transaction exports
+- Replaced unlimited date range with customizable period selection for transaction reports.
 
 #### Deprecated
 
