@@ -180,7 +180,7 @@ describe("ReportingNeuronsButton", () => {
     await runResolvedPromises();
 
     const expectedCsv = [
-      "NNS Account Principal Id,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+      "NNS-Dapp Account Principal Id,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
       'Export Date Time,"Oct 14, 2023 12:00 AM"',
       "",
       ",,Neuron Id,Project Name,Symbol,Neuron Account Id,Controller Principal Id,Stake,Available Maturity,Staked Maturity,Dissolve Delay,Dissolve Date,Creation Date,State",
