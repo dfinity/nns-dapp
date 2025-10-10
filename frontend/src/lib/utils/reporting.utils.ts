@@ -419,9 +419,6 @@ export const convertPeriodToNanosecondRange = ({
     new Date(y, mZero, d).getTime();
 
   switch (period) {
-    case "all":
-      return {};
-
     case "year-to-date":
       return {
         from: toNanoseconds(startOfLocalDayMs(currentYear, 0, 1)),

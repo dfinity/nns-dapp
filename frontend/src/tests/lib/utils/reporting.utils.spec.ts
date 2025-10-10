@@ -439,11 +439,6 @@ describe("reporting utils", () => {
       vi.setSystemTime(mockDate);
     });
 
-    it('returns empty object for "all" period', () => {
-      const result = convertPeriodToNanosecondRange({ period: "all" });
-      expect(result).toEqual({});
-    });
-
     it('returns correct range for "last-year"', () => {
       const result = convertPeriodToNanosecondRange({ period: "last-year" });
 

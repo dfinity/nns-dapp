@@ -9,7 +9,7 @@ describe("ReportingDateRangeSelector", () => {
   const renderComponent = (
     props: {
       period?: ReportingPeriod;
-    } = { period: "all" }
+    } = { period: "year-to-date" }
   ) => {
     const { container, component } = render(ReportingDateRangeSelector, props);
 
@@ -30,14 +30,14 @@ describe("ReportingDateRangeSelector", () => {
   it("should render four options", async () => {
     const { po } = renderComponent();
 
-    expect(await po.getAllOptions()).toHaveLength(4);
+    expect(await po.getAllOptions()).toHaveLength(3);
   });
 
-  it("should select 'all' option by default", async () => {
+  it("should select 'year-to-date' option by default", async () => {
     const { po } = renderComponent();
 
     const selectedOption = po.getSelectedOption();
-    expect(await selectedOption.getValue()).toBe("all");
+    expect(await selectedOption.getValue()).toBe("year-to-date");
   });
 
   it("should change the option when interacting with a new element", async () => {
@@ -57,22 +57,22 @@ describe("ReportingDateRangeSelector", () => {
   });
 
   it("should update period when selecting an option", async () => {
-    const testProps = $state({ period: "all" as const });
+    const testProps = $state({ period: "year-to-date" as const });
 
     const { po } = renderComponent(testProps);
     const allOptions = await po.getAllOptions();
 
-    expect(testProps.period).toBe("all");
+    expect(testProps.period).toBe("year-to-date");
 
     await allOptions[1].click();
     await tick();
 
-    expect(testProps.period).toBe("year-to-date");
+    expect(testProps.period).toBe("last-year");
   });
 
   it("should show custom date inputs when custom period is selected", async () => {
     const testProps = $state({
-      period: "all" as const,
+      period: "year-to-date" as const,
       customFrom: undefined,
       customTo: undefined,
     });
@@ -80,9 +80,9 @@ describe("ReportingDateRangeSelector", () => {
     const { po } = renderComponent(testProps);
     const options = await po.getAllOptions();
 
-    expect(testProps.period).toBe("all");
+    expect(testProps.period).toBe("year-to-date");
 
-    await options[3].click();
+    await options[2].click();
     await tick();
 
     expect(await po.getCustomRangeSection().isPresent()).toBe(true);

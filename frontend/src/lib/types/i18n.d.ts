@@ -257,7 +257,6 @@ interface I18nReporting {
   error_neurons: string;
   error_transactions: string;
   range_filter_title: string;
-  range_filter_all: string;
   range_last_year: string;
   range_year_to_date: string;
   range_custom: string;
