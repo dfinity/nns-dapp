@@ -387,7 +387,6 @@ export type ApiSetFolloweesParams = ApiManageNeuronParams & {
 };
 
 export type ApiSetFollowingParams = ApiManageNeuronParams & {
-  topic: Topic;
   topicFollowing: Array<FolloweesForTopic>;
 };
 

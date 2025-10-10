@@ -203,7 +203,7 @@ export const governanceApiService = {
   setFollowees(params: ApiSetFolloweesParams) {
     return clearCacheAfter(setFollowees(params));
   },
-  setFollowings(params: ApiSetFollowingParams) {
+  setFollowing(params: ApiSetFollowingParams) {
     return clearCacheAfter(setFollowing(params));
   },
   simulateMergeNeurons(params: ApiMergeNeuronsParams) {

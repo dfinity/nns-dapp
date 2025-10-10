@@ -78,6 +78,7 @@ import {
   NeuronVisibility,
   Topic,
   memoToNeuronAccountIdentifier,
+  type FolloweesForTopic,
   type Neuron,
   type NeuronId,
   type NeuronInfo,
@@ -958,6 +959,41 @@ export const addFollowee = async ({
     topic,
     followees: newFollowees,
   });
+};
+
+export const setFollowing = async ({
+  neuronId,
+  topics,
+  followee,
+}: {
+  neuronId: NeuronId;
+  topics: Topic[];
+  followee: NeuronId;
+}): Promise<void> => {
+  const neuron = getNeuronFromStore(neuronId);
+  if (neuron === undefined) {
+    throw new NotFoundError(
+      "Neuron not found in store. We can't check authorization to set followees."
+    );
+  }
+  const topicFollowing: FolloweesForTopic[] = topics.map((topic) => ({
+    topic,
+    followees: [followee],
+  }));
+
+  let identity: Identity = await getAuthenticatedIdentity();
+  if (!isHotKeyControllable({ neuron, identity })) {
+    identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
+  }
+  if (topicFollowing.some(({ topic }) => topic === Topic.NeuronManagement)) {
+    identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
+  }
+  await governanceApiService.setFollowing({
+    identity,
+    neuronId: neuron.neuronId,
+    topicFollowing,
+  });
+  await getAndLoadNeuron(neuron.neuronId);
 };
 
 export const removeFollowee = async ({
