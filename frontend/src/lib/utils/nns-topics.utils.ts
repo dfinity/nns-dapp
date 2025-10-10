@@ -25,8 +25,24 @@ export const isNnsNeuronFollowing = ({
   const topicFollowees = followings.find(
     (following) => following.topic === topic
   )?.followees;
-  return (topicFollowees ?? []).includes(neuronId);
+  if (topicFollowees === undefined) {
+    return false;
+  }
+  return topicFollowees.includes(neuronId);
 };
+
+export const isNnsNeuronFollowingAllTopics = ({
+  followings,
+  neuronId,
+  topics,
+}: {
+  followings: FolloweesForTopic[];
+  neuronId: NeuronId;
+  topics: Topic[];
+}): boolean =>
+  topics.every((topic) =>
+    isNnsNeuronFollowing({ followings, neuronId, topic })
+  );
 
 // Adds a neuron to the list of followees for the given topics
 // (the result contains only the provided topics).

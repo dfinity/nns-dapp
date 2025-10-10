@@ -16,6 +16,7 @@
   import { IconClose, Value } from "@dfinity/gix-components";
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import NewFolloweeByTopicsModal from "../../modals/neurons/NewFolloweeByTopicsModal.svelte";
 
   type Props = {
     topic: Topic;
@@ -90,7 +91,11 @@
   {/if}
 
   {#if showNewFolloweeModal}
-    <NewFolloweeModal {neuron} {topic} on:nnsClose={closeNewFolloweeModal} />
+    <NewFolloweeByTopicsModal
+      {neuron}
+      topics={[topic]}
+      on:nnsClose={closeNewFolloweeModal}
+    />
   {/if}
 </TestIdWrapper>
 
