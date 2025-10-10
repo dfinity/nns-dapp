@@ -14,12 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Custom date range selection for reporting.
 - Optional memo field for ICP transactions (available in Advanced mode).
 
 #### Changed
 
 - Hide technical error details.
+- Replaced unlimited date range with customizable 365-day period for transaction exports
 
 #### Deprecated
 
