@@ -4,6 +4,7 @@ import {
   combineDatasetsToCsv,
   convertPeriodToNanosecondRange,
   convertToCsv,
+  mapPool,
   type CsvHeader,
 } from "$lib/utils/reporting.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -536,6 +537,123 @@ describe("reporting utils", () => {
         });
 
         expect(result).toEqual({});
+      });
+    });
+  });
+
+  describe("mapPool", () => {
+    const delay = (ms: number) =>
+      new Promise((resolve) => setTimeout(resolve, ms));
+
+    beforeEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("should process all items successfully and maintain order", async () => {
+      const items = [1, 2, 3, 4, 5];
+      const worker = async (item: number) => {
+        await delay(Math.random() * 10);
+        return item * 2;
+      };
+
+      const results = await mapPool(items, worker, 3);
+
+      expect(results).toHaveLength(5);
+      results.forEach((result, index) => {
+        if (result.status === "fulfilled") {
+          expect(result.item).toBe(items[index]);
+          expect(result.value).toBe(items[index] * 2);
+        } else {
+          throw new Error(`Expected item ${items[index]} to succeed`);
+        }
+      });
+    });
+
+    it("should handle mixed success and failure scenarios", async () => {
+      const items = [1, 2, 3, 4, 5];
+      const worker = async (item: number) => {
+        await delay(5);
+        if (item % 2 === 0) {
+          throw new Error(`Failed for item ${item}`);
+        }
+        return item * 2;
+      };
+
+      const results = await mapPool(items, worker, 2);
+
+      expect(results).toHaveLength(5);
+
+      // Check successful items (odd numbers)
+      expect(results[0]).toEqual({
+        item: 1,
+        status: "fulfilled",
+        value: 2,
+      });
+      expect(results[2]).toEqual({
+        item: 3,
+        status: "fulfilled",
+        value: 6,
+      });
+      expect(results[4]).toEqual({
+        item: 5,
+        status: "fulfilled",
+        value: 10,
+      });
+
+      if (
+        results[1].status === "rejected" &&
+        results[3].status === "rejected"
+      ) {
+        expect(results[1].item).toBe(2);
+        expect(results[1].status).toBe("rejected");
+        expect(results[1].reason).toBeInstanceOf(Error);
+
+        expect(results[3].item).toBe(4);
+        expect(results[3].status).toBe("rejected");
+        expect(results[3].reason).toBeInstanceOf(Error);
+      } else {
+        throw new Error("Expected item 2 to fail");
+      }
+    });
+
+    it("should respect concurrency limits", async () => {
+      const items = [1, 2, 3, 4, 5];
+      let currentConcurrent = 0;
+      let maxConcurrent = 0;
+
+      const worker = async (item: number) => {
+        currentConcurrent++;
+        maxConcurrent = Math.max(maxConcurrent, currentConcurrent);
+        await delay(20);
+        currentConcurrent--;
+        return item;
+      };
+
+      await mapPool(items, worker, 2);
+
+      expect(maxConcurrent).toBeLessThanOrEqual(2);
+    });
+
+    it("should handle empty array", async () => {
+      const items: number[] = [];
+      const worker = async (item: number) => item * 2;
+
+      const results = await mapPool(items, worker, 3);
+
+      expect(results).toEqual([]);
+    });
+
+    it("should handle single item", async () => {
+      const items = [42];
+      const worker = async (item: number) => item * 2;
+
+      const results = await mapPool(items, worker, 3);
+
+      expect(results).toHaveLength(1);
+      expect(results[0]).toEqual({
+        item: 42,
+        status: "fulfilled",
+        value: 84,
       });
     });
   });
