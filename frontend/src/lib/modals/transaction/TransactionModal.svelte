@@ -175,6 +175,7 @@
         destinationAddress: selectedDestinationAddress,
         sourceAccount,
         amount,
+        memo,
       }}
       handleGoBack={goBack}
       {transactionFee}
@@ -185,7 +186,6 @@
       on:nnsSubmit
       on:nnsClose
       {withMemo}
-      {memo}
     >
       {#snippet additionalInfo()}
         <slot name="additional-info-review" />

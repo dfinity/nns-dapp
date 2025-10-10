@@ -18,7 +18,6 @@
     destinationInfo: Snippet;
     disableSubmit: boolean;
     handleGoBack: () => void;
-    memo?: string;
     receivedAmount: Snippet;
     selectedNetwork?: TransactionNetwork;
     showLedgerFee?: boolean;
@@ -34,7 +33,6 @@
     destinationInfo,
     disableSubmit,
     handleGoBack,
-    memo,
     receivedAmount,
     selectedNetwork = undefined,
     showLedgerFee = true,
@@ -44,7 +42,8 @@
     withMemo,
   }: Props = $props();
 
-  const { sourceAccount, amount, destinationAddress } = $derived(transaction);
+  const { sourceAccount, amount, destinationAddress, memo } =
+    $derived(transaction);
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
