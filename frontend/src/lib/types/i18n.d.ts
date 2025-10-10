@@ -223,6 +223,9 @@ interface I18nHeader {
 interface I18nReporting {
   neurons_title: string;
   neurons_description: string;
+  neurons_source: string;
+  neurons_source_nns: string;
+  neurons_source_sns: string;
   neurons_download: string;
   transactions_title: string;
   transactions_description: string;
