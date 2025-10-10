@@ -2,7 +2,7 @@ import type { Account } from "$lib/types/account";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
 
-export type ReportingPeriod = "all" | "last-year" | "year-to-date" | "custom";
+export type ReportingPeriod = "year-to-date" | "last-year" | "custom";
 
 export type TransactionsDateRange = {
   /** Start of the date range (inclusive) - timestamp in nanoseconds */
