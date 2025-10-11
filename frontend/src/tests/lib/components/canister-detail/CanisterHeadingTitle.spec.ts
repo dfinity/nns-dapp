@@ -4,7 +4,7 @@ import CanisterHeadingTitle from "$lib/components/canister-detail/CanisterHeadin
 import { mockCanister, mockCanisterDetails } from "$tests/mocks/canisters.mock";
 import { CanisterHeadingTitlePo } from "$tests/page-objects/CanisterHeadingTitle.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
 describe("CanisterHeadingTitle", () => {

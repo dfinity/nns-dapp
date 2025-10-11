@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Universe } from "$lib/types/universe";
   import { Tag } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
 
   export let tokenToRemove:
     | { universe: Universe }

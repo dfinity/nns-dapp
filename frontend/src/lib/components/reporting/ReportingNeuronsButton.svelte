@@ -14,7 +14,7 @@
     buildNeuronsDatasets,
     generateCsvFileToSave,
   } from "$lib/utils/reporting.utils";
-  import type { Identity } from "@dfinity/agent";
+  import type { Identity } from "@icp-sdk/core/agent";
   import { IconDown } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
 

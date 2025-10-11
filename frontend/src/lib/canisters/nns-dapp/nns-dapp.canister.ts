@@ -33,11 +33,11 @@ import type {
   RenameSubAccountResponse,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { Actor } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import type { ProposalId } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import { nonNullish, toNullable } from "@dfinity/utils";
+import { Actor } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export class NNSDappCanister {
   private constructor(

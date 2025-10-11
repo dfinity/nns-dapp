@@ -4,7 +4,7 @@
   import { createSnsNsFunctionsProjectStore } from "$lib/derived/sns-ns-functions-project.derived";
   import { i18n } from "$lib/stores/i18n";
   import { Modal, Spinner } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsNervousSystemFunction, SnsNeuron } from "@dfinity/sns";
   import { createEventDispatcher } from "svelte";
   import type { Readable } from "svelte/store";

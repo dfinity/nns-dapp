@@ -9,8 +9,8 @@ import {
   setIcpPrice,
   setIcpSwapUsdPrices,
 } from "$tests/utils/icp-swap.test-utils";
-import { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
 describe("HeadingSubtitleWithUsdValue", () => {

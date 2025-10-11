@@ -4,7 +4,6 @@ import { DEFAULT_LIST_PAGINATION_LIMIT } from "$lib/constants/constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import { enumsExclude } from "$lib/utils/enum.utils";
-import type { Identity } from "@dfinity/agent";
 import {
   GovernanceCanister,
   ProposalRewardStatus,
@@ -14,6 +13,7 @@ import {
   type ProposalId,
   type ProposalInfo,
 } from "@dfinity/nns";
+import type { Identity } from "@icp-sdk/core/agent";
 
 export const queryProposals = async ({
   beforeProposal,

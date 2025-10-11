@@ -28,7 +28,7 @@
     snsProposalAcceptingVotes,
     snsProposalIdString,
   } from "$lib/utils/sns-proposals.utils";
-  import { Principal } from "@dfinity/principal";
+  import { Principal } from "@icp-sdk/core/principal";
   import type {
     SnsNervousSystemParameters,
     SnsNeuron,

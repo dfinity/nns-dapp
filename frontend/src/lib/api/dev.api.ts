@@ -6,15 +6,10 @@ import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { Identity } from "@dfinity/agent";
-import { Actor, HttpAgent, type Agent } from "@dfinity/agent";
-import type { IDL } from "@dfinity/candid";
-import { Ed25519KeyIdentity } from "@dfinity/identity";
 import type { BlockHeight } from "@dfinity/ledger-icp";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s, NeuronId } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import {
   SnsGovernanceCanister,
   SnsGovernanceTestCanister,
@@ -25,6 +20,11 @@ import {
   createAgent as createAgentUtils,
   toNullable,
 } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import { Actor, HttpAgent, type Agent } from "@icp-sdk/core/agent";
+import type { IDL } from "@icp-sdk/core/candid";
+import { Ed25519KeyIdentity } from "@icp-sdk/core/identity";
+import { Principal } from "@icp-sdk/core/principal";
 
 export const testAccountPrincipal =
   "jg6qm-uw64t-m6ppo-oluwn-ogr5j-dc5pm-lgy2p-eh6px-hebcd-5v73i-nqe";

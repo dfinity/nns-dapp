@@ -1,8 +1,8 @@
 import type { ImportedToken } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
 import { isImportantCkToken } from "$lib/utils/icrc-tokens.utils";
-import type { Principal } from "@dfinity/principal";
 import { fromNullable, nonNullish, toNullable } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export const toImportedTokenData = ({
   ledger_canister_id,

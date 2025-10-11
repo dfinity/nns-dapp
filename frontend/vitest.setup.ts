@@ -85,7 +85,7 @@ beforeEach(() => {
   localStorage.clear();
 });
 
-// Mock SubtleCrypto to test @dfinity/auth-client
+// Mock SubtleCrypto to test @icp-sdk/auth/client
 const crypto = new SubtleCrypto();
 Object.defineProperty(global, "crypto", {
   value: crypto,

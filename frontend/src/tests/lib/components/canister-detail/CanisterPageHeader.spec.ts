@@ -3,7 +3,7 @@ import CanisterPageHeader from "$lib/components/canister-detail/CanisterPageHead
 import { mockCanister } from "$tests/mocks/canisters.mock";
 import { CanisterHeaderPo } from "$tests/page-objects/CanisterHeader.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
 describe("CanisterPageHeader", () => {

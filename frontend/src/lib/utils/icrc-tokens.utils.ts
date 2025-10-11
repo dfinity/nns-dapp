@@ -4,8 +4,8 @@ import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
 } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 /**
  * Token metadata is given only if the properties NNS-dapp needs (name, symbol and fee) are defined.

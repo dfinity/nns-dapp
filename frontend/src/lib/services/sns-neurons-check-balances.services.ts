@@ -14,11 +14,11 @@ import {
   nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import type { Identity } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
 import { neuronSubaccount } from "@dfinity/sns";
 import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 const loadNeuron = async ({

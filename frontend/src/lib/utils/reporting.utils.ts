@@ -27,7 +27,6 @@ import {
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import {
   ICPToken,
   TokenAmountV2,
@@ -35,6 +34,7 @@ import {
   nonNullish,
   secondsToDuration,
 } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 type Metadata = {
   label: string;

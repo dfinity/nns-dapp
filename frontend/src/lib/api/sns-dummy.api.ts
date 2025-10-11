@@ -1,5 +1,5 @@
-import { Principal } from "@dfinity/principal";
 import type { SnsAction } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 
 const motionProposal1 = {
   url: "internet-computer.org",
