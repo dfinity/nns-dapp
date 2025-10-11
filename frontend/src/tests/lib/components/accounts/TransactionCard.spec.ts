@@ -1,4 +1,5 @@
 import TransactionCard from "$lib/components/accounts/TransactionCard.svelte";
+import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
 import type { UiTransaction } from "$lib/types/transaction";
 import { mockCkETHToken } from "$tests/mocks/cketh-accounts.mock";
 import { TransactionCardPo } from "$tests/page-objects/TransactionCard.page-object";
@@ -163,5 +164,28 @@ describe("TransactionCard", () => {
     });
 
     expect(await po.getAmount()).toBe("+1.23");
+  });
+
+  it("displays memo when memo option is enabled and transaction has memo", async () => {
+    transactionMemoOptionStore.set("show");
+
+    const memoText = "Test transaction memo";
+    const po = renderComponent({
+      memoText,
+    });
+
+    const memo = await po.getMemo();
+    expect(memo).toContain("Memo:");
+    expect(memo).toContain(memoText);
+  });
+
+  it("does not display memo when memo option is disabled", async () => {
+    const memoText = "Test transaction memo";
+    const po = renderComponent({
+      memoText,
+    });
+
+    const memo = await po.getMemo();
+    expect(memo).toBeNull();
   });
 });

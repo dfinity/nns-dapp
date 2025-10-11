@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { ReportingPeriod } from "$lib/types/reporting";
 
-  let period: ReportingPeriod = $state("all");
+  let period: ReportingPeriod = $state("year-to-date");
   let customFrom: string = $state("");
   let customTo: string = $state("");
 </script>

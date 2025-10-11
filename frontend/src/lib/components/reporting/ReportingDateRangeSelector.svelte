@@ -18,7 +18,6 @@
     value: ReportingPeriod;
     label: string;
   }> = [
-    { value: "all", label: $i18n.reporting.range_filter_all },
     { value: "year-to-date", label: $i18n.reporting.range_year_to_date },
     { value: "last-year", label: $i18n.reporting.range_last_year },
     { value: "custom", label: $i18n.reporting.range_custom },
