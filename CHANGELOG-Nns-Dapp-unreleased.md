@@ -14,12 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Optional memo field for ICP transactions (available in Advanced mode).
-
 #### Changed
-
-- Hide technical error details.
-- Replaced unlimited date range with customizable period selection for transaction reports.
 
 #### Deprecated
 
