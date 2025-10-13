@@ -97,6 +97,9 @@ impl Storable for Account {
     fn to_bytes(&self) -> Cow<'_, [u8]> {
         candid::encode_one(self).expect("Failed to serialize account").into()
     }
+    fn into_bytes(self) -> Vec<u8> {
+        candid::encode_one(&self).expect("Failed to serialize account")
+    }
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
         candid::decode_one(&bytes).expect("Failed to parse account from store.")
     }
