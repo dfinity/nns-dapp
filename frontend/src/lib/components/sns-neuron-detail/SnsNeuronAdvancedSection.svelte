@@ -14,15 +14,20 @@
     getSnsNeuronIdAsHexString,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
+  import { snsNeuronAccount } from "$lib/utils/sns.utils";
   import {
     KeyValuePair,
     KeyValuePairInfo,
     Section,
   } from "@dfinity/gix-components";
-  import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
   import type { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
-  import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
+  import {
+    TokenAmountV2,
+    fromNullable,
+    nonNullish,
+    type Token,
+  } from "@dfinity/utils";
 
   export let governanceCanisterId: Principal | undefined;
   export let neuron: SnsNeuron;
@@ -31,12 +36,12 @@
   export let token: Token;
   export let apy: undefined | ApyAmount;
 
-  let neuronAccount: IcrcAccount | undefined;
+  let neuronAccount: string | undefined;
   $: neuronAccount = nonNullish(governanceCanisterId)
-    ? {
-        owner: governanceCanisterId,
-        subaccount: neuron?.id[0]?.id,
-      }
+    ? snsNeuronAccount({
+        governanceCanisterId,
+        neuronId: fromNullable(neuron.id)?.id,
+      })
     : undefined;
 
   let allowedToSplit: boolean;
@@ -107,7 +112,7 @@
             className="value"
             tagName="span"
             testId="neuron-account"
-            text={encodeIcrcAccount(neuronAccount)}
+            text={neuronAccount}
             id="neuron-account"
             showCopy
           />{/snippet}

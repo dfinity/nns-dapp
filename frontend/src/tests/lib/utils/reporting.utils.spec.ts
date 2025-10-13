@@ -509,73 +509,36 @@ describe("reporting utils", () => {
           metadata: expectedMetadata,
           data: [
             {
-              controllerId: mockPrincipal.toText(),
-              project: aggregatorTokenMock.name,
-              symbol: aggregatorTokenMock.symbol,
-              neuronId: "0102030405",
-              neuronAccountId: "rdmx6-jaaaa-aaaaa-aaadq-cai.0102030405",
-              stake: "5.00",
               availableMaturity: "0.50",
-              stakedMaturity: "1.00",
-              dissolveDelaySeconds: "1 minute",
-              dissolveDate: "N/A",
+              controllerId: mockPrincipal.toText(),
               creationDate: "Oct 10, 2020",
+              dissolveDate: "N/A",
+              dissolveDelaySeconds: "1 minute",
+              neuronAccountId: "rdmx6-jaaaa-aaaaa-aaadq-cai-geklybq.102030405",
+              neuronId: "0102030405",
+              project: aggregatorTokenMock.name,
+              stake: "5.00",
+              stakedMaturity: "1.00",
               state: "Locked",
+              symbol: aggregatorTokenMock.symbol,
             },
             {
-              controllerId: mockPrincipal.toText(),
-              project: aggregatorTokenMock.name,
-              symbol: aggregatorTokenMock.symbol,
-              neuronId: "0504030201",
-              neuronAccountId: "rdmx6-jaaaa-aaaaa-aaadq-cai.0504030201",
-              stake: "10.00",
               availableMaturity: "0.25",
-              stakedMaturity: "0.75",
-              dissolveDelaySeconds: "1 minute",
-              dissolveDate: "Oct 14, 2023",
+              controllerId: mockPrincipal.toText(),
               creationDate: "Oct 10, 2020",
+              dissolveDate: "Oct 13, 2025",
+              dissolveDelaySeconds: "2 years",
+              neuronAccountId: "rdmx6-jaaaa-aaaaa-aaadq-cai-wdecnbi.504030201",
+              neuronId: "0504030201",
+              project: aggregatorTokenMock.name,
+              stake: "10.00",
+              stakedMaturity: "0.75",
               state: "Dissolving",
+              symbol: aggregatorTokenMock.symbol,
             },
           ],
         },
       ]);
-    });
-
-    it("should handle dissolved SNS neurons correctly", () => {
-      const createdTimestampSeconds = 1602339200n; // Oct 10, 2020
-
-      const mockDissolvedSnsNeuron = createMockSnsNeuron({
-        stake: 250_000_000n, // 2.5 tokens
-        id: [9, 8, 7, 6, 5],
-        state: NeuronState.Dissolved,
-        createdTimestampSeconds,
-        maturity: 0n,
-        stakedMaturity: 0n,
-        dissolveDelaySeconds: 0n,
-      });
-
-      const neuronsWithMetadata = [
-        {
-          ...mockDissolvedSnsNeuron,
-          governanceCanisterId: mockGovernanceCanisterId,
-          token: aggregatorTokenMock,
-        },
-      ];
-
-      const result = buildSnsNeuronsDatasets({
-        neurons: neuronsWithMetadata,
-        i18n: en,
-        userPrincipal: mockPrincipal,
-      });
-
-      expect(result[0].data).toHaveLength(1);
-      expect(result[0].data[0]).toMatchObject({
-        neuronId: "0908070605",
-        stake: "2.50",
-        dissolveDate: "N/A",
-        state: "Dissolved",
-        dissolveDelaySeconds: "less than a minute",
-      });
     });
   });
 

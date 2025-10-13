@@ -6,6 +6,7 @@ import type { TicketStatus } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@dfinity/principal";
 import type {
   SnsGetAutoFinalizationStatusResponse,
@@ -220,3 +221,18 @@ export const isSnsLedgerCanisterId = ({
     ({ summary }) =>
       summary.ledgerCanisterId.toText() === ledgerCanisterId.toText()
   );
+
+export const snsNeuronAccount = ({
+  governanceCanisterId,
+  neuronId,
+}: {
+  governanceCanisterId: Principal;
+  neuronId?: number[] | Uint8Array<ArrayBufferLike>;
+}): string | undefined => {
+  if (isNullish(neuronId)) return undefined;
+
+  return encodeIcrcAccount({
+    owner: governanceCanisterId,
+    subaccount: neuronId,
+  });
+};

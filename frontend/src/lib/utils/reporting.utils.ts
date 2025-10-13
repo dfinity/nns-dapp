@@ -34,7 +34,6 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -47,6 +46,7 @@ import {
   secondsToDuration,
   type Token,
 } from "@dfinity/utils";
+import { snsNeuronAccount } from "./sns.utils";
 
 type Metadata = {
   label: string;
@@ -456,9 +456,9 @@ export const buildSnsNeuronsDatasets = ({
     );
 
     const neuronIdHex = getSnsNeuronIdAsHexString(neuron);
-    const neuronAccountId = encodeIcrcAccount({
-      owner: neuron.governanceCanisterId,
-      subaccount: fromNullable(neuron.id)?.id,
+    const neuronAccountId = snsNeuronAccount({
+      governanceCanisterId: neuron.governanceCanisterId,
+      neuronId: fromNullable(neuron.id)?.id,
     });
 
     return {
