@@ -68,7 +68,10 @@ impl PartialEq for AccountsStore {
             && self
                 .accounts_db
                 .iter()
-                .all(|(k, v)| other.accounts_db.get(k) == Some(v))
+                .all(|entry| {
+                    let (k, v) = (entry.key(), entry.value());
+                    other.accounts_db.get(k) == Some(v)
+                })
             && self.accounts_db_stats == other.accounts_db_stats
     }
 }
