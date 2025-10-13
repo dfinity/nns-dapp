@@ -24,16 +24,28 @@ import {
   FileSystemAccessError,
   saveGeneratedCsv,
 } from "$lib/utils/reporting.save-csv-to-file.utils";
+import {
+  getSnsDissolveDelaySeconds,
+  getSnsNeuronAvailableMaturity,
+  getSnsNeuronIdAsHexString,
+  getSnsNeuronStake,
+  getSnsNeuronStakedMaturity,
+  getSnsNeuronState,
+} from "$lib/utils/sns-neuron.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import type { SnsNeuron } from "@dfinity/sns";
 import {
   ICPToken,
   TokenAmountV2,
+  fromNullable,
   isNullish,
   nonNullish,
   secondsToDuration,
+  type Token,
 } from "@dfinity/utils";
 
 type Metadata = {
@@ -395,6 +407,76 @@ export const buildNeuronsDatasets = ({
       dissolveDate: dissolveDate ?? i18n.core.not_applicable,
       creationDate,
       state: i18n.neuron_state[getStateInfo(neuron.state).textKey],
+    };
+  });
+
+  return [{ metadata, data }];
+};
+
+export const buildSnsNeuronsDatasets = ({
+  neurons,
+  i18n,
+  userPrincipal,
+}: {
+  neurons: Array<SnsNeuron & { governanceCanisterId: Principal; token: Token }>;
+  i18n: I18n;
+  userPrincipal: Principal;
+}): CsvDataset<NeuronsCsvData>[] => {
+  if (neurons.length === 0) return [];
+
+  const metadataDate = nanoSecondsToDateTime(nowInBigIntNanoSeconds());
+  const metadata = [
+    {
+      label: i18n.reporting.principal_account_id,
+      value: userPrincipal.toText(),
+    },
+    {
+      label: i18n.reporting.date_label,
+      value: metadataDate,
+    },
+  ];
+
+  const data = neurons.map((neuron) => {
+    const stake = TokenAmountV2.fromUlps({
+      amount: getSnsNeuronStake(neuron),
+      token: neuron.token,
+    });
+
+    const availableMaturity = getSnsNeuronAvailableMaturity(neuron);
+    const stakedMaturity = getSnsNeuronStakedMaturity(neuron);
+
+    const state = getSnsNeuronState(neuron);
+    const dissolveDelay = getSnsDissolveDelaySeconds(neuron) ?? 0n;
+    const dissolveDate =
+      state === NeuronState.Dissolving
+        ? getFutureDateFromDelayInSeconds(dissolveDelay)
+        : null;
+    const creationDate = secondsToDate(
+      Number(neuron.created_timestamp_seconds)
+    );
+
+    const neuronIdHex = getSnsNeuronIdAsHexString(neuron);
+    const neuronAccountId = encodeIcrcAccount({
+      owner: neuron.governanceCanisterId,
+      subaccount: fromNullable(neuron.id)?.id,
+    });
+
+    return {
+      controllerId: userPrincipal.toText(),
+      project: neuron.token.name,
+      symbol: neuron.token.symbol,
+      neuronId: neuronIdHex,
+      neuronAccountId,
+      stake: formatTokenV2({ value: stake, detailed: true }),
+      availableMaturity: formatMaturity(availableMaturity),
+      stakedMaturity: formatMaturity(stakedMaturity),
+      dissolveDelaySeconds: secondsToDuration({
+        seconds: dissolveDelay,
+        i18n: i18n.time,
+      }),
+      dissolveDate: dissolveDate ?? i18n.core.not_applicable,
+      creationDate,
+      state: i18n.neuron_state[getStateInfo(state).textKey],
     };
   });
 

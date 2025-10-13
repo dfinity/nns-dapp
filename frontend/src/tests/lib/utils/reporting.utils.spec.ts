@@ -1,5 +1,6 @@
 import {
   buildNeuronsDatasets,
+  buildSnsNeuronsDatasets,
   buildTransactionsDatasets,
   combineDatasetsToCsv,
   convertPeriodToNanosecondRange,
@@ -12,7 +13,10 @@ import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { aggregatorTokenMock } from "$tests/mocks/sns-aggregator.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { Principal } from "@dfinity/principal";
 
 type TestPersonData = { name: string; age: number };
 type TestFormulaData = { formula: string; value: number };
@@ -428,6 +432,150 @@ describe("reporting utils", () => {
           metadata: expectedMetadata,
         },
       ]);
+    });
+  });
+
+  describe("buildSnsNeuronsDatasets", () => {
+    const mockGovernanceCanisterId = Principal.fromText(
+      "rdmx6-jaaaa-aaaaa-aaadq-cai"
+    );
+
+    it("should return an empty array when no neurons are provided", () => {
+      const result = buildSnsNeuronsDatasets({
+        neurons: [],
+        i18n: en,
+        userPrincipal: mockPrincipal,
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it("should generate datasets for SNS neurons", () => {
+      const createdTimestampSeconds = 1602339200n; // Oct 10, 2020
+      const dissolveDelaySeconds = 100n;
+
+      const mockLockedSnsNeuron = createMockSnsNeuron({
+        stake: 500_000_000n, // 5 tokens
+        id: [1, 2, 3, 4, 5],
+        state: NeuronState.Locked,
+        dissolveDelaySeconds,
+        createdTimestampSeconds,
+        maturity: 50_000_000n, // 0.5 tokens
+        stakedMaturity: 100_000_000n, // 1 token
+      });
+
+      const mockDissolvingSnsNeuron = createMockSnsNeuron({
+        stake: 1_000_000_000n, // 10 tokens
+        id: [5, 4, 3, 2, 1],
+        state: NeuronState.Dissolving,
+        dissolveDelaySeconds,
+        createdTimestampSeconds,
+        maturity: 25_000_000n, // 0.25 tokens
+        stakedMaturity: 75_000_000n, // 0.75 tokens
+      });
+
+      const neuronsWithMetadata = [
+        {
+          ...mockLockedSnsNeuron,
+          governanceCanisterId: mockGovernanceCanisterId,
+          token: aggregatorTokenMock,
+        },
+        {
+          ...mockDissolvingSnsNeuron,
+          governanceCanisterId: mockGovernanceCanisterId,
+          token: aggregatorTokenMock,
+        },
+      ];
+
+      const expectedMetadata = [
+        {
+          label: "NNS Account Principal Id",
+          value: mockPrincipal.toText(),
+        },
+        {
+          label: "Export Date Time",
+          value: "Oct 14, 2023 12:00 AM",
+        },
+      ];
+
+      const result = buildSnsNeuronsDatasets({
+        neurons: neuronsWithMetadata,
+        i18n: en,
+        userPrincipal: mockPrincipal,
+      });
+
+      expect(result).toEqual([
+        {
+          metadata: expectedMetadata,
+          data: [
+            {
+              controllerId: mockPrincipal.toText(),
+              project: aggregatorTokenMock.name,
+              symbol: aggregatorTokenMock.symbol,
+              neuronId: "0102030405",
+              neuronAccountId: "rdmx6-jaaaa-aaaaa-aaadq-cai.0102030405",
+              stake: "5.00",
+              availableMaturity: "0.50",
+              stakedMaturity: "1.00",
+              dissolveDelaySeconds: "1 minute",
+              dissolveDate: "N/A",
+              creationDate: "Oct 10, 2020",
+              state: "Locked",
+            },
+            {
+              controllerId: mockPrincipal.toText(),
+              project: aggregatorTokenMock.name,
+              symbol: aggregatorTokenMock.symbol,
+              neuronId: "0504030201",
+              neuronAccountId: "rdmx6-jaaaa-aaaaa-aaadq-cai.0504030201",
+              stake: "10.00",
+              availableMaturity: "0.25",
+              stakedMaturity: "0.75",
+              dissolveDelaySeconds: "1 minute",
+              dissolveDate: "Oct 14, 2023",
+              creationDate: "Oct 10, 2020",
+              state: "Dissolving",
+            },
+          ],
+        },
+      ]);
+    });
+
+    it("should handle dissolved SNS neurons correctly", () => {
+      const createdTimestampSeconds = 1602339200n; // Oct 10, 2020
+
+      const mockDissolvedSnsNeuron = createMockSnsNeuron({
+        stake: 250_000_000n, // 2.5 tokens
+        id: [9, 8, 7, 6, 5],
+        state: NeuronState.Dissolved,
+        createdTimestampSeconds,
+        maturity: 0n,
+        stakedMaturity: 0n,
+        dissolveDelaySeconds: 0n,
+      });
+
+      const neuronsWithMetadata = [
+        {
+          ...mockDissolvedSnsNeuron,
+          governanceCanisterId: mockGovernanceCanisterId,
+          token: aggregatorTokenMock,
+        },
+      ];
+
+      const result = buildSnsNeuronsDatasets({
+        neurons: neuronsWithMetadata,
+        i18n: en,
+        userPrincipal: mockPrincipal,
+      });
+
+      expect(result[0].data).toHaveLength(1);
+      expect(result[0].data[0]).toMatchObject({
+        neuronId: "0908070605",
+        stake: "2.50",
+        dissolveDate: "N/A",
+        state: "Dissolved",
+        dissolveDelaySeconds: "less than a minute",
+      });
     });
   });
 
