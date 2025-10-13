@@ -24,6 +24,7 @@ SHA="$(sha256sum <"$WASM" | awk '{print $1}')"
 ARG_DID="./release/sns_aggregator_arg.did"
 ARG_PATH="./release/sns_aggregator_arg.bin"
 didc encode "$(cat "$ARG_DID")" | xxd -r -p >"$ARG_PATH"
+ARG_SHA=$(sha256sum < "$ARG_PATH" | awk '{print $1}')
 
 PROPOSAL_TEXT="./release/AGGREGATOR_PROPOSAL.md"
 
@@ -49,7 +50,18 @@ if grep -w "$FORUM_PLACEHOLDER" "$PROPOSAL_TEXT"; then
   } >&2
 fi
 
-set ic-admin --pin "$DFX_HSM_PIN" --nns-url https://ic0.app --use-hsm --key-id 01 --slot 0 propose-to-change-nns-canister --proposer "$NEURON" --canister-id "$AGGREGATOR_CANISTER_ID" --mode upgrade --wasm-module-path "$WASM" --summary-file "$PROPOSAL_TEXT" --wasm-module-sha256 "$SHA" --arg "$ARG_PATH"
+set ic-admin --pin "$DFX_HSM_PIN" \
+    --nns-url https://ic0.app \
+    --use-hsm --key-id 01 --slot 0 \
+    propose-to-change-nns-canister \
+    --proposer "$NEURON" \
+    --canister-id "$AGGREGATOR_CANISTER_ID" \
+    --mode upgrade \
+    --wasm-module-path "$WASM" \
+    --summary-file "$PROPOSAL_TEXT" \
+    --wasm-module-sha256 "$SHA" \
+    --arg "$ARG_PATH" \
+    --arg-sha256 "$ARG_SHA"
 
 echo
 echo PLEASE REVIEW THIS COMMAND:
