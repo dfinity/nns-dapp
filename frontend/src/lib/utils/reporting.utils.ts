@@ -477,9 +477,8 @@ export const mapPool = async <T, R>(
   let next = 0;
 
   const run = async () => {
-    while (true) {
+    while (next < items.length) {
       const idx = next++;
-      if (idx >= items.length) return;
 
       const item = items[idx];
       try {
