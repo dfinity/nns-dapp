@@ -15,7 +15,21 @@ const initKnownNeuronsStore = () => {
     subscribe,
 
     setNeurons(neurons: KnownNeuron[]) {
-      set([...neurons]);
+      set([
+        ...neurons,
+        {
+          id: 858532347504764915n,
+          name: "Mock Neuron",
+          description: "This is a mock known neuron",
+          links: ["https://dfinity.org"],
+        },
+        {
+          id: 7463650834747952490n,
+          name: "Another Mocked Neuron",
+          description: "This is another mock known neuron",
+          links: ["https://dfinity.org/demo/demo-known-neuron"],
+        },
+      ]);
     },
 
     reset() {
