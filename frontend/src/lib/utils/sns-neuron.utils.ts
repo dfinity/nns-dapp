@@ -18,6 +18,7 @@ import { ballotVotingPower } from "$lib/utils/sns-proposals.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuronId } from "@dfinity/sns";
