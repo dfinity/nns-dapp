@@ -3,8 +3,8 @@
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import FollowTopicSection from "$lib/components/neurons/FollowTopicSection.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
-  import NewFolloweeModal from "$lib/modals/neurons/NewFolloweeModal.svelte";
-  import { removeFollowee } from "$lib/services/neurons.services";
+  import NewFolloweeByTopicsModal from "$lib/modals/neurons/NewFolloweeByTopicsModal.svelte";
+  import { removeFollowing } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
@@ -16,7 +16,6 @@
   import { IconClose, Value } from "@dfinity/gix-components";
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
-  import NewFolloweeByTopicsModal from "../../modals/neurons/NewFolloweeByTopicsModal.svelte";
 
   type Props = {
     topic: Topic;
@@ -55,9 +54,9 @@
 
   const removeCurrentFollowee = async (followee: NeuronId) => {
     startBusy({ initiator: "remove-followee" });
-    await removeFollowee({
+    await removeFollowing({
       neuronId: neuron.neuronId,
-      topic,
+      topics: [topic],
       followee,
     });
     stopBusy("remove-followee");

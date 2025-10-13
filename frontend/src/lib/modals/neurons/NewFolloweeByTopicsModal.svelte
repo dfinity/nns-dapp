@@ -1,5 +1,5 @@
 <script lang="ts">
-  import KnownNeuronFollowItem from "$lib/components/neurons/KnownNeuronFollowItem.svelte";
+  import KnownNeuronFollowByTopicsItem from "$lib/components/neurons/KnownNeuronFollowByTopicsItem.svelte";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
@@ -20,7 +20,12 @@
     isNnsNeuronFollowingAllTopics,
   } from "$lib/utils/nns-topics.utils";
   import { Html, Modal, Spinner, busy } from "@dfinity/gix-components";
-  import { Topic, type FolloweesForTopic, type NeuronInfo } from "@dfinity/nns";
+  import {
+    Topic,
+    type FolloweesForTopic,
+    type KnownNeuron,
+    type NeuronInfo,
+  } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher, onMount } from "svelte";
 
@@ -150,13 +155,22 @@
     followeeAddress.length === 0 ||
     !isUserAuthorized ||
     $busy;
+
+  let notFollowingKnownNeurons: KnownNeuron[] = [];
+  $: notFollowingKnownNeurons = $sortedknownNeuronsStore.filter(
+    (knownNeuron) =>
+      !isNnsNeuronFollowingAllTopics({
+        followings: followeesForTopics,
+        neuronId: knownNeuron.id,
+        topics,
+      })
+  );
 </script>
 
 <Modal onClose={close} testId="new-followee-modal-component">
   {#snippet title()}{$i18n.new_followee.title}{/snippet}
 
   <form on:submit|preventDefault={addFolloweeByAddress}>
-    <h1>LOL</h1>lol
     <InputWithError
       inputType="text"
       autocomplete="off"
@@ -190,18 +204,13 @@
       <Spinner />
     {:else}
       <ul>
-        {#each $sortedknownNeuronsStore as knownNeuron}
+        {#each notFollowingKnownNeurons as knownNeuron}
           <li data-tid="known-neuron-item">
-            <KnownNeuronFollowItem
+            <KnownNeuronFollowByTopicsItem
               on:nnsUpdated={close}
               {knownNeuron}
               neuronId={neuron.neuronId}
               {topics}
-              isFollowed={isNnsNeuronFollowingAllTopics({
-                followings: followeesForTopics,
-                neuronId: knownNeuron.id,
-                topics,
-              })}
             />
           </li>
         {/each}
