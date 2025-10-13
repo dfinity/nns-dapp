@@ -227,7 +227,7 @@ export const snsNeuronAccount = ({
   neuronId,
 }: {
   governanceCanisterId: Principal;
-  neuronId?: number[] | Uint8Array<ArrayBufferLike>;
+  neuronId?: number[] | Uint8Array;
 }): string | undefined => {
   if (isNullish(neuronId)) return undefined;
 
