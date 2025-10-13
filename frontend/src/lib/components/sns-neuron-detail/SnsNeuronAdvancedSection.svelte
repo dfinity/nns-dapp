@@ -11,10 +11,10 @@
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import {
     getSnsDissolvingTimestampSeconds,
+    getSnsNeuronAccount,
     getSnsNeuronIdAsHexString,
     hasPermissionToSplit,
   } from "$lib/utils/sns-neuron.utils";
-  import { snsNeuronAccount } from "$lib/utils/sns.utils";
   import {
     KeyValuePair,
     KeyValuePairInfo,
@@ -38,7 +38,7 @@
 
   let neuronAccount: string | undefined;
   $: neuronAccount = nonNullish(governanceCanisterId)
-    ? snsNeuronAccount({
+    ? getSnsNeuronAccount({
         governanceCanisterId,
         neuronId: fromNullable(neuron.id)?.id,
       })

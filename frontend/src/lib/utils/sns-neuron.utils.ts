@@ -1020,3 +1020,18 @@ export const totalDisbursingMaturity = ({
  */
 export const minimumAmountToDisburseMaturity = (fee: bigint): bigint =>
   BigInt(Math.ceil(Number(fee) / MATURITY_MODULATION_VARIANCE_PERCENTAGE));
+
+export const getSnsNeuronAccount = ({
+  governanceCanisterId,
+  neuronId,
+}: {
+  governanceCanisterId: Principal;
+  neuronId?: number[] | Uint8Array;
+}): string | undefined => {
+  if (isNullish(neuronId)) return undefined;
+
+  return encodeIcrcAccount({
+    owner: governanceCanisterId,
+    subaccount: neuronId,
+  });
+};

@@ -26,13 +26,13 @@ import {
 } from "$lib/utils/reporting.save-csv-to-file.utils";
 import {
   getSnsDissolveDelaySeconds,
+  getSnsNeuronAccount,
   getSnsNeuronAvailableMaturity,
   getSnsNeuronIdAsHexString,
   getSnsNeuronStake,
   getSnsNeuronStakedMaturity,
   getSnsNeuronState,
 } from "$lib/utils/sns-neuron.utils";
-import { snsNeuronAccount } from "$lib/utils/sns.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
@@ -457,7 +457,7 @@ export const buildSnsNeuronsDatasets = ({
 
     const neuronIdHex = getSnsNeuronIdAsHexString(neuron);
     const neuronAccountId =
-      snsNeuronAccount({
+      getSnsNeuronAccount({
         governanceCanisterId: neuron.governanceCanisterId,
         neuronId: fromNullable(neuron.id)?.id,
       }) ?? "";
