@@ -395,8 +395,8 @@ export const setFollowees = async ({
   const { canister } = await governanceCanister({ identity });
 
   throw new GovernanceError({
-    // error_message: `${followees.map((followee) => followee.toString()).join()}: Followee (${neuronId.toString()}) does not exist.\n`,
-    error_message: `${followees.map((followee) => followee.toString()).join()}: Not authorized to follow private neuron: ${neuronId.toString()}\n\t\To follow a private neuron, you must be the controller or a hotkey of it.\n`,
+    // error_message: `: The neuron with ID ${neuronId.toString()} does not exist.`,
+    error_message: `: Neuron ${neuronId.toString()} is a private neuron.`,
     error_type: 501,
   });
 
