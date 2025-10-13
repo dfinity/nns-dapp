@@ -32,6 +32,7 @@ import {
   getSnsNeuronStakedMaturity,
   getSnsNeuronState,
 } from "$lib/utils/sns-neuron.utils";
+import { snsNeuronAccount } from "$lib/utils/sns.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
@@ -46,7 +47,6 @@ import {
   secondsToDuration,
   type Token,
 } from "@dfinity/utils";
-import { snsNeuronAccount } from "./sns.utils";
 
 type Metadata = {
   label: string;
@@ -456,10 +456,11 @@ export const buildSnsNeuronsDatasets = ({
     );
 
     const neuronIdHex = getSnsNeuronIdAsHexString(neuron);
-    const neuronAccountId = snsNeuronAccount({
-      governanceCanisterId: neuron.governanceCanisterId,
-      neuronId: fromNullable(neuron.id)?.id,
-    });
+    const neuronAccountId =
+      snsNeuronAccount({
+        governanceCanisterId: neuron.governanceCanisterId,
+        neuronId: fromNullable(neuron.id)?.id,
+      }) ?? "";
 
     return {
       controllerId: userPrincipal.toText(),
