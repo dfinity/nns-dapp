@@ -463,3 +463,35 @@ export const buildFileName = ({
     period === "custom" ? `_${period}_${from}_${to}` : `_${period}`;
   return `${prefix}${date}${suffix}`;
 };
+
+type SettledResult<T, R> =
+  | { item: T; status: "fulfilled"; value: R }
+  | { item: T; status: "rejected"; reason: unknown };
+
+export const mapPool = async <T, R>(
+  items: T[],
+  worker: (item: T) => Promise<R>,
+  concurrency = 5
+): Promise<SettledResult<T, R>[]> => {
+  const results = new Array<SettledResult<T, R>>(items.length);
+  let next = 0;
+
+  const run = async () => {
+    while (next < items.length) {
+      const idx = next++;
+
+      const item = items[idx];
+      try {
+        const value = await worker(item);
+        results[idx] = { item, status: "fulfilled", value };
+      } catch (reason) {
+        results[idx] = { item, status: "rejected", reason };
+      }
+    }
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, items.length) }, run)
+  );
+  return results;
+};
