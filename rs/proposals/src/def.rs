@@ -485,11 +485,3 @@ pub struct SubnetRentalRequest {
 pub enum RentalConditionId {
     App13CH,
 }
-
-// NNS function 53 - PauseCanisterMigrations
-// https://github.com/dfinity/ic/blob/26098e18ddd64ab50d3f3725f50c7f369cd3f90e/rs/registry/canister/src/mutations/do_update_nodes_hostos_version.rs#L38C12-L38C43
-pub struct PauseCanisterMigrations;
-
-// NNS function 54 - UnpauseCanisterMigrations
-// https://github.com/dfinity/ic/blob/26098e18ddd64ab50d3f3725f50c7f369cd3f90e/rs/registry/canister/src/mutations/do_update_nodes_hostos_version.rs#L38C12-L38C43
-pub struct UnpauseCanisterMigrations;
