@@ -243,20 +243,6 @@ test_nns_function_52() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
-# test_nns_function_53() {
-#   subcommand="deregister-known-neuron"
-
-#   PROPOSAL_ID="$(run_ic_admin \
-#     "$subcommand" \
-#     --id 1234)"
-
-#   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
-#   EXPECTED_PAYLOAD="{\"user\":\"$USER_PRINCIPAL\",\"rental_condition_id\":\"App13CH\"}"
-#   echo "ACTUAL_PAYLOAD: $ACTUAL_PAYLOAD"
-
-#   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
-# }
-
 run_ic_admin() {
   ic-admin \
     --secret-key-pem "$PEM" \
@@ -303,9 +289,8 @@ for i in $(seq 0 5); do
   undefined_nns_function=$((FIRST_UNDEFINED_NNS_FUNCTION + i))
 
   ERROR=$(dfx canister call nns-governance manage_neuron "(record {id=opt record{id=$NEURON_ID : nat64}; command=opt variant{MakeProposal=record{url=\"https://forum.dfinity.org/\"; title=opt \"title\"; summary=\"summary\"; action=opt variant{ExecuteNnsFunction=record{nns_function = $undefined_nns_function : int32; payload=blob \"payload\" } } } } })" | idl2json | jq -c '.command[0].Error.error_message')
-  echo "$ERROR"
 
-  if [[ "$ERROR" != "\"Topic not specified."* ]]; then
+  if [[ "$ERROR" != "\"Invalid NnsFunction id:"* ]]; then
     {
       echo "NNS function $undefined_nns_function is no longer undefined."
       echo "Please add a test for it."
