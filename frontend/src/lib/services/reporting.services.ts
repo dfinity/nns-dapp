@@ -100,7 +100,7 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   // Based on
   //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/src/lib.rs#L50
   const pageSize = 50n;
-  const maxNumberOfPages = 30;
+  const maxNumberOfPages = 50;
 
   try {
     // TODO: Decide what to do if we reach the maximum number of iterations.
