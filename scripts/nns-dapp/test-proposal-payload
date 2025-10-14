@@ -248,7 +248,7 @@ test_nns_function_52() {
 
   PROPOSAL_ID="$(run_ic_admin \
     "$subcommand" \
-    --id 1234 )"
+    --id 1234)"
 
   ACTUAL_PAYLOAD="$(get_payload "$PROPOSAL_ID")"
   EXPECTED_PAYLOAD="{\"user\":\"$USER_PRINCIPAL\",\"rental_condition_id\":\"App13CH\"}"
