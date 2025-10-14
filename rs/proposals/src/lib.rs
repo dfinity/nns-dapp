@@ -9,14 +9,15 @@ use crate::def::{
     CompleteCanisterMigrationPayload, CreateSubnetPayload, DeployGuestosToAllSubnetNodesPayload,
     DeployGuestosToAllUnassignedNodesPayload, DeployGuestosToSomeApiBoundaryNodesPayload,
     DeployHostosToSomeNodesPayload, InsertUpgradePathEntriesRequest, InsertUpgradePathEntriesRequestHumanReadable,
-    PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload,
-    RemoveNodeOperatorsPayload, RemoveNodesFromSubnetPayload, RemoveNodesPayload, RerouteCanisterRangesPayload,
-    ReviseElectedGuestosVersionsPayload, ReviseElectedHostosVersionsPayload, SetAuthorizedSubnetworkListArgs,
-    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, SubnetRentalRequest, UpdateAllowedPrincipalsRequest,
-    UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload, UpdateFirewallRulesPayload,
-    UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload,
-    UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest, UpdateSshReadOnlyAccessForAllUnassignedNodesPayload,
-    UpdateSubnetPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
+    PauseCanisterMigrations, PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveApiBoundaryNodesPayload,
+    RemoveFirewallRulesPayload, RemoveNodeOperatorsPayload, RemoveNodesFromSubnetPayload, RemoveNodesPayload,
+    RerouteCanisterRangesPayload, ReviseElectedGuestosVersionsPayload, ReviseElectedHostosVersionsPayload,
+    SetAuthorizedSubnetworkListArgs, SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, SubnetRentalRequest,
+    UnpauseCanisterMigrations, UpdateAllowedPrincipalsRequest, UpdateApiBoundaryNodesVersionPayload,
+    UpdateElectedHostosVersionsPayload, UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload,
+    UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload, UpdateNodesHostosVersionPayload,
+    UpdateSnsSubnetListRequest, UpdateSshReadOnlyAccessForAllUnassignedNodesPayload, UpdateSubnetPayload,
+    UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
     UpgradeRootProposalPayloadTrimmed,
 };
 use candid::types::{self as candid_types, Type, TypeInner};
@@ -329,6 +330,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         50 => identity::<ReviseElectedHostosVersionsPayload>(payload_bytes),
         51 => identity::<DeployHostosToSomeNodesPayload>(payload_bytes),
         52 => identity::<SubnetRentalRequest>(payload_bytes),
+        53 => identity::<PauseCanisterMigrations>(payload_bytes),
+        54 => identity::<UnpauseCanisterMigrations>(payload_bytes),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
