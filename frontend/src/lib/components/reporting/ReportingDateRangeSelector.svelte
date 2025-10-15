@@ -103,7 +103,6 @@
       bind:value={period}
       name="dateRange"
       ariaLabel={$i18n.reporting.range_filter_title}
-      direction="responsive"
     />
 
     {#if isCustom()}
