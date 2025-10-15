@@ -96,6 +96,7 @@ export const mockKnownNeuron: KnownNeuron = {
   name: "Famous Neuron",
   description: undefined,
   links: undefined,
+  committed_topics: undefined,
 };
 
 export const createMockKnownNeuron = (id: number | bigint) => {
