@@ -489,7 +489,7 @@ describe("reporting utils", () => {
 
       const expectedMetadata = [
         {
-          label: "NNS Account Principal Id",
+          label: "NNS dapp Account Principal Id",
           value: mockPrincipal.toText(),
         },
         {

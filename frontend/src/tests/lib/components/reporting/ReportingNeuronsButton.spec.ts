@@ -1,6 +1,6 @@
 import * as gobernanceApi from "$lib/api/governance.api";
-import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
+import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
@@ -14,9 +14,9 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
