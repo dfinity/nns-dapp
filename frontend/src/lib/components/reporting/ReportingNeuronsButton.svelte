@@ -1,10 +1,7 @@
 <script lang="ts">
   import { queryNeurons } from "$lib/api/governance.api";
   import { querySnsNeurons } from "$lib/api/sns-governance.api";
-  import {
-    snsProjectsActivePadStore,
-    snsProjectsStore,
-  } from "$lib/derived/sns/sns-projects.derived";
+  import { snsProjectsActivePadStore } from "$lib/derived/sns/sns-projects.derived";
   import { getAuthenticatedIdentity } from "$lib/services/auth.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -60,15 +57,7 @@
           });
         }, 4000);
 
-        const projects = get(snsProjectsStore);
-        if (projects.length === 0) {
-          toastsError({
-            labelKey: "reporting.error_no_sns_projects",
-          });
-          return;
-        }
-
-        const promises = await mapPool(projects, (project) =>
+        const promises = await mapPool(snsProjects, (project) =>
           querySnsNeurons({
             identity,
             rootCanisterId: project.rootCanisterId,
