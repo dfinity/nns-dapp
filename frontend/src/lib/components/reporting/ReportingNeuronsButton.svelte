@@ -1,7 +1,10 @@
 <script lang="ts">
   import { queryNeurons } from "$lib/api/governance.api";
   import { querySnsNeurons } from "$lib/api/sns-governance.api";
-  import { snsProjectsStore } from "$lib/derived/sns/sns-projects.derived";
+  import {
+    snsProjectsActivePadStore,
+    snsProjectsStore,
+  } from "$lib/derived/sns/sns-projects.derived";
   import { getAuthenticatedIdentity } from "$lib/services/auth.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -19,17 +22,27 @@
     generateCsvFileToSave,
     mapPool,
   } from "$lib/utils/reporting.utils";
+  import { sortSnsNeuronsByStake } from "$lib/utils/sns-neuron.utils";
   import { IconDown } from "@dfinity/gix-components";
-  import { get } from "svelte/store";
 
   type Props = { source?: ReportingNeuronsOptions };
   let { source = "nns" }: Props = $props();
 
-  let loading = $state(false);
+  let isLoading = $state(false);
+
+  const snsProjects = $derived($snsProjectsActivePadStore);
+  const snsProjectsLoaded = $derived(
+    source === "sns" && snsProjects.length === 0
+  );
+  const fileName = $derived(
+    source === "sns"
+      ? `neurons_export_sns_${formatDateCompact(new Date())}`
+      : `neurons_export_nns_${formatDateCompact(new Date())}`
+  );
 
   const exportNeurons = async () => {
     try {
-      loading = true;
+      isLoading = true;
       startBusy({
         initiator: "reporting-neurons",
         labelKey: "reporting.busy_screen",
@@ -43,11 +56,17 @@
         setTimeout(() => {
           startBusy({
             initiator: "reporting-neurons",
-            labelKey: "fetching all sns neurons",
+            labelKey: "reporting.busy_screen_sns_getting_neurons",
           });
         }, 4000);
 
         const projects = get(snsProjectsStore);
+        if (projects.length === 0) {
+          toastsError({
+            labelKey: "reporting.error_no_sns_projects",
+          });
+          return;
+        }
 
         const promises = await mapPool(projects, (project) =>
           querySnsNeurons({
@@ -57,7 +76,6 @@
           })
         );
 
-        // const neurons = await Promise.all(promises);
         const didSomeProjectFail = promises.some(
           (p) => p.status === "rejected"
         );
@@ -69,28 +87,24 @@
 
         startBusy({
           initiator: "reporting-neurons",
-          labelKey: "generating report",
+          labelKey: "reporting.busy_screen",
         });
+
         const neurons = promises
           .filter((p) => p.status === "fulfilled")
-          .flatMap((p) =>
-            p.value.map((n) => ({
+          .flatMap((p) => {
+            return sortSnsNeuronsByStake(p.value).map((n) => ({
               ...n,
               governanceCanisterId: p.item.summary.governanceCanisterId,
               token: p.item.summary.token,
-            }))
-          );
-        console.log(neurons);
+            }));
+          });
 
         const datasets = buildSnsNeuronsDatasets({
           neurons,
           userPrincipal: identity.getPrincipal(),
           i18n: $i18n,
         });
-
-        const fileName = `neurons_export_sns_all_${formatDateCompact(
-          new Date()
-        )}`;
 
         await generateCsvFileToSave({
           datasets,
@@ -128,7 +142,6 @@
         });
 
         const neurons = sortNeuronsByStake(data);
-        const fileName = `neurons_export_${formatDateCompact(new Date())}`;
 
         await generateCsvFileToSave({
           datasets: buildNeuronsDatasets({
@@ -181,19 +194,41 @@
         });
       }
     } finally {
-      loading = false;
+      isLoading = false;
       stopBusy("reporting-neurons");
     }
   };
 </script>
 
-<button
-  data-tid="reporting-neurons-button-component"
-  onclick={exportNeurons}
-  class="primary with-icon"
-  disabled={loading}
-  aria-label={$i18n.reporting.neurons_download}
->
-  <IconDown />
-  {$i18n.reporting.neurons_download}
-</button>
+<div class="wrapper">
+  <button
+    data-tid="reporting-neurons-button-component"
+    onclick={exportNeurons}
+    class="primary with-icon"
+    disabled={isLoading || snsProjectsLoaded}
+    aria-label={$i18n.reporting.neurons_download}
+  >
+    <IconDown />
+    {$i18n.reporting.neurons_download}
+  </button>
+
+  {#if source === "sns" && snsProjectsLoaded}
+    <p class="hint">{$i18n.reporting.loading_sns_projects}</p>
+  {/if}
+</div>
+
+<style lang="scss">
+  .wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--padding);
+    width: 100%;
+
+    .hint {
+      font-size: var(--font-size-small);
+      color: var(--text-description);
+      margin: 0;
+      font-style: italic;
+    }
+  }
+</style>
