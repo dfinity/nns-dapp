@@ -332,7 +332,7 @@ describe("reporting utils", () => {
   describe("buildNeuronsDatasets", () => {
     const expectedMetadata = [
       {
-        label: "NNS-Dapp Account Principal Id",
+        label: "NNS dapp Account Principal Id",
         value:
           "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
       },

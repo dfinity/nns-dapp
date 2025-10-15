@@ -1,5 +1,6 @@
 import * as gobernanceApi from "$lib/api/governance.api";
 import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import * as toastsStore from "$lib/stores/toasts.store";
 import { toastsError } from "$lib/stores/toasts.store";
 import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
@@ -10,16 +11,19 @@ import {
 import * as exportToCsvUtils from "$lib/utils/reporting.utils";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { ReportingNeuronsButtonPo } from "$tests/page-objects/ReportingNeuronsButon.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");
+vi.mock("$lib/api/sns-governance.api");
 
 describe("ReportingNeuronsButton", () => {
   let spyQueryNeurons;
@@ -180,7 +184,7 @@ describe("ReportingNeuronsButton", () => {
     await runResolvedPromises();
 
     const expectedCsv = [
-      "NNS-Dapp Account Principal Id,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
+      "NNS dapp Account Principal Id,xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
       'Export Date Time,"Oct 14, 2023 12:00 AM"',
       "",
       ",,Neuron Id,Project Name,Symbol,Neuron Account Id,Controller Principal Id,Stake,Available Maturity,Staked Maturity,Dissolve Delay,Dissolve Date,Creation Date,State",
@@ -193,6 +197,44 @@ describe("ReportingNeuronsButton", () => {
       })
     );
     expect(spySaveGeneratedCsv).toBeCalledTimes(1);
+  });
+
+  it("should export SNS neurons and use sns filename", async () => {
+    // Prepare two SNS projects
+    setSnsProjects([{ projectName: "ProjA" }, { projectName: "ProjB" }]);
+
+    // Mock SNS neurons query to return one neuron per project
+    const snsNeuron = createMockSnsNeuron({});
+    const spyQuerySnsNeurons = vi
+      .spyOn(snsGovernanceApi, "querySnsNeurons")
+      .mockResolvedValue([snsNeuron]);
+
+    const spyGenerateCsvFileToSave = vi
+      .spyOn(exportToCsvUtils, "generateCsvFileToSave")
+      .mockResolvedValue();
+
+    // Render component with SNS source
+    const { container } = render(ReportingNeuronsButton, {
+      props: { source: "sns" },
+    });
+    const po = ReportingNeuronsButtonPo.under({
+      element: new JestPageObjectElement(container),
+    });
+
+    await po.click();
+    await runResolvedPromises();
+
+    // Called once per project
+    expect(spyQuerySnsNeurons).toHaveBeenCalledTimes(2);
+
+    // Filename should include sns prefix and compact date
+    const expectedFileName = `neurons_export_sns_20231014`;
+    expect(spyGenerateCsvFileToSave).toBeCalledWith(
+      expect.objectContaining({
+        fileName: expectedFileName,
+      })
+    );
+    expect(spyGenerateCsvFileToSave).toBeCalledTimes(1);
   });
 
   it("should show error toast when file system access fails", async () => {

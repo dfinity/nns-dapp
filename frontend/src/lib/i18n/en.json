@@ -224,7 +224,7 @@
     "transactions_download": "Export Transactions",
     "busy_screen": "Generating report... This may take a moment",
     "busy_screen_sns_getting_neurons": "Fetching your neurons across all SNS projects...",
-    "principal_account_id": "NNS-Dapp Account Principal Id",
+    "principal_account_id": "NNS dapp Account Principal Id",
     "date_label": "Export Date Time",
     "neuron_id": "Neuron Id",
     "project": "Project Name",
