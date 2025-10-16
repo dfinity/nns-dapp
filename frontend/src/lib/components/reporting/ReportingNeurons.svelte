@@ -1,19 +1,19 @@
 <script lang="ts">
   import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { ReportingNeuronsOptions } from "$lib/types/reporting";
+  import type { ReportingNeuronsSource } from "$lib/types/reporting";
 
-  let source: ReportingNeuronsOptions = $state("nns");
+  let source: ReportingNeuronsSource = $state("nns");
 
   const options: Array<{
-    value: ReportingNeuronsOptions;
+    value: ReportingNeuronsSource;
     label: string;
   }> = [
     { value: "nns", label: $i18n.reporting.neurons_source_nns },
     { value: "sns", label: $i18n.reporting.neurons_source_sns },
   ];
 
-  function handleChange(value: ReportingNeuronsOptions) {
+  function handleChange(value: ReportingNeuronsSource) {
     source = value;
   }
 </script>

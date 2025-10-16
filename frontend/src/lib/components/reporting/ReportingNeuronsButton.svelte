@@ -6,7 +6,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
-  import type { ReportingNeuronsOptions } from "$lib/types/reporting";
+  import type { ReportingNeuronsSource } from "$lib/types/reporting";
   import { formatDateCompact } from "$lib/utils/date.utils";
   import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
   import {
@@ -22,13 +22,13 @@
   import { sortSnsNeuronsByStake } from "$lib/utils/sns-neuron.utils";
   import { IconDown } from "@dfinity/gix-components";
 
-  type Props = { source?: ReportingNeuronsOptions };
+  type Props = { source?: ReportingNeuronsSource };
   let { source = "nns" }: Props = $props();
 
-  let isLoading = $state(false);
+  let inProgress = $state(false);
 
   const snsProjects = $derived($snsProjectsActivePadStore);
-  const snsProjectsLoaded = $derived(
+  const snsProjectsNotLoaded = $derived(
     source === "sns" && snsProjects.length === 0
   );
   const fileName = $derived(
@@ -39,7 +39,7 @@
 
   const exportNeurons = async () => {
     try {
-      isLoading = true;
+      inProgress = true;
       startBusy({
         initiator: "reporting-neurons",
         labelKey: "reporting.busy_screen",
@@ -183,7 +183,7 @@
         });
       }
     } finally {
-      isLoading = false;
+      inProgress = false;
       stopBusy("reporting-neurons");
     }
   };
@@ -194,14 +194,14 @@
     data-tid="reporting-neurons-button-component"
     onclick={exportNeurons}
     class="primary with-icon"
-    disabled={isLoading || snsProjectsLoaded}
+    disabled={inProgress || snsProjectsNotLoaded}
     aria-label={$i18n.reporting.neurons_download}
   >
     <IconDown />
     {$i18n.reporting.neurons_download}
   </button>
 
-  {#if source === "sns" && snsProjectsLoaded}
+  {#if source === "sns" && snsProjectsNotLoaded}
     <p class="hint">{$i18n.reporting.loading_sns_projects}</p>
   {/if}
 </div>
