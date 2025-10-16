@@ -393,12 +393,6 @@ export const setFollowees = async ({
   logWithTimestamp(`Setting Followees (${hashCode(neuronId)}) call...`);
   const { canister } = await governanceCanister({ identity });
 
-  // throw new GovernanceError({
-  //   // error_message: `: The neuron with ID ${neuronId.toString()} does not exist.`,
-  //   error_message: `: Neuron ${neuronId.toString()} is a private neuron.`,
-  //   error_type: 501,
-  // });
-
   await canister.setFollowees({
     neuronId,
     topic,
