@@ -64,12 +64,10 @@ impl fmt::Debug for AccountsStore {
 #[cfg(test)]
 impl PartialEq for AccountsStore {
     fn eq(&self, other: &Self) -> bool {
-        self.accounts_db.len() == other.accounts_db.len()
-            && self.accounts_db.iter().all(|entry| {
-                let (k, v) = (entry.key(), entry.value());
-                other.accounts_db.get(k) == Some(v)
-            })
-            && self.accounts_db_stats == other.accounts_db_stats
+        self.accounts_db
+            .range(..)
+            .map(|entry| entry.into_pair())
+            .eq(other.accounts_db.range(..).map(|entry| entry.into_pair()))
     }
 }
 #[cfg(test)]
