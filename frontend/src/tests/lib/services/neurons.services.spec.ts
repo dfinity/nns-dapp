@@ -894,9 +894,9 @@ describe("neurons-services", () => {
       expect(successCount).toBe(neurons.length);
     });
 
-    it("should use setFollowees to refresh voting state of the hotkey and HW neuron", async () => {
-      const spySetFollowees = vi
-        .spyOn(api, "setFollowees")
+    it("should use refreshVotingPower to refresh voting state of all neuron types (hotkey and HW neuron)", async () => {
+      const spyRefreshVotingPower = vi
+        .spyOn(api, "refreshVotingPower")
         .mockResolvedValue(undefined);
       setAccountsForTesting({
         main: mockMainAccount,
@@ -928,37 +928,28 @@ describe("neurons-services", () => {
       });
 
       expect(successCount).toBe(neurons.length);
+      expect(spyRefreshVotingPower).toBeCalledTimes(5);
       // own neuron
-      expect(spyRefreshVotingPower).toBeCalledTimes(1);
       expect(spyRefreshVotingPower).toHaveBeenCalledWith({
         identity: mockIdentity,
         neuronId: neuron1.neuronId,
       });
       // hotkey/HW neurons
-      expect(spySetFollowees).toBeCalledTimes(4);
-      expect(spySetFollowees).toHaveBeenCalledWith({
+      expect(spyRefreshVotingPower).toHaveBeenCalledWith({
         identity: mockIdentity,
         neuronId: hotkeyNeuronNoFollowees.neuronId,
-        followees: [],
-        topic: Topic.Governance,
       });
-      expect(spySetFollowees).toHaveBeenCalledWith({
+      expect(spyRefreshVotingPower).toHaveBeenCalledWith({
         identity: mockIdentity,
         neuronId: hotkeyNeuronWithFollowees.neuronId,
-        followees: testFollowee,
-        topic: Topic.Governance,
       });
-      expect(spySetFollowees).toHaveBeenCalledWith({
+      expect(spyRefreshVotingPower).toHaveBeenCalledWith({
         identity: mockIdentity,
         neuronId: ledgerNeuronNoFollowees.neuronId,
-        followees: [],
-        topic: Topic.Governance,
       });
-      expect(spySetFollowees).toHaveBeenCalledWith({
+      expect(spyRefreshVotingPower).toHaveBeenCalledWith({
         identity: mockIdentity,
         neuronId: ledgerNeuronWithFollowees.neuronId,
-        followees: testFollowee,
-        topic: Topic.Governance,
       });
     });
 
@@ -1045,9 +1036,6 @@ describe("neurons-services", () => {
       const spyConsoleError = vi
         .spyOn(console, "error")
         .mockImplementation(() => undefined);
-      const spySetFollowees = vi
-        .spyOn(api, "setFollowees")
-        .mockRejectedValue(testError);
       const spyRefreshVotingPower = vi
         .spyOn(api, "refreshVotingPower")
         .mockRejectedValue(testError);
@@ -1066,7 +1054,6 @@ describe("neurons-services", () => {
         certified: true,
       });
 
-      expect(spySetFollowees).toBeCalledTimes(0);
       expect(spyRefreshVotingPower).toBeCalledTimes(0);
 
       const { successCount } = await services.refreshVotingPowerForNeurons({
@@ -1078,8 +1065,7 @@ describe("neurons-services", () => {
       });
 
       expect(successCount).toBe(0);
-      expect(spyRefreshVotingPower).toBeCalledTimes(1);
-      expect(spySetFollowees).toBeCalledTimes(2);
+      expect(spyRefreshVotingPower).toBeCalledTimes(3);
       expect(spyConsoleError).toBeCalledTimes(3);
       expect(spyConsoleError).toBeCalledWith(
         "Failed to refresh neuronId 1",
