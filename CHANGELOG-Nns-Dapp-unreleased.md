@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Export SNS neuron data in reporting section
+
 #### Changed
 
 #### Deprecated

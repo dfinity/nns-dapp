@@ -223,11 +223,16 @@ interface I18nHeader {
 interface I18nReporting {
   neurons_title: string;
   neurons_description: string;
+  neurons_source: string;
+  neurons_source_nns: string;
+  neurons_source_sns: string;
   neurons_download: string;
+  loading_sns_projects: string;
   transactions_title: string;
   transactions_description: string;
   transactions_download: string;
   busy_screen: string;
+  busy_screen_sns_getting_neurons: string;
   principal_account_id: string;
   date_label: string;
   neuron_id: string;
@@ -256,6 +261,7 @@ interface I18nReporting {
   error_file_system_access: string;
   error_neurons: string;
   error_transactions: string;
+  error_some_sns_projects: string;
   range_filter_title: string;
   range_last_year: string;
   range_year_to_date: string;
