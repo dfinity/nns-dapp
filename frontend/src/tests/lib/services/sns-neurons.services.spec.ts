@@ -851,7 +851,7 @@ describe("sns-neurons-services", () => {
       expect(get(toastsStore)).toMatchObject([
         {
           level: "error",
-          text: `There is no neuron with ID ${neuronIdHext}. Please choose a neuron ID from an existing neuron.`,
+          text: `Neuron with ID ${neuronIdHext} does not exist.`,
         },
       ]);
     });
