@@ -396,7 +396,7 @@ describe("FollowSnsNeuronsByTopicModal", () => {
 
     expect(get(busyStore)).toEqual([]);
     expect(await neuronStepPo.getNeuronIdInputPo().getErrorMessage()).toEqual(
-      "There is no neuron with ID 01050309090302. Please choose a neuron ID from an existing neuron."
+      "Neuron with ID 040506 does not exist."
     );
     expect(get(toastsStore)).toMatchObject([]);
 
