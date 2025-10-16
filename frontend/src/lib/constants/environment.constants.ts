@@ -11,6 +11,8 @@ export const SNS_AGGREGATOR_CANISTER_URL = envVars.snsAggregatorUrl ?? "";
 
 export const ICP_SWAP_URL = envVars.icpSwapUrl ?? "";
 
+export const KONG_SWAP_URL = envVars.kongSwapUrl ?? "";
+
 export const PLAUSIBLE_DOMAIN = envVars.plausibleDomain;
 
 export interface FeatureFlags<T> {

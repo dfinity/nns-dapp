@@ -62,6 +62,9 @@ local_deployment_data="$(
   ICP_SWAP_URL="$(dfx-canister-url --network "$DFX_NETWORK" icp-swap)"
   export ICP_SWAP_URL
 
+  KONG_SWAP_URL="https://api.kongswap.io"
+  export KONG_SWAP_URL
+
   : "Get the SNS wasm canister ID, if it exists"
   : "- may be set as an env var"
   : "Note: If you want to use a wasm canister deployed by someone else, add the canister ID to the remote section in dfx.json:"
@@ -149,6 +152,7 @@ local_deployment_data="$(
     OWN_CANISTER_ID: env.OWN_CANISTER_ID,
     IDENTITY_SERVICE_URL: env.IDENTITY_SERVICE_URL,
     ICP_SWAP_URL: env.ICP_SWAP_URL,
+    KONG_SWAP_URL: env.KONG_SWAP_URL,
     SNS_AGGREGATOR_URL: env.SNS_AGGREGATOR_URL,
     LEDGER_CANISTER_ID: env.LEDGER_CANISTER_ID,
     INDEX_CANISTER_ID: env.INDEX_CANISTER_ID,
@@ -199,6 +203,7 @@ featureFlags=$(echo "$json" | jq -r ".FEATURE_FLAGS" | jq tostring)
 host=$(echo "$json" | jq -r ".HOST")
 identityServiceUrl=$(echo "$json" | jq -r ".IDENTITY_SERVICE_URL")
 icpSwapUrl=$(echo "$json" | jq -r ".ICP_SWAP_URL")
+kongSwapUrl=$(echo "$json" | jq -r ".KONG_SWAP_URL")
 aggregatorCanisterUrl=$(echo "$json" | jq -r '.SNS_AGGREGATOR_URL // ""')
 ckbtcLedgerCanisterId=$(echo "$json" | jq -r '.CKBTC_LEDGER_CANISTER_ID // ""')
 ckbtcMinterCanisterId=$(echo "$json" | jq -r '.CKBTC_MINTER_CANISTER_ID // ""')
@@ -222,6 +227,7 @@ VITE_FEATURE_FLAGS=$featureFlags
 VITE_HOST=$host
 VITE_IDENTITY_SERVICE_URL=$identityServiceUrl
 VITE_ICP_SWAP_URL=$icpSwapUrl
+VITE_KONG_SWAP_URL=$kongSwapUrl
 VITE_PLAUSIBLE_DOMAIN=$plausibleDomain
 VITE_AGGREGATOR_CANISTER_URL=${aggregatorCanisterUrl:-}
 VITE_CKBTC_LEDGER_CANISTER_ID=${ckbtcLedgerCanisterId:-}
@@ -254,6 +260,9 @@ export IDENTITY_SERVICE_URL
 
 ICP_SWAP_URL="$icpSwapUrl"
 export ICP_SWAP_URL
+
+KONG_SWAP_URL="$kongSwapUrl"
+export KONG_SWAP_URL
 
 SNS_AGGREGATOR_URL="${aggregatorCanisterUrl:-}"
 export SNS_AGGREGATOR_URL
