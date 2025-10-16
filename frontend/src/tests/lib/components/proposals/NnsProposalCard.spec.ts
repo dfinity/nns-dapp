@@ -59,6 +59,7 @@ describe("NnsProposalCard", () => {
         name: "Super neuron",
         description: "Super neuron description",
         links: undefined,
+        committed_topics: undefined,
       },
     };
     const { queryByTestId } = render(NnsProposalCard, {

@@ -14,11 +14,9 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Custom date range selection for reporting.
+- Export SNS neuron data in reporting section
 
 #### Changed
-
-- Hide technical error details.
 
 #### Deprecated
 
