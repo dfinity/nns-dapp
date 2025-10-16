@@ -2,7 +2,6 @@
   type RadioOption = {
     value: string;
     label: string;
-    disabled?: boolean;
     title?: string;
   };
 
@@ -10,31 +9,23 @@
     options: RadioOption[];
     value?: string;
     name?: string;
-    disabled?: boolean;
     ariaLabel?: string;
   };
 
-  let {
-    options,
-    value = $bindable(),
-    name,
-    disabled = false,
-    ariaLabel,
-  }: Props = $props();
+  let { options, value = $bindable(), name, ariaLabel }: Props = $props();
 
   const handleChange = (newValue: string) => (value = newValue);
 </script>
 
 <div class="options" role="radiogroup" aria-label={ariaLabel}>
   {#each options as option}
-    <label class="radio-option" aria-disabled={disabled || option.disabled}>
+    <label class="radio-option">
       <input
         type="radio"
         {name}
         value={option.value}
         checked={value === option.value}
         aria-checked={value === option.value}
-        disabled={disabled || option.disabled}
         title={option.title}
         onchange={() => handleChange(option.value)}
       />
