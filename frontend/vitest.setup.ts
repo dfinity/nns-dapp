@@ -176,6 +176,7 @@ vi.mock("./src/lib/utils/env-vars.utils.ts", () => ({
     governanceCanisterId: "rrkah-fqaaa-aaaaa-aaaaq-cai",
     identityServiceUrl: "http://localhost:8000/",
     icpSwapUrl: "http://mrfq3-7eaaa-aaaaa-qabja-cai.localhost:8080",
+    kongSwapUrl: "http://localhost:8000",
     ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     indexCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     ownCanisterId: "qhbym-qaaaa-aaaaa-aaafq-cai",
