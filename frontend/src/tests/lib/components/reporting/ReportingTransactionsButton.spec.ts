@@ -89,7 +89,7 @@ describe("ReportingTransactionsButton", () => {
       period: ReportingPeriod;
       customFrom?: string;
       customTo?: string;
-    } = { period: "all" }
+    } = { period: "year-to-date" }
   ) => {
     const { container } = render(ReportingTransactionsButton, {
       props: {
@@ -119,7 +119,7 @@ describe("ReportingTransactionsButton", () => {
     await po.click();
     await runResolvedPromises();
 
-    const expectedFileName = `icp_transactions_export_20231014_all`;
+    const expectedFileName = `icp_transactions_export_20231014_year-to-date`;
     expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
@@ -244,7 +244,9 @@ describe("ReportingTransactionsButton", () => {
     expect(spyExportDataService).toHaveBeenCalledWith({
       entities: expectation,
       identity: mockIdentity,
-      range: {},
+      range: {
+        from: 1672531200000000000n,
+      },
     });
   });
 
@@ -285,7 +287,9 @@ describe("ReportingTransactionsButton", () => {
     expect(spyExportDataService).toHaveBeenCalledWith({
       entities: expectation,
       identity: mockIdentity,
-      range: {},
+      range: {
+        from: 1672531200000000000n,
+      },
     });
   });
 
@@ -409,7 +413,7 @@ describe("ReportingTransactionsButton", () => {
 
   describe("Button state based on custom period", () => {
     it("should be enabled when period is not custom", async () => {
-      const po = renderComponent({ period: "all" });
+      const po = renderComponent({ period: "year-to-date" });
       expect(await po.isEnabled()).toBe(true);
     });
 
@@ -493,19 +497,6 @@ describe("ReportingTransactionsButton", () => {
   });
 
   describe("Filename generation", () => {
-    it("should generate correct filename for all period", async () => {
-      const po = renderComponent({ period: "all" });
-
-      await po.click();
-      await runResolvedPromises();
-
-      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fileName: "icp_transactions_export_20231014_all",
-        })
-      );
-    });
-
     it("should generate correct filename for year-to-date period", async () => {
       const po = renderComponent({ period: "year-to-date" });
 

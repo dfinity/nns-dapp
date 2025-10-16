@@ -6,6 +6,10 @@ import {
 } from "$lib/stores/balance-privacy-option.store";
 import { i18n } from "$lib/stores/i18n";
 import {
+  transactionMemoOptionStore,
+  type TransactionMemoOption,
+} from "$lib/stores/transaction-memo-option.store";
+import {
   IconCopy,
   IconDarkMode,
   IconDocument,
@@ -38,6 +42,7 @@ interface AlfredItemBase {
     isSignedIn: boolean;
     theme: ThemeStoreData;
     balancePrivacyOption: BalancePrivacyOptionData;
+    memoOption: TransactionMemoOption;
   }) => boolean;
 }
 
@@ -153,8 +158,8 @@ const getAlfredItems = (): AlfredItem[] => {
     {
       id: "hide-balance",
       type: "action",
-      title: "Hide Balance",
-      description: "Privacy mode for your balance",
+      title: alfred.hide_balance_title,
+      description: alfred.hide_balance_description,
       icon: IconEyeClosed,
       action: () => balancePrivacyOptionStore.set("hide"),
       contextFilter: (context) =>
@@ -163,12 +168,32 @@ const getAlfredItems = (): AlfredItem[] => {
     {
       id: "show-balance",
       type: "action",
-      title: "Show Balance",
-      description: "Display your balances",
+      title: alfred.show_balance_title,
+      description: alfred.show_balance_description,
       icon: IconEyeOpen,
       action: () => balancePrivacyOptionStore.set("show"),
       contextFilter: (context) =>
         context.balancePrivacyOption === "hide" && context.isSignedIn,
+    },
+    {
+      id: "show-transaction-memo",
+      type: "action",
+      title: alfred.show_memo_title,
+      description: alfred.show_memo_description,
+      icon: IconDocument,
+      action: () => transactionMemoOptionStore.set("show"),
+      contextFilter: (context) =>
+        context.memoOption === "hide" && context.isSignedIn,
+    },
+    {
+      id: "hide-transaction-memo",
+      type: "action",
+      title: alfred.hide_memo_title,
+      description: alfred.hide_memo_description,
+      icon: IconDocument,
+      action: () => transactionMemoOptionStore.set("hide"),
+      contextFilter: (context) =>
+        context.memoOption === "show" && context.isSignedIn,
     },
     {
       id: "log-in",
@@ -202,6 +227,7 @@ export const filterAlfredItems = (
     isSignedIn: boolean;
     theme: ThemeStoreData;
     balancePrivacyOption: BalancePrivacyOptionData;
+    memoOption: TransactionMemoOption;
   }
 ): AlfredItem[] => {
   const items = alfredItems.filter(

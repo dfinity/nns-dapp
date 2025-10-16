@@ -34,7 +34,7 @@ ic-nns-common = { workspace = true }
 ic-nns-constants = { workspace = true }
 ic-nns-governance = { workspace = true }
 ic-sns-swap = { workspace = true }
-ic-stable-structures = "0.6.5"
+ic-stable-structures = "0.7.2"
 icp-ledger = { workspace = true }
 on_wire = { workspace = true }
 
@@ -46,7 +46,7 @@ candid_parser = "0.1.2"
 ic_principal = "0.1.0"
 maplit = "1.0.2"
 pretty_assertions = "1.4.0"
-proptest = "1.6.0"
+proptest = "1.8.0"
 rand = "0.9.0"
 slotmap = "1"
 tokio = { version = "1.39.3", features = ["full"] }

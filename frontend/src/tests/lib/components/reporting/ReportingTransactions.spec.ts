@@ -64,7 +64,9 @@ describe("ReportingTransactions", () => {
     expect(getAccountTransactionsConcurrently).toHaveBeenCalledWith({
       entities: [mockMainAccount],
       identity: mockIdentity,
-      range: {},
+      range: {
+        from: 1672531200000000000n,
+      },
     });
   });
 

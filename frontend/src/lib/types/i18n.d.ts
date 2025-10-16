@@ -93,6 +93,8 @@ interface I18nError {
   transaction_error: string;
   transaction_too_old: string;
   transaction_created_in_future: string;
+  transaction_invalid_memo_icp: string;
+  transaction_invalid_memo_icrc: string;
   unexpected_number_neurons_merge: string;
   cannot_merge: string;
   not_authorized_neuron_action: string;
@@ -200,6 +202,14 @@ interface I18nAlfred {
   log_out_title: string;
   log_out_description: string;
   search_placeholder: string;
+  hide_balance_title: string;
+  hide_balance_description: string;
+  show_balance_title: string;
+  show_balance_description: string;
+  hide_memo_title: string;
+  hide_memo_description: string;
+  show_memo_title: string;
+  show_memo_description: string;
 }
 
 interface I18nHeader {
@@ -213,11 +223,16 @@ interface I18nHeader {
 interface I18nReporting {
   neurons_title: string;
   neurons_description: string;
+  neurons_source: string;
+  neurons_source_nns: string;
+  neurons_source_sns: string;
   neurons_download: string;
+  loading_sns_projects: string;
   transactions_title: string;
   transactions_description: string;
   transactions_download: string;
   busy_screen: string;
+  busy_screen_sns_getting_neurons: string;
   principal_account_id: string;
   date_label: string;
   neuron_id: string;
@@ -246,8 +261,8 @@ interface I18nReporting {
   error_file_system_access: string;
   error_neurons: string;
   error_transactions: string;
+  error_some_sns_projects: string;
   range_filter_title: string;
-  range_filter_all: string;
   range_last_year: string;
   range_year_to_date: string;
   range_custom: string;
@@ -273,6 +288,9 @@ interface I18nAccounts {
   buy_icp_note: string;
   banxa_logo_alt: string;
   icp_transaction_description: string;
+  icp_transaction_memo_label: string;
+  icp_transaction_memo_hint: string;
+  icp_transaction_memo: string;
   sns_transaction_description: string;
   ckbtc_transaction_description: string;
   ckbtc_to_btc_transaction_description: string;

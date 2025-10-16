@@ -24,6 +24,7 @@
     token: Token;
     transaction: NewTransaction;
     transactionFee: TokenAmountV2 | TokenAmount;
+    withMemo: boolean;
   };
 
   const {
@@ -38,9 +39,11 @@
     token,
     transaction,
     transactionFee,
+    withMemo,
   }: Props = $props();
 
-  const { sourceAccount, amount, destinationAddress } = $derived(transaction);
+  const { sourceAccount, amount, destinationAddress, memo } =
+    $derived(transaction);
 
   const dispatcher = createEventDispatcher();
   const submit = () => {
@@ -68,6 +71,15 @@
     />
 
     {@render additionalInfo()}
+
+    {#if withMemo}
+      <div class="memo">
+        <p class="label">{$i18n.accounts.icp_transaction_memo}</p>
+        <p class="value no-margin" data-tid="transaction-summary-memo">
+          {memo}
+        </p>
+      </div>
+    {/if}
   </div>
 
   <div class="toolbar">
