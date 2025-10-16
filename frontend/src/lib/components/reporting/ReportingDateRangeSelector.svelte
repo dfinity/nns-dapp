@@ -1,4 +1,5 @@
 <script lang="ts">
+  import RadioGroup from "$lib/components/reporting/RadioGroup.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { ReportingPeriod } from "$lib/types/reporting";
   import { formatDateCompact } from "$lib/utils/date.utils";
@@ -22,10 +23,6 @@
     { value: "last-year", label: $i18n.reporting.range_last_year },
     { value: "custom", label: $i18n.reporting.range_custom },
   ];
-
-  function handleChange(value: ReportingPeriod) {
-    period = value;
-  }
 
   const today = formatDateCompact(new Date(), "-");
 
@@ -101,21 +98,12 @@
 <fieldset data-tid="reporting-data-range-selector-component">
   <div class="wrapper">
     <legend>{$i18n.reporting.range_filter_title}</legend>
-    <div role="radiogroup" class="options">
-      {#each options as option}
-        <label class="radio-option">
-          <input
-            type="radio"
-            name="dateRange"
-            value={option.value}
-            checked={period === option.value}
-            aria-checked={period === option.value}
-            onchange={() => handleChange(option.value)}
-          />
-          <span class="label">{option.label}</span>
-        </label>
-      {/each}
-    </div>
+    <RadioGroup
+      {options}
+      bind:value={period}
+      name="dateRange"
+      ariaLabel={$i18n.reporting.range_filter_title}
+    />
 
     {#if isCustom()}
       <div class="range" data-tid="range-selection">
@@ -150,7 +138,6 @@
 
 <style lang="scss">
   @use "@dfinity/gix-components/dist/styles/mixins/fonts";
-  @use "@dfinity/gix-components/dist/styles/mixins/media";
 
   fieldset {
     all: unset;
@@ -165,43 +152,6 @@
 
       legend {
         @include fonts.h5;
-      }
-
-      .options {
-        display: flex;
-        flex-direction: column;
-        gap: var(--padding-3x);
-        @include media.min-width(medium) {
-          flex-direction: row;
-        }
-
-        .radio-option {
-          display: flex;
-          align-items: center;
-          gap: var(--padding);
-          cursor: pointer;
-
-          .label {
-            color: var(--text-description);
-            font-size: var(--font-size-body);
-          }
-
-          input[type="radio"] {
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            margin: 0;
-            cursor: pointer;
-            position: relative;
-            background: transparent;
-
-            &:checked {
-              border: 5px solid var(--primary, #666);
-            }
-          }
-        }
       }
     }
 
