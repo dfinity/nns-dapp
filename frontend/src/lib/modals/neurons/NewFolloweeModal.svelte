@@ -165,7 +165,7 @@
       <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
     </InputWithError>
     {#if nonNullish(customErrorMessage)}
-      <p class="custom-error-message">
+      <p class="custom-error-message" data-tid="custom-error-message">
         <Html text={customErrorMessage} />
       </p>
     {/if}
