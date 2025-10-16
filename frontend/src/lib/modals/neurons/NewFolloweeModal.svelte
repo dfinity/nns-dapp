@@ -72,7 +72,10 @@
   }) => {
     const toastMessage = mapNeuronErrorToToastMessage(error);
     const errorDetail = toastMessage.detail ?? "";
-    if (/: The neuron with ID \d+ does not exist\./.test(errorDetail)) {
+    const NON_EXISTENT_NEURON_ERROR =
+      /: The neuron with ID \d+ does not exist\./;
+    const FOLLOWING_NOT_ALLOWED_ERROR = /: Neuron \d+ is a private neuron\./;
+    if (NON_EXISTENT_NEURON_ERROR.test(errorDetail)) {
       // ref. https://github.com/dfinity/ic/blob/13a56ce65d36b85d10ee5e3171607cc2c31cf23e/rs/nns/governance/src/governance.rs#L8421
       errorMessage = replacePlaceholders(
         $i18n.new_followee.followee_does_not_exist,
@@ -80,7 +83,7 @@
           $neuronId: followee.toString(),
         }
       );
-    } else if (/: Neuron \d+ is a private neuron\./.test(errorDetail)) {
+    } else if (FOLLOWING_NOT_ALLOWED_ERROR.test(errorDetail)) {
       // ref. https://github.com/dfinity/ic/blob/13a56ce65d36b85d10ee5e3171607cc2c31cf23e/rs/nns/governance/src/governance.rs#L8411
       customErrorMessage = replacePlaceholders(
         $i18n.new_followee.followee_not_permit,
@@ -89,7 +92,9 @@
           $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
         }
       );
-      errorMessage = ""; // To display the error state of InputWithError
+      // Since the error message is not displayed directly in the input field,
+      // we set input.error to a non-undefined value to trigger the error state in InputWithError.
+      errorMessage = "";
     } else {
       toastsShow(toastMessage);
     }
@@ -116,23 +121,18 @@
 
     startBusy({ initiator: "add-followee" });
 
-    let addFolloweeError = true;
     try {
       await addFollowee({
         neuronId: neuron.neuronId,
         topic,
         followee,
       });
-      addFolloweeError = false;
+      followeeAddress = "";
+      close();
     } catch (err) {
       handleAddFolloweeError({ followee, error: err });
-    }
-
-    stopBusy("add-followee");
-
-    if (!addFolloweeError) {
-      close();
-      followeeAddress = "";
+    } finally {
+      stopBusy("add-followee");
     }
   };
 
@@ -142,7 +142,7 @@
   };
   let disabled: boolean;
   $: disabled =
-    errorMessage !== undefined ||
+    nonNullish(errorMessage) ||
     followeeAddress.length === 0 ||
     !isUserAuthorized ||
     $busy;
