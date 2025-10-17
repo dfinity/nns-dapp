@@ -1,51 +1,54 @@
 import { SNS_AGGREGATOR_CANISTER_URL } from "$lib/constants/environment.constants";
-import {
-  AGGREGATOR_CANISTER_VERSION,
-  AGGREGATOR_PAGE_SIZE,
-} from "$lib/constants/sns.constants";
+import { AGGREGATOR_CANISTER_VERSION } from "$lib/constants/sns.constants";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 
-const aggergatorPageUrl = (page: number) => `/sns/list/page/${page}/slow.json`;
+const aggregatorPageUrl = (page: number) =>
+  `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/list/page/${page}/slow.json`;
 
-const querySnsAggregator = async (page = 0): Promise<CachedSnsDto[]> => {
-  let response: Response;
-  try {
-    response = await fetch(
-      `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}${aggergatorPageUrl(
-        page
-      )}`
-    );
-  } catch (e) {
-    // If the error is after the first page, is because there are no more pages it fails
-    if (page > 0) {
+// Aggregator has a page size of 10 elements.
+// We currently have 51 projects so 6 pages
+// https://github.com/dfinity/nns-dapp/blob/b056a5dd42ffc8f198ce8eb92688645389293ef6/rs/sns_aggregator/src/state.rs#L140
+export const queryParallelSnsAggregator = async (): Promise<CachedSnsDto[]> => {
+  const pages = [0, 1, 2, 3, 4, 5].map(aggregatorPageUrl);
+
+  const pagePromises = pages.map(async (page) => {
+    try {
+      const response = await fetch(page);
+
+      if (!response.ok) {
+        console.error(
+          `Error loading SNS project page ${page} from aggregator canister (status ${response.status})`
+        );
+        return [] as CachedSnsDto[];
+      }
+      return await response.json();
+    } catch (e) {
       console.error(
-        `Error loading SNS project page ${page} from aggregator canister`
+        `Error loading SNS project page ${page} from aggregator canister`,
+        e
       );
-      return [];
+      return [] as CachedSnsDto[];
     }
-    throw e;
-  }
-  if (!response.ok) {
-    // If the error is after the first page, is because there are no more pages it fails
-    if (page > 0) {
-      return [];
-    }
+  });
+
+  const results = await Promise.all(pagePromises);
+  const allProjects = results.flat();
+
+  if (allProjects.length === 0) {
     throw new Error("Error loading SNS projects from aggregator canister");
   }
-  const data: CachedSnsDto[] = await response.json();
-  if (data.length === AGGREGATOR_PAGE_SIZE) {
-    const nextPageData = await querySnsAggregator(page + 1);
-    return [...data, ...nextPageData];
-  }
-  return data;
+  return allProjects;
 };
 
 export const querySnsProjects = async (): Promise<CachedSnsDto[]> => {
   logWithTimestamp("Loading SNS projects from aggregator canister...");
   try {
-    const data: CachedSnsDto[] = await querySnsAggregator();
-    logWithTimestamp("Loading SNS projects from aggregator canister completed");
+    const data: CachedSnsDto[] = await queryParallelSnsAggregator();
+
+    logWithTimestamp(
+      `Loading SNS projects from aggregator canister completed. Loaded ${data.length} projects.`
+    );
     return data;
   } catch (err) {
     console.error("Error converting data", err);
