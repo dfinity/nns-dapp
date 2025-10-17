@@ -1,4 +1,5 @@
 <script lang="ts">
+  import RadioGroup from "$lib/components/reporting/RadioGroup.svelte";
   import ReportingNeuronsButton from "$lib/components/reporting/ReportingNeuronsButton.svelte";
   import { i18n } from "$lib/stores/i18n";
   import type { ReportingNeuronsSource } from "$lib/types/reporting";
@@ -12,10 +13,6 @@
     { value: "nns", label: $i18n.reporting.neurons_source_nns },
     { value: "sns", label: $i18n.reporting.neurons_source_sns },
   ];
-
-  function handleChange(value: ReportingNeuronsSource) {
-    source = value;
-  }
 </script>
 
 <div class="wrapper">
@@ -26,21 +23,12 @@
   <fieldset data-tid="neurons-source-selector">
     <div class="selector-wrapper">
       <legend>{$i18n.reporting.neurons_source}</legend>
-      <div role="radiogroup" class="options">
-        {#each options as option}
-          <label class="radio-option">
-            <input
-              type="radio"
-              name="neuronsSource"
-              value={option.value}
-              checked={source === option.value}
-              aria-checked={source === option.value}
-              onchange={() => handleChange(option.value)}
-            />
-            <span class="label">{option.label}</span>
-          </label>
-        {/each}
-      </div>
+      <RadioGroup
+        {options}
+        bind:value={source}
+        name="neuronsSource"
+        ariaLabel={$i18n.reporting.neurons_source}
+      />
     </div>
   </fieldset>
 
