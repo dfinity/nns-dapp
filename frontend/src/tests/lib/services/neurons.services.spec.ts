@@ -1868,13 +1868,14 @@ describe("neurons-services", () => {
 
       setNoIdentity();
 
-      await addFollowee({
-        neuronId: controlledNeuron.neuronId,
-        topic,
-        followee,
-      });
+      const call = async () =>
+        await addFollowee({
+          neuronId: controlledNeuron.neuronId,
+          topic,
+          followee,
+        });
 
-      expectToastError(en.error.missing_identity);
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
       expect(spySetFollowees).not.toBeCalled();
     });
 
@@ -1886,13 +1887,14 @@ describe("neurons-services", () => {
       const followee = 8n;
       const topic = Topic.ExchangeRate;
 
-      await addFollowee({
-        neuronId: notControlledNeuron.neuronId,
-        topic,
-        followee,
-      });
+      const call = async () =>
+        await addFollowee({
+          neuronId: notControlledNeuron.neuronId,
+          topic,
+          followee,
+        });
 
-      expectToastError(en.error.not_authorized_neuron_action);
+      await expect(call).rejects.toThrow();
       expect(spySetFollowees).not.toBeCalled();
     });
 
@@ -1942,12 +1944,14 @@ describe("neurons-services", () => {
         certified: true,
       });
 
-      await addFollowee({
-        neuronId: hotkeyNeuron.neuronId,
-        topic,
-        followee,
-      });
+      const call = async () =>
+        await addFollowee({
+          neuronId: hotkeyNeuron.neuronId,
+          topic,
+          followee,
+        });
 
+      await expect(call).rejects.toThrow();
       expect(spySetFollowees).not.toBeCalled();
     });
   });
@@ -1996,12 +2000,14 @@ describe("neurons-services", () => {
 
       setNoIdentity();
 
-      await removeFollowee({
-        neuronId: controlledNeuron.neuronId,
-        topic,
-        followee,
-      });
-      expectToastError(en.error.missing_identity);
+      const call = async () =>
+        await removeFollowee({
+          neuronId: controlledNeuron.neuronId,
+          topic,
+          followee,
+        });
+
+      await expect(call).rejects.toThrow();
       expect(spySetFollowees).not.toBeCalled();
     });
 
@@ -2020,12 +2026,14 @@ describe("neurons-services", () => {
         certified: true,
       });
 
-      await removeFollowee({
-        neuronId: notControlled.neuronId,
-        topic,
-        followee,
-      });
-      expectToastError(en.error.not_authorized_neuron_action);
+      const call = async () =>
+        await removeFollowee({
+          neuronId: notControlled.neuronId,
+          topic,
+          followee,
+        });
+
+      await expect(call).rejects.toThrow();
       expect(spySetFollowees).not.toBeCalled();
     });
 
@@ -2076,11 +2084,14 @@ describe("neurons-services", () => {
         certified: true,
       });
 
-      await removeFollowee({
-        neuronId: hotkeyNeuron.neuronId,
-        topic,
-        followee,
-      });
+      const call = async () =>
+        await removeFollowee({
+          neuronId: hotkeyNeuron.neuronId,
+          topic,
+          followee,
+        });
+
+      await expect(call).rejects.toThrow();
       expect(spySetFollowees).not.toBeCalled();
     });
   });

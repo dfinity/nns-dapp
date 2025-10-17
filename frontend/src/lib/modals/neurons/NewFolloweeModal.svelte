@@ -1,6 +1,6 @@
 <script lang="ts">
   import KnownNeuronFollowItem from "$lib/components/neurons/KnownNeuronFollowItem.svelte";
-  import Input from "$lib/components/ui/Input.svelte";
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { addFollowee } from "$lib/services/neurons.services";
@@ -8,13 +8,17 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { sortedknownNeuronsStore } from "$lib/stores/known-neurons.store";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     followeesByTopic,
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import { Modal, Spinner, busy } from "@dfinity/gix-components";
+  import { Html, Modal, Spinner, busy } from "@dfinity/gix-components";
   import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+  import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher, onMount } from "svelte";
 
   export let neuron: NeuronInfo;
@@ -42,6 +46,9 @@
   let topicFollowees: NeuronId[];
   $: topicFollowees = followeesByTopic({ neuron, topic }) ?? [];
 
+  let errorMessage: string | undefined = undefined;
+  let customErrorMessage: string | undefined = undefined;
+
   onMount(() => listKnownNeurons());
 
   const followsKnownNeuron = ({
@@ -56,7 +63,45 @@
   const close = () => {
     dispatcher("nnsClose");
   };
+  const handleAddFolloweeError = ({
+    followee,
+    error,
+  }: {
+    followee: bigint;
+    error: unknown;
+  }) => {
+    const toastMessage = mapNeuronErrorToToastMessage(error);
+    const errorDetail = toastMessage.detail ?? "";
+    // ref. https://github.com/dfinity/ic/blob/13a56ce65d36b85d10ee5e3171607cc2c31cf23e/rs/nns/governance/src/governance.rs#L8421
+    const NON_EXISTENT_NEURON_ERROR =
+      /: The neuron with ID \d+ does not exist\./;
+    // ref. https://github.com/dfinity/ic/blob/13a56ce65d36b85d10ee5e3171607cc2c31cf23e/rs/nns/governance/src/governance.rs#L8411
+    const FOLLOWING_NOT_ALLOWED_ERROR = /: Neuron \d+ is a private neuron\./;
+    if (NON_EXISTENT_NEURON_ERROR.test(errorDetail)) {
+      errorMessage = replacePlaceholders(
+        $i18n.new_followee.followee_does_not_exist,
+        {
+          $neuronId: followee.toString(),
+        }
+      );
+    } else if (FOLLOWING_NOT_ALLOWED_ERROR.test(errorDetail)) {
+      customErrorMessage = replacePlaceholders(
+        $i18n.new_followee.followee_not_permit,
+        {
+          $neuronId: followee.toString(),
+          $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
+        }
+      );
+      // Since the error message is not displayed directly in the input field,
+      // we set input.error to a non-undefined value to trigger the error state in InputWithError.
+      errorMessage = "";
+    } else {
+      toastsShow(toastMessage);
+    }
+  };
   const addFolloweeByAddress = async () => {
+    clearError();
+
     let followee: bigint;
     if (followeeAddress.length === 0) {
       return;
@@ -65,44 +110,70 @@
     try {
       followee = BigInt(followeeAddress);
     } catch (_) {
-      // TODO: Show error in Input - https://dfinity.atlassian.net/browse/L2-408
-      alert(`Incorrect followee address ${followeeAddress}`);
+      errorMessage = $i18n.new_followee.followee_incorrect_id_format;
+      return;
+    }
+
+    if (BigInt(followeeAddress) === neuron.neuronId) {
+      errorMessage = $i18n.new_followee.followee_no_self_following;
       return;
     }
 
     startBusy({ initiator: "add-followee" });
 
-    await addFollowee({
-      neuronId: neuron.neuronId,
-      topic,
-      followee,
-    });
-
-    stopBusy("add-followee");
-    close();
-
-    followeeAddress = "";
+    try {
+      await addFollowee({
+        neuronId: neuron.neuronId,
+        topic,
+        followee,
+      });
+      followeeAddress = "";
+      close();
+    } catch (err) {
+      handleAddFolloweeError({ followee, error: err });
+    } finally {
+      stopBusy("add-followee");
+    }
   };
+
+  const clearError = () => {
+    errorMessage = undefined;
+    customErrorMessage = undefined;
+  };
+  let disabled: boolean;
+  $: disabled =
+    nonNullish(errorMessage) ||
+    followeeAddress.length === 0 ||
+    !isUserAuthorized ||
+    $busy;
 </script>
 
 <Modal onClose={close} testId="new-followee-modal-component">
   {#snippet title()}{$i18n.new_followee.title}{/snippet}
 
   <form on:submit|preventDefault={addFolloweeByAddress}>
-    <Input
+    <InputWithError
       inputType="text"
       autocomplete="off"
       placeholderLabelKey="new_followee.placeholder"
       name="new-followee-address"
       bind:value={followeeAddress}
+      {errorMessage}
+      required
+      on:nnsInput={clearError}
     >
       <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
-    </Input>
+    </InputWithError>
+    {#if nonNullish(customErrorMessage)}
+      <p class="custom-error-message" data-tid="custom-error-message">
+        <Html text={customErrorMessage} />
+      </p>
+    {/if}
     <button
       data-tid="follow-neuron-button"
       class="primary"
       type="submit"
-      disabled={followeeAddress.length === 0 || !isUserAuthorized || $busy}
+      {disabled}
     >
       {$i18n.new_followee.follow_neuron}
     </button>
@@ -136,6 +207,14 @@
 <style lang="scss">
   form {
     gap: var(--padding-2x);
+
+    .custom-error-message {
+      // mock InputWithError error message style
+      margin-top: calc(-1 * var(--padding));
+      color: var(--negative-emphasis);
+      font-size: var(--font-size-ultra-small);
+      line-height: var(--line-height-1_25x);
+    }
   }
 
   button {

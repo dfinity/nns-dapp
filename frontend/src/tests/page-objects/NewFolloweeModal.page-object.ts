@@ -1,6 +1,6 @@
+import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
 import { KnownNeuronFollowItemPo } from "$tests/page-objects/KnownNeuronFollowItem.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
-import { TextInputPo } from "$tests/page-objects/TextInput.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
 export class NewFolloweeModalPo extends ModalPo {
@@ -10,8 +10,12 @@ export class NewFolloweeModalPo extends ModalPo {
     return new NewFolloweeModalPo(element.byTestId(NewFolloweeModalPo.TID));
   }
 
-  getTextInputPo(): TextInputPo {
-    return TextInputPo.under({ element: this.root });
+  getTextInputPo(): InputWithErrorPo {
+    return InputWithErrorPo.under({ element: this.root });
+  }
+
+  getCustomErrorMessagePo(): PageObjectElement | null {
+    return this.root.byTestId("custom-error-message");
   }
 
   getKnownNeuronItemPos(): Promise<KnownNeuronFollowItemPo[]> {
