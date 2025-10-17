@@ -59,40 +59,6 @@
       legend {
         @include fonts.h5;
       }
-
-      .options {
-        display: flex;
-        flex-direction: row;
-        gap: var(--padding-3x);
-
-        .radio-option {
-          display: flex;
-          align-items: center;
-          gap: var(--padding);
-          cursor: pointer;
-
-          .label {
-            color: var(--text-description);
-            font-size: var(--font-size-body);
-          }
-
-          input[type="radio"] {
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            margin: 0;
-            cursor: pointer;
-            position: relative;
-            background: transparent;
-
-            &:checked {
-              border: 5px solid var(--primary, #666);
-            }
-          }
-        }
-      }
     }
   }
 </style>
