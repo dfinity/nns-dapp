@@ -24,16 +24,28 @@ import {
   FileSystemAccessError,
   saveGeneratedCsv,
 } from "$lib/utils/reporting.save-csv-to-file.utils";
+import {
+  getSnsDissolveDelaySeconds,
+  getSnsNeuronAccount,
+  getSnsNeuronAvailableMaturity,
+  getSnsNeuronIdAsHexString,
+  getSnsNeuronStake,
+  getSnsNeuronStakedMaturity,
+  getSnsNeuronState,
+} from "$lib/utils/sns-neuron.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
+import type { SnsNeuron } from "@dfinity/sns";
 import {
   ICPToken,
   TokenAmountV2,
+  fromNullable,
   isNullish,
   nonNullish,
   secondsToDuration,
+  type Token,
 } from "@dfinity/utils";
 
 type Metadata = {
@@ -401,6 +413,77 @@ export const buildNeuronsDatasets = ({
   return [{ metadata, data }];
 };
 
+export const buildSnsNeuronsDatasets = ({
+  neurons,
+  i18n,
+  userPrincipal,
+}: {
+  neurons: Array<SnsNeuron & { governanceCanisterId: Principal; token: Token }>;
+  i18n: I18n;
+  userPrincipal: Principal;
+}): CsvDataset<NeuronsCsvData>[] => {
+  if (neurons.length === 0) return [];
+
+  const metadataDate = nanoSecondsToDateTime(nowInBigIntNanoSeconds());
+  const metadata = [
+    {
+      label: i18n.reporting.principal_account_id,
+      value: userPrincipal.toText(),
+    },
+    {
+      label: i18n.reporting.date_label,
+      value: metadataDate,
+    },
+  ];
+
+  const data = neurons.map((neuron) => {
+    const stake = TokenAmountV2.fromUlps({
+      amount: getSnsNeuronStake(neuron),
+      token: neuron.token,
+    });
+
+    const availableMaturity = getSnsNeuronAvailableMaturity(neuron);
+    const stakedMaturity = getSnsNeuronStakedMaturity(neuron);
+
+    const state = getSnsNeuronState(neuron);
+    const dissolveDelay = getSnsDissolveDelaySeconds(neuron) ?? 0n;
+    const dissolveDate =
+      state === NeuronState.Dissolving
+        ? getFutureDateFromDelayInSeconds(dissolveDelay)
+        : null;
+    const creationDate = secondsToDate(
+      Number(neuron.created_timestamp_seconds)
+    );
+
+    const neuronIdHex = getSnsNeuronIdAsHexString(neuron);
+    const neuronAccountId =
+      getSnsNeuronAccount({
+        governanceCanisterId: neuron.governanceCanisterId,
+        neuronId: fromNullable(neuron.id)?.id,
+      }) ?? "";
+
+    return {
+      controllerId: userPrincipal.toText(),
+      project: neuron.token.name,
+      symbol: neuron.token.symbol,
+      neuronId: neuronIdHex,
+      neuronAccountId,
+      stake: formatTokenV2({ value: stake, detailed: true }),
+      availableMaturity: formatMaturity(availableMaturity),
+      stakedMaturity: formatMaturity(stakedMaturity),
+      dissolveDelaySeconds: secondsToDuration({
+        seconds: dissolveDelay,
+        i18n: i18n.time,
+      }),
+      dissolveDate: dissolveDate ?? i18n.core.not_applicable,
+      creationDate,
+      state: i18n.neuron_state[getStateInfo(state).textKey],
+    };
+  });
+
+  return [{ metadata, data }];
+};
+
 export const convertPeriodToNanosecondRange = ({
   period,
   from,
@@ -419,9 +502,6 @@ export const convertPeriodToNanosecondRange = ({
     new Date(y, mZero, d).getTime();
 
   switch (period) {
-    case "all":
-      return {};
-
     case "year-to-date":
       return {
         from: toNanoseconds(startOfLocalDayMs(currentYear, 0, 1)),
@@ -465,4 +545,36 @@ export const buildFileName = ({
   const suffix =
     period === "custom" ? `_${period}_${from}_${to}` : `_${period}`;
   return `${prefix}${date}${suffix}`;
+};
+
+type SettledResult<T, R> =
+  | { item: T; status: "fulfilled"; value: R }
+  | { item: T; status: "rejected"; reason: unknown };
+
+export const mapPool = async <T, R>(
+  items: T[],
+  worker: (item: T) => Promise<R>,
+  concurrency = 5
+): Promise<SettledResult<T, R>[]> => {
+  const results = new Array<SettledResult<T, R>>(items.length);
+  let next = 0;
+
+  const run = async () => {
+    while (next < items.length) {
+      const idx = next++;
+
+      const item = items[idx];
+      try {
+        const value = await worker(item);
+        results[idx] = { item, status: "fulfilled", value };
+      } catch (reason) {
+        results[idx] = { item, status: "rejected", reason };
+      }
+    }
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, items.length) }, run)
+  );
+  return results;
 };

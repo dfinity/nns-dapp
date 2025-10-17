@@ -18,6 +18,7 @@ import { ballotVotingPower } from "$lib/utils/sns-proposals.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
 import type { Identity } from "@dfinity/agent";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuronId } from "@dfinity/sns";
@@ -1020,3 +1021,18 @@ export const totalDisbursingMaturity = ({
  */
 export const minimumAmountToDisburseMaturity = (fee: bigint): bigint =>
   BigInt(Math.ceil(Number(fee) / MATURITY_MODULATION_VARIANCE_PERCENTAGE));
+
+export const getSnsNeuronAccount = ({
+  governanceCanisterId,
+  neuronId,
+}: {
+  governanceCanisterId: Principal;
+  neuronId?: number[] | Uint8Array;
+}): string | undefined => {
+  if (isNullish(neuronId)) return undefined;
+
+  return encodeIcrcAccount({
+    owner: governanceCanisterId,
+    subaccount: neuronId,
+  });
+};
