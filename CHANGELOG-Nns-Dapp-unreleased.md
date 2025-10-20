@@ -14,11 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Export SNS neuron data in reporting section
-
 #### Changed
-
-- Improved validation for adding NNS neuron followings.
 
 #### Deprecated
 
