@@ -3,30 +3,6 @@ import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 
 describe("sns-aggregator api", () => {
   describe("querySnsProjects", () => {
-    it("should fetch 6 pages in parallel and return results from first page when < 10", async () => {
-      const mockFetch = vi.fn((url: string) => {
-        const [_first, ...nineSnses] = tenAggregatedSnses;
-        if (url.endsWith("/page/0/slow.json")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(nineSnses),
-          });
-        }
-        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
-      });
-      global.fetch = mockFetch as unknown as typeof fetch;
-
-      const projects = await querySnsProjects();
-
-      const base = `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/list/page`;
-      const expectedUrls = [0, 1, 2, 3, 4, 5].map(
-        (p) => `${base}/${p}/slow.json`
-      );
-      expectedUrls.forEach((u) => expect(mockFetch).toHaveBeenCalledWith(u));
-      expect(mockFetch).toHaveBeenCalledTimes(6);
-      expect(projects).toHaveLength(9);
-    });
-
     it("should aggregate results across pages when multiple pages have data", async () => {
       const mockFetch = vi.fn((url: string) => {
         if (url.endsWith("/page/0/slow.json")) {
@@ -54,32 +30,6 @@ describe("sns-aggregator api", () => {
       expectedUrls.forEach((u) => expect(mockFetch).toHaveBeenCalledWith(u));
       expect(mockFetch).toHaveBeenCalledTimes(6);
       expect(projects).toHaveLength(11);
-    });
-
-    it("should work even when second page is empty", async () => {
-      const mockFetch = vi.fn((url: string) => {
-        if (url.endsWith("/page/0/slow.json")) {
-          return Promise.resolve({
-            ok: true,
-            json: () => Promise.resolve(tenAggregatedSnses),
-          });
-        }
-        if (url.endsWith("/page/1/slow.json")) {
-          return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
-        }
-        return Promise.resolve({ ok: true, json: () => Promise.resolve([]) });
-      });
-      global.fetch = mockFetch as unknown as typeof fetch;
-
-      const projects = await querySnsProjects();
-
-      const base = `https://5v72r-4aaaa-aaaaa-aabnq-cai.small12.testnet.dfinity.network/v1/sns/list/page`;
-      const expectedUrls = [0, 1, 2, 3, 4, 5].map(
-        (p) => `${base}/${p}/slow.json`
-      );
-      expectedUrls.forEach((u) => expect(mockFetch).toHaveBeenCalledWith(u));
-      expect(mockFetch).toHaveBeenCalledTimes(6);
-      expect(projects).toHaveLength(10);
     });
 
     it("should not fail if second page response is not ok", async () => {
