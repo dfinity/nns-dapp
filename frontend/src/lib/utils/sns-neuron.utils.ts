@@ -17,10 +17,8 @@ import {
 import { ballotVotingPower } from "$lib/utils/sns-proposals.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
-import type { Identity } from "@icp-sdk/core/agent";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { NeuronState, Vote, type E8s, type NeuronInfo } from "@dfinity/nns";
-import type { Principal } from "@icp-sdk/core/principal";
 import type { SnsNeuronId } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
@@ -37,6 +35,8 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export const sortSnsNeuronsByStake = (neurons: SnsNeuron[]): SnsNeuron[] =>
   [...neurons].sort((a, b) =>
