@@ -49,7 +49,7 @@ describe("reporting service", () => {
       expect(spyGetTransactions).toHaveBeenCalledWith({
         accountIdentifier: mockAccountId,
         identity: mockSignInIdentity,
-        maxResults: 2000n,
+        maxResults: 50n,
         start: undefined,
       });
       expect(result).toEqual(mockTransactions);
@@ -85,13 +85,13 @@ describe("reporting service", () => {
       expect(spyGetTransactions).toHaveBeenNthCalledWith(1, {
         accountIdentifier: mockAccountId,
         identity: mockSignInIdentity,
-        maxResults: 2000n,
+        maxResults: 50n,
         start: undefined,
       });
       expect(spyGetTransactions).toHaveBeenNthCalledWith(2, {
         accountIdentifier: mockAccountId,
         identity: mockSignInIdentity,
-        maxResults: 2000n,
+        maxResults: 50n,
         start: 2n,
       });
     });
@@ -103,7 +103,7 @@ describe("reporting service", () => {
 
       spyGetTransactions.mockResolvedValue({
         transactions: mockTransactions,
-        oldestTxId: 2000n,
+        oldestTxId: 50n,
       });
 
       const result = await getAllTransactionsFromAccountAndIdentity({
@@ -111,8 +111,8 @@ describe("reporting service", () => {
         identity: mockSignInIdentity,
       });
 
-      expect(result?.length).toBe(50);
-      expect(spyGetTransactions).toHaveBeenCalledTimes(10);
+      expect(result?.length).toBe(250);
+      expect(spyGetTransactions).toHaveBeenCalledTimes(50);
     });
 
     it("should handle errors and return accumulated transactions", async () => {

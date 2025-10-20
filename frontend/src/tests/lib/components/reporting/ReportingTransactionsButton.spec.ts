@@ -82,11 +82,20 @@ describe("ReportingTransactionsButton", () => {
     {
       onTrigger,
       period,
-    }: { onTrigger?: () => void; period: ReportingPeriod } = { period: "all" }
+      customFrom,
+      customTo,
+    }: {
+      onTrigger?: () => void;
+      period: ReportingPeriod;
+      customFrom?: string;
+      customTo?: string;
+    } = { period: "year-to-date" }
   ) => {
     const { container } = render(ReportingTransactionsButton, {
       props: {
         period,
+        customFrom,
+        customTo,
       },
       events: {
         ...(nonNullish(onTrigger) && {
@@ -110,7 +119,7 @@ describe("ReportingTransactionsButton", () => {
     await po.click();
     await runResolvedPromises();
 
-    const expectedFileName = `icp_transactions_export_20231014_all`;
+    const expectedFileName = `icp_transactions_export_20231014_year-to-date`;
     expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
       expect.objectContaining({
         fileName: expectedFileName,
@@ -235,7 +244,9 @@ describe("ReportingTransactionsButton", () => {
     expect(spyExportDataService).toHaveBeenCalledWith({
       entities: expectation,
       identity: mockIdentity,
-      range: {},
+      range: {
+        from: 1672531200000000000n,
+      },
     });
   });
 
@@ -276,7 +287,9 @@ describe("ReportingTransactionsButton", () => {
     expect(spyExportDataService).toHaveBeenCalledWith({
       entities: expectation,
       identity: mockIdentity,
-      range: {},
+      range: {
+        from: 1672531200000000000n,
+      },
     });
   });
 
@@ -396,5 +409,136 @@ describe("ReportingTransactionsButton", () => {
     await runResolvedPromises();
 
     expect(get(busyStore)).toEqual([]);
+  });
+
+  describe("Button state based on custom period", () => {
+    it("should be enabled when period is not custom", async () => {
+      const po = renderComponent({ period: "year-to-date" });
+      expect(await po.isEnabled()).toBe(true);
+    });
+
+    it("should be enabled when period is custom and both dates are provided", async () => {
+      const po = renderComponent({
+        period: "custom",
+        customFrom: "2024-01-01",
+        customTo: "2024-01-31",
+      });
+      expect(await po.isEnabled()).toBe(true);
+    });
+
+    it("should be disabled when period is custom and values are missing", async () => {
+      let po = renderComponent({ period: "custom" });
+      expect(await po.isDisabled()).toBe(true);
+
+      po = renderComponent({
+        period: "custom",
+        customTo: "2024-01-31",
+      });
+      expect(await po.isDisabled()).toBe(true);
+
+      po = renderComponent({
+        period: "custom",
+        customFrom: "2024-01-01",
+      });
+      expect(await po.isDisabled()).toBe(true);
+    });
+  });
+
+  describe("Custom date range values", () => {
+    it("should pass correct date range to convertPeriodToNanosecondRange for custom period", async () => {
+      const NANOS_IN_MS = BigInt(1_000_000);
+      const fromDate = "2024-01-01";
+      const toDate = "2024-01-31";
+
+      setAccountsForTesting({
+        main: mockMainAccount,
+      });
+
+      const po = renderComponent({
+        period: "custom",
+        customFrom: fromDate,
+        customTo: toDate,
+      });
+
+      expect(spyExportDataService).toBeCalledTimes(0);
+
+      await po.click();
+      await runResolvedPromises();
+
+      const expectedFromNanos =
+        BigInt(new Date("2024-01-01T00:00:00.000Z").getTime()) * NANOS_IN_MS;
+      const expectedToNanos =
+        BigInt(new Date("2024-02-01T00:00:00.000Z").getTime()) * NANOS_IN_MS;
+
+      expect(spyExportDataService).toHaveBeenCalledWith({
+        entities: expect.any(Array),
+        identity: mockIdentity,
+        range: {
+          from: expectedFromNanos,
+          to: expectedToNanos,
+        },
+      });
+    });
+
+    it("should handle empty custom dates gracefully", async () => {
+      setAccountsForTesting({
+        main: mockMainAccount,
+      });
+
+      const po = renderComponent({
+        period: "custom",
+        customFrom: "",
+        customTo: "",
+      });
+
+      // Should be disabled due to empty dates
+      expect(await po.isDisabled()).toBe(true);
+    });
+  });
+
+  describe("Filename generation", () => {
+    it("should generate correct filename for year-to-date period", async () => {
+      const po = renderComponent({ period: "year-to-date" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName: "icp_transactions_export_20231014_year-to-date",
+        })
+      );
+    });
+
+    it("should generate correct filename for last-year period", async () => {
+      const po = renderComponent({ period: "last-year" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName: "icp_transactions_export_20231014_last-year",
+        })
+      );
+    });
+
+    it("should generate correct filename for custom period with dates", async () => {
+      const po = renderComponent({
+        period: "custom",
+        customFrom: "2024-01-01",
+        customTo: "2024-01-31",
+      });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName:
+            "icp_transactions_export_20231014_custom_2024-01-01_2024-01-31",
+        })
+      );
+    });
   });
 });

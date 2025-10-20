@@ -118,9 +118,9 @@
         "DIDC_VERSION": "didc 0.4.0",
         "POCKETIC_VERSION": "3.0.1",
         "CARGO_SORT_VERSION": "1.0.9",
-        "SNSDEMO_RELEASE": "release-2025-09-24",
-        "IC_COMMIT_FOR_PROPOSALS": "release-2025-09-19_10-17-base",
-        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-09-25_09-52-base"
+        "SNSDEMO_RELEASE": "release-2025-10-15",
+        "IC_COMMIT_FOR_PROPOSALS": "release-2025-10-17_03-17-sev-prep",
+        "IC_COMMIT_FOR_SNS_AGGREGATOR": "release-2025-10-09_03-15-base"
       },
       "packtool": ""
     }

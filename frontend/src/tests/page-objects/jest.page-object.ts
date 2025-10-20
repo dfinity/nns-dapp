@@ -148,11 +148,14 @@ export class JestPageObjectElement implements PageObjectElement {
     await userEvent.type(element, input);
   }
 
-  async input(value: string): Promise<void> {
+  async input(value: string, type?: "input" | "change"): Promise<void> {
     await this.waitFor();
     // Svelte generates code for listening to the `input` event, not the `change` event in input fields.
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    await fireEvent.input(this.getElement(), { target: { value } });
+    // but input type="date" requires the change event to trigger the binding
+    const eventMethod = type === "change" ? fireEvent.change : fireEvent.input;
+
+    await eventMethod(this.getElement(), { target: { value } });
   }
 
   async typeText(text: string): Promise<void> {

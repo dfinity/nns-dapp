@@ -64,7 +64,10 @@ impl fmt::Debug for AccountsStore {
 #[cfg(test)]
 impl PartialEq for AccountsStore {
     fn eq(&self, other: &Self) -> bool {
-        self.accounts_db.range(..).eq(other.accounts_db.range(..)) && self.accounts_db_stats == other.accounts_db_stats
+        self.accounts_db
+            .range(..)
+            .map(|entry| entry.into_pair())
+            .eq(other.accounts_db.range(..).map(|entry| entry.into_pair()))
     }
 }
 #[cfg(test)]
@@ -96,6 +99,9 @@ impl Storable for Account {
     const BOUND: Bound = Bound::Unbounded;
     fn to_bytes(&self) -> Cow<'_, [u8]> {
         candid::encode_one(self).expect("Failed to serialize account").into()
+    }
+    fn into_bytes(self) -> Vec<u8> {
+        candid::encode_one(&self).expect("Failed to serialize account")
     }
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
         candid::decode_one(&bytes).expect("Failed to parse account from store.")

@@ -6,6 +6,7 @@ export type NewTransaction = {
   sourceAccount: Account;
   destinationAddress: string;
   amount: number;
+  memo?: string;
 };
 
 export interface TransactionInit {
@@ -84,6 +85,7 @@ export interface UiTransaction {
   // Always positive.
   tokenAmount: TokenAmount | TokenAmountV2;
   timestamp?: Date;
+  memoText?: string;
 }
 
 export enum TransactionNetwork {

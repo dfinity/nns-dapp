@@ -90,6 +90,7 @@ describe("Followee", () => {
         name: neuronName,
         description: "test-description",
         links: undefined,
+        committed_topics: undefined,
       },
     ]);
 
@@ -145,6 +146,7 @@ describe("Followee", () => {
           name: neuronName,
           description: "test-description",
           links: undefined,
+          committed_topics: undefined,
         },
       ]);
 

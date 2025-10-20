@@ -1,4 +1,4 @@
-//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-09-25_09-52-base/rs/sns/governance/canister/governance.did>
+//! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-10-09_03-15-base/rs/sns/governance/canister/governance.did>
 type Account = record {
   owner : opt principal;
   subaccount : opt Subaccount;
@@ -289,7 +289,7 @@ type TreasuryMetrics = record {
 };
 
 type VotingPowerMetrics = record {
-  governance_total_potential_voting_power : opt nat64; 
+  governance_total_potential_voting_power : opt nat64;
 
   // When the metrics were last updated.
   timestamp_seconds : opt nat64;

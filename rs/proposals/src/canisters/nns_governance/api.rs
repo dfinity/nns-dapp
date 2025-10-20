@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-09-19_10-17-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-10-17_03-17-sev-prep/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -295,8 +295,30 @@ pub struct Tally {
     pub timestamp_seconds: u64,
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub enum TopicToFollow {
+    Kyc,
+    ServiceNervousSystemManagement,
+    ApiBoundaryNodeManagement,
+    ApplicationCanisterManagement,
+    SubnetRental,
+    NeuronManagement,
+    NodeProviderRewards,
+    SubnetManagement,
+    ExchangeRate,
+    CatchAll,
+    NodeAdmin,
+    IcOsVersionElection,
+    ProtocolCanisterManagement,
+    NetworkEconomics,
+    IcOsVersionDeployment,
+    ParticipantManagement,
+    Governance,
+    SnsAndCommunityFund,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct KnownNeuronData {
     pub name: String,
+    pub committed_topics: Option<Vec<Option<TopicToFollow>>>,
     pub description: Option<String>,
     pub links: Option<Vec<String>>,
 }
@@ -851,6 +873,11 @@ pub enum Result4 {
     Err(GovernanceError),
 }
 #[derive(Serialize, CandidType, Deserialize)]
+pub struct GetNeuronIndexRequest {
+    pub page_size: Option<u32>,
+    pub exclusive_start_neuron_id: Option<NeuronId>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronInfo {
     pub dissolve_delay_seconds: u64,
     pub recent_ballots: Vec<BallotInfo>,
@@ -867,6 +894,15 @@ pub struct NeuronInfo {
     pub known_neuron_data: Option<KnownNeuronData>,
     pub voting_power: u64,
     pub age_seconds: u64,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct NeuronIndexData {
+    pub neurons: Vec<NeuronInfo>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum GetNeuronIndexResult {
+    Ok(NeuronIndexData),
+    Err(GovernanceError),
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub enum Result5 {
@@ -925,6 +961,31 @@ pub struct ProposalInfo {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct ListKnownNeuronsResponse {
     pub known_neurons: Vec<KnownNeuron>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct ListNeuronVotesRequest {
+    pub before_proposal: Option<ProposalId>,
+    pub limit: Option<u64>,
+    pub neuron_id: Option<NeuronId>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum Vote {
+    No,
+    Yes,
+    Unspecified,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct NeuronVote {
+    pub vote: Option<Vote>,
+    pub proposal_id: Option<ProposalId>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub enum ListNeuronVotesResponse {
+    Ok {
+        votes: Option<Vec<NeuronVote>>,
+        all_finalized_before_proposal: Option<ProposalId>,
+    },
+    Err(GovernanceError),
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronSubaccount {
@@ -1197,6 +1258,9 @@ impl Service {
     pub async fn get_neuron_ids(&self) -> CallResult<(Vec<u64>,)> {
         ic_cdk::call(self.0, "get_neuron_ids", ()).await
     }
+    pub async fn get_neuron_index(&self, arg0: GetNeuronIndexRequest) -> CallResult<(GetNeuronIndexResult,)> {
+        ic_cdk::call(self.0, "get_neuron_index", (arg0,)).await
+    }
     pub async fn get_neuron_info(&self, arg0: u64) -> CallResult<(Result5,)> {
         ic_cdk::call(self.0, "get_neuron_info", (arg0,)).await
     }
@@ -1223,6 +1287,9 @@ impl Service {
     }
     pub async fn list_known_neurons(&self) -> CallResult<(ListKnownNeuronsResponse,)> {
         ic_cdk::call(self.0, "list_known_neurons", ()).await
+    }
+    pub async fn list_neuron_votes(&self, arg0: ListNeuronVotesRequest) -> CallResult<(ListNeuronVotesResponse,)> {
+        ic_cdk::call(self.0, "list_neuron_votes", (arg0,)).await
     }
     pub async fn list_neurons(&self, arg0: ListNeurons) -> CallResult<(ListNeuronsResponse,)> {
         ic_cdk::call(self.0, "list_neurons", (arg0,)).await

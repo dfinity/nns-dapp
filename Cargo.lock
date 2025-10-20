@@ -2121,7 +2121,7 @@ dependencies = [
  "ic-ledger-canister-core",
  "ic-ledger-core",
  "ic-metrics-encoder",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icrc-ledger-types",
  "num-traits",
  "scopeguard",
@@ -2150,7 +2150,7 @@ dependencies = [
  "ic-ledger-core",
  "ic-ledger-hash-of",
  "ic-metrics-encoder",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icrc-ledger-types",
  "leb128",
  "minicbor",
@@ -2166,7 +2166,7 @@ source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1d
 dependencies = [
  "candid",
  "ic-ledger-core",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "minicbor",
  "num-traits",
  "serde",
@@ -2186,7 +2186,7 @@ dependencies = [
  "ic-ledger-hash-of",
  "ic-limits",
  "ic-management-canister-types-private",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-utils",
  "serde",
 ]
@@ -2198,7 +2198,7 @@ source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1d
 dependencies = [
  "candid",
  "ic-ledger-hash-of",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "minicbor",
  "num-traits",
  "serde",
@@ -2222,9 +2222,9 @@ source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1d
 
 [[package]]
 name = "ic-management-canister-types"
-version = "0.1.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eadff40906491c8c61a3c886cce4ee02f48a4798684d8a10e4a14891a217a284"
+checksum = "8b5a939a84adbc30769d47e5de72c7b9f3713284e3ac87df4eb24795677a8df8"
 dependencies = [
  "candid",
  "serde",
@@ -2284,7 +2284,7 @@ version = "0.9.0"
 source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1db8f933fdadc81a90e7db2389b081e21263a9b6"
 dependencies = [
  "ic-crypto-sha2",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "lazy_static",
  "prost",
 ]
@@ -2339,7 +2339,7 @@ dependencies = [
  "ic-metrics-encoder",
  "ic-nervous-system-runtime",
  "ic-nns-constants",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icp-ledger",
  "icrc-ledger-types",
  "json5",
@@ -2383,7 +2383,7 @@ version = "0.0.1"
 source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1db8f933fdadc81a90e7db2389b081e21263a9b6"
 dependencies = [
  "ic-base-types",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic_principal",
  "maplit",
  "num-traits",
@@ -2559,7 +2559,7 @@ dependencies = [
  "ic-protobuf",
  "ic-registry-keys",
  "ic-registry-transport",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-types",
  "lazy_static",
  "num-traits",
@@ -2631,7 +2631,7 @@ dependencies = [
  "ic-sns-root",
  "ic-sns-swap",
  "ic-sns-wasm",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-types",
  "ic-utils",
  "icp-ledger",
@@ -2770,7 +2770,7 @@ dependencies = [
  "ic-cdk",
  "ic-nervous-system-chunks",
  "ic-registry-transport",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "prost",
 ]
 
@@ -3082,7 +3082,7 @@ dependencies = [
  "ic-nervous-system-runtime",
  "ic-neurons-fund",
  "ic-sns-governance",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-utils",
  "icp-ledger",
  "icrc-ledger-types",
@@ -3151,6 +3151,15 @@ name = "ic-stable-structures"
 version = "0.6.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4d30d4cf17aff1024e13133897048bcba580e063c9000571ab766ca37e2996f4"
+dependencies = [
+ "ic_principal",
+]
+
+[[package]]
+name = "ic-stable-structures"
+version = "0.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ee3372ddc0cf2a747fc26ce2d075a240ed6bfab151e63bc70109e8967f7ce6f"
 dependencies = [
  "ic_principal",
 ]
@@ -3309,7 +3318,7 @@ dependencies = [
  "ic-ledger-core",
  "ic-ledger-hash-of",
  "ic-nns-constants",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icrc-ledger-types",
  "lazy_static",
  "on_wire",
@@ -3362,7 +3371,7 @@ dependencies = [
  "candid",
  "crc32fast",
  "hex",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "icrc-cbor",
  "itertools 0.12.1",
  "minicbor",
@@ -3931,7 +3940,7 @@ checksum = "650eef8c711430f1a879fdd01d4745a7deea475becfb90269c06775983bbf086"
 
 [[package]]
 name = "nns-dapp"
-version = "2.0.128"
+version = "2.0.130"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -3952,7 +3961,7 @@ dependencies = [
  "ic-nns-constants",
  "ic-nns-governance",
  "ic-sns-swap",
- "ic-stable-structures",
+ "ic-stable-structures 0.7.2",
  "ic_principal",
  "icp-ledger",
  "itertools 0.14.0",
@@ -4445,7 +4454,7 @@ dependencies = [
 
 [[package]]
 name = "proposals"
-version = "2.0.128"
+version = "2.0.130"
 dependencies = [
  "anyhow",
  "candid",
@@ -4474,9 +4483,9 @@ dependencies = [
 
 [[package]]
 name = "proptest"
-version = "1.7.0"
+version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6fcdab19deb5195a31cf7726a210015ff1496ba1464fd42cb4f537b8b01b471f"
+checksum = "2bb0be07becd10686a0bb407298fb425360a5c44a663774406340c59a22de4ce"
 dependencies = [
  "bit-set 0.8.0",
  "bit-vec 0.8.0",
@@ -4765,7 +4774,7 @@ dependencies = [
  "ic-registry-subnet-features",
  "ic-registry-subnet-type",
  "ic-registry-transport",
- "ic-stable-structures",
+ "ic-stable-structures 0.6.9",
  "ic-types",
  "ic-utils",
  "idna",
@@ -5172,7 +5181,7 @@ dependencies = [
 
 [[package]]
 name = "sns_aggregator"
-version = "2.0.128"
+version = "2.0.130"
 dependencies = [
  "anyhow",
  "base64 0.22.1",

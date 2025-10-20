@@ -25,6 +25,7 @@ describe("ICManagementCanister", () => {
       const settings = {
         wasm_memory_threshold: 1_000_000_000n,
         freezing_threshold: 2n,
+        environment_variables: [],
         controllers: [
           Principal.fromText(
             "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe"

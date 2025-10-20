@@ -98,12 +98,9 @@ export const getAllTransactionsFromAccountAndIdentity = async ({
   range?: TransactionsDateRange;
 }): Promise<TransactionWithId[] | undefined> => {
   // Based on
-  //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/index/src/lib.rs#L31
-  //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/index/src/main.rs#L593
-  //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/src/lib.rs#L1237
-  //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/src/lib.rs#L45
-  const pageSize = 2000n;
-  const maxNumberOfPages = 10;
+  //   https://github.com/dfinity/ic/blob/master/rs/ledger_suite/icp/src/lib.rs#L50
+  const pageSize = 50n;
+  const maxNumberOfPages = 50;
 
   try {
     // TODO: Decide what to do if we reach the maximum number of iterations.

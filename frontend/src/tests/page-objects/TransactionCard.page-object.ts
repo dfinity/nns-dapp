@@ -42,6 +42,10 @@ export class TransactionCardPo extends BasePageObject {
     return this.getAmountDisplayPo().getAmount();
   }
 
+  getMemo(): Promise<string> {
+    return this.getText("transaction-memo");
+  }
+
   async hasSentIcon(): Promise<boolean> {
     return this.getTransactionIconPo().isSentIcon();
   }

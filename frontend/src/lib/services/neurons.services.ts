@@ -705,38 +705,18 @@ const refreshVotingPower = async (neuronId: NeuronId): Promise<void> => {
   // Should not happen
   if (isNullish(neuron)) throw new Error("No neuron in store");
 
-  const isHWControlled = isNeuronControlledByHardwareWallet({
-    neuron,
-    accounts,
-  });
-  const isHotkeyControlled = isHotKeyControllable({
-    neuron,
-    identity: get(authStore).identity,
-  });
-
-  if (isHWControlled || isHotkeyControlled) {
-    // This is a workaround for Ledger device neurons and hotkey neurons
-    // because the `refreshVotingPower` API does not currently support them.
-    const identity: Identity = await getAuthenticatedIdentity();
-    // It doesn't matter which topic to use to confirm the current state of the neuron
-    // (except NeuronManagement, which can only be handled by controllers).
-    const topic = Topic.Governance;
-    const followees =
-      followeesByTopic({
-        neuron,
-        topic,
-      }) ?? [];
-    await governanceApiService.setFollowees({
-      identity,
-      neuronId: neuron.neuronId,
-      topic,
-      followees,
-    });
-  } else {
-    const identity: Identity =
-      await getIdentityOfControllerByNeuronId(neuronId);
-    await governanceApiService.refreshVotingPower({ neuronId, identity });
-  }
+  const identity: Identity =
+    isNeuronControlledByHardwareWallet({
+      neuron,
+      accounts,
+    }) ||
+    isHotKeyControllable({
+      neuron,
+      identity: get(authStore).identity,
+    })
+      ? await getAuthenticatedIdentity()
+      : await getIdentityOfControllerByNeuronId(neuronId);
+  await governanceApiService.refreshVotingPower({ neuronId, identity });
 };
 
 export const refreshVotingPowerForNeurons = async ({
@@ -907,31 +887,27 @@ const setFolloweesHelper = async ({
   topic: Topic;
   followees: NeuronId[];
 }) => {
-  try {
-    if (neuron === undefined) {
-      throw new NotFoundError(
-        "Neuron not found in store. We can't check authorization to set followees."
-      );
-    }
-    // We try to control by hotkey by default
-    let identity: Identity = await getAuthenticatedIdentity();
-    if (!isHotKeyControllable({ neuron, identity })) {
-      identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
-    }
-    // ManageNeuron topic followes can only be handled by controllers
-    if (topic === Topic.NeuronManagement) {
-      identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
-    }
-    await governanceApiService.setFollowees({
-      identity,
-      neuronId: neuron.neuronId,
-      topic,
-      followees,
-    });
-    await getAndLoadNeuron(neuron.neuronId);
-  } catch (err) {
-    toastsShow(mapNeuronErrorToToastMessage(err));
+  if (neuron === undefined) {
+    throw new NotFoundError(
+      "Neuron not found in store. We can't check authorization to set followees."
+    );
   }
+  // We try to control by hotkey by default
+  let identity: Identity = await getAuthenticatedIdentity();
+  if (!isHotKeyControllable({ neuron, identity })) {
+    identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
+  }
+  // ManageNeuron topic followes can only be handled by controllers
+  if (topic === Topic.NeuronManagement) {
+    identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
+  }
+  await governanceApiService.setFollowees({
+    identity,
+    neuronId: neuron.neuronId,
+    topic,
+    followees,
+  });
+  await getAndLoadNeuron(neuron.neuronId);
 };
 
 export const addFollowee = async ({

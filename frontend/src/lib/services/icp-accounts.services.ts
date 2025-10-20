@@ -45,6 +45,12 @@ import {
 import { isForceCallStrategy } from "$lib/utils/call.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import {
+  encodeMemoToIcp,
+  encodeMemoToIcrc1,
+  isValidIcpMemo,
+  isValidIcrc1Memo,
+} from "$lib/utils/icp-transactions.utils";
+import {
   cancelPoll,
   poll,
   pollingCancelled,
@@ -288,6 +294,7 @@ export const transferICP = async ({
   sourceAccount,
   destinationAddress: to,
   amount,
+  memo,
 }: NewTransaction): Promise<{ success: boolean; err?: string }> => {
   try {
     const { identifier, subAccount } = sourceAccount;
@@ -309,6 +316,17 @@ export const transferICP = async ({
 
     const feeE8s = get(mainTransactionFeeE8sStore);
 
+    // Validation happens at the UI level. No invalid memo should reach this point.
+    const icpMemo =
+      validIcpAddress && nonNullish(memo) && isValidIcpMemo(memo)
+        ? encodeMemoToIcp(memo)
+        : undefined;
+
+    const icrc1Memo =
+      validIcrcAddress && nonNullish(memo) && isValidIcrc1Memo(memo)
+        ? encodeMemoToIcrc1(memo)
+        : undefined;
+
     await (validIcrcAddress
       ? sendIcpIcrc1({
           identity,
@@ -316,6 +334,7 @@ export const transferICP = async ({
           fromSubAccount: subAccount && new Uint8Array(subAccount),
           amount: tokenAmount,
           fee: feeE8s,
+          icrc1Memo,
         })
       : sendICP({
           identity,
@@ -323,6 +342,7 @@ export const transferICP = async ({
           fromSubAccount: subAccount,
           amount: tokenAmount.toE8s(),
           fee: feeE8s,
+          memo: icpMemo,
         }));
 
     // Transfer can be to one of the user's account.

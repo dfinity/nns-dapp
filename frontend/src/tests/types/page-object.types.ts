@@ -30,7 +30,7 @@ export interface PageObjectElement {
   getClasses(): Promise<string[] | null>;
   click(): Promise<void>;
   keyDown(key: string, specialCharacters?: ("meta" | "ctrl")[]): Promise<void>;
-  input(value: string): Promise<void>;
+  input(value: string, type?: "input" | "change"): Promise<void>;
   isChecked(): Promise<boolean>;
   typeText(text: string): Promise<void>;
   selectOption(option: string): Promise<void>;
