@@ -3,9 +3,10 @@
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { nonNullish } from "@dfinity/utils";
+  import type { NeuronId } from "@dfinity/nns";
 
   type Props = {
-    neuronId: bigint;
+    neuronId: NeuronId;
     onRemoveClick?: () => void;
   };
 
