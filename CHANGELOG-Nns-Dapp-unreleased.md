@@ -14,7 +14,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Added explanation for disabled autostake control on hotkey-managed neurons
+- Added explanation for disabled auto-stake control on hotkey-managed neurons
 
 #### Changed
 
