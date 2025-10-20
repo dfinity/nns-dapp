@@ -13,8 +13,8 @@
     value: ReportingTransactionsSource;
     label: string;
   }> = [
-    { value: "nns", label: $i18n.reporting.neurons_source_nns },
-    { value: "ck", label: $i18n.tokens.projects_header_ck },
+    { value: "nns", label: $i18n.reporting.transactions_source_nns },
+    { value: "ck", label: $i18n.reporting.transactions_source_ck },
   ];
 </script>
 
