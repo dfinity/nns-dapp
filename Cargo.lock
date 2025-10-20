@@ -2222,9 +2222,9 @@ source = "git+https://github.com/dfinity/ic?rev=release-2025-08-14_03-27-base#1d
 
 [[package]]
 name = "ic-management-canister-types"
-version = "0.1.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eadff40906491c8c61a3c886cce4ee02f48a4798684d8a10e4a14891a217a284"
+checksum = "8b5a939a84adbc30769d47e5de72c7b9f3713284e3ac87df4eb24795677a8df8"
 dependencies = [
  "candid",
  "serde",
