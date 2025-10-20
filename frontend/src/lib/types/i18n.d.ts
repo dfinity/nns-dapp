@@ -231,6 +231,8 @@ interface I18nReporting {
   transactions_title: string;
   transactions_description: string;
   transactions_download: string;
+  transactions_source_nns: string;
+  transactions_source_ck: string;
   busy_screen: string;
   busy_screen_sns_getting_neurons: string;
   principal_account_id: string;
