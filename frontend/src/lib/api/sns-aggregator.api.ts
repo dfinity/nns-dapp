@@ -36,23 +36,18 @@ export const queryParallelSnsAggregator = async (): Promise<CachedSnsDto[]> => {
   const results = await Promise.all(pagePromises);
   const allProjects = results.flat();
 
-  if (allProjects.length === 0) {
-    throw new Error("Error loading SNS projects from aggregator canister");
-  }
+  if (allProjects.length === 0) throw new Error("Error loading SNS projects");
+
   return allProjects;
 };
 
 export const querySnsProjects = async (): Promise<CachedSnsDto[]> => {
   logWithTimestamp("Loading SNS projects from aggregator canister...");
-  try {
-    const data: CachedSnsDto[] = await queryParallelSnsAggregator();
 
-    logWithTimestamp(
-      `Loading SNS projects from aggregator canister completed. Loaded ${data.length} projects.`
-    );
-    return data;
-  } catch (err) {
-    console.error("Error converting data", err);
-    throw new Error("Error converting data from aggregator canister");
-  }
+  const data: CachedSnsDto[] = await queryParallelSnsAggregator();
+
+  logWithTimestamp(
+    `Loading SNS projects from aggregator canister completed. Loaded ${data.length} projects.`
+  );
+  return data;
 };
