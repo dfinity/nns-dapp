@@ -1272,7 +1272,9 @@ fn set_address_book_too_many() {
 
     assert_eq!(
         store.set_address_book(principal, AddressBook { named_addresses },),
-        SetAddressBookResponse::TooManyNamedAddresses { limit: MAX_NAMED_ADDRESSES }
+        SetAddressBookResponse::TooManyNamedAddresses {
+            limit: MAX_NAMED_ADDRESSES
+        }
     );
 }
 
