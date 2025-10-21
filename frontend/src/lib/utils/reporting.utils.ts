@@ -12,6 +12,7 @@ import {
 } from "$lib/utils/date.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mapIcpTransactionToReport } from "$lib/utils/icp-transactions.utils";
+import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import {
   formatMaturity,
   getStateInfo,
@@ -35,6 +36,7 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
+import { AccountTransactionType } from "$lib/types/transaction";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -337,6 +339,68 @@ export const buildTransactionsDatasets = ({
       }),
     };
   });
+};
+
+export type IcrcTransactionsCsvData = {
+  id: string;
+  project: string;
+  symbol: string;
+  accountId: string;
+  to: string | undefined;
+  from: string | undefined;
+  type: string;
+  amount: string;
+  timestamp: string;
+};
+
+export const buildIcrcTransactionsDataset = ({
+  account,
+  token,
+  transactions,
+  i18n,
+}: {
+  account: { identifier: string; balanceUlps: bigint; name?: string };
+  token: Token;
+  transactions: IcrcTransactionWithId[];
+  i18n: I18n;
+}): CsvDataset<IcrcTransactionsCsvData> => {
+  const amount = TokenAmountV2.fromUlps({ amount: account.balanceUlps, token });
+  const metadata: Metadata[] = [
+    { label: i18n.reporting.account_id, value: account.identifier },
+    ...(account.name
+      ? [{ label: i18n.reporting.account_name, value: account.name }]
+      : []),
+    {
+      label: replacePlaceholders(i18n.reporting.balance, {
+        $tokenSymbol: token.symbol,
+      }),
+      value: formatTokenV2({ value: amount, detailed: true }),
+    },
+    {
+      label: i18n.reporting.date_label,
+      value: nanoSecondsToDateTime(nowInBigIntNanoSeconds()),
+    },
+  ];
+
+  const data: IcrcTransactionsCsvData[] = transactions.map((tx) => {
+    const timestamp = nanoSecondsToDateTime(tx.transaction.timestamp);
+    return {
+      id: tx.id.toString(),
+      project: token.name,
+      symbol: token.symbol,
+      accountId: account.identifier,
+      to: undefined,
+      from: undefined,
+      type: transactionName({ type: AccountTransactionType.Unspecified, i18n }),
+      amount: formatTokenV2({
+        value: TokenAmountV2.fromUlps({ amount: 0n, token }),
+        detailed: true,
+      }),
+      timestamp,
+    };
+  });
+
+  return { metadata, data };
 };
 
 export type NeuronsCsvData = {
