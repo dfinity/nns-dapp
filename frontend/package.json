@@ -72,9 +72,9 @@
   "type": "module",
   "dependencies": {
     "@dfinity/gix-components": "next",
-    "@dfinity/utils": "^4.0.0-next-2025-10-21.2",
+    "@dfinity/utils": "^4.0.0-next-2025-10-21.4",
     "@icp-sdk/auth": "^4.1.1",
-    "@icp-sdk/canisters": "next",
+    "@icp-sdk/canisters": "^0.0.1-next-2025-10-21.3",
     "@icp-sdk/core": "^4.1.1",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.8",
     "@ledgerhq/hw-transport-webhid": "^6.27.8",

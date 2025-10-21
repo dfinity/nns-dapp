@@ -7,19 +7,19 @@
     type IcrcAccount,
   } from "@icp-sdk/canisters/ledger/icrc";
   import type {
-    Account,
-    DisburseMaturityInProgress,
-  } from "@icp-sdk/canisters/sns/candid/sns_governance";
+    SnsAccount,
+    SnsDisburseMaturityInProgress,
+  } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 
-  export let disbursement: DisburseMaturityInProgress;
+  export let disbursement: SnsDisburseMaturityInProgress;
 
   let dateTime: string;
   $: dateTime = secondsToDateTime(
     disbursement.timestamp_of_disbursement_seconds
   );
 
-  let account: Account;
+  let account: SnsAccount;
   $: account = fromDefinedNullable(disbursement.account_to_disburse_to);
 
   let destination: string;

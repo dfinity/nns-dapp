@@ -12,8 +12,8 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
+import type { RewardEvent } from "@icp-sdk/canisters/nns";
 import { NeuronVisibility, Topic, Vote } from "@icp-sdk/canisters/nns";
-import type { RewardEvent } from "@icp-sdk/canisters/nns/candid/governance";
 import type { Mock } from "vitest";
 
 vi.mock("$lib/api/governance.api");

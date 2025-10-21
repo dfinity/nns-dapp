@@ -80,7 +80,10 @@ import {
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { NeuronState, Vote, type NeuronInfo } from "@icp-sdk/canisters/nns";
-import type { SnsNervousSystemParameters } from "@icp-sdk/canisters/sns";
+import type {
+  SnsNervousSystemParameters,
+  SnsNeuronPermission,
+} from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsVote,
@@ -89,7 +92,6 @@ import {
   type SnsNeuron,
   type SnsProposalData,
 } from "@icp-sdk/canisters/sns";
-import type { NeuronPermission } from "@icp-sdk/canisters/sns/candid/sns_governance";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 
@@ -124,7 +126,7 @@ const permissionsWithTypeVote = [
     permission_type: Int32Array.from([
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
     ]),
-  } as NeuronPermission,
+  } as SnsNeuronPermission,
 ];
 const testSnsNeuronA: SnsNeuron = {
   ...mockSnsNeuron,

@@ -21,8 +21,8 @@ import {
   SnsSwapLifecycle,
   SnsVote,
   type SnsBallot,
+  type SnsNeuronPermission,
 } from "@icp-sdk/canisters/sns";
-import type { NeuronPermission } from "@icp-sdk/canisters/sns/candid/sns_governance";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -72,7 +72,7 @@ describe("SnsVotingCard", () => {
       permission_type: Int32Array.from([
         SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
       ]),
-    } as NeuronPermission,
+    } as SnsNeuronPermission,
   ];
 
   const testNeurons: SnsNeuron[] = [
