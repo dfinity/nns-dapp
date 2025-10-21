@@ -1182,6 +1182,111 @@ fn get_fav_projects_account_not_found() {
 }
 
 #[test]
+fn set_and_get_address_book() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let account_id = "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f".to_string();
+    let name = "Alice's Account".to_string();
+
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+
+    let named_address = NamedAddress {
+        account_id: account_id.clone(),
+        name: name.clone(),
+    };
+
+    assert_eq!(
+        store.set_address_book(
+            principal,
+            AddressBook {
+                named_addresses: vec![named_address.clone()],
+            },
+        ),
+        SetAddressBookResponse::Ok
+    );
+
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook {
+            named_addresses: vec![named_address],
+        })
+    );
+}
+
+fn get_unique_named_addresses(count: i32) -> Vec<NamedAddress> {
+    (0..count)
+        .map(|i| NamedAddress {
+            account_id: format!("account_id_{}", i),
+            name: format!("Name {}", i),
+        })
+        .collect()
+}
+
+#[test]
+fn set_and_get_max_named_addresses() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+
+    let named_addresses = get_unique_named_addresses(MAX_NAMED_ADDRESSES);
+
+    assert_eq!(
+        store.set_address_book(
+            principal,
+            AddressBook {
+                named_addresses: named_addresses.clone()
+            },
+        ),
+        SetAddressBookResponse::Ok
+    );
+
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook { named_addresses })
+    );
+}
+
+#[test]
+fn set_address_book_account_not_found() {
+    let mut store = setup_test_store();
+    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    assert_eq!(
+        store.set_address_book(non_existing_principal, AddressBook::default()),
+        SetAddressBookResponse::AccountNotFound
+    );
+}
+
+#[test]
+fn set_address_book_too_many() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    let named_addresses = get_unique_named_addresses(MAX_NAMED_ADDRESSES + 1);
+
+    assert_eq!(
+        store.set_address_book(principal, AddressBook { named_addresses },),
+        SetAddressBookResponse::TooManyNamedAddresses { limit: MAX_NAMED_ADDRESSES }
+    );
+}
+
+#[test]
+fn get_address_book_account_not_found() {
+    let store = setup_test_store();
+    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    assert_eq!(
+        store.get_address_book(non_existing_principal),
+        GetAddressBookResponse::AccountNotFound
+    );
+}
+
+#[test]
 fn sub_account_name_too_long() {
     let mut store = setup_test_store();
 

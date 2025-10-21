@@ -34,6 +34,9 @@ const MAX_IMPORTED_TOKENS: i32 = 20;
 // Conservatively limit the number of favorite projects to prevent using too much memory.
 const MAX_FAVORITE_PROJECTS: i32 = 20;
 
+// Conservatively limit the number of named addresses to prevent using too much memory.
+const MAX_NAMED_ADDRESSES: i32 = 20;
+
 /// Accounts and related data.
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
@@ -92,6 +95,7 @@ pub struct Account {
     canisters: Vec<NamedCanister>,
     imported_tokens: Option<ImportedTokens>,
     fav_projects: Option<FavProjects>,
+    address_book: Option<AddressBook>,
     // default_account_transactions: Do not reuse this field. There are still accounts in stable memor with this unused field.
 }
 
@@ -202,6 +206,30 @@ pub enum SetFavProjectsResponse {
 #[derive(CandidType, Debug, PartialEq)]
 pub enum GetFavProjectsResponse {
     Ok(FavProjects),
+    AccountNotFound,
+}
+
+#[derive(CandidType, Clone, Default, Deserialize, Debug, Eq, PartialEq)]
+pub struct NamedAddress {
+    account_id: String,
+    name: String,
+}
+
+#[derive(CandidType, Clone, Default, Deserialize, Debug, Eq, PartialEq)]
+pub struct AddressBook {
+    named_addresses: Vec<NamedAddress>,
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum SetAddressBookResponse {
+    Ok,
+    AccountNotFound,
+    TooManyNamedAddresses { limit: i32 },
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum GetAddressBookResponse {
+    Ok(AddressBook),
     AccountNotFound,
 }
 
@@ -686,6 +714,32 @@ impl AccountsStore {
         GetFavProjectsResponse::Ok(account.fav_projects.unwrap_or_default())
     }
 
+    pub fn set_address_book(&mut self, caller: PrincipalId, new_address_book: AddressBook) -> SetAddressBookResponse {
+        if new_address_book.named_addresses.len() > (MAX_NAMED_ADDRESSES as usize) {
+            return SetAddressBookResponse::TooManyNamedAddresses {
+                limit: MAX_NAMED_ADDRESSES,
+            };
+        }
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let Some(mut account) = self.accounts_db.get(&account_identifier) else {
+            return SetAddressBookResponse::AccountNotFound;
+        };
+
+        account.address_book = Some(new_address_book);
+
+        self.accounts_db.insert(account_identifier, account);
+        SetAddressBookResponse::Ok
+    }
+
+    pub fn get_address_book(&self, caller: PrincipalId) -> GetAddressBookResponse {
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let Some(account) = self.accounts_db.get(&account_identifier) else {
+            return GetAddressBookResponse::AccountNotFound;
+        };
+
+        GetAddressBookResponse::Ok(account.address_book.unwrap_or_default())
+    }
+
     pub fn get_stats(&self, stats: &mut Stats) {
         stats.accounts_count = self.accounts_db.len();
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
@@ -814,6 +868,7 @@ impl Account {
             canisters: Vec::new(),
             imported_tokens: None,
             fav_projects: None,
+            address_book: None,
         }
     }
 }
