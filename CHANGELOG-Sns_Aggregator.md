@@ -7,8 +7,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The SNS Aggregator is released through proposals in the Network Nervous System. Therefore, each proposal is documented below, following the relevant changes.
 
 ## Unreleased
-* Include SNS Governance metrics.
-* Include latest reward events.
 
 ### Added
 ### Changed
@@ -17,9 +15,14 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 ### Fixed
 ### Security
 
+## [Proposal 137283](https://dashboard.internetcomputer.org/proposal/137283)
+### Added
+- Include SNS Governance metrics.
+- Include latest reward events.
+
 ## [Proposal 132124](https://dashboard.internetcomputer.org/proposal/132124)
 ### Fixed
-* Keep existing data when a call to an SNS canister fails.
+- Keep existing data when a call to an SNS canister fails.
 
 ## [Proposal 132124](https://dashboard.internetcomputer.org/proposal/132124)
 ### Security
@@ -62,7 +65,7 @@ The SNS Aggregator is released through proposals in the Network Nervous System. 
 
 ### Added
 - Style (UI design) for the landing page
-- Add a link that points to NNS Dapp GitHub repo 
+- Add a link that points to NNS Dapp GitHub repo
 - Display swaps' lifecycle on the landing page
 ### Changed
 - Updated `ic-cdk` to the latest version and use the, now separate, `ic-cdk-timers`.
