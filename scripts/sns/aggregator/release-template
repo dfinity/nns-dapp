@@ -43,6 +43,12 @@ git checkout "$(git rev-parse HEAD)"
 ./scripts/docker-build
 sha256sum sns_aggregator.wasm.gz
 \`\`\`
+
+## Arg Verification
+\`\`\`
+ARG='(null : null)'
+didc encode "$ARG" | xxd -r -p | sha256sum
+\`\`\`
 EOF
 
 cat <<EOF >release/AGGREGATOR_ROLLBACK.md
@@ -58,6 +64,12 @@ git fetch  # to ensure you have the latest changes.
 git checkout "$(git rev-parse HEAD)"
 ./scripts/docker-build
 sha256sum sns_aggregator.wasm.gz
+\`\`\`
+
+## Arg Verification
+\`\`\`
+ARG='(null : null)'
+didc encode "$ARG" | xxd -r -p | sha256sum
 \`\`\`
 EOF
 
