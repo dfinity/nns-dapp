@@ -23,7 +23,7 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsDisburseMaturityInProgress } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 
@@ -55,7 +55,7 @@ describe("SnsNeurons", () => {
     disburse_maturity_in_progress: [
       {
         amount_e8s: 100_000_000n,
-      } as DisburseMaturityInProgress,
+      } as SnsDisburseMaturityInProgress,
     ],
   };
   const neuronNFStake = 400_000_000n;

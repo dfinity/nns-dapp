@@ -19,9 +19,9 @@ import {
   type SnsTopic,
 } from "@dfinity/sns";
 import type {
-  DisburseMaturityInProgress,
-  NeuronPermission,
-} from "@dfinity/sns/dist/candid/sns_governance";
+  SnsDisburseMaturityInProgress,
+  SnsNeuronPermission,
+} from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
   isNullish,
@@ -32,7 +32,7 @@ import type { Subscriber } from "svelte/store";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;
 
-export const mockActiveDisbursement: DisburseMaturityInProgress = {
+export const mockActiveDisbursement: SnsDisburseMaturityInProgress = {
   timestamp_of_disbursement_seconds: 10_000n,
   amount_e8s: 1_000_000n,
   account_to_disburse_to: [
@@ -66,7 +66,7 @@ export const createMockSnsNeuron = ({
   stake?: bigint;
   id?: number[];
   state?: NeuronState;
-  permissions?: NeuronPermission[];
+  permissions?: SnsNeuronPermission[];
   // `undefined` means no vesting at all (default)
   // `true` means is still vesting
   // `false` means vesting period has passed

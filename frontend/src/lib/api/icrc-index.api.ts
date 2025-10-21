@@ -5,7 +5,7 @@ import {
   type IcrcAccount,
   type IcrcGetTransactions,
 } from "@dfinity/ledger-icrc";
-import type { SubAccount } from "@dfinity/ledger-icrc/dist/candid/icrc_index";
+import type { IcrcSubaccount } from "@dfinity/ledger-icrc";
 import { fromNullable } from "@dfinity/utils";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
@@ -70,7 +70,7 @@ export const listSubaccounts = async ({
   identity: Identity;
   indexCanisterId: Principal;
   certified?: boolean;
-}): Promise<Array<SubAccount>> => {
+}): Promise<Array<IcrcSubaccount>> => {
   const {
     canister: { listSubaccounts },
   } = await indexNgCanister({

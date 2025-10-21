@@ -21,7 +21,7 @@ import {
   SnsVote,
   type SnsBallot,
 } from "@dfinity/sns";
-import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsNeuronPermission } from "@dfinity/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
@@ -72,7 +72,7 @@ describe("SnsVotingCard", () => {
       permission_type: Int32Array.from([
         SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
       ]),
-    } as NeuronPermission,
+    } as SnsNeuronPermission,
   ];
 
   const testNeurons: SnsNeuron[] = [

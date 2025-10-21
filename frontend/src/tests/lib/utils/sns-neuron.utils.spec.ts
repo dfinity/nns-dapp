@@ -88,7 +88,7 @@ import {
   type SnsNeuron,
   type SnsProposalData,
 } from "@dfinity/sns";
-import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsNeuronPermission } from "@dfinity/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
@@ -124,7 +124,7 @@ const permissionsWithTypeVote = [
     permission_type: Int32Array.from([
       SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
     ]),
-  } as NeuronPermission,
+  } as SnsNeuronPermission,
 ];
 const testSnsNeuronA: SnsNeuron = {
   ...mockSnsNeuron,

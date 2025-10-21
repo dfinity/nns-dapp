@@ -5,10 +5,10 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsActiveDisbursementsModalPo } from "$tests/page-objects/SnsActiveDisbursementsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import type { SnsNeuron } from "@dfinity/sns";
-import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsDisburseMaturityInProgress } from "@dfinity/sns";
 
 describe("SnsActiveDisbursementsModal", () => {
-  const testActiveDisbursement: DisburseMaturityInProgress = {
+  const testActiveDisbursement: SnsDisburseMaturityInProgress = {
     timestamp_of_disbursement_seconds: 10000n,
     amount_e8s: 100_000_000n,
     account_to_disburse_to: [

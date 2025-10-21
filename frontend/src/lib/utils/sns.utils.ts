@@ -12,7 +12,7 @@ import type {
   SnsNervousSystemFunction,
   SnsProposalData,
 } from "@dfinity/sns";
-import type { DerivedState } from "@dfinity/sns/dist/candid/sns_swap";
+import type { SnsSwapDerivedState } from "@dfinity/sns";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 
@@ -148,7 +148,7 @@ export const isSnsFinalizing = (
 
 export const convertDerivedStateResponseToDerivedState = (
   derivedState: SnsGetDerivedStateResponse
-): DerivedState | undefined => {
+): SnsSwapDerivedState | undefined => {
   const sns_tokens_per_icp = fromNullable(derivedState.sns_tokens_per_icp);
   const buyer_total_icp_e8s = fromNullable(derivedState.buyer_total_icp_e8s);
   // This is not expected, but in case it happens, we want to fail fast.
