@@ -2,14 +2,14 @@ import SnsActiveDisbursementEntry from "$lib/modals/sns/neurons/SnsActiveDisburs
 import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
 import { ActiveDisbursementEntryPo } from "$tests/page-objects/ActiveDisbursementEntry.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsDisburseMaturityInProgress } from "@dfinity/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 (".svelte");
 
 describe("SnsActiveDisbursementEntry", () => {
   const disbursementTimestamp = 1694000000n;
-  const testActiveDisbursement: DisburseMaturityInProgress = {
+  const testActiveDisbursement: SnsDisburseMaturityInProgress = {
     timestamp_of_disbursement_seconds: disbursementTimestamp,
     amount_e8s: 123_000_000n,
     account_to_disburse_to: [
@@ -20,7 +20,7 @@ describe("SnsActiveDisbursementEntry", () => {
     ],
     finalize_disbursement_timestamp_seconds: [],
   };
-  const renderComponent = (disbursement: DisburseMaturityInProgress) => {
+  const renderComponent = (disbursement: SnsDisburseMaturityInProgress) => {
     const { container } = render(SnsActiveDisbursementEntry, {
       props: { disbursement },
     });
