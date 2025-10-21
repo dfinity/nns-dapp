@@ -43,6 +43,15 @@ vi.mock("$lib/api/agent.api", () => {
   };
 });
 
+vi.mock("@icp-sdk/canisters/sns", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@icp-sdk/canisters/sns")>();
+  return {
+    ...actual,
+    SnsWrapper: vi.fn(),
+  };
+});
+
 describe("sns-api", () => {
   const mockQuerySwap = {
     swap: [mockSwap],
