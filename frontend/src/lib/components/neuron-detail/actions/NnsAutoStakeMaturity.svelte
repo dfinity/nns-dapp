@@ -14,17 +14,20 @@
   import type { NeuronInfo } from "@dfinity/nns";
   import { getContext } from "svelte";
 
-  export let neuron: NeuronInfo;
+  type Props = {
+    neuron: NeuronInfo;
+  };
+  const { neuron }: Props = $props();
 
-  let hasAutoStakeOn: boolean;
-  $: hasAutoStakeOn = hasAutoStakeMaturityOn(neuron);
+  let hasAutoStakeOn = $derived(hasAutoStakeMaturityOn(neuron));
 
-  let disabled: boolean;
-  $: disabled = !isNeuronControllable({
-    neuron,
-    identity: $authStore.identity,
-    accounts: $icpAccountsStore,
-  });
+  const disabled = $derived(
+    !isNeuronControllable({
+      neuron,
+      identity: $authStore.identity,
+      accounts: $icpAccountsStore,
+    })
+  );
 
   const { store }: NnsNeuronContext = getContext<NnsNeuronContext>(
     NNS_NEURON_CONTEXT_KEY
