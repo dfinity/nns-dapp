@@ -222,6 +222,8 @@
     "transactions_title": "ICP Transactions",
     "transactions_description": "Download a detailed CSV report of your ICP transaction history, including both regular ICP accounts and NNS neurons showing staking and minting transactions for manual tracking and analysis.",
     "transactions_download": "Export Transactions",
+    "transactions_source_nns": "ICP accounts and neurons",
+    "transactions_source_ck": "Ck-Tokens accounts",
     "busy_screen": "Generating report... This may take a moment",
     "busy_screen_sns_getting_neurons": "Fetching your neurons across all SNS projects...",
     "principal_account_id": "NNS dapp Account Principal Id",

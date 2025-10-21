@@ -27,7 +27,7 @@ describe("ReportingDateRangeSelector", () => {
     expect(await selectedOption.getValue()).toBe("last-year");
   });
 
-  it("should render four options", async () => {
+  it("should render three options", async () => {
     const { po } = renderComponent();
 
     expect(await po.getAllOptions()).toHaveLength(3);

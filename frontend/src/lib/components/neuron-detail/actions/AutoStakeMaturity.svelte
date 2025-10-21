@@ -2,8 +2,12 @@
   import { i18n } from "$lib/stores/i18n";
   import { Checkbox } from "@dfinity/gix-components";
 
-  export let hasAutoStakeOn: boolean;
-  export let disabled = false;
+  type Props = {
+    hasAutoStakeOn: boolean;
+    disabled?: boolean;
+  };
+
+  let { hasAutoStakeOn = $bindable(), disabled = false }: Props = $props();
 </script>
 
 <Checkbox

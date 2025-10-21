@@ -4,6 +4,7 @@ import type { NeuronInfo } from "@dfinity/nns";
 
 export type ReportingPeriod = "year-to-date" | "last-year" | "custom";
 export type ReportingNeuronsSource = "nns" | "sns";
+export type ReportingTransactionsSource = "nns" | "ck";
 
 export type TransactionsDateRange = {
   /** Start of the date range (inclusive) - timestamp in nanoseconds */
