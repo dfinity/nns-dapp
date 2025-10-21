@@ -1,6 +1,15 @@
 <script lang="ts">
+  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
+  import FollowNnsNeuronsByTopicStepNeuron from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepNeuron.svelte";
   import FollowNnsNeuronsByTopicStepTopics from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepTopics.svelte";
+  import { listKnownNeurons } from "$lib/services/known-neurons.services";
+  import { setFollowing } from "$lib/services/neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     WizardModal,
     wizardStepIndex,
@@ -9,8 +18,6 @@
   } from "@dfinity/gix-components";
   import { Topic, type NeuronId } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import { listKnownNeurons } from "$lib/services/known-neurons.services";
-  import { definedNeuronsStore } from "$lib/derived/neurons.derived";
 
   type Props = {
     neuronId: NeuronId;
@@ -42,6 +49,7 @@
   let currentStep: WizardStep | undefined = $state();
   let modal: WizardModal<string> | undefined = $state();
   let selectedTopics = $state<Topic[]>([]);
+  let errorMessage: string | undefined = $state();
 
   const openNextStep = () => {
     modal?.set(wizardStepIndex({ name: STEP_NEURON, steps }));
@@ -53,6 +61,79 @@
 
   const openPrevStep = () => {
     openFirstStep();
+  };
+
+  const clearError = () => {
+    errorMessage = undefined;
+  };
+
+  const handleAddFolloweeError = ({
+    followee,
+    error,
+  }: {
+    followee: bigint;
+    error: unknown;
+  }) => {
+    const toastMessage = mapNeuronErrorToToastMessage(error);
+    const errorDetail = toastMessage.detail ?? "";
+    // ref. https://github.com/dfinity/ic/blob/13a56ce65d36b85d10ee5e3171607cc2c31cf23e/rs/nns/governance/src/governance.rs#L8421
+    const NON_EXISTENT_NEURON_ERROR =
+      /: The neuron with ID \d+ does not exist\./;
+    // ref. https://github.com/dfinity/ic/blob/13a56ce65d36b85d10ee5e3171607cc2c31cf23e/rs/nns/governance/src/governance.rs#L8411
+    const FOLLOWING_NOT_ALLOWED_ERROR = /: Neuron \d+ is a private neuron\./;
+    if (NON_EXISTENT_NEURON_ERROR.test(errorDetail)) {
+      errorMessage = replacePlaceholders(
+        $i18n.new_followee.followee_does_not_exist,
+        {
+          $neuronId: followee.toString(),
+        }
+      );
+    } else if (FOLLOWING_NOT_ALLOWED_ERROR.test(errorDetail)) {
+      errorMessage = replacePlaceholders(
+        $i18n.new_followee.followee_not_permit,
+        {
+          $neuronId: followee.toString(),
+          $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
+        }
+      );
+      // Since the error message is not displayed directly in the input field,
+      // we set input.error to a non-undefined value to trigger the error state in InputWithError.
+      errorMessage = "";
+    } else {
+      toastsShow(toastMessage);
+    }
+  };
+
+  const addFolloweeByAddress = async (followeeAddress: string) => {
+    clearError();
+
+    if (followeeAddress.length === 0) {
+      return;
+    }
+
+    let followee: bigint;
+    try {
+      followee = BigInt(followeeAddress);
+    } catch (_) {
+      errorMessage = $i18n.new_followee.followee_incorrect_id_format;
+      return;
+    }
+
+    startBusy({ initiator: "add-followee" });
+
+    try {
+      await setFollowing({
+        neuronId: neuron.neuronId,
+        topics: selectedTopics,
+        followee,
+      });
+
+      onClose();
+    } catch (err: unknown) {
+      handleAddFolloweeError({ followee, error: err });
+    } finally {
+      stopBusy("add-followee");
+    }
   };
 </script>
 
@@ -75,61 +156,13 @@
   {/if}
 
   {#if currentStep?.name === STEP_NEURON}
-    <div
-      class="under-construction"
-      data-tid="follow-nns-neurons-by-topic-step-neuron-component"
-    >
-      <h3>Under Construction</h3>
-
-      <h4>Selected Topics:</h4>
-      {#each selectedTopics as topic}
-        <li>{topic}</li>
-      {/each}
-
-      <div class="toolbar">
-        <button
-          class="secondary"
-          type="button"
-          data-tid="back-button"
-          onclick={openPrevStep}
-        >
-          {$i18n.core.back}
-        </button>
-
-        <button
-          class="primary"
-          type="button"
-          data-tid="confirm-button"
-          disabled
-        >
-          Add Followee
-        </button>
-      </div>
-    </div>
+    <FollowNnsNeuronsByTopicStepNeuron
+      {neuron}
+      topics={selectedTopics}
+      {addFolloweeByAddress}
+      {openPrevStep}
+      {clearError}
+      {errorMessage}
+    />
   {/if}
 </WizardModal>
-
-<style lang="scss">
-  .selected-topics {
-    text-align: left;
-
-    h4 {
-      margin-bottom: var(--padding);
-    }
-
-    ul {
-      list-style-type: disc;
-      padding-left: var(--padding-2x);
-
-      li {
-        margin-bottom: var(--padding-0_5x);
-      }
-    }
-  }
-
-  .toolbar {
-    display: flex;
-    justify-content: space-between;
-    margin-top: var(--padding-2x);
-  }
-</style>
