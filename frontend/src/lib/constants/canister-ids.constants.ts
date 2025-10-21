@@ -38,5 +38,4 @@ export const abandonedProjectsCanisterId = [
   FUEL_EV_ROOT_CANISTER_ID,
 ];
 
-const ICVC_ROOT_CANISTER_ID = "nuywj-oaaaa-aaaaq-aadta-cai";
-export const uninstalledIndexCanistersId = [ICVC_ROOT_CANISTER_ID];
+export const uninstalledIndexCanistersId: string[] = [];
