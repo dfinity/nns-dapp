@@ -22,12 +22,14 @@ const initKnownNeuronsStore = () => {
           name: "Mock Neuron",
           description: "This is a mock known neuron",
           links: ["https://dfinity.org"],
+          committed_topics: undefined,
         },
         {
           id: 7463650834747952490n,
           name: "Another Mocked Neuron",
           description: "This is another mock known neuron",
           links: ["https://dfinity.org/demo/demo-known-neuron"],
+          committed_topics: undefined,
         },
       ]);
     },
