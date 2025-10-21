@@ -28,6 +28,15 @@ import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");
 
+vi.mock("@icp-sdk/canisters/sns", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@icp-sdk/canisters/sns")>();
+  return {
+    ...actual,
+    SnsWrapper: vi.fn(),
+  };
+});
+
 describe("sns-sale.api", () => {
   const ticket = snsTicketMock({
     rootCanisterId: rootCanisterIdMock,
