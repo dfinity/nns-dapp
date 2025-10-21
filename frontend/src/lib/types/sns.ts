@@ -3,6 +3,7 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UnknownTopic } from "$lib/types/sns-aggregator";
 import type {
   CfParticipant,
+  SnsFinalizeSwapResponse,
   SnsGetLifecycleResponse,
   SnsNervousSystemFunction,
   SnsNeuronId,
@@ -14,7 +15,6 @@ import type {
   SnsSwapTicket,
   SnsTopic,
 } from "@dfinity/sns";
-import type { SnsFinalizeSwapResponse } from "@dfinity/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export type RootCanisterId = Principal;

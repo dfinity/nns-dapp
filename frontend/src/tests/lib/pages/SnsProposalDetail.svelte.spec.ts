@@ -34,6 +34,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { Vote } from "@dfinity/nns";
+import type { SnsNeuronPermission } from "@dfinity/sns";
 import {
   SnsGovernanceError,
   SnsNeuronPermissionType,
@@ -44,7 +45,6 @@ import {
   type SnsBallot,
   type SnsProposalData,
 } from "@dfinity/sns";
-import type { SnsNeuronPermission } from "@dfinity/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { waitFor } from "@testing-library/svelte";

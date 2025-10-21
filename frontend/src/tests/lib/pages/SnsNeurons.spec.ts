@@ -16,6 +16,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { SnsDisburseMaturityInProgress } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
@@ -23,7 +24,6 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
 } from "@dfinity/sns";
-import type { SnsDisburseMaturityInProgress } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 

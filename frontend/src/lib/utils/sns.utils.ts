@@ -11,8 +11,8 @@ import type {
   SnsGetDerivedStateResponse,
   SnsNervousSystemFunction,
   SnsProposalData,
+  SnsSwapDerivedState,
 } from "@dfinity/sns";
-import type { SnsSwapDerivedState } from "@dfinity/sns";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 

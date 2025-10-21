@@ -1,11 +1,11 @@
 import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
+import type { IcrcSubaccount } from "@dfinity/ledger-icrc";
 import {
   IcrcIndexNgCanister,
   type IcrcAccount,
   type IcrcGetTransactions,
 } from "@dfinity/ledger-icrc";
-import type { IcrcSubaccount } from "@dfinity/ledger-icrc";
 import { fromNullable } from "@dfinity/utils";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";

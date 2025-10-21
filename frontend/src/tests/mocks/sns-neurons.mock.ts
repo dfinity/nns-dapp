@@ -12,15 +12,15 @@ import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { NeuronState, type NeuronId } from "@dfinity/nns";
+import type {
+  SnsDisburseMaturityInProgress,
+  SnsNeuronPermission,
+} from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   type SnsNervousSystemParameters,
   type SnsNeuron,
   type SnsTopic,
-} from "@dfinity/sns";
-import type {
-  SnsDisburseMaturityInProgress,
-  SnsNeuronPermission,
 } from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
