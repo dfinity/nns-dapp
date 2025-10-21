@@ -10,7 +10,7 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { neuronsTableOrderSortedNeuronIdsStore } from "$lib/stores/neurons-table-order-sorted-neuron-ids-store";
   import type { IntersectingDetail } from "$lib/types/intersection.types";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
 

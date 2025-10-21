@@ -17,7 +17,11 @@
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
   import { Html, Modal, Spinner, busy } from "@dfinity/gix-components";
-  import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+  import {
+    Topic,
+    type NeuronId,
+    type NeuronInfo,
+  } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher, onMount } from "svelte";
 

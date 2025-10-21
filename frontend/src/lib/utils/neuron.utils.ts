@@ -53,6 +53,14 @@ import {
   IconLockOpen,
 } from "@dfinity/gix-components";
 import {
+  ICPToken,
+  TokenAmountV2,
+  fromNullable,
+  isNullish,
+  nonNullish,
+  secondsToDuration,
+} from "@dfinity/utils";
+import {
   NeuronState,
   NeuronType,
   NeuronVisibility,
@@ -68,15 +76,7 @@ import {
   type NeuronInfo,
   type ProposalInfo,
   type RewardEvent,
-} from "@dfinity/nns";
-import {
-  ICPToken,
-  TokenAmountV2,
-  fromNullable,
-  isNullish,
-  nonNullish,
-  secondsToDuration,
-} from "@dfinity/utils";
+} from "@icp-sdk/canisters/nns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Component } from "svelte";
 

@@ -21,7 +21,10 @@
     Section,
   } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemParameters,
+    SnsNeuron,
+  } from "@icp-sdk/canisters/sns";
   import {
     TokenAmountV2,
     fromNullable,

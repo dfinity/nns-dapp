@@ -4,6 +4,7 @@ import { proposalsFiltersStore } from "$lib/stores/proposals.store";
 import en from "$tests/mocks/i18n.mock";
 import { createMockProposalInfo } from "$tests/mocks/proposal.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
+import { secondsToDuration } from "@dfinity/utils";
 import {
   NnsFunction,
   ProposalStatus,
@@ -11,8 +12,7 @@ import {
   type Action,
   type Proposal,
   type ProposalInfo,
-} from "@dfinity/nns";
-import { secondsToDuration } from "@dfinity/utils";
+} from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsProposalCard", () => {

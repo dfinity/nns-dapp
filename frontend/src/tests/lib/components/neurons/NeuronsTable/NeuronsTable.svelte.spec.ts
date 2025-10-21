@@ -11,8 +11,8 @@ import { NeuronsTablePo } from "$tests/page-objects/NeuronsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import { get, writable, type Writable } from "svelte/store";
 
 describe("NeuronsTable", () => {

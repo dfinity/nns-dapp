@@ -6,8 +6,8 @@ import {
   sortSnsNeuronsByStake,
   totalDisbursingMaturity,
 } from "$lib/utils/sns-neuron.utils";
-import type { SnsNeuron } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { derived, type Readable } from "svelte/store";
 
 // A neuron is considered "non-empty" if it has a non-zero stake, non-zero maturity,

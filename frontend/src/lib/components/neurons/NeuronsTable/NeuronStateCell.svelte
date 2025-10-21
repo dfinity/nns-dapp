@@ -4,7 +4,7 @@
   import type { TableNeuron } from "$lib/types/neurons-table";
   import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import { NeuronState } from "@dfinity/nns";
+  import { NeuronState } from "@icp-sdk/canisters/nns";
 
   type Props = {
     rowData: TableNeuron;

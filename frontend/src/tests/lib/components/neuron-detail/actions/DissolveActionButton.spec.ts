@@ -5,7 +5,7 @@ import {
 import DissolveActionButtonTest from "$tests/lib/components/neuron-detail/actions/DissolveActionButtonTest.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import { fireEvent, render } from "@testing-library/svelte";
 
 vi.mock("$lib/services/neurons.services", () => {

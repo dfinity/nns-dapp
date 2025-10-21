@@ -1,4 +1,4 @@
-import type { SnsGetDerivedStateResponse } from "@dfinity/sns";
+import type { SnsGetDerivedStateResponse } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 

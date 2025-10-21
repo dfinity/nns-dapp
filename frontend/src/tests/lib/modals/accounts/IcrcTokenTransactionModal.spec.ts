@@ -14,8 +14,8 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { IcrcTokenTransactionModalPo } from "$tests/page-objects/IcrcTokenTransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { TokenAmountV2 } from "@dfinity/utils";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 
 vi.mock("$lib/api/icrc-ledger.api");
 

@@ -11,7 +11,7 @@
   import { isAccountHardwareWallet } from "$lib/utils/accounts.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { WizardStep } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher, onMount } from "svelte";
 
   export let neuron: NeuronInfo;

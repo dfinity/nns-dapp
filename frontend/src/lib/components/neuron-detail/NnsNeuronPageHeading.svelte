@@ -19,7 +19,7 @@
     neuronStake,
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;

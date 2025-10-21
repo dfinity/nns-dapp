@@ -10,16 +10,6 @@ import type {
 import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { transactionName } from "$lib/utils/transactions.utils";
-import type {
-  PendingUtxo,
-  RetrieveBtcStatusV2,
-  RetrieveBtcStatusV2WithId,
-} from "@dfinity/ckbtc";
-import type {
-  IcrcTransaction,
-  IcrcTransactionWithId,
-} from "@dfinity/ledger-icrc";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   TokenAmount,
   TokenAmountV2,
@@ -29,6 +19,16 @@ import {
   uint8ArrayToHexString,
   type Token,
 } from "@dfinity/utils";
+import type {
+  PendingUtxo,
+  RetrieveBtcStatusV2,
+  RetrieveBtcStatusV2WithId,
+} from "@icp-sdk/canisters/ckbtc";
+import type {
+  IcrcTransaction,
+  IcrcTransactionWithId,
+} from "@icp-sdk/canisters/ledger/icrc";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { Cbor } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

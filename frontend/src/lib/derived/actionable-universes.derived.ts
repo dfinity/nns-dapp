@@ -3,8 +3,8 @@ import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposal
 import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
 import type { ProposalsNavigationId } from "$lib/types/proposals";
 import type { Universe } from "$lib/types/universe";
-import type { SnsProposalData } from "@dfinity/sns";
 import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
+import type { SnsProposalData } from "@icp-sdk/canisters/sns";
 import { derived, type Readable } from "svelte/store";
 
 import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";

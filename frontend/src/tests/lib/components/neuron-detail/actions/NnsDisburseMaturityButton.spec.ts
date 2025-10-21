@@ -3,7 +3,7 @@ import { MIN_DISBURSEMENT_WITH_VARIANCE } from "$lib/constants/neurons.constants
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { DisburseMaturityButtonPo } from "$tests/page-objects/DisburseMaturityButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsDisburseMaturityButton", () => {

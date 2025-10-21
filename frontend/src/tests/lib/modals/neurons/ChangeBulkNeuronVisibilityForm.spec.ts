@@ -18,8 +18,12 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { NeuronType, NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import {
+  NeuronType,
+  NeuronVisibility,
+  type NeuronInfo,
+} from "@icp-sdk/canisters/nns";
 import { tick } from "svelte";
 
 describe("ChangeBulkNeuronVisibilityForm", () => {

@@ -14,7 +14,7 @@
   import { toastsShow } from "$lib/stores/toasts.store";
   import { isNeuronControllable } from "$lib/utils/neuron.utils";
   import { IconClose, IconWarning, Value } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
 

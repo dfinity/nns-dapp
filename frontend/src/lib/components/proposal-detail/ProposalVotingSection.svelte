@@ -7,7 +7,10 @@
     MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER,
   } from "$lib/constants/proposals.constants";
   import { basisPointsToPercent } from "$lib/utils/utils";
-  import { ProposalRewardStatus, type ProposalInfo } from "@dfinity/nns";
+  import {
+    ProposalRewardStatus,
+    type ProposalInfo,
+  } from "@icp-sdk/canisters/nns";
 
   type Props = {
     proposalInfo: ProposalInfo;

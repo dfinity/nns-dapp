@@ -8,7 +8,10 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { Tag } from "@dfinity/gix-components";
-  import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+  import {
+    SnsNeuronPermissionType,
+    type SnsNeuron,
+  } from "@icp-sdk/canisters/sns";
   import { getContext } from "svelte";
 
   const { store }: SelectedSnsNeuronContext =

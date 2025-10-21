@@ -12,7 +12,7 @@ import {
   icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("tokens-list-base.derived", () => {

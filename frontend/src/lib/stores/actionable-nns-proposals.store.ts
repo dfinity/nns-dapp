@@ -1,4 +1,4 @@
-import type { ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import { writable, type Readable } from "svelte/store";
 
 export interface ActionableNnsProposalsStoreData {

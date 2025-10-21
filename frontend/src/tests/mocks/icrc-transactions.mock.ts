@@ -2,11 +2,11 @@ import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
+import { toNullable } from "@dfinity/utils";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
-} from "@dfinity/ledger-icrc";
-import { toNullable } from "@dfinity/utils";
+} from "@icp-sdk/canisters/ledger/icrc";
 import { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 

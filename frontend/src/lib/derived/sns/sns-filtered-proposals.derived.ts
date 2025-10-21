@@ -19,8 +19,8 @@ import {
 import { snsDecisionStatus } from "$lib/utils/sns-proposals.utils";
 import { snsTopicToTopicKey } from "$lib/utils/sns-topics.utils";
 import { isSnsGenericNervousSystemTypeProposal } from "$lib/utils/sns.utils";
-import type { SnsTopic } from "@dfinity/sns";
 import { fromNullable, isNullish } from "@dfinity/utils";
+import type { SnsTopic } from "@icp-sdk/canisters/sns";
 import { derived, get, type Readable } from "svelte/store";
 
 export const snsFilteredProposalsStore = derived<

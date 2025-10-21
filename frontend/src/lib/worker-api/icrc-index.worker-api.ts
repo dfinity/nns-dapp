@@ -10,8 +10,8 @@ import {
   createCanisterWorker,
   type CreateCanisterWorkerParams,
 } from "$lib/worker-utils/canister.worker-utils";
-import { IcrcIndexCanister } from "@dfinity/ledger-icrc";
 import { fromNullable } from "@dfinity/utils";
+import { IcrcIndexCanister } from "@icp-sdk/canisters/ledger/icrc";
 
 export const getIcrcTransactions = async ({
   identity,

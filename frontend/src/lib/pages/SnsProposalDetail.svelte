@@ -43,7 +43,7 @@
     SnsNervousSystemFunction,
     SnsProposalData,
     SnsProposalId,
-  } from "@dfinity/sns";
+  } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { tick } from "svelte";
   import { get, type Readable } from "svelte/store";

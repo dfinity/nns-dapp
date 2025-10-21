@@ -18,7 +18,7 @@
     comparatorsByColumnId,
     compareById,
   } from "$lib/utils/neurons-table.utils";
-  import { NeuronState } from "@dfinity/nns";
+  import { NeuronState } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {

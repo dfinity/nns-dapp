@@ -8,7 +8,7 @@ import type {
   SnsProposalTypeFilterId,
 } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import { SnsProposalDecisionStatus } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 

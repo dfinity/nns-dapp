@@ -9,7 +9,7 @@
     neuronsVotingPower,
     type CompactNeuronInfo,
   } from "$lib/utils/neuron.utils";
-  import { Vote } from "@dfinity/nns";
+  import { Vote } from "@icp-sdk/canisters/nns";
 
   export let neuronsVotedForProposal: CompactNeuronInfo[];
 

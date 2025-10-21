@@ -5,7 +5,7 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { SnsViewActiveDisbursementsItemActionPo } from "$tests/page-objects/SnsViewActiveDisbursementsItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsViewActiveDisbursementsItemAction", () => {

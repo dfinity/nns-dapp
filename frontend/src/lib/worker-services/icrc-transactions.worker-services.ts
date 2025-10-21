@@ -13,12 +13,12 @@ import type {
   TimerWorkerUtilsJobData,
   TimerWorkerUtilsSyncParams,
 } from "$lib/worker-utils/timer.worker-utils";
+import { jsonReplacer, nonNullish } from "@dfinity/utils";
 import {
   decodeIcrcAccount,
   type IcrcTransactionWithId,
   type IcrcTxId,
-} from "@dfinity/ledger-icrc";
-import { jsonReplacer, nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/ledger/icrc";
 
 export type GetAccountsTransactionsResults = Omit<
   PostMessageDataResponseTransaction,

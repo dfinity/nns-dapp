@@ -5,7 +5,7 @@ import {
 } from "$lib/services/accounts-balances.services";
 import * as snsBalanceServices from "$lib/services/sns-accounts-balance.services";
 import * as walletServices from "$lib/services/wallet-uncertified-accounts.services";
-import type { CanisterIdString } from "@dfinity/nns";
+import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 
 vi.mock("$lib/services/icrc-accounts.services", () => {

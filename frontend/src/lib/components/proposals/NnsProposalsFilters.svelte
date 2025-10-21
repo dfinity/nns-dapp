@@ -11,7 +11,7 @@
   import { proposalsFiltersStore } from "$lib/stores/proposals.store";
   import type { ProposalsFilterModalProps } from "$lib/types/proposals";
   import { enumsExclude } from "$lib/utils/enum.utils";
-  import { ProposalStatus, Topic } from "@dfinity/nns";
+  import { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
 
   let modalFilters: ProposalsFilterModalProps | undefined = undefined;
 

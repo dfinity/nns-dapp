@@ -8,7 +8,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
   import { getNeuronTags, type NeuronTagData } from "$lib/utils/neuron.utils";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
   export let tagName: "p" | "h3" = "p";

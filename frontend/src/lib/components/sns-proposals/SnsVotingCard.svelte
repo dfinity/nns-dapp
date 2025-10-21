@@ -34,7 +34,7 @@
     SnsNeuron,
     SnsProposalData,
     SnsVote,
-  } from "@dfinity/sns";
+  } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
   export let proposal: SnsProposalData;

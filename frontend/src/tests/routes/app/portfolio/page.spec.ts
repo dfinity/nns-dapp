@@ -41,7 +41,7 @@ import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";

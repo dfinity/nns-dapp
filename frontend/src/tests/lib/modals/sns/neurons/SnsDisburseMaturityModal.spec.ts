@@ -18,8 +18,8 @@ import { DisburseMaturityModalPo } from "$tests/page-objects/DisburseMaturityMod
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { extractHrefFromText } from "$tests/utils/utils.test-utils";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
-import type { SnsNeuron } from "@dfinity/sns";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/api/sns-governance.api");

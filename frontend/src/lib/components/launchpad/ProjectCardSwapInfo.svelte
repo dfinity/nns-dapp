@@ -11,7 +11,7 @@
     durationTillSwapStart,
   } from "$lib/utils/projects.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import {
     ICPToken,
     TokenAmountV2,

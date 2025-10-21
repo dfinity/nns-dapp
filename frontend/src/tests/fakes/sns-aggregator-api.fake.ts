@@ -1,7 +1,7 @@
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { installImplAndBlockRest } from "$tests/utils/module.test-utils";
-import type { SnsSwapLifecycle } from "@dfinity/sns";
+import type { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 
 const modulePath = "$lib/api/sns-aggregator.api";
 const implementedFunctions = {

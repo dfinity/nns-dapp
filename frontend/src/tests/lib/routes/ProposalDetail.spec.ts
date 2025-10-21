@@ -5,7 +5,7 @@ import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/governance.api");

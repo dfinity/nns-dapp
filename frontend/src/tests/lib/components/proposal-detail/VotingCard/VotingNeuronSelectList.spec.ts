@@ -5,7 +5,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { VotingNeuronSelectListPo } from "$tests/page-objects/VotingNeuronSelectList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { Vote, type NeuronInfo } from "@dfinity/nns";
+import { Vote, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

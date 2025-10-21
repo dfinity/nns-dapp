@@ -46,7 +46,7 @@
   } from "$lib/utils/universe.utils";
   import { isUserTokenData } from "$lib/utils/user-token.utils";
   import { isArrayEmpty } from "$lib/utils/utils";
-  import type { CanisterIdString } from "@dfinity/nns";
+  import type { CanisterIdString } from "@icp-sdk/canisters/nns";
   import { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";

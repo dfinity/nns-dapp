@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { LedgerCanister } from "@dfinity/ledger-icp";
+import type { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import type {
   ListProposalsRequest,
   ListProposalsResponse,
   NeuronId,
   NeuronInfo,
   ProposalInfo,
-} from "@dfinity/nns";
-import { GovernanceCanister, Vote } from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
+import { GovernanceCanister, Vote } from "@icp-sdk/canisters/nns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 // eslint-disable-next-line

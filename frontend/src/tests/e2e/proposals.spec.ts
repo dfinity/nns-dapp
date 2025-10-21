@@ -7,7 +7,7 @@ import {
   signInWithNewUser,
   step,
 } from "$tests/utils/e2e.test-utils";
-import { ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
 import { expect, test } from "@playwright/test";
 
 test("Test proposals", async ({ page, context }) => {

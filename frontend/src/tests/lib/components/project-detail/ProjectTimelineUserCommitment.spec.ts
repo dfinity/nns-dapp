@@ -11,8 +11,8 @@ import {
   mockSnsFullProject,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken, TokenAmount, secondsToDuration } from "@dfinity/utils";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("ProjectTimelineUserCommitment", () => {

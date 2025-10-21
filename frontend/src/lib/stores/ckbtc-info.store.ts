@@ -3,7 +3,7 @@ import type {
   UniverseCanisterIdText,
 } from "$lib/types/universe";
 import { removeKeys } from "$lib/utils/utils";
-import type { MinterInfo } from "@dfinity/ckbtc";
+import type { MinterInfo } from "@icp-sdk/canisters/ckbtc";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 

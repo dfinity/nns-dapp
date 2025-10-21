@@ -18,9 +18,9 @@
   import type { Universe } from "$lib/types/universe";
   import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
   import { IconStakedTokens, PageBanner } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
   import {
     TokenAmountV2,
     isNullish,

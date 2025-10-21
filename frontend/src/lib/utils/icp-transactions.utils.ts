@@ -13,11 +13,6 @@ import {
   invalidIcrcAddress,
 } from "$lib/utils/accounts.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
-import type {
-  Operation,
-  Transaction,
-  TransactionWithId,
-} from "@dfinity/ledger-icp";
 import {
   ICPToken,
   TokenAmountV2,
@@ -26,6 +21,11 @@ import {
   nonNullish,
   uint8ArrayToHexString,
 } from "@dfinity/utils";
+import type {
+  Operation,
+  Transaction,
+  TransactionWithId,
+} from "@icp-sdk/canisters/ledger/icp";
 
 const isToSelf = (transaction: Transaction): boolean => {
   if ("Transfer" in transaction.operation) {

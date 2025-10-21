@@ -4,9 +4,9 @@ import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
 import type { CanisterActorParams } from "$lib/types/worker";
 import { mapCanisterId } from "$lib/utils/canisters.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { CanisterStatusResponse } from "@dfinity/ic-management";
-import { ICManagementCanister } from "@dfinity/ic-management";
 import { createAgent } from "@dfinity/utils";
+import type { CanisterStatusResponse } from "@icp-sdk/canisters/ic-management";
+import { ICManagementCanister } from "@icp-sdk/canisters/ic-management";
 
 export const queryCanisterDetails = async ({
   identity,

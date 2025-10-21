@@ -3,7 +3,7 @@ import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { SnsTopicDefinitionsTopicPo } from "$tests/page-objects/SnsTopicDefinitionsTopic.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import type { SnsNervousSystemFunction } from "@dfinity/sns";
+import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
 
 describe("SnsTopicDefinitionsTopic", () => {
   const nativeNsFunction1: SnsNervousSystemFunction = {

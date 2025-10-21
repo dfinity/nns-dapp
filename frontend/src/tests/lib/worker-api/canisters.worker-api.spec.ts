@@ -2,9 +2,9 @@ import { CanisterStatus } from "$lib/canisters/ic-management/ic-management.canis
 import { queryCanisterDetails } from "$lib/worker-api/canisters.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
-import type { CanisterStatusResponse } from "@dfinity/ic-management";
-import { ICManagementCanister } from "@dfinity/ic-management";
 import * as dfinityUtils from "@dfinity/utils";
+import type { CanisterStatusResponse } from "@icp-sdk/canisters/ic-management";
+import { ICManagementCanister } from "@icp-sdk/canisters/ic-management";
 import { mock } from "vitest-mock-extended";
 
 describe("canisters-worker-api", () => {

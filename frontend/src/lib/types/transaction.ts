@@ -1,6 +1,6 @@
 import type { Account } from "$lib/types/account";
-import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
+import type { IcrcTransactionWithId } from "@icp-sdk/canisters/ledger/icrc";
 
 export type NewTransaction = {
   sourceAccount: Account;

@@ -11,18 +11,18 @@ import type {
   UnknownTopic,
 } from "$lib/types/sns-aggregator";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-import type {
-  SnsNervousSystemFunction,
-  SnsNeuron,
-  SnsNeuronId,
-  SnsTopic,
-} from "@dfinity/sns";
 import {
   fromDefinedNullable,
   fromNullable,
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import type {
+  SnsNervousSystemFunction,
+  SnsNeuron,
+  SnsNeuronId,
+  SnsTopic,
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const snsTopicToTopicKey = (

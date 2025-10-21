@@ -3,7 +3,7 @@ import FilterModalTest from "$tests/lib/modals/common/FilterModalTest.svelte";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { Topic } from "@dfinity/nns";
+import { Topic } from "@icp-sdk/canisters/nns";
 
 describe("FilterModal", () => {
   const filters = [

@@ -7,7 +7,7 @@ import en from "$tests/mocks/i18n.mock";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { Topic } from "@dfinity/nns";
+import { Topic } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 describe("ProposalsFilterModal", () => {

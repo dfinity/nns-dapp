@@ -8,7 +8,7 @@
     neuronStake as getNeuronStake,
     neuronPotentialVotingPower,
   } from "$lib/utils/neuron.utils";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   import SetDissolveDelay from "$lib/components/neurons/SetDissolveDelay.svelte";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";

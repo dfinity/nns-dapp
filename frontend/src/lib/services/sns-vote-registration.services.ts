@@ -23,14 +23,14 @@ import {
   mapProposalInfo as mapSnsProposal,
   toSnsVote,
 } from "$lib/utils/sns-proposals.utils";
+import { fromDefinedNullable } from "@dfinity/utils";
 import type {
+  SnsBallot,
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsProposalData,
   SnsVote,
-} from "@dfinity/sns";
-import type { Ballot } from "@dfinity/sns/dist/candid/sns_governance";
-import { fromDefinedNullable } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 /**
@@ -151,16 +151,18 @@ const proposalAfterVote = ({
   vote: SnsVote;
 }): SnsProposalData => {
   // replace ballots of just voted neurons with optimistic ones
-  const optimisticBallots: Array<[string, Ballot]> = neurons.map((neuron) => [
-    // neuron id
-    getSnsNeuronIdAsHexString(neuron),
-    // optimistic ballot
-    {
-      vote,
-      cast_timestamp_seconds: BigInt(Math.round(Date.now() / 1000)),
-      voting_power: ballotVotingPower({ proposal, neuron }),
-    } as Ballot,
-  ]);
+  const optimisticBallots: Array<[string, SnsBallot]> = neurons.map(
+    (neuron) => [
+      // neuron id
+      getSnsNeuronIdAsHexString(neuron),
+      // optimistic ballot
+      {
+        vote,
+        cast_timestamp_seconds: BigInt(Math.round(Date.now() / 1000)),
+        voting_power: ballotVotingPower({ proposal, neuron }),
+      } as SnsBallot,
+    ]
+  );
   const votedNeuronsIds = new Set(neurons.map(getSnsNeuronIdAsHexString));
 
   return {

@@ -7,9 +7,9 @@
   } from "$lib/services/sns-neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { NeuronState } from "@dfinity/nns";
+  import { NeuronState } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";
 
   export let neuronId: SnsNeuronId;

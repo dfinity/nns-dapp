@@ -6,7 +6,7 @@
   import { formatEstimatedFee } from "$lib/utils/bitcoin.utils";
   import { numberToE8s } from "$lib/utils/token.utils";
   import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
-  import type { EstimateWithdrawalFee } from "@dfinity/ckbtc";
+  import type { EstimateWithdrawalFee } from "@icp-sdk/canisters/ckbtc";
   import { debounce, nonNullish } from "@dfinity/utils";
 
   export let minterCanisterId: CanisterId;

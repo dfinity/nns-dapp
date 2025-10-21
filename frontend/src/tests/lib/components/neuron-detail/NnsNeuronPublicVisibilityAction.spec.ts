@@ -7,7 +7,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronPublicVisibilityActionPo } from "$tests/page-objects/NnsNeuronPublicVisibilityAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { NeuronVisibility, type NeuronInfo } from "@dfinity/nns";
+import { NeuronVisibility, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsNeuronPublicVisibilityAction", () => {

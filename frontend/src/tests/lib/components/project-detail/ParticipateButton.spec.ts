@@ -21,7 +21,7 @@ import { TooltipPo } from "$tests/page-objects/Tooltip.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { waitFor } from "@testing-library/svelte";
 
 describe("ParticipateButton", () => {

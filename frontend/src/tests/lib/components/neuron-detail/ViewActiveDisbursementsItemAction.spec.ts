@@ -2,7 +2,7 @@ import ViewActiveDisbursementsItemAction from "$lib/components/neuron-detail/Vie
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ViewActiveDisbursementsItemActionPo } from "$tests/page-objects/ViewActiveDisbursementsItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("ViewActiveDisbursementsItemAction", () => {

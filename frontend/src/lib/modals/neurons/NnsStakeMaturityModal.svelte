@@ -4,7 +4,7 @@
   import { stakeMaturity } from "$lib/services/neurons.services";
   import { stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;

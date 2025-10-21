@@ -17,7 +17,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemParameters } from "@dfinity/sns";
+  import type { SnsNervousSystemParameters } from "@icp-sdk/canisters/sns";
   import {
     fromNullable,
     nonNullish,

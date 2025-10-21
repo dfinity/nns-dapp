@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { busy, IconInfo } from "@dfinity/gix-components";
-  import type { NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 
   export let account: Account;

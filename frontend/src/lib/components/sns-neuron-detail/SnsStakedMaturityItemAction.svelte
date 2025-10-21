@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { formattedStakedMaturity } from "$lib/utils/sns-neuron.utils";
   import { IconStakedMaturity } from "@dfinity/gix-components";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 
   export let neuron: SnsNeuron;
 </script>

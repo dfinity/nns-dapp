@@ -3,7 +3,7 @@ import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
 import { toastsError } from "$lib/stores/toasts.store";
-import type { KnownNeuron } from "@dfinity/nns";
+import type { KnownNeuron } from "@icp-sdk/canisters/nns";
 
 export const listKnownNeurons = (): Promise<void> => {
   return queryAndUpdate<KnownNeuron[], unknown>({

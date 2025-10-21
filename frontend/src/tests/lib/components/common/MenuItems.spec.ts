@@ -20,7 +20,7 @@ import {
   menuCollapsed,
   menuStore,
 } from "@dfinity/gix-components";
-import type { ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

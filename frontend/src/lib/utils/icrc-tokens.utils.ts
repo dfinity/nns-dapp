@@ -1,10 +1,10 @@
 import { IMPORTANT_CK_TOKEN_IDS } from "$lib/constants/tokens.constants";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import { isNullish } from "@dfinity/utils";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger-icrc";
-import { isNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/ledger/icrc";
 import type { Principal } from "@icp-sdk/core/principal";
 
 /**

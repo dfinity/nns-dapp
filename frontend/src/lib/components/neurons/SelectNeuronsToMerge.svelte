@@ -11,7 +11,7 @@
     type MergeableNeuron,
   } from "$lib/utils/neuron.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import type { NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 
   let selectedNeuronIds: NeuronId[] = [];

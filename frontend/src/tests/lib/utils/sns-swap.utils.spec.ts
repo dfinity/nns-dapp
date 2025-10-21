@@ -1,7 +1,7 @@
 import { hasBuyersCount, swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockDerived } from "$tests/mocks/sns-projects.mock";
-import type { SnsSwapDerivedState } from "@dfinity/sns";
+import type { SnsSwapDerivedState } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 describe("sns-swap utils", () => {

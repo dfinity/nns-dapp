@@ -9,7 +9,7 @@
     SnsProposalRewardStatus,
     type SnsProposalData,
     type SnsTally,
-  } from "@dfinity/sns";
+  } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
 
   export let proposal: SnsProposalData;

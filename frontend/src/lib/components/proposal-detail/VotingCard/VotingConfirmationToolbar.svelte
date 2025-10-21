@@ -7,7 +7,7 @@
   } from "$lib/stores/vote-registration.store";
   import { selectedNeuronsVotingPower } from "$lib/utils/proposals.utils";
   import { Spinner, busy } from "@dfinity/gix-components";
-  import { Vote } from "@dfinity/nns";
+  import { Vote } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 
   const dispatch = createEventDispatcher();

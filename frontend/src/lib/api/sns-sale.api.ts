@@ -3,13 +3,13 @@ import { wrapper } from "$lib/api/sns-wrapper.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isMethodNotSupportedError } from "$lib/utils/error.utils";
+import { toNullable } from "@dfinity/utils";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsRefreshBuyerTokensResponse,
   SnsSwapTicket,
-} from "@dfinity/sns";
-import { SnsSwapCanister } from "@dfinity/sns";
-import { toNullable } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
+import { SnsSwapCanister } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

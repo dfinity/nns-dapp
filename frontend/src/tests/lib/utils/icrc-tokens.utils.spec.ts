@@ -15,7 +15,7 @@ import {
   mockSnsToken,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
+import { IcrcMetadataResponseEntries } from "@icp-sdk/canisters/ledger/icrc";
 
 describe("ICRC tokens utils", () => {
   describe("mapOptionalToken", () => {

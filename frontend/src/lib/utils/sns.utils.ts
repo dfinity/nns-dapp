@@ -5,15 +5,15 @@ import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { TicketStatus } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
-import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import { AccountIdentifier, SubAccount } from "@icp-sdk/canisters/ledger/icp";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
   SnsNervousSystemFunction,
   SnsProposalData,
-} from "@dfinity/sns";
-import type { DerivedState } from "@dfinity/sns/dist/candid/sns_swap";
-import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+  SnsSwapDerivedState,
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const getSwapCanisterAccount = ({
@@ -148,7 +148,7 @@ export const isSnsFinalizing = (
 
 export const convertDerivedStateResponseToDerivedState = (
   derivedState: SnsGetDerivedStateResponse
-): DerivedState | undefined => {
+): SnsSwapDerivedState | undefined => {
   const sns_tokens_per_icp = fromNullable(derivedState.sns_tokens_per_icp);
   const buyer_total_icp_e8s = fromNullable(derivedState.buyer_total_icp_e8s);
   // This is not expected, but in case it happens, we want to fail fast.

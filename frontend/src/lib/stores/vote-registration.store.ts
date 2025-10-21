@@ -4,8 +4,8 @@ import type {
   UniverseCanisterIdText,
 } from "$lib/types/universe";
 import { preserveNeuronSelectionAfterUpdate } from "$lib/utils/proposals.utils";
-import type { Vote } from "@dfinity/nns";
-import type { SnsVote } from "@dfinity/sns";
+import type { Vote } from "@icp-sdk/canisters/nns";
+import type { SnsVote } from "@icp-sdk/canisters/sns";
 import { writable, type Readable } from "svelte/store";
 
 export type VoteRegistrationStatus = "vote-registration" | "post-update";

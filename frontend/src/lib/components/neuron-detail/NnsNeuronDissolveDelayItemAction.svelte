@@ -14,7 +14,7 @@
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
   import { IconClockNoFill } from "@dfinity/gix-components";
-  import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+  import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken, secondsToDuration } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;

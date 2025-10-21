@@ -16,14 +16,14 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import type { SnsDisburseMaturityInProgress } from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
-} from "@dfinity/sns";
-import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
+} from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 
@@ -55,7 +55,7 @@ describe("SnsNeurons", () => {
     disburse_maturity_in_progress: [
       {
         amount_e8s: 100_000_000n,
-      } as DisburseMaturityInProgress,
+      } as SnsDisburseMaturityInProgress,
     ],
   };
   const neuronNFStake = 400_000_000n;

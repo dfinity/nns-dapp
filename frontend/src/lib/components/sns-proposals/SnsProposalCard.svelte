@@ -13,7 +13,7 @@
     SnsNeuronId,
     SnsProposalData,
     SnsProposalId,
-  } from "@dfinity/sns";
+  } from "@icp-sdk/canisters/sns";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
   import { Principal } from "@icp-sdk/core/principal";

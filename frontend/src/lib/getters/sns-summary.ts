@@ -1,7 +1,7 @@
 import type { CountryCode } from "$lib/types/location";
 import type { SnsSummary } from "$lib/types/sns";
-import type { ProposalId } from "@dfinity/nns";
 import { fromNullable } from "@dfinity/utils";
+import type { ProposalId } from "@icp-sdk/canisters/nns";
 
 export const getDeniedCountries = (_summary: SnsSummary): CountryCode[] =>
   fromNullable(fromNullable(_summary.swap.init)?.restricted_countries ?? [])

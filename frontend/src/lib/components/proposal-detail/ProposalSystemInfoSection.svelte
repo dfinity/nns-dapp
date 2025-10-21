@@ -4,7 +4,11 @@
   import { i18n } from "$lib/stores/i18n";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import { mapProposalInfo } from "$lib/utils/proposals.utils";
-  import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
+  import type {
+    NeuronId,
+    ProposalId,
+    ProposalInfo,
+  } from "@icp-sdk/canisters/nns";
 
   export let proposalInfo: ProposalInfo;
 

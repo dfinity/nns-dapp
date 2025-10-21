@@ -8,8 +8,8 @@ import en from "$tests/mocks/i18n.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 const defaultComponentProps = {

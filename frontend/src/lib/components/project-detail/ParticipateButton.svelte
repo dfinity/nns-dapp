@@ -18,7 +18,7 @@
   } from "$lib/utils/projects.utils";
   import { BottomSheet, Tooltip } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
+  import { SnsSwapLifecycle, type SnsSwapTicket } from "@icp-sdk/canisters/sns";
   import { nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 

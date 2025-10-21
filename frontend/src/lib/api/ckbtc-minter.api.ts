@@ -1,6 +1,7 @@
 import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
+import type { QueryParams } from "@dfinity/utils";
 import {
   CkBTCMinterCanister,
   type EstimateWithdrawalFee,
@@ -10,8 +11,7 @@ import {
   type RetrieveBtcOk,
   type RetrieveBtcStatusV2WithId,
   type UpdateBalanceOk,
-} from "@dfinity/ckbtc";
-import type { QueryParams } from "@dfinity/utils";
+} from "@icp-sdk/canisters/ckbtc";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

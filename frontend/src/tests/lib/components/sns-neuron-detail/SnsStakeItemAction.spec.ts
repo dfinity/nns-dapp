@@ -7,7 +7,7 @@ import {
 import { mockToken, mockUniverse } from "$tests/mocks/sns-projects.mock";
 import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsStakeItemAction", () => {

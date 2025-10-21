@@ -12,6 +12,7 @@ import {
   lastProposalId,
   sortProposalsByIdDescendingOrder,
 } from "$lib/utils/proposals.utils";
+import { isNullish } from "@dfinity/utils";
 import {
   ProposalRewardStatus,
   ProposalStatus,
@@ -19,8 +20,7 @@ import {
   votableNeurons,
   type NeuronInfo,
   type ProposalInfo,
-} from "@dfinity/nns";
-import { isNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 /**

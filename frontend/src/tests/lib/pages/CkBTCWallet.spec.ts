@@ -31,7 +31,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import type { RetrieveBtcStatusV2WithId } from "@dfinity/ckbtc";
+import type { RetrieveBtcStatusV2WithId } from "@icp-sdk/canisters/ckbtc";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

@@ -3,8 +3,8 @@
   import { i18n } from "$lib/stores/i18n";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { getSnsNeuronState, isVesting } from "$lib/utils/sns-neuron.utils";
-  import { NeuronState } from "@dfinity/nns";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import { NeuronState } from "@icp-sdk/canisters/nns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 
   export let neuron: SnsNeuron;
 

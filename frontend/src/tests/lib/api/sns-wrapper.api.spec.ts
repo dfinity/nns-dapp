@@ -3,7 +3,7 @@ import { clearWrapperCache, wrappers } from "$lib/api/sns-wrapper.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { SnsWrapper } from "@dfinity/sns";
+import type { SnsWrapper } from "@icp-sdk/canisters/sns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 

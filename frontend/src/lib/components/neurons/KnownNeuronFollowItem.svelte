@@ -3,7 +3,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { busy } from "@dfinity/gix-components";
-  import type { KnownNeuron, NeuronId, Topic } from "@dfinity/nns";
+  import type { KnownNeuron, NeuronId, Topic } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 
   export let knownNeuron: KnownNeuron;

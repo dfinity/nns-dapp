@@ -17,8 +17,8 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
 vi.mock("$lib/api/governance.api");
 vi.mock("$lib/api/sns-governance.api");

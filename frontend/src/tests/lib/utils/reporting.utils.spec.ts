@@ -15,7 +15,7 @@ import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { aggregatorTokenMock } from "$tests/mocks/sns-aggregator.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 
 type TestPersonData = { name: string; age: number };

@@ -2,7 +2,7 @@
   import EditFollowNeurons from "$lib/components/neurons/EditFollowNeurons.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { Modal } from "@dfinity/gix-components";
-  import type { NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@icp-sdk/canisters/nns";
 
   type Props = {
     neuronId: NeuronId;

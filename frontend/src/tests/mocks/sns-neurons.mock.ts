@@ -11,28 +11,28 @@ import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-conver
 import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
-import { NeuronState, type NeuronId } from "@dfinity/nns";
-import {
-  SnsNeuronPermissionType,
-  type SnsNervousSystemParameters,
-  type SnsNeuron,
-  type SnsTopic,
-} from "@dfinity/sns";
-import type {
-  DisburseMaturityInProgress,
-  NeuronPermission,
-} from "@dfinity/sns/dist/candid/sns_governance";
 import {
   arrayOfNumberToUint8Array,
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import { NeuronState, type NeuronId } from "@icp-sdk/canisters/nns";
+import type {
+  SnsDisburseMaturityInProgress,
+  SnsNeuronPermission,
+} from "@icp-sdk/canisters/sns";
+import {
+  SnsNeuronPermissionType,
+  type SnsNervousSystemParameters,
+  type SnsNeuron,
+  type SnsTopic,
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;
 
-export const mockActiveDisbursement: DisburseMaturityInProgress = {
+export const mockActiveDisbursement: SnsDisburseMaturityInProgress = {
   timestamp_of_disbursement_seconds: 10_000n,
   amount_e8s: 1_000_000n,
   account_to_disburse_to: [
@@ -66,7 +66,7 @@ export const createMockSnsNeuron = ({
   stake?: bigint;
   id?: number[];
   state?: NeuronState;
-  permissions?: NeuronPermission[];
+  permissions?: SnsNeuronPermission[];
   // `undefined` means no vesting at all (default)
   // `true` means is still vesting
   // `false` means vesting period has passed

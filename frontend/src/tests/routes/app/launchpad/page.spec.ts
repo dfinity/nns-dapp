@@ -15,7 +15,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Launchpad2Po } from "$tests/page-objects/Launchpad2.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";

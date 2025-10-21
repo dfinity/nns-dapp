@@ -8,7 +8,7 @@ import {
   createMockSnsNeuron,
   mockSnsNeuron,
 } from "$tests/mocks/sns-neurons.mock";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/services/sns-neurons.services", () => {

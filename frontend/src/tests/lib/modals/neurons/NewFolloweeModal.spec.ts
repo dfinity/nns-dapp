@@ -11,7 +11,7 @@ import { NewFolloweeModalPo } from "$tests/page-objects/NewFolloweeModal.page-ob
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { Topic, type NeuronInfo } from "@dfinity/nns";
+import { Topic, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 import type { Mock } from "vitest";
 

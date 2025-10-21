@@ -4,7 +4,7 @@
   import { snsFiltersStore } from "$lib/stores/sns-filters.store";
   import type { Filter } from "$lib/types/filters";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsProposalDecisionStatus } from "@dfinity/sns";
+  import type { SnsProposalDecisionStatus } from "@icp-sdk/canisters/sns";
 
   type Props = {
     rootCanisterId: Principal;

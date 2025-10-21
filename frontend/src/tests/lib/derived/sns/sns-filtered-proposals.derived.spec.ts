@@ -13,7 +13,10 @@ import {
   createSnsProposal,
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
-import { SnsProposalDecisionStatus, type SnsProposalData } from "@dfinity/sns";
+import {
+  SnsProposalDecisionStatus,
+  type SnsProposalData,
+} from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("snsFilteredProposalsStore", () => {

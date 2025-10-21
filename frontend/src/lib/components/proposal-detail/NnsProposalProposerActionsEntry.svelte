@@ -4,7 +4,7 @@
     proposalActionData,
     proposalFirstActionKey,
   } from "$lib/utils/proposals.utils";
-  import type { Proposal } from "@dfinity/nns";
+  import type { Proposal } from "@icp-sdk/canisters/nns";
 
   export let proposal: Proposal | undefined;
 

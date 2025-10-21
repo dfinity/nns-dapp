@@ -14,7 +14,7 @@ import type {
   ProposalInfo,
   ProposalStatus,
   Topic,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import { writable } from "svelte/store";
 
 export interface ProposalsFiltersStore {

@@ -3,7 +3,7 @@ import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDela
 import { updateDelay } from "$lib/services/neurons.services";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
 import type { Component } from "svelte";

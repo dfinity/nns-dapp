@@ -5,7 +5,7 @@ import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
-import type { AccountIdentifierHex } from "@dfinity/ledger-icp";
+import type { AccountIdentifierHex } from "@icp-sdk/canisters/ledger/icp";
 import type {
   E8s,
   GovernanceCachedMetrics,
@@ -16,12 +16,12 @@ import type {
   ProposalId,
   Topic,
   Vote,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import {
   GovernanceCanister,
   NeuronVisibility,
   type RewardEvent,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

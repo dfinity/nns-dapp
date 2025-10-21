@@ -5,7 +5,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
   type CreateServiceNervousSystem,
   type ProposalInfo,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("CreateSnsProposalCard", () => {

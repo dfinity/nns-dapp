@@ -2,8 +2,8 @@ import { CKBTC_LEDGER_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.cons
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcBalance } from "$lib/worker-api/icrc-ledger.worker-api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import * as dfinityUtils from "@dfinity/utils";
+import { IcrcLedgerCanister } from "@icp-sdk/canisters/ledger/icrc";
 import { mock } from "vitest-mock-extended";
 
 describe("icrc-ledger.worker-api", () => {

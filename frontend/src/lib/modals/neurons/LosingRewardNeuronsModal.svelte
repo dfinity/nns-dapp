@@ -9,7 +9,7 @@
   import { goto } from "$app/navigation";
   import { buildNeuronUrl } from "$lib/utils/navigation.utils";
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import ConfirmFollowingButton from "$lib/components/neuron-detail/actions/ConfirmFollowingButton.svelte";
   import { startReducingVotingPowerAfterSecondsStore } from "$lib/derived/network-economics.derived";
   import { nonNullish } from "@dfinity/utils";

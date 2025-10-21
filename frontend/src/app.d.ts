@@ -28,5 +28,5 @@ declare namespace svelteHTML {
 //
 // Hint: Could not find a declaration file for module '@dfinity/.../dist/esm/...'. '...js' implicitly has an 'any' type.
 // If the '@dfinity/...' package actually exposes this module, try adding a new declaration (.d.ts) file containing `declare module '@dfinity/.../dist/esm/...';`
-declare module "@dfinity/nns/dist/esm/sns_wasm.canister";
-declare module "@dfinity/sns/dist/esm/sns";
+declare module "@icp-sdk/canisters/nns/dist/esm/sns_wasm.canister";
+declare module "@icp-sdk/canisters/sns/dist/esm/sns";

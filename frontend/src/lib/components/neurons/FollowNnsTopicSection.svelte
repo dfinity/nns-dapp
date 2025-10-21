@@ -14,7 +14,11 @@
     getTopicTitle,
   } from "$lib/utils/neuron.utils";
   import { IconClose, Value } from "@dfinity/gix-components";
-  import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+  import {
+    Topic,
+    type NeuronId,
+    type NeuronInfo,
+  } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {

@@ -20,14 +20,14 @@ import {
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { mockUpdateBalanceOk } from "$tests/mocks/ckbtc-minter.mock";
 import en from "$tests/mocks/i18n.mock";
-import type { RetrieveBtcStatusV2WithId } from "@dfinity/ckbtc";
+import { toastsStore } from "@dfinity/gix-components";
+import type { RetrieveBtcStatusV2WithId } from "@icp-sdk/canisters/ckbtc";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
   MinterNoNewUtxosError,
   MinterTemporaryUnavailableError,
-} from "@dfinity/ckbtc";
-import { toastsStore } from "@dfinity/gix-components";
+} from "@icp-sdk/canisters/ckbtc";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

@@ -7,13 +7,13 @@
   import type { RootCanisterIdText } from "$lib/types/sns";
   import type { Universe } from "$lib/types/universe";
   import { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import type { ProposalData } from "@dfinity/sns/dist/candid/sns_governance";
+  import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+  import type { SnsProposalData } from "@icp-sdk/canisters/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
   import type { Readable } from "svelte/store";
 
   export let universe: Universe;
-  export let proposals: ProposalData[];
+  export let proposals: SnsProposalData[];
 
   let rootCanisterId: RootCanisterIdText;
   $: rootCanisterId = universe.canisterId;

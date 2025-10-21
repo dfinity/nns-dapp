@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { isSpawning, neuronStake } from "$lib/utils/neuron.utils";
   import { IconStackedLineChart } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;

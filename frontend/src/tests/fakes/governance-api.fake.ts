@@ -12,14 +12,14 @@ import {
   installImplAndBlockRest,
   makePausable,
 } from "$tests/utils/module.test-utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import type {
   KnownNeuron,
   NeuronId,
   NeuronInfo,
   RewardEvent,
-} from "@dfinity/nns";
-import { NeuronState, NeuronType } from "@dfinity/nns";
-import { isNullish, nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/nns";
+import { NeuronState, NeuronType } from "@icp-sdk/canisters/nns";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
 
 const modulePath = "$lib/api/governance.api";

@@ -10,7 +10,7 @@ import {
 import { JsonPreviewPo } from "$tests/page-objects/JsonPreview.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { Proposal } from "@dfinity/nns";
+import type { Proposal } from "@icp-sdk/canisters/nns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";

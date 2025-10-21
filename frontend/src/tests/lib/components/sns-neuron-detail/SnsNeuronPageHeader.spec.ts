@@ -13,7 +13,7 @@ import { SnsNeuronPageHeaderPo } from "$tests/page-objects/SnsNeuronPageHeader.p
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle, type SnsNeuron } from "@dfinity/sns";
+import { SnsSwapLifecycle, type SnsNeuron } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("SnsNeuronPageHeader", () => {

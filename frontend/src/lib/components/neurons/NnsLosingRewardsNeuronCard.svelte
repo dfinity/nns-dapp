@@ -15,7 +15,7 @@
     type NeuronTagData,
   } from "$lib/utils/neuron.utils";
   import { Card, IconRight } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;

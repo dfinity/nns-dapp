@@ -2,7 +2,7 @@
   import ActiveDisbursementItem from "$lib/components/neuron-detail/ActiveDisbursementEntry.svelte";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
-  import type { MaturityDisbursement } from "@dfinity/nns";
+  import type { MaturityDisbursement } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {

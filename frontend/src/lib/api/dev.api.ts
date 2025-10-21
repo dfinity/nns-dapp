@@ -6,20 +6,26 @@ import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { BlockHeight } from "@dfinity/ledger-icp";
-import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
-import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger-icrc";
-import type { E8s, NeuronId } from "@dfinity/nns";
-import {
-  SnsGovernanceCanister,
-  SnsGovernanceTestCanister,
-  type SnsNeuronId,
-} from "@dfinity/sns";
 import {
   arrayOfNumberToUint8Array,
   createAgent as createAgentUtils,
   toNullable,
 } from "@dfinity/utils";
+import type { BlockHeight } from "@icp-sdk/canisters/ledger/icp";
+import {
+  AccountIdentifier,
+  LedgerCanister,
+} from "@icp-sdk/canisters/ledger/icp";
+import {
+  IcrcLedgerCanister,
+  decodeIcrcAccount,
+} from "@icp-sdk/canisters/ledger/icrc";
+import type { E8s, NeuronId } from "@icp-sdk/canisters/nns";
+import {
+  SnsGovernanceCanister,
+  SnsGovernanceTestCanister,
+  type SnsNeuronId,
+} from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Actor, HttpAgent, type Agent } from "@icp-sdk/core/agent";
 import type { IDL } from "@icp-sdk/core/candid";

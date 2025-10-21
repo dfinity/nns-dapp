@@ -10,7 +10,7 @@ import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsLosingRewardsNeuronCardPo } from "$tests/page-objects/NnsLosingRewardsNeuronCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { Topic, type NeuronInfo } from "@dfinity/nns";
+import { Topic, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsLosingRewardsNeuronCard", () => {

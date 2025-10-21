@@ -8,7 +8,7 @@
     invalidIcrcAddress,
   } from "$lib/utils/accounts.utils";
   import { isUniverseCkTESTBTC } from "$lib/utils/universe.utils";
-  import { BtcNetwork } from "@dfinity/ckbtc";
+  import { BtcNetwork } from "@icp-sdk/canisters/ckbtc";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { isNullish, nonNullish } from "@dfinity/utils";
 

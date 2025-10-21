@@ -11,7 +11,7 @@ import {
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
 import { renderContextCmp } from "$tests/mocks/sns.mock";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 
 describe("ProjectStatus", () => {
   beforeEach(() => {

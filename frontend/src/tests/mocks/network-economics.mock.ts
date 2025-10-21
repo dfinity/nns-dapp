@@ -2,7 +2,7 @@ import {
   SECONDS_IN_HALF_YEAR,
   SECONDS_IN_MONTH,
 } from "$lib/constants/constants";
-import type { NetworkEconomics } from "@dfinity/nns";
+import type { NetworkEconomics } from "@icp-sdk/canisters/nns";
 
 export const mockNetworkEconomics: NetworkEconomics = {
   neuronMinimumStake: 100_000_000n,

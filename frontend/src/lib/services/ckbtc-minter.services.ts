@@ -19,6 +19,7 @@ import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { toToastError } from "$lib/utils/error.utils";
 import { waitForMilliseconds } from "$lib/utils/utils";
+import { nonNullish } from "@dfinity/utils";
 import {
   MinterAlreadyProcessingError,
   MinterGenericError,
@@ -28,8 +29,7 @@ import {
   type EstimateWithdrawalFeeParams,
   type PendingUtxo,
   type UpdateBalanceOk,
-} from "@dfinity/ckbtc";
-import { nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/ckbtc";
 import { get } from "svelte/store";
 
 const getBTCAddress = async (minterCanisterId: CanisterId): Promise<string> => {

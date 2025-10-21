@@ -9,7 +9,7 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { snsFinalizationStatusResponseMock } from "$tests/mocks/sns-finalization-status.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns-finalization-services", () => {

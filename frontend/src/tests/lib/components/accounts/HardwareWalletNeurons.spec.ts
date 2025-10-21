@@ -4,7 +4,7 @@ import HardwareWalletNeuronsTest from "$tests/lib/components/accounts/HardwareWa
 import { mockNeuronStake } from "$tests/mocks/hardware-wallet-neurons.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { Neuron } from "@dfinity/nns";
+import type { Neuron } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("HardwareWalletNeurons", () => {

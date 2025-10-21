@@ -7,7 +7,7 @@ import {
 import { StakeNeuronToVotePo } from "$tests/page-objects/StakeNeuronToVote.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("StakeNeuronToVote", () => {

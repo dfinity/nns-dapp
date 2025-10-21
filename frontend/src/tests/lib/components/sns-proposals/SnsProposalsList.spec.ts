@@ -10,7 +10,10 @@ import { SnsProposalListPo } from "$tests/page-objects/SnsProposalList.page-obje
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsProposalDecisionStatus, type SnsProposalData } from "@dfinity/sns";
+import {
+  SnsProposalDecisionStatus,
+  type SnsProposalData,
+} from "@icp-sdk/canisters/sns";
 
 describe("SnsProposalsList", () => {
   const renderComponent = async (props) => {

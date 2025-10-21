@@ -8,7 +8,7 @@ import {
   snsFinalizationStatusResponseMock,
 } from "$tests/mocks/sns-finalization-status.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import type { SnsGetAutoFinalizationStatusResponse } from "@dfinity/sns";
+import type { SnsGetAutoFinalizationStatusResponse } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns finalization status stores", () => {

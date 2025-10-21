@@ -5,7 +5,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { numberToE8s } from "$lib/utils/token.utils";
   import { Modal, Spinner } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;

@@ -33,7 +33,8 @@ import {
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { Vote } from "@dfinity/nns";
+import { Vote } from "@icp-sdk/canisters/nns";
+import type { SnsNeuronPermission } from "@icp-sdk/canisters/sns";
 import {
   SnsGovernanceError,
   SnsNeuronPermissionType,
@@ -43,8 +44,7 @@ import {
   SnsVote,
   type SnsBallot,
   type SnsProposalData,
-} from "@dfinity/sns";
-import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
+} from "@icp-sdk/canisters/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { waitFor } from "@testing-library/svelte";
@@ -852,7 +852,7 @@ describe("SnsProposalDetail", () => {
             permission_type: Int32Array.from([
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
             ]),
-          } as NeuronPermission,
+          } as SnsNeuronPermission,
         ],
       };
       const neuron1 = fakeSnsGovernanceApi.addNeuronWith({

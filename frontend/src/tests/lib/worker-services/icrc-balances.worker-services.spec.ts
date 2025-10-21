@@ -6,8 +6,8 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { ledgerCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import * as dfinityUtils from "@dfinity/utils";
+import { IcrcLedgerCanister } from "@icp-sdk/canisters/ledger/icrc";
 import { mock } from "vitest-mock-extended";
 
 describe("balances.worker-services", () => {

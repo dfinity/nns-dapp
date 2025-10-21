@@ -15,7 +15,7 @@
     SelectedProposalStore,
   } from "$lib/types/selected-proposal.context";
   import { SELECTED_PROPOSAL_CONTEXT_KEY } from "$lib/types/selected-proposal.context";
-  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
+  import type { ProposalId, ProposalInfo } from "@icp-sdk/canisters/nns";
   import { setContext } from "svelte";
   import { writable } from "svelte/store";
 

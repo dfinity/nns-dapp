@@ -4,7 +4,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ChangeNeuronVisibilityModalPo } from "$tests/page-objects/ChangeNeuronVisibilityModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { NeuronVisibility } from "@dfinity/nns";
+import { NeuronVisibility } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsChangeNeuronVisibilityButton", () => {

@@ -19,7 +19,7 @@
     SnsNervousSystemFunction,
     SnsNeuron,
     SnsNeuronId,
-  } from "@dfinity/sns";
+  } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
   type Props = {

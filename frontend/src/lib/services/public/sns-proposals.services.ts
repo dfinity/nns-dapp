@@ -16,6 +16,7 @@ import {
   toExcludeTypeParameter,
   toIncludeTopicsParameter,
 } from "$lib/utils/sns-proposals.utils";
+import { fromNullable, isNullish } from "@dfinity/utils";
 import type {
   SnsListProposalsResponse,
   SnsNervousSystemFunction,
@@ -23,8 +24,7 @@ import type {
   SnsProposalData,
   SnsProposalId,
   SnsVote,
-} from "@dfinity/sns";
-import { fromNullable, isNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 

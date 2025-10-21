@@ -11,7 +11,10 @@ import type {
 } from "$lib/types/sns-aggregator";
 import { aggregatorSnsMockWith } from "$tests/mocks/sns-aggregator.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
+import {
+  SnsSwapLifecycle,
+  type SnsNervousSystemFunction,
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const setSnsProjects = (

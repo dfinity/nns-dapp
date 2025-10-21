@@ -3,6 +3,7 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UnknownTopic } from "$lib/types/sns-aggregator";
 import type {
   CfParticipant,
+  SnsFinalizeSwapResponse,
   SnsGetLifecycleResponse,
   SnsNervousSystemFunction,
   SnsNeuronId,
@@ -13,8 +14,7 @@ import type {
   SnsSwapInit,
   SnsSwapTicket,
   SnsTopic,
-} from "@dfinity/sns";
-import type { FinalizeSwapResponse } from "@dfinity/sns/dist/candid/sns_swap";
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export type RootCanisterId = Principal;
@@ -31,7 +31,7 @@ export interface SnsSummaryMetadata {
 }
 
 export interface SnsSummarySwap {
-  auto_finalize_swap_response: [] | [FinalizeSwapResponse];
+  auto_finalize_swap_response: [] | [SnsFinalizeSwapResponse];
   next_ticket_id: [] | [bigint];
   already_tried_to_auto_finalize: [] | [boolean];
   purge_old_tickets_last_completion_timestamp_nanoseconds: [] | [bigint];

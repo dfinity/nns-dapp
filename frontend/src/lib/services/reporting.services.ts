@@ -6,9 +6,9 @@ import type {
   TransactionsDateRange,
 } from "$lib/types/reporting";
 import { neuronStake } from "$lib/utils/neuron.utils";
-import type { TransactionWithId } from "@dfinity/ledger-icp";
-import type { NeuronInfo } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { SignIdentity } from "@icp-sdk/core/agent";
 
 const accountToTransactionEntity = (account: Account): TransactionEntity => {

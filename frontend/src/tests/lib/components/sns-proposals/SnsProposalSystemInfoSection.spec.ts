@@ -17,7 +17,7 @@ import {
   SnsProposalDecisionStatus,
   type SnsProposalData,
   type SnsTopic,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

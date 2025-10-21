@@ -4,7 +4,7 @@ import {
   mockSwapCommitment,
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("ProjectUserCommitmentLabel", () => {

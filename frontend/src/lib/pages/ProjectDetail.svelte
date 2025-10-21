@@ -42,7 +42,7 @@
   import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { Principal } from "@icp-sdk/core/principal";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";

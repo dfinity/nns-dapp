@@ -4,14 +4,14 @@ import type {
   SnsSummaryMetadata,
   SnsSummarySwap,
 } from "$lib/types/sns";
+import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 import type {
   SnsGetLifecycleResponse,
   SnsParams,
   SnsSwapDerivedState,
   SnsSwapInit,
   SnsSwapLifecycle,
-} from "@dfinity/sns";
-import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export class SnsSummaryWrapper implements SnsSummary {

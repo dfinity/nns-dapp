@@ -21,7 +21,7 @@ import {
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

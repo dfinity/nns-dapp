@@ -5,8 +5,8 @@ import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsProposalData } from "@dfinity/sns";
-import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+import { SnsProposalDecisionStatus } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("snsFilteredActionableProposalsStore", () => {

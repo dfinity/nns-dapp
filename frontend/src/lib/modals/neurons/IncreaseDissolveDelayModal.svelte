@@ -7,7 +7,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;
