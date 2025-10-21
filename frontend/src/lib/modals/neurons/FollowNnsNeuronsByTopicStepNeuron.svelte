@@ -127,14 +127,24 @@
         <Html text={errorMessage} />
       </p>
     {/if}
-    <button
-      data-tid="follow-neuron-button"
-      class="primary"
-      type="submit"
-      {disabled}
-    >
-      {$i18n.new_followee.follow_neuron}
-    </button>
+    <div class="toolbar">
+      <button
+        class="secondary"
+        type="button"
+        data-tid="back-button"
+        onclick={openPrevStep}
+      >
+        {$i18n.core.back}
+      </button>
+      <button
+        data-tid="follow-neuron-button"
+        class="primary"
+        type="submit"
+        {disabled}
+      >
+        {$i18n.new_followee.follow_neuron}
+      </button>
+    </div>
   </form>
 
   <div class="following">
@@ -156,17 +166,6 @@
       </ul>
     {/if}
   </div>
-
-  <div class="toolbar">
-    <button
-      class="secondary"
-      type="button"
-      data-tid="back-button"
-      onclick={openPrevStep}
-    >
-      {$i18n.core.back}
-    </button>
-  </div>
 </div>
 
 <style lang="scss">
@@ -180,11 +179,6 @@
       font-size: var(--font-size-ultra-small);
       line-height: var(--line-height-1_25x);
     }
-  }
-
-  button {
-    width: fit-content;
-    align-self: flex-end;
   }
 
   ul {
@@ -202,6 +196,5 @@
   .toolbar {
     display: flex;
     justify-content: space-between;
-    margin-top: var(--padding-2x);
   }
 </style>
