@@ -1,5 +1,8 @@
 <script lang="ts">
-  import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemFunction,
+    SnsNeuronId,
+  } from "@icp-sdk/canisters/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
 
   type Props = {

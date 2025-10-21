@@ -1,4 +1,4 @@
-import type { RewardEvent } from "@dfinity/nns";
+import type { RewardEvent } from "@icp-sdk/canisters/nns";
 
 export const mockRewardEvent: RewardEvent = {
   rounds_since_last_distribution: [1_000n],

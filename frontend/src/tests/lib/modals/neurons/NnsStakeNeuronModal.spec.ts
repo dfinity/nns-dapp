@@ -34,10 +34,10 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { LedgerCanister } from "@dfinity/ledger-icp";
-import type { NeuronInfo } from "@dfinity/nns";
-import { GovernanceCanister } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
+import { GovernanceCanister } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 import { mock } from "vitest-mock-extended";

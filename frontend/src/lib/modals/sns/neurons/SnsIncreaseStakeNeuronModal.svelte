@@ -17,7 +17,7 @@
   import { toTokenAmountV2 } from "$lib/utils/token.utils";
   import type { WizardStep } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
   import { type Token, TokenAmountV2, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import type { Readable } from "svelte/store";

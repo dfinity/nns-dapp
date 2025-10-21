@@ -7,11 +7,11 @@ import {
   generateSnsProposalTopicsFilterData,
   generateSnsProposalTypesFilterData,
 } from "$lib/utils/sns-proposals.utils";
+import { isNullish } from "@dfinity/utils";
 import {
   SnsProposalDecisionStatus,
   type SnsNervousSystemFunction,
-} from "@dfinity/sns";
-import { isNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 

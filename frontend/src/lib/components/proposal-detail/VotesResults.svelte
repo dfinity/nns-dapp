@@ -8,7 +8,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isCriticalProposal } from "$lib/utils/sns-proposals.utils";
   import { Html, IconExpandMore } from "@dfinity/gix-components";
-  import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
+  import { ProposalStatus, type ProposalInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 
   const formatVotingPower = (value: number) =>

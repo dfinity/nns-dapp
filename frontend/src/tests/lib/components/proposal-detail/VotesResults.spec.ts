@@ -8,7 +8,7 @@ import { basisPointsToPercent } from "$lib/utils/utils";
 import en from "$tests/mocks/i18n.mock";
 import { VotesResultPo } from "$tests/page-objects/VotesResults.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { ProposalStatus } from "@dfinity/nns";
+import { ProposalStatus } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 const now = nowInSeconds();

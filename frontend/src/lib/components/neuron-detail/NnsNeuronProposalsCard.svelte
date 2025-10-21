@@ -1,7 +1,7 @@
 <script lang="ts">
   import NeuronProposalsCard from "$lib/components/neuron-detail/NeuronProposalsCard.svelte";
   import { makeDummyProposals } from "$lib/services/neurons.services";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
 

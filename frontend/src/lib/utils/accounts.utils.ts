@@ -10,14 +10,18 @@ import { TransactionNetwork } from "$lib/types/transaction";
 import { sumAmounts } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
-import { BtcNetwork, parseBtcAddress, type BtcAddress } from "@dfinity/ckbtc";
+import { isNullish, nonNullish } from "@dfinity/utils";
+import {
+  BtcNetwork,
+  parseBtcAddress,
+  type BtcAddress,
+} from "@icp-sdk/canisters/ckbtc";
 import {
   AccountIdentifier,
   SubAccount,
   checkAccountId,
-} from "@dfinity/ledger-icp";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { isNullish, nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/ledger/icp";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { Principal } from "@icp-sdk/core/principal";
 
 /*

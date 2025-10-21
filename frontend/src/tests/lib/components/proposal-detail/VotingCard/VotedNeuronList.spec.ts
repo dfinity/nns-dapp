@@ -3,7 +3,7 @@ import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
 import { VotedNeuronListPo } from "$tests/page-objects/VotedNeuronList.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { Vote } from "@dfinity/nns";
+import { Vote } from "@icp-sdk/canisters/nns";
 
 describe("VotedNeuronList", () => {
   const neuron1 = {

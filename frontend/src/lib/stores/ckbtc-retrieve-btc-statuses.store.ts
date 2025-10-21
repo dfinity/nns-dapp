@@ -2,7 +2,7 @@ import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
 } from "$lib/types/universe";
-import type { RetrieveBtcStatusV2WithId } from "@dfinity/ckbtc";
+import type { RetrieveBtcStatusV2WithId } from "@icp-sdk/canisters/ckbtc";
 import { writable, type Readable } from "svelte/store";
 
 type CkbtcRetrieveBtcStatusesStoreData = Record<

@@ -6,7 +6,7 @@
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
   import { Html, KeyValuePair, Modal } from "@dfinity/gix-components";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
   import type { Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

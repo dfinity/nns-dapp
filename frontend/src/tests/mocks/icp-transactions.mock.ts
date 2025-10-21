@@ -7,7 +7,7 @@ import type {
   Operation,
   Transaction,
   TransactionWithId,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 
 export const mockTransactionTransfer: Transaction = {
   memo: 0n,

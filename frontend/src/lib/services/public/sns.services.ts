@@ -11,8 +11,12 @@ import { toastsError } from "$lib/stores/toasts.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
-import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import {
+  ProposalStatus,
+  Topic,
+  type ProposalInfo,
+} from "@icp-sdk/canisters/nns";
 
 // Returns a promise that resolves once the snsAggregatorStore data is defined.
 export const getLoadedSnsAggregatorData = async (): Promise<CachedSnsDto[]> => {

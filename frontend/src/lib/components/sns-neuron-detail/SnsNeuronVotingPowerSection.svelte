@@ -18,7 +18,10 @@
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { Html, KeyValuePairInfo, Section } from "@dfinity/gix-components";
   import { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemParameters,
+    SnsNeuron,
+  } from "@icp-sdk/canisters/sns";
   import {
     fromDefinedNullable,
     secondsToDuration,

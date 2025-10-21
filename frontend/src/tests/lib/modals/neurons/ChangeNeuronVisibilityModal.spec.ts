@@ -11,7 +11,7 @@ import { ChangeNeuronVisibilityModalPo } from "$tests/page-objects/ChangeNeuronV
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { NeuronVisibility } from "@dfinity/nns";
+import { NeuronVisibility } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");

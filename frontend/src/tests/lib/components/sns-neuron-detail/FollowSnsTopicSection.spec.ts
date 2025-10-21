@@ -12,7 +12,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { FollowSnsTopicSectionPo } from "$tests/page-objects/FollowSnsTopicSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 
 describe("FollowSnsTopicSection", () => {
   const reload = vi.fn();

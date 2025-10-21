@@ -15,7 +15,7 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { extractHrefFromText } from "$tests/utils/utils.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");

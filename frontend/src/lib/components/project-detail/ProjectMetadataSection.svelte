@@ -12,7 +12,7 @@
   import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
   import { snsProjectDashboardUrl } from "$lib/utils/projects.utils";
   import type { Principal } from "@icp-sdk/core/principal";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import { isNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 

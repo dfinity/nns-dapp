@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsError } from "$lib/stores/toasts.store";
   import { Modal } from "@dfinity/gix-components";
-  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId, NeuronInfo } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher } from "svelte";
 

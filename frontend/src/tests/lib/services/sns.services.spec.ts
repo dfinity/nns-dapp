@@ -19,12 +19,12 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
-} from "@dfinity/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";

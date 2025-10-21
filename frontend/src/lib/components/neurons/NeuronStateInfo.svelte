@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { getStateInfo, type StateInfo } from "$lib/utils/neuron.utils";
   import { keyOf } from "$lib/utils/utils";
-  import type { NeuronState } from "@dfinity/nns";
+  import type { NeuronState } from "@icp-sdk/canisters/nns";
 
   export let state: NeuronState;
 

@@ -4,7 +4,7 @@
     NnsNeuronStore,
   } from "$lib/types/nns-neuron-detail.context";
   import { NNS_NEURON_CONTEXT_KEY } from "$lib/types/nns-neuron-detail.context";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { setContext } from "svelte";
   import { writable } from "svelte/store";
   import NnsNeuronRewardStatusAction from "$lib/components/neuron-detail/NnsNeuronRewardStatusAction.svelte";

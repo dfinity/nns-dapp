@@ -42,6 +42,7 @@ import {
   mockSnsProposal,
 } from "$tests/mocks/sns-proposals.mock";
 import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -52,8 +53,7 @@ import {
   type SnsProposalData,
   type SnsTally,
   type SnsTopicInfo,
-} from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 
 describe("sns-proposals utils", () => {
   const acceptedTally = {

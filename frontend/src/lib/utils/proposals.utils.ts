@@ -20,6 +20,7 @@ import {
   mergeComparators,
 } from "$lib/utils/sort.utils";
 import { isDefined, keyOf, keyOfOptional } from "$lib/utils/utils";
+import { isNullish } from "@dfinity/utils";
 import type {
   Ballot,
   ExecuteNnsFunction,
@@ -29,16 +30,15 @@ import type {
   ProposalId,
   ProposalInfo,
   Tally,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import {
   NnsFunction,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
   Vote,
-} from "@dfinity/nns";
-import type { SnsVote } from "@dfinity/sns";
-import { isNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/nns";
+import type { SnsVote } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 export const lastProposalId = (

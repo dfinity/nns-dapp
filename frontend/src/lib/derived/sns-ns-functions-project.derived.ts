@@ -2,8 +2,8 @@ import {
   snsFunctionsStore,
   type SnsNervousSystemFunctionsStore,
 } from "$lib/derived/sns-functions.derived";
-import type { SnsNervousSystemFunction } from "@dfinity/sns";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 

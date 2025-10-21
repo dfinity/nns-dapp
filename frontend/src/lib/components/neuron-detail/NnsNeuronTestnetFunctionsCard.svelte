@@ -3,7 +3,7 @@
   import { unlockNeuron } from "$lib/services/nns-neurons-dev.services";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { Spinner } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
 

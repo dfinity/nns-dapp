@@ -10,7 +10,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/NnsNeuronDissolveDelayItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsNeuronDissolveDelayItemAction", () => {

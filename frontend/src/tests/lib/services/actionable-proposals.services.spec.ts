@@ -14,7 +14,7 @@ import {
   Vote,
   type NeuronInfo,
   type ProposalInfo,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 describe("actionable-proposals.services", () => {

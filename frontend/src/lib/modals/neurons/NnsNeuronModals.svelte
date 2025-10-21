@@ -29,7 +29,7 @@
     isPublicNeuron,
     type FolloweesNeuron,
   } from "$lib/utils/neuron.utils";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 
   let modal: NnsNeuronModal<NnsNeuronModalData> | undefined;

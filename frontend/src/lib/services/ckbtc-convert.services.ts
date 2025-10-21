@@ -13,6 +13,7 @@ import { ConvertBtcStep } from "$lib/types/ckbtc-convert";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
+import { nonNullish } from "@dfinity/utils";
 import {
   MinterAlreadyProcessingError,
   MinterAmountTooLowError,
@@ -20,8 +21,7 @@ import {
   MinterInsufficientFundsError,
   MinterMalformedAddressError,
   MinterTemporaryUnavailableError,
-} from "@dfinity/ckbtc";
-import { nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/ckbtc";
 
 export type ConvertCkBTCToBtcParams = {
   destinationAddress: string;

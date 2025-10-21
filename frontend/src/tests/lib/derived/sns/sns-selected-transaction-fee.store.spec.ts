@@ -4,7 +4,7 @@ import { page } from "$mocks/$app/stores";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("snsSelectedTransactionFeeStore", () => {

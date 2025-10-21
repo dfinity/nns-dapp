@@ -3,7 +3,7 @@ import type {
   ConnectToHardwareWalletParams,
   RegisterHardwareWalletParams,
 } from "$lib/services/icp-ledger.services";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import type { Identity } from "@icp-sdk/core/agent";
 
 const importLedgerServices = () => import("../services/icp-ledger.services");

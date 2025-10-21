@@ -6,7 +6,7 @@ import {
   mockProposalInfo,
   proposalActionNnsFunction21,
 } from "$tests/mocks/proposal.mock";
-import type { Proposal } from "@dfinity/nns";
+import type { Proposal } from "@icp-sdk/canisters/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import { render, waitFor } from "@testing-library/svelte";
 import type { Component } from "svelte";

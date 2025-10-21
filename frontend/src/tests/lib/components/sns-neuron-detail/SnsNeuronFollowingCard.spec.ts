@@ -15,7 +15,7 @@ import {
   SnsNeuronPermissionType,
   type SnsNervousSystemFunction,
   type SnsNeuron,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 
 describe("SnsNeuronFollowingCard", () => {
   beforeEach(() => {

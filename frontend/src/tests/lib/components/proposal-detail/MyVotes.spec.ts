@@ -2,7 +2,7 @@ import MyVotes from "$lib/components/proposal-detail/MyVotes.svelte";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
 import en from "$tests/mocks/i18n.mock";
-import { Vote } from "@dfinity/nns";
+import { Vote } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("MyVotes", () => {

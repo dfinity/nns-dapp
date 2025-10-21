@@ -24,7 +24,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";

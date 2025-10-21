@@ -4,7 +4,7 @@
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { formatVotingPower } from "$lib/utils/neuron.utils";
   import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
-  import { Vote } from "@dfinity/nns";
+  import { Vote } from "@icp-sdk/canisters/nns";
 
   export let voteType: Vote;
   export let votingPower: bigint;

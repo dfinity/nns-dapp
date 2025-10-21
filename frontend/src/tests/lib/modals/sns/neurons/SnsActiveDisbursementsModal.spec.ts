@@ -4,8 +4,8 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { SnsActiveDisbursementsModalPo } from "$tests/page-objects/SnsActiveDisbursementsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuron } from "@dfinity/sns";
-import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { DisburseMaturityInProgress } from "@icp-sdk/canisters/sns/candid/sns_governance";
 
 describe("SnsActiveDisbursementsModal", () => {
   const testActiveDisbursement: DisburseMaturityInProgress = {

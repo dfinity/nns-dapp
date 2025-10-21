@@ -2,7 +2,7 @@ import { governanceApiService } from "$lib/api-services/governance.api-service";
 import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { networkEconomicsStore } from "$lib/stores/network-economics.store";
-import type { NetworkEconomics } from "@dfinity/nns";
+import type { NetworkEconomics } from "@icp-sdk/canisters/nns";
 
 export const loadNetworkEconomicsParameters = async (): Promise<void> => {
   return queryAndUpdate<NetworkEconomics, unknown>({

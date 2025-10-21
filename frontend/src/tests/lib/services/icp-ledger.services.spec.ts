@@ -31,7 +31,7 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { MockNNSDappCanister } from "$tests/mocks/nns-dapp.canister.mock";
 import { toastsStore } from "@dfinity/gix-components";
-import { principalToAccountIdentifier } from "@dfinity/nns";
+import { principalToAccountIdentifier } from "@icp-sdk/canisters/nns";
 import type { Agent } from "@icp-sdk/core/agent";
 import { LedgerError, type ResponseVersion } from "@zondax/ledger-icp";
 import { get } from "svelte/store";

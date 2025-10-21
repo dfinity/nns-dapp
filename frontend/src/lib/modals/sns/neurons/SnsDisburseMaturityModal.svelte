@@ -7,7 +7,7 @@
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { minimumAmountToDisburseMaturity } from "$lib/utils/sns-neuron.utils";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: SnsNeuron;

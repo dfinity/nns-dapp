@@ -9,7 +9,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("selected-project-new-transaction-data derived store", () => {

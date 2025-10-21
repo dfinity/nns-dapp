@@ -14,7 +14,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 vi.mock("$lib/api/sns-sale.api");

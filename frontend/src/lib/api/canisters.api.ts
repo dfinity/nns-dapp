@@ -27,9 +27,13 @@ import { getCanisterCreationCmcAccountIdentifierHex } from "$lib/utils/canisters
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, pollingLimit } from "$lib/utils/utils";
-import { CMCCanister, ProcessingError, type Cycles } from "@dfinity/cmc";
-import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
+import {
+  CMCCanister,
+  ProcessingError,
+  type Cycles,
+} from "@icp-sdk/canisters/cmc";
+import { AccountIdentifier, SubAccount } from "@icp-sdk/canisters/ledger/icp";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

@@ -10,7 +10,7 @@
   import { soonLosingRewardNeuronsStore } from "$lib/derived/neurons.derived";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { secondsToRoundedDuration } from "$lib/utils/date.utils";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import LosingRewardNeuronsModal from "$lib/modals/neurons/LosingRewardNeuronsModal.svelte";

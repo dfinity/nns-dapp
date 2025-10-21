@@ -17,8 +17,8 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
-import { NeuronState } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 

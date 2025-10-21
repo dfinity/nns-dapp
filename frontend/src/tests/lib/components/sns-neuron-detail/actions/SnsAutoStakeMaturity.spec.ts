@@ -8,7 +8,7 @@ import en from "$tests/mocks/i18n.mock";
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { toastsStore } from "@dfinity/gix-components";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
+import { SnsNeuronPermissionType } from "@icp-sdk/canisters/sns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

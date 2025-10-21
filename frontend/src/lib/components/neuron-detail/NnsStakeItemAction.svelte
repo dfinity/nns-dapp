@@ -7,7 +7,7 @@
   } from "$lib/types/nns-neuron-detail.context";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { neuronStake } from "$lib/utils/neuron.utils";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken } from "@dfinity/utils";
   import { getContext } from "svelte";
 

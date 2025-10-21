@@ -1,6 +1,6 @@
 import { toToastError } from "$lib/utils/error.utils";
 import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
-import { IcrcTransferError } from "@dfinity/ledger-icrc";
+import { IcrcTransferError } from "@icp-sdk/canisters/ledger/icrc";
 
 export const ledgerErrorToToastError = ({
   err,

@@ -17,7 +17,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/governance.api");

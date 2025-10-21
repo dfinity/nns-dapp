@@ -3,7 +3,7 @@ import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { FilterModalPo } from "$tests/page-objects/FilterModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
-import type { ProposalStatus, Topic } from "@dfinity/nns";
+import type { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
 
 export class NnsProposalFiltersPo extends BasePageObject {
   private static readonly TID = "nns-proposals-filters-component";

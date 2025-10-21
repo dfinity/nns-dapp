@@ -7,8 +7,8 @@ import { startBusy, stopBusy } from "$lib/stores/busy.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
 import { translate } from "$lib/utils/i18n.utils";
-import { GenesisTokenCanister } from "@dfinity/nns";
 import { uint8ArrayToHexString } from "@dfinity/utils";
+import { GenesisTokenCanister } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 // TODO: Remove after all seed neurons have been claimed.

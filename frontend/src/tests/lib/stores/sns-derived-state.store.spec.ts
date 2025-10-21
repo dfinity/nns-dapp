@@ -1,6 +1,6 @@
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { mockDerivedResponse, principal } from "$tests/mocks/sns-projects.mock";
-import type { SnsGetDerivedStateResponse } from "@dfinity/sns";
+import type { SnsGetDerivedStateResponse } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns derived state store", () => {

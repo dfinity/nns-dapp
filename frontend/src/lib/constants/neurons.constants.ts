@@ -3,7 +3,7 @@ import {
   SECONDS_IN_HALF_YEAR,
 } from "$lib/constants/constants";
 import { enumValues } from "$lib/utils/enum.utils";
-import { Topic } from "@dfinity/nns";
+import { Topic } from "@icp-sdk/canisters/nns";
 
 export const ULPS_PER_MATURITY = 100_000_000;
 export const MAX_NEURONS_MERGED = 2;

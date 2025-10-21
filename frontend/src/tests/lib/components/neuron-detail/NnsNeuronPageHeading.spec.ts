@@ -17,8 +17,8 @@ import { NnsNeuronPageHeadingPo } from "$tests/page-objects/NnsNeuronPageHeading
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
-import type { NeuronInfo } from "@dfinity/nns";
-import { NeuronType } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
+import { NeuronType } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsNeuronPageHeading", () => {

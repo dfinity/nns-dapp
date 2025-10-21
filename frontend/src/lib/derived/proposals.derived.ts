@@ -8,7 +8,7 @@ import {
   hideProposal,
   sortProposalsByIdDescendingOrder,
 } from "$lib/utils/proposals.utils";
-import type { ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import { derived, type Readable } from "svelte/store";
 
 /**

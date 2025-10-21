@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { Modal } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
 
   export let defaultSelectedNeuron: NeuronInfo | null = null;

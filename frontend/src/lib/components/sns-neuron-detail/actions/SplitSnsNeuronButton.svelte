@@ -10,7 +10,10 @@
   } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemParameters,
+    SnsNeuron,
+  } from "@icp-sdk/canisters/sns";
   import {
     fromDefinedNullable,
     type Token,

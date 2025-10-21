@@ -5,8 +5,8 @@ import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { SnsNeuron } from "@dfinity/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 

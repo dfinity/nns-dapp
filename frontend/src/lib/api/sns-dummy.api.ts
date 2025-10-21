@@ -1,4 +1,4 @@
-import type { SnsAction } from "@dfinity/sns";
+import type { SnsAction } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 const motionProposal1 = {

@@ -2,7 +2,7 @@ import Projects from "$lib/components/launchpad/Projects.svelte";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { ProjectsPo } from "$tests/page-objects/Projects.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render, waitFor } from "@testing-library/svelte";
 
 describe("Projects", () => {

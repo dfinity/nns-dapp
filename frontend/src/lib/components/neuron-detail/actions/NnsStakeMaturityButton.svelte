@@ -6,7 +6,7 @@
   } from "$lib/types/nns-neuron-detail.context";
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { hasEnoughMaturityToStake } from "$lib/utils/neuron.utils";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { getContext } from "svelte";
 
   export let neuron: NeuronInfo;

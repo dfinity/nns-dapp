@@ -10,7 +10,7 @@
     neuronStake,
   } from "$lib/utils/neuron.utils";
   import { Card, KeyValuePair } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken, TokenAmountV2, secondsToDuration } from "@dfinity/utils";
 
   export let neuron: NeuronInfo;

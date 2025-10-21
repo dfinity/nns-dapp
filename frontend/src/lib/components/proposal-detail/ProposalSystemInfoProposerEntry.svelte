@@ -5,7 +5,7 @@
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
-  import type { NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@icp-sdk/canisters/nns";
 
   export let proposer: NeuronId | undefined;
 

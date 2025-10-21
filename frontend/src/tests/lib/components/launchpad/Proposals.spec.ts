@@ -3,7 +3,11 @@ import Proposals from "$lib/components/launchpad/Proposals.svelte";
 import { snsProposalsStore } from "$lib/stores/sns.store";
 import en from "$tests/mocks/i18n.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
+import {
+  ProposalStatus,
+  Topic,
+  type ProposalInfo,
+} from "@icp-sdk/canisters/nns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { render, waitFor } from "@testing-library/svelte";
 

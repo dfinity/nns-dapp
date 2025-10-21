@@ -5,7 +5,7 @@ import {
   type Action,
   type CreateServiceNervousSystem,
   type ProposalInfo,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 
 /**
  * Generate mock proposals with autoincremented "id".

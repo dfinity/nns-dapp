@@ -7,8 +7,8 @@ import type { CkBTCAdditionalCanisters } from "$lib/types/ckbtc-canisters";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { isLastCall } from "$lib/utils/env.utils";
 import { isUniverseCkBTC } from "$lib/utils/universe.utils";
-import type { MinterInfo } from "@dfinity/ckbtc";
 import { isNullish } from "@dfinity/utils";
+import type { MinterInfo } from "@icp-sdk/canisters/ckbtc";
 import { get } from "svelte/store";
 
 export const loadCkBTCInfo = async ({

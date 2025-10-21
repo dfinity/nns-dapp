@@ -4,7 +4,7 @@ import { LaunchpadBannerPo } from "$tests/page-objects/LaunchpadBanner.page-obje
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 
 describe("LaunchpadBanner", () => {
   const buyerTotalIcpE8s = 1_00_000_000;

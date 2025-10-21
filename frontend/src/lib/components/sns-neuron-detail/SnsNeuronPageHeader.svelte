@@ -15,7 +15,7 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { getContext } from "svelte";
 

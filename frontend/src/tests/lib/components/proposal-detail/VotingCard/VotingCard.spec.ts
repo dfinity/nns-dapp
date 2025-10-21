@@ -8,7 +8,7 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { VotingCardPo } from "$tests/page-objects/VotingCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { Vote, type NeuronInfo } from "@dfinity/nns";
+import { Vote, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("VotingCard", () => {

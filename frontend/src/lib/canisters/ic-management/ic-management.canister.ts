@@ -4,18 +4,18 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
-import type { ICManagementCanisterOptions } from "@dfinity/ic-management";
+import type { ICManagementCanisterOptions } from "@icp-sdk/canisters/ic-management";
 import {
   ICManagementCanister as ICMgmtCanister,
   type CanisterStatusResponse,
-} from "@dfinity/ic-management";
+} from "@icp-sdk/canisters/ic-management";
 import type { Principal } from "@icp-sdk/core/principal";
 
 /**
  * The ICManagementCanister was initially implemented here, but it has since been moved to ic-js and packaged as a standalone library.
  * In order to maintain backwards compatibility and facilitate integration into NNS-dapp, we wrapped the new library within the existing wrapper, which extends the response of the canister.
  *
- * TODO: remove this wrapper and mapping of the types and use @dfinity/ic-management library only.
+ * TODO: remove this wrapper and mapping of the types and use @icp-sdk/canisters/ic-management library only.
  */
 export class ICManagementCanister {
   private readonly icMgmt: ICMgmtCanister;

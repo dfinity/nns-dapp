@@ -3,7 +3,7 @@
   import { openNnsNeuronModal } from "$lib/utils/modals.utils";
   import { neuronStake } from "$lib/utils/neuron.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   type Props = {
     neuron: NeuronInfo;

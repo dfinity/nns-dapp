@@ -43,8 +43,8 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

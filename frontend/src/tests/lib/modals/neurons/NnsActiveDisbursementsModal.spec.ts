@@ -8,7 +8,7 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { NnsActiveDisbursementsModalPo } from "$tests/page-objects/NnsActiveDisbursementsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
 describe("NnsActiveDisbursementsModal", () => {
   const maturityDisbursementAmount1 = 100_000_000n;

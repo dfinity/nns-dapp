@@ -1,14 +1,14 @@
 import type { NeuronsStore } from "$lib/stores/neurons.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import type {
   KnownNeuron,
   MaturityDisbursement,
   Neuron,
   NeuronInfo,
-} from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
-import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+} from "@icp-sdk/canisters/nns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import type { Subscriber } from "svelte/store";
 
 export const mockAccountIdentifier =

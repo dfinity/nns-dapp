@@ -50,8 +50,8 @@ import {
 import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
-import type { KnownNeuron, NeuronInfo } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import type { KnownNeuron, NeuronInfo } from "@icp-sdk/canisters/nns";
 import type { Identity } from "@icp-sdk/core/agent";
 
 const cacheExpirationDurationSeconds = 5 * SECONDS_IN_MINUTE;

@@ -1,4 +1,4 @@
-import type { KnownNeuron } from "@dfinity/nns";
+import type { KnownNeuron } from "@icp-sdk/canisters/nns";
 import { derived, writable } from "svelte/store";
 
 export type KnownNeuronsStore = KnownNeuron[];

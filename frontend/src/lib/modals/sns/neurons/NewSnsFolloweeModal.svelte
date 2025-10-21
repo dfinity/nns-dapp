@@ -8,7 +8,7 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { Modal, busy, startBusy, stopBusy } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher, getContext } from "svelte";
 
   export let rootCanisterId: Principal;

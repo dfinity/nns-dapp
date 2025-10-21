@@ -22,8 +22,8 @@ import {
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
-} from "@dfinity/sns";
-import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
+} from "@icp-sdk/canisters/sns";
+import type { DisburseMaturityInProgress } from "@icp-sdk/canisters/sns/candid/sns_governance";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 

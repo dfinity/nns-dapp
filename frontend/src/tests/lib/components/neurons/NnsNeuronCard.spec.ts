@@ -17,8 +17,8 @@ import { NnsNeuronCardPo } from "$tests/page-objects/NnsNeuronCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
-import type { Neuron } from "@dfinity/nns";
-import { NeuronState, NeuronType } from "@dfinity/nns";
+import type { Neuron } from "@icp-sdk/canisters/nns";
+import { NeuronState, NeuronType } from "@icp-sdk/canisters/nns";
 import { fireEvent } from "@testing-library/svelte";
 
 describe("NnsNeuronCard", () => {

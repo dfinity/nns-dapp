@@ -22,8 +22,8 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { Topic, type ProposalInfo } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
+import { Topic, type ProposalInfo } from "@icp-sdk/canisters/nns";
 import { waitFor } from "@testing-library/svelte";
 import type { Subscriber } from "svelte/store";
 

@@ -20,7 +20,7 @@ import { NnsNeuronAdvancedSectionPo } from "$tests/page-objects/NnsNeuronAdvance
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsNeuronAdvancedSection", () => {

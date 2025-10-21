@@ -8,7 +8,7 @@
   import { emit } from "$lib/utils/events.utils";
   import { getTopicTitle, type FolloweesNeuron } from "$lib/utils/neuron.utils";
   import { Tag } from "@dfinity/gix-components";
-  import type { NeuronInfo, Topic } from "@dfinity/nns";
+  import type { NeuronInfo, Topic } from "@icp-sdk/canisters/nns";
 
   type Props = {
     followee: FolloweesNeuron;

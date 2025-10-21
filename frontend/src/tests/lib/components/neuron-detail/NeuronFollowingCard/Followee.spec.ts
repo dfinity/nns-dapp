@@ -4,7 +4,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { FolloweePo } from "$tests/page-objects/Followee.page-object";
 import { VotingHistoryModalPo } from "$tests/page-objects/VotingHistoryModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { Topic } from "@dfinity/nns";
+import { Topic } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("Followee", () => {

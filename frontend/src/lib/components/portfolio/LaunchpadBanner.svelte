@@ -10,7 +10,7 @@
   import { compactCurrencyNumber, formatNumber } from "$lib/utils/format.utils";
   import { filterProjectsStatus } from "$lib/utils/projects.utils";
   import { IconRight } from "@dfinity/gix-components";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import { fade } from "svelte/transition";
 
   type Props = {

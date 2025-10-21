@@ -22,7 +22,7 @@
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { hexStringToBytes } from "$lib/utils/utils";
   import type { SignIdentity } from "@icp-sdk/core/agent";
-  import type { IcrcTokenMetadata } from "@dfinity/ledger-icrc";
+  import type { IcrcTokenMetadata } from "@icp-sdk/canisters/ledger/icrc";
   import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish } from "@dfinity/utils";
 

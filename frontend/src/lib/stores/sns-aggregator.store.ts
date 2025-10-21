@@ -1,7 +1,7 @@
 import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { derived, writable, type Readable } from "svelte/store";
 
 /**

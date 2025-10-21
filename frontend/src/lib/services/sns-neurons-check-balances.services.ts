@@ -14,9 +14,9 @@ import {
   nextMemo,
   subaccountToHexString,
 } from "$lib/utils/sns-neuron.utils";
-import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
-import { neuronSubaccount } from "@dfinity/sns";
 import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
+import type { SnsNeuron, SnsNeuronId } from "@icp-sdk/canisters/sns";
+import { neuronSubaccount } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

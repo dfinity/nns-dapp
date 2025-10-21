@@ -16,8 +16,8 @@
     comparesByDecentralizationSaleOpenTimestampDesc,
     filterProjectsStatus,
   } from "$lib/utils/projects.utils";
-  import type { ProposalInfo } from "@dfinity/nns";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import type { ProposalInfo } from "@icp-sdk/canisters/nns";
+  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import type { Component } from "svelte";
 
   type Props = {

@@ -24,7 +24,7 @@
   } from "$lib/utils/reporting.utils";
   import { SignIdentity, type Identity } from "@icp-sdk/core/agent";
   import { IconDown } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken, nonNullish } from "@dfinity/utils";
 
   type Props = {

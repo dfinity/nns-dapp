@@ -11,8 +11,8 @@ import {
   sortNeuronsByVotingPowerRefreshedTimeout,
   totalMaturityDisbursementsInProgress,
 } from "$lib/utils/neuron.utils";
-import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { derived, get, type Readable } from "svelte/store";
 
 // A neuron is considered "non-empty" if it has a non-zero stake, non-zero maturity,

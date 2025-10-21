@@ -26,8 +26,8 @@ import {
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore } from "@dfinity/gix-components";
-import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/icp-ledger.api");

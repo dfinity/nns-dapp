@@ -1,13 +1,13 @@
 import type { ProposalsStore } from "$lib/stores/proposals.store";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import {
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
   Vote,
   type Ballot,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import type { Subscriber } from "svelte/store";
 
 export const deadlineTimestampSeconds = BigInt(

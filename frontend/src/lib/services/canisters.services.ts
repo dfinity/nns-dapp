@@ -46,11 +46,6 @@ import {
   toToastError,
 } from "$lib/utils/error.utils";
 import {
-  AccountIdentifier,
-  SubAccount,
-  type TransactionWithId,
-} from "@dfinity/ledger-icp";
-import {
   ICPToken,
   TokenAmountV2,
   fromNullable,
@@ -58,6 +53,11 @@ import {
   nonNullish,
   principalToSubAccount,
 } from "@dfinity/utils";
+import {
+  AccountIdentifier,
+  SubAccount,
+  type TransactionWithId,
+} from "@icp-sdk/canisters/ledger/icp";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

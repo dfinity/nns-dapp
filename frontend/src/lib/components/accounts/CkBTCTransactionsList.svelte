@@ -22,7 +22,7 @@
     mapCkbtcPendingUtxo,
     mapCkbtcTransactions,
   } from "$lib/utils/icrc-transactions.utils";
-  import type { PendingUtxo } from "@dfinity/ckbtc";
+  import type { PendingUtxo } from "@icp-sdk/canisters/ckbtc";
   import { isNullish } from "@dfinity/utils";
 
   export let indexCanisterId: CanisterId;

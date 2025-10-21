@@ -6,7 +6,10 @@ import {
   createCanisterWorker,
   type CreateCanisterWorkerParams,
 } from "$lib/worker-utils/canister.worker-utils";
-import { IcrcLedgerCanister, type IcrcAccount } from "@dfinity/ledger-icrc";
+import {
+  IcrcLedgerCanister,
+  type IcrcAccount,
+} from "@icp-sdk/canisters/ledger/icrc";
 
 export const getIcrcBalance = async ({
   identity,

@@ -5,7 +5,7 @@ import {
   enumsKeys,
   enumValues,
 } from "$lib/utils/enum.utils";
-import { Topic } from "@dfinity/nns";
+import { Topic } from "@icp-sdk/canisters/nns";
 
 describe("enum-utils", () => {
   enum TestEnum {

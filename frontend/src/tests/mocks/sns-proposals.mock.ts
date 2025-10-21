@@ -1,5 +1,6 @@
 import type { ProjectProposalData } from "$lib/stores/sns-proposals.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
@@ -7,8 +8,7 @@ import {
   type SnsProposalData,
   type SnsProposalId,
   type SnsTally,
-} from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import type { Subscriber } from "svelte/store";
 
 export const mockSnsProposal: SnsProposalData = {

@@ -1,4 +1,4 @@
-import type { SnsNervousSystemFunction } from "@dfinity/sns";
+import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
 
 export const nervousSystemFunctionMock: SnsNervousSystemFunction = {
   id: 30n,

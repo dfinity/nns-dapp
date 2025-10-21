@@ -8,7 +8,7 @@
     minimumAmountToDisburseMaturity,
   } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
   import type { TokenAmountV2 } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;

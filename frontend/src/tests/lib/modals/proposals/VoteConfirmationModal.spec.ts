@@ -1,6 +1,6 @@
 import VoteConfirmationModal from "$lib/modals/proposals/VoteConfirmationModal.svelte";
 import en from "$tests/mocks/i18n.mock";
-import { Vote } from "@dfinity/nns";
+import { Vote } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("VoteConfirmationModal", () => {

@@ -1,4 +1,4 @@
-import type { GovernanceCachedMetrics } from "@dfinity/nns";
+import type { GovernanceCachedMetrics } from "@icp-sdk/canisters/nns";
 
 export const mockGovernanceMetrics: GovernanceCachedMetrics = {
   communityFundTotalMaturityE8sEquivalent: 4n,

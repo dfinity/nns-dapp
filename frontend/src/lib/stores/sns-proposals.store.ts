@@ -1,5 +1,5 @@
-import type { SnsProposalData } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
+import type { SnsProposalData } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 

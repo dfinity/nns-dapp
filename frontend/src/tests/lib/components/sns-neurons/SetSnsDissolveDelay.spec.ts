@@ -15,8 +15,8 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, secondsToDuration } from "@dfinity/utils";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("ConfirmSnsDissolveDelay", () => {

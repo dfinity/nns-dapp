@@ -3,7 +3,7 @@
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {

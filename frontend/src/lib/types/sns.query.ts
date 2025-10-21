@@ -1,10 +1,10 @@
 import type { RootCanisterIdText } from "$lib/types/sns";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
+import type { IcrcTokenMetadataResponse } from "@icp-sdk/canisters/ledger/icrc";
 import type {
   SnsGetMetadataResponse,
   SnsSwap,
   SnsSwapDerivedState,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export type QueryRootCanisterId = RootCanisterIdText;

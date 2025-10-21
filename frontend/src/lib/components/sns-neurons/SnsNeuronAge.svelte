@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { neuronAge } from "$lib/utils/sns-neuron.utils";
   import { KeyValuePair } from "@dfinity/gix-components";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
   import { secondsToDuration } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;

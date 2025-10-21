@@ -37,7 +37,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import { writable } from "svelte/store";
 import type { MockInstance } from "vitest";
 

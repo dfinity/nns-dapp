@@ -1,4 +1,4 @@
-import { SnsNeuronPermissionType } from "@dfinity/sns";
+import { SnsNeuronPermissionType } from "@icp-sdk/canisters/sns";
 
 // Limit coming from the limit of subaccounts
 export const MAX_NEURONS_SUBACCOUNTS = 2 ** 16;

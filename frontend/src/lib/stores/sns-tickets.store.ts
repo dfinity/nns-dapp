@@ -1,5 +1,5 @@
 import type { RootCanisterIdText } from "$lib/types/sns";
-import type { SnsSwapTicket } from "@dfinity/sns";
+import type { SnsSwapTicket } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";

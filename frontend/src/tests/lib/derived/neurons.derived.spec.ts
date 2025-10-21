@@ -14,7 +14,7 @@ import {
   mockMaturityDisbursement,
   mockNeuron,
 } from "$tests/mocks/neurons.mock";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 describe("neurons-derived", () => {

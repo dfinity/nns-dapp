@@ -19,8 +19,8 @@ import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { ProposalInfo } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import type { ProposalInfo } from "@icp-sdk/canisters/nns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("actionable proposals derived stores", () => {

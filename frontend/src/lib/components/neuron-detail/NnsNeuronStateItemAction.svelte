@@ -13,7 +13,7 @@
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
   import { keyOf } from "$lib/utils/utils";
-  import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+  import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
   import { ICPToken, nonNullish } from "@dfinity/utils";
 
   type Props = {

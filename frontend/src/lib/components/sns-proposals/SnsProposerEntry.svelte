@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import { Html, KeyValuePairInfo } from "@dfinity/gix-components";
-  import type { SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
 
   export let proposer: SnsNeuronId;
 

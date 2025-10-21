@@ -1,5 +1,5 @@
 import type { FolloweesNeuron } from "$lib/utils/neuron.utils";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
 export type NnsNeuronModalType =
   | "increase-dissolve-delay"

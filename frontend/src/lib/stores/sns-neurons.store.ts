@@ -1,6 +1,6 @@
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { removeKeys } from "$lib/utils/utils";
-import type { SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable } from "svelte/store";
 

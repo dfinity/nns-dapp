@@ -4,7 +4,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
+  import type { SnsNeuron, SnsNeuronId } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: SnsNeuron;

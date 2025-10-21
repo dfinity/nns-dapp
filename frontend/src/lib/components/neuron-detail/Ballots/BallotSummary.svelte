@@ -4,7 +4,11 @@
   import { loadProposal } from "$lib/services/public/proposals.services";
   import { getVoteDisplay } from "$lib/utils/proposals.utils";
   import { KeyValuePairInfo, SkeletonText } from "@dfinity/gix-components";
-  import type { BallotInfo, ProposalId, ProposalInfo } from "@dfinity/nns";
+  import type {
+    BallotInfo,
+    ProposalId,
+    ProposalInfo,
+  } from "@icp-sdk/canisters/nns";
   import { onMount } from "svelte";
   import { nonNullish } from "@dfinity/utils";
 

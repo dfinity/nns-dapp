@@ -8,8 +8,8 @@ import {
   UNIVERSE_PARAM,
 } from "$lib/constants/routes.constants";
 import { isArrayEmpty } from "$lib/utils/utils";
-import type { NeuronId, ProposalId } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import type { NeuronId, ProposalId } from "@icp-sdk/canisters/nns";
 
 // If the previous page is a particular detail page and if we have data in store, we don't reset and query the data in store after the route is mounted.
 // We do this to smoothness the back and forth navigation between the page and the detail page that have store that are not loaded at boot time.

@@ -8,9 +8,12 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
-import type { IcrcGetTransactions } from "@dfinity/ledger-icrc";
-import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
 import * as dfinityUtils from "@dfinity/utils";
+import type { IcrcGetTransactions } from "@icp-sdk/canisters/ledger/icrc";
+import {
+  IcrcIndexCanister,
+  type IcrcTransaction,
+} from "@icp-sdk/canisters/ledger/icrc";
 import { mock } from "vitest-mock-extended";
 
 describe("transactions.worker-services", () => {

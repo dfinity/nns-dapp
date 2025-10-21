@@ -5,8 +5,8 @@ import {
 } from "$lib/stores/sns-aggregator.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { aggregatorMockSnsesDataDto } from "$tests/mocks/sns-aggregator.mock";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { nonNullish } from "@dfinity/utils";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns-aggregator store", () => {

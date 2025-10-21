@@ -1,4 +1,4 @@
-import type { ProposalStatus, Topic } from "@dfinity/nns";
+import type { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
 
 export type ProposalsFilters = typeof Topic | typeof ProposalStatus;
 
