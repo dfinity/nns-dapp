@@ -25,9 +25,7 @@ export class FollowNnsNeuronsByTopicStepTopicsPo extends BasePageObject {
     const items = await this.getTopicItemPos();
     for (const item of items) {
       const name = await item.getTopicName();
-      if (name.includes(topicName)) {
-        return item;
-      }
+      if (name === topicName) return item;
     }
     throw new Error(`Topic item with name "${topicName}" not found`);
   }
