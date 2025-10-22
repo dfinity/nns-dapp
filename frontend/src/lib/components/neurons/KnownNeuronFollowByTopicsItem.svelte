@@ -1,34 +1,18 @@
 <script lang="ts">
-  import { setFollowing } from "$lib/services/neurons.services";
-  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { busy } from "@dfinity/gix-components";
-  import type { KnownNeuron, NeuronId, Topic } from "@dfinity/nns";
+  import type { KnownNeuron, Topic } from "@dfinity/nns";
   import { createEventDispatcher } from "svelte";
 
   export let knownNeuron: KnownNeuron;
   export let topics: Topic[] = [];
-  export let neuronId: NeuronId;
+  export let updateFollowings: (followeeAddress: string) => Promise<void>;
 
   const dispatcher = createEventDispatcher();
   const followKnownNeuron = async () => {
     if (topics.length === 0) return;
 
-    startBusy({ initiator: "add-followee" });
-    // if (isFollowed) {
-    //   await removeFollowing({
-    //     neuronId,
-    //     topics: topics,
-    //     followee: knownNeuron.id,
-    //   });
-    // } else {
-    await setFollowing({
-      neuronId,
-      topics,
-      followee: knownNeuron.id,
-    });
-
-    stopBusy("add-followee");
+    await updateFollowings(knownNeuron.id.toString());
     dispatcher("nnsUpdated");
   };
 </script>

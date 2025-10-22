@@ -158,8 +158,8 @@
             <KnownNeuronFollowByTopicsItem
               on:nnsUpdated={handleFolloweeUpdated}
               {knownNeuron}
-              neuronId={neuron.neuronId}
               {topics}
+              {updateFollowings}
             />
           </li>
         {/each}
