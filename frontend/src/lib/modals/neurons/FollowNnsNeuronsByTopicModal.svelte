@@ -3,7 +3,10 @@
   import FollowNnsNeuronsByTopicStepNeuron from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepNeuron.svelte";
   import FollowNnsNeuronsByTopicStepTopics from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepTopics.svelte";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
-  import { setFollowing } from "$lib/services/neurons.services";
+  import {
+    removeFollowing as removeFollowingService,
+    setFollowing,
+  } from "$lib/services/neurons.services";
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -63,7 +66,7 @@
     errorMessage = undefined;
   };
 
-  const handleAddFolloweeError = ({
+  const handleUpdateFollowingError = ({
     followee,
     error,
   }: {
@@ -127,9 +130,30 @@
       selectedTopics = [];
       openFirstStep();
     } catch (err: unknown) {
-      handleAddFolloweeError({ followee, error: err });
+      handleUpdateFollowingError({ followee, error: err });
     } finally {
       stopBusy("add-followee");
+    }
+  };
+
+  const removeFollowing = async ({
+    topic,
+    followee,
+  }: {
+    topic: Topic;
+    followee: NeuronId;
+  }) => {
+    startBusy({ initiator: "remove-followee" });
+    try {
+      await removeFollowingService({
+        neuronId: neuron.neuronId,
+        topics: [topic],
+        followee,
+      });
+    } catch (err: unknown) {
+      handleUpdateFollowingError({ followee, error: err });
+    } finally {
+      stopBusy("remove-followee");
     }
   };
 </script>
@@ -149,6 +173,7 @@
       bind:selectedTopics
       {onClose}
       {openNextStep}
+      {removeFollowing}
     />
   {/if}
 

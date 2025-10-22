@@ -5,19 +5,26 @@
   import { i18n } from "$lib/stores/i18n";
   import { TOPICS_TO_FOLLOW_NNS } from "$lib/constants/neurons.constants";
   import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
-  import { Topic, type FolloweesForTopic, type NeuronInfo } from "@dfinity/nns";
+  import {
+    Topic,
+    type FolloweesForTopic,
+    type NeuronInfo,
+    type NeuronId,
+  } from "@dfinity/nns";
 
   type Props = {
     neuron: NeuronInfo;
     selectedTopics: Topic[];
     onClose: () => void;
     openNextStep: () => void;
+    removeFollowing: (args: { topic: Topic; followee: NeuronId }) => void;
   };
   let {
     neuron,
     selectedTopics = $bindable(),
     onClose,
     openNextStep,
+    removeFollowing,
   }: Props = $props();
 
   const followings: FolloweesForTopic[] = $derived(
@@ -44,10 +51,6 @@
   };
 
   const isTopicSelected = (topic: Topic) => selectedTopics.includes(topic);
-
-  const removeFollowing = () => {
-    // TODO: To implement
-  };
 </script>
 
 <TestIdWrapper testId="follow-nns-neurons-by-topic-step-topics-component">

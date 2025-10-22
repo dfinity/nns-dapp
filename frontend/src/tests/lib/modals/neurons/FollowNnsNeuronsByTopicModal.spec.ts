@@ -11,15 +11,28 @@ import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
 
 describe("FollowNnsNeuronsByTopicModal", () => {
   const neuronId = 123456789n;
-  const testNeuron: NeuronInfo = {
+  const followeeNeuronId1 = 6666666666666666n;
+  const followeeNeuronId2 = 5555555555555555n;
+  const testNeuron = (): NeuronInfo => ({
     ...mockNeuron,
     neuronId,
-    // Make user the controller
     fullNeuron: {
       ...mockNeuron.fullNeuron,
+      // Make user the controller
       controller: mockIdentity.getPrincipal().toText(),
+      // Add some existing followees for testing removal
+      followees: [
+        {
+          topic: Topic.Governance,
+          followees: [followeeNeuronId1, followeeNeuronId2],
+        },
+        {
+          topic: Topic.NodeAdmin,
+          followees: [followeeNeuronId1],
+        },
+      ],
     },
-  };
+  });
 
   const renderComponent = (props: {
     neuronId: NeuronId;
@@ -40,7 +53,7 @@ describe("FollowNnsNeuronsByTopicModal", () => {
 
   beforeEach(() => {
     resetIdentity();
-    neuronsStore.setNeurons({ neurons: [testNeuron], certified: true });
+    neuronsStore.setNeurons({ neurons: [testNeuron()], certified: true });
     vi.spyOn(api, "queryKnownNeurons").mockResolvedValue([]);
   });
 
@@ -140,7 +153,9 @@ describe("FollowNnsNeuronsByTopicModal", () => {
     });
 
     const spySetFollowing = vi.spyOn(api, "setFollowing").mockResolvedValue();
-    vi.spyOn(api, "queryNeuron").mockResolvedValue(testNeuron);
+    const spyQueryNeuron = vi
+      .spyOn(api, "queryNeuron")
+      .mockResolvedValue(testNeuron());
 
     const topicsStep = po.getFollowNnsNeuronsByTopicStepTopicsPo();
 
@@ -175,11 +190,11 @@ describe("FollowNnsNeuronsByTopicModal", () => {
       neuronId,
       topicFollowing: [
         {
-          followees: [followeeNeuronId],
+          followees: [followeeNeuronId1, followeeNeuronId2, followeeNeuronId],
           topic: Topic.Governance,
         },
         {
-          followees: [followeeNeuronId],
+          followees: [followeeNeuronId1, followeeNeuronId],
           topic: Topic.NodeAdmin,
         },
       ],
@@ -193,8 +208,62 @@ describe("FollowNnsNeuronsByTopicModal", () => {
       true
     );
 
+    // Verify neuron was re-queried after update
+    expect(spyQueryNeuron).toHaveBeenCalledTimes(1);
+    expect(spyQueryNeuron).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      certified: true,
+      neuronId,
+    });
+
     // Verify topics selection has been cleared
     expect(await topicsStep.getTopicSelectionByName("Governance")).toBe(false);
     expect(await topicsStep.getTopicSelectionByName("Node Admin")).toBe(false);
+  });
+
+  it("should call removeFollowing API when removing a followee", async () => {
+    const po = renderComponent({
+      neuronId,
+    });
+
+    const spyQueryNeuron = vi
+      .spyOn(api, "queryNeuron")
+      .mockResolvedValue(testNeuron());
+    const spySetFollowing = vi.spyOn(api, "setFollowing").mockResolvedValue();
+
+    const topicsStep = po.getFollowNnsNeuronsByTopicStepTopicsPo();
+
+    // Find the topic item and expand it to see followees
+    const governanceTopicItem =
+      await topicsStep.getTopicItemPoByName("Governance");
+    await governanceTopicItem.clickExpandButton();
+
+    const followees = await governanceTopicItem.getFolloweesPo();
+    expect(followees.length).toBeGreaterThan(0);
+
+    // Click remove button on the first followee (followeeNeuronId1)
+    await followees[0].clickRemoveButton();
+    await runResolvedPromises();
+
+    expect(spySetFollowing).toHaveBeenCalledTimes(1);
+    expect(spySetFollowing).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      neuronId,
+      // The remaining followee for topic after removal
+      topicFollowing: [
+        {
+          followees: [followeeNeuronId2],
+          topic: Topic.Governance,
+        },
+      ],
+    });
+
+    // Verify neuron was re-queried after update
+    expect(spyQueryNeuron).toHaveBeenCalledTimes(1);
+    expect(spyQueryNeuron).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      certified: true,
+      neuronId,
+    });
   });
 });

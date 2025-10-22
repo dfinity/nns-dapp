@@ -16,7 +16,7 @@
     followees: FolloweesForTopic[];
     checked: boolean;
     onNnsChange: (args: { topic: Topic; checked: boolean }) => void;
-    removeFollowing: (args: { topic: Topic; neuronId: NeuronId }) => void;
+    removeFollowing: (args: { topic: Topic; followee: NeuronId }) => void;
   };
 
   let {
@@ -110,7 +110,7 @@
                   onRemoveClick={() => {
                     removeFollowing({
                       topic,
-                      neuronId,
+                      followee: neuronId,
                     });
                   }}
                 />
