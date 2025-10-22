@@ -37,6 +37,10 @@ const MAX_FAVORITE_PROJECTS: i32 = 20;
 // Conservatively limit the number of named addresses to prevent using too much memory.
 const MAX_NAMED_ADDRESSES: i32 = 20;
 
+// Maximum length for named address account_id and name fields
+const MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH: i32 = 64;
+const MAX_NAMED_ADDRESS_NAME_LENGTH: i32 = 64;
+
 /// Accounts and related data.
 pub struct AccountsStore {
     // TODO(NNS1-720): Use AccountIdentifier directly as the key for this HashMap
@@ -225,6 +229,8 @@ pub enum SetAddressBookResponse {
     Ok,
     AccountNotFound,
     TooManyNamedAddresses { limit: i32 },
+    NamedAddressAccountIdTooLong { max_length: i32 },
+    NamedAddressNameTooLong { max_length: i32 },
 }
 
 #[derive(CandidType, Debug, PartialEq)]
@@ -720,6 +726,21 @@ impl AccountsStore {
                 limit: MAX_NAMED_ADDRESSES,
             };
         }
+
+        // Validate each named address
+        for named_address in &new_address_book.named_addresses {
+            if named_address.account_id.len() > (MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH as usize) {
+                return SetAddressBookResponse::NamedAddressAccountIdTooLong {
+                    max_length: MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH,
+                };
+            }
+            if named_address.name.len() > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
+                return SetAddressBookResponse::NamedAddressNameTooLong {
+                    max_length: MAX_NAMED_ADDRESS_NAME_LENGTH,
+                };
+            }
+        }
+
         let account_identifier = AccountIdentifier::from(caller).to_vec();
         let Some(mut account) = self.accounts_db.get(&account_identifier) else {
             return SetAddressBookResponse::AccountNotFound;
