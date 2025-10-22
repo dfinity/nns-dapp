@@ -41,10 +41,12 @@ describe("FollowNnsNeuronsByTopicModal", () => {
 
     const topicsStep = po.getFollowNnsNeuronsByTopicStepTopicsPo();
     expect(await topicsStep.isPresent()).toBe(true);
-    expect(await po.isUnderConstructionStepPresent()).toBe(false);
+    expect(await po.getFollowNnsNeuronsByTopicStepNeuronPo().isPresent()).toBe(
+      false
+    );
   });
 
-  it("should show under construction step when next is clicked", async () => {
+  it("should show neuron step when next is clicked", async () => {
     const po = renderComponent({
       neuronId,
     });
@@ -54,10 +56,12 @@ describe("FollowNnsNeuronsByTopicModal", () => {
     // Select a topic first (required to enable Next button)
     await topicsStep.clickTopicItemByName("Governance");
 
-    // Click next to go to the under construction step
+    // Click next to go to the neuron step
     await topicsStep.clickNextButton();
 
-    expect(await po.isUnderConstructionStepPresent()).toBe(true);
+    expect(await po.getFollowNnsNeuronsByTopicStepNeuronPo().isPresent()).toBe(
+      true
+    );
     expect(await topicsStep.isPresent()).toBe(false);
   });
 
@@ -97,5 +101,26 @@ describe("FollowNnsNeuronsByTopicModal", () => {
 
     const nextButton = topicsStep.getNextButtonPo();
     expect(await nextButton.isDisabled()).toBe(false);
+  });
+
+  it("should navigate back to topics step when back button is clicked", async () => {
+    const po = renderComponent({
+      neuronId,
+    });
+
+    const topicsStep = po.getFollowNnsNeuronsByTopicStepTopicsPo();
+
+    // Select a topic and go to neuron step
+    await topicsStep.clickTopicItemByName("Governance");
+    await topicsStep.clickNextButton();
+
+    const neuronStep = po.getFollowNnsNeuronsByTopicStepNeuronPo();
+    await neuronStep.clickBackButton();
+
+    // Should be back on topics step
+    expect(await topicsStep.isPresent()).toBe(true);
+    expect(await po.getFollowNnsNeuronsByTopicStepNeuronPo().isPresent()).toBe(
+      false
+    );
   });
 });
