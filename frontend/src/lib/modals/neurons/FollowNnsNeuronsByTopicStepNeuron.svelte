@@ -9,17 +9,9 @@
     isHotKeyControllable,
     isNeuronControllable,
   } from "$lib/utils/neuron.utils";
-  import {
-    getNnsTopicFollowings,
-    isNnsNeuronFollowingAllTopics,
-  } from "$lib/utils/nns-topics.utils";
+  import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
   import { Html, Spinner, busy } from "@dfinity/gix-components";
-  import {
-    Topic,
-    type FolloweesForTopic,
-    type KnownNeuron,
-    type NeuronInfo,
-  } from "@dfinity/nns";
+  import { Topic, type FolloweesForTopic, type NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {

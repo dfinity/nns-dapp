@@ -1,7 +1,10 @@
 import FollowNnsNeuronsByTopicItem from "$lib/modals/neurons/FollowNnsNeuronsByTopicItem.svelte";
+import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
+import { mockKnownNeuron } from "$tests/mocks/neurons.mock";
 import { FollowNnsNeuronsByTopicItemPo } from "$tests/page-objects/FollowNnsNeuronsByTopicItem.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Topic, type FolloweesForTopic, type NeuronId } from "@dfinity/nns";
 
 describe("FollowNnsNeuronsByTopicItem", () => {
@@ -135,7 +138,7 @@ describe("FollowNnsNeuronsByTopicItem", () => {
 
     expect(mockRemoveFollowing).toHaveBeenCalledWith({
       topic: testTopic,
-      neuronId: neuronId1,
+      followee: neuronId1,
     });
   });
 
@@ -150,15 +153,46 @@ describe("FollowNnsNeuronsByTopicItem", () => {
 
     const collapsible = po.getCollapsiblePo();
 
-    // Initially collapsed
     expect(await collapsible.isExpanded()).toBe(false);
 
-    // Click to expand
     await po.clickExpandButton();
     expect(await collapsible.isExpanded()).toBe(true);
 
-    // Click to collapse
     await po.clickExpandButton();
     expect(await collapsible.isExpanded()).toBe(false);
+  });
+
+  it("should display known neuron name instead of neuron ID", async () => {
+    const knownNeuronId = 555666777n;
+    const knownNeuronName = "Test Known Neuron";
+    const testKnownNeuron = {
+      ...mockKnownNeuron,
+      id: knownNeuronId,
+      name: knownNeuronName,
+    };
+    const followeesWithKnownNeuron: FolloweesForTopic[] = [
+      {
+        topic: testTopic,
+        followees: [knownNeuronId, neuronId2],
+      },
+    ];
+
+    knownNeuronsStore.setNeurons([testKnownNeuron]);
+
+    const po = renderComponent({
+      topic: testTopic,
+      followees: followeesWithKnownNeuron,
+      checked: false,
+      onNnsChange: vi.fn(),
+      removeFollowing: vi.fn(),
+    });
+
+    // Expand the collapsible to see the followees
+    await po.clickExpandButton();
+    await runResolvedPromises();
+
+    const neuronIds = await po.getFolloweesNeuronIds();
+    expect(neuronIds).toHaveLength(2);
+    expect(neuronIds).toEqual([knownNeuronName, neuronId2.toString()]);
   });
 });

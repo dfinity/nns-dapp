@@ -2,6 +2,7 @@
   import { IconClose } from "@dfinity/gix-components";
   import Hash from "$lib/components/ui/Hash.svelte";
   import { i18n } from "$lib/stores/i18n";
+  import { sortedknownNeuronsStore } from "$lib/stores/known-neurons.store";
   import { nonNullish } from "@dfinity/utils";
   import type { NeuronId } from "@dfinity/nns";
 
@@ -11,13 +12,25 @@
   };
 
   const { neuronId, onRemoveClick }: Props = $props();
+
+  const knownNeuron = $derived(
+    $sortedknownNeuronsStore?.find(({ id }) => id === neuronId)
+  );
+
+  const displayText = $derived(knownNeuron?.name ?? neuronId.toString());
 </script>
 
 <div
   class="container"
   data-tid="follow-nns-neurons-by-topic-followee-component"
 >
-  <Hash text={neuronId.toString()} tagName="span" showCopy noHeigh={false} />
+  <Hash
+    text={displayText}
+    tagName="span"
+    showCopy
+    noHeigh={false}
+    splitLength={10}
+  />
   {#if nonNullish(onRemoveClick)}
     <button
       data-tid="remove-button"
