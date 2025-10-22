@@ -252,7 +252,7 @@ type SetAddressBookResponse =
         Ok;
         AccountNotFound;
         TooManyNamedAddresses: record{limit: int32};
-        NamedAddressAccountIdInvalid: record{error: text};
+        InvalidIcpAddress: record{error: text};
         NamedAddressNameTooLong: record{max_length: int32};
         InvalidIcrc1Address: record{error: text};
     };
