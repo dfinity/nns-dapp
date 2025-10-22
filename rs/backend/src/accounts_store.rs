@@ -37,8 +37,7 @@ const MAX_FAVORITE_PROJECTS: i32 = 20;
 // Conservatively limit the number of named addresses to prevent using too much memory.
 const MAX_NAMED_ADDRESSES: i32 = 20;
 
-// Maximum length for named address account_id and name fields
-const MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH: i32 = 64;
+// Maximum length for named address name field
 const MAX_NAMED_ADDRESS_NAME_LENGTH: i32 = 64;
 
 /// Accounts and related data.
@@ -229,7 +228,7 @@ pub enum SetAddressBookResponse {
     Ok,
     AccountNotFound,
     TooManyNamedAddresses { limit: i32 },
-    NamedAddressAccountIdTooLong { max_length: i32 },
+    NamedAddressAccountIdInvalid { error: String },
     NamedAddressNameTooLong { max_length: i32 },
 }
 
@@ -729,9 +728,10 @@ impl AccountsStore {
 
         // Validate each named address
         for named_address in &new_address_book.named_addresses {
-            if named_address.account_id.len() > (MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH as usize) {
-                return SetAddressBookResponse::NamedAddressAccountIdTooLong {
-                    max_length: MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH,
+            // Validate account_id using AccountIdentifier::from_hex
+            if let Err(e) = AccountIdentifier::from_hex(&named_address.account_id) {
+                return SetAddressBookResponse::NamedAddressAccountIdInvalid {
+                    error: e,
                 };
             }
             if named_address.name.len() > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {

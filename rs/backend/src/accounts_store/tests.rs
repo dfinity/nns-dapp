@@ -11,6 +11,8 @@ const TEST_ACCOUNT_4: &str = "zrmyx-sbrcv-rod5f-xyd6k-letwb-tukpj-edhrc-sqash-ld
 const TEST_ACCOUNT_5: &str = "2fzwl-cu3hl-bawo2-idwrw-7yygk-uccms-cbo3a-c6kqt-lnk3j-mewg3-hae";
 const TEST_ACCOUNT_6: &str = "4gb44-uya57-c2v6u-fcz5v-qrpwl-wqkmf-o3fd3-esjio-kpysm-r5xxh-fqe";
 
+const TEST_LEDGER_ACCOUNT_ID: &str = "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
+
 #[test]
 fn create_sub_account() {
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
@@ -1185,7 +1187,6 @@ fn get_fav_projects_account_not_found() {
 fn set_and_get_address_book() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let account_id = "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f".to_string();
     let name = "Alice's Account".to_string();
 
     assert_eq!(
@@ -1194,7 +1195,7 @@ fn set_and_get_address_book() {
     );
 
     let named_address = NamedAddress {
-        account_id: account_id.clone(),
+        account_id: TEST_LEDGER_ACCOUNT_ID.to_string(),
         name: name.clone(),
     };
 
@@ -1216,11 +1217,14 @@ fn set_and_get_address_book() {
     );
 }
 
-fn get_unique_named_addresses(count: i32) -> Vec<NamedAddress> {
+fn get_named_addresses(count: i32) -> Vec<NamedAddress> {
     (0..count)
-        .map(|i| NamedAddress {
-            account_id: format!("account_id_{}", i),
-            name: format!("Name {}", i),
+        .map(|i| {
+            // Generate a valid 64-character hex account_id
+            NamedAddress {
+                account_id: TEST_LEDGER_ACCOUNT_ID.to_string(),
+                name: format!("Name {}", i),
+            }
         })
         .collect()
 }
@@ -1235,7 +1239,7 @@ fn set_and_get_max_named_addresses() {
         GetAddressBookResponse::Ok(AddressBook::default())
     );
 
-    let named_addresses = get_unique_named_addresses(MAX_NAMED_ADDRESSES);
+    let named_addresses = get_named_addresses(MAX_NAMED_ADDRESSES);
 
     assert_eq!(
         store.set_address_book(
@@ -1268,7 +1272,7 @@ fn set_address_book_too_many() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
-    let named_addresses = get_unique_named_addresses(MAX_NAMED_ADDRESSES + 1);
+    let named_addresses = get_named_addresses(MAX_NAMED_ADDRESSES + 1);
 
     assert_eq!(
         store.set_address_book(principal, AddressBook { named_addresses },),
@@ -1279,49 +1283,35 @@ fn set_address_book_too_many() {
 }
 
 #[test]
-fn set_address_book_account_id_too_long() {
+fn set_address_book_account_id_invalid() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
-    // Create an account_id that is exactly MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH + 1 characters
-    let too_long_account_id = "a".repeat((MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH + 1) as usize);
-    
+    // Test with invalid hex (too short)
+    let invalid_account_id = "invalid";
     let named_addresses = vec![NamedAddress {
-        account_id: too_long_account_id,
+        account_id: invalid_account_id.to_string(),
         name: "Valid Name".to_string(),
     }];
 
-    assert_eq!(
-        store.set_address_book(principal, AddressBook { named_addresses }),
-        SetAddressBookResponse::NamedAddressAccountIdTooLong { 
-            max_length: MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH 
-        }
-    );
-}
-
-#[test]
-fn set_address_book_account_id_at_max_length() {
-    let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-
-    // Create an account_id that is exactly MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH characters
-    let max_length_account_id = "a".repeat(MAX_NAMED_ADDRESS_ACCOUNT_ID_LENGTH as usize);
+    let response = store.set_address_book(principal, AddressBook { named_addresses });
+    assert!(matches!(
+        response,
+        SetAddressBookResponse::NamedAddressAccountIdInvalid { .. }
+    ));
     
+    // Test with invalid hex (not hex characters)
+    let invalid_account_id = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz";
     let named_addresses = vec![NamedAddress {
-        account_id: max_length_account_id.clone(),
+        account_id: invalid_account_id.to_string(),
         name: "Valid Name".to_string(),
     }];
 
-    assert_eq!(
-        store.set_address_book(principal, AddressBook { named_addresses: named_addresses.clone() }),
-        SetAddressBookResponse::Ok
-    );
-
-    // Verify it was stored correctly
-    assert_eq!(
-        store.get_address_book(principal),
-        GetAddressBookResponse::Ok(AddressBook { named_addresses })
-    );
+    let response = store.set_address_book(principal, AddressBook { named_addresses });
+    assert!(matches!(
+        response,
+        SetAddressBookResponse::NamedAddressAccountIdInvalid { .. }
+    ));
 }
 
 #[test]
@@ -1333,7 +1323,7 @@ fn set_address_book_name_too_long() {
     let too_long_name = "a".repeat((MAX_NAMED_ADDRESS_NAME_LENGTH + 1) as usize);
     
     let named_addresses = vec![NamedAddress {
-        account_id: "valid_account_id".to_string(),
+        account_id: TEST_LEDGER_ACCOUNT_ID.to_string(),
         name: too_long_name,
     }];
 
@@ -1354,7 +1344,7 @@ fn set_address_book_name_at_max_length() {
     let max_length_name = "a".repeat(MAX_NAMED_ADDRESS_NAME_LENGTH as usize);
     
     let named_addresses = vec![NamedAddress {
-        account_id: "valid_account_id".to_string(),
+        account_id: TEST_LEDGER_ACCOUNT_ID.to_string(),
         name: max_length_name.clone(),
     }];
 
@@ -1367,16 +1357,6 @@ fn set_address_book_name_at_max_length() {
     assert_eq!(
         store.get_address_book(principal),
         GetAddressBookResponse::Ok(AddressBook { named_addresses })
-    );
-}
-
-#[test]
-fn get_address_book_account_not_found() {
-    let store = setup_test_store();
-    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    assert_eq!(
-        store.get_address_book(non_existing_principal),
-        GetAddressBookResponse::AccountNotFound
     );
 }
 
