@@ -9,6 +9,7 @@ use ic_stable_structures::{
     memory_manager::VirtualMemory, storable::Bound, DefaultMemoryImpl, StableBTreeMap, Storable,
 };
 use icp_ledger::{AccountIdentifier, BlockIndex, Subaccount};
+use icrc_ledger_types::icrc1::account::Account as Icrc1Account;
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
@@ -16,6 +17,7 @@ use std::borrow::Cow;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap, VecDeque};
 use std::fmt;
+use std::str::FromStr;
 
 pub mod histogram;
 
@@ -212,9 +214,15 @@ pub enum GetFavProjectsResponse {
     AccountNotFound,
 }
 
-#[derive(CandidType, Clone, Default, Deserialize, Debug, Eq, PartialEq)]
+#[derive(CandidType, Clone, Deserialize, Debug, Eq, PartialEq)]
+pub enum AddressType {
+    Icp(String),
+    Icrc1(String),
+}
+
+#[derive(CandidType, Clone, Deserialize, Debug, Eq, PartialEq)]
 pub struct NamedAddress {
-    account_id: String,
+    address: AddressType,
     name: String,
 }
 
@@ -230,6 +238,7 @@ pub enum SetAddressBookResponse {
     TooManyNamedAddresses { limit: i32 },
     NamedAddressAccountIdInvalid { error: String },
     NamedAddressNameTooLong { max_length: i32 },
+    InvalidIcrc1Address { error: String },
 }
 
 #[derive(CandidType, Debug, PartialEq)]
@@ -728,12 +737,27 @@ impl AccountsStore {
 
         // Validate each named address
         for named_address in &new_address_book.named_addresses {
-            // Validate account_id using AccountIdentifier::from_hex
-            if let Err(e) = AccountIdentifier::from_hex(&named_address.account_id) {
-                return SetAddressBookResponse::NamedAddressAccountIdInvalid {
-                    error: e,
-                };
+            // Validate the address based on its variant
+            match &named_address.address {
+                AddressType::Icp(address_str) => {
+                    // Validate ICP address using AccountIdentifier::from_hex
+                    if let Err(e) = AccountIdentifier::from_hex(address_str) {
+                        return SetAddressBookResponse::NamedAddressAccountIdInvalid {
+                            error: format!("Invalid ICP address: {}", e),
+                        };
+                    }
+                }
+                AddressType::Icrc1(address_str) => {
+                    // Validate ICRC1 address using the FromStr implementation from icrc-ledger-types
+                    // which properly validates the ICRC1 text representation including checksum validation
+                    if let Err(e) = Icrc1Account::from_str(address_str) {
+                        return SetAddressBookResponse::InvalidIcrc1Address {
+                            error: format!("Invalid ICRC1 address: {}", e),
+                        };
+                    }
+                }
             }
+            
             if named_address.name.len() > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
                 return SetAddressBookResponse::NamedAddressNameTooLong {
                     max_length: MAX_NAMED_ADDRESS_NAME_LENGTH,

@@ -230,9 +230,15 @@ type GetFavProjectsResponse =
         AccountNotFound;
     };
 
+type AddressType =
+    variant {
+        Icp: text;
+        Icrc1: text;
+    };
+
 type NamedAddress =
     record {
-        account_id: text;
+        address: AddressType;
         name: text;
     };
 
@@ -248,6 +254,7 @@ type SetAddressBookResponse =
         TooManyNamedAddresses: record{limit: int32};
         NamedAddressAccountIdInvalid: record{error: text};
         NamedAddressNameTooLong: record{max_length: int32};
+        InvalidIcrc1Address: record{error: text};
     };
 
 type GetAddressBookResponse =

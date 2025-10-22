@@ -36,6 +36,7 @@ ic-nns-governance = { workspace = true }
 ic-sns-swap = { workspace = true }
 ic-stable-structures = "0.7.2"
 icp-ledger = { workspace = true }
+icrc-ledger-types = { git = "https://github.com/dfinity/ic", rev = "release-2025-08-14_03-27-base" }
 on_wire = { workspace = true }
 
 proposals = { path = "../proposals" }

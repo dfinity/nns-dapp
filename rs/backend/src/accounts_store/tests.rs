@@ -11,7 +11,7 @@ const TEST_ACCOUNT_4: &str = "zrmyx-sbrcv-rod5f-xyd6k-letwb-tukpj-edhrc-sqash-ld
 const TEST_ACCOUNT_5: &str = "2fzwl-cu3hl-bawo2-idwrw-7yygk-uccms-cbo3a-c6kqt-lnk3j-mewg3-hae";
 const TEST_ACCOUNT_6: &str = "4gb44-uya57-c2v6u-fcz5v-qrpwl-wqkmf-o3fd3-esjio-kpysm-r5xxh-fqe";
 
-const TEST_LEDGER_ACCOUNT_ID: &str = "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
+const TEST_ICP_ACCOUNT_ID: &str = "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
 
 #[test]
 fn create_sub_account() {
@@ -1195,7 +1195,7 @@ fn set_and_get_address_book() {
     );
 
     let named_address = NamedAddress {
-        account_id: TEST_LEDGER_ACCOUNT_ID.to_string(),
+        address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
         name: name.clone(),
     };
 
@@ -1222,7 +1222,7 @@ fn get_named_addresses(count: i32) -> Vec<NamedAddress> {
         .map(|i| {
             // Generate a valid 64-character hex account_id
             NamedAddress {
-                account_id: TEST_LEDGER_ACCOUNT_ID.to_string(),
+                address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
                 name: format!("Name {}", i),
             }
         })
@@ -1290,7 +1290,7 @@ fn set_address_book_account_id_invalid() {
     // Test with invalid hex (too short)
     let invalid_account_id = "invalid";
     let named_addresses = vec![NamedAddress {
-        account_id: invalid_account_id.to_string(),
+        address: AddressType::Icp(invalid_account_id.to_string()),
         name: "Valid Name".to_string(),
     }];
 
@@ -1303,7 +1303,7 @@ fn set_address_book_account_id_invalid() {
     // Test with invalid hex (not hex characters)
     let invalid_account_id = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz";
     let named_addresses = vec![NamedAddress {
-        account_id: invalid_account_id.to_string(),
+        address: AddressType::Icp(invalid_account_id.to_string()),
         name: "Valid Name".to_string(),
     }];
 
@@ -1323,7 +1323,7 @@ fn set_address_book_name_too_long() {
     let too_long_name = "a".repeat((MAX_NAMED_ADDRESS_NAME_LENGTH + 1) as usize);
     
     let named_addresses = vec![NamedAddress {
-        account_id: TEST_LEDGER_ACCOUNT_ID.to_string(),
+        address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
         name: too_long_name,
     }];
 
@@ -1344,7 +1344,7 @@ fn set_address_book_name_at_max_length() {
     let max_length_name = "a".repeat(MAX_NAMED_ADDRESS_NAME_LENGTH as usize);
     
     let named_addresses = vec![NamedAddress {
-        account_id: TEST_LEDGER_ACCOUNT_ID.to_string(),
+        address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
         name: max_length_name.clone(),
     }];
 
@@ -1354,6 +1354,78 @@ fn set_address_book_name_at_max_length() {
     );
 
     // Verify it was stored correctly
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook { named_addresses })
+    );
+}
+
+#[test]
+fn set_address_book_with_valid_icrc1_address() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    // Test with a valid ICRC1 address (principal format)
+    let named_addresses = vec![NamedAddress {
+        address: AddressType::Icrc1(TEST_ACCOUNT_2.to_string()),
+        name: "ICRC1 Account".to_string(),
+    }];
+
+    assert_eq!(
+        store.set_address_book(principal, AddressBook { named_addresses: named_addresses.clone() }),
+        SetAddressBookResponse::Ok
+    );
+
+    // Verify it was stored correctly
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook { named_addresses })
+    );
+}
+
+#[test]
+fn set_address_book_with_invalid_icrc1_address() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    // Test with an invalid ICRC1 address
+    let named_addresses = vec![NamedAddress {
+        address: AddressType::Icrc1("invalid-principal-format".to_string()),
+        name: "Invalid ICRC1".to_string(),
+    }];
+
+    let response = store.set_address_book(principal, AddressBook { named_addresses });
+    assert!(matches!(
+        response,
+        SetAddressBookResponse::InvalidIcrc1Address { .. }
+    ));
+    
+    
+}
+
+#[test]
+fn set_address_book_with_mixed_address_types() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    // Test with both ICP and ICRC1 addresses
+    let named_addresses = vec![
+        NamedAddress {
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+            name: "ICP Account".to_string(),
+        },
+        NamedAddress {
+            address: AddressType::Icrc1(TEST_ACCOUNT_3.to_string()),
+            name: "ICRC1 Account".to_string(),
+        },
+    ];
+
+    assert_eq!(
+        store.set_address_book(principal, AddressBook { named_addresses: named_addresses.clone() }),
+        SetAddressBookResponse::Ok
+    );
+
+    // Verify both were stored correctly
     assert_eq!(
         store.get_address_book(principal),
         GetAddressBookResponse::Ok(AddressBook { named_addresses })
