@@ -985,6 +985,7 @@ export const addFollowee = async ({
   });
 };
 
+// TODO: add tests
 export const setFollowing = async ({
   neuronId,
   topics,
@@ -1042,6 +1043,7 @@ export const removeFollowee = async ({
   });
 };
 
+// TODO: add tests
 export const removeFollowing = async ({
   neuronId,
   topics,

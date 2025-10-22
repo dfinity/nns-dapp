@@ -59,10 +59,6 @@
     modal?.set(wizardStepIndex({ name: STEP_TOPICS, steps }));
   };
 
-  const openPrevStep = () => {
-    openFirstStep();
-  };
-
   const clearError = () => {
     errorMessage = undefined;
   };
@@ -128,7 +124,9 @@
         followee,
       });
 
-      onClose();
+
+      selectedTopics = [];
+      openFirstStep();
     } catch (err: unknown) {
       handleAddFolloweeError({ followee, error: err });
     } finally {
@@ -160,7 +158,7 @@
       {neuron}
       topics={selectedTopics}
       {addFolloweeByAddress}
-      {openPrevStep}
+      openPrevStep={openFirstStep}
       {clearError}
       {errorMessage}
     />
