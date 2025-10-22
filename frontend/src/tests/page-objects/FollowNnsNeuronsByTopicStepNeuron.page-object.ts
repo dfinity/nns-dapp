@@ -1,5 +1,6 @@
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { InputWithErrorPo } from "$tests/page-objects/InputWithError.page-object";
+import { KnownNeuronFollowByTopicsItemPo } from "$tests/page-objects/KnownNeuronFollowByTopicsItem.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
 import type { PageObjectElement } from "$tests/types/page-object.types";
 
@@ -40,12 +41,12 @@ export class FollowNnsNeuronsByTopicStepNeuronPo extends BasePageObject {
     });
   }
 
-  async getKnownNeuronItems(): Promise<PageObjectElement[]> {
-    return this.root.allByTestId("known-neuron-item");
+  async getKnownNeuronItems(): Promise<KnownNeuronFollowByTopicsItemPo[]> {
+    return KnownNeuronFollowByTopicsItemPo.allUnder(this.root);
   }
 
   getErrorMessagePo(): PageObjectElement {
-    return this.root.byTestId("error-message");
+    return this.root.byTestId("custom-error-message");
   }
 
   async getErrorMessage(): Promise<string | null> {

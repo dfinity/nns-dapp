@@ -19,6 +19,11 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
       hotKeys: ["test-hotkey"],
     },
   };
+  const anotherKnownNeuron = {
+    ...mockKnownNeuron,
+    id: 987654321n,
+    name: "Another Known Neuron",
+  };
 
   const testTopics = [Topic.Governance, Topic.SnsAndCommunityFund];
 
@@ -27,14 +32,14 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
     topics?: Topic[];
     errorMessage?: string;
     openPrevStep?: () => void;
-    addFolloweeByAddress?: (address: string) => Promise<void>;
+    updateFollowings?: (address: string) => Promise<void>;
     clearError?: () => void;
   }) => {
     const defaultProps = {
       neuron: testNeuron,
       topics: testTopics,
       openPrevStep: vi.fn(),
-      addFolloweeByAddress: vi.fn(),
+      updateFollowings: vi.fn(),
       clearError: vi.fn(),
       ...props,
     };
@@ -52,7 +57,6 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
   };
 
   beforeEach(() => {
-    knownNeuronsStore.setNeurons([mockKnownNeuron]);
     resetIdentity();
   });
 
@@ -99,14 +103,14 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
     expect(await po.isFollowNeuronButtonDisabled()).toBe(true);
   });
 
-  it("should call addFolloweeByAddress when form is submitted", async () => {
+  it("should call updateFollowings when form is submitted", async () => {
     const { po, props } = renderComponent({});
 
     await po.typeNeuronAddress("0123456789");
     await po.clickFollowNeuronButton();
 
-    expect(props.addFolloweeByAddress).toHaveBeenCalledTimes(1);
-    expect(props.addFolloweeByAddress).toHaveBeenCalledWith("0123456789");
+    expect(props.updateFollowings).toHaveBeenCalledTimes(1);
+    expect(props.updateFollowings).toHaveBeenCalledWith("0123456789");
   });
 
   it("should call openPrevStep when back button is clicked", async () => {
@@ -143,17 +147,100 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
     expect(await po.hasErrorMessage()).toBe(false);
   });
 
-  // TODO: expand known neuron tests
   it("should display known neurons when available", async () => {
-    knownNeuronsStore.setNeurons([
-      mockKnownNeuron,
-      { ...mockKnownNeuron, id: 987654321n, name: "Another Known Neuron" },
-    ]);
+    knownNeuronsStore.reset();
+    knownNeuronsStore.setNeurons([mockKnownNeuron, anotherKnownNeuron]);
 
     const { po } = renderComponent({});
     await runResolvedPromises();
 
     const knownNeuronItems = await po.getKnownNeuronItems();
-    expect(knownNeuronItems.length).toBeGreaterThan(0);
+
+    const names = [];
+    await Promise.all(
+      knownNeuronItems.map(async (item) => {
+        const name = await item.getNeuronName();
+        names.push(name);
+      })
+    );
+
+    expect(knownNeuronItems.length).toBe(2);
+    expect(names).toEqual([mockKnownNeuron.name, anotherKnownNeuron.name]);
   });
+
+  it("should disable follow button for known neurons that are already being followed", async () => {
+    // Set up a neuron that is already following the known neuron for the selected topics
+    const neuronWithFollowees: NeuronInfo = {
+      ...testNeuron,
+      fullNeuron: {
+        ...testNeuron.fullNeuron,
+        followees: [
+          {
+            topic: Topic.Governance,
+            followees: [mockKnownNeuron.id, 123n],
+          },
+          {
+            topic: Topic.SnsAndCommunityFund,
+            followees: [mockKnownNeuron.id],
+          },
+        ],
+      },
+    };
+
+    knownNeuronsStore.setNeurons([mockKnownNeuron, anotherKnownNeuron]);
+
+    const { po } = renderComponent({
+      neuron: neuronWithFollowees,
+      topics: [Topic.Governance, Topic.SnsAndCommunityFund],
+    });
+    await runResolvedPromises();
+
+    const knownNeuronItems = await po.getKnownNeuronItems();
+    expect(knownNeuronItems.length).toBe(2);
+
+    const firstKnownNeuron = knownNeuronItems[0];
+    expect(await firstKnownNeuron.getNeuronName()).toBe(mockKnownNeuron.name);
+    expect(await firstKnownNeuron.isFollowButtonDisabled()).toBe(false);
+
+    // Check the second known neuron (already followed)
+    const secondKnownNeuron = knownNeuronItems[1];
+    expect(await secondKnownNeuron.getNeuronName()).toBe(
+      "Already Followed Neuron"
+    );
+    expect(await secondKnownNeuron.isFollowButtonDisabled()).toBe(true);
+    expect(await secondKnownNeuron.hasTooltip()).toBe(true);
+  });
+
+  // it("should enable follow button for known neurons that are not being followed", async () => {
+  //   const notFollowedKnownNeuron = {
+  //     ...mockKnownNeuron,
+  //     id: 999888777n,
+  //     name: "Not Followed Neuron",
+  //   };
+
+  //   // Set up a neuron with no followees
+  //   const neuronWithoutFollowees: NeuronInfo = {
+  //     ...testNeuron,
+  //     fullNeuron: {
+  //       ...testNeuron.fullNeuron,
+  //       followees: [],
+  //     },
+  //   };
+
+  //   // Set known neurons for this test
+  //   knownNeuronsStore.setNeurons([notFollowedKnownNeuron]);
+
+  //   const { po } = renderComponent({
+  //     neuron: neuronWithoutFollowees,
+  //   });
+  //   await runResolvedPromises();
+
+  //   const knownNeuronItems = await po.getKnownNeuronItems();
+  //   expect(knownNeuronItems.length).toBe(1);
+
+  //   const knownNeuronItem = knownNeuronItems[0];
+  //   expect(await knownNeuronItem.getNeuronName()).toBe("Not Followed Neuron");
+  //   expect(await knownNeuronItem.isFollowButtonDisabled()).toBe(false);
+  //   expect(await knownNeuronItem.hasTooltip()).toBe(false);
+  // });
 });

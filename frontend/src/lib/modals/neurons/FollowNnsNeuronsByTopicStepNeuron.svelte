@@ -32,7 +32,7 @@
     clearError: () => void;
   };
 
-  let {
+  const {
     neuron,
     topics,
     errorMessage = $bindable(),
@@ -41,7 +41,7 @@
     clearError,
   }: Props = $props();
 
-  const followeesForTopics: FolloweesForTopic[] = $derived(
+  const followings: FolloweesForTopic[] = $derived(
     getNnsTopicFollowings(neuron)
   );
 
@@ -84,23 +84,6 @@
       !isUserAuthorized ||
       $busy
   );
-
-  const notFollowingKnownNeurons: KnownNeuron[] = $derived(
-    $sortedknownNeuronsStore.filter(
-      (knownNeuron) =>
-        !isNnsNeuronFollowingAllTopics({
-          followings: followeesForTopics,
-          neuronId: knownNeuron.id,
-          topics,
-        })
-    )
-  );
-
-  const handleFolloweeUpdated = () => {
-    // Reset the form
-    followeeAddress = "";
-    clearError();
-  };
 </script>
 
 <div data-tid="follow-nns-neurons-by-topic-step-neuron-component">
@@ -153,9 +136,14 @@
       <Spinner />
     {:else}
       <ul>
-        {#each notFollowingKnownNeurons as knownNeuron}
+        {#each $sortedknownNeuronsStore as knownNeuron}
           <li data-tid="known-neuron-item">
-            <KnownNeuronFollowByTopicsItem {knownNeuron} {updateFollowings} />
+            <KnownNeuronFollowByTopicsItem
+              {knownNeuron}
+              {followings}
+              {topics}
+              {updateFollowings}
+            />
           </li>
         {/each}
       </ul>
