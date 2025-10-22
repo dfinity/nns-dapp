@@ -155,12 +155,7 @@
       <ul>
         {#each notFollowingKnownNeurons as knownNeuron}
           <li data-tid="known-neuron-item">
-            <KnownNeuronFollowByTopicsItem
-              on:nnsUpdated={handleFolloweeUpdated}
-              {knownNeuron}
-              {topics}
-              {updateFollowings}
-            />
+            <KnownNeuronFollowByTopicsItem {knownNeuron} {updateFollowings} />
           </li>
         {/each}
       </ul>

@@ -1,25 +1,21 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { busy } from "@dfinity/gix-components";
-  import type { KnownNeuron, Topic } from "@dfinity/nns";
-  import { createEventDispatcher } from "svelte";
+  import type { KnownNeuron } from "@dfinity/nns";
 
-  export let knownNeuron: KnownNeuron;
-  export let topics: Topic[] = [];
-  export let updateFollowings: (followeeAddress: string) => Promise<void>;
-
-  const dispatcher = createEventDispatcher();
-  const followKnownNeuron = async () => {
-    if (topics.length === 0) return;
-
-    await updateFollowings(knownNeuron.id.toString());
-    dispatcher("nnsUpdated");
+  type Props = {
+    knownNeuron: KnownNeuron;
+    updateFollowings: (followeeAddress: string) => Promise<void>;
   };
+
+  const { knownNeuron, updateFollowings }: Props = $props();
+
+  const followKnownNeuron = () => updateFollowings(knownNeuron.id.toString());
 </script>
 
 <div data-tid="known-neuron-item-component">
   <p class="value">{knownNeuron.name}</p>
-  <button class="primary" disabled={$busy} on:click={followKnownNeuron}>
+  <button class="primary" disabled={$busy} onclick={followKnownNeuron}>
     {$i18n.new_followee.follow}
   </button>
 </div>
