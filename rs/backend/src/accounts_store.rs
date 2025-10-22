@@ -236,7 +236,7 @@ pub enum SetAddressBookResponse {
     Ok,
     AccountNotFound,
     TooManyNamedAddresses { limit: i32 },
-    NamedAddressAccountIdInvalid { error: String },
+    InvalidIcpAddress { error: String },
     NamedAddressNameTooLong { max_length: i32 },
     InvalidIcrc1Address { error: String },
 }
@@ -742,7 +742,7 @@ impl AccountsStore {
                 AddressType::Icp(address_str) => {
                     // Validate ICP address using AccountIdentifier::from_hex
                     if let Err(e) = AccountIdentifier::from_hex(address_str) {
-                        return SetAddressBookResponse::NamedAddressAccountIdInvalid {
+                        return SetAddressBookResponse::InvalidIcpAddress {
                             error: format!("Invalid ICP address: {}", e),
                         };
                     }

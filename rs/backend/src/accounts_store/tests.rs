@@ -1297,7 +1297,7 @@ fn set_address_book_account_id_invalid() {
     let response = store.set_address_book(principal, AddressBook { named_addresses });
     assert!(matches!(
         response,
-        SetAddressBookResponse::NamedAddressAccountIdInvalid { .. }
+        SetAddressBookResponse::InvalidIcpAddress { .. }
     ));
     
     // Test with invalid hex (not hex characters)
@@ -1310,7 +1310,7 @@ fn set_address_book_account_id_invalid() {
     let response = store.set_address_book(principal, AddressBook { named_addresses });
     assert!(matches!(
         response,
-        SetAddressBookResponse::NamedAddressAccountIdInvalid { .. }
+        SetAddressBookResponse::InvalidIcpAddress { .. }
     ));
 }
 
