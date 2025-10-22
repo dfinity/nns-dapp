@@ -71,6 +71,7 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: id,
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });
@@ -108,12 +109,14 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: id,
         oldestTxId: undefined,
+        balance: 0n,
       },
       {
         accountIdentifier: mockSnsSubAccount.identifier,
         transactions,
         mostRecentTxId: id,
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });
@@ -148,6 +151,7 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: ids[0],
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });
@@ -216,6 +220,7 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: ids[0],
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });
@@ -261,6 +266,7 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: ids[0],
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });
