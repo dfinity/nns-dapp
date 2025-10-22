@@ -79,7 +79,7 @@
   };
 
   const disabled: boolean = $derived(
-    errorMessage !== undefined ||
+    nonNullish(errorMessage) ||
       followeeAddress.length === 0 ||
       !isUserAuthorized ||
       $busy
@@ -123,7 +123,7 @@
       <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
     </InputWithError>
     {#if nonNullish(errorMessage)}
-      <p class="custom-error-message" data-tid="custom-error-message">
+      <p class="error-message" data-tid="error-message">
         <Html text={errorMessage} />
       </p>
     {/if}
@@ -172,7 +172,7 @@
   form {
     gap: var(--padding-2x);
 
-    .custom-error-message {
+    .error-message {
       // mock InputWithError error message style
       margin-top: calc(-1 * var(--padding));
       color: var(--negative-emphasis);
