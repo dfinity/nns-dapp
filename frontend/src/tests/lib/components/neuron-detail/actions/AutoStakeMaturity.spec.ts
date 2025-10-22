@@ -36,4 +36,25 @@ describe("AutoStakeMaturity", () => {
 
   it("renders unchecked if auto stake is undefined", () =>
     testCheckBox(undefined));
+
+  it("doesn't render tooltip if checkbox is enabled", () => {
+    const { queryByTestId } = render(AutoStakeMaturity, {
+      props: {
+        hasAutoStakeOn: true,
+        disabled: false,
+      },
+    });
+    const tooltip = queryByTestId("auto-stake-maturity-tooltip");
+    expect(tooltip).not.toBeInTheDocument();
+  });
+  it("renders tooltip if checkbox is disabled", () => {
+    const { queryByTestId } = render(AutoStakeMaturity, {
+      props: {
+        hasAutoStakeOn: true,
+        disabled: true,
+      },
+    });
+    const tooltip = queryByTestId("auto-stake-maturity-tooltip");
+    expect(tooltip).toBeInTheDocument();
+  });
 });

@@ -784,6 +784,7 @@
     "auto_stake_maturity_off": "Are you sure that you would like to stop automatically staking new maturity of this neuron?",
     "auto_stake_maturity_on_success": "Automatically staking new maturity.",
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
+    "auto_stake_maturity_tooltip": "Only the controller of the neuron can change this setting.",
     "maturity_title": "Maturity",
     "vote_delegation_title": "Vote Delegation",
     "vote_delegation_tooltip_all": "Voting delegated on all topics.",
