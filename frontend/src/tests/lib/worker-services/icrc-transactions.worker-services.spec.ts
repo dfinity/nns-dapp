@@ -8,16 +8,19 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
-import type { IcrcGetTransactions } from "@dfinity/ledger-icrc";
-import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
+import type { IcrcIndexNgGetTransactions } from "@dfinity/ledger-icrc";
+import {
+  IcrcIndexNgCanister,
+  type IcrcTransaction,
+} from "@dfinity/ledger-icrc";
 import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
 describe("transactions.worker-services", () => {
-  const indexCanisterMock = mock<IcrcIndexCanister>();
+  const indexCanisterMock = mock<IcrcIndexNgCanister>();
 
   beforeEach(() => {
-    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
+    vi.spyOn(IcrcIndexNgCanister, "create").mockImplementation(
       () => indexCanisterMock
     );
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
@@ -46,6 +49,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [],
+        balance: 0n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -79,6 +83,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [],
+        balance: 0n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -121,6 +126,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions: [...transactions, ...transactions],
         oldest_tx_id: [],
+        balance: 0n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -158,7 +164,7 @@ describe("transactions.worker-services", () => {
 
     const getTransactionsSpy =
       indexCanisterMock.getTransactions.mockImplementation(
-        async (): Promise<IcrcGetTransactions> => {
+        async (): Promise<IcrcIndexNgGetTransactions> => {
           if (firstCall) {
             firstCall = false;
 
@@ -168,6 +174,7 @@ describe("transactions.worker-services", () => {
                 DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT
               ),
               oldest_tx_id: [],
+              balance: 0n,
             };
           }
 
@@ -176,6 +183,7 @@ describe("transactions.worker-services", () => {
               DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT
             ),
             oldest_tx_id: [],
+            balance: 0n,
           };
         }
       );
@@ -222,6 +230,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions: [...transactions, ...transactions],
         oldest_tx_id: [],
+        balance: 0n,
       });
 
     const data: PostMessageDataRequestTransactions = {
