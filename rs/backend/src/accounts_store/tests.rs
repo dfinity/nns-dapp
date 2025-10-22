@@ -1219,11 +1219,9 @@ fn set_and_get_address_book() {
 
 fn get_named_addresses(count: i32) -> Vec<NamedAddress> {
     (0..count)
-        .map(|i| {
-            NamedAddress {
-                address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
-                name: format!("Name {}", i),
-            }
+        .map(|i| NamedAddress {
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+            name: format!("Name {}", i),
         })
         .collect()
 }
