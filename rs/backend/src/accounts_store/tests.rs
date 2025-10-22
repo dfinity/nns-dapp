@@ -1295,11 +1295,8 @@ fn set_address_book_account_id_invalid() {
     }];
 
     let response = store.set_address_book(principal, AddressBook { named_addresses });
-    assert!(matches!(
-        response,
-        SetAddressBookResponse::InvalidIcpAddress { .. }
-    ));
-    
+    assert!(matches!(response, SetAddressBookResponse::InvalidIcpAddress { .. }));
+
     // Test with invalid hex (not hex characters)
     let invalid_account_id = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz";
     let named_addresses = vec![NamedAddress {
@@ -1308,10 +1305,7 @@ fn set_address_book_account_id_invalid() {
     }];
 
     let response = store.set_address_book(principal, AddressBook { named_addresses });
-    assert!(matches!(
-        response,
-        SetAddressBookResponse::InvalidIcpAddress { .. }
-    ));
+    assert!(matches!(response, SetAddressBookResponse::InvalidIcpAddress { .. }));
 }
 
 #[test]
@@ -1321,7 +1315,7 @@ fn set_address_book_name_too_long() {
 
     // Create a name that is exactly MAX_NAMED_ADDRESS_NAME_LENGTH + 1 characters
     let too_long_name = "a".repeat((MAX_NAMED_ADDRESS_NAME_LENGTH + 1) as usize);
-    
+
     let named_addresses = vec![NamedAddress {
         address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
         name: too_long_name,
@@ -1329,8 +1323,8 @@ fn set_address_book_name_too_long() {
 
     assert_eq!(
         store.set_address_book(principal, AddressBook { named_addresses }),
-        SetAddressBookResponse::NamedAddressNameTooLong { 
-            max_length: MAX_NAMED_ADDRESS_NAME_LENGTH 
+        SetAddressBookResponse::NamedAddressNameTooLong {
+            max_length: MAX_NAMED_ADDRESS_NAME_LENGTH
         }
     );
 }
@@ -1342,14 +1336,19 @@ fn set_address_book_name_at_max_length() {
 
     // Create a name that is exactly MAX_NAMED_ADDRESS_NAME_LENGTH characters
     let max_length_name = "a".repeat(MAX_NAMED_ADDRESS_NAME_LENGTH as usize);
-    
+
     let named_addresses = vec![NamedAddress {
         address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
         name: max_length_name.clone(),
     }];
 
     assert_eq!(
-        store.set_address_book(principal, AddressBook { named_addresses: named_addresses.clone() }),
+        store.set_address_book(
+            principal,
+            AddressBook {
+                named_addresses: named_addresses.clone()
+            }
+        ),
         SetAddressBookResponse::Ok
     );
 
@@ -1372,7 +1371,12 @@ fn set_address_book_with_valid_icrc1_address() {
     }];
 
     assert_eq!(
-        store.set_address_book(principal, AddressBook { named_addresses: named_addresses.clone() }),
+        store.set_address_book(
+            principal,
+            AddressBook {
+                named_addresses: named_addresses.clone()
+            }
+        ),
         SetAddressBookResponse::Ok
     );
 
@@ -1395,12 +1399,7 @@ fn set_address_book_with_invalid_icrc1_address() {
     }];
 
     let response = store.set_address_book(principal, AddressBook { named_addresses });
-    assert!(matches!(
-        response,
-        SetAddressBookResponse::InvalidIcrc1Address { .. }
-    ));
-    
-    
+    assert!(matches!(response, SetAddressBookResponse::InvalidIcrc1Address { .. }));
 }
 
 #[test]
@@ -1421,7 +1420,12 @@ fn set_address_book_with_mixed_address_types() {
     ];
 
     assert_eq!(
-        store.set_address_book(principal, AddressBook { named_addresses: named_addresses.clone() }),
+        store.set_address_book(
+            principal,
+            AddressBook {
+                named_addresses: named_addresses.clone()
+            }
+        ),
         SetAddressBookResponse::Ok
     );
 

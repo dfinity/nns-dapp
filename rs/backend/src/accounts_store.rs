@@ -743,7 +743,7 @@ impl AccountsStore {
                     // Validate ICP address using AccountIdentifier::from_hex
                     if let Err(e) = AccountIdentifier::from_hex(address_str) {
                         return SetAddressBookResponse::InvalidIcpAddress {
-                            error: format!("Invalid ICP address: {}", e),
+                            error: format!("Invalid ICP address: {e}"),
                         };
                     }
                 }
@@ -752,12 +752,12 @@ impl AccountsStore {
                     // which properly validates the ICRC1 text representation including checksum validation
                     if let Err(e) = Icrc1Account::from_str(address_str) {
                         return SetAddressBookResponse::InvalidIcrc1Address {
-                            error: format!("Invalid ICRC1 address: {}", e),
+                            error: format!("Invalid ICRC1 address: {e}"),
                         };
                     }
                 }
             }
-            
+
             if named_address.name.len() > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
                 return SetAddressBookResponse::NamedAddressNameTooLong {
                     max_length: MAX_NAMED_ADDRESS_NAME_LENGTH,
