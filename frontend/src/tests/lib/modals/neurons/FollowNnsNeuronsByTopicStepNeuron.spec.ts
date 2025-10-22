@@ -200,14 +200,14 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
 
     const firstKnownNeuron = knownNeuronItems[0];
     expect(await firstKnownNeuron.getNeuronName()).toBe(mockKnownNeuron.name);
-    expect(await firstKnownNeuron.isFollowButtonDisabled()).toBe(false);
+    expect(await firstKnownNeuron.isFollowButtonDisabled()).toBe(true);
 
     // Check the second known neuron (already followed)
     const secondKnownNeuron = knownNeuronItems[1];
     expect(await secondKnownNeuron.getNeuronName()).toBe(
-      "Already Followed Neuron"
+      anotherKnownNeuron.name
     );
-    expect(await secondKnownNeuron.isFollowButtonDisabled()).toBe(true);
+    expect(await secondKnownNeuron.isFollowButtonDisabled()).toBe(false);
     expect(await secondKnownNeuron.hasTooltip()).toBe(true);
   });
 });
