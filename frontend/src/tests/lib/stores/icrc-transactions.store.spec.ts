@@ -14,6 +14,7 @@ describe("icrc-transactions", () => {
       accountIdentifier: mockCkBTCMainAccount.identifier,
       oldestTxId: 10n,
       completed: false,
+      balance: 0n,
     });
 
     const accounts = get(icrcTransactionsStore);
@@ -32,6 +33,7 @@ describe("icrc-transactions", () => {
       accountIdentifier: otherAccountIdentifier,
       oldestTxId: 10n,
       completed: false,
+      balance: 0n,
     });
 
     const accounts2 = get(icrcTransactionsStore);
@@ -65,6 +67,7 @@ describe("icrc-transactions", () => {
       accountIdentifier: identifier,
       oldestTxId: 10n,
       completed: false,
+      balance: 0n,
     });
 
     expect(
@@ -78,6 +81,7 @@ describe("icrc-transactions", () => {
       accountIdentifier: identifier,
       oldestTxId: 10n,
       completed: false,
+      balance: 0n,
     });
 
     expect(

@@ -17,6 +17,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: 10n,
         completed: false,
+        balance: 0n,
       });
 
       const accountsInStore = get(icrcTransactionsStore);
@@ -33,6 +34,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: 10n,
         completed: false,
+        balance: 0n,
       });
 
       icrcTransactionsStore.addTransactions({
@@ -41,6 +43,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsSubAccount.identifier,
         oldestTxId: 10n,
         completed: false,
+        balance: 0n,
       });
 
       const accountsInStore = get(icrcTransactionsStore);
@@ -73,6 +76,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: 10n,
         completed: false,
+        balance: 0n,
       });
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
@@ -80,6 +84,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: 10n,
         completed: false,
+        balance: 0n,
       });
 
       const accountsInStore = get(icrcTransactionsStore);
@@ -109,6 +114,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId,
         completed: false,
+        balance: 0n,
       });
       icrcTransactionsStore.addTransactions({
         canisterId: mockPrincipal,
@@ -116,6 +122,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: 3n,
         completed: false,
+        balance: 0n,
       });
 
       const accountsInStore = get(icrcTransactionsStore);
@@ -132,6 +139,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: 10n,
         completed: false,
+        balance: 0n,
       });
 
       const accountsInStore = get(icrcTransactionsStore);
@@ -154,6 +162,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: 10n,
         completed: false,
+        balance: 0n,
       });
       const accountsInStore = get(icrcTransactionsStore);
       expect(
@@ -167,6 +176,7 @@ describe("SNS Transactions store", () => {
         accountIdentifier: mockSnsMainAccount.identifier,
         oldestTxId: 10n,
         completed: false,
+        balance: 0n,
       });
       const accountsInStore2 = get(icrcTransactionsStore);
       expect(

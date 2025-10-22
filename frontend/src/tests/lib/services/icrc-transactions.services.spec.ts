@@ -43,6 +43,7 @@ describe("icrc-transactions services", () => {
         .mockResolvedValue({
           oldestTxId: 1_234n,
           transactions: [mockIcrcTransactionWithId],
+          balance: 0n,
         });
       const start = 1_234n;
 
@@ -109,6 +110,7 @@ describe("icrc-transactions services", () => {
         .mockResolvedValue({
           oldestTxId: newTransaction.id,
           transactions: [newTransaction],
+          balance: 0n,
         });
 
       const oldestTransaction = createIcrcTransactionWithId({
@@ -134,6 +136,7 @@ describe("icrc-transactions services", () => {
         ],
         oldestTxId: oldestTransaction.id,
         completed: false,
+        balance: 0n,
       });
 
       expect(
@@ -179,6 +182,7 @@ describe("icrc-transactions services", () => {
         .mockResolvedValue({
           oldestTxId: newTransaction.id,
           transactions: [newTransaction],
+          balance: 0n,
         });
       expect(spyGetTransactions).not.toBeCalled();
 
