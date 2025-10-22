@@ -100,7 +100,7 @@
     }
   };
 
-  const addFolloweeByAddress = async (followeeAddress: string) => {
+  const updateFollowings = async (followeeAddress: string) => {
     clearError();
 
     if (followeeAddress.length === 0) {
@@ -123,7 +123,6 @@
         topics: selectedTopics,
         followee,
       });
-
 
       selectedTopics = [];
       openFirstStep();
@@ -157,7 +156,7 @@
     <FollowNnsNeuronsByTopicStepNeuron
       {neuron}
       topics={selectedTopics}
-      {addFolloweeByAddress}
+      {updateFollowings}
       openPrevStep={openFirstStep}
       {clearError}
       {errorMessage}

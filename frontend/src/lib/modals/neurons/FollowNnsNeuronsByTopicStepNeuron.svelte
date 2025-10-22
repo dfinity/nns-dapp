@@ -28,7 +28,7 @@
     isBusy?: boolean;
     errorMessage?: string;
     openPrevStep: () => void;
-    addFolloweeByAddress: (followeeAddress: string) => Promise<void>;
+    updateFollowings: (followeeAddress: string) => Promise<void>;
     clearError: () => void;
   };
 
@@ -37,7 +37,7 @@
     topics,
     errorMessage = $bindable(),
     openPrevStep,
-    addFolloweeByAddress,
+    updateFollowings,
     clearError,
   }: Props = $props();
 
@@ -75,7 +75,7 @@
     if (followeeAddress.length === 0) {
       return;
     }
-    await addFolloweeByAddress(followeeAddress);
+    await updateFollowings(followeeAddress);
   };
 
   const disabled: boolean = $derived(
