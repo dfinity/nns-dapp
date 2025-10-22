@@ -1,13 +1,21 @@
 import { allCkTokens } from "$lib/constants/ck-canister-ids.constants";
 import {
+  CKBTC_INDEX_CANISTER_ID,
+  CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
 import {
+  CKETH_INDEX_CANISTER_ID,
+  CKETH_LEDGER_CANISTER_ID,
   CKETH_UNIVERSE_CANISTER_ID,
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/cketh-canister-ids.constants";
-import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import {
+  CKUSDC_INDEX_CANISTER_ID,
+  CKUSDC_LEDGER_CANISTER_ID,
+  CKUSDC_UNIVERSE_CANISTER_ID,
+} from "$lib/constants/ckusdc-canister-ids.constants";
 import { IS_TESTNET } from "$lib/constants/environment.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import type { TokensStoreUniverseData } from "$lib/stores/tokens.store";
@@ -36,4 +44,20 @@ export const IMPORTANT_CK_TOKEN_IDS = [
   // test ck tokens
   CKTESTBTC_UNIVERSE_CANISTER_ID,
   CKETHSEPOLIA_UNIVERSE_CANISTER_ID,
+];
+
+export const ALL_CK_TOKENS_CANISTER_IDS = [
+  {
+    ledgerCanisterId: CKBTC_LEDGER_CANISTER_ID,
+    indexCanisterId: CKBTC_INDEX_CANISTER_ID,
+  },
+  {
+    ledgerCanisterId: CKETH_LEDGER_CANISTER_ID,
+    indexCanisterId: CKETH_INDEX_CANISTER_ID,
+  },
+  {
+    ledgerCanisterId: CKUSDC_LEDGER_CANISTER_ID,
+    indexCanisterId: CKUSDC_INDEX_CANISTER_ID,
+  },
+  ...(IS_TESTNET ? [] : allCkTokens),
 ];
