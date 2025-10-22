@@ -210,37 +210,4 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
     expect(await secondKnownNeuron.isFollowButtonDisabled()).toBe(true);
     expect(await secondKnownNeuron.hasTooltip()).toBe(true);
   });
-
-  // it("should enable follow button for known neurons that are not being followed", async () => {
-  //   const notFollowedKnownNeuron = {
-  //     ...mockKnownNeuron,
-  //     id: 999888777n,
-  //     name: "Not Followed Neuron",
-  //   };
-
-  //   // Set up a neuron with no followees
-  //   const neuronWithoutFollowees: NeuronInfo = {
-  //     ...testNeuron,
-  //     fullNeuron: {
-  //       ...testNeuron.fullNeuron,
-  //       followees: [],
-  //     },
-  //   };
-
-  //   // Set known neurons for this test
-  //   knownNeuronsStore.setNeurons([notFollowedKnownNeuron]);
-
-  //   const { po } = renderComponent({
-  //     neuron: neuronWithoutFollowees,
-  //   });
-  //   await runResolvedPromises();
-
-  //   const knownNeuronItems = await po.getKnownNeuronItems();
-  //   expect(knownNeuronItems.length).toBe(1);
-
-  //   const knownNeuronItem = knownNeuronItems[0];
-  //   expect(await knownNeuronItem.getNeuronName()).toBe("Not Followed Neuron");
-  //   expect(await knownNeuronItem.isFollowButtonDisabled()).toBe(false);
-  //   expect(await knownNeuronItem.hasTooltip()).toBe(false);
-  // });
 });
