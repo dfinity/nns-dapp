@@ -14,7 +14,7 @@ use crate::{
 };
 
 use candid::{CandidType, Principal};
-use ic_base_types::{CanisterId, PrincipalId};
+use ic_base_types::{CanisterId, PrincipalId, NodeId, SubnetId};
 use ic_crypto_sha2::Sha256;
 use ic_management_canister_types::CanisterInstallMode;
 use serde::{Deserialize, Serialize};
@@ -473,15 +473,31 @@ pub type ReviseElectedHostosVersionsPayload = crate::canisters::nns_registry::ap
 pub type DeployHostosToSomeNodesPayload = crate::canisters::nns_registry::api::UpdateNodesHostosVersionPayload;
 
 // NNS function 52 - SubnetRentalRequest
-// Copied from https://github.com/dfinity/ic/blob/master/rs/nns/governance/src/governance.rs
+// Copied from https://github.com/dfinity/ic/blob/b626aab873afc4c5c6211b1795512fb7fbd1bf6f/rs/nns/governance/api/src/subnet_rental.rs
 #[derive(candid::CandidType, candid::Deserialize, serde::Serialize, Clone, Debug)]
 pub struct SubnetRentalRequest {
     pub user: PrincipalId,
     pub rental_condition_id: RentalConditionId,
 }
 
-// Copied from https://github.com/dfinity/ic/blob/master/rs/nns/governance/src/governance.rs
+// Copied from https://github.com/dfinity/ic/blob/b626aab873afc4c5c6211b1795512fb7fbd1bf6f/rs/nns/governance/api/src/subnet_rental.rs
 #[derive(candid::CandidType, candid::Deserialize, serde::Serialize, Clone, Copy, Debug)]
 pub enum RentalConditionId {
     App13CH,
+}
+
+// NNS function 55 - SetSubnetOperationalLevel
+// Copied from https://github.com/dfinity/ic/blob/b626aab873afc4c5c6211b1795512fb7fbd1bf6f/rs/registry/canister/src/mutations/do_set_subnet_operational_level.rs#L252
+#[derive(Debug, Clone, Eq, PartialEq, CandidType, Serialize, Deserialize)]
+pub struct SetSubnetOperationalLevelPayload {
+    pub subnet_id: Option<SubnetId>,
+    pub operational_level: Option<i32>,
+    pub ssh_readonly_access: Option<Vec<String>>,
+    pub ssh_node_state_write_access: Option<Vec<NodeSshAccess>>,
+}
+
+#[derive(Clone, Eq, PartialEq, Debug, CandidType, Serialize, Deserialize)]
+pub struct NodeSshAccess {
+    pub node_id: Option<NodeId>,
+    pub public_keys: Option<Vec<String>>,
 }
