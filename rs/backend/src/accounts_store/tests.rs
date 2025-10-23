@@ -1203,10 +1203,7 @@ fn set_and_get_address_book() {
     };
 
     assert_eq!(
-        store.set_address_book(
-            principal,
-            address_book.clone(),
-        ),
+        store.set_address_book(principal, address_book.clone(),),
         SetAddressBookResponse::Ok
     );
 
@@ -1239,10 +1236,7 @@ fn set_and_get_max_named_addresses() {
     let address_book = new_address_book(MAX_NAMED_ADDRESSES);
 
     assert_eq!(
-        store.set_address_book(
-            principal,
-            address_book.clone(),
-        ),
+        store.set_address_book(principal, address_book.clone(),),
         SetAddressBookResponse::Ok
     );
 
@@ -1481,9 +1475,7 @@ fn set_address_book_duplicate_names() {
 
     assert_eq!(
         store.set_address_book(principal, AddressBook { named_addresses }),
-        SetAddressBookResponse::DuplicateAddressName {
-            name: duplicate_name
-        }
+        SetAddressBookResponse::DuplicateAddressName { name: duplicate_name }
     );
 
     // Verify that the address book was not saved
@@ -1526,9 +1518,7 @@ fn set_address_book_duplicate_names_multiple() {
 
     assert_eq!(
         store.set_address_book(principal, AddressBook { named_addresses }),
-        SetAddressBookResponse::DuplicateAddressName {
-            name: duplicate_name
-        }
+        SetAddressBookResponse::DuplicateAddressName { name: duplicate_name }
     );
 
     // Verify that the address book was not saved
