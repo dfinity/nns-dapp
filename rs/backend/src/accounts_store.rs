@@ -750,9 +750,19 @@ impl AccountsStore {
         Ok(())
     }
 
-    fn validate_address_book_name_and_address(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+    fn validate_address_book_names_length(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
         for named_address in &address_book.named_addresses {
-            // Validate the address based on its variant
+            if named_address.name.len() > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
+                return Err(SetAddressBookResponse::AddressNameTooLong {
+                    max_length: MAX_NAMED_ADDRESS_NAME_LENGTH,
+                });
+            }
+        }
+        Ok(())
+    }
+
+    fn validate_address_book_addresses(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        for named_address in &address_book.named_addresses {
             match &named_address.address {
                 AddressType::Icp(address_str) => {
                     // Validate ICP address using AccountIdentifier::from_hex
@@ -772,23 +782,15 @@ impl AccountsStore {
                     }
                 }
             }
-
-            // Validate name length
-            if named_address.name.len() > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
-                return Err(SetAddressBookResponse::AddressNameTooLong {
-                    max_length: MAX_NAMED_ADDRESS_NAME_LENGTH,
-                });
-            }
         }
-
         Ok(())
     }
 
     fn validate_address_book(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
         Self::validate_address_book_count(address_book)?;
         Self::validate_address_book_unique_names(address_book)?;
-        Self::validate_address_book_name_and_address(address_book)?;
-
+        Self::validate_address_book_names_length(address_book)?;
+        Self::validate_address_book_addresses(address_book)?;
         Ok(())
     }
 
