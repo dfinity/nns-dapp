@@ -167,7 +167,7 @@ describe("NewFolloweeModal", () => {
     expect(await po.getTextInputPo().hasErrorOutline()).toBe(true);
     expect(await po.getCustomErrorMessagePo().isPresent()).toBe(true);
     expect(await po.getCustomErrorMessagePo().getText()).toBe(
-      "Neuron 123 is a private neuron. If you control neuron 123, you can follow it after adding your principal xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe to its list of hotkeys or setting the neuron to public."
+      "Neuron 123 is a private neuron. If you control neuron 123, you can follow it after adding your principal xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe to its list of hotkeys or setting the neuron to public. More info here."
     );
     expect(onClose).toBeCalledTimes(0);
     expectNoToastError();

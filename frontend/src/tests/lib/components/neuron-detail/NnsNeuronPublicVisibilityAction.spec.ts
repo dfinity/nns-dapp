@@ -57,7 +57,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     );
     expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
-      "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
+      "https://learn.internetcomputer.org/hc/en-us/articles/34084120668692-Neurons#h_01JJ26QW42Z5QMGJPE2JFBJK92"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Private");
     expect(await po.getButtonPo().isDisabled()).toBe(false);
@@ -77,7 +77,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     );
     expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
-      "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
+      "https://learn.internetcomputer.org/hc/en-us/articles/34084120668692-Neurons#h_01JJ26QW42Z5QMGJPE2JFBJK92"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
     expect(await po.getButtonPo().isDisabled()).toBe(false);
@@ -98,7 +98,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
 
     expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
-      "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
+      "https://learn.internetcomputer.org/hc/en-us/articles/34084120668692-Neurons#h_01JJ26QW42Z5QMGJPE2JFBJK92"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
     expect(await po.getButtonPo().isDisabled()).toBe(false);
@@ -118,7 +118,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     );
     expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
-      "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
+      "https://learn.internetcomputer.org/hc/en-us/articles/34084120668692-Neurons#h_01JJ26QW42Z5QMGJPE2JFBJK92"
     );
     expect(await po.getButtonPo().getText()).toBe("Make Neuron Public");
     expect(await po.getButtonPo().isDisabled()).toBe(false);
@@ -134,7 +134,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     );
     expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
-      "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
+      "https://learn.internetcomputer.org/hc/en-us/articles/34084120668692-Neurons#h_01JJ26QW42Z5QMGJPE2JFBJK92"
     );
     expect(await po.getButtonPo().isPresent()).toBe(false);
   });
@@ -148,7 +148,7 @@ describe("NnsNeuronPublicVisibilityAction", () => {
     );
     expect(await po.getSubtitleLinkPo().getText()).toBe("Learn more");
     expect(await po.getSubtitleLinkPo().getHref()).toBe(
-      "https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
+      "https://learn.internetcomputer.org/hc/en-us/articles/34084120668692-Neurons#h_01JJ26QW42Z5QMGJPE2JFBJK92"
     );
 
     expect(await po.getButtonPo().isDisabled()).toBe(true);
