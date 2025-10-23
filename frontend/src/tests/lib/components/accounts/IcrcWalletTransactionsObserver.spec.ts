@@ -52,6 +52,7 @@ describe("IcrcWalletTransactionsObserver", () => {
     accountIdentifier: mockCkBTCMainAccount.identifier,
     oldestTxId: 10n,
     completed: false,
+    balance: 0n,
   };
 
   beforeEach(() => {

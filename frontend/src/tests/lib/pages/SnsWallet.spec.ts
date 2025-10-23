@@ -75,6 +75,7 @@ describe("SnsWallet", () => {
     resetIdentity();
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
+      balance: 0n,
     });
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(10n);
     vi.spyOn(

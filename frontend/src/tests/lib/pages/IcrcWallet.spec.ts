@@ -117,6 +117,7 @@ describe("IcrcWallet", () => {
 
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
+      balance: 0n,
     });
 
     defaultIcrcCanistersStore.setCanisters({

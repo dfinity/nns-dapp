@@ -2,15 +2,18 @@ import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.const
 import { FETCH_ROOT_KEY, HOST } from "$lib/constants/environment.constants";
 import { getIcrcTransactions } from "$lib/worker-api/icrc-index.worker-api";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { IcrcIndexCanister, type IcrcTransaction } from "@dfinity/ledger-icrc";
+import {
+  IcrcIndexNgCanister,
+  type IcrcTransaction,
+} from "@dfinity/ledger-icrc";
 import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
 describe("icrc-index.worker-api", () => {
-  const indexCanisterMock = mock<IcrcIndexCanister>();
+  const indexCanisterMock = mock<IcrcIndexNgCanister>();
 
   beforeEach(() => {
-    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
+    vi.spyOn(IcrcIndexNgCanister, "create").mockImplementation(
       () => indexCanisterMock
     );
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
@@ -40,6 +43,7 @@ describe("icrc-index.worker-api", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions: [{ transaction, id }],
         oldest_tx_id: [],
+        balance: 0n,
       });
 
     const results = await getIcrcTransactions(params);
