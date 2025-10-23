@@ -95,9 +95,6 @@
           $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
         }
       );
-      // Since the error message is not displayed directly in the input field,
-      // we set input.error to a non-undefined value to trigger the error state in InputWithError.
-      errorMessage = "";
     } else {
       toastsShow(toastMessage);
     }
