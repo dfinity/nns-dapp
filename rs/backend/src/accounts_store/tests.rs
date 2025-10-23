@@ -4,18 +4,26 @@ use crate::accounts_store::toy_data::{toy_account, ToyAccountSize};
 use pretty_assertions::assert_eq;
 use std::str::FromStr;
 
-const TEST_ACCOUNT_1: &str = "h4a5i-5vcfo-5rusv-fmb6m-vrkia-mjnkc-jpoow-h5mam-nthnm-ldqlr-bqe";
-const TEST_ACCOUNT_2: &str = "bngem-gzprz-dtr6o-xnali-fgmfi-fjgpb-rya7j-x2idk-3eh6u-4v7tx-hqe";
-const TEST_ACCOUNT_3: &str = "347of-sq6dc-h53df-dtzkw-eama6-hfaxk-a7ghn-oumsd-jf2qy-tqvqc-wqe";
-const TEST_ACCOUNT_4: &str = "zrmyx-sbrcv-rod5f-xyd6k-letwb-tukpj-edhrc-sqash-lddmc-7qypw-yqe";
-const TEST_ACCOUNT_5: &str = "2fzwl-cu3hl-bawo2-idwrw-7yygk-uccms-cbo3a-c6kqt-lnk3j-mewg3-hae";
-const TEST_ACCOUNT_6: &str = "4gb44-uya57-c2v6u-fcz5v-qrpwl-wqkmf-o3fd3-esjio-kpysm-r5xxh-fqe";
+const TEST_ICRC1_ACCOUNT_1: &str = "h4a5i-5vcfo-5rusv-fmb6m-vrkia-mjnkc-jpoow-h5mam-nthnm-ldqlr-bqe";
+const TEST_ICRC1_ACCOUNT_2: &str = "bngem-gzprz-dtr6o-xnali-fgmfi-fjgpb-rya7j-x2idk-3eh6u-4v7tx-hqe";
+const TEST_ICRC1_ACCOUNT_3: &str = "347of-sq6dc-h53df-dtzkw-eama6-hfaxk-a7ghn-oumsd-jf2qy-tqvqc-wqe";
+const TEST_ICRC1_ACCOUNT_4: &str = "zrmyx-sbrcv-rod5f-xyd6k-letwb-tukpj-edhrc-sqash-lddmc-7qypw-yqe";
+const TEST_ICRC1_ACCOUNT_5: &str = "2fzwl-cu3hl-bawo2-idwrw-7yygk-uccms-cbo3a-c6kqt-lnk3j-mewg3-hae";
+const TEST_ICRC1_ACCOUNT_6: &str = "4gb44-uya57-c2v6u-fcz5v-qrpwl-wqkmf-o3fd3-esjio-kpysm-r5xxh-fqe";
 
-const TEST_ICP_ACCOUNT_ID: &str = "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
+const TEST_ICRC1_ACCOUNT_SUBACCOUNT_VALID_1: &str =
+    "k2t6j-2nvnp-4zjm3-25dtz-6xhaa-c7boj-5gayf-oj3xs-i43lp-teztq-6ae-6cc627i.1";
+const TEST_ICRC1_ACCOUNT_SUBACCOUNT_INVALID_1: &str =
+    "k2t6j-2nvnp-4zjm3-25dtz-6xhaa-c7boj-5gayf-oj3xs-i43lp-teztq-6ae-6cc627i.000001";
+const TEST_ICRC1_ACCOUNT_SUBACCOUNT_INVALID_2: &str = "k2t6j-2nvnp-4zjm3-25dtz-6xhaa-c7boj-5gayf-oj3xs-i43lp-teztq-6ae-6cc627i.0000000000000000000000000000000000000000000000000000000000000001";
+const TEST_ICRC1_ACCOUNT_SUBACCOUNT_INVALID_3: &str =
+    "k2t6j-2nvnp-4zjm3-25dtz-6xhaa-c7boj-5gayf-oj3xs-i43lp-teztq-6ae-6cc627i.ABC";
+
+const TEST_ICP_ACCOUNT_1: &str = "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
 
 #[test]
 fn create_sub_account() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
 
     store.create_sub_account(principal, "AAA".to_string());
@@ -33,7 +41,7 @@ fn create_sub_account() {
 
 #[test]
 fn create_sub_account_response() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
 
     let response = store.create_sub_account(principal, "AAA".to_string());
@@ -50,7 +58,7 @@ fn create_sub_account_response() {
 
 #[test]
 fn create_sub_account_name_too_long() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
 
     let response = store.create_sub_account(principal, "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string());
@@ -63,7 +71,7 @@ fn create_sub_account_name_too_long() {
 
 #[test]
 fn create_sub_account_limit_exceeded() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
 
     const MAX_SUB_ACCOUNTS_PER_ACCOUNT: usize = 254;
@@ -83,7 +91,7 @@ fn create_sub_account_limit_exceeded() {
 
 #[test]
 fn create_sub_account_account_not_found() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
     let mut store = setup_test_store();
 
     let response = store.create_sub_account(principal, "AAA".to_string());
@@ -93,7 +101,7 @@ fn create_sub_account_account_not_found() {
 
 #[test]
 fn rename_sub_account() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
 
     store.create_sub_account(principal, "AAA".to_string());
@@ -119,11 +127,11 @@ fn rename_sub_account() {
 
 #[test]
 fn register_hardware_wallet() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
 
-    let hw1 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    let hw2 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
+    let hw1 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
+    let hw2 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_4).unwrap();
 
     let res1 = store.register_hardware_wallet(
         principal,
@@ -160,10 +168,10 @@ fn register_hardware_wallet() {
 
 #[test]
 fn register_hardware_wallet_hardware_wallet_already_registered() {
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let mut store = setup_test_store();
 
-    let hw1 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let hw1 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
 
     let res1 = store.register_hardware_wallet(
         principal,
@@ -199,14 +207,14 @@ fn register_hardware_wallet_hardware_wallet_already_registered() {
 #[test]
 fn attach_canister_followed_by_get_canisters() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     let canister_ids: Vec<_> = [
-        TEST_ACCOUNT_2,
-        TEST_ACCOUNT_3,
-        TEST_ACCOUNT_4,
-        TEST_ACCOUNT_5,
-        TEST_ACCOUNT_6,
+        TEST_ICRC1_ACCOUNT_2,
+        TEST_ICRC1_ACCOUNT_3,
+        TEST_ICRC1_ACCOUNT_4,
+        TEST_ICRC1_ACCOUNT_5,
+        TEST_ICRC1_ACCOUNT_6,
     ]
     .iter()
     .map(|&id| CanisterId::from_str(id).unwrap())
@@ -248,10 +256,10 @@ fn attach_canister_followed_by_get_canisters() {
 #[test]
 fn attach_canister_name_already_taken() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
-    let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+    let canister_id1 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
+    let canister_id2 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
 
     let result1 = store.attach_canister(
         principal,
@@ -277,10 +285,10 @@ fn attach_canister_name_already_taken() {
 #[test]
 fn attach_canister_name_too_long() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
-    let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+    let canister_id1 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
+    let canister_id2 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
 
     let result1 = store.attach_canister(
         principal,
@@ -306,8 +314,8 @@ fn attach_canister_name_too_long() {
 #[test]
 fn attach_canister_account_not_found() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let result = store.attach_canister(
         principal,
@@ -324,9 +332,9 @@ fn attach_canister_account_not_found() {
 #[test]
 fn attach_canister_canister_already_attached_with_name() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let result1 = store.attach_canister(
         principal,
@@ -352,9 +360,9 @@ fn attach_canister_canister_already_attached_with_name() {
 #[test]
 fn attach_canister_canister_already_attached_with_same_name() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let result1 = store.attach_canister(
         principal,
@@ -380,9 +388,9 @@ fn attach_canister_canister_already_attached_with_same_name() {
 #[test]
 fn attach_canister_canister_already_attached_with_different_name() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let result1 = store.attach_canister(
         principal,
@@ -408,9 +416,9 @@ fn attach_canister_canister_already_attached_with_different_name() {
 #[test]
 fn attach_canister_canister_already_attached_both_without_name() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let result1 = store.attach_canister(
         principal,
@@ -436,9 +444,9 @@ fn attach_canister_canister_already_attached_both_without_name() {
 #[test]
 fn attach_canister_substitutes_empty_name_canister() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
     let block_index = Some(123);
 
     store.attach_canister(
@@ -474,9 +482,9 @@ fn attach_canister_substitutes_empty_name_canister() {
 fn attach_canister_canister_already_attached_with_block_index() {
     let name = "my canister";
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let result1 = store.attach_canister(
         principal,
@@ -503,9 +511,9 @@ fn attach_canister_canister_already_attached_with_block_index() {
 fn attach_canister_canister_already_attached_with_same_name_and_block_index() {
     let name = "my canister";
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let result1 = store.attach_canister(
         principal,
@@ -532,9 +540,9 @@ fn attach_canister_canister_already_attached_with_same_name_and_block_index() {
 fn attach_canister_canister_already_attached_with_different_block_index() {
     let name = "my canister";
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let result1 = store.attach_canister(
         principal,
@@ -561,9 +569,9 @@ fn attach_canister_canister_already_attached_with_different_block_index() {
 fn attach_canister_substitutes_absent_block_index() {
     let name = "my canister";
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     store.attach_canister(
         principal,
@@ -596,9 +604,9 @@ fn attach_canister_substitutes_absent_block_index() {
 #[test]
 fn attach_canister_and_rename() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let initial_name = "ABC".to_string();
     store.attach_canister(
@@ -629,9 +637,9 @@ fn attach_canister_and_rename() {
 #[test]
 fn rename_to_empty_name_succeeds() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let initial_name = "ABC".to_string();
     store.attach_canister(
@@ -662,9 +670,9 @@ fn rename_to_empty_name_succeeds() {
 #[test]
 fn rename_preserves_block_index() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let initial_name = "ABC".to_string();
     let block_index = Some(123);
@@ -697,10 +705,10 @@ fn rename_preserves_block_index() {
 #[test]
 fn rename_to_taken_name_fails() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
-    let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
+    let canister_id2 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
 
     let name1 = "ABC".to_string();
     store.attach_canister(
@@ -742,9 +750,9 @@ fn rename_to_taken_name_fails() {
 #[test]
 fn rename_to_long_name_fails() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     let long_name = "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string();
     let name = "DEF".to_string();
@@ -771,10 +779,10 @@ fn rename_to_long_name_fails() {
 #[test]
 fn rename_not_found_canister() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
-    let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
+    let canister_id2 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
 
     store.attach_canister(
         principal,
@@ -797,10 +805,10 @@ fn rename_not_found_canister() {
 #[test]
 fn rename_not_found_account() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let principal2 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
+    let principal2 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
 
-    let canister_id = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
+    let canister_id = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
 
     store.attach_canister(
         principal,
@@ -823,12 +831,12 @@ fn rename_not_found_account() {
 #[test]
 fn canisters_ordered_by_name_if_exists_then_by_id() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
-    let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
-    let canister_id3 = CanisterId::from_str(TEST_ACCOUNT_4).unwrap();
-    let canister_id4 = CanisterId::from_str(TEST_ACCOUNT_5).unwrap();
+    let canister_id1 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
+    let canister_id2 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
+    let canister_id3 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_4).unwrap();
+    let canister_id4 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_5).unwrap();
 
     store.attach_canister(
         principal,
@@ -875,10 +883,10 @@ fn canisters_ordered_by_name_if_exists_then_by_id() {
 #[test]
 fn detach_canister() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
-    let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+    let canister_id1 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
+    let canister_id2 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
 
     store.attach_canister(
         principal,
@@ -915,10 +923,10 @@ fn detach_canister() {
 #[test]
 fn detach_canister_canister_not_found() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
-    let canister_id1 = CanisterId::from_str(TEST_ACCOUNT_2).unwrap();
-    let canister_id2 = CanisterId::from_str(TEST_ACCOUNT_3).unwrap();
+    let canister_id1 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
+    let canister_id2 = CanisterId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
 
     store.attach_canister(
         principal,
@@ -947,7 +955,7 @@ fn detach_canister_canister_not_found() {
 #[test]
 fn set_and_get_imported_tokens() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let ledger_canister_id = PrincipalId::new_user_test_id(101);
     let index_canister_id = PrincipalId::new_user_test_id(102);
 
@@ -982,7 +990,7 @@ fn set_and_get_imported_tokens() {
 #[test]
 fn set_and_get_imported_tokens_without_index_canister() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let ledger_canister_id = PrincipalId::new_user_test_id(101);
 
     assert_eq!(
@@ -1025,7 +1033,7 @@ fn get_unique_imported_tokens(count: u64) -> Vec<ImportedToken> {
 #[test]
 fn set_and_get_20_imported_tokens() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     assert_eq!(
         store.get_imported_tokens(principal),
@@ -1053,7 +1061,7 @@ fn set_and_get_20_imported_tokens() {
 #[test]
 fn set_imported_tokens_account_not_found() {
     let mut store = setup_test_store();
-    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let non_existing_principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
     assert_eq!(
         store.set_imported_tokens(non_existing_principal, ImportedTokens::default()),
         SetImportedTokensResponse::AccountNotFound
@@ -1063,7 +1071,7 @@ fn set_imported_tokens_account_not_found() {
 #[test]
 fn set_imported_tokens_too_many() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     let imported_tokens = get_unique_imported_tokens(21);
 
@@ -1076,7 +1084,7 @@ fn set_imported_tokens_too_many() {
 #[test]
 fn get_imported_tokens_account_not_found() {
     let mut store = setup_test_store();
-    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let non_existing_principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
     assert_eq!(
         store.get_imported_tokens(non_existing_principal),
         GetImportedTokensResponse::AccountNotFound
@@ -1086,7 +1094,7 @@ fn get_imported_tokens_account_not_found() {
 #[test]
 fn set_and_get_fav_projects() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let root_canister_id = PrincipalId::new_user_test_id(101);
 
     assert_eq!(
@@ -1125,7 +1133,7 @@ fn get_unique_fav_projects(count: u64) -> Vec<FavProject> {
 #[test]
 fn set_and_get_20_fav_projects() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     assert_eq!(
         store.get_fav_projects(principal),
@@ -1153,7 +1161,7 @@ fn set_and_get_20_fav_projects() {
 #[test]
 fn set_fav_projects_account_not_found() {
     let mut store = setup_test_store();
-    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let non_existing_principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
     assert_eq!(
         store.set_fav_projects(non_existing_principal, FavProjects::default()),
         SetFavProjectsResponse::AccountNotFound
@@ -1163,7 +1171,7 @@ fn set_fav_projects_account_not_found() {
 #[test]
 fn set_fav_projects_too_many() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     let fav_projects = get_unique_fav_projects(21);
 
@@ -1176,7 +1184,7 @@ fn set_fav_projects_too_many() {
 #[test]
 fn get_fav_projects_account_not_found() {
     let store = setup_test_store();
-    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let non_existing_principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
     assert_eq!(
         store.get_fav_projects(non_existing_principal),
         GetFavProjectsResponse::AccountNotFound
@@ -1186,7 +1194,7 @@ fn get_fav_projects_account_not_found() {
 #[test]
 fn set_and_get_address_book() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
     let name = "Alice's Account".to_string();
 
     assert_eq!(
@@ -1195,7 +1203,7 @@ fn set_and_get_address_book() {
     );
 
     let named_address = NamedAddress {
-        address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+        address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
         name: name.clone(),
     };
     let address_book = AddressBook {
@@ -1216,7 +1224,7 @@ fn set_and_get_address_book() {
 fn new_address_book(count: i32) -> AddressBook {
     let named_addresses = (0..count)
         .map(|i| NamedAddress {
-            address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
             name: format!("Name {}", i),
         })
         .collect();
@@ -1226,7 +1234,7 @@ fn new_address_book(count: i32) -> AddressBook {
 #[test]
 fn set_and_get_max_named_addresses() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     assert_eq!(
         store.get_address_book(principal),
@@ -1249,7 +1257,7 @@ fn set_and_get_max_named_addresses() {
 #[test]
 fn set_address_book_account_not_found() {
     let mut store = setup_test_store();
-    let non_existing_principal = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
+    let non_existing_principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
     assert_eq!(
         store.set_address_book(non_existing_principal, AddressBook::default()),
         SetAddressBookResponse::AccountNotFound
@@ -1259,7 +1267,7 @@ fn set_address_book_account_not_found() {
 #[test]
 fn set_address_book_too_many() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     let address_book = new_address_book(MAX_NAMED_ADDRESSES + 1);
 
@@ -1280,7 +1288,7 @@ fn set_address_book_too_many() {
 #[test]
 fn set_address_book_account_id_invalid() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     // Test with invalid hex (too short)
     let invalid_account_id = "invalid";
@@ -1322,13 +1330,13 @@ fn set_address_book_account_id_invalid() {
 #[test]
 fn set_address_book_name_too_long() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     let too_long_name = "a".repeat((MAX_NAMED_ADDRESS_NAME_LENGTH + 1) as usize);
 
     let address_book = AddressBook {
         named_addresses: vec![NamedAddress {
-            address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
             name: too_long_name,
         }],
     };
@@ -1350,13 +1358,13 @@ fn set_address_book_name_too_long() {
 #[test]
 fn set_address_book_name_at_max_length() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     let max_length_name = "a".repeat(MAX_NAMED_ADDRESS_NAME_LENGTH as usize);
 
     let address_book = AddressBook {
         named_addresses: vec![NamedAddress {
-            address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
             name: max_length_name,
         }],
     };
@@ -1376,13 +1384,38 @@ fn set_address_book_name_at_max_length() {
 #[test]
 fn set_address_book_with_valid_icrc1_address() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     // Test with a valid ICRC1 address (principal format)
     let address_book = AddressBook {
         named_addresses: vec![NamedAddress {
-            address: AddressType::Icrc1(TEST_ACCOUNT_2.to_string()),
+            address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_2.to_string()),
             name: "ICRC1 Account".to_string(),
+        }],
+    };
+
+    assert_eq!(
+        store.set_address_book(principal, address_book.clone()),
+        SetAddressBookResponse::Ok
+    );
+
+    // Verify it was stored correctly
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(address_book)
+    );
+}
+
+#[test]
+fn set_address_book_with_valid_icrc1_with_subaccount_address() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
+
+    // Test with a valid ICRC1 with subaccount address
+    let address_book = AddressBook {
+        named_addresses: vec![NamedAddress {
+            address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_SUBACCOUNT_VALID_1.to_string()),
+            name: "ICRC1 Account with Subaccount".to_string(),
         }],
     };
 
@@ -1401,13 +1434,68 @@ fn set_address_book_with_valid_icrc1_address() {
 #[test]
 fn set_address_book_with_invalid_icrc1_address() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     // Test with an invalid ICRC1 address
     let address_book = AddressBook {
         named_addresses: vec![NamedAddress {
-            address: AddressType::Icrc1("invalid-principal-format".to_string()),
+            address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_SUBACCOUNT_INVALID_1.to_string()),
             name: "Invalid ICRC1".to_string(),
+        }],
+    };
+
+    let response = store.set_address_book(principal, address_book);
+    assert!(matches!(response, SetAddressBookResponse::InvalidIcrc1Address { .. }));
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+
+    let address_book = AddressBook {
+        named_addresses: vec![NamedAddress {
+            address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_SUBACCOUNT_INVALID_2.to_string()),
+            name: "Invalid ICRC1".to_string(),
+        }],
+    };
+
+    let response = store.set_address_book(principal, address_book);
+    assert!(matches!(response, SetAddressBookResponse::InvalidIcrc1Address { .. }));
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+
+    let address_book = AddressBook {
+        named_addresses: vec![NamedAddress {
+            address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_SUBACCOUNT_INVALID_3.to_string()),
+            name: "Invalid ICRC1".to_string(),
+        }],
+    };
+
+    let response = store.set_address_book(principal, address_book);
+    assert!(matches!(response, SetAddressBookResponse::InvalidIcrc1Address { .. }));
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+}
+
+#[test]
+fn set_address_book_with_invalid_icrc1_with_subaccount_address() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
+
+    // Test with an invalid subaccount address
+    let address_book = AddressBook {
+        named_addresses: vec![NamedAddress {
+            address: AddressType::Icrc1(format!("{}.123", TEST_ICRC1_ACCOUNT_2)),
+            name: "Invalid ICRC1 with Subaccount".to_string(),
         }],
     };
 
@@ -1424,17 +1512,17 @@ fn set_address_book_with_invalid_icrc1_address() {
 #[test]
 fn set_address_book_with_mixed_address_types() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     // Test with both ICP and ICRC1 addresses
     let address_book = AddressBook {
         named_addresses: vec![
             NamedAddress {
-                address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+                address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
                 name: "ICP Account".to_string(),
             },
             NamedAddress {
-                address: AddressType::Icrc1(TEST_ACCOUNT_3.to_string()),
+                address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_3.to_string()),
                 name: "ICRC1 Account".to_string(),
             },
         ],
@@ -1455,18 +1543,18 @@ fn set_address_book_with_mixed_address_types() {
 #[test]
 fn set_address_book_duplicate_names() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     // Test with duplicate names
     let duplicate_name = "Alice's Account".to_string();
     let address_book = AddressBook {
         named_addresses: vec![
             NamedAddress {
-                address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+                address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
                 name: duplicate_name.clone(),
             },
             NamedAddress {
-                address: AddressType::Icrc1(TEST_ACCOUNT_2.to_string()),
+                address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_2.to_string()),
                 name: duplicate_name.clone(),
             },
         ],
@@ -1487,7 +1575,7 @@ fn set_address_book_duplicate_names() {
 #[test]
 fn set_address_book_duplicate_names_multiple() {
     let mut store = setup_test_store();
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     // Test with three addresses where two have the same name
     let duplicate_name = "Duplicate".to_string();
@@ -1495,23 +1583,23 @@ fn set_address_book_duplicate_names_multiple() {
     let address_book = AddressBook {
         named_addresses: vec![
             NamedAddress {
-                address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+                address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
                 name: "Unique Name".to_string(),
             },
             NamedAddress {
-                address: AddressType::Icrc1(TEST_ACCOUNT_2.to_string()),
+                address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_2.to_string()),
                 name: duplicate_name.clone(),
             },
             NamedAddress {
-                address: AddressType::Icrc1(TEST_ACCOUNT_3.to_string()),
+                address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_3.to_string()),
                 name: duplicate_name.clone(),
             },
             NamedAddress {
-                address: AddressType::Icrc1(TEST_ACCOUNT_4.to_string()),
+                address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_4.to_string()),
                 name: duplicate_name_2.clone(),
             },
             NamedAddress {
-                address: AddressType::Icrc1(TEST_ACCOUNT_5.to_string()),
+                address: AddressType::Icrc1(TEST_ICRC1_ACCOUNT_5.to_string()),
                 name: duplicate_name_2.clone(),
             },
         ],
@@ -1533,7 +1621,7 @@ fn set_address_book_duplicate_names_multiple() {
 fn sub_account_name_too_long() {
     let mut store = setup_test_store();
 
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
 
     let res1 = store.create_sub_account(principal, "ABCDEFGHIJKLMNOPQRSTUVWX".to_string());
     let res2 = store.create_sub_account(principal, "ABCDEFGHIJKLMNOPQRSTUVWXY".to_string());
@@ -1546,9 +1634,9 @@ fn sub_account_name_too_long() {
 fn hardware_wallet_account_name_too_long() {
     let mut store = setup_test_store();
 
-    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let hw1 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    let hw2 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
+    let hw1 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
+    let hw2 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_4).unwrap();
 
     let res1 = store.register_hardware_wallet(
         principal,
@@ -1593,8 +1681,8 @@ fn get_stats() {
     store.get_stats(&mut stats);
     assert_initial_test_store_stats_are_correct(&stats);
 
-    let principal3 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    let principal4 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
+    let principal3 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
+    let principal4 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_4).unwrap();
 
     store.add_account(principal3);
     store.add_account(principal4);
@@ -1609,8 +1697,8 @@ fn get_stats() {
         assert_eq!(i, stats.sub_accounts_count);
     }
 
-    let hw1 = PrincipalId::from_str(TEST_ACCOUNT_5).unwrap();
-    let hw2 = PrincipalId::from_str(TEST_ACCOUNT_6).unwrap();
+    let hw1 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_5).unwrap();
+    let hw2 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_6).unwrap();
     store.register_hardware_wallet(
         principal3,
         RegisterHardwareWalletRequest {
@@ -1659,8 +1747,8 @@ fn get_histogram() {
         );
     }
 
-    let principal3 = PrincipalId::from_str(TEST_ACCOUNT_3).unwrap();
-    let principal4 = PrincipalId::from_str(TEST_ACCOUNT_4).unwrap();
+    let principal3 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_3).unwrap();
+    let principal4 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_4).unwrap();
 
     // Adding accounts should be accounted for correctly.  Pun intended.
     {
@@ -1697,8 +1785,8 @@ fn get_histogram() {
         );
     }
 
-    let hw1 = PrincipalId::from_str(TEST_ACCOUNT_5).unwrap();
-    let hw2 = PrincipalId::from_str(TEST_ACCOUNT_6).unwrap();
+    let hw1 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_5).unwrap();
+    let hw2 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_6).unwrap();
     // Hardware wallets should be counted correctly
     {
         store.register_hardware_wallet(
@@ -1747,8 +1835,8 @@ fn get_histogram() {
 }
 
 pub(crate) fn setup_test_store() -> AccountsStore {
-    let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
-    let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
+    let principal1 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
+    let principal2 = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_2).unwrap();
     let mut store = AccountsStore::default();
     store.add_account(principal1);
     store.add_account(principal2);
