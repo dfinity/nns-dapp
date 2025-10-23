@@ -1,8 +1,8 @@
 import {
   addNnsNeuronToFollowingsByTopics,
   getNnsTopicFollowings,
-  isNnsNeuronFollowing,
   isNnsNeuronFollowingAllTopics,
+  isNnsNeuronFollowingTopic,
   removeNnsNeuronFromFollowingsByTopics,
 } from "$lib/utils/nns-topics.utils";
 import { createMockNeuron } from "$tests/mocks/neurons.mock";
@@ -66,9 +66,9 @@ describe("nns-topics.utils", () => {
     });
   });
 
-  describe("isNnsNeuronFollowing", () => {
+  describe("isNnsNeuronFollowingTopic", () => {
     it("should return true when neuron is following the topic", () => {
-      const result = isNnsNeuronFollowing({
+      const result = isNnsNeuronFollowingTopic({
         followings: mockFollowings,
         neuronId: mockNeuronId1,
         topic: Topic.Governance,
@@ -78,7 +78,7 @@ describe("nns-topics.utils", () => {
     });
 
     it("should return false when neuron is not following the topic", () => {
-      const result = isNnsNeuronFollowing({
+      const result = isNnsNeuronFollowingTopic({
         followings: mockFollowings,
         neuronId: mockNeuronId3,
         topic: Topic.Governance,
@@ -88,7 +88,7 @@ describe("nns-topics.utils", () => {
     });
 
     it("should return false when topic is not in followings", () => {
-      const result = isNnsNeuronFollowing({
+      const result = isNnsNeuronFollowingTopic({
         followings: mockFollowings,
         neuronId: mockNeuronId1,
         topic: Topic.NeuronManagement,
@@ -98,7 +98,7 @@ describe("nns-topics.utils", () => {
     });
 
     it("should return false when followings is empty", () => {
-      const result = isNnsNeuronFollowing({
+      const result = isNnsNeuronFollowingTopic({
         followings: [],
         neuronId: mockNeuronId1,
         topic: Topic.Governance,

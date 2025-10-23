@@ -15,7 +15,7 @@ export const getNnsTopicFollowings = (
   }));
 
 // Returns true if the given neuron is following the given topic.
-export const isNnsNeuronFollowing = ({
+export const isNnsNeuronFollowingTopic = ({
   followings,
   neuronId,
   topic,
@@ -44,7 +44,7 @@ export const isNnsNeuronFollowingAllTopics = ({
   topics: Topic[];
 }): boolean =>
   topics.every((topic) =>
-    isNnsNeuronFollowing({ followings, neuronId, topic })
+    isNnsNeuronFollowingTopic({ followings, neuronId, topic })
   );
 
 // Adds a neuron to the list of followees for the given topics
@@ -62,7 +62,7 @@ export const addNnsNeuronToFollowingsByTopics = ({
     // Filter out topics that are already followed by the neuron to avoid duplications.
     .filter(
       (topic) =>
-        !isNnsNeuronFollowing({
+        !isNnsNeuronFollowingTopic({
           followings,
           neuronId,
           topic,
