@@ -11,6 +11,7 @@
     "list_sns_canisters": {
       "root": "lacdn-3iaaa-aaaaq-aae3a-cai",
       "swap": "knmhd-uaaaa-aaaaq-aae4q-cai",
+      "extensions": null,
       "ledger": "kknbx-zyaaa-aaaaq-aae4a-cai",
       "index": "kepm7-ciaaa-aaaaq-aae5a-cai",
       "governance": "lhdfz-wqaaa-aaaaq-aae3q-cai",
@@ -52,7 +53,7 @@
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1760578403
+              "timestamp_seconds": 1761184189
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -70,32 +71,28 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1760578403
+              "timestamp_seconds": 1761184189
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 321036523713262,
-            "timestamp_seconds": 1760578403
+            "governance_total_potential_voting_power": 322996887929295,
+            "timestamp_seconds": 1761184189
           },
-          "last_ledger_block_timestamp": 1760580346,
-          "num_recently_executed_proposals": 88,
-          "num_recently_submitted_proposals": 89,
+          "last_ledger_block_timestamp": 1761182026,
+          "num_recently_executed_proposals": 90,
+          "num_recently_submitted_proposals": 91,
           "genesis_timestamp_seconds": 1746713375
         }
       }
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1760537385,
-      "end_timestamp_seconds": 1760537375,
+      "actual_timestamp_seconds": 1761142185,
+      "end_timestamp_seconds": 1761142175,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 160,
-      "settled_proposals": [
-        {
-          "id": 180
-        }
-      ]
+      "round": 167,
+      "settled_proposals": []
     },
     "parameters": {
       "reserved_ids": [],
@@ -481,7 +478,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777776992000000,
+    "icrc1_total_supply": 777776980720000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
@@ -579,6 +576,7 @@
       "uncategorized_functions": [],
       "topics": [
         {
+          "extension_operations": [],
           "native_functions": [
             {
               "id": 2,
@@ -612,6 +610,7 @@
           "custom_functions": []
         },
         {
+          "extension_operations": [],
           "native_functions": [
             {
               "id": 7,
@@ -637,6 +636,7 @@
           "custom_functions": []
         },
         {
+          "extension_operations": [],
           "native_functions": [
             {
               "id": 3,
@@ -685,6 +685,7 @@
           ]
         },
         {
+          "extension_operations": [],
           "native_functions": [],
           "topic": "ApplicationBusinessLogic",
           "is_critical": false,
@@ -693,6 +694,7 @@
           "custom_functions": []
         },
         {
+          "extension_operations": [],
           "native_functions": [
             {
               "id": 1,
@@ -710,6 +712,7 @@
           "custom_functions": []
         },
         {
+          "extension_operations": [],
           "native_functions": [
             {
               "id": 9,
@@ -764,6 +767,7 @@
           ]
         },
         {
+          "extension_operations": [],
           "native_functions": [
             {
               "id": 11,
