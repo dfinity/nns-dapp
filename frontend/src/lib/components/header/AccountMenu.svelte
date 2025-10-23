@@ -1,6 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import AccountDetails from "$lib/components/header/AccountDetails.svelte";
+  import LinkToAddressBook from "$lib/components/header/LinkToAddressBook.svelte";
   import LinkToCanisters from "$lib/components/header/LinkToCanisters.svelte";
   import LinkToReporting from "$lib/components/header/LinkToReporting.svelte";
   import LinkToSettings from "$lib/components/header/LinkToSettings.svelte";
@@ -41,6 +42,8 @@
         <ManageInternetIdentityButton />
 
         <LinkToSettings on:nnsLink={closeMenu} />
+
+        <LinkToAddressBook on:nnsLink={closeMenu} />
 
         <LinkToCanisters on:nnsLink={closeMenu} />
 

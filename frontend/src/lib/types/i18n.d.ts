@@ -171,6 +171,7 @@ interface I18nNavigation {
   privacy_mode_hide: string;
   privacy_mode_show: string;
   project_page: string;
+  address_book: string;
 }
 
 interface I18nAlfred {

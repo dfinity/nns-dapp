@@ -164,7 +164,8 @@
     "portfolio": "Portfolio",
     "privacy_mode_hide": "Hide Balance",
     "privacy_mode_show": "Show Balance",
-    "project_page": "Project Page"
+    "project_page": "Project Page",
+    "address_book": "Address Book"
   },
   "alfred": {
     "no_results": "No results found",

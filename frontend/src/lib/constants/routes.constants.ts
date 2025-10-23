@@ -11,6 +11,7 @@ export enum AppPath {
   Launchpad = "/launchpad",
   Project = "/project",
   Settings = "/settings",
+  AddressBook = "/address-book",
   Tokens = "/tokens",
   Reporting = "/reporting",
   // We point to the home page to prevent different tracking for both pages
