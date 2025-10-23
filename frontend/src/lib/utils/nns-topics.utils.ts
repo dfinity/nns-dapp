@@ -14,6 +14,7 @@ export const getNnsTopicFollowings = (
     followees: [...followees],
   }));
 
+// Returns true if the given neuron is following the given topic.
 export const isNnsNeuronFollowing = ({
   followings,
   neuronId,
@@ -32,6 +33,7 @@ export const isNnsNeuronFollowing = ({
   return topicFollowees.includes(neuronId);
 };
 
+// Returns true if the given neuron is following all the given topics.
 export const isNnsNeuronFollowingAllTopics = ({
   followings,
   neuronId,
