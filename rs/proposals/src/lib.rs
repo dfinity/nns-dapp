@@ -12,12 +12,12 @@ use crate::def::{
     PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload,
     RemoveNodeOperatorsPayload, RemoveNodesFromSubnetPayload, RemoveNodesPayload, RerouteCanisterRangesPayload,
     ReviseElectedGuestosVersionsPayload, ReviseElectedHostosVersionsPayload, SetAuthorizedSubnetworkListArgs,
-    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, SetSubnetOperationalLevelPayload, SubnetRentalRequest, UpdateAllowedPrincipalsRequest,
-    UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload, UpdateFirewallRulesPayload,
-    UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload,
-    UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest, UpdateSshReadOnlyAccessForAllUnassignedNodesPayload,
-    UpdateSubnetPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
-    UpgradeRootProposalPayloadTrimmed,
+    SetFirewallConfigPayload, SetSubnetOperationalLevelPayload, StopOrStartNnsCanisterProposal, SubnetRentalRequest,
+    UpdateAllowedPrincipalsRequest, UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload,
+    UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
+    UpdateNodeRewardsTableProposalPayload, UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest,
+    UpdateSshReadOnlyAccessForAllUnassignedNodesPayload, UpdateSubnetPayload, UpdateSubnetTypeArgs,
+    UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
 use candid::types::{self as candid_types, Type, TypeInner};
 use candid::{CandidType, IDLArgs};

@@ -14,7 +14,7 @@ use crate::{
 };
 
 use candid::{CandidType, Principal};
-use ic_base_types::{CanisterId, PrincipalId, NodeId, SubnetId};
+use ic_base_types::{CanisterId, NodeId, PrincipalId, SubnetId};
 use ic_crypto_sha2::Sha256;
 use ic_management_canister_types::CanisterInstallMode;
 use serde::{Deserialize, Serialize};
