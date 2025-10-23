@@ -30,7 +30,7 @@
   <a
     class="button ghost with-icon"
     data-tid="doc-link"
-    href="https://internetcomputer.org/docs/current/developer-docs/daos/nns/using-the-nns-dapp/nns-dapp-importing-tokens"
+    href="https://learn.internetcomputer.org/hc/en-us/articles/42529262055700-How-can-I-import-ICRC-tokens#h_01K88M95P9RWF2AYBH536TJS3B"
     target="_blank"
     rel="external noopener noreferrer"
   >
