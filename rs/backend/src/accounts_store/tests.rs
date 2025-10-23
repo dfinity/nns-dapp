@@ -1320,7 +1320,6 @@ fn set_address_book_name_too_long() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
-    // Create a name that is exactly MAX_NAMED_ADDRESS_NAME_LENGTH + 1 characters
     let too_long_name = "a".repeat((MAX_NAMED_ADDRESS_NAME_LENGTH + 1) as usize);
 
     let named_addresses = vec![NamedAddress {
@@ -1347,7 +1346,6 @@ fn set_address_book_name_at_max_length() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
-    // Create a name that is exactly MAX_NAMED_ADDRESS_NAME_LENGTH characters
     let max_length_name = "a".repeat(MAX_NAMED_ADDRESS_NAME_LENGTH as usize);
 
     let named_addresses = vec![NamedAddress {
