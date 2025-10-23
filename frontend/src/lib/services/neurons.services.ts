@@ -996,14 +996,13 @@ export const setFollowing = async ({
   followee: NeuronId;
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
-  const topicFollowing =
-    neuron === undefined
-      ? []
-      : addNnsNeuronToFollowingsByTopics({
-          followings: getNnsTopicFollowings(neuron),
-          topics,
-          neuronId: followee,
-        });
+  const topicFollowing = isNullish(neuron)
+    ? []
+    : addNnsNeuronToFollowingsByTopics({
+        followings: getNnsTopicFollowings(neuron),
+        topics,
+        neuronId: followee,
+      });
 
   await setFollowingHelper({
     neuron,
@@ -1054,14 +1053,13 @@ export const removeFollowing = async ({
   followee: NeuronId;
 }): Promise<void> => {
   const neuron = getNeuronFromStore(neuronId);
-  const topicFollowing =
-    neuron === undefined
-      ? []
-      : removeNnsNeuronFromFollowingsByTopics({
-          followings: getNnsTopicFollowings(neuron),
-          topics,
-          neuronId: followee,
-        });
+  const topicFollowing = isNullish(neuron)
+    ? []
+    : removeNnsNeuronFromFollowingsByTopics({
+        followings: getNnsTopicFollowings(neuron),
+        topics,
+        neuronId: followee,
+      });
 
   await setFollowingHelper({
     neuron,

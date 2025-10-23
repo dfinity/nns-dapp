@@ -1,6 +1,7 @@
 <script lang="ts">
   import KnownNeuronFollowByTopicsItem from "$lib/components/neurons/KnownNeuronFollowByTopicsItem.svelte";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
+  import Separator from "$lib/components/ui/Separator.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { authStore } from "$lib/stores/auth.store";
   import { i18n } from "$lib/stores/i18n";
@@ -12,8 +13,7 @@
   import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
   import { Html, Spinner, busy } from "@dfinity/gix-components";
   import { Topic, type FolloweesForTopic, type NeuronInfo } from "@dfinity/nns";
-  import { nonNullish } from "@dfinity/utils";
-  import Separator from "../../components/ui/Separator.svelte";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   type Props = {
     neuron: NeuronInfo;
@@ -79,10 +79,7 @@
   );
 </script>
 
-<div
-  class="container"
-  data-tid="follow-nns-neurons-by-topic-step-neuron-component"
->
+<div data-tid="follow-nns-neurons-by-topic-step-neuron-component">
   <form
     onsubmit={(e) => {
       e.preventDefault();
@@ -122,7 +119,7 @@
 
   <div class="following">
     <h5 class="description">{$i18n.new_followee.known_neurons_title}</h5>
-    {#if $sortedknownNeuronsStore === undefined}
+    {#if isNullish($sortedknownNeuronsStore)}
       <Spinner />
     {:else}
       <ul>
@@ -151,12 +148,6 @@
 </div>
 
 <style lang="scss">
-  .container {
-    // display: flex;
-    // flex-direction: column;
-    // gap: var(--padding-4x);
-  }
-
   form {
     gap: var(--padding-2x);
 
@@ -181,17 +172,10 @@
     padding: var(--padding-1_5x) 0 0;
 
     li {
-      // padding: var(--padding) 0;
-      // border-top: 1px solid var(--elements-divider);
-
       &:first-child {
         border-top: none;
       }
     }
-  }
-
-  .following {
-    // margin: var(--padding-6x) 0 0;
   }
 
   .back-button {

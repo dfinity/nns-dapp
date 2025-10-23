@@ -1,5 +1,4 @@
 <script lang="ts">
-  import KnownNeuronFollowByTopicsItem from "$lib/components/neurons/KnownNeuronFollowByTopicsItem.svelte";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
@@ -151,7 +150,7 @@
   };
   let disabled: boolean;
   $: disabled =
-    errorMessage !== undefined ||
+    nonNullish(errorMessage) ||
     followeeAddress.length === 0 ||
     !isUserAuthorized ||
     $busy;
@@ -206,12 +205,12 @@
       <ul>
         {#each notFollowingKnownNeurons as knownNeuron}
           <li data-tid="known-neuron-item">
-            <KnownNeuronFollowByTopicsItem
+            <!-- <KnownNeuronFollowByTopicsItem
               on:nnsUpdated={close}
               {knownNeuron}
               neuronId={neuron.neuronId}
               {topics}
-            />
+            /> -->
           </li>
         {/each}
       </ul>

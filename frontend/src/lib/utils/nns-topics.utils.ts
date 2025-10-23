@@ -4,6 +4,7 @@ import type {
   NeuronInfo,
   Topic,
 } from "@dfinity/nns";
+import { isNullish } from "@dfinity/utils";
 
 export const getNnsTopicFollowings = (
   neuron: NeuronInfo
@@ -25,7 +26,7 @@ export const isNnsNeuronFollowing = ({
   const topicFollowees = followings.find(
     (following) => following.topic === topic
   )?.followees;
-  if (topicFollowees === undefined) {
+  if (isNullish(topicFollowees)) {
     return false;
   }
   return topicFollowees.includes(neuronId);
