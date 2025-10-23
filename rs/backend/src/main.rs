@@ -221,9 +221,9 @@ pub fn get_fav_projects() -> GetFavProjectsResponse {
 
 #[must_use]
 #[ic_cdk::update]
-pub fn set_address_book(settings: AddressBook) -> SetAddressBookResponse {
+pub fn set_address_book(addresses: AddressBook) -> SetAddressBookResponse {
     let principal = get_caller();
-    with_state_mut(|s| s.accounts_store.set_address_book(principal, settings))
+    with_state_mut(|s| s.accounts_store.set_address_book(principal, addresses))
 }
 
 #[must_use]
