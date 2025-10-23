@@ -1198,32 +1198,32 @@ fn set_and_get_address_book() {
         address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
         name: name.clone(),
     };
+    let address_book = AddressBook {
+        named_addresses: vec![named_address],
+    };
 
     assert_eq!(
         store.set_address_book(
             principal,
-            AddressBook {
-                named_addresses: vec![named_address.clone()],
-            },
+            address_book.clone(),
         ),
         SetAddressBookResponse::Ok
     );
 
     assert_eq!(
         store.get_address_book(principal),
-        GetAddressBookResponse::Ok(AddressBook {
-            named_addresses: vec![named_address],
-        })
+        GetAddressBookResponse::Ok(address_book)
     );
 }
 
-fn get_named_addresses(count: i32) -> Vec<NamedAddress> {
-    (0..count)
+fn new_address_book(count: i32) -> AddressBook {
+    let named_addresses = (0..count)
         .map(|i| NamedAddress {
             address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
             name: format!("Name {}", i),
         })
-        .collect()
+        .collect();
+    AddressBook { named_addresses }
 }
 
 #[test]
@@ -1236,21 +1236,19 @@ fn set_and_get_max_named_addresses() {
         GetAddressBookResponse::Ok(AddressBook::default())
     );
 
-    let named_addresses = get_named_addresses(MAX_NAMED_ADDRESSES);
+    let address_book = new_address_book(MAX_NAMED_ADDRESSES);
 
     assert_eq!(
         store.set_address_book(
             principal,
-            AddressBook {
-                named_addresses: named_addresses.clone()
-            },
+            address_book.clone(),
         ),
         SetAddressBookResponse::Ok
     );
 
     assert_eq!(
         store.get_address_book(principal),
-        GetAddressBookResponse::Ok(AddressBook { named_addresses })
+        GetAddressBookResponse::Ok(address_book)
     );
 }
 
@@ -1269,13 +1267,19 @@ fn set_address_book_too_many() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
 
-    let named_addresses = get_named_addresses(MAX_NAMED_ADDRESSES + 1);
+    let address_book = new_address_book(MAX_NAMED_ADDRESSES + 1);
 
     assert_eq!(
-        store.set_address_book(principal, AddressBook { named_addresses },),
+        store.set_address_book(principal, address_book),
         SetAddressBookResponse::TooManyNamedAddresses {
             limit: MAX_NAMED_ADDRESSES
         }
+    );
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
     );
 }
 
@@ -1294,6 +1298,12 @@ fn set_address_book_account_id_invalid() {
     let response = store.set_address_book(principal, AddressBook { named_addresses });
     assert!(matches!(response, SetAddressBookResponse::InvalidIcpAddress { .. }));
 
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+
     // Test with invalid hex (not hex characters)
     let invalid_account_id = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz";
     let named_addresses = vec![NamedAddress {
@@ -1303,6 +1313,12 @@ fn set_address_book_account_id_invalid() {
 
     let response = store.set_address_book(principal, AddressBook { named_addresses });
     assert!(matches!(response, SetAddressBookResponse::InvalidIcpAddress { .. }));
+
+    // Verify that the address book was still not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
 }
 
 #[test]
@@ -1320,9 +1336,15 @@ fn set_address_book_name_too_long() {
 
     assert_eq!(
         store.set_address_book(principal, AddressBook { named_addresses }),
-        SetAddressBookResponse::NamedAddressNameTooLong {
+        SetAddressBookResponse::AddressNameTooLong {
             max_length: MAX_NAMED_ADDRESS_NAME_LENGTH
         }
+    );
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
     );
 }
 
@@ -1397,6 +1419,12 @@ fn set_address_book_with_invalid_icrc1_address() {
 
     let response = store.set_address_book(principal, AddressBook { named_addresses });
     assert!(matches!(response, SetAddressBookResponse::InvalidIcrc1Address { .. }));
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
 }
 
 #[test]
@@ -1430,6 +1458,83 @@ fn set_address_book_with_mixed_address_types() {
     assert_eq!(
         store.get_address_book(principal),
         GetAddressBookResponse::Ok(AddressBook { named_addresses })
+    );
+}
+
+#[test]
+fn set_address_book_duplicate_names() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    // Test with duplicate names
+    let duplicate_name = "Alice's Account".to_string();
+    let named_addresses = vec![
+        NamedAddress {
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+            name: duplicate_name.clone(),
+        },
+        NamedAddress {
+            address: AddressType::Icrc1(TEST_ACCOUNT_2.to_string()),
+            name: duplicate_name.clone(),
+        },
+    ];
+
+    assert_eq!(
+        store.set_address_book(principal, AddressBook { named_addresses }),
+        SetAddressBookResponse::DuplicateAddressName {
+            name: duplicate_name
+        }
+    );
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+}
+
+#[test]
+fn set_address_book_duplicate_names_multiple() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
+
+    // Test with three addresses where two have the same name
+    let duplicate_name = "Duplicate".to_string();
+    let duplicate_name_2 = "Duplicate 2".to_string();
+    let named_addresses = vec![
+        NamedAddress {
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_ID.to_string()),
+            name: "Unique Name".to_string(),
+        },
+        NamedAddress {
+            address: AddressType::Icrc1(TEST_ACCOUNT_2.to_string()),
+            name: duplicate_name.clone(),
+        },
+        NamedAddress {
+            address: AddressType::Icrc1(TEST_ACCOUNT_3.to_string()),
+            name: duplicate_name.clone(),
+        },
+        NamedAddress {
+            address: AddressType::Icrc1(TEST_ACCOUNT_4.to_string()),
+            name: duplicate_name_2.clone(),
+        },
+        NamedAddress {
+            address: AddressType::Icrc1(TEST_ACCOUNT_5.to_string()),
+            name: duplicate_name_2.clone(),
+        },
+    ];
+
+    assert_eq!(
+        store.set_address_book(principal, AddressBook { named_addresses }),
+        SetAddressBookResponse::DuplicateAddressName {
+            name: duplicate_name
+        }
+    );
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
     );
 }
 

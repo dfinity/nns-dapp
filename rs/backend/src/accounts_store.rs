@@ -237,8 +237,9 @@ pub enum SetAddressBookResponse {
     AccountNotFound,
     TooManyNamedAddresses { limit: i32 },
     InvalidIcpAddress { error: String },
-    NamedAddressNameTooLong { max_length: i32 },
+    AddressNameTooLong { max_length: i32 },
     InvalidIcrc1Address { error: String },
+    DuplicateAddressName { name: String },
 }
 
 #[derive(CandidType, Debug, PartialEq)]
@@ -728,41 +729,73 @@ impl AccountsStore {
         GetFavProjectsResponse::Ok(account.fav_projects.unwrap_or_default())
     }
 
-    pub fn set_address_book(&mut self, caller: PrincipalId, new_address_book: AddressBook) -> SetAddressBookResponse {
-        if new_address_book.named_addresses.len() > (MAX_NAMED_ADDRESSES as usize) {
-            return SetAddressBookResponse::TooManyNamedAddresses {
+    fn validate_address_book_count(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        if address_book.named_addresses.len() > (MAX_NAMED_ADDRESSES as usize) {
+            return Err(SetAddressBookResponse::TooManyNamedAddresses {
                 limit: MAX_NAMED_ADDRESSES,
-            };
+            });
         }
+        Ok(())
+    }
 
-        // Validate each named address
-        for named_address in &new_address_book.named_addresses {
+    fn validate_address_book_unique_names(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        let mut seen_names = std::collections::HashSet::new();
+        for named_address in &address_book.named_addresses {
+            if !seen_names.insert(&named_address.name) {
+                return Err(SetAddressBookResponse::DuplicateAddressName {
+                    name: named_address.name.clone(),
+                });
+            }
+        }
+        Ok(())
+    }
+
+    fn validate_address_book_name_and_address(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        for named_address in &address_book.named_addresses {
             // Validate the address based on its variant
             match &named_address.address {
                 AddressType::Icp(address_str) => {
                     // Validate ICP address using AccountIdentifier::from_hex
                     if let Err(e) = AccountIdentifier::from_hex(address_str) {
-                        return SetAddressBookResponse::InvalidIcpAddress {
+                        return Err(SetAddressBookResponse::InvalidIcpAddress {
                             error: format!("Invalid ICP address: {e}"),
-                        };
+                        });
                     }
                 }
                 AddressType::Icrc1(address_str) => {
                     // Validate ICRC1 address using the FromStr implementation from icrc-ledger-types
                     // which properly validates the ICRC1 text representation including checksum validation
                     if let Err(e) = Icrc1Account::from_str(address_str) {
-                        return SetAddressBookResponse::InvalidIcrc1Address {
+                        return Err(SetAddressBookResponse::InvalidIcrc1Address {
                             error: format!("Invalid ICRC1 address: {e}"),
-                        };
+                        });
                     }
                 }
             }
 
+            // Validate name length
             if named_address.name.len() > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
-                return SetAddressBookResponse::NamedAddressNameTooLong {
+                return Err(SetAddressBookResponse::AddressNameTooLong {
                     max_length: MAX_NAMED_ADDRESS_NAME_LENGTH,
-                };
+                });
             }
+        }
+
+        Ok(())
+    }
+
+    fn validate_address_book(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        Self::validate_address_book_count(address_book)?;
+        Self::validate_address_book_unique_names(address_book)?;
+        Self::validate_address_book_name_and_address(address_book)?;
+
+        Ok(())
+    }
+
+    pub fn set_address_book(&mut self, caller: PrincipalId, new_address_book: AddressBook) -> SetAddressBookResponse {
+        // Validate the address book
+        if let Err(error_response) = Self::validate_address_book(&new_address_book) {
+            return error_response;
         }
 
         let account_identifier = AccountIdentifier::from(caller).to_vec();
