@@ -167,7 +167,8 @@
     "DeployHostosToSomeNodes": "Deploy HostOS To Some Nodes",
     "SubnetRentalRequest": "Subnet Rental Request",
     "PauseCanisterMigrations": "Pause Canister Migrations",
-    "UnpauseCanisterMigrations": "Unpause Canister Migrations"
+    "UnpauseCanisterMigrations": "Unpause Canister Migrations",
+    "SetSubnetOperationalLevel": "Set Subnet Operational Level"
   },
   "nns_functions_description": {
     "Unspecified": "",
@@ -220,6 +221,7 @@
     "DeployHostosToSomeNodes": "Deploy a HostOS version to a given set of nodes. The proposal changes the HostOS version that is used on the specified nodes.",
     "SubnetRentalRequest": "A proposal to rent a subnet on the Internet Computer.<br/><br/>The Subnet Rental Canister is called when this proposal is executed, and the rental request is stored there. The user specified in the proposal needs to make a sufficient upfront payment in ICP in order for the proposal to be valid, and the subnet must be available for rent. The available rental conditions can be checked by calling the Subnet Rental Canister.",
     "PauseCanisterMigrations": "A proposal to instruct the migration canister to not accept any more migration requests.",
-    "UnpauseCanisterMigrations": "A proposal to instruct the migration canister to accept migration requests again."
+    "UnpauseCanisterMigrations": "A proposal to instruct the migration canister to accept migration requests again.",
+    "SetSubnetOperationalLevel": "A proposal to set the operational level of a subnet, which can be used to take a subnet offline or bring it back online as part of subnet recovery."
   }
 }
