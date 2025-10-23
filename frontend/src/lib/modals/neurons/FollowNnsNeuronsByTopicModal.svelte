@@ -115,6 +115,11 @@
       return;
     }
 
+    if (BigInt(followeeAddress) === neuron.neuronId) {
+      errorMessage = $i18n.new_followee.followee_no_self_following;
+      return;
+    }
+
     startBusy({ initiator: "add-followee" });
 
     try {
