@@ -942,6 +942,7 @@ const setFollowingHelper = async ({
     identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
   }
 
+  // ManageNeuron topic followees can only be handled by controllers
   if (topicFollowing.some(({ topic }) => topic === Topic.NeuronManagement)) {
     identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
   }
@@ -985,7 +986,6 @@ export const addFollowee = async ({
   });
 };
 
-// TODO: add tests
 export const setFollowing = async ({
   neuronId,
   topics,
@@ -1007,6 +1007,34 @@ export const setFollowing = async ({
   await setFollowingHelper({
     neuron,
     topicFollowing,
+  });
+};
+
+export const removeFollowing = async ({
+  neuronId,
+  topics,
+  followee,
+}: {
+  neuronId: NeuronId;
+  topics: Topic[];
+  followee: NeuronId;
+}): Promise<void> => {
+  const neuron = getNeuronFromStore(neuronId);
+  const topicFollowing = isNullish(neuron)
+    ? []
+    : removeNnsNeuronFromFollowingsByTopics({
+        followings: getNnsTopicFollowings(neuron),
+        topics,
+        neuronId: followee,
+      });
+
+  await setFollowingHelper({
+    neuron,
+    topicFollowing,
+    onNoChanges: () =>
+      toastsError({
+        labelKey: "error.followee_does_not_exist",
+      }),
   });
 };
 
@@ -1039,35 +1067,6 @@ export const removeFollowee = async ({
     neuron,
     topic,
     followees: newFollowees,
-  });
-};
-
-// TODO: add tests
-export const removeFollowing = async ({
-  neuronId,
-  topics,
-  followee,
-}: {
-  neuronId: NeuronId;
-  topics: Topic[];
-  followee: NeuronId;
-}): Promise<void> => {
-  const neuron = getNeuronFromStore(neuronId);
-  const topicFollowing = isNullish(neuron)
-    ? []
-    : removeNnsNeuronFromFollowingsByTopics({
-        followings: getNnsTopicFollowings(neuron),
-        topics,
-        neuronId: followee,
-      });
-
-  await setFollowingHelper({
-    neuron,
-    topicFollowing,
-    onNoChanges: () =>
-      toastsError({
-        labelKey: "error.followee_does_not_exist",
-      }),
   });
 };
 
