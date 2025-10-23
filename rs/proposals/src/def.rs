@@ -472,6 +472,7 @@ pub type ReviseElectedHostosVersionsPayload = crate::canisters::nns_registry::ap
 // https://github.com/dfinity/ic/blob/26098e18ddd64ab50d3f3725f50c7f369cd3f90e/rs/registry/canister/src/mutations/do_update_nodes_hostos_version.rs#L38C12-L38C43
 pub type DeployHostosToSomeNodesPayload = crate::canisters::nns_registry::api::UpdateNodesHostosVersionPayload;
 
+// NNS function 52 - SubnetRentalRequest
 // Copied from https://github.com/dfinity/ic/blob/master/rs/nns/governance/src/governance.rs
 #[derive(candid::CandidType, candid::Deserialize, serde::Serialize, Clone, Debug)]
 pub struct SubnetRentalRequest {

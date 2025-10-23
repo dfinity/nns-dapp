@@ -1657,6 +1657,8 @@ interface I18nNns_functions {
   ReviseElectedHostosVersions: string;
   DeployHostosToSomeNodes: string;
   SubnetRentalRequest: string;
+  PauseCanisterMigrations: string;
+  UnpauseCanisterMigrations: string;
 }
 
 interface I18nNns_functions_description {
@@ -1709,6 +1711,8 @@ interface I18nNns_functions_description {
   ReviseElectedHostosVersions: string;
   DeployHostosToSomeNodes: string;
   SubnetRentalRequest: string;
+  PauseCanisterMigrations: string;
+  UnpauseCanisterMigrations: string;
 }
 
 interface I18n {
