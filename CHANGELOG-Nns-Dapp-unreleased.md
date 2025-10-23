@@ -15,6 +15,9 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Added explanation for disabled auto-stake control on hotkey-managed neurons
+- Support NNS function 53 for `PauseCanisterMigrations`.
+- Support NNS function 54 for `UnpauseCanisterMigrations`.
+- Support NNS function 55 for `SetSubnetOperationalLevel`.
 
 #### Changed
 
