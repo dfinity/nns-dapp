@@ -14,11 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Export SNS neuron data in reporting section
+- Added explanation for disabled auto-stake control on hotkey-managed neurons
 
 #### Changed
 
 - Improved validation for adding NNS neuron followings.
+- Improved SNS data loading speed through parallel processing
 
 #### Deprecated
 

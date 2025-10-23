@@ -231,6 +231,8 @@ interface I18nReporting {
   transactions_title: string;
   transactions_description: string;
   transactions_download: string;
+  transactions_source_nns: string;
+  transactions_source_ck: string;
   busy_screen: string;
   busy_screen_sns_getting_neurons: string;
   principal_account_id: string;
@@ -818,6 +820,7 @@ interface I18nNeuron_detail {
   auto_stake_maturity_off: string;
   auto_stake_maturity_on_success: string;
   auto_stake_maturity_off_success: string;
+  auto_stake_maturity_tooltip: string;
   maturity_title: string;
   vote_delegation_title: string;
   vote_delegation_tooltip_all: string;

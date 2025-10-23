@@ -50,7 +50,7 @@
 
       if (source === "sns") {
         // This flow will take some time so we update the message to users to indicate progress
-        setTimeout(() => {
+        let timeoutId = setTimeout(() => {
           startBusy({
             initiator: "reporting-neurons",
             labelKey: "reporting.busy_screen_sns_getting_neurons",
@@ -123,6 +123,8 @@
           ],
           fileName,
         });
+
+        clearTimeout(timeoutId);
       } else {
         const data = await queryNeurons({
           certified: true,

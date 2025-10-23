@@ -10,27 +10,21 @@
     hasAutoStakeMaturityOn,
     hasPermissionToStakeMaturity,
   } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNeuron } from "@dfinity/sns";
   import { isNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 
-  const context: SelectedSnsNeuronContext =
+  const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
-  const { store }: SelectedSnsNeuronContext = context;
 
-  let neuron: SnsNeuron | undefined | null;
-  $: ({ neuron } = $store);
-
-  let hasAutoStakeOn: boolean;
-  $: hasAutoStakeOn = hasAutoStakeMaturityOn(neuron);
-
-  let disabled: boolean;
-  $: disabled =
+  const { neuron } = $derived($store);
+  let hasAutoStakeOn = $derived(hasAutoStakeMaturityOn(neuron));
+  let disabled = $derived(
     isNullish(neuron) ||
-    !hasPermissionToStakeMaturity({
-      neuron,
-      identity: $authStore.identity,
-    });
+      !hasPermissionToStakeMaturity({
+        neuron,
+        identity: $authStore.identity,
+      })
+  );
 </script>
 
 <AutoStakeMaturityCheckbox
