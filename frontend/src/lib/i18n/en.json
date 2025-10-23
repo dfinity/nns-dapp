@@ -516,6 +516,7 @@
     "label": "Followee's Neuron Id",
     "follow_neuron": "Follow Neuron",
     "options_title": "Options for Following",
+    "known_neurons_title": "Known neurons to Follow",
     "follow": "Follow",
     "unfollow": "Unfollow",
     "followee_incorrect_id_format": "This is not a correctly formatted neuron ID. Please make sure you copied the full ID.",

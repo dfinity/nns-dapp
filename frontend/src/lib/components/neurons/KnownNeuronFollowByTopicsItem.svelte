@@ -45,4 +45,8 @@
     justify-content: space-between;
     align-items: center;
   }
+
+  button {
+    min-height: var(--padding-4x);
+  }
 </style>

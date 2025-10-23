@@ -13,6 +13,7 @@
   import { Html, Spinner, busy } from "@dfinity/gix-components";
   import { Topic, type FolloweesForTopic, type NeuronInfo } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
+  import Separator from "../../components/ui/Separator.svelte";
 
   type Props = {
     neuron: NeuronInfo;
@@ -78,7 +79,10 @@
   );
 </script>
 
-<div data-tid="follow-nns-neurons-by-topic-step-neuron-component">
+<div
+  class="container"
+  data-tid="follow-nns-neurons-by-topic-step-neuron-component"
+>
   <form
     onsubmit={(e) => {
       e.preventDefault();
@@ -102,15 +106,7 @@
         <Html text={errorMessage} />
       </p>
     {/if}
-    <div class="toolbar">
-      <button
-        class="secondary"
-        type="button"
-        data-tid="back-button"
-        onclick={openPrevStep}
-      >
-        {$i18n.core.back}
-      </button>
+    <div class="form-toolbar">
       <button
         data-tid="follow-neuron-button"
         class="primary"
@@ -122,8 +118,10 @@
     </div>
   </form>
 
+  <Separator spacing="medium" />
+
   <div class="following">
-    <span class="label">{$i18n.new_followee.options_title}</span>
+    <h5 class="description">{$i18n.new_followee.known_neurons_title}</h5>
     {#if $sortedknownNeuronsStore === undefined}
       <Spinner />
     {:else}
@@ -141,9 +139,24 @@
       </ul>
     {/if}
   </div>
+
+  <button
+    class="secondary back-button"
+    type="button"
+    data-tid="back-button"
+    onclick={openPrevStep}
+  >
+    {$i18n.core.back}
+  </button>
 </div>
 
 <style lang="scss">
+  .container {
+    // display: flex;
+    // flex-direction: column;
+    // gap: var(--padding-4x);
+  }
+
   form {
     gap: var(--padding-2x);
 
@@ -155,6 +168,10 @@
       line-height: var(--line-height-1_25x);
     }
   }
+  .form-toolbar {
+    display: flex;
+    justify-content: end;
+  }
 
   ul {
     list-style: none;
@@ -162,14 +179,23 @@
     flex-direction: column;
     gap: var(--padding);
     padding: var(--padding-1_5x) 0 0;
+
+    li {
+      // padding: var(--padding) 0;
+      // border-top: 1px solid var(--elements-divider);
+
+      &:first-child {
+        border-top: none;
+      }
+    }
   }
 
   .following {
-    margin: var(--padding-4x) 0 0;
+    // margin: var(--padding-6x) 0 0;
   }
 
-  .toolbar {
-    display: flex;
-    justify-content: space-between;
+  .back-button {
+    margin-top: var(--padding-6x);
+    width: 100%;
   }
 </style>
