@@ -1659,6 +1659,7 @@ interface I18nNns_functions {
   SubnetRentalRequest: string;
   PauseCanisterMigrations: string;
   UnpauseCanisterMigrations: string;
+  SetSubnetOperationalLevel: string;
 }
 
 interface I18nNns_functions_description {
@@ -1713,6 +1714,7 @@ interface I18nNns_functions_description {
   SubnetRentalRequest: string;
   PauseCanisterMigrations: string;
   UnpauseCanisterMigrations: string;
+  SetSubnetOperationalLevel: string;
 }
 
 interface I18n {
