@@ -3,13 +3,14 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import FollowNnsNeuronsByTopicItem from "$lib/modals/neurons/FollowNnsNeuronsByTopicItem.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import { TOPICS_TO_FOLLOW_NNS } from "$lib/constants/neurons.constants";
+  import { topicsToFollow } from "$lib/utils/neuron.utils";
   import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
+  import { sortNnsTopics } from "$lib/utils/proposals.utils";
   import {
     Topic,
     type FolloweesForTopic,
-    type NeuronInfo,
     type NeuronId,
+    type NeuronInfo,
   } from "@dfinity/nns";
 
   type Props = {
@@ -31,9 +32,17 @@
     getNnsTopicFollowings(neuron)
   );
 
-  // Filter topics to show - exclude deprecated and private topics
-  const topicsToShow: Topic[] = $derived(
-    TOPICS_TO_FOLLOW_NNS.filter((topic) => topic !== Topic.NeuronManagement)
+  const topics = $derived(
+    neuron ? sortNnsTopics({ topics: topicsToFollow(neuron), i18n: $i18n }) : []
+  );
+
+  const requiredTopics = [
+    Topic.Governance,
+    Topic.SnsAndCommunityFund,
+    Topic.Unspecified,
+  ];
+  const otherTopics: Topic[] = $derived(
+    topics.filter((topic) => !requiredTopics.includes(topic))
   );
 
   const onTopicSelectionChange = ({
@@ -42,13 +51,10 @@
   }: {
     topic: Topic;
     checked: boolean;
-  }) => {
-    if (checked) {
-      selectedTopics = [...selectedTopics, topic];
-    } else {
-      selectedTopics = selectedTopics.filter((t) => t !== topic);
-    }
-  };
+  }) =>
+    (selectedTopics = checked
+      ? [...selectedTopics, topic]
+      : selectedTopics.filter((t) => t !== topic));
 
   const isTopicSelected = (topic: Topic) => selectedTopics.includes(topic);
 </script>
@@ -58,9 +64,26 @@
 
   <Separator spacing="medium" />
 
-  <div class="topic-group" data-tid="nns-topic-group">
-    <h5 class="headline description">Topics</h5>
-    {#each topicsToShow as topic}
+  <div class="topic-group" data-tid="required-topic-group">
+    <h5 class="headline description"
+      >{$i18n.follow_neurons.required_settings}</h5
+    >
+    {#each requiredTopics as topic}
+      <FollowNnsNeuronsByTopicItem
+        {topic}
+        followees={followings}
+        checked={isTopicSelected(topic)}
+        onNnsChange={onTopicSelectionChange}
+        {removeFollowing}
+      />
+    {/each}
+  </div>
+
+  <div class="topic-group" data-tid="other-topic-group">
+    <h5 class="headline description"
+      >{$i18n.follow_neurons.advanced_settings}</h5
+    >
+    {#each otherTopics as topic}
       <FollowNnsNeuronsByTopicItem
         {topic}
         followees={followings}

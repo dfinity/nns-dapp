@@ -529,7 +529,9 @@
   "follow_neurons": {
     "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
     "current_followees": "Currently Following",
-    "add": "Add Followee"
+    "add": "Add Followee",
+    "required_settings": "Required settings",
+    "advanced_settings": "Advanced settings"
   },
   "follow_neurons_topic_subtitles": {
     "Unspecified": "Follow neurons on all proposal topics except the governance topic, and SNS & Neurons' Fund.",

@@ -123,4 +123,19 @@ describe("FollowNnsNeuronsByTopicStepTopics", () => {
 
     expect(await po.getNextButtonPo().isDisabled()).toBe(false);
   });
+
+  it("should display core topics first in correct order", async () => {
+    const po = renderComponent({
+      neuron: testNeuron,
+    });
+
+    const topicItems = await po.getTopicItemPos();
+    expect(topicItems.length).toBeGreaterThanOrEqual(3);
+
+    expect(await topicItems[0].getTopicName()).toBe("Governance");
+    expect(await topicItems[1].getTopicName()).toBe("SNS & Neurons' Fund");
+    expect(await topicItems[2].getTopicName()).toBe(
+      "All Except Governance, and SNS & Neurons' Fund"
+    );
+  });
 });
