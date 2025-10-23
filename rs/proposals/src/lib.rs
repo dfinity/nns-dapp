@@ -289,7 +289,6 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         9 => transform::<UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed>(payload_bytes),
         10 => identity::<UpdateIcpXdrConversionRatePayload>(payload_bytes),
         11 => identity::<DeployGuestosToAllSubnetNodesPayload>(payload_bytes),
-        12 => Ok("Proposal has no payload".to_string()),
         13 => identity::<RemoveNodesFromSubnetPayload>(payload_bytes),
         14 => identity::<SetAuthorizedSubnetworkListArgs>(payload_bytes),
         15 => identity::<SetFirewallConfigPayload>(payload_bytes),
@@ -329,6 +328,8 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         50 => identity::<ReviseElectedHostosVersionsPayload>(payload_bytes),
         51 => identity::<DeployHostosToSomeNodesPayload>(payload_bytes),
         52 => identity::<SubnetRentalRequest>(payload_bytes),
+
+        12 | 53 | 54 => Ok("Proposal has no payload".to_string()),
         _ => Err("Unrecognised NNS function".to_string()),
     }
 }
