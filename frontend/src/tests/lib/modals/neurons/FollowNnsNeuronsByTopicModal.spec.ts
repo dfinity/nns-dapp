@@ -7,7 +7,18 @@ import { FollowNnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowNnsNeu
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
 import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+import { get } from "svelte/store";
+
+const expectToastError = (contained: string) =>
+  expect(get(toastsStore)).toMatchObject([
+    {
+      level: "error",
+      text: expect.stringContaining(contained),
+    },
+  ]);
+const expectNoToastError = () => expect(get(toastsStore)).toMatchObject([]);
 
 describe("FollowNnsNeuronsByTopicModal", () => {
   const neuronId = 123456789n;
@@ -265,5 +276,98 @@ describe("FollowNnsNeuronsByTopicModal", () => {
       certified: true,
       neuronId,
     });
+  });
+
+  it("handles none-existent neuron error", async () => {
+    const po = renderComponent({
+      neuronId,
+    });
+
+    const spySetFollowing = vi.spyOn(api, "setFollowing");
+    spySetFollowing.mockRejectedValue(
+      new Error(
+        `000: The neuron with ID 123 does not exist. Make sure that you copied the neuron ID correctly.`
+      )
+    );
+
+    const topicsStep = po.getFollowNnsNeuronsByTopicStepTopicsPo();
+
+    // Select a topic and go to neuron step
+    await topicsStep.clickTopicItemByName("Governance");
+    await topicsStep.clickNextButton();
+
+    const neuronStepPo = po.getFollowNnsNeuronsByTopicStepNeuronPo();
+
+    // Enter neuron ID and submit
+    await neuronStepPo.typeNeuronAddress("123");
+    await neuronStepPo.clickFollowNeuronButton();
+    await runResolvedPromises();
+
+    // Verify the error message is displayed in the neuron step
+    expect(await neuronStepPo.hasErrorMessage()).toBe(true);
+    expect(await neuronStepPo.getErrorMessage()).toBe(
+      `There is no neuron with ID 123. Please choose a neuron ID from an existing neuron.`
+    );
+
+    // Should not close the modal and should not show toast
+    expect(await neuronStepPo.isPresent()).toBe(true);
+    expectNoToastError();
+  });
+
+  it("handles not allowed to follow neuron error", async () => {
+    const po = renderComponent({
+      neuronId,
+    });
+
+    const spySetFollowing = vi.spyOn(api, "setFollowing");
+    // https://github.com/dfinity/ic/blob/13a56ce65d36b85d10ee5e3171607cc2c31cf23e/rs/nns/governance/src/governance.rs#L8411
+    spySetFollowing.mockRejectedValue(
+      new Error("321: Neuron 123 is a private neuron... ")
+    );
+
+    const topicsStep = po.getFollowNnsNeuronsByTopicStepTopicsPo();
+    await topicsStep.clickTopicItemByName("Governance");
+    await topicsStep.clickNextButton();
+
+    const neuronStepPo = po.getFollowNnsNeuronsByTopicStepNeuronPo();
+
+    await neuronStepPo.typeNeuronAddress("123");
+    await neuronStepPo.clickFollowNeuronButton();
+    await runResolvedPromises();
+
+    expect(await neuronStepPo.hasErrorMessage()).toBe(true);
+    expect(await neuronStepPo.getErrorMessage()).toBe(
+      `Neuron 123 is a private neuron. If you control neuron 123, you can follow it after adding your principal ${mockIdentity.getPrincipal().toText()} to its list of hotkeys or setting the neuron to public.`
+    );
+
+    // Should not close the modal and should not show toast
+    expect(await neuronStepPo.isPresent()).toBe(true);
+    expectNoToastError();
+  });
+
+  it("displays unknown errors in the toast", async () => {
+    const po = renderComponent({
+      neuronId,
+    });
+
+    const spySetFollowing = vi.spyOn(api, "setFollowing");
+    spySetFollowing.mockRejectedValue(new Error("Unknown Failure"));
+
+    const topicsStep = po.getFollowNnsNeuronsByTopicStepTopicsPo();
+
+    await topicsStep.clickTopicItemByName("Governance");
+    await topicsStep.clickNextButton();
+
+    const neuronStepPo = po.getFollowNnsNeuronsByTopicStepNeuronPo();
+
+    expectNoToastError();
+
+    await neuronStepPo.typeNeuronAddress("123");
+    await neuronStepPo.clickFollowNeuronButton();
+    await runResolvedPromises();
+
+    // Should not close the modal but show error in toast
+    expect(await neuronStepPo.isPresent()).toBe(true);
+    expectToastError("Unknown Failure");
   });
 });
