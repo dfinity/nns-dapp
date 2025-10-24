@@ -1,14 +1,38 @@
+import * as api from "$lib/api/governance.api";
 import FollowNnsNeuronsByTopicStepTopics from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepTopics.svelte";
+import { neuronsStore } from "$lib/stores/neurons.store";
+import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { FollowNnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowNnsNeuronsByTopicStepTopics.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
+import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Topic, type NeuronInfo } from "@dfinity/nns";
 
 describe("FollowNnsNeuronsByTopicStepTopics", () => {
+  const neuronId = 123456789n;
+  const followeeNeuronId1 = 6666666666666666n;
+  const followeeNeuronId2 = 5555555555555555n;
+
   const testNeuron: NeuronInfo = {
     ...mockNeuron,
-    neuronId: 123456789n,
+    neuronId,
+    fullNeuron: {
+      ...mockNeuron.fullNeuron,
+      // Make user the controller
+      controller: mockIdentity.getPrincipal().toText(),
+      // Add some existing followees for testing removal
+      followees: [
+        {
+          topic: Topic.Governance,
+          followees: [followeeNeuronId1, followeeNeuronId2],
+        },
+        {
+          topic: Topic.NodeAdmin,
+          followees: [followeeNeuronId1],
+        },
+      ],
+    },
   };
 
   const renderComponent = (props: {
@@ -30,6 +54,12 @@ describe("FollowNnsNeuronsByTopicStepTopics", () => {
       new JestPageObjectElement(container)
     );
   };
+
+  beforeEach(() => {
+    resetIdentity();
+    neuronsStore.setNeurons({ neurons: [testNeuron], certified: true });
+    vi.spyOn(api, "queryKnownNeurons").mockResolvedValue([]);
+  });
 
   it("should render topic items", async () => {
     const po = renderComponent({
@@ -137,5 +167,48 @@ describe("FollowNnsNeuronsByTopicStepTopics", () => {
     expect(await topicItems[2].getTopicName()).toBe(
       "All Except Governance, and SNS & Neurons' Fund"
     );
+  });
+
+  it("should call removeFollowing API when removing a followee", async () => {
+    const po = renderComponent({
+      neuron: testNeuron,
+    });
+
+    const spyQueryNeuron = vi
+      .spyOn(api, "queryNeuron")
+      .mockResolvedValue(testNeuron);
+    const spySetFollowing = vi.spyOn(api, "setFollowing").mockResolvedValue();
+
+    // Find the topic item and expand it to see followees
+    const governanceTopicItem = await po.getTopicItemPoByName("Governance");
+    await governanceTopicItem.clickExpandButton();
+
+    const followees = await governanceTopicItem.getFolloweesPo();
+    expect(followees.length).toBeGreaterThan(0);
+
+    // Click remove button on the first followee (followeeNeuronId1)
+    await followees[0].clickRemoveButton();
+    await runResolvedPromises();
+
+    expect(spySetFollowing).toHaveBeenCalledTimes(1);
+    expect(spySetFollowing).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      neuronId,
+      // The remaining followee for topic after removal
+      topicFollowing: [
+        {
+          followees: [followeeNeuronId2],
+          topic: Topic.Governance,
+        },
+      ],
+    });
+
+    // Verify neuron was re-queried after update
+    expect(spyQueryNeuron).toHaveBeenCalledTimes(1);
+    expect(spyQueryNeuron).toHaveBeenCalledWith({
+      identity: mockIdentity,
+      certified: true,
+      neuronId,
+    });
   });
 });

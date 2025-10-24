@@ -232,52 +232,6 @@ describe("FollowNnsNeuronsByTopicModal", () => {
     expect(await topicsStep.getTopicSelectionByName("Node Admin")).toBe(false);
   });
 
-  it("should call removeFollowing API when removing a followee", async () => {
-    const po = renderComponent({
-      neuronId,
-    });
-
-    const spyQueryNeuron = vi
-      .spyOn(api, "queryNeuron")
-      .mockResolvedValue(testNeuron());
-    const spySetFollowing = vi.spyOn(api, "setFollowing").mockResolvedValue();
-
-    const topicsStep = po.getFollowNnsNeuronsByTopicStepTopicsPo();
-
-    // Find the topic item and expand it to see followees
-    const governanceTopicItem =
-      await topicsStep.getTopicItemPoByName("Governance");
-    await governanceTopicItem.clickExpandButton();
-
-    const followees = await governanceTopicItem.getFolloweesPo();
-    expect(followees.length).toBeGreaterThan(0);
-
-    // Click remove button on the first followee (followeeNeuronId1)
-    await followees[0].clickRemoveButton();
-    await runResolvedPromises();
-
-    expect(spySetFollowing).toHaveBeenCalledTimes(1);
-    expect(spySetFollowing).toHaveBeenCalledWith({
-      identity: mockIdentity,
-      neuronId,
-      // The remaining followee for topic after removal
-      topicFollowing: [
-        {
-          followees: [followeeNeuronId2],
-          topic: Topic.Governance,
-        },
-      ],
-    });
-
-    // Verify neuron was re-queried after update
-    expect(spyQueryNeuron).toHaveBeenCalledTimes(1);
-    expect(spyQueryNeuron).toHaveBeenCalledWith({
-      identity: mockIdentity,
-      certified: true,
-      neuronId,
-    });
-  });
-
   it("handles none-existent neuron error", async () => {
     const po = renderComponent({
       neuronId,
@@ -337,7 +291,7 @@ describe("FollowNnsNeuronsByTopicModal", () => {
 
     expect(await neuronStepPo.hasErrorMessage()).toBe(true);
     expect(await neuronStepPo.getErrorMessage()).toBe(
-      `Neuron 123 is a private neuron. If you control neuron 123, you can follow it after adding your principal ${mockIdentity.getPrincipal().toText()} to its list of hotkeys or setting the neuron to public.`
+      `Neuron 123 is a private neuron. If you control neuron 123, you can follow it after adding your principal ${mockIdentity.getPrincipal().toText()} to its list of hotkeys or setting the neuron to public. More info here.`
     );
 
     // Should not close the modal and should not show toast
