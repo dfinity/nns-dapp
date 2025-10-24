@@ -3,7 +3,13 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import FollowNnsNeuronsByTopicItem from "$lib/modals/neurons/FollowNnsNeuronsByTopicItem.svelte";
+  import { removeFollowing as removeFollowingService } from "$lib/services/neurons.services";
+  import { authStore } from "$lib/stores/auth.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
+  import { toastsShow } from "$lib/stores/toasts.store";
+  import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
   import { sortNnsTopics } from "$lib/utils/proposals.utils";
@@ -20,14 +26,12 @@
     selectedTopics: Topic[];
     onClose: () => void;
     openNextStep: () => void;
-    removeFollowing: (args: { topic: Topic; followee: NeuronId }) => void;
   };
   let {
     neuron,
     selectedTopics = $bindable(),
     onClose,
     openNextStep,
-    removeFollowing,
   }: Props = $props();
 
   const followings: FolloweesForTopic[] = $derived(
@@ -62,6 +66,63 @@
   let cmp = $state<Collapsible | undefined>(undefined);
   let toggleContent = () => cmp?.toggleContent();
   let expanded: boolean = $state(false);
+
+  const handleUpdateFollowingError = ({
+    followee,
+    error,
+  }: {
+    followee: bigint;
+    error: unknown;
+  }) => {
+    const toastMessage = mapNeuronErrorToToastMessage(error);
+    const errorDetail = toastMessage.detail ?? "";
+    // ref. https://github.com/dfinity/ic/blob/13a56ce65d36b85d10ee5e3171607cc2c31cf23e/rs/nns/governance/src/governance.rs#L8421
+    const NON_EXISTENT_NEURON_ERROR =
+      /: The neuron with ID \d+ does not exist\./;
+    // ref. https://github.com/dfinity/ic/blob/13a56ce65d36b85d10ee5e3171607cc2c31cf23e/rs/nns/governance/src/governance.rs#L8411
+    const FOLLOWING_NOT_ALLOWED_ERROR = /: Neuron \d+ is a private neuron\./;
+    if (NON_EXISTENT_NEURON_ERROR.test(errorDetail)) {
+      // For removeFollowing, we'll show toast instead of setting errorMessage
+      toastsShow({
+        level: "error",
+        text: replacePlaceholders($i18n.new_followee.followee_does_not_exist, {
+          $neuronId: followee.toString(),
+        }),
+      });
+    } else if (FOLLOWING_NOT_ALLOWED_ERROR.test(errorDetail)) {
+      // For removeFollowing, we'll show toast instead of setting errorMessage
+      toastsShow({
+        level: "error",
+        text: replacePlaceholders($i18n.new_followee.followee_not_permit, {
+          $neuronId: followee.toString(),
+          $principalId: $authStore.identity?.getPrincipal().toText() ?? "",
+        }),
+      });
+    } else {
+      toastsShow(toastMessage);
+    }
+  };
+
+  const removeFollowing = async ({
+    topic,
+    followee,
+  }: {
+    topic: Topic;
+    followee: NeuronId;
+  }) => {
+    startBusy({ initiator: "remove-followee" });
+    try {
+      await removeFollowingService({
+        neuronId: neuron.neuronId,
+        topics: [topic],
+        followee,
+      });
+    } catch (err: unknown) {
+      handleUpdateFollowingError({ followee, error: err });
+    } finally {
+      stopBusy("remove-followee");
+    }
+  };
 </script>
 
 <TestIdWrapper testId="follow-nns-neurons-by-topic-step-topics-component">
