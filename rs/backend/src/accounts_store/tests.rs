@@ -1211,7 +1211,7 @@ fn set_and_get_address_book() {
     };
 
     assert_eq!(
-        store.set_address_book(principal, address_book.clone(),),
+        store.set_address_book(principal, address_book.clone()),
         SetAddressBookResponse::Ok
     );
 
