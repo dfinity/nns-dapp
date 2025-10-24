@@ -9,6 +9,7 @@ import type { Agent, Identity } from "@dfinity/agent";
 import type { AccountIdentifierHex } from "@dfinity/ledger-icp";
 import type {
   E8s,
+  FolloweesForTopic,
   GovernanceCachedMetrics,
   KnownNeuron,
   NetworkEconomics,
@@ -384,6 +385,10 @@ export type ApiSetFolloweesParams = ApiManageNeuronParams & {
   followees: NeuronId[];
 };
 
+export type ApiSetFollowingParams = ApiManageNeuronParams & {
+  topicFollowing: Array<FolloweesForTopic>;
+};
+
 export const setFollowees = async ({
   identity,
   neuronId,
@@ -399,6 +404,21 @@ export const setFollowees = async ({
     followees,
   });
   logWithTimestamp(`Setting Followees (${hashCode(neuronId)}) complete.`);
+};
+
+export const setFollowing = async ({
+  identity,
+  neuronId,
+  topicFollowing,
+}: ApiSetFollowingParams): Promise<void> => {
+  logWithTimestamp(`Setting Followings (${hashCode(neuronId)}) call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  await canister.setFollowing({
+    neuronId,
+    topicFollowing,
+  });
+  logWithTimestamp(`Setting Followings (${hashCode(neuronId)}) complete.`);
 };
 
 export type ApiQueryNeuronsParams = ApiQueryParams & {

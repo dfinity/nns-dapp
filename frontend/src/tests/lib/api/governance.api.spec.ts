@@ -19,6 +19,7 @@ import {
   registerVote,
   removeHotkey,
   setFollowees,
+  setFollowing,
   simulateMergeNeurons,
   spawnNeuron,
   splitNeuron,
@@ -200,6 +201,61 @@ describe("neurons-api", () => {
           neuronId: 10n,
           topic: Topic.ExchangeRate,
           followees: [4n, 7n],
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("setFollowing", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.setFollowing.mockImplementation(
+        vi.fn().mockResolvedValue(undefined)
+      );
+
+      const topicFollowing = [
+        {
+          topic: Topic.Governance,
+          followees: [4n, 7n],
+        },
+        {
+          topic: Topic.ExchangeRate,
+          followees: [8n],
+        },
+      ];
+
+      await setFollowing({
+        identity: mockIdentity,
+        neuronId: 10n,
+        topicFollowing,
+      });
+
+      expect(mockGovernanceCanister.setFollowing).toBeCalled();
+      expect(mockGovernanceCanister.setFollowing).toBeCalledWith({
+        neuronId: 10n,
+        topicFollowing,
+      });
+    });
+
+    it("throws error when setting following fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.setFollowing.mockImplementation(
+        vi.fn(() => {
+          throw error;
+        })
+      );
+
+      const topicFollowing = [
+        {
+          topic: Topic.Governance,
+          followees: [4n, 7n],
+        },
+      ];
+
+      const call = () =>
+        setFollowing({
+          identity: mockIdentity,
+          neuronId: 10n,
+          topicFollowing,
         });
       await expect(call).rejects.toThrow(error);
     });
