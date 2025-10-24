@@ -7,6 +7,7 @@
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
   import { sortNnsTopics } from "$lib/utils/proposals.utils";
+  import { Collapsible, IconExpandMore } from "@dfinity/gix-components";
   import {
     Topic,
     type FolloweesForTopic,
@@ -58,6 +59,9 @@
       : selectedTopics.filter((t) => t !== topic));
 
   const isTopicSelected = (topic: Topic) => selectedTopics.includes(topic);
+  let cmp = $state<Collapsible | undefined>(undefined);
+  let toggleContent = () => cmp?.toggleContent();
+  let expanded: boolean = $state(false);
 </script>
 
 <TestIdWrapper testId="follow-nns-neurons-by-topic-step-topics-component">
@@ -84,18 +88,39 @@
   </div>
 
   <div class="topic-group" data-tid="other-topic-group">
-    <h5 class="headline description"
-      >{$i18n.follow_neurons.advanced_settings}</h5
+    <Collapsible
+      expandButton={false}
+      externalToggle={true}
+      bind:this={cmp}
+      bind:expanded
+      wrapHeight
     >
-    {#each otherTopics as topic}
-      <FollowNnsNeuronsByTopicItem
-        {topic}
-        followees={followings}
-        checked={isTopicSelected(topic)}
-        onNnsChange={onTopicSelectionChange}
-        {removeFollowing}
-      />
-    {/each}
+      {#snippet header()}
+        <div class="header" class:expanded>
+          <h5 class="headline description"
+            >{$i18n.follow_neurons.advanced_settings}</h5
+          >
+          <button
+            data-tid="expand-button"
+            class="expand-button"
+            class:expanded
+            onclick={toggleContent}
+          >
+            <IconExpandMore />
+          </button>
+        </div>
+      {/snippet}
+
+      {#each otherTopics as topic}
+        <FollowNnsNeuronsByTopicItem
+          {topic}
+          followees={followings}
+          checked={isTopicSelected(topic)}
+          onNnsChange={onTopicSelectionChange}
+          {removeFollowing}
+        />
+      {/each}
+    </Collapsible>
   </div>
 
   <div class="toolbar">
@@ -129,6 +154,29 @@
 
   .headline {
     margin: 0 0 var(--padding) 0;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--padding);
+    align-items: center;
+
+    // stretching to the full Collapsible header width
+    flex: 1 1 100%;
+  }
+
+  .expand-button {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+
+    transition: transform ease-out var(--animation-time-normal);
+    &.expanded {
+      transform: rotate(-180deg);
+    }
   }
 
   .toolbar {
