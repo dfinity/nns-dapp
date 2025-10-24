@@ -26,7 +26,6 @@
     selectedTopics: Topic[];
     isBusy?: boolean;
     openPrevStep: () => void;
-    openFirstStep: () => void;
   };
 
   let {
@@ -34,7 +33,6 @@
     topics,
     selectedTopics = $bindable(),
     openPrevStep,
-    openFirstStep,
   }: Props = $props();
 
   const followings: FolloweesForTopic[] = $derived(
@@ -136,7 +134,7 @@
       });
 
       selectedTopics = [];
-      openFirstStep();
+      openPrevStep();
     } catch (err: unknown) {
       handleUpdateFollowingError({ followee, error: err });
     } finally {

@@ -77,7 +77,6 @@
       topics={selectedTopics}
       bind:selectedTopics
       openPrevStep={openFirstStep}
-      {openFirstStep}
     />
   {/if}
 </WizardModal>
