@@ -113,6 +113,25 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
     expect(props.updateFollowings).toHaveBeenCalledWith("0123456789");
   });
 
+  it("should call updateFollowings when follow for known neuron is clicked", async () => {
+    knownNeuronsStore.setNeurons([mockKnownNeuron, anotherKnownNeuron]);
+
+    const { po, props } = renderComponent({});
+    await runResolvedPromises();
+
+    const knownNeuronItems = await po.getKnownNeuronItems();
+    expect(knownNeuronItems.length).toBe(2);
+
+    // Click follow button for the first known neuron
+    const firstKnownNeuron = knownNeuronItems[0];
+    await firstKnownNeuron.clickFollowButton();
+
+    expect(props.updateFollowings).toHaveBeenCalledTimes(1);
+    expect(props.updateFollowings).toHaveBeenCalledWith(
+      mockKnownNeuron.id.toString()
+    );
+  });
+
   it("should call openPrevStep when back button is clicked", async () => {
     const { po, props } = renderComponent({});
 
