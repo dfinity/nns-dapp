@@ -36,6 +36,7 @@ ic-nns-governance = { workspace = true }
 ic-sns-swap = { workspace = true }
 ic-stable-structures = "0.7.2"
 icp-ledger = { workspace = true }
+icrc-ledger-types = { workspace = true }
 on_wire = { workspace = true }
 
 proposals = { path = "../proposals" }
