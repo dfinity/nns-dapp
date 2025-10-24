@@ -21,6 +21,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Improved validation for adding NNS neuron followings.
 - Improved SNS data loading speed through parallel processing
 - Updated Import Tokens link to docs.
 
