@@ -59,7 +59,9 @@ const {
   listNeurons,
   loadNeuron,
   removeFollowee,
+  removeFollowing,
   removeHotkey,
+  setFollowing,
   stakeNeuron,
   startDissolving,
   stopDissolving,
@@ -145,6 +147,7 @@ describe("neurons-services", () => {
   let spyStartDissolving;
   let spyStopDissolving;
   let spySetFollowees;
+  let spySetFollowing;
   let spyClaimOrRefresh;
   let spyClaimOrRefreshByMemo;
   let spyChangeNeuronVisibility;
@@ -207,6 +210,7 @@ describe("neurons-services", () => {
     spyStartDissolving = vi.spyOn(api, "startDissolving").mockResolvedValue();
     spyStopDissolving = vi.spyOn(api, "stopDissolving").mockResolvedValue();
     spySetFollowees = vi.spyOn(api, "setFollowees").mockResolvedValue();
+    spySetFollowing = vi.spyOn(api, "setFollowing").mockResolvedValue();
     spyClaimOrRefresh = vi
       .spyOn(api, "claimOrRefreshNeuron")
       .mockResolvedValue(undefined);
@@ -2093,6 +2097,266 @@ describe("neurons-services", () => {
 
       await expect(call).rejects.toThrow();
       expect(spySetFollowees).not.toBeCalled();
+    });
+  });
+
+  describe("setFollowing", () => {
+    it("should call setFollowing API with correct parameters", async () => {
+      const followee = 8n;
+      const topics = [Topic.ExchangeRate, Topic.Governance];
+      neuronsStore.setNeurons({ neurons, certified: true });
+
+      expect(spySetFollowing).not.toBeCalled();
+      await setFollowing({
+        neuronId: controlledNeuron.neuronId,
+        topics,
+        followee,
+      });
+
+      expect(spySetFollowing).toBeCalledWith({
+        neuronId: controlledNeuron.neuronId,
+        identity: mockIdentity,
+        topicFollowing: [
+          { topic: Topic.ExchangeRate, followees: [followee] },
+          { topic: Topic.Governance, followees: [followee] },
+        ],
+      });
+      expect(spySetFollowing).toBeCalledTimes(1);
+    });
+
+    it("should not call api if no identity", async () => {
+      const followee = 8n;
+      const topics = [Topic.ExchangeRate];
+      neuronsStore.setNeurons({ neurons, certified: true });
+
+      setNoIdentity();
+
+      const call = async () =>
+        await setFollowing({
+          neuronId: controlledNeuron.neuronId,
+          topics,
+          followee,
+        });
+
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
+      expect(spySetFollowing).not.toBeCalled();
+    });
+
+    it("should not call api if not controlled by user nor hotkey", async () => {
+      neuronsStore.pushNeurons({
+        neurons: [notControlledNeuron],
+        certified: true,
+      });
+      const followee = 8n;
+      const topics = [Topic.ExchangeRate];
+
+      const call = async () =>
+        await setFollowing({
+          neuronId: notControlledNeuron.neuronId,
+          topics,
+          followee,
+        });
+
+      await expect(call).rejects.toThrow();
+      expect(spySetFollowing).not.toBeCalled();
+    });
+
+    it("should call api if not controlled by user but controlled by hotkey", async () => {
+      const followee = 8n;
+      const topics = [Topic.ExchangeRate];
+      const hotkeyNeuron = {
+        ...notControlledNeuron,
+        fullNeuron: {
+          ...notControlledNeuron.fullNeuron,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [hotkeyNeuron],
+        certified: true,
+      });
+
+      expect(spySetFollowing).not.toBeCalled();
+      await setFollowing({
+        neuronId: hotkeyNeuron.neuronId,
+        topics,
+        followee,
+      });
+
+      expect(spySetFollowing).toBeCalledWith({
+        neuronId: hotkeyNeuron.neuronId,
+        identity: mockIdentity,
+        topicFollowing: [{ topic: Topic.ExchangeRate, followees: [followee] }],
+      });
+      expect(spySetFollowing).toBeCalledTimes(1);
+    });
+
+    it("should not call api if not controlled by user but controlled by hotkey for topic Manage Neuron", async () => {
+      const followee = 8n;
+      const topics = [Topic.NeuronManagement];
+      const hotkeyNeuron = {
+        ...notControlledNeuron,
+        fullNeuron: {
+          ...notControlledNeuron.fullNeuron,
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [hotkeyNeuron],
+        certified: true,
+      });
+
+      const call = async () =>
+        await setFollowing({
+          neuronId: hotkeyNeuron.neuronId,
+          topics,
+          followee,
+        });
+
+      await expect(call).rejects.toThrow();
+      expect(spySetFollowing).not.toBeCalled();
+    });
+
+    it("should not call API when no changes needed", async () => {
+      const followee = 8n;
+      const topics = [];
+      neuronsStore.setNeurons({ neurons, certified: true });
+
+      await setFollowing({
+        neuronId: controlledNeuron.neuronId,
+        topics,
+        followee,
+      });
+
+      expect(spySetFollowing).not.toBeCalled();
+    });
+  });
+
+  describe("removeFollowing", () => {
+    const followee = 8n;
+    const topics = [Topic.ExchangeRate];
+    const neuronWithFollowees = {
+      ...controlledNeuron,
+      fullNeuron: {
+        ...controlledNeuron.fullNeuron,
+        followees: [{ topic: Topic.ExchangeRate, followees: [followee, 9n] }],
+      },
+    };
+
+    it("should call setFollowing API to remove followee from topics", async () => {
+      neuronsStore.setNeurons({
+        neurons: [neuronWithFollowees],
+        certified: true,
+      });
+
+      expect(spySetFollowing).not.toBeCalled();
+      await removeFollowing({
+        neuronId: neuronWithFollowees.neuronId,
+        topics,
+        followee,
+      });
+
+      expect(spySetFollowing).toBeCalledWith({
+        neuronId: neuronWithFollowees.neuronId,
+        identity: mockIdentity,
+        topicFollowing: [{ topic: Topic.ExchangeRate, followees: [9n] }],
+      });
+      expect(spySetFollowing).toBeCalledTimes(1);
+    });
+
+    it("should show error toast when trying to remove non-existing followee", async () => {
+      const neuronWithoutFollowee = {
+        ...controlledNeuron,
+        fullNeuron: {
+          ...controlledNeuron.fullNeuron,
+          followees: [{ topic: Topic.ExchangeRate, followees: [9n] }],
+        },
+      };
+      neuronsStore.setNeurons({
+        neurons: [neuronWithoutFollowee],
+        certified: true,
+      });
+
+      await removeFollowing({
+        neuronId: neuronWithoutFollowee.neuronId,
+        topics,
+        followee,
+      });
+
+      expectToastError(en.error.followee_does_not_exist);
+      expect(spySetFollowing).not.toBeCalled();
+    });
+
+    it("should not call api if no identity", async () => {
+      neuronsStore.setNeurons({
+        neurons: [neuronWithFollowees],
+        certified: true,
+      });
+
+      setNoIdentity();
+
+      const call = async () =>
+        await removeFollowing({
+          neuronId: neuronWithFollowees.neuronId,
+          topics,
+          followee,
+        });
+
+      await expect(call).rejects.toThrow(mockIdentityErrorMsg);
+      expect(spySetFollowing).not.toBeCalled();
+    });
+
+    it("should not call api if not controlled by user nor hotkey", async () => {
+      const notControlledWithFollowees = {
+        ...notControlledNeuron,
+        fullNeuron: {
+          ...notControlledNeuron.fullNeuron,
+          followees: [{ topic: Topic.ExchangeRate, followees: [followee] }],
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [notControlledWithFollowees],
+        certified: true,
+      });
+
+      const call = async () =>
+        await removeFollowing({
+          neuronId: notControlledWithFollowees.neuronId,
+          topics,
+          followee,
+        });
+
+      await expect(call).rejects.toThrow();
+      expect(spySetFollowing).not.toBeCalled();
+    });
+
+    it("should call api if not controlled by user but controlled by hotkey", async () => {
+      const hotkeyNeuronWithFollowees = {
+        ...notControlledNeuron,
+        fullNeuron: {
+          ...notControlledNeuron.fullNeuron,
+          followees: [{ topic: Topic.ExchangeRate, followees: [followee] }],
+          hotKeys: [mockIdentity.getPrincipal().toText()],
+        },
+      };
+      neuronsStore.pushNeurons({
+        neurons: [hotkeyNeuronWithFollowees],
+        certified: true,
+      });
+
+      expect(spySetFollowing).not.toBeCalled();
+      await removeFollowing({
+        neuronId: hotkeyNeuronWithFollowees.neuronId,
+        topics,
+        followee,
+      });
+
+      expect(spySetFollowing).toBeCalledWith({
+        neuronId: hotkeyNeuronWithFollowees.neuronId,
+        identity: mockIdentity,
+        topicFollowing: [{ topic: Topic.ExchangeRate, followees: [] }],
+      });
+      expect(spySetFollowing).toBeCalledTimes(1);
     });
   });
 
