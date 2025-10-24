@@ -533,6 +533,7 @@
     "current_followees": "Currently Following",
     "add": "Add Followee",
     "required_settings": "Required settings",
+    "required_settings_description": "For full vote delegation coverage, you need to set following on these three topics. The catch-all follow rule is applied to any topic — except Governance and SNS & Neurons’ Fund — for which no other explicit follow rule has been defined.",
     "advanced_settings": "Advanced settings"
   },
   "follow_neurons_topic_subtitles": {

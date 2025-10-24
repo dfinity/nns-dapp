@@ -1,6 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import Separator from "$lib/components/ui/Separator.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import FollowNnsNeuronsByTopicItem from "$lib/modals/neurons/FollowNnsNeuronsByTopicItem.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { topicsToFollow } from "$lib/utils/neuron.utils";
@@ -65,9 +66,12 @@
   <Separator spacing="medium" />
 
   <div class="topic-group" data-tid="required-topic-group">
-    <h5 class="headline description"
-      >{$i18n.follow_neurons.required_settings}</h5
-    >
+    <h5 class="headline description">
+      {$i18n.follow_neurons.required_settings}
+      <TooltipIcon
+        >{$i18n.follow_neurons.required_settings_description}</TooltipIcon
+      >
+    </h5>
     {#each requiredTopics as topic}
       <FollowNnsNeuronsByTopicItem
         {topic}

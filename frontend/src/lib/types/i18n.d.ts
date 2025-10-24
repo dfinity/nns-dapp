@@ -553,6 +553,7 @@ interface I18nFollow_neurons {
   current_followees: string;
   add: string;
   required_settings: string;
+  required_settings_description: string;
   advanced_settings: string;
 }
 
