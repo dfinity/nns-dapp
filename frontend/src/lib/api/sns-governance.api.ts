@@ -1,9 +1,7 @@
 import { wrapper } from "$lib/api/sns-wrapper.api";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-import type { Identity } from "@dfinity/agent";
 import type { IcrcAccount } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsParams,
   SnsNervousSystemParameters,
@@ -14,6 +12,8 @@ import type {
   SnsTopic,
   SnsVote,
 } from "@dfinity/sns";
+import type { Identity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export const querySnsNeurons = async ({
   identity,

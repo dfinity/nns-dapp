@@ -14,7 +14,7 @@ import {
   dateToNanoSeconds,
 } from "$tests/mocks/icp-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { SignIdentity } from "@dfinity/agent";
+import type { SignIdentity } from "@icp-sdk/core/agent";
 
 vi.mock("$lib/api/icp-ledger.api");
 

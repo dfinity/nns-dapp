@@ -6,7 +6,7 @@
     type SelectCanisterDetailsStore,
   } from "$lib/types/canister-detail.context";
   import { mockCanisterDetails } from "$tests/mocks/canisters.mock";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { setContext } from "svelte";
   import { writable } from "svelte/store";
 

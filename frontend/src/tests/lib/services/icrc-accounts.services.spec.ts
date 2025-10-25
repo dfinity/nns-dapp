@@ -32,16 +32,16 @@ import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { toastsStore } from "@dfinity/gix-components";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   AgentError,
   ErrorKindEnum,
   ReplicaRejectCode,
   requestIdOf,
   UncertifiedRejectErrorCode,
-} from "@dfinity/agent";
-import { toastsStore } from "@dfinity/gix-components";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
+} from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 

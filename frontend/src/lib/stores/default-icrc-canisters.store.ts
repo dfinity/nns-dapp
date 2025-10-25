@@ -1,7 +1,7 @@
 import { browser } from "$app/environment";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
-import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 

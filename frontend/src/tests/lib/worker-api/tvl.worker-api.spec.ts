@@ -1,8 +1,8 @@
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import { ACTOR_PARAMS } from "$lib/constants/canister-actor.constants";
 import { queryTVL } from "$lib/worker-api/tvl.worker-api";
-import { AnonymousIdentity } from "@dfinity/agent";
 import * as dfinityUtils from "@dfinity/utils";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/constants/canister-ids.constants");

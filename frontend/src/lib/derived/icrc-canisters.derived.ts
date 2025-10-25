@@ -1,7 +1,7 @@
 import { loadedImportedTokensStore } from "$lib/derived/imported-tokens.derived";
 import { defaultIcrcCanistersStore } from "$lib/stores/default-icrc-canisters.store";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 export interface IcrcCanisters {

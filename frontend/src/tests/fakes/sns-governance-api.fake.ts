@@ -10,8 +10,6 @@ import {
   installImplAndBlockRest,
   makePausable,
 } from "$tests/utils/module.test-utils";
-import type { Identity } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsParams,
   SnsNervousSystemFunction,
@@ -28,6 +26,8 @@ import {
   type SnsNeuron,
 } from "@dfinity/sns";
 import { fromNullable, isNullish, toNullable } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 const modulePath = "$lib/api/sns-governance.api";
 

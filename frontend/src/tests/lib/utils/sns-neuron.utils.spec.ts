@@ -78,9 +78,7 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import type { Identity } from "@dfinity/agent";
 import { NeuronState, Vote, type NeuronInfo } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import type { SnsNervousSystemParameters } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
@@ -92,6 +90,8 @@ import {
 } from "@dfinity/sns";
 import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 
 vi.mock("$lib/constants/sns-neurons.constants.ts", async () => {
   return {

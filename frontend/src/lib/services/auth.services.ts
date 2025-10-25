@@ -3,9 +3,9 @@ import { startBusy } from "$lib/stores/busy.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import type { ToastMsg } from "$lib/types/toast";
 import { replaceHistory } from "$lib/utils/route.utils";
-import type { Identity } from "@dfinity/agent";
-import { AnonymousIdentity } from "@dfinity/agent";
 import type { ToastLevel } from "@dfinity/gix-components";
+import type { Identity } from "@icp-sdk/core/agent";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 
 const msgParam = "msg";
