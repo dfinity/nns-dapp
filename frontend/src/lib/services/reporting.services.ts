@@ -1,4 +1,7 @@
 import { getTransactions } from "$lib/api/icp-index.api";
+import { getTransactions as getIcrcTransactions } from "$lib/api/icrc-index.api";
+import { queryIcrcToken } from "$lib/api/icrc-ledger.api";
+import { ALL_CK_TOKENS_CANISTER_IDS } from "$lib/constants/tokens.constants";
 import type { Account } from "$lib/types/account";
 import type {
   TransactionEntity,
@@ -8,6 +11,7 @@ import type {
 import { neuronStake } from "$lib/utils/neuron.utils";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
+import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type { NeuronInfo } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 
@@ -187,4 +191,45 @@ const filterTransactionsByRange = (
 
 const getTimestampFromTransaction = (tx: TransactionWithId): bigint | null => {
   return tx.transaction.created_at_time?.[0]?.timestamp_nanos || null;
+};
+
+export const getAllIcrcTransactionsForCkTokens = async ({
+  identity,
+  account,
+}: {
+  identity: SignIdentity;
+  account: IcrcAccount;
+}) => {
+  const ckTokens = [];
+  for (const {
+    ledgerCanisterId,
+    indexCanisterId,
+  } of ALL_CK_TOKENS_CANISTER_IDS) {
+    try {
+      const token = await queryIcrcToken({
+        identity,
+        canisterId: ledgerCanisterId,
+        certified: true,
+      });
+
+      // has to be recursive
+      const { transactions, balance } = await getIcrcTransactions({
+        identity,
+        indexCanisterId: indexCanisterId,
+        // Todo: Make it recursive
+        maxResults: 50n,
+        // Note: ICRC index uses 'start' as tx id, not timestamp. We start from newest by omitting it.
+        account,
+      });
+
+      ckTokens.push({
+        token,
+        transactions,
+        balance,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return ckTokens;
 };
