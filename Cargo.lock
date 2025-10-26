@@ -3964,6 +3964,7 @@ dependencies = [
  "ic-stable-structures 0.7.2",
  "ic_principal",
  "icp-ledger",
+ "icrc-ledger-types",
  "itertools 0.14.0",
  "lazy_static",
  "lzma-rs",

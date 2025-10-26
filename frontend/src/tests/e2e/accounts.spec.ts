@@ -60,7 +60,7 @@ test("Test accounts requirements", async ({ page, context }) => {
   const icRow = await appPo
     .getTokensPo()
     .getTokensPagePo()
-    .getTokensTable()
+    .getIcpTokensTable()
     .getRowByName("Internet Computer");
   await icRow.click();
 
