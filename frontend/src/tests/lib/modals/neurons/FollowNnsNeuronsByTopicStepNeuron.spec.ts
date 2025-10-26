@@ -1,6 +1,7 @@
 import * as api from "$lib/api/governance.api";
 import FollowNnsNeuronsByTopicStepNeuron from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepNeuron.svelte";
 import { knownNeuronsStore } from "$lib/stores/known-neurons.store";
+import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockKnownNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { FollowNnsNeuronsByTopicStepNeuronPo } from "$tests/page-objects/FollowNnsNeuronsByTopicStepNeuron.page-object";
@@ -10,7 +11,6 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { Topic, type NeuronInfo } from "@dfinity/nns";
 import { get } from "svelte/store";
-import { neuronsStore } from "../../../../lib/stores/neurons.store";
 
 const expectToastError = (contained: string) =>
   expect(get(toastsStore)).toMatchObject([

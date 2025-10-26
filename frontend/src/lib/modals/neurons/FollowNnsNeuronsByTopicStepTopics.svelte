@@ -3,6 +3,7 @@
   import Separator from "$lib/components/ui/Separator.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import FollowNnsNeuronsByTopicItem from "$lib/modals/neurons/FollowNnsNeuronsByTopicItem.svelte";
+  import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { removeFollowing as removeFollowingService } from "$lib/services/neurons.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
@@ -19,7 +20,6 @@
     type NeuronInfo,
   } from "@dfinity/nns";
   import { onMount } from "svelte";
-  import { listKnownNeurons } from "../../services/known-neurons.services";
 
   type Props = {
     neuron: NeuronInfo;
