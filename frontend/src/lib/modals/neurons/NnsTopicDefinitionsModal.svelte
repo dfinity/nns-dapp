@@ -54,7 +54,7 @@
       <div>
         <Collapsible wrapHeight>
           {#snippet header()}
-            <div class="header">
+            <div class="header" data-tid="topic-name">
               {topicInfo.title}
             </div>
           {/snippet}
@@ -79,7 +79,7 @@
       <div>
         <Collapsible wrapHeight>
           {#snippet header()}
-            <div class="header">
+            <div class="header" data-tid="topic-name">
               {topicInfo.title}
             </div>
           {/snippet}

@@ -19,50 +19,22 @@ export class NnsTopicDefinitionsModalPo extends ModalPo {
     return this.root.byTestId("other-topic-group");
   }
 
-  async getRequiredTopicElements(): Promise<PageObjectElement[]> {
-    const groupPo = this.getRequiredTopicGroupPo();
-    return groupPo.querySelectorAll(".topic-definition");
-  }
-
-  async getOtherTopicElements(): Promise<PageObjectElement[]> {
-    const groupPo = this.getOtherTopicGroupPo();
-    return groupPo.querySelectorAll(".topic-definition");
-  }
-
   async getRequiredTopicTitles(): Promise<string[]> {
-    const topicElements = await this.getRequiredTopicElements();
+    const groupPo = this.getRequiredTopicGroupPo();
     return Promise.all(
-      topicElements.map(async (element) => {
-        const titleElement = await element.querySelector(".topic-title");
-        return titleElement?.getText() ?? "";
+      (await groupPo.allByTestId("topic-name")).map(async (element) => {
+        return (await element?.getText()) ?? "";
       })
     );
   }
 
   async getOtherTopicTitles(): Promise<string[]> {
-    const topicElements = await this.getOtherTopicElements();
+    const groupPo = this.getOtherTopicGroupPo();
     return Promise.all(
-      topicElements.map(async (element) => {
-        const titleElement = await element.querySelector(".topic-title");
-        return titleElement?.getText() ?? "";
+      (await groupPo.allByTestId("topic-name")).map(async (element) => {
+        return element?.getText() ?? "";
       })
     );
-  }
-
-  async getTopicByTestId(testId: string): Promise<PageObjectElement | null> {
-    return this.root.byTestId(testId);
-  }
-
-  async getTopicTitle(testId: string): Promise<string> {
-    const topicElement = await this.getTopicByTestId(testId);
-    const titleElement = await topicElement?.querySelector(".topic-title");
-    return titleElement?.getText() ?? "";
-  }
-
-  async getTopicDescription(testId: string): Promise<string> {
-    const topicElement = await this.getTopicByTestId(testId);
-    const descElement = await topicElement?.querySelector(".topic-description");
-    return descElement?.getText() ?? "";
   }
 
   getCloseButtonPo(): ButtonPo {
