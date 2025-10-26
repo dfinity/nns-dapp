@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { getTopicSubtitle, getTopicTitle } from "$lib/utils/neuron.utils";
   import { sortNnsTopics } from "$lib/utils/proposals.utils";
-  import { Modal } from "@dfinity/gix-components";
+  import { Modal, Collapsible } from "@dfinity/gix-components";
   import { Topic } from "@dfinity/nns";
 
   interface Props {
@@ -51,11 +51,21 @@
     </h5>
     {#each requiredTopics as topic}
       {@const topicInfo = getTopicInfo(topic)}
-      <div class="topic-definition" data-tid={`topic-${Topic[topic]}`}>
-        <h6 class="topic-title">{topicInfo.title}</h6>
-        {#if topicInfo.description}
-          <p class="topic-description">{topicInfo.description}</p>
-        {/if}
+      <div>
+        <Collapsible wrapHeight>
+          {#snippet header()}
+            <div class="header">
+              {topicInfo.title}
+            </div>
+          {/snippet}
+          <div class="expandable-content">
+            {#if topicInfo.description}
+              <p class="topic-description">
+                {topicInfo.description}
+              </p>
+            {/if}
+          </div>
+        </Collapsible>
       </div>
     {/each}
   </div>
@@ -66,11 +76,21 @@
     </h5>
     {#each otherTopics as topic}
       {@const topicInfo = getTopicInfo(topic)}
-      <div class="topic-definition" data-tid={`topic-${Topic[topic]}`}>
-        <h6 class="topic-title">{topicInfo.title}</h6>
-        {#if topicInfo.description}
-          <p class="topic-description">{topicInfo.description}</p>
-        {/if}
+      <div>
+        <Collapsible wrapHeight>
+          {#snippet header()}
+            <div class="header">
+              {topicInfo.title}
+            </div>
+          {/snippet}
+          <div class="expandable-content">
+            {#if topicInfo.description}
+              <p class="topic-description">
+                {topicInfo.description}
+              </p>
+            {/if}
+          </div>
+        </Collapsible>
       </div>
     {/each}
   </div>
@@ -99,21 +119,12 @@
     gap: var(--padding);
   }
 
-  .topic-definition {
-    padding: var(--padding);
-    border: 1px solid var(--card-border);
-    border-radius: var(--border-radius);
-    background: var(--card-background);
-  }
-
-  .topic-title {
-    margin: 0 0 var(--padding-0_5x) 0;
-    font-weight: var(--font-weight-bold);
-    color: var(--primary-contrast);
+  .header {
+    padding: var(--padding) 0;
   }
 
   .topic-description {
-    margin: 0;
+    margin: 0 0 var(--padding-2x);
     color: var(--primary-contrast-tint);
     font-size: var(--font-size-small);
     line-height: var(--line-height-standard);
