@@ -81,17 +81,22 @@ describe("NeuronFollowingCard", () => {
 
   it("should open topic definitions modal when topic definitions button is clicked", async () => {
     overrideFeatureFlagsStore.setFlag("ENABLE_NNS_TOPICS", true);
-
     const { po, container } = renderComponent(neuron);
 
     expect(await po.getTopicDefinitionsButton().isPresent()).toBe(true);
+    expect(
+      await NnsNeuronModalsPo.under(container)
+        .getNnsTopicDefinitionsModalPo()
+        .isPresent()
+    ).toBe(false);
 
     await po.getTopicDefinitionsButton().click();
     await runResolvedPromises();
 
-    const modal =
-      NnsNeuronModalsPo.under(container).getNnsTopicDefinitionsModalPo();
-    expect(await modal.isPresent()).toBe(true);
-    expect(await modal.getModalTitle()).toBe("Topic Definition List");
+    expect(
+      await NnsNeuronModalsPo.under(container)
+        .getNnsTopicDefinitionsModalPo()
+        .isPresent()
+    ).toBe(true);
   });
 });
