@@ -45,7 +45,9 @@
     },
     {
       name: "EditFollowNeurons1",
-      title: $i18n.follow_sns_topics.topics_title,
+      title: $ENABLE_NNS_TOPICS
+        ? $i18n.follow_sns_topics.topics_title
+        : $i18n.neurons.follow_neurons_screen,
     },
     {
       name: "EditFollowNeurons2",
@@ -236,7 +238,7 @@
   {/if}
   {#if currentStep?.name === "EditFollowNeurons1"}
     {#if newNeuronId !== undefined && nonNullish(newNeuron)}
-      {#if ENABLE_NNS_TOPICS}
+      {#if $ENABLE_NNS_TOPICS}
         <FollowNnsNeuronsByTopicStepTopics
           neuron={newNeuron}
           bind:selectedTopics
