@@ -19,9 +19,12 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher, onDestroy, onMount, tick } from "svelte";
+  import { ENABLE_NNS_TOPICS } from "$lib/stores/feature-flags.store";
+  import FollowNnsNeuronsByTopicStepNeuron from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepNeuron.svelte";
+  import FollowNnsNeuronsByTopicStepTopics from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepTopics.svelte";
 
   onMount(() => {
     pollAccounts();
@@ -41,8 +44,12 @@
       title: $i18n.neurons.confirm_dissolve_delay,
     },
     {
-      name: "EditFollowNeurons",
-      title: $i18n.neurons.follow_neurons_screen,
+      name: "EditFollowNeurons1",
+      title: $i18n.follow_sns_topics.topics_title,
+    },
+    {
+      name: "EditFollowNeurons2",
+      title: $i18n.follow_sns_topics.neuron_title,
     },
   ];
 
@@ -95,7 +102,11 @@
       isNeuronInvalid: (neuron?: NeuronInfo) => neuron === undefined,
     },
     {
-      stepName: "EditFollowNeurons",
+      stepName: "EditFollowNeurons1",
+      isNeuronInvalid: (neuron?: NeuronInfo) => neuron === undefined,
+    },
+    {
+      stepName: "EditFollowNeurons2",
       isNeuronInvalid: (neuron?: NeuronInfo) => neuron === undefined,
     },
   ];
@@ -160,8 +171,10 @@
   };
 
   const goEditFollowers = () => {
-    modal.set(wizardStepIndex({ name: "EditFollowNeurons", steps }));
+    modal.set(wizardStepIndex({ name: "EditFollowNeurons1", steps }));
   };
+
+  let selectedTopics: Topic[] = [];
 </script>
 
 <WizardModal
@@ -170,7 +183,7 @@
   bind:currentStep
   bind:this={modal}
   onClose={() => dispatcher("nnsClose")}
-  --modal-content-overflow-y={currentStep?.name === "EditFollowNeurons"
+  --modal-content-overflow-y={currentStep?.name === "EditFollowNeurons1"
     ? "scroll"
     : "auto"}
 >
@@ -221,9 +234,28 @@
       />
     {/if}
   {/if}
-  {#if currentStep?.name === "EditFollowNeurons"}
-    {#if newNeuronId !== undefined}
-      <EditFollowNeurons neuronId={newNeuronId} />
+  {#if currentStep?.name === "EditFollowNeurons1"}
+    {#if newNeuronId !== undefined && nonNullish(newNeuron)}
+      {#if ENABLE_NNS_TOPICS}
+        <FollowNnsNeuronsByTopicStepTopics
+          neuron={newNeuron}
+          bind:selectedTopics
+          onClose={close}
+          openNextStep={goNext}
+        />
+      {:else}
+        <EditFollowNeurons neuronId={newNeuronId} />
+      {/if}
+    {/if}
+  {/if}
+  {#if currentStep?.name === "EditFollowNeurons2"}
+    {#if newNeuronId !== undefined && nonNullish(newNeuron)}
+      <FollowNnsNeuronsByTopicStepNeuron
+        neuron={newNeuron}
+        topics={selectedTopics}
+        bind:selectedTopics
+        openPrevStep={modal.back}
+      />
     {/if}
   {/if}
 </WizardModal>

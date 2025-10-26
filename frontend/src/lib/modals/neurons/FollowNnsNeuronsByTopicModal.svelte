@@ -2,7 +2,6 @@
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
   import FollowNnsNeuronsByTopicStepNeuron from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepNeuron.svelte";
   import FollowNnsNeuronsByTopicStepTopics from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepTopics.svelte";
-  import { listKnownNeurons } from "$lib/services/known-neurons.services";
   import { i18n } from "$lib/stores/i18n";
   import {
     WizardModal,
@@ -11,7 +10,6 @@
     type WizardSteps,
   } from "@dfinity/gix-components";
   import { Topic, type NeuronId } from "@dfinity/nns";
-  import { onMount } from "svelte";
 
   type Props = {
     neuronId: NeuronId;

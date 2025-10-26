@@ -6,18 +6,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { FollowNnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowNnsNeuronsByTopicModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { toastsStore } from "@dfinity/gix-components";
 import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
-import { get } from "svelte/store";
-
-const expectToastError = (contained: string) =>
-  expect(get(toastsStore)).toMatchObject([
-    {
-      level: "error",
-      text: expect.stringContaining(contained),
-    },
-  ]);
-const expectNoToastError = () => expect(get(toastsStore)).toMatchObject([]);
 
 describe("FollowNnsNeuronsByTopicModal", () => {
   const neuronId = 123456789n;

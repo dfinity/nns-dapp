@@ -1,4 +1,5 @@
 <script lang="ts">
+  import KnownNeuronFollowByTopicsItem from "$lib/components/neurons/KnownNeuronFollowByTopicsItem.svelte";
   import InputWithError from "$lib/components/ui/InputWithError.svelte";
   import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
   import { listKnownNeurons } from "$lib/services/known-neurons.services";
@@ -205,6 +206,7 @@
       <ul>
         {#each notFollowingKnownNeurons as knownNeuron}
           <li data-tid="known-neuron-item">
+            {knownNeuron.name}
             <!-- <KnownNeuronFollowByTopicsItem
               on:nnsUpdated={close}
               {knownNeuron}
