@@ -33,9 +33,6 @@
     },
   ];
 
-  // Load KnownNeurons which are used in the FollowNnsTopicSections
-  onMount(listKnownNeurons);
-
   const neuron = $derived(
     $definedNeuronsStore.find(({ neuronId: id }) => id === neuronId)
   )!;

@@ -211,4 +211,17 @@ describe("FollowNnsNeuronsByTopicStepTopics", () => {
       neuronId,
     });
   });
+
+  it("should fetch known neurons", async () => {
+    const queryKnownNeuronsSpy = vi
+      .spyOn(api, "queryKnownNeurons")
+      .mockResolvedValue([]);
+
+    expect(queryKnownNeuronsSpy).toHaveBeenCalledTimes(0);
+    renderComponent({
+      neuron: testNeuron,
+    });
+    await runResolvedPromises();
+    expect(queryKnownNeuronsSpy).toHaveBeenCalledTimes(2);
+  });
 });

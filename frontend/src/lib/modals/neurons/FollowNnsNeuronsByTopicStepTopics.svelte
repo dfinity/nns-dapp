@@ -4,12 +4,10 @@
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import FollowNnsNeuronsByTopicItem from "$lib/modals/neurons/FollowNnsNeuronsByTopicItem.svelte";
   import { removeFollowing as removeFollowingService } from "$lib/services/neurons.services";
-  import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsShow } from "$lib/stores/toasts.store";
   import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
-  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
   import { sortNnsTopics } from "$lib/utils/proposals.utils";
@@ -20,6 +18,8 @@
     type NeuronId,
     type NeuronInfo,
   } from "@dfinity/nns";
+  import { onMount } from "svelte";
+  import { listKnownNeurons } from "../../services/known-neurons.services";
 
   type Props = {
     neuron: NeuronInfo;
@@ -88,6 +88,10 @@
       stopBusy("remove-followee");
     }
   };
+
+  // Load KnownNeurons here to display their names in FollowNnsNeuronsByTopicItem
+  // and on the next step.
+  onMount(listKnownNeurons);
 </script>
 
 <TestIdWrapper testId="follow-nns-neurons-by-topic-step-topics-component">
