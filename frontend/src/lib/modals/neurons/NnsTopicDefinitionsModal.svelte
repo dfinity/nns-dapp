@@ -1,0 +1,125 @@
+<script lang="ts">
+  import Separator from "$lib/components/ui/Separator.svelte";
+  import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { getTopicSubtitle, getTopicTitle } from "$lib/utils/neuron.utils";
+  import { sortNnsTopics } from "$lib/utils/proposals.utils";
+  import { Modal } from "@dfinity/gix-components";
+  import { Topic } from "@dfinity/nns";
+
+  interface Props {
+    onClose: () => void;
+  }
+
+  let { onClose }: Props = $props();
+
+  const requiredTopics = [
+    Topic.Governance,
+    Topic.SnsAndCommunityFund,
+    Topic.Unspecified,
+  ];
+  const allTopics = Object.values(Topic).filter(
+    (topic): topic is Topic => typeof topic === "number"
+  );
+  const sortedTopics = sortNnsTopics({ topics: allTopics, i18n: $i18n });
+  const otherTopics = sortedTopics.filter(
+    (topic) => !requiredTopics.includes(topic)
+  );
+
+  const getTopicInfo = (topic: Topic) => ({
+    title: getTopicTitle({ topic, i18n: $i18n }),
+    description: getTopicSubtitle({ topic, i18n: $i18n }),
+  });
+</script>
+
+<Modal testId="nns-topic-definitions-modal-component" {onClose}>
+  {#snippet title()}Topic Definition List{/snippet}
+
+  <p class="description"
+    >Proposal types are grouped into topics defined by the NNS. You can review
+    the topic definitions here.</p
+  >
+
+  <Separator spacing="medium" />
+
+  <div class="topic-group" data-tid="required-topic-group">
+    <h5 class="headline description">
+      {$i18n.follow_neurons.required_settings}
+      <TooltipIcon
+        >{$i18n.follow_neurons.required_settings_description}</TooltipIcon
+      >
+    </h5>
+    {#each requiredTopics as topic}
+      {@const topicInfo = getTopicInfo(topic)}
+      <div class="topic-definition" data-tid={`topic-${Topic[topic]}`}>
+        <h6 class="topic-title">{topicInfo.title}</h6>
+        {#if topicInfo.description}
+          <p class="topic-description">{topicInfo.description}</p>
+        {/if}
+      </div>
+    {/each}
+  </div>
+
+  <div class="topic-group" data-tid="other-topic-group">
+    <h5 class="headline description">
+      {$i18n.follow_neurons.advanced_settings}
+    </h5>
+    {#each otherTopics as topic}
+      {@const topicInfo = getTopicInfo(topic)}
+      <div class="topic-definition" data-tid={`topic-${Topic[topic]}`}>
+        <h6 class="topic-title">{topicInfo.title}</h6>
+        {#if topicInfo.description}
+          <p class="topic-description">{topicInfo.description}</p>
+        {/if}
+      </div>
+    {/each}
+  </div>
+
+  <div class="toolbar">
+    <button
+      class="secondary"
+      type="button"
+      data-tid="close-button"
+      onclick={onClose}
+    >
+      {$i18n.core.close}
+    </button>
+  </div>
+</Modal>
+
+<style lang="scss">
+  .headline {
+    margin: 0;
+  }
+
+  .topic-group {
+    margin-bottom: var(--padding-3x);
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
+
+  .topic-definition {
+    padding: var(--padding);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius);
+    background: var(--card-background);
+  }
+
+  .topic-title {
+    margin: 0 0 var(--padding-0_5x) 0;
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-contrast);
+  }
+
+  .topic-description {
+    margin: 0;
+    color: var(--primary-contrast-tint);
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-standard);
+  }
+
+  .description {
+    margin-bottom: var(--padding);
+  }
+</style>
