@@ -15,6 +15,7 @@
   import NnsAutoStakeMaturityModal from "$lib/modals/neurons/NnsAutoStakeMaturityModal.svelte";
   import NnsDisburseMaturityModal from "$lib/modals/neurons/NnsDisburseMaturityModal.svelte";
   import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
+  import NnsTopicDefinitionsModal from "$lib/modals/neurons/NnsTopicDefinitionsModal.svelte";
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
   import UpdateVotingPowerRefreshedModal from "$lib/modals/neurons/UpdateVotingPowerRefreshedModal.svelte";
@@ -136,6 +137,10 @@
         neurons={[neuron]}
         on:nnsClose={close}
       />
+    {/if}
+
+    {#if type === "topic-definitions"}
+      <NnsTopicDefinitionsModal onClose={close} />
     {/if}
   {/if}
 

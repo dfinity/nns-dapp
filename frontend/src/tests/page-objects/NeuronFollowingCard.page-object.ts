@@ -25,4 +25,8 @@ export class NeuronFollowingCardPo extends BasePageObject {
   async getFolloweePos(): Promise<FolloweePo[]> {
     return FolloweePo.allUnder(this.root);
   }
+
+  getTopicDefinitionsButton(): PageObjectElement {
+    return this.root.byTestId("topic-definitions-button");
+  }
 }
