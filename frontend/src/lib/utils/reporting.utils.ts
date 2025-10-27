@@ -13,6 +13,7 @@ import {
 } from "$lib/utils/date.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mapIcpTransactionToReport } from "$lib/utils/icp-transactions.utils";
+import { mapIcrcTransactionToReport } from "$lib/utils/icrc-transactions.utils";
 import {
   formatMaturity,
   getStateInfo,
@@ -49,7 +50,6 @@ import {
   secondsToDuration,
   type Token,
 } from "@dfinity/utils";
-import { mapIcrcTransactionToReport } from "./icrc-transactions.utils";
 
 type Metadata = {
   label: string;
