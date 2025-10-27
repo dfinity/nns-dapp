@@ -35,9 +35,7 @@
 <Modal testId="nns-topic-definitions-modal-component" {onClose}>
   {#snippet title()}Topic Definition List{/snippet}
 
-  <p class="description"
-    >Proposal types are grouped into topics defined by the NNS. You can review
-    the topic definitions here.</p
+  <p class="description">{$i18n.follow_neurons.topic_definitions_description}</p
   >
 
   <Separator spacing="medium" />

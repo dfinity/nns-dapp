@@ -100,7 +100,7 @@
       <div class="followees">
         {#if topicFollowees.length > 0}
           <h5 class="followee-header"
-            >{$i18n.follow_sns_topics.topics_following}</h5
+            >{$i18n.follow_neurons.topics_following}</h5
           >
           <ul class="followee-list">
             {#each topicFollowees as neuronId (neuronId)}

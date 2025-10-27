@@ -23,11 +23,11 @@
   const steps: WizardSteps = [
     {
       name: STEP_TOPICS,
-      title: $i18n.follow_sns_topics.topics_title,
+      title: $i18n.follow_neurons.topics_title,
     },
     {
       name: STEP_NEURON,
-      title: $i18n.follow_sns_topics.neuron_title,
+      title: $i18n.follow_neurons.neuron_title,
     },
   ];
 

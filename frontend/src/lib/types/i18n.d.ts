@@ -555,6 +555,10 @@ interface I18nFollow_neurons {
   required_settings: string;
   required_settings_description: string;
   advanced_settings: string;
+  topics_title: string;
+  neuron_title: string;
+  topics_following: string;
+  topic_definitions_description: string;
 }
 
 interface I18nFollow_neurons_topic_subtitles {
