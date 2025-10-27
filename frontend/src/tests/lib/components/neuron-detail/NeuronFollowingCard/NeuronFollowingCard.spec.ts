@@ -5,7 +5,6 @@ import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/Neuron
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NeuronFollowingCardPo } from "$tests/page-objects/NeuronFollowingCard.page-object";
-import { NnsNeuronModalsPo } from "$tests/page-objects/NnsNeuronModals.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -39,10 +38,7 @@ describe("NeuronFollowingCard", () => {
         testComponent: NeuronFollowingCard,
       },
     });
-    return {
-      po: NeuronFollowingCardPo.under(new JestPageObjectElement(container)),
-      container: new JestPageObjectElement(container),
-    };
+    return NeuronFollowingCardPo.under(new JestPageObjectElement(container));
   };
 
   beforeEach(() => {
@@ -51,7 +47,7 @@ describe("NeuronFollowingCard", () => {
   });
 
   it("should render edit button", async () => {
-    const { po } = renderComponent(neuron);
+    const po = renderComponent(neuron);
 
     expect(await po.getFollowNeuronsButtonPo().isPresent()).toEqual(true);
     expect(
@@ -60,7 +56,7 @@ describe("NeuronFollowingCard", () => {
   });
 
   it("should render followees", async () => {
-    const { po } = renderComponent(neuron);
+    const po = renderComponent(neuron);
     const followeesPos = await po.getFolloweePos();
     const ids = await Promise.all(followeesPos.map((po) => po.getId()));
     const expectedIds = followees.map((id) => `followee-${id.toString()}`);
@@ -68,7 +64,7 @@ describe("NeuronFollowingCard", () => {
   });
 
   it("should render no frame if no followees available", async () => {
-    const { po } = renderComponent(mockNeuron);
+    const po = renderComponent(mockNeuron);
 
     expect(await po.getFolloweesList().isPresent()).toBe(false);
   });
@@ -81,11 +77,12 @@ describe("NeuronFollowingCard", () => {
 
   it("should open topic definitions modal when topic definitions button is clicked", async () => {
     overrideFeatureFlagsStore.setFlag("ENABLE_NNS_TOPICS", true);
-    const { po, container } = renderComponent(neuron);
+    const po = renderComponent(neuron);
 
     expect(await po.getTopicDefinitionsButton().isPresent()).toBe(true);
     expect(
-      await NnsNeuronModalsPo.under(container)
+      await po
+        .getNnsNeuronModalsPo()
         .getNnsTopicDefinitionsModalPo()
         .isPresent()
     ).toBe(false);
@@ -94,7 +91,8 @@ describe("NeuronFollowingCard", () => {
     await runResolvedPromises();
 
     expect(
-      await NnsNeuronModalsPo.under(container)
+      await po
+        .getNnsNeuronModalsPo()
         .getNnsTopicDefinitionsModalPo()
         .isPresent()
     ).toBe(true);

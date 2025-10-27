@@ -56,7 +56,6 @@ describe("FollowNnsNeuronsByTopicItem", () => {
       removeFollowing: vi.fn(),
     });
 
-    // First expand the collapsible to see the description
     await po.clickExpandButton();
     expect(await po.getTopicDescription()).toBeTruthy();
   });
