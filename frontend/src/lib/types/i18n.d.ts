@@ -174,6 +174,12 @@ interface I18nNavigation {
   address_book: string;
 }
 
+interface I18nAddress_book {
+  empty_title: string;
+  empty_description: string;
+  add_address: string;
+}
+
 interface I18nAlfred {
   no_results: string;
   home_title: string;
@@ -1722,6 +1728,7 @@ interface I18n {
   error: I18nError;
   warning: I18nWarning;
   navigation: I18nNavigation;
+  address_book: I18nAddress_book;
   alfred: I18nAlfred;
   header: I18nHeader;
   reporting: I18nReporting;
