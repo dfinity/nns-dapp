@@ -1123,7 +1123,7 @@ describe("icrc-transaction utils", () => {
           token: ICPToken,
         })
       );
-      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.timestampNanos).toBe(defaultTimestampNanos);
       expect(result.transactionDirection).toBe("debit");
     });
 
@@ -1153,7 +1153,7 @@ describe("icrc-transaction utils", () => {
           token: ICPToken,
         })
       );
-      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.timestampNanos).toBe(defaultTimestampNanos);
       expect(result.transactionDirection).toBe("credit");
     });
 
@@ -1185,7 +1185,7 @@ describe("icrc-transaction utils", () => {
           token: ICPToken,
         })
       );
-      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.timestampNanos).toBe(defaultTimestampNanos);
       expect(result.transactionDirection).toBe("credit");
     });
 
@@ -1215,7 +1215,7 @@ describe("icrc-transaction utils", () => {
           token: ICPToken,
         })
       );
-      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.timestampNanos).toBe(defaultTimestampNanos);
       expect(result.transactionDirection).toBe("debit");
     });
 
@@ -1243,7 +1243,7 @@ describe("icrc-transaction utils", () => {
           token: ICPToken,
         })
       );
-      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.timestampNanos).toBe(defaultTimestampNanos);
       expect(result.transactionDirection).toBe("debit");
     });
 
@@ -1271,7 +1271,7 @@ describe("icrc-transaction utils", () => {
           token: ICPToken,
         })
       );
-      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.timestampNanos).toBe(defaultTimestampNanos);
       expect(result.transactionDirection).toBe("credit");
     });
 
@@ -1283,7 +1283,7 @@ describe("icrc-transaction utils", () => {
           from: mainAccount,
           to: subAccount,
           amount: 100_000_000n,
-          fee: undefined,
+          fee: 0n,
         }).transaction,
       };
 
@@ -1301,7 +1301,7 @@ describe("icrc-transaction utils", () => {
           token: ICPToken,
         })
       );
-      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.timestampNanos).toBe(defaultTimestampNanos);
       expect(result.transactionDirection).toBe("debit");
     });
   });
