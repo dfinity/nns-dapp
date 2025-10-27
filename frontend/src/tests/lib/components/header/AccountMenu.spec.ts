@@ -1,4 +1,5 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
+import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
 import {
   mockLinkClickEvent,
   resetNavigationCallbacks,
@@ -8,6 +9,7 @@ import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { render } from "@testing-library/svelte";
+import { get } from "svelte/store";
 
 describe("AccountMenu", () => {
   const renderComponent = () => {
@@ -183,6 +185,19 @@ describe("AccountMenu", () => {
 
         await vi.waitFor(async () =>
           expect(await accountMenuPo.isOpen()).toBe(false)
+        );
+      });
+    });
+
+    describe("address book feature flag", () => {
+      it("should display Address Book link when feature flag is enabled", async () => {
+        const { accountMenuPo } = renderComponent();
+        await accountMenuPo.openMenu();
+
+        // Feature flag is enabled by default in tests (see vitest.setup.ts)
+        expect(get(ENABLE_ADDRESS_BOOK)).toBe(true);
+        expect(await accountMenuPo.getLinkToAddressBookPo().isPresent()).toBe(
+          true
         );
       });
     });

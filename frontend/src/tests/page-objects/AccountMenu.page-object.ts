@@ -52,6 +52,13 @@ export class AccountMenuPo extends BasePageObject {
     });
   }
 
+  getLinkToAddressBookPo(): LinkPo {
+    return LinkPo.under({
+      element: this.root,
+      testId: "address-book",
+    });
+  }
+
   getManangeIILinkPo(): LinkPo {
     return LinkPo.under({
       element: this.root,
