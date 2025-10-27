@@ -5,10 +5,13 @@
   import NnsStakeNeuron from "$lib/components/neurons/NnsStakeNeuron.svelte";
   import SetNnsDissolveDelay from "$lib/components/neurons/SetNnsDissolveDelay.svelte";
   import { definedNeuronsStore } from "$lib/derived/neurons.derived";
+  import FollowNnsNeuronsByTopicStepNeuron from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepNeuron.svelte";
+  import FollowNnsNeuronsByTopicStepTopics from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepTopics.svelte";
   import {
     cancelPollAccounts,
     pollAccounts,
   } from "$lib/services/icp-accounts.services";
+  import { ENABLE_NNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
@@ -22,9 +25,6 @@
   import type { NeuronId, NeuronInfo, Topic } from "@dfinity/nns";
   import { nonNullish } from "@dfinity/utils";
   import { createEventDispatcher, onDestroy, onMount, tick } from "svelte";
-  import { ENABLE_NNS_TOPICS } from "$lib/stores/feature-flags.store";
-  import FollowNnsNeuronsByTopicStepNeuron from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepNeuron.svelte";
-  import FollowNnsNeuronsByTopicStepTopics from "$lib/modals/neurons/FollowNnsNeuronsByTopicStepTopics.svelte";
 
   onMount(() => {
     pollAccounts();
