@@ -11,6 +11,24 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 139084
+
+### Application
+
+#### Added
+
+- Added explanation for disabled auto-stake control on hotkey-managed neurons
+- Support NNS function 53 for `PauseCanisterMigrations`.
+- Support NNS function 54 for `UnpauseCanisterMigrations`.
+- Support NNS function 55 for `SetSubnetOperationalLevel`.
+
+#### Changed
+
+- Improved SNS data loading speed through parallel processing
+- Updated Import Tokens link to docs.
+
+### Operations
+
 ## Proposal 138994
 
 ### Application
