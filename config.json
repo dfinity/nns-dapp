@@ -100,7 +100,7 @@
           "DISABLE_IMPORT_TOKEN_VALIDATION_FOR_TESTING": false,
           "ENABLE_DISBURSE_MATURITY": true,
           "ENABLE_SNS_TOPICS": true,
-          "ENABLE_NNS_TOPICS": false,
+          "ENABLE_NNS_TOPICS": true,
           "ENABLE_LAUNCHPAD_REDESIGN": true,
           "ENABLE_APY_PORTFOLIO": true,
           "ENABLE_NEW_TABLES": true
