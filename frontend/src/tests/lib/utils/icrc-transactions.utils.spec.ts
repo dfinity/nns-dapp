@@ -1,6 +1,9 @@
 import { NANO_SECONDS_IN_MILLISECOND } from "$lib/constants/constants";
 import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.store";
-import type { IcrcTransactionData } from "$lib/types/transaction";
+import {
+  AccountTransactionType,
+  type IcrcTransactionData,
+} from "$lib/types/transaction";
 import {
   getOldestTxIdFromStore,
   getSortedTransactionsFromStore,
@@ -9,6 +12,7 @@ import {
   mapCkbtcTransaction,
   mapCkbtcTransactions,
   mapIcrcTransaction,
+  mapIcrcTransactionToReport,
   type MapIcrcTransactionType,
 } from "$lib/utils/icrc-transactions.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
@@ -1071,6 +1075,234 @@ describe("icrc-transaction utils", () => {
           account: mockSnsSubAccount,
         })
       ).toBe(true);
+    });
+  });
+
+  describe("mapIcrcTransactionToReport", () => {
+    const defaultTimestamp = new Date("2023-01-01T00:00:00.000Z");
+    const defaultTimestampNanos = BigInt(
+      defaultTimestamp.getTime() * 1_000_000
+    );
+    const defaultTransactionParams = {
+      id: 112n,
+      from: mainAccount,
+      to: subAccount,
+      amount: 100_000_000n,
+      fee: 10_000n,
+      timestamp: defaultTimestamp,
+    };
+
+    const defaultParams = {
+      account: mockSnsMainAccount,
+      token: ICPToken,
+    };
+
+    it("maps sent transaction correctly", () => {
+      const transaction = {
+        id: 112n,
+        transaction: createIcrcTransactionWithId({
+          ...defaultTransactionParams,
+          from: mainAccount,
+          to: subAccount,
+          amount: 200_000_000n,
+          fee: 10_000n,
+        }).transaction,
+      };
+
+      const result = mapIcrcTransactionToReport({
+        ...defaultParams,
+        transaction,
+      });
+
+      expect(result.type).toBe(AccountTransactionType.Send);
+      expect(result.to).toBe(mockSnsSubAccount.identifier);
+      expect(result.from).toBe(mockSnsMainAccount.identifier);
+      expect(result.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: 200_010_000n, // amount + fee
+          token: ICPToken,
+        })
+      );
+      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.transactionDirection).toBe("debit");
+    });
+
+    it("maps received transaction correctly", () => {
+      const transaction = {
+        id: 113n,
+        transaction: createIcrcTransactionWithId({
+          ...defaultTransactionParams,
+          from: subAccount,
+          to: mainAccount,
+          amount: 150_000_000n,
+          fee: 10_000n,
+        }).transaction,
+      };
+
+      const result = mapIcrcTransactionToReport({
+        ...defaultParams,
+        transaction,
+      });
+
+      expect(result.type).toBe(AccountTransactionType.Receive);
+      expect(result.to).toBe(mockSnsMainAccount.identifier);
+      expect(result.from).toBe(mockSnsSubAccount.identifier);
+      expect(result.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: 150_000_000n, // no fee for received transactions
+          token: ICPToken,
+        })
+      );
+      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.transactionDirection).toBe("credit");
+    });
+
+    it("maps self transaction correctly", () => {
+      const selfTx = createIcrcTransactionWithId({
+        ...defaultTransactionParams,
+        from: mainAccount,
+        to: mainAccount,
+        amount: 300_000_000n,
+        fee: 10_000n,
+      });
+
+      const transaction = {
+        id: 114n,
+        transaction: selfTx.transaction,
+      };
+
+      const result = mapIcrcTransactionToReport({
+        ...defaultParams,
+        transaction,
+      });
+
+      expect(result.type).toBe(AccountTransactionType.Receive);
+      expect(result.to).toBe(mockSnsMainAccount.identifier);
+      expect(result.from).toBe(mockSnsMainAccount.identifier);
+      expect(result.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: 300_000_000n, // no fee for self transactions (treated as receive)
+          token: ICPToken,
+        })
+      );
+      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.transactionDirection).toBe("credit");
+    });
+
+    it("maps approve transaction correctly", () => {
+      const transaction = {
+        id: 115n,
+        transaction: createApproveTransaction({
+          timestamp: defaultTimestampNanos,
+          from: mainAccount,
+          amount: 100_000_000n,
+          fee: 10_000n,
+          spender: subAccount,
+        }),
+      };
+
+      const result = mapIcrcTransactionToReport({
+        ...defaultParams,
+        transaction,
+      });
+
+      expect(result.type).toBe(AccountTransactionType.Approve);
+      expect(result.to).toBeUndefined();
+      expect(result.from).toBe(mockSnsMainAccount.identifier);
+      expect(result.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: 10_000n, // only fee for approve transactions (amount is 0)
+          token: ICPToken,
+        })
+      );
+      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.transactionDirection).toBe("debit");
+    });
+
+    it("maps burn transaction correctly", () => {
+      const transaction = {
+        id: 116n,
+        transaction: createBurnTransaction({
+          timestamp: defaultTimestampNanos,
+          from: mainAccount,
+          amount: 50_000_000n,
+        }),
+      };
+
+      const result = mapIcrcTransactionToReport({
+        ...defaultParams,
+        transaction,
+      });
+
+      expect(result.type).toBe(AccountTransactionType.Burn);
+      expect(result.to).toBeUndefined();
+      expect(result.from).toBe(mockSnsMainAccount.identifier);
+      expect(result.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: 50_000_000n,
+          token: ICPToken,
+        })
+      );
+      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.transactionDirection).toBe("debit");
+    });
+
+    it("maps mint transaction correctly", () => {
+      const transaction = {
+        id: 117n,
+        transaction: createMintTransaction({
+          timestamp: defaultTimestampNanos,
+          to: mainAccount,
+          amount: 75_000_000n,
+        }),
+      };
+
+      const result = mapIcrcTransactionToReport({
+        ...defaultParams,
+        transaction,
+      });
+
+      expect(result.type).toBe(AccountTransactionType.Mint);
+      expect(result.to).toBe(mockSnsMainAccount.identifier);
+      expect(result.from).toBeUndefined();
+      expect(result.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: 75_000_000n,
+          token: ICPToken,
+        })
+      );
+      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.transactionDirection).toBe("credit");
+    });
+
+    it("handles transaction without fee correctly", () => {
+      const transaction = {
+        id: 118n,
+        transaction: createIcrcTransactionWithId({
+          ...defaultTransactionParams,
+          from: mainAccount,
+          to: subAccount,
+          amount: 100_000_000n,
+          fee: undefined,
+        }).transaction,
+      };
+
+      const result = mapIcrcTransactionToReport({
+        ...defaultParams,
+        transaction,
+      });
+
+      expect(result.type).toBe(AccountTransactionType.Send);
+      expect(result.to).toBe(mockSnsSubAccount.identifier);
+      expect(result.from).toBe(mockSnsMainAccount.identifier);
+      expect(result.tokenAmount).toEqual(
+        TokenAmountV2.fromUlps({
+          amount: 100_000_000n, // no fee added
+          token: ICPToken,
+        })
+      );
+      expect(result.timestampNanos).toBe(defaultTimestamp);
+      expect(result.transactionDirection).toBe("debit");
     });
   });
 });
