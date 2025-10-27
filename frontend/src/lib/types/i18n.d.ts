@@ -537,6 +537,7 @@ interface I18nNew_followee {
   label: string;
   follow_neuron: string;
   options_title: string;
+  known_neurons_title: string;
   follow: string;
   unfollow: string;
   followee_incorrect_id_format: string;
