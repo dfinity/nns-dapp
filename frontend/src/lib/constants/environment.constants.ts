@@ -26,6 +26,7 @@ export interface FeatureFlags<T> {
   ENABLE_LAUNCHPAD_REDESIGN: T;
   ENABLE_APY_PORTFOLIO: T;
   ENABLE_NEW_TABLES: T;
+  ENABLE_ADDRESS_BOOK: T;
 }
 export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_CKTESTBTC: false,
@@ -39,6 +40,7 @@ export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_LAUNCHPAD_REDESIGN: false,
   ENABLE_APY_PORTFOLIO: true,
   ENABLE_NEW_TABLES: false,
+  ENABLE_ADDRESS_BOOK: false,
 };
 
 export type FeatureKey = keyof FeatureFlags<boolean>;
