@@ -237,7 +237,7 @@
     {/if}
   {/if}
   {#if currentStep?.name === "EditFollowNeurons1"}
-    {#if newNeuronId !== undefined && nonNullish(newNeuron)}
+    {#if nonNullish(newNeuronId) && nonNullish(newNeuron)}
       {#if $ENABLE_NNS_TOPICS}
         <FollowNnsNeuronsByTopicStepTopics
           neuron={newNeuron}
@@ -251,7 +251,7 @@
     {/if}
   {/if}
   {#if currentStep?.name === "EditFollowNeurons2"}
-    {#if newNeuronId !== undefined && nonNullish(newNeuron)}
+    {#if nonNullish(newNeuronId) && nonNullish(newNeuron)}
       <FollowNnsNeuronsByTopicStepNeuron
         neuron={newNeuron}
         topics={selectedTopics}
