@@ -33,7 +33,7 @@
 </script>
 
 <Modal testId="nns-topic-definitions-modal-component" {onClose}>
-  {#snippet title()}Topic Definition List{/snippet}
+  {#snippet title()}{$i18n.follow_neurons.topic_definitions_title}{/snippet}
 
   <p class="description">{$i18n.follow_neurons.topic_definitions_description}</p
   >

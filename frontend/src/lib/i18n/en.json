@@ -538,7 +538,8 @@
     "topics_title": "Delegate Voting",
     "neuron_title": "Enter Neuron to Follow",
     "topics_following": "CURRENT DELEGATES",
-    "topic_definitions_description": "Proposal types are grouped into topics defined by the NNS. You can review the topic definitions here."
+    "topic_definitions_description": "Proposal types are grouped into topics defined by the NNS. You can review the topic definitions here.",
+    "topic_definitions_title": "Topic Definition List"
   },
   "follow_neurons_topic_subtitles": {
     "Unspecified": "Follow neurons on all proposal topics except the governance topic, and SNS & Neurons' Fund.",
