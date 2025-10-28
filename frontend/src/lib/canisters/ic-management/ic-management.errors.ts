@@ -11,7 +11,7 @@ export function mapError(error: Error | unknown): Error | unknown {
       ? error.message
           .split("\n")
           .map((l) => l.trim().toLowerCase())
-          .find((l) => l.startsWith('"error code"'))
+          .find((l) => l.startsWith("error code"))
       : "";
 
   if (statusLine?.includes("ic0512")) {

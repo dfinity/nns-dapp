@@ -22,6 +22,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Linked canister page status
+
 #### Security
 
 #### Not Published
