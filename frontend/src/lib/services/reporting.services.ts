@@ -9,6 +9,7 @@ import type {
   TransactionsDateRange,
 } from "$lib/types/reporting";
 import { neuronStake } from "$lib/utils/neuron.utils";
+import { mapPool } from "$lib/utils/reporting.utils";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import type {
@@ -324,12 +325,11 @@ export const getAllIcrcTransactionsForCkTokens = async ({
   account: IcrcAccount;
   range?: TransactionsDateRange;
 }) => {
-  const ckTokens = [];
-  for (const {
-    ledgerCanisterId,
-    indexCanisterId,
-  } of ALL_CK_TOKENS_CANISTER_IDS) {
-    try {
+  const concurrency = 3;
+
+  const promises = await mapPool(
+    ALL_CK_TOKENS_CANISTER_IDS,
+    async ({ ledgerCanisterId, indexCanisterId }) => {
       const token = await queryIcrcToken({
         identity,
         canisterId: ledgerCanisterId,
@@ -344,14 +344,24 @@ export const getAllIcrcTransactionsForCkTokens = async ({
           range,
         });
 
-      ckTokens.push({
-        token,
-        transactions,
-        balance,
-      });
-    } catch (error) {
-      console.log(error);
+      return { token, transactions, balance };
+    },
+    concurrency
+  );
+
+  const ckTokens = [];
+  for (const promise of promises) {
+    if (promise.status === "fulfilled") {
+      ckTokens.push(promise.value);
+    } else {
+      // Optionally log or handle errors further, e.g., collect for UI warnings
+      console.warn(
+        "Skipped token due to error:",
+        promise.item.ledgerCanisterId,
+        promise.reason
+      );
     }
   }
+
   return ckTokens;
 };
