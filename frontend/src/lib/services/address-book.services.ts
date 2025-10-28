@@ -11,6 +11,7 @@ import type {
   AddressBook,
   NamedAddress,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
+import { FORCE_CALL_STRATEGY } from "$lib/constants/mockable.constants";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { addressBookStore } from "$lib/stores/address-book.store";
@@ -28,7 +29,7 @@ export const loadAddressBook = async ({
 } = {}) => {
   return queryAndUpdate<AddressBook, unknown>({
     request: (options) => getAddressBook(options),
-    strategy: "query_and_update",
+    strategy: FORCE_CALL_STRATEGY,
     onLoad: ({ response: { named_addresses: namedAddresses }, certified }) => {
       addressBookStore.set({
         namedAddresses,
