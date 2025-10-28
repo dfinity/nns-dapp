@@ -558,6 +558,7 @@ interface I18nFollow_neurons {
   topics_title: string;
   neuron_title: string;
   topics_following: string;
+  topic_definitions_description: string;
 }
 
 interface I18nFollow_neurons_topic_subtitles {
