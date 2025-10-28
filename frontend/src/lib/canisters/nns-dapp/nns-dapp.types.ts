@@ -76,6 +76,30 @@ export interface FavProjects {
   fav_projects: Array<FavProject>;
 }
 
+export type AddressType = { Icp: string } | { Icrc1: string };
+
+export interface NamedAddress {
+  address: AddressType;
+  name: string;
+}
+
+export interface AddressBook {
+  named_addresses: Array<NamedAddress>;
+}
+
+export type SetAddressBookResponse =
+  | { Ok: null }
+  | { AccountNotFound: null }
+  | { TooManyNamedAddresses: { limit: number } }
+  | { InvalidIcpAddress: { error: string } }
+  | { AddressNameTooLong: { max_length: number } }
+  | { InvalidIcrc1Address: { error: string } }
+  | { DuplicateAddressName: { name: string } };
+
+export type GetAddressBookResponse =
+  | { Ok: AddressBook }
+  | { AccountNotFound: null };
+
 export interface RegisterHardwareWalletRequest {
   principal: Principal;
   name: string;
@@ -147,6 +171,7 @@ export default interface _SERVICE {
   get_canisters: () => Promise<Array<CanisterDetails>>;
   get_imported_tokens: () => Promise<GetImportedTokensResponse>;
   get_fav_projects: () => Promise<GetFavProjectsResponse>;
+  get_address_book: () => Promise<GetAddressBookResponse>;
   get_proposal_payload: (arg_0: bigint) => Promise<GetProposalPayloadResponse>;
   get_stats: () => Promise<Stats>;
   http_request: (arg_0: HttpRequest) => Promise<HttpResponse>;
@@ -158,4 +183,5 @@ export default interface _SERVICE {
   ) => Promise<RenameSubAccountResponse>;
   set_imported_tokens: ActorMethod<[ImportedTokens], SetImportedTokensResponse>;
   set_fav_projects: ActorMethod<[FavProjects], SetFavProjectsResponse>;
+  set_address_book: ActorMethod<[AddressBook], SetAddressBookResponse>;
 }
