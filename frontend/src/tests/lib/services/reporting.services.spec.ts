@@ -2,14 +2,14 @@ import * as icpIndexApi from "$lib/api/icp-index.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as reportingServices from "$lib/services/reporting.services";
-import { mapPool } from "$lib/utils/reporting.utils";
 import {
   getAccountTransactionsConcurrently,
+  getAllIcrcTransactionsForCkTokens,
   getAllIcrcTransactionsFromAccountAndIdentity,
   getAllTransactionsFromAccountAndIdentity,
-  getAllIcrcTransactionsForCkTokens,
   mapAccountOrNeuronToTransactionEntity,
 } from "$lib/services/reporting.services";
+import { mapPool } from "$lib/utils/reporting.utils";
 import { mockSignInIdentity } from "$tests/mocks/auth.store.mock";
 import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
@@ -945,11 +945,19 @@ describe("reporting service", () => {
       spyMapPool.mockResolvedValue([
         {
           status: "fulfilled",
-          value: { token: mockToken, transactions: mockTransactions, balance: 100n },
+          value: {
+            token: mockToken,
+            transactions: mockTransactions,
+            balance: 100n,
+          },
         },
         {
           status: "fulfilled",
-          value: { token: mockToken, transactions: mockTransactions, balance: 100n },
+          value: {
+            token: mockToken,
+            transactions: mockTransactions,
+            balance: 100n,
+          },
         },
       ]);
 
@@ -979,7 +987,11 @@ describe("reporting service", () => {
       spyMapPool.mockResolvedValue([
         {
           status: "fulfilled",
-          value: { token: mockToken, transactions: mockTransactions, balance: 100n },
+          value: {
+            token: mockToken,
+            transactions: mockTransactions,
+            balance: 100n,
+          },
         },
         {
           status: "rejected",
