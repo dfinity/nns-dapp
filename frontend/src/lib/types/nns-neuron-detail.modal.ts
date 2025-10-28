@@ -20,7 +20,8 @@ export type NnsNeuronModalType =
   | "voting-history"
   | "change-neuron-visibility"
   | "dev-update-voting-power-refreshed"
-  | "confirm-following";
+  | "confirm-following"
+  | "topic-definitions";
 export interface NnsNeuronModalData {
   neuron: NeuronInfo | undefined | null;
 }

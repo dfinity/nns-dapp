@@ -552,6 +552,14 @@ interface I18nFollow_neurons {
   description: string;
   current_followees: string;
   add: string;
+  required_settings: string;
+  required_settings_description: string;
+  advanced_settings: string;
+  topics_title: string;
+  neuron_title: string;
+  topics_following: string;
+  topic_definitions_description: string;
+  topic_definitions_title: string;
 }
 
 interface I18nFollow_neurons_topic_subtitles {
