@@ -84,7 +84,7 @@ jobs:
           name: hashes
           pattern: hashes_*
       - name: Get hashes
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: hashes
           path: hashes
