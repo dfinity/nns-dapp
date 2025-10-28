@@ -32,12 +32,7 @@
         </div>
       </div>
     {:else}
-      <p>Addresses in the address book</p>
-      <ul>
-        <li>Address 1</li>
-        <li>Address 2</li>
-        <li>Address 3</li>
-      </ul>
+      @TODO
     {/if}
   </div>
 </IslandWidthMain>
