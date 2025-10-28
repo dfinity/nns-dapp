@@ -1,9 +1,13 @@
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
+import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as reportingServices from "$lib/services/reporting.services";
+import { mapPool } from "$lib/utils/reporting.utils";
 import {
   getAccountTransactionsConcurrently,
   getAllIcrcTransactionsFromAccountAndIdentity,
   getAllTransactionsFromAccountAndIdentity,
+  getAllIcrcTransactionsForCkTokens,
   mapAccountOrNeuronToTransactionEntity,
 } from "$lib/services/reporting.services";
 import { mockSignInIdentity } from "$tests/mocks/auth.store.mock";
@@ -22,11 +26,24 @@ import type { SignIdentity } from "@dfinity/agent";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/icrc-index.api");
+vi.mock("$lib/api/icrc-ledger.api");
+vi.mock("$lib/constants/tokens.constants", () => ({
+  ALL_CK_TOKENS_CANISTER_IDS: [
+    { ledgerCanisterId: "ledger1", indexCanisterId: "index1" },
+    { ledgerCanisterId: "ledger2", indexCanisterId: "index2" },
+  ],
+}));
+vi.mock("$lib/utils/reporting.utils", () => ({
+  mapPool: vi.fn(),
+}));
 
 describe("reporting service", () => {
   const mockAccountId = "test-account-id";
   let spyGetTransactions;
   let spyGetIcrcTransactions;
+  let spyQueryIcrcToken;
+  let spyGetAllIcrcTransactionsFromAccountAndIdentity;
+  let spyMapPool;
 
   beforeEach(() => {
     vi.spyOn(console, "error").mockImplementation(() => {});
@@ -34,6 +51,12 @@ describe("reporting service", () => {
 
     spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
     spyGetIcrcTransactions = vi.spyOn(icrcIndexApi, "getTransactions");
+    spyQueryIcrcToken = vi.spyOn(icrcLedgerApi, "queryIcrcToken");
+    spyGetAllIcrcTransactionsFromAccountAndIdentity = vi.spyOn(
+      reportingServices,
+      "getAllIcrcTransactionsFromAccountAndIdentity"
+    );
+    spyMapPool = vi.mocked(mapPool);
   });
 
   describe("getAllTransactionsFromAccount", () => {
@@ -907,6 +930,80 @@ describe("reporting service", () => {
       expect(result.transactions).toHaveLength(4);
       expect(result.transactions).toEqual(allTransactions.slice(1, -1));
       expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("getAllIcrcTransactionsForCkTokens", () => {
+    const mockAccount = {
+      owner: mockMainAccount.principal,
+    };
+
+    it("should fetch transactions for all CK tokens", async () => {
+      const mockToken = { symbol: "CKBTC" };
+      const mockTransactions = [createIcrcTransactionWithId({})];
+
+      spyMapPool.mockResolvedValue([
+        {
+          status: "fulfilled",
+          value: { token: mockToken, transactions: mockTransactions, balance: 100n },
+        },
+        {
+          status: "fulfilled",
+          value: { token: mockToken, transactions: mockTransactions, balance: 100n },
+        },
+      ]);
+
+      const result = await getAllIcrcTransactionsForCkTokens({
+        identity: mockSignInIdentity,
+        account: mockAccount,
+        range: undefined,
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual({
+        token: mockToken,
+        transactions: mockTransactions,
+        balance: 100n,
+      });
+      expect(result[1]).toEqual({
+        token: mockToken,
+        transactions: mockTransactions,
+        balance: 100n,
+      });
+    });
+
+    it("should handle errors and skip failed tokens", async () => {
+      const mockToken = { symbol: "CKBTC" };
+      const mockTransactions = [createIcrcTransactionWithId({})];
+
+      spyMapPool.mockResolvedValue([
+        {
+          status: "fulfilled",
+          value: { token: mockToken, transactions: mockTransactions, balance: 100n },
+        },
+        {
+          status: "rejected",
+          reason: new Error("Token error"),
+          item: { ledgerCanisterId: "ledger2" },
+        },
+      ]);
+
+      const result = await getAllIcrcTransactionsForCkTokens({
+        identity: mockSignInIdentity,
+        account: mockAccount,
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual({
+        token: mockToken,
+        transactions: mockTransactions,
+        balance: 100n,
+      });
+      expect(console.warn).toHaveBeenCalledWith(
+        "Skipped token due to error:",
+        "ledger2",
+        expect.any(Error)
+      );
     });
   });
 });
