@@ -1,5 +1,7 @@
 import { getTransactions } from "$lib/api/icp-index.api";
 import { getTransactions as getIcrcTransactions } from "$lib/api/icrc-index.api";
+import { queryIcrcToken } from "$lib/api/icrc-ledger.api";
+import { ALL_CK_TOKENS_CANISTER_IDS } from "$lib/constants/tokens.constants";
 import type { Account } from "$lib/types/account";
 import type {
   TransactionEntity,
@@ -311,4 +313,45 @@ const filterIcrcTransactionsByRange = (
 
     return true;
   });
+};
+
+export const getAllIcrcTransactionsForCkTokens = async ({
+  identity,
+  account,
+  range,
+}: {
+  identity: SignIdentity;
+  account: IcrcAccount;
+  range?: TransactionsDateRange;
+}) => {
+  const ckTokens = [];
+  for (const {
+    ledgerCanisterId,
+    indexCanisterId,
+  } of ALL_CK_TOKENS_CANISTER_IDS) {
+    try {
+      const token = await queryIcrcToken({
+        identity,
+        canisterId: ledgerCanisterId,
+        certified: true,
+      });
+
+      const { transactions, balance } =
+        await getAllIcrcTransactionsFromAccountAndIdentity({
+          account,
+          identity,
+          indexCanisterId,
+          range,
+        });
+
+      ckTokens.push({
+        token,
+        transactions,
+        balance,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  return ckTokens;
 };
