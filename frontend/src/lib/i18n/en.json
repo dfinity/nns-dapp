@@ -535,6 +535,8 @@
     "required_settings": "Required settings",
     "required_settings_description": "For full vote delegation coverage, set following on these three topics. The choice for \"All Except Governance, and SNS & Neurons' Fund\"  is applied to all topics for which no other explicit follow rule has been defined, except for \"Governance\" and \"SNS & Neurons' Fund\".",
     "advanced_settings": "Advanced settings",
+    "topics_title": "Delegate Voting",
+    "neuron_title": "Enter Neuron to Follow",
     "topics_following": "CURRENT DELEGATES"
   },
   "follow_neurons_topic_subtitles": {
