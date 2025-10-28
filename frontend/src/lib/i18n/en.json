@@ -535,7 +535,11 @@
     "required_settings": "Required settings",
     "required_settings_description": "For full vote delegation coverage, set following on these three topics. The choice for \"All Except Governance, and SNS & Neurons' Fund\"  is applied to all topics for which no other explicit follow rule has been defined, except for \"Governance\" and \"SNS & Neurons' Fund\".",
     "advanced_settings": "Advanced settings",
-    "topics_following": "CURRENT DELEGATES"
+    "topics_title": "Delegate Voting",
+    "neuron_title": "Enter Neuron to Follow",
+    "topics_following": "CURRENT DELEGATES",
+    "topic_definitions_description": "Proposal types are grouped into topics defined by the NNS. You can review the topic definitions here.",
+    "topic_definitions_title": "Topic Definition List"
   },
   "follow_neurons_topic_subtitles": {
     "Unspecified": "Follow neurons on all proposal topics except the governance topic, and SNS & Neurons' Fund.",
