@@ -164,7 +164,13 @@
     "portfolio": "Portfolio",
     "privacy_mode_hide": "Hide Balance",
     "privacy_mode_show": "Show Balance",
-    "project_page": "Project Page"
+    "project_page": "Project Page",
+    "address_book": "Address Book"
+  },
+  "address_book": {
+    "title": "Save Wallet Addresses for Quick & Secure Access",
+    "description": "Effortlessly manage your withdrawals by saving wallet addresses in one place. Add custom labels to stay organized and speed up your transactions.",
+    "add_address": "Add New Address"
   },
   "alfred": {
     "no_results": "No results found",

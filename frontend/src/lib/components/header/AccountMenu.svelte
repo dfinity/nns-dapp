@@ -1,6 +1,7 @@
 <script lang="ts">
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
   import AccountDetails from "$lib/components/header/AccountDetails.svelte";
+  import LinkToAddressBook from "$lib/components/header/LinkToAddressBook.svelte";
   import LinkToCanisters from "$lib/components/header/LinkToCanisters.svelte";
   import LinkToReporting from "$lib/components/header/LinkToReporting.svelte";
   import LinkToSettings from "$lib/components/header/LinkToSettings.svelte";
@@ -9,6 +10,7 @@
   import ToggleBalancePrivacyOption from "$lib/components/header/ToggleBalancePrivacyOption.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { login } from "$lib/services/auth.services";
+  import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutAuthReady } from "$lib/stores/layout.store";
   import { IconLogin, IconUser, Popover } from "@dfinity/gix-components";
@@ -41,6 +43,10 @@
         <ManageInternetIdentityButton />
 
         <LinkToSettings on:nnsLink={closeMenu} />
+
+        {#if $ENABLE_ADDRESS_BOOK}
+          <LinkToAddressBook on:nnsLink={closeMenu} />
+        {/if}
 
         <LinkToCanisters on:nnsLink={closeMenu} />
 
