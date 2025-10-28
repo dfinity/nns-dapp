@@ -14,11 +14,8 @@ import type {
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { queryAndUpdate } from "$lib/services/utils.services";
 import { addressBookStore } from "$lib/stores/address-book.store";
-import { startBusy, stopBusy } from "$lib/stores/busy.store";
-import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
+import { toastsError } from "$lib/stores/toasts.store";
 import { isLastCall } from "$lib/utils/env.utils";
-import { isNullish } from "@dfinity/utils";
-import { get } from "svelte/store";
 
 /**
  * Load address book from the `nns-dapp` backend and update the `addressBookStore` store.
@@ -69,182 +66,63 @@ export const loadAddressBook = async ({
 };
 
 /**
- * Save address book to the nns-dapp backend.
- * Returns an error if the operation fails.
+ * Save the entire address book to the `nns-dapp` backend and reload to update the `addressBookStore`.
+ * - This method always saves the complete address book (replaces the existing one).
+ * - The UI is responsible for manipulating the array (add/update/remove) before calling this method.
+ * - Displays appropriate error toasts based on the error type.
+ * - Returns an error if the operation fails.
  */
-const saveAddressBook = async ({
-  namedAddresses,
-}: {
-  namedAddresses: NamedAddress[];
-}): Promise<{ err: Error | undefined }> => {
+export const saveAddressBook = async (
+  namedAddresses: NamedAddress[]
+): Promise<{ err?: Error }> => {
   try {
     const identity = await getAuthenticatedIdentity();
     await setAddressBook({ identity, namedAddresses });
+    await loadAddressBook();
+    return {};
   } catch (err) {
-    return { err: err as Error };
-  }
+    const error = err as Error;
 
-  return { err: undefined };
-};
-
-/**
- * Add new named address and reload address book from the `nns-dapp` backend to update the `addressBookStore`.
- * - Displays a success toast if the operation is successful.
- * - Displays an error toast if the operation fails.
- */
-export const addNamedAddress = async ({
-  addressToAdd,
-  namedAddresses,
-}: {
-  addressToAdd: NamedAddress;
-  namedAddresses: NamedAddress[];
-}): Promise<{ success: boolean }> => {
-  const addresses = [...namedAddresses, addressToAdd];
-  const { err } = await saveAddressBook({ namedAddresses: addresses });
-
-  if (isNullish(err)) {
-    await loadAddressBook();
-    toastsSuccess({
-      labelKey: "address_book.add_address_success",
-    });
-
-    return { success: true };
-  }
-
-  if (err instanceof TooManyNamedAddressesError) {
-    toastsError({
-      labelKey: "error__address_book.too_many",
-      err,
-    });
-  } else if (err instanceof InvalidIcpAddressError) {
-    toastsError({
-      labelKey: "error__address_book.invalid_icp",
-      err,
-    });
-  } else if (err instanceof InvalidIcrc1AddressError) {
-    toastsError({
-      labelKey: "error__address_book.invalid_icrc1",
-      err,
-    });
-  } else if (err instanceof AddressNameTooLongError) {
-    toastsError({
-      labelKey: "error__address_book.name_too_long",
-      err,
-    });
-  } else if (err instanceof DuplicateAddressNameError) {
-    toastsError({
-      labelKey: "error__address_book.duplicate_name",
-      err,
-    });
-  } else {
-    toastsError({
-      labelKey: "error__address_book.add_address",
-      err,
-    });
-  }
-
-  return { success: false };
-};
-
-/**
- * Update a named address and reload address book from the `nns-dapp` backend to update the `addressBookStore`.
- * - Displays a success toast if the operation is successful.
- * - Displays an error toast if the operation fails.
- */
-export const updateNamedAddress = async ({
-  oldName,
-  updatedAddress,
-  namedAddresses,
-}: {
-  oldName: string;
-  updatedAddress: NamedAddress;
-  namedAddresses: NamedAddress[];
-}): Promise<{ success: boolean }> => {
-  const addresses = namedAddresses.map((address) =>
-    address.name === oldName ? updatedAddress : address
-  );
-
-  const { err } = await saveAddressBook({ namedAddresses: addresses });
-
-  if (isNullish(err)) {
-    await loadAddressBook();
-    toastsSuccess({
-      labelKey: "address_book.update_address_success",
-    });
-
-    return { success: true };
-  }
-
-  if (err instanceof InvalidIcpAddressError) {
-    toastsError({
-      labelKey: "error__address_book.invalid_icp",
-      err,
-    });
-  } else if (err instanceof InvalidIcrc1AddressError) {
-    toastsError({
-      labelKey: "error__address_book.invalid_icrc1",
-      err,
-    });
-  } else if (err instanceof AddressNameTooLongError) {
-    toastsError({
-      labelKey: "error__address_book.name_too_long",
-      err,
-    });
-  } else if (err instanceof DuplicateAddressNameError) {
-    toastsError({
-      labelKey: "error__address_book.duplicate_name",
-      err,
-    });
-  } else {
-    toastsError({
-      labelKey: "error__address_book.update_address",
-      err,
-    });
-  }
-
-  return { success: false };
-};
-
-/**
- * Remove a named address and reload address book from the `nns-dapp` backend to update the `addressBookStore`.
- * - Displays a success toast if the operation is successful.
- * - Displays an error toast if the operation fails.
- */
-export const removeNamedAddress = async (
-  name: string
-): Promise<{ success: boolean }> => {
-  try {
-    startBusy({
-      initiator: "address-book-removing",
-      labelKey: "address_book.removing",
-    });
-
-    const remainingAddresses = (
-      get(addressBookStore).namedAddresses ?? []
-    ).filter((address) => address.name !== name);
-
-    const { err } = await saveAddressBook({
-      namedAddresses: remainingAddresses,
-    });
-
-    if (isNullish(err)) {
-      // There is no need to reload address book if the remove operation is successful.
-      addressBookStore.remove(name);
-
-      toastsSuccess({
-        labelKey: "address_book.remove_address_success",
+    // Display specific error messages based on error type
+    // Extract substitutions from the error if it's an AccountTranslateError
+    if (error instanceof TooManyNamedAddressesError) {
+      toastsError({
+        labelKey: "error__address_book.too_many",
+        err: error,
+        substitutions: error.substitutions,
       });
-
-      return { success: true };
+    } else if (error instanceof InvalidIcpAddressError) {
+      toastsError({
+        labelKey: "error__address_book.invalid_icp",
+        err: error,
+        substitutions: error.substitutions,
+      });
+    } else if (error instanceof InvalidIcrc1AddressError) {
+      toastsError({
+        labelKey: "error__address_book.invalid_icrc1",
+        err: error,
+        substitutions: error.substitutions,
+      });
+    } else if (error instanceof AddressNameTooLongError) {
+      toastsError({
+        labelKey: "error__address_book.name_too_long",
+        err: error,
+        substitutions: error.substitutions,
+      });
+    } else if (error instanceof DuplicateAddressNameError) {
+      toastsError({
+        labelKey: "error__address_book.duplicate_name",
+        err: error,
+        substitutions: error.substitutions,
+      });
+    } else {
+      // Generic error message for unexpected errors
+      toastsError({
+        labelKey: "error__address_book.update_address",
+        err: error,
+      });
     }
 
-    toastsError({
-      labelKey: "error__address_book.remove_address",
-      err,
-    });
-
-    return { success: false };
-  } finally {
-    stopBusy("address-book-removing");
+    return { err: error };
   }
 };

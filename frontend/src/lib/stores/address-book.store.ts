@@ -10,7 +10,7 @@ export interface AddressBookStore {
  * A store that contains the user's address book (named addresses)
  */
 const initAddressBookStore = () => {
-  const { update, subscribe, set } = writable<AddressBookStore>({
+  const { subscribe, set } = writable<AddressBookStore>({
     namedAddresses: undefined,
     certified: undefined,
   });
@@ -29,15 +29,6 @@ const initAddressBookStore = () => {
         namedAddresses,
         certified,
       });
-    },
-
-    update(name: string, updatedAddress: NamedAddress) {
-      update(({ namedAddresses, certified }) => ({
-        namedAddresses: namedAddresses?.map((address) =>
-          address.name === name ? updatedAddress : address
-        ),
-        certified,
-      }));
     },
 
     reset() {
