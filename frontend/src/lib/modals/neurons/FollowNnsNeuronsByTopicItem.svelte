@@ -27,10 +27,8 @@
     removeFollowing,
   }: Props = $props();
 
-  const title: string = $derived(getTopicTitle({ topic, i18n: $i18n }));
-  const description: string = $derived(
-    getTopicSubtitle({ topic, i18n: $i18n })
-  );
+  const title = $derived(getTopicTitle({ topic, i18n: $i18n }));
+  const description = $derived(getTopicSubtitle({ topic, i18n: $i18n }));
 
   const onChange = () => {
     // Checkbox doesn't support two-way binding
@@ -39,9 +37,7 @@
   };
 
   let cmp = $state<Collapsible | undefined>(undefined);
-
-  let toggleContent = () => cmp?.toggleContent();
-  let expanded: boolean = $state(false);
+  let expanded = $state(false);
 
   // Get followees for this specific topic
   const topicFollowees: NeuronId[] = $derived(
@@ -87,7 +83,7 @@
           data-tid="expand-button"
           class="expand-button"
           class:expanded
-          onclick={toggleContent}
+          onclick={() => cmp?.toggleContent()}
         >
           <IconExpandMore />
         </button>
