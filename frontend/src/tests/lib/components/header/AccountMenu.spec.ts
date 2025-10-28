@@ -1,5 +1,8 @@
 import AccountMenu from "$lib/components/header/AccountMenu.svelte";
-import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
+import {
+  ENABLE_ADDRESS_BOOK,
+  overrideFeatureFlagsStore,
+} from "$lib/stores/feature-flags.store";
 import {
   mockLinkClickEvent,
   resetNavigationCallbacks,
@@ -190,6 +193,10 @@ describe("AccountMenu", () => {
     });
 
     describe("address book feature flag", () => {
+      afterEach(() => {
+        overrideFeatureFlagsStore.reset();
+      });
+
       it("should display Address Book link when feature flag is enabled", async () => {
         const { accountMenuPo } = renderComponent();
         await accountMenuPo.openMenu();
@@ -198,6 +205,18 @@ describe("AccountMenu", () => {
         expect(get(ENABLE_ADDRESS_BOOK)).toBe(true);
         expect(await accountMenuPo.getLinkToAddressBookPo().isPresent()).toBe(
           true
+        );
+      });
+
+      it("should not display Address Book link when feature flag is disabled", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
+
+        const { accountMenuPo } = renderComponent();
+        await accountMenuPo.openMenu();
+
+        expect(get(ENABLE_ADDRESS_BOOK)).toBe(false);
+        expect(await accountMenuPo.getLinkToAddressBookPo().isPresent()).toBe(
+          false
         );
       });
     });
