@@ -1,7 +1,5 @@
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import * as icrcIndexApi from "$lib/api/icrc-index.api";
-import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import * as reportingServices from "$lib/services/reporting.services";
 import {
   getAccountTransactionsConcurrently,
   getAllIcrcTransactionsForCkTokens,
@@ -41,8 +39,6 @@ describe("reporting service", () => {
   const mockAccountId = "test-account-id";
   let spyGetTransactions;
   let spyGetIcrcTransactions;
-  let spyQueryIcrcToken;
-  let spyGetAllIcrcTransactionsFromAccountAndIdentity;
   let spyMapPool;
 
   beforeEach(() => {
@@ -51,11 +47,6 @@ describe("reporting service", () => {
 
     spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
     spyGetIcrcTransactions = vi.spyOn(icrcIndexApi, "getTransactions");
-    spyQueryIcrcToken = vi.spyOn(icrcLedgerApi, "queryIcrcToken");
-    spyGetAllIcrcTransactionsFromAccountAndIdentity = vi.spyOn(
-      reportingServices,
-      "getAllIcrcTransactionsFromAccountAndIdentity"
-    );
     spyMapPool = vi.mocked(mapPool);
   });
 
