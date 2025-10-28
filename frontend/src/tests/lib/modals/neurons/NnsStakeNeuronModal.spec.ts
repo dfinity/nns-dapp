@@ -14,7 +14,6 @@ import {
   stakeNeuron,
   updateDelay,
 } from "$lib/services/neurons.services";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { neuronsStore } from "$lib/stores/neurons.store";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -400,29 +399,6 @@ describe("NnsStakeNeuronModal", () => {
 
       await runResolvedPromises();
       expect(await po.getEditFollowNeuronsPo().isPresent()).toBe(true);
-    });
-
-    it("should go to edit followers by NNS topics after dissolve delay when ENABLE_NNS_TOPICS is true", async () => {
-      const po = await renderComponent({});
-      overrideFeatureFlagsStore.setFlag("ENABLE_NNS_TOPICS", true);
-
-      await po.getNnsStakeNeuronPo().getAmountInputPo().enterAmount(22);
-
-      await runResolvedPromises();
-      expect(queryBalanceSpy).not.toBeCalled();
-      expect(get(icpAccountsStore).main.balanceUlps).not.toEqual(newBalanceE8s);
-
-      await po.getNnsStakeNeuronPo().clickCreate();
-
-      await runResolvedPromises();
-      expect(await po.getEditFollowNeuronsPo().isPresent()).toBe(false);
-
-      await po.getSetDissolveDelayPo().clickSkip();
-
-      await runResolvedPromises();
-      expect(
-        await po.getFollowNnsNeuronsByTopicStepTopicsPo().isPresent()
-      ).toBe(true);
     });
 
     it("should trigger close on cancel", async () => {

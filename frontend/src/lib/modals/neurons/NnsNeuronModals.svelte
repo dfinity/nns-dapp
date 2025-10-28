@@ -6,7 +6,6 @@
   import DisburseNnsNeuronModal from "$lib/modals/neurons/DisburseNnsNeuronModal.svelte";
   import DissolveActionButtonModal from "$lib/modals/neurons/DissolveActionButtonModal.svelte";
   import FollowNeuronsModal from "$lib/modals/neurons/FollowNeuronsModal.svelte";
-  import FollowNnsNeuronsByTopicModal from "$lib/modals/neurons/FollowNnsNeuronsByTopicModal.svelte";
   import IncreaseDissolveDelayModal from "$lib/modals/neurons/IncreaseDissolveDelayModal.svelte";
   import IncreaseNeuronStakeModal from "$lib/modals/neurons/IncreaseNeuronStakeModal.svelte";
   import JoinCommunityFundModal from "$lib/modals/neurons/JoinCommunityFundModal.svelte";
@@ -15,13 +14,11 @@
   import NnsAutoStakeMaturityModal from "$lib/modals/neurons/NnsAutoStakeMaturityModal.svelte";
   import NnsDisburseMaturityModal from "$lib/modals/neurons/NnsDisburseMaturityModal.svelte";
   import NnsStakeMaturityModal from "$lib/modals/neurons/NnsStakeMaturityModal.svelte";
-  import NnsTopicDefinitionsModal from "$lib/modals/neurons/NnsTopicDefinitionsModal.svelte";
   import SpawnNeuronModal from "$lib/modals/neurons/SpawnNeuronModal.svelte";
   import SplitNeuronModal from "$lib/modals/neurons/SplitNnsNeuronModal.svelte";
   import UpdateVotingPowerRefreshedModal from "$lib/modals/neurons/UpdateVotingPowerRefreshedModal.svelte";
   import VotingHistoryModal from "$lib/modals/neurons/VotingHistoryModal.svelte";
   import NnsAddMaturityModal from "$lib/modals/sns/neurons/NnsAddMaturityModal.svelte";
-  import { ENABLE_NNS_TOPICS } from "$lib/stores/feature-flags.store";
   import type {
     NnsNeuronModal,
     NnsNeuronModalData,
@@ -101,14 +98,7 @@
     {/if}
 
     {#if type === "follow"}
-      {#if $ENABLE_NNS_TOPICS}
-        <FollowNnsNeuronsByTopicModal
-          onClose={close}
-          neuronId={neuron.neuronId}
-        />
-      {:else}
-        <FollowNeuronsModal onClose={close} neuronId={neuron.neuronId} />
-      {/if}
+      <FollowNeuronsModal onClose={close} neuronId={neuron.neuronId} />
     {/if}
 
     {#if type === "add-hotkey"}
@@ -137,10 +127,6 @@
         neurons={[neuron]}
         on:nnsClose={close}
       />
-    {/if}
-
-    {#if type === "topic-definitions"}
-      <NnsTopicDefinitionsModal onClose={close} />
     {/if}
   {/if}
 

@@ -1,7 +1,6 @@
 import { AddUserToHotkeysPo } from "$tests/page-objects/AddUserToHotkeys.page-object";
 import { ConfirmDissolveDelayPo } from "$tests/page-objects/ConfirmDissolveDelay.page-object";
 import { EditFollowNeuronsPo } from "$tests/page-objects/EditFollowNeurons.page-object";
-import { FollowNnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowNnsNeuronsByTopicStepTopics.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { NnsStakeNeuronPo } from "$tests/page-objects/NnsStakeNeuron.page-object";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
@@ -34,10 +33,6 @@ export class NnsStakeNeuronModalPo extends ModalPo {
 
   getEditFollowNeuronsPo(): EditFollowNeuronsPo {
     return EditFollowNeuronsPo.under(this.root);
-  }
-
-  getFollowNnsNeuronsByTopicStepTopicsPo(): FollowNnsNeuronsByTopicStepTopicsPo {
-    return FollowNnsNeuronsByTopicStepTopicsPo.under(this.root);
   }
 
   async stake({
