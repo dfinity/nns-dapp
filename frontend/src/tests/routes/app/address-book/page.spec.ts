@@ -1,6 +1,9 @@
 import { goto } from "$app/navigation";
 import { AppPath } from "$lib/constants/routes.constants";
-import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
+import {
+  ENABLE_ADDRESS_BOOK,
+  overrideFeatureFlagsStore,
+} from "$lib/stores/feature-flags.store";
 import AddressBookPage from "$routes/(app)/(nns)/address-book/+page.svelte";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import { render } from "@testing-library/svelte";
@@ -11,26 +14,33 @@ vi.mock("$app/navigation", () => ({
 }));
 
 describe("Address Book page", () => {
-  describe("not signed in", () => {
-    beforeEach(() => {
-      setNoIdentity();
-    });
+  describe("feature flag off", () => {
+    it("should redirect to portfolio when feature flag is disabled", () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
+      expect(get(ENABLE_ADDRESS_BOOK)).toBe(false);
 
-    it("should redirect to homepage if not logged in", () => {
       render(AddressBookPage);
 
       expect(goto).toHaveBeenCalledWith(AppPath.Portfolio);
     });
   });
 
-  describe("signed in", () => {
-    beforeEach(() => {
-      resetIdentity();
-    });
+  describe("not signed in", () => {
+    it("should render sign-in if not logged in", () => {
+      overrideFeatureFlagsStore.reset();
+      setNoIdentity();
 
-    it("should render address book page when feature flag is enabled", () => {
+      const { getByTestId } = render(AddressBookPage);
+
+      expect(getByTestId("login-button")).not.toBeNull();
+    });
+  });
+
+  describe("signed in", () => {
+    it("should render address book page when feature flag is enabled and signed in", () => {
       // Feature flag is enabled by default in tests (see vitest.setup.ts)
       expect(get(ENABLE_ADDRESS_BOOK)).toBe(true);
+      resetIdentity();
 
       const { container } = render(AddressBookPage);
 

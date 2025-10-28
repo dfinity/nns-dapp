@@ -17,8 +17,8 @@
       <div class="is-empty">
         <IconUserLogin size={144} />
         <div class="text">
-          <p class="title">{$i18n.address_book.empty_title}</p>
-          <p class="description">{$i18n.address_book.empty_description}</p>
+          <p class="title">{$i18n.address_book.title}</p>
+          <p class="description">{$i18n.address_book.description}</p>
           <button
             data-tid="add-address-button"
             class="primary"

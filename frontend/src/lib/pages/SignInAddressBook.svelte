@@ -9,8 +9,12 @@
   <div class="content">
     <PageBanner>
       <IconUserLogin slot="image" />
-      <svelte:fragment slot="title">{$i18n.navigation.address_book}</svelte:fragment>
-      <p class="description" slot="description">{$i18n.auth_accounts.text}</p>
+      <svelte:fragment slot="title"
+        >{$i18n.navigation.address_book}</svelte:fragment
+      >
+      <p class="description" slot="description">
+        {$i18n.address_book.description}
+      </p>
       <SignIn slot="actions" />
     </PageBanner>
 
@@ -25,4 +29,3 @@
     gap: var(--padding-2x);
   }
 </style>
-

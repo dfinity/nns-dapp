@@ -168,8 +168,8 @@
     "address_book": "Address Book"
   },
   "address_book": {
-    "empty_title": "Save Wallet Addresses for Quick & Secure Access",
-    "empty_description": "Effortlessly manage your withdrawals by saving wallet addresses in one place. Add custom labels to stay organized and speed up your transactions.",
+    "title": "Save Wallet Addresses for Quick & Secure Access",
+    "description": "Effortlessly manage your withdrawals by saving wallet addresses in one place. Add custom labels to stay organized and speed up your transactions.",
     "add_address": "Add New Address"
   },
   "alfred": {

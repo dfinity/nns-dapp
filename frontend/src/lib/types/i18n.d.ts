@@ -175,8 +175,8 @@ interface I18nNavigation {
 }
 
 interface I18nAddress_book {
-  empty_title: string;
-  empty_description: string;
+  title: string;
+  description: string;
   add_address: string;
 }
 
