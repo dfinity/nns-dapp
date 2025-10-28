@@ -42,9 +42,9 @@ describe("Address Book page", () => {
       expect(get(ENABLE_ADDRESS_BOOK)).toBe(true);
       resetIdentity();
 
-      const { container } = render(AddressBookPage);
+      const { getByTestId } = render(AddressBookPage);
 
-      expect(container.querySelector("main")).toBeInTheDocument();
+      expect(getByTestId("address-book-content")).not.toBeNull();
     });
   });
 });

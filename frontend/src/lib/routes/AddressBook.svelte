@@ -12,7 +12,7 @@
 </script>
 
 <IslandWidthMain>
-  <div class="content">
+  <div class="content" data-tid="address-book-content">
     {#if isEmpty}
       <div class="is-empty">
         <IconUserLogin size={144} />
