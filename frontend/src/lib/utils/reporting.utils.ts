@@ -1,3 +1,4 @@
+import type { Account } from "$lib/types/account";
 import type {
   ReportingPeriod,
   TransactionResults,
@@ -12,6 +13,7 @@ import {
 } from "$lib/utils/date.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { mapIcpTransactionToReport } from "$lib/utils/icp-transactions.utils";
+import { mapIcrcTransactionToReport } from "$lib/utils/icrc-transactions.utils";
 import {
   formatMaturity,
   getStateInfo,
@@ -35,6 +37,7 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
+import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import type { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
@@ -219,7 +222,7 @@ export const generateCsvFileToSave = async <T>({
 
 export type TransactionsCsvData = {
   id: string;
-  project: string;
+  project?: string;
   symbol: string;
   accountId: string;
   neuronId?: string;
@@ -337,6 +340,71 @@ export const buildTransactionsDatasets = ({
       }),
     };
   });
+};
+
+export const buildIcrcTransactionsDataset = ({
+  account,
+  token,
+  transactions,
+  i18n,
+}: {
+  account: Account;
+  token: Token;
+  transactions: IcrcTransactionWithId[];
+  i18n: I18n;
+}): CsvDataset<TransactionsCsvData> => {
+  const amount = TokenAmountV2.fromUlps({ amount: account.balanceUlps, token });
+  const metadata: Metadata[] = [
+    { label: i18n.reporting.account_id, value: account.identifier },
+    {
+      label: replacePlaceholders(i18n.reporting.balance, {
+        $tokenSymbol: token.symbol,
+      }),
+      value: formatTokenV2({ value: amount, detailed: true }),
+    },
+    {
+      label: i18n.reporting.controller_id,
+      value: account.principal?.toText() ?? i18n.core.not_applicable,
+    },
+    {
+      label: i18n.reporting.date_label,
+      value: nanoSecondsToDateTime(nowInBigIntNanoSeconds()),
+    },
+  ];
+
+  const data: TransactionsCsvData[] = transactions.map((tx) => {
+    const {
+      to,
+      from,
+      timestampNanos,
+      type,
+      transactionDirection,
+      tokenAmount,
+    } = mapIcrcTransactionToReport({
+      transaction: tx,
+      account,
+      token,
+    });
+
+    const sign = transactionDirection === "credit" ? "+" : "-";
+    const amount = formatTokenV2({ value: tokenAmount, detailed: true });
+    const timestamp = nonNullish(timestampNanos)
+      ? nanoSecondsToDateTime(timestampNanos)
+      : i18n.core.not_applicable;
+
+    return {
+      id: tx.id.toString(),
+      symbol: token.symbol,
+      accountId: account.identifier,
+      to,
+      from,
+      type: transactionName({ type, i18n }),
+      amount: `${sign}${amount}`,
+      timestamp,
+    };
+  });
+
+  return { metadata, data };
 };
 
 export type NeuronsCsvData = {
@@ -535,12 +603,14 @@ export const buildFileName = ({
   period,
   from,
   to,
+  type = "icp",
 }: {
   period: ReportingPeriod;
   from?: string;
   to?: string;
+  type?: string;
 }) => {
-  const prefix = "icp_transactions_export_";
+  const prefix = `${type}_transactions_export_`;
   const date = formatDateCompact(new Date());
   const suffix =
     period === "custom" ? `_${period}_${from}_${to}` : `_${period}`;
