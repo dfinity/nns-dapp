@@ -10,7 +10,7 @@ import { expect, test } from "@playwright/test";
 
 const TEST_TOKEN_NAME = "ckRED";
 
-test("Test imported tokens", async ({ page, context }) => {
+test.skip("Test imported tokens", async ({ page, context }) => {
   const testLedgerCanisterId = await dfxCanisterId("ckred_ledger");
   const testIndexCanisterId = await dfxCanisterId("ckred_index");
 

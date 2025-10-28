@@ -6,6 +6,7 @@ import { IncreaseNeuronStakeModalPo } from "$tests/page-objects/IncreaseNeuronSt
 import { JoinCommunityFundModalPo } from "$tests/page-objects/JoinCommunityFundModal.page-object";
 import { LosingRewardNeuronsModalPo } from "$tests/page-objects/LosingRewardNeuronsModal.page-object";
 import { NnsAddMaturityModalPo } from "$tests/page-objects/NnsAddMaturityModal.page-object";
+import { NnsTopicDefinitionsModalPo } from "$tests/page-objects/NnsTopicDefinitionsModal.page-object";
 import { SpawnNeuronModalPo } from "$tests/page-objects/SpawnNeuronModal.page-object";
 import { UpdateVotingPowerRefreshedModalPo } from "$tests/page-objects/UpdateVotingPowerRefreshedModal.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -56,5 +57,9 @@ export class NnsNeuronModalsPo extends BasePageObject {
 
   getDisburseMaturityModalPo(): DisburseMaturityModalPo {
     return DisburseMaturityModalPo.under(this.root);
+  }
+
+  getNnsTopicDefinitionsModalPo(): NnsTopicDefinitionsModalPo {
+    return NnsTopicDefinitionsModalPo.under(this.root);
   }
 }

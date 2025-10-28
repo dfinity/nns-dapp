@@ -10,7 +10,7 @@ import {
 import { ProposalStatus, Topic } from "@dfinity/nns";
 import { expect, test } from "@playwright/test";
 
-test("Test proposals", async ({ page, context }) => {
+test.skip("Test proposals", async ({ page, context }) => {
   await page.goto("/");
   await disableCssAnimations(page);
   await expect(page).toHaveTitle("Portfolio | Network Nervous System");

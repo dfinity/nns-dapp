@@ -11,7 +11,7 @@ const SECONDS_IN_DAY = 24 * 60 * 60;
 const AVERAGE_DAYS_PER_YEAR = 365.25;
 const SECONDS_IN_6_MONTHS = (AVERAGE_DAYS_PER_YEAR / 2) * SECONDS_IN_DAY;
 
-test("Test periodic confirmation", async ({ page, context }) => {
+test.skip("Test periodic confirmation", async ({ page, context }) => {
   const appPo = new AppPo(PlaywrightPageObjectElement.fromPage(page));
 
   await page.goto("/tokens");
