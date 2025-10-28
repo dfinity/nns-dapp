@@ -12,12 +12,12 @@ use crate::def::{
     PrepareCanisterMigrationPayload, RecoverSubnetPayload, RemoveApiBoundaryNodesPayload, RemoveFirewallRulesPayload,
     RemoveNodeOperatorsPayload, RemoveNodesFromSubnetPayload, RemoveNodesPayload, RerouteCanisterRangesPayload,
     ReviseElectedGuestosVersionsPayload, ReviseElectedHostosVersionsPayload, SetAuthorizedSubnetworkListArgs,
-    SetFirewallConfigPayload, StopOrStartNnsCanisterProposal, SubnetRentalRequest, UpdateAllowedPrincipalsRequest,
-    UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload, UpdateFirewallRulesPayload,
-    UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload, UpdateNodeRewardsTableProposalPayload,
-    UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest, UpdateSshReadOnlyAccessForAllUnassignedNodesPayload,
-    UpdateSubnetPayload, UpdateSubnetTypeArgs, UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload,
-    UpgradeRootProposalPayloadTrimmed,
+    SetFirewallConfigPayload, SetSubnetOperationalLevelPayload, StopOrStartNnsCanisterProposal, SubnetRentalRequest,
+    UpdateAllowedPrincipalsRequest, UpdateApiBoundaryNodesVersionPayload, UpdateElectedHostosVersionsPayload,
+    UpdateFirewallRulesPayload, UpdateIcpXdrConversionRatePayload, UpdateNodeOperatorConfigPayload,
+    UpdateNodeRewardsTableProposalPayload, UpdateNodesHostosVersionPayload, UpdateSnsSubnetListRequest,
+    UpdateSshReadOnlyAccessForAllUnassignedNodesPayload, UpdateSubnetPayload, UpdateSubnetTypeArgs,
+    UpdateUnassignedNodesConfigPayload, UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed,
 };
 use candid::types::{self as candid_types, Type, TypeInner};
 use candid::{CandidType, IDLArgs};
@@ -289,6 +289,7 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         9 => transform::<UpgradeRootProposalPayload, UpgradeRootProposalPayloadTrimmed>(payload_bytes),
         10 => identity::<UpdateIcpXdrConversionRatePayload>(payload_bytes),
         11 => identity::<DeployGuestosToAllSubnetNodesPayload>(payload_bytes),
+        // 12 is treated generically as it has no payload
         13 => identity::<RemoveNodesFromSubnetPayload>(payload_bytes),
         14 => identity::<SetAuthorizedSubnetworkListArgs>(payload_bytes),
         15 => identity::<SetFirewallConfigPayload>(payload_bytes),
@@ -328,7 +329,9 @@ fn transform_payload_to_json(nns_function: i32, payload_bytes: &[u8]) -> Result<
         50 => identity::<ReviseElectedHostosVersionsPayload>(payload_bytes),
         51 => identity::<DeployHostosToSomeNodesPayload>(payload_bytes),
         52 => identity::<SubnetRentalRequest>(payload_bytes),
-
+        // 53 is treated generically as it has no payload
+        // 54 is treated generically as it has no payload
+        55 => identity::<SetSubnetOperationalLevelPayload>(payload_bytes),
         12 | 53 | 54 => Ok("Proposal has no payload".to_string()),
         _ => Err("Unrecognised NNS function".to_string()),
     }

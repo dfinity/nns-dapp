@@ -7,7 +7,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "2.0.130"
+version = "2.0.131"
 
 [workspace.dependencies]
 ic-cdk = "0.17.1"
@@ -30,6 +30,7 @@ ic-protobuf = { git = "https://github.com/dfinity/ic", rev = "release-2025-08-14
 ic-sns-swap = { git = "https://github.com/dfinity/ic", rev = "release-2025-08-14_03-27-base" }
 registry-canister = { git = "https://github.com/dfinity/ic", rev = "release-2025-08-14_03-27-base" }
 icp-ledger = { git = "https://github.com/dfinity/ic", rev = "release-2025-08-14_03-27-base" }
+icrc-ledger-types = { git = "https://github.com/dfinity/ic", rev = "release-2025-08-14_03-27-base" }
 on_wire = { git = "https://github.com/dfinity/ic", rev = "release-2025-08-14_03-27-base" }
 
 [profile.release]

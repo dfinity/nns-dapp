@@ -45,31 +45,31 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Upload nns-dapp wasm module'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: nns-dapp
           path: out/nns-dapp.wasm.gz
           retention-days: 3
       - name: 'Upload nns-dapp test wasm module'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: nns-dapp_test
           path: out/nns-dapp_test.wasm.gz
           retention-days: 3
       - name: 'Upload sns_aggregator wasm module'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sns_aggregator
           path: out/sns_aggregator.wasm.gz
           retention-days: 3
       - name: 'Upload sns_aggregator_dev wasm module'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sns_aggregator_dev
           path: out/sns_aggregator_dev.wasm.gz
           retention-days: 3
       - name: 'Upload whole out directory'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: out
           path: out
@@ -107,7 +107,7 @@ jobs:
         uses: actions/checkout@v5
       - name: Get nns-dapp_test
         # Note: This may be performed manually with ./scripts/docker-build --network local
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: out
           path: out
@@ -129,7 +129,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v5
       - name: Get nns-dapp_test
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: out
           path: out
@@ -147,7 +147,7 @@ jobs:
         run: ./scripts/nns-dapp/migration-test --accounts 1000 --chunk 100
       - name: Upload dfx logs
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-upgrade-stable-dfx.log
           path: test-upgrade-stable-dfx.log
@@ -159,7 +159,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v5
       - name: Get nns-dapp_test
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: nns-dapp_test
       - name: Start empty nns-dapp
@@ -179,15 +179,15 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v5
       - name: Get nns-dapp
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: nns-dapp
       - name: Get sns_aggregator
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: sns_aggregator
       - name: Get sns_aggregator_dev
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: sns_aggregator_dev
       - name: Start snapshot environment
@@ -323,19 +323,19 @@ jobs:
           outputs: ./out-mainnet
       - name: Get nns-dapp
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: nns-dapp
           path: out-local
       - name: Get sns_aggregator
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: sns_aggregator
           path: out-local
       - name: Get sns_aggregator_dev
         if: steps.dockerfile_changed.outputs.dockerfile_changed == 'true'
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: sns_aggregator_dev
           path: out-local
@@ -362,7 +362,7 @@ jobs:
       - name: Checkout nns-dapp
         uses: actions/checkout@v5
       - name: Get sns_aggregator_dev
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: sns_aggregator_dev
       - name: Start snapshot environment
@@ -466,7 +466,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Get docker build outputs
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: out
           path: out
@@ -475,7 +475,7 @@ jobs:
       - name: 'Record the git commit and any tags'
         run: git log | head -n1 > out/commit.txt
       - name: 'Upload ${{ matrix.BUILD_NAME }} nns-dapp wasm module'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: nns-dapp for ${{ matrix.BUILD_NAME }}
           path: |
@@ -486,7 +486,7 @@ jobs:
             out/frontend-config.sh
             out/deployment-config.json
       - name: 'Upload sns_aggregator wasm module'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sns_aggregator for ${{ matrix.BUILD_NAME }}
           path: |
@@ -498,7 +498,7 @@ jobs:
           assets_dir: 'out'
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Upload frontend assets'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: NNS frontend assets
           path: |
