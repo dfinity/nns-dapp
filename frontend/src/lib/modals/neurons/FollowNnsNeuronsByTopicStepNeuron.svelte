@@ -197,6 +197,9 @@
 
   <div class="following">
     <h5 class="description">{$i18n.new_followee.known_neurons_title}</h5>
+    <p class="description known-neurons-description"
+      ><Html text={$i18n.follow_neurons.known_neurons_description} /></p
+    >
     {#if isNullish($sortedknownNeuronsStore)}
       <Spinner />
     {:else}
@@ -240,6 +243,10 @@
   .form-toolbar {
     display: flex;
     justify-content: end;
+  }
+
+  .known-neurons-description {
+    margin-top: var(--padding-3x);
   }
 
   ul {
