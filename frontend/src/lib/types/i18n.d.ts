@@ -552,6 +552,7 @@ interface I18nFollow_neurons {
   description: string;
   current_followees: string;
   add: string;
+  topics_following: string;
 }
 
 interface I18nFollow_neurons_topic_subtitles {
