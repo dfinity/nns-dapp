@@ -541,6 +541,67 @@ describe("reporting service", () => {
       owner: mockMainAccount.principal,
     };
 
+    it("should handle no transactions", async () => {
+      spyGetIcrcTransactions.mockResolvedValue({
+        transactions: [],
+        balance: 0n,
+      });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+      });
+
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+      expect(spyGetIcrcTransactions).toHaveBeenCalledWith({
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        maxResults: 50n,
+        start: undefined,
+        account: mockAccount,
+      });
+      expect(result).toEqual({
+        transactions: [],
+        balance: 0n,
+      });
+    });
+
+    it("should handle no transactions in following pages", async () => {
+      const firstBatch = Array.from({ length: 50 }, (_, i) =>
+        createTransactionWithId({ id: BigInt(i + 1) })
+      );
+
+      spyGetIcrcTransactions
+        .mockResolvedValueOnce({
+          transactions: firstBatch,
+          balance: 1000n,
+        })
+        .mockResolvedValueOnce({
+          transactions: [],
+          balance: 1000n,
+        });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+      });
+
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(2);
+      expect(spyGetIcrcTransactions).toHaveBeenCalledWith({
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        maxResults: 50n,
+        start: undefined,
+        account: mockAccount,
+      });
+      expect(result).toEqual({
+        transactions: firstBatch,
+        balance: 1000n,
+      });
+    });
+
     it("should fetch all transactions in one single call", async () => {
       const mockTransactions = [
         createIcrcTransactionWithId({}),

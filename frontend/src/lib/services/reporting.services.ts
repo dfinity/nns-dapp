@@ -245,7 +245,7 @@ export const getAllIcrcTransactionsFromAccountAndIdentity = async ({
 
     // Early return if we've gone past our date range. It assumes sorted transactions from newest to oldest.
     const oldestTransactionInPageTimestamp =
-      transactions[transactions.length - 1].transaction.timestamp;
+      transactions[transactions.length - 1]?.transaction.timestamp;
     const from = range?.from;
     if (nonNullish(from) && nonNullish(oldestTransactionInPageTimestamp)) {
       if (oldestTransactionInPageTimestamp < from) {
