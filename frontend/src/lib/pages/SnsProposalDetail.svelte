@@ -38,7 +38,7 @@
   } from "$lib/utils/sns-proposals.utils";
   import { isUniverseNns } from "$lib/utils/universe.utils";
   import { SplitBlock } from "@dfinity/gix-components";
-  import { Principal } from "@dfinity/principal";
+  import { Principal } from "@icp-sdk/core/principal";
   import type {
     SnsNervousSystemFunction,
     SnsProposalData,

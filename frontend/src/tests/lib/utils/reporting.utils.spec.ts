@@ -16,7 +16,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { aggregatorTokenMock } from "$tests/mocks/sns-aggregator.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 
 type TestPersonData = { name: string; age: number };
 type TestFormulaData = { formula: string; value: number };

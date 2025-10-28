@@ -1,7 +1,7 @@
 <script lang="ts">
   import LinkToDashboardCanister from "$lib/components/tokens/LinkToDashboardCanister.svelte";
   import Copy from "$lib/components/ui/Copy.svelte";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
 
   type Props = {

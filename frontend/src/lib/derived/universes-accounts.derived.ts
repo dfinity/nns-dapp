@@ -8,7 +8,7 @@ import {
 } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { mapEntries } from "$lib/utils/utils";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 export const universesAccountsStore = derived<

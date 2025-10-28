@@ -10,11 +10,6 @@ import {
 } from "$lib/types/neurons.errors";
 import type { ToastMsg } from "$lib/types/toast";
 import { translate, type I18nSubstitutions } from "$lib/utils/i18n.utils";
-import {
-  AgentError,
-  CertifiedRejectErrorCode,
-  UncertifiedRejectErrorCode,
-} from "@dfinity/agent";
 import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
 import {
   InsufficientFundsError,
@@ -29,6 +24,11 @@ import {
 } from "@dfinity/nns";
 import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
 import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  AgentError,
+  CertifiedRejectErrorCode,
+  UncertifiedRejectErrorCode,
+} from "@icp-sdk/core/agent";
 
 export const errorToString = (err?: unknown): string | undefined => {
   const text =

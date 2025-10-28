@@ -51,19 +51,19 @@ import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
+import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
+import { SnsSwapLifecycle } from "@dfinity/sns";
+import { isNullish } from "@dfinity/utils";
+import { AuthClient } from "@icp-sdk/auth/client";
 import {
   AgentError,
   ErrorKindEnum,
   ReplicaRejectCode,
   requestIdOf,
   UncertifiedRejectErrorCode,
-} from "@dfinity/agent";
-import { AuthClient } from "@dfinity/auth-client";
-import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
-import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import { isNullish } from "@dfinity/utils";
+} from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";

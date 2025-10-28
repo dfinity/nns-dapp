@@ -12,7 +12,6 @@ import {
   installImplAndBlockRest,
   makePausable,
 } from "$tests/utils/module.test-utils";
-import { AnonymousIdentity, type Identity } from "@dfinity/agent";
 import type {
   KnownNeuron,
   NeuronId,
@@ -21,6 +20,7 @@ import type {
 } from "@dfinity/nns";
 import { NeuronState, NeuronType } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
 
 const modulePath = "$lib/api/governance.api";
 const fakeFunctions = {

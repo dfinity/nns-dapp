@@ -38,9 +38,9 @@ import {
   LedgerCanister,
   SubAccount,
 } from "@dfinity/ledger-icp";
-import { Principal } from "@dfinity/principal";
 import * as dfinityUtils from "@dfinity/utils";
 import { principalToSubAccount } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
 
 describe("canisters-api", () => {

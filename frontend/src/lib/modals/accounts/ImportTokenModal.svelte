@@ -24,7 +24,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import { Principal } from "@dfinity/principal";
+  import { Principal } from "@icp-sdk/core/principal";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { get } from "svelte/store";

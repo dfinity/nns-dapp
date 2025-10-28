@@ -6,7 +6,7 @@
   import { actionableSnsProposalsStore } from "$lib/stores/actionable-sns-proposals.store";
   import type { RootCanisterIdText } from "$lib/types/sns";
   import type { Universe } from "$lib/types/universe";
-  import { Principal } from "@dfinity/principal";
+  import { Principal } from "@icp-sdk/core/principal";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import type { ProposalData } from "@dfinity/sns/dist/candid/sns_governance";
   import { fromNullable, nonNullish } from "@dfinity/utils";

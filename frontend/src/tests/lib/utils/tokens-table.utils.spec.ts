@@ -28,8 +28,8 @@ import {
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
-import { Principal } from "@dfinity/principal";
 import { TokenAmountV2 } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 
 describe("tokens-table.utils", () => {
   const ckBTCToken = createUserToken({

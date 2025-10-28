@@ -3,8 +3,6 @@ import { wrapper } from "$lib/api/sns-wrapper.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isMethodNotSupportedError } from "$lib/utils/error.utils";
-import type { Identity } from "@dfinity/agent";
-import type { Principal } from "@dfinity/principal";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsRefreshBuyerTokensResponse,
@@ -12,6 +10,8 @@ import type {
 } from "@dfinity/sns";
 import { SnsSwapCanister } from "@dfinity/sns";
 import { toNullable } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export const getOpenTicket = async ({
   identity,

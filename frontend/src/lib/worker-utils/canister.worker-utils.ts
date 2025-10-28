@@ -1,7 +1,7 @@
 import type { CanisterId } from "$lib/types/canister";
 import type { CanisterActorParams } from "$lib/types/worker";
-import type { Agent } from "@dfinity/agent";
 import { createAgent } from "@dfinity/utils";
+import type { Agent } from "@icp-sdk/core/agent";
 
 export interface CreateCanisterWorkerParams {
   canisterId: CanisterId;

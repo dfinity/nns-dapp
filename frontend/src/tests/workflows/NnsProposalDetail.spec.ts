@@ -13,13 +13,13 @@ import {
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { AnonymousIdentity } from "@dfinity/agent";
 import {
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
   Vote,
 } from "@dfinity/nns";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";

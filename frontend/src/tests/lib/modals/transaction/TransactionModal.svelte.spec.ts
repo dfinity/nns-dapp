@@ -21,8 +21,8 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import type { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import {
   fireEvent,
   render,
