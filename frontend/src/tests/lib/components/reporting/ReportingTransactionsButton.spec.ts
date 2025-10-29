@@ -42,6 +42,8 @@ describe("ReportingTransactionsButton", () => {
   let spyQueryNeurons;
   let spyExportDataService;
   let spySaveGeneratedCsv;
+  // let spyGetAllIcrcTransactionsForCkTokens;
+  // let spyBuildIcrcTransactionsDataset;
 
   beforeEach(() => {
     resetIdentity();
@@ -57,6 +59,13 @@ describe("ReportingTransactionsButton", () => {
       exportDataService,
       "getAccountTransactionsConcurrently"
     );
+    // spyGetAllIcrcTransactionsForCkTokens = vi.spyOn(
+    //   exportDataService,
+    //   "getAllIcrcTransactionsForCkTokens"
+    // );
+    // spyBuildIcrcTransactionsDataset = vi
+    //   .spyOn(exportToCsv, "buildIcrcTransactionsDataset")
+    //   .mockReturnValue({ data: [], metadata: [] });
 
     vi.spyOn(console, "error").mockImplementation(() => {});
 
@@ -79,6 +88,18 @@ describe("ReportingTransactionsButton", () => {
       balance: 0n,
       oldestTxId: 1n,
     });
+
+    // const mockIcrcTransactions = [
+    //   createIcrcTransactionWithId({}),
+    //   createIcrcTransactionWithId({
+    //     id: 1n,
+    //   }),
+    // ];
+    // vi.spyOn(icrcIndex, "getTransactions").mockResolvedValue({
+    //   transactions: mockIcrcTransactions,
+    //   balance: 0n,
+    //   oldestTxId: 1n,
+    // });
   });
 
   const renderComponent = (
