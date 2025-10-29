@@ -40,10 +40,10 @@
     period: ReportingPeriod;
     customFrom?: string;
     customTo?: string;
-    source: ReportingTransactionsSource;
+    source?: ReportingTransactionsSource;
   };
 
-  let { period, customFrom, customTo, source }: Props = $props();
+  let { period, customFrom, customTo, source = "nns" }: Props = $props();
 
   const identity = $derived($authStore.identity);
   const nnsAccounts = $derived($nnsAccountsListStore);
