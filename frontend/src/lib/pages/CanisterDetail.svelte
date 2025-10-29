@@ -55,7 +55,7 @@
   };
 
   let canistersReady = false;
-  $: $canistersStore, (canistersReady = canistersStoreReady());
+  $: ($canistersStore, (canistersReady = canistersStoreReady()));
 
   onMount(async () => {
     if (!canistersStoreReady()) {
@@ -123,7 +123,7 @@
     canistersStore: $canistersStore,
   });
 
-  $: canisterId,
+  $: (canisterId,
     selectedCanister,
     canistersReady,
     (async () => {
@@ -170,7 +170,7 @@
 
         await goBack();
       }
-    })();
+    })());
 
   $: ({ details: canisterDetails, info: canisterInfo } =
     $selectedCanisterStore);
