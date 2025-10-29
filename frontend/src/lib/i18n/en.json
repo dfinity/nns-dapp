@@ -169,10 +169,6 @@
   },
   "address_book": {
     "add_address": "Add New Address",
-    "add_address_success": "Address added successfully.",
-    "update_address_success": "Address updated successfully.",
-    "remove_address_success": "Address removed successfully.",
-    "removing": "Removing address...",
     "title": "Save Wallet Addresses for Quick & Secure Access",
     "description": "Effortlessly manage your withdrawals by saving wallet addresses in one place. Add custom labels to stay organized and speed up your transactions."
   },
@@ -1118,9 +1114,7 @@
   },
   "error__address_book": {
     "load_address_book": "There was an unexpected issue while loading the address book.",
-    "add_address": "There was an unexpected issue while adding the address.",
     "update_address": "There was an unexpected issue while updating the address.",
-    "remove_address": "There was an unexpected issue while removing the address.",
     "too_many": "You can't add more than $limit addresses.",
     "invalid_icp": "Invalid ICP address: $error.",
     "invalid_icrc1": "Invalid ICRC1 address: $error.",

@@ -175,10 +175,6 @@ interface I18nNavigation {
 }
 
 interface I18nAddress_book {
-  add_address_success: string;
-  update_address_success: string;
-  remove_address_success: string;
-  removing: string;
   title: string;
   description: string;
   add_address: string;
@@ -1168,9 +1164,7 @@ interface I18nError__fav_projects {
 
 interface I18nError__address_book {
   load_address_book: string;
-  add_address: string;
   update_address: string;
-  remove_address: string;
   too_many: string;
   invalid_icp: string;
   invalid_icrc1: string;
