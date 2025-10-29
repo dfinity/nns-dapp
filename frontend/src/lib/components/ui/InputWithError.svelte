@@ -21,6 +21,9 @@
   export let placeholderLabelKey: string;
   export let showInfo = true;
   export let testId = "input-with-error-compoment";
+  export let onInput: undefined | (() => void) = undefined;
+  export let onFocus: undefined | (() => void) = undefined;
+  export let onBlur: undefined | (() => void) = undefined;
 </script>
 
 <div class="wrapper" data-tid={testId} class:error={hasError}>
@@ -38,8 +41,9 @@
     {autocomplete}
     {showInfo}
     bind:value
-    on:blur
-    on:nnsInput
+    {onBlur}
+    {onFocus}
+    {onInput}
   >
     <slot name="start" slot="start" />
     <slot name="label" slot="label" />

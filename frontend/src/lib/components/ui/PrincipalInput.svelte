@@ -30,7 +30,7 @@
   {disabled}
   bind:value={address}
   errorMessage={showError ? $i18n.error.principal_not_valid : undefined}
-  on:blur={showErrorIfAny}
+  onBlur={showErrorIfAny}
   showInfo={$$slots.label !== undefined}
   {required}
 >
