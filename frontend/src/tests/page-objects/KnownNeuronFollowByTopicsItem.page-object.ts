@@ -24,8 +24,7 @@ export class KnownNeuronFollowByTopicsItemPo extends BasePageObject {
   }
 
   async getNeuronName(): Promise<string> {
-    const valueElement = await this.root.querySelector(".value");
-    return valueElement?.getText() ?? "";
+    return this.root.byTestId("known-neuron-name")?.getText() ?? "";
   }
 
   async isFollowButtonDisabled(): Promise<boolean> {

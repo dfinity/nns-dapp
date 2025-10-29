@@ -24,7 +24,7 @@
 </script>
 
 <div data-tid="known-neuron-item-component">
-  <p class="value">{knownNeuron.name}</p>
+  <p class="value" data-tid="known-neuron-name">{knownNeuron.name}</p>
   {#if isFollowing}
     <Tooltip
       id="desabled-known-neuron-follow-tooltip"

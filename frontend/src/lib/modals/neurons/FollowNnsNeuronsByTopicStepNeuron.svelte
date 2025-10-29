@@ -119,7 +119,7 @@
       return;
     }
 
-    if (BigInt(followeeAddress) === neuron.neuronId) {
+    if (followee === neuron.neuronId) {
       errorMessage = $i18n.new_followee.followee_no_self_following;
       return;
     }
