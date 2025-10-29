@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { _ } from "$env/static/private";
   import Copy from "$lib/components/ui/Copy.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { QRCode } from "@dfinity/gix-components";
