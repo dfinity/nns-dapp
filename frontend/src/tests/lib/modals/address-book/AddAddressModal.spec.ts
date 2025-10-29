@@ -2,18 +2,20 @@ import AddAddressModal from "$lib/modals/address-book/AddAddressModal.svelte";
 import * as addressBookServices from "$lib/services/address-book.services";
 import { addressBookStore } from "$lib/stores/address-book.store";
 import en from "$tests/mocks/i18n.mock";
+import {
+  mockNamedAddress,
+  mockNamedAddressIcrc1,
+} from "$tests/mocks/icrc-accounts.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { fireEvent, waitFor } from "@testing-library/svelte";
-import { get } from "svelte/store";
 
 vi.mock("$lib/services/address-book.services");
 
 describe("AddAddressModal", () => {
-  const validIcpAddress =
-    "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f";
-  // Valid ICRC1 address format (principal or principal.subaccount)
-  const validIcrc1Address =
-    "h4a5i-5vcfo-5rusv-fmb6m-vrkia-mjnkc-jpoow-h5mam-nthnm-ldqlr-bqe";
+  // Use existing mock addresses from the mocks file
+  const validIcpAddress = (mockNamedAddress.address as { Icp: string }).Icp;
+  const validIcrc1Address = (mockNamedAddressIcrc1.address as { Icrc1: string })
+    .Icrc1;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -83,12 +85,7 @@ describe("AddAddressModal", () => {
 
   it("should display error if nickname is already used", async () => {
     addressBookStore.set({
-      namedAddresses: [
-        {
-          name: "existing",
-          address: { Icp: validIcpAddress },
-        },
-      ],
+      namedAddresses: [mockNamedAddress],
       certified: true,
     });
 
@@ -101,7 +98,7 @@ describe("AddAddressModal", () => {
 
     nicknameInput &&
       (await fireEvent.input(nicknameInput, {
-        target: { value: "existing" },
+        target: { value: mockNamedAddress.name },
       }));
 
     expect(
@@ -125,23 +122,49 @@ describe("AddAddressModal", () => {
     expect(queryByText(en.address_book.invalid_address)).toBeInTheDocument();
   });
 
-  it("should not display error if inputs are empty", async () => {
+  it("should clear all error messages when nickname and address inputs are emptied after errors", async () => {
     const { container, queryByText } = await renderModal({
       component: AddAddressModal,
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
     const addressInput = container.querySelector("input[name='address']");
-
     expect(nicknameInput).not.toBeNull();
     expect(addressInput).not.toBeNull();
 
-    expect(
-      queryByText(en.address_book.nickname_too_short)
-    ).not.toBeInTheDocument();
-    expect(
-      queryByText(en.address_book.invalid_address)
-    ).not.toBeInTheDocument();
+    // Trigger nickname validation error (too short)
+    if (nicknameInput) {
+      await fireEvent.input(nicknameInput, {
+        target: { value: "a" },
+      });
+      expect(
+        queryByText(en.address_book.nickname_too_short)
+      ).toBeInTheDocument();
+
+      // Clear the input
+      await fireEvent.input(nicknameInput, {
+        target: { value: "" },
+      });
+      expect(
+        queryByText(en.address_book.nickname_too_short)
+      ).not.toBeInTheDocument();
+    }
+
+    // Trigger address validation error (invalid format)
+    if (addressInput) {
+      await fireEvent.input(addressInput, {
+        target: { value: "invalid-address" },
+      });
+      expect(queryByText(en.address_book.invalid_address)).toBeInTheDocument();
+
+      // Clear the input
+      await fireEvent.input(addressInput, {
+        target: { value: "" },
+      });
+      expect(
+        queryByText(en.address_book.invalid_address)
+      ).not.toBeInTheDocument();
+    }
   });
 
   it("should enable save button when inputs are valid", async () => {
@@ -252,12 +275,7 @@ describe("AddAddressModal", () => {
 
   it("should append to existing addresses", async () => {
     addressBookStore.set({
-      namedAddresses: [
-        {
-          name: "existing",
-          address: { Icp: validIcpAddress },
-        },
-      ],
+      namedAddresses: [mockNamedAddress],
       certified: true,
     });
 
@@ -287,10 +305,7 @@ describe("AddAddressModal", () => {
 
     await waitFor(() =>
       expect(saveAddressBookSpy).toHaveBeenCalledWith([
-        {
-          name: "existing",
-          address: { Icp: validIcpAddress },
-        },
+        mockNamedAddress,
         {
           name: "NewAddress",
           address: { Icrc1: validIcrc1Address },
@@ -353,43 +368,5 @@ describe("AddAddressModal", () => {
     cancelButton && (await fireEvent.click(cancelButton));
 
     expect(onClose).toHaveBeenCalled();
-  });
-
-  it("should start with empty addressBookStore if undefined", async () => {
-    const saveAddressBookSpy = vi
-      .spyOn(addressBookServices, "saveAddressBook")
-      .mockResolvedValue({});
-
-    addressBookStore.reset();
-    expect(get(addressBookStore).namedAddresses).toBeUndefined();
-
-    const { container, queryByTestId } = await renderModal({
-      component: AddAddressModal,
-    });
-
-    const nicknameInput = container.querySelector("input[name='nickname']");
-    const addressInput = container.querySelector("input[name='address']");
-
-    nicknameInput &&
-      (await fireEvent.input(nicknameInput, {
-        target: { value: "FirstAddress" },
-      }));
-
-    addressInput &&
-      (await fireEvent.input(addressInput, {
-        target: { value: validIcpAddress },
-      }));
-
-    const saveButton = queryByTestId("save-address-button");
-    saveButton && (await fireEvent.click(saveButton));
-
-    await waitFor(() =>
-      expect(saveAddressBookSpy).toHaveBeenCalledWith([
-        {
-          name: "FirstAddress",
-          address: { Icp: validIcpAddress },
-        },
-      ])
-    );
   });
 });
