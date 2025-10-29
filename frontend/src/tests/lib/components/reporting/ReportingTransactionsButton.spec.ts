@@ -79,6 +79,18 @@ describe("ReportingTransactionsButton", () => {
       balance: 0n,
       oldestTxId: 1n,
     });
+
+    // const mockIcrcTransactions = [
+    //   createIcrcTransactionWithId({}),
+    //   createIcrcTransactionWithId({
+    //     id: 1n,
+    //   }),
+    // ];
+    // vi.spyOn(icrcIndex, "getTransactions").mockResolvedValue({
+    //   transactions: mockIcrcTransactions,
+    //   balance: 0n,
+    //   oldestTxId: 1n,
+    // });
   });
 
   const renderComponent = (
