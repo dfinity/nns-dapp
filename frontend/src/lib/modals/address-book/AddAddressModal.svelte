@@ -1,0 +1,192 @@
+<script lang="ts">
+  import InputWithError from "$lib/components/ui/InputWithError.svelte";
+  import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
+  import { saveAddressBook } from "$lib/services/address-book.services";
+  import { addressBookStore } from "$lib/stores/address-book.store";
+  import { startBusy, stopBusy } from "$lib/stores/busy.store";
+  import { i18n } from "$lib/stores/i18n";
+  import { toastsSuccess } from "$lib/stores/toasts.store";
+  import {
+    invalidIcpAddress,
+    invalidIcrcAddress,
+  } from "$lib/utils/accounts.utils";
+  import { Modal, busy } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
+  let nickname: string = "";
+  let nicknameError: string | undefined = undefined;
+
+  let address: string = "";
+  let addressError: string | undefined = undefined;
+
+  // Validate nickname
+  $: {
+    if (nickname === "") {
+      nicknameError = undefined;
+    } else if (nickname.length < 3) {
+      nicknameError = $i18n.address_book.nickname_too_short;
+    } else if (nickname.length > 20) {
+      nicknameError = $i18n.address_book.nickname_too_long;
+    } else if (
+      $addressBookStore.namedAddresses?.some(
+        (namedAddress) => namedAddress.name === nickname
+      )
+    ) {
+      nicknameError = $i18n.address_book.nickname_already_used;
+    } else {
+      nicknameError = undefined;
+    }
+  }
+
+  // Validate address
+  $: {
+    if (address === "") {
+      addressError = undefined;
+    } else {
+      const isInvalidIcp = invalidIcpAddress(address);
+      const isInvalidIcrc = invalidIcrcAddress(address);
+
+      if (isInvalidIcp && isInvalidIcrc) {
+        addressError = $i18n.address_book.invalid_address;
+      } else {
+        addressError = undefined;
+      }
+    }
+  }
+
+  // Determine if save button should be disabled
+  let disableSave: boolean;
+  $: disableSave =
+    nickname === "" ||
+    address === "" ||
+    nonNullish(nicknameError) ||
+    nonNullish(addressError) ||
+    $busy;
+
+  const close = () => {
+    dispatch("nnsClose");
+  };
+
+  const resetForm = () => {
+    nickname = "";
+    address = "";
+    nicknameError = undefined;
+    addressError = undefined;
+  };
+
+  const handleSubmit = async () => {
+    // Determine address type
+    const isValidIcrc = !invalidIcrcAddress(address);
+    const addressType = isValidIcrc ? { Icrc1: address } : { Icp: address };
+
+    // Create new named address
+    const newAddress: NamedAddress = {
+      name: nickname,
+      address: addressType,
+    };
+
+    // Create temporary array with the new address
+    const currentAddresses = $addressBookStore.namedAddresses ?? [];
+    const updatedAddresses = [...currentAddresses, newAddress];
+
+    startBusy({ initiator: "add-address-book-entry" });
+
+    try {
+      const result = await saveAddressBook(updatedAddresses);
+
+      if (!result.err) {
+        toastsSuccess({
+          labelKey: "address_book.add_success",
+        });
+        resetForm();
+        close();
+      } else {
+        // Error already handled by saveAddressBook (toast shown)
+        // Keep modal open with current data
+      }
+    } finally {
+      stopBusy("add-address-book-entry");
+    }
+  };
+</script>
+
+<Modal testId="add-address-modal" onClose={close}>
+  {#snippet title()}
+    <span data-tid="add-address-modal-title"
+      >{$i18n.address_book.add_address}</span
+    >
+  {/snippet}
+
+  <form on:submit|preventDefault={handleSubmit}>
+    <div class="fields">
+      <InputWithError
+        testId="nickname-input"
+        bind:value={nickname}
+        inputType="text"
+        placeholderLabelKey="address_book.nickname_label"
+        name="nickname"
+        required={true}
+        errorMessage={nicknameError}
+        minLength={3}
+        disabled={$busy}
+      >
+        <svelte:fragment slot="label"
+          >{$i18n.address_book.nickname_label}</svelte:fragment
+        >
+      </InputWithError>
+
+      <InputWithError
+        testId="address-input"
+        bind:value={address}
+        inputType="text"
+        placeholderLabelKey="address_book.address_label"
+        name="address"
+        required={true}
+        errorMessage={addressError}
+        disabled={$busy}
+      >
+        <svelte:fragment slot="label"
+          >{$i18n.address_book.address_label}</svelte:fragment
+        >
+      </InputWithError>
+    </div>
+
+    <div class="toolbar">
+      <button
+        class="secondary"
+        type="button"
+        data-tid="cancel-button"
+        disabled={$busy}
+        on:click={close}
+      >
+        {$i18n.core.cancel}
+      </button>
+      <button
+        data-tid="save-address-button"
+        class="primary"
+        type="submit"
+        disabled={disableSave}
+      >
+        {$i18n.address_book.save_address}
+      </button>
+    </div>
+  </form>
+</Modal>
+
+<style lang="scss">
+  .fields {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+    padding: var(--padding-2x) var(--padding);
+  }
+
+  .toolbar {
+    display: flex;
+    gap: var(--padding);
+    padding: var(--padding) var(--padding) var(--padding-2x);
+  }
+</style>
