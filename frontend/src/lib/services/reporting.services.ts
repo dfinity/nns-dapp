@@ -1,5 +1,7 @@
 import { getTransactions } from "$lib/api/icp-index.api";
 import { getTransactions as getIcrcTransactions } from "$lib/api/icrc-index.api";
+import { queryIcrcToken } from "$lib/api/icrc-ledger.api";
+import { ALL_CK_TOKENS_CANISTER_IDS } from "$lib/constants/tokens.constants";
 import type { Account } from "$lib/types/account";
 import type {
   TransactionEntity,
@@ -7,6 +9,7 @@ import type {
   TransactionsDateRange,
 } from "$lib/types/reporting";
 import { neuronStake } from "$lib/utils/neuron.utils";
+import { mapPool } from "$lib/utils/reporting.utils";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import type {
@@ -311,4 +314,54 @@ const filterIcrcTransactionsByRange = (
 
     return true;
   });
+};
+
+export const getAllIcrcTransactionsForCkTokens = async ({
+  identity,
+  account,
+  range,
+}: {
+  identity: SignIdentity;
+  account: IcrcAccount;
+  range?: TransactionsDateRange;
+}) => {
+  const concurrency = 3;
+
+  const promises = await mapPool(
+    ALL_CK_TOKENS_CANISTER_IDS,
+    async ({ ledgerCanisterId, indexCanisterId }) => {
+      const token = await queryIcrcToken({
+        identity,
+        canisterId: ledgerCanisterId,
+        certified: true,
+      });
+
+      const { transactions, balance } =
+        await getAllIcrcTransactionsFromAccountAndIdentity({
+          account,
+          identity,
+          indexCanisterId,
+          range,
+        });
+
+      return { token, transactions, balance };
+    },
+    concurrency
+  );
+
+  const ckTokens = [];
+  for (const promise of promises) {
+    if (promise.status === "fulfilled") {
+      ckTokens.push(promise.value);
+    } else {
+      // Optionally log or handle errors further, e.g., collect for UI warnings
+      console.warn(
+        "Skipped token due to error:",
+        promise.item.ledgerCanisterId,
+        promise.reason
+      );
+    }
+  }
+
+  return ckTokens;
 };
