@@ -146,8 +146,6 @@ const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
   for (key in FEATURE_FLAG_ENVIRONMENT) {
     featureFlagStores[key] = initFeatureFlagStore(key);
   }
-  // Override the ENABLE_ADDRESS_BOOK feature flag to true for testing purposes - TO REMOVE LATER
-  // featureFlagStores.ENABLE_ADDRESS_BOOK = readable(true);
   return featureFlagStores as FeatureFlags<Readable<boolean>>;
 };
 

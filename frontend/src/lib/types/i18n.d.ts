@@ -175,9 +175,9 @@ interface I18nNavigation {
 }
 
 interface I18nAddress_book {
+  add_address: string;
   title: string;
   description: string;
-  add_address: string;
 }
 
 interface I18nAlfred {
