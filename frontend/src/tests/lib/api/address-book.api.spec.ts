@@ -32,7 +32,7 @@ describe("address-book-api", () => {
         certified: true,
       });
 
-      expect(mockNNSDappCanister.getAddressBook).toBeCalledTimes(1);
+      expect(mockNNSDappCanister.getAddressBook).toHaveBeenCalledTimes(1);
       expect(mockNNSDappCanister.getAddressBook).toBeCalledWith({
         certified: true,
       });
@@ -50,7 +50,7 @@ describe("address-book-api", () => {
         namedAddresses: [mockNamedAddress, mockNamedAddressIcrc1],
       });
 
-      expect(mockNNSDappCanister.setAddressBook).toBeCalledTimes(1);
+      expect(mockNNSDappCanister.setAddressBook).toHaveBeenCalledTimes(1);
       expect(mockNNSDappCanister.setAddressBook).toBeCalledWith([
         mockNamedAddress,
         mockNamedAddressIcrc1,

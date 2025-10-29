@@ -28,7 +28,7 @@ export const loadAddressBook = async ({
   ignoreAccountNotFoundError?: boolean;
 } = {}) => {
   return queryAndUpdate<AddressBook, unknown>({
-    request: (options) => getAddressBook(options),
+    request: getAddressBook,
     strategy: FORCE_CALL_STRATEGY,
     onLoad: ({ response: { named_addresses: namedAddresses }, certified }) => {
       addressBookStore.set({
@@ -75,12 +75,11 @@ export const loadAddressBook = async ({
  */
 export const saveAddressBook = async (
   namedAddresses: NamedAddress[]
-): Promise<{ err?: Error }> => {
+): Promise<{ err?: Error } | undefined> => {
   try {
     const identity = await getAuthenticatedIdentity();
     await setAddressBook({ identity, namedAddresses });
     await loadAddressBook();
-    return {};
   } catch (err) {
     const error = err as Error;
 
