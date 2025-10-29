@@ -19,7 +19,7 @@
     showError = address.length > 0 && principal === undefined;
   };
   // Hide error on change
-  $: address, (showError = false);
+  $: (address, (showError = false));
 </script>
 
 <InputWithError

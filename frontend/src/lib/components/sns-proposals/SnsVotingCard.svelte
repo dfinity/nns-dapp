@@ -68,9 +68,9 @@
     : [];
 
   let visible = false;
-  $: $snsOnlyProjectStore,
+  $: ($snsOnlyProjectStore,
     $voteRegistrationStore,
-    (visible = snsProposalAcceptingVotes(proposal));
+    (visible = snsProposalAcceptingVotes(proposal)));
 
   let neuronsReady = false;
   $: neuronsReady =
@@ -105,7 +105,7 @@
     }
   };
 
-  $: votableNeurons, updateVotingNeuronSelectedStore();
+  $: (votableNeurons, updateVotingNeuronSelectedStore());
 
   const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
     if (nonNullish(universeIdText) && votableNeurons.length > 0) {

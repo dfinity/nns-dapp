@@ -21,7 +21,7 @@
     hardwareWalletName.length < HARDWARE_WALLET_NAME_MIN_LENGTH;
 
   let disabled: boolean;
-  $: hardwareWalletName, (() => (disabled = invalidInputLength()))();
+  $: (hardwareWalletName, (() => (disabled = invalidInputLength()))());
 
   // We display the error message only if at least one character has been entered
   const showInvalidInputLength = () =>

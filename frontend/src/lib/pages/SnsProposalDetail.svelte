@@ -213,7 +213,7 @@
       : [];
 
   // The `update` function cares about the necessary data to be refetched.
-  $: universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update();
+  $: (universeIdText, proposalIdText, $snsNeuronsStore, $authStore, update());
 
   let proposalNavigationTitle: string | undefined;
   $: proposalNavigationTitle = proposalDataMap?.type;

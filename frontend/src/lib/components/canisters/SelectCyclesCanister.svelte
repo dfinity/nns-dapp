@@ -45,7 +45,7 @@
           )
         : undefined);
 
-  $: amount,
+  $: (amount,
     amountCycles,
     (() => {
       switch (isChanging) {
@@ -55,7 +55,7 @@
         case "tCycles":
           setAmount();
       }
-    })();
+    })());
 
   const dispatcher = createEventDispatcher();
   const selectAmount = () => {

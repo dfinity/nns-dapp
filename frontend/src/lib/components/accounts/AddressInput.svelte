@@ -20,14 +20,14 @@
       invalidAddress({ address, network: selectedNetwork, rootCanisterId });
   };
   // Hide error on change
-  $: address, (showError = false);
+  $: (address, (showError = false));
 
   const onBlur = () => {
     showErrorIfAny();
     dispatcher("nnsBlur");
   };
 
-  $: selectedNetwork, showErrorIfAny();
+  $: (selectedNetwork, showErrorIfAny());
 
   const onClickQRCode = () => dispatcher("nnsOpenQRCodeReader");
 </script>

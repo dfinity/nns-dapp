@@ -13,8 +13,8 @@
   let selectedAccount = account;
 
   const dispatcher = createEventDispatcher();
-  $: selectedAccount,
-    (() => dispatcher("nnsSelectedAccount", selectedAccount))();
+  $: (selectedAccount,
+    (() => dispatcher("nnsSelectedAccount", selectedAccount))());
 </script>
 
 {#if canSelectAccount && nonNullish(universeId)}
