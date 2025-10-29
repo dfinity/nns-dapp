@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { _ } from "$env/static/private";
   import Copy from "$lib/components/ui/Copy.svelte";
   import Logo from "$lib/components/ui/Logo.svelte";
   import { QRCode } from "@dfinity/gix-components";
@@ -17,7 +18,7 @@
   let {
     address,
     qrCodeLabel,
-    logo,
+    logo: logoSrc,
     logoArialLabel,
     logoSize = "huge",
     renderQRCode = false,
@@ -33,19 +34,21 @@
       <QRCode
         value={address ?? ""}
         ariaLabel={qrCodeLabel}
-        on:nnsQRCodeRendered={() => (qrCodeRendered = true)}
+        onQRCodeRendered={() => (qrCodeRendered = true)}
       >
-        <div class="logo" slot="logo">
-          {#if qrCodeRendered}
-            <Logo
-              src={logo}
-              size={logoSize}
-              framed={false}
-              testId="logo"
-              alt={logoArialLabel}
-            />
+        {#snippet logo()}
+          {#if nonNullish(qrCodeRendered)}
+            <div class="logo">
+              <Logo
+                src={logoSrc}
+                size={logoSize}
+                framed={false}
+                testId="logo"
+                alt={logoArialLabel}
+              />
+            </div>
           {/if}
-        </div>
+        {/snippet}
       </QRCode>
     {/if}
   </article>
