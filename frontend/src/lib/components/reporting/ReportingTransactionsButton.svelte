@@ -105,6 +105,8 @@
       }[] = [];
 
       for (const ckToken of ckTokens) {
+        if (ckToken.transactions.length === 0) continue;
+
         const account: Account = {
           type: "main",
           principal: mainAccount.owner,
