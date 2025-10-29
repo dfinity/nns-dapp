@@ -126,7 +126,7 @@
         testId="nickname-input"
         bind:value={nickname}
         inputType="text"
-        placeholderLabelKey="address_book.nickname_label"
+        placeholderLabelKey="address_book.nickname_placeholder"
         name="nickname"
         required={true}
         errorMessage={nicknameError}
@@ -142,7 +142,7 @@
         testId="address-input"
         bind:value={address}
         inputType="text"
-        placeholderLabelKey="address_book.address_label"
+        placeholderLabelKey="address_book.address_placeholder"
         name="address"
         required={true}
         errorMessage={addressError}
@@ -181,12 +181,18 @@
     display: flex;
     flex-direction: column;
     gap: var(--padding-2x);
-    padding: var(--padding-2x) var(--padding);
   }
 
   .toolbar {
     display: flex;
     gap: var(--padding);
     padding: var(--padding) var(--padding) var(--padding-2x);
+  }
+
+  form {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 </style>
