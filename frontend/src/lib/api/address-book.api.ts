@@ -1,7 +1,7 @@
 import { nnsDappCanister } from "$lib/api/nns-dapp.api";
 import type {
-    AddressBook,
-    NamedAddress,
+  AddressBook,
+  NamedAddress,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { Identity } from "@dfinity/agent";
