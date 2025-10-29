@@ -28,7 +28,7 @@
     "sync-node-version": "./scripts/sync-node-version"
   },
   "engines": {
-    "npm": ">=10.9.0 <11.0.0",
+    "npm": ">=11.5.1 <=12.0.0",
     "node": ">=22.0.0 <23.0.0"
   },
   "devDependencies": {
