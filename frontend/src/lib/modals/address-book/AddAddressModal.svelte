@@ -97,7 +97,7 @@
     try {
       const result = await saveAddressBook(updatedAddresses);
 
-      if (!result.err) {
+      if (!result?.err) {
         toastsSuccess({
           labelKey: "address_book.add_success",
         });
