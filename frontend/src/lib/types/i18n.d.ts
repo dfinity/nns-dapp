@@ -179,8 +179,8 @@ interface I18nAddress_book {
   update_address_success: string;
   remove_address_success: string;
   removing: string;
-  empty_title: string;
-  empty_description: string;
+  title: string;
+  description: string;
   add_address: string;
 }
 

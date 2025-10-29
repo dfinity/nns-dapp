@@ -1,4 +1,7 @@
 import { getTransactions } from "$lib/api/icp-index.api";
+import { getTransactions as getIcrcTransactions } from "$lib/api/icrc-index.api";
+import { queryIcrcToken } from "$lib/api/icrc-ledger.api";
+import { ALL_CK_TOKENS_CANISTER_IDS } from "$lib/constants/tokens.constants";
 import type { Account } from "$lib/types/account";
 import type {
   TransactionEntity,
@@ -6,9 +9,15 @@ import type {
   TransactionsDateRange,
 } from "$lib/types/reporting";
 import { neuronStake } from "$lib/utils/neuron.utils";
+import { mapPool } from "$lib/utils/reporting.utils";
 import { SignIdentity } from "@dfinity/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
+import type {
+  IcrcAccount,
+  IcrcIndexNgTransactionWithId,
+} from "@dfinity/ledger-icrc";
 import type { NeuronInfo } from "@dfinity/nns";
+import type { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 
 const accountToTransactionEntity = (account: Account): TransactionEntity => {
@@ -167,6 +176,7 @@ const filterTransactionsByRange = (
   range?: TransactionsDateRange
 ): TransactionWithId[] => {
   if (isNullish(range)) return transactions;
+
   return transactions.filter((tx) => {
     const timestamp = getTimestampFromTransaction(tx);
     if (isNullish(timestamp)) return false;
@@ -187,4 +197,171 @@ const filterTransactionsByRange = (
 
 const getTimestampFromTransaction = (tx: TransactionWithId): bigint | null => {
   return tx.transaction.created_at_time?.[0]?.timestamp_nanos || null;
+};
+
+export const getAllIcrcTransactionsFromAccountAndIdentity = async ({
+  account,
+  identity,
+  indexCanisterId,
+  lastTransactionId = undefined,
+  allTransactions = [],
+  currentPageIndex = 1,
+  range,
+  initialBalance = 0n,
+}: {
+  account: IcrcAccount;
+  identity: SignIdentity;
+  indexCanisterId: Principal;
+  lastTransactionId?: bigint;
+  allTransactions?: IcrcIndexNgTransactionWithId[];
+  currentPageIndex?: number;
+  range?: TransactionsDateRange;
+  initialBalance?: bigint;
+}): Promise<{
+  transactions: IcrcIndexNgTransactionWithId[];
+  balance: bigint;
+}> => {
+  const pageSize = 50n;
+  const maxNumberOfPages = 50;
+
+  try {
+    // TODO: Decide what to do if we reach the maximum number of iterations.
+    if (currentPageIndex > maxNumberOfPages) {
+      console.warn(
+        `Reached maximum limit of iterations(${maxNumberOfPages}). Stopping.`
+      );
+      return {
+        transactions: filterIcrcTransactionsByRange(allTransactions, range),
+        balance: initialBalance,
+      };
+    }
+
+    const { transactions, balance } = await getIcrcTransactions({
+      identity,
+      indexCanisterId,
+      maxResults: pageSize,
+      start: lastTransactionId,
+      account,
+    });
+
+    const updatedTransactions = [...allTransactions, ...transactions];
+
+    // Early return if we've gone past our date range. It assumes sorted transactions from newest to oldest.
+    const oldestTransactionInPageTimestamp =
+      transactions[transactions.length - 1]?.transaction.timestamp;
+    const from = range?.from;
+    if (nonNullish(from) && nonNullish(oldestTransactionInPageTimestamp)) {
+      if (oldestTransactionInPageTimestamp < from) {
+        return {
+          transactions: filterIcrcTransactionsByRange(
+            updatedTransactions,
+            range
+          ),
+          balance,
+        };
+      }
+    }
+
+    // We consider it complete if fewer transactions were returned than requested, indicating no more pages.
+    const completed = transactions.length < pageSize;
+
+    if (!completed) {
+      const lastTx = transactions[transactions.length - 1];
+      return getAllIcrcTransactionsFromAccountAndIdentity({
+        account,
+        identity,
+        indexCanisterId,
+        lastTransactionId: lastTx.id,
+        allTransactions: updatedTransactions,
+        currentPageIndex: currentPageIndex + 1,
+        range,
+        initialBalance: balance,
+      });
+    }
+
+    return {
+      transactions: filterIcrcTransactionsByRange(updatedTransactions, range),
+      balance,
+    };
+  } catch (error) {
+    console.error("Error loading ICRC account transactions:", error);
+    return {
+      transactions: filterIcrcTransactionsByRange(allTransactions, range),
+      balance: initialBalance,
+    };
+  }
+};
+
+const filterIcrcTransactionsByRange = (
+  transactions: IcrcIndexNgTransactionWithId[],
+  range?: TransactionsDateRange
+): IcrcIndexNgTransactionWithId[] => {
+  if (isNullish(range)) return transactions;
+
+  return transactions.filter((tx) => {
+    const timestamp = tx.transaction.timestamp;
+    if (isNullish(timestamp)) return false;
+
+    const from = range.from;
+    if (nonNullish(from) && timestamp < from) {
+      return false;
+    }
+
+    const to = range.to;
+    if (nonNullish(to) && timestamp >= to) {
+      return false;
+    }
+
+    return true;
+  });
+};
+
+export const getAllIcrcTransactionsForCkTokens = async ({
+  identity,
+  account,
+  range,
+}: {
+  identity: SignIdentity;
+  account: IcrcAccount;
+  range?: TransactionsDateRange;
+}) => {
+  const concurrency = 3;
+
+  const promises = await mapPool(
+    ALL_CK_TOKENS_CANISTER_IDS,
+    async ({ ledgerCanisterId, indexCanisterId }) => {
+      const token = await queryIcrcToken({
+        identity,
+        canisterId: ledgerCanisterId,
+        certified: true,
+      });
+
+      const { transactions, balance } =
+        await getAllIcrcTransactionsFromAccountAndIdentity({
+          account,
+          identity,
+          indexCanisterId,
+          range,
+        });
+
+      return { token, transactions, balance };
+    },
+    concurrency
+  );
+
+  const ckTokens = [];
+  for (const promise of promises) {
+    if (promise.status === "fulfilled") {
+      ckTokens.push(promise.value);
+    } else {
+      // Optionally log or handle errors further, e.g., collect for UI warnings
+      console.warn(
+        "Skipped token due to error:",
+        promise.item.ledgerCanisterId,
+        promise.reason
+      );
+    }
+  }
+
+  return ckTokens;
 };

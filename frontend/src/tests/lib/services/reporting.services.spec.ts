@@ -1,10 +1,15 @@
 import * as icpIndexApi from "$lib/api/icp-index.api";
+import * as icrcIndexApi from "$lib/api/icrc-index.api";
 import {
   getAccountTransactionsConcurrently,
+  getAllIcrcTransactionsForCkTokens,
+  getAllIcrcTransactionsFromAccountAndIdentity,
   getAllTransactionsFromAccountAndIdentity,
   mapAccountOrNeuronToTransactionEntity,
 } from "$lib/services/reporting.services";
+import { mapPool } from "$lib/utils/reporting.utils";
 import { mockSignInIdentity } from "$tests/mocks/auth.store.mock";
+import { mockCanisterId } from "$tests/mocks/canisters.mock";
 import {
   mockMainAccount,
   mockSubAccount,
@@ -13,20 +18,36 @@ import {
   createTransactionWithId,
   dateToNanoSeconds,
 } from "$tests/mocks/icp-transactions.mock";
+import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { SignIdentity } from "@dfinity/agent";
 
 vi.mock("$lib/api/icp-ledger.api");
+vi.mock("$lib/api/icrc-index.api");
+vi.mock("$lib/api/icrc-ledger.api");
+vi.mock("$lib/constants/tokens.constants", () => ({
+  ALL_CK_TOKENS_CANISTER_IDS: [
+    { ledgerCanisterId: "ledger1", indexCanisterId: "index1" },
+    { ledgerCanisterId: "ledger2", indexCanisterId: "index2" },
+  ],
+}));
+vi.mock("$lib/utils/reporting.utils", () => ({
+  mapPool: vi.fn(),
+}));
 
 describe("reporting service", () => {
   const mockAccountId = "test-account-id";
   let spyGetTransactions;
+  let spyGetIcrcTransactions;
+  let spyMapPool;
 
   beforeEach(() => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     vi.spyOn(console, "warn").mockImplementation(() => {});
 
     spyGetTransactions = vi.spyOn(icpIndexApi, "getTransactions");
+    spyGetIcrcTransactions = vi.spyOn(icrcIndexApi, "getTransactions");
+    spyMapPool = vi.mocked(mapPool);
   });
 
   describe("getAllTransactionsFromAccount", () => {
@@ -525,6 +546,467 @@ describe("reporting service", () => {
       expect(result[2].entity).toEqual(neuronEntity);
       expect(result[2].transactions).toEqual(mockTransactions);
       expect(result[2].error).toBeUndefined();
+    });
+  });
+
+  describe("getAllIcrcTransactionsFromAccountAndIdentity", () => {
+    const mockIndexCanisterId = mockCanisterId;
+    const mockAccount = {
+      owner: mockMainAccount.principal,
+    };
+
+    it("should handle no transactions", async () => {
+      spyGetIcrcTransactions.mockResolvedValue({
+        transactions: [],
+        balance: 0n,
+      });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+      });
+
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+      expect(spyGetIcrcTransactions).toHaveBeenCalledWith({
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        maxResults: 50n,
+        start: undefined,
+        account: mockAccount,
+      });
+      expect(result).toEqual({
+        transactions: [],
+        balance: 0n,
+      });
+    });
+
+    it("should handle no transactions in following pages", async () => {
+      const firstBatch = Array.from({ length: 50 }, (_, i) =>
+        createTransactionWithId({ id: BigInt(i + 1) })
+      );
+
+      spyGetIcrcTransactions
+        .mockResolvedValueOnce({
+          transactions: firstBatch,
+          balance: 1000n,
+        })
+        .mockResolvedValueOnce({
+          transactions: [],
+          balance: 1000n,
+        });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+      });
+
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(2);
+      expect(spyGetIcrcTransactions).toHaveBeenCalledWith({
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        maxResults: 50n,
+        start: undefined,
+        account: mockAccount,
+      });
+      expect(result).toEqual({
+        transactions: firstBatch,
+        balance: 1000n,
+      });
+    });
+
+    it("should fetch all transactions in one single call", async () => {
+      const mockTransactions = [
+        createIcrcTransactionWithId({}),
+        createIcrcTransactionWithId({}),
+      ];
+
+      spyGetIcrcTransactions.mockResolvedValue({
+        transactions: mockTransactions,
+        balance: 1000n,
+      });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+      });
+
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+      expect(spyGetIcrcTransactions).toHaveBeenCalledWith({
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        maxResults: 50n,
+        start: undefined,
+        account: mockAccount,
+      });
+      expect(result).toEqual({
+        transactions: mockTransactions,
+        balance: 1000n,
+      });
+    });
+
+    it("should fetch all transactions in multiple iterations", async () => {
+      const firstBatch = Array.from({ length: 50 }, (_, i) =>
+        createTransactionWithId({ id: BigInt(i + 1) })
+      );
+      const secondBatch = [
+        createIcrcTransactionWithId({ id: 51n }),
+        createIcrcTransactionWithId({ id: 52n }),
+      ];
+
+      spyGetIcrcTransactions
+        .mockResolvedValueOnce({
+          transactions: firstBatch,
+          balance: 1000n,
+        })
+        .mockResolvedValueOnce({
+          transactions: secondBatch,
+          balance: 1000n,
+        });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+      });
+
+      expect(result).toEqual({
+        transactions: [...firstBatch, ...secondBatch],
+        balance: 1000n,
+      });
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(2);
+      expect(spyGetIcrcTransactions).toHaveBeenNthCalledWith(1, {
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        maxResults: 50n,
+        start: undefined,
+        account: mockAccount,
+      });
+      expect(spyGetIcrcTransactions).toHaveBeenNthCalledWith(2, {
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        maxResults: 50n,
+        start: 50n,
+        account: mockAccount,
+      });
+    });
+
+    it("should respect the max iterations limit", async () => {
+      const mockTransactions = Array.from({ length: 50 }, (_, i) =>
+        createTransactionWithId({ id: BigInt(i + 1) })
+      );
+
+      spyGetIcrcTransactions.mockResolvedValue({
+        transactions: mockTransactions,
+        balance: 1000n,
+      });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+      });
+
+      expect(result.transactions.length).toBe(2500);
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(50);
+    });
+
+    it("should handle errors and return accumulated transactions", async () => {
+      const firstBatch = [
+        createIcrcTransactionWithId({ id: 3n }),
+        createIcrcTransactionWithId({ id: 2n }),
+      ];
+
+      spyGetIcrcTransactions
+        .mockResolvedValueOnce({
+          transactions: firstBatch,
+          balance: 1000n,
+        })
+        .mockRejectedValueOnce(new Error("API Error"));
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+      });
+
+      expect(result).toEqual({ transactions: firstBatch, balance: 1000n });
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+    });
+
+    it('should filter "to" the provided date excluding to', async () => {
+      const allTransactions = [
+        createIcrcTransactionWithId({
+          id: 3n,
+          timestamp: new Date("2023-01-02T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
+        }),
+      ];
+
+      spyGetIcrcTransactions.mockResolvedValue({
+        transactions: allTransactions,
+        balance: 1000n,
+      });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        range: {
+          to: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
+        },
+      });
+
+      expect(result.transactions).toHaveLength(1);
+      expect(result.transactions).toEqual(allTransactions.slice(2));
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+    });
+
+    it('should filter "from" the provided date', async () => {
+      const allTransactions = [
+        createIcrcTransactionWithId({
+          id: 3n,
+          timestamp: new Date("2023-01-02T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
+        }),
+      ];
+
+      spyGetIcrcTransactions.mockResolvedValue({
+        transactions: allTransactions,
+        balance: 1000n,
+      });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        range: {
+          from: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
+        },
+      });
+
+      expect(result.transactions).toHaveLength(2);
+      expect(result.transactions).toEqual(allTransactions.slice(0, 2));
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle date range where no transactions match", async () => {
+      const allTransactions = [
+        createIcrcTransactionWithId({
+          id: 3n,
+          timestamp: new Date("2023-01-02T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2022-12-30T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-12-29T00:00:00.000Z"),
+        }),
+      ];
+
+      spyGetIcrcTransactions.mockResolvedValue({
+        transactions: allTransactions,
+        balance: 1000n,
+      });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        range: {
+          to: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
+          from: dateToNanoSeconds(new Date("2022-12-31T00:00:00.000Z")),
+        },
+      });
+
+      expect(result.transactions).toHaveLength(0);
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return early if the last transaction in the current page is older than "from" date', async () => {
+      const firstBatch = [
+        createIcrcTransactionWithId({
+          id: 3n,
+          timestamp: new Date("2023-01-02T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-12-30T00:00:00.000Z"),
+        }),
+      ];
+
+      spyGetIcrcTransactions.mockResolvedValueOnce({
+        transactions: firstBatch,
+        balance: 1000n,
+      });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        range: {
+          from: dateToNanoSeconds(new Date("2023-01-01T00:00:00.000Z")),
+        },
+      });
+
+      expect(result.transactions).toHaveLength(1);
+      expect(result.transactions).toEqual([firstBatch[0]]);
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle a range with both "from" and "to" dates', async () => {
+      const allTransactions = [
+        createIcrcTransactionWithId({
+          id: 6n,
+          timestamp: new Date("2023-02-02T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 5n,
+          timestamp: new Date("2023-01-01T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 4n,
+          timestamp: new Date("2022-12-31T10:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 3n,
+          timestamp: new Date("2022-12-31T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 2n,
+          timestamp: new Date("2022-12-30T00:00:00.000Z"),
+        }),
+        createIcrcTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2022-11-20T00:00:00.000Z"),
+        }),
+      ];
+
+      spyGetIcrcTransactions.mockResolvedValueOnce({
+        transactions: allTransactions,
+        balance: 1000n,
+      });
+
+      const result = await getAllIcrcTransactionsFromAccountAndIdentity({
+        account: mockAccount,
+        identity: mockSignInIdentity,
+        indexCanisterId: mockIndexCanisterId,
+        range: {
+          to: dateToNanoSeconds(new Date("2023-01-02T00:00:00.000Z")),
+          from: dateToNanoSeconds(new Date("2022-11-30T00:00:00.000Z")),
+        },
+      });
+      expect(result.transactions).toHaveLength(4);
+      expect(result.transactions).toEqual(allTransactions.slice(1, -1));
+      expect(spyGetIcrcTransactions).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("getAllIcrcTransactionsForCkTokens", () => {
+    const mockAccount = {
+      owner: mockMainAccount.principal,
+    };
+
+    it("should fetch transactions for all CK tokens", async () => {
+      const mockToken = { symbol: "CKBTC" };
+      const mockTransactions = [createIcrcTransactionWithId({})];
+
+      spyMapPool.mockResolvedValue([
+        {
+          status: "fulfilled",
+          value: {
+            token: mockToken,
+            transactions: mockTransactions,
+            balance: 100n,
+          },
+        },
+        {
+          status: "fulfilled",
+          value: {
+            token: mockToken,
+            transactions: mockTransactions,
+            balance: 100n,
+          },
+        },
+      ]);
+
+      const result = await getAllIcrcTransactionsForCkTokens({
+        identity: mockSignInIdentity,
+        account: mockAccount,
+        range: undefined,
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toEqual({
+        token: mockToken,
+        transactions: mockTransactions,
+        balance: 100n,
+      });
+      expect(result[1]).toEqual({
+        token: mockToken,
+        transactions: mockTransactions,
+        balance: 100n,
+      });
+    });
+
+    it("should handle errors and skip failed tokens", async () => {
+      const mockToken = { symbol: "CKBTC" };
+      const mockTransactions = [createIcrcTransactionWithId({})];
+
+      spyMapPool.mockResolvedValue([
+        {
+          status: "fulfilled",
+          value: {
+            token: mockToken,
+            transactions: mockTransactions,
+            balance: 100n,
+          },
+        },
+        {
+          status: "rejected",
+          reason: new Error("Token error"),
+          item: { ledgerCanisterId: "ledger2" },
+        },
+      ]);
+
+      const result = await getAllIcrcTransactionsForCkTokens({
+        identity: mockSignInIdentity,
+        account: mockAccount,
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual({
+        token: mockToken,
+        transactions: mockTransactions,
+        balance: 100n,
+      });
+      expect(console.warn).toHaveBeenCalledWith(
+        "Skipped token due to error:",
+        "ledger2",
+        expect.any(Error)
+      );
     });
   });
 });
