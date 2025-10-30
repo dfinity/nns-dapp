@@ -21,7 +21,7 @@
 
 <div data-tid="address-actions-cell" class="actions">
   <button
-    class="icon-only"
+    class="icon-only icon-settings"
     data-tid="edit-address-button"
     onclick={handleEdit}
     aria-label="Edit {rowData.namedAddress.name}"
@@ -29,7 +29,7 @@
     <IconSettings />
   </button>
   <button
-    class="icon-only"
+    class="icon-only icon-bin"
     data-tid="delete-address-button"
     onclick={handleDelete}
     aria-label="Delete {rowData.namedAddress.name}"
@@ -39,6 +39,12 @@
 </div>
 
 <style lang="scss">
+  .icon-settings {
+    color: var(--primary);
+  }
+  .icon-bin {
+    color: var(--negative-emphasis);
+  }
   .actions {
     display: flex;
     gap: var(--padding);
