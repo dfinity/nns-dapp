@@ -10,6 +10,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { AddressBookTableRowData } from "$lib/types/address-book";
+  import { createAscendingComparator } from "$lib/utils/sort.utils";
   import { IconAdd, IconUserLogin } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
@@ -42,13 +43,18 @@
     }));
   });
 
-  const columns = $derived([
+  const compareByNickname = createAscendingComparator(
+    (rowData: AddressBookTableRowData) => rowData.namedAddress.name
+  );
+
+  const columns = [
     {
       id: "label",
       title: $i18n.address_book.nickname_label,
       cellComponent: LabelCell,
       alignment: "left",
       templateColumns: ["1fr"],
+      comparator: compareByNickname,
     },
     {
       title: $i18n.address_book.address_label,
@@ -57,12 +63,12 @@
       templateColumns: ["2fr"],
     },
     {
-      title: $i18n.core.actions,
+      title: "",
       cellComponent: AddressActionsCell,
       alignment: "right",
       templateColumns: ["max-content"],
     },
-  ] as any[]);
+  ] as any[];
 
   const openAddAddressModal = () => (showAddAddressModal = true);
   const closeAddAddressModal = () => (showAddAddressModal = false);
