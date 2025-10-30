@@ -62,7 +62,7 @@
       alignment: "right",
       templateColumns: ["max-content"],
     },
-  ]);
+  ] as any[]);
 
   const openAddAddressModal = () => (showAddAddressModal = true);
   const closeAddAddressModal = () => (showAddAddressModal = false);
