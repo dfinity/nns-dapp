@@ -11,7 +11,7 @@
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { AddressBookTableRowData } from "$lib/types/address-book";
   import { createAscendingComparator } from "$lib/utils/sort.utils";
-  import { IconAdd, IconUserLogin } from "@dfinity/gix-components";
+  import { IconAdd, IconUserLogin, Spinner } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   layoutTitleStore.set({
@@ -20,9 +20,12 @@
 
   let showAddAddressModal = $state(false);
 
+  // Check if data is still loading (undefined means not loaded yet)
+  const isLoading = $derived($addressBookStore.namedAddresses === undefined);
+
   const isEmpty = $derived(
-    !nonNullish($addressBookStore.namedAddresses) ||
-      $addressBookStore.namedAddresses?.length === 0
+    nonNullish($addressBookStore.namedAddresses) &&
+      $addressBookStore.namedAddresses.length === 0
   );
 
   const isMaxReached = $derived(
@@ -76,7 +79,9 @@
 
 <IslandWidthMain>
   <div class="content" data-tid="address-book-content">
-    {#if isEmpty}
+    {#if isLoading}
+      <Spinner />
+    {:else if isEmpty}
       <div class="is-empty">
         <IconUserLogin size={144} />
         <div class="text">
