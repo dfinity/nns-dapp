@@ -230,6 +230,7 @@
     "transactions_download": "Export Transactions",
     "transactions_source_nns": "NNS",
     "transactions_source_ck": "Ck-Tokens",
+    "transactions_no_results": "No transactions found for the selected date range.",
     "busy_screen": "Generating report... This may take a moment",
     "busy_screen_sns_getting_neurons": "Fetching your neurons across all SNS projects...",
     "principal_account_id": "NNS dapp Account Principal Id",
