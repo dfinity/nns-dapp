@@ -1,5 +1,6 @@
 import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
+import { AddAddressModalPo } from "$tests/page-objects/AddAddressModal.page-object";
 import { AddressBookPo } from "$tests/page-objects/AddressBook.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { BusyScreenPo } from "$tests/page-objects/BusyScreen.page-object";
@@ -98,6 +99,10 @@ export class AppPo extends BasePageObject {
 
   getAddressBookPo(): AddressBookPo {
     return AddressBookPo.under(this.root);
+  }
+
+  getAddAddressModalPo(): AddAddressModalPo {
+    return AddAddressModalPo.under(this.root);
   }
 
   getMenuItemsPo(): MenuItemsPo {

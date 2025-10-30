@@ -48,7 +48,7 @@
     assertNonNullish(column.id);
     order = selectPrimaryOrder({ order, selectedColumnId: column.id });
   };
-  console.log("order", order, tableData, columns);
+
   const getTableStyle = (columns: ResponsiveTableColumn<RowDataType>[]) => {
     // On desktop the first column gets all the remaining space after other
     // columns get as much as their content needs.

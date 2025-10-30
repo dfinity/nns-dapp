@@ -1,4 +1,3 @@
-import { AddAddressModalPo } from "$tests/page-objects/AddAddressModal.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { ResponsiveTablePo } from "$tests/page-objects/ResponsiveTable.page-object";
 import { BasePageObject } from "$tests/page-objects/base.page-object";
@@ -21,10 +20,6 @@ export class AddressBookPo extends BasePageObject {
 
   isAddAddressButtonDisabled(): Promise<boolean> {
     return this.getAddAddressButtonPo().isDisabled();
-  }
-
-  getAddAddressModalPo(): AddAddressModalPo {
-    return AddAddressModalPo.under(this.root);
   }
 
   getResponsiveTablePo(): ResponsiveTablePo {
