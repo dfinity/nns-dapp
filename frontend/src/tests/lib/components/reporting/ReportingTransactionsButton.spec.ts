@@ -620,7 +620,7 @@ describe("ReportingTransactionsButton", () => {
       );
     });
 
-    it.only("should generate correct filename for custom period CK", async () => {
+    it("should generate correct filename for custom period CK", async () => {
       const po = renderComponent({
         source: "ck",
         period: "custom",
