@@ -1,24 +1,72 @@
 <script lang="ts">
+  import AddressActionsCell from "$lib/components/address-book/AddressActionsCell.svelte";
+  import AddressCell from "$lib/components/address-book/AddressCell.svelte";
+  import LabelCell from "$lib/components/address-book/LabelCell.svelte";
   import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
+  import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
+  import { MAX_ADDRESS_BOOK_ENTRIES } from "$lib/constants/address-book.constants";
   import AddAddressModal from "$lib/modals/address-book/AddAddressModal.svelte";
+  import { addressBookStore } from "$lib/stores/address-book.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
+  import type { AddressBookTableRowData } from "$lib/types/address-book";
   import { IconAdd, IconUserLogin } from "@dfinity/gix-components";
+  import { nonNullish } from "@dfinity/utils";
 
   layoutTitleStore.set({
     title: $i18n.navigation.address_book,
   });
 
-  const isEmpty = true;
-  let showAddAddressModal = false;
+  let showAddAddressModal = $state(false);
 
-  const openAddAddressModal = () => {
-    showAddAddressModal = true;
-  };
+  const isEmpty = $derived(
+    !nonNullish($addressBookStore.namedAddresses) ||
+      $addressBookStore.namedAddresses?.length === 0
+  );
 
-  const closeAddAddressModal = () => {
-    showAddAddressModal = false;
-  };
+  const isMaxReached = $derived(
+    nonNullish($addressBookStore.namedAddresses) &&
+      ($addressBookStore.namedAddresses?.length ?? 0) >=
+        MAX_ADDRESS_BOOK_ENTRIES
+  );
+
+  const addressBookData = $derived.by((): AddressBookTableRowData[] => {
+    const addresses = $addressBookStore.namedAddresses;
+    if (!nonNullish(addresses)) {
+      return [];
+    }
+
+    return addresses.map((namedAddress) => ({
+      domKey: namedAddress.name,
+      namedAddress,
+    }));
+  });
+
+  const columns = $derived([
+    {
+      id: "label",
+      title: $i18n.address_book.nickname_label,
+      cellComponent: LabelCell,
+      alignment: "left",
+      templateColumns: ["1fr"],
+    },
+    {
+      id: "address",
+      title: $i18n.address_book.address_label,
+      cellComponent: AddressCell,
+      alignment: "left",
+      templateColumns: ["2fr"],
+    },
+    {
+      title: "",
+      cellComponent: AddressActionsCell,
+      alignment: "right",
+      templateColumns: ["max-content"],
+    },
+  ]);
+
+  const openAddAddressModal = () => (showAddAddressModal = true);
+  const closeAddAddressModal = () => (showAddAddressModal = false);
 </script>
 
 <IslandWidthMain>
@@ -32,7 +80,7 @@
           <button
             data-tid="add-address-button"
             class="primary"
-            on:click={openAddAddressModal}
+            onclick={openAddAddressModal}
           >
             <div class="add-address-button-content">
               <IconAdd size="20" />
@@ -42,7 +90,22 @@
         </div>
       </div>
     {:else}
-      @TODO
+      <div class="table-container">
+        <div class="header">
+          <button
+            data-tid="add-address-button"
+            class="primary"
+            onclick={openAddAddressModal}
+            disabled={isMaxReached}
+          >
+            <div class="add-address-button-content">
+              <IconAdd size="20" />
+              {$i18n.address_book.add_address}
+            </div>
+          </button>
+        </div>
+        <ResponsiveTable tableData={addressBookData} {columns} />
+      </div>
     {/if}
   </div>
 </IslandWidthMain>
@@ -82,6 +145,23 @@
       line-height: 18px;
       color: var(--text-description);
       margin-bottom: 32px;
+    }
+
+    .add-address-button-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+
+  .table-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2x);
+
+    .header {
+      display: flex;
+      justify-content: flex-end;
     }
 
     .add-address-button-content {
