@@ -48,7 +48,7 @@
 </IslandWidthMain>
 
 {#if showAddAddressModal}
-  <AddAddressModal on:nnsClose={closeAddAddressModal} />
+  <AddAddressModal onClose={closeAddAddressModal} />
 {/if}
 
 <style lang="scss">

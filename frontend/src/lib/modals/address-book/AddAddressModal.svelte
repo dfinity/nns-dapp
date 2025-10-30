@@ -12,70 +12,69 @@
   } from "$lib/utils/accounts.utils";
   import { Modal, busy } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
-  import { createEventDispatcher } from "svelte";
 
-  const dispatch = createEventDispatcher();
+  interface Props {
+    onClose?: () => void;
+  }
 
-  let nickname: string = "";
-  let nicknameError: string | undefined = undefined;
+  let { onClose }: Props = $props();
 
-  let address: string = "";
-  let addressError: string | undefined = undefined;
+  let nickname = $state("");
+  let address = $state("");
 
   // Validate nickname
-  $: {
+  const nicknameError = $derived.by(() => {
     if (nickname === "") {
-      nicknameError = undefined;
-    } else if (nickname.length < 3) {
-      nicknameError = $i18n.address_book.nickname_too_short;
-    } else if (nickname.length > 20) {
-      nicknameError = $i18n.address_book.nickname_too_long;
-    } else if (
+      return undefined;
+    }
+    if (nickname.length < 3) {
+      return $i18n.address_book.nickname_too_short;
+    }
+    if (nickname.length > 20) {
+      return $i18n.address_book.nickname_too_long;
+    }
+    if (
       $addressBookStore.namedAddresses?.some(
         (namedAddress) => namedAddress.name === nickname
       )
     ) {
-      nicknameError = $i18n.address_book.nickname_already_used;
-    } else {
-      nicknameError = undefined;
+      return $i18n.address_book.nickname_already_used;
     }
-  }
+    return undefined;
+  });
 
   // Validate address
-  $: {
+  const addressError = $derived.by(() => {
     if (address === "") {
-      addressError = undefined;
-    } else {
-      const isInvalidIcp = invalidIcpAddress(address);
-      const isInvalidIcrc = invalidIcrcAddress(address);
-
-      if (isInvalidIcp && isInvalidIcrc) {
-        addressError = $i18n.address_book.invalid_address;
-      } else {
-        addressError = undefined;
-      }
+      return undefined;
     }
-  }
+    const isInvalidIcp = invalidIcpAddress(address);
+    const isInvalidIcrc = invalidIcrcAddress(address);
+
+    if (isInvalidIcp && isInvalidIcrc) {
+      return $i18n.address_book.invalid_address;
+    }
+    return undefined;
+  });
 
   // Determine if save button should be disabled
-  let disableSave: boolean;
-  $: disableSave =
+  const disableSave = $derived(
     nickname === "" ||
-    address === "" ||
-    nonNullish(nicknameError) ||
-    nonNullish(addressError) ||
-    $busy;
+      address === "" ||
+      nonNullish(nicknameError) ||
+      nonNullish(addressError) ||
+      $busy
+  );
 
-  const close = () => dispatch("nnsClose");
+  const close = () => onClose?.();
 
   const resetForm = () => {
     nickname = "";
     address = "";
-    nicknameError = undefined;
-    addressError = undefined;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: SubmitEvent) => {
+    event.preventDefault();
     // Determine address type
     const isValidIcrc = !invalidIcrcAddress(address);
     const addressType = isValidIcrc ? { Icrc1: address } : { Icp: address };
@@ -118,7 +117,7 @@
     >
   {/snippet}
 
-  <form on:submit|preventDefault={handleSubmit}>
+  <form onsubmit={handleSubmit}>
     <div class="fields">
       <InputWithError
         testId="nickname-input"
@@ -158,7 +157,7 @@
         type="button"
         data-tid="cancel-button"
         disabled={$busy}
-        on:click={close}
+        onclick={close}
       >
         {$i18n.core.cancel}
       </button>

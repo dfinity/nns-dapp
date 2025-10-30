@@ -199,8 +199,8 @@ describe("AddAddressModal", () => {
 
     const { container, queryByTestId } = await renderModal({
       component: AddAddressModal,
-      events: {
-        nnsClose: onClose,
+      props: {
+        onClose,
       },
     });
 
@@ -241,8 +241,8 @@ describe("AddAddressModal", () => {
 
     const { container, queryByTestId } = await renderModal({
       component: AddAddressModal,
-      events: {
-        nnsClose: onClose,
+      props: {
+        onClose,
       },
     });
 
@@ -324,8 +324,8 @@ describe("AddAddressModal", () => {
 
     const { container, queryByTestId } = await renderModal({
       component: AddAddressModal,
-      events: {
-        nnsClose: onClose,
+      props: {
+        onClose,
       },
     });
 
@@ -360,8 +360,8 @@ describe("AddAddressModal", () => {
 
     const { queryByTestId } = await renderModal({
       component: AddAddressModal,
-      events: {
-        nnsClose: onClose,
+      props: {
+        onClose,
       },
     });
 
