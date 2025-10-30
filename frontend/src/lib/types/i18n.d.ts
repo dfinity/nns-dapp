@@ -45,6 +45,7 @@ interface I18nCore {
   copy: string;
   copied: string;
   week: string;
+  actions: string;
 }
 
 interface I18nError {

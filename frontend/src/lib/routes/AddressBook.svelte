@@ -51,14 +51,13 @@
       templateColumns: ["1fr"],
     },
     {
-      id: "address",
       title: $i18n.address_book.address_label,
       cellComponent: AddressCell,
       alignment: "left",
       templateColumns: ["2fr"],
     },
     {
-      title: "",
+      title: $i18n.core.actions,
       cellComponent: AddressActionsCell,
       alignment: "right",
       templateColumns: ["max-content"],
