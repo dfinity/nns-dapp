@@ -107,6 +107,52 @@ describe("AddAddressModal", () => {
     ).toBeInTheDocument();
   });
 
+  it("should show error for duplicate nickname with different case", async () => {
+    addressBookStore.set({
+      namedAddresses: [mockNamedAddress],
+      certified: true,
+    });
+
+    const { container, queryByText } = await renderModal({
+      component: AddAddressModal,
+    });
+
+    const nicknameInput = container.querySelector("input[name='nickname']");
+
+    // Try uppercase version of existing nickname
+    nicknameInput &&
+      (await fireEvent.input(nicknameInput, {
+        target: { value: mockNamedAddress.name.toUpperCase() },
+      }));
+
+    expect(
+      queryByText(en.address_book.nickname_already_used)
+    ).toBeInTheDocument();
+  });
+
+  it("should show error for duplicate nickname with trailing spaces", async () => {
+    addressBookStore.set({
+      namedAddresses: [mockNamedAddress],
+      certified: true,
+    });
+
+    const { container, queryByText } = await renderModal({
+      component: AddAddressModal,
+    });
+
+    const nicknameInput = container.querySelector("input[name='nickname']");
+
+    // Try with trailing spaces
+    nicknameInput &&
+      (await fireEvent.input(nicknameInput, {
+        target: { value: `${mockNamedAddress.name}  ` },
+      }));
+
+    expect(
+      queryByText(en.address_book.nickname_already_used)
+    ).toBeInTheDocument();
+  });
+
   it("should display error if address is invalid", async () => {
     const { container, queryByText } = await renderModal({
       component: AddAddressModal,
