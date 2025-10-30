@@ -544,6 +544,7 @@ interface I18nNew_followee {
   label: string;
   follow_neuron: string;
   options_title: string;
+  known_neurons_title: string;
   follow: string;
   unfollow: string;
   followee_incorrect_id_format: string;
@@ -558,6 +559,14 @@ interface I18nFollow_neurons {
   description: string;
   current_followees: string;
   add: string;
+  required_settings: string;
+  required_settings_description: string;
+  advanced_settings: string;
+  topics_title: string;
+  neuron_title: string;
+  topics_following: string;
+  topic_definitions_description: string;
+  topic_definitions_title: string;
 }
 
 interface I18nFollow_neurons_topic_subtitles {
