@@ -2,7 +2,7 @@ import { getFavProjects, setFavProjects } from "$lib/api/fav-projects.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { mockCreateAgent } from "$tests/mocks/agent.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockFavProject } from "$tests/mocks/icrc-accounts.mock";
+import { mockFavProject } from "$tests/mocks/fav-projects.mock";
 import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 

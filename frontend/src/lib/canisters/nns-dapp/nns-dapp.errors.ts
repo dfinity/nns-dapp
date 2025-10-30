@@ -29,6 +29,46 @@ export class TooManyFavProjectsError extends AccountTranslateError {
   }
 }
 
+export class TooManyNamedAddressesError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
+export class InvalidIcpAddressError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
+export class AddressNameTooLongError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
+export class InvalidIcrc1AddressError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
+export class DuplicateAddressNameError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
 export class SubAccountLimitExceededError extends Error {}
 
 export class NameTooLongError extends AccountTranslateError {

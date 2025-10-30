@@ -26,14 +26,13 @@ import type {
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockCanister, mockCanisters } from "$tests/mocks/canisters.mock";
+import { mockFavProject } from "$tests/mocks/fav-projects.mock";
 import {
   mockAccountDetails,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
-import {
-  mockFavProject,
-  mockImportedToken,
-} from "$tests/mocks/icrc-accounts.mock";
+import { mockImportedToken } from "$tests/mocks/imported-tokens.mock";
+
 import type { HttpAgent } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";

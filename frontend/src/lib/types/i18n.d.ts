@@ -175,9 +175,9 @@ interface I18nNavigation {
 }
 
 interface I18nAddress_book {
+  add_address: string;
   title: string;
   description: string;
-  add_address: string;
 }
 
 interface I18nAlfred {
@@ -1171,6 +1171,16 @@ interface I18nError__fav_projects {
   too_many: string;
 }
 
+interface I18nError__address_book {
+  load_address_book: string;
+  update_address: string;
+  too_many: string;
+  invalid_icp: string;
+  invalid_icrc1: string;
+  name_too_long: string;
+  duplicate_name: string;
+}
+
 interface I18nError__sns {
   undefined_project: string;
   list_summaries: string;
@@ -1782,6 +1792,7 @@ interface I18n {
   error__canister: I18nError__canister;
   error__imported_tokens: I18nError__imported_tokens;
   error__fav_projects: I18nError__fav_projects;
+  error__address_book: I18nError__address_book;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
   auth_report: I18nAuth_report;

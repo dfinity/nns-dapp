@@ -2,24 +2,30 @@ import type { NNSDappCanisterOptions } from "$lib/canisters/nns-dapp/nns-dapp.ca
 import { idlFactory as certifiedIdlFactory } from "$lib/canisters/nns-dapp/nns-dapp.certified.idl";
 import {
   AccountNotFoundError,
+  AddressNameTooLongError,
   CanisterAlreadyAttachedError,
   CanisterLimitExceededError,
   CanisterNameAlreadyTakenError,
   CanisterNameTooLongError,
   CanisterNotFoundError,
+  DuplicateAddressNameError,
   HardwareWalletAttachError,
+  InvalidIcpAddressError,
+  InvalidIcrc1AddressError,
   NameTooLongError,
   ProposalPayloadNotFoundError,
   ProposalPayloadTooLargeError,
   SubAccountLimitExceededError,
   TooManyFavProjectsError,
   TooManyImportedTokensError,
+  TooManyNamedAddressesError,
   UnknownProposalPayloadError,
 } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import type { NNSDappService } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import { idlFactory } from "$lib/canisters/nns-dapp/nns-dapp.idl";
 import type {
   AccountDetails,
+  AddressBook,
   CanisterDetails,
   CreateSubAccountResponse,
   FavProject,
@@ -27,6 +33,7 @@ import type {
   GetAccountResponse,
   ImportedToken,
   ImportedTokens,
+  NamedAddress,
   RegisterHardwareWalletRequest,
   RegisterHardwareWalletResponse,
   RenameSubAccountRequest,
@@ -412,5 +419,65 @@ export class NNSDappCanister {
     }
     // Edge case
     throw new Error(`Error setting fav projects ${JSON.stringify(response)}`);
+  };
+
+  public getAddressBook = async ({
+    certified,
+  }: {
+    certified: boolean;
+  }): Promise<AddressBook> => {
+    const response = await this.getNNSDappService(certified).get_address_book();
+    if ("Ok" in response) {
+      return response.Ok;
+    }
+    if ("AccountNotFound" in response) {
+      throw new AccountNotFoundError("error__account.not_found");
+    }
+    // Edge case
+    throw new Error(`Error getting address book ${JSON.stringify(response)}`);
+  };
+
+  public setAddressBook = async (
+    namedAddresses: Array<NamedAddress>
+  ): Promise<void> => {
+    const response = await this.certifiedService.set_address_book({
+      named_addresses: namedAddresses,
+    });
+    if ("Ok" in response) {
+      return;
+    }
+    if ("AccountNotFound" in response) {
+      throw new AccountNotFoundError("error__account.not_found");
+    }
+    if ("TooManyNamedAddresses" in response) {
+      throw new TooManyNamedAddressesError("error__address_book.too_many", {
+        $limit: response.TooManyNamedAddresses?.limit.toString(),
+      });
+    }
+    if ("InvalidIcpAddress" in response) {
+      throw new InvalidIcpAddressError("error__address_book.invalid_icp", {
+        $error: response.InvalidIcpAddress?.error,
+      });
+    }
+    if ("AddressNameTooLong" in response) {
+      throw new AddressNameTooLongError("error__address_book.name_too_long", {
+        $maxLength: response.AddressNameTooLong?.max_length.toString(),
+      });
+    }
+    if ("InvalidIcrc1Address" in response) {
+      throw new InvalidIcrc1AddressError("error__address_book.invalid_icrc1", {
+        $error: response.InvalidIcrc1Address?.error,
+      });
+    }
+    if ("DuplicateAddressName" in response) {
+      throw new DuplicateAddressNameError(
+        "error__address_book.duplicate_name",
+        {
+          $name: response.DuplicateAddressName?.name,
+        }
+      );
+    }
+    // Edge case
+    throw new Error(`Error setting address book ${JSON.stringify(response)}`);
   };
 }
