@@ -46,14 +46,14 @@
             {
               "name": "TOKEN_ICP",
               "original_amount_e8s": 12707777371395,
-              "amount_e8s": 5752718324395,
+              "amount_e8s": 5753662904518,
               "account": {
                 "owner": "lhdfz-wqaaa-aaaaq-aae3q-cai",
                 "subaccount": null
               },
               "ledger_canister_id": "ryjl3-tyaaa-aaaaa-aaaba-cai",
               "treasury": 1,
-              "timestamp_seconds": 1761184189
+              "timestamp_seconds": 1761793737
             },
             {
               "name": "TOKEN_SNS_TOKEN",
@@ -71,15 +71,15 @@
               },
               "ledger_canister_id": "kknbx-zyaaa-aaaaq-aae4a-cai",
               "treasury": 2,
-              "timestamp_seconds": 1761184189
+              "timestamp_seconds": 1761793737
             }
           ],
           "voting_power_metrics": {
-            "governance_total_potential_voting_power": 322996887929295,
-            "timestamp_seconds": 1761184189
+            "governance_total_potential_voting_power": 169612422003621,
+            "timestamp_seconds": 1761793737
           },
-          "last_ledger_block_timestamp": 1761182026,
-          "num_recently_executed_proposals": 90,
+          "last_ledger_block_timestamp": 1761794286,
+          "num_recently_executed_proposals": 89,
           "num_recently_submitted_proposals": 91,
           "genesis_timestamp_seconds": 1746713375
         }
@@ -87,11 +87,11 @@
     },
     "latest_reward_event": {
       "rounds_since_last_distribution": 1,
-      "actual_timestamp_seconds": 1761142185,
-      "end_timestamp_seconds": 1761142175,
+      "actual_timestamp_seconds": 1761746985,
+      "end_timestamp_seconds": 1761746975,
       "total_available_e8s_equivalent": 0,
       "distributed_e8s_equivalent": 0,
-      "round": 167,
+      "round": 174,
       "settled_proposals": []
     },
     "parameters": {
@@ -478,7 +478,7 @@
       ]
     ],
     "icrc1_fee": [10000],
-    "icrc1_total_supply": 777776980720000,
+    "icrc1_total_supply": 777776967300000,
     "swap_params": {
       "params": {
         "min_participant_icp_e8s": 700000000,
