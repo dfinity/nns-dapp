@@ -1,11 +1,12 @@
 import { getAddressBook, setAddressBook } from "$lib/api/address-book.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
-import { mockCreateAgent } from "$tests/mocks/agent.mock";
-import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockNamedAddress,
   mockNamedAddressIcrc1,
-} from "$tests/mocks/icrc-accounts.mock";
+} from "$tests/mocks/address-book.mock";
+import { mockCreateAgent } from "$tests/mocks/agent.mock";
+import { mockIdentity } from "$tests/mocks/auth.store.mock";
+
 import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
