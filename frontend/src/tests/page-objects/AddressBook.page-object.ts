@@ -19,7 +19,7 @@ export class AddressBookPo extends BasePageObject {
     return this.getAddAddressButtonPo().click();
   }
 
-  async isAddAddressButtonDisabled(): Promise<boolean> {
+  isAddAddressButtonDisabled(): Promise<boolean> {
     return this.getAddAddressButtonPo().isDisabled();
   }
 
