@@ -188,6 +188,7 @@ interface I18nAddress_book {
   nickname_too_long: string;
   nickname_already_used: string;
   invalid_address: string;
+  max_addresses_reached: string;
 }
 
 interface I18nAlfred {

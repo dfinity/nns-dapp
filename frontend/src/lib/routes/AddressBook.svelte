@@ -10,8 +10,14 @@
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { AddressBookTableRowData } from "$lib/types/address-book";
+  import type { ResponsiveTableOrder } from "$lib/types/responsive-table";
   import { createAscendingComparator } from "$lib/utils/sort.utils";
-  import { IconAdd, IconUserLogin, Spinner } from "@dfinity/gix-components";
+  import {
+    IconAdd,
+    IconUserLogin,
+    Spinner,
+    Tooltip,
+  } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   layoutTitleStore.set({
@@ -19,6 +25,7 @@
   });
 
   let showAddAddressModal = $state(false);
+  let order = $state<ResponsiveTableOrder>([{ columnId: "label" }]);
 
   // Check if data is still loading (undefined means not loaded yet)
   const isLoading = $derived($addressBookStore.namedAddresses === undefined);
@@ -102,19 +109,32 @@
     {:else}
       <div class="table-container">
         <div class="header">
-          <button
-            data-tid="add-address-button"
-            class="primary"
-            onclick={openAddAddressModal}
-            disabled={isMaxReached}
-          >
-            <div class="add-address-button-content">
-              <IconAdd size="20" />
-              {$i18n.address_book.add_address}
-            </div>
-          </button>
+          {#snippet addButton()}
+            <button
+              data-tid="add-address-button"
+              class="primary"
+              onclick={openAddAddressModal}
+              disabled={isMaxReached}
+            >
+              <div class="add-address-button-content">
+                <IconAdd size="20" />
+                {$i18n.address_book.add_address}
+              </div>
+            </button>
+          {/snippet}
+
+          {#if isMaxReached}
+            <Tooltip
+              id="add-address-button-disabled"
+              text={$i18n.address_book.max_addresses_reached}
+            >
+              {@render addButton()}
+            </Tooltip>
+          {:else}
+            {@render addButton()}
+          {/if}
         </div>
-        <ResponsiveTable tableData={addressBookData} {columns} />
+        <ResponsiveTable tableData={addressBookData} {columns} bind:order />
       </div>
     {/if}
   </div>
