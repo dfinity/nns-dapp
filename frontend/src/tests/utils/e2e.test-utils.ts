@@ -1,4 +1,5 @@
 import type { FeatureKey } from "$lib/constants/environment.constants";
+import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { HighlightPo } from "$tests/page-objects/Highlight.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
@@ -83,21 +84,18 @@ export const signInWithNewUser = async ({
   await step("Running the main test");
 };
 
-export const setFeatureFlag = ({
-  page,
-  featureFlag,
-  value,
-}: {
-  page: Page;
-  featureFlag: FeatureKey;
-  value: boolean;
-}) =>
-  page.evaluate(
-    ({ featureFlag, value }) =>
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      (window as any).__featureFlags[featureFlag]["overrideWith"](value),
-    { featureFlag, value }
-  );
+export const setFeatureFlag = async (
+  page: Page,
+  featureFlag: FeatureKey,
+  value: boolean
+) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      StoreLocalStorageKey.FeatureFlags,
+      JSON.stringify({ [featureFlag]: value })
+    );
+  });
+};
 
 // Finds elements matching any of the selectors and replaces their
 // `innerHTML` content with any of the `replacements`, if the current content
