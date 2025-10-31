@@ -1,5 +1,7 @@
 import { AccountMenuPo } from "$tests/page-objects/AccountMenu.page-object";
 import { AccountsPo } from "$tests/page-objects/Accounts.page-object";
+import { AddAddressModalPo } from "$tests/page-objects/AddAddressModal.page-object";
+import { AddressBookPo } from "$tests/page-objects/AddressBook.page-object";
 import { BackdropPo } from "$tests/page-objects/Backdrop.page-object";
 import { BusyScreenPo } from "$tests/page-objects/BusyScreen.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
@@ -95,6 +97,14 @@ export class AppPo extends BasePageObject {
     return CanisterDetailPo.under(this.root);
   }
 
+  getAddressBookPo(): AddressBookPo {
+    return AddressBookPo.under(this.root);
+  }
+
+  getAddAddressModalPo(): AddAddressModalPo {
+    return AddAddressModalPo.under(this.root);
+  }
+
   getMenuItemsPo(): MenuItemsPo {
     return MenuItemsPo.under(this.root);
   }
@@ -141,6 +151,14 @@ export class AppPo extends BasePageObject {
     await this.goBackAllTheWay();
     await this.openMenu();
     await this.getMenuItemsPo().clickAccounts();
+    // Menu closes automatically.
+    await this.getBackdropPo().waitForAbsent();
+  }
+
+  async goToAddressBook(): Promise<void> {
+    await this.goBackAllTheWay();
+    await this.openMenu();
+    await this.getMenuItemsPo().clickAddressBook();
     // Menu closes automatically.
     await this.getBackdropPo().waitForAbsent();
   }
