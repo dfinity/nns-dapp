@@ -5,11 +5,11 @@ on:
   workflow_dispatch:
     inputs:
       gix_components:
-        description: 'Update gix-components'
+        description: "Update gix-components"
         default: true
         type: boolean
       ic_js:
-        description: 'Update ic-js'
+        description: "Update ic-js"
         default: true
         type: boolean
 jobs:
@@ -28,7 +28,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
           node-version: ${{ env.NODE_VERSION }}
       - name: Update gix-components
         if: ${{ inputs.gix_components }}
@@ -51,7 +51,7 @@ jobs:
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-bump-next
           branch-suffix: timestamp
-          reviewers: mstrasinskis, yhabib
+          reviewers: yhabib
           add-paths: |
             frontend
           delete-branch: true
