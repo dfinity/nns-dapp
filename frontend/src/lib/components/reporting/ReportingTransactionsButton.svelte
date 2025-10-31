@@ -9,7 +9,7 @@
   import { authStore } from "$lib/stores/auth.store";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { Account } from "$lib/types/account";
   import type {
     ReportingPeriod,
@@ -104,9 +104,19 @@
         data: TransactionsCsvData[];
       }[] = [];
 
-      for (const ckToken of ckTokens) {
-        if (ckToken.transactions.length === 0) continue;
+      const ckTokensWithTransactions = ckTokens.filter(
+        (ckToken) => ckToken.transactions.length > 0
+      );
 
+      if (ckTokensWithTransactions.length === 0) {
+        toastsShow({
+          labelKey: "reporting.transactions_no_results",
+          level: "info",
+        });
+        return;
+      }
+
+      for (const ckToken of ckTokensWithTransactions) {
         const account: Account = {
           type: "main",
           principal: mainAccount.owner,

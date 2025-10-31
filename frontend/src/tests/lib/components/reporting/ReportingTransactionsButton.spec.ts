@@ -79,18 +79,6 @@ describe("ReportingTransactionsButton", () => {
       balance: 0n,
       oldestTxId: 1n,
     });
-
-    // const mockIcrcTransactions = [
-    //   createIcrcTransactionWithId({}),
-    //   createIcrcTransactionWithId({
-    //     id: 1n,
-    //   }),
-    // ];
-    // vi.spyOn(icrcIndex, "getTransactions").mockResolvedValue({
-    //   transactions: mockIcrcTransactions,
-    //   balance: 0n,
-    //   oldestTxId: 1n,
-    // });
   });
 
   const renderComponent = (
@@ -583,6 +571,7 @@ describe("ReportingTransactionsButton", () => {
         createIcrcTransactionWithId({}),
         createIcrcTransactionWithId({
           id: 1n,
+          timestamp: new Date("2023-01-05T12:00:00Z"),
         }),
       ];
       vi.spyOn(icrcIndex, "getTransactions").mockImplementation(
@@ -635,8 +624,8 @@ describe("ReportingTransactionsButton", () => {
       const po = renderComponent({
         source: "ck",
         period: "custom",
-        customFrom: "2024-01-01",
-        customTo: "2024-01-31",
+        customFrom: "2023-01-01",
+        customTo: "2023-01-31",
       });
 
       await po.click();
@@ -645,7 +634,7 @@ describe("ReportingTransactionsButton", () => {
       expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
         expect.objectContaining({
           fileName:
-            "ck-tokens_transactions_export_20231014_custom_2024-01-01_2024-01-31",
+            "ck-tokens_transactions_export_20231014_custom_2023-01-01_2023-01-31",
         })
       );
     });
@@ -722,6 +711,37 @@ describe("ReportingTransactionsButton", () => {
       await runResolvedPromises();
 
       expect(await po.isDisabled()).toBe(false);
+    });
+
+    it("should show info toast and skip CSV generation when no CK transactions", async () => {
+      spyGetAllIcrcTransactionsForCkTokens.mockResolvedValue([
+        {
+          token: {
+            symbol: "CKBTC",
+            name: "Chain Key Bitcoin",
+            fee: 10n,
+            decimals: 8,
+          },
+          transactions: [],
+          balance: 0n,
+        },
+      ]);
+
+      const spyToastsShow = vi.spyOn(toastsStore, "toastsShow");
+
+      const po = renderComponent({ source: "ck" });
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(0);
+      expect(spyToastsShow).toHaveBeenCalledTimes(0);
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyToastsShow).toHaveBeenCalledWith({
+        labelKey: "reporting.transactions_no_results",
+        level: "info",
+      });
+      expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(0);
     });
   });
 });
