@@ -43,9 +43,7 @@
 
   const addressBookData = $derived.by((): AddressBookTableRowData[] => {
     const addresses = $addressBookStore.namedAddresses;
-    if (!nonNullish(addresses)) {
-      return [];
-    }
+    if (!nonNullish(addresses)) return [];
 
     return addresses.map((namedAddress) => ({
       domKey: namedAddress.name,
@@ -84,6 +82,20 @@
   const closeAddAddressModal = () => (showAddAddressModal = false);
 </script>
 
+{#snippet addButton()}
+  <button
+    data-tid="add-address-button"
+    class="primary"
+    onclick={openAddAddressModal}
+    disabled={isMaxReached}
+  >
+    <div class="add-address-button-content">
+      <IconAdd size="20" />
+      {$i18n.address_book.add_address}
+    </div>
+  </button>
+{/snippet}
+
 <IslandWidthMain>
   <div class="content" data-tid="address-book-content">
     {#if isLoading}
@@ -94,35 +106,12 @@
         <div class="text">
           <p class="title">{$i18n.address_book.title}</p>
           <p class="description">{$i18n.address_book.description}</p>
-          <button
-            data-tid="add-address-button"
-            class="primary"
-            onclick={openAddAddressModal}
-          >
-            <div class="add-address-button-content">
-              <IconAdd size="20" />
-              {$i18n.address_book.add_address}
-            </div>
-          </button>
+          {@render addButton()}
         </div>
       </div>
     {:else}
       <div class="table-container">
         <div class="header">
-          {#snippet addButton()}
-            <button
-              data-tid="add-address-button"
-              class="primary"
-              onclick={openAddAddressModal}
-              disabled={isMaxReached}
-            >
-              <div class="add-address-button-content">
-                <IconAdd size="20" />
-                {$i18n.address_book.add_address}
-              </div>
-            </button>
-          {/snippet}
-
           {#if isMaxReached}
             <Tooltip
               id="add-address-button-disabled"
