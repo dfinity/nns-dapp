@@ -10,7 +10,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import type { AddressBookTableRowData } from "$lib/types/address-book";
-  import type { ResponsiveTableOrder } from "$lib/types/responsive-table";
+  import type {
+    ResponsiveTableColumn,
+    ResponsiveTableOrder,
+  } from "$lib/types/responsive-table";
   import { createAscendingComparator } from "$lib/utils/sort.utils";
   import {
     IconAdd,
@@ -76,7 +79,7 @@
       alignment: "right",
       templateColumns: ["max-content"],
     },
-  ] as any[];
+  ] as unknown as ResponsiveTableColumn<AddressBookTableRowData, string>[];
 
   const openAddAddressModal = () => (showAddAddressModal = true);
   const closeAddAddressModal = () => (showAddAddressModal = false);
