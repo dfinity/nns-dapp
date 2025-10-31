@@ -224,6 +224,7 @@
     "neurons_source_nns": "NNS",
     "neurons_source_sns": "SNS projects",
     "neurons_download": "Export Neuron Portfolio",
+    "neurons_no_results": "No neurons found.",
     "loading_sns_projects": "Loading sns projects...",
     "transactions_title": "Transactions",
     "transactions_description": "Download a detailed CSV report of your transaction history, including both regular token accounts and neurons showing staking and minting transactions for manual tracking and analysis.",
