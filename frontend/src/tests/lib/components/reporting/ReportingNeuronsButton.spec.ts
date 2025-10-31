@@ -327,10 +327,6 @@ describe("ReportingNeuronsButton", () => {
   it("should not generate CSV and show info toast when no SNS neurons are found", async () => {
     setSnsProjects([{ projectName: "ProjA" }]);
 
-    const spyQuerySnsNeurons = vi
-      .spyOn(snsGovernanceApi, "querySnsNeurons")
-      .mockResolvedValue([]);
-
     const spyGenerateCsvFileToSave = vi
       .spyOn(exportToCsvUtils, "generateCsvFileToSave")
       .mockResolvedValue();
