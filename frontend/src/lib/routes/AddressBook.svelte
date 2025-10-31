@@ -4,6 +4,7 @@
   import LabelCell from "$lib/components/address-book/LabelCell.svelte";
   import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
   import ResponsiveTable from "$lib/components/ui/ResponsiveTable.svelte";
+  import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { MAX_ADDRESS_BOOK_ENTRIES } from "$lib/constants/address-book.constants";
   import AddAddressModal from "$lib/modals/address-book/AddAddressModal.svelte";
   import { addressBookStore } from "$lib/stores/address-book.store";
@@ -28,6 +29,7 @@
   });
 
   let showAddAddressModal = $state(false);
+  let editingAddress = $state<NamedAddress | undefined>(undefined);
   let order = $state<ResponsiveTableOrder>([{ columnId: "label" }]);
 
   // Check if data is still loading (undefined means not loaded yet)
@@ -43,6 +45,21 @@
       ($addressBookStore.namedAddresses.length ?? 0) >= MAX_ADDRESS_BOOK_ENTRIES
   );
 
+  const openAddAddressModal = () => {
+    editingAddress = undefined;
+    showAddAddressModal = true;
+  };
+
+  const openEditAddressModal = (namedAddress: NamedAddress) => {
+    editingAddress = namedAddress;
+    showAddAddressModal = true;
+  };
+
+  const closeAddAddressModal = () => {
+    showAddAddressModal = false;
+    editingAddress = undefined;
+  };
+
   const addressBookData = $derived.by((): AddressBookTableRowData[] => {
     const addresses = $addressBookStore.namedAddresses;
     if (!nonNullish(addresses)) return [];
@@ -50,6 +67,9 @@
     return addresses.map((namedAddress) => ({
       domKey: namedAddress.name,
       namedAddress,
+      rowContext: {
+        onEdit: openEditAddressModal,
+      },
     }));
   });
 
@@ -79,9 +99,6 @@
       templateColumns: ["max-content"],
     },
   ] as unknown as ResponsiveTableColumn<AddressBookTableRowData, string>[];
-
-  const openAddAddressModal = () => (showAddAddressModal = true);
-  const closeAddAddressModal = () => (showAddAddressModal = false);
 </script>
 
 {#snippet addButton({ disabled = false } = {})}
@@ -132,7 +149,10 @@
 </IslandWidthMain>
 
 {#if showAddAddressModal}
-  <AddAddressModal onClose={closeAddAddressModal} />
+  <AddAddressModal
+    onClose={closeAddAddressModal}
+    namedAddress={editingAddress}
+  />
 {/if}
 
 <style lang="scss">
