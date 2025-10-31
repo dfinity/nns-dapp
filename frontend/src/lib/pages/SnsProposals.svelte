@@ -84,10 +84,10 @@
 
   // Fetch the proposals only on filters or project change.
   // TODO(e2e): cover this with e2e tests.
-  $: $snsOnlyProjectStore,
+  $: ($snsOnlyProjectStore,
     $snsFiltersStore,
     $nsFunctionsStore,
-    (() => fetchProposals($snsFiltersStore))();
+    (() => fetchProposals($snsFiltersStore))());
 
   let loadingNextPage = false;
   let loadNextPage: () => Promise<void>;

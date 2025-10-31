@@ -135,12 +135,12 @@
     neuron,
   });
 
-  $: neuron,
+  $: (neuron,
     (() =>
       selectedNeuronStore.update((data) => ({
         ...data,
         neuron,
-      })))();
+      })))());
 
   setContext<NnsNeuronContext>(NNS_NEURON_CONTEXT_KEY, {
     store: selectedNeuronStore,

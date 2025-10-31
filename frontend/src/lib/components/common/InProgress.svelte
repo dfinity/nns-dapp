@@ -35,7 +35,7 @@
     ) as [ProgressStep, ...ProgressStep[]];
   };
 
-  $: progressStep, updateSteps();
+  $: (progressStep, updateSteps());
 </script>
 
 <TestIdWrapper testId="in-progress-component">

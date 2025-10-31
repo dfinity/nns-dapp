@@ -11,13 +11,13 @@
     ? actionableProposalsSegmentId
     : allProposalsSegmentId;
 
-  $: selectedSegmentId,
+  $: (selectedSegmentId,
     (() =>
       actionableProposalsSegmentStore.set(
         selectedSegmentId === actionableProposalsSegmentId
           ? "actionable"
           : "all"
-      ))();
+      ))());
 </script>
 
 <div data-tid="actionable-proposals-segment-component">

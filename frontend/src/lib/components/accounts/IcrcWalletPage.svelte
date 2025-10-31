@@ -142,12 +142,12 @@
     loaded = true;
   };
 
-  $: accountIdentifier,
+  $: (accountIdentifier,
     (async () =>
       await loadData({
         ledgerCanisterId,
         isSignedIn: $authSignedInStore,
-      }))();
+      }))());
 
   let moreButton: HTMLButtonElement | undefined;
   let morePopupVisible = false;

@@ -57,8 +57,8 @@
     $voteRegistrationStore.registrations[OWN_CANISTER_ID_TEXT] ?? []
   ).find(({ proposalIdString }) => `${proposalInfo.id}` === proposalIdString);
 
-  $: $definedNeuronsStore,
-    (visible = isProposalDeadlineInTheFuture(proposalInfo));
+  $: ($definedNeuronsStore,
+    (visible = isProposalDeadlineInTheFuture(proposalInfo)));
 
   const updateVotingNeuronSelectedStore = ({
     neurons,
@@ -124,7 +124,7 @@
   };
 
   let neuronsReady = false;
-  $: $neuronsStore, (neuronsReady = neuronsStoreReady());
+  $: ($neuronsStore, (neuronsReady = neuronsStoreReady()));
 
   let neuronsVotedForProposal: CompactNeuronInfo[];
   $: {

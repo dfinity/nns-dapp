@@ -72,6 +72,7 @@ describe("AddAccountModal", () => {
       (await fireEvent.click(accountCard.parentElement));
 
     await tick();
+    await runResolvedPromises();
     expect(queryByText(en.accounts.attach_hardware_enter_name)).not.toBeNull();
   };
 
@@ -107,6 +108,7 @@ describe("AddAccountModal", () => {
     accountCard?.parentElement &&
       (await fireEvent.click(accountCard.parentElement));
     await tick();
+    await runResolvedPromises();
 
     const input = container.querySelector('input[name="add-text-input"]');
     // Svelte generates code for listening to the `input` event
@@ -133,11 +135,17 @@ describe("AddAccountModal", () => {
     accountCard?.parentElement &&
       (await fireEvent.click(accountCard.parentElement));
     await tick();
+    await runResolvedPromises();
 
     const input = container.querySelector('input[name="add-text-input"]');
+    expect(input).not.toBeNull();
     // Svelte generates code for listening to the `input` event
     // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
-    input && (await fireEvent.input(input, { target: { value: "test name" } }));
+    await fireEvent.input(input, { target: { value: "test name" } });
+    await fireEvent.blur(input);
+
+    await runResolvedPromises();
+    await tick();
 
     const createButton = container.querySelector('button[type="submit"]');
 

@@ -53,8 +53,8 @@
   inputType="number"
   {errorMessage}
   {warningMessage}
-  on:nnsInput={showError}
-  on:blur={showError}
+  onInput={showError}
+  onBlur={showError}
   {disabled}
 >
   <MinButton on:click={setMin} slot="start" {disabled} />

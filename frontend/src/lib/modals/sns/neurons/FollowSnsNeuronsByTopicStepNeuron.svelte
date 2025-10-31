@@ -32,7 +32,7 @@
     name="new-followee-id"
     {errorMessage}
     bind:value={followeeHex}
-    on:nnsInput={() => {
+    onInput={() => {
       // Hide error message when user starts typing
       errorMessage = undefined;
     }}

@@ -45,7 +45,7 @@
     });
   };
 
-  $: $metricsStore, (() => transactionRateWarning())();
+  $: ($metricsStore, (() => transactionRateWarning())());
 </script>
 
 <!-- display transaction rate warnings -->

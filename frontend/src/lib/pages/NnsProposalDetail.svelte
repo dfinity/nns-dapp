@@ -95,7 +95,7 @@
     });
   };
 
-  $: $authStore.identity,
+  $: ($authStore.identity,
     proposalId,
     (async () => {
       if (proposalId === undefined) {
@@ -110,7 +110,7 @@
       });
 
       await findProposal();
-    })();
+    })());
 
   // END: loading and navigation
 

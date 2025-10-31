@@ -45,7 +45,7 @@
           )
         : undefined);
 
-  $: amount,
+  $: (amount,
     amountCycles,
     (() => {
       switch (isChanging) {
@@ -55,7 +55,7 @@
         case "tCycles":
           setAmount();
       }
-    })();
+    })());
 
   const dispatcher = createEventDispatcher();
   const selectAmount = () => {
@@ -74,8 +74,8 @@
       inputType="icp"
       name="icp-amount"
       bind:value={amount}
-      on:focus={() => (isChanging = "icp")}
-      on:blur={() => (isChanging = undefined)}
+      onFocus={() => (isChanging = "icp")}
+      onBlur={() => (isChanging = undefined)}
       disabled={icpToCyclesExchangeRate === undefined}
     >
       <span class="label" slot="label">{$i18n.core.icp}</span>
@@ -91,8 +91,8 @@
       inputType="icp"
       name="t-cycles-amount"
       bind:value={amountCycles}
-      on:focus={() => (isChanging = "tCycles")}
-      on:blur={() => (isChanging = undefined)}
+      onFocus={() => (isChanging = "tCycles")}
+      onBlur={() => (isChanging = undefined)}
       disabled={icpToCyclesExchangeRate === undefined}
     >
       <span class="label" slot="label">

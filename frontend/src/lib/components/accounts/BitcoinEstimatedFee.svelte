@@ -39,7 +39,7 @@
 
   const debounceEstimateFee = debounce(loadEstimatedFee);
 
-  $: selectedNetwork, amount, (async () => debounceEstimateFee())();
+  $: (selectedNetwork, amount, (async () => debounceEstimateFee())());
 </script>
 
 {#if nonNullish(bitcoinEstimatedFee)}

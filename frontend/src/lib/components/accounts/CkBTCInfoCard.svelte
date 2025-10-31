@@ -96,15 +96,17 @@
     <div class="qr-code">
       {#if nonNullish(btcAddress)}
         <QRCode value={btcAddress}>
-          <div class="logo" slot="logo">
-            <Logo
-              src={BITCOIN_LOGO}
-              size="medium"
-              framed={false}
-              testId="logo"
-              alt="ckBTC logo"
-            />
-          </div>
+          {#snippet logo()}
+            <div class="logo">
+              <Logo
+                src={BITCOIN_LOGO}
+                size="medium"
+                framed={false}
+                testId="logo"
+                alt="ckBTC logo"
+              />
+            </div>
+          {/snippet}
         </QRCode>
       {:else}
         <Spinner />

@@ -103,7 +103,7 @@
    * We load all the sns summaries and swap commitments on the global scale of the app.
    * That's why we subscribe to these stores - i.e. each times they change, we can try to find the current root canister id within these data.
    */
-  $: $snsSummariesStore,
+  $: ($snsSummariesStore,
     $snsSwapCommitmentsStore,
     $snsTotalSupplyTokenAmountStore,
     (async () => {
@@ -137,7 +137,7 @@
 
       $projectDetailStore.totalTokensSupply =
         $snsTotalSupplyTokenAmountStore[rootCanisterId];
-    })();
+    })());
 
   /////////////////////////////////
   // Set up watchers and load the data in stores

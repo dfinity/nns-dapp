@@ -33,7 +33,7 @@
   inputType="currency"
   decimals={Math.min(token.decimals, ICP_DISPLAYED_DECIMALS_DETAILED)}
   {errorMessage}
-  on:nnsInput={onInput}
+  {onInput}
 >
   <span class="label" slot="label">{$i18n.core.amount}</span>
 
