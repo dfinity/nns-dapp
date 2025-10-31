@@ -1,5 +1,3 @@
-import type { FeatureKey } from "$lib/constants/environment.constants";
-import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { HighlightPo } from "$tests/page-objects/Highlight.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
@@ -82,19 +80,6 @@ export const signInWithNewUser = async ({
   await expect(iiPage.isClosed()).toBe(true);
 
   await step("Running the main test");
-};
-
-export const setFeatureFlag = async (
-  page: Page,
-  featureFlag: FeatureKey,
-  value: boolean
-) => {
-  await page.addInitScript(() => {
-    localStorage.setItem(
-      StoreLocalStorageKey.FeatureFlags,
-      JSON.stringify({ [featureFlag]: value })
-    );
-  });
 };
 
 // Finds elements matching any of the selectors and replaces their
