@@ -87,5 +87,4 @@ test("Test address book functionality", async ({ page, context }) => {
   expect(rowsData2[0].address).toBe(shortenWithMiddleEllipsis(icpAddress));
   expect(rowsData2[1].nickname).toBe("Bob ICRC1");
   expect(rowsData2[1].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
-  // TODO: Test the edit and delete buttons from this point on later
 });
