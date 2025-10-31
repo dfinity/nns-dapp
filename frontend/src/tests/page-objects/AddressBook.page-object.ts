@@ -52,8 +52,12 @@ export class AddressBookPo extends BasePageObject {
 
     return Promise.all(
       rows.map(async (row) => {
-        const cells = await row.getCells();
-        return { nickname: cells[0], address: cells[1] };
+        const cellElements = await row.root.querySelectorAll(
+          "[role='cell'] .cell-body"
+        );
+        const nickname = (await cellElements[0].getText()).trim();
+        const address = (await cellElements[1].getText()).trim();
+        return { nickname, address };
       })
     );
   }

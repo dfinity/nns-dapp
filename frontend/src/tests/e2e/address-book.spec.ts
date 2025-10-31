@@ -59,7 +59,7 @@ test("Test address book functionality", async ({ page, context }) => {
   expect(rowsData).toHaveLength(1);
   expect(rowsData[0].nickname).toBe("Alice ICP");
   expect(rowsData[0].address).toBe(shortenWithMiddleEllipsis(icpAddress));
-  return;
+
   step("Click add address button again");
   await addressBookPo.clickAddAddress();
   await addAddressModalPo.waitFor();
@@ -67,7 +67,6 @@ test("Test address book functionality", async ({ page, context }) => {
   step("Modal reopens empty");
   expect(await addAddressModalPo.getNicknameInputPo().getValue()).toBe("");
   expect(await addAddressModalPo.getAddressInputPo().getValue()).toBe("");
-
   step("Add new valid ICRC1 name and address");
   const icrc1Address = (mockNamedAddressIcrc1.address as { Icrc1: string })
     .Icrc1;
@@ -88,6 +87,5 @@ test("Test address book functionality", async ({ page, context }) => {
   expect(rowsData2[0].address).toBe(shortenWithMiddleEllipsis(icpAddress));
   expect(rowsData2[1].nickname).toBe("Bob ICRC1");
   expect(rowsData2[1].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
-
   // TODO: Test the edit and delete buttons from this point on later
 });
