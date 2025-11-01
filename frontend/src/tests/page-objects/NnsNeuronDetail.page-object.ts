@@ -168,6 +168,9 @@ export class NnsNeuronDetailPo extends BasePageObject {
       .getButton()
       .click();
     const modal = this.getNnsNeuronModalsPo().getDisburseMaturityModalPo();
+    // Ensure the modal and its input are rendered before interacting
+    await modal.waitFor();
+    await modal.getNeuronSelectPercentagePo().getInputRangePo().waitFor();
     await modal.disburseMaturity({ percentage });
     await modal.waitForClosed();
   }
