@@ -416,4 +416,280 @@ describe("AddAddressModal", () => {
 
     expect(onClose).toHaveBeenCalled();
   });
+
+  describe("Edit mode", () => {
+    it("should display 'Edit Address' title when namedAddress is provided", async () => {
+      const { queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+        },
+      });
+
+      expect(queryByTestId("add-address-modal-title")).toBeInTheDocument();
+      expect(queryByTestId("add-address-modal-title")?.textContent).toBe(
+        en.address_book.edit_address
+      );
+    });
+
+    it("should prefill form with existing data", async () => {
+      const { container } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+        },
+      });
+
+      const nicknameInput = container.querySelector(
+        "input[name='nickname']"
+      ) as HTMLInputElement;
+      const addressInput = container.querySelector(
+        "input[name='address']"
+      ) as HTMLInputElement;
+
+      expect(nicknameInput?.value).toBe(mockNamedAddress.name);
+      expect(addressInput?.value).toBe(
+        (mockNamedAddress.address as { Icp: string }).Icp
+      );
+    });
+
+    it("should prefill form with ICRC1 address data", async () => {
+      const { container } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddressIcrc1,
+        },
+      });
+
+      const nicknameInput = container.querySelector(
+        "input[name='nickname']"
+      ) as HTMLInputElement;
+      const addressInput = container.querySelector(
+        "input[name='address']"
+      ) as HTMLInputElement;
+
+      expect(nicknameInput?.value).toBe(mockNamedAddressIcrc1.name);
+      expect(addressInput?.value).toBe(
+        (mockNamedAddressIcrc1.address as { Icrc1: string }).Icrc1
+      );
+    });
+
+    it("should disable save button when nothing has changed", async () => {
+      const { queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+        },
+      });
+
+      const saveButton = queryByTestId("save-address-button");
+      expect(saveButton?.hasAttribute("disabled")).toBe(true);
+    });
+
+    it("should enable save button when nickname is changed", async () => {
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+        },
+      });
+
+      const nicknameInput = container.querySelector("input[name='nickname']");
+
+      nicknameInput &&
+        (await fireEvent.input(nicknameInput, {
+          target: { value: "NewNickname" },
+        }));
+
+      const saveButton = queryByTestId("save-address-button");
+      expect(saveButton?.hasAttribute("disabled")).toBe(false);
+    });
+
+    it("should enable save button when address is changed", async () => {
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+        },
+      });
+
+      const addressInput = container.querySelector("input[name='address']");
+
+      addressInput &&
+        (await fireEvent.input(addressInput, {
+          target: { value: validIcrc1Address },
+        }));
+
+      const saveButton = queryByTestId("save-address-button");
+      expect(saveButton?.hasAttribute("disabled")).toBe(false);
+    });
+
+    it("should disable save button when changes are reverted", async () => {
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+        },
+      });
+
+      const nicknameInput = container.querySelector("input[name='nickname']");
+
+      // Change the value
+      nicknameInput &&
+        (await fireEvent.input(nicknameInput, {
+          target: { value: "NewNickname" },
+        }));
+
+      let saveButton = queryByTestId("save-address-button");
+      expect(saveButton?.hasAttribute("disabled")).toBe(false);
+
+      // Revert the value
+      nicknameInput &&
+        (await fireEvent.input(nicknameInput, {
+          target: { value: mockNamedAddress.name },
+        }));
+
+      saveButton = queryByTestId("save-address-button");
+      expect(saveButton?.hasAttribute("disabled")).toBe(true);
+    });
+
+    it("should allow keeping same nickname when editing", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddress, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const { container, queryByText, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+        },
+      });
+
+      const addressInput = container.querySelector("input[name='address']");
+
+      // Change only the address, keep the same nickname
+      addressInput &&
+        (await fireEvent.input(addressInput, {
+          target: { value: validIcrc1Address },
+        }));
+
+      // Should not show nickname already used error
+      expect(
+        queryByText(en.address_book.nickname_already_used)
+      ).not.toBeInTheDocument();
+
+      // Save button should be enabled
+      const saveButton = queryByTestId("save-address-button");
+      expect(saveButton?.hasAttribute("disabled")).toBe(false);
+    });
+
+    it("should not allow using another existing nickname", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddress, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const { container, queryByText } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+        },
+      });
+
+      const nicknameInput = container.querySelector("input[name='nickname']");
+
+      // Try to use Bob's nickname (the other existing address)
+      nicknameInput &&
+        (await fireEvent.input(nicknameInput, {
+          target: { value: mockNamedAddressIcrc1.name },
+        }));
+
+      expect(
+        queryByText(en.address_book.nickname_already_used)
+      ).toBeInTheDocument();
+    });
+
+    it("should call saveAddressBook with updated address", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddress],
+        certified: true,
+      });
+
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+
+      const onClose = vi.fn();
+
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+          onClose,
+        },
+      });
+
+      const nicknameInput = container.querySelector("input[name='nickname']");
+
+      // Change the nickname
+      nicknameInput &&
+        (await fireEvent.input(nicknameInput, {
+          target: { value: "UpdatedNickname" },
+        }));
+
+      const saveButton = queryByTestId("save-address-button");
+      saveButton && (await fireEvent.click(saveButton));
+
+      await waitFor(() =>
+        expect(saveAddressBookSpy).toHaveBeenCalledWith([
+          {
+            name: "UpdatedNickname",
+            address: mockNamedAddress.address,
+          },
+        ])
+      );
+
+      await waitFor(() => expect(onClose).toHaveBeenCalled());
+    });
+
+    it("should replace the correct entry when multiple addresses exist", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddress, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: {
+          namedAddress: mockNamedAddress,
+        },
+      });
+
+      const addressInput = container.querySelector("input[name='address']");
+
+      // Change Alice's address
+      addressInput &&
+        (await fireEvent.input(addressInput, {
+          target: { value: validIcrc1Address },
+        }));
+
+      const saveButton = queryByTestId("save-address-button");
+      saveButton && (await fireEvent.click(saveButton));
+
+      await waitFor(() =>
+        expect(saveAddressBookSpy).toHaveBeenCalledWith([
+          {
+            name: mockNamedAddress.name,
+            address: { Icrc1: validIcrc1Address },
+          },
+          mockNamedAddressIcrc1,
+        ])
+      );
+    });
+  });
 });
