@@ -11,6 +11,9 @@ export const SNS_AGGREGATOR_CANISTER_URL = envVars.snsAggregatorUrl ?? "";
 
 export const ICP_SWAP_URL = envVars.icpSwapUrl ?? "";
 
+// Default to public API base if not provided (dev convenience)
+export const KONG_SWAP_URL = envVars.kongSwapUrl ?? "https://api.kongswap.io";
+
 export const PLAUSIBLE_DOMAIN = envVars.plausibleDomain;
 
 export interface FeatureFlags<T> {
