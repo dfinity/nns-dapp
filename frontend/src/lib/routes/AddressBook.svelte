@@ -1,5 +1,6 @@
 <script lang="ts">
   import IslandWidthMain from "$lib/components/layout/IslandWidthMain.svelte";
+  import AddAddressModal from "$lib/modals/address-book/AddAddressModal.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
   import { IconAdd, IconUserLogin } from "@dfinity/gix-components";
@@ -9,6 +10,15 @@
   });
 
   const isEmpty = true;
+  let showAddAddressModal = false;
+
+  const openAddAddressModal = () => {
+    showAddAddressModal = true;
+  };
+
+  const closeAddAddressModal = () => {
+    showAddAddressModal = false;
+  };
 </script>
 
 <IslandWidthMain>
@@ -22,7 +32,7 @@
           <button
             data-tid="add-address-button"
             class="primary"
-            on:click={() => {}}
+            on:click={openAddAddressModal}
           >
             <div class="add-address-button-content">
               <IconAdd size="20" />
@@ -36,6 +46,10 @@
     {/if}
   </div>
 </IslandWidthMain>
+
+{#if showAddAddressModal}
+  <AddAddressModal onClose={closeAddAddressModal} />
+{/if}
 
 <style lang="scss">
   .is-empty {

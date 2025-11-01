@@ -170,7 +170,17 @@
   "address_book": {
     "add_address": "Add New Address",
     "title": "Save Wallet Addresses for Quick & Secure Access",
-    "description": "Effortlessly manage your withdrawals by saving wallet addresses in one place. Add custom labels to stay organized and speed up your transactions."
+    "description": "Effortlessly manage your withdrawals by saving wallet addresses in one place. Add custom labels to stay organized and speed up your transactions.",
+    "nickname_label": "Nickname",
+    "nickname_placeholder": "3-20 characters e.g. John's ICP Wallet",
+    "address_label": "Address",
+    "address_placeholder": "Enter address here",
+    "save_address": "Save Address",
+    "add_success": "Address saved successfully.",
+    "nickname_too_short": "Nickname must be at least 3 characters.",
+    "nickname_too_long": "Nickname must be at most 20 characters.",
+    "nickname_already_used": "This nickname is already in use.",
+    "invalid_address": "Please enter a valid ICP or ICRC1 address."
   },
   "alfred": {
     "no_results": "No results found",
