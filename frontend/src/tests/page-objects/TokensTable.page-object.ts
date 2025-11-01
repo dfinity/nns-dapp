@@ -53,19 +53,34 @@ export class TokensTablePo extends ResponsiveTablePo {
   async getRowByName(projectName: string): Promise<TokensTableRowPo> {
     for (;;) {
       const rows = await this.getRows();
+
+      // If no rows yet, wait for the first row to appear.
+      if (rows.length === 0) {
+        const atLeastOne = TokensTableRowPo.countUnder({
+          element: this.root,
+          count: 1,
+        });
+        await atLeastOne[0].waitFor();
+        continue;
+      }
+
+      // Ensure current rows are rendered and their content loaded
+      await Promise.all(
+        rows.map(async (row) => {
+          await row.waitFor();
+          // Wait for balance spinner to disappear which correlates with row content being ready
+          await row.waitForBalance();
+        })
+      );
+
+      // Try to find the row by its project name
       for (const row of rows) {
         const name = await row.getProjectName();
         if (name === projectName) {
           return row;
         }
       }
-
-      // If we didn't find the row, wait for more rows to load and try again.
-      const moreRows = TokensTableRowPo.countUnder({
-        element: this.root,
-        count: rows.length + 1,
-      });
-      await moreRows.at(-1).waitFor();
+      // Loop and retry until found or test timeout triggers
     }
   }
 

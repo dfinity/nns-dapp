@@ -104,6 +104,8 @@ test("Test neurons table", async ({ page, context, browser }) => {
   await neuronDetail.addMaturity(5);
   // Reload the page to see the maturity and enable the spawn neuron button.
   await page.reload();
+  // Ensure neuron detail content is fully loaded before opening the disburse modal
+  await appPo.getNeuronDetailPo().waitForContentLoaded();
 
   step("Disburse maturity");
   await neuronDetail.disburseMaturity({ percentage: 100 });
