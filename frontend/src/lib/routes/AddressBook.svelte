@@ -84,12 +84,12 @@
   const closeAddAddressModal = () => (showAddAddressModal = false);
 </script>
 
-{#snippet addButton()}
+{#snippet addButton({ disabled = false } = {})}
   <button
     data-tid="add-address-button"
     class="primary"
     onclick={openAddAddressModal}
-    disabled={isMaxReached}
+    {disabled}
   >
     <div class="add-address-button-content">
       <IconAdd size="20" />
@@ -119,7 +119,7 @@
               id="add-address-button-disabled"
               text={$i18n.address_book.max_addresses_reached}
             >
-              {@render addButton()}
+              {@render addButton({ disabled: true })}
             </Tooltip>
           {:else}
             {@render addButton()}
