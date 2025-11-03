@@ -245,7 +245,6 @@ interface I18nReporting {
   neurons_source_nns: string;
   neurons_source_sns: string;
   neurons_download: string;
-  neurons_no_results: string;
   loading_sns_projects: string;
   transactions_title: string;
   transactions_description: string;

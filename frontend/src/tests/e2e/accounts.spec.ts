@@ -36,10 +36,6 @@ test("Test accounts requirements", async ({ page, context }) => {
   await addAccountModalPo.addAccount(subAccountName);
   await addAccountModalPo.waitForClosed();
 
-  // Wait for the subaccount row to be rendered to avoid race conditions
-  const newSubaccountRow = await tokensTablePo.getRowByName(subAccountName);
-  await newSubaccountRow.waitFor();
-
   step("AU001: The user MUST be able to see a list of all their accounts");
   const accountNames = async () =>
     (await tokensTablePo.getRowsData()).map(({ projectName }) => projectName);
