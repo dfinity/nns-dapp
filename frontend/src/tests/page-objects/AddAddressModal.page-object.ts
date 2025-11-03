@@ -36,4 +36,10 @@ export class AddAddressModalPo extends ModalPo {
     await this.getAddressInputPo().typeText(address);
     await this.clickSaveAddress();
   }
+
+  async updateAddress(nickname: string, address: string): Promise<void> {
+    await this.getNicknameInputPo().typeText(nickname);
+    await this.getAddressInputPo().typeText(address);
+    await this.clickSaveAddress();
+  }
 }

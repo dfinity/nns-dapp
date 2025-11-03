@@ -88,4 +88,57 @@ test.skip("Test address book functionality", async ({ page, context }) => {
   expect(rowsData2[0].address).toBe(shortenWithMiddleEllipsis(icpAddress));
   expect(rowsData2[1].nickname).toBe("Bob ICRC1");
   expect(rowsData2[1].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
+
+  step("Edit Alice ICP nickname to Marta ICP");
+  await addressBookPo.clickEditOnRow("Alice ICP");
+  await addAddressModalPo.waitFor();
+
+  step("Modal should be prefilled with Alice's data");
+  expect(await addAddressModalPo.getNicknameInputPo().getValue()).toBe(
+    "Alice ICP"
+  );
+  expect(await addAddressModalPo.getAddressInputPo().getValue()).toBe(
+    icpAddress
+  );
+
+  step("Update nickname to Marta ICP");
+  await addAddressModalPo.updateAddress("Marta ICP", icpAddress);
+
+  step("Wait for update to complete and check success toast");
+  await addAddressModalPo.waitForClosed();
+  const toastMessages3 = await toastsPo.getMessages();
+  expect(
+    toastMessages3.some((msg) => msg.includes("Address updated successfully."))
+  ).toBe(true);
+  await toastsPo.closeAll();
+
+  step("Verify nickname has changed in the table");
+  const rowsData3 = await addressBookPo.getTableRowsData();
+  expect(rowsData3).toHaveLength(2);
+  expect(rowsData3[0].nickname).toBe("Bob ICRC1");
+  expect(rowsData3[0].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
+  expect(rowsData3[1].nickname).toBe("Marta ICP");
+  expect(rowsData3[1].address).toBe(shortenWithMiddleEllipsis(icpAddress));
+
+  step("Edit Marta ICP address");
+  await addressBookPo.clickEditOnRow("Marta ICP");
+  await addAddressModalPo.waitFor();
+
+  step("Update address to ICRC1 address");
+  await addAddressModalPo.updateAddress("Marta ICP", icrc1Address);
+
+  step("Wait for update to complete and verify address changed");
+  await addAddressModalPo.waitForClosed();
+  const toastMessages4 = await toastsPo.getMessages();
+  expect(
+    toastMessages4.some((msg) => msg.includes("Address updated successfully."))
+  ).toBe(true);
+  await toastsPo.closeAll();
+
+  const rowsData4 = await addressBookPo.getTableRowsData();
+  expect(rowsData4).toHaveLength(2);
+  expect(rowsData4[0].nickname).toBe("Bob ICRC1");
+  expect(rowsData4[0].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
+  expect(rowsData4[1].nickname).toBe("Marta ICP");
+  expect(rowsData4[1].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
 });
