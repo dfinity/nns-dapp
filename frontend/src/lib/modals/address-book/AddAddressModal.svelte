@@ -202,7 +202,7 @@
         required={true}
         errorMessage={nicknameError}
         disabled={$busy}
-        on:nnsInput={() => (nicknameError = undefined)}
+        onInput={() => (nicknameError = undefined)}
       >
         <svelte:fragment slot="label"
           >{$i18n.address_book.nickname_label}</svelte:fragment
@@ -218,7 +218,7 @@
         required={true}
         errorMessage={addressError}
         disabled={$busy}
-        on:nnsInput={() => (addressError = undefined)}
+        onInput={() => (addressError = undefined)}
       >
         <svelte:fragment slot="label"
           >{$i18n.address_book.address_label}</svelte:fragment
