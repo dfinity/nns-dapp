@@ -178,6 +178,16 @@ interface I18nAddress_book {
   add_address: string;
   title: string;
   description: string;
+  nickname_label: string;
+  nickname_placeholder: string;
+  address_label: string;
+  address_placeholder: string;
+  save_address: string;
+  add_success: string;
+  nickname_too_short: string;
+  nickname_too_long: string;
+  nickname_already_used: string;
+  invalid_address: string;
 }
 
 interface I18nAlfred {
