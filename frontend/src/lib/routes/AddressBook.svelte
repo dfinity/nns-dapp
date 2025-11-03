@@ -40,8 +40,7 @@
 
   const isMaxReached = $derived(
     nonNullish($addressBookStore.namedAddresses) &&
-      ($addressBookStore.namedAddresses?.length ?? 0) >=
-        MAX_ADDRESS_BOOK_ENTRIES
+      ($addressBookStore.namedAddresses.length ?? 0) >= MAX_ADDRESS_BOOK_ENTRIES
   );
 
   const addressBookData = $derived.by((): AddressBookTableRowData[] => {
