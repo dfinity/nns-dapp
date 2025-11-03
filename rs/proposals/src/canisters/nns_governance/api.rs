@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-10-23_03-18-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-10-30_03-22-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -879,6 +879,7 @@ pub struct GetNeuronIndexRequest {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronInfo {
+    pub id: Option<NeuronId>,
     pub dissolve_delay_seconds: u64,
     pub recent_ballots: Vec<BallotInfo>,
     pub voting_power_refreshed_timestamp_seconds: Option<u64>,
