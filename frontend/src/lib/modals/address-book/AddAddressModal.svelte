@@ -40,8 +40,12 @@
     namedAddress ? getAddressString(namedAddress.address) : ""
   );
 
+  // Error messages - set on submit, cleared on change
+  let nicknameError = $state<string | undefined>(undefined);
+  let addressError = $state<string | undefined>(undefined);
+
   // Validate nickname
-  const nicknameError = $derived.by(() => {
+  const validateNickname = (): string | undefined => {
     if (nickname === "") {
       return undefined;
     }
@@ -69,10 +73,10 @@
       return $i18n.address_book.nickname_already_used;
     }
     return undefined;
-  });
+  };
 
   // Validate address
-  const addressError = $derived.by(() => {
+  const validateAddress = (): string | undefined => {
     if (address === "") {
       return undefined;
     }
@@ -83,7 +87,7 @@
       return $i18n.address_book.invalid_address;
     }
     return undefined;
-  });
+  };
 
   // Check if nothing has changed in edit mode
   const hasChanges = $derived(
@@ -92,6 +96,7 @@
   );
 
   // Determine if save button should be disabled
+  // Disabled only if: fields are empty, errors are shown, busy, or no changes in edit mode
   const disableSave = $derived(
     nickname === "" ||
       address === "" ||
@@ -107,10 +112,22 @@
   const resetForm = () => {
     nickname = "";
     address = "";
+    nicknameError = undefined;
+    addressError = undefined;
   };
 
   const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
+
+    // Validate and set errors
+    nicknameError = validateNickname();
+    addressError = validateAddress();
+
+    // If there are errors, stop here
+    if (nonNullish(nicknameError) || nonNullish(addressError)) {
+      return;
+    }
+
     // Determine address type
     const isValidIcrc = !invalidIcrcAddress(address);
     const addressType = isValidIcrc ? { Icrc1: address } : { Icp: address };
@@ -183,8 +200,8 @@
         name="nickname"
         required={true}
         errorMessage={nicknameError}
-        minLength={3}
         disabled={$busy}
+        on:nnsInput={() => (nicknameError = undefined)}
       >
         <svelte:fragment slot="label"
           >{$i18n.address_book.nickname_label}</svelte:fragment
@@ -200,6 +217,7 @@
         required={true}
         errorMessage={addressError}
         disabled={$busy}
+        on:nnsInput={() => (addressError = undefined)}
       >
         <svelte:fragment slot="label"
           >{$i18n.address_book.address_label}</svelte:fragment

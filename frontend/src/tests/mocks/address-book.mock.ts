@@ -1,6 +1,6 @@
 import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
 
-export const mockNamedAddress: NamedAddress = {
+export const mockNamedAddressIcp: NamedAddress = {
   name: "Alice",
   address: {
     Icp: "d4685b31b51450508aff0331584df7692a84467b680326f5c5f7d30ae711682f",

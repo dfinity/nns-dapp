@@ -1,6 +1,6 @@
 import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
 import {
-  mockNamedAddress,
+  mockNamedAddressIcp,
   mockNamedAddressIcrc1,
 } from "$tests/mocks/address-book.mock";
 import { AppPo } from "$tests/page-objects/App.page-object";
@@ -39,7 +39,7 @@ test.skip("Test address book functionality", async ({ page, context }) => {
   expect(await addAddressModalPo.getAddressInputPo().getValue()).toBe("");
 
   step("Enter valid ICP label and address");
-  const icpAddress = (mockNamedAddress.address as { Icp: string }).Icp;
+  const icpAddress = (mockNamedAddressIcp.address as { Icp: string }).Icp;
   await addAddressModalPo.addAddress("Alice ICP", icpAddress);
 
   step("Wait for save to complete and check success toast");
