@@ -26,7 +26,7 @@ vi.mock("$app/navigation", () => ({
 
 describe("Launchpad", () => {
   beforeEach(() => {
-    vi.stubGlobal("window", { ...window });
+    vi.stubGlobal("window", window);
 
     authStore.setForTesting(null);
 
