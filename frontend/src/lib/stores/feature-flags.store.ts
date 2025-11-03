@@ -6,7 +6,7 @@ import {
 } from "$lib/constants/environment.constants";
 import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
 import { writableStored } from "$lib/stores/writable-stored";
-import { derived, get, type Readable } from "svelte/store";
+import { derived, get, writable, type Readable } from "svelte/store";
 
 type OverrideFeatureFlagsData = Partial<FeatureFlags<boolean>>;
 export interface OverrideFeatureFlagsStore
@@ -146,6 +146,7 @@ const initFeatureFlagsStore = (): FeatureFlags<Readable<boolean>> => {
   for (key in FEATURE_FLAG_ENVIRONMENT) {
     featureFlagStores[key] = initFeatureFlagStore(key);
   }
+  featureFlagStores.ENABLE_ADDRESS_BOOK = writable(true);
   return featureFlagStores as FeatureFlags<Readable<boolean>>;
 };
 

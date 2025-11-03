@@ -17,7 +17,7 @@
     onClose?: () => void;
   }
 
-  let { onClose }: Props = $props();
+  const { onClose }: Props = $props();
 
   let nickname = $state("");
   let address = $state("");
