@@ -17,7 +17,7 @@
     onClose?: () => void;
   }
 
-  const { onClose }: Props = $props();
+  let { onClose }: Props = $props();
 
   let nickname = $state("");
   let address = $state("");
@@ -33,9 +33,12 @@
     if (nickname.length > 20) {
       return $i18n.address_book.nickname_too_long;
     }
+    // Check uniqueness: normalize both sides (trim + lowercase) for comparison
+    const normalizedNickname = nickname.trim().toLowerCase();
     if (
       $addressBookStore.namedAddresses?.some(
-        (namedAddress) => namedAddress.name === nickname
+        (namedAddress) =>
+          namedAddress.name.trim().toLowerCase() === normalizedNickname
       )
     ) {
       return $i18n.address_book.nickname_already_used;

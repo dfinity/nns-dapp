@@ -188,6 +188,7 @@ interface I18nAddress_book {
   nickname_too_long: string;
   nickname_already_used: string;
   invalid_address: string;
+  max_addresses_reached: string;
 }
 
 interface I18nAlfred {
@@ -244,7 +245,6 @@ interface I18nReporting {
   neurons_source_nns: string;
   neurons_source_sns: string;
   neurons_download: string;
-  neurons_no_results: string;
   loading_sns_projects: string;
   transactions_title: string;
   transactions_description: string;
