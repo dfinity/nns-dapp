@@ -326,7 +326,7 @@
     balance: $selectedAccountStore.account?.balanceUlps.toString(),
   });
 
-  $: accountKey, accountDidUpdate();
+  $: (accountKey, accountDidUpdate());
 
   let showModal: "send" | undefined = undefined;
 

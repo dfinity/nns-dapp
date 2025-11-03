@@ -9,7 +9,7 @@
 
   let modal: TransactionModal;
 
-  $: modal, (() => modal?.goProgress())();
+  $: (modal, (() => modal?.goProgress())());
 
   const rootCanisterId = OWN_CANISTER_ID;
   const transactionFee = TokenAmount.fromE8s({
