@@ -1,4 +1,4 @@
-name: 'Run Playwright e2e test shard'
+name: "Run Playwright e2e test shard"
 description: |
   Set up a test environment and run (a subset of) the Playwright end-to-end tests.
 inputs:
@@ -36,10 +36,10 @@ runs:
     - name: Start snapshot environment
       uses: ./.github/actions/start_dfx_snapshot
       with:
-        nns_dapp_wasm: 'nns-dapp.wasm.gz'
-        sns_aggregator_wasm: 'sns_aggregator_dev.wasm.gz'
+        nns_dapp_wasm: "nns-dapp.wasm.gz"
+        sns_aggregator_wasm: "sns_aggregator_dev.wasm.gz"
         # Upgrade instead of reinstall to keep the preloaded SNSs.
-        sns_aggregator_install_mode: 'upgrade'
+        sns_aggregator_install_mode: "upgrade"
     - name: Generate .env configuration for Playwright end-to-end tests
       shell: bash
       run: |
@@ -49,7 +49,7 @@ runs:
       working-directory: frontend
       run: |
         npm ci
-        npx playwright install --with-deps firefox
+        npx playwright install
     - name: Run Playwright end-to-end tests
       shell: bash
       working-directory: frontend
