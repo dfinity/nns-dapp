@@ -577,6 +577,10 @@ describe("AddAddressModal", () => {
         certified: true,
       });
 
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+
       const { container, queryByText, queryByTestId } = await renderModal({
         component: AddAddressModal,
         props: {
@@ -593,6 +597,7 @@ describe("AddAddressModal", () => {
       const saveButton = queryByTestId("save-address-button");
       await fireEvent.click(saveButton);
 
+      expect(saveAddressBookSpy).toHaveBeenCalled();
       expect(
         queryByText(en.address_book.nickname_already_used)
       ).not.toBeInTheDocument();
