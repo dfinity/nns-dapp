@@ -31,6 +31,9 @@
     return "";
   };
 
+  // Helper function to normalize names for comparison (case-insensitive, trimmed)
+  const normalizeName = (name: string): string => name.trim().toLowerCase();
+
   // Determine if we're in edit mode
   const isEditMode = nonNullish(namedAddress);
 
@@ -56,18 +59,17 @@
       return $i18n.address_book.nickname_too_long;
     }
     // Check uniqueness: normalize both sides (trim + lowercase) for comparison
-    const normalizedNickname = nickname.trim().toLowerCase();
+    const normalizedNickname = normalizeName(nickname);
     if (
       $addressBookStore.namedAddresses?.some((entry) => {
         // In edit mode, exclude the current entry from uniqueness check
         if (
           isEditMode &&
-          entry.name.trim().toLowerCase() ===
-            namedAddress?.name.trim().toLowerCase()
+          normalizeName(entry.name) === normalizeName(namedAddress?.name ?? "")
         ) {
           return false;
         }
-        return entry.name.trim().toLowerCase() === normalizedNickname;
+        return normalizeName(entry.name) === normalizedNickname;
       })
     ) {
       return $i18n.address_book.nickname_already_used;
@@ -145,8 +147,7 @@
     if (isEditMode) {
       // In edit mode, find and replace the existing entry
       updatedAddresses = currentAddresses.map((entry) =>
-        entry.name.trim().toLowerCase() ===
-        namedAddress?.name.trim().toLowerCase()
+        normalizeName(entry.name) === normalizeName(namedAddress?.name ?? "")
           ? updatedAddress
           : entry
       );
