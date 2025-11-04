@@ -26,6 +26,7 @@ describe("AddAddressModal", () => {
   it("should display modal", async () => {
     const { container } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     expect(container.querySelector("div.modal")).not.toBeNull();
@@ -34,6 +35,7 @@ describe("AddAddressModal", () => {
   it("should display modal title", async () => {
     const { queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     expect(queryByTestId("add-address-modal-title")).toBeInTheDocument();
@@ -45,6 +47,7 @@ describe("AddAddressModal", () => {
   it("should have disabled save button by default", async () => {
     const { queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const saveButton = queryByTestId("save-address-button");
@@ -54,6 +57,7 @@ describe("AddAddressModal", () => {
   it("should display error if nickname is too short on submit", async () => {
     const { container, queryByText, queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
@@ -76,6 +80,7 @@ describe("AddAddressModal", () => {
   it("should display error if nickname is too long on submit", async () => {
     const { container, queryByText, queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
@@ -104,6 +109,7 @@ describe("AddAddressModal", () => {
 
     const { container, queryByText, queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
@@ -133,6 +139,7 @@ describe("AddAddressModal", () => {
 
     const { container, queryByText, queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
@@ -162,6 +169,7 @@ describe("AddAddressModal", () => {
 
     const { container, queryByText, queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
@@ -186,6 +194,7 @@ describe("AddAddressModal", () => {
   it("should display error if address is invalid on submit", async () => {
     const { container, queryByText, queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
@@ -208,6 +217,7 @@ describe("AddAddressModal", () => {
   it("should clear error messages when inputs change after submit attempt", async () => {
     const { container, queryByText, queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
@@ -256,6 +266,7 @@ describe("AddAddressModal", () => {
   it("should enable save button when inputs are valid", async () => {
     const { container, queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
@@ -361,6 +372,7 @@ describe("AddAddressModal", () => {
 
     const { container, queryByTestId } = await renderModal({
       component: AddAddressModal,
+      props: { onClose: vi.fn() },
     });
 
     const nicknameInput = container.querySelector("input[name='nickname']");
@@ -444,6 +456,7 @@ describe("AddAddressModal", () => {
       const { queryByTestId } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcp,
         },
       });
@@ -458,6 +471,7 @@ describe("AddAddressModal", () => {
       const { container } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcp,
         },
       });
@@ -479,6 +493,7 @@ describe("AddAddressModal", () => {
       const { container } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcrc1,
         },
       });
@@ -500,6 +515,7 @@ describe("AddAddressModal", () => {
       const { queryByTestId } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcp,
         },
       });
@@ -512,6 +528,7 @@ describe("AddAddressModal", () => {
       const { container, queryByTestId } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcp,
         },
       });
@@ -530,6 +547,7 @@ describe("AddAddressModal", () => {
       const { container, queryByTestId } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcp,
         },
       });
@@ -548,6 +566,7 @@ describe("AddAddressModal", () => {
       const { container, queryByTestId } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcp,
         },
       });
@@ -584,6 +603,7 @@ describe("AddAddressModal", () => {
       const { container, queryByText, queryByTestId } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcp,
         },
       });
@@ -612,6 +632,7 @@ describe("AddAddressModal", () => {
       const { container, queryByText, queryByTestId } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcp,
         },
       });
@@ -683,6 +704,7 @@ describe("AddAddressModal", () => {
       const { container, queryByTestId } = await renderModal({
         component: AddAddressModal,
         props: {
+          onClose: vi.fn(),
           namedAddress: mockNamedAddressIcp,
         },
       });
