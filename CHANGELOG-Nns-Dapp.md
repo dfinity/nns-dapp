@@ -11,6 +11,20 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 139207
+
+### Application
+
+#### Added
+
+- Export ck-tokens transaction data in reporting section
+
+#### Fixed
+
+- Linked canister page status
+
+### Operations
+
 ## Proposal 139084
 
 ### Application

@@ -14,8 +14,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
-- Export ck-tokens transaction data in reporting section
-
 #### Changed
 
 #### Deprecated
@@ -23,8 +21,6 @@ proposal is successful, the changes it released will be moved from this file to
 #### Removed
 
 #### Fixed
-
-- Linked canister page status
 
 #### Security
 
