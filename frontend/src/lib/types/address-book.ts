@@ -5,6 +5,6 @@ export interface AddressBookTableRowData extends ResponsiveTableRowData {
   namedAddress: NamedAddress;
   rowContext: {
     onEdit: (namedAddress: NamedAddress) => void;
-    onDelete?: (namedAddress: NamedAddress) => void;
+    onDelete: (namedAddress: NamedAddress) => void;
   };
 }

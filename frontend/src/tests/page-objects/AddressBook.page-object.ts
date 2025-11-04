@@ -92,4 +92,13 @@ export class AddressBookPo extends BasePageObject {
     const editButton = row.byTestId("edit-address-button");
     await editButton.click();
   }
+
+  async clickDeleteOnRow(nickname: string): Promise<void> {
+    const row = await this.getRowByNickname(nickname);
+    if (!row) {
+      throw new Error(`Row with nickname "${nickname}" not found`);
+    }
+    const deleteButton = row.byTestId("delete-address-button");
+    await deleteButton.click();
+  }
 }

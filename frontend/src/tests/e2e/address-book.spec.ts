@@ -45,7 +45,7 @@ test.skip("Test address book functionality", async ({ page, context }) => {
   step("Wait for save to complete and check success toast");
   await addAddressModalPo.waitForClosed();
   const toastsPo = appPo.getToastsPo();
-  const toastMessages = await toastsPo.getMessages();
+  let toastMessages = await toastsPo.getMessages();
   expect(
     toastMessages.some((msg) => msg.includes("Address saved successfully."))
   ).toBe(true);
@@ -75,9 +75,9 @@ test.skip("Test address book functionality", async ({ page, context }) => {
 
   step("Wait for call to finish and verify it's added to table");
   await addAddressModalPo.waitForClosed();
-  const toastMessages2 = await toastsPo.getMessages();
+  toastMessages = await toastsPo.getMessages();
   expect(
-    toastMessages2.some((msg) => msg.includes("Address saved successfully."))
+    toastMessages.some((msg) => msg.includes("Address saved successfully."))
   ).toBe(true);
   await toastsPo.closeAll();
 
@@ -106,9 +106,9 @@ test.skip("Test address book functionality", async ({ page, context }) => {
 
   step("Wait for update to complete and check success toast");
   await addAddressModalPo.waitForClosed();
-  const toastMessages3 = await toastsPo.getMessages();
+  toastMessages = await toastsPo.getMessages();
   expect(
-    toastMessages3.some((msg) => msg.includes("Address updated successfully."))
+    toastMessages.some((msg) => msg.includes("Address updated successfully."))
   ).toBe(true);
   await toastsPo.closeAll();
 
@@ -129,9 +129,9 @@ test.skip("Test address book functionality", async ({ page, context }) => {
 
   step("Wait for update to complete and verify address changed");
   await addAddressModalPo.waitForClosed();
-  const toastMessages4 = await toastsPo.getMessages();
+  toastMessages = await toastsPo.getMessages();
   expect(
-    toastMessages4.some((msg) => msg.includes("Address updated successfully."))
+    toastMessages.some((msg) => msg.includes("Address updated successfully."))
   ).toBe(true);
   await toastsPo.closeAll();
 
@@ -141,4 +141,58 @@ test.skip("Test address book functionality", async ({ page, context }) => {
   expect(rowsData4[0].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
   expect(rowsData4[1].nickname).toBe("Marta ICP");
   expect(rowsData4[1].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
+
+  step("Delete Bob ICRC1");
+  await addressBookPo.clickDeleteOnRow("Bob ICRC1");
+  const removeModalPo = appPo.getRemoveAddressModalPo();
+  await removeModalPo.waitFor();
+
+  step("Verify confirmation modal shows correct label");
+  const confirmationText = await removeModalPo.getContentText();
+  expect(confirmationText).toContain("Bob ICRC1");
+
+  step("Click Yes to confirm deletion");
+  await removeModalPo.clickYes();
+
+  step("Wait for deletion to complete and check success toast");
+  await removeModalPo.waitForClosed();
+  toastMessages = await toastsPo.getMessages();
+  expect(
+    toastMessages.some((msg) => msg.includes("Address removed successfully."))
+  ).toBe(true);
+  await toastsPo.closeAll();
+
+  step("Verify Bob ICRC1 has been removed from the table");
+  const rowsData5 = await addressBookPo.getTableRowsData();
+  expect(rowsData5).toHaveLength(1);
+  expect(rowsData5[0].nickname).toBe("Marta ICP");
+  expect(rowsData5[0].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
+
+  step("Delete Marta ICP");
+  await addressBookPo.clickDeleteOnRow("Marta ICP");
+  await removeModalPo.waitFor();
+
+  step("Click No to cancel deletion");
+  await removeModalPo.clickNo();
+  await removeModalPo.waitForClosed();
+
+  step("Verify Marta ICP is still in the table after canceling");
+  const rowsData6 = await addressBookPo.getTableRowsData();
+  expect(rowsData6).toHaveLength(1);
+  expect(rowsData6[0].nickname).toBe("Marta ICP");
+  expect(rowsData5[0].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
+
+  step("Delete Marta ICP again and confirm");
+  await addressBookPo.clickDeleteOnRow("Marta ICP");
+  await removeModalPo.waitFor();
+  await removeModalPo.clickYes();
+  await removeModalPo.waitForClosed();
+  toastMessages = await toastsPo.getMessages();
+  expect(
+    toastMessages.some((msg) => msg.includes("Address removed successfully."))
+  ).toBe(true);
+  await toastsPo.closeAll();
+
+  step("Verify table is empty and shows empty state");
+  expect(await addressBookPo.hasEmptyState()).toBe(true);
 });

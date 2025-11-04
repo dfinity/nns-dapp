@@ -7,6 +7,7 @@
   import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { MAX_ADDRESS_BOOK_ENTRIES } from "$lib/constants/address-book.constants";
   import AddAddressModal from "$lib/modals/address-book/AddAddressModal.svelte";
+  import RemoveAddressModal from "$lib/modals/address-book/RemoveAddressModal.svelte";
   import { addressBookStore } from "$lib/stores/address-book.store";
   import { i18n } from "$lib/stores/i18n";
   import { layoutTitleStore } from "$lib/stores/layout.store";
@@ -22,14 +23,16 @@
     Spinner,
     Tooltip,
   } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   layoutTitleStore.set({
     title: $i18n.navigation.address_book,
   });
 
   let showAddAddressModal = $state(false);
+  let showRemoveAddressModal = $state(false);
   let editingAddress = $state<NamedAddress | undefined>(undefined);
+  let deletingAddress = $state<NamedAddress | undefined>(undefined);
   let order = $state<ResponsiveTableOrder>([{ columnId: "label" }]);
 
   // Check if data is still loading (undefined means not loaded yet)
@@ -56,19 +59,30 @@
   };
 
   const closeAddAddressModal = () => {
-    showAddAddressModal = false;
     editingAddress = undefined;
+    showAddAddressModal = false;
+  };
+
+  const openRemoveAddressModal = (namedAddress: NamedAddress) => {
+    deletingAddress = namedAddress;
+    showRemoveAddressModal = true;
+  };
+
+  const closeRemoveAddressModal = () => {
+    deletingAddress = undefined;
+    showRemoveAddressModal = false;
   };
 
   const addressBookData = $derived.by((): AddressBookTableRowData[] => {
     const addresses = $addressBookStore.namedAddresses;
-    if (!nonNullish(addresses)) return [];
+    if (isNullish(addresses)) return [];
 
     return addresses.map((namedAddress) => ({
       domKey: namedAddress.name,
       namedAddress,
       rowContext: {
         onEdit: openEditAddressModal,
+        onDelete: openRemoveAddressModal,
       },
     }));
   });
@@ -152,6 +166,13 @@
   <AddAddressModal
     onClose={closeAddAddressModal}
     namedAddress={editingAddress}
+  />
+{/if}
+
+{#if showRemoveAddressModal && nonNullish(deletingAddress)}
+  <RemoveAddressModal
+    onClose={closeRemoveAddressModal}
+    namedAddress={deletingAddress}
   />
 {/if}
 
