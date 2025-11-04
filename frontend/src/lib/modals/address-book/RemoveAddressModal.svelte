@@ -7,6 +7,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { IconErrorOutline } from "@dfinity/gix-components";
   import { isNullish } from "@dfinity/utils";
 
   interface Props {
@@ -53,22 +54,46 @@
         $label: namedAddress.name,
       })}
     </h4>
-    <p>{$i18n.address_book.remove_address_message}</p>
+
+    <div class="icon-wrapper">
+      <div class="icon">
+        <IconErrorOutline size="16" />
+      </div>
+      {$i18n.address_book.remove_address_message}
+    </div>
   </div>
 </ConfirmationModal>
 
 <style lang="scss">
   @use "../../themes/mixins/confirmation-modal";
 
+  .icon-wrapper {
+    padding-top: var(--padding-2x);
+    color: var(--description-color);
+    justify-content: center;
+    align-items: center;
+    gap: var(--padding);
+    display: flex;
+    width: 100%;
+
+    .icon {
+      background-color: var(--negative-emphasis-light);
+      color: var(--negative-emphasis);
+      justify-content: center;
+      padding: var(--padding-0_5x);
+      align-items: center;
+      border-radius: 100%;
+      display: flex;
+      flex-grow: 0;
+    }
+  }
+
   .wrapper {
     @include confirmation-modal.wrapper;
+    text-align: center;
   }
 
   h4 {
     @include confirmation-modal.title;
-  }
-
-  p {
-    @include confirmation-modal.text;
   }
 </style>
