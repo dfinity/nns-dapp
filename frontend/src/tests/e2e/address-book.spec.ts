@@ -180,7 +180,7 @@ test.skip("Test address book functionality", async ({ page, context }) => {
   const rowsData6 = await addressBookPo.getTableRowsData();
   expect(rowsData6).toHaveLength(1);
   expect(rowsData6[0].nickname).toBe("Marta ICP");
-  expect(rowsData5[0].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
+  expect(rowsData6[0].address).toBe(shortenWithMiddleEllipsis(icrc1Address));
 
   step("Delete Marta ICP again and confirm");
   await addressBookPo.clickDeleteOnRow("Marta ICP");
