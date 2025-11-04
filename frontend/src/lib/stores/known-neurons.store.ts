@@ -43,14 +43,14 @@ export const sortedknownNeuronsStore = derived(
       const aIndex = getOrderIndex(a.id);
       const bIndex = getOrderIndex(b.id);
 
-      // First sort by known order
+      // 1. sort by known order
       if (nonNullish(aIndex) && nonNullish(bIndex)) return aIndex - bIndex;
       if (nonNullish(aIndex)) return -1;
       if (nonNullish(bIndex)) return 1;
 
-      // Second sort by name alphabetically
-      const aName = a.name?.toLocaleLowerCase?.() ?? "";
-      const bName = b.name?.toLocaleLowerCase?.() ?? "";
+      // 2. sort by name alphabetically
+      const aName = a.name.toLocaleLowerCase();
+      const bName = b.name.toLocaleLowerCase();
       if (aName < bName) return -1;
       if (aName > bName) return 1;
 
