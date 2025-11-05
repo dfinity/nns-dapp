@@ -24,22 +24,20 @@
 
 <p>
   <span data-tid="identifier" class:text_small={size === "small"}
-    >{labelText}
-    {#if nonNullish(addressBookLabel)}
-      <span class="named-address-container">
+    >{labelText}{#if nonNullish(addressBookLabel)}<span
+        class="named-address-container"
+      >
         <Tooltip id={`identifier-${identifier}`} text={identifier} center top>
           {addressBookLabel}
         </Tooltip>
       </span>
     {:else}
       <Value>{identifier}</Value>
-    {/if}
-
-    {#if showCopy}
+    {/if}{#if showCopy}
       <Copy value={identifier} />
     {/if}
-  </span></p
->
+  </span>
+</p>
 
 <style lang="scss">
   span {
