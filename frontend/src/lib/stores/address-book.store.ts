@@ -51,18 +51,11 @@ export const addressToLabelStore = derived(
   addressBookStore,
   ($addressBookStore) => {
     const map = new Map<string, string>();
+    const addresses = $addressBookStore.namedAddresses || [];
 
-    const addresses = $addressBookStore.namedAddresses;
-    if (!addresses) {
-      return map;
-    }
-
-    // Build map with first occurrence only (if duplicates exist)
     for (const namedAddress of addresses) {
       const addressString = getAddressString(namedAddress.address);
-      if (addressString && !map.has(addressString)) {
-        map.set(addressString, namedAddress.name);
-      }
+      map.set(addressString, namedAddress.name);
     }
 
     return map;
