@@ -1,3 +1,4 @@
+import { KNOWN_NEURONS_ORDER_DASHBOARD } from "$lib/constants/neurons.constants";
 import {
   knownNeuronsStore,
   sortedknownNeuronsStore,
@@ -66,5 +67,23 @@ describe("knownNeurons", () => {
 
     const sorted = get(sortedknownNeuronsStore);
     expect(sorted.map((n) => n.name)).toEqual(["alpha", "Bravo", "Charlie"]);
+  });
+
+  it("should filter out pinned ids not present in the store", () => {
+    knownNeuronsStore.reset();
+
+    const presentPinnedIdStr = KNOWN_NEURONS_ORDER_DASHBOARD[0];
+    const missingPinnedIdStr = KNOWN_NEURONS_ORDER_DASHBOARD[1];
+
+    const presentPinnedNeuron = {
+      ...createMockKnownNeuron(BigInt(presentPinnedIdStr)),
+    };
+
+    knownNeuronsStore.setNeurons([presentPinnedNeuron]);
+    const sorted = get(sortedknownNeuronsStore);
+    const sortedIds = sorted.map((n) => n.id);
+
+    expect(sortedIds).toEqual([BigInt(presentPinnedIdStr)]);
+    expect(sortedIds.includes(BigInt(missingPinnedIdStr))).toBe(false);
   });
 });

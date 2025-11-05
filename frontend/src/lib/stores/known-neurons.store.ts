@@ -28,33 +28,40 @@ const initKnownNeuronsStore = () => {
 
 export const knownNeuronsStore = initKnownNeuronsStore();
 
-// Precompute index lookup for the pinned order on the dashboard
-const KNOWN_NEURON_ORDER_INDEX: Map<string, number> = new Map(
-  KNOWN_NEURONS_ORDER_DASHBOARD.map((id, index) => [id, index])
-);
-
+// The `listKnownNeuron` endpoint does not return the creation timestamp,
+// so we rely on this hardcoded variable to avoid calling `getNeuronInfo`
+// for each neuron.
+// This approach is acceptable since this list does not change frequently.
 export const sortedknownNeuronsStore = derived(
   knownNeuronsStore,
   ($neurons) => {
-    const getOrderIndex = (id: bigint): number | undefined =>
-      KNOWN_NEURON_ORDER_INDEX.get(id.toString());
+    const byId = new Map($neurons.map((n) => [n.id.toString(), n]));
 
-    return $neurons.toSorted((a: KnownNeuron, b: KnownNeuron) => {
-      const aIndex = getOrderIndex(a.id);
-      const bIndex = getOrderIndex(b.id);
+    // 1) Pinned neurons in the order defined by the constant (safe mapping)
+    const pinnedNeurons: KnownNeuron[] = KNOWN_NEURONS_ORDER_DASHBOARD.map(
+      (id) => byId.get(id)
+    ).filter(nonNullish);
 
-      // 1. sort by known order
-      if (nonNullish(aIndex) && nonNullish(bIndex)) return aIndex - bIndex;
-      if (nonNullish(aIndex)) return -1;
-      if (nonNullish(bIndex)) return 1;
+    if (pinnedNeurons.length === $neurons.length) return pinnedNeurons;
 
-      // 2. sort by name alphabetically
-      const aName = a.name.toLocaleLowerCase();
-      const bName = b.name.toLocaleLowerCase();
-      if (aName < bName) return -1;
-      if (aName > bName) return 1;
+    // 2) Append remaining neurons alphabetically by name with stable id tie-break
+    const pinnedPresentIdSet = new Set(
+      pinnedNeurons.map((n) => n.id.toString())
+    );
 
-      return 0;
-    });
+    const remainingNeurons = $neurons.filter(
+      (n) => !pinnedPresentIdSet.has(n.id.toString())
+    );
+    const remainingSorted = remainingNeurons.toSorted(
+      (a: KnownNeuron, b: KnownNeuron) => {
+        const byName = a.name.localeCompare(b.name, undefined, {
+          sensitivity: "base",
+        });
+        if (byName !== 0) return byName;
+        return Number(a.id - b.id);
+      }
+    );
+
+    return [...pinnedNeurons, ...remainingSorted];
   }
 );

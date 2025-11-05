@@ -57,6 +57,7 @@ export const TOPICS_TO_FOLLOW_NNS = [
 // To notify users that their rewards will start decreasing in 30 days.
 export const NOTIFICATION_PERIOD_BEFORE_REWARD_LOSS_STARTS_DAYS = 30;
 
+// Export from the known neurons dashboard order
 export const KNOWN_NEURONS_ORDER_DASHBOARD = [
   "27",
   "12911334408382674412",
