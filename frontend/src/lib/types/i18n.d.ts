@@ -186,14 +186,14 @@ interface I18nAddress_book {
   save_address: string;
   add_success: string;
   edit_success: string;
+  delete_success: string;
+  remove_address_title: string;
+  remove_address_message: string;
   nickname_too_short: string;
   nickname_too_long: string;
   nickname_already_used: string;
   invalid_address: string;
   max_addresses_reached: string;
-  remove_address_title: string;
-  remove_address_message: string;
-  delete_success: string;
 }
 
 interface I18nAlfred {
