@@ -18,7 +18,7 @@ describe("Identifier", () => {
     const { getByTestId, queryByRole } = render(Identifier, { props });
 
     const small = getByTestId("identifier");
-    expect(small?.textContent).toEqual(identifier);
+    expect(small.textContent?.trim()).toEqual(identifier);
 
     const button = queryByRole("button");
     expect(button).toBeNull();
