@@ -54,7 +54,6 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
           base: main
-          reviewers: governance-team
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: config.json
           commit-message: Update didc release
