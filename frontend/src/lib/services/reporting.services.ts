@@ -10,14 +10,14 @@ import type {
 } from "$lib/types/reporting";
 import { neuronStake } from "$lib/utils/neuron.utils";
 import { mapPool } from "$lib/utils/reporting.utils";
-import { SignIdentity } from "@dfinity/agent";
+import { SignIdentity } from "@icp-sdk/core/agent";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import type {
   IcrcAccount,
   IcrcIndexNgTransactionWithId,
 } from "@dfinity/ledger-icrc";
 import type { NeuronInfo } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
 
 const accountToTransactionEntity = (account: Account): TransactionEntity => {
