@@ -38,9 +38,9 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
-import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
-import { Principal } from "@dfinity/principal";
+import { AnonymousIdentity } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";

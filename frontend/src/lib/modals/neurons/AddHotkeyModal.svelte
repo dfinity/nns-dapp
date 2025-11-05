@@ -7,7 +7,7 @@
   import { toastsError } from "$lib/stores/toasts.store";
   import { Modal } from "@dfinity/gix-components";
   import type { NeuronId, NeuronInfo } from "@dfinity/nns";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher } from "svelte";
 
   export let neuron: NeuronInfo;

@@ -2,8 +2,8 @@ import { toastsError, toastsHide } from "$lib/stores/toasts.store";
 import type { PngDataUrl } from "$lib/types/assets";
 import type { BasisPoints } from "$lib/types/proposals";
 import { errorToString } from "$lib/utils/error.utils";
-import { JSON_KEY_PRINCIPAL, type Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import { JSON_KEY_PRINCIPAL, type Principal } from "@icp-sdk/core/principal";
 
 export const isPrincipal = (value: unknown): value is Principal =>
   typeof value === "object" && (value as Principal)?._isPrincipal === true;

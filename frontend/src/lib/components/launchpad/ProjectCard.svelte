@@ -10,7 +10,7 @@
   import type { SnsSummary, SnsSwapCommitment } from "$lib/types/sns";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { Card, Spinner } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
   import type { Readable } from "svelte/store";

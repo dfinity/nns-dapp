@@ -7,7 +7,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher } from "svelte";
 
   const steps: WizardSteps = [

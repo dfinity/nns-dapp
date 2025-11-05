@@ -6,7 +6,7 @@
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
   import { mockCanisterDetailsStore } from "$tests/mocks/canisters.mock";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { setContext } from "svelte";
 
   export let reloadDetails: (canisterId: Principal) => Promise<void>;

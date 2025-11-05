@@ -1,6 +1,6 @@
 import type { Account } from "$lib/types/account";
 import { removeKeys } from "$lib/utils/utils";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
 

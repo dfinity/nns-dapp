@@ -22,7 +22,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { assertNonNullish, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
   import { isNnsUniverseStore } from "$lib/derived/selected-universe.derived";

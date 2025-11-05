@@ -9,7 +9,7 @@ import { renderModal } from "$tests/mocks/modal.mock";
 import { ReceiveModalPo } from "$tests/page-objects/ReceiveModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 
 describe("ReceiveModal", () => {
   const reloadSpy = vi.fn();

@@ -19,8 +19,8 @@ import {
   filterCommittedProjects,
   filterProjectsStatus,
 } from "$lib/utils/projects.utils";
-import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsRewardEvent } from "@dfinity/sns";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 // ************** Sns full project - all information **************

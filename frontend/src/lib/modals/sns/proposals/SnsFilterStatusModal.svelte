@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { snsFiltersStore } from "$lib/stores/sns-filters.store";
   import type { Filter } from "$lib/types/filters";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsProposalDecisionStatus } from "@dfinity/sns";
 
   type Props = {

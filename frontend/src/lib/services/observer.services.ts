@@ -1,7 +1,7 @@
 import { icrcTransactionsStore } from "$lib/stores/icrc-transactions.store";
 import type { PostMessageDataResponseTransaction } from "$lib/types/post-message.transactions";
-import type { Principal } from "@dfinity/principal";
 import { jsonReviver } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export const addObservedIcrcTransactionsToStore = ({
   ledgerCanisterId,

@@ -6,12 +6,12 @@ import {
   mockCanisterId,
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
-import { type ActorSubclass, type HttpAgent } from "@dfinity/agent";
 import type {
   CanisterStatusResponse,
   ICManagementCanisterOptions,
 } from "@dfinity/ic-management";
-import { Principal } from "@dfinity/principal";
+import { type ActorSubclass, type HttpAgent } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
 
 type IcManagementService = ICManagementCanisterOptions["serviceOverride"];

@@ -17,7 +17,6 @@ import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
 } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
 import {
   SnsSwapLifecycle,
   type SnsGetDerivedStateResponse,
@@ -33,6 +32,7 @@ import {
 } from "@dfinity/sns";
 import type { Token } from "@dfinity/utils";
 import { nonNullish, toNullable } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 
 export const mockProjectSubscribe =

@@ -45,9 +45,9 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("project-utils", () => {

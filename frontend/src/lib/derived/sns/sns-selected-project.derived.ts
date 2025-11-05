@@ -9,7 +9,7 @@ import {
   type SnsAggregatorData,
   type SnsAggregatorStore,
 } from "$lib/stores/sns-aggregator.store";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 /**

@@ -1,7 +1,7 @@
 import { TVLCanister } from "$lib/canisters/tvl/tvl.canister";
 import type { _SERVICE as TVLService } from "$lib/canisters/tvl/tvl.types";
-import type { HttpAgent } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
+import type { HttpAgent } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
 
 describe("TVL canister", () => {

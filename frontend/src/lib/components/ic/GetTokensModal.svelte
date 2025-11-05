@@ -23,7 +23,7 @@
     Modal,
     Spinner,
   } from "@dfinity/gix-components";
-  import { Principal } from "@dfinity/principal";
+  import { Principal } from "@icp-sdk/core/principal";
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

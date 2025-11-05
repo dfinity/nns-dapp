@@ -16,7 +16,7 @@ import {
   mockCanisters,
 } from "$tests/mocks/canisters.mock";
 import en from "$tests/mocks/i18n.mock";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 
 describe("canister-utils", () => {
   describe("getCanisterFromStore", () => {

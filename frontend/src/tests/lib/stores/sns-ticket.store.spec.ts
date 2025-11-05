@@ -2,7 +2,7 @@ import { snsTicketsStore } from "$lib/stores/sns-tickets.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("snsTicketsStore", () => {

@@ -11,9 +11,9 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { Principal } from "@dfinity/principal";
 import type { SnsDisburseMaturityInProgress, SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

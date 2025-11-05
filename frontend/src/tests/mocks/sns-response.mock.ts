@@ -15,13 +15,13 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
-import type { Principal } from "@dfinity/principal";
 import type {
   SnsSwap,
   SnsSwapDerivedState,
   SnsSwapLifecycle,
 } from "@dfinity/sns";
 import { nonNullish, toNullable } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
   {

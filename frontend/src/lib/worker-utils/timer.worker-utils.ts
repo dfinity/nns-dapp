@@ -1,7 +1,7 @@
 import type { PostMessageResponse } from "$lib/types/post-messages";
 import type { SyncState } from "$lib/types/sync";
 import { loadIdentity } from "$lib/utils/auth.utils";
-import type { Identity } from "@dfinity/agent";
+import type { Identity } from "@icp-sdk/core/agent";
 
 export interface TimerWorkerUtilsParams<T> {
   job: (params: TimerWorkerUtilsJobData<T>) => Promise<void>;

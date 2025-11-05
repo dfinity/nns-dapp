@@ -4,7 +4,7 @@ import {
   loadIdentity,
 } from "$lib/utils/auth.utils";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { AuthClient } from "@dfinity/auth-client";
+import { AuthClient } from "@icp-sdk/auth/client";
 import { mock } from "vitest-mock-extended";
 
 describe("auth-utils", () => {

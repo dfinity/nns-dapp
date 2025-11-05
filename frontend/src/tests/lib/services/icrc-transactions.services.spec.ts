@@ -12,14 +12,14 @@ import {
   mockIcrcTransactionWithId,
 } from "$tests/mocks/icrc-transactions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
+import { toastsStore } from "@dfinity/gix-components";
 import {
   AgentError,
   ErrorKindEnum,
   ReplicaRejectCode,
   requestIdOf,
   UncertifiedRejectErrorCode,
-} from "@dfinity/agent";
-import { toastsStore } from "@dfinity/gix-components";
+} from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 
 vi.mock("$lib/api/icrc-index.api");

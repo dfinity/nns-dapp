@@ -8,7 +8,7 @@
     getAccountsByRootCanister,
   } from "$lib/utils/accounts.utils";
   import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish } from "@dfinity/utils";
 
   export let selectedAccount: Account | undefined = undefined;
