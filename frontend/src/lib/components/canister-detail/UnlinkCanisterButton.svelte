@@ -3,7 +3,7 @@
   import type { CanisterDetailModalDetach } from "$lib/types/canister-detail.modal";
   import { emit } from "$lib/utils/events.utils";
   import { busy } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
 
   export let canisterId: Principal;
 

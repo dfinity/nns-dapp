@@ -15,8 +15,8 @@ import type { SnsSummary } from "$lib/types/sns";
 import type { Universe } from "$lib/types/universe";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { isSelectedPath } from "$lib/utils/navigation.utils";
-import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 /**

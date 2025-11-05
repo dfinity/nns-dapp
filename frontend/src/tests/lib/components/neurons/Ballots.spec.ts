@@ -6,9 +6,9 @@ import en from "$tests/mocks/i18n.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
 import type { BallotInfo } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { render } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
 

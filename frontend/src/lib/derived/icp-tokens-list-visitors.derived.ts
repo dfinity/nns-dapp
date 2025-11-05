@@ -8,8 +8,8 @@ import { UserTokenAction, type UserTokenData } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
 import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import { UnavailableTokenAmount } from "$lib/utils/token.utils";
-import { Principal } from "@dfinity/principal";
 import { TokenAmountV2 } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 export const icpTokensListVisitors = derived<

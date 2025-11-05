@@ -33,9 +33,9 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockImportedToken } from "$tests/mocks/imported-tokens.mock";
 
-import type { HttpAgent } from "@dfinity/agent";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
-import { Principal } from "@dfinity/principal";
+import type { HttpAgent } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
 
 describe("NNSDapp", () => {

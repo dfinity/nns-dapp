@@ -21,9 +21,9 @@ import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvance
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
 import { NeuronState } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 describe("SnsNeuronAdvancedSection", () => {
   const nowInSeconds = new Date("Jul 20, 2023 8:53 AM").getTime() / 1000;

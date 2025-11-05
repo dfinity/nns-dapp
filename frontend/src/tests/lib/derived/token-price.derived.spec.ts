@@ -7,8 +7,8 @@ import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { Principal } from "@dfinity/principal";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("token-price.derived", () => {

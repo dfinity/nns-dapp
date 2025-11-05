@@ -8,8 +8,8 @@ import type {
   SnsProposalTypeFilterId,
 } from "$lib/types/filters";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
-import { Principal } from "@dfinity/principal";
 import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("sns-filters store", () => {

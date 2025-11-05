@@ -16,7 +16,6 @@ import {
   toExcludeTypeParameter,
   toIncludeTopicsParameter,
 } from "$lib/utils/sns-proposals.utils";
-import type { Principal } from "@dfinity/principal";
 import type {
   SnsListProposalsResponse,
   SnsNervousSystemFunction,
@@ -26,6 +25,7 @@ import type {
   SnsVote,
 } from "@dfinity/sns";
 import { fromNullable, isNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 export const registerVote = async ({

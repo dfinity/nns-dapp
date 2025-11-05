@@ -6,7 +6,6 @@ import type { TicketStatus } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
-import type { Principal } from "@dfinity/principal";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
@@ -15,6 +14,7 @@ import type {
 } from "@dfinity/sns";
 import type { DerivedState } from "@dfinity/sns/dist/candid/sns_swap";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export const getSwapCanisterAccount = ({
   controller,

@@ -3,11 +3,11 @@ import { getTransactions } from "$lib/api/icp-index.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
-import type { HttpAgent } from "@dfinity/agent";
 import {
   IndexCanister,
   type GetAccountIdentifierTransactionsResponse,
 } from "@dfinity/ledger-icp";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 describe("icp-index.api", () => {

@@ -1,5 +1,5 @@
 import type { CanisterDetails } from "$lib/canisters/ic-management/ic-management.canister.types";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export type CanisterSyncStatus = "syncing" | "synced" | "error";
 

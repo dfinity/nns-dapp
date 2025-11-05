@@ -31,13 +31,13 @@ import { SnsNeuronDetailPo } from "$tests/page-objects/SnsNeuronDetail.page-obje
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
   type SnsNeuronId,
 } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";

@@ -3,8 +3,8 @@ import {
   type SnsAggregatorStore,
 } from "$lib/stores/sns-aggregator.store";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import { Principal } from "@dfinity/principal";
 import { isNullish } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { derived } from "svelte/store";
 
 /**

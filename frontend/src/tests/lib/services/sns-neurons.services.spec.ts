@@ -40,7 +40,6 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { NeuronState } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   neuronSubaccount,
@@ -52,6 +51,7 @@ import {
   fromDefinedNullable,
   fromNullable,
 } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";

@@ -15,9 +15,9 @@ import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNetworkEconomics } from "$tests/mocks/network-economics.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { LedgerCanister } from "@dfinity/ledger-icp";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 

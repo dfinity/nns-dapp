@@ -2,8 +2,8 @@ import SnsActiveDisbursementEntry from "$lib/modals/sns/neurons/SnsActiveDisburs
 import { mockPrincipalText } from "$tests/mocks/auth.store.mock";
 import { ActiveDisbursementEntryPo } from "$tests/page-objects/ActiveDisbursementEntry.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { Principal } from "@dfinity/principal";
 import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 (".svelte");
 

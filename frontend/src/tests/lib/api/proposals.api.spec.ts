@@ -9,8 +9,8 @@ import { DEFAULT_PROPOSALS_FILTERS } from "$lib/constants/proposals.constants";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { MockGovernanceCanister } from "$tests/mocks/governance.canister.mock";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
-import type { HttpAgent } from "@dfinity/agent";
 import { GovernanceCanister, ProposalRewardStatus } from "@dfinity/nns";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 describe("proposals-api", () => {

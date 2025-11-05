@@ -1,7 +1,6 @@
 import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { Agent, Identity } from "@dfinity/agent";
 import {
   CkBTCMinterCanister,
   type EstimateWithdrawalFee,
@@ -12,8 +11,9 @@ import {
   type RetrieveBtcStatusV2WithId,
   type UpdateBalanceOk,
 } from "@dfinity/ckbtc";
-import type { Principal } from "@dfinity/principal";
 import type { QueryParams } from "@dfinity/utils";
+import type { Agent, Identity } from "@icp-sdk/core/agent";
+import type { Principal } from "@icp-sdk/core/principal";
 
 const minterIdentityParams = ({
   identity,

@@ -1,6 +1,6 @@
 <script lang="ts">
   import PrincipalInput from "$lib/components/ui/PrincipalInput.svelte";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
 
   export let placeholderLabelKey: string;
   export let name: string;

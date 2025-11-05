@@ -41,7 +41,7 @@
   import { userCountryIsNeeded } from "$lib/utils/projects.utils";
   import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import { Principal } from "@dfinity/principal";
+  import { Principal } from "@icp-sdk/core/principal";
   import { SnsSwapLifecycle } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { onDestroy, setContext } from "svelte";

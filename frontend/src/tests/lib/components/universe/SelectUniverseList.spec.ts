@@ -11,8 +11,8 @@ import { SelectUniverseListPo } from "$tests/page-objects/SelectUniverseList.pag
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
-import { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 
 describe("SelectUniverseList", () => {
   const projects = [

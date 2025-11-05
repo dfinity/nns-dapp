@@ -12,7 +12,6 @@ import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
 import { NeuronState, type NeuronId } from "@dfinity/nns";
-import type { Principal } from "@dfinity/principal";
 import {
   SnsNeuronPermissionType,
   type SnsNervousSystemParameters,
@@ -28,6 +27,7 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;

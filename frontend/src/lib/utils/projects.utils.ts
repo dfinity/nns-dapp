@@ -23,7 +23,6 @@ import { getCommitmentE8s } from "$lib/utils/sns.utils";
 import { createDescendingComparator } from "$lib/utils/sort.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { stringifyJson } from "$lib/utils/utils";
-import type { Principal } from "@dfinity/principal";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import {
   fromNullable,
@@ -32,6 +31,7 @@ import {
   TokenAmountV2,
   type TokenAmount,
 } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export const filterProjectsStatus = ({
   swapLifecycle,
