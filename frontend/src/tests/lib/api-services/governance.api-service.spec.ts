@@ -838,6 +838,44 @@ describe("neurons api-service", () => {
     });
   });
 
+  describe("setFollowing", () => {
+    const params = {
+      neuronId,
+      identity: mockIdentity,
+      topicFollowing: [
+        {
+          topic: Topic.Governance,
+          followees: [2n, 20n],
+        },
+        {
+          topic: Topic.ExchangeRate,
+          followees: [3n],
+        },
+      ],
+    };
+
+    it("should call setFollowing api", () => {
+      governanceApiService.setFollowing(params);
+      expect(api.setFollowing).toHaveBeenCalledWith(params);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.setFollowing,
+        apiServiceFunc: governanceApiService.setFollowing,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.setFollowing,
+        apiServiceFunc: governanceApiService.setFollowing,
+        params,
+      });
+    });
+  });
+
   describe("simulateMergeNeurons", () => {
     const params = {
       identity: mockIdentity,

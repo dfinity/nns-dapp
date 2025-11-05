@@ -7,12 +7,10 @@ describe("IC Management Error utils", () => {
   describe("mapError", () => {
     it("returns error based on error code", () => {
       const notControllerError = new Error(`Call failed:
-      Canister: aaaaa-aa
-      Method: canister_status (update)
-      "Request ID": "9dac7652f94de82d72f00ee492c132defc48da8dd6043516312275ab0fa5b5e1"
-      "Error code": "IC0512"
-      "Reject code": "5"
-      "Reject message": "Only controllers of canister mwewp-s4aaa-aaaaa-qabjq-cai can call ic00 method canister_status"`);
+        Request ID: f194c3c83afe42c6f4323625bb705490346107bb9fdeac175af8baddc49f9772
+        Reject code: 5
+        Reject text: Only controllers of canister igbbe-6yaaa-aaaaq-aadnq-cai can call ic00 method canister_status
+        Error code: IC0512`);
       expect(mapError(notControllerError)).toBeInstanceOf(
         UserNotTheControllerError
       );

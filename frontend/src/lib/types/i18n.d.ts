@@ -171,6 +171,29 @@ interface I18nNavigation {
   privacy_mode_hide: string;
   privacy_mode_show: string;
   project_page: string;
+  address_book: string;
+}
+
+interface I18nAddress_book {
+  add_address: string;
+  edit_address: string;
+  title: string;
+  description: string;
+  nickname_label: string;
+  nickname_placeholder: string;
+  address_label: string;
+  address_placeholder: string;
+  save_address: string;
+  add_success: string;
+  edit_success: string;
+  nickname_too_short: string;
+  nickname_too_long: string;
+  nickname_already_used: string;
+  invalid_address: string;
+  max_addresses_reached: string;
+  remove_address_title: string;
+  remove_address_message: string;
+  delete_success: string;
 }
 
 interface I18nAlfred {
@@ -227,12 +250,14 @@ interface I18nReporting {
   neurons_source_nns: string;
   neurons_source_sns: string;
   neurons_download: string;
+  neurons_no_results: string;
   loading_sns_projects: string;
   transactions_title: string;
   transactions_description: string;
   transactions_download: string;
   transactions_source_nns: string;
   transactions_source_ck: string;
+  transactions_no_results: string;
   busy_screen: string;
   busy_screen_sns_getting_neurons: string;
   principal_account_id: string;
@@ -537,6 +562,7 @@ interface I18nNew_followee {
   label: string;
   follow_neuron: string;
   options_title: string;
+  known_neurons_title: string;
   follow: string;
   unfollow: string;
   followee_incorrect_id_format: string;
@@ -551,6 +577,14 @@ interface I18nFollow_neurons {
   description: string;
   current_followees: string;
   add: string;
+  required_settings: string;
+  required_settings_description: string;
+  advanced_settings: string;
+  topics_title: string;
+  neuron_title: string;
+  topics_following: string;
+  topic_definitions_description: string;
+  topic_definitions_title: string;
 }
 
 interface I18nFollow_neurons_topic_subtitles {
@@ -817,6 +851,7 @@ interface I18nNeuron_detail {
   auto_stake_maturity_off: string;
   auto_stake_maturity_on_success: string;
   auto_stake_maturity_off_success: string;
+  auto_stake_maturity_tooltip: string;
   maturity_title: string;
   vote_delegation_title: string;
   vote_delegation_tooltip_all: string;
@@ -1152,6 +1187,16 @@ interface I18nError__imported_tokens {
 
 interface I18nError__fav_projects {
   too_many: string;
+}
+
+interface I18nError__address_book {
+  load_address_book: string;
+  update_address: string;
+  too_many: string;
+  invalid_icp: string;
+  invalid_icrc1: string;
+  name_too_long: string;
+  duplicate_name: string;
 }
 
 interface I18nError__sns {
@@ -1656,6 +1701,9 @@ interface I18nNns_functions {
   ReviseElectedHostosVersions: string;
   DeployHostosToSomeNodes: string;
   SubnetRentalRequest: string;
+  PauseCanisterMigrations: string;
+  UnpauseCanisterMigrations: string;
+  SetSubnetOperationalLevel: string;
 }
 
 interface I18nNns_functions_description {
@@ -1708,6 +1756,9 @@ interface I18nNns_functions_description {
   ReviseElectedHostosVersions: string;
   DeployHostosToSomeNodes: string;
   SubnetRentalRequest: string;
+  PauseCanisterMigrations: string;
+  UnpauseCanisterMigrations: string;
+  SetSubnetOperationalLevel: string;
 }
 
 interface I18n {
@@ -1716,6 +1767,7 @@ interface I18n {
   error: I18nError;
   warning: I18nWarning;
   navigation: I18nNavigation;
+  address_book: I18nAddress_book;
   alfred: I18nAlfred;
   header: I18nHeader;
   reporting: I18nReporting;
@@ -1758,6 +1810,7 @@ interface I18n {
   error__canister: I18nError__canister;
   error__imported_tokens: I18nError__imported_tokens;
   error__fav_projects: I18nError__fav_projects;
+  error__address_book: I18nError__address_book;
   error__sns: I18nError__sns;
   auth_accounts: I18nAuth_accounts;
   auth_report: I18nAuth_report;

@@ -16,6 +16,9 @@
   export let value: string | number | undefined = undefined;
   export let placeholderLabelKey: string;
   export let showInfo = true;
+  export let onInput: undefined | (() => void) = undefined;
+  export let onFocus: undefined | (() => void) = undefined;
+  export let onBlur: undefined | (() => void) = undefined;
 
   let placeholder: string;
   $: placeholder = translate({ labelKey: placeholderLabelKey });
@@ -35,15 +38,24 @@
   {placeholder}
   {max}
   {autocomplete}
-  on:blur
-  on:focus
-  on:nnsInput
-  on:keydown
+  {onBlur}
+  {onFocus}
+  {onInput}
   {showInfo}
 >
-  <slot name="start" slot="start" />
-  <slot name="label" slot="label" />
-  <slot name="end" slot="end" />
-  <slot name="inner-end" slot="inner-end" />
-  <slot name="bottom" slot="bottom" />
+  {#snippet start()}
+    <slot name="start" />
+  {/snippet}
+  {#snippet label()}
+    <slot name="label" />
+  {/snippet}
+  {#snippet end()}
+    <slot name="end" />
+  {/snippet}
+  {#snippet innerEnd()}
+    <slot name="inner-end" />
+  {/snippet}
+  {#snippet bottom()}
+    <slot name="bottom" />
+  {/snippet}
 </Input>

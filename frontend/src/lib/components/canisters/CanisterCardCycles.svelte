@@ -33,7 +33,7 @@
     });
   };
 
-  $: canister, (async () => await initWorker())();
+  $: (canister, (async () => await initWorker())());
 
   let canisterSync: CanisterSync | undefined = undefined;
 

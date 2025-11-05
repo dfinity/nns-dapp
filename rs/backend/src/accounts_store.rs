@@ -9,6 +9,7 @@ use ic_stable_structures::{
     memory_manager::VirtualMemory, storable::Bound, DefaultMemoryImpl, StableBTreeMap, Storable,
 };
 use icp_ledger::{AccountIdentifier, BlockIndex, Subaccount};
+use icrc_ledger_types::icrc1::account::Account as Icrc1Account;
 use itertools::Itertools;
 use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
@@ -16,6 +17,7 @@ use std::borrow::Cow;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, HashMap, VecDeque};
 use std::fmt;
+use std::str::FromStr;
 
 pub mod histogram;
 
@@ -33,6 +35,12 @@ const MAX_IMPORTED_TOKENS: i32 = 20;
 
 // Conservatively limit the number of favorite projects to prevent using too much memory.
 const MAX_FAVORITE_PROJECTS: i32 = 20;
+
+// Conservatively limit the number of named addresses to prevent using too much memory.
+const MAX_NAMED_ADDRESSES: i32 = 20;
+
+// Maximum length for named address name field
+const MAX_NAMED_ADDRESS_NAME_LENGTH: i32 = 64;
 
 /// Accounts and related data.
 pub struct AccountsStore {
@@ -92,6 +100,7 @@ pub struct Account {
     canisters: Vec<NamedCanister>,
     imported_tokens: Option<ImportedTokens>,
     fav_projects: Option<FavProjects>,
+    address_book: Option<AddressBook>,
     // default_account_transactions: Do not reuse this field. There are still accounts in stable memor with this unused field.
 }
 
@@ -202,6 +211,40 @@ pub enum SetFavProjectsResponse {
 #[derive(CandidType, Debug, PartialEq)]
 pub enum GetFavProjectsResponse {
     Ok(FavProjects),
+    AccountNotFound,
+}
+
+#[derive(CandidType, Clone, Deserialize, Debug, Eq, PartialEq)]
+pub enum AddressType {
+    Icp(String),
+    Icrc1(String),
+}
+
+#[derive(CandidType, Clone, Deserialize, Debug, Eq, PartialEq)]
+pub struct NamedAddress {
+    address: AddressType,
+    name: String,
+}
+
+#[derive(CandidType, Clone, Default, Deserialize, Debug, Eq, PartialEq)]
+pub struct AddressBook {
+    named_addresses: Vec<NamedAddress>,
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum SetAddressBookResponse {
+    Ok,
+    AccountNotFound,
+    TooManyNamedAddresses { limit: i32 },
+    InvalidIcpAddress { error: String },
+    AddressNameTooLong { max_length: i32 },
+    InvalidIcrc1Address { error: String },
+    DuplicateAddressName { name: String },
+}
+
+#[derive(CandidType, Debug, PartialEq)]
+pub enum GetAddressBookResponse {
+    Ok(AddressBook),
     AccountNotFound,
 }
 
@@ -686,6 +729,97 @@ impl AccountsStore {
         GetFavProjectsResponse::Ok(account.fav_projects.unwrap_or_default())
     }
 
+    fn validate_address_book_count(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        if address_book.named_addresses.len() > (MAX_NAMED_ADDRESSES as usize) {
+            return Err(SetAddressBookResponse::TooManyNamedAddresses {
+                limit: MAX_NAMED_ADDRESSES,
+            });
+        }
+        Ok(())
+    }
+
+    fn validate_address_book_unique_names(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        let mut seen_names = std::collections::HashSet::new();
+        for named_address in &address_book.named_addresses {
+            if !seen_names.insert(&named_address.name) {
+                return Err(SetAddressBookResponse::DuplicateAddressName {
+                    name: named_address.name.clone(),
+                });
+            }
+        }
+        Ok(())
+    }
+
+    fn validate_address_book_names_length(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        for named_address in &address_book.named_addresses {
+            if named_address.name.len() > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
+                return Err(SetAddressBookResponse::AddressNameTooLong {
+                    max_length: MAX_NAMED_ADDRESS_NAME_LENGTH,
+                });
+            }
+        }
+        Ok(())
+    }
+
+    fn validate_address_book_addresses(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        for named_address in &address_book.named_addresses {
+            match &named_address.address {
+                AddressType::Icp(address_str) => {
+                    // Validate ICP address using AccountIdentifier::from_hex
+                    if let Err(e) = AccountIdentifier::from_hex(address_str) {
+                        return Err(SetAddressBookResponse::InvalidIcpAddress {
+                            error: format!("Invalid ICP address: {e}"),
+                        });
+                    }
+                }
+                AddressType::Icrc1(address_str) => {
+                    // Validate ICRC1 address using the FromStr implementation from icrc-ledger-types
+                    // which properly validates the ICRC1 text representation including checksum validation
+                    if let Err(e) = Icrc1Account::from_str(address_str) {
+                        return Err(SetAddressBookResponse::InvalidIcrc1Address {
+                            error: format!("Invalid ICRC1 address: {e}"),
+                        });
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+
+    fn validate_address_book(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
+        Self::validate_address_book_count(address_book)?;
+        Self::validate_address_book_unique_names(address_book)?;
+        Self::validate_address_book_names_length(address_book)?;
+        Self::validate_address_book_addresses(address_book)?;
+        Ok(())
+    }
+
+    pub fn set_address_book(&mut self, caller: PrincipalId, new_address_book: AddressBook) -> SetAddressBookResponse {
+        // Validate the address book
+        if let Err(error_response) = Self::validate_address_book(&new_address_book) {
+            return error_response;
+        }
+
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let Some(mut account) = self.accounts_db.get(&account_identifier) else {
+            return SetAddressBookResponse::AccountNotFound;
+        };
+
+        account.address_book = Some(new_address_book);
+
+        self.accounts_db.insert(account_identifier, account);
+        SetAddressBookResponse::Ok
+    }
+
+    pub fn get_address_book(&self, caller: PrincipalId) -> GetAddressBookResponse {
+        let account_identifier = AccountIdentifier::from(caller).to_vec();
+        let Some(account) = self.accounts_db.get(&account_identifier) else {
+            return GetAddressBookResponse::AccountNotFound;
+        };
+
+        GetAddressBookResponse::Ok(account.address_book.unwrap_or_default())
+    }
+
     pub fn get_stats(&self, stats: &mut Stats) {
         stats.accounts_count = self.accounts_db.len();
         stats.sub_accounts_count = self.accounts_db_stats.sub_accounts_count;
@@ -814,6 +948,7 @@ impl Account {
             canisters: Vec::new(),
             imported_tokens: None,
             fav_projects: None,
+            address_book: None,
         }
     }
 }

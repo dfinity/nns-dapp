@@ -136,6 +136,30 @@ export const idlFactory = ({ IDL }) => {
     AccountNotFound: IDL.Null,
     TooManyImportedTokens: IDL.Record({ limit: IDL.Int32 }),
   });
+  const AddressType = IDL.Variant({
+    Icp: IDL.Text,
+    Icrc1: IDL.Text,
+  });
+  const NamedAddress = IDL.Record({
+    address: AddressType,
+    name: IDL.Text,
+  });
+  const AddressBook = IDL.Record({
+    named_addresses: IDL.Vec(NamedAddress),
+  });
+  const SetAddressBookResponse = IDL.Variant({
+    Ok: IDL.Null,
+    AccountNotFound: IDL.Null,
+    TooManyNamedAddresses: IDL.Record({ limit: IDL.Int32 }),
+    InvalidIcpAddress: IDL.Record({ error: IDL.Text }),
+    AddressNameTooLong: IDL.Record({ max_length: IDL.Int32 }),
+    InvalidIcrc1Address: IDL.Record({ error: IDL.Text }),
+    DuplicateAddressName: IDL.Record({ name: IDL.Text }),
+  });
+  const GetAddressBookResponse = IDL.Variant({
+    Ok: AddressBook,
+    AccountNotFound: IDL.Null,
+  });
   return IDL.Service({
     add_account: IDL.Func([], [AccountIdentifier], []),
     add_stable_asset: IDL.Func([IDL.Vec(IDL.Nat8)], [], []),
@@ -156,6 +180,7 @@ export const idlFactory = ({ IDL }) => {
       []
     ),
     get_account: IDL.Func([], [GetAccountResponse], ["query"]),
+    get_address_book: IDL.Func([], [GetAddressBookResponse], ["query"]),
     get_canisters: IDL.Func([], [IDL.Vec(CanisterDetails)], ["query"]),
     get_fav_projects: IDL.Func([], [GetFavProjectsResponse], ["query"]),
     get_imported_tokens: IDL.Func([], [GetImportedTokensResponse], ["query"]),
@@ -176,6 +201,7 @@ export const idlFactory = ({ IDL }) => {
       [RenameSubAccountResponse],
       []
     ),
+    set_address_book: IDL.Func([AddressBook], [SetAddressBookResponse], []),
     set_fav_projects: IDL.Func([FavProjects], [SetFavProjectsResponse], []),
     set_imported_tokens: IDL.Func(
       [ImportedTokens],

@@ -4,7 +4,7 @@ name: Update snsdemo
 on:
   schedule:
     # check for new snsdemo commits weekly
-    - cron: '30 3 * * FRI'
+    - cron: "30 3 * * FRI"
   workflow_dispatch:
   push:
     branches:
@@ -41,8 +41,8 @@ jobs:
         uses: actions/checkout@v5
         if: ${{ steps.update.outputs.updated == '1' }}
         with:
-          repository: 'dfinity/snsdemo'
-          path: 'snsdemo'
+          repository: "dfinity/snsdemo"
+          path: "snsdemo"
           ref: ${{ steps.update.outputs.release }}
       - name: Update snsdemo
         if: ${{ steps.update.outputs.updated == '1' }}
@@ -70,13 +70,13 @@ jobs:
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-snsdemo-update
           branch-suffix: timestamp
-          reviewers: mstrasinskis, yhabib
+          reviewers: governance-team
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: |
             config.json
             dfx.json
           delete-branch: true
-          title: 'bot: Update snsdemo to ${{ steps.update.outputs.release }}'
+          title: "bot: Update snsdemo to ${{ steps.update.outputs.release }}"
           body: |
             # Motivation
             We would like to keep the testing environment, provided by snsdemo, up to date.

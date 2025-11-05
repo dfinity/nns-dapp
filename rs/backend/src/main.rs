@@ -1,10 +1,10 @@
 use crate::accounts_store::histogram::AccountsStoreHistogram;
 use crate::accounts_store::{
-    AccountDetails, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse, DetachCanisterRequest,
-    DetachCanisterResponse, FavProjects, GetFavProjectsResponse, GetImportedTokensResponse, ImportedTokens,
-    NamedCanister, RegisterHardwareWalletRequest, RegisterHardwareWalletResponse, RenameCanisterRequest,
-    RenameCanisterResponse, RenameSubAccountRequest, RenameSubAccountResponse, SetFavProjectsResponse,
-    SetImportedTokensResponse,
+    AccountDetails, AddressBook, AttachCanisterRequest, AttachCanisterResponse, CreateSubAccountResponse,
+    DetachCanisterRequest, DetachCanisterResponse, FavProjects, GetAddressBookResponse, GetFavProjectsResponse,
+    GetImportedTokensResponse, ImportedTokens, NamedCanister, RegisterHardwareWalletRequest,
+    RegisterHardwareWalletResponse, RenameCanisterRequest, RenameCanisterResponse, RenameSubAccountRequest,
+    RenameSubAccountResponse, SetAddressBookResponse, SetFavProjectsResponse, SetImportedTokensResponse,
 };
 use crate::arguments::{set_canister_arguments, CanisterArguments};
 use crate::assets::{hash_bytes, insert_asset, Asset};
@@ -217,6 +217,20 @@ pub fn set_fav_projects(settings: FavProjects) -> SetFavProjectsResponse {
 pub fn get_fav_projects() -> GetFavProjectsResponse {
     let principal = get_caller();
     with_state(|s| s.accounts_store.get_fav_projects(principal))
+}
+
+#[must_use]
+#[ic_cdk::update]
+pub fn set_address_book(addresses: AddressBook) -> SetAddressBookResponse {
+    let principal = get_caller();
+    with_state_mut(|s| s.accounts_store.set_address_book(principal, addresses))
+}
+
+#[must_use]
+#[ic_cdk::query]
+pub fn get_address_book() -> GetAddressBookResponse {
+    let principal = get_caller();
+    with_state(|s| s.accounts_store.get_address_book(principal))
 }
 
 #[ic_cdk::update]

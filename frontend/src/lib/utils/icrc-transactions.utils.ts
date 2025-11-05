@@ -10,6 +10,7 @@ import type {
 import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { transactionName } from "$lib/utils/transactions.utils";
+import { Cbor } from "@dfinity/agent";
 import type {
   PendingUtxo,
   RetrieveBtcStatusV2,
@@ -20,6 +21,8 @@ import type {
   IcrcTransactionWithId,
 } from "@dfinity/ledger-icrc";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import type { TransactionWithId } from "@dfinity/ledger-icrc/dist/candid/icrc_index-ng";
+import type { Principal } from "@dfinity/principal";
 import {
   TokenAmount,
   TokenAmountV2,
@@ -29,8 +32,6 @@ import {
   uint8ArrayToHexString,
   type Token,
 } from "@dfinity/utils";
-import { Cbor } from "@icp-sdk/core/agent";
-import type { Principal } from "@icp-sdk/core/principal";
 
 const isToSelf = (transaction: IcrcTransaction): boolean => {
   if (transaction.transfer.length !== 1) {
@@ -170,6 +171,49 @@ const getTransactionInformation = (
     // transacted amount.
     amount: isApprove ? 0n : data?.amount,
     fee: fromNullable("fee" in data ? data.fee : []),
+  };
+};
+
+export const mapIcrcTransactionToReport = ({
+  account,
+  transaction,
+  token,
+}: {
+  account: Account;
+  transaction: TransactionWithId;
+  token: Token;
+}) => {
+  const txInfo = getTransactionInformation(transaction.transaction);
+  if (txInfo === undefined) {
+    throw new Error(`Unknown transaction type ${transaction.transaction.kind}`);
+  }
+  const { to, from, amount, fee } = txInfo;
+  const isSelfTransaction = isToSelf(transaction.transaction);
+
+  const isReceive = isSelfTransaction || txInfo.from !== account.identifier;
+  const transactionDirection: "credit" | "debit" = isReceive
+    ? "credit"
+    : "debit";
+  const useFee = !isReceive;
+  const feeApplied = useFee && nonNullish(fee) ? fee : 0n;
+
+  const type = getIcrcTransactionType({
+    transaction: transaction.transaction,
+    isReceive,
+  });
+
+  const tokenAmount = TokenAmountV2.fromUlps({
+    amount: amount + feeApplied,
+    token: token,
+  });
+
+  return {
+    type,
+    to,
+    from,
+    tokenAmount,
+    timestampNanos: transaction.transaction.timestamp,
+    transactionDirection,
   };
 };
 

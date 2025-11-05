@@ -201,6 +201,7 @@ describe("icrc-accounts-services", () => {
         transactions: [mockIcrcTransactionWithId],
         oldestTxId: undefined,
         completed: false,
+        balance: 0n,
       });
 
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(new Error());

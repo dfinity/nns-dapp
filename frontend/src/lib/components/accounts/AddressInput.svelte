@@ -20,14 +20,14 @@
       invalidAddress({ address, network: selectedNetwork, rootCanisterId });
   };
   // Hide error on change
-  $: address, (showError = false);
+  $: (address, (showError = false));
 
   const onBlur = () => {
     showErrorIfAny();
     dispatcher("nnsBlur");
   };
 
-  $: selectedNetwork, showErrorIfAny();
+  $: (selectedNetwork, showErrorIfAny());
 
   const onClickQRCode = () => dispatcher("nnsOpenQRCodeReader");
 </script>
@@ -40,7 +40,7 @@
   bind:value={address}
   errorMessage={showError ? $i18n.error.address_not_valid : undefined}
   showInfo={$$slots.label !== undefined}
-  on:blur={onBlur}
+  {onBlur}
   ><slot name="label" slot="label" />
 
   <svelte:fragment slot="inner-end">

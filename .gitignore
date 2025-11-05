@@ -27,6 +27,9 @@ out
 # Visual Studio Code related
 .vscode/
 
+# Cursor related
+.cursor/
+
 # Pub related
 **/doc/api/
 .packages

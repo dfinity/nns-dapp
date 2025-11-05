@@ -3,7 +3,7 @@ import { HOST } from "$lib/constants/environment.constants";
 import {
   IcrcIndexNgCanister,
   type IcrcAccount,
-  type IcrcGetTransactions,
+  type IcrcIndexNgGetTransactions,
 } from "@dfinity/ledger-icrc";
 import type { SubAccount } from "@dfinity/ledger-icrc/dist/candid/icrc_index";
 import { fromNullable } from "@dfinity/utils";
@@ -19,7 +19,7 @@ export interface GetTransactionsParams {
 }
 
 export interface GetTransactionsResponse
-  extends Omit<IcrcGetTransactions, "oldest_tx_id"> {
+  extends Omit<IcrcIndexNgGetTransactions, "oldest_tx_id"> {
   oldestTxId?: bigint;
 }
 

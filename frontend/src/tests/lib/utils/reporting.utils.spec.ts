@@ -1,4 +1,5 @@
 import {
+  buildIcrcTransactionsDataset,
   buildNeuronsDatasets,
   buildSnsNeuronsDatasets,
   buildTransactionsDatasets,
@@ -9,9 +10,12 @@ import {
   type CsvHeader,
 } from "$lib/utils/reporting.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
+import { mockCkBTCToken } from "$tests/mocks/ckbtc-accounts.mock";
 import en from "$tests/mocks/i18n.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
+import { mockIcrcMainAccount } from "$tests/mocks/icrc-accounts.mock";
+import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { aggregatorTokenMock } from "$tests/mocks/sns-aggregator.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
@@ -766,6 +770,140 @@ describe("reporting utils", () => {
         status: "fulfilled",
         value: 84,
       });
+    });
+  });
+
+  describe("buildIcrcTransactionsDataset", () => {
+    it("should generate dataset with empty transactions", () => {
+      const result = buildIcrcTransactionsDataset({
+        account: mockIcrcMainAccount,
+        token: mockCkBTCToken,
+        transactions: [],
+        i18n: en,
+      });
+
+      expect(result).toEqual({
+        metadata: [
+          {
+            label: "Account Id",
+            value: mockIcrcMainAccount.identifier,
+          },
+          {
+            label: "Balance(ckBTC)",
+            value: "8'901'567.12340000",
+          },
+          {
+            label: "Controller Principal Id",
+            value: mockPrincipal.toText(),
+          },
+          {
+            label: "Export Date Time",
+            value: "Oct 14, 2023 12:00 AM",
+          },
+        ],
+        data: [],
+      });
+    });
+
+    it("should generate dataset with transfer transactions", () => {
+      const transferTransaction = createIcrcTransactionWithId({
+        id: 123n,
+        amount: 100_000_000n, // 1 ckBTC
+        fee: 10n,
+        timestamp: new Date("2023-01-01T12:00:00Z"),
+      });
+
+      const result = buildIcrcTransactionsDataset({
+        account: mockIcrcMainAccount,
+        token: mockCkBTCToken,
+        transactions: [transferTransaction],
+        i18n: en,
+      });
+
+      expect(result.data).toEqual([
+        {
+          id: "123",
+          symbol: "ckBTC",
+          accountId: mockIcrcMainAccount.identifier,
+          to: expect.any(String),
+          from: expect.any(String),
+          type: "Sent",
+          amount: expect.stringMatching(/^[+-]\d+\.\d+$/),
+          timestamp: "Jan 1, 2023 12:00 PM",
+        },
+      ]);
+
+      expect(result.metadata).toEqual([
+        {
+          label: "Account Id",
+          value: mockIcrcMainAccount.identifier,
+        },
+        {
+          label: "Balance(ckBTC)",
+          value: "8'901'567.12340000",
+        },
+        {
+          label: "Controller Principal Id",
+          value: mockPrincipal.toText(),
+        },
+        {
+          label: "Export Date Time",
+          value: "Oct 14, 2023 12:00 AM",
+        },
+      ]);
+    });
+
+    it("should generate dataset with multiple transaction types", () => {
+      const transferTransaction = createIcrcTransactionWithId({
+        id: 100n,
+        amount: 50_000_000n, // 0.5 ckBTC
+        timestamp: new Date("2023-01-01T10:00:00Z"),
+      });
+
+      const anotherTransaction = createIcrcTransactionWithId({
+        id: 101n,
+        amount: 200_000_000n, // 2 ckBTC
+        timestamp: new Date("2023-01-02T15:30:00Z"),
+      });
+
+      const result = buildIcrcTransactionsDataset({
+        account: mockIcrcMainAccount,
+        token: mockCkBTCToken,
+        transactions: [transferTransaction, anotherTransaction],
+        i18n: en,
+      });
+
+      expect(result.data).toHaveLength(2);
+      expect(result.data[0].id).toBe("100");
+      expect(result.data[0].symbol).toBe("ckBTC");
+      expect(result.data[0].timestamp).toBe("Jan 1, 2023 10:00 AM");
+      expect(result.data[1].id).toBe("101");
+      expect(result.data[1].symbol).toBe("ckBTC");
+      expect(result.data[1].timestamp).toBe("Jan 2, 2023 3:30 PM");
+    });
+
+    it("should format amounts correctly with token decimals", () => {
+      const customToken = {
+        ...mockCkBTCToken,
+        symbol: "CUSTOM",
+        decimals: 6, // Different decimals
+      };
+
+      const transaction = createIcrcTransactionWithId({
+        id: 456n,
+        amount: 1_000_000n, // 1 token with 6 decimals
+        timestamp: new Date("2023-06-15T08:00:00Z"),
+      });
+
+      const result = buildIcrcTransactionsDataset({
+        account: mockIcrcMainAccount,
+        token: customToken,
+        transactions: [transaction],
+        i18n: en,
+      });
+
+      expect(result.data[0].symbol).toBe("CUSTOM");
+      expect(result.metadata[1].label).toBe("Balance(CUSTOM)");
     });
   });
 });
