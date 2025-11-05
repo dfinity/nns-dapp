@@ -13,8 +13,7 @@
   };
 
   const handleDelete = () => {
-    // TODO: Implement delete functionality
-    console.log("Delete", rowData.namedAddress.name);
+    rowData.rowContext.onDelete(rowData.namedAddress);
   };
 </script>
 

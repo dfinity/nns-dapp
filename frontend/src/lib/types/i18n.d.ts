@@ -191,6 +191,9 @@ interface I18nAddress_book {
   nickname_already_used: string;
   invalid_address: string;
   max_addresses_reached: string;
+  remove_address_title: string;
+  remove_address_message: string;
+  delete_success: string;
 }
 
 interface I18nAlfred {

@@ -7,6 +7,7 @@ import { BusyScreenPo } from "$tests/page-objects/BusyScreen.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object";
 import { CanistersPo } from "$tests/page-objects/Canisters.page-object";
+import { ConfirmationModalPo } from "$tests/page-objects/ConfirmationModal.page-object";
 import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { Launchpad2Po } from "$tests/page-objects/Launchpad2.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
@@ -103,6 +104,10 @@ export class AppPo extends BasePageObject {
 
   getAddAddressModalPo(): AddAddressModalPo {
     return AddAddressModalPo.under(this.root);
+  }
+
+  getRemoveAddressModalPo(): ConfirmationModalPo {
+    return ConfirmationModalPo.under(this.root);
   }
 
   getMenuItemsPo(): MenuItemsPo {

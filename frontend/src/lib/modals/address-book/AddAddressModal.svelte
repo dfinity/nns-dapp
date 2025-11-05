@@ -14,7 +14,7 @@
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   interface Props {
-    onClose?: () => void;
+    onClose: () => void;
     namedAddress?: NamedAddress;
   }
 
@@ -116,8 +116,6 @@
       (isEditMode && !hasChanges)
   );
 
-  const close = () => onClose?.();
-
   const resetForm = () => {
     nickname = "";
     address = "";
@@ -178,7 +176,7 @@
             : "address_book.add_success",
         });
         resetForm();
-        close();
+        onClose();
       } else {
         // Error already handled by saveAddressBook (toast shown)
         // Keep modal open with current data
@@ -189,7 +187,7 @@
   };
 </script>
 
-<Modal testId="add-address-modal" onClose={close}>
+<Modal testId="add-address-modal" {onClose}>
   {#snippet title()}
     <span data-tid="add-address-modal-title"
       >{isEditMode
@@ -239,7 +237,7 @@
         type="button"
         data-tid="cancel-button"
         disabled={$busy}
-        onclick={close}
+        onclick={onClose}
       >
         {$i18n.core.cancel}
       </button>
