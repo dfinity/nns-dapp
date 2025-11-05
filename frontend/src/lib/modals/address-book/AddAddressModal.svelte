@@ -11,7 +11,7 @@
     invalidIcrcAddress,
   } from "$lib/utils/accounts.utils";
   import { Modal, busy } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   interface Props {
     onClose?: () => void;
@@ -21,7 +21,12 @@
   const { onClose, namedAddress }: Props = $props();
 
   // Helper function to extract address string from AddressType
-  const getAddressString = (addressType: NamedAddress["address"]): string => {
+  const getAddressString = (
+    addressType: NamedAddress["address"] | undefined
+  ): string => {
+    if (isNullish(addressType)) {
+      return "";
+    }
     if ("Icp" in addressType) {
       return addressType.Icp;
     }
@@ -39,9 +44,7 @@
 
   // Initialize fields with existing data if in edit mode
   let nickname = $state(namedAddress?.name ?? "");
-  let address = $state(
-    namedAddress ? getAddressString(namedAddress.address) : ""
-  );
+  let address = $state(getAddressString(namedAddress?.address));
 
   // Error messages - set on submit, cleared on change
   let nicknameError = $state<string | undefined>(undefined);
@@ -52,33 +55,37 @@
     if (nickname === "") {
       return undefined;
     }
+
     if (nickname.length < 3) {
       return $i18n.address_book.nickname_too_short;
     }
+
     if (nickname.length > 20) {
       return $i18n.address_book.nickname_too_long;
     }
+
     // Check uniqueness: normalize both sides (trim + lowercase) for comparison
-    const normalizedNickname = normalizeName(nickname);
-    if (
-      $addressBookStore.namedAddresses?.some((entry) => {
-        // In edit mode, exclude the current entry from uniqueness check
+    const isNicknameAlreadyUsed = $addressBookStore.namedAddresses?.some(
+      (entry) => {
         if (
           isEditMode &&
           normalizeName(entry.name) === normalizeName(namedAddress?.name ?? "")
         ) {
+          // In edit mode, exclude the current entry from uniqueness check
           return false;
         }
-        return normalizeName(entry.name) === normalizedNickname;
-      })
-    ) {
+        return normalizeName(entry.name) === normalizeName(nickname);
+      }
+    );
+    if (isNicknameAlreadyUsed) {
       return $i18n.address_book.nickname_already_used;
     }
+
     return undefined;
   };
 
   // Validate address
-  const validateAddress = (): string | undefined => {
+  const validateAddress = () => {
     if (address === "") {
       return undefined;
     }
@@ -94,7 +101,7 @@
   // Check if nothing has changed in edit mode
   const hasChanges = $derived(
     nickname !== (namedAddress?.name ?? "") ||
-      address !== (namedAddress ? getAddressString(namedAddress.address) : "")
+      address !== getAddressString(namedAddress?.address)
   );
 
   // Determine if save button should be disabled
