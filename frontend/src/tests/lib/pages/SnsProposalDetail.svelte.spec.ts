@@ -36,6 +36,7 @@ import { AnonymousIdentity } from "@dfinity/agent";
 import { toastsStore } from "@dfinity/gix-components";
 import { Vote } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+import type { SnsNeuronPermission } from "@dfinity/sns";
 import {
   SnsGovernanceError,
   SnsNeuronPermissionType,
@@ -46,7 +47,6 @@ import {
   type SnsBallot,
   type SnsProposalData,
 } from "@dfinity/sns";
-import type { NeuronPermission } from "@dfinity/sns/dist/candid/sns_governance";
 import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
@@ -852,7 +852,7 @@ describe("SnsProposalDetail", () => {
             permission_type: Int32Array.from([
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
             ]),
-          } as NeuronPermission,
+          } as SnsNeuronPermission,
         ],
       };
       const neuron1 = fakeSnsGovernanceApi.addNeuronWith({

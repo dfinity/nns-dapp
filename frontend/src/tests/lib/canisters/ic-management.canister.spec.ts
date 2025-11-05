@@ -7,10 +7,14 @@ import {
   mockCanisterSettings,
 } from "$tests/mocks/canisters.mock";
 import { type ActorSubclass, type HttpAgent } from "@dfinity/agent";
-import type { CanisterStatusResponse } from "@dfinity/ic-management";
-import type { _SERVICE as IcManagementService } from "@dfinity/ic-management/dist/candid/ic-management";
+import type {
+  CanisterStatusResponse,
+  ICManagementCanisterOptions,
+} from "@dfinity/ic-management";
 import { Principal } from "@dfinity/principal";
 import { mock } from "vitest-mock-extended";
+
+type IcManagementService = ICManagementCanisterOptions["serviceOverride"];
 
 describe("ICManagementCanister", () => {
   const createICManagement = async (service: IcManagementService) => {

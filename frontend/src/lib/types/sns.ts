@@ -4,6 +4,7 @@ import type { UnknownTopic } from "$lib/types/sns-aggregator";
 import type { Principal } from "@dfinity/principal";
 import type {
   CfParticipant,
+  SnsFinalizeSwapResponse,
   SnsGetLifecycleResponse,
   SnsNervousSystemFunction,
   SnsNeuronId,
@@ -15,7 +16,6 @@ import type {
   SnsSwapTicket,
   SnsTopic,
 } from "@dfinity/sns";
-import type { FinalizeSwapResponse } from "@dfinity/sns/dist/candid/sns_swap";
 
 export type RootCanisterId = Principal;
 export type RootCanisterIdText = string;
@@ -31,7 +31,7 @@ export interface SnsSummaryMetadata {
 }
 
 export interface SnsSummarySwap {
-  auto_finalize_swap_response: [] | [FinalizeSwapResponse];
+  auto_finalize_swap_response: [] | [SnsFinalizeSwapResponse];
   next_ticket_id: [] | [bigint];
   already_tried_to_auto_finalize: [] | [boolean];
   purge_old_tickets_last_completion_timestamp_nanoseconds: [] | [bigint];

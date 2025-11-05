@@ -8,7 +8,7 @@
   import type { Universe } from "$lib/types/universe";
   import { Principal } from "@dfinity/principal";
   import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import type { ProposalData } from "@dfinity/sns/dist/candid/sns_governance";
+  import type { ProposalData } from "@dfinity/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
   import type { Readable } from "svelte/store";
 

@@ -12,9 +12,8 @@ import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@dfinity/principal";
-import type { SnsNeuron } from "@dfinity/sns";
+import type { SnsDisburseMaturityInProgress, SnsNeuron } from "@dfinity/sns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
-import type { DisburseMaturityInProgress } from "@dfinity/sns/dist/candid/sns_governance";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
@@ -87,7 +86,7 @@ describe("nonEmptySnsNeuronStore", () => {
         disburse_maturity_in_progress: [
           {
             amount_e8s: 1n,
-          } as DisburseMaturityInProgress,
+          } as SnsDisburseMaturityInProgress,
         ],
       },
       {
@@ -100,7 +99,7 @@ describe("nonEmptySnsNeuronStore", () => {
         disburse_maturity_in_progress: [
           {
             amount_e8s: 0n,
-          } as DisburseMaturityInProgress,
+          } as SnsDisburseMaturityInProgress,
         ],
       },
       {
@@ -229,7 +228,7 @@ describe("definedSnsNeuronStore", () => {
         disburse_maturity_in_progress: [
           {
             amount_e8s: 500_000_000n,
-          } as DisburseMaturityInProgress,
+          } as SnsDisburseMaturityInProgress,
         ],
       },
       {
@@ -242,7 +241,7 @@ describe("definedSnsNeuronStore", () => {
         disburse_maturity_in_progress: [
           {
             amount_e8s: 1_500_000_000n,
-          } as DisburseMaturityInProgress,
+          } as SnsDisburseMaturityInProgress,
         ],
       },
       {
