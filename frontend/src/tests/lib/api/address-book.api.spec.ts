@@ -1,7 +1,7 @@
 import { getAddressBook, setAddressBook } from "$lib/api/address-book.api";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import {
-  mockNamedAddress,
+  mockNamedAddressIcp,
   mockNamedAddressIcrc1,
 } from "$tests/mocks/address-book.mock";
 import { mockCreateAgent } from "$tests/mocks/agent.mock";
@@ -25,7 +25,7 @@ describe("address-book-api", () => {
   describe("getAddressBook", () => {
     it("should call the nns dapp canister to get the address book", async () => {
       mockNNSDappCanister.getAddressBook.mockResolvedValue({
-        named_addresses: [mockNamedAddress, mockNamedAddressIcrc1],
+        named_addresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
       });
       expect(mockNNSDappCanister.getAddressBook).not.toBeCalled();
       const result = await getAddressBook({
@@ -38,7 +38,7 @@ describe("address-book-api", () => {
         certified: true,
       });
       expect(result).toEqual({
-        named_addresses: [mockNamedAddress, mockNamedAddressIcrc1],
+        named_addresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
       });
     });
   });
@@ -48,12 +48,12 @@ describe("address-book-api", () => {
       expect(mockNNSDappCanister.setAddressBook).not.toBeCalled();
       await setAddressBook({
         identity: mockIdentity,
-        namedAddresses: [mockNamedAddress, mockNamedAddressIcrc1],
+        namedAddresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
       });
 
       expect(mockNNSDappCanister.setAddressBook).toHaveBeenCalledTimes(1);
       expect(mockNNSDappCanister.setAddressBook).toBeCalledWith([
-        mockNamedAddress,
+        mockNamedAddressIcp,
         mockNamedAddressIcrc1,
       ]);
     });

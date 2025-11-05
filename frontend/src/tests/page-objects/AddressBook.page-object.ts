@@ -66,4 +66,30 @@ export class AddressBookPo extends BasePageObject {
     const rows = await this.getResponsiveTablePo().getRows();
     return rows.length;
   }
+
+  async getRowByNickname(nickname: string): Promise<PageObjectElement | null> {
+    const table = this.getResponsiveTablePo();
+    const rows = await table.getRows();
+
+    for (const row of rows) {
+      const cellElements = await row.root.querySelectorAll(
+        "[role='cell'] .cell-body"
+      );
+      const rowNickname = (await cellElements[0].getText()).trim();
+      if (rowNickname === nickname) {
+        return row.root;
+      }
+    }
+
+    return null;
+  }
+
+  async clickEditOnRow(nickname: string): Promise<void> {
+    const row = await this.getRowByNickname(nickname);
+    if (!row) {
+      throw new Error(`Row with nickname "${nickname}" not found`);
+    }
+    const editButton = row.byTestId("edit-address-button");
+    await editButton.click();
+  }
 }

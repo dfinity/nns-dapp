@@ -11,43 +11,81 @@
     invalidIcrcAddress,
   } from "$lib/utils/accounts.utils";
   import { Modal, busy } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   interface Props {
     onClose?: () => void;
+    namedAddress?: NamedAddress;
   }
 
-  const { onClose }: Props = $props();
+  const { onClose, namedAddress }: Props = $props();
 
-  let nickname = $state("");
-  let address = $state("");
+  // Helper function to extract address string from AddressType
+  const getAddressString = (
+    addressType: NamedAddress["address"] | undefined
+  ): string => {
+    if (isNullish(addressType)) {
+      return "";
+    }
+    if ("Icp" in addressType) {
+      return addressType.Icp;
+    }
+    if ("Icrc1" in addressType) {
+      return addressType.Icrc1;
+    }
+    return "";
+  };
+
+  // Helper function to normalize names for comparison (case-insensitive, trimmed)
+  const normalizeName = (name: string): string => name.trim().toLowerCase();
+
+  // Determine if we're in edit mode
+  const isEditMode = nonNullish(namedAddress);
+
+  // Initialize fields with existing data if in edit mode
+  let nickname = $state(namedAddress?.name ?? "");
+  let address = $state(getAddressString(namedAddress?.address));
+
+  // Error messages - set on submit, cleared on change
+  let nicknameError = $state<string | undefined>(undefined);
+  let addressError = $state<string | undefined>(undefined);
 
   // Validate nickname
-  const nicknameError = $derived.by(() => {
+  const validateNickname = (): string | undefined => {
     if (nickname === "") {
       return undefined;
     }
+
     if (nickname.length < 3) {
       return $i18n.address_book.nickname_too_short;
     }
+
     if (nickname.length > 20) {
       return $i18n.address_book.nickname_too_long;
     }
+
     // Check uniqueness: normalize both sides (trim + lowercase) for comparison
-    const normalizedNickname = nickname.trim().toLowerCase();
-    if (
-      $addressBookStore.namedAddresses?.some(
-        (namedAddress) =>
-          namedAddress.name.trim().toLowerCase() === normalizedNickname
-      )
-    ) {
+    const isNicknameAlreadyUsed = $addressBookStore.namedAddresses?.some(
+      (entry) => {
+        if (
+          isEditMode &&
+          normalizeName(entry.name) === normalizeName(namedAddress?.name ?? "")
+        ) {
+          // In edit mode, exclude the current entry from uniqueness check
+          return false;
+        }
+        return normalizeName(entry.name) === normalizeName(nickname);
+      }
+    );
+    if (isNicknameAlreadyUsed) {
       return $i18n.address_book.nickname_already_used;
     }
+
     return undefined;
-  });
+  };
 
   // Validate address
-  const addressError = $derived.by(() => {
+  const validateAddress = () => {
     if (address === "") {
       return undefined;
     }
@@ -58,15 +96,24 @@
       return $i18n.address_book.invalid_address;
     }
     return undefined;
-  });
+  };
+
+  // Check if nothing has changed in edit mode
+  const hasChanges = $derived(
+    nickname !== (namedAddress?.name ?? "") ||
+      address !== getAddressString(namedAddress?.address)
+  );
 
   // Determine if save button should be disabled
+  // Disabled only if: fields are empty, errors are shown, busy, or no changes in edit mode
   const disableSave = $derived(
     nickname === "" ||
       address === "" ||
       nonNullish(nicknameError) ||
       nonNullish(addressError) ||
-      $busy
+      $busy ||
+      // In edit mode, disable if nothing changed
+      (isEditMode && !hasChanges)
   );
 
   const close = () => onClose?.();
@@ -74,32 +121,61 @@
   const resetForm = () => {
     nickname = "";
     address = "";
+    nicknameError = undefined;
+    addressError = undefined;
   };
 
   const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
+
+    // Validate and set errors
+    nicknameError = validateNickname();
+    addressError = validateAddress();
+
+    // If there are errors, stop here
+    if (nonNullish(nicknameError) || nonNullish(addressError)) {
+      return;
+    }
+
     // Determine address type
     const isValidIcrc = !invalidIcrcAddress(address);
     const addressType = isValidIcrc ? { Icrc1: address } : { Icp: address };
 
-    // Create new named address
-    const newAddress: NamedAddress = {
+    // Create new or updated named address
+    const updatedAddress: NamedAddress = {
       name: nickname,
       address: addressType,
     };
 
-    // Create temporary array with the new address
+    // Create temporary array with the updated addresses
     const currentAddresses = $addressBookStore.namedAddresses ?? [];
-    const updatedAddresses = [...currentAddresses, newAddress];
+    let updatedAddresses: NamedAddress[];
 
-    startBusy({ initiator: "add-address-book-entry" });
+    if (isEditMode) {
+      // In edit mode, find and replace the existing entry
+      updatedAddresses = currentAddresses.map((entry) =>
+        normalizeName(entry.name) === normalizeName(namedAddress?.name ?? "")
+          ? updatedAddress
+          : entry
+      );
+    } else {
+      // In add mode, append the new address
+      updatedAddresses = [...currentAddresses, updatedAddress];
+    }
+
+    const initiator = isEditMode
+      ? "edit-address-book-entry"
+      : "add-address-book-entry";
+    startBusy({ initiator });
 
     try {
       const result = await saveAddressBook(updatedAddresses);
 
       if (!result?.err) {
         toastsSuccess({
-          labelKey: "address_book.add_success",
+          labelKey: isEditMode
+            ? "address_book.edit_success"
+            : "address_book.add_success",
         });
         resetForm();
         close();
@@ -108,7 +184,7 @@
         // Keep modal open with current data
       }
     } finally {
-      stopBusy("add-address-book-entry");
+      stopBusy(initiator);
     }
   };
 </script>
@@ -116,7 +192,9 @@
 <Modal testId="add-address-modal" onClose={close}>
   {#snippet title()}
     <span data-tid="add-address-modal-title"
-      >{$i18n.address_book.add_address}</span
+      >{isEditMode
+        ? $i18n.address_book.edit_address
+        : $i18n.address_book.add_address}</span
     >
   {/snippet}
 
@@ -130,8 +208,8 @@
         name="nickname"
         required={true}
         errorMessage={nicknameError}
-        minLength={3}
         disabled={$busy}
+        onInput={() => (nicknameError = undefined)}
       >
         <svelte:fragment slot="label"
           >{$i18n.address_book.nickname_label}</svelte:fragment
@@ -147,6 +225,7 @@
         required={true}
         errorMessage={addressError}
         disabled={$busy}
+        onInput={() => (addressError = undefined)}
       >
         <svelte:fragment slot="label"
           >{$i18n.address_book.address_label}</svelte:fragment

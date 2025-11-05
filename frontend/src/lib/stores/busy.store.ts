@@ -59,7 +59,8 @@ export type BusyStateInitiatorType =
   | "change-neuron-visibility"
   | "reporting-neurons"
   | "reporting-transactions"
-  | "add-address-book-entry";
+  | "add-address-book-entry"
+  | "edit-address-book-entry";
 
 export interface BusyState {
   initiator: BusyStateInitiatorType;

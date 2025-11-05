@@ -9,8 +9,7 @@
   const { rowData }: Props = $props();
 
   const handleEdit = () => {
-    // TODO: Implement edit functionality
-    console.log("Edit", rowData.namedAddress.name);
+    rowData.rowContext.onEdit(rowData.namedAddress);
   };
 
   const handleDelete = () => {
