@@ -3,20 +3,17 @@
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
-  import type {
-    Account,
-    DisburseMaturityInProgress,
-  } from "@dfinity/sns/dist/candid/sns_governance";
+  import type { SnsAccount, SnsDisburseMaturityInProgress } from "@dfinity/sns";
   import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 
-  export let disbursement: DisburseMaturityInProgress;
+  export let disbursement: SnsDisburseMaturityInProgress;
 
   let dateTime: string;
   $: dateTime = secondsToDateTime(
     disbursement.timestamp_of_disbursement_seconds
   );
 
-  let account: Account;
+  let account: SnsAccount;
   $: account = fromDefinedNullable(disbursement.account_to_disburse_to);
 
   let destination: string;

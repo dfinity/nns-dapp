@@ -15,7 +15,7 @@ import type {
 } from "$lib/worker-utils/timer.worker-utils";
 import {
   decodeIcrcAccount,
-  type IcrcTransactionWithId,
+  type IcrcIndexNgTransactionWithId,
   type IcrcTxId,
 } from "@dfinity/ledger-icrc";
 import { jsonReplacer, nonNullish } from "@dfinity/utils";
@@ -72,7 +72,7 @@ export const getIcrcAccountsTransactions = ({
             ) !== undefined;
 
           return [...acc, ...(alreadyExist() ? [] : [value])];
-        }, [] as IcrcTransactionWithId[]),
+        }, [] as IcrcIndexNgTransactionWithId[]),
         ...rest,
       };
     })
