@@ -4,7 +4,7 @@ import type { IcrcSubaccount } from "@dfinity/ledger-icrc";
 import {
   IcrcIndexNgCanister,
   type IcrcAccount,
-  type IcrcGetTransactions,
+  type IcrcIndexNgGetTransactions,
 } from "@dfinity/ledger-icrc";
 import { fromNullable } from "@dfinity/utils";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
@@ -19,7 +19,7 @@ export interface GetTransactionsParams {
 }
 
 export interface GetTransactionsResponse
-  extends Omit<IcrcGetTransactions, "oldest_tx_id"> {
+  extends Omit<IcrcIndexNgGetTransactions, "oldest_tx_id"> {
   oldestTxId?: bigint;
 }
 

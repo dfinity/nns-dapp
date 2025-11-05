@@ -20,6 +20,7 @@ import {
   registerVote,
   removeHotkey,
   setFollowees,
+  setFollowing,
   simulateMergeNeurons,
   spawnNeuron,
   splitNeuron,
@@ -41,6 +42,7 @@ import {
   type ApiQueryParams,
   type ApiRefreshVotingPowerParams,
   type ApiSetFolloweesParams,
+  type ApiSetFollowingParams,
   type ApiSpawnNeuronParams,
   type ApiSplitNeuronParams,
   type ApiStakeMaturityParams,
@@ -200,6 +202,9 @@ export const governanceApiService = {
   },
   setFollowees(params: ApiSetFolloweesParams) {
     return clearCacheAfter(setFollowees(params));
+  },
+  setFollowing(params: ApiSetFollowingParams) {
+    return clearCacheAfter(setFollowing(params));
   },
   simulateMergeNeurons(params: ApiMergeNeuronsParams) {
     return clearCacheAfter(simulateMergeNeurons(params));

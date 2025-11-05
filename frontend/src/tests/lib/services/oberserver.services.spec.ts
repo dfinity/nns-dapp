@@ -16,6 +16,7 @@ describe("observer.services", () => {
     accountIdentifier: mockSnsMainAccount.identifier,
     oldestTxId: 10n,
     completed: false,
+    balance: 0n,
   };
 
   beforeEach(() => {
@@ -43,6 +44,7 @@ describe("observer.services", () => {
           accountIdentifier: mockSnsMainAccount.identifier,
           transactions: JSON.stringify([mockIcrcTransactionMint], jsonReplacer),
           oldestTxId,
+          balance: 0n,
         },
       ],
     });

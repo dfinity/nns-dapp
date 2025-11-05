@@ -167,6 +167,7 @@ describe("sns-accounts-services", () => {
         transactions: [mockIcrcTransactionWithId],
         oldestTxId: undefined,
         completed: false,
+        balance: 0n,
       });
 
       const spyQuery = vi

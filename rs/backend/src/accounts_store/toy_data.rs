@@ -63,6 +63,7 @@ pub fn toy_account(account_index: u64, size: ToyAccountSize) -> Account {
         canisters: Vec::new(),
         imported_tokens: None,
         fav_projects: None,
+        address_book: None,
     };
     // Creates linked sub-accounts:
     // Note: Successive accounts have 0, 1, 2 ... MAX_SUB_ACCOUNTS_PER_ACCOUNT-1 sub accounts, restarting at 0.

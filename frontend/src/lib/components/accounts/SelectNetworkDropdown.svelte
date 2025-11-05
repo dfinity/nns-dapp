@@ -50,7 +50,7 @@
     }
   };
 
-  $: selectedDestinationAddress, onDestinationAddressInput();
+  $: (selectedDestinationAddress, onDestinationAddressInput());
 </script>
 
 <Dropdown

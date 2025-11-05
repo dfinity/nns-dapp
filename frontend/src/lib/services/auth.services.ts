@@ -1,3 +1,4 @@
+import { browser } from "$app/environment";
 import { authStore } from "$lib/stores/auth.store";
 import { startBusy } from "$lib/stores/busy.store";
 import { toastsError, toastsShow } from "$lib/stores/toasts.store";
@@ -90,6 +91,8 @@ export const getAuthenticatedIdentity = async (): Promise<Identity> => {
 const appendMsgToUrl = (msg: Pick<ToastMsg, "labelKey" | "level">) => {
   const { labelKey, level } = msg;
 
+  if (!browser) return;
+
   const url: URL = new URL(window.location.href);
 
   url.searchParams.append(msgParam, encodeURI(labelKey));
@@ -102,6 +105,8 @@ const appendMsgToUrl = (msg: Pick<ToastMsg, "labelKey" | "level">) => {
  * If the url contains a msg that has been provided on logout, display it as a toast message. Cleanup url afterwards - we don't want the user to see the message again if reloads the browser
  */
 export const displayAndCleanLogoutMsg = () => {
+  if (!browser) return;
+
   const urlParams: URLSearchParams = new URLSearchParams(
     window.location.search
   );
@@ -122,6 +127,8 @@ export const displayAndCleanLogoutMsg = () => {
 };
 
 const cleanUpMsgUrl = () => {
+  if (!browser) return;
+
   const url: URL = new URL(window.location.href);
 
   url.searchParams.delete(msgParam);

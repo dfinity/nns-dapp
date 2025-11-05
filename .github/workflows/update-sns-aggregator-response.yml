@@ -3,7 +3,7 @@
 name: Update the SNS aggregator response for ProdLaunchpad.spec
 on:
   schedule:
-    - cron: '30 3 * * THU'
+    - cron: "30 3 * * THU"
   workflow_dispatch:
   push:
     branches:
@@ -40,13 +40,12 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           base: main
-          reviewers: mstrasinskis, yhabib
           # Note: Please be careful when updating the add-paths field.
           add-paths: frontend/src/tests/workflows/Launchpad/*.json
           branch: bot-aggregator-response-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'bot: Update SNS Aggregator Response'
+          title: "bot: Update SNS Aggregator Response"
           body: |
             # Motivation
             We would like to keep the ProdLaunchpad.spec up to date with mainnet data.

@@ -33,7 +33,7 @@
       universesAccounts: $universesAccountsStore,
     })?.filter(filterAccounts) ?? [];
 
-  $: selectableAccounts,
+  $: (selectableAccounts,
     (() => {
       if (isNullish(selectedAccountIdentifier)) {
         return;
@@ -48,7 +48,7 @@
       ) {
         selectedAccountIdentifier = selectableAccounts[0]?.identifier;
       }
-    })();
+    })());
 </script>
 
 <TestIdWrapper testId="select-account-dropdown-component">

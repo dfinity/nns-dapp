@@ -1,6 +1,9 @@
 import * as governanceApi from "$lib/api/governance.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
+import * as icrcIndex from "$lib/api/icrc-index.api";
+import * as icrcLedger from "$lib/api/icrc-ledger.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
+import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as exportDataService from "$lib/services/reporting.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
@@ -16,6 +19,7 @@ import {
   mockMainAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
+import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ReportingTransactionsButtonPo } from "$tests/page-objects/ReportingTransactionsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -70,7 +74,6 @@ describe("ReportingTransactionsButton", () => {
         id: 1n,
       }),
     ];
-
     vi.spyOn(icpIndexApi, "getTransactions").mockResolvedValue({
       transactions: mockTransactions,
       balance: 0n,
@@ -84,18 +87,21 @@ describe("ReportingTransactionsButton", () => {
       period,
       customFrom,
       customTo,
+      source,
     }: {
       onTrigger?: () => void;
-      period: ReportingPeriod;
+      period?: ReportingPeriod;
       customFrom?: string;
       customTo?: string;
-    } = { period: "year-to-date" }
+      source?: "icp" | "ck";
+    } = { period: "year-to-date", source: "icp" }
   ) => {
     const { container } = render(ReportingTransactionsButton, {
       props: {
         period,
         customFrom,
         customTo,
+        source,
       },
       events: {
         ...(nonNullish(onTrigger) && {
@@ -539,6 +545,203 @@ describe("ReportingTransactionsButton", () => {
             "icp_transactions_export_20231014_custom_2024-01-01_2024-01-31",
         })
       );
+    });
+  });
+
+  describe("CK Tokens Export", () => {
+    let spyGetAllIcrcTransactionsForCkTokens;
+    let spyBuildIcrcTransactionsDataset;
+
+    beforeEach(() => {
+      spyGetAllIcrcTransactionsForCkTokens = vi.spyOn(
+        exportDataService,
+        "getAllIcrcTransactionsForCkTokens"
+      );
+      spyBuildIcrcTransactionsDataset = vi
+        .spyOn(exportToCsv, "buildIcrcTransactionsDataset")
+        .mockReturnValue({ data: [], metadata: [] });
+      vi.spyOn(icrcLedger, "queryIcrcToken").mockResolvedValue({
+        symbol: "CKBTC",
+        name: "Chain Key Bitcoin",
+        fee: 0n,
+        decimals: 8,
+      });
+
+      const mockIcrcTransactions = [
+        createIcrcTransactionWithId({}),
+        createIcrcTransactionWithId({
+          id: 1n,
+          timestamp: new Date("2023-01-05T12:00:00Z"),
+        }),
+      ];
+      vi.spyOn(icrcIndex, "getTransactions").mockImplementation(
+        async (params) => {
+          if (params?.indexCanisterId === CKBTC_INDEX_CANISTER_ID) {
+            return {
+              transactions: mockIcrcTransactions,
+              balance: 0n,
+              oldestTxId: 1n,
+            };
+          }
+          return {
+            transactions: [],
+            balance: 0n,
+            oldestTxId: 0n,
+          };
+        }
+      );
+    });
+
+    it("should call CK export functions instead of ICP ones", async () => {
+      const po = renderComponent({ source: "ck" });
+
+      expect(spyGetAllIcrcTransactionsForCkTokens).toHaveBeenCalledTimes(0);
+      expect(spyExportDataService).toHaveBeenCalledTimes(0);
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(0);
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyGetAllIcrcTransactionsForCkTokens).toHaveBeenCalledTimes(1);
+      expect(spyExportDataService).toHaveBeenCalledTimes(0);
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(0);
+    });
+
+    it("should generate correct filename for CK tokens year-to-date", async () => {
+      const po = renderComponent({ source: "ck", period: "year-to-date" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName: "ck-tokens_transactions_export_20231014_year-to-date",
+        })
+      );
+    });
+
+    it("should generate correct filename for custom period CK", async () => {
+      const po = renderComponent({
+        source: "ck",
+        period: "custom",
+        customFrom: "2023-01-01",
+        customTo: "2023-01-31",
+      });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName:
+            "ck-tokens_transactions_export_20231014_custom_2023-01-01_2023-01-31",
+        })
+      );
+    });
+
+    it("should use correct headers for CK tokens", async () => {
+      const spyGenerateCsvFileToSave = vi
+        .spyOn(exportToCsv, "generateCsvFileToSave")
+        .mockResolvedValue();
+      const po = renderComponent({ source: "ck" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyGenerateCsvFileToSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          headers: expect.arrayContaining([
+            expect.objectContaining({ id: "id" }),
+            expect.objectContaining({ id: "symbol" }),
+            expect.objectContaining({ id: "accountId" }),
+            expect.objectContaining({ id: "to" }),
+            expect.objectContaining({ id: "from" }),
+            expect.objectContaining({ id: "type" }),
+            expect.objectContaining({ id: "amount" }),
+            expect.objectContaining({ id: "timestamp" }),
+          ]),
+        })
+      );
+    });
+
+    it("should build datasets using buildIcrcTransactionsDataset", async () => {
+      const po = renderComponent({ source: "ck" });
+
+      expect(spyBuildIcrcTransactionsDataset).toHaveBeenCalledTimes(0);
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyBuildIcrcTransactionsDataset).toHaveBeenCalledTimes(1);
+      expect(spyBuildIcrcTransactionsDataset).toHaveBeenCalledWith({
+        account: expect.objectContaining({
+          type: "main",
+          principal: mockIdentity.getPrincipal(),
+        }),
+        i18n: expect.any(Object),
+        token: expect.objectContaining({ symbol: "CKBTC" }),
+        transactions: expect.any(Array),
+      });
+    });
+
+    it("should handle errors in CK export", async () => {
+      spyGetAllIcrcTransactionsForCkTokens.mockRejectedValueOnce(
+        new Error("CK error")
+      );
+
+      const po = renderComponent({ source: "ck" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyToastError).toHaveBeenCalledWith({
+        labelKey: "reporting.error_transactions",
+      });
+    });
+
+    it("should disable button during CK export", async () => {
+      const po = renderComponent({ source: "ck" });
+
+      expect(await po.isDisabled()).toBe(false);
+
+      await po.click();
+
+      expect(await po.isDisabled()).toBe(true);
+
+      await runResolvedPromises();
+
+      expect(await po.isDisabled()).toBe(false);
+    });
+
+    it("should show info toast and skip CSV generation when no CK transactions", async () => {
+      spyGetAllIcrcTransactionsForCkTokens.mockResolvedValue([
+        {
+          token: {
+            symbol: "CKBTC",
+            name: "Chain Key Bitcoin",
+            fee: 10n,
+            decimals: 8,
+          },
+          transactions: [],
+          balance: 0n,
+        },
+      ]);
+
+      const spyToastsShow = vi.spyOn(toastsStore, "toastsShow");
+
+      const po = renderComponent({ source: "ck" });
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(0);
+      expect(spyToastsShow).toHaveBeenCalledTimes(0);
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyToastsShow).toHaveBeenCalledWith({
+        labelKey: "reporting.transactions_no_results",
+        level: "info",
+      });
+      expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(0);
     });
   });
 });

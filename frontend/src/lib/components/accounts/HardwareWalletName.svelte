@@ -21,7 +21,7 @@
     hardwareWalletName.length < HARDWARE_WALLET_NAME_MIN_LENGTH;
 
   let disabled: boolean;
-  $: hardwareWalletName, (() => (disabled = invalidInputLength()))();
+  $: (hardwareWalletName, (() => (disabled = invalidInputLength()))());
 
   // We display the error message only if at least one character has been entered
   const showInvalidInputLength = () =>
@@ -47,7 +47,7 @@
       placeholderLabelKey="accounts.attach_hardware_name_placeholder"
       name="walletName"
       bind:value={hardwareWalletName}
-      on:blur={showInvalidInputLength}
+      onBlur={showInvalidInputLength}
       showInfo={false}
       errorMessage={invalidInputMessage
         ? replacePlaceholders($i18n.error.input_length, {
