@@ -44,7 +44,7 @@ const initAddressBookStore = () => {
 export const addressBookStore = initAddressBookStore();
 
 /**
- * A derived store that maps addresses to their labels (first match only)
+ * A derived store that maps addresses to their labels
  * Returns a Map<address, label>
  */
 export const addressToLabelStore = derived(
