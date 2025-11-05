@@ -3,8 +3,8 @@ import type { IcrcTransactionsStoreData } from "$lib/stores/icrc-transactions.st
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import type {
-  IcrcTransaction,
-  IcrcTransactionWithId,
+  IcrcIndexNgTransaction,
+  IcrcIndexNgTransactionWithId,
 } from "@dfinity/ledger-icrc";
 import { Principal } from "@dfinity/principal";
 import { toNullable } from "@dfinity/utils";
@@ -31,7 +31,7 @@ export const createIcrcTransactionWithId = ({
   amount?: bigint;
   timestamp?: Date;
   memo?: Uint8Array;
-}): IcrcTransactionWithId => ({
+}): IcrcIndexNgTransactionWithId => ({
   id: id ?? 123n,
   transaction: {
     kind: "transfer",
@@ -70,7 +70,7 @@ const fakeSubAccount = {
   subaccount: [new Uint8Array([2, 3, 4])] as [Uint8Array],
 };
 
-const mockIcrcTransactionTransfer: IcrcTransaction = {
+const mockIcrcTransactionTransfer: IcrcIndexNgTransaction = {
   kind: "transfer",
   timestamp: 12_354n,
   burn: [],
@@ -89,7 +89,7 @@ const mockIcrcTransactionTransfer: IcrcTransaction = {
   approve: [],
 };
 
-const mockIcrcTransactionTransferToSelf: IcrcTransaction = {
+const mockIcrcTransactionTransferToSelf: IcrcIndexNgTransaction = {
   kind: "transfer",
   timestamp: 12_354n,
   burn: [],
@@ -120,7 +120,7 @@ export const createMintTransaction = ({
   to?: IcrcCandidAccount;
   memo?: Uint8Array;
   createdAt?: bigint;
-}): IcrcTransaction => {
+}): IcrcIndexNgTransaction => {
   return {
     kind: "burn",
     timestamp,
@@ -131,6 +131,7 @@ export const createMintTransaction = ({
         to,
         memo: toNullable(memo),
         created_at_time: toNullable(createdAt),
+        fee: [],
       },
     ],
     transfer: [],
@@ -154,7 +155,7 @@ export const createApproveTransaction = ({
   memo?: Uint8Array;
   createdAt?: bigint;
   spender?: IcrcCandidAccount;
-}): IcrcTransaction => {
+}): IcrcIndexNgTransaction => {
   return {
     kind: "approve",
     timestamp,
@@ -190,7 +191,7 @@ export const createBurnTransaction = ({
   memo?: Uint8Array;
   createdAt?: bigint;
   spender?: IcrcCandidAccount;
-}): IcrcTransaction => {
+}): IcrcIndexNgTransaction => {
   return {
     kind: "burn",
     timestamp,
@@ -201,6 +202,7 @@ export const createBurnTransaction = ({
         memo: toNullable(memo),
         created_at_time: toNullable(createdAt),
         spender: toNullable(spender),
+        fee: [],
       },
     ],
     mint: [],
@@ -209,11 +211,10 @@ export const createBurnTransaction = ({
   };
 };
 
-export const mockIcrcTransactionBurn: IcrcTransaction = createBurnTransaction(
-  {}
-);
+export const mockIcrcTransactionBurn: IcrcIndexNgTransaction =
+  createBurnTransaction({});
 
-export const mockIcrcTransactionMint: IcrcTransaction = {
+export const mockIcrcTransactionMint: IcrcIndexNgTransaction = {
   kind: "mint",
   timestamp: 12_354n,
   burn: [],
@@ -223,18 +224,19 @@ export const mockIcrcTransactionMint: IcrcTransaction = {
       memo: [],
       created_at_time: [123n],
       to: fakeAccount,
+      fee: [],
     },
   ],
   transfer: [],
   approve: [],
 };
 
-export const mockIcrcTransactionWithId: IcrcTransactionWithId = {
+export const mockIcrcTransactionWithId: IcrcIndexNgTransactionWithId = {
   id: 123n,
   transaction: mockIcrcTransactionTransfer,
 };
 
-export const mockIcrcTransactionWithIdToSelf: IcrcTransactionWithId = {
+export const mockIcrcTransactionWithIdToSelf: IcrcIndexNgTransactionWithId = {
   id: 124n,
   transaction: mockIcrcTransactionTransferToSelf,
 };

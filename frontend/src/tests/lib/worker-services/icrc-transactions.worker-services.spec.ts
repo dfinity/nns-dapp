@@ -11,7 +11,7 @@ import {
 import type { IcrcIndexNgGetTransactions } from "@dfinity/ledger-icrc";
 import {
   IcrcIndexNgCanister,
-  type IcrcTransaction,
+  type IcrcIndexNgTransaction,
 } from "@dfinity/ledger-icrc";
 import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
@@ -30,7 +30,7 @@ describe("transactions.worker-services", () => {
 
   const transaction = {
     burn: [],
-  } as unknown as IcrcTransaction;
+  } as unknown as IcrcIndexNgTransaction;
 
   const request: Omit<
     PostMessageDataRequestTransactions,
