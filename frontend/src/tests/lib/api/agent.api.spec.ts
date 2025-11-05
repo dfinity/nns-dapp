@@ -1,5 +1,6 @@
 import * as agentApi from "$lib/api/agent.api";
 import { mockCreateAgent } from "$tests/mocks/agent.mock";
+import * as utils from "@dfinity/utils";
 import {
   AgentError,
   ErrorKindEnum,
@@ -16,9 +17,8 @@ import {
   type ReadStateOptions,
   type RequestId,
   type SubmitResponse,
-} from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
-import * as utils from "@dfinity/utils";
+} from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import type { Mocked } from "vitest";
 
 const host = "http://localhost:8000";

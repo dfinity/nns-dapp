@@ -2,7 +2,7 @@ import { uncertifiedLoadSnsesAccountsBalances } from "$lib/services/sns-accounts
 import { uncertifiedLoadAccountsBalance } from "$lib/services/wallet-uncertified-accounts.services";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import type { CanisterIdString } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 
 const loadedBalances = new Set<CanisterIdString>();
 export const resetBalanceLoading = (): void => {

@@ -15,8 +15,8 @@ import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
 import { buildWalletUrl } from "$lib/utils/navigation.utils";
 import { getUsdValue, sortUserTokens } from "$lib/utils/token.utils";
-import { Principal } from "@dfinity/principal";
 import { isNullish, TokenAmountV2 } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 const convertAccountToUserTokenData = ({

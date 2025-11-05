@@ -19,7 +19,7 @@
   import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
   import { IconStakedTokens, PageBanner } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import {
     TokenAmountV2,

@@ -30,7 +30,7 @@
     type CsvHeader,
     type TransactionsCsvData,
   } from "$lib/utils/reporting.utils";
-  import { SignIdentity, type Identity } from "@dfinity/agent";
+  import { SignIdentity, type Identity } from "@icp-sdk/core/agent";
   import { IconDown } from "@dfinity/gix-components";
   import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
   import type { NeuronInfo } from "@dfinity/nns";

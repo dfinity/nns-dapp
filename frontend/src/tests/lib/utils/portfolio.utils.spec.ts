@@ -23,7 +23,7 @@ import {
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
 import type { ProposalInfo } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 
 describe("Portfolio utils", () => {
   describe("getTopTokens", () => {

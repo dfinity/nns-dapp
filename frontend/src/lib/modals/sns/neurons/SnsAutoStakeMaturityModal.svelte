@@ -4,7 +4,7 @@
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { toastsSuccess } from "$lib/stores/toasts.store";
   import { hasAutoStakeMaturityOn } from "$lib/utils/sns-neuron.utils";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsNeuron, SnsNeuronId } from "@dfinity/sns";
   import { createEventDispatcher } from "svelte";
 

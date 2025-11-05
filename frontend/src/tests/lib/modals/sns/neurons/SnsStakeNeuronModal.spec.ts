@@ -15,8 +15,8 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { Principal } from "@dfinity/principal";
 import { TokenAmount } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 
 describe("SnsStakeNeuronModal", () => {

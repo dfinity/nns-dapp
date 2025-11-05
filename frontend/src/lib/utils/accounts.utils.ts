@@ -17,8 +17,8 @@ import {
   checkAccountId,
 } from "@dfinity/ledger-icp";
 import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 
 /*
  * Returns the principal's main or hardware account

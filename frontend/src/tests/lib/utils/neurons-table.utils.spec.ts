@@ -28,9 +28,9 @@ import {
   type Followees,
   type NeuronInfo,
 } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 
 describe("neurons-table.utils", () => {
   const now = new Date("2022-01-01T15:26:47Z");

@@ -13,9 +13,9 @@ import {
   mockSnsToken,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { AnonymousIdentity, type HttpAgent } from "@dfinity/agent";
 import { IcrcLedgerCanister, type IcrcAccount } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
+import { AnonymousIdentity, type HttpAgent } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
 
 describe("icrc-ledger api", () => {

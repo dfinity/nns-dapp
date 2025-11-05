@@ -14,7 +14,7 @@
     invalidAddress,
   } from "$lib/utils/accounts.utils";
   import { Toggle } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;

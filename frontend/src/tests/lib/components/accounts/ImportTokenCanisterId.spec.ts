@@ -1,7 +1,7 @@
 import ImportTokenCanisterId from "$lib/components/accounts/ImportTokenCanisterId.svelte";
 import { ImportTokenCanisterIdPo } from "$tests/page-objects/ImportTokenCanisterId.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
 describe("ImportTokenCanisterId", () => {

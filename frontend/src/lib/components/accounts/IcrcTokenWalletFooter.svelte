@@ -8,7 +8,7 @@
   import type { Account } from "$lib/types/account";
   import type { IcrcTokenMetadata } from "$lib/types/icrc";
   import { openIcrcTokenModal } from "$lib/utils/modals.utils";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { isNullish } from "@dfinity/utils";
 
   export let ledgerCanisterId: Principal;

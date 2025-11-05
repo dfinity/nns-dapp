@@ -40,8 +40,8 @@ import {
 } from "$lib/utils/agnostic-neuron.utils";
 import { bigIntDiv, bigIntMul } from "$lib/utils/bigInt.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { Principal } from "@dfinity/principal";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 
 /////////////////
 /// DOC REFERENCE

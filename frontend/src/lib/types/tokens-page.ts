@@ -13,8 +13,8 @@ import type {
   ResponsiveTableOrder,
 } from "$lib/types/responsive-table";
 import type { UnavailableTokenAmount } from "$lib/utils/token.utils";
-import type { Principal } from "@dfinity/principal";
 import type { Token, TokenAmountV2 } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export enum UserTokenAction {
   Send = "send",

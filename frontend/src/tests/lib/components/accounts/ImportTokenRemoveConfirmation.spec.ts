@@ -4,8 +4,8 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { ImportTokenRemoveConfirmationPo } from "$tests/page-objects/ImportTokenRemoveConfirmation.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import type { Principal } from "@dfinity/principal";
 import { nonNullish } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 
 describe("ImportTokenRemoveConfirmation", () => {
   const ledgerCanisterId = principal(1);

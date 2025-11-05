@@ -14,13 +14,13 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { ProposalInfo } from "@dfinity/nns";
-import { Principal } from "@dfinity/principal";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   type SnsProposalData,
 } from "@dfinity/sns";
+import { Principal } from "@icp-sdk/core/principal";
 import { tick } from "svelte";
 import { beforeEach } from "vitest";
 

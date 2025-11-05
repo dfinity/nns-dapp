@@ -9,7 +9,7 @@
     type CanisterDetailsContext,
   } from "$lib/types/canister-detail.context";
   import { busy } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { createEventDispatcher, getContext } from "svelte";
 
   export let controller: Principal;

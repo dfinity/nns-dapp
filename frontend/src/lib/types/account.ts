@@ -3,7 +3,7 @@ import type {
   SubAccountArray,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { IcrcAccountIdentifierText } from "$lib/types/icrc";
-import type { Principal } from "@dfinity/principal";
+import type { Principal } from "@icp-sdk/core/principal";
 
 export type AccountType = "main" | "subAccount" | "hardwareWallet";
 

@@ -17,13 +17,13 @@ import {
   mockCkBTCMainAccount,
 } from "$tests/mocks/ckbtc-accounts.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { HttpAgent } from "@dfinity/agent";
 import {
   CkBTCMinterCanister,
   MinterInsufficientFundsError,
   type RetrieveBtcOk,
 } from "@dfinity/ckbtc";
 import { toastsStore } from "@dfinity/gix-components";
+import type { HttpAgent } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 import type { Mock } from "vitest";
 import { mock } from "vitest-mock-extended";

@@ -34,7 +34,6 @@ import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { isPngAsset } from "$lib/utils/utils";
 import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
-import { Principal } from "@dfinity/principal";
 import type {
   SnsDefaultFollowees,
   SnsFunctionType,
@@ -54,6 +53,7 @@ import {
   nonNullish,
   toNullable,
 } from "@dfinity/utils";
+import { Principal } from "@icp-sdk/core/principal";
 
 export const aggregatorCanisterLogoPath = (rootCanisterId: string) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/root/${rootCanisterId}/logo.png`;

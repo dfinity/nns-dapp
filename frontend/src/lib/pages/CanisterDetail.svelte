@@ -18,7 +18,7 @@
   } from "$lib/types/canister-detail.context";
   import { replacePlaceholders, translate } from "$lib/utils/i18n.utils";
   import { Island, busy } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
 

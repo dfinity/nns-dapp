@@ -16,12 +16,12 @@ import {
   lastProposalId,
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
-import type { Identity } from "@dfinity/agent";
-import { Principal } from "@dfinity/principal";
 import type { SnsNeuron } from "@dfinity/sns";
 import { SnsProposalRewardStatus } from "@dfinity/sns";
 import type { ProposalData } from "@dfinity/sns/dist/candid/sns_governance";
 import { isNullish } from "@dfinity/utils";
+import type { Identity } from "@icp-sdk/core/agent";
+import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 export const loadActionableSnsProposals = async () => {

@@ -5,7 +5,7 @@ import type {
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
 import type { Account } from "$lib/types/account";
-import { Principal } from "@dfinity/principal";
+import { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 
 export const mockMainAccount: Account = {

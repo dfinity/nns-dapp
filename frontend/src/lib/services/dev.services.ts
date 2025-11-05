@@ -13,8 +13,8 @@ import { loadAccounts } from "$lib/services/icrc-accounts.services";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import { numberToUlps } from "$lib/utils/token.utils";
-import type { Principal } from "@dfinity/principal";
 import { ICPToken, nonNullish, type Token } from "@dfinity/utils";
+import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 const getMainAccount = async (): Promise<Account> => {

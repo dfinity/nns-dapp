@@ -13,7 +13,7 @@
   } from "$lib/utils/sns-neuron.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
   import { busy } from "@dfinity/gix-components";
-  import type { Principal } from "@dfinity/principal";
+  import type { Principal } from "@icp-sdk/core/principal";
   import type { SnsNeuron } from "@dfinity/sns";
   import {
     isNullish,
