@@ -7,6 +7,7 @@ import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.const
 import * as exportDataService from "$lib/services/reporting.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
+import { setSnsProjects, resetSnsProjects } from "$tests/utils/sns.test-utils";
 import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
 import {
   CsvGenerationError,
@@ -93,7 +94,7 @@ describe("ReportingTransactionsButton", () => {
       period?: ReportingPeriod;
       customFrom?: string;
       customTo?: string;
-      source?: "icp" | "ck";
+      source?: "icp" | "ck" | "sns";
     } = { period: "year-to-date", source: "icp" }
   ) => {
     const { container } = render(ReportingTransactionsButton, {
@@ -730,6 +731,172 @@ describe("ReportingTransactionsButton", () => {
       const spyToastsShow = vi.spyOn(toastsStore, "toastsShow");
 
       const po = renderComponent({ source: "ck" });
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(0);
+      expect(spyToastsShow).toHaveBeenCalledTimes(0);
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyToastsShow).toHaveBeenCalledWith({
+        labelKey: "reporting.transactions_no_results",
+        level: "info",
+      });
+      expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe("SNS Tokens Export", () => {
+    let spyGetAllIcrcTransactionsFromAccountAndIdentity;
+    let spyBuildIcrcTransactionsDataset;
+
+    beforeEach(() => {
+      resetSnsProjects();
+      setSnsProjects([
+        {
+          // Default token metadata will be provided by the mock; override symbol for assertions
+          tokenMetadata: { symbol: "SNS1", name: "SNS Token 1", fee: 0n, decimals: 8 },
+        },
+      ]);
+
+      spyGetAllIcrcTransactionsFromAccountAndIdentity = vi
+        .spyOn(exportDataService, "getAllIcrcTransactionsFromAccountAndIdentity")
+        .mockResolvedValue({
+          transactions: [
+            createIcrcTransactionWithId({}),
+            createIcrcTransactionWithId({ id: 1n, timestamp: new Date("2023-01-05T12:00:00Z") }),
+          ],
+          balance: 0n,
+        });
+
+      spyBuildIcrcTransactionsDataset = vi
+        .spyOn(exportToCsv, "buildIcrcTransactionsDataset")
+        .mockReturnValue({ data: [], metadata: [] });
+    });
+
+    afterEach(() => {
+      resetSnsProjects();
+    });
+
+    it("should call SNS export path instead of ICP/CK", async () => {
+      const spyGetAllIcrcTransactionsForCkTokens = vi.spyOn(
+        exportDataService,
+        "getAllIcrcTransactionsForCkTokens"
+      );
+
+      const po = renderComponent({ source: "sns" });
+
+      expect(spyGetAllIcrcTransactionsFromAccountAndIdentity).toHaveBeenCalledTimes(0);
+      expect(spyGetAllIcrcTransactionsForCkTokens).toHaveBeenCalledTimes(0);
+      expect(spyExportDataService).toHaveBeenCalledTimes(0);
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(0);
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyGetAllIcrcTransactionsFromAccountAndIdentity).toHaveBeenCalledTimes(1);
+      expect(spyGetAllIcrcTransactionsForCkTokens).toHaveBeenCalledTimes(0);
+      expect(spyExportDataService).toHaveBeenCalledTimes(0);
+      expect(spyQueryNeurons).toHaveBeenCalledTimes(0);
+    });
+
+    it("should generate correct filename for SNS year-to-date", async () => {
+      const po = renderComponent({ source: "sns", period: "year-to-date" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spySaveGeneratedCsv).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fileName: "sns-tokens_transactions_export_20231014_year-to-date",
+        })
+      );
+    });
+
+    it("should use correct headers for SNS tokens", async () => {
+      const spyGenerateCsvFileToSave = vi
+        .spyOn(exportToCsv, "generateCsvFileToSave")
+        .mockResolvedValue();
+
+      const po = renderComponent({ source: "sns" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyGenerateCsvFileToSave).toHaveBeenCalledWith(
+        expect.objectContaining({
+          headers: expect.arrayContaining([
+            expect.objectContaining({ id: "id" }),
+            expect.objectContaining({ id: "symbol" }),
+            expect.objectContaining({ id: "accountId" }),
+            expect.objectContaining({ id: "to" }),
+            expect.objectContaining({ id: "from" }),
+            expect.objectContaining({ id: "type" }),
+            expect.objectContaining({ id: "amount" }),
+            expect.objectContaining({ id: "timestamp" }),
+          ]),
+        })
+      );
+    });
+
+    it("should build datasets using buildIcrcTransactionsDataset for SNS tokens", async () => {
+      const po = renderComponent({ source: "sns" });
+
+      expect(spyBuildIcrcTransactionsDataset).toHaveBeenCalledTimes(0);
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyBuildIcrcTransactionsDataset).toHaveBeenCalledTimes(1);
+      expect(spyBuildIcrcTransactionsDataset).toHaveBeenCalledWith({
+        account: expect.objectContaining({
+          type: "main",
+          principal: mockIdentity.getPrincipal(),
+        }),
+        i18n: expect.any(Object),
+        token: expect.objectContaining({ symbol: "SNS1" }),
+        transactions: expect.any(Array),
+      });
+    });
+
+    it("should handle errors in SNS export", async () => {
+      spyGetAllIcrcTransactionsFromAccountAndIdentity.mockRejectedValueOnce(
+        new Error("SNS error")
+      );
+
+      const po = renderComponent({ source: "sns" });
+
+      await po.click();
+      await runResolvedPromises();
+
+      expect(spyToastError).toHaveBeenCalledWith({
+        labelKey: "reporting.error_transactions",
+      });
+    });
+
+    it("should disable button during SNS export", async () => {
+      const po = renderComponent({ source: "sns" });
+
+      expect(await po.isDisabled()).toBe(false);
+
+      await po.click();
+
+      expect(await po.isDisabled()).toBe(true);
+
+      await runResolvedPromises();
+
+      expect(await po.isDisabled()).toBe(false);
+    });
+
+    it("should show info toast and skip CSV when no SNS transactions", async () => {
+      spyGetAllIcrcTransactionsFromAccountAndIdentity.mockResolvedValueOnce({
+        transactions: [],
+        balance: 0n,
+      });
+
+      const spyToastsShow = vi.spyOn(toastsStore, "toastsShow");
+
+      const po = renderComponent({ source: "sns" });
 
       expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(0);
       expect(spyToastsShow).toHaveBeenCalledTimes(0);
