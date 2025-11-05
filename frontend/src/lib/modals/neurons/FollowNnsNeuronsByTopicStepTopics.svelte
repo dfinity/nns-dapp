@@ -65,6 +65,8 @@
   const isTopicSelected = (topic: Topic) => selectedTopics.includes(topic);
   let cmp = $state<Collapsible | undefined>(undefined);
   let toggleContent = () => cmp?.toggleContent();
+  let updateMaxHeight = () => cmp?.updateMaxHeight();
+
   let expanded: boolean = $state(false);
 
   const removeFollowing = async ({
@@ -148,6 +150,7 @@
           checked={isTopicSelected(topic)}
           onNnsChange={onTopicSelectionChange}
           {removeFollowing}
+          onExpandingOption={updateMaxHeight}
         />
       {/each}
     </Collapsible>

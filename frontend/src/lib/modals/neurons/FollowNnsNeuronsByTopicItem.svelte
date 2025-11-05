@@ -1,4 +1,7 @@
 <script lang="ts">
+  import FollowNnsNeuronsByTopicFollowee from "$lib/modals/neurons/FollowNnsNeuronsByTopicFollowee.svelte";
+  import { i18n } from "$lib/stores/i18n";
+  import { getTopicSubtitle, getTopicTitle } from "$lib/utils/neuron.utils";
   import {
     Checkbox,
     Collapsible,
@@ -6,10 +9,8 @@
     IconErrorOutline,
     IconExpandMore,
   } from "@dfinity/gix-components";
-  import FollowNnsNeuronsByTopicFollowee from "$lib/modals/neurons/FollowNnsNeuronsByTopicFollowee.svelte";
-  import { i18n } from "$lib/stores/i18n";
-  import { getTopicTitle, getTopicSubtitle } from "$lib/utils/neuron.utils";
   import { Topic, type FolloweesForTopic, type NeuronId } from "@dfinity/nns";
+  import { isNullish } from "@dfinity/utils";
 
   type Props = {
     topic: Topic;
@@ -17,6 +18,7 @@
     checked: boolean;
     onNnsChange: (args: { topic: Topic; checked: boolean }) => void;
     removeFollowing: (args: { topic: Topic; followee: NeuronId }) => void;
+    onExpandingOption?: () => void;
   };
 
   let {
@@ -25,6 +27,7 @@
     checked = false,
     onNnsChange,
     removeFollowing,
+    onExpandingOption,
   }: Props = $props();
 
   const title = $derived(getTopicTitle({ topic, i18n: $i18n }));
@@ -44,6 +47,13 @@
     followees.find((f) => f.topic === topic)?.followees ?? []
   );
   const isFollowingByTopic = $derived(topicFollowees.length > 0);
+
+  $effect(() => {
+    expanded;
+    if (isNullish(onExpandingOption)) return;
+
+    setTimeout(onExpandingOption, 250);
+  });
 </script>
 
 <div class="topic-item" data-tid="follow-nns-neurons-by-topic-item-component">
