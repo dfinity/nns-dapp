@@ -5,7 +5,7 @@ import { isNullish } from "@dfinity/utils";
  * Helper function to extract address string from AddressType
  */
 export const getAddressString = (
-  addressType: NamedAddress["address"] | undefined
+  addressType?: NamedAddress["address"]
 ): string => {
   if (isNullish(addressType)) {
     return "";

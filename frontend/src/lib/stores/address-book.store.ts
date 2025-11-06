@@ -50,14 +50,10 @@ export const addressBookStore = initAddressBookStore();
 export const addressToLabelStore = derived(
   addressBookStore,
   ($addressBookStore) => {
-    const map = new Map<string, string>();
     const addresses = $addressBookStore.namedAddresses || [];
 
-    for (const namedAddress of addresses) {
-      const addressString = getAddressString(namedAddress.address);
-      map.set(addressString, namedAddress.name);
-    }
-
-    return map;
+    return new Map(
+      addresses.map(({ address, name }) => [getAddressString(address), name])
+    );
   }
 );
