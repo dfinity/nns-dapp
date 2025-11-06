@@ -7,7 +7,6 @@ import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.const
 import * as exportDataService from "$lib/services/reporting.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
-import { setSnsProjects, resetSnsProjects } from "$tests/utils/sns.test-utils";
 import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
 import {
   CsvGenerationError,
@@ -28,6 +27,7 @@ import {
   resetAccountsForTesting,
   setAccountsForTesting,
 } from "$tests/utils/accounts.test-utils";
+import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore } from "@dfinity/gix-components";
@@ -755,16 +755,27 @@ describe("ReportingTransactionsButton", () => {
       setSnsProjects([
         {
           // Default token metadata will be provided by the mock; override symbol for assertions
-          tokenMetadata: { symbol: "SNS1", name: "SNS Token 1", fee: 0n, decimals: 8 },
+          tokenMetadata: {
+            symbol: "SNS1",
+            name: "SNS Token 1",
+            fee: 0n,
+            decimals: 8,
+          },
         },
       ]);
 
       spyGetAllIcrcTransactionsFromAccountAndIdentity = vi
-        .spyOn(exportDataService, "getAllIcrcTransactionsFromAccountAndIdentity")
+        .spyOn(
+          exportDataService,
+          "getAllIcrcTransactionsFromAccountAndIdentity"
+        )
         .mockResolvedValue({
           transactions: [
             createIcrcTransactionWithId({}),
-            createIcrcTransactionWithId({ id: 1n, timestamp: new Date("2023-01-05T12:00:00Z") }),
+            createIcrcTransactionWithId({
+              id: 1n,
+              timestamp: new Date("2023-01-05T12:00:00Z"),
+            }),
           ],
           balance: 0n,
         });
@@ -786,7 +797,9 @@ describe("ReportingTransactionsButton", () => {
 
       const po = renderComponent({ source: "sns" });
 
-      expect(spyGetAllIcrcTransactionsFromAccountAndIdentity).toHaveBeenCalledTimes(0);
+      expect(
+        spyGetAllIcrcTransactionsFromAccountAndIdentity
+      ).toHaveBeenCalledTimes(0);
       expect(spyGetAllIcrcTransactionsForCkTokens).toHaveBeenCalledTimes(0);
       expect(spyExportDataService).toHaveBeenCalledTimes(0);
       expect(spyQueryNeurons).toHaveBeenCalledTimes(0);
@@ -794,7 +807,9 @@ describe("ReportingTransactionsButton", () => {
       await po.click();
       await runResolvedPromises();
 
-      expect(spyGetAllIcrcTransactionsFromAccountAndIdentity).toHaveBeenCalledTimes(1);
+      expect(
+        spyGetAllIcrcTransactionsFromAccountAndIdentity
+      ).toHaveBeenCalledTimes(1);
       expect(spyGetAllIcrcTransactionsForCkTokens).toHaveBeenCalledTimes(0);
       expect(spyExportDataService).toHaveBeenCalledTimes(0);
       expect(spyQueryNeurons).toHaveBeenCalledTimes(0);
