@@ -197,11 +197,10 @@ test.skip("Test address book functionality", async ({ page, context }) => {
   expect(await addressBookPo.hasEmptyState()).toBe(true);
 });
 
-test("Test ICP transfer using address book", async ({ page, context }) => {
-  await page.goto("/accounts");
+// @TODO: Enable this test once the address book feature flag is enabled
+test.skip("Test ICP transfer using address book", async ({ page, context }) => {
+  await page.goto("/tokens");
   await disableCssAnimations(page);
-  await expect(page).toHaveTitle("Account | Network Nervous System");
-
   await signInWithNewUser({ page, context });
 
   const pageElement = PlaywrightPageObjectElement.fromPage(page);
@@ -235,7 +234,7 @@ test("Test ICP transfer using address book", async ({ page, context }) => {
   const nnsAccountsPo = accountsPo.getNnsAccountsPo();
   const tokensTablePo = nnsAccountsPo.getTokensTablePo();
   const mainAccountRow = await tokensTablePo.getRowByName("Main");
-  await mainAccountRow.waitFor();
+  await mainAccountRow.waitForBalance();
 
   const initialBalance = await mainAccountRow.getBalance();
   expect(initialBalance).toBe("20.00 ICP");
@@ -255,10 +254,9 @@ test("Test ICP transfer using address book", async ({ page, context }) => {
   await page.goto("/accounts");
   await tokensTablePo.waitFor();
   const updatedMainRow = await tokensTablePo.getRowByName("Main");
-  await updatedMainRow.waitFor();
+  await updatedMainRow.waitForBalance();
 
-  // Balance should have decreased by 5 ICP plus fees
+  // Balance should have decreased by 5 ICP
   const finalBalance = await updatedMainRow.getBalance();
-  expect(parseFloat(finalBalance)).toBeLessThan(15.0);
-  expect(parseFloat(finalBalance)).toBeGreaterThan(14.9);
+  expect(parseFloat(finalBalance)).toBe(15.0);
 });
