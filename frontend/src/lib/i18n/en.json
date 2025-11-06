@@ -188,7 +188,9 @@
     "invalid_address": "Please enter a valid ICP or ICRC1 address.",
     "max_addresses_reached": "You have reached the maximum of 20 saved addresses.",
     "use_address_book": "Use address book",
+    "address_book_loading": "Loading address book...",
     "address_book_empty": "The address book is empty",
+    "no_applicable_addresses": "No applicable addresses for this token",
     "manual_address_warning": "Be careful when entering an address manually, similar addresses may be confused.",
     "check_address_book_link": "Check out the address book!",
     "select_address_placeholder": "Select an address"

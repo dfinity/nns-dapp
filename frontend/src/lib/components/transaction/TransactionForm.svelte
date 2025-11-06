@@ -189,6 +189,25 @@
     });
   }
 
+  // Determine which disabled message to show
+  let addressBookDisabledTooltip: string;
+  $: {
+    const namedAddresses = $addressBookStore.namedAddresses;
+
+    // Case 1: Still loading
+    if (namedAddresses === undefined) {
+      addressBookDisabledTooltip = $i18n.address_book.address_book_loading;
+    }
+    // Case 2: Loaded but empty
+    else if (namedAddresses.length === 0) {
+      addressBookDisabledTooltip = $i18n.address_book.address_book_empty;
+    }
+    // Case 3: Has addresses but none applicable for this token
+    else {
+      addressBookDisabledTooltip = $i18n.address_book.no_applicable_addresses;
+    }
+  }
+
   // Enable toggle by default only once when address book finishes loading with applicable addresses (if no destination address is selected)
   let useAddressBook = false;
   let initializedAddressBook = false;
@@ -248,7 +267,7 @@
           {:else}
             <Tooltip
               id="address-book-toggle-disabled"
-              text={$i18n.address_book.address_book_empty}
+              text={addressBookDisabledTooltip}
             >
               <div class="toggle-wrapper">
                 <p>{$i18n.address_book.use_address_book}</p>

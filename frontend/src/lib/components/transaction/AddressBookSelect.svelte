@@ -3,7 +3,7 @@
   import { addressBookStore } from "$lib/stores/address-book.store";
   import { i18n } from "$lib/stores/i18n";
   import { getAddressString } from "$lib/utils/address-book.utils";
-  import { Dropdown, DropdownItem, Spinner } from "@dfinity/gix-components";
+  import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   interface Props {
@@ -18,9 +18,6 @@
   const applicableAddresses = $derived(
     $addressBookStore.namedAddresses?.filter(filterAddresses) ?? []
   );
-
-  // Check if still loading
-  const isLoading = $derived($addressBookStore.namedAddresses === undefined);
 
   // Internal state for the dropdown - sync with selectedAddress
   let selectedNickname = $state<string | undefined>(undefined);
@@ -52,11 +49,7 @@
 </script>
 
 <div data-tid="address-book-select">
-  {#if isLoading}
-    <div class="select">
-      <Spinner size="small" inline />
-    </div>
-  {:else if applicableAddresses.length === 0}
+  {#if applicableAddresses.length === 0}
     <div class="select empty">
       <span class="placeholder"
         >{$i18n.address_book.select_address_placeholder}</span
