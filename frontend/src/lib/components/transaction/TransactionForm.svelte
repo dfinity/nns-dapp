@@ -1,30 +1,36 @@
 <script lang="ts">
   import SelectDestinationAddress from "$lib/components/accounts/SelectDestinationAddress.svelte";
+  import AddressBookSelect from "$lib/components/transaction/AddressBookSelect.svelte";
   import TransactionFormFee from "$lib/components/transaction/TransactionFormFee.svelte";
   import TransactionFormItemNetwork from "$lib/components/transaction/TransactionFormItemNetwork.svelte";
   import TransactionFromAccount from "$lib/components/transaction/TransactionFromAccount.svelte";
   import TransactionMemo from "$lib/components/transaction/TransactionMemo.svelte";
   import AmountInput from "$lib/components/ui/AmountInput.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
+  import { addressBookStore } from "$lib/stores/address-book.store";
+  import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import { InvalidAmountError } from "$lib/types/neurons.errors";
-  import type {
+  import {
     TransactionNetwork,
-    TransactionSelectDestinationMethods,
-    ValidateAmountFn,
+    type TransactionSelectDestinationMethods,
+    type ValidateAmountFn,
   } from "$lib/types/transaction";
   import {
     assertEnoughAccountFunds,
     invalidAddress,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
+  import { filterAddressesByToken } from "$lib/utils/address-book.utils";
   import { translate } from "$lib/utils/i18n.utils";
   import { validateTransactionMemo } from "$lib/utils/icp-transactions.utils";
   import {
     getMaxTransactionAmount,
     toTokenAmountV2,
   } from "$lib/utils/token.utils";
+  import { Toggle, Tooltip } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
   import {
     isNullish,
@@ -34,6 +40,7 @@
     type Token,
   } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
+  import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -173,6 +180,45 @@
   let balance: bigint | undefined;
   $: balance = selectedAccount?.balanceUlps;
 
+  // Address book integration
+  let applicableAddresses: NamedAddress[] = [];
+  $: if ($ENABLE_ADDRESS_BOOK) {
+    applicableAddresses = filterAddressesByToken({
+      addresses: $addressBookStore.namedAddresses ?? [],
+      token,
+    });
+  }
+
+  // Enable toggle by default only once when address book finishes loading with applicable addresses (if no destination address is selected)
+  let useAddressBook = false;
+  let initializedAddressBook = false;
+  $: if (
+    $ENABLE_ADDRESS_BOOK &&
+    applicableAddresses.length > 0 &&
+    !initializedAddressBook
+  ) {
+    if (!selectedDestinationAddress) {
+      useAddressBook = true;
+    }
+    initializedAddressBook = true;
+  }
+
+  const toggleAddressBook = () => {
+    useAddressBook = !useAddressBook;
+    // Reset address when toggling
+    selectedDestinationAddress = undefined;
+  };
+
+  // When using address book with ckBTC (or other tokens requiring network selection),
+  // automatically set network to ICP since address book only contains ICP/ICRC addresses
+  let forceIcpNetwork = false;
+  $: if ($ENABLE_ADDRESS_BOOK && useAddressBook && mustSelectNetwork) {
+    selectedNetwork = TransactionNetwork.ICP;
+    forceIcpNetwork = true;
+  } else {
+    forceIcpNetwork = false;
+  }
+
   // TODO(GIX-1332): if destination address is selected, select corresponding network
   // TODO: if network changes, reset destination address or display error?
 </script>
@@ -186,15 +232,73 @@
   />
 
   {#if canSelectDestination}
-    <SelectDestinationAddress
-      {rootCanisterId}
-      filterAccounts={filterDestinationAccounts}
-      bind:selectedDestinationAddress
-      bind:showManualAddress
-      bind:selectMethods={selectDestinationMethods}
-      {selectedNetwork}
-      on:nnsOpenQRCodeReader
-    />
+    {#if $ENABLE_ADDRESS_BOOK}
+      <div class="destination-wrapper">
+        <div class="destination-header">
+          <p class="label">{$i18n.accounts.destination}</p>
+          {#if applicableAddresses.length > 0}
+            <div class="toggle-wrapper">
+              <p>{$i18n.address_book.use_address_book}</p>
+              <Toggle
+                bind:checked={useAddressBook}
+                on:nnsToggle={toggleAddressBook}
+                ariaLabel={$i18n.address_book.use_address_book}
+              />
+            </div>
+          {:else}
+            <Tooltip
+              id="address-book-toggle-disabled"
+              text={$i18n.address_book.address_book_empty}
+            >
+              <div class="toggle-wrapper">
+                <p>{$i18n.address_book.use_address_book}</p>
+                <Toggle
+                  checked={false}
+                  disabled={true}
+                  ariaLabel={$i18n.address_book.use_address_book}
+                />
+              </div>
+            </Tooltip>
+          {/if}
+        </div>
+        {#if useAddressBook}
+          <AddressBookSelect
+            bind:selectedAddress={selectedDestinationAddress}
+            filterAddresses={(address) =>
+              applicableAddresses.some((addr) => addr.name === address.name)}
+          />
+        {:else}
+          <SelectDestinationAddress
+            {rootCanisterId}
+            filterAccounts={filterDestinationAccounts}
+            bind:selectedDestinationAddress
+            bind:showManualAddress
+            bind:selectMethods={selectDestinationMethods}
+            {selectedNetwork}
+            on:nnsOpenQRCodeReader
+            hideTitle={true}
+          />
+          <div class="manual-address-info">
+            <p class="warning"
+              >{$i18n.address_book.manual_address_warning}
+              <a href={AppPath.AddressBook} class="link">
+                {$i18n.address_book.check_address_book_link}
+              </a>
+            </p>
+          </div>
+        {/if}
+      </div>
+    {:else}
+      <SelectDestinationAddress
+        {rootCanisterId}
+        filterAccounts={filterDestinationAccounts}
+        bind:selectedDestinationAddress
+        bind:showManualAddress
+        bind:selectMethods={selectDestinationMethods}
+        {selectedNetwork}
+        on:nnsOpenQRCodeReader
+      />
+    {/if}
   {/if}
 
   {#if mustSelectNetwork}
@@ -202,7 +306,7 @@
       bind:selectedNetwork
       universeId={rootCanisterId}
       {selectedDestinationAddress}
-      {networkReadonly}
+      networkReadonly={networkReadonly || forceIcpNetwork}
     />
   {/if}
 
@@ -255,5 +359,60 @@
 
     margin-top: var(--padding);
     --input-error-wrapper-padding: 0 0 var(--padding-2x);
+  }
+
+  .destination-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding);
+  }
+
+  .destination-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .label {
+      font-size: var(--font-size-small);
+      color: var(--text-description);
+    }
+
+    .toggle-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: var(--padding);
+
+      p {
+        font-size: var(--font-size-small);
+        color: var(--text-description);
+      }
+    }
+  }
+
+  .manual-address-info {
+    display: flex;
+    flex-direction: column;
+
+    .warning {
+      background-color: var(--warning-emphasis-light);
+      padding: var(--padding) var(--padding-1_5x);
+      border-radius: var(--border-radius);
+      font-size: var(--font-size-small);
+      margin-top: 0;
+    }
+
+    .link {
+      font-size: var(--font-size-small);
+      padding-top: var(--padding-0_5x);
+      text-decoration: underline;
+      display: inline-block;
+      color: var(--primary);
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
   }
 </style>

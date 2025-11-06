@@ -186,7 +186,12 @@
     "nickname_too_long": "Nickname must be at most 20 characters.",
     "nickname_already_used": "This nickname is already in use.",
     "invalid_address": "Please enter a valid ICP or ICRC1 address.",
-    "max_addresses_reached": "You have reached the maximum of 20 saved addresses."
+    "max_addresses_reached": "You have reached the maximum of 20 saved addresses.",
+    "use_address_book": "Use address book",
+    "address_book_empty": "The address book is empty",
+    "manual_address_warning": "Be careful when entering an address manually, similar addresses may be confused.",
+    "check_address_book_link": "Check out the address book!",
+    "select_address_placeholder": "Select an address"
   },
   "alfred": {
     "no_results": "No results found",
