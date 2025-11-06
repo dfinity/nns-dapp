@@ -1,11 +1,17 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
+import { addressBookStore } from "$lib/stores/address-book.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import TransactionModalTest from "$tests/lib/modals/transaction/TransactionModalTest.svelte";
+import {
+  mockNamedAddressIcp,
+  mockNamedAddressIcrc1,
+} from "$tests/mocks/address-book.mock";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
@@ -21,7 +27,7 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmount, type Token } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import {
   fireEvent,
@@ -44,6 +50,7 @@ describe("TransactionModal", () => {
     mustSelectNetwork = false,
     showLedgerFee,
     skipHardwareWallets,
+    token,
     events,
   }: {
     destinationAddress?: string;
@@ -54,6 +61,7 @@ describe("TransactionModal", () => {
     mustSelectNetwork?: boolean;
     showLedgerFee?: boolean;
     skipHardwareWallets?: boolean;
+    token?: Token;
     events?: Record<string, ($event: CustomEvent) => void>;
   }) =>
     renderModal({
@@ -63,6 +71,7 @@ describe("TransactionModal", () => {
         rootCanisterId,
         validateAmount,
         skipHardwareWallets,
+        token,
         transactionInit: {
           sourceAccount,
           destinationAddress,
@@ -600,6 +609,246 @@ describe("TransactionModal", () => {
         "Main",
         "test subaccount",
       ]);
+    });
+  });
+
+  describe("address book integration", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", true);
+      addressBookStore.reset();
+    });
+
+    afterEach(() => {
+      overrideFeatureFlagsStore.reset();
+      addressBookStore.reset();
+    });
+
+    it("should show disabled toggle with tooltip when address book is empty", async () => {
+      addressBookStore.set({
+        namedAddresses: [],
+        certified: true,
+      });
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      const selectDestination = container.querySelector(
+        '[data-tid="select-destination"]'
+      );
+      expect(selectDestination).toBeInTheDocument();
+
+      // The destination-wrapper should render when feature flag is on
+      const destinationWrapper = container.querySelector(
+        ".destination-wrapper"
+      );
+
+      expect(destinationWrapper).toBeInTheDocument();
+
+      // Should not show address book dropdown
+      expect(
+        container.querySelector('[data-tid="address-book-dropdown"]')
+      ).not.toBeInTheDocument();
+
+      // Find the disabled toggle
+      const disabledToggle = container.querySelector(
+        'input[type="checkbox"][disabled][aria-label="Use address book"]'
+      );
+      expect(disabledToggle).toBeInTheDocument();
+      expect(disabledToggle?.hasAttribute("disabled")).toBe(true);
+
+      // Verify tooltip is present by checking for the tooltip wrapper (has aria-describedby)
+      const toggleWrapper = disabledToggle?.closest(".toggle-wrapper");
+      expect(toggleWrapper).toBeInTheDocument();
+      expect(toggleWrapper?.parentElement).toHaveAttribute("aria-describedby");
+    });
+
+    it("should show text input and warning when toggle is off", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      // Find the address book toggle and click it to turn it off
+      const addressBookToggle = container.querySelector(
+        'input[aria-label="Use address book"]'
+      );
+      expect(addressBookToggle).toBeInTheDocument();
+
+      // Initially toggle should be on
+      expect((addressBookToggle as HTMLInputElement)?.checked).toBe(true);
+
+      // Click to turn it off
+      addressBookToggle && fireEvent.click(addressBookToggle);
+
+      await waitFor(() => {
+        expect((addressBookToggle as HTMLInputElement)?.checked).toBe(false);
+      });
+
+      // Should show the manual address input
+      const addressInput = container.querySelector(
+        'input[name="accounts-address"]'
+      );
+      expect(addressInput).toBeInTheDocument();
+
+      // Should show warning
+      const warning = container.querySelector(".manual-address-info .warning");
+      expect(warning).toBeInTheDocument();
+      expect(warning?.textContent).toContain(
+        "Be careful when entering an address manually"
+      );
+
+      // Should show link to address book
+      const link = container.querySelector(
+        ".manual-address-info .link"
+      ) as HTMLAnchorElement;
+      expect(link).toBeInTheDocument();
+      expect(link?.textContent).toContain("Check out the address book!");
+      expect(link?.href).toContain("/address-book");
+    });
+
+    it("should show both ICP and ICRC1 addresses for ICP transactions", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      // Toggle should be enabled
+      const addressBookToggle = container.querySelector(
+        'input[aria-label="Use address book"]'
+      ) as HTMLInputElement;
+      expect(addressBookToggle).toBeInTheDocument();
+      expect(addressBookToggle?.disabled).toBe(false);
+      expect(addressBookToggle?.checked).toBe(true);
+
+      // Should show address book dropdown
+      const dropdown = container.querySelector(
+        '[data-tid="address-book-dropdown"]'
+      );
+      expect(dropdown).toBeInTheDocument();
+
+      // Should have both addresses as options
+      const options = Array.from(
+        dropdown?.querySelectorAll("option") ?? []
+      ).map((opt) => opt.textContent?.trim());
+      expect(options).toEqual(["Alice", "Bob"]);
+    });
+
+    it("should show only ICRC1 addresses for non-ICP transactions", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const ckBTCToken = {
+        symbol: "ckBTC",
+        name: "Chain Key Bitcoin",
+        decimals: 8,
+      };
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+        token: ckBTCToken,
+      });
+
+      // Should show address book dropdown
+      const dropdown = container.querySelector(
+        '[data-tid="address-book-dropdown"]'
+      );
+      expect(dropdown).toBeInTheDocument();
+
+      // Should have only ICRC1 address as option (Bob)
+      const options = Array.from(
+        dropdown?.querySelectorAll("option") ?? []
+      ).map((opt) => opt.textContent?.trim());
+      expect(options).toEqual(["Bob"]);
+    });
+
+    it("should disable toggle when only ICP addresses exist for non-ICP transactions", async () => {
+      // Set address book with only ICP addresses
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp],
+        certified: true,
+      });
+
+      const ckBTCToken = {
+        symbol: "ckBTC",
+        name: "Chain Key Bitcoin",
+        decimals: 8,
+      };
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+        token: ckBTCToken,
+      });
+
+      const destinationWrapper = container.querySelector(
+        ".destination-wrapper"
+      );
+
+      expect(destinationWrapper).toBeInTheDocument();
+
+      // Toggle should be disabled since no ICRC1 addresses
+      const disabledToggle = container.querySelector(
+        'input[type="checkbox"][disabled][aria-label="Use address book"]'
+      );
+      expect(disabledToggle).toBeInTheDocument();
+      expect(disabledToggle?.hasAttribute("disabled")).toBe(true);
+
+      // Verify tooltip is present by checking for the tooltip wrapper
+      const toggleWrapper = disabledToggle?.closest(".toggle-wrapper");
+      expect(toggleWrapper).toBeInTheDocument();
+      expect(toggleWrapper?.parentElement).toHaveAttribute("aria-describedby");
+
+      // Should not show address book dropdown
+      expect(
+        container.querySelector('[data-tid="address-book-dropdown"]')
+      ).not.toBeInTheDocument();
+    });
+
+    it("should select address from dropdown and populate destination", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      // Should show address book dropdown
+      const dropdown = container.querySelector(
+        '[data-tid="address-book-dropdown"]'
+      ) as HTMLSelectElement;
+      expect(dropdown).toBeInTheDocument();
+
+      // Select Bob (ICRC1 address)
+      fireEvent.change(dropdown, { target: { value: "Bob" } });
+
+      await waitFor(() => {
+        expect(dropdown.value).toBe("Bob");
+      });
+
+      // The selectedDestinationAddress should be updated to Bob's address
+      // We can verify this by checking if the continue button becomes enabled when amount is entered
+      const input = container.querySelector("input[name='amount']");
+      input && fireEvent.input(input, { target: { value: "10" } });
+
+      const participateButton = container.querySelector(
+        '[data-tid="transaction-button-next"]'
+      ) as HTMLButtonElement;
+
+      await waitFor(() => {
+        expect(participateButton?.hasAttribute("disabled")).toBe(false);
+      });
     });
   });
 });
