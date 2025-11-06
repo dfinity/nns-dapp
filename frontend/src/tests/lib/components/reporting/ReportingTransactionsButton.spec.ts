@@ -7,7 +7,6 @@ import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.const
 import * as exportDataService from "$lib/services/reporting.services";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
-import { setSnsProjects, resetSnsProjects } from "$tests/utils/sns.test-utils";
 import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
 import {
   CsvGenerationError,
