@@ -20,7 +20,6 @@ import type {
   IcrcTransactionWithId,
 } from "@dfinity/ledger-icrc";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-import type { TransactionWithId } from "@dfinity/ledger-icrc/dist/candid/icrc_index-ng";
 import {
   TokenAmount,
   TokenAmountV2,
@@ -180,7 +179,7 @@ export const mapIcrcTransactionToReport = ({
   token,
 }: {
   account: Account;
-  transaction: TransactionWithId;
+  transaction: IcrcTransactionWithId;
   token: Token;
 }) => {
   const txInfo = getTransactionInformation(transaction.transaction);
