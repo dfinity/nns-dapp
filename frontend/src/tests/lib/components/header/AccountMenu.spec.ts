@@ -198,10 +198,11 @@ describe("AccountMenu", () => {
       });
 
       it("should display Address Book link when feature flag is enabled", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", true);
+
         const { accountMenuPo } = renderComponent();
         await accountMenuPo.openMenu();
 
-        // Feature flag is enabled by default in tests (see vitest.setup.ts)
         expect(get(ENABLE_ADDRESS_BOOK)).toBe(true);
         expect(await accountMenuPo.getLinkToAddressBookPo().isPresent()).toBe(
           true
@@ -209,8 +210,6 @@ describe("AccountMenu", () => {
       });
 
       it("should not display Address Book link when feature flag is disabled", async () => {
-        overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
-
         const { accountMenuPo } = renderComponent();
         await accountMenuPo.openMenu();
 

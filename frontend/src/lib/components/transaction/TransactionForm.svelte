@@ -194,21 +194,19 @@
   $: {
     const namedAddresses = $addressBookStore.namedAddresses;
 
-    // Case 1: Still loading
     if (namedAddresses === undefined) {
+      // Case 1: Still loading
       addressBookDisabledTooltip = $i18n.address_book.address_book_loading;
-    }
-    // Case 2: Loaded but empty
-    else if (namedAddresses.length === 0) {
+    } else if (namedAddresses.length === 0) {
+      // Case 2: Loaded but empty
       addressBookDisabledTooltip = $i18n.address_book.address_book_empty;
-    }
-    // Case 3: Has addresses but none applicable for this token
-    else {
+    } else {
+      // Case 3: Has addresses but none applicable for this token
       addressBookDisabledTooltip = $i18n.address_book.no_applicable_addresses;
     }
   }
 
-  // Enable toggle by default only once when address book finishes loading with applicable addresses (if no destination address is selected)
+  // Enable toggle by default only once when address book finishes loading with applicable addresses (if no destination address is already entered)
   let useAddressBook = false;
   let initializedAddressBook = false;
   $: if (
