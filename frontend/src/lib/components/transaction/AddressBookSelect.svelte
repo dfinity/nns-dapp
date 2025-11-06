@@ -73,14 +73,11 @@
 
   .select {
     @include form.input;
-
-    position: relative;
-    box-sizing: border-box;
-
-    padding: var(--padding-2x);
-    border-radius: var(--border-radius);
-
     width: var(--dropdown-width, auto);
+    border-radius: var(--border-radius);
+    padding: var(--padding-2x);
+    box-sizing: border-box;
+    position: relative;
 
     &.empty {
       color: var(--text-description);
