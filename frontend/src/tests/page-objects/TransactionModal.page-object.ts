@@ -58,6 +58,30 @@ export class TransactionModalBasePo extends ModalPo {
     }
     await review.clickSend();
   }
+
+  async transferToAddressBookEntry({
+    nickname,
+    expectedAccountAddress,
+    amount,
+  }: {
+    nickname: string;
+    expectedAccountAddress: string;
+    amount: number;
+  }): Promise<void> {
+    await this.getTransactionFormPo().transferToAddressBookEntry({
+      nickname,
+      amount,
+    });
+    const review = this.getTransactionReviewPo();
+    await review.waitFor();
+    const destinationAddress = await review.getDestinationAddress();
+    if (destinationAddress.trim() !== expectedAccountAddress.trim()) {
+      throw new Error(
+        `Destination address should be ${expectedAccountAddress} but was ${destinationAddress}.`
+      );
+    }
+    await review.clickSend();
+  }
 }
 
 export class TransactionModalPo extends TransactionModalBasePo {

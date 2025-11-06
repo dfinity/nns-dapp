@@ -196,3 +196,69 @@ test.skip("Test address book functionality", async ({ page, context }) => {
   step("Verify table is empty and shows empty state");
   expect(await addressBookPo.hasEmptyState()).toBe(true);
 });
+
+test("Test ICP transfer using address book", async ({ page, context }) => {
+  await page.goto("/accounts");
+  await disableCssAnimations(page);
+  await expect(page).toHaveTitle("Account | Network Nervous System");
+
+  await signInWithNewUser({ page, context });
+
+  const pageElement = PlaywrightPageObjectElement.fromPage(page);
+  const appPo = new AppPo(pageElement);
+
+  step("Get some ICP tokens");
+  await appPo.getIcpTokens(20);
+
+  step("Go to address book and add an address");
+  await page.goto("/address-book");
+  const addressBookPo = appPo.getAddressBookPo();
+  await addressBookPo.waitForContentLoaded();
+
+  step("Add an ICP address to the address book");
+  await addressBookPo.clickAddAddress();
+  const addAddressModalPo = appPo.getAddAddressModalPo();
+  await addAddressModalPo.waitFor();
+
+  const icpAddress = (mockNamedAddressIcp.address as { Icp: string }).Icp;
+  await addAddressModalPo.addAddress("Test ICP Wallet", icpAddress);
+  await addAddressModalPo.waitForClosed();
+
+  step("Verify address was added");
+  const rowsData = await addressBookPo.getTableRowsData();
+  expect(rowsData).toHaveLength(1);
+  expect(rowsData[0].nickname).toBe("Test ICP Wallet");
+
+  step("Navigate to accounts page and send ICP using address book");
+  await page.goto("/accounts");
+  const accountsPo = appPo.getAccountsPo();
+  const nnsAccountsPo = accountsPo.getNnsAccountsPo();
+  const tokensTablePo = nnsAccountsPo.getTokensTablePo();
+  const mainAccountRow = await tokensTablePo.getRowByName("Main");
+  await mainAccountRow.waitFor();
+
+  const initialBalance = await mainAccountRow.getBalance();
+  expect(initialBalance).toBe("20.00 ICP");
+
+  step("Click on Main account to open wallet");
+  await mainAccountRow.click();
+  const nnsWalletPo = appPo.getWalletPo().getNnsWalletPo();
+
+  step("Send ICP via address book");
+  await nnsWalletPo.transferToAddressBookEntry({
+    nickname: "Test ICP Wallet",
+    expectedAccountAddress: icpAddress,
+    amount: 5,
+  });
+
+  step("Wait for transaction to complete and verify balance decreased");
+  await page.goto("/accounts");
+  await tokensTablePo.waitFor();
+  const updatedMainRow = await tokensTablePo.getRowByName("Main");
+  await updatedMainRow.waitFor();
+
+  // Balance should have decreased by 5 ICP plus fees
+  const finalBalance = await updatedMainRow.getBalance();
+  expect(parseFloat(finalBalance)).toBeLessThan(15.0);
+  expect(parseFloat(finalBalance)).toBeGreaterThan(14.9);
+});

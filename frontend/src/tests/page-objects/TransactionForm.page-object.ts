@@ -1,3 +1,4 @@
+import { AddressBookSelectPo } from "$tests/page-objects/AddressBookSelect.page-object";
 import { AmountInputPo } from "$tests/page-objects/AmountInput.page-object";
 import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { SelectDestinationAddressPo } from "$tests/page-objects/SelectDestinationAddress.page-object";
@@ -73,6 +74,44 @@ export class TransactionFormPo extends BasePageObject {
     amount: number;
   }): Promise<void> {
     await this.enterAddress(destinationAddress);
+    await this.enterAmount(amount);
+    await this.clickContinue();
+  }
+
+  // Address book methods
+  getAddressBookSelectPo(): AddressBookSelectPo {
+    return AddressBookSelectPo.under(this.root);
+  }
+
+  async isAddressBookToggleEnabled(): Promise<boolean> {
+    const toggle = this.root.querySelector(
+      'input[aria-label="Use address book"]'
+    );
+    return (await toggle.getAttribute("disabled")) === null;
+  }
+
+  async isAddressBookToggleChecked(): Promise<boolean> {
+    const toggle = this.root.querySelector(
+      'input[aria-label="Use address book"]'
+    );
+    return toggle.isChecked();
+  }
+
+  async toggleAddressBook(): Promise<void> {
+    const toggle = this.root.querySelector(
+      'input[aria-label="Use address book"]'
+    );
+    await toggle.click();
+  }
+
+  async transferToAddressBookEntry({
+    nickname,
+    amount,
+  }: {
+    nickname: string;
+    amount: number;
+  }): Promise<void> {
+    await this.getAddressBookSelectPo().selectAddress(nickname);
     await this.enterAmount(amount);
     await this.clickContinue();
   }
