@@ -1,5 +1,6 @@
 import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { writable } from "svelte/store";
+import { getAddressString } from "$lib/utils/address-book.utils";
+import { derived, writable } from "svelte/store";
 
 export interface AddressBookStore {
   namedAddresses: NamedAddress[] | undefined;
@@ -41,3 +42,18 @@ const initAddressBookStore = () => {
 };
 
 export const addressBookStore = initAddressBookStore();
+
+/**
+ * A derived store that maps addresses to their labels
+ * Returns a Map<address, label>
+ */
+export const addressToLabelStore = derived(
+  addressBookStore,
+  ($addressBookStore) => {
+    const addresses = $addressBookStore.namedAddresses || [];
+
+    return new Map(
+      addresses.map(({ address, name }) => [getAddressString(address), name])
+    );
+  }
+);

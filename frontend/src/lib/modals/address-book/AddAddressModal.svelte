@@ -10,8 +10,9 @@
     invalidIcpAddress,
     invalidIcrcAddress,
   } from "$lib/utils/accounts.utils";
+  import { getAddressString } from "$lib/utils/address-book.utils";
   import { Modal, busy } from "@dfinity/gix-components";
-  import { isNullish, nonNullish } from "@dfinity/utils";
+  import { nonNullish } from "@dfinity/utils";
 
   interface Props {
     onClose: () => void;
@@ -19,22 +20,6 @@
   }
 
   const { onClose, namedAddress }: Props = $props();
-
-  // Helper function to extract address string from AddressType
-  const getAddressString = (
-    addressType: NamedAddress["address"] | undefined
-  ): string => {
-    if (isNullish(addressType)) {
-      return "";
-    }
-    if ("Icp" in addressType) {
-      return addressType.Icp;
-    }
-    if ("Icrc1" in addressType) {
-      return addressType.Icrc1;
-    }
-    return "";
-  };
 
   // Helper function to normalize names for comparison (case-insensitive, trimmed)
   const normalizeName = (name: string): string => name.trim().toLowerCase();
