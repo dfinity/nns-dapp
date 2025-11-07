@@ -2,10 +2,10 @@ import * as governanceApi from "$lib/api/governance.api";
 import * as icpIndexApi from "$lib/api/icp-index.api";
 import * as icrcIndex from "$lib/api/icrc-index.api";
 import * as icrcLedger from "$lib/api/icrc-ledger.api";
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as exportDataService from "$lib/services/reporting.services";
-import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
 import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
@@ -14,6 +14,7 @@ import {
   FileSystemAccessError,
 } from "$lib/utils/reporting.save-csv-to-file.utils";
 import * as exportToCsv from "$lib/utils/reporting.utils";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockAccountsStoreData,
@@ -22,6 +23,7 @@ import {
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { ReportingTransactionsButtonPo } from "$tests/page-objects/ReportingTransactionsButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import {
@@ -35,8 +37,6 @@ import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
-import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/governance.api");
@@ -953,7 +953,9 @@ describe("ReportingTransactionsButton", () => {
       // Assert: CSV called and contains a dataset with neuron metadata ordered like NNS
       expect(spyGenerateCsvFileToSave).toHaveBeenCalledTimes(1);
       const callArg = spyGenerateCsvFileToSave.mock.calls[0][0];
-      const datasets = callArg.datasets as Array<{ metadata: Array<{ label: string; value: string }> }>;
+      const datasets = callArg.datasets as Array<{
+        metadata: Array<{ label: string; value: string }>;
+      }>;
 
       // Find neuron dataset (contains Neuron Id label)
       const neuronDataset = datasets.find((d) =>
@@ -971,10 +973,14 @@ describe("ReportingTransactionsButton", () => {
         "Export Date Time",
       ]);
 
-      const neuronIdEntry = neuronDataset!.metadata.find((m) => m.label === "Neuron Id");
+      const neuronIdEntry = neuronDataset!.metadata.find(
+        (m) => m.label === "Neuron Id"
+      );
       expect(neuronIdEntry?.value).toBe(getSnsNeuronIdAsHexString(neuron));
 
-      const transactionsEntry = neuronDataset!.metadata.find((m) => m.label === "Transactions");
+      const transactionsEntry = neuronDataset!.metadata.find(
+        (m) => m.label === "Transactions"
+      );
       expect(transactionsEntry?.value).toBe("2");
     });
   });
