@@ -6,7 +6,6 @@ import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as exportDataService from "$lib/services/reporting.services";
-import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
 import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
@@ -38,8 +37,6 @@ import { busyStore } from "@dfinity/gix-components";
 import { nonNullish } from "@dfinity/utils";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
-import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/governance.api");
