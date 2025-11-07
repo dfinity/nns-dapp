@@ -1,5 +1,6 @@
 <script lang="ts">
   import Alfred from "$lib/components/alfred/Alfred.svelte";
+  import Highlight from "$lib/components/ui/Highlight.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
@@ -12,7 +13,9 @@
     type AuthWorker,
   } from "$lib/services/worker-auth.services";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
+  import { ENABLE_NNS_TOPICS } from "$lib/stores/feature-flags.store";
   import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
+  import { i18n } from "$lib/stores/i18n";
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
   import { neuronsStore } from "$lib/stores/neurons.store";
   import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
@@ -84,6 +87,15 @@
 </script>
 
 <Alfred />
+
+{#if $ENABLE_NNS_TOPICS && $authSignedInStore}
+  <Highlight
+    level="info"
+    title={$i18n.highlight.topics_feature_title}
+    description={$i18n.highlight.topics_feature_description}
+    id="topics-feature"
+  />
+{/if}
 
 <slot />
 
