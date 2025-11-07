@@ -1,4 +1,7 @@
-import { SNS_AGGREGATOR_CANISTER_URL } from "$lib/constants/environment.constants";
+import {
+  IS_TESTNET,
+  SNS_AGGREGATOR_CANISTER_URL,
+} from "$lib/constants/environment.constants";
 import { AGGREGATOR_CANISTER_VERSION } from "$lib/constants/sns.constants";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
@@ -6,10 +9,12 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 const aggregatorPageUrl = (page: number) =>
   `${SNS_AGGREGATOR_CANISTER_URL}/${AGGREGATOR_CANISTER_VERSION}/sns/list/page/${page}/slow.json`;
 
+const DEV_PAGE_COUNT = 2;
 // Aggregator has a page size of 10 elements.
 // We currently have 51 projects so 6 pages
 // https://github.com/dfinity/nns-dapp/blob/b056a5dd42ffc8f198ce8eb92688645389293ef6/rs/sns_aggregator/src/state.rs#L140
-const PAGE_COUNT = 6;
+const MAINNER_PAGE_COUNT = 6;
+const PAGE_COUNT = IS_TESTNET ? DEV_PAGE_COUNT : MAINNER_PAGE_COUNT;
 const pages = [...Array(PAGE_COUNT).keys()].map(aggregatorPageUrl);
 
 export const queryParallelSnsAggregator = async (): Promise<CachedSnsDto[]> => {
