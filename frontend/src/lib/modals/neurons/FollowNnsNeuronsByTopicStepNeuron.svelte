@@ -172,7 +172,7 @@
       bind:value={followeeAddress}
       errorMessage={nonNullish(errorMessage) ? "" : undefined}
       required
-      on:nnsInput={clearError}
+      onInput={clearError}
     >
       <svelte:fragment slot="label">{$i18n.new_followee.label}</svelte:fragment>
     </InputWithError>

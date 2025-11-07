@@ -287,6 +287,10 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
 
     // Verify staying on the same step
     expect(openPrevStepSpy).toHaveBeenCalledTimes(0);
+
+    // It should clean up the error when typing again
+    await po.typeNeuronAddress("1234");
+    expect(await po.hasErrorMessage()).toBe(false);
   });
 
   it("handles not allowed to follow neuron error", async () => {
