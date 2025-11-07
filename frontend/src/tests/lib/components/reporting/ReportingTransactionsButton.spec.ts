@@ -5,6 +5,7 @@ import * as icrcLedger from "$lib/api/icrc-ledger.api";
 import ReportingTransactionsButton from "$lib/components/reporting/ReportingTransactionsButton.svelte";
 import { CKBTC_INDEX_CANISTER_ID } from "$lib/constants/ckbtc-canister-ids.constants";
 import * as exportDataService from "$lib/services/reporting.services";
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import * as toastsStore from "$lib/stores/toasts.store";
 import type { ReportingPeriod } from "$lib/types/reporting";
 import * as reportingSaveCsvToFile from "$lib/utils/reporting.save-csv-to-file.utils";
@@ -34,6 +35,8 @@ import { busyStore } from "@dfinity/gix-components";
 import type { NeuronInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
+import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
+import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 
 vi.mock("$lib/api/icp-ledger.api");
 vi.mock("$lib/api/governance.api");
@@ -749,6 +752,7 @@ describe("ReportingTransactionsButton", () => {
   describe("SNS Tokens Export", () => {
     let spyGetAllIcrcTransactionsFromAccountAndIdentity;
     let spyBuildIcrcTransactionsDataset;
+    let spyQuerySnsNeurons;
 
     beforeEach(() => {
       resetSnsProjects();
@@ -783,6 +787,11 @@ describe("ReportingTransactionsButton", () => {
       spyBuildIcrcTransactionsDataset = vi
         .spyOn(exportToCsv, "buildIcrcTransactionsDataset")
         .mockReturnValue({ data: [], metadata: [] });
+
+      // By default, return no SNS neurons to keep existing tests behavior
+      spyQuerySnsNeurons = vi
+        .spyOn(snsGovernanceApi, "querySnsNeurons")
+        .mockResolvedValue([]);
     });
 
     afterEach(() => {
@@ -924,6 +933,49 @@ describe("ReportingTransactionsButton", () => {
         level: "info",
       });
       expect(spySaveGeneratedCsv).toHaveBeenCalledTimes(0);
+    });
+
+    it("should include SNS neuron transactions and neuron metadata in correct order", async () => {
+      // Arrange: one SNS neuron
+      const neuron = createMockSnsNeuron({});
+      spyQuerySnsNeurons.mockResolvedValue([neuron]);
+
+      const spyGenerateCsvFileToSave = vi
+        .spyOn(exportToCsv, "generateCsvFileToSave")
+        .mockResolvedValue();
+
+      const po = renderComponent({ source: "sns" });
+
+      // Act
+      await po.click();
+      await runResolvedPromises();
+
+      // Assert: CSV called and contains a dataset with neuron metadata ordered like NNS
+      expect(spyGenerateCsvFileToSave).toHaveBeenCalledTimes(1);
+      const callArg = spyGenerateCsvFileToSave.mock.calls[0][0];
+      const datasets = callArg.datasets as Array<{ metadata: Array<{ label: string; value: string }> }>;
+
+      // Find neuron dataset (contains Neuron Id label)
+      const neuronDataset = datasets.find((d) =>
+        d.metadata?.some((m) => m.label === "Neuron Id")
+      );
+
+      expect(neuronDataset).toBeTruthy();
+      const labels = neuronDataset!.metadata.map((m) => m.label);
+      expect(labels).toEqual([
+        "Account Id",
+        "Neuron Id",
+        "Balance(SNS1)",
+        "Controller Principal Id",
+        "Transactions",
+        "Export Date Time",
+      ]);
+
+      const neuronIdEntry = neuronDataset!.metadata.find((m) => m.label === "Neuron Id");
+      expect(neuronIdEntry?.value).toBe(getSnsNeuronIdAsHexString(neuron));
+
+      const transactionsEntry = neuronDataset!.metadata.find((m) => m.label === "Transactions");
+      expect(transactionsEntry?.value).toBe("2");
     });
   });
 });
