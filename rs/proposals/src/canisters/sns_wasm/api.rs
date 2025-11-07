@@ -29,6 +29,7 @@ pub struct SnsWasm {
     pub proposal_id: Option<u64>,
     pub canister_type: i32,
 }
+/// ! Candid for canister `sns_wasm` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-10-30_03-22-base/rs/nns/sns-wasm/canister/sns-wasm.did>
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddWasmRequest {
     pub hash: serde_bytes::ByteBuf,
@@ -40,13 +41,13 @@ pub struct SnsWasmError {
     pub message: String,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub enum Result_ {
+pub enum Result {
     Error(SnsWasmError),
     Hash(serde_bytes::ByteBuf),
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AddWasmResponse {
-    pub result: Option<Result_>,
+    pub result: Option<Result>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct NeuronBasketConstructionParameters {
@@ -341,69 +342,69 @@ pub struct UpdateSnsSubnetListResponse {
 
 pub struct Service(pub Principal);
 impl Service {
-    pub async fn add_wasm(&self, arg0: AddWasmRequest) -> CallResult<(AddWasmResponse,)> {
+    pub async fn add_wasm(&self, arg0: &AddWasmRequest) -> CallResult<(AddWasmResponse,)> {
         ic_cdk::call(self.0, "add_wasm", (arg0,)).await
     }
-    pub async fn deploy_new_sns(&self, arg0: DeployNewSnsRequest) -> CallResult<(DeployNewSnsResponse,)> {
+    pub async fn deploy_new_sns(&self, arg0: &DeployNewSnsRequest) -> CallResult<(DeployNewSnsResponse,)> {
         ic_cdk::call(self.0, "deploy_new_sns", (arg0,)).await
     }
     pub async fn get_allowed_principals(
         &self,
-        arg0: GetAllowedPrincipalsArg,
+        arg0: &GetAllowedPrincipalsArg,
     ) -> CallResult<(GetAllowedPrincipalsResponse,)> {
         ic_cdk::call(self.0, "get_allowed_principals", (arg0,)).await
     }
     pub async fn get_deployed_sns_by_proposal_id(
         &self,
-        arg0: GetDeployedSnsByProposalIdRequest,
+        arg0: &GetDeployedSnsByProposalIdRequest,
     ) -> CallResult<(GetDeployedSnsByProposalIdResponse,)> {
         ic_cdk::call(self.0, "get_deployed_sns_by_proposal_id", (arg0,)).await
     }
-    pub async fn get_latest_sns_version_pretty(&self, arg0: ()) -> CallResult<(Vec<(String, String)>,)> {
+    pub async fn get_latest_sns_version_pretty(&self, arg0: &()) -> CallResult<(Vec<(String, String)>,)> {
         ic_cdk::call(self.0, "get_latest_sns_version_pretty", (arg0,)).await
     }
     pub async fn get_next_sns_version(
         &self,
-        arg0: GetNextSnsVersionRequest,
+        arg0: &GetNextSnsVersionRequest,
     ) -> CallResult<(GetNextSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_next_sns_version", (arg0,)).await
     }
     pub async fn get_proposal_id_that_added_wasm(
         &self,
-        arg0: GetProposalIdThatAddedWasmRequest,
+        arg0: &GetProposalIdThatAddedWasmRequest,
     ) -> CallResult<(GetProposalIdThatAddedWasmResponse,)> {
         ic_cdk::call(self.0, "get_proposal_id_that_added_wasm", (arg0,)).await
     }
-    pub async fn get_sns_subnet_ids(&self, arg0: GetSnsSubnetIdsArg) -> CallResult<(GetSnsSubnetIdsResponse,)> {
+    pub async fn get_sns_subnet_ids(&self, arg0: &GetSnsSubnetIdsArg) -> CallResult<(GetSnsSubnetIdsResponse,)> {
         ic_cdk::call(self.0, "get_sns_subnet_ids", (arg0,)).await
     }
-    pub async fn get_wasm(&self, arg0: GetWasmRequest) -> CallResult<(GetWasmResponse,)> {
+    pub async fn get_wasm(&self, arg0: &GetWasmRequest) -> CallResult<(GetWasmResponse,)> {
         ic_cdk::call(self.0, "get_wasm", (arg0,)).await
     }
-    pub async fn get_wasm_metadata(&self, arg0: GetWasmMetadataRequest) -> CallResult<(GetWasmMetadataResponse,)> {
+    pub async fn get_wasm_metadata(&self, arg0: &GetWasmMetadataRequest) -> CallResult<(GetWasmMetadataResponse,)> {
         ic_cdk::call(self.0, "get_wasm_metadata", (arg0,)).await
     }
     pub async fn insert_upgrade_path_entries(
         &self,
-        arg0: InsertUpgradePathEntriesRequest,
+        arg0: &InsertUpgradePathEntriesRequest,
     ) -> CallResult<(InsertUpgradePathEntriesResponse,)> {
         ic_cdk::call(self.0, "insert_upgrade_path_entries", (arg0,)).await
     }
-    pub async fn list_deployed_snses(&self, arg0: ListDeployedSnsesArg) -> CallResult<(ListDeployedSnsesResponse,)> {
+    pub async fn list_deployed_snses(&self, arg0: &ListDeployedSnsesArg) -> CallResult<(ListDeployedSnsesResponse,)> {
         ic_cdk::call(self.0, "list_deployed_snses", (arg0,)).await
     }
-    pub async fn list_upgrade_steps(&self, arg0: ListUpgradeStepsRequest) -> CallResult<(ListUpgradeStepsResponse,)> {
+    pub async fn list_upgrade_steps(&self, arg0: &ListUpgradeStepsRequest) -> CallResult<(ListUpgradeStepsResponse,)> {
         ic_cdk::call(self.0, "list_upgrade_steps", (arg0,)).await
     }
     pub async fn update_allowed_principals(
         &self,
-        arg0: UpdateAllowedPrincipalsRequest,
+        arg0: &UpdateAllowedPrincipalsRequest,
     ) -> CallResult<(UpdateAllowedPrincipalsResponse,)> {
         ic_cdk::call(self.0, "update_allowed_principals", (arg0,)).await
     }
     pub async fn update_sns_subnet_list(
         &self,
-        arg0: UpdateSnsSubnetListRequest,
+        arg0: &UpdateSnsSubnetListRequest,
     ) -> CallResult<(UpdateSnsSubnetListResponse,)> {
         ic_cdk::call(self.0, "update_sns_subnet_list", (arg0,)).await
     }
