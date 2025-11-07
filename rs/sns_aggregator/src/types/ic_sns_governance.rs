@@ -75,6 +75,7 @@ pub struct NervousSystemFunction {
 pub struct Subaccount {
     pub subaccount: serde_bytes::ByteBuf,
 }
+/// ! Candid for canister `sns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-10-30_03-22-base/rs/sns/governance/canister/governance.did>
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Account {
     pub owner: Option<Principal>,
@@ -82,17 +83,24 @@ pub struct Account {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct TreasuryMetrics {
+    /// A human-readable identified for this treasury, e.g., "ICP".
     pub name: Option<String>,
+    /// The amount of tokens in this treasury at the end of swap finalization.
     pub original_amount_e8s: Option<u64>,
+    /// The regularly updated amount of tokens in this treasury.
     pub amount_e8s: Option<u64>,
     pub account: Option<Account>,
+    /// The source of truth for the treasury balance is this ledger canister / account.
     pub ledger_canister_id: Option<Principal>,
+    /// Same as, e.g., `TransferSnsTreasuryFunds.from_treasury`.
     pub treasury: i32,
+    /// When the metrics were last updated.
     pub timestamp_seconds: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct VotingPowerMetrics {
     pub governance_total_potential_voting_power: Option<u64>,
+    /// When the metrics were last updated.
     pub timestamp_seconds: Option<u64>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
@@ -327,6 +335,20 @@ pub struct ManageDappCanisterSettings {
     pub memory_allocation: Option<u64>,
     pub compute_allocation: Option<u64>,
 }
+/// This type is equivalant to `ICRC3Value`, but we give it another name since it is used here not
+/// in the context of the ICRC-3 ledger standard. The justification is the same: The candid format
+/// supports sharing information even when the client and the server involved do not have the same
+/// schema (see the Upgrading and subtyping section of the candid spec). While this mechanism allows
+/// to evolve services and clients independently without breaking them, it also means that a client
+/// may not receive all the information that the server is sending, e.g. in case the client schema
+/// lacks some fields that the server schema has.
+///
+/// This loss of information is not an option for SNS voters deciding if an extension with particular
+/// init args should be installed or if an extension function with particular arguments should be
+/// called. The client must receive the same exact data the server sent in order to verify it.
+///
+/// Verification of a priorly installed extension is done by hashing the extension's init arg data
+/// and checking that the result is consistent with what has been certified by the SNS.
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum PreciseValue {
     Int(i64),
@@ -732,11 +754,7 @@ pub struct SwapNeuron {
 pub struct ClaimedSwapNeurons {
     pub swap_neurons: Vec<SwapNeuron>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum ClaimSwapNeuronsResult {
-    Ok(ClaimedSwapNeurons),
-    Err(i32),
-}
+pub type ClaimSwapNeuronsResult = std::result::Result<ClaimedSwapNeurons, i32>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct ClaimSwapNeuronsResponse {
     pub claim_swap_neurons_result: Option<ClaimSwapNeuronsResult>,
@@ -766,6 +784,7 @@ pub struct GetMetricsRequest {
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Metrics {
+    /// The metrics below are cached (albeit this is an implementation detail).
     pub treasury_metrics: Option<Vec<TreasuryMetrics>>,
     pub voting_power_metrics: Option<VotingPowerMetrics>,
     pub last_ledger_block_timestamp: Option<u64>,
@@ -773,11 +792,7 @@ pub struct Metrics {
     pub num_recently_submitted_proposals: Option<u64>,
     pub genesis_timestamp_seconds: Option<u64>,
 }
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum GetMetricsResult {
-    Ok(Metrics),
-    Err(GovernanceError),
-}
+pub type GetMetricsResult = std::result::Result<Metrics, GovernanceError>;
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetMetricsResponse {
     pub get_metrics_result: Option<GetMetricsResult>,
@@ -793,13 +808,13 @@ pub struct GetNeuron {
     pub neuron_id: Option<NeuronId>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub enum Result_ {
+pub enum Result {
     Error(GovernanceError),
     Neuron(Neuron),
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetNeuronResponse {
-    pub result: Option<Result_>,
+    pub result: Option<Result>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetProposal {
@@ -1059,12 +1074,12 @@ pub struct SetModeRet {}
 
 pub struct Service(pub Principal);
 impl Service {
-    pub async fn claim_swap_neurons(&self, arg0: ClaimSwapNeuronsRequest) -> CallResult<(ClaimSwapNeuronsResponse,)> {
+    pub async fn claim_swap_neurons(&self, arg0: &ClaimSwapNeuronsRequest) -> CallResult<(ClaimSwapNeuronsResponse,)> {
         ic_cdk::call(self.0, "claim_swap_neurons", (arg0,)).await
     }
     pub async fn fail_stuck_upgrade_in_progress(
         &self,
-        arg0: FailStuckUpgradeInProgressArg,
+        arg0: &FailStuckUpgradeInProgressArg,
     ) -> CallResult<(FailStuckUpgradeInProgressRet,)> {
         ic_cdk::call(self.0, "fail_stuck_upgrade_in_progress", (arg0,)).await
     }
@@ -1076,74 +1091,74 @@ impl Service {
     }
     pub async fn get_maturity_modulation(
         &self,
-        arg0: GetMaturityModulationArg,
+        arg0: &GetMaturityModulationArg,
     ) -> CallResult<(GetMaturityModulationResponse,)> {
         ic_cdk::call(self.0, "get_maturity_modulation", (arg0,)).await
     }
-    pub async fn get_metadata(&self, arg0: GetMetadataArg) -> CallResult<(GetMetadataResponse,)> {
+    pub async fn get_metadata(&self, arg0: &GetMetadataArg) -> CallResult<(GetMetadataResponse,)> {
         ic_cdk::call(self.0, "get_metadata", (arg0,)).await
     }
-    pub async fn get_metrics(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
+    pub async fn get_metrics(&self, arg0: &GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
         ic_cdk::call(self.0, "get_metrics", (arg0,)).await
     }
-    pub async fn get_metrics_replicated(&self, arg0: GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
+    pub async fn get_metrics_replicated(&self, arg0: &GetMetricsRequest) -> CallResult<(GetMetricsResponse,)> {
         ic_cdk::call(self.0, "get_metrics_replicated", (arg0,)).await
     }
-    pub async fn get_mode(&self, arg0: GetModeArg) -> CallResult<(GetModeResponse,)> {
+    pub async fn get_mode(&self, arg0: &GetModeArg) -> CallResult<(GetModeResponse,)> {
         ic_cdk::call(self.0, "get_mode", (arg0,)).await
     }
-    pub async fn get_nervous_system_parameters(&self, arg0: ()) -> CallResult<(NervousSystemParameters,)> {
+    pub async fn get_nervous_system_parameters(&self, arg0: &()) -> CallResult<(NervousSystemParameters,)> {
         ic_cdk::call(self.0, "get_nervous_system_parameters", (arg0,)).await
     }
-    pub async fn get_neuron(&self, arg0: GetNeuron) -> CallResult<(GetNeuronResponse,)> {
+    pub async fn get_neuron(&self, arg0: &GetNeuron) -> CallResult<(GetNeuronResponse,)> {
         ic_cdk::call(self.0, "get_neuron", (arg0,)).await
     }
-    pub async fn get_proposal(&self, arg0: GetProposal) -> CallResult<(GetProposalResponse,)> {
+    pub async fn get_proposal(&self, arg0: &GetProposal) -> CallResult<(GetProposalResponse,)> {
         ic_cdk::call(self.0, "get_proposal", (arg0,)).await
     }
-    pub async fn get_root_canister_status(&self, arg0: ()) -> CallResult<(CanisterStatusResultV2,)> {
+    pub async fn get_root_canister_status(&self, arg0: &()) -> CallResult<(CanisterStatusResultV2,)> {
         ic_cdk::call(self.0, "get_root_canister_status", (arg0,)).await
     }
     pub async fn get_running_sns_version(
         &self,
-        arg0: GetRunningSnsVersionArg,
+        arg0: &GetRunningSnsVersionArg,
     ) -> CallResult<(GetRunningSnsVersionResponse,)> {
         ic_cdk::call(self.0, "get_running_sns_version", (arg0,)).await
     }
     pub async fn get_sns_initialization_parameters(
         &self,
-        arg0: GetSnsInitializationParametersArg,
+        arg0: &GetSnsInitializationParametersArg,
     ) -> CallResult<(GetSnsInitializationParametersResponse,)> {
         ic_cdk::call(self.0, "get_sns_initialization_parameters", (arg0,)).await
     }
-    pub async fn get_timers(&self, arg0: GetTimersArg) -> CallResult<(GetTimersResponse,)> {
+    pub async fn get_timers(&self, arg0: &GetTimersArg) -> CallResult<(GetTimersResponse,)> {
         ic_cdk::call(self.0, "get_timers", (arg0,)).await
     }
     pub async fn get_upgrade_journal(
         &self,
-        arg0: GetUpgradeJournalRequest,
+        arg0: &GetUpgradeJournalRequest,
     ) -> CallResult<(GetUpgradeJournalResponse,)> {
         ic_cdk::call(self.0, "get_upgrade_journal", (arg0,)).await
     }
     pub async fn list_nervous_system_functions(&self) -> CallResult<(ListNervousSystemFunctionsResponse,)> {
         ic_cdk::call(self.0, "list_nervous_system_functions", ()).await
     }
-    pub async fn list_neurons(&self, arg0: ListNeurons) -> CallResult<(ListNeuronsResponse,)> {
+    pub async fn list_neurons(&self, arg0: &ListNeurons) -> CallResult<(ListNeuronsResponse,)> {
         ic_cdk::call(self.0, "list_neurons", (arg0,)).await
     }
-    pub async fn list_proposals(&self, arg0: ListProposals) -> CallResult<(ListProposalsResponse,)> {
+    pub async fn list_proposals(&self, arg0: &ListProposals) -> CallResult<(ListProposalsResponse,)> {
         ic_cdk::call(self.0, "list_proposals", (arg0,)).await
     }
-    pub async fn list_topics(&self, arg0: ListTopicsRequest) -> CallResult<(ListTopicsResponse,)> {
+    pub async fn list_topics(&self, arg0: &ListTopicsRequest) -> CallResult<(ListTopicsResponse,)> {
         ic_cdk::call(self.0, "list_topics", (arg0,)).await
     }
-    pub async fn manage_neuron(&self, arg0: ManageNeuron) -> CallResult<(ManageNeuronResponse,)> {
+    pub async fn manage_neuron(&self, arg0: &ManageNeuron) -> CallResult<(ManageNeuronResponse,)> {
         ic_cdk::call(self.0, "manage_neuron", (arg0,)).await
     }
-    pub async fn reset_timers(&self, arg0: ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
+    pub async fn reset_timers(&self, arg0: &ResetTimersArg) -> CallResult<(ResetTimersRet,)> {
         ic_cdk::call(self.0, "reset_timers", (arg0,)).await
     }
-    pub async fn set_mode(&self, arg0: SetMode) -> CallResult<(SetModeRet,)> {
+    pub async fn set_mode(&self, arg0: &SetMode) -> CallResult<(SetModeRet,)> {
         ic_cdk::call(self.0, "set_mode", (arg0,)).await
     }
 }
