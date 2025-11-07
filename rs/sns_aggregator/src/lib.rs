@@ -243,7 +243,9 @@ fn setup(config: Option<Config>) {
     let timer_interval = Duration::from_millis(STATE.with(|s| s.stable.borrow().config.borrow().update_interval_ms));
     crate::state::log(format!("Set interval to {}", &timer_interval.as_millis()));
     STATE.with(|state| {
-        let timer_id = set_timer_interval(timer_interval, || ic_cdk::futures::spawn_017_compat(crate::upstream::update_cache()));
+        let timer_id = set_timer_interval(timer_interval, || {
+            ic_cdk::futures::spawn_017_compat(crate::upstream::update_cache())
+        });
         let old_timer = state.timer_id.replace_with(|_| Some(timer_id));
         if let Some(id) = old_timer {
             clear_timer(id);
