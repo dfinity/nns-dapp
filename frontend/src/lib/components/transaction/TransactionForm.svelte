@@ -388,6 +388,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 16px;
 
     .label {
       font-size: var(--font-size-small);
