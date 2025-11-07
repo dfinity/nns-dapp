@@ -40,8 +40,9 @@
       const matchingEntry = applicableAddresses.find(
         (addr) => addr.name === selectedNickname
       );
-      if (matchingEntry)
-        selectedAddress = getAddressString(matchingEntry.address);
+      selectedAddress = matchingEntry
+        ? getAddressString(matchingEntry.address)
+        : undefined;
     } else {
       selectedAddress = undefined;
     }
