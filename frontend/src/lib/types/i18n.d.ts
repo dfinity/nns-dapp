@@ -1523,7 +1523,10 @@ interface I18nPortfolio {
   start_staking_card_link: string;
 }
 
-interface I18nHighlight {}
+interface I18nHighlight {
+  topics_feature_title: string;
+  topics_feature_description: string;
+}
 
 interface I18nNeuron_state {
   Unspecified: string;

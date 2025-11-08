@@ -1450,5 +1450,8 @@
     "start_staking_card_content": "Stake ICP tokens and participate in NNS governance to earn up to 13% of yearly voting rewards",
     "start_staking_card_link": "Open Staking"
   },
-  "highlight": {}
+  "highlight": {
+    "topics_feature_title": "Improved voting delegation",
+    "topics_feature_description": "We’ve simplified voting delegation for NNS neurons, see it in neuron details!"
+  }
 }
