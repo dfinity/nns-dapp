@@ -140,6 +140,7 @@ describe("Layout", () => {
     };
 
     setNoIdentity();
+    overrideFeatureFlagsStore.setFlag("ENABLE_NNS_TOPICS", true);
     expect(await renderComponent().isPresent()).toBe(false);
 
     resetIdentity();
