@@ -2,6 +2,7 @@ import { HighlightPo } from "$tests/page-objects/Highlight.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import { exec } from "child_process";
+import { tick } from "svelte";
 
 let resolvePreviousStep = () => {
   /* this function will be replaced at each step */
@@ -79,6 +80,7 @@ export const signInWithNewUser = async ({
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);
 
+  await tick();
   await closeHighlight(page);
   await page.waitForTimeout(500);
 
