@@ -1,23 +1,32 @@
 <script lang="ts">
-  import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
   import { addressBookStore } from "$lib/stores/address-book.store";
+  import { AddressBookFilter } from "$lib/types/address-book";
   import { i18n } from "$lib/stores/i18n";
-  import { getAddressString } from "$lib/utils/address-book.utils";
+  import {
+    getAddressString,
+    isIcrc1Address,
+  } from "$lib/utils/address-book.utils";
   import { Dropdown, DropdownItem } from "@dfinity/gix-components";
   import { nonNullish } from "@dfinity/utils";
 
   interface Props {
     selectedAddress: string | undefined;
-    filterAddresses?: (address: NamedAddress) => boolean;
+    filter?: AddressBookFilter;
   }
 
-  let { selectedAddress = $bindable(), filterAddresses = () => true }: Props =
+  let { selectedAddress = $bindable(), filter = AddressBookFilter.All }: Props =
     $props();
 
-  // Derive applicable addresses
-  const applicableAddresses = $derived(
-    $addressBookStore.namedAddresses?.filter(filterAddresses) ?? []
-  );
+  // Derive applicable addresses based on filter
+  const applicableAddresses = $derived.by(() => {
+    const addresses = $addressBookStore.namedAddresses ?? [];
+    if (filter === AddressBookFilter.ICRC1) {
+      return addresses.filter((namedAddress) =>
+        isIcrc1Address(namedAddress.address)
+      );
+    }
+    return addresses;
+  });
 
   // Internal state for the dropdown - sync with selectedAddress
   let selectedNickname = $state<string | undefined>(undefined);

@@ -11,6 +11,7 @@
   import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
   import { i18n } from "$lib/stores/i18n";
   import type { Account } from "$lib/types/account";
+  import { AddressBookFilter } from "$lib/types/address-book";
   import { NotEnoughAmountError } from "$lib/types/common.errors";
   import { InvalidAmountError } from "$lib/types/neurons.errors";
   import {
@@ -23,7 +24,7 @@
     invalidAddress,
     isAccountHardwareWallet,
   } from "$lib/utils/accounts.utils";
-  import { filterAddressesByToken } from "$lib/utils/address-book.utils";
+  import { isIcpToken, isIcrc1Address } from "$lib/utils/address-book.utils";
   import { translate } from "$lib/utils/i18n.utils";
   import { validateTransactionMemo } from "$lib/utils/icp-transactions.utils";
   import {
@@ -40,7 +41,6 @@
     type Token,
   } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
-  import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
 
   // Tested in the TransactionModal
   export let rootCanisterId: Principal;
@@ -180,13 +180,20 @@
   let balance: bigint | undefined;
   $: balance = selectedAccount?.balanceUlps;
 
-  // Address book integration
-  let applicableAddresses: NamedAddress[] = [];
+  // Address book integration - determine filter type
+  let addressFilter: AddressBookFilter;
+  $: addressFilter = isIcpToken(token)
+    ? AddressBookFilter.All
+    : AddressBookFilter.ICRC1;
+
+  // Get count of applicable addresses for toggle disabled state
+  let hasApplicableAddresses: boolean;
   $: if ($ENABLE_ADDRESS_BOOK) {
-    applicableAddresses = filterAddressesByToken({
-      addresses: $addressBookStore.namedAddresses ?? [],
-      token,
-    });
+    const addresses = $addressBookStore.namedAddresses ?? [];
+    hasApplicableAddresses =
+      addressFilter === AddressBookFilter.All
+        ? addresses.length > 0
+        : addresses.some((addr) => isIcrc1Address(addr.address));
   }
 
   // Determine which disabled message to show
@@ -211,7 +218,7 @@
   let initializedAddressBook = false;
   $: if (
     $ENABLE_ADDRESS_BOOK &&
-    applicableAddresses.length > 0 &&
+    hasApplicableAddresses &&
     !initializedAddressBook
   ) {
     if (!selectedDestinationAddress) {
@@ -253,7 +260,7 @@
       <div class="destination-wrapper">
         <div class="destination-header">
           <p class="label">{$i18n.accounts.destination}</p>
-          {#if applicableAddresses.length > 0}
+          {#if hasApplicableAddresses}
             <div class="toggle-wrapper">
               <p>{$i18n.address_book.use_address_book}</p>
               <Toggle
@@ -281,8 +288,7 @@
         {#if useAddressBook}
           <AddressBookSelect
             bind:selectedAddress={selectedDestinationAddress}
-            filterAddresses={(address) =>
-              applicableAddresses.some((addr) => addr.name === address.name)}
+            filter={addressFilter}
           />
         {:else}
           <SelectDestinationAddress

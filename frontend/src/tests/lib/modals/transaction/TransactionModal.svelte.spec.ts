@@ -618,11 +618,6 @@ describe("TransactionModal", () => {
       addressBookStore.reset();
     });
 
-    afterEach(() => {
-      overrideFeatureFlagsStore.reset();
-      addressBookStore.reset();
-    });
-
     it("should show disabled toggle with tooltip when address book is empty", async () => {
       addressBookStore.set({
         namedAddresses: [],
