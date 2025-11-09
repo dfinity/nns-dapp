@@ -257,7 +257,7 @@
 
   {#if canSelectDestination}
     {#if $ENABLE_ADDRESS_BOOK}
-      <div class="destination-wrapper">
+      <div class="destination-wrapper" data-tid="destination-wrapper">
         <div class="destination-header">
           <p class="label">{$i18n.accounts.destination}</p>
           {#if hasApplicableAddresses}
@@ -302,9 +302,13 @@
             hideTitle={true}
           />
           <div class="manual-address-info">
-            <p class="warning"
-              >{$i18n.address_book.manual_address_warning}
-              <a href={AppPath.AddressBook} class="link">
+            <p class="warning" data-tid="manual-address-warning">
+              {$i18n.address_book.manual_address_warning}
+              <a
+                href={AppPath.AddressBook}
+                class="link"
+                data-tid="manual-address-warning-link"
+              >
                 {$i18n.address_book.check_address_book_link}
               </a>
             </p>

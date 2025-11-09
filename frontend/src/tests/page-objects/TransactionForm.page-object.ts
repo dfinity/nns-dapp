@@ -115,4 +115,40 @@ export class TransactionFormPo extends BasePageObject {
     await this.enterAmount(amount);
     await this.clickContinue();
   }
+
+  getSelectDestinationElement(): PageObjectElement {
+    return this.root.byTestId("select-destination");
+  }
+
+  getDestinationSection(): PageObjectElement {
+    return this.root.byTestId("destination-wrapper");
+  }
+
+  async hasDestinationSection(): Promise<boolean> {
+    return this.getDestinationSection().isPresent();
+  }
+
+  async hasAddressBookDropdown(): Promise<boolean> {
+    return this.root.byTestId("address-book-dropdown").isPresent();
+  }
+
+  getManualAddressInput(): PageObjectElement {
+    return this.root.querySelector('input[name="accounts-address"]');
+  }
+
+  getManualAddressWarning(): PageObjectElement {
+    return this.root.byTestId("manual-address-warning");
+  }
+
+  getManualAddressLink(): PageObjectElement {
+    return this.root.byTestId("manual-address-warning-link");
+  }
+
+  async hasManualAddressWarning(): Promise<boolean> {
+    return this.getManualAddressWarning().isPresent();
+  }
+
+  async hasManualAddressLink(): Promise<boolean> {
+    return this.getManualAddressLink().isPresent();
+  }
 }

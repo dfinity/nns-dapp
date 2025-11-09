@@ -628,34 +628,19 @@ describe("TransactionModal", () => {
         rootCanisterId: OWN_CANISTER_ID,
       });
 
-      const selectDestination = container.querySelector(
-        '[data-tid="select-destination"]'
-      );
-      expect(selectDestination).toBeInTheDocument();
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
 
-      // The destination-wrapper should render when feature flag is on
-      const destinationWrapper = container.querySelector(
-        ".destination-wrapper"
-      );
+      expect(await form.getSelectDestinationElement().isPresent()).toBe(true);
 
-      expect(destinationWrapper).toBeInTheDocument();
+      // The destination section should render when feature flag is on
+      expect(await form.hasDestinationSection()).toBe(true);
 
       // Should not show address book dropdown
-      expect(
-        container.querySelector('[data-tid="address-book-dropdown"]')
-      ).not.toBeInTheDocument();
+      expect(await form.hasAddressBookDropdown()).toBe(false);
 
-      // Find the disabled toggle
-      const disabledToggle = container.querySelector(
-        'input[type="checkbox"][disabled][aria-label="Use address book"]'
-      );
-      expect(disabledToggle).toBeInTheDocument();
-      expect(disabledToggle?.hasAttribute("disabled")).toBe(true);
-
-      // Verify tooltip is present by checking for the tooltip wrapper (has aria-describedby)
-      const toggleWrapper = disabledToggle?.closest(".toggle-wrapper");
-      expect(toggleWrapper).toBeInTheDocument();
-      expect(toggleWrapper?.parentElement).toHaveAttribute("aria-describedby");
+      // Toggle should be disabled
+      expect(await form.isAddressBookToggleEnabled()).toBe(false);
     });
 
     it("should show text input and warning when toggle is off", async () => {
@@ -668,42 +653,33 @@ describe("TransactionModal", () => {
         rootCanisterId: OWN_CANISTER_ID,
       });
 
-      // Find the address book toggle and click it to turn it off
-      const addressBookToggle = container.querySelector(
-        'input[aria-label="Use address book"]'
-      );
-      expect(addressBookToggle).toBeInTheDocument();
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
 
       // Initially toggle should be on
-      expect((addressBookToggle as HTMLInputElement)?.checked).toBe(true);
+      expect(await form.isAddressBookToggleEnabled()).toBe(true);
+      expect(await form.isAddressBookToggleChecked()).toBe(true);
+      expect(await form.hasAddressBookDropdown()).toBe(true);
 
       // Click to turn it off
-      addressBookToggle && fireEvent.click(addressBookToggle);
-
-      await waitFor(() => {
-        expect((addressBookToggle as HTMLInputElement)?.checked).toBe(false);
-      });
+      await form.toggleAddressBook();
+      expect(await form.isAddressBookToggleChecked()).toBe(false);
 
       // Should show the manual address input
-      const addressInput = container.querySelector(
-        'input[name="accounts-address"]'
-      );
-      expect(addressInput).toBeInTheDocument();
+      expect(await form.getManualAddressInput().isPresent()).toBe(true);
 
       // Should show warning
-      const warning = container.querySelector(".manual-address-info .warning");
-      expect(warning).toBeInTheDocument();
-      expect(warning?.textContent).toContain(
+      expect(await form.hasManualAddressWarning()).toBe(true);
+      const warning = form.getManualAddressWarning();
+      expect(await warning.getText()).toContain(
         "Be careful when entering an address manually"
       );
 
       // Should show link to address book
-      const link = container.querySelector(
-        ".manual-address-info .link"
-      ) as HTMLAnchorElement;
-      expect(link).toBeInTheDocument();
-      expect(link?.textContent).toContain("Check out the address book!");
-      expect(link?.href).toContain("/address-book");
+      expect(await form.hasManualAddressLink()).toBe(true);
+      const link = form.getManualAddressLink();
+      expect(await link.getText()).toContain("Check out the address book!");
+      expect(await link.getAttribute("href")).toContain("/address-book");
     });
 
     it("should show both ICP and ICRC1 addresses for ICP transactions", async () => {
@@ -716,24 +692,19 @@ describe("TransactionModal", () => {
         rootCanisterId: OWN_CANISTER_ID,
       });
 
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+
       // Toggle should be enabled
-      const addressBookToggle = container.querySelector(
-        'input[aria-label="Use address book"]'
-      ) as HTMLInputElement;
-      expect(addressBookToggle).toBeInTheDocument();
-      expect(addressBookToggle?.disabled).toBe(false);
-      expect(addressBookToggle?.checked).toBe(true);
+      expect(await form.isAddressBookToggleEnabled()).toBe(true);
+      expect(await form.isAddressBookToggleChecked()).toBe(true);
 
       // Should show address book dropdown
-      const dropdown = container.querySelector(
-        '[data-tid="address-book-dropdown"]'
-      );
-      expect(dropdown).toBeInTheDocument();
+      expect(await form.hasAddressBookDropdown()).toBe(true);
 
       // Should have both addresses as options
-      const options = Array.from(
-        dropdown?.querySelectorAll("option") ?? []
-      ).map((opt) => opt.textContent?.trim());
+      const addressBookSelect = form.getAddressBookSelectPo();
+      const options = await addressBookSelect.getOptions();
       expect(options).toEqual(["Alice", "Bob"]);
     });
 
@@ -754,16 +725,15 @@ describe("TransactionModal", () => {
         token: ckBTCToken,
       });
 
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+
       // Should show address book dropdown
-      const dropdown = container.querySelector(
-        '[data-tid="address-book-dropdown"]'
-      );
-      expect(dropdown).toBeInTheDocument();
+      expect(await form.hasAddressBookDropdown()).toBe(true);
 
       // Should have only ICRC1 address as option (Bob)
-      const options = Array.from(
-        dropdown?.querySelectorAll("option") ?? []
-      ).map((opt) => opt.textContent?.trim());
+      const addressBookSelect = form.getAddressBookSelectPo();
+      const options = await addressBookSelect.getOptions();
       expect(options).toEqual(["Bob"]);
     });
 
@@ -785,28 +755,16 @@ describe("TransactionModal", () => {
         token: ckBTCToken,
       });
 
-      const destinationWrapper = container.querySelector(
-        ".destination-wrapper"
-      );
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
 
-      expect(destinationWrapper).toBeInTheDocument();
+      expect(await form.hasDestinationSection()).toBe(true);
 
       // Toggle should be disabled since no ICRC1 addresses
-      const disabledToggle = container.querySelector(
-        'input[type="checkbox"][disabled][aria-label="Use address book"]'
-      );
-      expect(disabledToggle).toBeInTheDocument();
-      expect(disabledToggle?.hasAttribute("disabled")).toBe(true);
-
-      // Verify tooltip is present by checking for the tooltip wrapper
-      const toggleWrapper = disabledToggle?.closest(".toggle-wrapper");
-      expect(toggleWrapper).toBeInTheDocument();
-      expect(toggleWrapper?.parentElement).toHaveAttribute("aria-describedby");
+      expect(await form.isAddressBookToggleEnabled()).toBe(false);
 
       // Should not show address book dropdown
-      expect(
-        container.querySelector('[data-tid="address-book-dropdown"]')
-      ).not.toBeInTheDocument();
+      expect(await form.hasAddressBookDropdown()).toBe(false);
     });
 
     it("should select address from dropdown and populate destination", async () => {
@@ -819,30 +777,22 @@ describe("TransactionModal", () => {
         rootCanisterId: OWN_CANISTER_ID,
       });
 
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+
       // Should show address book dropdown
-      const dropdown = container.querySelector(
-        '[data-tid="address-book-dropdown"]'
-      ) as HTMLSelectElement;
-      expect(dropdown).toBeInTheDocument();
+      expect(await form.hasAddressBookDropdown()).toBe(true);
 
       // Select Bob (ICRC1 address)
-      fireEvent.change(dropdown, { target: { value: "Bob" } });
-
-      await waitFor(() => {
-        expect(dropdown.value).toBe("Bob");
-      });
+      const addressBookSelect = form.getAddressBookSelectPo();
+      await addressBookSelect.selectAddress("Bob");
 
       // The selectedDestinationAddress should be updated to Bob's address
       // We can verify this by checking if the continue button becomes enabled when amount is entered
-      const input = container.querySelector("input[name='amount']");
-      input && fireEvent.input(input, { target: { value: "10" } });
+      await form.enterAmount(10);
 
-      const participateButton = container.querySelector(
-        '[data-tid="transaction-button-next"]'
-      ) as HTMLButtonElement;
-
-      await waitFor(() => {
-        expect(participateButton?.hasAttribute("disabled")).toBe(false);
+      await waitFor(async () => {
+        expect(await form.isContinueButtonEnabled()).toBe(true);
       });
     });
   });
