@@ -1,4 +1,4 @@
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-10-30_03-22-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-11-06_03-24-base/rs/nns/governance/canister/governance.did>
 type AccountIdentifier = record {
   hash : blob;
 };
@@ -612,11 +612,19 @@ type MergeResponse = record {
   source_neuron_info : opt NeuronInfo;
 };
 
+type DateUtc = record {
+  year : nat32;
+  month : nat32;
+  day : nat32;
+};
+
 type MonthlyNodeProviderRewards = record {
   minimum_xdr_permyriad_per_icp : opt nat64;
   registry_version : opt nat64;
   node_providers : vec NodeProvider;
   timestamp : nat64;
+  start_date : opt DateUtc;
+  end_date : opt DateUtc;
   rewards : vec RewardNodeProvider;
   xdr_conversion_rate : opt XdrConversionRate;
   maximum_node_provider_rewards_e8s : opt nat64;
