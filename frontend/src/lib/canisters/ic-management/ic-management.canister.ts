@@ -24,6 +24,7 @@ export class ICManagementCanister {
     this.icMgmt = ICMgmtCanister.create({
       agent: options.agent,
       serviceOverride: options.serviceOverride,
+      certifiedServiceOverride: options.certifiedServiceOverride,
     });
   }
 
