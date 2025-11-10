@@ -18,14 +18,24 @@ test("Test neuron following", async ({ page, context }) => {
   step("Get some ICP");
   await appPo.getIcpTokens(20);
 
-  step("Stake neuron");
+  step("Stake first neuron");
   await appPo.goToStaking();
-  const nnsRow = await appPo
+
+  await appPo
     .getStakingPo()
-    .getProjectsTablePo()
-    .getRowByTitle("Internet Computer");
-  await nnsRow.getStakeButtonPo().click();
-  const stakeModal = appPo.getStakingPo().getNnsStakeNeuronModalPo();
+    .stakeFirstNnsNeuron({ amount: 1, dissolveDelayDays: "max" });
+
+  const neurons = await appPo.getNeuronsPo().getNnsNeuronsPo().getNeuronIds();
+
+  expect(neurons.length).toBe(1);
+
+  step("Stake neuron with full flow");
+  await appPo.getNeuronsPo().getNnsNeuronsFooterPo().clickStakeNeuronsButton();
+
+  const stakeModal = appPo
+    .getNeuronsPo()
+    .getNnsNeuronsFooterPo()
+    .getNnsStakeNeuronModalPo();
   await stakeModal.getNnsStakeNeuronPo().stake(10);
 
   await stakeModal.getSetDissolveDelayPo().setDissolveDelayDays("max");
@@ -47,13 +57,12 @@ test("Test neuron following", async ({ page, context }) => {
   const followNnsByTopicStepNeuron =
     stakeModal.getFollowNnsNeuronsByTopicStepNeuronPo();
 
-  const followee = "123";
+  const followee = neurons[0];
   followNnsByTopicStepNeuron.typeNeuronAddress(followee);
   followNnsByTopicStepNeuron.clickFollowNeuronButton();
 
-  // TODO: It requires additional work to check for an existing neuronId
-  // await stakeModal.getFollowNnsNeuronsByTopicStepTopicsPo().waitFor();
-  // const governanceTopic =
-  //   await followNnsByTopicStepTopic.getTopicItemPoByName("Governance");
-  // expect(await governanceTopic.getFolloweesNeuronIds()).toBe(followee);
+  await stakeModal.getFollowNnsNeuronsByTopicStepTopicsPo().waitFor();
+  const governanceTopic =
+    await followNnsByTopicStepTopic.getTopicItemPoByName("Governance");
+  expect(await governanceTopic.getFolloweesNeuronIds()).toContain(followee);
 });
