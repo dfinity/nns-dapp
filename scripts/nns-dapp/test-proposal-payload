@@ -243,6 +243,8 @@ test_nns_function_52() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
+# TODO: Add test for nns_function_55
+
 run_ic_admin() {
   ic-admin \
     --secret-key-pem "$PEM" \
