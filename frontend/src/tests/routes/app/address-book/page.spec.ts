@@ -16,18 +16,15 @@ vi.mock("$app/navigation", () => ({
 describe("Address Book page", () => {
   describe("feature flag off", () => {
     it("should redirect to portfolio when feature flag is disabled", () => {
-      overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
       expect(get(ENABLE_ADDRESS_BOOK)).toBe(false);
 
       render(AddressBookPage);
-
       expect(goto).toHaveBeenCalledWith(AppPath.Portfolio);
     });
   });
 
   describe("not signed in", () => {
     it("should render sign-in if not logged in", () => {
-      overrideFeatureFlagsStore.reset();
       setNoIdentity();
 
       const { getByTestId } = render(AddressBookPage);
@@ -38,7 +35,7 @@ describe("Address Book page", () => {
 
   describe("signed in", () => {
     it("should render address book page when feature flag is enabled and signed in", () => {
-      // Feature flag is enabled by default in tests (see vitest.setup.ts)
+      overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", true);
       expect(get(ENABLE_ADDRESS_BOOK)).toBe(true);
       resetIdentity();
 

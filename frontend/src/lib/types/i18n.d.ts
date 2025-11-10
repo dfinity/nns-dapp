@@ -194,6 +194,13 @@ interface I18nAddress_book {
   nickname_already_used: string;
   invalid_address: string;
   max_addresses_reached: string;
+  use_address_book: string;
+  address_book_loading: string;
+  address_book_empty: string;
+  no_applicable_addresses: string;
+  manual_address_warning: string;
+  check_address_book_link: string;
+  select_address_placeholder: string;
 }
 
 interface I18nAlfred {

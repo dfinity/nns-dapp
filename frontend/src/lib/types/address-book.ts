@@ -1,6 +1,11 @@
 import type { NamedAddress } from "$lib/canisters/nns-dapp/nns-dapp.types";
 import type { ResponsiveTableRowData } from "$lib/types/responsive-table";
 
+export enum AddressBookFilter {
+  All = "all",
+  ICRC1 = "icrc1",
+}
+
 export interface AddressBookTableRowData extends ResponsiveTableRowData {
   namedAddress: NamedAddress;
   rowContext: {

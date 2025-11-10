@@ -23,6 +23,7 @@
   export let selectedNetwork: TransactionNetwork | undefined = undefined;
   export let selectMethods: TransactionSelectDestinationMethods = "all";
   export let showManualAddress: boolean = selectMethods !== "dropdown";
+  export let hideTitle = false;
 
   // If the component is already initialized with a selectedDestinationAddress
   let selectedAccount: Account | undefined = getAccountByRootCanister({
@@ -60,20 +61,22 @@
 </script>
 
 <div data-tid="select-destination">
-  <div class="title">
-    <p class="label">{$i18n.accounts.destination}</p>
-    {#if showToggle}
-      <div class="toggle">
-        <p>{$i18n.accounts.select}</p>
-        <Toggle
-          bind:checked={showManualAddress}
-          on:nnsToggle={onToggleManualInput}
-          ariaLabel="change"
-        />
-        <p>{$i18n.accounts.manual}</p>
-      </div>
-    {/if}
-  </div>
+  {#if !hideTitle}
+    <div class="title">
+      <p class="label">{$i18n.accounts.destination}</p>
+      {#if showToggle}
+        <div class="toggle">
+          <p>{$i18n.accounts.select}</p>
+          <Toggle
+            bind:checked={showManualAddress}
+            on:nnsToggle={onToggleManualInput}
+            ariaLabel="change"
+          />
+          <p>{$i18n.accounts.manual}</p>
+        </div>
+      {/if}
+    </div>
+  {/if}
   {#if showManualAddress}
     <AddressInput
       on:nnsOpenQRCodeReader
