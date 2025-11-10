@@ -52,7 +52,7 @@ test("Test neuron following", async ({ page, context }) => {
   await followNnsByTopicStepTopic.clickTopicItemByName("Governance");
   await followNnsByTopicStepTopic.clickNextButton();
 
-  // Set the followe neuron
+  // Set the followee neuron
   await stakeModal.getFollowNnsNeuronsByTopicStepNeuronPo().waitFor();
   const followNnsByTopicStepNeuron =
     stakeModal.getFollowNnsNeuronsByTopicStepNeuronPo();
