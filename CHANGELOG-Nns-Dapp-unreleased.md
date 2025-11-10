@@ -17,6 +17,7 @@ proposal is successful, the changes it released will be moved from this file to
 #### Changed
 
 - Sorted known neurons by their registration age in the following neuron flow.
+- Follow neuron flow for NNS neurons.
 
 #### Deprecated
 
