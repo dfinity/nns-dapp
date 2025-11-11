@@ -77,9 +77,8 @@ test("Test accounts requirements", async ({ page, context }) => {
   const subAccountAddress = await accountsPo.getAccountAddress(subAccountName);
 
   await mainAccountRow.click();
-  await appPo.getWalletPo().getNnsWalletPo().transferToAccount({
-    accountName: subAccountName,
-    expectedAccountAddress: subAccountAddress,
+  await appPo.getWalletPo().getNnsWalletPo().transferToAddress({
+    destinationAddress: subAccountAddress,
     amount: 5,
   });
   await appPo.goBack();
