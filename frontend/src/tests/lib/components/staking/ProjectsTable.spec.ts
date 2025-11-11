@@ -827,6 +827,8 @@ describe("ProjectsTable", () => {
     });
 
     it("should show total USD banner when tickers fail to load", async () => {
+      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {}); // silence output
+
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
