@@ -12,8 +12,7 @@ import {
 } from "$tests/utils/e2e.test-utils";
 import { expect, test } from "@playwright/test";
 
-// @TODO: Enable this test once the address book feature flag is enabled
-test.skip("Test address book functionality", async ({ page, context }) => {
+test("Test address book functionality", async ({ page, context }) => {
   await page.goto("/address-book");
   await disableCssAnimations(page);
   await expect(page).toHaveTitle("Address Book | Network Nervous System");
@@ -197,8 +196,7 @@ test.skip("Test address book functionality", async ({ page, context }) => {
   expect(await addressBookPo.hasEmptyState()).toBe(true);
 });
 
-// @TODO: Enable this test once the address book feature flag is enabled
-test.skip("Test ICP transfer using address book", async ({ page, context }) => {
+test("Test ICP transfer using address book", async ({ page, context }) => {
   await page.goto("/tokens");
   await disableCssAnimations(page);
   await signInWithNewUser({ page, context });

@@ -16,6 +16,7 @@ vi.mock("$app/navigation", () => ({
 describe("Address Book page", () => {
   describe("feature flag off", () => {
     it("should redirect to portfolio when feature flag is disabled", () => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
       expect(get(ENABLE_ADDRESS_BOOK)).toBe(false);
 
       render(AddressBookPage);

@@ -104,7 +104,7 @@
           "ENABLE_LAUNCHPAD_REDESIGN": true,
           "ENABLE_APY_PORTFOLIO": true,
           "ENABLE_NEW_TABLES": true,
-          "ENABLE_ADDRESS_BOOK": false
+          "ENABLE_ADDRESS_BOOK": true
         }
       }
     },
