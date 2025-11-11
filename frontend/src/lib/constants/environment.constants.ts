@@ -40,7 +40,7 @@ export const defaultFeatureFlagValues: FeatureFlags<boolean> = {
   ENABLE_LAUNCHPAD_REDESIGN: false,
   ENABLE_APY_PORTFOLIO: true,
   ENABLE_NEW_TABLES: false,
-  ENABLE_ADDRESS_BOOK: false,
+  ENABLE_ADDRESS_BOOK: true,
 };
 
 export type FeatureKey = keyof FeatureFlags<boolean>;

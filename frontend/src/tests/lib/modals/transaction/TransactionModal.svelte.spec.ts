@@ -85,6 +85,8 @@ describe("TransactionModal", () => {
   beforeEach(() => {
     resetIdentity();
 
+    overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
+
     setAccountsForTesting({
       main: mockMainAccount,
       subAccounts: [mockSubAccount],

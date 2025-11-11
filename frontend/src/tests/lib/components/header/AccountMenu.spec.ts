@@ -193,10 +193,6 @@ describe("AccountMenu", () => {
     });
 
     describe("address book feature flag", () => {
-      afterEach(() => {
-        overrideFeatureFlagsStore.reset();
-      });
-
       it("should display Address Book link when feature flag is enabled", async () => {
         overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", true);
 
@@ -210,6 +206,7 @@ describe("AccountMenu", () => {
       });
 
       it("should not display Address Book link when feature flag is disabled", async () => {
+        overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
         const { accountMenuPo } = renderComponent();
         await accountMenuPo.openMenu();
 
