@@ -1,8 +1,8 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { FailedActionableSnsesStoreData } from "$lib/stores/actionable-sns-proposals.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import type { TableProject } from "$lib/types/staking";
+import type { TickersStoreData } from "$lib/types/tickers";
 import type { Universe } from "$lib/types/universe";
 import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
 import {
@@ -168,7 +168,7 @@ export const getTableProjects = ({
   isSignedIn,
   nnsNeurons,
   snsNeurons,
-  icpSwapUsdPrices,
+  tickersStore,
   failedActionableSnses,
   stakingRewardsResult,
 }: {
@@ -176,7 +176,7 @@ export const getTableProjects = ({
   isSignedIn: boolean;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
-  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
+  tickersStore: TickersStoreData;
   failedActionableSnses: FailedActionableSnsesStoreData;
   stakingRewardsResult: StakingRewardResult | undefined;
 }): TableProject[] => {
@@ -214,9 +214,9 @@ export const getTableProjects = ({
         const universeId = universe.canisterId;
         const ledgerCanisterId = getLedgerCanisterIdFromUniverse(universe);
         const tokenPrice =
-          isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error"
+          isNullish(tickersStore) || tickersStore === "error"
             ? undefined
-            : icpSwapUsdPrices[ledgerCanisterId.toText()];
+            : tickersStore[ledgerCanisterId.toText()];
         const stakeInUsd =
           stake instanceof TokenAmountV2
             ? getUsdValue({

@@ -43,12 +43,12 @@ describe("token-price.derived", () => {
       );
     });
 
-    it("should return undefined when icpSwapUsdPricesStore is undefined", () => {
+    it("should return undefined when tickersStore is undefined", () => {
       const store = tokenPriceStore(ICPToken);
       expect(get(store)).toBeUndefined();
     });
 
-    it("should return undefined when icpSwapUsdPricesStore is 'error'", () => {
+    it("should return undefined when tickersStore is 'error'", () => {
       icpSwapTickersStore.set("error");
 
       const store = tokenPriceStore(ICPToken);

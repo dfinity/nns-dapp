@@ -4,12 +4,9 @@ import {
   icpAccountsStore,
   type IcpAccountsStore,
 } from "$lib/derived/icp-accounts.derived";
-import {
-  icpSwapUsdPricesStore,
-  type IcpSwapUsdPricesStore,
-} from "$lib/derived/icp-swap.derived";
 import { nnsUniverseStore } from "$lib/derived/nns-universe.derived";
 import { i18n } from "$lib/stores/i18n";
+import { tickersStore, type TickersStore } from "$lib/stores/tickers.store";
 import type { Account, AccountType } from "$lib/types/account";
 import { UserTokenAction, type UserToken } from "$lib/types/tokens-page";
 import type { Universe } from "$lib/types/universe";
@@ -85,15 +82,15 @@ const convertAccountToUserTokenData = ({
 };
 
 export const icpTokensListUser = derived<
-  [Readable<Universe>, IcpAccountsStore, Readable<I18n>, IcpSwapUsdPricesStore],
+  [Readable<Universe>, IcpAccountsStore, Readable<I18n>, TickersStore],
   UserToken[]
 >(
-  [nnsUniverseStore, icpAccountsStore, i18n, icpSwapUsdPricesStore],
-  ([nnsUniverse, icpAccounts, i18nObj, icpSwapUsdPrices]) => {
+  [nnsUniverseStore, icpAccountsStore, i18n, tickersStore],
+  ([nnsUniverse, icpAccounts, i18nObj, tickers]) => {
     const icpPrice =
-      isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error"
+      isNullish(tickers) || tickers === "error"
         ? undefined
-        : icpSwapUsdPrices[LEDGER_CANISTER_ID.toText()];
+        : tickers[LEDGER_CANISTER_ID.toText()];
     return [
       convertAccountToUserTokenData({
         nnsUniverse,

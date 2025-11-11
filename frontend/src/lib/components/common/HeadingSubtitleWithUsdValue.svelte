@@ -1,24 +1,24 @@
 <script lang="ts">
   import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { tickersStore } from "$lib/stores/tickers.store";
   import { formatNumber } from "$lib/utils/format.utils";
-  import type { Principal } from "@icp-sdk/core/principal";
   import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
+  import type { Principal } from "@icp-sdk/core/principal";
 
   export let amount: TokenAmountV2 | undefined = undefined;
   export let ledgerCanisterId: Principal | undefined;
 
   let icpSwapHasError: boolean;
-  $: icpSwapHasError = $icpSwapUsdPricesStore === "error";
+  $: icpSwapHasError = $tickersStore === "error";
 
   let tokenPrice: number | undefined;
   $: tokenPrice =
     nonNullish(ledgerCanisterId) &&
-    nonNullish($icpSwapUsdPricesStore) &&
-    $icpSwapUsdPricesStore !== "error"
-      ? $icpSwapUsdPricesStore[ledgerCanisterId.toText()]
+    nonNullish($tickersStore) &&
+    $tickersStore !== "error"
+      ? $tickersStore[ledgerCanisterId.toText()]
       : undefined;
 
   let amountInUsd: number | undefined;

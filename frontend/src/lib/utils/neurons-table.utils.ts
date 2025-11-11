@@ -3,7 +3,6 @@ import {
   OWN_CANISTER_ID_TEXT,
 } from "$lib/constants/canister-ids.constants";
 import type { IcpAccountsStoreData } from "$lib/derived/icp-accounts.derived";
-import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import {
   NeuronsTableVoteDelegationStateOrder,
   type NeuronsTableColumnId,
@@ -12,6 +11,7 @@ import {
   type TableNeuronComparator,
 } from "$lib/types/neurons-table";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
+import type { TickersStoreData } from "$lib/types/tickers";
 import type { UniverseCanisterIdText } from "$lib/types/universe";
 import { enumValues } from "$lib/utils/enum.utils";
 import { buildNeuronUrl } from "$lib/utils/navigation.utils";
@@ -54,7 +54,7 @@ export const tableNeuronsFromNeuronInfos = ({
   neuronInfos,
   identity,
   accounts,
-  icpSwapUsdPrices,
+  tickersStore,
   i18n,
   startReducingVotingPowerAfterSeconds,
   minimumDissolveDelay,
@@ -63,7 +63,7 @@ export const tableNeuronsFromNeuronInfos = ({
   neuronInfos: NeuronInfo[];
   identity?: Identity | undefined | null;
   accounts: IcpAccountsStoreData;
-  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
+  tickersStore: TickersStoreData;
   i18n: I18n;
   startReducingVotingPowerAfterSeconds: bigint | undefined;
   minimumDissolveDelay: bigint;
@@ -84,9 +84,9 @@ export const tableNeuronsFromNeuronInfos = ({
       token: ICPToken,
     });
     const icpPrice =
-      isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error"
+      isNullish(tickersStore) || tickersStore === "error"
         ? undefined
-        : icpSwapUsdPrices[LEDGER_CANISTER_ID.toText()];
+        : tickersStore[LEDGER_CANISTER_ID.toText()];
     const stakeInUsd = getUsdValue({
       amount: stake,
       tokenPrice: icpPrice,
@@ -182,7 +182,7 @@ export const tableNeuronsFromSnsNeurons = ({
   universe,
   token,
   identity,
-  icpSwapUsdPrices,
+  tickersStore,
   ledgerCanisterId,
   i18n,
   topicInfos,
@@ -192,7 +192,7 @@ export const tableNeuronsFromSnsNeurons = ({
   universe: UniverseCanisterIdText;
   token: Token;
   identity: Identity | undefined | null;
-  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
+  tickersStore: TickersStoreData;
   ledgerCanisterId: Principal;
   i18n: I18n;
   topicInfos: TopicInfoWithUnknown[];
@@ -210,9 +210,9 @@ export const tableNeuronsFromSnsNeurons = ({
       token,
     });
     const tokenPrice =
-      isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error"
+      isNullish(tickersStore) || tickersStore === "error"
         ? undefined
-        : icpSwapUsdPrices[ledgerCanisterId.toText()];
+        : tickersStore[ledgerCanisterId.toText()];
     const stakeInUsd = getUsdValue({
       amount: stake,
       tokenPrice,

@@ -1,8 +1,8 @@
 import { SEERS_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
-import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
+import { tickersStore } from "$lib/stores/tickers.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -1683,7 +1683,7 @@ describe("snsProjectMarketCap", () => {
     const marketCap = snsProjectMarketCap({
       sns: project,
       snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
-      icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+      tickersStore: get(tickersStore),
     });
 
     // totalTokenSupply / 10**8 * tokenPrice
@@ -1716,7 +1716,7 @@ describe("snsProjectMarketCap", () => {
     const marketCap = snsProjectMarketCap({
       sns: project,
       snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
-      icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+      tickersStore: get(tickersStore),
     });
 
     expect(marketCap).toEqual(undefined);

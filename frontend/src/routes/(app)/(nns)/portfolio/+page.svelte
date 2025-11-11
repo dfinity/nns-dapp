@@ -3,7 +3,6 @@
   import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { ckBTCUniversesStore } from "$lib/derived/ckbtc-universes.derived";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { icrcCanistersStore } from "$lib/derived/icrc-canisters.derived";
   import { selectableUniversesStore } from "$lib/derived/selectable-universes.derived";
   import { snsProjectsCommittedStore } from "$lib/derived/sns/sns-projects.derived";
@@ -22,6 +21,7 @@
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { snsProposalsStoreIsLoading } from "$lib/stores/sns.store";
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
+  import { tickersStore } from "$lib/stores/tickers.store";
   import type { TableProject } from "$lib/types/staking";
   import type { UserToken } from "$lib/types/tokens-page";
   import { logWithTimestamp } from "$lib/utils/dev.utils";
@@ -81,7 +81,7 @@
     isSignedIn: $authSignedInStore,
     nnsNeurons: $neuronsStore?.neurons,
     snsNeurons: $snsNeuronsStore,
-    icpSwapUsdPrices: $icpSwapUsdPricesStore,
+    tickersStore: $tickersStore,
     failedActionableSnses: $failedActionableSnsesStore,
     stakingRewardsResult: $stakingRewardsStore,
   })[0];
@@ -93,7 +93,7 @@
     isSignedIn: $authSignedInStore,
     nnsNeurons: $neuronsStore?.neurons,
     snsNeurons: $snsNeuronsStore,
-    icpSwapUsdPrices: $icpSwapUsdPricesStore,
+    tickersStore: $tickersStore,
     failedActionableSnses: $failedActionableSnsesStore,
     stakingRewardsResult: $stakingRewardsStore,
   });
