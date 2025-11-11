@@ -274,7 +274,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-14]
+        os: [ubuntu-22.04, macos-15-intel]
     runs-on: ${{ matrix.os }}
     env:
       # Used by download-ci-wasm.test
