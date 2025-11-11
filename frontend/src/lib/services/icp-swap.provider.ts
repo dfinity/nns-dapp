@@ -2,12 +2,12 @@ import { queryIcpSwapTickers } from "$lib/api/icp-swap.api";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import type { IcpSwapTicker } from "$lib/types/icp-swap";
-import type { TickersData } from "$lib/types/tickers";
+import { ProviderErrors, type TickersData } from "$lib/types/tickers";
 import { mapEntries } from "$lib/utils/utils";
 import { isNullish } from "@dfinity/utils";
 
 const adapter = (tickers: IcpSwapTicker[]): TickersData => {
-  if (isNullish(tickers)) throw new Error("No tickers data");
+  if (isNullish(tickers)) throw new Error(ProviderErrors.NO_DATA);
 
   // The contents of icpSwapTickersStore come from ICP Swap, so there's no
   // guarantee that it's format is as expected.
@@ -54,13 +54,13 @@ const adapter = (tickers: IcpSwapTicker[]): TickersData => {
   const ckusdcTicker =
     ledgerCanisterIdToTicker[CKUSDC_LEDGER_CANISTER_ID.toText()];
   if (isNullish(ckusdcTicker)) {
-    throw new Error("No ckUsdc data");
+    throw new Error(ProviderErrors.INVALID_CKUSDC_PRICE);
   }
 
   const icpPriceInCkusdc = Number(ckusdcTicker?.last_price);
 
   if (icpPriceInCkusdc === 0 || !Number.isFinite(icpPriceInCkusdc)) {
-    throw new Error("Invalid icp Price");
+    throw new Error(ProviderErrors.INVALID_ICP_PRICE);
   }
 
   const ledgerCanisterIdToUsdPrice: Record<string, number> = mapEntries({
