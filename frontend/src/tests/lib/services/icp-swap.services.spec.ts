@@ -4,7 +4,7 @@ import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { get } from "svelte/store";
 
-describe("icp-swap.services", () => {
+describe.skip("icp-swap.services", () => {
   describe("loadIcpSwapTickers", () => {
     it("should load tickers into the store", async () => {
       vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([

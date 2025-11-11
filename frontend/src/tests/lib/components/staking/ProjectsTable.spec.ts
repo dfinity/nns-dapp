@@ -1,7 +1,10 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
@@ -37,6 +40,14 @@ describe("ProjectsTable", () => {
   const snsLedgerCanisterId = principal(1112);
   const snsTokenSymbol = "TOK";
 
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+      last_price: "10.00",
+    },
+  ];
+
   const renderComponent = ({ onNnsStakeTokens = null } = {}) => {
     const { container } = render(ProjectsTable, {
       props: {},
@@ -71,6 +82,7 @@ describe("ProjectsTable", () => {
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
   });
 
   describe("table when ENABLE_APY_PORTFOLIO disabled", () => {
@@ -665,15 +677,6 @@ describe("ProjectsTable", () => {
     });
 
     it("should display stake in USD", async () => {
-      const tickers = [
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "10.00",
-        },
-      ];
-      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
-
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
@@ -685,7 +688,12 @@ describe("ProjectsTable", () => {
       const po = renderComponent();
       await runResolvedPromises();
 
-      expect(get(icpSwapTickersStore)).toEqual(tickers);
+      const expectedTickersStore = {
+        [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
+        [LEDGER_CANISTER_ID.toText()]: 10,
+      };
+
+      expect(get(icpSwapTickersStore)).toEqual(expectedTickersStore);
       expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
 
       const rowPos = await po.getProjectsTableRowPos();
@@ -818,6 +826,8 @@ describe("ProjectsTable", () => {
     });
 
     it("should show total USD banner when tickers fail to load", async () => {
+      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {}); // silence output
+
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,

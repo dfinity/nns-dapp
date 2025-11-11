@@ -22,7 +22,7 @@ export const loadTickers = async (): Promise<void> => {
 
       return tickersStore.set(tickers);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

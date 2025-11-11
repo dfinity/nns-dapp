@@ -3,10 +3,10 @@ import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.co
 import { tokenPriceStore } from "$lib/derived/token-price.derived";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { tokensStore } from "$lib/stores/tokens.store";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
@@ -44,8 +44,6 @@ describe("token-price.derived", () => {
     });
 
     it("should return undefined when icpSwapUsdPricesStore is undefined", () => {
-      icpSwapTickersStore.set([]);
-
       const store = tokenPriceStore(ICPToken);
       expect(get(store)).toBeUndefined();
     });
@@ -58,12 +56,9 @@ describe("token-price.derived", () => {
     });
 
     it("should return undefined when ledger canister ID is not found", () => {
-      const ckusdcTicker = {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_LEDGER_CANISTER_ID.toText(),
-        last_price: "12.4",
-      };
-      icpSwapTickersStore.set([ckusdcTicker]);
+      setTickers({
+        [LEDGER_CANISTER_ID.toText()]: 12.4,
+      });
 
       const unknownTokenAmount = TokenAmountV2.fromUlps({
         amount: 100_000_000n,
@@ -75,24 +70,18 @@ describe("token-price.derived", () => {
     });
 
     it("should return ICP price for ICP token", () => {
-      const ckusdcTicker = {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_LEDGER_CANISTER_ID.toText(),
-        last_price: "12.4",
-      };
-      icpSwapTickersStore.set([ckusdcTicker]);
+      setTickers({
+        [LEDGER_CANISTER_ID.toText()]: 12.4,
+      });
 
       const store = tokenPriceStore(ICPToken);
       expect(get(store)).toBe(12.4);
     });
 
     it("should return ckUSDC price for ckUSDC token", () => {
-      const ckusdcTicker = {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_LEDGER_CANISTER_ID.toText(),
-        last_price: "12.4",
-      };
-      icpSwapTickersStore.set([ckusdcTicker]);
+      setTickers({
+        [LEDGER_CANISTER_ID.toText()]: 12.4,
+      });
 
       const store = tokenPriceStore(mockCkUSDCToken);
       expect(get(store)).toBe(1.0);
@@ -107,20 +96,13 @@ describe("token-price.derived", () => {
         },
       ]);
 
-      const ckusdcTicker = {
-        ...mockIcpSwapTicker,
-        base_id: CKUSDC_LEDGER_CANISTER_ID.toText(),
-        last_price: "12.4",
-      };
-      const snsTicker = {
-        ...mockIcpSwapTicker,
-        base_id: snsLedgerCanisterIdText,
-        last_price: "0.1",
-      };
-      icpSwapTickersStore.set([ckusdcTicker, snsTicker]);
+      setTickers({
+        [LEDGER_CANISTER_ID.toText()]: 12.4,
+        [snsLedgerCanisterIdText]: 0.1,
+      });
 
       const store = tokenPriceStore(snsToken);
-      expect(get(store)).toBe(124.0); // 12.4 / 0.1
+      expect(get(store)).toBe(0.1);
     });
   });
 });

@@ -3,8 +3,12 @@ import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -149,7 +153,12 @@ describe("Tokens route", () => {
     {
       ...mockIcpSwapTicker,
       base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-      last_price: "0.00",
+      last_price: "1.00",
+    },
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKBTC_LEDGER_CANISTER_ID.toText(),
+      last_price: "0.01",
     },
   ];
 
@@ -568,7 +577,13 @@ describe("Tokens route", () => {
 
         const po = await renderPage();
 
-        expect(get(icpSwapTickersStore)).toEqual(tickers);
+        const expectedTickersStore = {
+          [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
+          [LEDGER_CANISTER_ID.toText()]: 10,
+        };
+
+        expect(get(icpSwapTickersStore)).toEqual(expectedTickersStore);
+
         expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
 
         const tokensPagePo = po.getTokensPagePo();
@@ -788,6 +803,7 @@ describe("Tokens route", () => {
       const failedImportedTokenId = Principal.fromText(
         failedImportedTokenIdText
       );
+
       beforeEach(() => {
         resetIdentity();
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);
