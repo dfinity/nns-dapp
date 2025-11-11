@@ -12,9 +12,9 @@ import {
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProjectCard2Po } from "$tests/page-objects/ProjectCard2.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
@@ -139,7 +139,7 @@ describe("ProjectCard2", () => {
         },
       });
       const ledgerCanisterId = project.summary.ledgerCanisterId;
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId.toText()]: tokenPrice,
       });
 
@@ -168,7 +168,7 @@ describe("ProjectCard2", () => {
         },
       });
       const ledgerCanisterId = project.summary.ledgerCanisterId;
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId.toText()]: tokenPrice,
       });
 

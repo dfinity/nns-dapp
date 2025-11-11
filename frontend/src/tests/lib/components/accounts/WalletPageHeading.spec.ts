@@ -7,10 +7,7 @@ import en from "$tests/mocks/i18n.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import {
-  setIcpPrice,
-  setIcpSwapUsdPrices,
-} from "$tests/utils/icp-swap.test-utils";
+import { setIcpPrice, setTickers } from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -184,7 +181,7 @@ describe("WalletPageHeading", () => {
   it("should get token price based on ledger canister ID", async () => {
     const ledgerCanisterId = principal(3);
 
-    setIcpSwapUsdPrices({
+    setTickers({
       [ledgerCanisterId.toText()]: 5,
     });
 

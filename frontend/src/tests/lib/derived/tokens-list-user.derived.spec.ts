@@ -42,8 +42,8 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -400,7 +400,7 @@ describe("tokens-list-user.derived", () => {
       const tetrisPrice = 0.2;
       const tetrisUsdBalance = tetrisBalance * tetrisPrice;
 
-      setIcpSwapUsdPrices({
+      setTickers({
         [snsTetris.ledgerCanisterId.toText()]: tetrisPrice,
       });
       icrcAccountsStore.set({

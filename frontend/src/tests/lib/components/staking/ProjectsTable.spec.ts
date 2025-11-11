@@ -27,9 +27,9 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -1150,7 +1150,7 @@ describe("ProjectsTable", () => {
       certified: true,
     });
 
-    setIcpSwapUsdPrices({
+    setTickers({
       [ledgerCanisterId5.toText()]: 1,
       [ledgerCanisterId6.toText()]: 2,
     });

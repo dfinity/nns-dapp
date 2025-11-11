@@ -22,8 +22,8 @@ import {
   mockSnsMetrics,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
 import { SnsSwapLifecycle } from "@dfinity/sns";
 import { Principal } from "@icp-sdk/core/principal";
@@ -361,7 +361,7 @@ describe("Launchpad utils", () => {
           totalTokenSupply,
         },
       ]);
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId1.toText()]: tokenPrice,
         [ledgerCanisterId2.toText()]: undefined,
       });
@@ -479,7 +479,7 @@ describe("Launchpad utils", () => {
           totalTokenSupply: totalTokenSupply2,
         },
       ]);
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId1.toText()]: tokenPrice,
         [ledgerCanisterId2.toText()]: tokenPrice,
       });
@@ -652,7 +652,7 @@ describe("Launchpad utils", () => {
         },
       ]);
       // mock same token price for all the projects
-      setIcpSwapUsdPrices({
+      setTickers({
         [sameTokenPriceSummaryParams("_").ledgerCanisterId.toText()]: 1,
       });
     });

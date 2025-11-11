@@ -43,8 +43,8 @@ import {
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
@@ -1676,7 +1676,7 @@ describe("snsProjectMarketCap", () => {
       },
     });
     const ledgerCanisterId = project.summary.ledgerCanisterId;
-    setIcpSwapUsdPrices({
+    setTickers({
       [ledgerCanisterId.toText()]: tokenPrice,
     });
 
@@ -1709,7 +1709,7 @@ describe("snsProjectMarketCap", () => {
       },
     });
     const ledgerCanisterId = project.summary.ledgerCanisterId;
-    setIcpSwapUsdPrices({
+    setTickers({
       [ledgerCanisterId.toText()]: tokenPrice,
     });
 

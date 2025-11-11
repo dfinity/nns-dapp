@@ -30,7 +30,7 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsStakeNeuronModalPo } from "$tests/page-objects/NnsStakeNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import {
   advanceTime,
   runResolvedPromises,

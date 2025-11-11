@@ -10,7 +10,7 @@ import { mockAccountDetails } from "$tests/mocks/icp-accounts.store.mock";
 import { createUserToken } from "$tests/mocks/tokens-page.mock";
 import { NnsAccountsPo } from "$tests/page-objects/NnsAccounts.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import {
   advanceTime,
   runResolvedPromises,

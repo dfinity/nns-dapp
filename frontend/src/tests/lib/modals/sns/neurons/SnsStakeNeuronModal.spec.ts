@@ -12,8 +12,8 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsSelectedTransactionFeeStoreSubscribe } from "$tests/mocks/transaction-fee.mock";
 import { SnsStakeNeuronModalPo } from "$tests/page-objects/SnsStakeNeuronModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { TokenAmount } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -130,7 +130,7 @@ describe("SnsStakeNeuronModal", () => {
   });
 
   it("should display the amount in fiat value", async () => {
-    setIcpSwapUsdPrices({
+    setTickers({
       [ledgerCanisterId.toText()]: 100,
     });
 
