@@ -62,7 +62,7 @@ local_deployment_data="$(
   ICP_SWAP_URL="$(dfx-canister-url --network "$DFX_NETWORK" icp-swap)"
   export ICP_SWAP_URL
 
-  KONG_SWAP_URL="https://api.kongswap.io"
+  KONG_SWAP_URL="$(dfx-canister-url --network "$DFX_NETWORK" kong-swap)"
   export KONG_SWAP_URL
 
   : "Get the SNS wasm canister ID, if it exists"
