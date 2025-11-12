@@ -63,7 +63,7 @@ describe("env-vars-utils", () => {
     host: "http://localhost:8080",
     identityServiceUrl: "http://qhbym-qaaaa-aaaaa-aaafq-cai.localhost:8080",
     icpSwapUrl: "http://mrfq3-7eaaa-aaaaa-qabja-cai.localhost:8080",
-    kongSwapUrl: "https://api.kongswap.io",
+    kongSwapUrl: "http://xvemo-ap777-77774-qaalq-cai.localhost:8080",
     ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     indexCanisterId: "mecbw-6maaa-aaaaa-qabkq-cai",
     ownCanisterId: "qsgjb-riaaa-aaaaa-aaaga-cai",
@@ -136,7 +136,7 @@ describe("env-vars-utils", () => {
   });
 
   it("should return the correct Kong Swap URL", () => {
-    const kongSwapUrl = "https://api.kongswap.io";
+    const kongSwapUrl = "http://xvemo-ap777-77774-qaalq-cai.localhost:8080";
     vi.stubEnv("VITE_KONG_SWAP_URL", kongSwapUrl);
     expect(getEnvVars()).toEqual({
       ...defaultExpectedEnvVars,
