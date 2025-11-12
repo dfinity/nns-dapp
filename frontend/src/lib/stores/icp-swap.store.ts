@@ -1,19 +1,4 @@
-import type { IcpSwapTicker } from "$lib/types/icp-swap";
-import { writable, type Readable } from "svelte/store";
+import { tickersStore } from "$lib/stores/tickers.store";
 
-export type IcpSwapTickersStoreData = IcpSwapTicker[] | undefined | "error";
-
-export interface IcpSwapTickersStore extends Readable<IcpSwapTickersStoreData> {
-  set: (data: IcpSwapTickersStoreData) => void;
-}
-
-const initIcpSwapTickersStore = (): IcpSwapTickersStore => {
-  const { subscribe, set } = writable<IcpSwapTickersStoreData>(undefined);
-
-  return {
-    subscribe,
-    set,
-  };
-};
-
-export const icpSwapTickersStore = initIcpSwapTickersStore();
+// TODO: Remove this store and use tickersStore directly.
+export const icpSwapTickersStore = tickersStore;

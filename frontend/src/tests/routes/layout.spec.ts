@@ -1,4 +1,5 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
 import * as analytics from "$lib/services/analytics.services";
@@ -102,7 +103,12 @@ describe("Layout", () => {
     render(App);
     await runResolvedPromises();
 
-    expect(get(icpSwapTickersStore)).toEqual(tickers);
+    const expectedTickersStore = {
+      [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
+      [LEDGER_CANISTER_ID.toText()]: 10,
+    };
+
+    expect(get(icpSwapTickersStore)).toEqual(expectedTickersStore);
     expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
   });
 

@@ -25,8 +25,8 @@
   import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { IconNeuronsPage, Spinner } from "@dfinity/gix-components";
-  import { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
+  import { Principal } from "@icp-sdk/core/principal";
 
   let loading = true;
 
