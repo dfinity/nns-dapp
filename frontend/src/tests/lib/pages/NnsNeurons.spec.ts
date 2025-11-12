@@ -18,7 +18,7 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { NnsNeuronsPo } from "$tests/page-objects/NnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { render, waitFor } from "@testing-library/svelte";

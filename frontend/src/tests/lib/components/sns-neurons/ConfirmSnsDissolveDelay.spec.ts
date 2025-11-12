@@ -5,9 +5,9 @@ import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken, principal } from "$tests/mocks/sns-projects.mock";
 import { ConfirmSnsDissolveDelayPo } from "$tests/page-objects/ConfirmSnsDissolveDelay.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
 
@@ -112,7 +112,7 @@ describe("ConfirmSnsDissolveDelay", () => {
         },
       },
     ]);
-    setIcpSwapUsdPrices({
+    setTickers({
       [ledgerCanisterId.toText()]: 0.1,
     });
 

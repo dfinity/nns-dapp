@@ -2,7 +2,6 @@
   import Alfred from "$lib/components/alfred/Alfred.svelte";
   import Highlight from "$lib/components/ui/Highlight.svelte";
   import { authSignedInStore } from "$lib/derived/auth.derived";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
   import { initAnalytics } from "$lib/services/analytics.services";
@@ -21,6 +20,7 @@
   import { nnsTotalVotingPowerStore } from "$lib/stores/nns-total-voting-power.store";
   import { snsAggregatorStore } from "$lib/stores/sns-aggregator.store";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
+  import { tickersStore } from "$lib/stores/tickers.store";
   import { toastsClean } from "$lib/stores/toasts.store";
   import { logWithTimestamp } from "$lib/utils/dev.utils";
   import { onMount } from "svelte";
@@ -79,7 +79,7 @@
       snsNeurons: $snsNeuronsStore,
       nnsNeurons: $neuronsStore,
       nnsEconomics: $networkEconomicsStore,
-      fxRates: $icpSwapUsdPricesStore,
+      fxRates: $tickersStore,
       governanceMetrics: $governanceMetricsStore,
       nnsTotalVotingPower: $nnsTotalVotingPowerStore,
     });

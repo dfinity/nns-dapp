@@ -2,8 +2,8 @@ import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { TotalAssetsCardPo } from "$tests/page-objects/TotalAssetsCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 
 describe("TotalAssetsCard", () => {
   const renderComponent = ({

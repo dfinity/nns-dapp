@@ -6,11 +6,11 @@
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { AppPath } from "$lib/constants/routes.constants";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
+  import { tickersStore } from "$lib/stores/tickers.store";
   import { compactCurrencyNumber } from "$lib/utils/format.utils";
   import {
     snsProjectMarketCap,
@@ -44,7 +44,7 @@
     const marketCap = snsProjectMarketCap({
       sns: project,
       snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
-      icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
+      tickersStore: $tickersStore,
     });
 
     if (isNullish(marketCap)) return PRICE_NOT_AVAILABLE_PLACEHOLDER;

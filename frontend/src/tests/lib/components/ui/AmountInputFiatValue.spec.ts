@@ -3,7 +3,7 @@ import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import en from "$tests/mocks/i18n.mock";
 import { AmountInputFiatValuePo } from "$tests/page-objects/AmountInputFiatValue.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 

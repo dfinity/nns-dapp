@@ -136,7 +136,7 @@ describe("staking.utils", () => {
         snsNeurons: {
           [universeId2]: { neurons: [] },
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -163,7 +163,7 @@ describe("staking.utils", () => {
         snsNeurons: {
           [snsUniverseId]: { neurons: [] },
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -200,7 +200,7 @@ describe("staking.utils", () => {
         snsNeurons: {
           [universeId2]: { neurons: [] },
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -227,7 +227,7 @@ describe("staking.utils", () => {
           nnsNeuronWithStake,
         ],
         snsNeurons: {},
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -270,7 +270,7 @@ describe("staking.utils", () => {
         isSignedIn: true,
         nnsNeurons: [neuron1, neuron2],
         snsNeurons: {},
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -312,7 +312,7 @@ describe("staking.utils", () => {
         isSignedIn: true,
         nnsNeurons: [neuron1, neuron2],
         snsNeurons: {},
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -342,7 +342,7 @@ describe("staking.utils", () => {
             neurons: [snsNeuronWithStake, snsNeuronWithStake],
           },
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -385,7 +385,7 @@ describe("staking.utils", () => {
             neurons: [neuron1, neuron2],
           },
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -425,7 +425,7 @@ describe("staking.utils", () => {
             neurons: [neuron1, neuron2],
           },
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -462,7 +462,7 @@ describe("staking.utils", () => {
         isSignedIn: true,
         nnsNeurons: [nnsNeuron],
         snsNeurons: {},
-        icpSwapUsdPrices: {
+        tickersStore: {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
         failedActionableSnses: [],
@@ -503,7 +503,7 @@ describe("staking.utils", () => {
             neurons: [snsNeuron],
           },
         },
-        icpSwapUsdPrices: {
+        tickersStore: {
           [snsUniverse.summary.ledgerCanisterId.toText()]: tokenPrice,
         },
         failedActionableSnses: [],
@@ -534,7 +534,7 @@ describe("staking.utils", () => {
           nnsNeuronWithoutStake,
         ],
         snsNeurons: {},
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -568,7 +568,7 @@ describe("staking.utils", () => {
             ],
           },
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -597,7 +597,7 @@ describe("staking.utils", () => {
             neurons: [],
           },
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -632,7 +632,7 @@ describe("staking.utils", () => {
         snsNeurons: {
           [universeId2]: undefined,
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [],
         stakingRewardsResult: undefined,
       });
@@ -669,7 +669,7 @@ describe("staking.utils", () => {
         snsNeurons: {
           [universeId2]: undefined,
         },
-        icpSwapUsdPrices: undefined,
+        tickersStore: undefined,
         failedActionableSnses: [universeId2],
         stakingRewardsResult: undefined,
       });

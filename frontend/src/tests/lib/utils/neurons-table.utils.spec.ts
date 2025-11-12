@@ -88,7 +88,7 @@ describe("neurons-table.utils", () => {
         neuronInfos,
         identity: mockIdentity,
         accounts: mockAccountsStoreData,
-        icpSwapUsdPrices: {
+        tickersStore: {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
         i18n: en,
@@ -279,7 +279,7 @@ describe("neurons-table.utils", () => {
         neuronInfos: [hotkeyNeuronInfo],
         identity: mockIdentity,
         accounts: mockAccountsStoreData,
-        icpSwapUsdPrices: {
+        tickersStore: {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
         i18n: en,
@@ -489,7 +489,7 @@ describe("neurons-table.utils", () => {
         universe: snsUniverseIdText,
         token: mockSnsToken,
         identity: mockIdentity,
-        icpSwapUsdPrices: {
+        tickersStore: {
           [ledgerCanisterId.toText()]: snsTokenPrice,
         },
         ledgerCanisterId,

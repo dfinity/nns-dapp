@@ -13,7 +13,6 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
@@ -241,7 +240,7 @@ describe("SnsNeurons", () => {
     });
 
     it("should provide USD prices", async () => {
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId.toText()]: 0.1,
       });
 
@@ -260,7 +259,7 @@ describe("SnsNeurons", () => {
     });
 
     it("should show total stake in USD", async () => {
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId.toText()]: 0.1,
       });
 

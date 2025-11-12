@@ -16,7 +16,7 @@ import {
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronPageHeadingPo } from "$tests/page-objects/SnsNeuronPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { NeuronState } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -63,7 +63,7 @@ describe("SnsNeuronPageHeading", () => {
     // of the neuron age.
     vi.useFakeTimers();
 
-    setIcpSwapUsdPrices({
+    setTickers({
       [LEDGER_CANISTER_ID.toText()]: 10,
       [ledgerCanisterId.toText()]: 0.1,
     });

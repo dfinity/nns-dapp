@@ -5,7 +5,7 @@ import en from "$tests/mocks/i18n.mock";
 import { createMockSnippet } from "$tests/mocks/snippet.mock";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { TransactionSummaryPo } from "$tests/page-objects/TransactionSummary.page-object";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 

@@ -1,8 +1,8 @@
 import { SEERS_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
-import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
+import { tickersStore } from "$lib/stores/tickers.store";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { nowInSeconds } from "$lib/utils/date.utils";
@@ -43,8 +43,8 @@ import {
   summaryForLifecycle,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
@@ -1676,14 +1676,14 @@ describe("snsProjectMarketCap", () => {
       },
     });
     const ledgerCanisterId = project.summary.ledgerCanisterId;
-    setIcpSwapUsdPrices({
+    setTickers({
       [ledgerCanisterId.toText()]: tokenPrice,
     });
 
     const marketCap = snsProjectMarketCap({
       sns: project,
       snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
-      icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+      tickersStore: get(tickersStore),
     });
 
     // totalTokenSupply / 10**8 * tokenPrice
@@ -1709,14 +1709,14 @@ describe("snsProjectMarketCap", () => {
       },
     });
     const ledgerCanisterId = project.summary.ledgerCanisterId;
-    setIcpSwapUsdPrices({
+    setTickers({
       [ledgerCanisterId.toText()]: tokenPrice,
     });
 
     const marketCap = snsProjectMarketCap({
       sns: project,
       snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
-      icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+      tickersStore: get(tickersStore),
     });
 
     expect(marketCap).toEqual(undefined);

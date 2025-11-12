@@ -26,7 +26,7 @@ import en from "$tests/mocks/i18n.mock";
 import { renderModal } from "$tests/mocks/modal.mock";
 import { CkBTCTransactionModalPo } from "$tests/page-objects/CkBTCTransactionModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { advanceTime } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { TokenAmountV2, nonNullish } from "@dfinity/utils";
@@ -525,7 +525,7 @@ describe("CkBTCTransactionModal", () => {
   });
 
   it("should display the amount in fiat value", async () => {
-    setIcpSwapUsdPrices({
+    setTickers({
       [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: 10,
     });
 

@@ -18,7 +18,7 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { PortfolioPagePo } from "$tests/page-objects/PortfolioPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 

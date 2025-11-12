@@ -1,8 +1,8 @@
 <script lang="ts">
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { selectedUniverseStore } from "$lib/derived/selected-universe.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { tickersStore } from "$lib/stores/tickers.store";
   import { formatUsdValue } from "$lib/utils/format.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
   import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
@@ -18,10 +18,9 @@
       $selectedUniverseStore
     );
 
-    if (isNullish($icpSwapUsdPricesStore) || $icpSwapUsdPricesStore === "error")
-      return 0;
+    if (isNullish($tickersStore) || $tickersStore === "error") return 0;
 
-    const tokenPrice = $icpSwapUsdPricesStore[ledgerCanisterId.toText()];
+    const tokenPrice = $tickersStore[ledgerCanisterId.toText()];
     const usdValue = getUsdValue({ amount: transactionFee, tokenPrice }) ?? 0;
     return formatUsdValue(usdValue);
   });
