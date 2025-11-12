@@ -41,7 +41,10 @@ describe("env-vars-utils", () => {
       "VITE_ICP_SWAP_URL",
       "http://mrfq3-7eaaa-aaaaa-qabja-cai.localhost:8080"
     );
-    vi.stubEnv("VITE_KONG_SWAP_URL", "https://api.kongswap.io");
+    vi.stubEnv(
+      "VITE_KONG_SWAP_URL",
+      "http://xvemo-ap777-77774-qaalq-cai.localhost:8080"
+    );
     vi.stubEnv("VITE_CKBTC_MINTER_CANISTER_ID", "o66jk-a4aaa-aaaaa-qabfq-cai");
     vi.stubEnv("VITE_CKBTC_INDEX_CANISTER_ID", "olzyh-buaaa-aaaaa-qabga-cai");
     vi.stubEnv("VITE_CKETH_LEDGER_CANISTER_ID", "omy6t-mmaaa-aaaaa-qabgq-cai");
