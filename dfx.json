@@ -296,6 +296,13 @@
         "app": "https://uvevg-iyaaa-aaaak-ac27q-cai.raw.ic0.app/",
         "beta": "https://uvevg-iyaaa-aaaak-ac27q-cai.raw.ic0.app/"
       }
+    },
+    "kong-swap": {
+      "url": {
+        "mainnet": "https://api.kongswap.io",
+        "app": "https://api.kongswap.io",
+        "beta": "https://api.kongswap.io"
+      }
     }
   },
   "networks": {
