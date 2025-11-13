@@ -13,7 +13,6 @@ import { get } from "svelte/store";
 
 describe("tickers.services", () => {
   const primaryProvider = providers[0];
-  const fallbackProvider = providers[1];
   const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
   const ckusdcLedgerCanisterId = CKUSDC_LEDGER_CANISTER_ID.toText();
 
