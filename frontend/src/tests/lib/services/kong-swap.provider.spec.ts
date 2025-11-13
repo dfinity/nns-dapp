@@ -11,21 +11,21 @@ describe("kong-swap.provider", () => {
     const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
     const ckusdcLedgerCanisterId = CKUSDC_LEDGER_CANISTER_ID.toText();
 
-    // Mock ckUSDC ticker: 1 ckUSDC = 25 ICP (so ICP price = 1/25 = 0.04 USD)
+    // 10 ckUSDC = 1 ICP (so ICP price = 1/10 = 0.1 USD)
     const ckusdcTicker: KongSwapTicker = {
       ...mockKongSwapTicker,
       base_currency: ckusdcLedgerCanisterId,
       target_currency: icpLedgerCanisterId,
-      last_price: 25, // 1 ckUSDC = 25 ICP, so 1 ICP = 1/25 = 0.04 ckUSDC ≈ 0.04 USD
+      last_price: 0.1,
       liquidity_in_usd: 1000,
     };
 
-    // Mock another token ticker: 1 TOKEN = 2 ICP (so TOKEN price = 0.04 * 2 = 0.08 USD)
+    // 1 TOKEN = 0.2 ICP (so TOKEN price = 0.2 * 10 = 2 USD)
     const tokenTicker: KongSwapTicker = {
       ...mockKongSwapTicker,
       base_currency: "token-canister-id",
       target_currency: icpLedgerCanisterId,
-      last_price: 2, // 1 TOKEN = 2 ICP
+      last_price: 0.2,
       liquidity_in_usd: 500,
     };
 
@@ -37,9 +37,9 @@ describe("kong-swap.provider", () => {
     const result = await kongSwapTickerProvider();
 
     expect(result).toEqual({
-      [icpLedgerCanisterId]: 0.04, // ICP price in USD (1/25)
-      [ckusdcLedgerCanisterId]: 1, // ckUSDC price = 0.04 * 25 = 1 USD
-      "token-canister-id": 0.08, // TOKEN price = 0.04 * 2 = 0.08 USD
+      [icpLedgerCanisterId]: 10,
+      [ckusdcLedgerCanisterId]: 1,
+      "token-canister-id": 2,
     });
   });
 
