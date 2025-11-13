@@ -18,40 +18,9 @@ const adapter = (tickers: KongSwapTicker[]): TickersData => {
     ({ target_currency }) => target_currency === icpLedgerCanisterId
   );
 
-  // Group tickers by base_currency to identify pairs with multiple tickers
-  const tickersByBaseCurrency = icpBasedTickers.reduce(
-    (acc, ticker) => {
-      const baseCurrency = ticker.base_currency;
-      if (!acc[baseCurrency]) acc[baseCurrency] = [];
-
-      acc[baseCurrency].push(ticker);
-      return acc;
-    },
-    {} as Record<string, KongSwapTicker[]>
-  );
-
-  // Apply liquidity filter only when there are multiple tickers for the same pair
-  const filteredTickers = Object.values(tickersByBaseCurrency).flatMap(
-    (tickersForPair) => {
-      if (tickersForPair.length === 1) {
-        // Single ticker for this pair - keep it regardless of liquidity
-        return tickersForPair;
-      } else {
-        // Multiple tickers for this pair - filter by liquidity
-        return (
-          tickersForPair.find(
-            (ticker) =>
-              ticker.liquidity_in_usd !== undefined &&
-              Number(ticker.liquidity_in_usd) > 0
-          ) ?? []
-        );
-      }
-    }
-  );
-
   const ledgerCanisterIdToTicker: Record<string, KongSwapTicker> =
     Object.fromEntries(
-      filteredTickers.map((ticker) => [ticker.base_currency, ticker])
+      icpBasedTickers.map((ticker) => [ticker.base_currency, ticker])
     );
 
   const ckusdcTicker =
