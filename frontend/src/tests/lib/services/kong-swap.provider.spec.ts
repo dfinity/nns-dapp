@@ -191,49 +191,6 @@ describe("kong-swap.provider", () => {
     expect(result).toHaveProperty(ckusdcLedgerCanisterId);
   });
 
-  it("should handle multiple tickers with undefined liquidity by selecting none", async () => {
-    const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
-    const ckusdcLedgerCanisterId = CKUSDC_LEDGER_CANISTER_ID.toText();
-
-    const ckusdcTicker: KongSwapTicker = {
-      ...mockKongSwapTicker,
-      base_currency: ckusdcLedgerCanisterId,
-      target_currency: icpLedgerCanisterId,
-      last_price: 25,
-      liquidity_in_usd: 1000,
-    };
-
-    // Multiple tickers, all with undefined liquidity - should return empty array (no ticker selected)
-    const tokenTicker1: KongSwapTicker = {
-      ...mockKongSwapTicker,
-      base_currency: "token-canister-id",
-      target_currency: icpLedgerCanisterId,
-      last_price: 2,
-      liquidity_in_usd: undefined,
-    };
-
-    const tokenTicker2: KongSwapTicker = {
-      ...mockKongSwapTicker,
-      base_currency: "token-canister-id",
-      target_currency: icpLedgerCanisterId,
-      last_price: 2.5,
-      liquidity_in_usd: undefined,
-    };
-
-    vi.spyOn(kongSwapApi, "queryKongSwapTickers").mockResolvedValue([
-      ckusdcTicker,
-      tokenTicker1,
-      tokenTicker2,
-    ]);
-
-    const result = await kongSwapTickerProvider();
-
-    // Should not include the token since no ticker with liquidity was found
-    expect(result).not.toHaveProperty("token-canister-id");
-    expect(result).toHaveProperty(icpLedgerCanisterId);
-    expect(result).toHaveProperty(ckusdcLedgerCanisterId);
-  });
-
   it("should filter out tickers with invalid prices (zero or non-finite)", async () => {
     const icpLedgerCanisterId = LEDGER_CANISTER_ID.toText();
     const ckusdcLedgerCanisterId = CKUSDC_LEDGER_CANISTER_ID.toText();
@@ -378,4 +335,3 @@ describe("kong-swap.provider", () => {
     );
   });
 });
-

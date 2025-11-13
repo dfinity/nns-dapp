@@ -6,8 +6,7 @@ export const mockKongSwapTicker: KongSwapTicker = {
   target_currency: "ryjl3-tyaaa-aaaaa-aaaba-cai",
   pool_id: "pool-123",
   last_price: 26.476703,
-  base_volume: 14707114.222300,
-  target_volume: 14639835.630040,
+  base_volume: 14707114.2223,
+  target_volume: 14639835.63004,
   liquidity_in_usd: 493835.903685,
 };
-
