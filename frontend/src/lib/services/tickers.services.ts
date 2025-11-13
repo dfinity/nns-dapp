@@ -5,7 +5,7 @@ import type { ProviderLoader, TickersProviders } from "$lib/types/tickers";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-const providers: TickersProviders[] = ["icp-swap", "kong-swap"];
+export const providers: TickersProviders[] = ["icp-swap", "kong-swap"];
 const providersLoaders = new Map<TickersProviders, ProviderLoader>([
   ["icp-swap", icpSwapTickerProvider],
   ["kong-swap", kongSwapTickerProvider],
