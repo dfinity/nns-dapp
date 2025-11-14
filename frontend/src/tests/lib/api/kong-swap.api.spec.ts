@@ -1,17 +1,10 @@
 import { queryKongSwapTickers } from "$lib/api/kong-swap.api";
 import { KONG_SWAP_URL } from "$lib/constants/environment.constants";
+import { mockKongSwapTicker } from "$tests/mocks/kong-swap.mock";
 
 describe("kong-swap.api", () => {
   it("should fetch KongSwap tickers", async () => {
-    const tickersResponse = [
-      {
-        ticker_id: "mxzaz-hqaaa-aaaar-qaada-cai_cngnf-vqaaa-aaaar-qag4q-cai",
-        base_currency: "mxzaz-hqaaa-aaaar-qaada-cai",
-        target_currency: "cngnf-vqaaa-aaaar-qag4q-cai",
-        pool_id: "2",
-        last_price: 111324.134685011,
-      },
-    ];
+    const tickersResponse = [mockKongSwapTicker];
 
     vi.spyOn(global, "fetch").mockResolvedValue({
       ok: true,
