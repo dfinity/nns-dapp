@@ -1,6 +1,6 @@
 import type { CanisterIdString } from "@dfinity/nns";
 
-export type TickersProviders = "icp-swap";
+export type TickersProviders = "icp-swap" | "kong-swap";
 export type ProviderLoader = () => Promise<TickersData>;
 export enum ProviderErrors {
   NO_DATA = "NO_DATA",
