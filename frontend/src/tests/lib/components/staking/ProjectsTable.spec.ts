@@ -1,5 +1,6 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as kongSwapApi from "$lib/api/kong-swap.api";
 import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
 import {
   LEDGER_CANISTER_ID,
@@ -836,9 +837,10 @@ describe("ProjectsTable", () => {
         certified: true,
       });
 
-      const error = new Error("ICPSwap failed");
+      const error = new Error("Provider failed");
       vi.spyOn(console, "error").mockReturnValue();
       vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockRejectedValue(error);
+      vi.spyOn(kongSwapApi, "queryKongSwapTickers").mockRejectedValue(error);
 
       const po = renderComponent();
       await runResolvedPromises();
@@ -851,7 +853,7 @@ describe("ProjectsTable", () => {
         "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
       );
       expect(console.error).toBeCalledWith(error);
-      expect(console.error).toBeCalledTimes(1);
+      expect(console.error).toBeCalledTimes(2);
     });
 
     it("should order by stake by default", async () => {
