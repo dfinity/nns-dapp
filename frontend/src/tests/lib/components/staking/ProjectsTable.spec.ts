@@ -850,7 +850,7 @@ describe("ProjectsTable", () => {
       expect(
         await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
       ).toBe(
-        "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
+        "USD prices are temporarily unavailable — all pricing provider APIs are currently unreachable."
       );
       expect(console.error).toBeCalledWith(error);
       expect(console.error).toBeCalledTimes(2);

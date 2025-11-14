@@ -174,7 +174,7 @@ describe("WalletPageHeading", () => {
     expect(await po.hasBalanceInUsd()).toBe(true);
     expect(await po.getBalanceInUsd()).toBe("$-/-");
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
+      "USD prices are temporarily unavailable — all pricing provider APIs are currently unreachable."
     );
   });
 
