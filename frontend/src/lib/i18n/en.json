@@ -382,7 +382,7 @@
     "received_amount_notice": "Received Amount *",
     "transaction_time": "Transaction Time",
     "transaction_time_seconds": "Seconds",
-    "token_price_error": "USD prices are temporarily unavailable — all pricing provider APIs are currently unreachable.",
+    "token_price_error": "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable.",
     "unpriced_tokens_warning": "Value may be inaccurate as some prices could not be fetched.",
     "token_price_source": "Token prices are given in USD and based on data provided by ICPSwap."
   },

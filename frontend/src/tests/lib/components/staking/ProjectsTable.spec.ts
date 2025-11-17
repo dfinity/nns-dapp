@@ -850,7 +850,7 @@ describe("ProjectsTable", () => {
       expect(
         await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
       ).toBe(
-        "USD prices are temporarily unavailable — all pricing provider APIs are currently unreachable."
+        "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable."
       );
       expect(console.error).toBeCalledWith(error);
       expect(console.error).toBeCalledTimes(2);
