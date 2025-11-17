@@ -137,6 +137,8 @@ if [ "$command" = "import-from-index-html" ]; then
   internetIdentity="$(canister_id_from_url "$identityServiceUrl")"
   icpSwapUrl="$(get_value_from_html data-icp-swap-url "$tmp_index_html")"
   icpSwap="$(canister_id_from_url "$icpSwapUrl")"
+  kongSwapUrl="$(get_value_from_html data-kong-swap-url "$tmp_index_html")"
+  kongSwap="$(canister_id_from_url "$kongSwapUrl")"
 
   snsAggregatorUrl="$(get_value_from_html data-sns-aggregator-url "$tmp_index_html")"
   snsAggregator="$(canister_id_from_url "$snsAggregatorUrl")"
@@ -165,6 +167,7 @@ if [ "$command" = "import-from-index-html" ]; then
     .["nns-sns-wasm"][$network] = $snsWasm |
     .internet_identity[$network] = $internetIdentity |
     .["icp-swap"][$network] = $icpSwap |
+    .["kong-swap"][$network] = $kongSwap |
     .["nns-dapp"][$network] = $nnsDapp |
     .sns_aggregator[$network] = $snsAggregator' \
     --arg network "$NETWORK" \
@@ -179,6 +182,7 @@ if [ "$command" = "import-from-index-html" ]; then
     --arg snsWasm "$snsWasm" \
     --arg internetIdentity "$internetIdentity" \
     --arg icpSwap "$icpSwap" \
+    --arg kongSwap "$kongSwap" \
     --arg nnsDapp "$nnsDapp" \
     --arg snsAggregator "$snsAggregator" \
     "$JSON_FILE" >"$tmp_file"

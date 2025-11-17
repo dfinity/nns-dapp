@@ -255,6 +255,7 @@ jobs:
           	ckusdc_ledger
           	icp-swap
           	internet_identity
+          	kong-swap
           	nns-dapp
           	nns-index
           	nns-sns-wasm
