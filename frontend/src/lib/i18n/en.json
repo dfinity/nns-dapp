@@ -37,7 +37,7 @@
     "or": "or",
     "add": "Add",
     "not_applicable": "N/A",
-    "view_more": "View more",
+    "learn_more": "Learn more",
     "view": "View",
     "copy": "Copy to clipboard",
     "copied": "Copied",
@@ -1458,7 +1458,7 @@
     "start_staking_card_link": "Open Staking"
   },
   "highlight": {
-    "topics_feature_title": "Improved voting delegation",
-    "topics_feature_description": "We’ve simplified voting delegation for NNS neurons, see it in neuron details!"
+    "topics_feature_title": "Protect your transfers",
+    "topics_feature_description": "With the new Address Book you can save up to 20 addresses and reduce the risk of address poisoning."
   }
 }
