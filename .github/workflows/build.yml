@@ -259,6 +259,7 @@ jobs:
           	nns-index
           	nns-sns-wasm
           	sns_aggregator
+          	kong-swap
           	EOF
           )
           rm canister_ids.json
