@@ -1458,7 +1458,7 @@
     "start_staking_card_link": "Open Staking"
   },
   "highlight": {
-    "topics_feature_title": "Improved voting delegation",
-    "topics_feature_description": "We’ve simplified voting delegation for NNS neurons, see it in neuron details!"
+    "topics_feature_title": "Protect your transfers",
+    "topics_feature_description": "Use your Address Book to pick saved ICP and ICRC1 addresses and reduce the risk of address poisoning."
   }
 }

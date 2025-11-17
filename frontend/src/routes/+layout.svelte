@@ -12,7 +12,7 @@
     type AuthWorker,
   } from "$lib/services/worker-auth.services";
   import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
-  import { ENABLE_NNS_TOPICS } from "$lib/stores/feature-flags.store";
+  import { ENABLE_ADDRESS_BOOK } from "$lib/stores/feature-flags.store";
   import { governanceMetricsStore } from "$lib/stores/governance-metrics.store";
   import { i18n } from "$lib/stores/i18n";
   import { networkEconomicsStore } from "$lib/stores/network-economics.store";
@@ -88,7 +88,7 @@
 
 <Alfred />
 
-{#if $ENABLE_NNS_TOPICS && $authSignedInStore}
+{#if $ENABLE_ADDRESS_BOOK && $authSignedInStore}
   <Highlight
     level="info"
     title={$i18n.highlight.topics_feature_title}
