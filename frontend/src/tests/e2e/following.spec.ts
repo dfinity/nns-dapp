@@ -18,14 +18,25 @@ test("Test neuron following", async ({ page, context }) => {
   step("Get some ICP");
   await appPo.getIcpTokens(20);
 
-  step("Stake neuron");
+  step("Stake first neuron");
   await appPo.goToStaking();
-  const nnsRow = await appPo
+
+  await appPo
     .getStakingPo()
-    .getProjectsTablePo()
-    .getRowByTitle("Internet Computer");
-  await nnsRow.getStakeButtonPo().click();
-  const stakeModal = appPo.getStakingPo().getNnsStakeNeuronModalPo();
+    .stakeFirstNnsNeuron({ amount: 1, dissolveDelayDays: "max" });
+
+  const neurons = await appPo.getNeuronsPo().getNnsNeuronsPo().getNeuronIds();
+
+  expect(neurons.length).toBe(1);
+
+  step("Stake neuron");
+  await appPo.getNeuronsPo().getNnsNeuronsFooterPo().clickStakeNeuronsButton();
+
+  const stakeModal = appPo
+    .getNeuronsPo()
+    .getNnsNeuronsFooterPo()
+    .getNnsStakeNeuronModalPo();
+
   await stakeModal.getNnsStakeNeuronPo().stake(10);
   await stakeModal.getSetDissolveDelayPo().setDissolveDelayDays("max");
   await stakeModal.getConfirmDissolveDelayPo().clickConfirm();
@@ -39,7 +50,8 @@ test("Test neuron following", async ({ page, context }) => {
   // Go through sections in reverse order because the later ones are the ones
   // most likely to fail.
   followNnsTopicSections.reverse();
-  const followee = "123";
+
+  const followee = neurons[0];
   for (const followNnsTopicSection of followNnsTopicSections) {
     await followNnsTopicSection.addFollowee(followee);
     const followees = await followNnsTopicSection.getFollowees();
