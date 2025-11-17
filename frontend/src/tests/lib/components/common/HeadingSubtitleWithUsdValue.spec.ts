@@ -64,7 +64,7 @@ describe("HeadingSubtitleWithUsdValue", () => {
     expect(await po.hasAmountInUsd()).toBe(true);
     expect(await po.getAmountInUsd()).toBe("$-/-");
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
+      "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable."
     );
   });
 
