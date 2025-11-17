@@ -40,7 +40,6 @@ interface I18nCore {
   or: string;
   add: string;
   not_applicable: string;
-  view_more: string;
   learn_more: string;
   view: string;
   copy: string;
