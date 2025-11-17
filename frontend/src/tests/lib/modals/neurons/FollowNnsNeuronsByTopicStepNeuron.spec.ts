@@ -155,7 +155,7 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
     );
 
     expect(knownNeuronItems.length).toBe(2);
-    expect(names).toEqual([anotherKnownNeuron.name, mockKnownNeuron.name]);
+    expect(names).toEqual([mockKnownNeuron.name, anotherKnownNeuron.name]);
   });
 
   it("should disable follow button for known neurons that are already being followed", async () => {
@@ -189,14 +189,14 @@ describe("FollowNnsNeuronsByTopicStepNeuron", () => {
     expect(knownNeuronItems.length).toBe(2);
 
     const firstKnownNeuron = knownNeuronItems[0];
-    expect(await firstKnownNeuron.getNeuronName()).toBe(
-      anotherKnownNeuron.name
-    );
-    expect(await firstKnownNeuron.isFollowButtonDisabled()).toBe(false);
+    expect(await firstKnownNeuron.getNeuronName()).toBe(mockKnownNeuron.name);
+    expect(await firstKnownNeuron.isFollowButtonDisabled()).toBe(true);
 
     const secondKnownNeuron = knownNeuronItems[1];
-    expect(await secondKnownNeuron.getNeuronName()).toBe(mockKnownNeuron.name);
-    expect(await secondKnownNeuron.isFollowButtonDisabled()).toBe(true);
+    expect(await secondKnownNeuron.getNeuronName()).toBe(
+      anotherKnownNeuron.name
+    );
+    expect(await secondKnownNeuron.isFollowButtonDisabled()).toBe(false);
     expect(await secondKnownNeuron.hasTooltip()).toBe(true);
   });
 
