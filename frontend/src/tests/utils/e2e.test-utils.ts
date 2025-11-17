@@ -79,9 +79,6 @@ export const signInWithNewUser = async ({
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);
 
-  await closeHighlight(page);
-  await page.waitForTimeout(500);
-
   await step("Running the main test");
 };
 

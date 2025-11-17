@@ -18,8 +18,7 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Follow neuron flow for NNS neurons.
-- User address-book to save common addresses.
+- Sorted known neurons by their registration age in the following neuron flow.
 
 #### Deprecated
 
