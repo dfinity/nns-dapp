@@ -1,6 +1,7 @@
 <script lang="ts">
   import Alfred from "$lib/components/alfred/Alfred.svelte";
   import Highlight from "$lib/components/ui/Highlight.svelte";
+  import { AppPath } from "$lib/constants/routes.constants";
   import { authSignedInStore } from "$lib/derived/auth.derived";
   import { tokensListUserStore } from "$lib/derived/tokens-list-user.derived";
   import { initAppPrivateDataProxy } from "$lib/proxy/app.services.proxy";
@@ -94,6 +95,7 @@
     title={$i18n.highlight.topics_feature_title}
     description={$i18n.highlight.topics_feature_description}
     id="topics-feature"
+    link={AppPath.AddressBook}
   />
 {/if}
 

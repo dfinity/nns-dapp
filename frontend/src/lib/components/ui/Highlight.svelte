@@ -2,6 +2,7 @@
   import { browser } from "$app/environment";
   import { StoreLocalStorageKey } from "$lib/constants/stores.constants";
   import { i18n } from "$lib/stores/i18n";
+  import { isExternalLink } from "$lib/utils/navigation.utils";
   import {
     IconCheck,
     IconClose,
@@ -44,6 +45,15 @@
 
     localStorage?.setItem(localStorageKey, "false");
   };
+
+  const linkProps = $derived(
+    isExternalLink(link)
+      ? {
+          target: "_blank",
+          rel: "noopener noreferrer",
+        }
+      : {}
+  );
 </script>
 
 {#if isOpen}
@@ -73,13 +83,8 @@
         <p data-tid="highlight-description">{description}</p>
       </div>
       {#if link}
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="link"
-          data-tid="highlight-link"
-          >{$i18n.core.view_more}
+        <a href={link} {...linkProps} class="link" data-tid="highlight-link"
+          >{$i18n.core.learn_more}
         </a>
       {/if}
     </div>

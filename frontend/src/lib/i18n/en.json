@@ -38,6 +38,7 @@
     "add": "Add",
     "not_applicable": "N/A",
     "view_more": "View more",
+    "learn_more": "Learn more",
     "view": "View",
     "copy": "Copy to clipboard",
     "copied": "Copied",
@@ -1459,6 +1460,6 @@
   },
   "highlight": {
     "topics_feature_title": "Protect your transfers",
-    "topics_feature_description": "Use your Address Book to pick saved ICP and ICRC1 addresses and reduce the risk of address poisoning."
+    "topics_feature_description": "With the new Address Book you can saved up to 20 addresses and reduce the risk of address poisoning."
   }
 }
