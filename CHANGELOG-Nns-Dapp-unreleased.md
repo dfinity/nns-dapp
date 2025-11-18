@@ -26,6 +26,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Fixed
 
+- Resized NNS following collapsible sections when content changes.
+
 #### Security
 
 #### Not Published
