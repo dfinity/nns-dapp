@@ -19,8 +19,8 @@ import {
   enterAmount,
 } from "$tests/utils/neurons-modal.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { ICPToken } from "@dfinity/utils";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { fireEvent, waitFor, type RenderResult } from "@testing-library/svelte";
 import type { Component } from "svelte";
 

@@ -1,4 +1,4 @@
-import type { SnsGetAutoFinalizationStatusResponse } from "@dfinity/sns";
+import type { SnsGetAutoFinalizationStatusResponse } from "@icp-sdk/canisters/sns";
 
 export const snsFinalizationStatusResponseMock: SnsGetAutoFinalizationStatusResponse =
   {

@@ -19,8 +19,8 @@ import {
   mergeComparators,
 } from "$lib/utils/sort.utils";
 import type { ProposalInfo } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import type { Component } from "svelte";
 
 export const getUpcomingLaunchesCards = ({

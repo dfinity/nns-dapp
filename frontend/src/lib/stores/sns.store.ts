@@ -16,16 +16,16 @@ import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
 import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
-import type {
-  SnsGetDerivedStateResponse,
-  SnsSwapDerivedState,
-} from "@dfinity/sns";
 import {
   fromDefinedNullable,
   fromNullable,
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import type {
+  SnsGetDerivedStateResponse,
+  SnsSwapDerivedState,
+} from "@icp-sdk/canisters/sns";
 import { derived, writable, type Readable } from "svelte/store";
 
 // ************** Proposals for Launchpad **************

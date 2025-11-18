@@ -9,7 +9,10 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
 import { FollowSnsNeuronsByTopicStepLegacyPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepLegacy.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNervousSystemFunction, SnsNeuron } from "@dfinity/sns";
+import type {
+  SnsNervousSystemFunction,
+  SnsNeuron,
+} from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("FollowSnsNeuronsByTopicStepLegacy", () => {

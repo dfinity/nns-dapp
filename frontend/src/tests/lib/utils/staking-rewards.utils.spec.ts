@@ -29,7 +29,7 @@ import {
   type NetworkEconomics,
   type NeuronInfo,
 } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 type TestStakingRewardCalcParams = {

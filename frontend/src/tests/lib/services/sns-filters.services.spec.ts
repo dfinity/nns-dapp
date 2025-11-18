@@ -8,7 +8,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsProposalDecisionStatus,
   type SnsNervousSystemFunction,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns-filters services", () => {

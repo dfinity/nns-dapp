@@ -22,7 +22,7 @@
   } from "$lib/utils/sns-neuron.utils";
   import { IconRight, KeyValuePairInfo } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";

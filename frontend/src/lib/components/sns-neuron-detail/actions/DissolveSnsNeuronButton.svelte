@@ -5,7 +5,7 @@
   import { getSnsNeuronState, isVesting } from "$lib/utils/sns-neuron.utils";
   import { keyOf } from "$lib/utils/utils";
   import { NeuronState } from "@dfinity/nns";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 
   export let neuron: SnsNeuron;
   let neuronState: NeuronState;

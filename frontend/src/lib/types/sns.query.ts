@@ -4,7 +4,7 @@ import type {
   SnsGetMetadataResponse,
   SnsSwap,
   SnsSwapDerivedState,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export type QueryRootCanisterId = RootCanisterIdText;

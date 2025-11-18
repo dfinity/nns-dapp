@@ -15,8 +15,8 @@ import type {
   SnsParams,
   SnsSwapDerivedState,
   SnsSwapInit,
-} from "@dfinity/sns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 
 describe("SnsSummaryWrapper", () => {
   it("should return rootCanisterId", () => {
