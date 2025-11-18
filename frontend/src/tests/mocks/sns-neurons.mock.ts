@@ -11,12 +11,12 @@ import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-conver
 import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
-import { NeuronState, type NeuronId } from "@icp-sdk/canisters/nns";
 import {
   arrayOfNumberToUint8Array,
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import { NeuronState, type NeuronId } from "@icp-sdk/canisters/nns";
 import type {
   SnsDisburseMaturityInProgress,
   SnsNeuronPermission,

@@ -18,8 +18,8 @@ import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { NeuronState } from "@icp-sdk/canisters/nns";
 import { fromDefinedNullable } from "@dfinity/utils";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import type { SnsBallot, SnsProposalData } from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,

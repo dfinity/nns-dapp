@@ -16,16 +16,16 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/ledger-icp";
-import {
-  CouldNotClaimNeuronError,
-  GovernanceError,
-  InsufficientAmountError as InsufficientAmountNNSError,
-} from "@icp-sdk/canisters/nns";
 import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
 import {
   InvalidaTransactionError,
   RefundedError,
 } from "@icp-sdk/canisters/cmc";
+import {
+  CouldNotClaimNeuronError,
+  GovernanceError,
+  InsufficientAmountError as InsufficientAmountNNSError,
+} from "@icp-sdk/canisters/nns";
 import {
   SnsGovernanceError,
   UnsupportedMethodError,

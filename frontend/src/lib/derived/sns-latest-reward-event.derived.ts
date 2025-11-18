@@ -1,7 +1,7 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
 import { convertDtoRewardEvent } from "$lib/utils/sns-aggregator-converters.utils";
-import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 import { isNullish } from "@dfinity/utils";
+import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 import type { SnsRewardEvent } from "@icp-sdk/canisters/sns";
 import { type Readable } from "svelte/store";
 

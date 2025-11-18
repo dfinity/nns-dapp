@@ -11,8 +11,8 @@ import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { NeuronState, Vote } from "@icp-sdk/canisters/nns";
 import { fromDefinedNullable } from "@dfinity/utils";
+import { NeuronState, Vote } from "@icp-sdk/canisters/nns";
 import type {
   SnsNeuron,
   SnsNeuronPermission,
