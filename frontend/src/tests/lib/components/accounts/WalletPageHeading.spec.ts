@@ -174,7 +174,7 @@ describe("WalletPageHeading", () => {
     expect(await po.hasBalanceInUsd()).toBe(true);
     expect(await po.getBalanceInUsd()).toBe("$-/-");
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable."
+      "USD prices are temporarily unavailable."
     );
   });
 

@@ -851,9 +851,7 @@ describe("ProjectsTable", () => {
       expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$-/-");
       expect(
         await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
-      ).toBe(
-        "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable."
-      );
+      ).toBe("USD prices are temporarily unavailable.");
       expect(console.error).toBeCalledWith(error);
       expect(console.error).toBeCalledTimes(2);
     });
