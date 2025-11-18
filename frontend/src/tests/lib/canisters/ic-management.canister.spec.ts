@@ -9,7 +9,7 @@ import {
 import type {
   CanisterStatusResponse,
   ICManagementCanisterOptions,
-} from "@dfinity/ic-management";
+} from "@icp-sdk/canisters/ic-management";
 import { type ActorSubclass, type HttpAgent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
