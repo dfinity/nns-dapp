@@ -1,6 +1,6 @@
 import type { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
-import type { CanisterIdString } from "@dfinity/nns";
 import type { SnsListTopicsResponse, SnsTopicInfo } from "@dfinity/sns";
+import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 
 type CanisterIds = {
   root_canister_id: string;

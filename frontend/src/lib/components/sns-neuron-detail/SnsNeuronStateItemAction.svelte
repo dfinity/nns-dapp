@@ -14,7 +14,7 @@
     hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
   import { keyOf } from "$lib/utils/utils";
-  import { NeuronState } from "@dfinity/nns";
+  import { NeuronState } from "@icp-sdk/canisters/nns";
   import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import { nonNullish, type Token } from "@dfinity/utils";
 

@@ -3,7 +3,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { ballotsWithDefinedProposal } from "$lib/utils/neuron.utils";
   import { InfiniteScroll } from "@dfinity/gix-components";
-  import type { BallotInfo, NeuronInfo } from "@dfinity/nns";
+  import type { BallotInfo, NeuronInfo } from "@icp-sdk/canisters/nns";
   import { debounce } from "@dfinity/utils";
 
   export let neuron: NeuronInfo | undefined;

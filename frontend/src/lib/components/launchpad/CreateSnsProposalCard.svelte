@@ -13,7 +13,7 @@
     IconVote,
     Tag,
   } from "@dfinity/gix-components";
-  import type { ProposalInfo } from "@dfinity/nns";
+  import type { ProposalInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish, secondsToDuration } from "@dfinity/utils";
 
   type Props = {

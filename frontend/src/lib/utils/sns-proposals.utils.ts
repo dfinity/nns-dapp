@@ -36,7 +36,6 @@ import {
   isSnsNativeNervousSystemFunction,
 } from "$lib/utils/sns.utils";
 import { basisPointsToPercent } from "$lib/utils/utils";
-import { Vote } from "@dfinity/nns";
 import type {
   SnsBallot,
   SnsNervousSystemFunction,
@@ -58,6 +57,7 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import { Vote } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 export type SnsProposalDataMap = {

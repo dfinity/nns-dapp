@@ -5,8 +5,8 @@ import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import type { NeuronInfo } from "@dfinity/nns";
-import { NeuronState } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 describe("neuronsTableOrderSortedNeuronIdsStore", () => {

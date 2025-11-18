@@ -5,8 +5,8 @@ import type {
 import type { ApyAmount } from "$lib/types/staking";
 import type { NeuronTagData } from "$lib/utils/neuron.utils";
 import type { Comparator } from "$lib/utils/sort.utils";
-import type { NeuronState } from "@dfinity/nns";
 import type { TokenAmountV2 } from "@dfinity/utils";
+import type { NeuronState } from "@icp-sdk/canisters/nns";
 
 export type TableNeuron = {
   rowHref?: string;

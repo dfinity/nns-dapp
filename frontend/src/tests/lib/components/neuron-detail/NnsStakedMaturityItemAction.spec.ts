@@ -3,7 +3,7 @@ import NeuronContextActionsTest from "$tests/lib/components/neuron-detail/Neuron
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { NnsStakedMaturityItemActionPo } from "$tests/page-objects/NnsStakedMaturityItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsStakedMaturityItemAction", () => {

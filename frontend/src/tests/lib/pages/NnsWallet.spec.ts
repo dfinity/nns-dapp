@@ -55,7 +55,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
-import { memoToNeuronAccountIdentifier } from "@dfinity/nns";
+import { memoToNeuronAccountIdentifier } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";

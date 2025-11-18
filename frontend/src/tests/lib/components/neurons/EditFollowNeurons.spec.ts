@@ -8,7 +8,7 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { EditFollowNeuronsPo } from "$tests/page-objects/EditFollowNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { Topic } from "@dfinity/nns";
+import { Topic } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("EditFollowNeurons", () => {

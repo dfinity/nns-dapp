@@ -2,7 +2,7 @@
   import Ballots from "$lib/components/neuron-detail/Ballots/Ballots.svelte";
   import CardInfo from "$lib/components/ui/CardInfo.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
 </script>

@@ -32,7 +32,6 @@ import {
   getUsdValue,
 } from "$lib/utils/token.utils";
 import { getLedgerCanisterIdFromUniverse } from "$lib/utils/universe.utils";
-import type { NeuronInfo } from "@dfinity/nns";
 import type { SnsNeuron } from "@dfinity/sns";
 import {
   ICPToken,
@@ -42,6 +41,7 @@ import {
   nonNullish,
   type Token,
 } from "@dfinity/utils";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
 const getNnsNeuronAggregateInfo = (
   nnsNeurons: NeuronInfo[] | undefined

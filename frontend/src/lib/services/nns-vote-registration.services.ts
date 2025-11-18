@@ -15,8 +15,13 @@ import { toastsError } from "$lib/stores/toasts.store";
 import { voteRegistrationStore } from "$lib/stores/vote-registration.store";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapProposalInfo as mapNnsProposal } from "$lib/utils/proposals.utils";
-import type { NeuronId, ProposalId, ProposalInfo, Vote } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import type {
+  NeuronId,
+  ProposalId,
+  ProposalInfo,
+  Vote,
+} from "@icp-sdk/canisters/nns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 

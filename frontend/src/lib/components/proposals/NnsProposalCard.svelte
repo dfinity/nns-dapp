@@ -7,7 +7,11 @@
     getUniversalProposalStatus,
     mapProposalInfo,
   } from "$lib/utils/proposals.utils";
-  import type { NeuronId, ProposalId, ProposalInfo } from "@dfinity/nns";
+  import type {
+    NeuronId,
+    ProposalId,
+    ProposalInfo,
+  } from "@icp-sdk/canisters/nns";
 
   export let proposalInfo: ProposalInfo;
   export let hidden = false;

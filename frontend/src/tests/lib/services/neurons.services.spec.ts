@@ -41,7 +41,11 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import type { TransactionWithId } from "@dfinity/ledger-icp";
 import { LedgerCanister } from "@dfinity/ledger-icp";
-import { NeuronVisibility, Topic, type NeuronInfo } from "@dfinity/nns";
+import {
+  NeuronVisibility,
+  Topic,
+  type NeuronInfo,
+} from "@icp-sdk/canisters/nns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";

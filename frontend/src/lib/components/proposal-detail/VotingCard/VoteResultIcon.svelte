@@ -1,6 +1,6 @@
 <script lang="ts">
   import { IconThumbDown, IconThumbUp } from "@dfinity/gix-components";
-  import { Vote } from "@dfinity/nns";
+  import { Vote } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 
   export let vote: Vote;

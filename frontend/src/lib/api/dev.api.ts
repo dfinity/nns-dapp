@@ -9,7 +9,6 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { BlockHeight } from "@dfinity/ledger-icp";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger-icrc";
-import type { E8s, NeuronId } from "@dfinity/nns";
 import {
   SnsGovernanceCanister,
   SnsGovernanceTestCanister,
@@ -20,6 +19,7 @@ import {
   createAgent as createAgentUtils,
   toNullable,
 } from "@dfinity/utils";
+import type { E8s, NeuronId } from "@icp-sdk/canisters/nns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Actor, HttpAgent, type Agent } from "@icp-sdk/core/agent";
 import type { IDL } from "@icp-sdk/core/candid";

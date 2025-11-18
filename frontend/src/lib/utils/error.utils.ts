@@ -17,13 +17,13 @@ import {
   InvalidSenderError,
   TransferError,
 } from "@dfinity/ledger-icp";
+import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
+import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
 import {
   CouldNotClaimNeuronError,
   GovernanceError,
   InsufficientAmountError as InsufficientAmountNNSError,
-} from "@dfinity/nns";
-import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
-import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/nns";
 import {
   AgentError,
   CertifiedRejectErrorCode,

@@ -78,6 +78,7 @@ import type {
   AccountIdentifierHex,
   TransactionWithId,
 } from "@dfinity/ledger-icp";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import {
   NeuronVisibility,
   Topic,
@@ -86,8 +87,7 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
-} from "@dfinity/nns";
-import { isNullish, nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/nns";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

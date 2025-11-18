@@ -3,7 +3,7 @@ import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { JoinCommunityFundModalPo } from "$tests/page-objects/JoinCommunityFundModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("ConfirmationModal", () => {

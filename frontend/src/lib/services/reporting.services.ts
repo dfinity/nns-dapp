@@ -15,8 +15,8 @@ import type {
   IcrcAccount,
   IcrcIndexNgTransactionWithId,
 } from "@dfinity/ledger-icrc";
-import type { NeuronInfo } from "@dfinity/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { SignIdentity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

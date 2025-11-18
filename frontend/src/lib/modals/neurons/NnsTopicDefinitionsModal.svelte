@@ -5,7 +5,7 @@
   import { getTopicSubtitle, getTopicTitle } from "$lib/utils/neuron.utils";
   import { sortNnsTopics } from "$lib/utils/proposals.utils";
   import { Modal, Collapsible } from "@dfinity/gix-components";
-  import { Topic } from "@dfinity/nns";
+  import { Topic } from "@icp-sdk/canisters/nns";
 
   interface Props {
     onClose: () => void;

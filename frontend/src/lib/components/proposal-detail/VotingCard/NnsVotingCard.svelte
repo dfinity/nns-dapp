@@ -26,12 +26,12 @@
     isProposalDeadlineInTheFuture,
     nnsNeuronToVotingNeuron,
   } from "$lib/utils/proposals.utils";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import {
     votableNeurons as getVotableNeurons,
     type ProposalInfo,
     type Vote,
-  } from "@dfinity/nns";
+  } from "@icp-sdk/canisters/nns";
   import { getContext } from "svelte";
 
   export let proposalInfo: ProposalInfo;
