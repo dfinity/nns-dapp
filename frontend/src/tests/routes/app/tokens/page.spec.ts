@@ -58,11 +58,11 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
 import { isNullish } from "@dfinity/utils";
 import { AuthClient } from "@icp-sdk/auth/client";
-import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import {
   MinterNoNewUtxosError,
   type UpdateBalanceOk,
 } from "@icp-sdk/canisters/ckbtc";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
   ErrorKindEnum,
