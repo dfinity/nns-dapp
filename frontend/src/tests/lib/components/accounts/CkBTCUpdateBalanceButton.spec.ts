@@ -10,7 +10,7 @@ import { page } from "$mocks/$app/stores";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { advanceTime } from "$tests/utils/timers.test-utils";
-import { MinterNoNewUtxosError } from "@dfinity/ckbtc";
+import { MinterNoNewUtxosError } from "@icp-sdk/canisters/ckbtc";
 import { waitFor } from "@testing-library/dom";
 import { fireEvent, render } from "@testing-library/svelte";
 
