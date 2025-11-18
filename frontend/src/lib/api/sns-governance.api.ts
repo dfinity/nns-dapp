@@ -1,7 +1,6 @@
 import { wrapper } from "$lib/api/sns-wrapper.api";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
-import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type {
   SnsListProposalsParams,
   SnsNervousSystemParameters,
@@ -12,6 +11,7 @@ import type {
   SnsTopic,
   SnsVote,
 } from "@dfinity/sns";
+import type { IcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

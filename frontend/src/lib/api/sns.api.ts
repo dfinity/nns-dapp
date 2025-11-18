@@ -7,7 +7,6 @@ import type {
 } from "$lib/types/sns.query";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
@@ -15,6 +14,7 @@ import type {
   SnsSwapBuyerState,
   SnsWrapper,
 } from "@dfinity/sns";
+import type { IcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 

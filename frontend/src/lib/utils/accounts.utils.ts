@@ -16,8 +16,8 @@ import {
   SubAccount,
   checkAccountId,
 } from "@dfinity/ledger-icp";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { isNullish, nonNullish } from "@dfinity/utils";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { Principal } from "@icp-sdk/core/principal";
 
 /*

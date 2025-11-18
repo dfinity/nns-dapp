@@ -14,10 +14,6 @@ import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
 import type { Universe } from "$lib/types/universe";
 import {
-  IcrcMetadataResponseEntries,
-  type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger-icrc";
-import {
   SnsSwapLifecycle,
   type SnsGetDerivedStateResponse,
   type SnsGetLifecycleResponse,
@@ -32,6 +28,10 @@ import {
 } from "@dfinity/sns";
 import type { Token } from "@dfinity/utils";
 import { nonNullish, toNullable } from "@dfinity/utils";
+import {
+  IcrcMetadataResponseEntries,
+  type IcrcTokenMetadataResponse,
+} from "@icp-sdk/canisters/ledger/icrc";
 import { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 

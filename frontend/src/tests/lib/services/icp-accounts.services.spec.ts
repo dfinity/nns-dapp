@@ -61,8 +61,8 @@ import {
   TxCreatedInFutureError,
   TxTooOldError,
 } from "@dfinity/ledger-icp";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 

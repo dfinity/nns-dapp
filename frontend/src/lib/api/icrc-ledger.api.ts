@@ -7,17 +7,17 @@ import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import {
-  IcrcLedgerCanister,
-  type IcrcAccount,
-  type IcrcBlockIndex,
-  type TransferParams,
-} from "@dfinity/ledger-icrc";
-import {
   arrayOfNumberToUint8Array,
   isNullish,
   nonNullish,
   toNullable,
 } from "@dfinity/utils";
+import {
+  IcrcLedgerCanister,
+  type IcrcAccount,
+  type IcrcBlockIndex,
+  type TransferParams,
+} from "@icp-sdk/canisters/ledger/icrc";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

@@ -8,7 +8,6 @@ import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { BlockHeight } from "@dfinity/ledger-icp";
 import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
-import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s, NeuronId } from "@dfinity/nns";
 import {
   SnsGovernanceCanister,
@@ -20,6 +19,10 @@ import {
   createAgent as createAgentUtils,
   toNullable,
 } from "@dfinity/utils";
+import {
+  IcrcLedgerCanister,
+  decodeIcrcAccount,
+} from "@icp-sdk/canisters/ledger/icrc";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Actor, HttpAgent, type Agent } from "@icp-sdk/core/agent";
 import type { IDL } from "@icp-sdk/core/candid";

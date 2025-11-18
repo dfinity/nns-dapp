@@ -5,7 +5,7 @@ import {
   indexCanisterIdMock,
   ledgerCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 
 export const mockIcrcMainAccount: Account = {
   identifier: encodeIcrcAccount({

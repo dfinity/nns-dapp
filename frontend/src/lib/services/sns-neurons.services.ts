@@ -52,7 +52,6 @@ import {
 import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s } from "@dfinity/nns";
 import type { SnsNeuron, SnsNeuronId, SnsTopic } from "@dfinity/sns";
 import {
@@ -63,6 +62,7 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

@@ -37,13 +37,13 @@ import type {
   RetrieveBtcStatusV2,
   RetrieveBtcStatusV2WithId,
 } from "@dfinity/ckbtc";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   ICPToken,
   TokenAmount,
   TokenAmountV2,
   toNullable,
 } from "@dfinity/utils";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { Cbor } from "@icp-sdk/core/agent";
 
 describe("icrc-transaction utils", () => {
