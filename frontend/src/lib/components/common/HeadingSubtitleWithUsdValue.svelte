@@ -1,13 +1,13 @@
 <script lang="ts">
   import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { tickersProviderName } from "$lib/derived/tickers-provider-name.derived";
   import { i18n } from "$lib/stores/i18n";
   import { tickersStore } from "$lib/stores/tickers.store";
   import { formatNumber } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import type { Principal } from "@icp-sdk/core/principal";
-  import { tickersProviderName } from "lib/derived/tickers-provider-name.derived";
 
   export let amount: TokenAmountV2 | undefined = undefined;
   export let ledgerCanisterId: Principal | undefined;
