@@ -6,7 +6,7 @@
   import { tickersStore } from "$lib/stores/tickers.store";
   import { formatNumber } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
+  import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import type { Principal } from "@icp-sdk/core/principal";
 
   export let amount: TokenAmountV2 | undefined = undefined;
@@ -42,7 +42,7 @@
         {formattedAmountInUsd}
       </span>
       <TooltipIcon>
-        {#if icpSwapHasError}
+        {#if icpSwapHasError || isNullish($tickersProviderName)}
           {$i18n.accounts.token_price_error}
         {:else}
           {replacePlaceholders($i18n.accounts.token_price_source, {

@@ -3,6 +3,7 @@
   import { tickersProviderName } from "$lib/derived/tickers-provider-name.derived";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isNullish } from "@dfinity/utils";
 
   export let hasError: boolean;
 </script>
@@ -13,7 +14,7 @@
   class:has-error={hasError}
 >
   <TooltipIcon>
-    {#if hasError}
+    {#if hasError || isNullish($tickersProviderName)}
       {$i18n.accounts.token_price_error}
     {:else}
       <div>

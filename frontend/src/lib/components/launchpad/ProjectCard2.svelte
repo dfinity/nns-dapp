@@ -91,16 +91,19 @@
       <li class="stat-item">
         <h6 class="stat-label fdv">
           {$i18n.launchpad_cards.project_card_fully_diluted_valuation}
-          <TooltipIcon
-            iconSize={16}
-            text={replacePlaceholders(
-              $i18n.launchpad_cards
-                .project_card_fully_diluted_valuation_tooltip,
-              {
-                $fiatProvider: $tickersProviderName,
-              }
-            )}
-          />
+          <TooltipIcon iconSize={16}>
+            {#if isNullish($tickersProviderName)}
+              {$i18n.accounts.token_price_error}
+            {:else}
+              {replacePlaceholders(
+                $i18n.launchpad_cards
+                  .project_card_fully_diluted_valuation_tooltip,
+                {
+                  $fiatProvider: $tickersProviderName,
+                }
+              )}
+            {/if}
+          </TooltipIcon>
         </h6>
         <div class="stat-value">
           <IconCoin size="16px" />

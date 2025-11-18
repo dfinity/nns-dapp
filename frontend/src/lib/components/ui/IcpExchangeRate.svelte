@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let icpPrice: number | undefined;
   export let hasError: boolean;
@@ -32,7 +32,7 @@
     1 {$i18n.core.icp} = $<span data-tid="icp-price">{icpPriceFormatted}</span>
   </span>
   <TooltipIcon>
-    {#if hasError}
+    {#if hasError || isNullish($tickersProviderName)}
       {$i18n.accounts.token_price_error}
     {:else}
       <div class="mobile-only">
