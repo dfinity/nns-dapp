@@ -6,6 +6,7 @@ export const tickersProviderName = derived(
   ([provider]) => {
     if (provider === "icp-swap") return "ICPSwap";
     if (provider === "kong-swap") return "KongSwap";
-    return "Unknown";
+
+    return undefined;
   }
 );
