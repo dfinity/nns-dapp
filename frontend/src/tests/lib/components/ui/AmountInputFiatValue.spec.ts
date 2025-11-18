@@ -101,8 +101,8 @@ describe("AmountInputFiatValue", () => {
       errorState: true,
     });
 
-    expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
-      en.accounts.token_price_source
+    expect(await po.getTooltipIconPo().getTooltipText()).toContain(
+      "Token prices are given in USD and based on data provided by"
     );
   });
 

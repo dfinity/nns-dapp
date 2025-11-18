@@ -8,10 +8,12 @@
   import { AppPath } from "$lib/constants/routes.constants";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
+  import { tickersProviderName } from "$lib/derived/tickers-provider-name.derived";
   import { loadSnsFinalizationStatus } from "$lib/services/sns-finalization.services";
   import { i18n } from "$lib/stores/i18n";
   import { tickersStore } from "$lib/stores/tickers.store";
   import { compactCurrencyNumber } from "$lib/utils/format.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import {
     snsProjectMarketCap,
     snsProjectWeeklyProposalActivity,
@@ -91,8 +93,13 @@
           {$i18n.launchpad_cards.project_card_fully_diluted_valuation}
           <TooltipIcon
             iconSize={16}
-            text={$i18n.launchpad_cards
-              .project_card_fully_diluted_valuation_tooltip}
+            text={replacePlaceholders(
+              $i18n.launchpad_cards
+                .project_card_fully_diluted_valuation_tooltip,
+              {
+                $fiatProvider: $tickersProviderName,
+              }
+            )}
           />
         </h6>
         <div class="stat-value">

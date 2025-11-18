@@ -2,8 +2,10 @@
   import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
+  import { tickersProviderName } from "$lib/derived/tickers-provider-name.derived";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { nonNullish } from "@dfinity/utils";
 
   export let icpPrice: number | undefined;
@@ -36,7 +38,9 @@
       <div class="mobile-only">
         1 {$i18n.core.icp} = ${icpPriceFormatted}
       </div><div>
-        {$i18n.accounts.token_price_source}
+        {replacePlaceholders($i18n.accounts.token_price_source, {
+          $fiatProvider: $tickersProviderName,
+        })}
       </div>
     {/if}
   </TooltipIcon>

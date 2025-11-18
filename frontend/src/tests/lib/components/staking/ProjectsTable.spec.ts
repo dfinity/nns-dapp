@@ -791,7 +791,9 @@ describe("ProjectsTable", () => {
       ).toBe(false);
       expect(
         await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
-      ).toBe(`1 ICP = $10.00${en.accounts.token_price_source}`);
+      ).toBe(
+        `1 ICP = $10.00Token prices are given in USD and based on data provided by ICPSwap.`
+      );
     });
 
     it("should ignore tokens with unknown balance in USD when adding up the total", async () => {

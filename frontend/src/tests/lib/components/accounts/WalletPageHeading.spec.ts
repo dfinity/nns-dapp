@@ -157,8 +157,8 @@ describe("WalletPageHeading", () => {
 
     expect(await po.hasBalanceInUsd()).toBe(true);
     expect(await po.getBalanceInUsd()).toBe("$30.00");
-    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      en.accounts.token_price_source
+    expect(await po.getTooltipIconPo().getTooltipText()).toContain(
+      "Token prices are given in USD and based on data provided by"
     );
   });
 

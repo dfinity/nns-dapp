@@ -1,7 +1,6 @@
 import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
-import en from "$tests/mocks/i18n.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { HeadingSubtitleWithUsdValuePo } from "$tests/page-objects/HeadingSubtitleWithUsdValue.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -44,8 +43,8 @@ describe("HeadingSubtitleWithUsdValue", () => {
 
     expect(await po.hasAmountInUsd()).toBe(true);
     expect(await po.getAmountInUsd()).toBe("$30.00");
-    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      en.accounts.token_price_source
+    expect(await po.getTooltipIconPo().getTooltipText()).toContain(
+      "Token prices are given in USD and based on data provided by"
     );
   });
 

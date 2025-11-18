@@ -1,5 +1,6 @@
 import { icpSwapTickerProvider } from "$lib/services/icp-swap.provider";
 import { kongSwapTickerProvider } from "$lib/services/kong-swap.provider";
+import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
 import { tickersStore } from "$lib/stores/tickers.store";
 import type { ProviderLoader, TickersProviders } from "$lib/types/tickers";
 import { isNullish } from "@dfinity/utils";
@@ -22,6 +23,7 @@ export const loadTickers = async (): Promise<void> => {
 
       const tickers = await provider();
 
+      tickerProviderStore.set(p);
       return tickersStore.set(tickers);
     } catch (error) {
       console.error(error);
@@ -29,5 +31,6 @@ export const loadTickers = async (): Promise<void> => {
   }
 
   // If all providers failed, set error state.
+  tickerProviderStore.set(undefined);
   tickersStore.set("error");
 };

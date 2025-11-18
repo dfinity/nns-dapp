@@ -1,6 +1,8 @@
 <script lang="ts">
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { tickersProviderName } from "$lib/derived/tickers-provider-name.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
 
   export let hasError: boolean;
 </script>
@@ -15,7 +17,9 @@
       {$i18n.accounts.token_price_error}
     {:else}
       <div>
-        {$i18n.accounts.token_price_source}
+        {replacePlaceholders($i18n.accounts.token_price_source, {
+          $fiatProvider: $tickersProviderName,
+        })}
       </div>
     {/if}
   </TooltipIcon>

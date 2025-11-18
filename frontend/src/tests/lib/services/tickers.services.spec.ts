@@ -4,6 +4,7 @@ import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { loadTickers, providers } from "$lib/services/tickers.services";
 import { tickersStore } from "$lib/stores/tickers.store";
+import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
 import type { IcpSwapTicker } from "$lib/types/icp-swap";
 import type { KongSwapTicker } from "$lib/types/kong-swap";
 import type { TickersData } from "$lib/types/tickers";
@@ -68,6 +69,7 @@ describe("tickers.services", () => {
 
   it("should load tickers from primary provider and set them in the store", async () => {
     expect(get(tickersStore)).toBeUndefined();
+    expect(get(tickerProviderStore)).toBeUndefined();
 
     await loadTickers();
 
@@ -75,10 +77,12 @@ describe("tickers.services", () => {
 
     expect(result[icpLedgerCanisterId]).toBe(10); // ICP price in USD
     expect(result["token-canister-id"]).toBe(2); // TOKEN price in USD
+    expect(get(tickerProviderStore)).toBe(primaryProvider);
   });
 
   it("should fallback to secondary provider when primary fails", async () => {
     // Mock primary provider failing
+    const secondaryProvider = providers[1];
     if (primaryProvider === "icp-swap") {
       icpSwapApySpy.mockRejectedValue(new Error("ICP Swap failed"));
     } else {
@@ -86,6 +90,7 @@ describe("tickers.services", () => {
     }
 
     expect(get(tickersStore)).toBeUndefined();
+    expect(get(tickerProviderStore)).toBeUndefined();
 
     await loadTickers();
 
@@ -93,6 +98,7 @@ describe("tickers.services", () => {
 
     expect(result[icpLedgerCanisterId]).toBe(10); // ICP price in USD
     expect(result["token-canister-id"]).toBe(2); // TOKEN price in USD
+    expect(get(tickerProviderStore)).toBe(secondaryProvider);
   });
 
   it("should not load tickers if they are already loaded", async () => {
@@ -115,9 +121,11 @@ describe("tickers.services", () => {
     kongSwapApiSpy.mockRejectedValue(new Error("error"));
 
     expect(get(tickersStore)).toBeUndefined();
+    expect(get(tickerProviderStore)).toBeUndefined();
 
     await loadTickers();
 
     expect(get(tickersStore)).toBe("error");
+    expect(get(tickerProviderStore)).toBeUndefined();
   });
 });
