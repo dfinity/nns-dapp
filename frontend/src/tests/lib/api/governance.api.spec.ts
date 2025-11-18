@@ -37,7 +37,7 @@ import {
   NeuronVisibility,
   Topic,
   Vote,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import type { Agent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";

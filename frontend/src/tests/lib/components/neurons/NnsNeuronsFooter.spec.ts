@@ -11,7 +11,7 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockVoteRegistration } from "$tests/mocks/proposal.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import { fireEvent, render, waitFor } from "@testing-library/svelte";
 
 vi.mock("$lib/services/neurons.services", () => {

@@ -12,7 +12,7 @@ import { SelectUniverseDropdownPo } from "$tests/page-objects/SelectUniverseDrop
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,

@@ -7,7 +7,7 @@ import { FollowNnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowN
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { Topic, type NeuronInfo } from "@dfinity/nns";
+import { Topic, type NeuronInfo } from "@icp-sdk/canisters/nns";
 
 describe("FollowNnsNeuronsByTopicStepTopics", () => {
   const neuronId = 123456789n;

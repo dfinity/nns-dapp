@@ -9,7 +9,7 @@ import {
 } from "$tests/mocks/proposal.mock";
 import { ProposalProposerActionsEntryPo } from "$tests/page-objects/ProposalProposerActionsEntry.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { Action, Proposal } from "@dfinity/nns";
+import type { Action, Proposal } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 const proposalWithMotionAction = {

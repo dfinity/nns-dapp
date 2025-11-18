@@ -1,4 +1,4 @@
-import type { CanisterIdString } from "@dfinity/nns";
+import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 import { get, writable, type Readable } from "svelte/store";
 
 export type UnsupportedFilterByTopicCanistersStoreData =

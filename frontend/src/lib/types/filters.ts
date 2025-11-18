@@ -1,5 +1,5 @@
 import type { SnsTopicKey } from "$lib/types/sns";
-import type { ProposalStatus, Topic } from "@dfinity/nns";
+import type { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
 import type { SnsProposalDecisionStatus } from "@icp-sdk/canisters/sns";
 
 // artificial proposal type id to filter by all generic SNS types

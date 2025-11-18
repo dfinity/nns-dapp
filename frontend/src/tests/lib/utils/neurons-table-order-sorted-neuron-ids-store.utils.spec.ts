@@ -2,8 +2,8 @@ import type { NeuronsTableOrder, TableNeuron } from "$lib/types/neurons-table";
 
 import { getSortedNeuronIds } from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import { mockTableNeuron } from "$tests/mocks/neurons.mock";
-import { NeuronState } from "@dfinity/nns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 
 describe("neurons-table-order-sorted-neuron-ids-store.utils", () => {
   const makeStake = (amount: bigint) =>

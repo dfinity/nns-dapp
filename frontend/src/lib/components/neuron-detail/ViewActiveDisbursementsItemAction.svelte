@@ -8,7 +8,7 @@
     totalMaturityDisbursementsInProgress,
   } from "$lib/utils/neuron.utils";
   import { IconPace } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   type Props = {
     neuron: NeuronInfo;

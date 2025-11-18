@@ -15,8 +15,8 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { NeuronState } from "@dfinity/nns";
 import { ICPToken, fromDefinedNullable } from "@dfinity/utils";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { fireEvent } from "@testing-library/dom";

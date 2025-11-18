@@ -14,7 +14,7 @@ import {
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronDissolveDelayItemActionPo } from "$tests/page-objects/SnsNeuronDissolveDelayItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import {
   SnsNeuronPermissionType,
   type SnsNervousSystemParameters,

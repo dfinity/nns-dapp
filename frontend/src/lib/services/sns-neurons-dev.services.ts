@@ -1,7 +1,7 @@
 import { addMaturity as addMaturityApi } from "$lib/api/dev.api";
 import { getSnsNeuronIdentity } from "$lib/services/sns-neurons.services";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-import type { E8s } from "@dfinity/nns";
+import type { E8s } from "@icp-sdk/canisters/nns";
 import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 

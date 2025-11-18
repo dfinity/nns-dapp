@@ -12,7 +12,7 @@
     getSnsNeuronState,
     snsNeuronVotingPower,
   } from "$lib/utils/sns-neuron.utils";
-  import type { NeuronState } from "@dfinity/nns";
+  import type { NeuronState } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
   import type {
     SnsNervousSystemParameters,

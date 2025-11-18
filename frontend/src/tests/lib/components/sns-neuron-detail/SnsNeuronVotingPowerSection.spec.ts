@@ -13,7 +13,7 @@ import {
 import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronVotingPowerSectionPo } from "$tests/page-objects/SnsNeuronVotingPowerSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 

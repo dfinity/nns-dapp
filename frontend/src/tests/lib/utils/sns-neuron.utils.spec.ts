@@ -78,8 +78,8 @@ import {
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import { NeuronState, Vote, type NeuronInfo } from "@dfinity/nns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+import { NeuronState, Vote, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import type {
   SnsNervousSystemParameters,
   SnsNeuronPermission,

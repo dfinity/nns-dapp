@@ -17,12 +17,12 @@ import type {
   ProposalId,
   Topic,
   Vote,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import {
   GovernanceCanister,
   NeuronVisibility,
   type RewardEvent,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 
