@@ -18,7 +18,6 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
-- Follow neuron flow for NNS neurons.
 - User address-book to save common addresses.
 
 #### Deprecated
