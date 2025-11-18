@@ -1,6 +1,7 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import * as snsApi from "$lib/api/sns.api";
+import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
@@ -15,7 +16,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Launchpad2Po } from "$tests/page-objects/Launchpad2.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
@@ -51,7 +52,12 @@ describe("Launchpad page", () => {
 
     await renderPage();
 
-    expect(get(icpSwapTickersStore)).toEqual(tickers);
+    const expectedTickersStore = {
+      [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
+      [LEDGER_CANISTER_ID.toText()]: 10,
+    };
+
+    expect(get(icpSwapTickersStore)).toEqual(expectedTickersStore);
     expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
   });
 

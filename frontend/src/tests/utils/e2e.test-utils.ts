@@ -1,4 +1,3 @@
-import type { FeatureKey } from "$lib/constants/environment.constants";
 import { HighlightPo } from "$tests/page-objects/Highlight.page-object";
 import { PlaywrightPageObjectElement } from "$tests/page-objects/playwright.page-object";
 import { expect, test, type BrowserContext, type Page } from "@playwright/test";
@@ -80,24 +79,11 @@ export const signInWithNewUser = async ({
   await iiPage.waitForEvent("close");
   await expect(iiPage.isClosed()).toBe(true);
 
+  await closeHighlight(page);
+  await page.waitForTimeout(500);
+
   await step("Running the main test");
 };
-
-export const setFeatureFlag = ({
-  page,
-  featureFlag,
-  value,
-}: {
-  page: Page;
-  featureFlag: FeatureKey;
-  value: boolean;
-}) =>
-  page.evaluate(
-    ({ featureFlag, value }) =>
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-      (window as any).__featureFlags[featureFlag]["overrideWith"](value),
-    { featureFlag, value }
-  );
 
 // Finds elements matching any of the selectors and replaces their
 // `innerHTML` content with any of the `replacements`, if the current content
@@ -153,7 +139,9 @@ export const closeHighlight = async (page: Page) => {
     PlaywrightPageObjectElement.fromPage(page)
   );
 
-  await highlightPo.clickClose();
+  if (await highlightPo.isPresent()) {
+    await highlightPo.clickClose();
+  }
 };
 
 export const disableCssAnimations = async (page: Page) => {

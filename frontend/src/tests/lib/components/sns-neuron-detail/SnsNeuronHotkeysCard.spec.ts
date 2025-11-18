@@ -10,10 +10,7 @@ import {
   mockSnsNeuron,
   snsNervousSystemParametersMock,
 } from "$tests/mocks/sns-neurons.mock";
-import {
-  SnsNeuronPermissionType,
-  type SnsNeuron,
-} from "@icp-sdk/canisters/sns";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 

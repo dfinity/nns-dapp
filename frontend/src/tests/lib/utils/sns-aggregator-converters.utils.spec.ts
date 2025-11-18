@@ -25,7 +25,7 @@ import type {
   SnsNervousSystemParameters,
   SnsRewardEvent,
   SnsTopicInfo,
-} from "@icp-sdk/canisters/sns";
+} from "@dfinity/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 describe("sns aggregator converters utils", () => {

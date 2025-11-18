@@ -230,6 +230,40 @@ type GetFavProjectsResponse =
         AccountNotFound;
     };
 
+type AddressType =
+    variant {
+        Icp: text;
+        Icrc1: text;
+    };
+
+type NamedAddress =
+    record {
+        address: AddressType;
+        name: text;
+    };
+
+type AddressBook =
+    record {
+        named_addresses: vec NamedAddress;
+    };
+
+type SetAddressBookResponse =
+    variant {
+        Ok;
+        AccountNotFound;
+        TooManyNamedAddresses: record{limit: int32};
+        InvalidIcpAddress: record{error: text};
+        AddressNameTooLong: record{max_length: int32};
+        InvalidIcrc1Address: record{error: text};
+        DuplicateAddressName: record{name: text};
+    };
+
+type GetAddressBookResponse =
+    variant {
+        Ok: AddressBook;
+        AccountNotFound;
+    };
+
 type TvlResult =
     record {
         tvl : nat;
@@ -255,6 +289,8 @@ service: (opt Config) -> {
     get_imported_tokens: () -> (GetImportedTokensResponse) query;
     set_fav_projects: (FavProjects) -> (SetFavProjectsResponse);
     get_fav_projects: () -> (GetFavProjectsResponse) query;
+    set_address_book: (AddressBook) -> (SetAddressBookResponse);
+    get_address_book: () -> (GetAddressBookResponse) query;
     get_proposal_payload: (nat64) -> (GetProposalPayloadResponse);
     get_stats: () -> (Stats) query;
     get_histogram: () -> (Histogram) query;

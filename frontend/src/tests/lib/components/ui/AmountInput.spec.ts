@@ -4,8 +4,8 @@ import en from "$tests/mocks/i18n.mock";
 import { mockCkUSDCToken } from "$tests/mocks/tokens.mock";
 import { AmountInputPo } from "$tests/page-objects/AmountInput.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import { ICPToken, type Token } from "@dfinity/utils";
 import { fireEvent } from "@testing-library/svelte";
 

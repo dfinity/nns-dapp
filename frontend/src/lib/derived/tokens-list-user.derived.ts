@@ -3,11 +3,6 @@ import {
   uninstalledIndexCanistersId,
 } from "$lib/constants/canister-ids.constants";
 import type { UniversesAccounts } from "$lib/derived/accounts-list.derived";
-import {
-  icpSwapUsdPricesStore,
-  type IcpSwapUsdPricesStore,
-  type IcpSwapUsdPricesStoreData,
-} from "$lib/derived/icp-swap.derived";
 import { failedExistentImportedTokenLedgerIdsStore } from "$lib/derived/imported-tokens.derived";
 import { tokensListBaseStore } from "$lib/derived/tokens-list-base.derived";
 import { tokensByUniverseIdStore } from "$lib/derived/tokens.derived";
@@ -17,7 +12,9 @@ import {
   type OutOfCyclesCanistersStore,
   type OutOfCyclesCanistersStoreData,
 } from "$lib/stores/out-of-cycles-canisters.store";
+import { tickersStore, type TickersStore } from "$lib/stores/tickers.store";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
+import type { TickersStoreData } from "$lib/types/tickers";
 import {
   UserTokenAction,
   type UserToken,
@@ -33,20 +30,20 @@ import { derived, type Readable } from "svelte/store";
 const getUsdValue = ({
   balance,
   ledgerCanisterId,
-  icpSwapUsdPrices,
+  tickers,
 }: {
   balance: TokenAmountV2;
   ledgerCanisterId: string;
-  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
+  tickers: TickersStoreData;
 }): number | undefined => {
   const balanceE8s = Number(balance.toE8s());
   if (balanceE8s === 0) {
     return 0;
   }
-  if (isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error") {
+  if (isNullish(tickers) || tickers === "error") {
     return undefined;
   }
-  const tokenUsdPrice = icpSwapUsdPrices[ledgerCanisterId];
+  const tokenUsdPrice = tickers[ledgerCanisterId];
   if (isNullish(tokenUsdPrice)) {
     return undefined;
   }
@@ -57,13 +54,13 @@ const convertToUserTokenData = ({
   accounts,
   tokensByUniverse,
   baseTokenData,
-  icpSwapUsdPrices,
+  tickers,
   outOfCyclesCanisters,
 }: {
   accounts: UniversesAccounts;
   tokensByUniverse: Record<string, IcrcTokenMetadata>;
   baseTokenData: UserTokenBase;
-  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
+  tickers: TickersStoreData;
   outOfCyclesCanisters: OutOfCyclesCanistersStoreData;
 }): UserToken => {
   const token = tokensByUniverse[baseTokenData.universeId.toText()];
@@ -122,7 +119,7 @@ const convertToUserTokenData = ({
     balanceInUsd: getUsdValue({
       balance,
       ledgerCanisterId: baseTokenData.ledgerCanisterId.toText(),
-      icpSwapUsdPrices,
+      tickers,
     }),
     actions: [
       ...(baseTokenData.universeId.toText() === OWN_CANISTER_ID_TEXT
@@ -141,7 +138,7 @@ export const tokensListUserStore = derived<
     Readable<UniversesAccounts>,
     Readable<Record<string, IcrcTokenMetadata>>,
     Readable<Array<string>>,
-    IcpSwapUsdPricesStore,
+    TickersStore,
     OutOfCyclesCanistersStore,
   ],
   UserToken[]
@@ -151,7 +148,7 @@ export const tokensListUserStore = derived<
     universesAccountsStore,
     tokensByUniverseIdStore,
     failedExistentImportedTokenLedgerIdsStore,
-    icpSwapUsdPricesStore,
+    tickersStore,
     outOfCyclesCanistersStore,
   ],
   ([
@@ -159,7 +156,7 @@ export const tokensListUserStore = derived<
     accounts,
     tokensByUniverse,
     failedImportedTokenLedgerIds,
-    icpSwapUsdPrices,
+    tickers,
     outOfCyclesCanisters,
   ]) => [
     ...tokensList.map((baseTokenData) =>
@@ -167,7 +164,7 @@ export const tokensListUserStore = derived<
         baseTokenData,
         accounts,
         tokensByUniverse,
-        icpSwapUsdPrices,
+        tickers,
         outOfCyclesCanisters,
       })
     ),

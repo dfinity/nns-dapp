@@ -16,7 +16,7 @@ import type {
 import { jsonReplacer, nonNullish } from "@dfinity/utils";
 import {
   decodeIcrcAccount,
-  type IcrcTransactionWithId,
+  type IcrcIndexNgTransactionWithId,
   type IcrcTxId,
 } from "@icp-sdk/canisters/ledger/icrc";
 
@@ -72,7 +72,7 @@ export const getIcrcAccountsTransactions = ({
             ) !== undefined;
 
           return [...acc, ...(alreadyExist() ? [] : [value])];
-        }, [] as IcrcTransactionWithId[]),
+        }, [] as IcrcIndexNgTransactionWithId[]),
         ...rest,
       };
     })

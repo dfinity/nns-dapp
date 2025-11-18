@@ -37,7 +37,7 @@
     "or": "or",
     "add": "Add",
     "not_applicable": "N/A",
-    "view_more": "View more",
+    "learn_more": "Learn more",
     "view": "View",
     "copy": "Copy to clipboard",
     "copied": "Copied",
@@ -164,7 +164,36 @@
     "portfolio": "Portfolio",
     "privacy_mode_hide": "Hide Balance",
     "privacy_mode_show": "Show Balance",
-    "project_page": "Project Page"
+    "project_page": "Project Page",
+    "address_book": "Address Book"
+  },
+  "address_book": {
+    "add_address": "Add New Address",
+    "edit_address": "Edit Address",
+    "title": "Save Wallet Addresses for Quick & Secure Access",
+    "description": "Effortlessly manage your withdrawals by saving wallet addresses in one place. Add custom labels to stay organized and speed up your transactions.",
+    "nickname_label": "Nickname",
+    "nickname_placeholder": "3-20 characters e.g. John's ICP Wallet",
+    "address_label": "Address",
+    "address_placeholder": "Enter address here",
+    "save_address": "Save Address",
+    "add_success": "Address saved successfully.",
+    "edit_success": "Address updated successfully.",
+    "delete_success": "Address removed successfully.",
+    "remove_address_title": "Remove Address: \"$label\"",
+    "remove_address_message": "This contact will be removed from your address book.",
+    "nickname_too_short": "Nickname must be at least 3 characters.",
+    "nickname_too_long": "Nickname must be at most 20 characters.",
+    "nickname_already_used": "This nickname is already in use.",
+    "invalid_address": "Please enter a valid ICP or ICRC1 address.",
+    "max_addresses_reached": "You have reached the maximum of 20 saved addresses.",
+    "use_address_book": "Use address book",
+    "address_book_loading": "Loading address book...",
+    "address_book_empty": "The address book is empty",
+    "no_applicable_addresses": "No applicable addresses for this token",
+    "manual_address_warning": "Be careful when entering an address manually, similar addresses may be confused.",
+    "check_address_book_link": "Check out the address book!",
+    "select_address_placeholder": "Select an address"
   },
   "alfred": {
     "no_results": "No results found",
@@ -218,12 +247,14 @@
     "neurons_source_nns": "NNS",
     "neurons_source_sns": "SNS projects",
     "neurons_download": "Export Neuron Portfolio",
+    "neurons_no_results": "To generate a report you need to own at least 1 valid neuron.",
     "loading_sns_projects": "Loading sns projects...",
-    "transactions_title": "ICP Transactions",
-    "transactions_description": "Download a detailed CSV report of your ICP transaction history, including both regular ICP accounts and NNS neurons showing staking and minting transactions for manual tracking and analysis.",
+    "transactions_title": "Transactions",
+    "transactions_description": "Download a detailed CSV report of your transaction history, including both regular token accounts and neurons showing staking and minting transactions for manual tracking and analysis.",
     "transactions_download": "Export Transactions",
-    "transactions_source_nns": "ICP accounts and neurons",
-    "transactions_source_ck": "Ck-Tokens accounts",
+    "transactions_source_nns": "NNS",
+    "transactions_source_ck": "Ck-Tokens",
+    "transactions_no_results": "To generate a report you need to have at least one transaction in the selected period.",
     "busy_screen": "Generating report... This may take a moment",
     "busy_screen_sns_getting_neurons": "Fetching your neurons across all SNS projects...",
     "principal_account_id": "NNS dapp Account Principal Id",
@@ -351,7 +382,7 @@
     "received_amount_notice": "Received Amount *",
     "transaction_time": "Transaction Time",
     "transaction_time_seconds": "Seconds",
-    "token_price_error": "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment.",
+    "token_price_error": "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable.",
     "unpriced_tokens_warning": "Value may be inaccurate as some prices could not be fetched.",
     "token_price_source": "Token prices are given in USD and based on data provided by ICPSwap."
   },
@@ -518,19 +549,28 @@
     "label": "Followee's Neuron Id",
     "follow_neuron": "Follow Neuron",
     "options_title": "Options for Following",
+    "known_neurons_title": "Known neurons to Follow",
     "follow": "Follow",
     "unfollow": "Unfollow",
     "followee_incorrect_id_format": "This is not a correctly formatted neuron ID. Please make sure you copied the full ID.",
     "followee_no_self_following": "A neuron is not allowed to follow itself. Please enter a neuron ID of a different neuron or choose one of the known neurons below to follow.",
     "followee_does_not_exist": "There is no neuron with ID $neuronId. Please choose a neuron ID from an existing neuron.",
-    "followee_not_permit": "Neuron $neuronId is a private neuron. If you control neuron $neuronId, you can follow it after adding your principal <small>$principalId</small> to its list of hotkeys or setting the neuron to public.",
+    "followee_not_permit": "Neuron $neuronId is a private neuron. If you control neuron $neuronId, you can follow it after adding your principal <small>$principalId</small> to its list of hotkeys or setting the neuron to public. More info <a href=\"https://learn.internetcomputer.org/hc/en-us/articles/34084120668692-Neurons#01JY3Q496PCW6VVT0R6XXST12S\" rel=\"noopener noreferrer\" aria-label=\"more info about neuron following rules\" target=\"_blank\">here</a>.",
     "neuron_not_followee": "Sorry, you can't unfollow neuron $neuronId because you are not following it.",
     "already_followed": "You are already following this neuron."
   },
   "follow_neurons": {
     "description": "Follow neurons to automate your voting, and receive the maximum voting rewards. You can follow neurons on specific topics or all topics.",
     "current_followees": "Currently Following",
-    "add": "Add Followee"
+    "add": "Add Followee",
+    "required_settings": "Required settings",
+    "required_settings_description": "For full vote delegation coverage, set following on these three topics. The choice for \"All Except Governance, and SNS & Neurons' Fund\"  is applied to all topics for which no other explicit follow rule has been defined, except for \"Governance\" and \"SNS & Neurons' Fund\".",
+    "advanced_settings": "Advanced settings",
+    "topics_title": "Delegate Voting",
+    "neuron_title": "Enter Neuron to Follow",
+    "topics_following": "CURRENT DELEGATES",
+    "topic_definitions_description": "Proposal types are grouped into topics defined by the NNS. You can review the topic definitions here.",
+    "topic_definitions_title": "Topic Definition List"
   },
   "follow_neurons_topic_subtitles": {
     "Unspecified": "Follow neurons on all proposal topics except the governance topic, and SNS & Neurons' Fund.",
@@ -784,13 +824,14 @@
     "auto_stake_maturity_off": "Are you sure that you would like to stop automatically staking new maturity of this neuron?",
     "auto_stake_maturity_on_success": "Automatically staking new maturity.",
     "auto_stake_maturity_off_success": "Stopped automatically staking new maturity.",
+    "auto_stake_maturity_tooltip": "Only the controller of the neuron can change this setting.",
     "maturity_title": "Maturity",
     "vote_delegation_title": "Vote Delegation",
     "vote_delegation_tooltip_all": "Voting delegated on all topics.",
     "vote_delegation_tooltip_some": "Voting delegated on some topics.",
     "vote_delegation_tooltip_none": "Voting not delegated on any topic.",
     "maturity_last_distribution": "Last Maturity Distribution",
-    "maturity_last_distribution_info": "On a day with no settled proposals, no rewards are distributed; rather rewards will roll over to the following day. The last distribution date is the last time rewards were distributed. <a href=\"https://wiki.internetcomputer.org/wiki/Roll-over_of_NNS_voting_rewards\" rel=\"noopener noreferrer\" aria-label=\"more info about the voting rewards\" target=\"_blank\">Learn more</a>",
+    "maturity_last_distribution_info": "On a day with no settled proposals, no rewards are distributed; rather rewards will roll over to the following day. The last distribution date is the last time rewards were distributed. <a href=\"https://learn.internetcomputer.org/hc/en-us/articles/34142993417108-Voting-Rewards\" rel=\"noopener noreferrer\" aria-label=\"more info about the voting rewards\" target=\"_blank\">Learn more</a>",
     "stake_maturity": "Stake",
     "view_active_disbursements_total": "Total Maturity Disbursing",
     "view_active_disbursements": "View Active Disbursements",
@@ -1105,6 +1146,15 @@
   "error__fav_projects": {
     "too_many": "You can't add more than $limit favorite projects."
   },
+  "error__address_book": {
+    "load_address_book": "There was an unexpected issue while loading the address book.",
+    "update_address": "There was an unexpected issue while updating the address.",
+    "too_many": "You can't add more than $limit addresses.",
+    "invalid_icp": "Invalid ICP address: $error.",
+    "invalid_icrc1": "Invalid ICRC1 address: $error.",
+    "name_too_long": "Address name is too long. Maximum length is $maxLength characters.",
+    "duplicate_name": "An address with the name \"$name\" already exists."
+  },
   "error__sns": {
     "undefined_project": "The requested project is invalid or throws an error.",
     "list_summaries": "There was an unexpected error while loading the summaries of all deployed projects.",
@@ -1407,5 +1457,8 @@
     "start_staking_card_content": "Stake ICP tokens and participate in NNS governance to earn up to 13% of yearly voting rewards",
     "start_staking_card_link": "Open Staking"
   },
-  "highlight": {}
+  "highlight": {
+    "topics_feature_title": "Protect your transfers",
+    "topics_feature_description": "With the new Address Book you can save up to 20 addresses and reduce the risk of address poisoning."
+  }
 }

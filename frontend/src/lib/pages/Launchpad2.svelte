@@ -3,10 +3,10 @@
   import ProjectCard2 from "$lib/components/launchpad/ProjectCard2.svelte";
   import SkeletonProjectCard from "$lib/components/launchpad/SkeletonProjectCard.svelte";
   import { FEATURED_SNS_PROJECTS } from "$lib/constants/sns.constants";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
   import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { tickersStore } from "$lib/stores/tickers.store";
   import type { ComponentWithProps } from "$lib/types/svelte";
   import {
     compareLaunchpadSnsProjects,
@@ -48,7 +48,7 @@
       .sort(
         compareLaunchpadSnsProjects({
           snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
-          icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
+          tickersStore: $tickersStore,
         })
       )
       .map((project) => ({
@@ -65,7 +65,7 @@
       .sort(
         compareLaunchpadSnsProjects({
           snsTotalSupplyTokenAmountStore: $snsTotalSupplyTokenAmountStore,
-          icpSwapUsdPricesStore: $icpSwapUsdPricesStore,
+          tickersStore: $tickersStore,
         })
       )
       .map((project) => ({

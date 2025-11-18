@@ -510,9 +510,9 @@ dependencies = [
 
 [[package]]
 name = "candid"
-version = "0.10.18"
+version = "0.10.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ae495fbaf9ee8f4f7898affbd3df85dba8598bfa4ffaca24726c42aa4beb7b1"
+checksum = "8037a01ec09d6c06883a38bad4f47b8d06158ad360b841e0ae5707c9884dfaf6"
 dependencies = [
  "anyhow",
  "binread",
@@ -533,9 +533,9 @@ dependencies = [
 
 [[package]]
 name = "candid_derive"
-version = "0.10.18"
+version = "0.10.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7388be3b345b1a2ad30e529619b4db0d1955852afb56da821fa6a805f7cbf6be"
+checksum = "fb45f4d5eff3805598ee633dd80f8afb306c023249d34b5b7dfdc2080ea1df2e"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -1323,9 +1323,9 @@ checksum = "1d674e81391d1e1ab681a28d99df07927c6d4aa5b027d7da16ba32d1d21ecd99"
 
 [[package]]
 name = "flate2"
-version = "1.1.2"
+version = "1.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4a3d7db9596fecd151c5f638c0ee5d5bd487b6e0ea232e5dc96d5250f6f94b1d"
+checksum = "bfe33edd8e85a12a67454e37f8c75e730830d83e313556ab9ebf9ee7fbeb3bfb"
 dependencies = [
  "crc32fast",
  "miniz_oxide",
@@ -3887,6 +3887,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fa76a2c86f704bdb222d66965fb3d63269ce38518b83cb0575fca855ebb6316"
 dependencies = [
  "adler2",
+ "simd-adler32",
 ]
 
 [[package]]
@@ -3940,7 +3941,7 @@ checksum = "650eef8c711430f1a879fdd01d4745a7deea475becfb90269c06775983bbf086"
 
 [[package]]
 name = "nns-dapp"
-version = "2.0.130"
+version = "2.0.132"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -3964,6 +3965,7 @@ dependencies = [
  "ic-stable-structures 0.7.2",
  "ic_principal",
  "icp-ledger",
+ "icrc-ledger-types",
  "itertools 0.14.0",
  "lazy_static",
  "lzma-rs",
@@ -4454,7 +4456,7 @@ dependencies = [
 
 [[package]]
 name = "proposals"
-version = "2.0.130"
+version = "2.0.132"
 dependencies = [
  "anyhow",
  "candid",
@@ -4483,14 +4485,13 @@ dependencies = [
 
 [[package]]
 name = "proptest"
-version = "1.8.0"
+version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2bb0be07becd10686a0bb407298fb425360a5c44a663774406340c59a22de4ce"
+checksum = "bee689443a2bd0a16ab0348b52ee43e3b2d1b1f931c8aa5c9f8de4c86fbe8c40"
 dependencies = [
  "bit-set 0.8.0",
  "bit-vec 0.8.0",
  "bitflags",
- "lazy_static",
  "num-traits",
  "rand 0.9.2",
  "rand_chacha 0.9.0",
@@ -4699,9 +4700,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.11.2"
+version = "1.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23d7fd106d8c02486a8d64e778353d1cffe08ce79ac2e82f540c86d0facf6912"
+checksum = "843bc0191f75f3e22651ae5f1e72939ab2f72a4bc30fa80a066bd66edefc24d4"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -4711,9 +4712,9 @@ dependencies = [
 
 [[package]]
 name = "regex-automata"
-version = "0.4.10"
+version = "0.4.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b9458fa0bfeeac22b5ca447c63aaf45f28439a709ccd244698632f9aa6394d6"
+checksum = "5276caf25ac86c8d810222b3dbb938e512c55c6831a10f3e6ed1c93b84041f1c"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -5116,6 +5117,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "simd-adler32"
+version = "0.3.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d66dc143e6b11c1eddc06d5c423cfc97062865baf299914ab64caa38182078fe"
+
+[[package]]
 name = "simdutf8"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5181,7 +5188,7 @@ dependencies = [
 
 [[package]]
 name = "sns_aggregator"
-version = "2.0.130"
+version = "2.0.132"
 dependencies = [
  "anyhow",
  "base64 0.22.1",

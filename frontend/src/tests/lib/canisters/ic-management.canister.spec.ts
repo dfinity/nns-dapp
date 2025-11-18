@@ -9,18 +9,22 @@ import {
 import type {
   CanisterStatusResponse,
   ICManagementCanisterOptions,
-} from "@icp-sdk/canisters/ic-management";
-import type { ActorSubclass, HttpAgent } from "@icp-sdk/core/agent";
+} from "@dfinity/ic-management";
+import { type ActorSubclass, type HttpAgent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
 
-type IcManagementService = ICManagementCanisterOptions["serviceOverride"];
+type IcManagementCertifiedService =
+  ICManagementCanisterOptions["certifiedServiceOverride"];
 
 describe("ICManagementCanister", () => {
-  const createICManagement = async (service: IcManagementService) => {
+  const createICManagement = async (
+    certifiedService: IcManagementCertifiedService
+  ) => {
     return ICManagementCanister.create({
       agent: mock<HttpAgent>(),
-      serviceOverride: service as ActorSubclass<IcManagementService>,
+      certifiedServiceOverride:
+        certifiedService as ActorSubclass<IcManagementCertifiedService>,
     });
   };
 
@@ -68,7 +72,7 @@ describe("ICManagementCanister", () => {
         ready_for_migration: true,
         version: 42n,
       };
-      const service = mock<IcManagementService>();
+      const service = mock<IcManagementCertifiedService>();
       service.canister_status.mockResolvedValue(response);
 
       const icManagement = await createICManagement(service);
@@ -81,14 +85,12 @@ describe("ICManagementCanister", () => {
     });
 
     it('throws UserNotTheControllerError if "Error Code" is "IC0512"', async () => {
-      const error = new Error(`Call failed:
-      Canister: aaaaa-aa
-      Method: canister_status (update)
-      "Request ID": "9dac7652f94de82d72f00ee492c132defc48da8dd6043516312275ab0fa5b5e1"
-      "Error code": "IC0512"
-      "Reject code": "5"
-      "Reject message": "Only controllers of canister mwewp-s4aaa-aaaaa-qabjq-cai can call ic00 method canister_status"`);
-      const service = mock<IcManagementService>();
+      const error = new Error(`The replica returned a rejection error:
+        Request ID: f194c3c83afe42c6f4323625bb705490346107bb9fdeac175af8baddc49f9772
+        Reject code: 5
+        Reject text: Only controllers of canister igbbe-6yaaa-aaaaq-aadnq-cai can call ic00 method canister_status
+        Error code: IC0512`);
+      const service = mock<IcManagementCertifiedService>();
       service.canister_status.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);
@@ -101,13 +103,11 @@ describe("ICManagementCanister", () => {
 
     it('throws Error if "IC0512" is present, but not as "Error Code"', async () => {
       const error = new Error(`Call failed:
-      Canister: aaaaa-aa
-      Method: canister_status (update)
-      "Request ID": "IC0512"
-      "Error code": "Another code"
-      "Reject code": "5"
-      "Reject message": "..."`);
-      const service = mock<IcManagementService>();
+        Request ID: f194c3c83afe42c6f4323625bb705490346107bb9fdeac175af8baddc49f9772
+        Reject code: IC0512
+        Reject text: Only controllers of canister igbbe-6yaaa-aaaaq-aadnq-cai can call ic00 method canister_status
+        Error code: IC0111`);
+      const service = mock<IcManagementCertifiedService>();
       service.canister_status.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);
@@ -120,7 +120,7 @@ describe("ICManagementCanister", () => {
 
     it("throws Error", async () => {
       const error = new Error("Test");
-      const service = mock<IcManagementService>();
+      const service = mock<IcManagementCertifiedService>();
       service.canister_status.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);
@@ -134,7 +134,7 @@ describe("ICManagementCanister", () => {
 
   describe("updateSettings", () => {
     it("calls update_settings with new settings", async () => {
-      const service = mock<IcManagementService>();
+      const service = mock<IcManagementCertifiedService>();
       service.update_settings.mockResolvedValue(undefined);
 
       const icManagement = await createICManagement(service);
@@ -152,7 +152,7 @@ describe("ICManagementCanister", () => {
           "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
         ],
       };
-      const service = mock<IcManagementService>();
+      const service = mock<IcManagementCertifiedService>();
       service.update_settings.mockResolvedValue(undefined);
 
       const icManagement = await createICManagement(service);
@@ -166,13 +166,11 @@ describe("ICManagementCanister", () => {
 
     it("throws UserNotTheControllerError", async () => {
       const error = new Error(`Call failed:
-      Canister: aaaaa-aa
-      Method: canister_status (update)
-      "Request ID": "9dac7652f94de82d72f00ee492c132defc48da8dd6043516312275ab0fa5b5e1"
-      "Error code": "IC0512"
-      "Reject code": "5"
-      "Reject message": "Only controllers of canister mwewp-s4aaa-aaaaa-qabjq-cai can call ic00 method canister_status"`);
-      const service = mock<IcManagementService>();
+        Request ID: f194c3c83afe42c6f4323625bb705490346107bb9fdeac175af8baddc49f9772
+        Reject code: 5
+        Reject text: Only controllers of canister igbbe-6yaaa-aaaaq-aadnq-cai can call ic00 method canister_status
+        Error code: IC0512`);
+      const service = mock<IcManagementCertifiedService>();
       service.update_settings.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);
@@ -187,7 +185,7 @@ describe("ICManagementCanister", () => {
 
     it("throws Error", async () => {
       const error = new Error("Test");
-      const service = mock<IcManagementService>();
+      const service = mock<IcManagementCertifiedService>();
       service.update_settings.mockRejectedValue(error);
 
       const icManagement = await createICManagement(service);

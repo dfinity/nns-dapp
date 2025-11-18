@@ -3,7 +3,7 @@
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
   import { getAllSnsNSFunctions } from "$lib/utils/sns-topics.utils";
-  import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+  import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let topicInfo: TopicInfoWithUnknown;

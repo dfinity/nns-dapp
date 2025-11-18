@@ -13,11 +13,11 @@
   let nnsFunctionKey: string | undefined;
   $: nnsFunctionKey = getNnsFunctionKey(proposal);
 
-  $: $proposalPayloadsStore,
+  $: ($proposalPayloadsStore,
     (payload =
       proposalId !== undefined
         ? $proposalPayloadsStore.get(proposalId)
-        : undefined);
+        : undefined));
   $: if (
     proposalId !== undefined &&
     nnsFunctionKey !== undefined &&

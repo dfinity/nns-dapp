@@ -14,10 +14,7 @@
   } from "$lib/utils/sns-neuron.utils";
   import { Tag } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import { TokenAmountV2, nonNullish, type Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;

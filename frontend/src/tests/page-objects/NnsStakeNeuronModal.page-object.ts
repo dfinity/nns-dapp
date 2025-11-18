@@ -1,6 +1,8 @@
 import { AddUserToHotkeysPo } from "$tests/page-objects/AddUserToHotkeys.page-object";
 import { ConfirmDissolveDelayPo } from "$tests/page-objects/ConfirmDissolveDelay.page-object";
 import { EditFollowNeuronsPo } from "$tests/page-objects/EditFollowNeurons.page-object";
+import { FollowNnsNeuronsByTopicStepNeuronPo } from "$tests/page-objects/FollowNnsNeuronsByTopicStepNeuron.page-object";
+import { FollowNnsNeuronsByTopicStepTopicsPo } from "$tests/page-objects/FollowNnsNeuronsByTopicStepTopics.page-object";
 import { ModalPo } from "$tests/page-objects/Modal.page-object";
 import { NnsStakeNeuronPo } from "$tests/page-objects/NnsStakeNeuron.page-object";
 import { SetDissolveDelayPo } from "$tests/page-objects/SetDissolveDelay.page-object";
@@ -31,8 +33,17 @@ export class NnsStakeNeuronModalPo extends ModalPo {
     return ConfirmDissolveDelayPo.under(this.root);
   }
 
+  // @deprecated
   getEditFollowNeuronsPo(): EditFollowNeuronsPo {
     return EditFollowNeuronsPo.under(this.root);
+  }
+
+  getFollowNnsNeuronsByTopicStepTopicsPo(): FollowNnsNeuronsByTopicStepTopicsPo {
+    return FollowNnsNeuronsByTopicStepTopicsPo.under(this.root);
+  }
+
+  getFollowNnsNeuronsByTopicStepNeuronPo(): FollowNnsNeuronsByTopicStepNeuronPo {
+    return FollowNnsNeuronsByTopicStepNeuronPo.under(this.root);
   }
 
   async stake({
@@ -44,10 +55,12 @@ export class NnsStakeNeuronModalPo extends ModalPo {
   }): Promise<void> {
     await this.getNnsStakeNeuronPo().stake(amount);
     await this.getSetDissolveDelayPo().setDissolveDelayDays(dissolveDelayDays);
+
     if (dissolveDelayDays !== 0) {
       await this.getConfirmDissolveDelayPo().clickConfirm();
     }
-    await this.getEditFollowNeuronsPo().waitFor();
+
+    await this.getFollowNnsNeuronsByTopicStepTopicsPo().waitFor();
     await this.closeModal();
   }
 }

@@ -4,7 +4,7 @@ name: Update proposals candid bindings
 on:
   schedule:
     # Check for updates on candid interface for the proposals every thursday at 3:30am.
-    - cron: '30 3 * * MON'
+    - cron: "30 3 * * MON"
   workflow_dispatch:
   push:
     branches:
@@ -70,14 +70,13 @@ jobs:
           author: gix-bot <gix-bot@users.noreply.github.com>
           branch: bot-proposals-update
           branch-suffix: timestamp
-          reviewers: mstrasinskis, yhabib
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: |
             config.json
             declarations/*/*.did
             rs/proposals/src/canisters/*/api.rs
           delete-branch: true
-          title: 'bot: Update proposals candid bindings'
+          title: "bot: Update proposals candid bindings"
           # Note: It is _likely_ but not guaranteed that the .did files match the `IC_COMMIT` in `config.json`.  The files in the PR have a header that give this information reliably.
           #       We do _not_ put a commit in the PR title as it could be misleading.
           body: |

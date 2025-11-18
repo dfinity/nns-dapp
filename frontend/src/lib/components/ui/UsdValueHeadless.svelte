@@ -2,7 +2,7 @@
   import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
   import { isBalancePrivacyOptionStore } from "$lib/derived/balance-privacy-active.derived";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
+  import { tickersStore } from "$lib/stores/tickers.store";
   import {
     formatCurrencyNumber,
     formatNumber,
@@ -33,8 +33,8 @@
     children,
   }: Props = $props();
 
-  const hasError = $derived($icpSwapUsdPricesStore === "error");
-  const hasPrices = $derived(!hasError && nonNullish($icpSwapUsdPricesStore));
+  const hasError = $derived($tickersStore === "error");
+  const hasPrices = $derived(!hasError && nonNullish($tickersStore));
   const hasPricesAndUnpricedTokens = $derived(hasPrices && hasUnpricedTokens);
 
   const usdAmountFormatted = $derived(
@@ -45,9 +45,9 @@
         : absentValue
   );
   const icpPrice = $derived(
-    isNullish($icpSwapUsdPricesStore) || $icpSwapUsdPricesStore === "error"
+    isNullish($tickersStore) || $tickersStore === "error"
       ? undefined
-      : $icpSwapUsdPricesStore[LEDGER_CANISTER_ID.toText()]
+      : $tickersStore[LEDGER_CANISTER_ID.toText()]
   );
 
   const icpAmount = $derived(

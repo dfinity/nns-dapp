@@ -1,7 +1,11 @@
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as kongSwapApi from "$lib/api/kong-swap.api";
 import ProjectsTable from "$lib/components/staking/ProjectsTable.svelte";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import { failedActionableSnsesStore } from "$lib/stores/actionable-sns-proposals.store";
@@ -24,9 +28,9 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -36,6 +40,14 @@ describe("ProjectsTable", () => {
   const snsCanisterId = principal(1111);
   const snsLedgerCanisterId = principal(1112);
   const snsTokenSymbol = "TOK";
+
+  const tickers = [
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
+      last_price: "10.00",
+    },
+  ];
 
   const renderComponent = ({ onNnsStakeTokens = null } = {}) => {
     const { container } = render(ProjectsTable, {
@@ -71,6 +83,7 @@ describe("ProjectsTable", () => {
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue([]);
     vi.spyOn(icrcLedgerApi, "queryIcrcBalance").mockResolvedValue(0n);
     vi.spyOn(icrcLedgerApi, "queryIcrcToken").mockResolvedValue(mockToken);
+    vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
   });
 
   describe("table when ENABLE_APY_PORTFOLIO disabled", () => {
@@ -665,15 +678,6 @@ describe("ProjectsTable", () => {
     });
 
     it("should display stake in USD", async () => {
-      const tickers = [
-        {
-          ...mockIcpSwapTicker,
-          base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-          last_price: "10.00",
-        },
-      ];
-      vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
-
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
@@ -685,7 +689,12 @@ describe("ProjectsTable", () => {
       const po = renderComponent();
       await runResolvedPromises();
 
-      expect(get(icpSwapTickersStore)).toEqual(tickers);
+      const expectedTickersStore = {
+        [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
+        [LEDGER_CANISTER_ID.toText()]: 10,
+      };
+
+      expect(get(icpSwapTickersStore)).toEqual(expectedTickersStore);
       expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
 
       const rowPos = await po.getProjectsTableRowPos();
@@ -828,9 +837,10 @@ describe("ProjectsTable", () => {
         certified: true,
       });
 
-      const error = new Error("ICPSwap failed");
+      const error = new Error("Provider failed");
       vi.spyOn(console, "error").mockReturnValue();
       vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockRejectedValue(error);
+      vi.spyOn(kongSwapApi, "queryKongSwapTickers").mockRejectedValue(error);
 
       const po = renderComponent();
       await runResolvedPromises();
@@ -840,10 +850,10 @@ describe("ProjectsTable", () => {
       expect(
         await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
       ).toBe(
-        "ICPSwap API is currently unavailable, token prices cannot be fetched at the moment."
+        "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable."
       );
       expect(console.error).toBeCalledWith(error);
-      expect(console.error).toBeCalledTimes(1);
+      expect(console.error).toBeCalledTimes(2);
     });
 
     it("should order by stake by default", async () => {
@@ -1142,7 +1152,7 @@ describe("ProjectsTable", () => {
       certified: true,
     });
 
-    setIcpSwapUsdPrices({
+    setTickers({
       [ledgerCanisterId5.toText()]: 1,
       [ledgerCanisterId6.toText()]: 2,
     });

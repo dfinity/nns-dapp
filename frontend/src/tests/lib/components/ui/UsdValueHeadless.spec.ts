@@ -4,8 +4,8 @@ import UsdValueHeadlessTest from "$tests/lib/components/ui/UsdValueHeadlessTest.
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import { UsdValueHeadlessPo } from "$tests/page-objects/UsdValueHeadless.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import { tick } from "svelte";
 
 describe("UsdValueHeadless", () => {

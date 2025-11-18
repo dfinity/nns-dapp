@@ -16,13 +16,13 @@ import {
   MAX_AGE_BONUS,
   MAX_DISSOLVE_DELAY_BONUS,
 } from "$lib/constants/neurons.constants";
-import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { GovernanceMetricsStoreData } from "$lib/stores/governance-metrics.store";
 import type { NetworkEconomicsStoreData } from "$lib/stores/network-economics.store";
 import { type NeuronsStore } from "$lib/stores/neurons.store";
 import { type SnsAggregatorData } from "$lib/stores/sns-aggregator.store";
 import { type NeuronsStore as SNSNeuronsStore } from "$lib/stores/sns-neurons.store";
 import type { CachedSnsDto } from "$lib/types/sns-aggregator";
+import type { TickersStoreData } from "$lib/types/tickers";
 import type { UserToken, UserTokenData } from "$lib/types/tokens-page";
 import {
   cloneNeurons,
@@ -98,7 +98,7 @@ export interface StakingRewardCalcParams {
   snsNeurons: SNSNeuronsStore;
   nnsNeurons: NeuronsStore;
   nnsEconomics: NetworkEconomicsStoreData;
-  fxRates: IcpSwapUsdPricesStoreData;
+  fxRates: TickersStoreData;
   governanceMetrics: GovernanceMetricsStoreData;
   nnsTotalVotingPower: bigint | undefined;
 }
@@ -650,7 +650,7 @@ const getNeuronsRewardEstimationUSD = (params: {
 };
 
 const getFXRate = (
-  fxRates: IcpSwapUsdPricesStoreData,
+  fxRates: TickersStoreData,
   ledgerPrincipal: Principal | string
 ) => {
   const principal =

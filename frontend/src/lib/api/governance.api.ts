@@ -5,9 +5,10 @@ import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
-import type { AccountIdentifierHex } from "@icp-sdk/canisters/ledger/icp";
+import type { AccountIdentifierHex } from "@dfinity/ledger-icp";
 import type {
   E8s,
+  FolloweesForTopic,
   GovernanceCachedMetrics,
   KnownNeuron,
   NetworkEconomics,
@@ -16,12 +17,12 @@ import type {
   ProposalId,
   Topic,
   Vote,
-} from "@icp-sdk/canisters/nns";
+} from "@dfinity/nns";
 import {
   GovernanceCanister,
   NeuronVisibility,
   type RewardEvent,
-} from "@icp-sdk/canisters/nns";
+} from "@dfinity/nns";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 
@@ -384,6 +385,10 @@ export type ApiSetFolloweesParams = ApiManageNeuronParams & {
   followees: NeuronId[];
 };
 
+export type ApiSetFollowingParams = ApiManageNeuronParams & {
+  topicFollowing: Array<FolloweesForTopic>;
+};
+
 export const setFollowees = async ({
   identity,
   neuronId,
@@ -399,6 +404,21 @@ export const setFollowees = async ({
     followees,
   });
   logWithTimestamp(`Setting Followees (${hashCode(neuronId)}) complete.`);
+};
+
+export const setFollowing = async ({
+  identity,
+  neuronId,
+  topicFollowing,
+}: ApiSetFollowingParams): Promise<void> => {
+  logWithTimestamp(`Setting Followings (${hashCode(neuronId)}) call...`);
+  const { canister } = await governanceCanister({ identity });
+
+  await canister.setFollowing({
+    neuronId,
+    topicFollowing,
+  });
+  logWithTimestamp(`Setting Followings (${hashCode(neuronId)}) complete.`);
 };
 
 export type ApiQueryNeuronsParams = ApiQueryParams & {

@@ -22,7 +22,7 @@ import {
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   type SnsProposalData,
-} from "@icp-sdk/canisters/sns";
+} from "@dfinity/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";

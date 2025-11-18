@@ -22,14 +22,14 @@ import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron, mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import {
   NeuronState,
   Topic,
   type Followees,
   type NeuronInfo,
-} from "@icp-sdk/canisters/nns";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+} from "@dfinity/nns";
+import type { SnsNeuron } from "@dfinity/sns";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 
 describe("neurons-table.utils", () => {
@@ -88,7 +88,7 @@ describe("neurons-table.utils", () => {
         neuronInfos,
         identity: mockIdentity,
         accounts: mockAccountsStoreData,
-        icpSwapUsdPrices: {
+        tickersStore: {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
         i18n: en,
@@ -279,7 +279,7 @@ describe("neurons-table.utils", () => {
         neuronInfos: [hotkeyNeuronInfo],
         identity: mockIdentity,
         accounts: mockAccountsStoreData,
-        icpSwapUsdPrices: {
+        tickersStore: {
           [LEDGER_CANISTER_ID.toText()]: icpPrice,
         },
         i18n: en,
@@ -489,7 +489,7 @@ describe("neurons-table.utils", () => {
         universe: snsUniverseIdText,
         token: mockSnsToken,
         identity: mockIdentity,
-        icpSwapUsdPrices: {
+        tickersStore: {
           [ledgerCanisterId.toText()]: snsTokenPrice,
         },
         ledgerCanisterId,

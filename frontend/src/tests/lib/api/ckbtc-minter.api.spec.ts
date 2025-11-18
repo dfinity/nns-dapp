@@ -18,7 +18,7 @@ import {
   CkBTCMinterCanister,
   type RetrieveBtcOk,
   type RetrieveBtcStatusV2WithId,
-} from "@icp-sdk/canisters/ckbtc";
+} from "@dfinity/ckbtc";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 

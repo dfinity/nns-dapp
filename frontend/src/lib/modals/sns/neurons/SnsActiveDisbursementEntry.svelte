@@ -2,14 +2,8 @@
   import ActiveDisbursementItem from "$lib/components/neuron-detail/ActiveDisbursementEntry.svelte";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import { formatMaturity } from "$lib/utils/neuron.utils";
-  import {
-    encodeIcrcAccount,
-    type IcrcAccount,
-  } from "@icp-sdk/canisters/ledger/icrc";
-  import type {
-    SnsAccount,
-    SnsDisburseMaturityInProgress,
-  } from "@icp-sdk/canisters/sns";
+  import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
+  import type { SnsAccount, SnsDisburseMaturityInProgress } from "@dfinity/sns";
   import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
 
   export let disbursement: SnsDisburseMaturityInProgress;

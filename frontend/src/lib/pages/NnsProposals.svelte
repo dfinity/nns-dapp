@@ -119,7 +119,7 @@
     debounceFindProposals?.();
   };
 
-  $: $proposalsFiltersStore, applyFilter();
+  $: ($proposalsFiltersStore, applyFilter());
 
   let loadingAnimation: "spinner" | "skeleton" | undefined = undefined;
   $: loadingAnimation = !loading

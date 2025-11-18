@@ -12,8 +12,8 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import type { RewardEvent } from "@icp-sdk/canisters/nns";
-import { NeuronVisibility, Topic, Vote } from "@icp-sdk/canisters/nns";
+import type { RewardEvent } from "@dfinity/nns";
+import { NeuronVisibility, Topic, Vote } from "@dfinity/nns";
 import type { Mock } from "vitest";
 
 vi.mock("$lib/api/governance.api");
@@ -833,6 +833,44 @@ describe("neurons api-service", () => {
       await shouldInvalidateCacheOnFailure({
         apiFunc: api.setFollowees,
         apiServiceFunc: governanceApiService.setFollowees,
+        params,
+      });
+    });
+  });
+
+  describe("setFollowing", () => {
+    const params = {
+      neuronId,
+      identity: mockIdentity,
+      topicFollowing: [
+        {
+          topic: Topic.Governance,
+          followees: [2n, 20n],
+        },
+        {
+          topic: Topic.ExchangeRate,
+          followees: [3n],
+        },
+      ],
+    };
+
+    it("should call setFollowing api", () => {
+      governanceApiService.setFollowing(params);
+      expect(api.setFollowing).toHaveBeenCalledWith(params);
+    });
+
+    it("should invalidate the cache", async () => {
+      await shouldInvalidateCache({
+        apiFunc: api.setFollowing,
+        apiServiceFunc: governanceApiService.setFollowing,
+        params,
+      });
+    });
+
+    it("should invalidate the cache on failure", async () => {
+      await shouldInvalidateCacheOnFailure({
+        apiFunc: api.setFollowing,
+        apiServiceFunc: governanceApiService.setFollowing,
         params,
       });
     });

@@ -56,12 +56,9 @@ import {
   pollingCancelled,
   pollingLimit,
 } from "$lib/utils/utils";
+import { TxCreatedInFutureError, TxTooOldError } from "@dfinity/ledger-icp";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
-import {
-  TxCreatedInFutureError,
-  TxTooOldError,
-} from "@icp-sdk/canisters/ledger/icp";
-import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import type { Identity } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 

@@ -19,6 +19,7 @@ import {
   registerVote,
   removeHotkey,
   setFollowees,
+  setFollowing,
   simulateMergeNeurons,
   spawnNeuron,
   splitNeuron,
@@ -30,13 +31,13 @@ import {
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import { LedgerCanister } from "@dfinity/ledger-icp";
 import {
   GovernanceCanister,
   NeuronVisibility,
   Topic,
   Vote,
-} from "@icp-sdk/canisters/nns";
+} from "@dfinity/nns";
 import type { Agent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
@@ -200,6 +201,61 @@ describe("neurons-api", () => {
           neuronId: 10n,
           topic: Topic.ExchangeRate,
           followees: [4n, 7n],
+        });
+      await expect(call).rejects.toThrow(error);
+    });
+  });
+
+  describe("setFollowing", () => {
+    it("updates neuron successfully", async () => {
+      mockGovernanceCanister.setFollowing.mockImplementation(
+        vi.fn().mockResolvedValue(undefined)
+      );
+
+      const topicFollowing = [
+        {
+          topic: Topic.Governance,
+          followees: [4n, 7n],
+        },
+        {
+          topic: Topic.ExchangeRate,
+          followees: [8n],
+        },
+      ];
+
+      await setFollowing({
+        identity: mockIdentity,
+        neuronId: 10n,
+        topicFollowing,
+      });
+
+      expect(mockGovernanceCanister.setFollowing).toBeCalled();
+      expect(mockGovernanceCanister.setFollowing).toBeCalledWith({
+        neuronId: 10n,
+        topicFollowing,
+      });
+    });
+
+    it("throws error when setting following fails", async () => {
+      const error = new Error();
+      mockGovernanceCanister.setFollowing.mockImplementation(
+        vi.fn(() => {
+          throw error;
+        })
+      );
+
+      const topicFollowing = [
+        {
+          topic: Topic.Governance,
+          followees: [4n, 7n],
+        },
+      ];
+
+      const call = () =>
+        setFollowing({
+          identity: mockIdentity,
+          neuronId: 10n,
+          topicFollowing,
         });
       await expect(call).rejects.toThrow(error);
     });

@@ -26,7 +26,7 @@ import {
   type SnsNeuron,
   type SnsNeuronId,
   type SnsProposalData,
-} from "@icp-sdk/canisters/sns";
+} from "@dfinity/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import type { MockInstance } from "@vitest/spy";
 import { get } from "svelte/store";

@@ -17,7 +17,7 @@
     }
     await loadSnsSwapCommitments();
   };
-  $: $authStore.identity, (async () => await loadSnsSale())();
+  $: ($authStore.identity, (async () => await loadSnsSale())());
 
   let showCommitted = false;
   $: showCommitted = $snsProjectsCommittedStore.length > 0;

@@ -2,7 +2,10 @@ import * as agent from "$lib/api/agent.api";
 import * as icpLedgerApi from "$lib/api/icp-ledger.api";
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import NeuronDetail from "$lib/routes/NeuronDetail.svelte";
@@ -21,7 +24,7 @@ import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { waitFor } from "@testing-library/dom";
@@ -175,7 +178,13 @@ describe("NeuronDetail", () => {
       const po = NeuronDetailPo.under(new JestPageObjectElement(container));
       await runResolvedPromises();
 
-      expect(get(icpSwapTickersStore)).toBe(tickers);
+      const expectedTickersStore = {
+        [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
+        [LEDGER_CANISTER_ID.toText()]: 10,
+        [testSnsLedgerCanisterId.toText()]: 0.1,
+      };
+
+      expect(get(icpSwapTickersStore)).toEqual(expectedTickersStore);
       expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
 
       const headingPo = po.getSnsNeuronDetailPo().getSnsNeuronPageHeadingPo();

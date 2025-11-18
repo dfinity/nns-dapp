@@ -9,7 +9,7 @@ import {
   toToastError,
 } from "$lib/utils/error.utils";
 import { getOldestTxIdFromStore } from "$lib/utils/icrc-transactions.utils";
-import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
@@ -31,7 +31,7 @@ export const loadIcrcAccountTransactions = async ({
     const snsAccount = decodeIcrcAccount(account.identifier);
     const maxResults = DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT;
 
-    const { transactions, oldestTxId } = await getTransactions({
+    const { transactions, oldestTxId, balance } = await getTransactions({
       identity,
       account: snsAccount,
       maxResults: BigInt(maxResults),
@@ -47,6 +47,7 @@ export const loadIcrcAccountTransactions = async ({
       transactions,
       oldestTxId,
       completed,
+      balance,
     });
   } catch (err) {
     console.error(err);

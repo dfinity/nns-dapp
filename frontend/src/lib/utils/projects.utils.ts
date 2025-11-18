@@ -1,7 +1,6 @@
 import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
 import { AGGREGATOR_METRICS_TIME_WINDOW_SECONDS } from "$lib/constants/sns.constants";
 import { NOT_LOADED } from "$lib/constants/stores.constants";
-import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import {
   getDeniedCountries,
@@ -17,12 +16,14 @@ import type {
 } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { StoreData } from "$lib/types/store";
+import type { TickersStoreData } from "$lib/types/tickers";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import type { I18nSubstitutions } from "$lib/utils/i18n.utils";
 import { getCommitmentE8s } from "$lib/utils/sns.utils";
 import { createDescendingComparator } from "$lib/utils/sort.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { stringifyJson } from "$lib/utils/utils";
+import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
 import {
   fromNullable,
   isNullish,
@@ -30,7 +31,6 @@ import {
   TokenAmountV2,
   type TokenAmount,
 } from "@dfinity/utils";
-import { SnsSwapLifecycle, type SnsSwapTicket } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const filterProjectsStatus = ({
@@ -518,11 +518,11 @@ export const snsProjectIcpInTreasuryPercentage = (
 export const snsProjectMarketCap = ({
   sns,
   snsTotalSupplyTokenAmountStore,
-  icpSwapUsdPricesStore,
+  tickersStore,
 }: {
   sns: SnsFullProject;
   snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
-  icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
+  tickersStore: TickersStoreData;
 }): number | undefined => {
   const {
     rootCanisterId,
@@ -535,9 +535,9 @@ export const snsProjectMarketCap = ({
     : undefined;
   const tokenPriceUsd =
     nonNullish(ledgerCanisterId) &&
-    nonNullish(icpSwapUsdPricesStore) &&
-    icpSwapUsdPricesStore !== "error"
-      ? icpSwapUsdPricesStore[ledgerCanisterId.toText()]
+    nonNullish(tickersStore) &&
+    tickersStore !== "error"
+      ? tickersStore[ledgerCanisterId.toText()]
       : undefined;
 
   if (isNullish(totalSupply) || isNullish(tokenPriceUsd)) return undefined;

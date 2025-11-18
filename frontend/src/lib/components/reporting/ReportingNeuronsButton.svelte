@@ -5,7 +5,7 @@
   import { getAuthenticatedIdentity } from "$lib/services/auth.services";
   import { startBusy, stopBusy } from "$lib/stores/busy.store";
   import { i18n } from "$lib/stores/i18n";
-  import { toastsError } from "$lib/stores/toasts.store";
+  import { toastsError, toastsShow } from "$lib/stores/toasts.store";
   import type { ReportingNeuronsSource } from "$lib/types/reporting";
   import { formatDateCompact } from "$lib/utils/date.utils";
   import { sortNeuronsByStake } from "$lib/utils/neuron.utils";
@@ -89,6 +89,15 @@
             }));
           });
 
+        if (neurons.length === 0) {
+          toastsShow({
+            labelKey: "reporting.neurons_no_results",
+            level: "info",
+          });
+          clearTimeout(timeoutId);
+          return;
+        }
+
         const datasets = buildSnsNeuronsDatasets({
           neurons,
           userPrincipal: identity.getPrincipal(),
@@ -133,6 +142,14 @@
         });
 
         const neurons = sortNeuronsByStake(data);
+
+        if (neurons.length === 0) {
+          toastsShow({
+            labelKey: "reporting.neurons_no_results",
+            level: "info",
+          });
+          return;
+        }
 
         await generateCsvFileToSave({
           datasets: buildNeuronsDatasets({

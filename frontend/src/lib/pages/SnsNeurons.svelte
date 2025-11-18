@@ -2,7 +2,6 @@
   import NeuronsTable from "$lib/components/neurons/NeuronsTable/NeuronsTable.svelte";
   import EmptyMessage from "$lib/components/ui/EmptyMessage.svelte";
   import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { pageStore } from "$lib/derived/page.derived";
   import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
   import {
@@ -18,6 +17,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
   import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
+  import { tickersStore } from "$lib/stores/tickers.store";
   import type { TableNeuron } from "$lib/types/neurons-table";
   import type { SnsSummary } from "$lib/types/sns";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
@@ -25,8 +25,8 @@
   import { tableNeuronsFromSnsNeurons } from "$lib/utils/neurons-table.utils";
   import { getTotalStakeInUsd } from "$lib/utils/staking.utils";
   import { IconNeuronsPage, Spinner } from "@dfinity/gix-components";
-  import { Principal } from "@icp-sdk/core/principal";
   import { nonNullish } from "@dfinity/utils";
+  import { Principal } from "@icp-sdk/core/principal";
 
   let loading = true;
 
@@ -60,7 +60,7 @@
         identity: $authStore.identity,
         i18n: $i18n,
         snsNeurons: $nonEmptySnsNeuronStore,
-        icpSwapUsdPrices: $icpSwapUsdPricesStore,
+        tickersStore: $tickersStore,
         ledgerCanisterId: summary.ledgerCanisterId,
         topicInfos,
         stakingRewardsResult: $ENABLE_APY_PORTFOLIO
@@ -71,10 +71,10 @@
 
   let isTokenPriceKnown: boolean;
   $: isTokenPriceKnown =
-    nonNullish($icpSwapUsdPricesStore) &&
-    $icpSwapUsdPricesStore !== "error" &&
+    nonNullish($tickersStore) &&
+    $tickersStore !== "error" &&
     nonNullish(summary) &&
-    summary.ledgerCanisterId.toText() in $icpSwapUsdPricesStore;
+    summary.ledgerCanisterId.toText() in $tickersStore;
 
   let totalStakeInUsd: number | undefined;
   $: totalStakeInUsd = isTokenPriceKnown

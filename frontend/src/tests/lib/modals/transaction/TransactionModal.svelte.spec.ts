@@ -1,11 +1,17 @@
 import { OWN_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { DEFAULT_TRANSACTION_FEE_E8S } from "$lib/constants/icp.constants";
 import TransactionModal from "$lib/modals/transaction/TransactionModal.svelte";
+import { addressBookStore } from "$lib/stores/address-book.store";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icrcAccountsStore } from "$lib/stores/icrc-accounts.store";
 import type { Account } from "$lib/types/account";
 import type { ValidateAmountFn } from "$lib/types/transaction";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import TransactionModalTest from "$tests/lib/modals/transaction/TransactionModalTest.svelte";
+import {
+  mockNamedAddressIcp,
+  mockNamedAddressIcrc1,
+} from "$tests/mocks/address-book.mock";
 import { mockPrincipal, resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
   mockHardwareWalletAccount,
@@ -21,7 +27,7 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { queryToggleById } from "$tests/utils/toggle.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
+import { ICPToken, TokenAmount, type Token } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import {
   fireEvent,
@@ -44,6 +50,7 @@ describe("TransactionModal", () => {
     mustSelectNetwork = false,
     showLedgerFee,
     skipHardwareWallets,
+    token,
     events,
   }: {
     destinationAddress?: string;
@@ -54,6 +61,7 @@ describe("TransactionModal", () => {
     mustSelectNetwork?: boolean;
     showLedgerFee?: boolean;
     skipHardwareWallets?: boolean;
+    token?: Token;
     events?: Record<string, ($event: CustomEvent) => void>;
   }) =>
     renderModal({
@@ -63,6 +71,7 @@ describe("TransactionModal", () => {
         rootCanisterId,
         validateAmount,
         skipHardwareWallets,
+        token,
         transactionInit: {
           sourceAccount,
           destinationAddress,
@@ -75,6 +84,8 @@ describe("TransactionModal", () => {
 
   beforeEach(() => {
     resetIdentity();
+
+    overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
 
     setAccountsForTesting({
       main: mockMainAccount,
@@ -600,6 +611,191 @@ describe("TransactionModal", () => {
         "Main",
         "test subaccount",
       ]);
+    });
+  });
+
+  describe("address book integration", () => {
+    beforeEach(() => {
+      overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", true);
+      addressBookStore.reset();
+    });
+
+    it("should show disabled toggle with tooltip when address book is empty", async () => {
+      addressBookStore.set({
+        namedAddresses: [],
+        certified: true,
+      });
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+
+      expect(await form.getSelectDestinationElement().isPresent()).toBe(true);
+
+      // The destination section should render when feature flag is on
+      expect(await form.hasDestinationSection()).toBe(true);
+
+      // Should not show address book dropdown
+      expect(await form.hasAddressBookDropdown()).toBe(false);
+
+      // Toggle should be disabled
+      expect(await form.isAddressBookToggleEnabled()).toBe(false);
+    });
+
+    it("should show text input and warning when toggle is off", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+
+      // Initially toggle should be on
+      expect(await form.isAddressBookToggleEnabled()).toBe(true);
+      expect(await form.isAddressBookToggleChecked()).toBe(true);
+      expect(await form.hasAddressBookDropdown()).toBe(true);
+
+      // Click to turn it off
+      await form.toggleAddressBook();
+      expect(await form.isAddressBookToggleChecked()).toBe(false);
+
+      // Should show the manual address input
+      expect(await form.getManualAddressInput().isPresent()).toBe(true);
+
+      // Should show warning
+      expect(await form.hasManualAddressWarning()).toBe(true);
+      const warning = form.getManualAddressWarning();
+      expect(await warning.getText()).toContain(
+        "Be careful when entering an address manually"
+      );
+
+      // Should show link to address book
+      expect(await form.hasManualAddressLink()).toBe(true);
+      const link = form.getManualAddressLink();
+      expect(await link.getText()).toContain("Check out the address book!");
+      expect(await link.getAttribute("href")).toContain("/address-book");
+    });
+
+    it("should show both ICP and ICRC1 addresses for ICP transactions", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+
+      // Toggle should be enabled
+      expect(await form.isAddressBookToggleEnabled()).toBe(true);
+      expect(await form.isAddressBookToggleChecked()).toBe(true);
+
+      // Should show address book dropdown
+      expect(await form.hasAddressBookDropdown()).toBe(true);
+
+      // Should have both addresses as options
+      const addressBookSelect = form.getAddressBookSelectPo();
+      const options = await addressBookSelect.getOptions();
+      expect(options).toEqual(["Alice", "Bob"]);
+    });
+
+    it("should show only ICRC1 addresses for non-ICP transactions", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const ckBTCToken = {
+        symbol: "ckBTC",
+        name: "Chain Key Bitcoin",
+        decimals: 8,
+      };
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+        token: ckBTCToken,
+      });
+
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+
+      // Should show address book dropdown
+      expect(await form.hasAddressBookDropdown()).toBe(true);
+
+      // Should have only ICRC1 address as option (Bob)
+      const addressBookSelect = form.getAddressBookSelectPo();
+      const options = await addressBookSelect.getOptions();
+      expect(options).toEqual(["Bob"]);
+    });
+
+    it("should disable toggle when only ICP addresses exist for non-ICP transactions", async () => {
+      // Set address book with only ICP addresses
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp],
+        certified: true,
+      });
+
+      const ckBTCToken = {
+        symbol: "ckBTC",
+        name: "Chain Key Bitcoin",
+        decimals: 8,
+      };
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+        token: ckBTCToken,
+      });
+
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+
+      expect(await form.hasDestinationSection()).toBe(true);
+
+      // Toggle should be disabled since no ICRC1 addresses
+      expect(await form.isAddressBookToggleEnabled()).toBe(false);
+
+      // Should not show address book dropdown
+      expect(await form.hasAddressBookDropdown()).toBe(false);
+    });
+
+    it("should select address from dropdown and populate destination", async () => {
+      addressBookStore.set({
+        namedAddresses: [mockNamedAddressIcp, mockNamedAddressIcrc1],
+        certified: true,
+      });
+
+      const { container } = await renderTransactionModal({
+        rootCanisterId: OWN_CANISTER_ID,
+      });
+
+      const po = TransactionModalPo.under(new JestPageObjectElement(container));
+      const form = po.getTransactionFormPo();
+
+      // Should show address book dropdown
+      expect(await form.hasAddressBookDropdown()).toBe(true);
+
+      // Select Bob (ICRC1 address)
+      const addressBookSelect = form.getAddressBookSelectPo();
+      await addressBookSelect.selectAddress("Bob");
+
+      // The selectedDestinationAddress should be updated to Bob's address
+      // We can verify this by checking if the continue button becomes enabled when amount is entered
+      await form.enterAmount(10);
+
+      await waitFor(async () => {
+        expect(await form.isContinueButtonEnabled()).toBe(true);
+      });
     });
   });
 });

@@ -1,11 +1,9 @@
 import TransactionReceivedTokenAmount from "$lib/components/transaction/TransactionReceivedTokenAmount.svelte";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
-import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { tokensStore } from "$lib/stores/tokens.store";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import en from "$tests/mocks/i18n.mock";
-import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -75,12 +73,9 @@ describe("TransactionReceivedTokenAmount", () => {
       token,
       certified: true,
     });
-    const ckusdcTicker = {
-      ...mockIcpSwapTicker,
-      base_id: CKUSDC_LEDGER_CANISTER_ID.toText(),
-      last_price: "12.4",
-    };
-    icpSwapTickersStore.set([ckusdcTicker]);
+    setTickers({
+      [LEDGER_CANISTER_ID.toText()]: 12.4,
+    });
 
     const testId = "fiat-value";
     const { getByTestId } = renderComponent({

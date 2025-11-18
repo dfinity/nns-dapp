@@ -5,7 +5,7 @@ import {
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { mockCreateAgent } from "$tests/mocks/agent.mock";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
-import { mockImportedToken } from "$tests/mocks/icrc-accounts.mock";
+import { mockImportedToken } from "$tests/mocks/imported-tokens.mock";
 import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 

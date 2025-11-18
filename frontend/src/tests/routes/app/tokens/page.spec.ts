@@ -3,8 +3,12 @@ import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as ledgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
+import {
+  CKBTC_LEDGER_CANISTER_ID,
   CKBTC_UNIVERSE_CANISTER_ID,
   CKTESTBTC_UNIVERSE_CANISTER_ID,
 } from "$lib/constants/ckbtc-canister-ids.constants";
@@ -51,17 +55,11 @@ import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
+import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
+import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { AuthClient } from "@icp-sdk/auth/client";
-import {
-  MinterNoNewUtxosError,
-  type UpdateBalanceOk,
-} from "@icp-sdk/canisters/ckbtc";
-import {
-  encodeIcrcAccount,
-  type IcrcAccount,
-} from "@icp-sdk/canisters/ledger/icrc";
-import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
   ErrorKindEnum,
@@ -155,7 +153,12 @@ describe("Tokens route", () => {
     {
       ...mockIcpSwapTicker,
       base_id: CKUSDC_UNIVERSE_CANISTER_ID.toText(),
-      last_price: "0.00",
+      last_price: "1.00",
+    },
+    {
+      ...mockIcpSwapTicker,
+      base_id: CKBTC_LEDGER_CANISTER_ID.toText(),
+      last_price: "0.01",
     },
   ];
 
@@ -574,7 +577,13 @@ describe("Tokens route", () => {
 
         const po = await renderPage();
 
-        expect(get(icpSwapTickersStore)).toEqual(tickers);
+        const expectedTickersStore = {
+          [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
+          [LEDGER_CANISTER_ID.toText()]: 10,
+        };
+
+        expect(get(icpSwapTickersStore)).toEqual(expectedTickersStore);
+
         expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
 
         const tokensPagePo = po.getTokensPagePo();
@@ -794,6 +803,7 @@ describe("Tokens route", () => {
       const failedImportedTokenId = Principal.fromText(
         failedImportedTokenIdText
       );
+
       beforeEach(() => {
         resetIdentity();
         overrideFeatureFlagsStore.setFlag("ENABLE_CKTESTBTC", false);

@@ -36,17 +36,17 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
-import type { SnsWrapper } from "@icp-sdk/canisters/sns";
-import * as dfinitySns from "@icp-sdk/canisters/sns";
+import { LedgerCanister } from "@dfinity/ledger-icp";
+import type { SnsWrapper } from "@dfinity/sns";
+import * as dfinitySns from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   SnsVote,
   type SnsListNervousSystemFunctionsResponse,
   type SnsNeuronId,
   type SnsProposalId,
-} from "@icp-sdk/canisters/sns";
+} from "@dfinity/sns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Agent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
@@ -55,15 +55,6 @@ vi.mock("$lib/proxy/api.import.proxy");
 vi.mock("$lib/api/agent.api", () => {
   return {
     createAgent: () => Promise.resolve(mock<Agent>()),
-  };
-});
-
-vi.mock("@icp-sdk/canisters/sns", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@icp-sdk/canisters/sns")>();
-  return {
-    ...actual,
-    SnsWrapper: vi.fn(),
   };
 });
 

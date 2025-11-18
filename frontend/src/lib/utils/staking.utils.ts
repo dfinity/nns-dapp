@@ -1,8 +1,8 @@
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
-import { type IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { FailedActionableSnsesStoreData } from "$lib/stores/actionable-sns-proposals.store";
 import type { TableNeuron } from "$lib/types/neurons-table";
 import type { TableProject } from "$lib/types/staking";
+import type { TickersStoreData } from "$lib/types/tickers";
 import type { Universe } from "$lib/types/universe";
 import { buildNeuronsUrl } from "$lib/utils/navigation.utils";
 import {
@@ -37,6 +37,7 @@ import {
   TokenAmountV2,
   asNonNullish,
   isNullish,
+  nonNullish,
   type Token,
 } from "@dfinity/utils";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
@@ -167,7 +168,7 @@ export const getTableProjects = ({
   isSignedIn,
   nnsNeurons,
   snsNeurons,
-  icpSwapUsdPrices,
+  tickersStore,
   failedActionableSnses,
   stakingRewardsResult,
 }: {
@@ -175,67 +176,75 @@ export const getTableProjects = ({
   isSignedIn: boolean;
   nnsNeurons: NeuronInfo[] | undefined;
   snsNeurons: { [rootCanisterId: string]: { neurons: SnsNeuron[] } };
-  icpSwapUsdPrices: IcpSwapUsdPricesStoreData;
+  tickersStore: TickersStoreData;
   failedActionableSnses: FailedActionableSnsesStoreData;
   stakingRewardsResult: StakingRewardResult | undefined;
 }): TableProject[] => {
-  return universes.map((universe) => {
-    const token =
-      universe.canisterId === OWN_CANISTER_ID_TEXT
-        ? ICPToken
-        : // If the universe is an SNS universe then the summary is non-nullish.
-          asNonNullish(universe.summary).token;
-    const {
-      neuronCount,
-      stake,
-      availableMaturity,
-      stakedMaturity,
-      isStakeLoading,
-    } = getNeuronAggregateInfo({
-      isSignedIn,
-      universe,
-      token,
-      nnsNeurons,
-      snsNeurons,
-      failedActionableSnses,
-    });
-    const rowHref =
-      stake instanceof FailedTokenAmount
-        ? undefined
-        : buildNeuronsUrl({ universe: universe.canisterId });
-    const universeId = universe.canisterId;
-    const ledgerCanisterId = getLedgerCanisterIdFromUniverse(universe);
-    const tokenPrice =
-      isNullish(icpSwapUsdPrices) || icpSwapUsdPrices === "error"
-        ? undefined
-        : icpSwapUsdPrices[ledgerCanisterId.toText()];
-    const stakeInUsd =
-      stake instanceof TokenAmountV2
-        ? getUsdValue({
-            amount: stake,
-            tokenPrice,
-          })
-        : undefined;
-    const apy = isStakingRewardDataReady(stakingRewardsResult)
-      ? stakingRewardsResult?.apy.get(universeId)
-      : undefined;
+  return (
+    universes
+      // Filters out ck projects: projects without a summary or non-icp
+      .filter(
+        ({ canisterId, summary }) =>
+          canisterId === OWN_CANISTER_ID_TEXT || nonNullish(summary)
+      )
+      .map((universe) => {
+        const token =
+          universe.canisterId === OWN_CANISTER_ID_TEXT
+            ? ICPToken
+            : // If the universe is an SNS universe then the summary is non-nullish.
+              asNonNullish(universe.summary).token;
+        const {
+          neuronCount,
+          stake,
+          availableMaturity,
+          stakedMaturity,
+          isStakeLoading,
+        } = getNeuronAggregateInfo({
+          isSignedIn,
+          universe,
+          token,
+          nnsNeurons,
+          snsNeurons,
+          failedActionableSnses,
+        });
+        const rowHref =
+          stake instanceof FailedTokenAmount
+            ? undefined
+            : buildNeuronsUrl({ universe: universe.canisterId });
+        const universeId = universe.canisterId;
+        const ledgerCanisterId = getLedgerCanisterIdFromUniverse(universe);
+        const tokenPrice =
+          isNullish(tickersStore) || tickersStore === "error"
+            ? undefined
+            : tickersStore[ledgerCanisterId.toText()];
+        const stakeInUsd =
+          stake instanceof TokenAmountV2
+            ? getUsdValue({
+                amount: stake,
+                tokenPrice,
+              })
+            : undefined;
+        const apy = isStakingRewardDataReady(stakingRewardsResult)
+          ? stakingRewardsResult?.apy.get(universeId)
+          : undefined;
 
-    return {
-      rowHref,
-      domKey: universeId,
-      universeId,
-      title: universe.title,
-      logo: universe.logo,
-      tokenSymbol: token.symbol,
-      neuronCount,
-      stake,
-      stakeInUsd,
-      apy,
-      availableMaturity,
-      stakedMaturity,
-      isStakeLoading,
-    };
-  });
+        return {
+          rowHref,
+          domKey: universeId,
+          universeId,
+          title: universe.title,
+          logo: universe.logo,
+          tokenSymbol: token.symbol,
+          neuronCount,
+          stake,
+          stakeInUsd,
+          apy,
+          availableMaturity,
+          stakedMaturity,
+          isStakeLoading,
+        };
+      })
+  );
 };
 
 export const isIcpProject = (project: TableProject) =>

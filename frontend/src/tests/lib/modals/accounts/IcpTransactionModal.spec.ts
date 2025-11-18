@@ -2,6 +2,7 @@ import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
 import IcpTransactionModal from "$lib/modals/accounts/IcpTransactionModal.svelte";
 import * as icpAccountsServices from "$lib/services/icp-accounts.services";
 import { transferICP } from "$lib/services/icp-accounts.services";
+import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
 import { resetIdentity } from "$tests/mocks/auth.store.mock";
 import {
@@ -30,6 +31,8 @@ describe("IcpTransactionModal", () => {
 
   beforeEach(() => {
     resetIdentity();
+
+    overrideFeatureFlagsStore.setFlag("ENABLE_ADDRESS_BOOK", false);
 
     vi.spyOn(icpAccountsServices, "transferICP").mockResolvedValue({
       success: true,

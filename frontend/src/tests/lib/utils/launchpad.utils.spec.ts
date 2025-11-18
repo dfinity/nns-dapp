@@ -2,8 +2,8 @@ import CreateSnsProposalCard from "$lib/components/launchpad/CreateSnsProposalCa
 import OngoingProjectCard from "$lib/components/launchpad/OngoingProjectCard.svelte";
 import UpcomingProjectCard from "$lib/components/launchpad/UpcomingProjectCard.svelte";
 import { SEERS_ROOT_CANISTER_ID } from "$lib/constants/canister-ids.constants";
-import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import { snsTotalSupplyTokenAmountStore } from "$lib/derived/sns/sns-total-supply-token-amount.derived";
+import { tickersStore } from "$lib/stores/tickers.store";
 import {
   compareLaunchpadSnsProjects,
   compareSnsProjectsAbandonedLast,
@@ -22,14 +22,10 @@ import {
   mockSnsMetrics,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import {
-  ProposalStatus,
-  Topic,
-  type ProposalInfo,
-} from "@icp-sdk/canisters/nns";
-import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+import { setTickers } from "$tests/utils/tickers.test-utils";
+import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
@@ -365,7 +361,7 @@ describe("Launchpad utils", () => {
           totalTokenSupply,
         },
       ]);
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId1.toText()]: tokenPrice,
         [ledgerCanisterId2.toText()]: undefined,
       });
@@ -373,7 +369,7 @@ describe("Launchpad utils", () => {
 
     it("returns 1 when prices not available for the `a` project", () => {
       const comparator = compareSnsProjectsUndefinedMarketCapLast({
-        icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+        tickersStore: get(tickersStore),
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
       });
       expect(comparator(projectWithoutPrice, testProject)).toBe(1);
@@ -381,7 +377,7 @@ describe("Launchpad utils", () => {
 
     it("returns -1 when prices not available for the `b` project", () => {
       const comparator = compareSnsProjectsUndefinedMarketCapLast({
-        icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+        tickersStore: get(tickersStore),
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
       });
       expect(comparator(testProject, projectWithoutPrice)).toBe(-1);
@@ -389,7 +385,7 @@ describe("Launchpad utils", () => {
 
     it("returns 0 when `a` and `b` have same prices availability", () => {
       const comparator = compareSnsProjectsUndefinedMarketCapLast({
-        icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+        tickersStore: get(tickersStore),
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
       });
       expect(comparator(testProject, testProject)).toBe(0);
@@ -483,7 +479,7 @@ describe("Launchpad utils", () => {
           totalTokenSupply: totalTokenSupply2,
         },
       ]);
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId1.toText()]: tokenPrice,
         [ledgerCanisterId2.toText()]: tokenPrice,
       });
@@ -491,7 +487,7 @@ describe("Launchpad utils", () => {
 
     it("Returns 1 if `a` has a smaller fully diluted valuation than `b`", () => {
       const comparator = compareSnsProjectsByMarketCap({
-        icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+        tickersStore: get(tickersStore),
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
       });
       expect(
@@ -501,7 +497,7 @@ describe("Launchpad utils", () => {
 
     it("Returns -1 if `a` has a larger fully diluted valuation than `b`", () => {
       const comparator = compareSnsProjectsByMarketCap({
-        icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+        tickersStore: get(tickersStore),
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
       });
       expect(
@@ -511,7 +507,7 @@ describe("Launchpad utils", () => {
 
     it("Returns 0 if `a` has the same fully diluted valuation as `b`", () => {
       const comparator = compareSnsProjectsByMarketCap({
-        icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+        tickersStore: get(tickersStore),
         snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
       });
       expect(
@@ -656,7 +652,7 @@ describe("Launchpad utils", () => {
         },
       ]);
       // mock same token price for all the projects
-      setIcpSwapUsdPrices({
+      setTickers({
         [sameTokenPriceSummaryParams("_").ledgerCanisterId.toText()]: 1,
       });
     });
@@ -674,7 +670,7 @@ describe("Launchpad utils", () => {
       ];
       const sortedProjects = projects.sort(
         compareLaunchpadSnsProjects({
-          icpSwapUsdPricesStore: get(icpSwapUsdPricesStore),
+          tickersStore: get(tickersStore),
           snsTotalSupplyTokenAmountStore: get(snsTotalSupplyTokenAmountStore),
         })
       );

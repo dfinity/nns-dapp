@@ -70,7 +70,7 @@
       ? $i18n.neuron_detail.change_neuron_make_neuron_public_description
       : $i18n.neuron_detail.change_neuron_make_neuron_private_description}
     <a
-      href="https://internetcomputer.org/docs/current/developer-docs/daos/nns/concepts/neurons/neuron-management"
+      href="https://learn.internetcomputer.org/hc/en-us/articles/34084120668692-Neurons#h_01JJ26QW42Z5QMGJPE2JFBJK92"
       target="_blank"
       rel="noopener noreferrer"
     >

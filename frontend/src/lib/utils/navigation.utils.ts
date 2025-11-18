@@ -146,3 +146,13 @@ export const isSelectedPath = ({
   currentPath: AppPath | null;
   paths: (AppPath | null)[];
 }): boolean => currentPath !== null && paths.includes(currentPath);
+
+export const isExternalLink = (url: string | undefined) => {
+  if (!url) return false;
+  try {
+    const linkUrl = new URL(url, window.location.href);
+    return linkUrl.origin !== window.location.origin;
+  } catch {
+    return false;
+  }
+};

@@ -302,4 +302,51 @@ describe("ReportingNeuronsButton", () => {
 
     expect(await po.isDisabled()).toBe(false);
   });
+
+  it("should not generate CSV and show info toast when no NNS neurons are found", async () => {
+    spyQueryNeurons.mockResolvedValue([]);
+
+    const spyGenerateCsvFileToSave = vi
+      .spyOn(exportToCsvUtils, "generateCsvFileToSave")
+      .mockResolvedValue();
+
+    vi.spyOn(toastsStore, "toastsShow");
+
+    const po = renderComponent();
+
+    await po.click();
+    await runResolvedPromises();
+
+    expect(toastsStore.toastsShow).toBeCalledWith({
+      labelKey: "reporting.neurons_no_results",
+      level: "info",
+    });
+    expect(spyGenerateCsvFileToSave).not.toBeCalled();
+  });
+
+  it("should not generate CSV and show info toast when no SNS neurons are found", async () => {
+    setSnsProjects([{ projectName: "ProjA" }]);
+
+    const spyGenerateCsvFileToSave = vi
+      .spyOn(exportToCsvUtils, "generateCsvFileToSave")
+      .mockResolvedValue();
+
+    vi.spyOn(toastsStore, "toastsShow");
+
+    const { container } = render(ReportingNeuronsButton, {
+      props: { source: "sns" },
+    });
+    const po = ReportingNeuronsButtonPo.under({
+      element: new JestPageObjectElement(container),
+    });
+
+    await po.click();
+    await runResolvedPromises();
+
+    expect(toastsStore.toastsShow).toBeCalledWith({
+      labelKey: "reporting.neurons_no_results",
+      level: "info",
+    });
+    expect(spyGenerateCsvFileToSave).not.toBeCalled();
+  });
 });

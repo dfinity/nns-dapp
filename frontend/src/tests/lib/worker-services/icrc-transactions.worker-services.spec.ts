@@ -8,19 +8,19 @@ import {
   mockSnsMainAccount,
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
-import * as dfinityUtils from "@dfinity/utils";
-import type { IcrcGetTransactions } from "@icp-sdk/canisters/ledger/icrc";
+import type { IcrcIndexNgGetTransactions } from "@dfinity/ledger-icrc";
 import {
-  IcrcIndexCanister,
-  type IcrcTransaction,
-} from "@icp-sdk/canisters/ledger/icrc";
+  IcrcIndexNgCanister,
+  type IcrcIndexNgTransaction,
+} from "@dfinity/ledger-icrc";
+import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 
 describe("transactions.worker-services", () => {
-  const indexCanisterMock = mock<IcrcIndexCanister>();
+  const indexCanisterMock = mock<IcrcIndexNgCanister>();
 
   beforeEach(() => {
-    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
+    vi.spyOn(IcrcIndexNgCanister, "create").mockImplementation(
       () => indexCanisterMock
     );
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
@@ -30,7 +30,7 @@ describe("transactions.worker-services", () => {
 
   const transaction = {
     burn: [],
-  } as unknown as IcrcTransaction;
+  } as unknown as IcrcIndexNgTransaction;
 
   const request: Omit<
     PostMessageDataRequestTransactions,
@@ -49,6 +49,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [],
+        balance: 0n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -70,6 +71,7 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: id,
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });
@@ -82,6 +84,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions,
         oldest_tx_id: [],
+        balance: 0n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -106,12 +109,14 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: id,
         oldestTxId: undefined,
+        balance: 0n,
       },
       {
         accountIdentifier: mockSnsSubAccount.identifier,
         transactions,
         mostRecentTxId: id,
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });
@@ -124,6 +129,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions: [...transactions, ...transactions],
         oldest_tx_id: [],
+        balance: 0n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -145,6 +151,7 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: ids[0],
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });
@@ -161,7 +168,7 @@ describe("transactions.worker-services", () => {
 
     const getTransactionsSpy =
       indexCanisterMock.getTransactions.mockImplementation(
-        async (): Promise<IcrcGetTransactions> => {
+        async (): Promise<IcrcIndexNgGetTransactions> => {
           if (firstCall) {
             firstCall = false;
 
@@ -171,6 +178,7 @@ describe("transactions.worker-services", () => {
                 DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT
               ),
               oldest_tx_id: [],
+              balance: 0n,
             };
           }
 
@@ -179,6 +187,7 @@ describe("transactions.worker-services", () => {
               DEFAULT_INDEX_TRANSACTION_PAGE_LIMIT
             ),
             oldest_tx_id: [],
+            balance: 0n,
           };
         }
       );
@@ -197,6 +206,7 @@ describe("transactions.worker-services", () => {
           mostRecentTxId,
           oldestTxId: undefined,
           certified: true,
+          balance: 0n,
         },
       },
       data,
@@ -210,6 +220,7 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: ids[0],
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });
@@ -224,6 +235,7 @@ describe("transactions.worker-services", () => {
       indexCanisterMock.getTransactions.mockResolvedValue({
         transactions: [...transactions, ...transactions],
         oldest_tx_id: [],
+        balance: 0n,
       });
 
     const data: PostMessageDataRequestTransactions = {
@@ -240,6 +252,7 @@ describe("transactions.worker-services", () => {
           mostRecentTxId: undefined,
           oldestTxId: undefined,
           certified: true,
+          balance: 0n,
         },
       },
       data,
@@ -253,6 +266,7 @@ describe("transactions.worker-services", () => {
         transactions,
         mostRecentTxId: ids[0],
         oldestTxId: undefined,
+        balance: 0n,
       },
     ]);
   });

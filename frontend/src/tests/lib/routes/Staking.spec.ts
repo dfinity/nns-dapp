@@ -26,11 +26,8 @@ import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { StakingPo } from "$tests/page-objects/Staking.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import {
-  setIcpPrice,
-  setIcpSwapUsdPrices,
-} from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setIcpPrice, setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { fromNullable } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
@@ -49,7 +46,7 @@ describe("Staking", () => {
       routeId: AppPath.Staking,
     });
 
-    setIcpSwapUsdPrices({
+    setTickers({
       [snsLedgerId.toText()]: 10,
     });
 

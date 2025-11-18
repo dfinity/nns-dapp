@@ -38,10 +38,10 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -282,7 +282,7 @@ describe("Portfolio route", () => {
           main: { ...mockMainAccount, balanceUlps: icpBalanceE8s },
         });
 
-        setIcpSwapUsdPrices({
+        setTickers({
           [CKBTC_UNIVERSE_CANISTER_ID.toText()]: 100_000,
           [CKTESTBTC_UNIVERSE_CANISTER_ID.toText()]: 100_000,
           [CKETH_UNIVERSE_CANISTER_ID.toText()]: 10_000,

@@ -77,7 +77,7 @@ export class PlaywrightPageObjectElement implements PageObjectElement {
   }
 
   getValue(): Promise<string> {
-    throw new Error("Not implemented");
+    return this.locator.inputValue();
   }
 
   getText(): Promise<string> {

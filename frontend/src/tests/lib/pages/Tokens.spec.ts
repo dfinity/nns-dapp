@@ -20,7 +20,7 @@ import {
 } from "$tests/mocks/tokens-page.mock";
 import { TokensPagePo } from "$tests/page-objects/TokensPage.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import {
   advanceTime,
   runResolvedPromises,

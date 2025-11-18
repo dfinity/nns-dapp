@@ -18,7 +18,7 @@ import {
   ProposalStatus,
   Topic,
   Vote,
-} from "@icp-sdk/canisters/nns";
+} from "@dfinity/nns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";

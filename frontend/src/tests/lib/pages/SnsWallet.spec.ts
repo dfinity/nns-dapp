@@ -30,8 +30,8 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
-import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -75,6 +75,7 @@ describe("SnsWallet", () => {
     resetIdentity();
     vi.mocked(icrcIndexApi.getTransactions).mockResolvedValue({
       transactions: [],
+      balance: 0n,
     });
     vi.spyOn(icrcLedgerApi, "icrcTransfer").mockResolvedValue(10n);
     vi.spyOn(

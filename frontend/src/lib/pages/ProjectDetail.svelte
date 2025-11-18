@@ -42,7 +42,7 @@
   import { hasBuyersCount } from "$lib/utils/sns-swap.utils";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
   import { Principal } from "@icp-sdk/core/principal";
-  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+  import { SnsSwapLifecycle } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { onDestroy, setContext } from "svelte";
   import { writable } from "svelte/store";
@@ -103,7 +103,7 @@
    * We load all the sns summaries and swap commitments on the global scale of the app.
    * That's why we subscribe to these stores - i.e. each times they change, we can try to find the current root canister id within these data.
    */
-  $: $snsSummariesStore,
+  $: ($snsSummariesStore,
     $snsSwapCommitmentsStore,
     $snsTotalSupplyTokenAmountStore,
     (async () => {
@@ -137,7 +137,7 @@
 
       $projectDetailStore.totalTokensSupply =
         $snsTotalSupplyTokenAmountStore[rootCanisterId];
-    })();
+    })());
 
   /////////////////////////////////
   // Set up watchers and load the data in stores

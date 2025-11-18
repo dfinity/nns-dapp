@@ -41,6 +41,10 @@ describe("env-vars-utils", () => {
       "VITE_ICP_SWAP_URL",
       "http://mrfq3-7eaaa-aaaaa-qabja-cai.localhost:8080"
     );
+    vi.stubEnv(
+      "VITE_KONG_SWAP_URL",
+      "http://xvemo-ap777-77774-qaalq-cai.localhost:8080"
+    );
     vi.stubEnv("VITE_CKBTC_MINTER_CANISTER_ID", "o66jk-a4aaa-aaaaa-qabfq-cai");
     vi.stubEnv("VITE_CKBTC_INDEX_CANISTER_ID", "olzyh-buaaa-aaaaa-qabga-cai");
     vi.stubEnv("VITE_CKETH_LEDGER_CANISTER_ID", "omy6t-mmaaa-aaaaa-qabgq-cai");
@@ -62,6 +66,7 @@ describe("env-vars-utils", () => {
     host: "http://localhost:8080",
     identityServiceUrl: "http://qhbym-qaaaa-aaaaa-aaafq-cai.localhost:8080",
     icpSwapUrl: "http://mrfq3-7eaaa-aaaaa-qabja-cai.localhost:8080",
+    kongSwapUrl: "http://xvemo-ap777-77774-qaalq-cai.localhost:8080",
     ledgerCanisterId: "ryjl3-tyaaa-aaaaa-aaaba-cai",
     indexCanisterId: "mecbw-6maaa-aaaaa-qabkq-cai",
     ownCanisterId: "qsgjb-riaaa-aaaaa-aaaga-cai",
@@ -133,10 +138,26 @@ describe("env-vars-utils", () => {
     });
   });
 
+  it("should return the correct Kong Swap URL", () => {
+    const kongSwapUrl = "http://xvemo-ap777-77774-qaalq-cai.localhost:8080";
+    vi.stubEnv("VITE_KONG_SWAP_URL", kongSwapUrl);
+    expect(getEnvVars()).toEqual({
+      ...defaultExpectedEnvVars,
+      kongSwapUrl,
+    });
+  });
+
   it("ICP Swap URL is mandatory", () => {
     vi.stubEnv("VITE_ICP_SWAP_URL", "");
     expect(() => getEnvVars()).toThrowError(
       "Missing mandatory environment variables: icpSwapUrl"
+    );
+  });
+
+  it("Kong Swap URL is mandatory", () => {
+    vi.stubEnv("VITE_KONG_SWAP_URL", "");
+    expect(() => getEnvVars()).toThrowError(
+      "Missing mandatory environment variables: kongSwapUrl"
     );
   });
 });

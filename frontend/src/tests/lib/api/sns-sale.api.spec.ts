@@ -16,26 +16,17 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { SnsWrapper } from "@icp-sdk/canisters/sns";
-import * as dfinitySns from "@icp-sdk/canisters/sns";
+import type { SnsWrapper } from "@dfinity/sns";
+import * as dfinitySns from "@dfinity/sns";
 import {
   SnsSwapCanister,
   UnsupportedMethodError,
   type SnsGetAutoFinalizationStatusResponse,
-} from "@icp-sdk/canisters/sns";
+} from "@dfinity/sns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 vi.mock("$lib/proxy/api.import.proxy");
-
-vi.mock("@icp-sdk/canisters/sns", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@icp-sdk/canisters/sns")>();
-  return {
-    ...actual,
-    SnsWrapper: vi.fn(),
-  };
-});
 
 describe("sns-sale.api", () => {
   const ticket = snsTicketMock({

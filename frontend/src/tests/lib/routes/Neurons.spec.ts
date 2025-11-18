@@ -1,7 +1,10 @@
 import * as agent from "$lib/api/agent.api";
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
-import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
+import {
+  LEDGER_CANISTER_ID,
+  OWN_CANISTER_ID_TEXT,
+} from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
 import Neurons from "$lib/routes/Neurons.svelte";
@@ -20,7 +23,7 @@ import { NeuronsPo } from "$tests/page-objects/Neurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { blockAllCallsTo } from "$tests/utils/module.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { waitFor } from "@testing-library/dom";
@@ -164,7 +167,13 @@ describe("Neurons", () => {
     const po = NeuronsPo.under(new JestPageObjectElement(container));
     await runResolvedPromises();
 
-    expect(get(icpSwapTickersStore)).toEqual(tickers);
+    const expectedTickersStore = {
+      [CKUSDC_UNIVERSE_CANISTER_ID.toText()]: 1,
+      [LEDGER_CANISTER_ID.toText()]: 10,
+    };
+
+    expect(get(icpSwapTickersStore)).toEqual(expectedTickersStore);
+
     expect(icpSwapApi.queryIcpSwapTickers).toBeCalledTimes(1);
 
     const rows = await po

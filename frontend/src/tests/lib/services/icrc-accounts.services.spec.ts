@@ -33,7 +33,7 @@ import { mockSnsMainAccount } from "$tests/mocks/sns-accounts.mock";
 import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   AgentError,
   ErrorKindEnum,
@@ -201,6 +201,7 @@ describe("icrc-accounts-services", () => {
         transactions: [mockIcrcTransactionWithId],
         oldestTxId: undefined,
         completed: false,
+        balance: 0n,
       });
 
       vi.spyOn(ledgerApi, "queryIcrcBalance").mockRejectedValue(new Error());

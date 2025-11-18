@@ -18,7 +18,7 @@ import {
   icpTokenBase,
 } from "$tests/mocks/tokens-page.mock";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { setIcpPrice } from "$tests/utils/icp-swap.test-utils";
+import { setIcpPrice } from "$tests/utils/tickers.test-utils";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 

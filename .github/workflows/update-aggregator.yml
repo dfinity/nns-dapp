@@ -4,7 +4,7 @@ name: Update sns_aggregator candid bindings
 on:
   schedule:
     # Check for updates on candid interface for the aggregator every monday at 3:30am.
-    - cron: '30 3 * * TUE'
+    - cron: "30 3 * * TUE"
   workflow_dispatch:
   push:
     branches:
@@ -63,7 +63,6 @@ jobs:
           committer: GitHub <noreply@github.com>
           author: gix-bot <gix-bot@users.noreply.github.com>
           base: main
-          reviewers: mstrasinskis, aterga, yhabib
           # Note: Please be careful when updating the add-paths field.  We have had the snsdemo committed by accident, with a pattern that matches nothing seemingly committing everything.
           add-paths: |
             config.json
@@ -72,7 +71,7 @@ jobs:
           branch: bot-aggregator-update
           branch-suffix: timestamp
           delete-branch: true
-          title: 'bot: Update sns_aggregator candid bindings'
+          title: "bot: Update sns_aggregator candid bindings"
           body: |
             # Motivation
             A newer release of the internet computer is available.

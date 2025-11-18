@@ -10,12 +10,9 @@
   import { isValidInputAmount } from "$lib/utils/neuron.utils";
   import { getSnsNeuronStake } from "$lib/utils/sns-neuron.utils";
   import { busy, Modal } from "@dfinity/gix-components";
-  import type { E8s } from "@icp-sdk/canisters/nns";
+  import type { E8s } from "@dfinity/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
   import {
     fromDefinedNullable,
     isNullish,

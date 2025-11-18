@@ -10,8 +10,8 @@ import {
   createCanisterWorker,
   type CreateCanisterWorkerParams,
 } from "$lib/worker-utils/canister.worker-utils";
+import { IcrcIndexNgCanister } from "@dfinity/ledger-icrc";
 import { fromNullable } from "@dfinity/utils";
-import { IcrcIndexCanister } from "@icp-sdk/canisters/ledger/icrc";
 
 export const getIcrcTransactions = async ({
   identity,
@@ -56,11 +56,11 @@ export const getIcrcTransactions = async ({
 
 const createCanister = (
   params: CanisterActorParams & { canisterId: CanisterId }
-): Promise<IcrcIndexCanister> =>
-  createCanisterWorker<IcrcIndexCanister>({
+): Promise<IcrcIndexNgCanister> =>
+  createCanisterWorker<IcrcIndexNgCanister>({
     ...params,
     create: ({ agent, canisterId }: CreateCanisterWorkerParams) =>
-      IcrcIndexCanister.create({
+      IcrcIndexNgCanister.create({
         agent,
         canisterId: mapCanisterId(canisterId),
       }),

@@ -2,9 +2,9 @@
   import AmountDisplay from "$lib/components/ic/AmountDisplay.svelte";
   import IcpExchangeRateInfoTooltip from "$lib/components/ui/IcpExchangeRateInfoTooltip.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
-  import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
   import { tokensByLedgerCanisterIdStore } from "$lib/derived/tokens.derived";
   import { i18n } from "$lib/stores/i18n";
+  import { tickersStore } from "$lib/stores/tickers.store";
   import { formatNumber } from "$lib/utils/format.utils";
   import {
     getLedgerCanisterIdFromToken,
@@ -45,9 +45,9 @@
   let tokenPrice: number | undefined;
   $: tokenPrice =
     nonNullish(ledgerCanisterId) &&
-    nonNullish($icpSwapUsdPricesStore) &&
-    $icpSwapUsdPricesStore !== "error"
-      ? $icpSwapUsdPricesStore[ledgerCanisterId]
+    nonNullish($tickersStore) &&
+    $tickersStore !== "error"
+      ? $tickersStore[ledgerCanisterId]
       : undefined;
 
   let tokens: TokenAmountV2 | undefined;
@@ -65,7 +65,7 @@
     : PRICE_NOT_AVAILABLE_PLACEHOLDER;
 
   let hasError: boolean;
-  $: hasError = $icpSwapUsdPricesStore === "error" || isNullish(tokenPrice);
+  $: hasError = $tickersStore === "error" || isNullish(tokenPrice);
 </script>
 
 <div

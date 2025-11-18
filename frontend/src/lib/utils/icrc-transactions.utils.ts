@@ -10,6 +10,16 @@ import type {
 import { AccountTransactionType } from "$lib/types/transaction";
 import type { UniverseCanisterId } from "$lib/types/universe";
 import { transactionName } from "$lib/utils/transactions.utils";
+import type {
+  PendingUtxo,
+  RetrieveBtcStatusV2,
+  RetrieveBtcStatusV2WithId,
+} from "@dfinity/ckbtc";
+import type {
+  IcrcTransaction,
+  IcrcTransactionWithId,
+} from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   TokenAmount,
   TokenAmountV2,
@@ -19,16 +29,6 @@ import {
   uint8ArrayToHexString,
   type Token,
 } from "@dfinity/utils";
-import type {
-  PendingUtxo,
-  RetrieveBtcStatusV2,
-  RetrieveBtcStatusV2WithId,
-} from "@icp-sdk/canisters/ckbtc";
-import type {
-  IcrcTransaction,
-  IcrcTransactionWithId,
-} from "@icp-sdk/canisters/ledger/icrc";
-import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { Cbor } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 
@@ -170,6 +170,49 @@ const getTransactionInformation = (
     // transacted amount.
     amount: isApprove ? 0n : data?.amount,
     fee: fromNullable("fee" in data ? data.fee : []),
+  };
+};
+
+export const mapIcrcTransactionToReport = ({
+  account,
+  transaction,
+  token,
+}: {
+  account: Account;
+  transaction: IcrcTransactionWithId;
+  token: Token;
+}) => {
+  const txInfo = getTransactionInformation(transaction.transaction);
+  if (txInfo === undefined) {
+    throw new Error(`Unknown transaction type ${transaction.transaction.kind}`);
+  }
+  const { to, from, amount, fee } = txInfo;
+  const isSelfTransaction = isToSelf(transaction.transaction);
+
+  const isReceive = isSelfTransaction || txInfo.from !== account.identifier;
+  const transactionDirection: "credit" | "debit" = isReceive
+    ? "credit"
+    : "debit";
+  const useFee = !isReceive;
+  const feeApplied = useFee && nonNullish(fee) ? fee : 0n;
+
+  const type = getIcrcTransactionType({
+    transaction: transaction.transaction,
+    isReceive,
+  });
+
+  const tokenAmount = TokenAmountV2.fromUlps({
+    amount: amount + feeApplied,
+    token: token,
+  });
+
+  return {
+    type,
+    to,
+    from,
+    tokenAmount,
+    timestampNanos: transaction.transaction.timestamp,
+    transactionDirection,
   };
 };
 

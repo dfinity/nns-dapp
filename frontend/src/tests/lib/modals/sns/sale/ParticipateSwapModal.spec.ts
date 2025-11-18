@@ -32,7 +32,7 @@ import { ParticipateSwapModalPo } from "$tests/page-objects/ParticipateSwapModal
 import type { TransactionReviewPo } from "$tests/page-objects/TransactionReview.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import {
   advanceTime,
   runResolvedPromises,
@@ -248,7 +248,7 @@ describe("ParticipateSwapModal", () => {
     });
 
     it("should display the amount in fiat value", async () => {
-      setIcpSwapUsdPrices({
+      setTickers({
         [rootCanisterIdMock.toText()]: 100,
       });
 

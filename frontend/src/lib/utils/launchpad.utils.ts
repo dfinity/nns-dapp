@@ -2,9 +2,9 @@ import CreateSnsProposalCard from "$lib/components/launchpad/CreateSnsProposalCa
 import OngoingProjectCard from "$lib/components/launchpad/OngoingProjectCard.svelte";
 import UpcomingProjectCard from "$lib/components/launchpad/UpcomingProjectCard.svelte";
 import { abandonedProjectsCanisterId } from "$lib/constants/canister-ids.constants";
-import type { IcpSwapUsdPricesStoreData } from "$lib/derived/icp-swap.derived";
 import type { SnsFullProject } from "$lib/derived/sns/sns-projects.derived";
 import type { ComponentWithProps } from "$lib/types/svelte";
+import type { TickersStoreData } from "$lib/types/tickers";
 import { compareProposalInfoByDeadlineTimestampSeconds } from "$lib/utils/portfolio.utils";
 import {
   comparesByDecentralizationSaleOpenTimestampDesc,
@@ -85,17 +85,17 @@ export const compareSnsProjectsUndefinedProposalActivityLast =
 
 export const compareSnsProjectsUndefinedMarketCapLast = ({
   snsTotalSupplyTokenAmountStore,
-  icpSwapUsdPricesStore,
+  tickersStore,
 }: {
   snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
-  icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
+  tickersStore: TickersStoreData;
 }) =>
   createAscendingComparator(
     (project: SnsFullProject) =>
       snsProjectMarketCap({
         sns: project,
         snsTotalSupplyTokenAmountStore,
-        icpSwapUsdPricesStore,
+        tickersStore,
       }) === undefined
   );
 
@@ -105,17 +105,17 @@ export const compareSnsProjectsByProposalActivity = createDescendingComparator(
 
 export const compareSnsProjectsByMarketCap = ({
   snsTotalSupplyTokenAmountStore,
-  icpSwapUsdPricesStore,
+  tickersStore,
 }: {
   snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
-  icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
+  tickersStore: TickersStoreData;
 }) =>
   createDescendingComparator(
     (project: SnsFullProject) =>
       snsProjectMarketCap({
         sns: project,
         snsTotalSupplyTokenAmountStore,
-        icpSwapUsdPricesStore,
+        tickersStore,
       }) ?? 0n
   );
 export const compareSnsProjectsByIcpTreasury = createDescendingComparator(
@@ -124,10 +124,10 @@ export const compareSnsProjectsByIcpTreasury = createDescendingComparator(
 
 export const compareLaunchpadSnsProjects = ({
   snsTotalSupplyTokenAmountStore,
-  icpSwapUsdPricesStore,
+  tickersStore,
 }: {
   snsTotalSupplyTokenAmountStore: Record<string, TokenAmountV2>;
-  icpSwapUsdPricesStore: IcpSwapUsdPricesStoreData;
+  tickersStore: TickersStoreData;
 }) =>
   mergeComparators([
     compareSnsProjectsAbandonedLast,
@@ -135,11 +135,11 @@ export const compareLaunchpadSnsProjects = ({
     compareSnsProjectsUndefinedIcpTreasuryLast,
     compareSnsProjectsUndefinedMarketCapLast({
       snsTotalSupplyTokenAmountStore,
-      icpSwapUsdPricesStore,
+      tickersStore,
     }),
     compareSnsProjectsByMarketCap({
       snsTotalSupplyTokenAmountStore,
-      icpSwapUsdPricesStore,
+      tickersStore,
     }),
     compareSnsProjectsByProposalActivity,
     compareSnsProjectsByIcpTreasury,

@@ -68,20 +68,26 @@ import {
   userAuthorizedNeuron,
   validTopUpAmount,
 } from "$lib/utils/neuron.utils";
+import {
+  addNnsNeuronToFollowingsByTopics,
+  getNnsTopicFollowings,
+  removeNnsNeuronFromFollowingsByTopics,
+} from "$lib/utils/nns-topics.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
-import { isNullish, nonNullish } from "@dfinity/utils";
 import type {
   AccountIdentifierHex,
   TransactionWithId,
-} from "@icp-sdk/canisters/ledger/icp";
+} from "@dfinity/ledger-icp";
 import {
   NeuronVisibility,
   Topic,
   memoToNeuronAccountIdentifier,
+  type FolloweesForTopic,
   type Neuron,
   type NeuronId,
   type NeuronInfo,
-} from "@icp-sdk/canisters/nns";
+} from "@dfinity/nns";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
@@ -910,6 +916,46 @@ const setFolloweesHelper = async ({
   await getAndLoadNeuron(neuron.neuronId);
 };
 
+const setFollowingHelper = async ({
+  neuron,
+  topicFollowing,
+  onNoChanges,
+}: {
+  neuron: NeuronInfo | undefined;
+  topicFollowing: FolloweesForTopic[];
+  onNoChanges?: () => void;
+}) => {
+  if (neuron === undefined) {
+    throw new NotFoundError(
+      "Neuron not found in store. We can't check authorization to set followees."
+    );
+  }
+
+  if (topicFollowing.length === 0) {
+    onNoChanges?.();
+    return;
+  }
+
+  let identity: Identity = await getAuthenticatedIdentity();
+
+  if (!isHotKeyControllable({ neuron, identity })) {
+    identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
+  }
+
+  // ManageNeuron topic followees can only be handled by controllers
+  if (topicFollowing.some(({ topic }) => topic === Topic.NeuronManagement)) {
+    identity = await getIdentityOfControllerByNeuronId(neuron.neuronId);
+  }
+
+  await governanceApiService.setFollowing({
+    identity,
+    neuronId: neuron.neuronId,
+    topicFollowing,
+  });
+
+  await getAndLoadNeuron(neuron.neuronId);
+};
+
 export const addFollowee = async ({
   neuronId,
   topic,
@@ -937,6 +983,58 @@ export const addFollowee = async ({
     neuron,
     topic,
     followees: newFollowees,
+  });
+};
+
+export const setFollowing = async ({
+  neuronId,
+  topics,
+  followee,
+}: {
+  neuronId: NeuronId;
+  topics: Topic[];
+  followee: NeuronId;
+}): Promise<void> => {
+  const neuron = getNeuronFromStore(neuronId);
+  const topicFollowing = isNullish(neuron)
+    ? []
+    : addNnsNeuronToFollowingsByTopics({
+        followings: getNnsTopicFollowings(neuron),
+        topics,
+        neuronId: followee,
+      });
+
+  await setFollowingHelper({
+    neuron,
+    topicFollowing,
+  });
+};
+
+export const removeFollowing = async ({
+  neuronId,
+  topics,
+  followee,
+}: {
+  neuronId: NeuronId;
+  topics: Topic[];
+  followee: NeuronId;
+}): Promise<void> => {
+  const neuron = getNeuronFromStore(neuronId);
+  const topicFollowing = isNullish(neuron)
+    ? []
+    : removeNnsNeuronFromFollowingsByTopics({
+        followings: getNnsTopicFollowings(neuron),
+        topics,
+        neuronId: followee,
+      });
+
+  await setFollowingHelper({
+    neuron,
+    topicFollowing,
+    onNoChanges: () =>
+      toastsError({
+        labelKey: "error.followee_does_not_exist",
+      }),
   });
 };
 

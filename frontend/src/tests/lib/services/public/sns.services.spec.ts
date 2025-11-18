@@ -33,7 +33,7 @@ import {
   rootCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle } from "@dfinity/sns";
 import { AnonymousIdentity, type HttpAgent } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";

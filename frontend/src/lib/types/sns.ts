@@ -14,7 +14,7 @@ import type {
   SnsSwapInit,
   SnsSwapTicket,
   SnsTopic,
-} from "@icp-sdk/canisters/sns";
+} from "@dfinity/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export type RootCanisterId = Principal;

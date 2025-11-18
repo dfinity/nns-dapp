@@ -134,4 +134,23 @@ export class NnsWalletPo extends BasePageObject {
     });
     await modal.waitForAbsent();
   }
+
+  async transferToAddressBookEntry({
+    nickname,
+    expectedAccountAddress,
+    amount,
+  }: {
+    nickname: string;
+    expectedAccountAddress: string;
+    amount: number;
+  }): Promise<void> {
+    await this.clickSend();
+    const modal = this.getIcpTransactionModalPo();
+    await modal.transferToAddressBookEntry({
+      nickname,
+      expectedAccountAddress,
+      amount,
+    });
+    await modal.waitForAbsent();
+  }
 }

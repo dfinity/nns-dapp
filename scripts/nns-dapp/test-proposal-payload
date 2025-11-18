@@ -243,6 +243,8 @@ test_nns_function_52() {
   verify_payload "$subcommand" "$ACTUAL_PAYLOAD" "$EXPECTED_PAYLOAD"
 }
 
+# TODO: Add test for nns_function_55
+
 run_ic_admin() {
   ic-admin \
     --secret-key-pem "$PEM" \
@@ -283,7 +285,7 @@ declare -F | grep test_nns_function_ | sed -e 's/declare -f //' | while read -r 
 done
 
 # Make sure that we add tests for new NNS function.
-FIRST_UNDEFINED_NNS_FUNCTION=53
+FIRST_UNDEFINED_NNS_FUNCTION=56
 
 for i in $(seq 0 5); do
   undefined_nns_function=$((FIRST_UNDEFINED_NNS_FUNCTION + i))

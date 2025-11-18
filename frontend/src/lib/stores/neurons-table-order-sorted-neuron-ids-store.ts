@@ -1,5 +1,4 @@
 import { icpAccountsStore } from "$lib/derived/icp-accounts.derived";
-import { icpSwapUsdPricesStore } from "$lib/derived/icp-swap.derived";
 import {
   neuronMinimumDissolveDelayToVoteSeconds,
   startReducingVotingPowerAfterSecondsStore,
@@ -9,6 +8,7 @@ import { authStore } from "$lib/stores/auth.store";
 import { i18n } from "$lib/stores/i18n";
 import { neuronsTableOrderStore } from "$lib/stores/neurons-table.store";
 import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
+import { tickersStore } from "$lib/stores/tickers.store";
 import { getSortedNeuronIds } from "$lib/utils/neurons-table-order-sorted-neuron-ids-store.utils";
 import {
   compareById,
@@ -22,7 +22,7 @@ const tableNeuronsToSortStore = derived(
     icpAccountsStore,
     i18n,
     definedNeuronsStore,
-    icpSwapUsdPricesStore,
+    tickersStore,
     startReducingVotingPowerAfterSecondsStore,
     neuronMinimumDissolveDelayToVoteSeconds,
     stakingRewardsStore,
@@ -32,7 +32,7 @@ const tableNeuronsToSortStore = derived(
     $icpAccountsStore,
     $i18n,
     $definedNeuronsStore,
-    $icpSwapUsdPricesStore,
+    tickersStore,
     $startReducingVotingPowerAfterSecondsStore,
     $neuronMinimumDissolveDelayToVoteSeconds,
     $stakingRewardsStore,
@@ -42,7 +42,7 @@ const tableNeuronsToSortStore = derived(
       accounts: $icpAccountsStore,
       i18n: $i18n,
       neuronInfos: $definedNeuronsStore,
-      icpSwapUsdPrices: $icpSwapUsdPricesStore,
+      tickersStore,
       startReducingVotingPowerAfterSeconds:
         $startReducingVotingPowerAfterSecondsStore,
       minimumDissolveDelay: $neuronMinimumDissolveDelayToVoteSeconds,

@@ -26,7 +26,7 @@
     sortSnsProposalsById,
   } from "$lib/utils/sns-proposals.utils";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+  import type { SnsNervousSystemFunction } from "@dfinity/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { Readable } from "svelte/store";
 
@@ -84,10 +84,10 @@
 
   // Fetch the proposals only on filters or project change.
   // TODO(e2e): cover this with e2e tests.
-  $: $snsOnlyProjectStore,
+  $: ($snsOnlyProjectStore,
     $snsFiltersStore,
     $nsFunctionsStore,
-    (() => fetchProposals($snsFiltersStore))();
+    (() => fetchProposals($snsFiltersStore))());
 
   let loadingNextPage = false;
   let loadNextPage: () => Promise<void>;

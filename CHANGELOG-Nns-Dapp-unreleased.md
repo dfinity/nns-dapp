@@ -14,9 +14,12 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Secondary data source for USD values. 
+
 #### Changed
 
-- Improved SNS data loading speed through parallel processing
+- Follow neuron flow for NNS neurons.
+- User address-book to save common addresses.
 
 #### Deprecated
 

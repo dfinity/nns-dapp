@@ -13,17 +13,17 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { SnsNeuronsPo } from "$tests/page-objects/SnsNeurons.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpSwapUsdPrices } from "$tests/utils/icp-swap.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsDisburseMaturityInProgress } from "@icp-sdk/canisters/sns";
+import type { SnsDisburseMaturityInProgress } from "@dfinity/sns";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
-} from "@icp-sdk/canisters/sns";
+} from "@dfinity/sns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 
@@ -240,7 +240,7 @@ describe("SnsNeurons", () => {
     });
 
     it("should provide USD prices", async () => {
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId.toText()]: 0.1,
       });
 
@@ -259,7 +259,7 @@ describe("SnsNeurons", () => {
     });
 
     it("should show total stake in USD", async () => {
-      setIcpSwapUsdPrices({
+      setTickers({
         [ledgerCanisterId.toText()]: 0.1,
       });
 
@@ -275,7 +275,7 @@ describe("SnsNeurons", () => {
     });
 
     it("should show absent total stake in USD if token price is unknown", async () => {
-      setIcpSwapUsdPrices({
+      setTickers({
         // No price for the SNS token.
         [ledgerCanisterId.toText()]: undefined,
       });
