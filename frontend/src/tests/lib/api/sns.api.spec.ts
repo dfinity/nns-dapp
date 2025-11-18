@@ -43,6 +43,8 @@ vi.mock("$lib/api/agent.api", () => {
   };
 });
 
+vi.mock("@icp-sdk/canisters/sns", { spy: true });
+
 describe("sns-api", () => {
   const mockQuerySwap = {
     swap: [mockSwap],

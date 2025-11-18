@@ -73,6 +73,8 @@ import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
+vi.mock("@icp-sdk/canisters/sns", { spy: true });
+
 const identity: Identity | undefined = mockIdentity;
 const rootCanisterIdMock = identity.getPrincipal();
 
