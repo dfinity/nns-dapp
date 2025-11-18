@@ -4,7 +4,11 @@ import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { HeadingSubtitleWithUsdValuePo } from "$tests/page-objects/HeadingSubtitleWithUsdValue.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice, setTickers } from "$tests/utils/tickers.test-utils";
+import {
+  setIcpPrice,
+  setTickers,
+  setTickersProvider,
+} from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -31,6 +35,7 @@ describe("HeadingSubtitleWithUsdValue", () => {
   });
 
   it("should render amount in USD", async () => {
+    setTickersProvider("icp-swap");
     const amount = TokenAmountV2.fromString({
       amount: "3",
       token: ICPToken,
@@ -43,8 +48,8 @@ describe("HeadingSubtitleWithUsdValue", () => {
 
     expect(await po.hasAmountInUsd()).toBe(true);
     expect(await po.getAmountInUsd()).toBe("$30.00");
-    expect(await po.getTooltipIconPo().getTooltipText()).toContain(
-      "Token prices are given in USD and based on data provided by"
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
+      "Token prices are given in USD and based on data provided by ICPSwap."
     );
   });
 

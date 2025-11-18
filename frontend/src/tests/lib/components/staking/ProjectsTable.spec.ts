@@ -30,7 +30,10 @@ import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
-import { setTickers } from "$tests/utils/tickers.test-utils";
+import {
+  setTickers,
+  setTickersProvider,
+} from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -754,6 +757,7 @@ describe("ProjectsTable", () => {
     });
 
     it("should show total stake in USD", async () => {
+      setTickersProvider("icp-swap");
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,

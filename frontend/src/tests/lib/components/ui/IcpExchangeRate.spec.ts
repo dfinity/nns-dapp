@@ -2,6 +2,7 @@ import IcpExchangeRate from "$lib/components/ui/IcpExchangeRate.svelte";
 import en from "$tests/mocks/i18n.mock";
 import { IcpExchangeRatePo } from "$tests/page-objects/IcpExchangeRate.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { setTickersProvider } from "$tests/utils/tickers.test-utils";
 import { render } from "@testing-library/svelte";
 
 describe("IcpExchangeRate", () => {
@@ -65,10 +66,11 @@ describe("IcpExchangeRate", () => {
   it("shows price source message in tooltip when hasError is false", async () => {
     const icpPrice = 10;
     const hasError = false;
+    setTickersProvider("icp-swap");
 
     const po = renderComponent({ icpPrice, hasError });
-    const message = `1 ICP = $10.00Token prices are given in USD and based on data provided by`;
+    const message = `1 ICP = $10.00Token prices are given in USD and based on data provided by ICPSwap.`;
 
-    expect(await po.getTooltipText()).toContain(message);
+    expect(await po.getTooltipText()).toBe(message);
   });
 });

@@ -3,7 +3,10 @@ import en from "$tests/mocks/i18n.mock";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { setIcpPrice } from "$tests/utils/tickers.test-utils";
+import {
+  setIcpPrice,
+  setTickersProvider,
+} from "$tests/utils/tickers.test-utils";
 
 describe("UsdValueBanner", () => {
   const renderComponent = ({
@@ -78,12 +81,13 @@ describe("UsdValueBanner", () => {
     const usdAmount = 50;
     const icpPrice = 10;
 
+    setTickersProvider("icp-swap");
     setIcpPrice(icpPrice);
 
     const po = renderComponent({ usdAmount, hasUnpricedTokens: false });
-    const message = `1 ICP = $10.00Token prices are given in USD and based on data provided by`;
+    const message = `1 ICP = $10.00Token prices are given in USD and based on data provided by ICPSwap.`;
 
-    expect(await po.getIcpExchangeRatePo().getTooltipText()).toContain(message);
+    expect(await po.getIcpExchangeRatePo().getTooltipText()).toBe(message);
   });
 
   it("should not have an error by default", async () => {

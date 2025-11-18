@@ -7,7 +7,11 @@ import en from "$tests/mocks/i18n.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice, setTickers } from "$tests/utils/tickers.test-utils";
+import {
+  setIcpPrice,
+  setTickers,
+  setTickersProvider,
+} from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -149,6 +153,8 @@ describe("WalletPageHeading", () => {
   });
 
   it("should display USD balance if feature flag is enabled", async () => {
+    setTickersProvider("icp-swap");
+
     const balance = TokenAmountV2.fromString({
       amount: "3",
       token: ICPToken,
@@ -157,8 +163,8 @@ describe("WalletPageHeading", () => {
 
     expect(await po.hasBalanceInUsd()).toBe(true);
     expect(await po.getBalanceInUsd()).toBe("$30.00");
-    expect(await po.getTooltipIconPo().getTooltipText()).toContain(
-      "Token prices are given in USD and based on data provided by"
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
+      "Token prices are given in USD and based on data provided by ICPSwap."
     );
   });
 
