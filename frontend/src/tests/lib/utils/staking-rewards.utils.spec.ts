@@ -23,13 +23,13 @@ import {
   getStakingRewardData,
   type StakingRewardCalcParams,
 } from "$lib/utils/staking-rewards.utils";
-import type { SnsNeuron } from "@dfinity/sns";
 import {
   NeuronState,
   type GovernanceCachedMetrics,
   type NetworkEconomics,
   type NeuronInfo,
-} from "@icp-sdk/canisters/nns";
+} from "@dfinity/nns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 type TestStakingRewardCalcParams = {

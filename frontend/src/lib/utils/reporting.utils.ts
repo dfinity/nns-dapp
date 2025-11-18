@@ -38,7 +38,7 @@ import {
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
 import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
-import type { SnsNeuron } from "@dfinity/sns";
+import { NeuronState, type NeuronInfo } from "@dfinity/nns";
 import {
   ICPToken,
   TokenAmountV2,
@@ -48,7 +48,7 @@ import {
   secondsToDuration,
   type Token,
 } from "@dfinity/utils";
-import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 type Metadata = {

@@ -14,7 +14,10 @@
   } from "$lib/utils/sns-neuron.utils";
   import type { NeuronState } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemParameters,
+    SnsNeuron,
+  } from "@icp-sdk/canisters/sns";
   import type { Token } from "@dfinity/utils";
   import {
     TokenAmountV2,

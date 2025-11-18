@@ -11,7 +11,7 @@ import type {
   SnsProposalId,
   SnsTopic,
   SnsVote,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

@@ -6,14 +6,14 @@ import type { TicketStatus } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
+import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
   SnsNervousSystemFunction,
   SnsProposalData,
   SnsSwapDerivedState,
-} from "@dfinity/sns";
-import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const getSwapCanisterAccount = ({

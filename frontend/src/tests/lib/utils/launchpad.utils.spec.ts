@@ -24,12 +24,8 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { setTickers } from "$tests/utils/tickers.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
-import {
-  ProposalStatus,
-  Topic,
-  type ProposalInfo,
-} from "@icp-sdk/canisters/nns";
+import { ProposalStatus, Topic, type ProposalInfo } from "@dfinity/nns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 

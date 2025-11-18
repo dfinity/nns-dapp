@@ -22,14 +22,14 @@ import { mockAccountsStoreData } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron, mockTableNeuron } from "$tests/mocks/neurons.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
-import type { SnsNeuron } from "@dfinity/sns";
-import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import {
   NeuronState,
   Topic,
   type Followees,
   type NeuronInfo,
-} from "@icp-sdk/canisters/nns";
+} from "@dfinity/nns";
+import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 describe("neurons-table.utils", () => {

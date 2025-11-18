@@ -20,11 +20,11 @@ import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
 import type { AccountIdentifier } from "@dfinity/ledger-icp";
+import { nonNullish } from "@dfinity/utils";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
-} from "@dfinity/sns";
-import { nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
