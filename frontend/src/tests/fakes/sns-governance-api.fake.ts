@@ -10,6 +10,7 @@ import {
   installImplAndBlockRest,
   makePausable,
 } from "$tests/utils/module.test-utils";
+import { fromNullable, isNullish, toNullable } from "@dfinity/utils";
 import type {
   SnsListProposalsParams,
   SnsNervousSystemFunction,
@@ -25,7 +26,6 @@ import {
   type SnsListProposalsResponse,
   type SnsNeuron,
 } from "@icp-sdk/canisters/sns";
-import { fromNullable, isNullish, toNullable } from "@dfinity/utils";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

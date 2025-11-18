@@ -46,6 +46,15 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import {
+  ICPToken,
+  TokenAmount,
+  assertNonNullish,
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
+import {
   InsufficientFundsError,
   TransferError,
   TxCreatedInFutureError,
@@ -64,15 +73,6 @@ import {
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
 } from "@icp-sdk/canisters/sns";
-import {
-  ICPToken,
-  TokenAmount,
-  assertNonNullish,
-  fromDefinedNullable,
-  fromNullable,
-  isNullish,
-  nonNullish,
-} from "@dfinity/utils";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

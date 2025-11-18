@@ -31,12 +31,12 @@ import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import {
   SnsProposalDecisionStatus,
   SnsVote,
   type SnsProposalData,
 } from "@icp-sdk/canisters/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";

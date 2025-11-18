@@ -11,6 +11,11 @@ import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-conver
 import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
+import {
+  arrayOfNumberToUint8Array,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { NeuronState, type NeuronId } from "@icp-sdk/canisters/nns";
 import type {
   SnsDisburseMaturityInProgress,
@@ -22,11 +27,6 @@ import {
   type SnsNeuron,
   type SnsTopic,
 } from "@icp-sdk/canisters/sns";
-import {
-  arrayOfNumberToUint8Array,
-  isNullish,
-  nonNullish,
-} from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 

@@ -5,7 +5,11 @@ import { FollowNnsNeuronsByTopicItemPo } from "$tests/page-objects/FollowNnsNeur
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { Topic, type FolloweesForTopic, type NeuronId } from "@icp-sdk/canisters/nns";
+import {
+  Topic,
+  type FolloweesForTopic,
+  type NeuronId,
+} from "@icp-sdk/canisters/nns";
 
 describe("FollowNnsNeuronsByTopicItem", () => {
   const testTopic = Topic.ExchangeRate;

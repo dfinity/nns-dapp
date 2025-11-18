@@ -1,7 +1,11 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { busy, Tooltip } from "@dfinity/gix-components";
-  import type { FolloweesForTopic, KnownNeuron, Topic } from "@icp-sdk/canisters/nns";
+  import type {
+    FolloweesForTopic,
+    KnownNeuron,
+    Topic,
+  } from "@icp-sdk/canisters/nns";
   import { isNnsNeuronFollowingAllTopics } from "$lib/utils/nns-topics.utils";
 
   type Props = {

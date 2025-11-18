@@ -12,7 +12,10 @@
   import { busy, Modal } from "@dfinity/gix-components";
   import type { E8s } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type {
+    SnsNervousSystemParameters,
+    SnsNeuron,
+  } from "@icp-sdk/canisters/sns";
   import {
     fromDefinedNullable,
     isNullish,

@@ -19,12 +19,12 @@ import type { SnsSwapCommitment } from "$lib/types/sns";
 import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
+import { nonNullish } from "@dfinity/utils";
 import type { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,
 } from "@icp-sdk/canisters/sns";
-import { nonNullish } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 

@@ -17,8 +17,19 @@ import {
 import { ballotVotingPower } from "$lib/utils/sns-proposals.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
+import {
+  fromDefinedNullable,
+  fromNullable,
+  isNullish,
+  nonNullish,
+} from "@dfinity/utils";
 import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
-import { NeuronState, Vote, type E8s, type NeuronInfo } from "@icp-sdk/canisters/nns";
+import {
+  NeuronState,
+  Vote,
+  type E8s,
+  type NeuronInfo,
+} from "@icp-sdk/canisters/nns";
 import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
@@ -29,12 +40,6 @@ import {
   type SnsNeuron,
   type SnsProposalData,
 } from "@icp-sdk/canisters/sns";
-import {
-  fromDefinedNullable,
-  fromNullable,
-  isNullish,
-  nonNullish,
-} from "@dfinity/utils";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 

@@ -74,6 +74,7 @@ import {
   removeNnsNeuronFromFollowingsByTopics,
 } from "$lib/utils/nns-topics.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import type {
   AccountIdentifierHex,
   TransactionWithId,
@@ -87,7 +88,6 @@ import {
   type NeuronId,
   type NeuronInfo,
 } from "@icp-sdk/canisters/nns";
-import { isNullish, nonNullish } from "@dfinity/utils";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

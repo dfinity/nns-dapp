@@ -9,7 +9,11 @@
     IconErrorOutline,
     IconExpandMore,
   } from "@dfinity/gix-components";
-  import { Topic, type FolloweesForTopic, type NeuronId } from "@icp-sdk/canisters/nns";
+  import {
+    Topic,
+    type FolloweesForTopic,
+    type NeuronId,
+  } from "@icp-sdk/canisters/nns";
   import { isNullish } from "@dfinity/utils";
 
   type Props = {

@@ -36,6 +36,7 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import type { SnsWrapper } from "@icp-sdk/canisters/sns";
 import * as dfinitySns from "@icp-sdk/canisters/sns";
@@ -46,7 +47,6 @@ import {
   type SnsNeuronId,
   type SnsProposalId,
 } from "@icp-sdk/canisters/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Agent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";

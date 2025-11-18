@@ -47,6 +47,12 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import {
+  ICPToken,
+  TokenAmount,
+  arrayOfNumberToUint8Array,
+  toNullable,
+} from "@dfinity/utils";
+import {
   InsufficientFundsError,
   TransferError,
   TxCreatedInFutureError,
@@ -62,12 +68,6 @@ import {
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
 } from "@icp-sdk/canisters/sns";
-import {
-  ICPToken,
-  TokenAmount,
-  arrayOfNumberToUint8Array,
-  toNullable,
-} from "@dfinity/utils";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

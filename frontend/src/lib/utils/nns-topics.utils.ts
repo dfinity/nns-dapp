@@ -1,10 +1,10 @@
+import { isNullish } from "@dfinity/utils";
 import type {
   FolloweesForTopic,
   NeuronId,
   NeuronInfo,
   Topic,
 } from "@icp-sdk/canisters/nns";
-import { isNullish } from "@dfinity/utils";
 
 export const getNnsTopicFollowings = (
   neuron: NeuronInfo

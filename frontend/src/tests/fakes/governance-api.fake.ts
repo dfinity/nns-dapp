@@ -12,6 +12,7 @@ import {
   installImplAndBlockRest,
   makePausable,
 } from "$tests/utils/module.test-utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import type {
   KnownNeuron,
   NeuronId,
@@ -19,7 +20,6 @@ import type {
   RewardEvent,
 } from "@icp-sdk/canisters/nns";
 import { NeuronState, NeuronType } from "@icp-sdk/canisters/nns";
-import { isNullish, nonNullish } from "@dfinity/utils";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
 
 const modulePath = "$lib/api/governance.api";
