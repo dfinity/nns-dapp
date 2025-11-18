@@ -9,7 +9,7 @@ import {
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronStateItemActionPo } from "$tests/page-objects/SnsNeuronStateItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import {
   SnsNeuronPermissionType,
   type SnsNeuron,

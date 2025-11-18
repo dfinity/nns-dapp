@@ -36,7 +36,7 @@ import {
   isSnsNativeNervousSystemFunction,
 } from "$lib/utils/sns.utils";
 import { basisPointsToPercent } from "$lib/utils/utils";
-import { Vote } from "@dfinity/nns";
+import { Vote } from "@icp-sdk/canisters/nns";
 import {
   fromDefinedNullable,
   fromNullable,

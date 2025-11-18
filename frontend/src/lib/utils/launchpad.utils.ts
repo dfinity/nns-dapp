@@ -18,7 +18,7 @@ import {
   createDescendingComparator,
   mergeComparators,
 } from "$lib/utils/sort.utils";
-import type { ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import type { Component } from "svelte";

@@ -22,7 +22,7 @@ import {
   mockSnsSwapCommitment,
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
-import { ProposalStatus } from "@dfinity/nns";
+import { ProposalStatus } from "@icp-sdk/canisters/nns";
 import {
   SnsSwapLifecycle,
   type SnsGetDerivedStateResponse,

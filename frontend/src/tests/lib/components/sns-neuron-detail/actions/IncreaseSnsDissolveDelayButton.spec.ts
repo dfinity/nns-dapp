@@ -11,7 +11,7 @@ import { mockToken } from "$tests/mocks/sns-projects.mock";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { NeuronState } from "@dfinity/nns";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import { SnsSwapLifecycle, type SnsNeuron } from "@icp-sdk/canisters/sns";
 import { render, waitFor } from "@testing-library/svelte";
 

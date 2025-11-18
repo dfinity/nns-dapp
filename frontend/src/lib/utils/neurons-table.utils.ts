@@ -43,8 +43,8 @@ import {
   type StakingRewardResult,
 } from "$lib/utils/staking-rewards.utils";
 import { getUsdValue } from "$lib/utils/token.utils";
-import type { NeuronInfo } from "@dfinity/nns";
-import { NeuronState, Topic } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
+import { NeuronState, Topic } from "@icp-sdk/canisters/nns";
 import { ICPToken, TokenAmountV2, isNullish, type Token } from "@dfinity/utils";
 import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";

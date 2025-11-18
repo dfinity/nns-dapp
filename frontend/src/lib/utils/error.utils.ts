@@ -20,7 +20,7 @@ import {
   CouldNotClaimNeuronError,
   GovernanceError,
   InsufficientAmountError as InsufficientAmountNNSError,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
 import {
   InvalidaTransactionError,

@@ -33,7 +33,7 @@ import {
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { Vote } from "@dfinity/nns";
+import { Vote } from "@icp-sdk/canisters/nns";
 import type { SnsNeuronPermission } from "@icp-sdk/canisters/sns";
 import {
   SnsGovernanceError,

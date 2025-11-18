@@ -15,7 +15,7 @@ import {
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { convertDtoToSnsSummary } from "$lib/utils/sns-aggregator-converters.utils";
-import { ProposalStatus, type ProposalInfo } from "@dfinity/nns";
+import { ProposalStatus, type ProposalInfo } from "@icp-sdk/canisters/nns";
 import {
   fromDefinedNullable,
   fromNullable,

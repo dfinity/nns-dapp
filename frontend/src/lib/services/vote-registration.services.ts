@@ -13,7 +13,7 @@ import type { UniverseCanisterId } from "$lib/types/universe";
 import { errorToString } from "$lib/utils/error.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { registerVoteErrorDetails } from "$lib/utils/proposals.utils";
-import { Vote } from "@dfinity/nns";
+import { Vote } from "@icp-sdk/canisters/nns";
 import { assertNonNullish } from "@dfinity/utils";
 import type { SnsVote } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";

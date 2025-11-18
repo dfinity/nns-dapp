@@ -12,7 +12,7 @@ import {
   getSnsNeuronState,
   hasAutoStakeMaturityOn as hasAutoStakeMaturityOnSns,
 } from "$lib/utils/sns-neuron.utils";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { fromNullable } from "@dfinity/utils";
 import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 

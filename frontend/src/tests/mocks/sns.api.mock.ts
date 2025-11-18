@@ -1,5 +1,5 @@
 import { principal } from "$tests/mocks/sns-projects.mock";
-import type { DeployedSns } from "@dfinity/nns";
+import type { DeployedSns } from "@icp-sdk/canisters/nns";
 import type { SnsCanisterStatus } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 

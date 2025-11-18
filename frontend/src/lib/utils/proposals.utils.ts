@@ -29,14 +29,14 @@ import type {
   ProposalId,
   ProposalInfo,
   Tally,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import {
   NnsFunction,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
   Vote,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import { isNullish } from "@dfinity/utils";
 import type { SnsVote } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";

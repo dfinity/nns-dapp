@@ -1,5 +1,5 @@
 import type { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
-import type { CanisterIdString } from "@dfinity/nns";
+import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 import type {
   SnsListTopicsResponse,
   SnsTopicInfo,

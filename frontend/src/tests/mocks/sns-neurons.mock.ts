@@ -11,7 +11,7 @@ import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-conver
 import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { aggregatorSnsMockDto } from "$tests/mocks/sns-aggregator.mock";
-import { NeuronState, type NeuronId } from "@dfinity/nns";
+import { NeuronState, type NeuronId } from "@icp-sdk/canisters/nns";
 import {
   arrayOfNumberToUint8Array,
   isNullish,

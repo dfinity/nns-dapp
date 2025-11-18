@@ -12,7 +12,7 @@
     hasPermissionToDissolve,
   } from "$lib/utils/sns-neuron.utils";
   import { IconClockNoFill } from "@dfinity/gix-components";
-  import { NeuronState } from "@dfinity/nns";
+  import { NeuronState } from "@icp-sdk/canisters/nns";
   import type {
     SnsNervousSystemParameters,
     SnsNeuron,
