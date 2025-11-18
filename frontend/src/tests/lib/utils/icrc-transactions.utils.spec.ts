@@ -33,10 +33,6 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import type {
-  RetrieveBtcStatusV2,
-  RetrieveBtcStatusV2WithId,
-} from "@dfinity/ckbtc";
 import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   ICPToken,
@@ -44,6 +40,10 @@ import {
   TokenAmountV2,
   toNullable,
 } from "@dfinity/utils";
+import type {
+  RetrieveBtcStatusV2,
+  RetrieveBtcStatusV2WithId,
+} from "@icp-sdk/canisters/ckbtc";
 import { Cbor } from "@icp-sdk/core/agent";
 
 describe("icrc-transaction utils", () => {
