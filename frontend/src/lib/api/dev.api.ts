@@ -11,15 +11,15 @@ import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import type { E8s, NeuronId } from "@dfinity/nns";
 import {
-  SnsGovernanceCanister,
-  SnsGovernanceTestCanister,
-  type SnsNeuronId,
-} from "@dfinity/sns";
-import {
   arrayOfNumberToUint8Array,
   createAgent as createAgentUtils,
   toNullable,
 } from "@dfinity/utils";
+import {
+  SnsGovernanceCanister,
+  SnsGovernanceTestCanister,
+  type SnsNeuronId,
+} from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Actor, HttpAgent, type Agent } from "@icp-sdk/core/agent";
 import type { IDL } from "@icp-sdk/core/candid";

@@ -14,8 +14,8 @@ import { errorToString } from "$lib/utils/error.utils";
 import { replacePlaceholders } from "$lib/utils/i18n.utils";
 import { registerVoteErrorDetails } from "$lib/utils/proposals.utils";
 import { Vote } from "@dfinity/nns";
-import type { SnsVote } from "@dfinity/sns";
 import { assertNonNullish } from "@dfinity/utils";
+import type { SnsVote } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 /**

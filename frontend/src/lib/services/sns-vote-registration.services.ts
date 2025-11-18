@@ -23,14 +23,14 @@ import {
   mapProposalInfo as mapSnsProposal,
   toSnsVote,
 } from "$lib/utils/sns-proposals.utils";
+import { fromDefinedNullable } from "@dfinity/utils";
 import type {
   SnsBallot,
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsProposalData,
   SnsVote,
-} from "@dfinity/sns";
-import { fromDefinedNullable } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 /**

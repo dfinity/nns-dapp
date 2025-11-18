@@ -17,6 +17,8 @@ import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
 } from "@dfinity/ledger-icrc";
+import type { Token } from "@dfinity/utils";
+import { nonNullish, toNullable } from "@dfinity/utils";
 import {
   SnsSwapLifecycle,
   type SnsGetDerivedStateResponse,
@@ -29,9 +31,7 @@ import {
   type SnsSwapDerivedState,
   type SnsSwapInit,
   type SnsTransferableAmount,
-} from "@dfinity/sns";
-import type { Token } from "@dfinity/utils";
-import { nonNullish, toNullable } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 

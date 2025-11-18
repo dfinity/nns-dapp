@@ -14,7 +14,7 @@ import type {
   SnsNeuronId,
   SnsSwapBuyerState,
   SnsWrapper,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 

@@ -13,8 +13,8 @@ import {
   hasAutoStakeMaturityOn as hasAutoStakeMaturityOnSns,
 } from "$lib/utils/sns-neuron.utils";
 import { NeuronState, type NeuronInfo } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
 import { fromNullable } from "@dfinity/utils";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 
 export type AgnosticNeuron = NeuronInfo | SnsNeuron;
 

@@ -33,7 +33,7 @@
     SnsNervousSystemParameters,
     SnsNeuron,
     SnsNeuronId,
-  } from "@dfinity/sns";
+  } from "@icp-sdk/canisters/sns";
   import {
     fromDefinedNullable,
     isNullish,

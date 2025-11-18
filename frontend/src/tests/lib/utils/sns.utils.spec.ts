@@ -36,7 +36,7 @@ import { AccountIdentifier } from "@dfinity/ledger-icp";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns-utils", () => {

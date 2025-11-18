@@ -9,7 +9,7 @@
   } from "$lib/types/project-detail.context";
   import type { SnsSwapCommitment } from "$lib/types/sns";
   import { getCommitmentE8s } from "$lib/utils/sns.utils";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 

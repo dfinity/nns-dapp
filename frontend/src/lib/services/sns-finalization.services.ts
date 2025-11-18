@@ -5,11 +5,11 @@ import { getOrCreateSnsFinalizationStatusStore } from "$lib/stores/sns-finalizat
 import { snsSummariesStore } from "$lib/stores/sns.store";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { swapEndedMoreThanOneWeekAgo } from "$lib/utils/sns.utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import {
   SnsSwapLifecycle,
   type SnsGetAutoFinalizationStatusResponse,
-} from "@dfinity/sns";
-import { isNullish, nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 

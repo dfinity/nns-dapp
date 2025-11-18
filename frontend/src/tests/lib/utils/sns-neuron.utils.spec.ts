@@ -79,10 +79,11 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { NeuronState, Vote, type NeuronInfo } from "@dfinity/nns";
+import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type {
   SnsNervousSystemParameters,
   SnsNeuronPermission,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsVote,
@@ -90,8 +91,7 @@ import {
   type SnsNervousSystemFunction,
   type SnsNeuron,
   type SnsProposalData,
-} from "@dfinity/sns";
-import { arrayOfNumberToUint8Array } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 

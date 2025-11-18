@@ -13,7 +13,10 @@
   } from "$lib/utils/sns-neuron.utils";
   import { IconClockNoFill } from "@dfinity/gix-components";
   import { NeuronState } from "@dfinity/nns";
-  import type { SnsNervousSystemParameters, SnsNeuron } from "@dfinity/sns";
+  import type {
+    SnsNervousSystemParameters,
+    SnsNeuron,
+  } from "@icp-sdk/canisters/sns";
   import { fromNullable, secondsToDuration, type Token } from "@dfinity/utils";
 
   export let neuron: SnsNeuron;

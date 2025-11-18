@@ -19,13 +19,13 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState } from "@dfinity/nns";
-import type { SnsBallot, SnsProposalData } from "@dfinity/sns";
+import { fromDefinedNullable } from "@dfinity/utils";
+import type { SnsBallot, SnsProposalData } from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsProposalRewardStatus,
   SnsVote,
-} from "@dfinity/sns";
-import { fromDefinedNullable } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";

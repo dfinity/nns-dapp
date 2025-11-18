@@ -21,7 +21,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import type { Ballot, NeuronInfo, ProposalInfo } from "@dfinity/nns";
 import { ProposalStatus, Vote } from "@dfinity/nns";
-import { SnsNeuronPermissionType } from "@dfinity/sns";
+import { SnsNeuronPermissionType } from "@icp-sdk/canisters/sns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";

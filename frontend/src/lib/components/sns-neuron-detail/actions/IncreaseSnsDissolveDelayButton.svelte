@@ -4,7 +4,7 @@
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { getSnsNeuronState, isVesting } from "$lib/utils/sns-neuron.utils";
   import { NeuronState } from "@dfinity/nns";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 
   export let neuron: SnsNeuron;
 

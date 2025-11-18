@@ -22,8 +22,11 @@ import {
   GovernanceError,
   InsufficientAmountError as InsufficientAmountNNSError,
 } from "@dfinity/nns";
-import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
 import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  SnsGovernanceError,
+  UnsupportedMethodError,
+} from "@icp-sdk/canisters/sns";
 import {
   AgentError,
   CertifiedRejectErrorCode,

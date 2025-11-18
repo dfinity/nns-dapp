@@ -28,8 +28,8 @@ import {
   type Followees,
   type NeuronInfo,
 } from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 describe("neurons-table.utils", () => {

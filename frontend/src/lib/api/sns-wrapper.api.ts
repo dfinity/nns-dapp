@@ -8,7 +8,7 @@ import {
   SnsRootCanister,
   SnsSwapCanister,
   SnsWrapper,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 // The API layer should not depend on the services layer.

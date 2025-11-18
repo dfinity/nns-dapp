@@ -5,7 +5,7 @@ import { createMockSnsFullProject } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProjectCardSwapInfoPo } from "$tests/page-objects/ProjectCardSwapInfo.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("ProjectCardSwapInfo", () => {

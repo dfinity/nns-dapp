@@ -57,9 +57,9 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { MinterNoNewUtxosError, type UpdateBalanceOk } from "@dfinity/ckbtc";
 import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
-import { SnsSwapLifecycle } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
 import { AuthClient } from "@icp-sdk/auth/client";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
   ErrorKindEnum,

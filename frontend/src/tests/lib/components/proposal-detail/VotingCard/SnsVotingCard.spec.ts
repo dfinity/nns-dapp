@@ -12,11 +12,12 @@ import { createSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { NeuronState, Vote } from "@dfinity/nns";
+import { fromDefinedNullable } from "@dfinity/utils";
 import type {
   SnsNeuron,
   SnsNeuronPermission,
   SnsProposalData,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
@@ -24,8 +25,7 @@ import {
   SnsSwapLifecycle,
   SnsVote,
   type SnsBallot,
-} from "@dfinity/sns";
-import { fromDefinedNullable } from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";

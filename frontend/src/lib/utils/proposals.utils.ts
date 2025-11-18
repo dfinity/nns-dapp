@@ -37,8 +37,8 @@ import {
   Topic,
   Vote,
 } from "@dfinity/nns";
-import type { SnsVote } from "@dfinity/sns";
 import { isNullish } from "@dfinity/utils";
+import type { SnsVote } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 export const lastProposalId = (

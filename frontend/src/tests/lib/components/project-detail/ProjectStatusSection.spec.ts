@@ -11,7 +11,7 @@ import {
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectStatusSectionPo } from "$tests/page-objects/ProjectStatusSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { waitFor } from "@testing-library/svelte";
 
 describe("ProjectStatusSection", () => {

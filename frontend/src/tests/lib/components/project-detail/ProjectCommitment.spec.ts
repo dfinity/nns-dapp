@@ -9,7 +9,7 @@ import {
 import { renderContextCmp } from "$tests/mocks/sns.mock";
 import { ProjectCommitmentPo } from "$tests/page-objects/ProjectCommitment.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 
 describe("ProjectCommitment", () => {
   const saleBuyerCount = 1_000_000;

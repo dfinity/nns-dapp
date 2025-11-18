@@ -13,7 +13,7 @@ import {
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { Launchpad2Po } from "$tests/page-objects/Launchpad2.page-object";
 import { type ProposalInfo } from "@dfinity/nns";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 

@@ -20,7 +20,7 @@
   import { IconStakedTokens, PageBanner } from "@dfinity/gix-components";
   import type { NeuronInfo } from "@dfinity/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron } from "@dfinity/sns";
+  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
   import {
     TokenAmountV2,
     isNullish,
