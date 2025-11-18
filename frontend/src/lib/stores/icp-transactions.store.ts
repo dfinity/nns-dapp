@@ -1,7 +1,7 @@
 import type { IcpAccountIdentifierText } from "$lib/types/account";
 import { getUniqueTransactions } from "$lib/utils/transactions.utils";
 import { removeKeys } from "$lib/utils/utils";
-import type { TransactionWithId } from "@dfinity/ledger-icp";
+import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
 import { writable, type Readable } from "svelte/store";
 
 // Each ICP Account is an entry in this store.

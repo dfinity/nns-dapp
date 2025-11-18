@@ -12,18 +12,18 @@ import type { ToastMsg } from "$lib/types/toast";
 import { translate, type I18nSubstitutions } from "$lib/utils/i18n.utils";
 import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
 import {
-  InsufficientFundsError,
-  InvalidAccountIDError,
-  InvalidSenderError,
-  TransferError,
-} from "@dfinity/ledger-icp";
-import {
   CouldNotClaimNeuronError,
   GovernanceError,
   InsufficientAmountError as InsufficientAmountNNSError,
 } from "@dfinity/nns";
 import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
 import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
+import {
+  InsufficientFundsError,
+  InvalidAccountIDError,
+  InvalidSenderError,
+  TransferError,
+} from "@icp-sdk/canisters/ledger/icp";
 import {
   AgentError,
   CertifiedRejectErrorCode,

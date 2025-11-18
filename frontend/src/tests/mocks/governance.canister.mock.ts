@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { LedgerCanister } from "@dfinity/ledger-icp";
 import type {
   ListProposalsRequest,
   ListProposalsResponse,
@@ -9,6 +8,7 @@ import type {
   ProposalInfo,
 } from "@dfinity/nns";
 import { GovernanceCanister, Vote } from "@dfinity/nns";
+import type { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import type { Principal } from "@icp-sdk/core/principal";
 
 // eslint-disable-next-line

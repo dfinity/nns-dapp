@@ -25,7 +25,6 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { LedgerCanister } from "@dfinity/ledger-icp";
 import type { SnsWrapper } from "@dfinity/sns";
 import * as dfinitySns from "@dfinity/sns";
 import {
@@ -33,6 +32,7 @@ import {
   type SnsGetLifecycleResponse,
   type SnsNeuronId,
 } from "@dfinity/sns";
+import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import type { Agent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 

@@ -46,13 +46,6 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import {
-  InsufficientFundsError,
-  TransferError,
-  TxCreatedInFutureError,
-  TxDuplicateError,
-  TxTooOldError,
-} from "@dfinity/ledger-icp";
 import type { SnsWrapper } from "@dfinity/sns";
 import * as dfinitySns from "@dfinity/sns";
 import {
@@ -68,6 +61,13 @@ import {
   arrayOfNumberToUint8Array,
   toNullable,
 } from "@dfinity/utils";
+import {
+  InsufficientFundsError,
+  TransferError,
+  TxCreatedInFutureError,
+  TxDuplicateError,
+  TxTooOldError,
+} from "@icp-sdk/canisters/ledger/icp";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

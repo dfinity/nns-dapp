@@ -1,6 +1,6 @@
 import type { Account } from "$lib/types/account";
-import type { TransactionWithId } from "@dfinity/ledger-icp";
 import type { NeuronInfo } from "@dfinity/nns";
+import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
 
 export type ReportingPeriod = "year-to-date" | "last-year" | "custom";
 export type ReportingNeuronsSource = "nns" | "sns";
