@@ -36,8 +36,8 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import type {
   RetrieveBtcStatusV2,
   RetrieveBtcStatusV2WithId,
-} from "@dfinity/ckbtc";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ckbtc";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   ICPToken,
   TokenAmount,

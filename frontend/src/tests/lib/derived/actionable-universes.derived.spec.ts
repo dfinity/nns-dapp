@@ -15,7 +15,7 @@ import {
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   type SnsProposalData,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 

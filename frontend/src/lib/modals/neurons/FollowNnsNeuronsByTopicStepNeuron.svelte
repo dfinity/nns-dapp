@@ -17,7 +17,7 @@
   } from "$lib/utils/neuron.utils";
   import { getNnsTopicFollowings } from "$lib/utils/nns-topics.utils";
   import { Html, Spinner, busy } from "@dfinity/gix-components";
-  import { Topic, type FolloweesForTopic, type NeuronInfo } from "@dfinity/nns";
+  import { Topic, type FolloweesForTopic, type NeuronInfo } from "@icp-sdk/canisters/nns";
   import { isNullish, nonNullish } from "@dfinity/utils";
 
   type Props = {

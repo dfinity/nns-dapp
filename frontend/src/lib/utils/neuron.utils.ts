@@ -68,7 +68,7 @@ import {
   type NeuronInfo,
   type ProposalInfo,
   type RewardEvent,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import {
   ICPToken,
   TokenAmountV2,

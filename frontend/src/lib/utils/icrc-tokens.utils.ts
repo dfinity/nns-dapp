@@ -3,7 +3,7 @@ import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
 import { isNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 

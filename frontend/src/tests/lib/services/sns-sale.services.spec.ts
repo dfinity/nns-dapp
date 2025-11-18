@@ -52,16 +52,16 @@ import {
   TxCreatedInFutureError,
   TxDuplicateError,
   TxTooOldError,
-} from "@dfinity/ledger-icp";
-import type { SnsWrapper } from "@dfinity/sns";
-import * as dfinitySns from "@dfinity/sns";
+} from "@icp-sdk/canisters/ledger/icp";
+import type { SnsWrapper } from "@icp-sdk/canisters/sns";
+import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   GetOpenTicketErrorType,
   NewSaleTicketResponseErrorType,
   SnsSwapCanister,
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import {
   ICPToken,
   TokenAmount,

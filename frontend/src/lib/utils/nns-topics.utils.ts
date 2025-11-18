@@ -3,7 +3,7 @@ import type {
   NeuronId,
   NeuronInfo,
   Topic,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import { isNullish } from "@dfinity/utils";
 
 export const getNnsTopicFollowings = (

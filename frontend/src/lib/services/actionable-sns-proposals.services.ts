@@ -16,8 +16,8 @@ import {
   lastProposalId,
   sortSnsProposalsById,
 } from "$lib/utils/sns-proposals.utils";
-import type { SnsNeuron, SnsProposalData } from "@dfinity/sns";
-import { SnsProposalRewardStatus } from "@dfinity/sns";
+import type { SnsNeuron, SnsProposalData } from "@icp-sdk/canisters/sns";
+import { SnsProposalRewardStatus } from "@icp-sdk/canisters/sns";
 import { isNullish } from "@dfinity/utils";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";

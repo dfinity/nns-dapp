@@ -17,8 +17,8 @@ import type {
   NeuronId,
   NeuronInfo,
   RewardEvent,
-} from "@dfinity/nns";
-import { NeuronState, NeuronType } from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
+import { NeuronState, NeuronType } from "@icp-sdk/canisters/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
 

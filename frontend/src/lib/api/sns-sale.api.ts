@@ -7,8 +7,8 @@ import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsRefreshBuyerTokensResponse,
   SnsSwapTicket,
-} from "@dfinity/sns";
-import { SnsSwapCanister } from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
+import { SnsSwapCanister } from "@icp-sdk/canisters/sns";
 import { toNullable } from "@dfinity/utils";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";

@@ -36,8 +36,8 @@
   } from "$lib/utils/reporting.utils";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import { IconDown } from "@dfinity/gix-components";
-  import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import {
     fromNullable,
     ICPToken,

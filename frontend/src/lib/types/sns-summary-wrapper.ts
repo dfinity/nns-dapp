@@ -10,7 +10,7 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
   SnsSwapLifecycle,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 

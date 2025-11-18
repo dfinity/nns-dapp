@@ -9,7 +9,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import { Topic, type NeuronId } from "@dfinity/nns";
+  import { Topic, type NeuronId } from "@icp-sdk/canisters/nns";
 
   type Props = {
     neuronId: NeuronId;

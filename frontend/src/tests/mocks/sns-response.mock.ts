@@ -14,12 +14,12 @@ import {
   ledgerCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
+import type { IcrcTokenMetadataResponse } from "@icp-sdk/canisters/ledger/icrc";
 import type {
   SnsSwap,
   SnsSwapDerivedState,
   SnsSwapLifecycle,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 

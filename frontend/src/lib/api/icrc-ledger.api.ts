@@ -11,7 +11,7 @@ import {
   type IcrcAccount,
   type IcrcBlockIndex,
   type TransferParams,
-} from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
 import {
   arrayOfNumberToUint8Array,
   isNullish,

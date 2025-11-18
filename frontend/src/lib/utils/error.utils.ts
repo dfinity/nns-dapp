@@ -10,19 +10,19 @@ import {
 } from "$lib/types/neurons.errors";
 import type { ToastMsg } from "$lib/types/toast";
 import { translate, type I18nSubstitutions } from "$lib/utils/i18n.utils";
-import { InvalidaTransactionError, RefundedError } from "@dfinity/cmc";
+import { InvalidaTransactionError, RefundedError } from "@icp-sdk/canisters/cmc";
 import {
   InsufficientFundsError,
   InvalidAccountIDError,
   InvalidSenderError,
   TransferError,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import {
   CouldNotClaimNeuronError,
   GovernanceError,
   InsufficientAmountError as InsufficientAmountNNSError,
-} from "@dfinity/nns";
-import { SnsGovernanceError, UnsupportedMethodError } from "@dfinity/sns";
+} from "@icp-sdk/canisters/nns";
+import { SnsGovernanceError, UnsupportedMethodError } from "@icp-sdk/canisters/sns";
 import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
 import {
   AgentError,

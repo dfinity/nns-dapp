@@ -21,7 +21,7 @@ import {
   CkBTCMinterCanister,
   MinterInsufficientFundsError,
   type RetrieveBtcOk,
-} from "@dfinity/ckbtc";
+} from "@icp-sdk/canisters/ckbtc";
 import { toastsStore } from "@dfinity/gix-components";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";

@@ -5,7 +5,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import {
   IndexCanister,
   type GetAccountIdentifierTransactionsResponse,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import { fromNullable } from "@dfinity/utils";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 

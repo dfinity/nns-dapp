@@ -29,7 +29,7 @@ import type {
   SnsNeuron,
   SnsProposalData,
   SnsVote,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { get } from "svelte/store";
 

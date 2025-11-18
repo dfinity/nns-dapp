@@ -44,7 +44,7 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { setTickers } from "$tests/utils/tickers.test-utils";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import { get } from "svelte/store";
 

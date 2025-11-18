@@ -38,14 +38,14 @@ import {
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
-import { NeuronState } from "@dfinity/nns";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+import { NeuronState } from "@icp-sdk/canisters/nns";
 import {
   SnsNeuronPermissionType,
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import {
   arrayOfNumberToUint8Array,
   fromDefinedNullable,

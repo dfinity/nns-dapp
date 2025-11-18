@@ -10,7 +10,7 @@ import {
   type RetrieveBtcOk,
   type RetrieveBtcStatusV2WithId,
   type UpdateBalanceOk,
-} from "@dfinity/ckbtc";
+} from "@icp-sdk/canisters/ckbtc";
 import type { QueryParams } from "@dfinity/utils";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";

@@ -5,7 +5,7 @@ import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import {
   IcrcIndexNgCanister,
   type IcrcIndexNgTransaction,
-} from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
 import * as dfinityUtils from "@dfinity/utils";
 import { mock } from "vitest-mock-extended";
 

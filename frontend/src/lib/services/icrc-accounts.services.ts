@@ -36,7 +36,7 @@ import {
   decodeIcrcAccount,
   encodeIcrcAccount,
   type IcrcBlockIndex,
-} from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";

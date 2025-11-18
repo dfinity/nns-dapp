@@ -23,7 +23,7 @@ import { getCommitmentE8s } from "$lib/utils/sns.utils";
 import { createDescendingComparator } from "$lib/utils/sort.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { stringifyJson } from "$lib/utils/utils";
-import { SnsSwapLifecycle, type SnsSwapTicket } from "@dfinity/sns";
+import { SnsSwapLifecycle, type SnsSwapTicket } from "@icp-sdk/canisters/sns";
 import {
   fromNullable,
   isNullish,

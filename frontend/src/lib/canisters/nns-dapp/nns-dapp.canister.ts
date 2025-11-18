@@ -40,8 +40,8 @@ import type {
   RenameSubAccountResponse,
   SubAccountDetails,
 } from "$lib/canisters/nns-dapp/nns-dapp.types";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
-import type { ProposalId } from "@dfinity/nns";
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
+import type { ProposalId } from "@icp-sdk/canisters/nns";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import { Actor } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";

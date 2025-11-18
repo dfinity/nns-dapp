@@ -49,7 +49,7 @@ import {
   AccountIdentifier,
   SubAccount,
   type TransactionWithId,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import {
   ICPToken,
   TokenAmountV2,

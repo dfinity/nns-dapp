@@ -35,7 +35,7 @@ import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
   type SnsNeuronId,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { fromNullable } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { render, waitFor } from "@testing-library/svelte";

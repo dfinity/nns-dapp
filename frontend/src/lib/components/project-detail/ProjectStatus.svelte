@@ -9,7 +9,7 @@
   import { keyOf } from "$lib/utils/utils";
   import { Tag } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
   import { getContext } from "svelte";
   import type { Readable } from "svelte/store";
 

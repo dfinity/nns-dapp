@@ -36,16 +36,16 @@ import {
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import { LedgerCanister } from "@dfinity/ledger-icp";
-import type { SnsWrapper } from "@dfinity/sns";
-import * as dfinitySns from "@dfinity/sns";
+import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import type { SnsWrapper } from "@icp-sdk/canisters/sns";
+import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsVote,
   type SnsListNervousSystemFunctionsResponse,
   type SnsNeuronId,
   type SnsProposalId,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import type { Agent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";

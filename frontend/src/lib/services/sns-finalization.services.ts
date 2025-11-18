@@ -8,7 +8,7 @@ import { swapEndedMoreThanOneWeekAgo } from "$lib/utils/sns.utils";
 import {
   SnsSwapLifecycle,
   type SnsGetAutoFinalizationStatusResponse,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

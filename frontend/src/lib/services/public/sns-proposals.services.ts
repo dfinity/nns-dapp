@@ -23,7 +23,7 @@ import type {
   SnsProposalData,
   SnsProposalId,
   SnsVote,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { fromNullable, isNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

@@ -6,7 +6,7 @@ import type {
 } from "$lib/types/universe";
 import { getUniqueTransactions } from "$lib/utils/transactions.utils";
 import { removeKeys } from "$lib/utils/utils";
-import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
+import type { IcrcTransactionWithId } from "@icp-sdk/canisters/ledger/icrc";
 import { nonNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";

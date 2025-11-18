@@ -26,7 +26,7 @@
     sortSnsProposalsById,
   } from "$lib/utils/sns-proposals.utils";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemFunction } from "@dfinity/sns";
+  import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import type { Readable } from "svelte/store";
 

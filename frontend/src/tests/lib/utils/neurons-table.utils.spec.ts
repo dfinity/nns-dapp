@@ -27,8 +27,8 @@ import {
   Topic,
   type Followees,
   type NeuronInfo,
-} from "@dfinity/nns";
-import type { SnsNeuron } from "@dfinity/sns";
+} from "@icp-sdk/canisters/nns";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 

@@ -32,12 +32,12 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { CMCCanister, ProcessingError } from "@dfinity/cmc";
+import { CMCCanister, ProcessingError } from "@icp-sdk/canisters/cmc";
 import {
   AccountIdentifier,
   LedgerCanister,
   SubAccount,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import * as dfinityUtils from "@dfinity/utils";
 import { principalToSubAccount } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";

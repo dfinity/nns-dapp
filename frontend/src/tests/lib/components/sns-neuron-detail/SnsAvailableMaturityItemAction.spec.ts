@@ -7,7 +7,7 @@ import {
 import { mockSnsToken } from "$tests/mocks/sns-projects.mock";
 import { SnsAvailableMaturityItemActionPo } from "$tests/page-objects/SnsAvailableMaturityItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
+import { SnsNeuronPermissionType, type SnsNeuron } from "@icp-sdk/canisters/sns";
 import { TokenAmountV2 } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";

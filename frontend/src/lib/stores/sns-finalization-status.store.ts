@@ -1,5 +1,5 @@
 import { isSnsFinalizing } from "$lib/utils/sns.utils";
-import type { SnsGetAutoFinalizationStatusResponse } from "@dfinity/sns";
+import type { SnsGetAutoFinalizationStatusResponse } from "@icp-sdk/canisters/sns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import { derived, writable, type Readable } from "svelte/store";

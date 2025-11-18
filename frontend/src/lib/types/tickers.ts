@@ -1,4 +1,4 @@
-import type { CanisterIdString } from "@dfinity/nns";
+import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 
 export type TickersProviders = "icp-swap" | "kong-swap";
 export type ProviderLoader = () => Promise<TickersData>;

@@ -35,7 +35,7 @@ import {
   SnsProposalDecisionStatus,
   SnsVote,
   type SnsProposalData,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { waitFor } from "@testing-library/svelte";

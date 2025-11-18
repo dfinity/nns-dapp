@@ -16,13 +16,13 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { SnsWrapper } from "@dfinity/sns";
-import * as dfinitySns from "@dfinity/sns";
+import type { SnsWrapper } from "@icp-sdk/canisters/sns";
+import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsSwapCanister,
   UnsupportedMethodError,
   type SnsGetAutoFinalizationStatusResponse,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 

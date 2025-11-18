@@ -52,7 +52,7 @@ import {
 import { SECONDS_IN_MINUTE } from "$lib/constants/constants";
 import { nowInSeconds } from "$lib/utils/date.utils";
 import { registerCleanupForTesting } from "$lib/utils/test-support.utils";
-import type { KnownNeuron, NeuronInfo } from "@dfinity/nns";
+import type { KnownNeuron, NeuronInfo } from "@icp-sdk/canisters/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import type { Identity } from "@icp-sdk/core/agent";
 

@@ -5,7 +5,7 @@ import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import type {
   IcrcIndexNgTransaction,
   IcrcIndexNgTransactionWithId,
-} from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
 import { toNullable } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";

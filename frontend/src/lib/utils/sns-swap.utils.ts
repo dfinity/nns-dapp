@@ -1,5 +1,5 @@
 import type { SnsSwapMetricsStoreData } from "$lib/stores/sns-swap-metrics.store";
-import type { SnsSwapDerivedState } from "@dfinity/sns";
+import type { SnsSwapDerivedState } from "@icp-sdk/canisters/sns";
 import { fromNullable, nonNullish } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 

@@ -6,7 +6,7 @@ import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { FollowNnsNeuronsByTopicModalPo } from "$tests/page-objects/FollowNnsNeuronsByTopicModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { Topic, type NeuronId, type NeuronInfo } from "@dfinity/nns";
+import { Topic, type NeuronId, type NeuronInfo } from "@icp-sdk/canisters/nns";
 
 describe("FollowNnsNeuronsByTopicModal", () => {
   const neuronId = 123456789n;

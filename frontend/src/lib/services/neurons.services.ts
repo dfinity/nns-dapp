@@ -77,7 +77,7 @@ import { numberToE8s } from "$lib/utils/token.utils";
 import type {
   AccountIdentifierHex,
   TransactionWithId,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import {
   NeuronVisibility,
   Topic,
@@ -86,7 +86,7 @@ import {
   type Neuron,
   type NeuronId,
   type NeuronInfo,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import { AnonymousIdentity, type Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";

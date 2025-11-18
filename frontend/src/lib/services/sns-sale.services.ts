@@ -52,18 +52,18 @@ import {
   TxDuplicateError,
   TxTooOldError,
   type BlockHeight,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import type {
   SnsInvalidUserAmount,
   SnsRefreshBuyerTokensResponse,
   SnsSwapTicket,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import {
   GetOpenTicketErrorType,
   NewSaleTicketResponseErrorType,
   SnsSwapGetOpenTicketError,
   SnsSwapNewTicketError,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import {
   ICPToken,
   TokenAmount,

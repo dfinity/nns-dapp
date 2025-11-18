@@ -18,13 +18,13 @@ import type {
   SnsNeuronPermissionType,
   SnsProposalData,
   SnsProposalId,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import {
   SnsGovernanceError,
   neuronSubaccount,
   type SnsListProposalsResponse,
   type SnsNeuron,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { fromNullable, isNullish, toNullable } from "@dfinity/utils";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";

@@ -14,12 +14,12 @@ import type {
   PendingUtxo,
   RetrieveBtcStatusV2,
   RetrieveBtcStatusV2WithId,
-} from "@dfinity/ckbtc";
+} from "@icp-sdk/canisters/ckbtc";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
-} from "@dfinity/ledger-icrc";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   TokenAmount,
   TokenAmountV2,

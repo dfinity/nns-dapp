@@ -16,7 +16,7 @@ import type { Universe } from "$lib/types/universe";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
 import {
   SnsSwapLifecycle,
   type SnsGetDerivedStateResponse,
@@ -29,7 +29,7 @@ import {
   type SnsSwapDerivedState,
   type SnsSwapInit,
   type SnsTransferableAmount,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import type { Token } from "@dfinity/utils";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";

@@ -13,7 +13,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { busyStore, toastsStore } from "@dfinity/gix-components";
-import type { SnsNeuron, SnsNeuronId, SnsTopic } from "@dfinity/sns";
+import type { SnsNeuron, SnsNeuronId, SnsTopic } from "@icp-sdk/canisters/sns";
 import { arrayOfNumberToUint8Array, fromNullable } from "@dfinity/utils";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";

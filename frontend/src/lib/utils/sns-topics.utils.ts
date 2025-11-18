@@ -16,7 +16,7 @@ import type {
   SnsNeuron,
   SnsNeuronId,
   SnsTopic,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import {
   fromDefinedNullable,
   fromNullable,

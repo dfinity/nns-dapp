@@ -33,7 +33,7 @@ import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { isPngAsset } from "$lib/utils/utils";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
+import type { IcrcTokenMetadataResponse } from "@icp-sdk/canisters/ledger/icrc";
 import type {
   SnsDefaultFollowees,
   SnsFunctionType,
@@ -46,7 +46,7 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
   SnsVotingRewardsParameters,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import {
   candidNumberArrayToBigInt,
   isNullish,
