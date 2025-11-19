@@ -17,10 +17,17 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 
-vi.mock("$lib/api/governance.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/governance.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/governance.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("NeuronDetail", () => {
-  fakeGovernanceApi.install();
+  fakeGovernanceApi.install(governanceApi);
 
   const dissolveDelaySeconds = SECONDS_IN_HALF_YEAR;
   const neuronId = 314n;

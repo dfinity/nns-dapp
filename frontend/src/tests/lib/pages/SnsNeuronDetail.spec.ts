@@ -1,5 +1,6 @@
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as snsGovernanceApi from "$lib/api/sns-governance.api";
+import * as snsApi from "$lib/api/sns.api";
 import { increaseStakeNeuron } from "$lib/api/sns.api";
 import { AppPath } from "$lib/constants/routes.constants";
 import {
@@ -42,13 +43,25 @@ import { render, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/sns.api");
-vi.mock("$lib/api/sns-governance.api");
-vi.mock("$lib/api/sns-ledger.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/sns.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/sns.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/sns-governance.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/sns-governance.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("SnsNeuronDetail", () => {
-  fakeSnsGovernanceApi.install();
-  fakeSnsApi.install();
+  fakeSnsGovernanceApi.install(snsGovernanceApi);
+  fakeSnsApi.install(snsApi);
 
   const rootCanisterId = rootCanisterIdMock;
   const projectName = "Test SNS";
