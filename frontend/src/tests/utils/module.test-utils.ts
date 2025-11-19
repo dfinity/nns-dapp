@@ -103,9 +103,16 @@ export const installImplAndBlockRest = ({
 
 // Call this inside a describe() block outside beforeEach() because it defines
 // its own beforeEach() and afterEach().
-export const blockAllCallsTo = (modulePaths: string[]) => {
+export const blockAllCallsTo = (
+  modulePaths: string[],
+  moduleObjects?: Record<string, unknown>
+) => {
   for (const modulePath of modulePaths) {
-    installImplAndBlockRest({ modulePath, implementedFunctions: {} });
+    installImplAndBlockRest({
+      modulePath,
+      implementedFunctions: {},
+      moduleObject: moduleObjects?.[modulePath],
+    });
   }
 };
 

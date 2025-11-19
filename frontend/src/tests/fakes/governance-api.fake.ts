@@ -259,7 +259,7 @@ export const setLatestRewardEvent = (
 
 // Call this inside a describe() block outside beforeEach() because it defines
 // its own beforeEach() and afterEach().
-export const install = (moduleObject?: any) => {
+export const install = (moduleObject?: unknown) => {
   beforeEach(() => {
     reset();
   });

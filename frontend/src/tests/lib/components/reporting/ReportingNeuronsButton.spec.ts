@@ -20,8 +20,20 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { nonNullish } from "@dfinity/utils";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
-vi.mock("$lib/api/governance.api");
-vi.mock("$lib/api/sns-governance.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/governance.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/governance.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/sns-governance.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/sns-governance.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("ReportingNeuronsButton", () => {
   let spyQueryNeurons;
@@ -327,6 +339,11 @@ describe("ReportingNeuronsButton", () => {
   it("should not generate CSV and show info toast when no SNS neurons are found", async () => {
     setSnsProjects([{ projectName: "ProjA" }]);
 
+    // Mock querySnsNeurons to return empty array
+    const spyQuerySnsNeurons = vi
+      .spyOn(snsGovernanceApi, "querySnsNeurons")
+      .mockResolvedValue([]);
+
     const spyGenerateCsvFileToSave = vi
       .spyOn(exportToCsvUtils, "generateCsvFileToSave")
       .mockResolvedValue();
@@ -343,6 +360,7 @@ describe("ReportingNeuronsButton", () => {
     await po.click();
     await runResolvedPromises();
 
+    expect(spyQuerySnsNeurons).toHaveBeenCalled();
     expect(toastsStore.toastsShow).toBeCalledWith({
       labelKey: "reporting.neurons_no_results",
       level: "info",
