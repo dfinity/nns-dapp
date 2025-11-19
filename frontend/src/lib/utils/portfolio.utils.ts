@@ -13,8 +13,8 @@ import { compareByProjectTitle } from "$lib/utils/staking.utils";
 import { ulpsToNumber } from "$lib/utils/token.utils";
 import { compareTokensByImportance } from "$lib/utils/tokens-table.utils";
 import { isUserTokenData } from "$lib/utils/user-token.utils";
-import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import { ICPToken, isNullish } from "@dfinity/utils";
+import type { ProposalId, ProposalInfo } from "@icp-sdk/canisters/nns";
 
 // Tables contain 4 items: ICP and 3 other tokens/projects with the highest USD balance.
 const MAX_NUMBER_OF_ITEMS = 3;

@@ -16,14 +16,14 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { setTickers } from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsDisburseMaturityInProgress } from "@dfinity/sns";
+import type { SnsDisburseMaturityInProgress } from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
   neuronSubaccount,
   type SnsNeuron,
   type SnsNeuronId,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 

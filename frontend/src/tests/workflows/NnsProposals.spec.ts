@@ -9,7 +9,11 @@ import { authStore, type AuthStoreData } from "$lib/stores/auth.store";
 import { page } from "$mocks/$app/stores";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import { ProposalRewardStatus, ProposalStatus, Topic } from "@dfinity/nns";
+import {
+  ProposalRewardStatus,
+  ProposalStatus,
+  Topic,
+} from "@icp-sdk/canisters/nns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { waitFor } from "@testing-library/dom";
 import { render } from "@testing-library/svelte";

@@ -10,7 +10,7 @@
   import { mapHardwareWalletNeuronInfo } from "$lib/utils/hardware-wallet-neurons.utils";
   import { openWalletModal } from "$lib/utils/modals.utils";
   import { busy } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { getContext } from "svelte";
 
   // Get the store for the neurons of the Ledger device from the dedicated context

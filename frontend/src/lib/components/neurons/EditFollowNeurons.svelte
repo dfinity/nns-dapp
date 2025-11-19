@@ -6,7 +6,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { topicsToFollow } from "$lib/utils/neuron.utils";
   import { sortNnsTopics } from "$lib/utils/proposals.utils";
-  import type { NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
   import { onMount } from "svelte";
 

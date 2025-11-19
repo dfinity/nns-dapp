@@ -2,8 +2,8 @@ import { updateNeuron } from "$lib/api/governace-test.api";
 import { getAuthenticatedIdentity } from "$lib/services/auth.services";
 import { getAndLoadNeuron } from "$lib/services/neurons.services";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
-import type { E8s, Neuron, NeuronInfo } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
+import type { E8s, Neuron, NeuronInfo } from "@icp-sdk/canisters/nns";
 
 const u64Max = 2n ** 64n - 1n;
 

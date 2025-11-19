@@ -12,8 +12,11 @@ import { convertDtoToTokenMetadata } from "$lib/utils/sns-aggregator-converters.
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 import { mockQueryTokenResponse } from "$tests/mocks/sns-projects.mock";
 import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
-import { SnsSwapLifecycle, type SnsNervousSystemFunction } from "@dfinity/sns";
 import { fromNullable, nonNullish } from "@dfinity/utils";
+import {
+  SnsSwapLifecycle,
+  type SnsNervousSystemFunction,
+} from "@icp-sdk/canisters/sns";
 
 export const aggregatorMockSnsesDataDto: CachedSnsDto[] = tenAggregatedSnses;
 

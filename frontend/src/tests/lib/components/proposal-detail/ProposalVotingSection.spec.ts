@@ -10,7 +10,7 @@ import {
   ProposalStatus,
   type Ballot,
   type NeuronInfo,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("ProposalVotingSection", () => {

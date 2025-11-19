@@ -6,7 +6,7 @@
   import NnsNeuronCardTitle from "$lib/components/neurons/NnsNeuronCardTitle.svelte";
   import NnsNeuronRemainingTime from "$lib/components/neurons/NnsNeuronRemainingTime.svelte";
   import type { CardType } from "$lib/types/card";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
   export let proposerNeuron = false;

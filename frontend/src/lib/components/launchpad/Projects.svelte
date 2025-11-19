@@ -13,7 +13,7 @@
     filterProjectsStatus,
   } from "$lib/utils/projects.utils";
   import { Html } from "@dfinity/gix-components";
-  import { SnsSwapLifecycle } from "@dfinity/sns";
+  import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 
   export let testId: string;
   export let status: SnsSwapLifecycle;

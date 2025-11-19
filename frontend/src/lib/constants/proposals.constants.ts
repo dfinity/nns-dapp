@@ -1,5 +1,5 @@
 import type { BasisPoints } from "$lib/types/proposals";
-import { ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
 
 export const DEFAULT_PROPOSALS_FILTERS: {
   topics: Topic[];

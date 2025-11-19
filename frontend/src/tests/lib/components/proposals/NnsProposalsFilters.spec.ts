@@ -12,7 +12,7 @@ import en from "$tests/mocks/i18n.mock";
 import { NnsProposalFiltersPo } from "$tests/page-objects/NnsProposalFilters.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("NnsProposalsFilters", () => {

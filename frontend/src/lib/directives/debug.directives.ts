@@ -12,7 +12,7 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
 import { enumKeys } from "$lib/utils/enum.utils";
 import { followeesByTopic } from "$lib/utils/neuron.utils";
-import { Topic, type NeuronId } from "@dfinity/nns";
+import { Topic, type NeuronId } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 /**

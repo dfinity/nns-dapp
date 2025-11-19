@@ -1,4 +1,4 @@
-import type { NetworkEconomics } from "@dfinity/nns";
+import type { NetworkEconomics } from "@icp-sdk/canisters/nns";
 import { writable, type Readable } from "svelte/store";
 
 export interface NetworkEconomicsStoreData {

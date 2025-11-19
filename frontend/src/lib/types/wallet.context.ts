@@ -1,5 +1,5 @@
 import type { Account } from "$lib/types/account";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import type { Writable } from "svelte/store";
 
 export interface HardwareWalletNeuronInfo extends NeuronInfo {

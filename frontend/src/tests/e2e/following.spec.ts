@@ -29,40 +29,32 @@ test("Test neuron following", async ({ page, context }) => {
 
   expect(neurons.length).toBe(1);
 
-  step("Stake neuron with full flow");
+  step("Stake neuron");
   await appPo.getNeuronsPo().getNnsNeuronsFooterPo().clickStakeNeuronsButton();
 
   const stakeModal = appPo
     .getNeuronsPo()
     .getNnsNeuronsFooterPo()
     .getNnsStakeNeuronModalPo();
-  await stakeModal.getNnsStakeNeuronPo().stake(10);
 
+  await stakeModal.getNnsStakeNeuronPo().stake(10);
   await stakeModal.getSetDissolveDelayPo().setDissolveDelayDays("max");
   await stakeModal.getConfirmDissolveDelayPo().clickConfirm();
-  await stakeModal.getFollowNnsNeuronsByTopicStepTopicsPo().waitFor();
-  const followNnsByTopicStepTopic =
-    stakeModal.getFollowNnsNeuronsByTopicStepTopicsPo();
+  await stakeModal.getEditFollowNeuronsPo().waitFor();
+  const followNnsTopicSections = await stakeModal
+    .getEditFollowNeuronsPo()
+    .getFollowNnsTopicSectionPos();
 
   step("Follow topics");
-  const topics = await followNnsByTopicStepTopic.getTopicItemPos();
-  expect(topics.length).toBe(17);
-
-  // Select one topic to follow and click continue
-  await followNnsByTopicStepTopic.clickTopicItemByName("Governance");
-  await followNnsByTopicStepTopic.clickNextButton();
-
-  // Set the followee neuron
-  await stakeModal.getFollowNnsNeuronsByTopicStepNeuronPo().waitFor();
-  const followNnsByTopicStepNeuron =
-    stakeModal.getFollowNnsNeuronsByTopicStepNeuronPo();
+  expect(followNnsTopicSections.length).toBe(17);
+  // Go through sections in reverse order because the later ones are the ones
+  // most likely to fail.
+  followNnsTopicSections.reverse();
 
   const followee = neurons[0];
-  followNnsByTopicStepNeuron.typeNeuronAddress(followee);
-  followNnsByTopicStepNeuron.clickFollowNeuronButton();
-
-  await stakeModal.getFollowNnsNeuronsByTopicStepTopicsPo().waitFor();
-  const governanceTopic =
-    await followNnsByTopicStepTopic.getTopicItemPoByName("Governance");
-  expect(await governanceTopic.getFolloweesNeuronIds()).toContain(followee);
+  for (const followNnsTopicSection of followNnsTopicSections) {
+    await followNnsTopicSection.addFollowee(followee);
+    const followees = await followNnsTopicSection.getFollowees();
+    expect(followees).toContain(followee);
+  }
 });

@@ -1,6 +1,6 @@
 import type { SnsSwapMetricsStoreData } from "$lib/stores/sns-swap-metrics.store";
-import type { SnsSwapDerivedState } from "@dfinity/sns";
 import { fromNullable, nonNullish } from "@dfinity/utils";
+import type { SnsSwapDerivedState } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const swapSaleBuyerCount = ({

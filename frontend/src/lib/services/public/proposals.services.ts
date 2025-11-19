@@ -31,8 +31,8 @@ import {
   excludeProposals,
   proposalsHaveSameIds,
 } from "$lib/utils/proposals.utils";
-import type { ProposalId, ProposalInfo } from "@dfinity/nns";
 import { nonNullish } from "@dfinity/utils";
+import type { ProposalId, ProposalInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 const handleFindProposalsError = ({

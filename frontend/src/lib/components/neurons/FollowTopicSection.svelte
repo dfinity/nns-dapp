@@ -1,7 +1,7 @@
 <script lang="ts">
   import { i18n } from "$lib/stores/i18n";
   import { Collapsible } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import type { Snippet } from "svelte";
 
   type Props = {
@@ -15,21 +15,17 @@
 
   const { id, count, openNewFolloweeModal, title, subtitle, children }: Props =
     $props();
-  const defaultTestId = "collapsible";
-  let testId = $state(defaultTestId);
+  let cmp = $state<Collapsible | undefined>(undefined);
 
   $effect(() => {
-    if (count === 0) return;
-    testId = "";
+    if (count === 0 || isNullish(cmp?.updateMaxHeight)) return;
 
-    setTimeout(() => {
-      testId = defaultTestId;
-    }, 0);
+    setTimeout(cmp.updateMaxHeight, 100);
   });
 </script>
 
 <article data-tid={`follow-topic-${id}-section`}>
-  <Collapsible {id} iconSize="medium" {testId}>
+  <Collapsible {id} iconSize="medium" testId="collapsible" bind:this={cmp}>
     {#snippet header()}
       <div class="wrapper">
         <span class="value" data-tid="topic-title">{title}</span>

@@ -8,7 +8,7 @@
   import { formatUsdValue } from "$lib/utils/format.utils";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { getUsdValue } from "$lib/utils/token.utils";
-  import type { NeuronState } from "@dfinity/nns";
+  import type { NeuronState } from "@icp-sdk/canisters/nns";
   import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

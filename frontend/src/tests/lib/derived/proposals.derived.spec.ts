@@ -5,7 +5,7 @@ import {
 import { actionableNnsProposalsStore } from "$lib/stores/actionable-nns-proposals.store";
 import { proposalsStore } from "$lib/stores/proposals.store";
 import { mockProposals } from "$tests/mocks/proposals.store.mock";
-import type { ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 describe("proposals-derived", () => {

@@ -11,7 +11,7 @@
     type WalletContext,
   } from "$lib/types/wallet.context";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
-  import type { NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher, getContext } from "svelte";
 
   export let neuronId: NeuronId;

@@ -46,32 +46,34 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import type { SnsWrapper } from "@dfinity/sns";
-import * as dfinitySns from "@dfinity/sns";
-import {
-  GetOpenTicketErrorType,
-  NewSaleTicketResponseErrorType,
-  SnsSwapCanister,
-  SnsSwapGetOpenTicketError,
-  SnsSwapNewTicketError,
-} from "@dfinity/sns";
-import {
-  ICPToken,
-  TokenAmount,
-  arrayOfNumberToUint8Array,
-  toNullable,
-} from "@dfinity/utils";
 import {
   InsufficientFundsError,
   TransferError,
   TxCreatedInFutureError,
   TxDuplicateError,
   TxTooOldError,
-} from "@icp-sdk/canisters/ledger/icp";
+} from "@dfinity/ledger-icp";
+import {
+  ICPToken,
+  TokenAmount,
+  arrayOfNumberToUint8Array,
+  toNullable,
+} from "@dfinity/utils";
+import type { SnsWrapper } from "@icp-sdk/canisters/sns";
+import * as dfinitySns from "@icp-sdk/canisters/sns";
+import {
+  GetOpenTicketErrorType,
+  NewSaleTicketResponseErrorType,
+  SnsSwapCanister,
+  SnsSwapGetOpenTicketError,
+  SnsSwapNewTicketError,
+} from "@icp-sdk/canisters/sns";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
+
+vi.mock("@icp-sdk/canisters/sns", { spy: true });
 
 const identity: Identity | undefined = mockIdentity;
 const rootCanisterIdMock = identity.getPrincipal();

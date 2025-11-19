@@ -30,7 +30,7 @@ import {
   Topic,
   Vote,
   type ProposalInfo,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

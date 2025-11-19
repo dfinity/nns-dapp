@@ -2,8 +2,8 @@ import SnsDisburseMaturityButton from "$lib/components/sns-neuron-detail/actions
 import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { DisburseMaturityButtonPo } from "$tests/page-objects/DisburseMaturityButton.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import type { SnsNeuron } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsDisburseMaturityButton", () => {

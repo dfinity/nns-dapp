@@ -7,8 +7,8 @@
   import type { RootCanisterIdText } from "$lib/types/sns";
   import type { Universe } from "$lib/types/universe";
   import { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemFunction } from "@dfinity/sns";
-  import type { SnsProposalData } from "@dfinity/sns";
+  import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+  import type { SnsProposalData } from "@icp-sdk/canisters/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
   import type { Readable } from "svelte/store";
 

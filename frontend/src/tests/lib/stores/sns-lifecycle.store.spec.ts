@@ -3,7 +3,10 @@ import {
   mockLifecycleResponse,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { SnsSwapLifecycle, type SnsGetLifecycleResponse } from "@dfinity/sns";
+import {
+  SnsSwapLifecycle,
+  type SnsGetLifecycleResponse,
+} from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns lifecycle store", () => {

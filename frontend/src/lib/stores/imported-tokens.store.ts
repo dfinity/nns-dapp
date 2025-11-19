@@ -1,5 +1,5 @@
 import type { ImportedTokenData } from "$lib/types/imported-tokens";
-import type { CanisterIdString } from "@dfinity/nns";
+import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 import { writable } from "svelte/store";
 
