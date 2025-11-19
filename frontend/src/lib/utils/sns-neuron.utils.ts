@@ -17,13 +17,13 @@ import {
 import { ballotVotingPower } from "$lib/utils/sns-proposals.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   fromDefinedNullable,
   fromNullable,
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   NeuronState,
   Vote,

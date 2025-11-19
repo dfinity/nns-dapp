@@ -10,7 +10,6 @@ import { TransactionNetwork } from "$lib/types/transaction";
 import { sumAmounts } from "$lib/utils/token.utils";
 import { isTransactionNetworkBtc } from "$lib/utils/transactions.utils";
 import { isUniverseNns } from "$lib/utils/universe.utils";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import {
   BtcNetwork,
@@ -22,6 +21,7 @@ import {
   SubAccount,
   checkAccountId,
 } from "@icp-sdk/canisters/ledger/icp";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { Principal } from "@icp-sdk/core/principal";
 
 /*

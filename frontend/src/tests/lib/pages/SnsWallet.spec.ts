@@ -30,7 +30,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";

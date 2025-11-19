@@ -6,7 +6,6 @@ import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   arrayOfNumberToUint8Array,
   createAgent as createAgentUtils,
@@ -17,6 +16,10 @@ import {
   AccountIdentifier,
   LedgerCanister,
 } from "@icp-sdk/canisters/ledger/icp";
+import {
+  IcrcLedgerCanister,
+  decodeIcrcAccount,
+} from "@icp-sdk/canisters/ledger/icrc";
 import type { E8s, NeuronId } from "@icp-sdk/canisters/nns";
 import {
   SnsGovernanceCanister,

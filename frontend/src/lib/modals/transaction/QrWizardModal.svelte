@@ -7,7 +7,7 @@
     type WizardStep,
     type WizardSteps,
   } from "@dfinity/gix-components";
-  import { decodePayment } from "@dfinity/ledger-icrc";
+  import { decodePayment } from "@icp-sdk/canisters/ledger/icrc";
   import {
     assertNonNullish,
     isNullish,

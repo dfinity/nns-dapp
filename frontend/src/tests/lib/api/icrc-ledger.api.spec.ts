@@ -13,7 +13,10 @@ import {
   mockSnsToken,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import { IcrcLedgerCanister, type IcrcAccount } from "@dfinity/ledger-icrc";
+import {
+  IcrcLedgerCanister,
+  type IcrcAccount,
+} from "@icp-sdk/canisters/ledger/icrc";
 import { AnonymousIdentity, type HttpAgent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";
