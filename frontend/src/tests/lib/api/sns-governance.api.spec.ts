@@ -38,7 +38,6 @@ import {
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
 import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
-import type { SnsWrapper } from "@icp-sdk/canisters/sns";
 import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
@@ -127,33 +126,34 @@ describe("sns-api", () => {
 
     setSnsProjects([canisterIds]);
 
-    vi.spyOn(dfinitySns, "SnsWrapper").mockReturnValue({
-      canisterIds,
-      metadata: () =>
-        Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
-      listNeurons: queryNeuronsSpy,
-      getNeuron: getNeuronSpy,
-      queryNeuron: queryNeuronSpy,
-      addNeuronPermissions: addNeuronPermissionsSpy,
-      removeNeuronPermissions: removeNeuronPermissionsSpy,
-      disburse: disburseSpy,
-      splitNeuron: splitNeuronSpy,
-      startDissolving: startDissolvingSpy,
-      stopDissolving: stopDissolvingSpy,
-      increaseDissolveDelay: increaseDissolveDelaySpy,
-      getNeuronBalance: getNeuronBalanceSpy,
-      refreshNeuron: refreshNeuronSpy,
-      claimNeuron: claimNeuronSpy,
-      listNervousSystemFunctions: getFunctionsSpy,
-      setTopicFollowees: setTopicFolloweesSpy,
-      setFollowing: setFollowingSpy,
-      stakeMaturity: stakeMaturitySpy,
-      registerVote: registerVoteSpy,
-      autoStakeMaturity: autoStakeMaturitySpy,
-      listProposals: listProposalsSpy,
-      getProposal: getProposalSpy,
-      disburseMaturity: disburseMaturitySpy,
-    } as unknown as SnsWrapper);
+    vi.spyOn(dfinitySns, "SnsWrapper").mockImplementation(function () {
+      // @ts-expect-error: mocking constructor
+      this.canisterIds = canisterIds;
+      this.metadata = () =>
+        Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]);
+      this.listNeurons = queryNeuronsSpy;
+      this.getNeuron = getNeuronSpy;
+      this.queryNeuron = queryNeuronSpy;
+      this.addNeuronPermissions = addNeuronPermissionsSpy;
+      this.removeNeuronPermissions = removeNeuronPermissionsSpy;
+      this.disburse = disburseSpy;
+      this.splitNeuron = splitNeuronSpy;
+      this.startDissolving = startDissolvingSpy;
+      this.stopDissolving = stopDissolvingSpy;
+      this.increaseDissolveDelay = increaseDissolveDelaySpy;
+      this.getNeuronBalance = getNeuronBalanceSpy;
+      this.refreshNeuron = refreshNeuronSpy;
+      this.claimNeuron = claimNeuronSpy;
+      this.listNervousSystemFunctions = getFunctionsSpy;
+      this.setTopicFollowees = setTopicFolloweesSpy;
+      this.setFollowing = setFollowingSpy;
+      this.stakeMaturity = stakeMaturitySpy;
+      this.registerVote = registerVoteSpy;
+      this.autoStakeMaturity = autoStakeMaturitySpy;
+      this.listProposals = listProposalsSpy;
+      this.getProposal = getProposalSpy;
+      this.disburseMaturity = disburseMaturitySpy;
+    });
   });
 
   it("should query sns neurons", async () => {

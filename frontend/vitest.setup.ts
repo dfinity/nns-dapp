@@ -32,6 +32,7 @@ beforeEach(() => {
   // return undefined. Regardless, it will make sure that each test starts with
   // the same behavior for all mocks.
   vi.restoreAllMocks();
+  vi.clearAllMocks();
 
   // Resets/restores any global objects(eg. window, document, Date, ) that were stubbed/mocked during testing
   vi.unstubAllGlobals();

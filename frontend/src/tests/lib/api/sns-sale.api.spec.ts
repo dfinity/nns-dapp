@@ -16,7 +16,6 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { SnsWrapper } from "@icp-sdk/canisters/sns";
 import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsSwapCanister,
@@ -60,14 +59,15 @@ describe("sns-sale.api", () => {
 
     setSnsProjects([canisterIds]);
 
-    vi.spyOn(dfinitySns, "SnsWrapper").mockReturnValue({
-      canisterIds,
-      getOpenTicket: getOpenTicketSpy,
-      newSaleTicket: newSaleTicketSpy,
-      notifyPaymentFailure: notifyPaymentFailureSpy,
-      notifyParticipation: notifyParticipationSpy,
-      getFinalizationStatus: finalizationStatusSpy,
-    } as unknown as SnsWrapper);
+    vi.spyOn(dfinitySns, "SnsWrapper").mockImplementation(function () {
+      // @ts-expect-error: mocking constructor
+      this.canisterIds = canisterIds;
+      this.getOpenTicket = getOpenTicketSpy;
+      this.newSaleTicket = newSaleTicketSpy;
+      this.notifyPaymentFailure = notifyPaymentFailureSpy;
+      this.notifyParticipation = notifyParticipationSpy;
+      this.getFinalizationStatus = finalizationStatusSpy;
+    });
 
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
   });
