@@ -44,7 +44,7 @@
     SnsNervousSystemFunction,
     SnsNeuron,
     SnsNeuronId,
-  } from "@dfinity/sns";
+  } from "@icp-sdk/canisters/sns";
   import {
     arrayOfNumberToUint8Array,
     fromDefinedNullable,

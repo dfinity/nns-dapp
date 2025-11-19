@@ -1,6 +1,9 @@
-import type { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
-import type { CanisterIdString } from "@dfinity/nns";
-import type { SnsListTopicsResponse, SnsTopicInfo } from "@dfinity/sns";
+import type { IcrcMetadataResponseEntries } from "@icp-sdk/canisters/ledger/icrc";
+import type { CanisterIdString } from "@icp-sdk/canisters/nns";
+import type {
+  SnsListTopicsResponse,
+  SnsTopicInfo,
+} from "@icp-sdk/canisters/sns";
 
 type CanisterIds = {
   root_canister_id: string;
@@ -72,7 +75,7 @@ type GetMetricsResultDto = {
   Ok?: MetricsDto;
   Err?: GovernanceErrorDto;
 };
-// This type is a combined version of multiple IC/sns types, so it can't be directly converted to a single @dfinity/sns type.
+// This type is a combined version of multiple IC/sns types, so it can't be directly converted to a single @icp-sdk/canisters/sns type.
 export type CachedSnsMetricsDto = {
   get_metrics_result: GetMetricsResultDto;
 };

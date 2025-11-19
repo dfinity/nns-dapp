@@ -32,12 +32,12 @@ import {
 } from "$lib/utils/error.utils";
 import { isImportedToken } from "$lib/utils/imported-tokens.utils";
 import { ledgerErrorToToastError } from "$lib/utils/sns-ledger.utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import {
   decodeIcrcAccount,
   encodeIcrcAccount,
   type IcrcBlockIndex,
-} from "@dfinity/ledger-icrc";
-import { isNullish, nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/ledger/icrc";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

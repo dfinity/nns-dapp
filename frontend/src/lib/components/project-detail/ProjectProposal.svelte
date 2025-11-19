@@ -5,7 +5,7 @@
   import { i18n } from "$lib/stores/i18n";
   import type { SnsSummary } from "$lib/types/sns";
   import { IconInfo } from "@dfinity/gix-components";
-  import type { ProposalId, ProposalInfo } from "@dfinity/nns";
+  import type { ProposalId, ProposalInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
 
   export let summary: SnsSummary;

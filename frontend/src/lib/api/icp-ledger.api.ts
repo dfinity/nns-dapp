@@ -5,11 +5,14 @@ import { HOST } from "$lib/constants/environment.constants";
 import type { IcpAccountIdentifierText } from "$lib/types/account";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { BlockHeight } from "@dfinity/ledger-icp";
-import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
-import type { IcrcAccount } from "@dfinity/ledger-icrc";
 import type { TokenAmount } from "@dfinity/utils";
 import { toNullable } from "@dfinity/utils";
+import type { BlockHeight } from "@icp-sdk/canisters/ledger/icp";
+import {
+  AccountIdentifier,
+  LedgerCanister,
+} from "@icp-sdk/canisters/ledger/icp";
+import type { IcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 
 /**

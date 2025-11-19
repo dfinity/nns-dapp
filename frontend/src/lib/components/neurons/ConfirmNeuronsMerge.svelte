@@ -12,7 +12,7 @@
   import { toastsError, toastsSuccess } from "$lib/stores/toasts.store";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { Html, busy } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
   import { isNullish } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 

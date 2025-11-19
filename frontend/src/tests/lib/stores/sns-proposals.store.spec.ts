@@ -1,7 +1,7 @@
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import type { SnsProposalData } from "@dfinity/sns";
+import type { SnsProposalData } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 

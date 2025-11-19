@@ -4,7 +4,7 @@ import {
 } from "$lib/stores/actionable-sns-proposals.store";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import type { SnsProposalData } from "@dfinity/sns";
+import type { SnsProposalData } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("actionableSnsProposalsStore", () => {

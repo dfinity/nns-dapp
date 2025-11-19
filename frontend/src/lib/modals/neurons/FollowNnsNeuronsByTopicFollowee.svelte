@@ -4,7 +4,7 @@
   import { i18n } from "$lib/stores/i18n";
   import { sortedknownNeuronsStore } from "$lib/stores/known-neurons.store";
   import { nonNullish } from "@dfinity/utils";
-  import type { NeuronId } from "@dfinity/nns";
+  import type { NeuronId } from "@icp-sdk/canisters/nns";
 
   type Props = {
     neuronId: NeuronId;

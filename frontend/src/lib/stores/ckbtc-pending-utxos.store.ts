@@ -2,7 +2,7 @@ import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
 } from "$lib/types/universe";
-import type { PendingUtxo } from "@dfinity/ckbtc";
+import type { PendingUtxo } from "@icp-sdk/canisters/ckbtc";
 import { writable, type Readable } from "svelte/store";
 
 type CkbtcPendingUtxosStoreData = Record<UniverseCanisterIdText, PendingUtxo[]>;

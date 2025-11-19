@@ -16,7 +16,11 @@ import { NnsProposalPo } from "$tests/page-objects/NnsProposal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { ProposalRewardStatus, Vote, type NeuronInfo } from "@dfinity/nns";
+import {
+  ProposalRewardStatus,
+  Vote,
+  type NeuronInfo,
+} from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";

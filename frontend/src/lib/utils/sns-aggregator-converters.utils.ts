@@ -33,7 +33,13 @@ import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import { mapOptionalToken } from "$lib/utils/icrc-tokens.utils";
 import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { isPngAsset } from "$lib/utils/utils";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
+import {
+  candidNumberArrayToBigInt,
+  isNullish,
+  nonNullish,
+  toNullable,
+} from "@dfinity/utils";
+import type { IcrcTokenMetadataResponse } from "@icp-sdk/canisters/ledger/icrc";
 import type {
   SnsDefaultFollowees,
   SnsFunctionType,
@@ -46,13 +52,7 @@ import type {
   SnsSwapDerivedState,
   SnsSwapInit,
   SnsVotingRewardsParameters,
-} from "@dfinity/sns";
-import {
-  candidNumberArrayToBigInt,
-  isNullish,
-  nonNullish,
-  toNullable,
-} from "@dfinity/utils";
+} from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 export const aggregatorCanisterLogoPath = (rootCanisterId: string) =>

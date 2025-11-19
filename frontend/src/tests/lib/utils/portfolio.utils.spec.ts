@@ -22,7 +22,7 @@ import {
   createUserToken,
   createUserTokenLoading,
 } from "$tests/mocks/tokens-page.mock";
-import type { ProposalInfo } from "@dfinity/nns";
+import type { ProposalInfo } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 
 describe("Portfolio utils", () => {

@@ -18,7 +18,7 @@
     type FolloweesForTopic,
     type NeuronId,
     type NeuronInfo,
-  } from "@dfinity/nns";
+  } from "@icp-sdk/canisters/nns";
   import { onMount } from "svelte";
 
   type Props = {

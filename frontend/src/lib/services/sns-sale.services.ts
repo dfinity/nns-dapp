@@ -46,25 +46,6 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import {
-  InsufficientFundsError,
-  TransferError,
-  TxCreatedInFutureError,
-  TxDuplicateError,
-  TxTooOldError,
-  type BlockHeight,
-} from "@dfinity/ledger-icp";
-import type {
-  SnsInvalidUserAmount,
-  SnsRefreshBuyerTokensResponse,
-  SnsSwapTicket,
-} from "@dfinity/sns";
-import {
-  GetOpenTicketErrorType,
-  NewSaleTicketResponseErrorType,
-  SnsSwapGetOpenTicketError,
-  SnsSwapNewTicketError,
-} from "@dfinity/sns";
-import {
   ICPToken,
   TokenAmount,
   assertNonNullish,
@@ -73,6 +54,25 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import {
+  InsufficientFundsError,
+  TransferError,
+  TxCreatedInFutureError,
+  TxDuplicateError,
+  TxTooOldError,
+  type BlockHeight,
+} from "@icp-sdk/canisters/ledger/icp";
+import type {
+  SnsInvalidUserAmount,
+  SnsRefreshBuyerTokensResponse,
+  SnsSwapTicket,
+} from "@icp-sdk/canisters/sns";
+import {
+  GetOpenTicketErrorType,
+  NewSaleTicketResponseErrorType,
+  SnsSwapGetOpenTicketError,
+  SnsSwapNewTicketError,
+} from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

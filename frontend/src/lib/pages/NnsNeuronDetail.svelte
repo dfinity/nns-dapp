@@ -42,7 +42,7 @@
     neuronVoting,
   } from "$lib/utils/neuron.utils";
   import { Island } from "@dfinity/gix-components";
-  import type { NeuronId, NeuronInfo } from "@dfinity/nns";
+  import type { NeuronId, NeuronInfo } from "@icp-sdk/canisters/nns";
   import { nonNullish } from "@dfinity/utils";
   import { onMount, setContext } from "svelte";
   import { writable } from "svelte/store";
