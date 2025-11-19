@@ -9,9 +9,9 @@ describe("initCyclesWorker", () => {
   beforeEach(async () => {
     const module = await import("$lib/workers/cycles.worker?worker");
     // In Vitest 4, we need to mock default as a constructor (class)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     module.default = class {
       postMessage = postMessage;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
   });
 
