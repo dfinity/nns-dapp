@@ -38,7 +38,7 @@ import {
 import { mockSnsToken, mockTokenStore } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   arrayOfNumberToUint8Array,
   fromDefinedNullable,

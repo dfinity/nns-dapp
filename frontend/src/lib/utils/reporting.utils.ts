@@ -37,7 +37,7 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { formatTokenV2 } from "$lib/utils/token.utils";
 import { transactionName } from "$lib/utils/transactions.utils";
-import type { IcrcTransactionWithId } from "@dfinity/ledger-icrc";
+import type { IcrcTransactionWithId } from "@icp-sdk/canisters/ledger/icrc";
 import {
   ICPToken,
   TokenAmountV2,

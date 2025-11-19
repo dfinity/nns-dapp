@@ -14,7 +14,7 @@ import {
   ledgerCanisterIdMock,
   swapCanisterIdMock,
 } from "$tests/mocks/sns.api.mock";
-import type { IcrcTokenMetadataResponse } from "@dfinity/ledger-icrc";
+import type { IcrcTokenMetadataResponse } from "@icp-sdk/canisters/ledger/icrc";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import type {
   SnsSwap,

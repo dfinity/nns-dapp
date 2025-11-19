@@ -41,7 +41,7 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";

@@ -55,7 +55,7 @@ import { setCkETHCanisters } from "$tests/utils/cketh.test-utils";
 import { setCkUSDCCanisters } from "$tests/utils/ckusdc.test-utils";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import { encodeIcrcAccount, type IcrcAccount } from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount, type IcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { isNullish } from "@dfinity/utils";
 import { AuthClient } from "@icp-sdk/auth/client";
 import {

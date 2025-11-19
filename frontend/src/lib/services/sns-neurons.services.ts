@@ -52,7 +52,7 @@ import {
 import { snsTopicKeyToTopic } from "$lib/utils/sns-topics.utils";
 import { formatTokenE8s, numberToE8s } from "$lib/utils/token.utils";
 import { hexStringToBytes } from "$lib/utils/utils";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   arrayOfNumberToUint8Array,
   assertNonNullish,

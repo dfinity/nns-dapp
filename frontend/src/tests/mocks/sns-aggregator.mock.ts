@@ -11,7 +11,7 @@ import type {
 import { convertDtoToTokenMetadata } from "$lib/utils/sns-aggregator-converters.utils";
 import tenAggregatedSnses from "$tests/mocks/sns-aggregator.mock.json";
 import { mockQueryTokenResponse } from "$tests/mocks/sns-projects.mock";
-import { IcrcMetadataResponseEntries } from "@dfinity/ledger-icrc";
+import { IcrcMetadataResponseEntries } from "@icp-sdk/canisters/ledger/icrc";
 import { fromNullable, nonNullish } from "@dfinity/utils";
 import {
   SnsSwapLifecycle,

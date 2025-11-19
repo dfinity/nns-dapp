@@ -56,7 +56,7 @@ import {
   pollingCancelled,
   pollingLimit,
 } from "$lib/utils/utils";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { ICPToken, TokenAmount, isNullish, nonNullish } from "@dfinity/utils";
 import {
   TxCreatedInFutureError,

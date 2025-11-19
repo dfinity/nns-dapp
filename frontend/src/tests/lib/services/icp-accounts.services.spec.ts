@@ -56,7 +56,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
 import {
   AccountIdentifier,

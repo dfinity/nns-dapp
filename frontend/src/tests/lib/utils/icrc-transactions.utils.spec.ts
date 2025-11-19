@@ -33,7 +33,7 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   ICPToken,
   TokenAmount,

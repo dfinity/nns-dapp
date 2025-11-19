@@ -16,7 +16,7 @@ import type { Universe } from "$lib/types/universe";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
-} from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
 import type { Token } from "@dfinity/utils";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import {

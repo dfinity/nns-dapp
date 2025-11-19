@@ -13,7 +13,7 @@ import { mapPool } from "$lib/utils/reporting.utils";
 import type {
   IcrcAccount,
   IcrcIndexNgTransactionWithId,
-} from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
 import { isNullish, nonNullish } from "@dfinity/utils";
 import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";

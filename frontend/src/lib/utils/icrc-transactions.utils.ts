@@ -13,8 +13,8 @@ import { transactionName } from "$lib/utils/transactions.utils";
 import type {
   IcrcTransaction,
   IcrcTransactionWithId,
-} from "@dfinity/ledger-icrc";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+} from "@icp-sdk/canisters/ledger/icrc";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   TokenAmount,
   TokenAmountV2,

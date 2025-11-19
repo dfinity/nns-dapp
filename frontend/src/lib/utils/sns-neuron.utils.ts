@@ -17,7 +17,7 @@ import {
 import { ballotVotingPower } from "$lib/utils/sns-proposals.utils";
 import { formatTokenE8s } from "$lib/utils/token.utils";
 import { bytesToHexString } from "$lib/utils/utils";
-import { encodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import {
   fromDefinedNullable,
   fromNullable,
