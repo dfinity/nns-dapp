@@ -171,7 +171,7 @@ describe("sns-api", () => {
       this.canisterIds = canisterIds;
       this.metadata = () =>
         Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]);
-      // TODO: Fix type
+      // @ts-expect-error: mocking constructor
       this.swapState = () => Promise.resolve(mockQuerySwap);
       this.notifyParticipation = spyOnNotifyParticipation;
       this.newSaleTicket = spyOnNewSaleTicketApi;
