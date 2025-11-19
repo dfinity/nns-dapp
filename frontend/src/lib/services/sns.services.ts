@@ -19,8 +19,8 @@ import type { SnsSwapCommitment } from "$lib/types/sns";
 import { isLastCall } from "$lib/utils/env.utils";
 import { toToastError } from "$lib/utils/error.utils";
 import { getSwapCanisterAccount } from "$lib/utils/sns.utils";
-import type { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import { nonNullish } from "@dfinity/utils";
+import type { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import type {
   SnsGetDerivedStateResponse,
   SnsGetLifecycleResponse,

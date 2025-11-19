@@ -46,14 +46,6 @@ import {
   pollingLimit,
 } from "$lib/utils/utils";
 import {
-  InsufficientFundsError,
-  TransferError,
-  TxCreatedInFutureError,
-  TxDuplicateError,
-  TxTooOldError,
-  type BlockHeight,
-} from "@icp-sdk/canisters/ledger/icp";
-import {
   ICPToken,
   TokenAmount,
   assertNonNullish,
@@ -62,6 +54,14 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
+import {
+  InsufficientFundsError,
+  TransferError,
+  TxCreatedInFutureError,
+  TxDuplicateError,
+  TxTooOldError,
+  type BlockHeight,
+} from "@icp-sdk/canisters/ledger/icp";
 import type {
   SnsInvalidUserAmount,
   SnsRefreshBuyerTokensResponse,
