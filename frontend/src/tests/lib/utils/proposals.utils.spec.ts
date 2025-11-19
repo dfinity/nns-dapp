@@ -44,14 +44,14 @@ import type {
   NeuronInfo,
   Proposal,
   ProposalInfo,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import {
   NnsFunction,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
   Vote,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 
 const proposalWithNnsFunctionAction = {
   ...mockProposalInfo.proposal,

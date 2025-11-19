@@ -2,7 +2,7 @@ import { snsLatestRewardEventStore } from "$lib/derived/sns-latest-reward-event.
 import type { RewardEventDto } from "$lib/types/sns-aggregator";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { SnsRewardEvent } from "@dfinity/sns";
+import type { SnsRewardEvent } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("snsLatestRewardEventStore", () => {

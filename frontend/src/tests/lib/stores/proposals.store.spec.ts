@@ -5,7 +5,7 @@ import {
   proposalsStore,
 } from "$lib/stores/proposals.store";
 import { generateMockProposals } from "$tests/mocks/proposal.mock";
-import { ProposalStatus, Topic } from "@dfinity/nns";
+import { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 describe("proposals-store", () => {

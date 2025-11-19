@@ -16,7 +16,10 @@
     type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import { SnsNeuronPermissionType, type SnsNeuronId } from "@dfinity/sns";
+  import {
+    SnsNeuronPermissionType,
+    type SnsNeuronId,
+  } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";
 
   export let neuronId: SnsNeuronId;

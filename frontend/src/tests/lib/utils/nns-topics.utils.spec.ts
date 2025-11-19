@@ -6,7 +6,11 @@ import {
   removeNnsNeuronFromFollowingsByTopics,
 } from "$lib/utils/nns-topics.utils";
 import { createMockNeuron } from "$tests/mocks/neurons.mock";
-import { Topic, type FolloweesForTopic, type NeuronId } from "@dfinity/nns";
+import {
+  Topic,
+  type FolloweesForTopic,
+  type NeuronId,
+} from "@icp-sdk/canisters/nns";
 
 describe("nns-topics.utils", () => {
   const mockNeuronId1 = 123n as NeuronId;

@@ -11,7 +11,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   type SnsProposalData,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsProposalCard", () => {

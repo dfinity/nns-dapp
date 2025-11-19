@@ -1,5 +1,5 @@
-import type { RewardEvent } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
+import type { RewardEvent } from "@icp-sdk/canisters/nns";
 import { writable, type Readable } from "svelte/store";
 
 type RewardEventData = {

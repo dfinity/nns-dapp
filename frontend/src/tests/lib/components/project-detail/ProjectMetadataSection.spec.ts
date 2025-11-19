@@ -12,7 +12,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { ProjectMetadataSectionPo } from "$tests/page-objects/ProjectMetadataSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { SnsSwapLifecycle } from "@dfinity/sns";
+import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 import { writable } from "svelte/store";
 

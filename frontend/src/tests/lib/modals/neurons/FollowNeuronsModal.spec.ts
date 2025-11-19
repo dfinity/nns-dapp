@@ -6,7 +6,7 @@ import { mockFullNeuron, mockNeuron } from "$tests/mocks/neurons.mock";
 import { FollowNeuronsModalPo } from "$tests/page-objects/FollowNeuronsModal.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import { Topic } from "@dfinity/nns";
+import { Topic } from "@icp-sdk/canisters/nns";
 
 describe("FollowNeuronsModal", () => {
   const neuronFollowing = {

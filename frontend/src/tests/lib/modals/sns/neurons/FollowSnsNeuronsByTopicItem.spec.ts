@@ -4,7 +4,10 @@ import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { FollowSnsNeuronsByTopicItemPo } from "$tests/page-objects/FollowSnsNeuronsByTopicItem.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import type { SnsNervousSystemFunction, SnsNeuronId } from "@dfinity/sns";
+import type {
+  SnsNervousSystemFunction,
+  SnsNeuronId,
+} from "@icp-sdk/canisters/sns";
 
 describe("FollowSnsNeuronsByTopicItem", () => {
   const nativeNsFunction: SnsNervousSystemFunction = {

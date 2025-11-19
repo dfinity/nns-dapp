@@ -11,7 +11,7 @@
   import { PROPOSAL_FILTER_UNSPECIFIED_VALUE } from "$lib/types/proposals";
   import { enumValues } from "$lib/utils/enum.utils";
   import { keyOfOptional } from "$lib/utils/utils";
-  import type { ProposalStatus, Topic } from "@dfinity/nns";
+  import type { ProposalStatus, Topic } from "@icp-sdk/canisters/nns";
   import { createEventDispatcher } from "svelte";
   import {
     getProposalStatusTitle,

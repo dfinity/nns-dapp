@@ -24,7 +24,7 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import type { RenderResult } from "@testing-library/svelte";
 import type { Component } from "svelte";
 import { get } from "svelte/store";

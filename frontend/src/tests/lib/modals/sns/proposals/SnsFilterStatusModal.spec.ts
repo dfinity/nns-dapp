@@ -5,7 +5,7 @@ import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
 import { render } from "$tests/utils/svelte.test-utils";
 import { clickByTestId } from "$tests/utils/utils.test-utils";
-import { SnsProposalDecisionStatus } from "@dfinity/sns";
+import { SnsProposalDecisionStatus } from "@icp-sdk/canisters/sns";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 

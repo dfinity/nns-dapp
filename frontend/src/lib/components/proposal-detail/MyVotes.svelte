@@ -10,7 +10,7 @@
   import type { CompactNeuronInfo } from "$lib/utils/neuron.utils";
   import { getVoteDisplay } from "$lib/utils/proposals.utils";
   import { KeyValuePair } from "@dfinity/gix-components";
-  import { Vote } from "@dfinity/nns";
+  import { Vote } from "@icp-sdk/canisters/nns";
   import { fade } from "svelte/transition";
 
   export let neuronsVotedForProposal: CompactNeuronInfo[] = [];

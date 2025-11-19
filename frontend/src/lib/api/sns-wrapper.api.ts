@@ -2,16 +2,13 @@ import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { ApiErrorKey } from "$lib/types/api.errors";
 import type { QueryRootCanisterId } from "$lib/types/sns.query";
+import { IcrcIndexCanister, IcrcLedgerCanister } from "@dfinity/ledger-icrc";
 import {
   SnsGovernanceCanister,
   SnsRootCanister,
   SnsSwapCanister,
   SnsWrapper,
-} from "@dfinity/sns";
-import {
-  IcrcIndexCanister,
-  IcrcLedgerCanister,
-} from "@icp-sdk/canisters/ledger/icrc";
+} from "@icp-sdk/canisters/sns";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 // The API layer should not depend on the services layer.

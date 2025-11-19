@@ -9,7 +9,7 @@ import {
   toToastError,
 } from "$lib/utils/error.utils";
 import en from "$tests/mocks/i18n.mock";
-import { UnsupportedMethodError } from "@dfinity/sns";
+import { UnsupportedMethodError } from "@icp-sdk/canisters/sns";
 import {
   AgentError,
   CertifiedRejectErrorCode,

@@ -13,7 +13,7 @@ import type {
   SnsNervousSystemFunction,
   SnsNeuron,
   SnsNeuronId,
-} from "@dfinity/sns";
+} from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("FollowSnsNeuronsByTopicStepTopics", () => {

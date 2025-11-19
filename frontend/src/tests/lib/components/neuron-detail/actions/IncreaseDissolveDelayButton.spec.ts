@@ -3,7 +3,7 @@ import NeuronContextTest from "$tests/lib/components/neuron-detail/NeuronContext
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { NeuronState, type NeuronInfo } from "@dfinity/nns";
+import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { render } from "@testing-library/svelte";
 
 describe("IncreaseDissolveDelayButton", () => {

@@ -12,7 +12,7 @@ import {
   type ListProposalsResponse,
   type ProposalId,
   type ProposalInfo,
-} from "@dfinity/nns";
+} from "@icp-sdk/canisters/nns";
 import type { Identity } from "@icp-sdk/core/agent";
 
 export const queryProposals = async ({

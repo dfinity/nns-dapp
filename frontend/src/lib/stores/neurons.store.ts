@@ -1,4 +1,4 @@
-import type { NeuronInfo } from "@dfinity/nns";
+import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { writable } from "svelte/store";
 
 export interface NeuronsStore {

@@ -20,7 +20,7 @@
     SnsNervousSystemFunction,
     SnsNeuron,
     SnsNeuronId,
-  } from "@dfinity/sns";
+  } from "@icp-sdk/canisters/sns";
   import { fromNullable } from "@dfinity/utils";
   import { getContext } from "svelte";
 

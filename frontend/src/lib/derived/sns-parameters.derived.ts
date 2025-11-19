@@ -1,6 +1,6 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
 import { convertNervousSystemParameters } from "$lib/utils/sns-aggregator-converters.utils";
-import type { SnsNervousSystemParameters } from "@dfinity/sns";
+import type { SnsNervousSystemParameters } from "@icp-sdk/canisters/sns";
 import { type Readable } from "svelte/store";
 
 export interface SnsParameters {

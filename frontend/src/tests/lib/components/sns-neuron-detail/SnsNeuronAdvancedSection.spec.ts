@@ -20,9 +20,12 @@ import { mockToken, principal } from "$tests/mocks/sns-projects.mock";
 import { SnsNeuronAdvancedSectionPo } from "$tests/page-objects/SnsNeuronAdvancedSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { normalizeWhitespace } from "$tests/utils/utils.test-utils";
-import { NeuronState } from "@dfinity/nns";
-import { SnsNeuronPermissionType, type SnsNeuron } from "@dfinity/sns";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import { NeuronState } from "@icp-sdk/canisters/nns";
+import {
+  SnsNeuronPermissionType,
+  type SnsNeuron,
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 describe("SnsNeuronAdvancedSection", () => {

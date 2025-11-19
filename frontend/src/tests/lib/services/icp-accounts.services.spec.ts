@@ -56,13 +56,13 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
+import { decodeIcrcAccount } from "@dfinity/ledger-icrc";
+import { ICPToken, TokenAmount } from "@dfinity/utils";
 import {
   AccountIdentifier,
   TxCreatedInFutureError,
   TxTooOldError,
-} from "@dfinity/ledger-icp";
-import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
+} from "@icp-sdk/canisters/ledger/icp";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 

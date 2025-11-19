@@ -1,7 +1,7 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
 import type { MetricsDto } from "$lib/types/sns-aggregator";
-import type { CanisterIdString } from "@dfinity/nns";
 import { isNullish } from "@dfinity/utils";
+import type { CanisterIdString } from "@icp-sdk/canisters/nns";
 import { type Readable } from "svelte/store";
 
 export interface SnsMetricsStoreData {

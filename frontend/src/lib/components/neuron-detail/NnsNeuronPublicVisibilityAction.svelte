@@ -9,7 +9,7 @@
     isPublicNeuron,
   } from "$lib/utils/neuron.utils";
   import { IconPublicBadge, Tooltip } from "@dfinity/gix-components";
-  import type { NeuronInfo } from "@dfinity/nns";
+  import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
   export let neuron: NeuronInfo;
 
