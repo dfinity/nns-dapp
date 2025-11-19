@@ -60,8 +60,11 @@ describe("sns-sale.api", () => {
     setSnsProjects([canisterIds]);
 
     vi.spyOn(dfinitySns, "SnsWrapper").mockImplementation(function () {
-      // @ts-expect-error: mocking constructor
-      this.canisterIds = canisterIds;
+      Object.defineProperty(this, "canisterIds", {
+        value: canisterIds,
+        writable: true,
+        configurable: true,
+      });
       this.getOpenTicket = getOpenTicketSpy;
       this.newSaleTicket = newSaleTicketSpy;
       this.notifyPaymentFailure = notifyPaymentFailureSpy;
