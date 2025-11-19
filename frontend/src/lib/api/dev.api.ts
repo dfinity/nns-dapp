@@ -6,8 +6,8 @@ import { HOST, IS_TESTNET } from "$lib/constants/environment.constants";
 import type { Account } from "$lib/types/account";
 import { invalidIcrcAddress } from "$lib/utils/accounts.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
-import type { BlockHeight } from "@dfinity/ledger-icp";
-import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
+import type { BlockHeight } from "@icp-sdk/canisters/ledger/icp";
+import { AccountIdentifier, LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import { IcrcLedgerCanister, decodeIcrcAccount } from "@dfinity/ledger-icrc";
 import {
   arrayOfNumberToUint8Array,

@@ -52,7 +52,7 @@ import {
   TxCreatedInFutureError,
   TxDuplicateError,
   TxTooOldError,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import {
   ICPToken,
   TokenAmount,

@@ -5,7 +5,7 @@ import type { SnsTicketsStoreData } from "$lib/stores/sns-tickets.store";
 import type { TicketStatus } from "$lib/types/sale";
 import type { SnsSwapCommitment } from "$lib/types/sns";
 import type { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
-import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
+import { AccountIdentifier, SubAccount } from "@icp-sdk/canisters/ledger/icp";
 import { fromNullable, isNullish, nonNullish } from "@dfinity/utils";
 import type {
   SnsGetAutoFinalizationStatusResponse,

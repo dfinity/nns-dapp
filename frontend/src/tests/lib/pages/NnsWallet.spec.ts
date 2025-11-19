@@ -54,7 +54,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import type { TransactionWithId } from "@dfinity/ledger-icp";
+import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
 import { memoToNeuronAccountIdentifier } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";

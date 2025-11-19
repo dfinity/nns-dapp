@@ -31,7 +31,7 @@ import {
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import { LedgerCanister } from "@dfinity/ledger-icp";
+import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import {
   GovernanceCanister,
   NeuronVisibility,

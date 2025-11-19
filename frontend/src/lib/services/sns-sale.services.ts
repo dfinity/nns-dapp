@@ -52,7 +52,7 @@ import {
   TxDuplicateError,
   TxTooOldError,
   type BlockHeight,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import {
   ICPToken,
   TokenAmount,

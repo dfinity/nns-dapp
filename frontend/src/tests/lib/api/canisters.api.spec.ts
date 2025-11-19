@@ -36,7 +36,7 @@ import {
   AccountIdentifier,
   LedgerCanister,
   SubAccount,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import * as dfinityUtils from "@dfinity/utils";
 import { principalToSubAccount } from "@dfinity/utils";
 import { CMCCanister, ProcessingError } from "@icp-sdk/canisters/cmc";

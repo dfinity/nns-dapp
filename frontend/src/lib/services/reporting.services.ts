@@ -10,7 +10,7 @@ import type {
 } from "$lib/types/reporting";
 import { neuronStake } from "$lib/utils/neuron.utils";
 import { mapPool } from "$lib/utils/reporting.utils";
-import type { TransactionWithId } from "@dfinity/ledger-icp";
+import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
 import type {
   IcrcAccount,
   IcrcIndexNgTransactionWithId,

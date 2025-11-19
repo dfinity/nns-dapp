@@ -32,7 +32,7 @@ import {
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { snsTicketMock } from "$tests/mocks/sns.mock";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import type {
   SnsGetAutoFinalizationStatusResponse,
   SnsGetDerivedStateResponse,

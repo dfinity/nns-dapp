@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { mockNeuron } from "$tests/mocks/neurons.mock";
-import type { LedgerCanister } from "@dfinity/ledger-icp";
+import type { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import type {
   ListProposalsRequest,
   ListProposalsResponse,

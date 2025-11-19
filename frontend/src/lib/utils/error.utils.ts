@@ -15,7 +15,7 @@ import {
   InvalidAccountIDError,
   InvalidSenderError,
   TransferError,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
 import {
   InvalidaTransactionError,

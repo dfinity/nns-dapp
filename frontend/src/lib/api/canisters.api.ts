@@ -27,7 +27,7 @@ import { getCanisterCreationCmcAccountIdentifierHex } from "$lib/utils/canisters
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, pollingLimit } from "$lib/utils/utils";
-import { AccountIdentifier, SubAccount } from "@dfinity/ledger-icp";
+import { AccountIdentifier, SubAccount } from "@icp-sdk/canisters/ledger/icp";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
 import {
   CMCCanister,
