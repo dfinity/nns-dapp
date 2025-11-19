@@ -51,10 +51,11 @@
     padding-right: var(--padding-1_5x);
     padding-left: var(--padding-1_5x);
     padding-top: var(--padding-0_5x);
-    color: var(--description-color);
-    background-color: #dadef2;
     font-weight: 450;
+    color: var(--description-color);
+    background-color: var(--background);
   }
+
   p {
     display: flex;
     align-items: center;

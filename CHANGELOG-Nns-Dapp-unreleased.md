@@ -15,10 +15,9 @@ proposal is successful, the changes it released will be moved from this file to
 #### Added
 
 - Secondary data source for USD values. 
+- User address-book to save common addresses.
 
 #### Changed
-
-- User address-book to save common addresses.
 
 #### Deprecated
 
