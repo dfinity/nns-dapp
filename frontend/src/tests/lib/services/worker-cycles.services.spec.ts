@@ -8,9 +8,11 @@ describe("initCyclesWorker", () => {
   const postMessage = vi.fn();
   beforeEach(async () => {
     const module = await import("$lib/workers/cycles.worker?worker");
-    module.default = vi.fn().mockReturnValue({
-      postMessage,
-    });
+    // In Vitest 4, we need to mock default as a constructor (class)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    module.default = class {
+      postMessage = postMessage;
+    } as any;
   });
 
   it("starting sends post message with host and fetchRootKey", async () => {
