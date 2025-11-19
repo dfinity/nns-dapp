@@ -1,3 +1,4 @@
+import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import { OWN_CANISTER_ID_TEXT } from "$lib/constants/canister-ids.constants";
 import { AppPath } from "$lib/constants/routes.constants";
@@ -29,10 +30,18 @@ import { Principal } from "@icp-sdk/core/principal";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/nns-dapp.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/nns-dapp.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/nns-dapp.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("Proposal", () => {
-  blockAllCallsTo(["$lib/api/nns-dapp.api"]);
+  blockAllCallsTo(["$lib/api/nns-dapp.api"], {
+    "$lib/api/nns-dapp.api": nnsDappApi,
+  });
 
   beforeEach(() => {
     resetIdentity();

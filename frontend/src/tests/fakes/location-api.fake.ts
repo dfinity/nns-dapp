@@ -54,12 +54,13 @@ export const setCountryCode = (newCountryCode: CountryCode | Error): void => {
 
 // Call this inside a describe() block outside beforeEach() because it defines
 // its own beforeEach() and afterEach().
-export const install = () => {
+export const install = (moduleObject?: unknown) => {
   beforeEach(() => {
     reset();
   });
   installImplAndBlockRest({
     modulePath,
     implementedFunctions,
+    moduleObject,
   });
 };

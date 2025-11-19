@@ -95,7 +95,11 @@ describe("sns-api", () => {
 
     vi.spyOn(dfinitySns, "SnsWrapper").mockImplementation(function () {
       // @ts-expect-error: mocking constructor
-      this.canisterIds = canisterIds;
+      Object.defineProperty(this, "canisterIds", {
+        value: canisterIds,
+        writable: true,
+        configurable: true,
+      });
       this.metadata = () =>
         Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]);
       // @ts-expect-error: mocking constructor

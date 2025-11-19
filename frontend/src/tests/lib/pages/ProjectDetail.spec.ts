@@ -1,4 +1,5 @@
 import * as ledgerApi from "$lib/api/icp-ledger.api";
+import * as locationApi from "$lib/api/location.api";
 import * as nnsDappApi from "$lib/api/nns-dapp.api";
 import * as proposalsApi from "$lib/api/proposals.api";
 import * as snsSaleApi from "$lib/api/sns-sale.api";
@@ -48,16 +49,61 @@ import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/sns.api");
-vi.mock("$lib/api/sns-swap-metrics.api");
-vi.mock("$lib/api/sns-sale.api");
-vi.mock("$lib/api/icp-ledger.api");
-vi.mock("$lib/api/location.api");
-vi.mock("$lib/api/proposals.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/nns-dapp.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/nns-dapp.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/sns.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/sns.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/sns-swap-metrics.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/sns-swap-metrics.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/sns-sale.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/sns-sale.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/icp-ledger.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/icp-ledger.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/location.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/location.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/proposals.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/proposals.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("ProjectDetail", () => {
-  fakeLocationApi.install();
+  fakeLocationApi.install(locationApi);
 
   const rootCanisterId = mockCanisterId;
   const swapCanisterId = principal(5);
@@ -218,10 +264,14 @@ sale_buyer_count ${saleBuyerCount} 1677707139456
       });
 
       it("should not load user's commitment", async () => {
+        const spyQuerySnsSwapCommitment = vi.spyOn(
+          snsApi,
+          "querySnsSwapCommitment"
+        );
         renderComponent(props);
 
         await runResolvedPromises();
-        expect(snsApi.querySnsSwapCommitment).not.toBeCalled();
+        expect(spyQuerySnsSwapCommitment).not.toBeCalled();
       });
 
       it("should render info section", async () => {
