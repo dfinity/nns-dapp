@@ -13,12 +13,12 @@ import type {
 import { SnsSummaryWrapper } from "$lib/types/sns-summary-wrapper";
 import type { QuerySnsMetadata } from "$lib/types/sns.query";
 import type { Universe } from "$lib/types/universe";
+import type { Token } from "@dfinity/utils";
+import { nonNullish, toNullable } from "@dfinity/utils";
 import {
   IcrcMetadataResponseEntries,
   type IcrcTokenMetadataResponse,
 } from "@icp-sdk/canisters/ledger/icrc";
-import type { Token } from "@dfinity/utils";
-import { nonNullish, toNullable } from "@dfinity/utils";
 import {
   SnsSwapLifecycle,
   type SnsGetDerivedStateResponse,
