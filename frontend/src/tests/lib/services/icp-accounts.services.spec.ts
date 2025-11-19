@@ -66,14 +66,30 @@ import { decodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 
-vi.mock("$lib/api/nns-dapp.api");
-vi.mock("$lib/api/icp-ledger.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/nns-dapp.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/nns-dapp.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/icp-ledger.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/icp-ledger.api")>();
+  return {
+    ...actual,
+  };
+});
+
 const blockedApiPaths = ["$lib/api/nns-dapp.api", "$lib/api/icp-ledger.api"];
 
 describe("icp-accounts.services", () => {
   const mockLedgerIdentity = new MockLedgerIdentity();
 
-  blockAllCallsTo(blockedApiPaths);
+  blockAllCallsTo(blockedApiPaths, {
+    "$lib/api/nns-dapp.api": nnsDappApi,
+    "$lib/api/icp-ledger.api": ledgerApi,
+  });
 
   beforeEach(() => {
     vi.spyOn(console, "error").mockReturnValue();

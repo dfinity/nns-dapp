@@ -27,11 +27,18 @@ import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { fireEvent, waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 
-vi.mock("$lib/api/sns-governance.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/sns-governance.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/sns-governance.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("SnsProposals", () => {
-  fakeSnsGovernanceApi.install();
+  fakeSnsGovernanceApi.install(snsGovernanceApi);
 
   const nothingFound = (
     container: HTMLElement

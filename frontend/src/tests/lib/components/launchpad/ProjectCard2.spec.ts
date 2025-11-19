@@ -19,12 +19,18 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/api/sns-sale.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/sns-sale.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/sns-sale.api")>();
+  return {
+    ...actual,
+  };
+});
 
 const blockedApiPaths = ["$lib/api/sns-sale.api"];
 
 describe("ProjectCard2", () => {
-  blockAllCallsTo(blockedApiPaths);
+  blockAllCallsTo(blockedApiPaths, { "$lib/api/sns-sale.api": saleApi });
 
   const rootCanisterId = rootCanisterIdMock;
   const now = 1698139468000;
