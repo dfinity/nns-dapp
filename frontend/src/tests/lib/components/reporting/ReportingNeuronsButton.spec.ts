@@ -22,14 +22,16 @@ import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
 // In Vitest 4, we need to use importOriginal to partially mock the module
 vi.mock("$lib/api/governance.api", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("$lib/api/governance.api")>();
+  const actual =
+    await importOriginal<typeof import("$lib/api/governance.api")>();
   return {
     ...actual,
   };
 });
 
 vi.mock("$lib/api/sns-governance.api", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("$lib/api/sns-governance.api")>();
+  const actual =
+    await importOriginal<typeof import("$lib/api/sns-governance.api")>();
   return {
     ...actual,
   };

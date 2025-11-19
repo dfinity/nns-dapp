@@ -75,7 +75,8 @@ vi.mock("$lib/api/nns-dapp.api", async (importOriginal) => {
 });
 
 vi.mock("$lib/api/icp-ledger.api", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("$lib/api/icp-ledger.api")>();
+  const actual =
+    await importOriginal<typeof import("$lib/api/icp-ledger.api")>();
   return {
     ...actual,
   };

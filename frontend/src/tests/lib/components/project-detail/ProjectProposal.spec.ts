@@ -13,7 +13,8 @@ import { get } from "svelte/store";
 
 // In Vitest 4, we need to use importOriginal to partially mock the module
 vi.mock("$lib/api/proposals.api", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("$lib/api/proposals.api")>();
+  const actual =
+    await importOriginal<typeof import("$lib/api/proposals.api")>();
   return {
     ...actual,
   };
