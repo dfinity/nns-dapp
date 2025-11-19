@@ -33,7 +33,7 @@ import {
 } from "$tests/mocks/icp-accounts.store.mock";
 import { mockImportedToken } from "$tests/mocks/imported-tokens.mock";
 
-import { AccountIdentifier } from "@dfinity/ledger-icp";
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 import { mock } from "vitest-mock-extended";

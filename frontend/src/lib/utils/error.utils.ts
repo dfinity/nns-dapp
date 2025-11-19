@@ -10,17 +10,17 @@ import {
 } from "$lib/types/neurons.errors";
 import type { ToastMsg } from "$lib/types/toast";
 import { translate, type I18nSubstitutions } from "$lib/utils/i18n.utils";
-import {
-  InsufficientFundsError,
-  InvalidAccountIDError,
-  InvalidSenderError,
-  TransferError,
-} from "@dfinity/ledger-icp";
 import { InvalidPercentageError, isNullish, nonNullish } from "@dfinity/utils";
 import {
   InvalidaTransactionError,
   RefundedError,
 } from "@icp-sdk/canisters/cmc";
+import {
+  InsufficientFundsError,
+  InvalidAccountIDError,
+  InvalidSenderError,
+  TransferError,
+} from "@icp-sdk/canisters/ledger/icp";
 import {
   CouldNotClaimNeuronError,
   GovernanceError,

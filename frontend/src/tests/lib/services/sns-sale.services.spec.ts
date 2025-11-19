@@ -47,18 +47,18 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import {
-  InsufficientFundsError,
-  TransferError,
-  TxCreatedInFutureError,
-  TxDuplicateError,
-  TxTooOldError,
-} from "@dfinity/ledger-icp";
-import {
   ICPToken,
   TokenAmount,
   arrayOfNumberToUint8Array,
   toNullable,
 } from "@dfinity/utils";
+import {
+  InsufficientFundsError,
+  TransferError,
+  TxCreatedInFutureError,
+  TxDuplicateError,
+  TxTooOldError,
+} from "@icp-sdk/canisters/ledger/icp";
 import type { SnsWrapper } from "@icp-sdk/canisters/sns";
 import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {

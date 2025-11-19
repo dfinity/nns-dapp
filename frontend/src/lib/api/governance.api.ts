@@ -5,7 +5,7 @@ import { GOVERNANCE_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
-import type { AccountIdentifierHex } from "@dfinity/ledger-icp";
+import type { AccountIdentifierHex } from "@icp-sdk/canisters/ledger/icp";
 import type {
   E8s,
   FolloweesForTopic,

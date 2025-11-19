@@ -20,8 +20,8 @@ import {
 } from "$lib/utils/icp-transactions.utils";
 import en from "$tests/mocks/i18n.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
-import type { Operation } from "@dfinity/ledger-icp";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
+import type { Operation } from "@icp-sdk/canisters/ledger/icp";
 
 describe("icp-transactions.utils", () => {
   const defaultTimestamp = new Date("2023-01-01T00:00:00.000Z");

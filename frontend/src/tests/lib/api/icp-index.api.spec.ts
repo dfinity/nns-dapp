@@ -6,7 +6,7 @@ import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
 import {
   IndexCanister,
   type GetAccountIdentifierTransactionsResponse,
-} from "@dfinity/ledger-icp";
+} from "@icp-sdk/canisters/ledger/icp";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 

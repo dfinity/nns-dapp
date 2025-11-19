@@ -74,11 +74,11 @@ import {
   removeNnsNeuronFromFollowingsByTopics,
 } from "$lib/utils/nns-topics.utils";
 import { numberToE8s } from "$lib/utils/token.utils";
+import { isNullish, nonNullish } from "@dfinity/utils";
 import type {
   AccountIdentifierHex,
   TransactionWithId,
-} from "@dfinity/ledger-icp";
-import { isNullish, nonNullish } from "@dfinity/utils";
+} from "@icp-sdk/canisters/ledger/icp";
 import {
   NeuronVisibility,
   Topic,

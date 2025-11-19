@@ -9,7 +9,7 @@ import {
   mockMainAccount,
   mockSubAccountDetails,
 } from "$tests/mocks/icp-accounts.store.mock";
-import { AccountIdentifier } from "@dfinity/ledger-icp";
+import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
 
 // eslint-disable-next-line
 // @ts-ignore: test file

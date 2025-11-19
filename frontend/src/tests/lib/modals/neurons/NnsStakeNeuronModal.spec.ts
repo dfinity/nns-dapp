@@ -35,8 +35,8 @@ import {
   advanceTime,
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
-import { LedgerCanister } from "@dfinity/ledger-icp";
 import { nonNullish } from "@dfinity/utils";
+import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { GovernanceCanister } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
