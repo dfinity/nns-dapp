@@ -19,10 +19,19 @@ import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 
-vi.mock("$lib/api/canisters.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/canisters.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/canisters.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("CanisterDetail", () => {
-  blockAllCallsTo(["$lib/api/canisters.api"]);
+  blockAllCallsTo(["$lib/api/canisters.api"], {
+    "$lib/api/canisters.api": canisterApi,
+  });
 
   beforeEach(() => {
     authStore.setForTesting(mockIdentity);
