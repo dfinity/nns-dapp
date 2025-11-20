@@ -51,10 +51,17 @@ import { waitFor } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/sns-governance.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/sns-governance.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/sns-governance.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("SnsProposalDetail", () => {
-  fakeSnsGovernanceApi.install();
+  fakeSnsGovernanceApi.install(snsGovernanceApi);
   const proposalId = { id: 3n };
   const rootCanisterId = mockCanisterId;
 
@@ -196,7 +203,10 @@ describe("SnsProposalDetail", () => {
       await tick();
       await runResolvedPromises();
 
-      expect((await po.getPayloadText()).trim()).toBe(payload);
+      // We use waitFor instead of runResolvedPromises because markdown is sometimes too slow for runResolvedPromises.
+      await waitFor(async () => {
+        expect((await po.getPayloadText()).trim()).toBe(payload);
+      });
     });
 
     it("should redirect to the list of sns proposals if proposal id is not a valid id", async () => {

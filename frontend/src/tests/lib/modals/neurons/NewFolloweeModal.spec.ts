@@ -15,15 +15,24 @@ import { Topic, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 import type { Mock } from "vitest";
 
-vi.mock("$lib/services/neurons.services", () => {
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/services/neurons.services", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/services/neurons.services")>();
   return {
+    ...actual,
     addFollowee: vi.fn().mockResolvedValue(undefined),
     removeFollowee: vi.fn().mockResolvedValue(undefined),
   };
 });
 
-vi.mock("$lib/services/known-neurons.services", () => {
+vi.mock("$lib/services/known-neurons.services", async (importOriginal) => {
+  const actual =
+    await importOriginal<
+      typeof import("$lib/services/known-neurons.services")
+    >();
   return {
+    ...actual,
     listKnownNeurons: vi.fn(),
   };
 });
@@ -61,6 +70,10 @@ describe("NewFolloweeModal", () => {
   beforeEach(() => {
     resetIdentity();
     knownNeuronsStore.setNeurons([]);
+    vi.mocked(addFollowee).mockReset();
+    vi.mocked(removeFollowee).mockReset();
+    vi.mocked(addFollowee).mockResolvedValue(undefined);
+    vi.mocked(removeFollowee).mockResolvedValue(undefined);
   });
 
   const renderComponent = ({

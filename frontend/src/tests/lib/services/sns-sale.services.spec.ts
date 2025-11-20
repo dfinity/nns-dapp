@@ -59,7 +59,6 @@ import {
   TxDuplicateError,
   TxTooOldError,
 } from "@icp-sdk/canisters/ledger/icp";
-import type { SnsWrapper } from "@icp-sdk/canisters/sns";
 import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   GetOpenTicketErrorType,
@@ -167,15 +166,18 @@ describe("sns-api", () => {
 
     setSnsProjects([canisterIds]);
 
-    vi.spyOn(dfinitySns, "SnsWrapper").mockReturnValue({
-      canisterIds,
-      metadata: () =>
-        Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
-      swapState: () => Promise.resolve(mockQuerySwap),
-      notifyParticipation: spyOnNotifyParticipation,
-      newSaleTicket: spyOnNewSaleTicketApi,
-      notifyPaymentFailure: spyOnNotifyPaymentFailureApi,
-    } as unknown as SnsWrapper);
+    vi.spyOn(dfinitySns, "SnsWrapper").mockImplementation(function () {
+      Object.defineProperty(this, "canisterIds", {
+        value: canisterIds,
+      });
+      this.metadata = () =>
+        Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]);
+      // @ts-expect-error: mocking constructor
+      this.swapState = () => Promise.resolve(mockQuerySwap);
+      this.notifyParticipation = spyOnNotifyParticipation;
+      this.newSaleTicket = spyOnNewSaleTicketApi;
+      this.notifyPaymentFailure = spyOnNotifyPaymentFailureApi;
+    });
     // `getOpenTicket` is mocked from the SnsSwapCanister not the wrapper
     vi.spyOn(SnsSwapCanister, "create").mockImplementation(
       (): SnsSwapCanister => snsSwapCanister

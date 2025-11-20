@@ -20,7 +20,14 @@ import { toastsStore } from "@dfinity/gix-components";
 import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/governance.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/governance.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/governance.api")>();
+  return {
+    ...actual,
+  };
+});
 
 const testIdentity = createMockIdentity(37373);
 
@@ -36,7 +43,7 @@ const expectToastError = (contained: string) =>
   ]);
 
 describe("MergeNeuronsModal", () => {
-  fakeGovernanceApi.install();
+  fakeGovernanceApi.install(governanceApi);
 
   beforeEach(() => {
     vi.spyOn(authServices, "getAuthenticatedIdentity").mockResolvedValue(

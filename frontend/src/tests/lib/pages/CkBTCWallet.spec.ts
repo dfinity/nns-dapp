@@ -64,9 +64,30 @@ vi.mock("$lib/services/worker-transactions.services", () => ({
   ),
 }));
 
-vi.mock("$lib/api/ckbtc-minter.api");
-vi.mock("$lib/api/icrc-ledger.api");
-vi.mock("$lib/api/icrc-index.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/ckbtc-minter.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/ckbtc-minter.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/icrc-ledger.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/icrc-ledger.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/icrc-index.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/icrc-index.api")>();
+  return {
+    ...actual,
+  };
+});
 
 const blockedApiPaths = [
   "$lib/api/ckbtc-minter.api",
@@ -75,7 +96,11 @@ const blockedApiPaths = [
 ];
 
 describe("CkBTCWallet", () => {
-  blockAllCallsTo(blockedApiPaths);
+  blockAllCallsTo(blockedApiPaths, {
+    "$lib/api/ckbtc-minter.api": ckbtcMinterApi,
+    "$lib/api/icrc-ledger.api": icrcLedgerApi,
+    "$lib/api/icrc-index.api": icrcIndexApi,
+  });
 
   const props = {
     accountIdentifier: mockCkBTCMainAccount.identifier,

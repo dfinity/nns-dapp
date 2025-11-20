@@ -1,3 +1,4 @@
+import * as governanceApi from "$lib/api/governance.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
 import * as importedTokensApi from "$lib/api/imported-tokens.api";
 import * as proposalsApi from "$lib/api/proposals.api";
@@ -47,10 +48,17 @@ import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 
-vi.mock("$lib/api/governance.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/governance.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/governance.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("Portfolio route", () => {
-  fakeGovernanceApi.install();
+  fakeGovernanceApi.install(governanceApi);
 
   const renderPage = async () => {
     const { container } = render(PortfolioRoute);

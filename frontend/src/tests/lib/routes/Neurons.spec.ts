@@ -1,6 +1,9 @@
 import * as agent from "$lib/api/agent.api";
+import * as governanceApi from "$lib/api/governance.api";
 import * as icpSwapApi from "$lib/api/icp-swap.api";
 import * as icrcLedgerApi from "$lib/api/icrc-ledger.api";
+import * as snsAggregatorApi from "$lib/api/sns-aggregator.api";
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import {
   LEDGER_CANISTER_ID,
   OWN_CANISTER_ID_TEXT,
@@ -32,12 +35,45 @@ import { tick } from "svelte";
 import { get } from "svelte/store";
 import { mock } from "vitest-mock-extended";
 
-vi.mock("$lib/api/icrc-ledger.api");
-vi.mock("$lib/api/governance.api");
-vi.mock("$lib/api/sns-aggregator.api");
-vi.mock("$lib/api/sns-governance.api");
-vi.mock("$lib/api/sns-ledger.api");
-vi.mock("$lib/api/sns.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/icrc-ledger.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/icrc-ledger.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/governance.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/governance.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/sns-aggregator.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/sns-aggregator.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/sns-governance.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/sns-governance.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/sns.api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("$lib/api/sns.api")>();
+  return {
+    ...actual,
+  };
+});
 
 const testCommittedSnsCanisterId = Principal.fromHex("897654");
 const testOpenSnsCanisterId = Principal.fromHex("567812");
@@ -46,11 +82,13 @@ const testNnsNeuronId = 543n;
 const blockedPaths = ["$lib/api/icrc-ledger.api"];
 
 describe("Neurons", () => {
-  blockAllCallsTo(blockedPaths);
+  blockAllCallsTo(blockedPaths, {
+    "$lib/api/icrc-ledger.api": icrcLedgerApi,
+  });
 
-  fakeGovernanceApi.install();
-  fakeSnsGovernanceApi.install();
-  fakeSnsAggregatorApi.install();
+  fakeGovernanceApi.install(governanceApi);
+  fakeSnsGovernanceApi.install(snsGovernanceApi);
+  fakeSnsAggregatorApi.install(snsAggregatorApi);
 
   const tickers = [
     {

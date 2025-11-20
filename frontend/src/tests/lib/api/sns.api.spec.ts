@@ -26,7 +26,6 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
-import type { SnsWrapper } from "@icp-sdk/canisters/sns";
 import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsSwapLifecycle,
@@ -94,18 +93,21 @@ describe("sns-api", () => {
 
     setSnsProjects([canisterIds]);
 
-    vi.spyOn(dfinitySns, "SnsWrapper").mockReturnValue({
-      canisterIds,
-      metadata: () =>
-        Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]),
-      swapState: () => Promise.resolve(mockQuerySwap),
-      notifyParticipation: notifyParticipationSpy,
-      getUserCommitment: getUserCommitmentSpy,
-      stakeNeuron: stakeNeuronSpy,
-      increaseStakeNeuron: increaseStakeNeuronSpy,
-      getDerivedState: getDerivedStateSpy,
-      getLifecycle: getLifecycleSpy,
-    } as unknown as SnsWrapper);
+    vi.spyOn(dfinitySns, "SnsWrapper").mockImplementation(function () {
+      Object.defineProperty(this, "canisterIds", {
+        value: canisterIds,
+      });
+      this.metadata = () =>
+        Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]);
+      // @ts-expect-error: mocking constructor
+      this.swapState = () => Promise.resolve(mockQuerySwap);
+      this.notifyParticipation = notifyParticipationSpy;
+      this.getUserCommitment = getUserCommitmentSpy;
+      this.stakeNeuron = stakeNeuronSpy;
+      this.increaseStakeNeuron = increaseStakeNeuronSpy;
+      this.getDerivedState = getDerivedStateSpy;
+      this.getLifecycle = getLifecycleSpy;
+    });
   });
 
   it("should query sns metadata", async () => {

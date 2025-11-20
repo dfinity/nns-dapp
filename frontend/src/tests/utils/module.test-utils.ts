@@ -15,9 +15,11 @@
 export const installImplAndBlockRest = ({
   modulePath,
   implementedFunctions = {},
+  moduleObject,
 }: {
   modulePath: string;
   implementedFunctions: { [key: string]: (args: unknown) => unknown };
+  moduleObject?: unknown;
 }) => {
   const blockedCalls: string[] = [];
 
@@ -41,25 +43,47 @@ export const installImplAndBlockRest = ({
   };
 
   const mockModule = async () => {
-    const module = await import(modulePath);
-    let hasMockFunction = false;
+    // In Vitest 4, use the provided module object to avoid dynamic import issues
+    const module = moduleObject || (await import(modulePath));
+
+    // Collect all function names that need to be mocked
+    const functionNames = new Set<string>();
     for (const fn in module) {
-      if (module[fn].mock) {
-        hasMockFunction = true;
-        const fnImplementation =
-          implementedFunctions[fn] || failOnCall.bind(null, { modulePath, fn });
-        module[fn].mockImplementation(fnImplementation);
+      if (typeof module[fn] === "function") {
+        functionNames.add(fn);
       }
     }
+    for (const fn in implementedFunctions) {
+      functionNames.add(fn);
+    }
+
+    // Set up mocks for all functions
+    let hasMockFunction = false;
+    for (const fn of functionNames) {
+      if (typeof module[fn] !== "function") continue;
+
+      const isMocked = module[fn]?.mock || vi.isMockFunction(module[fn]);
+      const fnImplementation =
+        implementedFunctions[fn] || failOnCall.bind(null, { modulePath, fn });
+
+      if (!isMocked) {
+        // Spy on the function to make it mockable
+        vi.spyOn(module, fn).mockImplementation(fnImplementation);
+        hasMockFunction = true;
+      } else {
+        // Already mocked, just set the implementation
+        module[fn].mockImplementation(fnImplementation);
+        hasMockFunction = true;
+      }
+    }
+
     if (!hasMockFunction) {
-      // The module didn't have any mocked functions so it wasn't actually mocked.
-      // jest.mock() can't be done here because jest does some magic to move all
-      // those calls to the top of test to make sure they happen before any
-      // import.
       throw new Error(`You must add 'vi.mock("${modulePath}");' to your test.`);
     }
+
+    // Verify all implemented functions are mockable
     for (const fn in implementedFunctions) {
-      if (!module[fn]?.mock) {
+      if (!module[fn]?.mock && !vi.isMockFunction(module[fn])) {
         throw new Error(
           `${fn} is provided in implementedFunctions but can't be mocked on "${modulePath}".`
         );
@@ -79,9 +103,16 @@ export const installImplAndBlockRest = ({
 
 // Call this inside a describe() block outside beforeEach() because it defines
 // its own beforeEach() and afterEach().
-export const blockAllCallsTo = (modulePaths: string[]) => {
+export const blockAllCallsTo = (
+  modulePaths: string[],
+  moduleObjects?: Record<string, unknown>
+) => {
   for (const modulePath of modulePaths) {
-    installImplAndBlockRest({ modulePath, implementedFunctions: {} });
+    installImplAndBlockRest({
+      modulePath,
+      implementedFunctions: {},
+      moduleObject: moduleObjects?.[modulePath],
+    });
   }
 };
 

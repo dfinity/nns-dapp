@@ -11,11 +11,18 @@ import { render } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/proposals.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/proposals.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/proposals.api")>();
+  return {
+    ...actual,
+  };
+});
 
 const blockedApiPaths = ["$lib/api/proposals.api"];
 describe("ProjectProposal", () => {
-  blockAllCallsTo(blockedApiPaths);
+  blockAllCallsTo(blockedApiPaths, { "$lib/api/proposals.api": proposalsApi });
 
   beforeEach(() => {
     setNoIdentity();

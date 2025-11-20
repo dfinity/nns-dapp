@@ -1,3 +1,4 @@
+import * as snsGovernanceApi from "$lib/api/sns-governance.api";
 import ProposalSystemInfoSection from "$lib/components/sns-proposals/SnsProposalSystemInfoSection.svelte";
 import { snsFunctionsStore } from "$lib/derived/sns-functions.derived";
 import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
@@ -21,10 +22,17 @@ import {
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
 
-vi.mock("$lib/api/sns-governance.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/sns-governance.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/sns-governance.api")>();
+  return {
+    ...actual,
+  };
+});
 
 describe("ProposalSystemInfoSection", () => {
-  fakeSnsGovernanceApi.install();
+  fakeSnsGovernanceApi.install(snsGovernanceApi);
 
   const rootCanisterId = mockCanisterId;
   const testNervousFunctionId = 1n;

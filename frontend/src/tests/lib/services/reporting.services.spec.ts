@@ -22,9 +22,30 @@ import { createIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock
 import { mockNeuron } from "$tests/mocks/neurons.mock";
 import type { SignIdentity } from "@icp-sdk/core/agent";
 
-vi.mock("$lib/api/icp-ledger.api");
-vi.mock("$lib/api/icrc-index.api");
-vi.mock("$lib/api/icrc-ledger.api");
+// In Vitest 4, we need to use importOriginal to partially mock the module
+vi.mock("$lib/api/icp-ledger.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/icp-ledger.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/icrc-index.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/icrc-index.api")>();
+  return {
+    ...actual,
+  };
+});
+
+vi.mock("$lib/api/icrc-ledger.api", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("$lib/api/icrc-ledger.api")>();
+  return {
+    ...actual,
+  };
+});
 vi.mock("$lib/constants/tokens.constants", () => ({
   ALL_CK_TOKENS_CANISTER_IDS: [
     { ledgerCanisterId: "ledger1", indexCanisterId: "index1" },
