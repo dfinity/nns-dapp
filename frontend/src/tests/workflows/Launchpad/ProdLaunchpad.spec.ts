@@ -4,8 +4,8 @@ import * as proposalsApi from "$lib/api/proposals.api";
 import { queryFinalizationStatus } from "$lib/api/sns-sale.api";
 import { authStore } from "$lib/stores/auth.store";
 import { mockToken } from "$tests/mocks/sns-projects.mock";
-import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
+import { Launchpad2Po } from "$tests/page-objects/Launchpad2.page-object";
 import Launchpad from "$tests/workflows/Launchpad/LaunchpadWithLayout.svelte";
 import { toastsStore } from "@dfinity/gix-components";
 import { isNullish } from "@dfinity/utils";
@@ -78,13 +78,12 @@ describe("Launchpad", () => {
   it("loads with prod data", async () => {
     const { container } = render(Launchpad);
 
-    const po = LaunchpadPo.under(new JestPageObjectElement(container));
+    const po = Launchpad2Po.under(new JestPageObjectElement(container));
 
-    await po.getCommittedProjectsPo().waitForContentLoaded();
     await tick();
 
     expect(
-      (await po.getCommittedProjectsPo().getProjectCardPos()).length
+      (await po.getFeaturedProjectsCardListPo().getCardEntries()).length
     ).toBeGreaterThan(0);
 
     expect(get(toastsStore).length).toBe(0);

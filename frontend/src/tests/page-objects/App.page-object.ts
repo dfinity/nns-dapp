@@ -8,7 +8,6 @@ import type { ButtonPo } from "$tests/page-objects/Button.page-object";
 import { CanisterDetailPo } from "$tests/page-objects/CanisterDetail.page-object";
 import { CanistersPo } from "$tests/page-objects/Canisters.page-object";
 import { ConfirmationModalPo } from "$tests/page-objects/ConfirmationModal.page-object";
-import { LaunchpadPo } from "$tests/page-objects/Launchpad.page-object";
 import { Launchpad2Po } from "$tests/page-objects/Launchpad2.page-object";
 import { MenuItemsPo } from "$tests/page-objects/MenuItems.page-object";
 import { NeuronDetailPo } from "$tests/page-objects/NeuronDetail.page-object";
@@ -75,11 +74,6 @@ export class AppPo extends BasePageObject {
 
   getProposalDetailPo(): ProposalDetailPo {
     return ProposalDetailPo.under(this.root);
-  }
-
-  // TODO: Delete after FF is removed
-  getLaunchpadPo(): LaunchpadPo {
-    return LaunchpadPo.under(this.root);
   }
 
   getLaunchpad2Po(): Launchpad2Po {
