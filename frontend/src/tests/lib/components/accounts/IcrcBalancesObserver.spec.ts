@@ -36,7 +36,9 @@ const { postMessageMockRef } = vi.hoisted(() => {
   }
 
   return {
-    postMessageMockRef: { value: undefined as PostMessageMock<BalancesMessageEvent> | undefined },
+    postMessageMockRef: {
+      value: undefined as PostMessageMock<BalancesMessageEvent> | undefined,
+    },
   };
 });
 
