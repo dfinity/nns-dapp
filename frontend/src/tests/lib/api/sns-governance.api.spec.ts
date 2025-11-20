@@ -129,8 +129,6 @@ describe("sns-api", () => {
     vi.spyOn(dfinitySns, "SnsWrapper").mockImplementation(function () {
       Object.defineProperty(this, "canisterIds", {
         value: canisterIds,
-        writable: true,
-        configurable: true,
       });
       this.metadata = () =>
         Promise.resolve([mockQueryMetadataResponse, mockQueryTokenResponse]);

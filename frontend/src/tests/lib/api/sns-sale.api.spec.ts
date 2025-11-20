@@ -62,8 +62,6 @@ describe("sns-sale.api", () => {
     vi.spyOn(dfinitySns, "SnsWrapper").mockImplementation(function () {
       Object.defineProperty(this, "canisterIds", {
         value: canisterIds,
-        writable: true,
-        configurable: true,
       });
       this.getOpenTicket = getOpenTicketSpy;
       this.newSaleTicket = newSaleTicketSpy;
