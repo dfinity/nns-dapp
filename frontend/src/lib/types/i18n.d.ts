@@ -991,14 +991,6 @@ interface I18nNeuron_detail {
 
 interface I18nSns_launchpad {
   header: string;
-  committed_projects: string;
-  no_committed_projects: string;
-  no_opening_soon_projects: string;
-  no_projects: string;
-  open_projects: string;
-  upcoming_projects: string;
-  no_open_projects: string;
-  proposals: string;
   project_logo: string;
   no_proposals: string;
   participated: string;
