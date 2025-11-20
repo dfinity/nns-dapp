@@ -63,6 +63,7 @@ vi.mock("$lib/workers/balances.worker?worker", () => ({
       };
       // Try immediately, and also store for later
       setupSubscription();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (this as any)._setupSubscription = setupSubscription;
     }
 
