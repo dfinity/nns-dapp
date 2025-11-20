@@ -34,8 +34,18 @@ vi.mock("$app/navigation", () => ({
 }));
 
 describe("Launchpad", () => {
+  const originalLocation = window.location;
+
   beforeEach(async () => {
-    vi.stubGlobal("window", window);
+    // Set up window.location with search property to prevent ReferenceError
+    Object.defineProperty(window, "location", {
+      writable: true,
+      value: {
+        ...originalLocation,
+        search: "",
+        href: "http://localhost/",
+      },
+    });
 
     authStore.setForTesting(null);
 
