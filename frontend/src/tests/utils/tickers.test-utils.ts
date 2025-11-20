@@ -1,6 +1,8 @@
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_LEDGER_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
+import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
 import { tickersStore } from "$lib/stores/tickers.store";
+import type { TickersProviders } from "$lib/types/tickers";
 
 const isIcpPriceInvalid = (price: number) => Number.isNaN(price) || price <= 0;
 
@@ -30,3 +32,6 @@ export const setIcpPrice = (icpPrice: number) => {
     [LEDGER_CANISTER_ID.toText()]: icpPrice,
   });
 };
+
+export const setTickersProvider = (provider: TickersProviders) =>
+  tickerProviderStore.set(provider);

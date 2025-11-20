@@ -15,6 +15,7 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
+import { TickersProviders } from "$lib/types/tickers";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -30,7 +31,10 @@ import { ProjectsTablePo } from "$tests/page-objects/ProjectsTable.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { render } from "$tests/utils/svelte.test-utils";
-import { setTickers } from "$tests/utils/tickers.test-utils";
+import {
+  setTickers,
+  setTickersProvider,
+} from "$tests/utils/tickers.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { nonNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
@@ -754,6 +758,7 @@ describe("ProjectsTable", () => {
     });
 
     it("should show total stake in USD", async () => {
+      setTickersProvider(TickersProviders.ICP_SWAP);
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
@@ -791,7 +796,9 @@ describe("ProjectsTable", () => {
       ).toBe(false);
       expect(
         await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
-      ).toBe(`1 ICP = $10.00${en.accounts.token_price_source}`);
+      ).toBe(
+        `1 ICP = $10.00Token prices are given in USD and based on data provided by ICPSwap.`
+      );
     });
 
     it("should ignore tokens with unknown balance in USD when adding up the total", async () => {
@@ -849,9 +856,7 @@ describe("ProjectsTable", () => {
       expect(await po.getUsdValueBannerPo().getPrimaryAmount()).toBe("$-/-");
       expect(
         await po.getUsdValueBannerPo().getIcpExchangeRatePo().getTooltipText()
-      ).toBe(
-        "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable."
-      );
+      ).toBe("USD prices are temporarily unavailable.");
       expect(console.error).toBeCalledWith(error);
       expect(console.error).toBeCalledTimes(2);
     });

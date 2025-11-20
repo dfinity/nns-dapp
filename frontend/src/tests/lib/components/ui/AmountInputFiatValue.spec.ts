@@ -1,9 +1,13 @@
 import AmountInputFiatValue from "$lib/components/ui/AmountInputFiatValue.svelte";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { TickersProviders } from "$lib/types/tickers";
 import en from "$tests/mocks/i18n.mock";
 import { AmountInputFiatValuePo } from "$tests/page-objects/AmountInputFiatValue.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice } from "$tests/utils/tickers.test-utils";
+import {
+  setIcpPrice,
+  setTickersProvider,
+} from "$tests/utils/tickers.test-utils";
 import { ICPToken } from "@dfinity/utils";
 import { render } from "@testing-library/svelte";
 
@@ -93,6 +97,7 @@ describe("AmountInputFiatValue", () => {
   });
 
   it("should show tooltip message with the source of the conversion", async () => {
+    setTickersProvider(TickersProviders.ICP_SWAP);
     setIcpPrice(10);
     const po = renderComponent({
       amount: 5,
@@ -101,8 +106,8 @@ describe("AmountInputFiatValue", () => {
       errorState: true,
     });
 
-    expect(await po.getTooltipIconPo().getTooltipText()).toEqual(
-      en.accounts.token_price_source
+    expect(await po.getTooltipIconPo().getTooltipText()).toBe(
+      "Token prices are given in USD and based on data provided by ICPSwap."
     );
   });
 

@@ -1,10 +1,12 @@
 <script lang="ts">
   import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
   import { i18n } from "$lib/stores/i18n";
   import { tickersStore } from "$lib/stores/tickers.store";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { nonNullish, type TokenAmountV2 } from "@dfinity/utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isNullish, nonNullish, type TokenAmountV2 } from "@dfinity/utils";
   import type { Principal } from "@icp-sdk/core/principal";
 
   export let amount: TokenAmountV2 | undefined = undefined;
@@ -40,10 +42,12 @@
         {formattedAmountInUsd}
       </span>
       <TooltipIcon>
-        {#if icpSwapHasError}
+        {#if icpSwapHasError || isNullish($tickerProviderStore)}
           {$i18n.accounts.token_price_error}
         {:else}
-          {$i18n.accounts.token_price_source}
+          {replacePlaceholders($i18n.accounts.token_price_source, {
+            $fiatProvider: $tickerProviderStore,
+          })}
         {/if}
       </TooltipIcon>
     </div>

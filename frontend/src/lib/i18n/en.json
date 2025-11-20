@@ -382,9 +382,9 @@
     "received_amount_notice": "Received Amount *",
     "transaction_time": "Transaction Time",
     "transaction_time_seconds": "Seconds",
-    "token_price_error": "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable.",
+    "token_price_error": "USD prices are temporarily unavailable.",
     "unpriced_tokens_warning": "Value may be inaccurate as some prices could not be fetched.",
-    "token_price_source": "Token prices are given in USD and based on data provided by ICPSwap."
+    "token_price_source": "Token prices are given in USD and based on data provided by $fiatProvider."
   },
   "neuron_types": {
     "seed": "Seed",
@@ -977,7 +977,7 @@
     "ongoing_min_icp": "Min, ICP",
     "ongoing_cap_icp": "Cap, ICP",
     "project_card_fully_diluted_valuation": "FDV",
-    "project_card_fully_diluted_valuation_tooltip": "Fully Diluted Valuation, which is computed as the total token supply times the token price (price taken from ICPSwap).",
+    "project_card_fully_diluted_valuation_tooltip": "Fully Diluted Valuation, which is computed as the total token supply times the token price (price taken from $fiatProvider).",
     "project_card_my_participation": "My Participation",
     "project_card_proposal_activity": "Proposal Activity",
     "upcoming_tag_upcoming": "Upcoming",
@@ -1402,7 +1402,6 @@
     "staked_tokens_card_link": "Stake neurons",
     "staked_tokens_card_subtitle_icp": "Staked ICP",
     "staked_tokens_card_subtitle_rest": "Other Tokens Staked",
-
     "staked_tokens_card_list_first_column_icp": "Native Token on ICP",
     "staked_tokens_card_list_first_column_rest": "Decentralized community projects",
     "staked_tokens_card_list_second_column_mobile": "Balance / Maturity",

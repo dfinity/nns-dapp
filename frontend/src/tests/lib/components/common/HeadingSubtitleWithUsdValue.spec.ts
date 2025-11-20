@@ -1,11 +1,15 @@
 import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
-import en from "$tests/mocks/i18n.mock";
+import { TickersProviders } from "$lib/types/tickers";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { HeadingSubtitleWithUsdValuePo } from "$tests/page-objects/HeadingSubtitleWithUsdValue.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice, setTickers } from "$tests/utils/tickers.test-utils";
+import {
+  setIcpPrice,
+  setTickers,
+  setTickersProvider,
+} from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -32,6 +36,7 @@ describe("HeadingSubtitleWithUsdValue", () => {
   });
 
   it("should render amount in USD", async () => {
+    setTickersProvider(TickersProviders.ICP_SWAP);
     const amount = TokenAmountV2.fromString({
       amount: "3",
       token: ICPToken,
@@ -45,7 +50,7 @@ describe("HeadingSubtitleWithUsdValue", () => {
     expect(await po.hasAmountInUsd()).toBe(true);
     expect(await po.getAmountInUsd()).toBe("$30.00");
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      en.accounts.token_price_source
+      "Token prices are given in USD and based on data provided by ICPSwap."
     );
   });
 
@@ -64,7 +69,7 @@ describe("HeadingSubtitleWithUsdValue", () => {
     expect(await po.hasAmountInUsd()).toBe(true);
     expect(await po.getAmountInUsd()).toBe("$-/-");
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable."
+      "USD prices are temporarily unavailable."
     );
   });
 

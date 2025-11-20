@@ -1,14 +1,18 @@
 import { icpSwapTickerProvider } from "$lib/services/icp-swap.provider";
 import { kongSwapTickerProvider } from "$lib/services/kong-swap.provider";
+import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
 import { tickersStore } from "$lib/stores/tickers.store";
-import type { ProviderLoader, TickersProviders } from "$lib/types/tickers";
+import { TickersProviders, type ProviderLoader } from "$lib/types/tickers";
 import { isNullish } from "@dfinity/utils";
 import { get } from "svelte/store";
 
-export const providers: TickersProviders[] = ["icp-swap", "kong-swap"];
+export const providers: TickersProviders[] = [
+  TickersProviders.ICP_SWAP,
+  TickersProviders.KONG_SWAP,
+];
 const providersLoaders = new Map<TickersProviders, ProviderLoader>([
-  ["icp-swap", icpSwapTickerProvider],
-  ["kong-swap", kongSwapTickerProvider],
+  [TickersProviders.ICP_SWAP, icpSwapTickerProvider],
+  [TickersProviders.KONG_SWAP, kongSwapTickerProvider],
 ]);
 
 export const loadTickers = async (): Promise<void> => {
@@ -22,6 +26,7 @@ export const loadTickers = async (): Promise<void> => {
 
       const tickers = await provider();
 
+      tickerProviderStore.set(p);
       return tickersStore.set(tickers);
     } catch (error) {
       console.error(error);
@@ -29,5 +34,6 @@ export const loadTickers = async (): Promise<void> => {
   }
 
   // If all providers failed, set error state.
+  tickerProviderStore.set(undefined);
   tickersStore.set("error");
 };

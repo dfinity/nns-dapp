@@ -2,12 +2,17 @@ import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { TickersProviders } from "$lib/types/tickers";
 import { dispatchIntersecting } from "$lib/utils/events.utils";
 import en from "$tests/mocks/i18n.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { WalletPageHeadingPo } from "$tests/page-objects/WalletPageHeading.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import { setIcpPrice, setTickers } from "$tests/utils/tickers.test-utils";
+import {
+  setIcpPrice,
+  setTickers,
+  setTickersProvider,
+} from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -149,6 +154,8 @@ describe("WalletPageHeading", () => {
   });
 
   it("should display USD balance if feature flag is enabled", async () => {
+    setTickersProvider(TickersProviders.ICP_SWAP);
+
     const balance = TokenAmountV2.fromString({
       amount: "3",
       token: ICPToken,
@@ -158,7 +165,7 @@ describe("WalletPageHeading", () => {
     expect(await po.hasBalanceInUsd()).toBe(true);
     expect(await po.getBalanceInUsd()).toBe("$30.00");
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      en.accounts.token_price_source
+      "Token prices are given in USD and based on data provided by ICPSwap."
     );
   });
 
@@ -174,7 +181,7 @@ describe("WalletPageHeading", () => {
     expect(await po.hasBalanceInUsd()).toBe(true);
     expect(await po.getBalanceInUsd()).toBe("$-/-");
     expect(await po.getTooltipIconPo().getTooltipText()).toBe(
-      "USD prices are temporarily unavailable: all pricing provider APIs are currently unreachable."
+      "USD prices are temporarily unavailable."
     );
   });
 

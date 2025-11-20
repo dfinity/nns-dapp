@@ -1,6 +1,9 @@
 <script lang="ts">
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
+  import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
   import { i18n } from "$lib/stores/i18n";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isNullish } from "@dfinity/utils";
 
   export let hasError: boolean;
 </script>
@@ -11,11 +14,13 @@
   class:has-error={hasError}
 >
   <TooltipIcon>
-    {#if hasError}
+    {#if hasError || isNullish($tickerProviderStore)}
       {$i18n.accounts.token_price_error}
     {:else}
       <div>
-        {$i18n.accounts.token_price_source}
+        {replacePlaceholders($i18n.accounts.token_price_source, {
+          $fiatProvider: $tickerProviderStore,
+        })}
       </div>
     {/if}
   </TooltipIcon>

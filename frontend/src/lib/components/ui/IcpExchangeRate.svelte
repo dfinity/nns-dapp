@@ -2,9 +2,11 @@
   import IC_LOGO_ROUNDED from "$lib/assets/icp-rounded.svg";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
   import { PRICE_NOT_AVAILABLE_PLACEHOLDER } from "$lib/constants/constants";
+  import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
   import { i18n } from "$lib/stores/i18n";
   import { formatNumber } from "$lib/utils/format.utils";
-  import { nonNullish } from "@dfinity/utils";
+  import { replacePlaceholders } from "$lib/utils/i18n.utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
 
   export let icpPrice: number | undefined;
   export let hasError: boolean;
@@ -30,13 +32,15 @@
     1 {$i18n.core.icp} = $<span data-tid="icp-price">{icpPriceFormatted}</span>
   </span>
   <TooltipIcon>
-    {#if hasError}
+    {#if hasError || isNullish($tickerProviderStore)}
       {$i18n.accounts.token_price_error}
     {:else}
       <div class="mobile-only">
         1 {$i18n.core.icp} = ${icpPriceFormatted}
       </div><div>
-        {$i18n.accounts.token_price_source}
+        {replacePlaceholders($i18n.accounts.token_price_source, {
+          $fiatProvider: $tickerProviderStore,
+        })}
       </div>
     {/if}
   </TooltipIcon>
