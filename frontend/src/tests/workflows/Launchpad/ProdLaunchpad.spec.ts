@@ -109,7 +109,7 @@ describe("Launchpad", () => {
             ok: true,
             json: () => Promise.resolve(response),
           };
-        } catch (err) {
+        } catch (_) {
           // Return an empty list if importing fails.
           // That will happen with the last page requested has exactly ten projects.
           return {
