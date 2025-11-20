@@ -1,4 +1,5 @@
 import UsdValueBanner from "$lib/components/ui/UsdValueBanner.svelte";
+import { TickersProviders } from "$lib/types/tickers";
 import en from "$tests/mocks/i18n.mock";
 import { UsdValueBannerPo } from "$tests/page-objects/UsdValueBanner.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -81,7 +82,7 @@ describe("UsdValueBanner", () => {
     const usdAmount = 50;
     const icpPrice = 10;
 
-    setTickersProvider("icp-swap");
+    setTickersProvider(TickersProviders.ICP_SWAP);
     setIcpPrice(icpPrice);
 
     const po = renderComponent({ usdAmount, hasUnpricedTokens: false });

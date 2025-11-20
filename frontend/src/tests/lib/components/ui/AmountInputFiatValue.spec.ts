@@ -1,5 +1,6 @@
 import AmountInputFiatValue from "$lib/components/ui/AmountInputFiatValue.svelte";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { TickersProviders } from "$lib/types/tickers";
 import en from "$tests/mocks/i18n.mock";
 import { AmountInputFiatValuePo } from "$tests/page-objects/AmountInputFiatValue.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -96,7 +97,7 @@ describe("AmountInputFiatValue", () => {
   });
 
   it("should show tooltip message with the source of the conversion", async () => {
-    setTickersProvider("icp-swap");
+    setTickersProvider(TickersProviders.ICP_SWAP);
     setIcpPrice(10);
     const po = renderComponent({
       amount: 5,

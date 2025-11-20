@@ -7,7 +7,7 @@ import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
 import { tickersStore } from "$lib/stores/tickers.store";
 import type { IcpSwapTicker } from "$lib/types/icp-swap";
 import type { KongSwapTicker } from "$lib/types/kong-swap";
-import type { TickersData } from "$lib/types/tickers";
+import { TickersProviders, type TickersData } from "$lib/types/tickers";
 import { mockIcpSwapTicker } from "$tests/mocks/icp-swap.mock";
 import { mockKongSwapTicker } from "$tests/mocks/kong-swap.mock";
 import { get } from "svelte/store";
@@ -83,7 +83,7 @@ describe("tickers.services", () => {
   it("should fallback to secondary provider when primary fails", async () => {
     // Mock primary provider failing
     const secondaryProvider = providers[1];
-    if (primaryProvider === "icp-swap") {
+    if (primaryProvider === TickersProviders.ICP_SWAP) {
       icpSwapApySpy.mockRejectedValue(new Error("ICP Swap failed"));
     } else {
       kongSwapApiSpy.mockRejectedValue(new Error("Kong Swap failed"));

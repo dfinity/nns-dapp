@@ -2,6 +2,7 @@ import WalletPageHeading from "$lib/components/accounts/WalletPageHeading.svelte
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import { layoutTitleStore } from "$lib/stores/layout.store";
+import { TickersProviders } from "$lib/types/tickers";
 import { dispatchIntersecting } from "$lib/utils/events.utils";
 import en from "$tests/mocks/i18n.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
@@ -153,7 +154,7 @@ describe("WalletPageHeading", () => {
   });
 
   it("should display USD balance if feature flag is enabled", async () => {
-    setTickersProvider("icp-swap");
+    setTickersProvider(TickersProviders.ICP_SWAP);
 
     const balance = TokenAmountV2.fromString({
       amount: "3",

@@ -1,6 +1,7 @@
 import HeadingSubtitleWithUsdValue from "$lib/components/common/HeadingSubtitleWithUsdValue.svelte";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
+import { TickersProviders } from "$lib/types/tickers";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { HeadingSubtitleWithUsdValuePo } from "$tests/page-objects/HeadingSubtitleWithUsdValue.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -35,7 +36,7 @@ describe("HeadingSubtitleWithUsdValue", () => {
   });
 
   it("should render amount in USD", async () => {
-    setTickersProvider("icp-swap");
+    setTickersProvider(TickersProviders.ICP_SWAP);
     const amount = TokenAmountV2.fromString({
       amount: "3",
       token: ICPToken,

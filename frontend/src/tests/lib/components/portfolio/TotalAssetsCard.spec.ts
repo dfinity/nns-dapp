@@ -1,4 +1,5 @@
 import TotalAssetsCard from "$lib/components/portfolio/TotalAssetsCard.svelte";
+import { TickersProviders } from "$lib/types/tickers";
 import en from "$tests/mocks/i18n.mock";
 import { TotalAssetsCardPo } from "$tests/page-objects/TotalAssetsCard.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
@@ -87,7 +88,7 @@ describe("TotalAssetsCard", () => {
     const usdAmount = 50;
     const icpPrice = 10;
 
-    setTickersProvider("icp-swap");
+    setTickersProvider(TickersProviders.ICP_SWAP);
     setIcpPrice(icpPrice);
 
     const po = renderComponent({ usdAmount, hasUnpricedTokens: false });

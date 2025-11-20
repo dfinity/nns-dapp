@@ -15,6 +15,7 @@ import { neuronsStore } from "$lib/stores/neurons.store";
 import { projectsTableOrderStore } from "$lib/stores/projects-table.store";
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { stakingRewardsStore } from "$lib/stores/staking-rewards.store";
+import { TickersProviders } from "$lib/types/tickers";
 import { page } from "$mocks/$app/stores";
 import { resetIdentity, setNoIdentity } from "$tests/mocks/auth.store.mock";
 import en from "$tests/mocks/i18n.mock";
@@ -757,7 +758,7 @@ describe("ProjectsTable", () => {
     });
 
     it("should show total stake in USD", async () => {
-      setTickersProvider("icp-swap");
+      setTickersProvider(TickersProviders.ICP_SWAP);
       neuronsStore.setNeurons({
         neurons: [nnsNeuronWithStake],
         certified: true,
