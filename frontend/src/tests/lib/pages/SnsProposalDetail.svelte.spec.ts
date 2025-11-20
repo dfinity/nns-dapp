@@ -203,7 +203,10 @@ describe("SnsProposalDetail", () => {
       await tick();
       await runResolvedPromises();
 
-      expect((await po.getPayloadText()).trim()).toBe(payload);
+      // We use waitFor instead of runResolvedPromises because markdown is sometimes too slow for runResolvedPromises.
+      await waitFor(async () => {
+        expect((await po.getPayloadText()).trim()).toBe(payload);
+      });
     });
 
     it("should redirect to the list of sns proposals if proposal id is not a valid id", async () => {
