@@ -27,6 +27,11 @@ vi.mock("$lib/api/sns-sale.api");
 vi.mock("$lib/api/icp-swap.api");
 vi.mock("$lib/api/kong-swap.api");
 
+vi.mock("$lib/services/public/app.services", () => ({
+  initAppAuth: vi.fn(() => Promise.resolve()),
+  initAppPublicData: vi.fn(() => Promise.resolve()),
+}));
+
 vi.mock("$app/navigation", () => ({
   afterNavigate: vi.fn((callback) => {
     callback({ from: null, to: { url: new URL("http://localhost/") } });
