@@ -23,12 +23,45 @@ type BalancesMessageEvent = MessageEvent<
   PostMessage<PostMessageDataResponseBalances | PostMessageDataResponseSync>
 >;
 
+// Hoist Worker global and postMessageMock ref
+const { postMessageMockRef } = vi.hoisted(() => {
+  // Mock Worker global if it doesn't exist (Node.js environment)
+  if (typeof globalThis.Worker === "undefined") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (globalThis as any).Worker = class {
+      constructor() {
+        // Mock Worker constructor
+      }
+    };
+  }
+
+  return {
+    postMessageMockRef: { value: undefined as PostMessageMock<BalancesMessageEvent> | undefined },
+  };
+});
+
 let postMessageMock: PostMessageMock<BalancesMessageEvent>;
 
 vi.mock("$lib/workers/balances.worker?worker", () => ({
   default: class BalancesWorker {
+    onmessage = async (_params: BalancesMessageEvent) => {
+      // Nothing here
+    };
+
     constructor() {
-      postMessageMock.subscribe(async (msg) => await this.onmessage(msg));
+      // Set up subscription when postMessageMock is available
+      const setupSubscription = () => {
+        if (postMessageMockRef.value) {
+          postMessageMockRef.value.subscribe(async (msg) => {
+            if (this.onmessage) {
+              await this.onmessage(msg);
+            }
+          });
+        }
+      };
+      // Try immediately, and also store for later
+      setupSubscription();
+      (this as any)._setupSubscription = setupSubscription;
     }
 
     postMessage(_data: {
@@ -37,10 +70,6 @@ vi.mock("$lib/workers/balances.worker?worker", () => ({
     }) {
       // Nothing here
     }
-
-    onmessage = async (_params: BalancesMessageEvent) => {
-      // Nothing here
-    };
   },
 }));
 
@@ -58,6 +87,7 @@ describe("IcrcBalancesObserver", () => {
     });
 
     postMessageMock = new PostMessageMock();
+    postMessageMockRef.value = postMessageMock;
   });
 
   it("should init data and render slotted content", async () => {
