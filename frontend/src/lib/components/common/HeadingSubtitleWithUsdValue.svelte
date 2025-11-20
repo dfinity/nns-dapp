@@ -1,7 +1,7 @@
 <script lang="ts">
   import HeadingSubtitle from "$lib/components/common/HeadingSubtitle.svelte";
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
-  import { tickersProviderName } from "$lib/derived/tickers-provider-name.derived";
+  import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
   import { i18n } from "$lib/stores/i18n";
   import { tickersStore } from "$lib/stores/tickers.store";
   import { formatNumber } from "$lib/utils/format.utils";
@@ -42,11 +42,11 @@
         {formattedAmountInUsd}
       </span>
       <TooltipIcon>
-        {#if icpSwapHasError || isNullish($tickersProviderName)}
+        {#if icpSwapHasError || isNullish($tickerProviderStore)}
           {$i18n.accounts.token_price_error}
         {:else}
           {replacePlaceholders($i18n.accounts.token_price_source, {
-            $fiatProvider: $tickersProviderName,
+            $fiatProvider: $tickerProviderStore,
           })}
         {/if}
       </TooltipIcon>

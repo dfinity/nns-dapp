@@ -1,6 +1,6 @@
 <script lang="ts">
   import TooltipIcon from "$lib/components/ui/TooltipIcon.svelte";
-  import { tickersProviderName } from "$lib/derived/tickers-provider-name.derived";
+  import { tickerProviderStore } from "$lib/stores/ticker-provider.store";
   import { i18n } from "$lib/stores/i18n";
   import { replacePlaceholders } from "$lib/utils/i18n.utils";
   import { isNullish } from "@dfinity/utils";
@@ -14,12 +14,12 @@
   class:has-error={hasError}
 >
   <TooltipIcon>
-    {#if hasError || isNullish($tickersProviderName)}
+    {#if hasError || isNullish($tickerProviderStore)}
       {$i18n.accounts.token_price_error}
     {:else}
       <div>
         {replacePlaceholders($i18n.accounts.token_price_source, {
-          $fiatProvider: $tickersProviderName,
+          $fiatProvider: $tickerProviderStore,
         })}
       </div>
     {/if}
