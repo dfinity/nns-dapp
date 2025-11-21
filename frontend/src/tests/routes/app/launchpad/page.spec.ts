@@ -3,7 +3,6 @@ import * as proposalsApi from "$lib/api/proposals.api";
 import * as snsApi from "$lib/api/sns.api";
 import { LEDGER_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { CKUSDC_UNIVERSE_CANISTER_ID } from "$lib/constants/ckusdc-canister-ids.constants";
-import { overrideFeatureFlagsStore } from "$lib/stores/feature-flags.store";
 import { icpSwapTickersStore } from "$lib/stores/icp-swap.store";
 import LaunchpadPage from "$routes/(app)/(nns)/launchpad/+page.svelte";
 import { mockIdentity, resetIdentity } from "$tests/mocks/auth.store.mock";
@@ -39,9 +38,6 @@ describe("Launchpad page", () => {
   ];
 
   beforeEach(() => {
-    // Test only the redesign of the Launchpad, since the old one contains no logic on this level (and is deprecated).
-    overrideFeatureFlagsStore.setFlag("ENABLE_LAUNCHPAD_REDESIGN", true);
-
     vi.spyOn(icpSwapApi, "queryIcpSwapTickers").mockResolvedValue(tickers);
     vi.spyOn(proposalsApi, "queryProposals").mockResolvedValue([]);
   });
