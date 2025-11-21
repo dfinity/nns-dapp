@@ -59,14 +59,14 @@ export const initBalancesWorker = async (): Promise<BalancesWorker> => {
     } & Omit<PostMessageDataRequestBalances, "fetchRootKey" | "host">) => {
       balancesCallback = callback;
 
-      balancesWorker.postMessage({
+      balancesWorker?.postMessage?.({
         msg: "nnsStartBalancesTimer",
         data: { ...rest, ...ACTOR_PARAMS },
       });
     },
     stopBalancesTimer: () => {
       balancesCallback = undefined;
-      balancesWorker.postMessage({
+      balancesWorker?.postMessage?.({
         msg: "nnsStopBalancesTimer",
       });
     },
