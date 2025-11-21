@@ -112,6 +112,17 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
+// Mock Worker global if it doesn't exist (Node.js environment, e.g., CI)
+// Vitest 4 processes worker imports more eagerly, requiring Worker to be available before module evaluation
+if (typeof globalThis.Worker === "undefined") {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (globalThis as any).Worker = class {
+    constructor() {
+      // Mock Worker constructor
+    }
+  };
+}
+
 // Default to desktop view (non-mobile)
 const defaultMatches = false;
 
