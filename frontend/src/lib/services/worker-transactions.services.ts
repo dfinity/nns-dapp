@@ -67,13 +67,13 @@ export const initTransactionsWorker = async (): Promise<TransactionsWorker> => {
     } & Omit<PostMessageDataRequestTransactions, "fetchRootKey" | "host">) => {
       transactionsCallback = callback;
 
-      transactionsWorker.postMessage({
+      transactionsWorker?.postMessage?.({
         msg: "nnsStartTransactionsTimer",
         data: { ...rest, ...ACTOR_PARAMS },
       });
     },
     stopTransactionsTimer: () => {
-      transactionsWorker.postMessage({
+      transactionsWorker?.postMessage?.({
         msg: "nnsStopTransactionsTimer",
       });
     },
