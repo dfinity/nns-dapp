@@ -1758,7 +1758,7 @@ const getTestNeuronNns =
 
 const getTestNeuronSns =
   (): TestStakingRewardCalcParams["snsNeurons"]["0"]["neurons"][0] => ({
-    id: [{ id: [Number(neuronCounter++)] }],
+    id: [{ id: Uint8Array.from([Number(neuronCounter++)]) }],
     maturity_e8s_equivalent: BigInt(0),
     staked_maturity_e8s_equivalent: [BigInt(0)],
     cached_neuron_stake_e8s: BigInt(10 * E8S_RATE),

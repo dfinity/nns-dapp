@@ -185,7 +185,7 @@ describe("SnsWalletDevTools", () => {
         canisterId: ledgerCanisterId,
         account: {
           owner: mockIdentity.getPrincipal(),
-          subaccount: hexStringToBytes(testSubaccount),
+          subaccount: Uint8Array.from(hexStringToBytes(testSubaccount)),
         },
       });
 

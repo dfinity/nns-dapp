@@ -260,7 +260,7 @@ describe("sns aggregator converters utils", () => {
         max_dissolve_delay_bonus_percentage: 100,
         max_followees_per_function: 15,
         neuron_claimer_permissions: {
-          permissions: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
         },
         neuron_minimum_stake_e8s: 100000000000,
         max_neuron_age_for_age_bonus: 252460800,
@@ -274,7 +274,7 @@ describe("sns aggregator converters utils", () => {
         max_number_of_proposals_with_ballots: 700,
         max_age_bonus_percentage: 25,
         neuron_grantable_permissions: {
-          permissions: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
         },
         voting_rewards_parameters: {
           final_reward_rate_basis_points: 0,
@@ -843,7 +843,7 @@ describe("sns aggregator converters utils", () => {
         max_dissolve_delay_bonus_percentage: 100,
         max_followees_per_function: 15,
         neuron_claimer_permissions: {
-          permissions: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+          permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
         },
         neuron_minimum_stake_e8s: 100000000000,
         max_neuron_age_for_age_bonus: 252460800,
@@ -857,7 +857,7 @@ describe("sns aggregator converters utils", () => {
         max_number_of_proposals_with_ballots: 700,
         max_age_bonus_percentage: 25,
         neuron_grantable_permissions: {
-          permissions: [0, 1, 2, 3, 4],
+          permissions: Int32Array.from([0, 1, 2, 3, 4]),
         },
         voting_rewards_parameters: {
           final_reward_rate_basis_points: 75,
@@ -884,7 +884,7 @@ describe("sns aggregator converters utils", () => {
         max_followees_per_function: [15n],
         neuron_claimer_permissions: [
           {
-            permissions: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            permissions: Int32Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8]),
           },
         ],
         neuron_minimum_stake_e8s: [100000000000n],
@@ -898,7 +898,9 @@ describe("sns aggregator converters utils", () => {
         transaction_fee_e8s: [100000n],
         max_number_of_proposals_with_ballots: [700n],
         max_age_bonus_percentage: [25n],
-        neuron_grantable_permissions: [{ permissions: [0, 1, 2, 3, 4] }],
+        neuron_grantable_permissions: [
+          { permissions: Int32Array.from([0, 1, 2, 3, 4]) },
+        ],
         voting_rewards_parameters: [
           {
             final_reward_rate_basis_points: [75n],
