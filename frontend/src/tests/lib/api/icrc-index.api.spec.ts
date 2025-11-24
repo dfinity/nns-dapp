@@ -143,7 +143,10 @@ describe("icrc-index api", () => {
   });
 
   describe("listSubaccounts", () => {
-    const subaccounts = [mockSubAccountArray, mockSubAccountArray];
+    const subaccounts = [
+      Uint8Array.from(mockSubAccountArray),
+      Uint8Array.from(mockSubAccountArray),
+    ];
     const indexCanisterId = principal(0);
 
     it("returns subaccounts", async () => {

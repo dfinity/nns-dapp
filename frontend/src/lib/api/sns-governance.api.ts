@@ -342,7 +342,7 @@ export const claimNeuron = async ({
   identity: Identity;
   memo: bigint;
   controller: Principal;
-  subaccount: Uint8Array | number[];
+  subaccount: Uint8Array;
 }): Promise<SnsNeuronId> => {
   logWithTimestamp(`Claiming neuron call...`);
 

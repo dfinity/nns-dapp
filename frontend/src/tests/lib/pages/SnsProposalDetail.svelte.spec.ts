@@ -867,11 +867,11 @@ describe("SnsProposalDetail", () => {
       };
       const neuron1 = fakeSnsGovernanceApi.addNeuronWith({
         ...votingNeuronParams,
-        id: [{ id: [1] }],
+        id: [{ id: Uint8Array.from([1]) }],
       });
       const neuron2 = fakeSnsGovernanceApi.addNeuronWith({
         ...votingNeuronParams,
-        id: [{ id: [2] }],
+        id: [{ id: Uint8Array.from([2]) }],
       });
       const neuron1Id = getSnsNeuronIdAsHexString(neuron1);
       const neuron2Id = getSnsNeuronIdAsHexString(neuron2);

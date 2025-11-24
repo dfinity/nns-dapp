@@ -53,11 +53,11 @@ describe("FollowSnsNeuronsByTopicModal", () => {
   const legacyNsFunctionName = "Test Motion";
   const legacyNsFunctionId = 10n;
   const legacyFolloweeNeuronId1: SnsNeuronId = {
-    id: [1, 2, 3, 4],
+    id: Uint8Array.from([1, 2, 3, 4]),
   };
   const legacyFolloweeNeuronId1Hex = "01020304";
   const legacyFolloweeNeuronId2: SnsNeuronId = {
-    id: [5, 6, 7, 8],
+    id: Uint8Array.from([5, 6, 7, 8]),
   };
   const legacyFolloweeNeuronId2Hex = "05060708";
 

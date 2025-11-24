@@ -1032,7 +1032,7 @@ export const getSnsNeuronAccount = ({
   neuronId,
 }: {
   governanceCanisterId: Principal;
-  neuronId?: number[] | Uint8Array;
+  neuronId?: Uint8Array;
 }): string | undefined => {
   if (isNullish(neuronId)) return undefined;
 

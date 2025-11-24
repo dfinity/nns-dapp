@@ -104,7 +104,7 @@ const claimAndLoadNeuron = async ({
   identity: Identity;
   controller: Principal;
   memo: bigint;
-  subaccount: Uint8Array | number[];
+  subaccount: Uint8Array;
 }): Promise<void> => {
   // There is a subaccount with balance and no neuron. Claim it.
   const neuronId = await claimNeuron({
@@ -228,7 +228,7 @@ const claimNeuronIfNeeded = async ({
 }: {
   rootCanisterId: Principal;
   memo: bigint;
-  subaccount: Uint8Array | number[];
+  subaccount: Uint8Array;
   identity: Identity;
 }): Promise<void> => {
   // We only check neurons to recover from an interrupted stake/top-up.
