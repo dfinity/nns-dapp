@@ -11,6 +11,21 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 139482
+
+### Application
+
+#### Added
+
+- Secondary data source for USD values. 
+- User address-book to save common addresses.
+
+#### Fixed
+
+- Resized NNS following collapsible sections when content changes.
+
+### Operations
+
 ## Proposal 139207
 
 ### Application
