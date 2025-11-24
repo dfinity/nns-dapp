@@ -27,13 +27,13 @@
     "mainnet": "qaa6y-5yaaa-aaaaa-aaafa-cai"
   },
   "internet_identity": {
-    "mainnet": "identity"
+    "mainnet": "identity.internetcomputer.org"
   },
   "icp-swap": {
     "mainnet": "uvevg-iyaaa-aaaak-ac27q-cai"
   },
   "kong-swap": {
-    "mainnet": "api"
+    "mainnet": "api.kongswap.io"
   },
   "nns-dapp": {
     "mainnet": "qoctq-giaaa-aaaaa-aaaea-cai"

@@ -124,6 +124,10 @@ canister_id_from_url() {
   echo "$1" | sed -E 's@https://([^.]*)\..*@\1@'
 }
 
+domain_from_url() {
+  echo "$1" | sed -E 's@https://([^/]*).*@\1@'
+}
+
 if [ "$command" = "import-from-index-html" ]; then
   tmp_index_html="$(mktemp)"
   trap 'rm -f "$tmp_index_html"' EXIT
@@ -134,11 +138,11 @@ if [ "$command" = "import-from-index-html" ]; then
   fi
 
   identityServiceUrl="$(get_value_from_html data-identity-service-url "$tmp_index_html")"
-  internetIdentity="$(canister_id_from_url "$identityServiceUrl")"
+  internetIdentity="$(domain_from_url "$identityServiceUrl")"
   icpSwapUrl="$(get_value_from_html data-icp-swap-url "$tmp_index_html")"
   icpSwap="$(canister_id_from_url "$icpSwapUrl")"
   kongSwapUrl="$(get_value_from_html data-kong-swap-url "$tmp_index_html")"
-  kongSwap="$(canister_id_from_url "$kongSwapUrl")"
+  kongSwap="$(domain_from_url "$kongSwapUrl")"
 
   snsAggregatorUrl="$(get_value_from_html data-sns-aggregator-url "$tmp_index_html")"
   snsAggregator="$(canister_id_from_url "$snsAggregatorUrl")"
