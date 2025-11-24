@@ -138,7 +138,7 @@ if [ "$command" = "import-from-index-html" ]; then
   fi
 
   identityServiceUrl="$(get_value_from_html data-identity-service-url "$tmp_index_html")"
-  internetIdentity="$(domain_from_url "$identityServiceUrl")"
+  internetIdentity="$(canister_id_from_url "$identityServiceUrl")"
   icpSwapUrl="$(get_value_from_html data-icp-swap-url "$tmp_index_html")"
   icpSwap="$(canister_id_from_url "$icpSwapUrl")"
   kongSwapUrl="$(get_value_from_html data-kong-swap-url "$tmp_index_html")"
