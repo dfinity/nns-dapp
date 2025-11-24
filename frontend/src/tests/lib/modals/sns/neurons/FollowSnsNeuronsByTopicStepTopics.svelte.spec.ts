@@ -32,10 +32,10 @@ describe("FollowSnsNeuronsByTopicStepTopics", () => {
   };
   const legacyFolloweeNeuronId1: SnsNeuronId = {
     ...nervousSystemFunctionMock,
-    id: [1, 2, 3, 4],
+    id: Uint8Array.from([1, 2, 3, 4]),
   };
   const legacyFolloweeNeuronId2: SnsNeuronId = {
-    id: [5, 6, 7, 8],
+    id: Uint8Array.from([5, 6, 7, 8]),
   };
   // followings by topic
   const criticalTopicKey1: SnsTopicKey = "CriticalDappOperations";

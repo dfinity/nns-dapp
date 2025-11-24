@@ -44,7 +44,7 @@ export class ICManagementCanister {
   ): Promise<CanisterDetails> => {
     try {
       const rawResponse: CanisterStatusResponse =
-        await this.icMgmt.canisterStatus(canisterId);
+        await this.icMgmt.canisterStatus({ canisterId });
       return toCanisterDetails({
         response: rawResponse,
         canisterId,

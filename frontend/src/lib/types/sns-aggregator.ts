@@ -121,7 +121,7 @@ export type CachedDefaultFolloweesDto = {
 };
 
 export type CachedNeuronPermissionListDto = {
-  permissions: number[];
+  permissions: Int32Array;
 };
 
 export type CachedVotingRewardsParametersDto = {

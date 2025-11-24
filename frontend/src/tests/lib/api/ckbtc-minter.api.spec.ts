@@ -135,7 +135,7 @@ describe("ckbtc-minter api", () => {
         {
           id: 135n,
           status: {
-            Confirmed: { txid: [1, 2, 3] },
+            Confirmed: { txid: Uint8Array.from([1, 2, 3]) },
           },
         },
       ];
