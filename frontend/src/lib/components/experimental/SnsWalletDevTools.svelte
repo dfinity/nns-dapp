@@ -104,7 +104,7 @@ Note: You must be logged in to use these commands.
           console.log(`🔍 Checking balance for subaccount: ${subaccount}...`);
           const account = {
             owner: identity.getPrincipal(),
-            subaccount: hexStringToBytes(subaccount),
+            subaccount: Uint8Array.from(hexStringToBytes(subaccount)),
           };
 
           const balance = await queryIcrcBalance({
@@ -144,7 +144,7 @@ Note: You must be logged in to use these commands.
             canisterId: ledgerCanisterId,
             account: {
               owner: identity.getPrincipal(),
-              subaccount: hexStringToBytes(subaccount),
+              subaccount: Uint8Array.from(hexStringToBytes(subaccount)),
             },
           });
 
