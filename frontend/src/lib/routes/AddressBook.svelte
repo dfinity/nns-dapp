@@ -177,6 +177,8 @@
 {/if}
 
 <style lang="scss">
+  @use "@dfinity/gix-components/dist/styles/mixins/media";
+
   .is-empty {
     display: flex;
     flex-direction: column;
@@ -230,6 +232,28 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+  }
+
+  // Handle long labels on mobile
+  :global(div[role="cell"]):nth-child(1) {
+    overflow: hidden;
+    max-width: 90%;
+
+    > :global(div) {
+      width: 100%;
+    }
+
+    :global(.label) {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  @include media.min-width(small) {
+    :global(div[role="cell"]):nth-child(1) {
+      overflow: initial;
+      max-width: initial;
     }
   }
 </style>
