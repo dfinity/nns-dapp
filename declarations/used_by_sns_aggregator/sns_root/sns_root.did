@@ -1,4 +1,4 @@
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-11-06_03-24-base/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-11-20_03-21-base/rs/sns/root/canister/root.did>
 type CanisterCallError = record {
   code : opt int32;
   description : text;
@@ -165,6 +165,19 @@ type RegisterExtensionResponse = record {
   result : opt RegisterExtensionResult;
 };
 
+type CleanUpFailedRegisterExtensionRequest = record {
+  canister_id : opt principal;
+};
+
+type CleanUpFailedRegisterExtensionResult = variant {
+  Ok : record {};
+  Err : CanisterCallError;
+};
+
+type CleanUpFailedRegisterExtensionResponse = record {
+  result : opt CleanUpFailedRegisterExtensionResult;
+};
+
 type RegisterDappCanisterRequest = record {
   canister_id : opt principal;
 };
@@ -211,6 +224,7 @@ type GetTimersResponse = record {
 service : (SnsRootCanister) -> {
   canister_status : (CanisterIdRecord) -> (CanisterStatusResult);
   change_canister : (ChangeCanisterRequest) -> ();
+  clean_up_failed_register_extension : (CleanUpFailedRegisterExtensionRequest) -> (CleanUpFailedRegisterExtensionResponse);
   get_build_metadata : () -> (text) query;
   get_sns_canisters_summary : (GetSnsCanistersSummaryRequest) -> (
       GetSnsCanistersSummaryResponse,
