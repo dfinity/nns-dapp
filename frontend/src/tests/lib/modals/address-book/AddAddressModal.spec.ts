@@ -86,7 +86,7 @@ describe("AddAddressModal", () => {
     const nicknameInput = container.querySelector("input[name='nickname']");
     const addressInput = container.querySelector("input[name='address']");
 
-    const longNickname = "a".repeat(21);
+    const longNickname = "a".repeat(65);
     await fireEvent.input(nicknameInput, {
       target: { value: longNickname },
     });

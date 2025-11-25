@@ -45,7 +45,7 @@
       return $i18n.address_book.nickname_too_short;
     }
 
-    if (nickname.length > 20) {
+    if (nickname.length > 64) {
       return $i18n.address_book.nickname_too_long;
     }
 
