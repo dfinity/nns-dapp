@@ -765,13 +765,13 @@ impl AccountsStore {
         for named_address in &address_book.named_addresses {
             let normalized_name = Self::normalize_name(&named_address.name);
             let name_len = normalized_name.len();
-            
+
             if name_len < (MIN_NAMED_ADDRESS_NAME_LENGTH as usize) {
                 return Err(SetAddressBookResponse::AddressNameTooShort {
                     min_length: MIN_NAMED_ADDRESS_NAME_LENGTH,
                 });
             }
-            
+
             if name_len > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
                 return Err(SetAddressBookResponse::AddressNameTooLong {
                     max_length: MAX_NAMED_ADDRESS_NAME_LENGTH,

@@ -1452,13 +1452,12 @@ fn set_address_book_name_too_short_after_trimming() {
             min_length: MIN_NAMED_ADDRESS_NAME_LENGTH
         }
     );
-    
+
     // Verify that the address book was not saved
     assert_eq!(
         store.get_address_book(principal),
         GetAddressBookResponse::Ok(AddressBook::default())
     );
-
 
     // Test with name that's OK after trimming
     let only_spaces = "  a     b ".to_string(); // After trim and normalize: "a b" (3 chars)
@@ -1473,7 +1472,7 @@ fn set_address_book_name_too_short_after_trimming() {
         store.set_address_book(principal, address_book_3.clone()),
         SetAddressBookResponse::Ok
     );
-    
+
     // Verify that the address book was saved
     assert_eq!(
         store.get_address_book(principal),
