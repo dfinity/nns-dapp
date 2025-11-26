@@ -39,6 +39,9 @@ const MAX_FAVORITE_PROJECTS: i32 = 20;
 // Conservatively limit the number of named addresses to prevent using too much memory.
 const MAX_NAMED_ADDRESSES: i32 = 20;
 
+// Minimum length for named address name field (after trimming and normalizing spaces)
+const MIN_NAMED_ADDRESS_NAME_LENGTH: i32 = 3;
+
 // Maximum length for named address name field
 const MAX_NAMED_ADDRESS_NAME_LENGTH: i32 = 64;
 
@@ -237,6 +240,7 @@ pub enum SetAddressBookResponse {
     AccountNotFound,
     TooManyNamedAddresses { limit: i32 },
     InvalidIcpAddress { error: String },
+    AddressNameTooShort { min_length: i32 },
     AddressNameTooLong { max_length: i32 },
     InvalidIcrc1Address { error: String },
     DuplicateAddressName { name: String },
@@ -750,9 +754,26 @@ impl AccountsStore {
         Ok(())
     }
 
+    /// Normalize a name by trimming and replacing consecutive whitespace with a single space
+    fn normalize_name(name: &str) -> String {
+        let trimmed = name.trim();
+        // Replace consecutive whitespace with a single space
+        let re = regex::Regex::new(r"\s+").unwrap();
+        re.replace_all(trimmed, " ").to_string()
+    }
+
     fn validate_address_book_names_length(address_book: &AddressBook) -> Result<(), SetAddressBookResponse> {
         for named_address in &address_book.named_addresses {
-            if named_address.name.len() > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
+            let normalized_name = Self::normalize_name(&named_address.name);
+            let name_len = normalized_name.len();
+            
+            if name_len < (MIN_NAMED_ADDRESS_NAME_LENGTH as usize) {
+                return Err(SetAddressBookResponse::AddressNameTooShort {
+                    min_length: MIN_NAMED_ADDRESS_NAME_LENGTH,
+                });
+            }
+            
+            if name_len > (MAX_NAMED_ADDRESS_NAME_LENGTH as usize) {
                 return Err(SetAddressBookResponse::AddressNameTooLong {
                     max_length: MAX_NAMED_ADDRESS_NAME_LENGTH,
                 });

@@ -152,6 +152,7 @@ export const idlFactory = ({ IDL }) => {
     AccountNotFound: IDL.Null,
     TooManyNamedAddresses: IDL.Record({ limit: IDL.Int32 }),
     InvalidIcpAddress: IDL.Record({ error: IDL.Text }),
+    AddressNameTooShort: IDL.Record({ min_length: IDL.Int32 }),
     AddressNameTooLong: IDL.Record({ max_length: IDL.Int32 }),
     InvalidIcrc1Address: IDL.Record({ error: IDL.Text }),
     DuplicateAddressName: IDL.Record({ name: IDL.Text }),

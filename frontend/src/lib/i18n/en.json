@@ -1144,6 +1144,7 @@
     "too_many": "You can't add more than $limit addresses.",
     "invalid_icp": "Invalid ICP address: $error.",
     "invalid_icrc1": "Invalid ICRC1 address: $error.",
+    "name_too_short": "Address name is too short. Minimum length is $minLength characters (after trimming spaces).",
     "name_too_long": "Address name is too long. Maximum length is $maxLength characters.",
     "duplicate_name": "An address with the name \"$name\" already exists."
   },

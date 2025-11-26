@@ -253,6 +253,7 @@ type SetAddressBookResponse =
         AccountNotFound;
         TooManyNamedAddresses: record{limit: int32};
         InvalidIcpAddress: record{error: text};
+        AddressNameTooShort: record{min_length: int32};
         AddressNameTooLong: record{max_length: int32};
         InvalidIcrc1Address: record{error: text};
         DuplicateAddressName: record{name: text};
