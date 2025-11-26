@@ -48,7 +48,7 @@ runs:
       shell: bash
       working-directory: frontend
       run: |
-        npm ci --force
+        npm ci
         npx playwright install
     - name: Run Playwright end-to-end tests
       shell: bash
