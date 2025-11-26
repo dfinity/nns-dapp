@@ -108,21 +108,16 @@
     addressError = undefined;
   };
 
-  // Trim and normalize spaces
+  // Trim and normalize spaces in nickname
   const normalizeNickname = () => {
     nickname = nickname.trim().replace(/\s+/g, " ");
-  };
-
-  const normalizeAddress = () => {
-    address = address.trim().replace(/\s+/g, " ");
   };
 
   const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
     normalizeNickname();
-    normalizeAddress();
 
-    // Check if fields are empty after trimming
+    // Check if fields are empty after normalizing
     if (nickname === "" || address === "") {
       return;
     }
@@ -226,7 +221,6 @@
         errorMessage={addressError}
         disabled={$busy}
         onInput={() => (addressError = undefined)}
-        onBlur={normalizeAddress}
       >
         <svelte:fragment slot="label"
           >{$i18n.address_book.address_label}</svelte:fragment

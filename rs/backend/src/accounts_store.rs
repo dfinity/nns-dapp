@@ -757,7 +757,6 @@ impl AccountsStore {
     /// Normalize a name by trimming and replacing consecutive whitespace with a single space
     fn normalize_name(name: &str) -> String {
         let trimmed = name.trim();
-        // Replace consecutive whitespace with a single space
         let re = regex::Regex::new(r"\s+").unwrap();
         re.replace_all(trimmed, " ").to_string()
     }
