@@ -71,7 +71,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@dfinity/gix-components": "^9.0.0",
+    "@dfinity/gix-components": "^9.0.0-next-2025-11-26",
     "@dfinity/utils": "4.0.1-next-2025-11-26",
     "@icp-sdk/auth": "^5.0.0-beta.0",
     "@icp-sdk/canisters": "^2.0.1-next-2025-11-26",
