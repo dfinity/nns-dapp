@@ -22,7 +22,7 @@
     "vitest": "vitest --config ./vitest.config.ts",
     "vitest:coverage": "vitest run --coverage --config ./vitest.config.ts",
     "test-e2e": "tsc --noEmit -p src/tests/e2e/tsconfig.json && playwright test",
-    "update:agent": "npm rm @icp-sdk/core @icp-sdk/auth @icp-sdk/canisters @dfinity/utils && npm i @icp-sdk/core @icp-sdk/auth @icp-sdk/canisters@next @dfinity/utils@next && ../scripts/revert-next.sh",
+    "update:agent": "npm rm @icp-sdk/core @icp-sdk/auth @icp-sdk/canisters @dfinity/utils && npm i @icp-sdk/core@beta @icp-sdk/auth @icp-sdk/canisters@next @dfinity/utils@next && ../scripts/revert-next.sh",
     "update:gix": "npm update @dfinity/gix-components",
     "upgrade:next": "npm rm @icp-sdk/canisters @dfinity/utils && npm i @icp-sdk/canisters@next @dfinity/utils@next && ../scripts/revert-next.sh",
     "sync-node-version": "./scripts/sync-node-version"
@@ -71,11 +71,11 @@
   },
   "type": "module",
   "dependencies": {
-    "@dfinity/gix-components": "next",
+    "@dfinity/gix-components": "^9.0.0",
     "@dfinity/utils": "next",
     "@icp-sdk/auth": "^4.2.0",
     "@icp-sdk/canisters": "next",
-    "@icp-sdk/core": "^4.2.1",
+    "@icp-sdk/core": "5.0.0-beta.0",
     "@ledgerhq/hw-transport-node-hid-noevents": "^6.27.8",
     "@ledgerhq/hw-transport-webhid": "^6.27.8",
     "@zondax/ledger-icp": "^0.6.1",

@@ -23,7 +23,7 @@ runs:
         node-version: ${{ env.NODE_VERSION }}
     - name: Install dependencies
       shell: bash
-      run: npm ci
+      run: npm ci --force
       working-directory: ./frontend
     - name: Test
       shell: bash
