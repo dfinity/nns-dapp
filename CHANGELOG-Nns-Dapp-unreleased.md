@@ -16,6 +16,10 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Changed
 
+- Address Book: allow up to 64-chars nicknames, improved responsive sizing.
+- Address Book: better handling of spaces (trim + normalization).
+- Address Book: improved contrast in the case of "use manual address" warning.
+
 #### Deprecated
 
 #### Removed
