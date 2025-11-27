@@ -92,6 +92,7 @@ export type SetAddressBookResponse =
   | { AccountNotFound: null }
   | { TooManyNamedAddresses: { limit: number } }
   | { InvalidIcpAddress: { error: string } }
+  | { AddressNameTooShort: { min_length: number } }
   | { AddressNameTooLong: { max_length: number } }
   | { InvalidIcrc1Address: { error: string } }
   | { DuplicateAddressName: { name: string } };

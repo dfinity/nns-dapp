@@ -2,6 +2,7 @@ import { getAddressBook, setAddressBook } from "$lib/api/address-book.api";
 import {
   AccountNotFoundError,
   AddressNameTooLongError,
+  AddressNameTooShortError,
   DuplicateAddressNameError,
   InvalidIcpAddressError,
   InvalidIcrc1AddressError,
@@ -100,6 +101,12 @@ export const saveAddressBook = async (
     } else if (error instanceof InvalidIcrc1AddressError) {
       toastsError({
         labelKey: "error__address_book.invalid_icrc1",
+        err: error,
+        substitutions: error.substitutions,
+      });
+    } else if (error instanceof AddressNameTooShortError) {
+      toastsError({
+        labelKey: "error__address_book.name_too_short",
         err: error,
         substitutions: error.substitutions,
       });

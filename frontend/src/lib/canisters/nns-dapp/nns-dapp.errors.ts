@@ -45,6 +45,14 @@ export class InvalidIcpAddressError extends AccountTranslateError {
   }
 }
 
+export class AddressNameTooShortError extends AccountTranslateError {
+  constructor(message: string, substitutions?: I18nSubstitutions) {
+    super(message);
+
+    this.substitutions = substitutions;
+  }
+}
+
 export class AddressNameTooLongError extends AccountTranslateError {
   constructor(message: string, substitutions?: I18nSubstitutions) {
     super(message);

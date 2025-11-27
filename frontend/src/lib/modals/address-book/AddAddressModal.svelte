@@ -45,7 +45,7 @@
       return $i18n.address_book.nickname_too_short;
     }
 
-    if (nickname.length > 20) {
+    if (nickname.length > 64) {
       return $i18n.address_book.nickname_too_long;
     }
 
@@ -108,8 +108,19 @@
     addressError = undefined;
   };
 
+  // Trim and normalize spaces in nickname
+  const normalizeNickname = () => {
+    nickname = nickname.trim().replace(/\s+/g, " ");
+  };
+
   const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
+    normalizeNickname();
+
+    // Check if fields are empty after normalizing
+    if (nickname === "" || address === "") {
+      return;
+    }
 
     // Validate and set errors
     nicknameError = validateNickname();
@@ -193,6 +204,7 @@
         errorMessage={nicknameError}
         disabled={$busy}
         onInput={() => (nicknameError = undefined)}
+        onBlur={normalizeNickname}
       >
         <svelte:fragment slot="label"
           >{$i18n.address_book.nickname_label}</svelte:fragment

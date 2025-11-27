@@ -1382,6 +1382,105 @@ fn set_address_book_name_at_max_length() {
 }
 
 #[test]
+fn set_address_book_name_too_short() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
+
+    // Test with name that's too short after normalization
+    let too_short_name = "ab".to_string();
+
+    let address_book = AddressBook {
+        named_addresses: vec![NamedAddress {
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
+            name: too_short_name,
+        }],
+    };
+
+    assert_eq!(
+        store.set_address_book(principal, address_book),
+        SetAddressBookResponse::AddressNameTooShort {
+            min_length: MIN_NAMED_ADDRESS_NAME_LENGTH
+        }
+    );
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+}
+
+#[test]
+fn set_address_book_name_too_short_after_trimming() {
+    let mut store = setup_test_store();
+    let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();
+
+    // Test with name that has spaces and becomes too short after normalization
+    let name_with_spaces = "  a    ".to_string();
+    let address_book_1 = AddressBook {
+        named_addresses: vec![NamedAddress {
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
+            name: name_with_spaces,
+        }],
+    };
+
+    assert_eq!(
+        store.set_address_book(principal, address_book_1),
+        SetAddressBookResponse::AddressNameTooShort {
+            min_length: MIN_NAMED_ADDRESS_NAME_LENGTH
+        }
+    );
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+
+    // Test with name that's too short after trimming
+    let only_spaces = "   ".to_string(); // After trim: "" (0 chars)
+    let address_book_2 = AddressBook {
+        named_addresses: vec![NamedAddress {
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
+            name: only_spaces,
+        }],
+    };
+
+    assert_eq!(
+        store.set_address_book(principal, address_book_2),
+        SetAddressBookResponse::AddressNameTooShort {
+            min_length: MIN_NAMED_ADDRESS_NAME_LENGTH
+        }
+    );
+
+    // Verify that the address book was not saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(AddressBook::default())
+    );
+
+    // Test with name that's OK after trimming
+    let only_spaces = "  a     b ".to_string(); // After trim and normalize: "a b" (3 chars)
+    let address_book_3 = AddressBook {
+        named_addresses: vec![NamedAddress {
+            address: AddressType::Icp(TEST_ICP_ACCOUNT_1.to_string()),
+            name: only_spaces,
+        }],
+    };
+
+    assert_eq!(
+        store.set_address_book(principal, address_book_3.clone()),
+        SetAddressBookResponse::Ok
+    );
+
+    // Verify that the address book was saved
+    assert_eq!(
+        store.get_address_book(principal),
+        GetAddressBookResponse::Ok(address_book_3)
+    );
+}
+
+#[test]
 fn set_address_book_with_valid_icrc1_address() {
     let mut store = setup_test_store();
     let principal = PrincipalId::from_str(TEST_ICRC1_ACCOUNT_1).unwrap();

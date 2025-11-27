@@ -86,7 +86,7 @@ describe("AddAddressModal", () => {
     const nicknameInput = container.querySelector("input[name='nickname']");
     const addressInput = container.querySelector("input[name='address']");
 
-    const longNickname = "a".repeat(21);
+    const longNickname = "a".repeat(65);
     await fireEvent.input(nicknameInput, {
       target: { value: longNickname },
     });
@@ -673,7 +673,6 @@ describe("AddAddressModal", () => {
 
       const nicknameInput = container.querySelector("input[name='nickname']");
 
-      // Change the nickname
       await fireEvent.input(nicknameInput, {
         target: { value: "UpdatedNickname" },
       });
@@ -726,6 +725,109 @@ describe("AddAddressModal", () => {
         },
         mockNamedAddressIcrc1,
       ]);
+    });
+  });
+
+  describe("Whitespace normalization", () => {
+    it("should trim leading and trailing spaces from nickname on blur", async () => {
+      const { container } = await renderModal({
+        component: AddAddressModal,
+        props: { onClose: vi.fn() },
+      });
+
+      const nicknameInput = container.querySelector(
+        "input[name='nickname']"
+      ) as HTMLInputElement;
+
+      await fireEvent.input(nicknameInput, {
+        target: { value: "  Test Name  " },
+      });
+
+      await fireEvent.blur(nicknameInput);
+      expect(nicknameInput.value).toBe("Test Name");
+    });
+
+    it("should normalize consecutive spaces to single space in nickname on blur", async () => {
+      const { container } = await renderModal({
+        component: AddAddressModal,
+        props: { onClose: vi.fn() },
+      });
+
+      const nicknameInput = container.querySelector(
+        "input[name='nickname']"
+      ) as HTMLInputElement;
+
+      await fireEvent.input(nicknameInput, {
+        target: { value: "Test   Multiple   Spaces" },
+      });
+
+      await fireEvent.blur(nicknameInput);
+      expect(nicknameInput.value).toBe("Test Multiple Spaces");
+    });
+
+    it("should trim and normalize nickname spaces on submit", async () => {
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+
+      const onClose = vi.fn();
+
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: { onClose },
+      });
+
+      const nicknameInput = container.querySelector("input[name='nickname']");
+      const addressInput = container.querySelector("input[name='address']");
+
+      await fireEvent.input(nicknameInput, {
+        target: { value: "  My   Test   Address  " },
+      });
+
+      await fireEvent.input(addressInput, {
+        target: { value: validIcpAddress },
+      });
+
+      const saveButton = queryByTestId("save-address-button");
+      await fireEvent.click(saveButton);
+
+      expect(saveAddressBookSpy).toHaveBeenCalledWith([
+        {
+          name: "My Test Address",
+          address: { Icp: validIcpAddress },
+        },
+      ]);
+
+      expect(onClose).toHaveBeenCalled();
+    });
+
+    it("should not submit when nickname is only spaces", async () => {
+      const saveAddressBookSpy = vi
+        .spyOn(addressBookServices, "saveAddressBook")
+        .mockResolvedValue({});
+
+      const onClose = vi.fn();
+
+      const { container, queryByTestId } = await renderModal({
+        component: AddAddressModal,
+        props: { onClose },
+      });
+
+      const nicknameInput = container.querySelector("input[name='nickname']");
+      const addressInput = container.querySelector("input[name='address']");
+
+      await fireEvent.input(nicknameInput, {
+        target: { value: "     " },
+      });
+
+      await fireEvent.input(addressInput, {
+        target: { value: validIcpAddress },
+      });
+
+      const saveButton = queryByTestId("save-address-button");
+      await fireEvent.click(saveButton);
+      expect(saveAddressBookSpy).not.toHaveBeenCalled();
+      expect(onClose).not.toHaveBeenCalled();
     });
   });
 });

@@ -3,6 +3,7 @@ import { idlFactory as certifiedIdlFactory } from "$lib/canisters/nns-dapp/nns-d
 import {
   AccountNotFoundError,
   AddressNameTooLongError,
+  AddressNameTooShortError,
   CanisterAlreadyAttachedError,
   CanisterLimitExceededError,
   CanisterNameAlreadyTakenError,
@@ -457,6 +458,11 @@ export class NNSDappCanister {
     if ("InvalidIcpAddress" in response) {
       throw new InvalidIcpAddressError("error__address_book.invalid_icp", {
         $error: response.InvalidIcpAddress?.error,
+      });
+    }
+    if ("AddressNameTooShort" in response) {
+      throw new AddressNameTooShortError("error__address_book.name_too_short", {
+        $minLength: response.AddressNameTooShort?.min_length.toString(),
       });
     }
     if ("AddressNameTooLong" in response) {

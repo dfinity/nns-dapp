@@ -424,6 +424,7 @@
 
     .warning {
       background-color: var(--warning-emphasis-light);
+      color: var(--warning-emphasis-contrast);
       padding: var(--padding) var(--padding-1_5x);
       border-radius: var(--border-radius);
       font-size: var(--font-size-small);
@@ -435,7 +436,8 @@
       padding-top: var(--padding-0_5x);
       text-decoration: underline;
       display: inline-block;
-      color: var(--primary);
+      color: inherit;
+      font-weight: var(--font-weight-bold);
       cursor: pointer;
 
       &:hover {

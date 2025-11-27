@@ -1194,6 +1194,7 @@ interface I18nError__address_book {
   too_many: string;
   invalid_icp: string;
   invalid_icrc1: string;
+  name_too_short: string;
   name_too_long: string;
   duplicate_name: string;
 }
