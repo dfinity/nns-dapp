@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister nns_governance --out api.rs --header did2rs.header --traits Serialize`
-//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-10-30_03-22-base/rs/nns/governance/canister/governance.did>
+//! Candid for canister `nns_governance` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-11-20_03-21-base/rs/nns/governance/canister/governance.did>
 #![allow(clippy::all)]
 #![allow(missing_docs)]
 #![allow(clippy::missing_docs_in_private_items)]
@@ -24,6 +24,12 @@ pub struct NeuronId {
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct Followees {
     pub followees: Vec<NeuronId>,
+}
+#[derive(Serialize, CandidType, Deserialize)]
+pub struct DateUtc {
+    pub day: u32,
+    pub month: u32,
+    pub year: u32,
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct AccountIdentifier {
@@ -60,9 +66,12 @@ pub struct XdrConversionRate {
 }
 #[derive(Serialize, CandidType, Deserialize)]
 pub struct MonthlyNodeProviderRewards {
+    pub algorithm_version: Option<u32>,
     pub minimum_xdr_permyriad_per_icp: Option<u64>,
+    pub end_date: Option<DateUtc>,
     pub registry_version: Option<u64>,
     pub node_providers: Vec<NodeProvider>,
+    pub start_date: Option<DateUtc>,
     pub timestamp: u64,
     pub rewards: Vec<RewardNodeProvider>,
     pub xdr_conversion_rate: Option<XdrConversionRate>,
@@ -462,7 +471,7 @@ pub struct Disburse {
     pub amount: Option<Amount>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub enum Command {
+pub enum ManageNeuronProposalCommand {
     Spawn(Spawn),
     Split(Split),
     Follow(Follow),
@@ -485,9 +494,9 @@ pub enum NeuronIdOrSubaccount {
     NeuronId(NeuronId),
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct ManageNeuron {
+pub struct ManageNeuronProposal {
     pub id: Option<NeuronId>,
-    pub command: Option<Command>,
+    pub command: Option<ManageNeuronProposalCommand>,
     pub neuron_id_or_subaccount: Option<NeuronIdOrSubaccount>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
@@ -707,7 +716,7 @@ pub struct Motion {
 pub enum Action {
     RegisterKnownNeuron(KnownNeuron),
     FulfillSubnetRentalRequest(FulfillSubnetRentalRequest),
-    ManageNeuron(ManageNeuron),
+    ManageNeuron(ManageNeuronProposal),
     UpdateCanisterSettings(UpdateCanisterSettings),
     InstallCode(InstallCode),
     DeregisterKnownNeuron(DeregisterKnownNeuron),
@@ -1026,7 +1035,7 @@ pub struct ListNodeProvidersResponse {
     pub node_providers: Vec<NodeProvider>,
 }
 #[derive(Serialize, CandidType, Deserialize)]
-pub struct ListProposalInfo {
+pub struct ListProposalInfoRequest {
     pub include_reward_status: Vec<i32>,
     pub omit_large_fields: Option<bool>,
     pub before_proposal: Option<ProposalId>,
@@ -1304,7 +1313,7 @@ impl Service {
     pub async fn list_node_providers(&self) -> CallResult<(ListNodeProvidersResponse,)> {
         ic_cdk::call(self.0, "list_node_providers", ()).await
     }
-    pub async fn list_proposals(&self, arg0: ListProposalInfo) -> CallResult<(ListProposalInfoResponse,)> {
+    pub async fn list_proposals(&self, arg0: ListProposalInfoRequest) -> CallResult<(ListProposalInfoResponse,)> {
         ic_cdk::call(self.0, "list_proposals", (arg0,)).await
     }
     pub async fn manage_neuron(&self, arg0: ManageNeuronRequest) -> CallResult<(ManageNeuronResponse,)> {
