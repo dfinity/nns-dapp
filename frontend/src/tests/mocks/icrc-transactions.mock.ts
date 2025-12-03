@@ -57,6 +57,7 @@ export const createIcrcTransactionWithId = ({
       },
     ],
     approve: [],
+    fee_collector: [],
   },
 });
 
@@ -87,6 +88,7 @@ const mockIcrcTransactionTransfer: IcrcIndexNgTransaction = {
     },
   ],
   approve: [],
+  fee_collector: [],
 };
 
 const mockIcrcTransactionTransferToSelf: IcrcIndexNgTransaction = {
@@ -106,6 +108,7 @@ const mockIcrcTransactionTransferToSelf: IcrcIndexNgTransaction = {
     },
   ],
   approve: [],
+  fee_collector: [],
 };
 
 export const createMintTransaction = ({
@@ -136,6 +139,7 @@ export const createMintTransaction = ({
     ],
     transfer: [],
     approve: [],
+    fee_collector: [],
   };
 };
 
@@ -174,6 +178,7 @@ export const createApproveTransaction = ({
     burn: [],
     mint: [],
     transfer: [],
+    fee_collector: [],
   };
 };
 
@@ -208,6 +213,7 @@ export const createBurnTransaction = ({
     mint: [],
     transfer: [],
     approve: [],
+    fee_collector: [],
   };
 };
 
@@ -229,6 +235,7 @@ export const mockIcrcTransactionMint: IcrcIndexNgTransaction = {
   ],
   transfer: [],
   approve: [],
+  fee_collector: [],
 };
 
 export const mockIcrcTransactionWithId: IcrcIndexNgTransactionWithId = {
