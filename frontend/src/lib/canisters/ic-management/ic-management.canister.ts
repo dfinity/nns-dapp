@@ -4,32 +4,32 @@ import type {
   CanisterSettings,
 } from "$lib/canisters/ic-management/ic-management.canister.types";
 import { mapError } from "$lib/canisters/ic-management/ic-management.errors";
-import type { ICManagementCanisterOptions } from "@icp-sdk/canisters/ic-management";
+import type { IcManagementCanisterOptions } from "@icp-sdk/canisters/ic-management";
 import {
-  ICManagementCanister as ICMgmtCanister,
+  IcManagementCanister as IcMgmtCanister,
   type CanisterStatusResponse,
 } from "@icp-sdk/canisters/ic-management";
 import type { Principal } from "@icp-sdk/core/principal";
 
 /**
- * The ICManagementCanister was initially implemented here, but it has since been moved to ic-js and packaged as a standalone library.
+ * The IcManagementCanister was initially implemented here, but it has since been moved to ic-js and packaged as a standalone library.
  * In order to maintain backwards compatibility and facilitate integration into NNS-dapp, we wrapped the new library within the existing wrapper, which extends the response of the canister.
  *
  * TODO: remove this wrapper and mapping of the types and use @icp-sdk/canisters/ic-management library only.
  */
-export class ICManagementCanister {
-  private readonly icMgmt: ICMgmtCanister;
+export class IcManagementCanister {
+  private readonly icMgmt: IcMgmtCanister;
 
-  private constructor(options: ICManagementCanisterOptions) {
-    this.icMgmt = ICMgmtCanister.create({
+  private constructor(options: IcManagementCanisterOptions) {
+    this.icMgmt = IcMgmtCanister.create({
       agent: options.agent,
       serviceOverride: options.serviceOverride,
       certifiedServiceOverride: options.certifiedServiceOverride,
     });
   }
 
-  public static create(options: ICManagementCanisterOptions) {
-    return new ICManagementCanister(options);
+  public static create(options: IcManagementCanisterOptions) {
+    return new IcManagementCanister(options);
   }
 
   /**

@@ -11,7 +11,7 @@ import {
   topUpCanister,
   updateSettings,
 } from "$lib/api/canisters.api";
-import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
+import { IcManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import { NNSDappCanister } from "$lib/canisters/nns-dapp/nns-dapp.canister";
 import { CanisterNameTooLongError } from "$lib/canisters/nns-dapp/nns-dapp.errors";
 import {
@@ -34,7 +34,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import * as dfinityUtils from "@dfinity/utils";
 import { principalToSubAccount } from "@dfinity/utils";
-import { CMCCanister, ProcessingError } from "@icp-sdk/canisters/cmc";
+import { CmcCanister, ProcessingError } from "@icp-sdk/canisters/cmc";
 import {
   AccountIdentifier,
   LedgerCanister,
@@ -45,8 +45,8 @@ import { mock } from "vitest-mock-extended";
 
 describe("canisters-api", () => {
   const mockNNSDappCanister = mock<NNSDappCanister>();
-  const mockCMCCanister = mock<CMCCanister>();
-  const mockICManagementCanister = mock<ICManagementCanister>();
+  const mockCmcCanister = mock<CmcCanister>();
+  const mockIcManagementCanister = mock<IcManagementCanister>();
   const mockLedgerCanister = mock<LedgerCanister>();
   const fee = 10_000n;
 
@@ -63,10 +63,10 @@ describe("canisters-api", () => {
       (): NNSDappCanister => mockNNSDappCanister
     );
 
-    vi.spyOn(CMCCanister, "create").mockImplementation(() => mockCMCCanister);
+    vi.spyOn(CmcCanister, "create").mockImplementation(() => mockCmcCanister);
 
-    vi.spyOn(ICManagementCanister, "create").mockImplementation(
-      () => mockICManagementCanister
+    vi.spyOn(IcManagementCanister, "create").mockImplementation(
+      () => mockIcManagementCanister
     );
 
     vi.spyOn(LedgerCanister, "create").mockImplementation(
@@ -158,14 +158,14 @@ describe("canisters-api", () => {
 
   describe("updateSettings", () => {
     it("should call the ic management canister to update settings", async () => {
-      mockICManagementCanister.updateSettings.mockResolvedValue(undefined);
+      mockIcManagementCanister.updateSettings.mockResolvedValue(undefined);
       await updateSettings({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id,
         settings: mockCanisterSettings,
       });
 
-      expect(mockICManagementCanister.updateSettings).toBeCalled();
+      expect(mockIcManagementCanister.updateSettings).toBeCalled();
     });
 
     it("should call the ic management canister to update settings with partial settings", async () => {
@@ -174,14 +174,14 @@ describe("canisters-api", () => {
           "xlmdg-vkosz-ceopx-7wtgu-g3xmd-koiyc-awqaq-7modz-zf6r6-364rh-oqe",
         ],
       };
-      mockICManagementCanister.updateSettings.mockResolvedValue(undefined);
+      mockIcManagementCanister.updateSettings.mockResolvedValue(undefined);
       await updateSettings({
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id,
         settings,
       });
 
-      expect(mockICManagementCanister.updateSettings).toBeCalled();
+      expect(mockIcManagementCanister.updateSettings).toBeCalled();
     });
   });
 
@@ -198,7 +198,7 @@ describe("canisters-api", () => {
 
   describe("queryCanisterDetails", () => {
     it("should call IC Management Canister with canister id", async () => {
-      mockICManagementCanister.getCanisterDetails.mockResolvedValue(
+      mockIcManagementCanister.getCanisterDetails.mockResolvedValue(
         mockCanisterDetails
       );
 
@@ -206,7 +206,7 @@ describe("canisters-api", () => {
         identity: mockIdentity,
         canisterId: mockCanisterDetails.id,
       });
-      expect(mockICManagementCanister.getCanisterDetails).toBeCalledWith(
+      expect(mockIcManagementCanister.getCanisterDetails).toBeCalledWith(
         mockCanisterDetails.id
       );
       expect(response).toEqual(mockCanisterDetails);
@@ -215,10 +215,10 @@ describe("canisters-api", () => {
 
   describe("getIcpToCyclesExchangeRate", () => {
     it("should call CMC to get conversion rate", async () => {
-      mockCMCCanister.getIcpToCyclesConversionRate.mockResolvedValue(10_000n);
+      mockCmcCanister.getIcpToCyclesConversionRate.mockResolvedValue(10_000n);
 
       const response = await getIcpToCyclesExchangeRate(mockIdentity);
-      expect(mockCMCCanister.getIcpToCyclesConversionRate).toBeCalledWith({
+      expect(mockCmcCanister.getIcpToCyclesConversionRate).toBeCalledWith({
         certified: true,
       });
       expect(response).toEqual(10_000n);
@@ -229,7 +229,7 @@ describe("canisters-api", () => {
     it("should make a transfer, notify and attach the canister", async () => {
       const blockIndex = 10n;
       mockLedgerCanister.transfer.mockResolvedValue(blockIndex);
-      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+      mockCmcCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
 
@@ -239,7 +239,7 @@ describe("canisters-api", () => {
         fee,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
-      expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
+      expect(mockCmcCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         name: "",
         canisterId: mockCanisterDetails.id,
@@ -251,7 +251,7 @@ describe("canisters-api", () => {
     it("should attach the canister if name max length", async () => {
       const blockIndex = 10n;
       mockLedgerCanister.transfer.mockResolvedValue(blockIndex);
-      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+      mockCmcCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
 
@@ -272,7 +272,7 @@ describe("canisters-api", () => {
 
     it("should notify twice if the first call returns Processing", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(10n);
-      mockCMCCanister.notifyCreateCanister
+      mockCmcCanister.notifyCreateCanister
         .mockRejectedValueOnce(new ProcessingError())
         .mockResolvedValue(mockCanisterDetails.id);
 
@@ -282,14 +282,14 @@ describe("canisters-api", () => {
         fee,
       });
       await advanceTime();
-      expect(mockCMCCanister.notifyCreateCanister).toHaveBeenCalledTimes(2);
+      expect(mockCmcCanister.notifyCreateCanister).toHaveBeenCalledTimes(2);
       expect(await responsePromise).toEqual(mockCanisterDetails.id);
     });
 
     it("handles creating from subaccounts", async () => {
       const blockIndex = 10n;
       mockLedgerCanister.transfer.mockResolvedValue(blockIndex);
-      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+      mockCmcCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
       const amount = 300_000_000n;
@@ -316,7 +316,7 @@ describe("canisters-api", () => {
         createdAt: nowInBigIntNanoSeconds(),
         fee,
       });
-      expect(mockCMCCanister.notifyCreateCanister).toBeCalled();
+      expect(mockCmcCanister.notifyCreateCanister).toBeCalled();
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         name: "",
         canisterId: mockCanisterDetails.id,
@@ -335,7 +335,7 @@ describe("canisters-api", () => {
           fee,
         });
       await expect(call).rejects.toThrow();
-      expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
+      expect(mockCmcCanister.notifyCreateCanister).not.toBeCalled();
       expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
     });
 
@@ -354,7 +354,7 @@ describe("canisters-api", () => {
           $name: longName,
         })
       );
-      expect(mockCMCCanister.notifyCreateCanister).not.toBeCalled();
+      expect(mockCmcCanister.notifyCreateCanister).not.toBeCalled();
       expect(mockNNSDappCanister.attachCanister).not.toBeCalled();
     });
   });
@@ -362,7 +362,7 @@ describe("canisters-api", () => {
   describe("notifyAndAttachCanister", () => {
     it("should notify the CMC and attach the canister", async () => {
       const blockIndex = 10n;
-      mockCMCCanister.notifyCreateCanister.mockResolvedValue(
+      mockCmcCanister.notifyCreateCanister.mockResolvedValue(
         mockCanisterDetails.id
       );
 
@@ -370,14 +370,14 @@ describe("canisters-api", () => {
         identity: mockIdentity,
         blockIndex,
       });
-      expect(mockCMCCanister.notifyCreateCanister).toBeCalledWith({
+      expect(mockCmcCanister.notifyCreateCanister).toBeCalledWith({
         block_index: blockIndex,
         controller: mockIdentity.getPrincipal(),
         settings: [],
         subnet_selection: [],
         subnet_type: [],
       });
-      expect(mockCMCCanister.notifyCreateCanister).toBeCalledTimes(1);
+      expect(mockCmcCanister.notifyCreateCanister).toBeCalledTimes(1);
       expect(mockNNSDappCanister.attachCanister).toBeCalledWith({
         name: "",
         canisterId: mockCanisterDetails.id,
@@ -388,7 +388,7 @@ describe("canisters-api", () => {
 
     it("should notify twice if the first call returns Processing", async () => {
       const blockIndex = 10n;
-      mockCMCCanister.notifyCreateCanister
+      mockCmcCanister.notifyCreateCanister
         .mockRejectedValueOnce(new ProcessingError())
         .mockResolvedValue(mockCanisterDetails.id);
 
@@ -405,15 +405,15 @@ describe("canisters-api", () => {
         subnet_selection: [],
         subnet_type: [],
       };
-      expect(mockCMCCanister.notifyCreateCanister).toBeCalledTimes(1);
-      expect(mockCMCCanister.notifyCreateCanister).toHaveBeenNthCalledWith(
+      expect(mockCmcCanister.notifyCreateCanister).toBeCalledTimes(1);
+      expect(mockCmcCanister.notifyCreateCanister).toHaveBeenNthCalledWith(
         1,
         expectedNotifyParams
       );
       await advanceTime();
 
-      expect(mockCMCCanister.notifyCreateCanister).toBeCalledTimes(2);
-      expect(mockCMCCanister.notifyCreateCanister).toHaveBeenNthCalledWith(
+      expect(mockCmcCanister.notifyCreateCanister).toBeCalledTimes(2);
+      expect(mockCmcCanister.notifyCreateCanister).toHaveBeenNthCalledWith(
         2,
         expectedNotifyParams
       );
@@ -436,7 +436,7 @@ describe("canisters-api", () => {
 
     it("should make a transfer and notify", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(10n);
-      mockCMCCanister.notifyTopUp.mockResolvedValue(10n);
+      mockCmcCanister.notifyTopUp.mockResolvedValue(10n);
 
       await topUpCanister({
         identity: mockIdentity,
@@ -445,12 +445,12 @@ describe("canisters-api", () => {
         fee,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
-      expect(mockCMCCanister.notifyTopUp).toBeCalled();
+      expect(mockCmcCanister.notifyTopUp).toBeCalled();
     });
 
     it("should notify twice if the first returns ProcessingError", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(10n);
-      mockCMCCanister.notifyTopUp
+      mockCmcCanister.notifyTopUp
         .mockRejectedValueOnce(new ProcessingError())
         .mockResolvedValue(10n);
 
@@ -460,12 +460,12 @@ describe("canisters-api", () => {
         canisterId: mockCanisterDetails.id,
         fee,
       });
-      expect(mockCMCCanister.notifyTopUp).toHaveBeenCalledTimes(2);
+      expect(mockCmcCanister.notifyTopUp).toHaveBeenCalledTimes(2);
     });
 
     it("should make a transfer from subaccounts", async () => {
       mockLedgerCanister.transfer.mockResolvedValue(10n);
-      mockCMCCanister.notifyTopUp.mockResolvedValue(10n);
+      mockCmcCanister.notifyTopUp.mockResolvedValue(10n);
 
       const toSubAccount = principalToSubAccount(mockCanisterDetails.id);
       // To create a canister you need to send ICP to an account owned by the CMC, so that the CMC can burn those funds.
@@ -493,7 +493,7 @@ describe("canisters-api", () => {
         fee,
       });
       expect(mockLedgerCanister.transfer).toBeCalled();
-      expect(mockCMCCanister.notifyTopUp).toBeCalled();
+      expect(mockCmcCanister.notifyTopUp).toBeCalled();
     });
 
     it("should not notify if transfer fails", async () => {
@@ -507,7 +507,7 @@ describe("canisters-api", () => {
           fee,
         });
       await expect(call).rejects.toThrow();
-      expect(mockCMCCanister.notifyTopUp).not.toBeCalled();
+      expect(mockCmcCanister.notifyTopUp).not.toBeCalled();
     });
   });
 
@@ -518,7 +518,7 @@ describe("canisters-api", () => {
       const cycles = 3_000_000_000_000n;
       const blockHeight = 14545n;
 
-      mockCMCCanister.notifyTopUp.mockResolvedValue(cycles);
+      mockCmcCanister.notifyTopUp.mockResolvedValue(cycles);
 
       const call = () =>
         notifyTopUpCanister({
@@ -529,8 +529,8 @@ describe("canisters-api", () => {
 
       await expect(call()).resolves.toBe(cycles);
 
-      expect(mockCMCCanister.notifyTopUp).toBeCalledTimes(1);
-      expect(mockCMCCanister.notifyTopUp).toBeCalledWith({
+      expect(mockCmcCanister.notifyTopUp).toBeCalledTimes(1);
+      expect(mockCmcCanister.notifyTopUp).toBeCalledWith({
         canister_id: canisterId,
         block_index: blockHeight,
       });
