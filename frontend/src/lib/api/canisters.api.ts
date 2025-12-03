@@ -1,7 +1,7 @@
 import { createAgent } from "$lib/api/agent.api";
 import { sendICP } from "$lib/api/icp-ledger.api";
 import { nnsDappCanister } from "$lib/api/nns-dapp.api";
-import { ICManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
+import { IcManagementCanister } from "$lib/canisters/ic-management/ic-management.canister";
 import type {
   CanisterDetails,
   CanisterSettings,
@@ -29,7 +29,7 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { poll, pollingLimit } from "$lib/utils/utils";
 import { nonNullish, principalToSubAccount } from "@dfinity/utils";
 import {
-  CMCCanister,
+  CmcCanister,
   ProcessingError,
   type CmcDid,
 } from "@icp-sdk/canisters/cmc";
@@ -190,7 +190,7 @@ const pollNotifyCreateCanister = async ({
   controller,
   blockHeight,
 }: {
-  cmc: CMCCanister;
+  cmc: CmcCanister;
   controller: Principal;
   blockHeight: bigint;
 }): Promise<Principal> => {
@@ -340,7 +340,7 @@ const pollNotifyTopUpCanister = async ({
   blockHeight,
   canisterId,
 }: {
-  cmc: CMCCanister;
+  cmc: CmcCanister;
   canisterId: Principal;
   blockHeight: bigint;
   counter?: number;
@@ -432,8 +432,8 @@ export const notifyTopUpCanister = async ({
 const canisters = async (
   identity: Identity
 ): Promise<{
-  cmc: CMCCanister;
-  icMgt: ICManagementCanister;
+  cmc: CmcCanister;
+  icMgt: IcManagementCanister;
   nnsDapp: NNSDappCanister;
 }> => {
   const agent = await createAgent({
@@ -441,12 +441,12 @@ const canisters = async (
     host: HOST,
   });
 
-  const cmc = CMCCanister.create({
+  const cmc = CmcCanister.create({
     agent,
     canisterId: CYCLES_MINTING_CANISTER_ID,
   });
 
-  const icMgt = ICManagementCanister.create({
+  const icMgt = IcManagementCanister.create({
     agent,
   });
 
