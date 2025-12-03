@@ -31,7 +31,7 @@ import { nonNullish, principalToSubAccount } from "@dfinity/utils";
 import {
   CMCCanister,
   ProcessingError,
-  type Cycles,
+  type CmcDid,
 } from "@icp-sdk/canisters/cmc";
 import { AccountIdentifier, SubAccount } from "@icp-sdk/canisters/ledger/icp";
 import type { Identity } from "@icp-sdk/core/agent";
@@ -344,10 +344,10 @@ const pollNotifyTopUpCanister = async ({
   canisterId: Principal;
   blockHeight: bigint;
   counter?: number;
-}): Promise<Cycles> => {
+}): Promise<CmcDid.Cycles> => {
   try {
     return await poll({
-      fn: (): Promise<Cycles> =>
+      fn: (): Promise<CmcDid.Cycles> =>
         cmc.notifyTopUp({
           canister_id: canisterId,
           block_index: blockHeight,
