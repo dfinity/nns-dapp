@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_ledger --out ic_sns_ledger.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-11-06_03-24-base/rs/ledger_suite/icrc1/ledger/ledger.did>
+//! Candid for canister `sns_ledger` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-11-28_03-22-base/rs/ledger_suite/icrc1/ledger/ledger.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -176,6 +176,12 @@ pub struct Approve {
     pub spender: Account,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct FeeCollector {
+    pub ts: Option<u64>,
+    pub fee_collector: Option<Account>,
+    pub caller: Option<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct Transfer {
     pub to: Account,
     pub fee: Option<candid::Nat>,
@@ -191,6 +197,7 @@ pub struct Transaction {
     pub kind: String,
     pub mint: Option<Mint>,
     pub approve: Option<Approve>,
+    pub fee_collector: Option<FeeCollector>,
     pub timestamp: Timestamp,
     pub transfer: Option<Transfer>,
 }

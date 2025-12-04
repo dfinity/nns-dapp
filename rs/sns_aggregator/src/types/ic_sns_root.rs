@@ -1,5 +1,5 @@
 //! Rust code created from candid by: `scripts/did2rs.sh --canister sns_root --out ic_sns_root.rs --header did2rs.header --traits Serialize\,\ Clone\,\ Debug`
-//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-11-06_03-24-base/rs/sns/root/canister/root.did>
+//! Candid for canister `sns_root` obtained by `scripts/update_ic_commit` from: <https://raw.githubusercontent.com/dfinity/ic/release-2025-11-28_03-22-base/rs/sns/root/canister/root.did>
 #![allow(clippy::all)]
 #![allow(unused_imports)]
 #![allow(missing_docs)]
@@ -126,6 +126,24 @@ pub struct ChangeCanisterRequest {
     pub chunked_canister_wasm: Option<ChunkedCanisterWasm>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct CleanUpFailedRegisterExtensionRequest {
+    pub canister_id: Option<Principal>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct CanisterCallError {
+    pub code: Option<i32>,
+    pub description: String,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub enum CleanUpFailedRegisterExtensionResult {
+    Ok(EmptyRecord),
+    Err(CanisterCallError),
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
+pub struct CleanUpFailedRegisterExtensionResponse {
+    pub result: Option<CleanUpFailedRegisterExtensionResult>,
+}
+#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub struct GetSnsCanistersSummaryRequest {
     pub update_canister_list: Option<bool>,
 }
@@ -215,11 +233,6 @@ pub struct RegisterExtensionRequest {
     pub canister_id: Option<Principal>,
 }
 #[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
-pub struct CanisterCallError {
-    pub code: Option<i32>,
-    pub description: String,
-}
-#[derive(Serialize, Clone, Debug, CandidType, Deserialize)]
 pub enum RegisterExtensionResult {
     Ok(EmptyRecord),
     Err(CanisterCallError),
@@ -254,6 +267,12 @@ impl Service {
     }
     pub async fn change_canister(&self, arg0: ChangeCanisterRequest) -> CallResult<()> {
         ic_cdk::call(self.0, "change_canister", (arg0,)).await
+    }
+    pub async fn clean_up_failed_register_extension(
+        &self,
+        arg0: CleanUpFailedRegisterExtensionRequest,
+    ) -> CallResult<(CleanUpFailedRegisterExtensionResponse,)> {
+        ic_cdk::call(self.0, "clean_up_failed_register_extension", (arg0,)).await
     }
     pub async fn get_build_metadata(&self) -> CallResult<(String,)> {
         ic_cdk::call(self.0, "get_build_metadata", ()).await
