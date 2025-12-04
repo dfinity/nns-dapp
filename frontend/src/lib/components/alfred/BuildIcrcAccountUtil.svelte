@@ -142,12 +142,6 @@
         gap: var(--padding);
         margin-top: var(--padding);
 
-        label {
-          font-weight: var(--font-weight-medium);
-          color: var(--text-color);
-          @include fonts.small();
-        }
-
         .hex-value-container {
           display: flex;
           align-items: center;
