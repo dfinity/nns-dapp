@@ -2,18 +2,18 @@
   import Copy from "$lib/components/ui/Copy.svelte";
   import { i18n } from "$lib/stores/i18n";
   import { IconKey, Input } from "@dfinity/gix-components";
-  import { nonNullish } from "@dfinity/utils";
+  import { isNullish, nonNullish } from "@dfinity/utils";
   import { SubAccount } from "@icp-sdk/canisters/ledger/icp";
   import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
   import { Principal } from "@icp-sdk/core/principal";
 
   let principalInput = $state("");
-  let subAccountInput = $state("");
+  let subAccountInput = $state<number | undefined>();
   let hexOutput = $state<null | string>(null);
   let errorMessage = $state<null | string>(null);
 
   $effect(() => {
-    if (principalInput === "" || subAccountInput === "") {
+    if (principalInput === "" || isNullish(subAccountInput)) {
       hexOutput = null;
       errorMessage = null;
       return;
@@ -21,7 +21,7 @@
 
     try {
       const owner = Principal.fromText(principalInput.trim());
-      const subaccount = SubAccount.fromID(Number(subAccountInput));
+      const subaccount = SubAccount.fromID(subAccountInput);
 
       const icrc = encodeIcrcAccount({
         owner,
@@ -64,7 +64,7 @@
         >{$i18n.alfred.build_icrc_account_subaccount_label}</label
       >
       <Input
-        inputType="text"
+        inputType="number"
         name="alfred-util-subaccount"
         placeholder="Enter subaccount"
         autocomplete="off"
