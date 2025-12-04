@@ -17,6 +17,7 @@
   let isProcessingKey = $state(false);
   let searchInput = $state<HTMLInputElement>();
   let UtilComponent = $state<Component | null>(null);
+  let container = $state<HTMLDivElement>();
 
   const principalId = $derived($authStore.identity?.getPrincipal().toText());
   const filteredItems = $derived(
@@ -158,7 +159,7 @@
     <Backdrop on:nnsClose={hideAlfred} />
 
     <div class="wrapper">
-      <div class="menu">
+      <div class="menu" bind:this={container}>
         {#if nonNullish(UtilComponent)}
           <UtilComponent />
         {:else}
