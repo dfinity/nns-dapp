@@ -6,11 +6,13 @@
   import { SubAccount } from "@icp-sdk/canisters/ledger/icp";
   import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
   import { Principal } from "@icp-sdk/core/principal";
+  import { onMount } from "svelte";
 
+  let principalInputRef = $state<HTMLInputElement | undefined>();
   let principalInput = $state("");
   let subAccountInput = $state<number | undefined>();
-  let hexOutput = $state<null | string>(null);
-  let errorMessage = $state<null | string>(null);
+  let hexOutput = $state<string | null>(null);
+  let errorMessage = $state<string | null>(null);
 
   $effect(() => {
     if (principalInput === "" || isNullish(subAccountInput)) {
@@ -35,6 +37,10 @@
       hexOutput = null;
     }
   });
+
+  onMount(() => {
+    principalInputRef?.focus();
+  });
 </script>
 
 <div class="util-form">
@@ -57,6 +63,7 @@
         spellcheck={false}
         testId="alfred-util-principal"
         bind:value={principalInput}
+        bind:inputElement={principalInputRef}
       />
     </div>
     <div class="util-field">
