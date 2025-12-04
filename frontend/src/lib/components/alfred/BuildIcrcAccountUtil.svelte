@@ -13,7 +13,11 @@
   let errorMessage = $state<null | string>(null);
 
   $effect(() => {
-    if (principalInput === "" || subAccountInput === "") return;
+    if (principalInput === "" || subAccountInput === "") {
+      hexOutput = null;
+      errorMessage = null;
+      return;
+    }
 
     try {
       const owner = Principal.fromText(principalInput.trim());
