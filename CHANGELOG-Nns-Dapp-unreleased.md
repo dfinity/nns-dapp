@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Use the Command Palette to encode an ICRC-1 account identifier.
+
 #### Changed
 
 - Address Book: allow up to 64-chars nicknames, improved responsive sizing.
