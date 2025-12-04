@@ -17,6 +17,7 @@
   let isProcessingKey = $state(false);
   let searchInput = $state<HTMLInputElement>();
   let UtilComponent = $state<Component | null>(null);
+  let container = $state<HTMLDivElement>();
 
   const principalId = $derived($authStore.identity?.getPrincipal().toText());
   const filteredItems = $derived(
@@ -122,7 +123,7 @@
       alfredQuery = "";
       await tick();
       // Focus first input when form appears
-      const firstInput = document.querySelector<HTMLInputElement>("input");
+      const firstInput = container?.querySelector<HTMLInputElement>("input");
       firstInput?.focus();
     }
   };
@@ -162,7 +163,7 @@
     <Backdrop on:nnsClose={hideAlfred} />
 
     <div class="wrapper">
-      <div class="menu">
+      <div class="menu" bind:this={container}>
         {#if nonNullish(UtilComponent)}
           <UtilComponent />
         {:else}
