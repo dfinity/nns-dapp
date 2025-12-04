@@ -240,6 +240,10 @@ interface I18nAlfred {
   hide_memo_description: string;
   show_memo_title: string;
   show_memo_description: string;
+  build_icrc_account_title: string;
+  build_icrc_account_description: string;
+  build_icrc_account_principal_label: string;
+  build_icrc_account_subaccount_label: string;
 }
 
 interface I18nHeader {
