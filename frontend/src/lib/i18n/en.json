@@ -233,7 +233,7 @@
     "show_memo_title": "Show transaction memo",
     "show_memo_description": "Show the memo input for ICP transaction forms",
     "build_icrc_account_title": "Build ICRC Account",
-    "build_icrc_account_description": "Build a hex string of an ICRC account",
+    "build_icrc_account_description": "Encode an ICRC-1 account identifier in its textual representation.",
     "build_icrc_account_principal_label": "Principal",
     "build_icrc_account_subaccount_label": "Subaccount"
   },
