@@ -27,7 +27,7 @@
       hexOutput = icrc;
       errorMessage = null;
     } catch (e) {
-      errorMessage = e instanceof Error ? e?.message : "An error occurred";
+      errorMessage = e instanceof Error ? e.message : String(e);
       hexOutput = null;
     }
   });
@@ -62,7 +62,7 @@
       <Input
         inputType="text"
         name="alfred-util-subaccount"
-        placeholder="Enter subaccount (optional)"
+        placeholder="Enter subaccount"
         autocomplete="off"
         spellcheck={false}
         testId="alfred-util-subaccount"
@@ -75,7 +75,7 @@
           <div class="error-message">{errorMessage}</div>
         {:else if nonNullish(hexOutput)}
           <div class="hex-value" data-tid="alfred-util-hex-output"
-            >{hexOutput || ""}</div
+            >{hexOutput}</div
           >
           <Copy value={hexOutput} />
         {/if}

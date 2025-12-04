@@ -122,9 +122,7 @@
       alfredQuery = "";
       await tick();
       // Focus first input when form appears
-      const firstInput = document.querySelector<HTMLInputElement>(
-        '[name="alfred-util-principal"]'
-      );
+      const firstInput = document.querySelector<HTMLInputElement>("input");
       firstInput?.focus();
     }
   };

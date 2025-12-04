@@ -17,6 +17,7 @@ import {
   IconEyeClosed,
   IconEyeOpen,
   IconHome,
+  IconKey,
   IconLaunchpad,
   IconLedger,
   IconLightMode,
@@ -206,7 +207,7 @@ const getAlfredItems = (): AlfredItem[] => {
       type: "util",
       title: alfred.build_icrc_account_title,
       description: alfred.build_icrc_account_description,
-      icon: IconLedger,
+      icon: IconKey,
       component: BuildIcrcAccountUtil,
     },
     {
