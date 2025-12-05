@@ -231,7 +231,11 @@
     "hide_memo_title": "Hide transaction memo",
     "hide_memo_description": "Hide the memo input for ICP transaction forms",
     "show_memo_title": "Show transaction memo",
-    "show_memo_description": "Show the memo input for ICP transaction forms"
+    "show_memo_description": "Show the memo input for ICP transaction forms",
+    "build_icrc_account_title": "Encode ICRC-1 Account",
+    "build_icrc_account_description": "Encode an ICRC-1 account defined by a principal and a subaccount into its textual format.",
+    "build_icrc_account_principal_label": "Principal",
+    "build_icrc_account_subaccount_label": "Subaccount"
   },
   "header": {
     "menu": "Open menu to access navigation options",

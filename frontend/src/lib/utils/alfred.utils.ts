@@ -1,3 +1,4 @@
+import BuildIcrcAccountUtil from "$lib/components/alfred/BuildIcrcAccountUtil.svelte";
 import { AppPath } from "$lib/constants/routes.constants";
 import { login, logout } from "$lib/services/auth.services";
 import {
@@ -16,6 +17,7 @@ import {
   IconEyeClosed,
   IconEyeOpen,
   IconHome,
+  IconKey,
   IconLaunchpad,
   IconLedger,
   IconLightMode,
@@ -34,7 +36,7 @@ import { get } from "svelte/store";
 
 interface AlfredItemBase {
   id: string;
-  type: "page" | "action";
+  type: "page" | "action" | "util";
   title: string;
   description: string;
   icon: Component;
@@ -56,7 +58,12 @@ interface AlfredItemAction extends AlfredItemBase {
   action: (payload: { copyToClipboardValue?: string }) => void;
 }
 
-export type AlfredItem = AlfredItemPage | AlfredItemAction;
+interface AlfredItemUtil extends AlfredItemBase {
+  type: "util";
+  component: Component;
+}
+
+export type AlfredItem = AlfredItemPage | AlfredItemAction | AlfredItemUtil;
 
 const getAlfredItems = (): AlfredItem[] => {
   const i18nObj = get(i18n);
@@ -194,6 +201,14 @@ const getAlfredItems = (): AlfredItem[] => {
       action: () => transactionMemoOptionStore.set("hide"),
       contextFilter: (context) =>
         context.memoOption === "show" && context.isSignedIn,
+    },
+    {
+      id: "build-icrc-account",
+      type: "util",
+      title: alfred.build_icrc_account_title,
+      description: alfred.build_icrc_account_description,
+      icon: IconKey,
+      component: BuildIcrcAccountUtil,
     },
     {
       id: "log-in",

@@ -7,8 +7,8 @@
   import { transactionMemoOptionStore } from "$lib/stores/transaction-memo-option.store";
   import { filterAlfredItems, type AlfredItem } from "$lib/utils/alfred.utils";
   import { Backdrop, Input, themeStore } from "@dfinity/gix-components";
-  import { debounce } from "@dfinity/utils";
-  import { tick } from "svelte";
+  import { debounce, nonNullish } from "@dfinity/utils";
+  import { tick, type Component } from "svelte";
   import { fade } from "svelte/transition";
 
   let alfredVisible = $state(false);
@@ -16,6 +16,7 @@
   let selectedIndex = $state(0);
   let isProcessingKey = $state(false);
   let searchInput = $state<HTMLInputElement>();
+  let UtilComponent = $state<Component | null>(null);
 
   const principalId = $derived($authStore.identity?.getPrincipal().toText());
   const filteredItems = $derived(
@@ -39,6 +40,7 @@
     alfredVisible = !alfredVisible;
     alfredQuery = "";
     selectedIndex = 0;
+    UtilComponent = null;
 
     if (alfredVisible) {
       await tick();
@@ -49,15 +51,24 @@
   const hideAlfred = () => {
     alfredVisible = false;
     alfredQuery = "";
+    UtilComponent = null;
   };
 
-  const handleKeyNavigation = (event: KeyboardEvent): void => {
+  const handleKeyNavigation = async (event: KeyboardEvent): Promise<void> => {
     const prevIndex = selectedIndex;
 
     switch (event.key) {
       case "Escape":
         event.preventDefault();
-        hideAlfred();
+        if (UtilComponent) {
+          // Go back to search from util form
+          UtilComponent = null;
+          alfredQuery = "";
+          await tick();
+          searchInput?.focus();
+        } else {
+          hideAlfred();
+        }
         break;
       case "ArrowDown":
         event.preventDefault();
@@ -94,7 +105,7 @@
     }
   };
 
-  const selectItem = (item: AlfredItem) => {
+  const selectItem = async (item: AlfredItem) => {
     if (item.type === "page" && item.path) {
       goto(item.path);
 
@@ -106,6 +117,9 @@
       item.action(context);
 
       hideAlfred();
+    } else if (item.type === "util") {
+      UtilComponent = item.component;
+      alfredQuery = "";
     }
   };
 
@@ -145,53 +159,59 @@
 
     <div class="wrapper">
       <div class="menu">
-        <div class="search">
-          <Input
-            inputType="text"
-            name="alfred-search"
-            placeholder={$i18n.alfred.search_placeholder}
-            autocomplete="off"
-            spellcheck={false}
-            testId="alfred-input"
-            bind:value={alfredQuery}
-            bind:inputElement={searchInput}
-          />
-        </div>
+        {#if nonNullish(UtilComponent)}
+          <UtilComponent />
+        {:else}
+          <div class="search">
+            <Input
+              inputType="text"
+              name="alfred-search"
+              placeholder={$i18n.alfred.search_placeholder}
+              autocomplete="off"
+              spellcheck={false}
+              testId="alfred-input"
+              bind:value={alfredQuery}
+              bind:inputElement={searchInput}
+            />
+          </div>
 
-        <div class="results" role="listbox" aria-label="Search results">
-          {#if filteredItems.length === 0}
-            <div class="no-results">{$i18n.alfred.no_results}</div>
-          {:else}
-            <ul>
-              {#each filteredItems as item, index}
-                <li
-                  id={`alfred-item-${index}`}
-                  class:selected={index === selectedIndex}
-                  role="option"
-                  aria-selected={index === selectedIndex ? "true" : "false"}
-                  data-tid="alfred-result"
-                >
-                  <button
-                    class="item-button"
-                    onclick={() => selectItem(item)}
-                    aria-current={index === selectedIndex ? "true" : undefined}
-                    data-tid="alfred-result-button"
+          <div class="results" role="listbox" aria-label="Search results">
+            {#if filteredItems.length === 0}
+              <div class="no-results">{$i18n.alfred.no_results}</div>
+            {:else}
+              <ul>
+                {#each filteredItems as item, index}
+                  <li
+                    id={`alfred-item-${index}`}
+                    class:selected={index === selectedIndex}
+                    role="option"
+                    aria-selected={index === selectedIndex ? "true" : "false"}
+                    data-tid="alfred-result"
                   >
-                    <div class="item-icon">
-                      <item.icon size="20" />
-                    </div>
-                    <div class="item-content">
-                      <div class="item-title" data-tid="alfred-result-title"
-                        >{item.title}</div
-                      >
-                      <div class="item-description">{item.description}</div>
-                    </div>
-                  </button>
-                </li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
+                    <button
+                      class="item-button"
+                      onclick={() => selectItem(item)}
+                      aria-current={index === selectedIndex
+                        ? "true"
+                        : undefined}
+                      data-tid="alfred-result-button"
+                    >
+                      <div class="item-icon">
+                        <item.icon size="20" />
+                      </div>
+                      <div class="item-content">
+                        <div class="item-title" data-tid="alfred-result-title"
+                          >{item.title}</div
+                        >
+                        <div class="item-description">{item.description}</div>
+                      </div>
+                    </button>
+                  </li>
+                {/each}
+              </ul>
+            {/if}
+          </div>
+        {/if}
       </div>
     </div>
   </div>

@@ -14,6 +14,7 @@ describe("Alfred Component", () => {
     "Reporting",
     "Canisters",
     "Settings",
+    "Encode ICRC-1 Account",
     "Log In",
   ];
 
@@ -29,6 +30,7 @@ describe("Alfred Component", () => {
     "Copy principal ID",
     "Hide Balance",
     "Show transaction memo",
+    "Encode ICRC-1 Account",
     "Log Out",
   ];
 
