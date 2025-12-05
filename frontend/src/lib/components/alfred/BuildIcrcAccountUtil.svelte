@@ -11,12 +11,12 @@
   let principalInputRef = $state<HTMLInputElement | undefined>();
   let principalInput = $state("");
   let subAccountInput = $state<number | undefined>();
-  let hexOutput = $state<string | null>(null);
+  let icrcAccountText = $state<string | null>(null);
   let errorMessage = $state<string | null>(null);
 
   $effect(() => {
     if (principalInput === "" || isNullish(subAccountInput)) {
-      hexOutput = null;
+      icrcAccountText = null;
       errorMessage = null;
       return;
     }
@@ -30,11 +30,11 @@
         subaccount: subaccount.toUint8Array(),
       });
 
-      hexOutput = icrc;
+      icrcAccountText = icrc;
       errorMessage = null;
     } catch (e) {
       errorMessage = e instanceof Error ? e.message : String(e);
-      hexOutput = null;
+      icrcAccountText = null;
     }
   });
 
@@ -84,11 +84,11 @@
       <div class="hex-value-container">
         {#if nonNullish(errorMessage)}
           <div class="error-message">{errorMessage}</div>
-        {:else if nonNullish(hexOutput)}
+        {:else if nonNullish(icrcAccountText)}
           <div class="hex-value" data-tid="alfred-util-hex-output"
-            >{hexOutput}</div
+            >{icrcAccountText}</div
           >
-          <Copy value={hexOutput} />
+          <Copy value={icrcAccountText} />
         {/if}
       </div>
     </div>
