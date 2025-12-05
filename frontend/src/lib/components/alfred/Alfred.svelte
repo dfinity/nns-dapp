@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { authSignedInStore } from "$lib/derived/auth.derived";
+  import { analytics } from "$lib/services/analytics.services";
   import { authStore } from "$lib/stores/auth.store";
   import { balancePrivacyOptionStore } from "$lib/stores/balance-privacy-option.store";
   import { i18n } from "$lib/stores/i18n";
@@ -106,6 +107,8 @@
   };
 
   const selectItem = async (item: AlfredItem) => {
+    analytics.event("alfred-action", { id: `${item.type}-${item.id}` });
+
     if (item.type === "page" && item.path) {
       goto(item.path);
 
