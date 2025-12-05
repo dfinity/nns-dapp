@@ -14,6 +14,8 @@ proposal is successful, the changes it released will be moved from this file to
 
 #### Added
 
+- Export transaction data for SNS projects in the reporting section.
+
 #### Changed
 
 - Address Book: allow up to 64-chars nicknames, improved responsive sizing.

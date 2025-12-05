@@ -14,6 +14,7 @@
     label: string;
   }> = [
     { value: "nns", label: $i18n.reporting.transactions_source_nns },
+    { value: "sns", label: $i18n.reporting.transactions_source_sns },
     { value: "ck", label: $i18n.reporting.transactions_source_ck },
   ];
 </script>
