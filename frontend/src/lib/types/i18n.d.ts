@@ -217,6 +217,8 @@ interface I18nAlfred {
   launchpad_description: string;
   reporting_title: string;
   reporting_description: string;
+  address_book_title: string;
+  address_book_description: string;
   canisters_title: string;
   canisters_description: string;
   settings_title: string;

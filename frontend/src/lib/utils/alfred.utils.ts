@@ -26,6 +26,7 @@ import {
   IconNeurons,
   IconSettings,
   IconTokens,
+  IconUsers,
   IconVote,
   Theme,
   themeStore,
@@ -109,6 +110,14 @@ const getAlfredItems = (): AlfredItem[] => {
       description: alfred.launchpad_description,
       path: AppPath.Launchpad,
       icon: IconLaunchpad,
+    },
+    {
+      id: "address-book",
+      type: "page",
+      title: alfred.address_book_title,
+      description: alfred.address_book_description,
+      path: AppPath.AddressBook,
+      icon: IconUsers,
     },
     {
       id: "reporting",
