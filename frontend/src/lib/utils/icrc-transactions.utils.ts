@@ -20,8 +20,7 @@ import {
   type Token,
 } from "@dfinity/utils";
 import type {
-  PendingUtxo,
-  RetrieveBtcStatusV2,
+  CkBtcMinterDid,
   RetrieveBtcStatusV2WithId,
 } from "@icp-sdk/canisters/ckbtc";
 import type {
@@ -323,7 +322,7 @@ export const mapCkbtcTransaction = (params: {
   governanceCanisterId?: Principal;
   token: Token | undefined;
   i18n: I18n;
-  retrieveBtcStatus?: RetrieveBtcStatusV2;
+  retrieveBtcStatus?: CkBtcMinterDid.RetrieveBtcStatusV2;
 }): UiTransaction | undefined => {
   const mappedTransaction = mapIcrcTransaction(params);
   if (isNullish(mappedTransaction)) {
@@ -395,7 +394,7 @@ export const mapCkbtcTransactions = ({
 }): UiTransaction[] => {
   let prevTransaction: IcrcTransactionWithId | undefined = undefined;
   let prevUiTransaction: UiTransaction | undefined = undefined;
-  const statusById = new Map<bigint, RetrieveBtcStatusV2>();
+  const statusById = new Map<bigint, CkBtcMinterDid.RetrieveBtcStatusV2>();
   for (const { id, status } of retrieveBtcStatuses) {
     if (status) {
       statusById.set(id, status);
@@ -439,7 +438,7 @@ export const mapCkbtcPendingUtxo = ({
   kytFee,
   i18n,
 }: {
-  utxo: PendingUtxo;
+  utxo: CkBtcMinterDid.PendingUtxo;
   token: Token;
   kytFee: bigint;
   i18n: I18n;

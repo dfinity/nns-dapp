@@ -19,9 +19,9 @@ import {
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import {
-  CkBTCMinterCanister,
+  CkBtcMinterCanister,
   MinterInsufficientFundsError,
-  type RetrieveBtcOk,
+  type CkBtcMinterDid,
 } from "@icp-sdk/canisters/ckbtc";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { get } from "svelte/store";
@@ -33,7 +33,7 @@ vi.mock("$lib/services/icrc-accounts.services");
 
 describe("ckbtc-convert-services", () => {
   const now = new Date("2019-02-03T12:34:56.789Z").getTime();
-  const minterCanisterMock = mock<CkBTCMinterCanister>();
+  const minterCanisterMock = mock<CkBtcMinterCanister>();
   let loadAccountsSpy;
 
   const params = {
@@ -60,7 +60,7 @@ describe("ckbtc-convert-services", () => {
   beforeEach(() => {
     resetIdentity();
 
-    vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
+    vi.spyOn(CkBtcMinterCanister, "create").mockImplementation(
       () => minterCanisterMock
     );
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
@@ -98,7 +98,7 @@ describe("ckbtc-convert-services", () => {
         .spyOn(minterApi, "retrieveBtcWithApproval")
         .mockImplementation(
           () =>
-            new Promise<RetrieveBtcOk>((resolve, reject) => {
+            new Promise<CkBtcMinterDid.RetrieveBtcOk>((resolve, reject) => {
               resolveRetrieveBtc = resolve;
               rejectRetrieveBtc = reject;
             })
