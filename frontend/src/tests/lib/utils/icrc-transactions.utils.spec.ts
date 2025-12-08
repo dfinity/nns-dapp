@@ -40,7 +40,7 @@ import {
   toNullable,
 } from "@dfinity/utils";
 import type {
-  RetrieveBtcStatusV2,
+  CkBtcMinterDid,
   RetrieveBtcStatusV2WithId,
 } from "@icp-sdk/canisters/ckbtc";
 import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
@@ -84,7 +84,9 @@ describe("icrc-transaction utils", () => {
     from: subAccount,
     to: subAccount,
   });
-  const retrieveBtcStatusReimbursed = (amount): RetrieveBtcStatusV2 => ({
+  const retrieveBtcStatusReimbursed = (
+    amount
+  ): CkBtcMinterDid.RetrieveBtcStatusV2 => ({
     Reimbursed: {
       account: {
         owner: mockPrincipal,
@@ -97,10 +99,10 @@ describe("icrc-transaction utils", () => {
       },
     },
   });
-  const retrieveBtcStatusPending: RetrieveBtcStatusV2 = {
+  const retrieveBtcStatusPending: CkBtcMinterDid.RetrieveBtcStatusV2 = {
     Pending: null,
   };
-  const retrieveBtcStatusConfirmed: RetrieveBtcStatusV2 = {
+  const retrieveBtcStatusConfirmed: CkBtcMinterDid.RetrieveBtcStatusV2 = {
     Confirmed: {
       txid: new Uint8Array([1, 2, 1, 1]),
     },

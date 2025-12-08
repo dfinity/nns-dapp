@@ -25,9 +25,9 @@ import {
   MinterGenericError,
   MinterNoNewUtxosError,
   MinterTemporaryUnavailableError,
+  type CkBtcMinterDid,
   type EstimateWithdrawalFee,
   type EstimateWithdrawalFeeParams,
-  type PendingUtxo,
   type UpdateBalanceOk,
 } from "@icp-sdk/canisters/ckbtc";
 import { get } from "svelte/store";
@@ -111,7 +111,10 @@ const getPendingAndCompletedUtxos = async ({
   minterCanisterId,
 }: {
   minterCanisterId: CanisterId;
-}): Promise<{ completed: UpdateBalanceOk; pending: PendingUtxo[] }> => {
+}): Promise<{
+  completed: UpdateBalanceOk;
+  pending: CkBtcMinterDid.PendingUtxo[];
+}> => {
   const identity = await getAuthenticatedIdentity();
   const completedUtxos: UpdateBalanceOk = [];
 

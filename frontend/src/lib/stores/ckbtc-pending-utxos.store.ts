@@ -2,16 +2,19 @@ import type {
   UniverseCanisterId,
   UniverseCanisterIdText,
 } from "$lib/types/universe";
-import type { PendingUtxo } from "@icp-sdk/canisters/ckbtc";
+import type { CkBtcMinterDid } from "@icp-sdk/canisters/ckbtc";
 import { writable, type Readable } from "svelte/store";
 
-type CkbtcPendingUtxosStoreData = Record<UniverseCanisterIdText, PendingUtxo[]>;
+type CkbtcPendingUtxosStoreData = Record<
+  UniverseCanisterIdText,
+  CkBtcMinterDid.PendingUtxo[]
+>;
 
 export interface CkbtcPendingUtxosStore
   extends Readable<CkbtcPendingUtxosStoreData> {
   setUtxos: (params: {
     universeId: UniverseCanisterId;
-    utxos: PendingUtxo[];
+    utxos: CkBtcMinterDid.PendingUtxo[];
   }) => void;
   reset: () => void;
 }
@@ -35,7 +38,7 @@ const initCkbtcPendingUtxosStore = (): CkbtcPendingUtxosStore => {
       utxos,
     }: {
       universeId: UniverseCanisterId;
-      utxos: PendingUtxo[];
+      utxos: CkBtcMinterDid.PendingUtxo[];
     }) => {
       utxos = [...utxos];
       utxos.sort((a, b) => a.confirmations - b.confirmations);

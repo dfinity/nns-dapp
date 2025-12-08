@@ -3,12 +3,11 @@ import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { QueryParams } from "@dfinity/utils";
 import {
-  CkBTCMinterCanister,
+  CkBtcMinterCanister,
+  type CkBtcMinterDid,
   type EstimateWithdrawalFee,
   type EstimateWithdrawalFeeParams,
-  type MinterInfo,
   type MinterParams,
-  type RetrieveBtcOk,
   type RetrieveBtcStatusV2WithId,
   type UpdateBalanceOk,
 } from "@icp-sdk/canisters/ckbtc";
@@ -72,7 +71,7 @@ export const retrieveBtcWithApproval = async ({
   address: string;
   amount: bigint;
   fromSubaccount?: Uint8Array;
-}): Promise<RetrieveBtcOk> => {
+}): Promise<CkBtcMinterDid.RetrieveBtcOk> => {
   logWithTimestamp("Retrieve BTC with approval: call...");
 
   const {
@@ -136,7 +135,7 @@ export const minterInfo = async ({
 }: {
   identity: Identity;
   canisterId: Principal;
-} & QueryParams): Promise<MinterInfo> => {
+} & QueryParams): Promise<CkBtcMinterDid.MinterInfo> => {
   logWithTimestamp("Minter info: call...");
 
   const {
@@ -157,7 +156,7 @@ const ckBTCMinterCanister = async ({
   identity: Identity;
   canisterId: Principal;
 }): Promise<{
-  canister: CkBTCMinterCanister;
+  canister: CkBtcMinterCanister;
   agent: Agent;
 }> => {
   const agent = await createAgent({
@@ -165,7 +164,7 @@ const ckBTCMinterCanister = async ({
     host: HOST,
   });
 
-  const canister = CkBTCMinterCanister.create({
+  const canister = CkBtcMinterCanister.create({
     agent,
     canisterId,
   });

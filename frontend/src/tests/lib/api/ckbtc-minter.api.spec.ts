@@ -15,18 +15,18 @@ import {
   mockUpdateBalanceOk,
 } from "$tests/mocks/ckbtc-minter.mock";
 import {
-  CkBTCMinterCanister,
-  type RetrieveBtcOk,
+  CkBtcMinterCanister,
+  type CkBtcMinterDid,
   type RetrieveBtcStatusV2WithId,
 } from "@icp-sdk/canisters/ckbtc";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
 describe("ckbtc-minter api", () => {
-  const minterCanisterMock = mock<CkBTCMinterCanister>();
+  const minterCanisterMock = mock<CkBtcMinterCanister>();
 
   beforeEach(() => {
-    vi.spyOn(CkBTCMinterCanister, "create").mockImplementation(
+    vi.spyOn(CkBtcMinterCanister, "create").mockImplementation(
       () => minterCanisterMock
     );
     vi.spyOn(agent, "createAgent").mockResolvedValue(mock<HttpAgent>());
@@ -92,7 +92,7 @@ describe("ckbtc-minter api", () => {
     };
 
     it("returns successfully when btc are retrieved", async () => {
-      const ok: RetrieveBtcOk = {
+      const ok: CkBtcMinterDid.RetrieveBtcOk = {
         block_index: 1n,
       };
 
