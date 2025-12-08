@@ -11,6 +11,23 @@ The NNS Dapp is released through proposals in the Network Nervous System. Theref
 Unreleased changes are added to `CHANGELOG-Nns-Dapp-unreleased.md` and moved
 here after a successful release.
 
+## Proposal 139676
+
+### Application
+
+#### Added
+
+- Use the Command Palette to encode an ICRC-1 account identifier.
+
+#### Changed
+
+- Address Book: allow up to 64-chars nicknames, improved responsive sizing.
+- Address Book: better handling of spaces (trim + normalization).
+- Address Book: improved contrast in the case of "use manual address" warning.
+- Address Book: added entry to Command Palette.
+
+### Operations
+
 ## Proposal 139482
 
 ### Application
