@@ -22,7 +22,7 @@
     mapCkbtcPendingUtxo,
     mapCkbtcTransactions,
   } from "$lib/utils/icrc-transactions.utils";
-  import type { PendingUtxo } from "@icp-sdk/canisters/ckbtc";
+  import type { CkBtcMinterDid } from "@icp-sdk/canisters/ckbtc";
   import { isNullish } from "@dfinity/utils";
 
   export let indexCanisterId: CanisterId;
@@ -40,7 +40,7 @@
   let kytFee: bigint | undefined = undefined;
   $: kytFee = ckbtcInfo?.info.kyt_fee;
 
-  let pendingUtxos: PendingUtxo[] = [];
+  let pendingUtxos: CkBtcMinterDid.PendingUtxo[] = [];
   $: pendingUtxos = $ckbtcPendingUtxosStore[universeId.toText()] ?? [];
 
   const mapPendingUtxos = ({
@@ -48,7 +48,7 @@
     token,
     kytFee,
   }: {
-    pendingUtxos: PendingUtxo[];
+    pendingUtxos: CkBtcMinterDid.PendingUtxo[];
     token: IcrcTokenMetadata;
     kytFee: bigint;
   }): UiTransaction[] =>
