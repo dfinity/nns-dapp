@@ -1,6 +1,6 @@
 import type { Account } from "$lib/types/account";
 import type { TokenAmount, TokenAmountV2 } from "@dfinity/utils";
-import type { IcrcIndexNgDid } from "@icp-sdk/canisters/ledger/icrc";
+import type { IcrcIndexDid } from "@icp-sdk/canisters/ledger/icrc";
 
 export type NewTransaction = {
   sourceAccount: Account;
@@ -42,7 +42,7 @@ export type ValidateAmountFn = (params: {
 
 export interface IcrcTransactionData {
   toSelfTransaction: boolean;
-  transaction: IcrcIndexNgDid.TransactionWithId;
+  transaction: IcrcIndexDid.TransactionWithId;
 }
 
 export interface IcrcTransactionInfo {

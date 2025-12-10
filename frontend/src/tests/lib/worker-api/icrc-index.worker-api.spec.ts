@@ -4,16 +4,16 @@ import { getIcrcTransactions } from "$lib/worker-api/icrc-index.worker-api";
 import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import * as dfinityUtils from "@dfinity/utils";
 import {
-  IcrcIndexNgCanister,
-  type IcrcIndexNgDid,
+  IcrcIndexCanister,
+  type IcrcIndexDid,
 } from "@icp-sdk/canisters/ledger/icrc";
 import { mock } from "vitest-mock-extended";
 
 describe("icrc-index.worker-api", () => {
-  const indexCanisterMock = mock<IcrcIndexNgCanister>();
+  const indexCanisterMock = mock<IcrcIndexCanister>();
 
   beforeEach(() => {
-    vi.spyOn(IcrcIndexNgCanister, "create").mockImplementation(
+    vi.spyOn(IcrcIndexCanister, "create").mockImplementation(
       () => indexCanisterMock
     );
     // Prevent HttpAgent.create(), which is called by createAgent, from making a
@@ -34,7 +34,7 @@ describe("icrc-index.worker-api", () => {
 
   const transaction = {
     burn: [],
-  } as unknown as IcrcIndexNgDid.Transaction;
+  } as unknown as IcrcIndexDid.Transaction;
 
   it("should returns transactions", async () => {
     const id = 1n;

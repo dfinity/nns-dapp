@@ -3,7 +3,10 @@ import { getTransactions } from "$lib/api/icp-index.api";
 import { mockIdentity } from "$tests/mocks/auth.store.mock";
 import { mockMainAccount } from "$tests/mocks/icp-accounts.store.mock";
 import { mockTransactionWithId } from "$tests/mocks/transaction.mock";
-import { IndexCanister, type IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
+import {
+  IcpIndexCanister,
+  type IcpIndexDid,
+} from "@icp-sdk/canisters/ledger/icp";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
@@ -21,22 +24,22 @@ describe("icp-index.api", () => {
         balance: 200_000_000n,
       };
     let currentResponse = defaultResponse;
-    const indexCanisterMock = mock<IndexCanister>();
+    const indexCanisterMock = mock<IcpIndexCanister>();
 
     beforeEach(() => {
       currentResponse = defaultResponse;
       indexCanisterMock.getTransactions.mockImplementation(
         async () => currentResponse
       );
-      vi.spyOn(IndexCanister, "create").mockImplementation(
-        (): IndexCanister => indexCanisterMock
+      vi.spyOn(IcpIndexCanister, "create").mockImplementation(
+        (): IcpIndexCanister => indexCanisterMock
       );
     });
 
     describe("getTransactions", () => {
       it("should call the index canister method to get transactions", async () => {
         const maxResults = 20n;
-        expect(IndexCanister.create).toHaveBeenCalledTimes(0);
+        expect(IcpIndexCanister.create).toHaveBeenCalledTimes(0);
 
         const response = await getTransactions({
           identity: mockIdentity,
@@ -44,7 +47,7 @@ describe("icp-index.api", () => {
           accountIdentifier,
         });
 
-        expect(IndexCanister.create).toHaveBeenCalledTimes(1);
+        expect(IcpIndexCanister.create).toHaveBeenCalledTimes(1);
         expect(indexCanisterMock.getTransactions).toHaveBeenCalledWith({
           start: undefined,
           accountIdentifier,
@@ -60,7 +63,7 @@ describe("icp-index.api", () => {
       it("should pass the start parameter", async () => {
         const maxResults = 20n;
         const start = 1234n;
-        expect(IndexCanister.create).toHaveBeenCalledTimes(0);
+        expect(IcpIndexCanister.create).toHaveBeenCalledTimes(0);
 
         await getTransactions({
           identity: mockIdentity,
@@ -69,7 +72,7 @@ describe("icp-index.api", () => {
           start,
         });
 
-        expect(IndexCanister.create).toHaveBeenCalledTimes(1);
+        expect(IcpIndexCanister.create).toHaveBeenCalledTimes(1);
         expect(indexCanisterMock.getTransactions).toHaveBeenCalledWith({
           start,
           accountIdentifier,
@@ -83,7 +86,7 @@ describe("icp-index.api", () => {
           ...defaultResponse,
           oldest_tx_id: [],
         };
-        expect(IndexCanister.create).toHaveBeenCalledTimes(0);
+        expect(IcpIndexCanister.create).toHaveBeenCalledTimes(0);
 
         const response = await getTransactions({
           identity: mockIdentity,

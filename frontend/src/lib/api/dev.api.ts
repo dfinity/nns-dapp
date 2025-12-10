@@ -14,7 +14,7 @@ import {
 import type { BlockHeight } from "@icp-sdk/canisters/ledger/icp";
 import {
   AccountIdentifier,
-  LedgerCanister,
+  IcpLedgerCanister,
 } from "@icp-sdk/canisters/ledger/icp";
 import {
   IcrcLedgerCanister,
@@ -64,7 +64,7 @@ export const getTestIcpAccountBalance = async (): Promise<bigint> => {
 
   const agent = await getTestAccountAgent();
 
-  const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
+  const ledgerCanister: IcpLedgerCanister = IcpLedgerCanister.create({ agent });
 
   return ledgerCanister.accountBalance({
     accountIdentifier: AccountIdentifier.fromHex(testAccountAddress),
@@ -126,7 +126,7 @@ export const acquireICPTs = async ({
   }
 
   // Old school ICP
-  const ledgerCanister: LedgerCanister = LedgerCanister.create({ agent });
+  const ledgerCanister: IcpLedgerCanister = IcpLedgerCanister.create({ agent });
 
   return ledgerCanister.transfer({
     amount: e8s,

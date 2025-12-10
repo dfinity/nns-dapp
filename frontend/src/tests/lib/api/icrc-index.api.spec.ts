@@ -9,7 +9,7 @@ import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSubAccountArray } from "$tests/mocks/icp-accounts.store.mock";
 import { mockIcrcTransactionWithId } from "$tests/mocks/icrc-transactions.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import { IcrcIndexNgCanister } from "@icp-sdk/canisters/ledger/icrc";
+import { IcrcIndexCanister } from "@icp-sdk/canisters/ledger/icrc";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
 
@@ -23,14 +23,14 @@ describe("icrc-index api", () => {
     indexCanisterId: principal(0),
   };
 
-  const indexNgCanisterMock = mock<IcrcIndexNgCanister>();
+  const indexNgCanisterMock = mock<IcrcIndexCanister>();
   let spyOnIndexNgCanisterCreate;
 
   const agentMock = mock<HttpAgent>();
 
   beforeEach(() => {
     spyOnIndexNgCanisterCreate = vi
-      .spyOn(IcrcIndexNgCanister, "create")
+      .spyOn(IcrcIndexCanister, "create")
       .mockImplementation(() => indexNgCanisterMock);
 
     vi.spyOn(agent, "createAgent").mockResolvedValue(agentMock);

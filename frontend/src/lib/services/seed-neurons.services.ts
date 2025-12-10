@@ -8,7 +8,7 @@ import { toastsError, toastsShow } from "$lib/stores/toasts.store";
 import { mapNeuronErrorToToastMessage } from "$lib/utils/error.utils";
 import { translate } from "$lib/utils/i18n.utils";
 import { uint8ArrayToHexString } from "@dfinity/utils";
-import { GenesisTokenCanister } from "@icp-sdk/canisters/nns";
+import { NnsGenesisTokenCanister } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 
 // TODO: Remove after all seed neurons have been claimed.
@@ -33,7 +33,7 @@ export const claimSeedNeurons = async () => {
       labelKey: "busy_screen.pending_approval_hw",
     });
     const identity = await getLedgerIdentityProxy(hardwareWallet?.identifier);
-    const governance = GenesisTokenCanister.create({
+    const governance = NnsGenesisTokenCanister.create({
       agent: await createAgent({ identity, host: HOST }),
     });
 

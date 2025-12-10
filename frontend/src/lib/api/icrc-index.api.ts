@@ -2,9 +2,9 @@ import { createAgent } from "$lib/api/agent.api";
 import { HOST } from "$lib/constants/environment.constants";
 import { fromNullable } from "@dfinity/utils";
 import {
-  IcrcIndexNgCanister,
+  IcrcIndexCanister,
   type IcrcAccount,
-  type IcrcIndexNgDid,
+  type IcrcIndexDid,
 } from "@icp-sdk/canisters/ledger/icrc";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
@@ -18,7 +18,7 @@ export interface GetTransactionsParams {
 }
 
 export interface GetTransactionsResponse
-  extends Omit<IcrcIndexNgDid.GetTransactions, "oldest_tx_id"> {
+  extends Omit<IcrcIndexDid.GetTransactions, "oldest_tx_id"> {
   oldestTxId?: bigint;
 }
 
@@ -69,7 +69,7 @@ export const listSubaccounts = async ({
   identity: Identity;
   indexCanisterId: Principal;
   certified?: boolean;
-}): Promise<Array<IcrcIndexNgDid.SubAccount>> => {
+}): Promise<Array<IcrcIndexDid.SubAccount>> => {
   const {
     canister: { listSubaccounts },
   } = await indexNgCanister({
@@ -93,7 +93,7 @@ const indexNgCanister = async ({
   identity: Identity;
   canisterId: Principal;
 }): Promise<{
-  canister: IcrcIndexNgCanister;
+  canister: IcrcIndexCanister;
   agent: Agent;
 }> => {
   const agent = await createAgent({
@@ -101,7 +101,7 @@ const indexNgCanister = async ({
     host: HOST,
   });
 
-  const canister = IcrcIndexNgCanister.create({
+  const canister = IcrcIndexCanister.create({
     agent,
     canisterId,
   });

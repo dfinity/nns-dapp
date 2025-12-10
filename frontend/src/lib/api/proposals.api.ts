@@ -5,7 +5,7 @@ import { HOST } from "$lib/constants/environment.constants";
 import { hashCode, logWithTimestamp } from "$lib/utils/dev.utils";
 import { enumsExclude } from "$lib/utils/enum.utils";
 import {
-  GovernanceCanister,
+  NnsGovernanceCanister,
   ProposalRewardStatus,
   ProposalStatus,
   Topic,
@@ -38,7 +38,7 @@ export const queryProposals = async ({
     }) certified:${certified} call...`
   );
 
-  const governance: GovernanceCanister = GovernanceCanister.create({
+  const governance: NnsGovernanceCanister = NnsGovernanceCanister.create({
     agent: await createAgent({ identity, host: HOST }),
   });
 
@@ -89,7 +89,7 @@ export const queryProposal = async ({
     `Querying Proposal (${hashCode(proposalId)}) certified:${certified} call...`
   );
 
-  const governance: GovernanceCanister = GovernanceCanister.create({
+  const governance: NnsGovernanceCanister = NnsGovernanceCanister.create({
     agent: await createAgent({ identity, host: HOST }),
   });
 

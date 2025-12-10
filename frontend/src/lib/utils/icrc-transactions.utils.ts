@@ -23,12 +23,12 @@ import type {
   CkBtcMinterDid,
   RetrieveBtcStatusV2WithId,
 } from "@icp-sdk/canisters/ckbtc";
-import type { IcrcIndexNgDid } from "@icp-sdk/canisters/ledger/icrc";
+import type { IcrcIndexDid } from "@icp-sdk/canisters/ledger/icrc";
 import { encodeIcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import { Cbor } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 
-const isToSelf = (transaction: IcrcIndexNgDid.Transaction): boolean => {
+const isToSelf = (transaction: IcrcIndexDid.Transaction): boolean => {
   if (transaction.transfer.length !== 1) {
     return false;
   }
@@ -53,9 +53,9 @@ const isToSelf = (transaction: IcrcIndexNgDid.Transaction): boolean => {
  * the transactions has toSelfTransaction set to true and the other to false.
  */
 const mapToSelfTransactions = (
-  transactions: IcrcIndexNgDid.TransactionWithId[]
+  transactions: IcrcIndexDid.TransactionWithId[]
 ): {
-  transaction: IcrcIndexNgDid.TransactionWithId;
+  transaction: IcrcIndexDid.TransactionWithId;
   toSelfTransaction: boolean;
 }[] => {
   const resultTransactions = transactions.flatMap((transaction) => {
@@ -102,7 +102,7 @@ const getIcrcTransactionType = ({
   governanceCanisterId,
   isReceive,
 }: {
-  transaction: IcrcIndexNgDid.Transaction;
+  transaction: IcrcIndexDid.Transaction;
   governanceCanisterId?: Principal;
   isReceive: boolean;
 }): AccountTransactionType => {
@@ -136,7 +136,7 @@ const getIcrcTransactionType = ({
 };
 
 const getTransactionInformation = (
-  transaction: IcrcIndexNgDid.Transaction
+  transaction: IcrcIndexDid.Transaction
 ): IcrcTransactionInfo | undefined => {
   const data =
     fromNullable(transaction.approve) ??
@@ -178,7 +178,7 @@ export const mapIcrcTransactionToReport = ({
   token,
 }: {
   account: Account;
-  transaction: IcrcIndexNgDid.TransactionWithId;
+  transaction: IcrcIndexDid.TransactionWithId;
   token: Token;
 }) => {
   const txInfo = getTransactionInformation(transaction.transaction);
@@ -223,7 +223,7 @@ export const mapIcrcTransaction = ({
   token,
   i18n,
 }: {
-  transaction: IcrcIndexNgDid.TransactionWithId;
+  transaction: IcrcIndexDid.TransactionWithId;
   account: Account;
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;
@@ -316,7 +316,7 @@ const isCkbtcReimbursementMintMemo = (
 };
 
 export const mapCkbtcTransaction = (params: {
-  transaction: IcrcIndexNgDid.TransactionWithId;
+  transaction: IcrcIndexDid.TransactionWithId;
   account: Account;
   toSelfTransaction: boolean;
   governanceCanisterId?: Principal;
@@ -392,7 +392,7 @@ export const mapCkbtcTransactions = ({
   i18n: I18n;
   retrieveBtcStatuses: RetrieveBtcStatusV2WithId[];
 }): UiTransaction[] => {
-  let prevTransaction: IcrcIndexNgDid.TransactionWithId | undefined = undefined;
+  let prevTransaction: IcrcIndexDid.TransactionWithId | undefined = undefined;
   let prevUiTransaction: UiTransaction | undefined = undefined;
   const statusById = new Map<bigint, CkBtcMinterDid.RetrieveBtcStatusV2>();
   for (const { id, status } of retrieveBtcStatuses) {

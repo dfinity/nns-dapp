@@ -37,7 +37,7 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { arrayOfNumberToUint8Array } from "@dfinity/utils";
-import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
@@ -58,7 +58,7 @@ vi.mock("$lib/api/agent.api", () => {
 vi.mock("@icp-sdk/canisters/sns", { spy: true });
 
 describe("sns-api", () => {
-  const ledgerCanisterMock = mock<LedgerCanister>();
+  const ledgerCanisterMock = mock<IcpLedgerCanister>();
   const proposals = [mockSnsProposal];
   const queryNeuronsSpy = vi.fn();
   const getNeuronSpy = vi.fn();
@@ -112,7 +112,7 @@ describe("sns-api", () => {
     disburseMaturitySpy.mockResolvedValue(undefined);
     getFunctionsSpy.mockResolvedValue(nervousSystemFunctionsMock);
 
-    vi.spyOn(LedgerCanister, "create").mockImplementation(
+    vi.spyOn(IcpLedgerCanister, "create").mockImplementation(
       () => ledgerCanisterMock
     );
 

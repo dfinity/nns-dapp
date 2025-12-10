@@ -40,7 +40,7 @@ import { setAccountsForTesting } from "$tests/utils/accounts.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
-import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import {
   NeuronVisibility,
   Topic,
@@ -298,8 +298,8 @@ describe("neurons-services", () => {
     });
 
     it("stakeNeuron return undefined if amount less than 1 ICP", async () => {
-      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-        mock<LedgerCanister>()
+      vi.spyOn(IcpLedgerCanister, "create").mockImplementation(() =>
+        mock<IcpLedgerCanister>()
       );
 
       const response = await stakeNeuron({
@@ -313,8 +313,8 @@ describe("neurons-services", () => {
     });
 
     it("stake neuron should return undefined if amount not valid", async () => {
-      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-        mock<LedgerCanister>()
+      vi.spyOn(IcpLedgerCanister, "create").mockImplementation(() =>
+        mock<IcpLedgerCanister>()
       );
 
       const response = await stakeNeuron({
@@ -328,8 +328,8 @@ describe("neurons-services", () => {
     });
 
     it("stake neuron should return undefined if not enough funds in account", async () => {
-      vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-        mock<LedgerCanister>()
+      vi.spyOn(IcpLedgerCanister, "create").mockImplementation(() =>
+        mock<IcpLedgerCanister>()
       );
 
       // 10 ICPs

@@ -8,7 +8,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { silentConsoleErrors } from "$tests/utils/utils.test-utils";
 import type { BallotInfo } from "@icp-sdk/canisters/nns";
-import { GovernanceCanister, Vote } from "@icp-sdk/canisters/nns";
+import { NnsGovernanceCanister, Vote } from "@icp-sdk/canisters/nns";
 import type { HttpAgent } from "@icp-sdk/core/agent";
 import { render, waitFor } from "@testing-library/svelte";
 import { mock } from "vitest-mock-extended";
@@ -25,8 +25,8 @@ describe("BallotSummary", () => {
   beforeEach(() => {
     silentConsoleErrors();
 
-    vi.spyOn(GovernanceCanister, "create").mockImplementation(
-      (): GovernanceCanister => mockGovernanceCanister
+    vi.spyOn(NnsGovernanceCanister, "create").mockImplementation(
+      (): NnsGovernanceCanister => mockGovernanceCanister
     );
 
     resetIdentity();

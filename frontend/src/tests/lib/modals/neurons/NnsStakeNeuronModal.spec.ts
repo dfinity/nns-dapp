@@ -36,9 +36,9 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { nonNullish } from "@dfinity/utils";
-import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
+import { IcpLedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
-import { GovernanceCanister } from "@icp-sdk/canisters/nns";
+import { NnsGovernanceCanister } from "@icp-sdk/canisters/nns";
 import { get } from "svelte/store";
 import type { MockInstance } from "vitest";
 import { mock } from "vitest-mock-extended";
@@ -79,11 +79,11 @@ describe("NnsStakeNeuronModal", () => {
       undefined
     );
 
-    vi.spyOn(LedgerCanister, "create").mockImplementation(() =>
-      mock<LedgerCanister>()
+    vi.spyOn(IcpLedgerCanister, "create").mockImplementation(() =>
+      mock<IcpLedgerCanister>()
     );
-    vi.spyOn(GovernanceCanister, "create").mockImplementation(() =>
-      mock<GovernanceCanister>()
+    vi.spyOn(NnsGovernanceCanister, "create").mockImplementation(() =>
+      mock<NnsGovernanceCanister>()
     );
     queryBalanceSpy = vi
       .spyOn(ledgerApi, "queryAccountBalance")

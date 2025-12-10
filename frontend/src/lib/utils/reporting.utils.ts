@@ -46,7 +46,7 @@ import {
   secondsToDuration,
   type Token,
 } from "@dfinity/utils";
-import type { IcrcIndexNgDid } from "@icp-sdk/canisters/ledger/icrc";
+import type { IcrcIndexDid } from "@icp-sdk/canisters/ledger/icrc";
 import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
 import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -350,7 +350,7 @@ export const buildIcrcTransactionsDataset = ({
 }: {
   account: Account;
   token: Token;
-  transactions: IcrcIndexNgDid.TransactionWithId[];
+  transactions: IcrcIndexDid.TransactionWithId[];
   i18n: I18n;
 }): CsvDataset<TransactionsCsvData> => {
   const amount = TokenAmountV2.fromUlps({ amount: account.balanceUlps, token });
