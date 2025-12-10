@@ -29,7 +29,7 @@
     snsProposalIdString,
   } from "$lib/utils/sns-proposals.utils";
   import { Principal } from "@icp-sdk/core/principal";
-  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid, SnsVote } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
   export let proposal: SnsGovernanceDid.ProposalData;
@@ -102,11 +102,7 @@
 
   $: (votableNeurons, updateVotingNeuronSelectedStore());
 
-  const vote = async ({
-    detail,
-  }: {
-    detail: { voteType: SnsGovernanceDid.Vote };
-  }) => {
+  const vote = async ({ detail }: { detail: { voteType: SnsVote } }) => {
     if (nonNullish(universeIdText) && votableNeurons.length > 0) {
       await registerSnsVotes({
         universeCanisterId: Principal.from(universeIdText),
