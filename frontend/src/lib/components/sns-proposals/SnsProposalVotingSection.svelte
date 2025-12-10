@@ -7,12 +7,11 @@
   import { basisPointsToPercent } from "$lib/utils/utils";
   import {
     SnsProposalRewardStatus,
-    type SnsProposalData,
-    type SnsTally,
+    type SnsGovernanceDid,
   } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable } from "@dfinity/utils";
 
-  export let proposal: SnsProposalData;
+  export let proposal: SnsGovernanceDid.ProposalData;
   export let proposalDataMap: SnsProposalDataMap;
   export let reloadProposal: () => Promise<void>;
 
@@ -21,7 +20,7 @@
     proposalDataMap.rewardStatus ===
     SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED;
 
-  let tally: SnsTally;
+  let tally: SnsGovernanceDid.Tally;
   $: tally = fromDefinedNullable(proposal.latest_tally);
   let yes = 0;
   $: yes = Number(tally.yes) / E8S_PER_ICP;

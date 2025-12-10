@@ -50,7 +50,7 @@ import {
 } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
-export type ProposalDataMap = {
+export type SnsProposalDataMap = {
   // Mapped directly from SnsGovernanceDid.ProposalData directly
   id?: SnsGovernanceDid.ProposalId;
   payload_text_rendering?: string;
@@ -108,7 +108,7 @@ export const mapProposalInfo = ({
   proposalData: SnsGovernanceDid.ProposalData;
   nsFunctions: SnsGovernanceDid.NervousSystemFunction[] | undefined;
   topics: TopicInfoWithUnknown[] | undefined;
-}): ProposalDataMap => {
+}): SnsProposalDataMap => {
   const {
     proposal,
     proposer,

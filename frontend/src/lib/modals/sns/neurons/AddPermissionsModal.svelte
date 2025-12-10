@@ -18,11 +18,11 @@
   import type { Principal } from "@icp-sdk/core/principal";
   import {
     SnsNeuronPermissionType,
-    type SnsNeuronId,
+    type SnsGovernanceDid,
   } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher } from "svelte";
 
-  export let neuronId: SnsNeuronId;
+  export let neuronId: SnsGovernanceDid.NeuronId;
   export let rootCanisterId: Principal;
   export let reloadNeuron: () => Promise<void>;
   export let mode: "add" | "remove";
