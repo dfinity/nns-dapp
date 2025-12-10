@@ -3,10 +3,7 @@ import { INDEX_CANISTER_ID } from "$lib/constants/canister-ids.constants";
 import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { fromNullable } from "@dfinity/utils";
-import {
-  IndexCanister,
-  type GetAccountIdentifierTransactionsResponse,
-} from "@icp-sdk/canisters/ledger/icp";
+import { IndexCanister, type IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
 
 export interface GetTransactionsParams {
@@ -17,7 +14,10 @@ export interface GetTransactionsParams {
 }
 
 export interface GetTransactionsResponse
-  extends Omit<GetAccountIdentifierTransactionsResponse, "oldest_tx_id"> {
+  extends Omit<
+    IcpIndexDid.GetAccountIdentifierTransactionsResponse,
+    "oldest_tx_id"
+  > {
   oldestTxId?: bigint;
 }
 

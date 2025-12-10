@@ -1,10 +1,10 @@
 <script lang="ts">
   import ProposalSummary from "$lib/components/proposal-detail/ProposalSummary.svelte";
   import { i18n } from "$lib/stores/i18n";
-  import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
 
-  export let proposal: SnsProposalData;
+  export let proposal: SnsGovernanceDid.ProposalData;
 
   let payload: string | undefined;
   $: payload = fromNullable(proposal.payload_text_rendering);

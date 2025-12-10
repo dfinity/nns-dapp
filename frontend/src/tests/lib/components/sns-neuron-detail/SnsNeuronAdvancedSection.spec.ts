@@ -24,13 +24,13 @@ import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
 import { NeuronState } from "@icp-sdk/canisters/nns";
 import {
   SnsNeuronPermissionType,
-  type SnsNeuron,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 describe("SnsNeuronAdvancedSection", () => {
   const nowInSeconds = new Date("Jul 20, 2023 8:53 AM").getTime() / 1000;
-  const renderComponent = (neuron: SnsNeuron) => {
+  const renderComponent = (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = renderSelectedSnsNeuronContext({
       Component: SnsNeuronAdvancedSection,
       neuron,

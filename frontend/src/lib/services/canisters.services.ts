@@ -56,7 +56,7 @@ import {
 import {
   AccountIdentifier,
   SubAccount,
-  type TransactionWithId,
+  type IcpIndexDid,
 } from "@icp-sdk/canisters/ledger/icp";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -199,7 +199,7 @@ export const topUpCanister = async ({
 const getBlockHeightFromCanisterTopUp = ({
   id: blockHeight,
   transaction: { memo, operation },
-}: TransactionWithId): bigint | undefined => {
+}: IcpIndexDid.TransactionWithId): bigint | undefined => {
   if (memo !== TOP_UP_CANISTER_MEMO || !("Transfer" in operation)) {
     return undefined;
   }
@@ -427,7 +427,7 @@ const getCanisterCreationBlockIndices = ({
   transactions,
 }: {
   controller: Principal;
-  transactions: TransactionWithId[];
+  transactions: IcpIndexDid.TransactionWithId[];
 }): bigint[] => {
   const cmcAccountIdentifier = getCanisterCreationCmcAccountIdentifierHex({
     controller,
@@ -452,7 +452,7 @@ export const notifyAndAttachCanisterIfNeeded = async ({
   transactions,
   canisters,
 }: {
-  transactions: TransactionWithId[];
+  transactions: IcpIndexDid.TransactionWithId[];
   canisters: CanisterInfo[];
 }): Promise<void> => {
   const identity = await getAuthenticatedIdentity();

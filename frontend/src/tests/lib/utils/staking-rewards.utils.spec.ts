@@ -29,7 +29,7 @@ import {
   type NetworkEconomics,
   type NeuronInfo,
 } from "@icp-sdk/canisters/nns";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 type TestStakingRewardCalcParams = {
@@ -67,7 +67,7 @@ type TestStakingRewardCalcParams = {
   snsNeurons: {
     [rootCanisterId: string]: {
       neurons: Pick<
-        SnsNeuron,
+        SnsGovernanceDid.Neuron,
         | "id"
         | "maturity_e8s_equivalent"
         | "staked_maturity_e8s_equivalent"

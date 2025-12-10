@@ -1,14 +1,14 @@
 import { snsNeuronsStore } from "$lib/stores/sns-neurons.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("SNS Neurons stores", () => {
   describe("snsNeurons store", () => {
     it("should set neurons for a project", () => {
-      const neurons: SnsNeuron[] = [
+      const neurons: SnsGovernanceDid.Neuron[] = [
         createMockSnsNeuron({
           stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
@@ -29,7 +29,7 @@ describe("SNS Neurons stores", () => {
     });
 
     it("should reset neurons for a project", () => {
-      const neurons: SnsNeuron[] = [
+      const neurons: SnsGovernanceDid.Neuron[] = [
         createMockSnsNeuron({
           stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
@@ -51,7 +51,7 @@ describe("SNS Neurons stores", () => {
     });
 
     it("should add neurons for another project", () => {
-      const neurons1: SnsNeuron[] = [
+      const neurons1: SnsGovernanceDid.Neuron[] = [
         createMockSnsNeuron({
           stake: 1_000_000_000n,
           id: [1, 5, 3, 9, 1, 1, 1],
@@ -66,7 +66,7 @@ describe("SNS Neurons stores", () => {
         neurons: neurons1,
         certified: true,
       });
-      const neurons2: SnsNeuron[] = [
+      const neurons2: SnsGovernanceDid.Neuron[] = [
         createMockSnsNeuron({
           stake: 1_000_000_000n,
           id: [1, 5, 3, 4, 1, 1, 1],
@@ -100,13 +100,13 @@ describe("SNS Neurons stores", () => {
         stake: 2_000_000_000n,
         id: [1, 5, 2, 9, 9, 3, 2],
       });
-      const neurons1: SnsNeuron[] = [neuron1, neuron2];
+      const neurons1: SnsGovernanceDid.Neuron[] = [neuron1, neuron2];
       snsNeuronsStore.setNeurons({
         rootCanisterId: mockPrincipal,
         neurons: neurons1,
         certified: true,
       });
-      const neurons2: SnsNeuron[] = [neuron1, neuron3];
+      const neurons2: SnsGovernanceDid.Neuron[] = [neuron1, neuron3];
       snsNeuronsStore.addNeurons({
         rootCanisterId: mockPrincipal,
         neurons: neurons2,

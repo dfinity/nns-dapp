@@ -19,7 +19,7 @@ import { DisburseSnsNeuronModalPo } from "$tests/page-objects/DisburseSnsNeuronM
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import type { RenderResult } from "@testing-library/svelte";
 import type { Component } from "svelte";
@@ -35,7 +35,7 @@ describe("DisburseSnsNeuronModal", () => {
   const principalString = rootCanisterId.toText();
 
   const renderDisburseModal = async (
-    neuron: SnsNeuron,
+    neuron: SnsGovernanceDid.Neuron,
     reloadNeuron: () => Promise<void> = () => Promise.resolve()
   ): Promise<RenderResult<Component>> => {
     return renderModal({
@@ -52,7 +52,7 @@ describe("DisburseSnsNeuronModal", () => {
     neuron,
     reloadNeuron,
   }: {
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
     reloadNeuron?: () => Promise<void>;
   }): Promise<DisburseSnsNeuronModalPo> => {
     const { container } = await renderDisburseModal(neuron, reloadNeuron);

@@ -19,7 +19,10 @@ import {
   filterCommittedProjects,
   filterProjectsStatus,
 } from "$lib/utils/projects.utils";
-import { SnsSwapLifecycle, type SnsRewardEvent } from "@icp-sdk/canisters/sns";
+import {
+  SnsSwapLifecycle,
+  type SnsGovernanceDid,
+} from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
@@ -30,7 +33,7 @@ export interface SnsFullProject {
   summary: SnsSummaryWrapper;
   swapCommitment: SnsSwapCommitment | undefined;
   metrics: MetricsDto | undefined;
-  latestRewardEvent: SnsRewardEvent | undefined;
+  latestRewardEvent: SnsGovernanceDid.RewardEvent | undefined;
 }
 
 /**

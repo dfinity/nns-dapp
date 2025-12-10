@@ -21,16 +21,8 @@ import {
 } from "@icp-sdk/canisters/ledger/icrc";
 import {
   SnsSwapLifecycle,
-  type SnsGetDerivedStateResponse,
-  type SnsGetLifecycleResponse,
-  type SnsGetMetadataResponse,
-  type SnsParams,
-  type SnsRewardEvent,
-  type SnsSwap,
-  type SnsSwapBuyerState,
-  type SnsSwapDerivedState,
-  type SnsSwapInit,
-  type SnsTransferableAmount,
+  type SnsGovernanceDid,
+  type SnsSwapDid,
 } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
@@ -54,14 +46,14 @@ export const principal = (index: number): Principal => {
 
 export const createTransferableAmount = (
   amount: bigint
-): SnsTransferableAmount => ({
+): SnsSwapDid.TransferableAmount => ({
   transfer_start_timestamp_seconds: 0n,
   amount_e8s: amount,
   transfer_success_timestamp_seconds: 0n,
   transfer_fee_paid_e8s: [],
   amount_transferred_e8s: [],
 });
-export const createBuyersState = (amount: bigint): SnsSwapBuyerState => ({
+export const createBuyersState = (amount: bigint): SnsSwapDid.BuyerState => ({
   icp: [createTransferableAmount(amount)],
   has_created_neuron_recipes: [],
 });
@@ -91,7 +83,7 @@ export const mockSnsSwapCommitment = (
 const SECONDS_IN_DAY = 60 * 60 * 24;
 const SECONDS_TODAY = +new Date(new Date().toJSON().split("T")[0]) / 1000;
 
-export const mockSnsParams: SnsParams = {
+export const mockSnsParams: SnsSwapDid.Params = {
   min_participant_icp_e8s: 150_000_000n,
   max_icp_e8s: BigInt(3000 * 100000000),
   neuron_basket_construction_parameters: [],
@@ -105,7 +97,7 @@ export const mockSnsParams: SnsParams = {
   max_direct_participation_icp_e8s: [],
 };
 
-export const mockInit: SnsSwapInit = {
+export const mockInit: SnsSwapDid.Init = {
   nns_proposal_id: [123n],
   sns_root_canister_id:
     "vxi5c-ydsws-tmett-fndw6-7qwga-thtxc-epwtj-st3wy-jc464-muowb-eqe",
@@ -157,7 +149,7 @@ export const mockSwap: SnsSummarySwap = {
   neurons_fund_participation_icp_e8s: [],
 };
 
-export const mockQuerySwap: SnsSwap = {
+export const mockQuerySwap: SnsSwapDid.Swap = {
   auto_finalize_swap_response: [],
   neuron_recipes: [],
   cf_participants: [],
@@ -178,7 +170,7 @@ export const mockQuerySwap: SnsSwap = {
   timers: [],
 };
 
-export const mockDerived: SnsSwapDerivedState = {
+export const mockDerived: SnsSwapDid.DerivedState = {
   buyer_total_icp_e8s: BigInt(100 * 100000000),
   sns_tokens_per_icp: 1,
   cf_participant_count: [100n],
@@ -188,7 +180,7 @@ export const mockDerived: SnsSwapDerivedState = {
   neurons_fund_participation_icp_e8s: [],
 };
 
-export const mockDerivedResponse: SnsGetDerivedStateResponse = {
+export const mockDerivedResponse: SnsSwapDid.GetDerivedStateResponse = {
   buyer_total_icp_e8s: [BigInt(100 * 100000000)],
   sns_tokens_per_icp: [1],
   cf_participant_count: [100n],
@@ -213,7 +205,7 @@ export const mockToken: IcrcTokenMetadata = {
   decimals: 8,
 };
 
-export const mockLifecycleResponse: SnsGetLifecycleResponse = {
+export const mockLifecycleResponse: SnsSwapDid.GetLifecycleResponse = {
   lifecycle: [SnsSwapLifecycle.Open],
   decentralization_sale_open_timestamp_seconds: [],
   decentralization_swap_termination_timestamp_seconds: [],
@@ -368,7 +360,7 @@ export const mockSnsRewardEventDto: RewardEventDto = {
   settled_proposals: [{ id: 123 }],
 };
 
-export const mockSnsRewardEvent: SnsRewardEvent = {
+export const mockSnsRewardEvent: SnsGovernanceDid.RewardEvent = {
   rounds_since_last_distribution: [1n],
   actual_timestamp_seconds: 1752160922n,
   end_timestamp_seconds: [1752160920n],
@@ -451,7 +443,7 @@ export const createSummary = ({
   logo,
   ledgerCanisterId,
 }: SnsSummaryParams): SnsSummaryWrapper => {
-  const init: SnsSwapInit = {
+  const init: SnsSwapDid.Init = {
     ...mockInit,
     swap_due_timestamp_seconds: [swapDueTimestampSeconds],
     confirmation_text: toNullable(confirmationText),
@@ -477,7 +469,7 @@ export const createSummary = ({
       : [],
     nns_proposal_id: toNullable(nnsProposalId),
   };
-  const params: SnsParams = {
+  const params: SnsSwapDid.Params = {
     ...mockSnsParams,
     min_participants: minParticipants,
     sns_token_e8s: tokensDistributed,
@@ -487,7 +479,7 @@ export const createSummary = ({
     min_icp_e8s: minTotalCommitment ?? mockSnsParams.min_icp_e8s,
     max_icp_e8s: maxTotalCommitment ?? mockSnsParams.max_icp_e8s,
   };
-  const derived: SnsSwapDerivedState = {
+  const derived: SnsSwapDid.DerivedState = {
     ...mockDerived,
     direct_participant_count: buyersCount === null ? [] : [buyersCount],
     buyer_total_icp_e8s:
@@ -529,7 +521,7 @@ export const createMockSnsFullProject = ({
   summaryParams: SnsSummaryParams;
   icpCommitment?: bigint;
   metrics?: MetricsDto;
-  latestRewardEvent?: SnsRewardEvent;
+  latestRewardEvent?: SnsGovernanceDid.RewardEvent;
 }): SnsFullProject => ({
   rootCanisterId,
   summary: createSummary(summaryParams),
@@ -543,7 +535,7 @@ export const createMockSnsFullProject = ({
   latestRewardEvent,
 });
 
-export const mockQueryMetadataResponse: SnsGetMetadataResponse = {
+export const mockQueryMetadataResponse: SnsGovernanceDid.GetMetadataResponse = {
   url: [`https://my.url/`],
   logo: ["a_logo"],
   name: [`My project`],

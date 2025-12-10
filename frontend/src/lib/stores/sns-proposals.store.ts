@@ -1,10 +1,10 @@
 import { fromNullable } from "@dfinity/utils";
-import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 
 export interface ProjectProposalData {
-  proposals: SnsProposalData[];
+  proposals: SnsGovernanceDid.ProposalData[];
   // certified is an optimistic value - i.e. it represents the last value that has been pushed in store
   certified: boolean | undefined;
   // Whether all proposals have been loaded
@@ -19,13 +19,13 @@ export interface SnsProposalsStoreData {
 export interface SnsProposalsStore extends Readable<SnsProposalsStoreData> {
   setProposals: (data: {
     rootCanisterId: Principal;
-    proposals: SnsProposalData[];
+    proposals: SnsGovernanceDid.ProposalData[];
     certified: boolean | undefined;
     completed: boolean;
   }) => void;
   addProposals: (data: {
     rootCanisterId: Principal;
-    proposals: SnsProposalData[];
+    proposals: SnsGovernanceDid.ProposalData[];
     certified: boolean | undefined;
     completed: boolean;
   }) => void;
@@ -51,7 +51,7 @@ const initSnsProposalsStore = () => {
       completed,
     }: {
       rootCanisterId: Principal;
-      proposals: SnsProposalData[];
+      proposals: SnsGovernanceDid.ProposalData[];
       certified: boolean | undefined;
       completed: boolean;
     }) {
@@ -73,7 +73,7 @@ const initSnsProposalsStore = () => {
       completed,
     }: {
       rootCanisterId: Principal;
-      proposals: SnsProposalData[];
+      proposals: SnsGovernanceDid.ProposalData[];
       certified: boolean | undefined;
       completed: boolean;
     }) {

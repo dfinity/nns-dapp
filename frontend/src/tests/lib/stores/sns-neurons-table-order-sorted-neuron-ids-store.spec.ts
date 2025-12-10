@@ -5,13 +5,13 @@ import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { page } from "$mocks/$app/stores";
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("snsNeuronsTableOrderSortedNeuronIdsStore", () => {
-  const testSnsNeurons: SnsNeuron[] = [
+  const testSnsNeurons: SnsGovernanceDid.Neuron[] = [
     createMockSnsNeuron({
       id: [1],
       stake: 400_000_000n,

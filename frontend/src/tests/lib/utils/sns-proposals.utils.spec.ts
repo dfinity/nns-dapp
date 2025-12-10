@@ -47,12 +47,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsVote,
-  type SnsNervousSystemFunction,
-  type SnsNeuron,
-  type SnsPercentage,
-  type SnsProposalData,
-  type SnsTally,
-  type SnsTopicInfo,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 
 describe("sns-proposals utils", () => {
@@ -71,7 +66,7 @@ describe("sns-proposals utils", () => {
 
   describe("isAccepted", () => {
     it("should return true if the proposal is accepted", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         latest_tally: [acceptedTally],
       };
@@ -79,7 +74,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should return false if the proposal is accepted", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         latest_tally: [rejectedTally],
       };
@@ -89,7 +84,7 @@ describe("sns-proposals utils", () => {
 
   describe("snsDecisionStatus", () => {
     it("should return OPEN status", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         decided_timestamp_seconds: 0n,
       };
@@ -99,7 +94,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should return EXECUTED status", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         decided_timestamp_seconds: 10n,
         executed_timestamp_seconds: 10n,
@@ -111,7 +106,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should return FAILED status", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         decided_timestamp_seconds: 10n,
         executed_timestamp_seconds: 0n,
@@ -124,7 +119,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should return ADOPTED status", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         decided_timestamp_seconds: 10n,
         executed_timestamp_seconds: 0n,
@@ -137,7 +132,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should return REJECTED status", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         decided_timestamp_seconds: 10n,
         executed_timestamp_seconds: 0n,
@@ -156,7 +151,7 @@ describe("sns-proposals utils", () => {
       vi.useFakeTimers().setSystemTime(now);
     });
     it("should return SETTLED", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         reward_event_round: 2n,
       };
@@ -166,7 +161,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should return SETTLED based on reward event end timestamp", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         reward_event_round: 0n,
         reward_event_end_timestamp_seconds: [0n],
@@ -178,7 +173,7 @@ describe("sns-proposals utils", () => {
 
     it("should return ACCEPT_VOTES", () => {
       const now = BigInt(nowInSeconds());
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         reward_event_round: 0n,
         wait_for_quiet_state: [
@@ -194,7 +189,7 @@ describe("sns-proposals utils", () => {
 
     it("should return ACCEPT_VOTES w/o current_deadline_timestamp_seconds ", () => {
       const now = BigInt(nowInSeconds());
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         reward_event_round: 0n,
         wait_for_quiet_state: [],
@@ -208,7 +203,7 @@ describe("sns-proposals utils", () => {
 
     it("should return READY_TO_SETTLE", () => {
       const now = BigInt(nowInSeconds());
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         reward_event_round: 0n,
         wait_for_quiet_state: [
@@ -225,7 +220,7 @@ describe("sns-proposals utils", () => {
 
     it("should return SETTLED if no case matches", () => {
       const now = BigInt(nowInSeconds());
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         reward_event_round: 0n,
         wait_for_quiet_state: [
@@ -248,7 +243,7 @@ describe("sns-proposals utils", () => {
     });
     it("should add statuses with text and description", () => {
       const now = BigInt(nowInSeconds());
-      const proposalData: SnsProposalData = {
+      const proposalData: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         decided_timestamp_seconds: 0n,
         reward_event_round: 0n,
@@ -277,7 +272,7 @@ describe("sns-proposals utils", () => {
 
     it("should extract optional parameters from array", () => {
       const now = BigInt(nowInSeconds());
-      const proposalData: SnsProposalData = {
+      const proposalData: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         decided_timestamp_seconds: 0n,
         reward_event_round: 0n,
@@ -310,7 +305,7 @@ describe("sns-proposals utils", () => {
         ...mockSnsProposal,
         proposal: [proposal],
         wait_for_quiet_state: [{ current_deadline_timestamp_seconds }],
-      } as SnsProposalData;
+      } as SnsGovernanceDid.ProposalData;
 
       const mappedProposal = mapProposalInfo({
         proposalData,
@@ -329,7 +324,7 @@ describe("sns-proposals utils", () => {
       const proposalData = {
         ...mockSnsProposal,
         action: nervousSystemFunctionMock.id,
-      } as SnsProposalData;
+      } as SnsGovernanceDid.ProposalData;
 
       const mappedProposal = mapProposalInfo({
         proposalData,
@@ -347,7 +342,7 @@ describe("sns-proposals utils", () => {
         ...mockSnsProposal,
         action: nervousSystemFunctionMock.id,
         topic: [{ Governance: null }],
-      } as SnsProposalData;
+      } as SnsGovernanceDid.ProposalData;
 
       const mappedProposal = mapProposalInfo({
         proposalData,
@@ -362,13 +357,13 @@ describe("sns-proposals utils", () => {
         ...mockSnsProposal,
         action: nervousSystemFunctionMock.id,
         topic: [{ Governance: null }],
-      } as SnsProposalData;
+      } as SnsGovernanceDid.ProposalData;
 
-      const topicInfo1: SnsTopicInfo = {
+      const topicInfo1: SnsGovernanceDid.TopicInfo = {
         ...topicInfoMock,
         topic: [{ DaoCommunitySettings: null }],
       };
-      const topicInfo2: SnsTopicInfo = {
+      const topicInfo2: SnsGovernanceDid.TopicInfo = {
         ...topicInfoMock,
         topic: [{ Governance: null }],
       };
@@ -381,7 +376,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should not break when topics are not available", () => {
-      const testTopicInfo: SnsTopicInfo = {
+      const testTopicInfo: SnsGovernanceDid.TopicInfo = {
         ...topicInfoMock,
         topic: [{ Governance: null }],
       };
@@ -422,15 +417,15 @@ describe("sns-proposals utils", () => {
 
   describe("lastProposalId", () => {
     it("should return the last proposal id", async () => {
-      const proposal1: SnsProposalData = {
+      const proposal1: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         id: [{ id: 1n }],
       };
-      const proposal2: SnsProposalData = {
+      const proposal2: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         id: [{ id: 2n }],
       };
-      const proposal3: SnsProposalData = {
+      const proposal3: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         id: [{ id: 3n }],
       };
@@ -446,15 +441,15 @@ describe("sns-proposals utils", () => {
 
   describe("sortSnsProposalsById", () => {
     it("sorts proposals by id in descending", () => {
-      const proposal1: SnsProposalData = {
+      const proposal1: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         id: [{ id: 1n }],
       };
-      const proposal2: SnsProposalData = {
+      const proposal2: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         id: [{ id: 2n }],
       };
-      const proposal3: SnsProposalData = {
+      const proposal3: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         id: [{ id: 3n }],
       };
@@ -478,7 +473,7 @@ describe("sns-proposals utils", () => {
   describe("snsProposalId", () => {
     it("should return proposal id", () => {
       const testId = 123_987n;
-      const testProposal: SnsProposalData = {
+      const testProposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         id: [
           {
@@ -493,7 +488,7 @@ describe("sns-proposals utils", () => {
   describe("snsProposalIdString", () => {
     it("should stringify proposal id", () => {
       const testId = 123_987n;
-      const testProposal: SnsProposalData = {
+      const testProposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         id: [
           {
@@ -523,7 +518,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should return false when proposal is ready to settle", () => {
-      const testProposal: SnsProposalData = createSnsProposal({
+      const testProposal: SnsGovernanceDid.ProposalData = createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
         rewardStatus:
           SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_READY_TO_SETTLE,
@@ -533,7 +528,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should return false when proposal is settled", () => {
-      const testProposal: SnsProposalData = createSnsProposal({
+      const testProposal: SnsGovernanceDid.ProposalData = createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
         rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
         proposalId: 123n,
@@ -543,13 +538,13 @@ describe("sns-proposals utils", () => {
   });
 
   describe("ballotVotingPower", () => {
-    const testNeuron: SnsNeuron = {
+    const testNeuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       id: [{ id: arrayOfNumberToUint8Array([1, 2, 3]) }],
     };
 
     it("should return the voting power of the ballot for a specific neuron", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         ballots: [
           [
@@ -571,7 +566,7 @@ describe("sns-proposals utils", () => {
     });
 
     it("should return 0 voting power if neuron doesn't have a ballot", () => {
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         ballots: [],
       };
@@ -586,7 +581,7 @@ describe("sns-proposals utils", () => {
 
   describe("snsNeuronToVotingNeuron", () => {
     it("should create VotingNeuron out of SnsNeuron with voting power from ballot", () => {
-      const testNeuron: SnsNeuron = {
+      const testNeuron: SnsGovernanceDid.Neuron = {
         ...mockSnsNeuron,
         id: [{ id: arrayOfNumberToUint8Array([1, 2, 3]) }],
         staked_maturity_e8s_equivalent: [],
@@ -597,7 +592,7 @@ describe("sns-proposals utils", () => {
         voting_power_percentage_multiplier: 100n,
         cached_neuron_stake_e8s: 100n,
       };
-      const proposal: SnsProposalData = {
+      const proposal: SnsGovernanceDid.ProposalData = {
         ...mockSnsProposal,
         ballots: [
           [
@@ -704,7 +699,7 @@ describe("sns-proposals utils", () => {
       };
 
       it("should use nsFunctions to create filter entries", () => {
-        const nsFunctions: SnsNervousSystemFunction[] = [
+        const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] = [
           nativeNervousSystemFunction1,
           nativeNervousSystemFunction2,
         ];
@@ -722,7 +717,7 @@ describe("sns-proposals utils", () => {
       });
 
       it('should ignore "All Topic" ns function', () => {
-        const nsFunctions: SnsNervousSystemFunction[] = [
+        const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] = [
           allTopicsNervousSystemFunctionMock,
           nativeNervousSystemFunction1,
           nativeNervousSystemFunction2,
@@ -741,7 +736,7 @@ describe("sns-proposals utils", () => {
       });
 
       it("should combine generic nsFunctions to a single entry", () => {
-        const nsFunctions: SnsNervousSystemFunction[] = [
+        const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] = [
           nativeNervousSystemFunction1,
           genericNervousSystemFunctions1,
           genericNervousSystemFunctions2,
@@ -757,7 +752,7 @@ describe("sns-proposals utils", () => {
       });
 
       it('should not have "All Generic" entry if no generic nsFunctions available', () => {
-        const nsFunctions: SnsNervousSystemFunction[] = [
+        const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] = [
           nativeNervousSystemFunction1,
           nativeNervousSystemFunction2,
           nativeNervousSystemFunction3,
@@ -773,7 +768,7 @@ describe("sns-proposals utils", () => {
       });
 
       it("should preserve selection", () => {
-        const nsFunctions: SnsNervousSystemFunction[] = [
+        const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] = [
           nativeNervousSystemFunction1,
           nativeNervousSystemFunction2,
           nativeNervousSystemFunction3,
@@ -809,7 +804,7 @@ describe("sns-proposals utils", () => {
       });
 
       it("should select new entries", () => {
-        const nsFunctions: SnsNervousSystemFunction[] = [
+        const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] = [
           nativeNervousSystemFunction1,
           nativeNervousSystemFunction2,
           nativeNervousSystemFunction3,
@@ -968,32 +963,32 @@ describe("sns-proposals utils", () => {
     const genericNsFunctionId1 = 1001n;
     const genericNsFunctionId2 = 1010n;
     // Prepare sns functions
-    const allTopicsNativeNsFunction: SnsNervousSystemFunction = {
+    const allTopicsNativeNsFunction: SnsGovernanceDid.NervousSystemFunction = {
       ...nativeNervousSystemFunctionMock,
       id: allTypesNsFunctionId,
       name: "All Topics",
     };
-    const nativeNsFunction1: SnsNervousSystemFunction = {
+    const nativeNsFunction1: SnsGovernanceDid.NervousSystemFunction = {
       ...nativeNervousSystemFunctionMock,
       id: nativeNsFunctionId1,
       name: "name",
     };
-    const nativeNsFunction2: SnsNervousSystemFunction = {
+    const nativeNsFunction2: SnsGovernanceDid.NervousSystemFunction = {
       ...nativeNervousSystemFunctionMock,
       id: nativeNsFunctionId2,
       name: "name",
     };
-    const genericNsFunction1: SnsNervousSystemFunction = {
+    const genericNsFunction1: SnsGovernanceDid.NervousSystemFunction = {
       ...genericNervousSystemFunctionMock,
       id: genericNsFunctionId1,
       name: "name",
     };
-    const genericNsFunction2: SnsNervousSystemFunction = {
+    const genericNsFunction2: SnsGovernanceDid.NervousSystemFunction = {
       ...genericNervousSystemFunctionMock,
       id: genericNsFunctionId2,
       name: "name",
     };
-    const snsFunctions: SnsNervousSystemFunction[] = [
+    const snsFunctions: SnsGovernanceDid.NervousSystemFunction[] = [
       allTopicsNativeNsFunction,
       nativeNsFunction1,
       nativeNsFunction2,
@@ -1180,7 +1175,9 @@ describe("sns-proposals utils", () => {
   describe("fromPercentageBasisPoints", () => {
     it("should return basis points", () => {
       expect(
-        fromPercentageBasisPoints([{ basis_points: [300n] } as SnsPercentage])
+        fromPercentageBasisPoints([
+          { basis_points: [300n] } as SnsGovernanceDid.Percentage,
+        ])
       ).toBe(300n);
     });
 
@@ -1190,7 +1187,9 @@ describe("sns-proposals utils", () => {
   });
 
   describe("isAccepted", () => {
-    const from_percentage = (percentage: number): SnsPercentage => ({
+    const from_percentage = (
+      percentage: number
+    ): SnsGovernanceDid.Percentage => ({
       basis_points: [BigInt(percentage * 100)],
     });
 
@@ -1204,12 +1203,12 @@ describe("sns-proposals utils", () => {
             no: 0n,
             total: 10n,
             timestamp_seconds: 1n,
-          } as SnsTally,
+          } as SnsGovernanceDid.Tally,
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
         minimum_yes_proportion_of_total: [from_percentage(0)],
-      } as SnsProposalData;
+      } as SnsGovernanceDid.ProposalData;
 
       const p1 = {
         ...mockSnsProposal,
@@ -1219,12 +1218,12 @@ describe("sns-proposals utils", () => {
             no: 0n,
             total: 10n,
             timestamp_seconds: 1n,
-          } as SnsTally,
+          } as SnsGovernanceDid.Tally,
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
         minimum_yes_proportion_of_total: [from_percentage(0)],
-      } as SnsProposalData;
+      } as SnsGovernanceDid.ProposalData;
 
       const p2 = {
         ...mockSnsProposal,
@@ -1234,12 +1233,12 @@ describe("sns-proposals utils", () => {
             no: 0n,
             total: 10n,
             timestamp_seconds: 1n,
-          } as SnsTally,
+          } as SnsGovernanceDid.Tally,
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
         minimum_yes_proportion_of_total: [from_percentage(10)],
-      } as SnsProposalData;
+      } as SnsGovernanceDid.ProposalData;
 
       const p3 = {
         ...mockSnsProposal,
@@ -1249,12 +1248,12 @@ describe("sns-proposals utils", () => {
             no: 0n,
             total: 10n,
             timestamp_seconds: 1n,
-          } as SnsTally,
+          } as SnsGovernanceDid.Tally,
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
         minimum_yes_proportion_of_total: [from_percentage(20)],
-      } as SnsProposalData;
+      } as SnsGovernanceDid.ProposalData;
 
       const p4 = {
         ...mockSnsProposal,
@@ -1264,12 +1263,12 @@ describe("sns-proposals utils", () => {
             no: 0n,
             total: 10n,
             timestamp_seconds: 1n,
-          } as SnsTally,
+          } as SnsGovernanceDid.Tally,
         ],
         proposal_creation_timestamp_seconds: 1n,
         initial_voting_period_seconds: 10n,
         minimum_yes_proportion_of_total: [from_percentage(30)],
-      } as SnsProposalData;
+      } as SnsGovernanceDid.ProposalData;
 
       expect(isAccepted(p0)).toBe(false);
       expect(isAccepted(p1)).toBe(true);

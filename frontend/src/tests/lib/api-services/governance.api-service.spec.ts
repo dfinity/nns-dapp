@@ -12,7 +12,7 @@ import {
 } from "$tests/mocks/neurons.mock";
 import { mockRewardEvent } from "$tests/mocks/nns-reward-event.mock";
 import { mockProposalInfo } from "$tests/mocks/proposal.mock";
-import type { RewardEvent } from "@icp-sdk/canisters/nns";
+import type { NnsGovernanceDid } from "@icp-sdk/canisters/nns";
 import { NeuronVisibility, Topic, Vote } from "@icp-sdk/canisters/nns";
 import type { Mock } from "vitest";
 
@@ -441,8 +441,8 @@ describe("neurons api-service", () => {
   });
 
   describe("queryLastestRewardEvent", () => {
-    const rewardEvent1: RewardEvent = mockRewardEvent;
-    const rewardEvent2: RewardEvent = {
+    const rewardEvent1: NnsGovernanceDid.RewardEvent = mockRewardEvent;
+    const rewardEvent2: NnsGovernanceDid.RewardEvent = {
       ...rewardEvent1,
       rounds_since_last_distribution: [2_000n],
     };

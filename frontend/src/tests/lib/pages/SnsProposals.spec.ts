@@ -22,7 +22,7 @@ import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { fireEvent, waitFor } from "@testing-library/svelte";
@@ -206,7 +206,7 @@ describe("SnsProposals", () => {
   });
 
   describe("filter proposals", () => {
-    const proposals: SnsProposalData[] = [
+    const proposals: SnsGovernanceDid.ProposalData[] = [
       createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
         proposalId: 1n,

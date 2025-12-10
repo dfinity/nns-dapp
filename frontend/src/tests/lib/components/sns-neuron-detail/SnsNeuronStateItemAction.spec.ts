@@ -12,7 +12,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { NeuronState } from "@icp-sdk/canisters/nns";
 import {
   SnsNeuronPermissionType,
-  type SnsNeuron,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -24,7 +24,7 @@ describe("SnsNeuronStateItemAction", () => {
     symbol: "ASDF",
   };
 
-  const renderComponent = (neuron: SnsNeuron) => {
+  const renderComponent = (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = render(SnsNeuronStateItemAction, {
       props: {
         neuron,

@@ -42,9 +42,7 @@ import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsVote,
-  type SnsListNervousSystemFunctionsResponse,
-  type SnsNeuronId,
-  type SnsProposalId,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Agent } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
@@ -83,10 +81,11 @@ describe("sns-api", () => {
   const listProposalsSpy = vi.fn();
   const getProposalSpy = vi.fn();
   const disburseMaturitySpy = vi.fn();
-  const nervousSystemFunctionsMock: SnsListNervousSystemFunctionsResponse = {
-    reserved_ids: new BigUint64Array(),
-    functions: [nervousSystemFunctionMock],
-  };
+  const nervousSystemFunctionsMock: SnsGovernanceDid.ListNervousSystemFunctionsResponse =
+    {
+      reserved_ids: new BigUint64Array(),
+      functions: [nervousSystemFunctionMock],
+    };
   const getFunctionsSpy = vi.fn();
 
   beforeEach(() => {
@@ -343,8 +342,12 @@ describe("sns-api", () => {
   });
 
   it("should setFollowees for a ns-function", async () => {
-    const followee1: SnsNeuronId = { id: arrayOfNumberToUint8Array([1, 2, 3]) };
-    const followee2: SnsNeuronId = { id: arrayOfNumberToUint8Array([1, 2, 4]) };
+    const followee1: SnsGovernanceDid.NeuronId = {
+      id: arrayOfNumberToUint8Array([1, 2, 3]),
+    };
+    const followee2: SnsGovernanceDid.NeuronId = {
+      id: arrayOfNumberToUint8Array([1, 2, 4]),
+    };
     await setFollowees({
       identity: mockIdentity,
       rootCanisterId: rootCanisterIdMock,
@@ -357,7 +360,9 @@ describe("sns-api", () => {
   });
 
   it("should setFollowing for topics", async () => {
-    const neuronId: SnsNeuronId = { id: arrayOfNumberToUint8Array([1, 2, 3]) };
+    const neuronId: SnsGovernanceDid.NeuronId = {
+      id: arrayOfNumberToUint8Array([1, 2, 3]),
+    };
 
     expect(setFollowingSpy).toHaveBeenCalledTimes(0);
 
@@ -402,7 +407,7 @@ describe("sns-api", () => {
   });
 
   it("should get a proposal", async () => {
-    const proposalId: SnsProposalId = {
+    const proposalId: SnsGovernanceDid.ProposalId = {
       id: 2n,
     };
     const res = await queryProposal({

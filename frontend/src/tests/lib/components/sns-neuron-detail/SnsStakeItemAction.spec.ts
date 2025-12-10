@@ -7,12 +7,12 @@ import {
 import { mockToken, mockUniverse } from "$tests/mocks/sns-projects.mock";
 import { StakeItemActionPo } from "$tests/page-objects/StakeItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsStakeItemAction", () => {
   const renderComponent = (
-    neuron: SnsNeuron,
+    neuron: SnsGovernanceDid.Neuron,
     token: IcrcTokenMetadata = mockToken
   ) => {
     const { container } = render(SnsStakeItemAction, {

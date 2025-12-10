@@ -17,32 +17,27 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { NeuronState, type NeuronId } from "@icp-sdk/canisters/nns";
-import type {
-  SnsDisburseMaturityInProgress,
-  SnsNeuronPermission,
-} from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
-  type SnsNervousSystemParameters,
-  type SnsNeuron,
-  type SnsTopic,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import type { Subscriber } from "svelte/store";
 
 export const mockSnsNeuronTimestampSeconds = 3600 * 24 * 6;
 
-export const mockActiveDisbursement: SnsDisburseMaturityInProgress = {
-  timestamp_of_disbursement_seconds: 10_000n,
-  amount_e8s: 1_000_000n,
-  account_to_disburse_to: [
-    {
-      owner: [mockPrincipal],
-      subaccount: [],
-    },
-  ],
-  finalize_disbursement_timestamp_seconds: [],
-};
+export const mockActiveDisbursement: SnsGovernanceDid.DisburseMaturityInProgress =
+  {
+    timestamp_of_disbursement_seconds: 10_000n,
+    amount_e8s: 1_000_000n,
+    account_to_disburse_to: [
+      {
+        owner: [mockPrincipal],
+        subaccount: [],
+      },
+    ],
+    finalize_disbursement_timestamp_seconds: [],
+  };
 
 export const createMockSnsNeuron = ({
   stake = 1_000_000_000n,
@@ -66,7 +61,7 @@ export const createMockSnsNeuron = ({
   stake?: bigint;
   id?: number[];
   state?: NeuronState;
-  permissions?: SnsNeuronPermission[];
+  permissions?: SnsGovernanceDid.NeuronPermission[];
   // `undefined` means no vesting at all (default)
   // `true` means is still vesting
   // `false` means vesting period has passed
@@ -84,7 +79,7 @@ export const createMockSnsNeuron = ({
   topicFollowees?: {
     [key in SnsTopicKey]?: SnsTopicFollowee[];
   };
-}): SnsNeuron => {
+}): SnsGovernanceDid.Neuron => {
   if (isNullish(state) && nonNullish(dissolveDelaySeconds)) {
     state = NeuronState.Locked;
   } else if (
@@ -140,7 +135,11 @@ export const createMockSnsNeuron = ({
                 // The topic number-based IDs are not used in the nns-dapp
                 0,
                 {
-                  topic: [snsTopicKeyToTopic(topic as SnsTopicKey) as SnsTopic],
+                  topic: [
+                    snsTopicKeyToTopic(
+                      topic as SnsTopicKey
+                    ) as SnsGovernanceDid.Topic,
+                  ],
                   followees: followees.map(({ neuronId, alias }) => ({
                     neuron_id: [neuronId],
                     alias: alias === undefined ? [] : [alias],
@@ -161,7 +160,7 @@ export const mockSnsNeuron = createMockSnsNeuron({});
 
 export const mockSnsNeuronWithPermissions = (
   permissions: SnsNeuronPermissionType[]
-): SnsNeuron => ({
+): SnsGovernanceDid.Neuron => ({
   ...createMockSnsNeuron({
     stake: 1_000_000_000n,
     id: [1, 5, 3, 9, 9, 3, 2],
@@ -179,7 +178,7 @@ export const buildMockSnsNeuronsStoreSubscribe =
     neurons,
     rootCanisterId,
   }: {
-    neurons: SnsNeuron[];
+    neurons: SnsGovernanceDid.Neuron[];
     rootCanisterId: Principal;
   }) =>
   (
@@ -195,13 +194,13 @@ export const buildMockSnsNeuronsStoreSubscribe =
   };
 
 export const buildMockSortedSnsNeuronsStoreSubscribe =
-  (neurons: SnsNeuron[] = []) =>
-  (run: Subscriber<SnsNeuron[]>): (() => void) => {
+  (neurons: SnsGovernanceDid.Neuron[] = []) =>
+  (run: Subscriber<SnsGovernanceDid.Neuron[]>): (() => void) => {
     run(neurons);
     return () => undefined;
   };
 
-export const snsNervousSystemParametersMock: SnsNervousSystemParameters =
+export const snsNervousSystemParametersMock: SnsGovernanceDid.NervousSystemParameters =
   convertNervousSystemParameters(
     aggregatorSnsMockDto.nervous_system_parameters
   );

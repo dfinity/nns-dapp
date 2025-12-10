@@ -1,6 +1,6 @@
-import type { RewardEvent } from "@icp-sdk/canisters/nns";
+import type { NnsGovernanceDid } from "@icp-sdk/canisters/nns";
 
-export const mockRewardEvent: RewardEvent = {
+export const mockRewardEvent: NnsGovernanceDid.RewardEvent = {
   rounds_since_last_distribution: [1_000n],
   day_after_genesis: 365n,
   actual_timestamp_seconds: 12_234_455_555n,

@@ -9,10 +9,9 @@ import {
   mockSnsSubAccount,
 } from "$tests/mocks/sns-accounts.mock";
 import * as dfinityUtils from "@dfinity/utils";
-import type { IcrcIndexNgGetTransactions } from "@icp-sdk/canisters/ledger/icrc";
 import {
   IcrcIndexNgCanister,
-  type IcrcIndexNgTransaction,
+  type IcrcIndexNgDid,
 } from "@icp-sdk/canisters/ledger/icrc";
 import { mock } from "vitest-mock-extended";
 
@@ -30,7 +29,7 @@ describe("transactions.worker-services", () => {
 
   const transaction = {
     burn: [],
-  } as unknown as IcrcIndexNgTransaction;
+  } as unknown as IcrcIndexNgDid.Transaction;
 
   const request: Omit<
     PostMessageDataRequestTransactions,
@@ -168,7 +167,7 @@ describe("transactions.worker-services", () => {
 
     const getTransactionsSpy =
       indexCanisterMock.getTransactions.mockImplementation(
-        async (): Promise<IcrcIndexNgGetTransactions> => {
+        async (): Promise<IcrcIndexNgDid.GetTransactions> => {
           if (firstCall) {
             firstCall = false;
 

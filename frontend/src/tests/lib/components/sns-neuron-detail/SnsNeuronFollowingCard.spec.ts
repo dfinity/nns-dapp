@@ -13,8 +13,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { resetSnsProjects, setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsNeuronPermissionType,
-  type SnsNervousSystemFunction,
-  type SnsNeuron,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 
 describe("SnsNeuronFollowingCard", () => {
@@ -24,7 +23,7 @@ describe("SnsNeuronFollowingCard", () => {
   });
 
   describe("user has permissions to manage followees", () => {
-    const controlledNeuron: SnsNeuron = {
+    const controlledNeuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       permissions: [
         {
@@ -36,17 +35,17 @@ describe("SnsNeuronFollowingCard", () => {
       ],
       followees: [],
     };
-    const function0: SnsNervousSystemFunction = {
+    const function0: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 0n,
       name: "function0",
     };
-    const function1: SnsNervousSystemFunction = {
+    const function1: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 1n,
       name: "function1",
     };
-    const function2: SnsNervousSystemFunction = {
+    const function2: SnsGovernanceDid.NervousSystemFunction = {
       ...nervousSystemFunctionMock,
       id: 2n,
       name: "function2",
@@ -57,7 +56,7 @@ describe("SnsNeuronFollowingCard", () => {
     const followee2 = createMockSnsNeuron({
       id: [5, 6, 7, 8],
     });
-    const neuronWithFollowees: SnsNeuron = {
+    const neuronWithFollowees: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       followees: [
         [function0.id, { followees: [followee1.id[0]] }],
@@ -67,14 +66,14 @@ describe("SnsNeuronFollowingCard", () => {
     };
 
     const reload = vi.fn();
-    const renderCard = (neuron: SnsNeuron) =>
+    const renderCard = (neuron: SnsGovernanceDid.Neuron) =>
       renderSelectedSnsNeuronContext({
         reload,
         Component: SnsNeuronFollowingCard,
         neuron,
       });
 
-    const renderComponent = (neuron: SnsNeuron) => {
+    const renderComponent = (neuron: SnsGovernanceDid.Neuron) => {
       const { container } = renderCard(neuron);
       return SnsNeuronFollowingCardPo.under(
         new JestPageObjectElement(container)
@@ -195,7 +194,7 @@ describe("SnsNeuronFollowingCard", () => {
   });
 
   describe("user does not have permissions to manage followees", () => {
-    const uncontrolledNeuron: SnsNeuron = {
+    const uncontrolledNeuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       permissions: [
         {
@@ -206,14 +205,14 @@ describe("SnsNeuronFollowingCard", () => {
     };
 
     const reload = vi.fn();
-    const renderCard = (neuron: SnsNeuron) =>
+    const renderCard = (neuron: SnsGovernanceDid.Neuron) =>
       renderSelectedSnsNeuronContext({
         reload,
         Component: SnsNeuronFollowingCard,
         neuron,
       });
 
-    const renderComponent = (neuron: SnsNeuron) => {
+    const renderComponent = (neuron: SnsGovernanceDid.Neuron) => {
       const { container } = renderCard(neuron);
       return SnsNeuronFollowingCardPo.under(
         new JestPageObjectElement(container)

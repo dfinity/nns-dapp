@@ -3,14 +3,11 @@ import {
   mockLifecycleResponse,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import {
-  SnsSwapLifecycle,
-  type SnsGetLifecycleResponse,
-} from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle, type SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns lifecycle store", () => {
-  const anotherLifecycleResponse: SnsGetLifecycleResponse = {
+  const anotherLifecycleResponse: SnsSwapDid.GetLifecycleResponse = {
     ...mockLifecycleResponse,
     lifecycle: [SnsSwapLifecycle.Committed],
   };

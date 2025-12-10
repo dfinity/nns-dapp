@@ -21,11 +21,7 @@ import {
   SnsProposalRewardStatus,
   SnsVote,
   neuronSubaccount,
-  type SnsBallot,
-  type SnsListProposalsResponse,
-  type SnsNeuron,
-  type SnsNeuronId,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import type { MockInstance } from "@vitest/spy";
@@ -38,11 +34,11 @@ describe("actionable-sns-proposals.services", () => {
       controller: mockIdentity.getPrincipal(),
       index: 0,
     });
-    const neuronId: SnsNeuronId = { id: subaccount };
-    const neuron: SnsNeuron = {
+    const neuronId: SnsGovernanceDid.NeuronId = { id: subaccount };
+    const neuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       created_timestamp_seconds: 0n,
-      id: [neuronId] as [SnsNeuronId],
+      id: [neuronId] as [SnsGovernanceDid.NeuronId],
       permissions: [
         {
           principal: [mockIdentity.getPrincipal()],
@@ -65,7 +61,7 @@ describe("actionable-sns-proposals.services", () => {
             voting_power: 10000n,
           },
         ],
-      ] as [string, SnsBallot][],
+      ] as [string, SnsGovernanceDid.Ballot][],
     };
     const twelveHundredProposals = Array.from(Array(1200))
       .map((_, index) =>
@@ -75,15 +71,15 @@ describe("actionable-sns-proposals.services", () => {
         })
       )
       .reverse();
-    const votableProposal1: SnsProposalData = createSnsProposal({
+    const votableProposal1: SnsGovernanceDid.ProposalData = createSnsProposal({
       ...votableProposalProps,
       proposalId: 0n,
     });
-    const votableProposal2: SnsProposalData = createSnsProposal({
+    const votableProposal2: SnsGovernanceDid.ProposalData = createSnsProposal({
       ...votableProposalProps,
       proposalId: 1n,
     });
-    const votedProposal: SnsProposalData = createSnsProposal({
+    const votedProposal: SnsGovernanceDid.ProposalData = createSnsProposal({
       ...votableProposalProps,
       proposalId: 123456789n,
       ballots: [
@@ -106,11 +102,13 @@ describe("actionable-sns-proposals.services", () => {
           rootCanisterId,
         }))
       );
-    const queryProposalsResponse = (proposals: SnsProposalData[]) =>
+    const queryProposalsResponse = (
+      proposals: SnsGovernanceDid.ProposalData[]
+    ) =>
       ({
         proposals,
         include_ballots_by_caller: [true],
-      }) as SnsListProposalsResponse;
+      }) as SnsGovernanceDid.ListProposalsResponse;
     const expectedFilterParams = {
       includeRewardStatus: [
         SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES,
@@ -139,7 +137,7 @@ describe("actionable-sns-proposals.services", () => {
                 ? [votableProposal1, votedProposal]
                 : [votableProposal2, votedProposal],
             include_ballots_by_caller: [true],
-          }) as SnsListProposalsResponse
+          }) as SnsGovernanceDid.ListProposalsResponse
       );
     });
 

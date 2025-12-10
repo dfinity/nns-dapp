@@ -1,10 +1,10 @@
 import { snsAggregatorDerived } from "$lib/derived/sns-aggregator.derived";
 import { convertNervousFunction } from "$lib/utils/sns-aggregator-converters.utils";
-import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { type Readable } from "svelte/store";
 
 interface SnsNervousSystemFunctions {
-  nsFunctions: SnsNervousSystemFunction[];
+  nsFunctions: SnsGovernanceDid.NervousSystemFunction[];
 }
 export interface SnsNervousSystemFunctionsData {
   // Each SNS Project is an entry in this Store.

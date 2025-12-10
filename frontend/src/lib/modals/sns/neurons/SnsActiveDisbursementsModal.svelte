@@ -6,11 +6,11 @@
   import { formatMaturity } from "$lib/utils/neuron.utils";
   import { totalDisbursingMaturity } from "$lib/utils/sns-neuron.utils";
   import { Html, KeyValuePair, Modal } from "@dfinity/gix-components";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import type { Token } from "@dfinity/utils";
   import { createEventDispatcher } from "svelte";
 
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
 
   let token: Token | undefined;
   $: token = $selectedTokenStore;

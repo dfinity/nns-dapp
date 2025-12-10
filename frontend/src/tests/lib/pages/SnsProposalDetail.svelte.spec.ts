@@ -34,7 +34,7 @@ import { render } from "$tests/utils/svelte.test-utils";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { Vote } from "@icp-sdk/canisters/nns";
-import type { SnsNeuronPermission } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import {
   SnsGovernanceError,
   SnsNeuronPermissionType,
@@ -42,8 +42,6 @@ import {
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   SnsVote,
-  type SnsBallot,
-  type SnsProposalData,
 } from "@icp-sdk/canisters/sns";
 import { AnonymousIdentity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
@@ -862,7 +860,7 @@ describe("SnsProposalDetail", () => {
             permission_type: Int32Array.from([
               SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
             ]),
-          } as SnsNeuronPermission,
+          } as SnsGovernanceDid.NeuronPermission,
         ],
       };
       const neuron1 = fakeSnsGovernanceApi.addNeuronWith({
@@ -893,7 +891,7 @@ describe("SnsProposalDetail", () => {
               cast_timestamp_seconds: 0n,
             },
           ],
-        ] as [string, SnsBallot][];
+        ] as [string, SnsGovernanceDid.Ballot][];
 
       snsProposalsStore.setProposals({
         rootCanisterId,
@@ -938,7 +936,8 @@ describe("SnsProposalDetail", () => {
       const spyQueryProposalApi = vi
         .spyOn(snsGovernanceApi, "queryProposal")
         .mockImplementation(
-          () => resolveQueryProposalApiPromise as Promise<SnsProposalData>
+          () =>
+            resolveQueryProposalApiPromise as Promise<SnsGovernanceDid.ProposalData>
         );
       spyQueryProposalApi.mockClear();
 

@@ -46,7 +46,7 @@ import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { setTickers } from "$tests/utils/tickers.test-utils";
 import { ICPToken, TokenAmount } from "@dfinity/utils";
-import { SnsSwapLifecycle, type SnsSwapTicket } from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle, type SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
@@ -1060,7 +1060,7 @@ describe("project-utils", () => {
       myCommitment: undefined,
     };
 
-    const testTicket: SnsSwapTicket = {
+    const testTicket: SnsSwapDid.Ticket = {
       creation_time: BigInt(nowInSeconds()),
       ticket_id: 123n,
       account: [

@@ -17,7 +17,7 @@ import {
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { ICPToken, fromDefinedNullable } from "@dfinity/utils";
 import { NeuronState } from "@icp-sdk/canisters/nns";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { fireEvent } from "@testing-library/dom";
 import { waitFor, type RenderResult } from "@testing-library/svelte";
@@ -31,7 +31,7 @@ const testIdentity = createMockIdentity(10023);
 describe("IncreaseSnsDissolveDelayModal", () => {
   const nowInSeconds = 1689063315;
   const now = nowInSeconds * 1000;
-  const neuron: SnsNeuron = {
+  const neuron: SnsGovernanceDid.Neuron = {
     ...mockSnsNeuron,
     dissolve_state: [
       {
@@ -42,7 +42,7 @@ describe("IncreaseSnsDissolveDelayModal", () => {
 
   const reloadNeuron = vi.fn().mockResolvedValue(undefined);
   const renderIncreaseDelayModal = async (
-    neuron: SnsNeuron
+    neuron: SnsGovernanceDid.Neuron
   ): Promise<RenderResult<Component>> => {
     return renderModal({
       component: IncreaseSnsDissolveDelayModal,

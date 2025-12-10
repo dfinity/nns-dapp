@@ -7,22 +7,23 @@
   import type { RootCanisterIdText } from "$lib/types/sns";
   import type { Universe } from "$lib/types/universe";
   import { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
-  import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
   import type { Readable } from "svelte/store";
 
   export let universe: Universe;
-  export let proposals: SnsProposalData[];
+  export let proposals: SnsGovernanceDid.ProposalData[];
 
   let rootCanisterId: RootCanisterIdText;
   $: rootCanisterId = universe.canisterId;
 
-  let nsFunctionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
+  let nsFunctionsStore: Readable<
+    SnsGovernanceDid.NervousSystemFunction[] | undefined
+  >;
   $: nsFunctionsStore = createSnsNsFunctionsProjectStore(
     Principal.fromText(rootCanisterId)
   );
-  let nsFunctions: SnsNervousSystemFunction[] | undefined;
+  let nsFunctions: SnsGovernanceDid.NervousSystemFunction[] | undefined;
   $: nsFunctions = nonNullish(nsFunctionsStore) ? $nsFunctionsStore : undefined;
 </script>
 

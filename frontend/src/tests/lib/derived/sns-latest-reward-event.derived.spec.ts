@@ -2,7 +2,7 @@ import { snsLatestRewardEventStore } from "$lib/derived/sns-latest-reward-event.
 import type { RewardEventDto } from "$lib/types/sns-aggregator";
 import { principal } from "$tests/mocks/sns-projects.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
-import type { SnsRewardEvent } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("snsLatestRewardEventStore", () => {
@@ -21,7 +21,7 @@ describe("snsLatestRewardEventStore", () => {
   });
 
   it("should convert data", () => {
-    const expectedRewardEvent: SnsRewardEvent = {
+    const expectedRewardEvent: SnsGovernanceDid.RewardEvent = {
       rounds_since_last_distribution: [1n],
       actual_timestamp_seconds: 1752160922n,
       end_timestamp_seconds: [1752160920n],

@@ -7,7 +7,7 @@ import type {
 import { getUniqueTransactions } from "$lib/utils/transactions.utils";
 import { removeKeys } from "$lib/utils/utils";
 import { nonNullish } from "@dfinity/utils";
-import type { IcrcTransactionWithId } from "@icp-sdk/canisters/ledger/icrc";
+import type { IcrcIndexNgDid } from "@icp-sdk/canisters/ledger/icrc";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 
@@ -16,7 +16,7 @@ import { writable, type Readable } from "svelte/store";
 export type IcrcTransactions = Record<
   IcrcAccountIdentifierText,
   {
-    transactions: IcrcTransactionWithId[];
+    transactions: IcrcIndexNgDid.TransactionWithId[];
     oldestTxId?: bigint;
     completed: boolean;
   }
@@ -68,7 +68,7 @@ const initIcrcTransactionsStore = (): IcrcTransactionsStore => {
     }: {
       accountIdentifier: string;
       canisterId: Principal;
-      transactions: IcrcTransactionWithId[];
+      transactions: IcrcIndexNgDid.TransactionWithId[];
       oldestTxId?: bigint;
       completed: boolean;
     }) {

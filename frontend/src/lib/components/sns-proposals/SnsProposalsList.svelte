@@ -12,14 +12,14 @@
   import { pageStore } from "$lib/derived/page.derived";
   import type { SnsProposalActionableData } from "$lib/derived/sns/sns-filtered-actionable-proposals.derived";
   import { InfiniteScroll } from "@dfinity/gix-components";
-  import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromNullable, isNullish } from "@dfinity/utils";
   import { fade } from "svelte/transition";
 
   type Props = {
     proposals: SnsProposalActionableData[] | undefined;
     actionableSelected: boolean;
-    nsFunctions: SnsNervousSystemFunction[] | undefined;
+    nsFunctions: SnsGovernanceDid.NervousSystemFunction[] | undefined;
     disableInfiniteScroll?: boolean;
     loadingNextPage?: boolean;
     loadNextPage: () => Promise<void>;

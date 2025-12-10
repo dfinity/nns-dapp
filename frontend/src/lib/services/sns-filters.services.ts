@@ -10,7 +10,7 @@ import {
 import { isNullish } from "@dfinity/utils";
 import {
   SnsProposalDecisionStatus,
-  type SnsNervousSystemFunction,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
@@ -56,7 +56,7 @@ const loadTypesFilters = ({
   snsName,
 }: {
   rootCanisterId: Principal;
-  nsFunctions: SnsNervousSystemFunction[];
+  nsFunctions: SnsGovernanceDid.NervousSystemFunction[];
   snsName: string;
 }) => {
   const currentTypesFilterData =
@@ -94,7 +94,7 @@ export const loadSnsFilters = async ({
   snsName,
 }: {
   rootCanisterId: Principal;
-  nsFunctions: SnsNervousSystemFunction[];
+  nsFunctions: SnsGovernanceDid.NervousSystemFunction[];
   snsName: string;
 }) => {
   const filtersProjectStoreData = get(snsFiltersStore)[rootCanisterId.toText()];

@@ -1,5 +1,5 @@
 import type { RootCanisterIdText } from "$lib/types/sns";
-import type { SnsSwapTicket } from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import type { Readable } from "svelte/store";
 import { writable } from "svelte/store";
@@ -9,7 +9,7 @@ export interface SnsTicketsStoreEntry {
    * undefined: not initialized yet
    * null: no ticket available
    */
-  ticket: SnsSwapTicket | undefined | null;
+  ticket: SnsSwapDid.Ticket | undefined | null;
 }
 
 export type SnsTicketsStoreData = Record<
@@ -20,7 +20,7 @@ export type SnsTicketsStoreData = Record<
 export interface SnsTicketsStore extends Readable<SnsTicketsStoreData> {
   setTicket: (data: {
     rootCanisterId: Principal;
-    ticket: SnsSwapTicket | undefined | null;
+    ticket: SnsSwapDid.Ticket | undefined | null;
   }) => void;
   setNoTicket: (rootCanisterId: Principal) => void;
   reset: () => void;
@@ -41,7 +41,7 @@ const initSnsTicketsStore = (): SnsTicketsStore => {
       ticket,
     }: {
       rootCanisterId: Principal;
-      ticket: SnsSwapTicket | undefined | null;
+      ticket: SnsSwapDid.Ticket | undefined | null;
     }) {
       update((currentState: SnsTicketsStoreData) => ({
         ...currentState,

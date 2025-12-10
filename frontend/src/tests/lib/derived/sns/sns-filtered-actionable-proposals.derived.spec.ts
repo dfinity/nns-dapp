@@ -5,21 +5,21 @@ import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { SnsProposalDecisionStatus } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("snsFilteredActionableProposalsStore", () => {
   const rootCanisterId = mockPrincipal;
-  const snsProposal1: SnsProposalData = {
+  const snsProposal1: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 1n }],
   };
-  const snsProposal2: SnsProposalData = {
+  const snsProposal2: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 2n }],
   };
-  const snsProposal3: SnsProposalData = {
+  const snsProposal3: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 3n }],
   };

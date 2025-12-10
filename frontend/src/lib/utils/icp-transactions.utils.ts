@@ -21,13 +21,9 @@ import {
   nonNullish,
   uint8ArrayToHexString,
 } from "@dfinity/utils";
-import type {
-  Operation,
-  Transaction,
-  TransactionWithId,
-} from "@icp-sdk/canisters/ledger/icp";
+import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 
-const isToSelf = (transaction: Transaction): boolean => {
+const isToSelf = (transaction: IcpIndexDid.Transaction): boolean => {
   if ("Transfer" in transaction.operation) {
     const data = transaction.operation.Transfer;
     return data.to === data.from;
@@ -40,8 +36,11 @@ const isToSelf = (transaction: Transaction): boolean => {
  * the transactions has toSelfTransaction set to true and the other to false.
  */
 export const mapToSelfTransactions = (
-  transactions: TransactionWithId[]
-): { transaction: TransactionWithId; toSelfTransaction: boolean }[] => {
+  transactions: IcpIndexDid.TransactionWithId[]
+): {
+  transaction: IcpIndexDid.TransactionWithId;
+  toSelfTransaction: boolean;
+}[] => {
   const resultTransactions = transactions.flatMap((transaction) => {
     const tx = {
       transaction: { ...transaction },
@@ -56,8 +55,9 @@ export const mapToSelfTransactions = (
 };
 
 export const sortTransactionsByIdDescendingOrder = (
-  transactions: TransactionWithId[]
-): TransactionWithId[] => transactions.sort((a, b) => (a.id > b.id ? -1 : 1));
+  transactions: IcpIndexDid.TransactionWithId[]
+): IcpIndexDid.TransactionWithId[] =>
+  transactions.sort((a, b) => (a.id > b.id ? -1 : 1));
 
 // TODO: Support icrc_memo which is not used at the moment in NNS dapp.
 const getTransactionType = ({
@@ -66,7 +66,7 @@ const getTransactionType = ({
   swapCanisterAccounts,
   isReceive,
 }: {
-  transaction: Transaction;
+  transaction: IcpIndexDid.Transaction;
   neuronAccounts: Set<string>;
   swapCanisterAccounts: Set<string>;
   isReceive: boolean;
@@ -115,7 +115,7 @@ type IcpTransactionInfo = {
 };
 
 const getTransactionInformation = (
-  operation: Operation
+  operation: IcpIndexDid.Operation
 ): IcpTransactionInfo | undefined => {
   let data = undefined;
   if ("Approve" in operation) {
@@ -147,7 +147,7 @@ export const mapIcpTransactionToReport = ({
   neuronAccounts,
   swapCanisterAccounts,
 }: {
-  transaction: TransactionWithId;
+  transaction: IcpIndexDid.TransactionWithId;
   accountIdentifier: string;
   neuronAccounts: Set<string>;
   swapCanisterAccounts: Set<string>;
@@ -209,7 +209,7 @@ export const mapIcpTransactionToUi = ({
   swapCanisterAccounts,
   i18n,
 }: {
-  transaction: TransactionWithId;
+  transaction: IcpIndexDid.TransactionWithId;
   accountIdentifier: string;
   toSelfTransaction: boolean;
   neuronAccounts: Set<string>;

@@ -15,30 +15,30 @@ import {
 } from "$tests/mocks/sns-proposals.mock";
 import {
   SnsProposalDecisionStatus,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("snsFilteredProposalsStore", () => {
   const rootCanisterId = mockPrincipal;
-  const getProposals = (): SnsProposalData[] =>
+  const getProposals = (): SnsGovernanceDid.ProposalData[] =>
     get(snsFilteredProposalsStore)[rootCanisterId.toText()]?.proposals;
 
-  const snsProposal1: SnsProposalData = {
+  const snsProposal1: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 2n }],
   };
-  const snsProposal2: SnsProposalData = {
+  const snsProposal2: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 2n }],
   };
-  const snsProposal3: SnsProposalData = {
+  const snsProposal3: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 3n }],
   };
 
   it("should return undefined if filter store is not loaded", () => {
-    const proposals: SnsProposalData[] = [
+    const proposals: SnsGovernanceDid.ProposalData[] = [
       snsProposal1,
       snsProposal2,
       snsProposal3,
@@ -56,7 +56,7 @@ describe("snsFilteredProposalsStore", () => {
   });
 
   it("should return all proposals if no decisions filter is checked", () => {
-    const proposals: SnsProposalData[] = [
+    const proposals: SnsGovernanceDid.ProposalData[] = [
       snsProposal1,
       snsProposal2,
       snsProposal3,
@@ -102,7 +102,7 @@ describe("snsFilteredProposalsStore", () => {
       proposalId: 4n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_FAILED,
     });
-    const proposals: SnsProposalData[] = [
+    const proposals: SnsGovernanceDid.ProposalData[] = [
       failedProposal1,
       openProposal,
       failedProposal2,

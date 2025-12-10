@@ -1,5 +1,5 @@
 import type { Account } from "$lib/types/account";
-import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
+import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 
 export type ReportingPeriod = "year-to-date" | "last-year" | "custom";
@@ -29,6 +29,6 @@ export type TransactionEntity =
 
 export type TransactionResults = {
   entity: TransactionEntity;
-  transactions: TransactionWithId[];
+  transactions: IcpIndexDid.TransactionWithId[];
   error?: string;
 }[];

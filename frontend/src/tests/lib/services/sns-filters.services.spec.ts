@@ -7,7 +7,7 @@ import { topicInfoDtoMock } from "$tests/mocks/sns-topics.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsProposalDecisionStatus,
-  type SnsNervousSystemFunction,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
@@ -90,7 +90,7 @@ describe("sns-filters services", () => {
             ...nativeNervousSystemFunctionMock,
             id: 1n,
             name: "Motion",
-          } as SnsNervousSystemFunction,
+          } as SnsGovernanceDid.NervousSystemFunction,
         ],
         snsName: "sns-name",
       });

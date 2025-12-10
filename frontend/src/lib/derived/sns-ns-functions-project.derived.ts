@@ -3,12 +3,12 @@ import {
   type SnsNervousSystemFunctionsStore,
 } from "$lib/derived/sns-functions.derived";
 import { isNullish, nonNullish } from "@dfinity/utils";
-import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { derived, type Readable } from "svelte/store";
 
 export type SnsNervousSystemFunctionsProjectStore = Readable<
-  SnsNervousSystemFunction[] | undefined
+  SnsGovernanceDid.NervousSystemFunction[] | undefined
 >;
 
 export const createSnsNsFunctionsProjectStore = (
@@ -16,7 +16,7 @@ export const createSnsNsFunctionsProjectStore = (
 ): SnsNervousSystemFunctionsProjectStore =>
   derived<
     SnsNervousSystemFunctionsStore,
-    SnsNervousSystemFunction[] | undefined
+    SnsGovernanceDid.NervousSystemFunction[] | undefined
   >(snsFunctionsStore, (snsFunctions) => {
     if (isNullish(rootCanisterId)) {
       return undefined;

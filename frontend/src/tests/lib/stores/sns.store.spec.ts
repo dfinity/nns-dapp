@@ -23,11 +23,7 @@ import {
 } from "$tests/mocks/sns-projects.mock";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { ProposalStatus } from "@icp-sdk/canisters/nns";
-import {
-  SnsSwapLifecycle,
-  type SnsGetDerivedStateResponse,
-  type SnsGetLifecycleResponse,
-} from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle, type SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns.store", () => {
@@ -144,7 +140,7 @@ describe("sns.store", () => {
         newSnsTokensPerIcp
       );
 
-      const newDerivedState: SnsGetDerivedStateResponse = {
+      const newDerivedState: SnsSwapDid.GetDerivedStateResponse = {
         ...mockDerivedResponse,
         sns_tokens_per_icp: [newSnsTokensPerIcp],
       };
@@ -168,7 +164,7 @@ describe("sns.store", () => {
 
       expect(get(snsSummariesStore)[0].swap.lifecycle).not.toBe(newLifecycle);
 
-      const newLifecycleResponse: SnsGetLifecycleResponse = {
+      const newLifecycleResponse: SnsSwapDid.GetLifecycleResponse = {
         ...mockLifecycleResponse,
         lifecycle: [newLifecycle],
       };

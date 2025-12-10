@@ -1,13 +1,13 @@
 import { hasBuyersCount, swapSaleBuyerCount } from "$lib/utils/sns-swap.utils";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockDerived } from "$tests/mocks/sns-projects.mock";
-import type { SnsSwapDerivedState } from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 
 describe("sns-swap utils", () => {
   describe("swapSaleBuyerCount", () => {
     describe("derived state does NOT have buyers count", () => {
-      const derivedState: SnsSwapDerivedState = {
+      const derivedState: SnsSwapDid.DerivedState = {
         ...mockDerived,
         direct_participant_count: [],
       };
@@ -77,7 +77,7 @@ describe("sns-swap utils", () => {
 
     describe("derived state has buyers count", () => {
       const participantsCount = 100;
-      const derivedState: SnsSwapDerivedState = {
+      const derivedState: SnsSwapDid.DerivedState = {
         ...mockDerived,
         direct_participant_count: [BigInt(participantsCount)],
       };
@@ -96,11 +96,11 @@ describe("sns-swap utils", () => {
   });
 
   describe("hasBuyersCount", () => {
-    const derivedWithBuyersCount: SnsSwapDerivedState = {
+    const derivedWithBuyersCount: SnsSwapDid.DerivedState = {
       ...mockDerived,
       direct_participant_count: [100n],
     };
-    const derivedWithoutBuyersCount: SnsSwapDerivedState = {
+    const derivedWithoutBuyersCount: SnsSwapDid.DerivedState = {
       ...mockDerived,
       direct_participant_count: [],
     };

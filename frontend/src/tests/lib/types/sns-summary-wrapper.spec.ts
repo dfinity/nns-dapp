@@ -10,12 +10,7 @@ import {
   mockToken,
   principal,
 } from "$tests/mocks/sns-projects.mock";
-import type {
-  SnsGetLifecycleResponse,
-  SnsParams,
-  SnsSwapDerivedState,
-  SnsSwapInit,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 
 describe("SnsSummaryWrapper", () => {
@@ -85,7 +80,7 @@ describe("SnsSummaryWrapper", () => {
   });
 
   it("should return derived", () => {
-    const derived: SnsSwapDerivedState = {
+    const derived: SnsSwapDid.DerivedState = {
       ...mockDerived,
       direct_participant_count: [34294n],
     };
@@ -94,7 +89,7 @@ describe("SnsSummaryWrapper", () => {
   });
 
   it("should return init", () => {
-    const init: SnsSwapInit = {
+    const init: SnsSwapDid.Init = {
       ...mockInit,
       nns_proposal_id: [91n],
     };
@@ -103,7 +98,7 @@ describe("SnsSummaryWrapper", () => {
   });
 
   it("should return swapParams", () => {
-    const swapParams: SnsParams = {
+    const swapParams: SnsSwapDid.Params = {
       ...mockSnsParams,
       max_icp_e8s: 13_785_000_000n,
     };
@@ -112,7 +107,7 @@ describe("SnsSummaryWrapper", () => {
   });
 
   it("should return lifecycle", () => {
-    const lifecycle: SnsGetLifecycleResponse = {
+    const lifecycle: SnsSwapDid.GetLifecycleResponse = {
       ...mockLifecycleResponse,
       lifecycle: [SnsSwapLifecycle.Aborted],
       decentralization_sale_open_timestamp_seconds: [168_100_000n],

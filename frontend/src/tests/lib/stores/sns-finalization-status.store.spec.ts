@@ -8,7 +8,7 @@ import {
   snsFinalizationStatusResponseMock,
 } from "$tests/mocks/sns-finalization-status.mock";
 import { principal } from "$tests/mocks/sns-projects.mock";
-import type { SnsGetAutoFinalizationStatusResponse } from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns finalization status stores", () => {
@@ -101,7 +101,7 @@ describe("sns finalization status stores", () => {
 
     it("returns false if not finalizing because not attempted", () => {
       const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
-      const finalizingResponse: SnsGetAutoFinalizationStatusResponse = {
+      const finalizingResponse: SnsSwapDid.GetAutoFinalizationStatusResponse = {
         is_auto_finalize_enabled: [true],
         auto_finalize_swap_response: [],
         has_auto_finalize_been_attempted: [false],
@@ -119,7 +119,7 @@ describe("sns finalization status stores", () => {
 
     it("returns false if not finalizing because it finished", () => {
       const store = getOrCreateSnsFinalizationStatusStore(rootCanisterId);
-      const finalizingResponse: SnsGetAutoFinalizationStatusResponse = {
+      const finalizingResponse: SnsSwapDid.GetAutoFinalizationStatusResponse = {
         is_auto_finalize_enabled: [true],
         auto_finalize_swap_response: [
           {

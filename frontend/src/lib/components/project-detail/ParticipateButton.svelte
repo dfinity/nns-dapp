@@ -18,7 +18,7 @@
   } from "$lib/utils/projects.utils";
   import { BottomSheet, Tooltip } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import { SnsSwapLifecycle, type SnsSwapTicket } from "@icp-sdk/canisters/sns";
+  import { SnsSwapLifecycle, type SnsSwapDid } from "@icp-sdk/canisters/sns";
   import { nonNullish } from "@dfinity/utils";
   import { getContext } from "svelte";
 
@@ -45,7 +45,7 @@
   });
 
   // TODO: Receive this as props
-  let ticket: SnsSwapTicket | undefined | null = undefined;
+  let ticket: SnsSwapDid.Ticket | undefined | null = undefined;
   $: ticket = $snsTicketsStore[rootCanisterId?.toText() ?? ""]?.ticket;
 
   let buttonStatus: ParticipationButtonStatus = "logged-out";

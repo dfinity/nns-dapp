@@ -4,11 +4,7 @@ import { HOST } from "$lib/constants/environment.constants";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { isMethodNotSupportedError } from "$lib/utils/error.utils";
 import { toNullable } from "@dfinity/utils";
-import type {
-  SnsGetAutoFinalizationStatusResponse,
-  SnsRefreshBuyerTokensResponse,
-  SnsSwapTicket,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { SnsSwapCanister } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
@@ -21,7 +17,7 @@ export const getOpenTicket = async ({
   identity: Identity;
   swapCanisterId: Principal;
   certified: boolean;
-}): Promise<SnsSwapTicket | undefined> => {
+}): Promise<SnsSwapDid.Ticket | undefined> => {
   logWithTimestamp(`[sale] getOpenTicket call...`);
   const agent = await createAgent({
     identity,
@@ -50,7 +46,7 @@ export const newSaleTicket = async ({
   rootCanisterId: Principal;
   amount_icp_e8s: bigint;
   subaccount?: Uint8Array;
-}): Promise<SnsSwapTicket> => {
+}): Promise<SnsSwapDid.Ticket> => {
   logWithTimestamp(`[sale]newSaleTicket call...`);
 
   const { newSaleTicket } = await wrapper({
@@ -72,7 +68,7 @@ export const notifyPaymentFailure = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-}): Promise<SnsSwapTicket | undefined> => {
+}): Promise<SnsSwapDid.Ticket | undefined> => {
   logWithTimestamp(`[sale] notifyPaymentFailure call...`);
 
   const { notifyPaymentFailure } = await wrapper({
@@ -98,7 +94,7 @@ export const notifyParticipation = async ({
   rootCanisterId: Principal;
   buyer: Principal;
   confirmationText: string | undefined;
-}): Promise<SnsRefreshBuyerTokensResponse> => {
+}): Promise<SnsSwapDid.RefreshBuyerTokensResponse> => {
   logWithTimestamp(`[sale] notifyParticipation call...`);
 
   const { notifyParticipation: notifyParticipationApi } = await wrapper({
@@ -125,7 +121,7 @@ export const queryFinalizationStatus = async ({
   identity: Identity;
   rootCanisterId: Principal;
   certified: boolean;
-}): Promise<SnsGetAutoFinalizationStatusResponse | undefined> => {
+}): Promise<SnsSwapDid.GetAutoFinalizationStatusResponse | undefined> => {
   logWithTimestamp(`[sale] get finalize status call...`);
 
   const { getFinalizationStatus } = await wrapper({

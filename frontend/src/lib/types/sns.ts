@@ -1,20 +1,7 @@
 import type { PngDataUrl } from "$lib/types/assets";
 import type { IcrcTokenMetadata } from "$lib/types/icrc";
 import type { UnknownTopic } from "$lib/types/sns-aggregator";
-import type {
-  CfParticipant,
-  SnsFinalizeSwapResponse,
-  SnsGetLifecycleResponse,
-  SnsNervousSystemFunction,
-  SnsNeuronId,
-  SnsNeuronRecipe,
-  SnsParams,
-  SnsSwapBuyerState,
-  SnsSwapDerivedState,
-  SnsSwapInit,
-  SnsSwapTicket,
-  SnsTopic,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid, SnsSwapDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export type RootCanisterId = Principal;
@@ -31,21 +18,21 @@ export interface SnsSummaryMetadata {
 }
 
 export interface SnsSummarySwap {
-  auto_finalize_swap_response: [] | [SnsFinalizeSwapResponse];
+  auto_finalize_swap_response: [] | [SnsSwapDid.FinalizeSwapResponse];
   next_ticket_id: [] | [bigint];
   already_tried_to_auto_finalize: [] | [boolean];
   purge_old_tickets_last_completion_timestamp_nanoseconds: [] | [bigint];
   purge_old_tickets_next_principal: [] | [Uint8Array | number[]];
-  neuron_recipes: Array<SnsNeuronRecipe>;
-  cf_participants: Array<CfParticipant>;
+  neuron_recipes: Array<SnsSwapDid.SnsNeuronRecipe>;
+  cf_participants: Array<SnsSwapDid.CfParticipant>;
   decentralization_sale_open_timestamp_seconds?: bigint;
   // We don't use it for now and keep it as the candid optional type
   finalize_swap_in_progress: [] | [boolean];
   // We don't use it for now and keep it as the candid optional type
-  init: [] | [SnsSwapInit];
+  init: [] | [SnsSwapDid.Init];
   lifecycle: number;
-  buyers: Array<[string, SnsSwapBuyerState]>;
-  params: SnsParams;
+  buyers: Array<[string, SnsSwapDid.BuyerState]>;
+  params: SnsSwapDid.Params;
   // We don't use it for now and keep it as the candid optional type
   open_sns_token_swap_proposal_id: [] | [bigint];
   direct_participation_icp_e8s: [] | [bigint];
@@ -80,42 +67,42 @@ export interface SnsSummary {
   /**
    * Derived information about the sale such as the current total of ICP all buyers have invested so far
    */
-  derived: SnsSwapDerivedState;
+  derived: SnsSwapDid.DerivedState;
 
   /**
    * Data from `get_init` call.
    */
-  init: SnsSwapInit;
+  init: SnsSwapDid.Init;
 
   /**
    * Data from `get_sale_parameters` call.
    */
-  swapParams: SnsParams;
+  swapParams: SnsSwapDid.Params;
 
   /**
    * Data from `get_lifecycle` call.
    */
-  lifecycle: SnsGetLifecycleResponse;
+  lifecycle: SnsSwapDid.GetLifecycleResponse;
 }
 
 export interface SnsSwapCommitment {
   rootCanisterId: RootCanisterId;
-  // sns swap canister doesn't return any `SnsSwapBuyerState` if user has no commitment
-  myCommitment: SnsSwapBuyerState | undefined;
+  // sns swap canister doesn't return any `SnsSwapDid.BuyerState` if user has no commitment
+  myCommitment: SnsSwapDid.BuyerState | undefined;
 }
 
 export interface SnsTicket {
   rootCanisterId: Principal;
-  ticket?: SnsSwapTicket;
+  ticket?: SnsSwapDid.Ticket;
 }
 
 // "DappCanisterManagement" | "DaoCommunitySettings" | ...
 export type SnsTopicKey = keyof {
-  [K in SnsTopic | UnknownTopic as keyof K]: true;
+  [K in SnsGovernanceDid.Topic | UnknownTopic as keyof K]: true;
 };
 
 export type SnsTopicFollowee = {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   alias?: string;
 };
 
@@ -125,6 +112,6 @@ export type SnsTopicFollowing = {
 };
 
 export type SnsLegacyFollowings = {
-  nsFunction: SnsNervousSystemFunction;
-  followees: Array<SnsNeuronId>;
+  nsFunction: SnsGovernanceDid.NervousSystemFunction;
+  followees: Array<SnsGovernanceDid.NeuronId>;
 };

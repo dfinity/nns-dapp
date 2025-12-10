@@ -4,13 +4,10 @@ import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
 import { FollowSnsNeuronsByTopicItemPo } from "$tests/page-objects/FollowSnsNeuronsByTopicItem.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { render } from "$tests/utils/svelte.test-utils";
-import type {
-  SnsNervousSystemFunction,
-  SnsNeuronId,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
 describe("FollowSnsNeuronsByTopicItem", () => {
-  const nativeNsFunction: SnsNervousSystemFunction = {
+  const nativeNsFunction: SnsGovernanceDid.NervousSystemFunction = {
     id: 1n,
     name: "Native Function",
     description: ["Description 1"],
@@ -30,8 +27,12 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     custom_functions: [[]],
     extension_operations: [],
   };
-  const neuronId1: SnsNeuronId = { id: Uint8Array.from([1, 2, 3]) };
-  const neuronId2: SnsNeuronId = { id: Uint8Array.from([4, 5, 6]) };
+  const neuronId1: SnsGovernanceDid.NeuronId = {
+    id: Uint8Array.from([1, 2, 3]),
+  };
+  const neuronId2: SnsGovernanceDid.NeuronId = {
+    id: Uint8Array.from([4, 5, 6]),
+  };
 
   const renderComponent = (props: {
     topicInfo: TopicInfoWithUnknown;
@@ -41,8 +42,8 @@ describe("FollowSnsNeuronsByTopicItem", () => {
     onNnsChange: () => void;
     removeFollowing: () => void;
     removeLegacyFollowing: (args: {
-      nsFunction: SnsNervousSystemFunction;
-      followee: SnsNeuronId;
+      nsFunction: SnsGovernanceDid.NervousSystemFunction;
+      followee: SnsGovernanceDid.NeuronId;
     }) => void;
   }) => {
     const { container } = render(FollowSnsNeuronsByTopicItem, {

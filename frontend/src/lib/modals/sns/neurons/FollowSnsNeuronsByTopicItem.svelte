@@ -14,10 +14,7 @@
     SnsTopicKey,
   } from "$lib/types/sns";
   import { getSnsTopicInfoKey } from "$lib/utils/sns-topics.utils";
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuronId,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import FollowSnsNeuronsByTopicFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicFollowee.svelte";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import FollowSnsNeuronsByTopicLegacyFollowee from "$lib/modals/sns/neurons/FollowSnsNeuronsByTopicLegacyFollowee.svelte";
@@ -32,11 +29,11 @@
     onNnsChange: (args: { topicKey: SnsTopicKey; checked: boolean }) => void;
     removeFollowing: (args: {
       topicKey: SnsTopicKey;
-      neuronId: SnsNeuronId;
+      neuronId: SnsGovernanceDid.NeuronId;
     }) => void;
     removeLegacyFollowing: (args: {
-      nsFunction: SnsNervousSystemFunction;
-      followee: SnsNeuronId;
+      nsFunction: SnsGovernanceDid.NervousSystemFunction;
+      followee: SnsGovernanceDid.NeuronId;
     }) => void;
   };
 

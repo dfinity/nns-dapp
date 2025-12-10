@@ -20,10 +20,7 @@ import {
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
 import { AccountIdentifier } from "@icp-sdk/canisters/ledger/icp";
-import type {
-  SnsGetDerivedStateResponse,
-  SnsGetLifecycleResponse,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -258,7 +255,7 @@ describe("sns-services", () => {
 
   describe("loadSnsDerivedState", () => {
     it("should call api to get total commitments and load them in stores", async () => {
-      const derivedState: SnsGetDerivedStateResponse = {
+      const derivedState: SnsSwapDid.GetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
         buyer_total_icp_e8s: [1_000_000_000n],
         cf_participant_count: [],
@@ -283,7 +280,7 @@ describe("sns-services", () => {
     });
 
     it("should call api with the strategy passed", async () => {
-      const derivedState: SnsGetDerivedStateResponse = {
+      const derivedState: SnsSwapDid.GetDerivedStateResponse = {
         sns_tokens_per_icp: [1],
         buyer_total_icp_e8s: [1_000_000_000n],
         cf_participant_count: [],
@@ -312,7 +309,7 @@ describe("sns-services", () => {
 
   describe("watchSnsTotalCommitment", () => {
     it("should call api to get total commitments and load them in store and keep polling", async () => {
-      const derivedState: SnsGetDerivedStateResponse = {
+      const derivedState: SnsSwapDid.GetDerivedStateResponse = {
         sns_tokens_per_icp: [2],
         buyer_total_icp_e8s: [2_000_000_000n],
         cf_participant_count: [],
@@ -485,7 +482,7 @@ describe("sns-services", () => {
   describe("loadSnsLifecycle", () => {
     it("should call api to get lifecycle and load them in store", async () => {
       const newLifeCycle = SnsSwapLifecycle.Committed;
-      const lifeCycleResponse: SnsGetLifecycleResponse = {
+      const lifeCycleResponse: SnsSwapDid.GetLifecycleResponse = {
         lifecycle: [newLifeCycle],
         decentralization_sale_open_timestamp_seconds: [1n],
         decentralization_swap_termination_timestamp_seconds: [],

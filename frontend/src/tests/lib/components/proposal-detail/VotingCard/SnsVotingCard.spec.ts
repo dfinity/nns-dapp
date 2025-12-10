@@ -13,18 +13,13 @@ import { mockSnsCanisterId } from "$tests/mocks/sns.api.mock";
 import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import { fromDefinedNullable } from "@dfinity/utils";
 import { NeuronState, Vote } from "@icp-sdk/canisters/nns";
-import type {
-  SnsNeuron,
-  SnsNeuronPermission,
-  SnsProposalData,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import {
   SnsNeuronPermissionType,
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
   SnsSwapLifecycle,
   SnsVote,
-  type SnsBallot,
 } from "@icp-sdk/canisters/sns";
 import { fireEvent } from "@testing-library/dom";
 import { render, waitFor } from "@testing-library/svelte";
@@ -32,7 +27,7 @@ import { tick } from "svelte";
 
 describe("SnsVotingCard", () => {
   const nowInSeconds = 1689843195;
-  const testBallots: [string, SnsBallot][] = [
+  const testBallots: [string, SnsGovernanceDid.Ballot][] = [
     [
       "01",
       {
@@ -60,7 +55,7 @@ describe("SnsVotingCard", () => {
   ];
   const neuronCreatedAt = BigInt(nowInSeconds - SECONDS_IN_DAY * 2);
   const proposalCreatedAt = BigInt(nowInSeconds - SECONDS_IN_DAY);
-  const testProposal: SnsProposalData = {
+  const testProposal: SnsGovernanceDid.ProposalData = {
     ...createSnsProposal({
       proposalId: 123n,
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
@@ -75,10 +70,10 @@ describe("SnsVotingCard", () => {
       permission_type: Int32Array.from([
         SnsNeuronPermissionType.NEURON_PERMISSION_TYPE_VOTE,
       ]),
-    } as SnsNeuronPermission,
+    } as SnsGovernanceDid.NeuronPermission,
   ];
 
-  const testNeurons: SnsNeuron[] = [
+  const testNeurons: SnsGovernanceDid.Neuron[] = [
     {
       ...createMockSnsNeuron({
         id: [1],
@@ -156,7 +151,7 @@ describe("SnsVotingCard", () => {
       neurons: testNeurons,
       certified: true,
     });
-    const proposal: SnsProposalData = {
+    const proposal: SnsGovernanceDid.ProposalData = {
       ...testProposal,
       ballots: [
         [
@@ -309,7 +304,7 @@ describe("SnsVotingCard", () => {
       certified: true,
     });
 
-    const proposal: SnsProposalData = {
+    const proposal: SnsGovernanceDid.ProposalData = {
       ...testProposal,
       ballots: [
         [

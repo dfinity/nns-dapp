@@ -12,10 +12,7 @@
   import { busy, Modal } from "@dfinity/gix-components";
   import type { E8s } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     fromDefinedNullable,
     isNullish,
@@ -26,9 +23,9 @@
   import { createEventDispatcher } from "svelte";
 
   export let rootCanisterId: Principal;
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
   export let token: Token;
-  export let parameters: SnsNervousSystemParameters;
+  export let parameters: SnsGovernanceDid.NervousSystemParameters;
   export let transactionFee: E8s;
   export let reloadNeuron: () => Promise<void>;
 

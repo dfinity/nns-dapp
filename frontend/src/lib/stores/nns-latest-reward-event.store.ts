@@ -1,9 +1,9 @@
 import { isNullish } from "@dfinity/utils";
-import type { RewardEvent } from "@icp-sdk/canisters/nns";
+import type { NnsGovernanceDid } from "@icp-sdk/canisters/nns";
 import { writable, type Readable } from "svelte/store";
 
 type RewardEventData = {
-  rewardEvent: RewardEvent;
+  rewardEvent: NnsGovernanceDid.RewardEvent;
   certified: boolean;
 };
 

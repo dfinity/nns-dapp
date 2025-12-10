@@ -6,7 +6,7 @@
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { secondsToDateTime } from "$lib/utils/date.utils";
   import type { SnsProposalDataMap } from "$lib/utils/sns-proposals.utils";
-  import type { SnsNeuronId } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromNullable, nonNullish } from "@dfinity/utils";
 
   export let proposalDataMap: SnsProposalDataMap;
@@ -22,7 +22,7 @@
   let decided_timestamp_seconds: bigint;
   let executed_timestamp_seconds: bigint;
   let failed_timestamp_seconds: bigint;
-  let proposer: SnsNeuronId | undefined;
+  let proposer: SnsGovernanceDid.NeuronId | undefined;
 
   $: ({
     type,

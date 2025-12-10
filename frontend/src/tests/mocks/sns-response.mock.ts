@@ -16,14 +16,10 @@ import {
 } from "$tests/mocks/sns.api.mock";
 import { nonNullish, toNullable } from "@dfinity/utils";
 import type { IcrcTokenMetadataResponse } from "@icp-sdk/canisters/ledger/icrc";
-import type {
-  SnsSwap,
-  SnsSwapDerivedState,
-  SnsSwapLifecycle,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid, SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
-const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwap] => [
+const swapToQuerySwap = (swap: SnsSummarySwap): [SnsSwapDid.Swap] => [
   {
     ...swap,
     decentralization_sale_open_timestamp_seconds: toNullable(
@@ -95,7 +91,7 @@ export const snsResponseFor = ({
           direct_participant_count:
             directParticipantCount ?? mockDerived.direct_participant_count,
         },
-      ] as [SnsSwapDerivedState],
+      ] as [SnsSwapDid.DerivedState],
       certified,
     },
   ],

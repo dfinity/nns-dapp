@@ -1,10 +1,6 @@
 import type { RootCanisterIdText } from "$lib/types/sns";
 import type { IcrcTokenMetadataResponse } from "@icp-sdk/canisters/ledger/icrc";
-import type {
-  SnsGetMetadataResponse,
-  SnsSwap,
-  SnsSwapDerivedState,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid, SnsSwapDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export type QueryRootCanisterId = RootCanisterIdText;
@@ -15,7 +11,7 @@ export type QuerySns = {
 };
 
 export type QuerySnsMetadata = QuerySns & {
-  metadata: SnsGetMetadataResponse;
+  metadata: SnsGovernanceDid.GetMetadataResponse;
   token: IcrcTokenMetadataResponse;
 };
 
@@ -24,6 +20,6 @@ export type QuerySnsSwapState = QuerySns & {
   governanceCanisterId: Principal;
   ledgerCanisterId: Principal;
   indexCanisterId: Principal;
-  swap: [] | [SnsSwap];
-  derived: [] | [SnsSwapDerivedState];
+  swap: [] | [SnsSwapDid.Swap];
+  derived: [] | [SnsSwapDid.DerivedState];
 };

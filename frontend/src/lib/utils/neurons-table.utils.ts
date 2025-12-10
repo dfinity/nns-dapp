@@ -46,7 +46,7 @@ import { getUsdValue } from "$lib/utils/token.utils";
 import { ICPToken, TokenAmountV2, isNullish, type Token } from "@dfinity/utils";
 import type { NeuronInfo } from "@icp-sdk/canisters/nns";
 import { NeuronState, Topic } from "@icp-sdk/canisters/nns";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import type { Principal } from "@icp-sdk/core/principal";
 
@@ -162,7 +162,7 @@ export const getSnsNeuronVoteDelegationState = ({
   neuron,
 }: {
   topicCount: number;
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
 }): NeuronsTableVoteDelegationState => {
   // If there are no topics, no delegation by topic is possible.
   if (topicCount === 0) return "none";
@@ -188,7 +188,7 @@ export const tableNeuronsFromSnsNeurons = ({
   topicInfos,
   stakingRewardsResult,
 }: {
-  snsNeurons: SnsNeuron[];
+  snsNeurons: SnsGovernanceDid.Neuron[];
   universe: UniverseCanisterIdText;
   token: Token;
   identity: Identity | undefined | null;

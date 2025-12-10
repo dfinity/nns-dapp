@@ -15,15 +15,11 @@
     getLegacyFolloweesByTopics,
     snsTopicToTopicKey,
   } from "$lib/utils/sns-topics.utils";
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuron,
-    SnsNeuronId,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { fromDefinedNullable, nonNullish } from "@dfinity/utils";
 
   type Props = {
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
     followings: SnsTopicFollowing[];
@@ -32,11 +28,11 @@
     openNextStep: () => void;
     removeFollowing: (args: {
       topicKey: SnsTopicKey;
-      neuronId: SnsNeuronId;
+      neuronId: SnsGovernanceDid.NeuronId;
     }) => void;
     removeLegacyFollowing: (args: {
-      nsFunction: SnsNervousSystemFunction;
-      followee: SnsNeuronId;
+      nsFunction: SnsGovernanceDid.NervousSystemFunction;
+      followee: SnsGovernanceDid.NeuronId;
     }) => void;
     openDeactivateCatchAllStep: () => void;
   };

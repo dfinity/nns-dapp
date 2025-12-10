@@ -14,10 +14,7 @@
   } from "$lib/utils/sns-neuron.utils";
   import type { NeuronState } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import type { Token } from "@dfinity/utils";
   import {
     TokenAmountV2,
@@ -26,14 +23,14 @@
   } from "@dfinity/utils";
 
   export let rootCanisterId: Principal;
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
   export let token: Token;
   export let delayInSeconds: number;
 
   let neuronDissolveDelaySeconds: bigint;
   $: neuronDissolveDelaySeconds = getSnsLockedTimeInSeconds(neuron) ?? 0n;
 
-  let snsParameters: SnsNervousSystemParameters | undefined;
+  let snsParameters: SnsGovernanceDid.NervousSystemParameters | undefined;
   $: snsParameters = $snsParametersStore[rootCanisterId.toText()]?.parameters;
 
   let neuronStake: TokenAmountV2;

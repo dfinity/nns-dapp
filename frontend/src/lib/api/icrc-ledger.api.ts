@@ -15,7 +15,7 @@ import {
 import {
   IcrcLedgerCanister,
   type IcrcAccount,
-  type IcrcBlockIndex,
+  type IcrcLedgerDid,
   type TransferParams,
 } from "@icp-sdk/canisters/ledger/icrc";
 import type { Agent, Identity } from "@icp-sdk/core/agent";
@@ -79,7 +79,7 @@ export const icrcTransfer = async ({
 }: {
   identity: Identity;
   canisterId: Principal;
-} & IcrcTransferParams): Promise<IcrcBlockIndex> => {
+} & IcrcTransferParams): Promise<IcrcLedgerDid.BlockIndex> => {
   logWithTimestamp("Getting ICRC transfer: call...");
 
   const {
@@ -111,8 +111,8 @@ export const executeIcrcTransfer = async ({
   transfer: transferApi,
   ...rest
 }: IcrcTransferParams & {
-  transfer: (params: TransferParams) => Promise<IcrcBlockIndex>;
-}): Promise<IcrcBlockIndex> =>
+  transfer: (params: TransferParams) => Promise<IcrcLedgerDid.BlockIndex>;
+}): Promise<IcrcLedgerDid.BlockIndex> =>
   transferApi({
     to: {
       owner,
@@ -145,7 +145,7 @@ export const approveTransfer = async ({
   expiresAt?: bigint;
   createdAt?: bigint;
   expectedAllowance?: bigint;
-}): Promise<IcrcBlockIndex> => {
+}): Promise<IcrcLedgerDid.BlockIndex> => {
   logWithTimestamp("Approving transfer: call...");
 
   const {

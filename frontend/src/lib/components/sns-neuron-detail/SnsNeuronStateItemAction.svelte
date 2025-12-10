@@ -15,15 +15,12 @@
   } from "$lib/utils/sns-neuron.utils";
   import { keyOf } from "$lib/utils/utils";
   import { NeuronState } from "@icp-sdk/canisters/nns";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { nonNullish, type Token } from "@dfinity/utils";
 
   type Props = {
-    neuron: SnsNeuron;
-    snsParameters: SnsNervousSystemParameters;
+    neuron: SnsGovernanceDid.Neuron;
+    snsParameters: SnsGovernanceDid.NervousSystemParameters;
     token: Token;
   };
   const { neuron, snsParameters, token }: Props = $props();

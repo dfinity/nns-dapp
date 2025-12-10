@@ -8,28 +8,23 @@
     getUniversalProposalStatus,
     mapProposalInfo,
   } from "$lib/utils/sns-proposals.utils";
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuronId,
-    SnsProposalData,
-    SnsProposalId,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { createSnsTopicsProjectStore } from "$lib/derived/sns-topics.derived";
   import { Principal } from "@icp-sdk/core/principal";
   import { get } from "svelte/store";
 
-  export let proposalData: SnsProposalData;
-  export let nsFunctions: SnsNervousSystemFunction[] | undefined;
+  export let proposalData: SnsGovernanceDid.ProposalData;
+  export let nsFunctions: SnsGovernanceDid.NervousSystemFunction[] | undefined;
   export let rootCanisterId: RootCanisterIdText;
   export let actionable = false;
   export let fromActionablePage = false;
   export let hidden = false;
 
-  let id: SnsProposalId | undefined;
+  let id: SnsGovernanceDid.ProposalId | undefined;
   let title: string | undefined;
   let type: string | undefined;
-  let proposer: SnsNeuronId | undefined;
+  let proposer: SnsGovernanceDid.NeuronId | undefined;
   let proposerString: string | undefined;
   $: proposerString =
     proposer !== undefined ? subaccountToHexString(proposer.id) : undefined;

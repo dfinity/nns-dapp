@@ -10,7 +10,7 @@ import { mockSnsCanisterIdText } from "$tests/mocks/sns.api.mock";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
-  type SnsProposalData,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
@@ -80,7 +80,7 @@ describe("SnsProposalCard", () => {
   });
 
   it("should render deadline", () => {
-    const proposalData: SnsProposalData = {
+    const proposalData: SnsGovernanceDid.ProposalData = {
       ...mockSnsProposal,
       wait_for_quiet_state: [
         {
@@ -104,7 +104,7 @@ describe("SnsProposalCard", () => {
   });
 
   it("should not render deadline if closed", () => {
-    const proposalData: SnsProposalData = createSnsProposal({
+    const proposalData: SnsGovernanceDid.ProposalData = createSnsProposal({
       status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_EXECUTED,
       rewardStatus: SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_SETTLED,
       proposalId: 123n,
@@ -121,7 +121,7 @@ describe("SnsProposalCard", () => {
   });
 
   it("should render a specific color for the status", () => {
-    const proposalData: SnsProposalData = {
+    const proposalData: SnsGovernanceDid.ProposalData = {
       ...mockSnsProposal,
       decided_timestamp_seconds: 2_222n,
       latest_tally: [

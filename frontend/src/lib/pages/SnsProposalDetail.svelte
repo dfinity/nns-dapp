@@ -39,11 +39,7 @@
   import { isUniverseNns } from "$lib/utils/universe.utils";
   import { SplitBlock } from "@dfinity/gix-components";
   import { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemFunction,
-    SnsProposalData,
-    SnsProposalId,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish } from "@dfinity/utils";
   import { tick } from "svelte";
   import { get, type Readable } from "svelte/store";
@@ -63,7 +59,7 @@
     nonNullish($snsNeuronsStore[universeIdText]?.neurons);
 
   // TODO: Use proposal to render the component.
-  let proposal: SnsProposalData | undefined;
+  let proposal: SnsGovernanceDid.ProposalData | undefined;
   let updating = false;
 
   const setProposal = async (value: typeof proposal) => {
@@ -107,7 +103,7 @@
     // Otherwise, TS doesn't believe that the value of `universeCanisterIdText` won't change.
     universeCanisterIdAtTimeOfRequest = universeIdText;
 
-    const proposalId: SnsProposalId = {
+    const proposalId: SnsGovernanceDid.ProposalId = {
       id: BigInt(proposalIdText as string),
     };
     return getSnsProposalById({
@@ -116,7 +112,7 @@
       setProposal: ({
         proposal: proposalData,
       }: {
-        proposal: SnsProposalData;
+        proposal: SnsGovernanceDid.ProposalData;
       }) => {
         // Fix race condition in case the user changes the proposal before the first one hasn't loaded yet.
         // TODO(sns-voting): test this
@@ -180,7 +176,9 @@
   });
 
   // preload sns functions for mapping
-  let functionsStore: Readable<SnsNervousSystemFunction[] | undefined>;
+  let functionsStore: Readable<
+    SnsGovernanceDid.NervousSystemFunction[] | undefined
+  >;
   $: if (universeCanisterId) {
     functionsStore = createSnsNsFunctionsProjectStore(universeCanisterId);
   }

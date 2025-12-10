@@ -29,11 +29,7 @@
   import { getSnsNeuronState } from "$lib/utils/sns-neuron.utils";
   import type { E8s, NeuronState } from "@icp-sdk/canisters/nns";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-    SnsNeuronId,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     fromDefinedNullable,
     isNullish,
@@ -56,13 +52,13 @@
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
   const { store, reload: reloadNeuron }: SelectedSnsNeuronContext = context;
 
-  let neuron: SnsNeuron | undefined | null;
+  let neuron: SnsGovernanceDid.Neuron | undefined | null;
   $: ({ neuron } = $store);
 
   let rootCanisterId: Principal | undefined;
   $: rootCanisterId = $store.selected?.rootCanisterId;
 
-  let neuronId: SnsNeuronId | undefined;
+  let neuronId: SnsGovernanceDid.NeuronId | undefined;
   $: neuronId =
     neuron?.id !== undefined ? fromDefinedNullable(neuron.id) : undefined;
 
@@ -72,7 +68,7 @@
   let token: Token;
   $: token = $snsTokenSymbolSelectedStore as Token;
 
-  let parameters: SnsNervousSystemParameters | undefined;
+  let parameters: SnsGovernanceDid.NervousSystemParameters | undefined;
   $: parameters = nonNullish(rootCanisterId)
     ? $snsParametersStore?.[rootCanisterId.toText()]?.parameters
     : undefined;

@@ -14,17 +14,19 @@ import {
 } from "$lib/utils/sns-neuron.utils";
 import { fromNullable } from "@dfinity/utils";
 import { NeuronState, type NeuronInfo } from "@icp-sdk/canisters/nns";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
-export type AgnosticNeuron = NeuronInfo | SnsNeuron;
+export type AgnosticNeuron = NeuronInfo | SnsGovernanceDid.Neuron;
 
-export type AgnosticNeuronArray = NeuronInfo[] | SnsNeuron[];
+export type AgnosticNeuronArray = NeuronInfo[] | SnsGovernanceDid.Neuron[];
 
 export const isNnsNeuron = (neuron: AgnosticNeuron): neuron is NeuronInfo => {
   return neuron && "neuronId" in neuron;
 };
 
-export const isSnsNeuron = (neuron: AgnosticNeuron): neuron is SnsNeuron => {
+export const isSnsNeuron = (
+  neuron: AgnosticNeuron
+): neuron is SnsGovernanceDid.Neuron => {
   return !isNnsNeuron(neuron);
 };
 
@@ -230,11 +232,11 @@ export const cloneNeurons = (neurons: AgnosticNeuronArray) => {
       fullNeuron: n.fullNeuron ? { ...n.fullNeuron } : undefined,
     })) as NeuronInfo[];
   } else {
-    return (neurons as SnsNeuron[]).map((n) => ({
+    return (neurons as SnsGovernanceDid.Neuron[]).map((n) => ({
       ...n,
       dissolve_state: n.dissolve_state ? [...n.dissolve_state] : [],
       staked_maturity_e8s_equivalent: [...n.staked_maturity_e8s_equivalent],
-    })) as SnsNeuron[];
+    })) as SnsGovernanceDid.Neuron[];
   }
 };
 

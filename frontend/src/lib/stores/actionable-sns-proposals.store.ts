@@ -1,11 +1,11 @@
 import { removeKeys } from "$lib/utils/utils";
 import type { CanisterIdString } from "@icp-sdk/canisters/nns";
-import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 
 export interface ActionableSnsProposalsData {
-  proposals: SnsProposalData[];
+  proposals: SnsGovernanceDid.ProposalData[];
   fetchLimitReached: boolean;
 }
 export interface ActionableSnsProposalsStoreData {
@@ -18,7 +18,7 @@ export interface ActionableSnsProposalsStore
   extends Readable<ActionableSnsProposalsStoreData> {
   set: (data: {
     rootCanisterId: Principal;
-    proposals: SnsProposalData[];
+    proposals: SnsGovernanceDid.ProposalData[];
     fetchLimitReached?: boolean;
   }) => void;
   resetForSns: (rootCanisterId: Principal) => void;
@@ -49,7 +49,7 @@ const initActionableSnsProposalsStore = (): ActionableSnsProposalsStore => {
       fetchLimitReached = false,
     }: {
       rootCanisterId: Principal;
-      proposals: SnsProposalData[];
+      proposals: SnsGovernanceDid.ProposalData[];
       fetchLimitReached?: boolean;
     }) {
       update((currentState: ActionableSnsProposalsStoreData) => ({

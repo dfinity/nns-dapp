@@ -10,14 +10,14 @@
   import { Tag } from "@dfinity/gix-components";
   import {
     SnsNeuronPermissionType,
-    type SnsNeuron,
+    type SnsGovernanceDid,
   } from "@icp-sdk/canisters/sns";
   import { getContext } from "svelte";
 
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
-  let neuron: SnsNeuron | undefined | null = $store.neuron;
+  let neuron: SnsGovernanceDid.Neuron | undefined | null = $store.neuron;
 
   const openAddPermissionsModal = async () => {
     openSnsNeuronModal({ type: "dev-add-permissions" });

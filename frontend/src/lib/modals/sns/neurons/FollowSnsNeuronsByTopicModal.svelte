@@ -40,11 +40,7 @@
     type WizardSteps,
   } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemFunction,
-    SnsNeuron,
-    SnsNeuronId,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     arrayOfNumberToUint8Array,
     fromDefinedNullable,
@@ -56,7 +52,7 @@
 
   type Props = {
     rootCanisterId: Principal;
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
     closeModal: () => void;
     reloadNeuron: () => Promise<void>;
   };
@@ -130,7 +126,7 @@
   let selectedTopics = $state<SnsTopicKey[]>([]);
   let followeeNeuronIdHex = $state<string>("");
 
-  const nsFunctions: SnsNervousSystemFunction[] = $derived(
+  const nsFunctions: SnsGovernanceDid.NervousSystemFunction[] = $derived(
     get(createSnsNsFunctionsProjectStore(rootCanisterId)) ?? []
   );
   const catchAllLegacyFollowings: SnsLegacyFollowings | undefined = $derived(
@@ -151,7 +147,7 @@
   );
 
   // Validate the followee neuron id by fetching it.
-  const validateNeuronId = async (neuronId: SnsNeuronId) => {
+  const validateNeuronId = async (neuronId: SnsGovernanceDid.NeuronId) => {
     try {
       return nonNullish(
         await querySnsNeuron({
@@ -167,7 +163,7 @@
   };
 
   const addFollowing = async (followeeHex: string) => {
-    const followeeNeuronId: SnsNeuronId = {
+    const followeeNeuronId: SnsGovernanceDid.NeuronId = {
       id: arrayOfNumberToUint8Array(hexStringToBytes(followeeHex)),
     };
 
@@ -230,7 +226,7 @@
     neuronId,
   }: {
     topicKey: SnsTopicKey;
-    neuronId: SnsNeuronId;
+    neuronId: SnsGovernanceDid.NeuronId;
   }) => {
     startBusy({
       initiator: "remove-followee-by-topic",
@@ -263,8 +259,8 @@
     nsFunction,
     followee,
   }: {
-    nsFunction: SnsNervousSystemFunction;
-    followee: SnsNeuronId;
+    nsFunction: SnsGovernanceDid.NervousSystemFunction;
+    followee: SnsGovernanceDid.NeuronId;
   }) => {
     startBusy({
       initiator: "remove-sns-legacy-followee",

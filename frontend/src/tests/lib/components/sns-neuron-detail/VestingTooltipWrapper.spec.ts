@@ -2,7 +2,7 @@ import VestingTooltipWrapper from "$lib/components/sns-neuron-detail/VestingTool
 import { createMockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { VestingTooltipWrapperPo } from "$tests/page-objects/VestingTooltipWrapper.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("VestingTooltipWrapper", () => {
@@ -15,7 +15,7 @@ describe("VestingTooltipWrapper", () => {
     vesting: true,
   });
 
-  const renderComponent = (neuron: SnsNeuron) => {
+  const renderComponent = (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = render(VestingTooltipWrapper, {
       props: {
         neuron,

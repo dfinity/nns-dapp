@@ -4,10 +4,10 @@
   import { openSnsNeuronModal } from "$lib/utils/modals.utils";
   import { getSnsNeuronStake, isVesting } from "$lib/utils/sns-neuron.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
   type Props = {
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
   };
   const { neuron }: Props = $props();
 

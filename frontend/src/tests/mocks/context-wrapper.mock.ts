@@ -12,7 +12,7 @@ import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import ContextWrapperTest from "$tests/lib/components/ContextWrapperTest.svelte";
 import { rootCanisterIdMock } from "$tests/mocks/sns.api.mock";
 import { render } from "$tests/utils/svelte.test-utils";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { RenderResult } from "@testing-library/svelte";
 import type { Component } from "svelte";
 import { writable } from "svelte/store";
@@ -67,7 +67,7 @@ export const renderSelectedSnsNeuronContext = ({
   events,
 }: {
   Component: Component;
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   reload: () => Promise<void>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props?: any;

@@ -15,7 +15,7 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { shortenWithMiddleEllipsis } from "$lib/utils/format.utils";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { isNullish, nonNullish, type Token } from "@dfinity/utils";
   import { getContext } from "svelte";
 
@@ -24,7 +24,7 @@
   const { store }: SelectedSnsNeuronContext =
     getContext<SelectedSnsNeuronContext>(SELECTED_SNS_NEURON_CONTEXT_KEY);
 
-  let neuron: SnsNeuron | undefined | null;
+  let neuron: SnsGovernanceDid.Neuron | undefined | null;
   $: neuron = $store.neuron;
 
   const updateLayoutTitle = ($event: Event) => {

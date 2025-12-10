@@ -29,8 +29,8 @@ import { LedgerCanister } from "@icp-sdk/canisters/ledger/icp";
 import * as dfinitySns from "@icp-sdk/canisters/sns";
 import {
   SnsSwapLifecycle,
-  type SnsGetLifecycleResponse,
-  type SnsNeuronId,
+  type SnsGovernanceDid,
+  type SnsSwapDid,
 } from "@icp-sdk/canisters/sns";
 import type { Agent } from "@icp-sdk/core/agent";
 import { mock } from "vitest-mock-extended";
@@ -59,7 +59,7 @@ describe("sns-api", () => {
     sns_tokens_per_icp: [1],
     buyer_total_icp_e8s: [1_000_000_000n],
   };
-  const lifecycleResponse: SnsGetLifecycleResponse = {
+  const lifecycleResponse: SnsSwapDid.GetLifecycleResponse = {
     lifecycle: [SnsSwapLifecycle.Open],
     decentralization_sale_open_timestamp_seconds: [1n],
     decentralization_swap_termination_timestamp_seconds: [],
@@ -210,7 +210,7 @@ describe("sns-api", () => {
       source: {
         owner: mockPrincipal,
       },
-      neuronId: mockSnsNeuron.id[0] as SnsNeuronId,
+      neuronId: mockSnsNeuron.id[0] as SnsGovernanceDid.NeuronId,
     });
 
     expect(increaseStakeNeuronSpy).toBeCalled();

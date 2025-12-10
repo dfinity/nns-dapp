@@ -19,8 +19,7 @@ import { setSnsProjects } from "$tests/utils/sns.test-utils";
 import {
   SnsNeuronPermissionType,
   neuronSubaccount,
-  type SnsNeuron,
-  type SnsNeuronId,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -31,8 +30,8 @@ describe("sns-neurons-check-balances-services", () => {
     controller: mockIdentity.getPrincipal(),
     index: 0,
   });
-  const neuronId: SnsNeuronId = { id: subaccount };
-  const userNeuron: SnsNeuron = {
+  const neuronId: SnsGovernanceDid.NeuronId = { id: subaccount };
+  const userNeuron: SnsGovernanceDid.Neuron = {
     ...mockSnsNeuron,
     permissions: [
       {
@@ -40,16 +39,16 @@ describe("sns-neurons-check-balances-services", () => {
         permission_type: allPermissions,
       },
     ],
-    id: [neuronId] as [SnsNeuronId],
+    id: [neuronId] as [SnsGovernanceDid.NeuronId],
   };
   const subaccountTransferredNeuron = neuronSubaccount({
     controller: mockIdentity.getPrincipal(),
     index: 1,
   });
-  const transferredNeuronId: SnsNeuronId = {
+  const transferredNeuronId: SnsGovernanceDid.NeuronId = {
     id: subaccountTransferredNeuron,
   };
-  const transferredNeuron: SnsNeuron = {
+  const transferredNeuron: SnsGovernanceDid.Neuron = {
     ...mockSnsNeuron,
     permissions: [
       {
@@ -57,7 +56,7 @@ describe("sns-neurons-check-balances-services", () => {
         permission_type: allPermissions,
       },
     ],
-    id: [transferredNeuronId] as [SnsNeuronId],
+    id: [transferredNeuronId] as [SnsGovernanceDid.NeuronId],
   };
 
   beforeEach(() => {
@@ -238,12 +237,12 @@ describe("sns-neurons-check-balances-services", () => {
         controller: mockIdentity.getPrincipal(),
         index: 0,
       });
-      const unclaimedNeuronId: SnsNeuronId = {
+      const unclaimedNeuronId: SnsGovernanceDid.NeuronId = {
         id: subaccountUnclaimedNeuron,
       };
-      const unclaimedNeuron: SnsNeuron = {
+      const unclaimedNeuron: SnsGovernanceDid.Neuron = {
         ...userNeuron,
-        id: [unclaimedNeuronId] as [SnsNeuronId],
+        id: [unclaimedNeuronId] as [SnsGovernanceDid.NeuronId],
         cached_neuron_stake_e8s: neuronAccountBalance,
       };
 
@@ -327,7 +326,7 @@ describe("sns-neurons-check-balances-services", () => {
         },
       ]);
 
-      const createNeuron = (index: number): SnsNeuron => {
+      const createNeuron = (index: number): SnsGovernanceDid.Neuron => {
         const subaccount = neuronSubaccount({
           controller: mockIdentity.getPrincipal(),
           index,
@@ -397,14 +396,14 @@ describe("sns-neurons-check-balances-services", () => {
         controller: mockIdentity.getPrincipal(),
         index: 0,
       });
-      const unclaimedNeuronId: SnsNeuronId = {
+      const unclaimedNeuronId: SnsGovernanceDid.NeuronId = {
         id: subaccountUnclaimedNeuron,
       };
-      const unclaimedNeuron: SnsNeuron = {
+      const unclaimedNeuron: SnsGovernanceDid.Neuron = {
         // The current user does not have any permissions because this neuron
         // no longer belongs to this user.
         ...transferredNeuron,
-        id: [unclaimedNeuronId] as [SnsNeuronId],
+        id: [unclaimedNeuronId] as [SnsGovernanceDid.NeuronId],
         cached_neuron_stake_e8s: neuronAccountBalance,
       };
 

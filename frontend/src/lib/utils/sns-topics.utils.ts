@@ -17,16 +17,11 @@ import {
   isNullish,
   nonNullish,
 } from "@dfinity/utils";
-import type {
-  SnsNervousSystemFunction,
-  SnsNeuron,
-  SnsNeuronId,
-  SnsTopic,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const snsTopicToTopicKey = (
-  topic: SnsTopic | UnknownTopic
+  topic: SnsGovernanceDid.Topic | UnknownTopic
 ): SnsTopicKey => {
   // We can't ensure that all the topicKeys are present in this list.
   const topicKeys: SnsTopicKey[] = [
@@ -50,7 +45,7 @@ export const snsTopicToTopicKey = (
 
 export const snsTopicKeyToTopic = (
   topic: SnsTopicKey
-): SnsTopic | UnknownTopic => {
+): SnsGovernanceDid.Topic | UnknownTopic => {
   switch (topic) {
     case "DappCanisterManagement":
       return { DappCanisterManagement: null };
@@ -75,7 +70,9 @@ export const snsTopicKeyToTopic = (
 export const getSnsTopicInfoKey = (
   topicInfo: TopicInfoWithUnknown
 ): SnsTopicKey =>
-  snsTopicToTopicKey(fromNullable(topicInfo.topic) as SnsTopic | UnknownTopic);
+  snsTopicToTopicKey(
+    fromNullable(topicInfo.topic) as SnsGovernanceDid.Topic | UnknownTopic
+  );
 
 // Returns all available SNS topics keys
 export const getSnsTopicKeys = (
@@ -95,13 +92,13 @@ export const getTopicInfoBySnsTopicKey = ({
 // Combines native and generic nervous system functions
 export const getAllSnsNSFunctions = (
   topicInfo: TopicInfoWithUnknown
-): SnsNervousSystemFunction[] => [
+): SnsGovernanceDid.NervousSystemFunction[] => [
   ...(fromNullable(topicInfo.native_functions) ?? []),
   ...(fromNullable(topicInfo.custom_functions) ?? []),
 ];
 
 export const getSnsTopicFollowings = (
-  neuron: SnsNeuron
+  neuron: SnsGovernanceDid.Neuron
 ): SnsTopicFollowing[] => {
   const topicFollowees =
     fromNullable(neuron.topic_followees)?.topic_id_to_followees ?? [];
@@ -121,7 +118,7 @@ export const isSnsNeuronsFollowing = ({
   topicKey,
 }: {
   followings: SnsTopicFollowing[];
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   topicKey: SnsTopicKey;
 }): boolean => {
   const topicFollowees = followings.find(
@@ -146,7 +143,7 @@ export const addSnsNeuronToFollowingsByTopics = ({
 }: {
   followings: SnsTopicFollowing[];
   topics: SnsTopicKey[];
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): SnsTopicFollowing[] =>
   topics
     // Filter out topics that are already followed by the neuron to avoid duplications.
@@ -182,7 +179,7 @@ export const removeSnsNeuronFromFollowingsByTopics = ({
 }: {
   followings: SnsTopicFollowing[];
   topics: SnsTopicKey[];
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): SnsTopicFollowing[] =>
   followings
     // Filter out topics that are not in the provided list.
@@ -201,10 +198,13 @@ export const getLegacyFolloweesByTopics = ({
   neuron,
   topicInfos,
 }: {
-  neuron: SnsNeuron;
+  neuron: SnsGovernanceDid.Neuron;
   topicInfos: TopicInfoWithUnknown[];
 }): Array<SnsLegacyFollowings> => {
-  const topicsNsFunctionMap = new Map<bigint, SnsNervousSystemFunction>(
+  const topicsNsFunctionMap = new Map<
+    bigint,
+    SnsGovernanceDid.NervousSystemFunction
+  >(
     topicInfos
       .flatMap(getAllSnsNSFunctions)
       .map((nsFunction) => [nsFunction.id, nsFunction])
@@ -225,8 +225,8 @@ export const getCatchAllSnsLegacyFollowings = ({
   neuron,
   nsFunctions,
 }: {
-  neuron: SnsNeuron;
-  nsFunctions: SnsNervousSystemFunction[];
+  neuron: SnsGovernanceDid.Neuron;
+  nsFunctions: SnsGovernanceDid.NervousSystemFunction[];
 }): SnsLegacyFollowings | undefined => {
   const nsFunction = nsFunctions.find(
     (nsFunction) => nsFunction.id === ALL_SNS_PROPOSAL_TYPES_NS_FUNCTION_ID

@@ -5,9 +5,9 @@
   import { getSnsNeuronState, isVesting } from "$lib/utils/sns-neuron.utils";
   import { keyOf } from "$lib/utils/utils";
   import { NeuronState } from "@icp-sdk/canisters/nns";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
   let neuronState: NeuronState;
   $: neuronState = getSnsNeuronState(neuron);
 

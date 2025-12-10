@@ -12,7 +12,7 @@ import { principal } from "$tests/mocks/sns-projects.mock";
 import { FollowSnsTopicSectionPo } from "$tests/page-objects/FollowSnsTopicSection.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 
 describe("FollowSnsTopicSection", () => {
   const reload = vi.fn();
@@ -20,7 +20,7 @@ describe("FollowSnsTopicSection", () => {
   const followee1 = createMockSnsNeuron({ id: [1, 2, 3] });
   const followee2 = createMockSnsNeuron({ id: [5, 6, 7] });
   const followees = [followee1.id[0], followee2.id[0]];
-  const neuron: SnsNeuron = {
+  const neuron: SnsGovernanceDid.Neuron = {
     ...mockSnsNeuron,
     followees: [[nervousSystemFunctionMock.id, { followees }]],
   };

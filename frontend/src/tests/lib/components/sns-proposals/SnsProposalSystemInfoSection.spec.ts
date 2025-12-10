@@ -16,8 +16,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { runResolvedPromises } from "$tests/utils/timers.test-utils";
 import {
   SnsProposalDecisionStatus,
-  type SnsProposalData,
-  type SnsTopic,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { render, waitFor } from "@testing-library/svelte";
 import { get } from "svelte/store";
@@ -61,7 +60,7 @@ describe("ProposalSystemInfoSection", () => {
   });
 
   describe("open proposal", () => {
-    const testTopic: SnsTopic = { Governance: null };
+    const testTopic: SnsGovernanceDid.Topic = { Governance: null };
     const openProposal = {
       ...createSnsProposal({
         status: SnsProposalDecisionStatus.PROPOSAL_DECISION_STATUS_OPEN,
@@ -69,7 +68,7 @@ describe("ProposalSystemInfoSection", () => {
       }),
       action: testNervousFunctionId,
       topic: [testTopic],
-    } as SnsProposalData;
+    } as SnsGovernanceDid.ProposalData;
     const topicName = "Topic name";
     const topicDescription = "Topic description";
     const testTopicInfo: TopicInfoWithUnknown = {

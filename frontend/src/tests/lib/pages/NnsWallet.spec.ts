@@ -54,7 +54,7 @@ import {
   runResolvedPromises,
 } from "$tests/utils/timers.test-utils";
 import { toastsStore } from "@dfinity/gix-components";
-import type { TransactionWithId } from "@icp-sdk/canisters/ledger/icp";
+import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 import { memoToNeuronAccountIdentifier } from "@icp-sdk/canisters/nns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
@@ -517,7 +517,7 @@ describe("NnsWallet", () => {
 
     // FIXME: This test is polluting the mocks and all the tests after this point don't work.
     it.skip("should render 'Staked' transaction from ICP Index canister", async () => {
-      const stakeNeuronTransaction: TransactionWithId = {
+      const stakeNeuronTransaction: IcpIndexDid.TransactionWithId = {
         id: 1234n,
         transaction: {
           memo: 123456n,
@@ -563,7 +563,7 @@ describe("NnsWallet", () => {
         controller: mockMainAccount.principal,
         swapCanisterId,
       });
-      const swapTransaction: TransactionWithId = {
+      const swapTransaction: IcpIndexDid.TransactionWithId = {
         id: 1234n,
         transaction: {
           memo: 123456n,

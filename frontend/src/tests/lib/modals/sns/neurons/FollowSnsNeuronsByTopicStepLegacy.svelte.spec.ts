@@ -9,22 +9,19 @@ import { mockSnsNeuron } from "$tests/mocks/sns-neurons.mock";
 import { topicInfoMock } from "$tests/mocks/sns-topics.mock";
 import { FollowSnsNeuronsByTopicStepLegacyPo } from "$tests/page-objects/FollowSnsNeuronsByTopicStepLegacy.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type {
-  SnsNervousSystemFunction,
-  SnsNeuron,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("FollowSnsNeuronsByTopicStepLegacy", () => {
   // Native Nervous System Function
   const nativeNsFunctionId = 1n;
-  const nativeNsFunction: SnsNervousSystemFunction = {
+  const nativeNsFunction: SnsGovernanceDid.NervousSystemFunction = {
     ...nativeNervousSystemFunctionMock,
     id: 1n,
   };
   // Generic Nervous System Function
   const genericNsFunctionId = 1001n;
-  const genericNsFunction: SnsNervousSystemFunction = {
+  const genericNsFunction: SnsGovernanceDid.NervousSystemFunction = {
     ...genericNervousSystemFunctionMock,
     id: genericNsFunctionId,
   };
@@ -64,7 +61,7 @@ describe("FollowSnsNeuronsByTopicStepLegacy", () => {
   };
 
   const renderComponent = (props: {
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
     openNextStep: () => void;
@@ -87,7 +84,7 @@ describe("FollowSnsNeuronsByTopicStepLegacy", () => {
   };
 
   it("displays selected topics with legacy followings ", async () => {
-    const neuron: SnsNeuron = {
+    const neuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       followees: [
         [nativeNsFunctionId, { followees: [neuronId1] }],
@@ -105,7 +102,7 @@ describe("FollowSnsNeuronsByTopicStepLegacy", () => {
   });
 
   it("displays legacy followings of selected topics", async () => {
-    const neuron: SnsNeuron = {
+    const neuron: SnsGovernanceDid.Neuron = {
       ...mockSnsNeuron,
       followees: [
         [nativeNsFunctionId, { followees: [neuronId1] }],

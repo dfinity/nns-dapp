@@ -5,11 +5,11 @@ import {
 } from "$tests/mocks/sns-neurons.mock";
 import { SnsViewActiveDisbursementsItemActionPo } from "$tests/page-objects/SnsViewActiveDisbursementsItemAction.page-object";
 import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { render } from "@testing-library/svelte";
 
 describe("SnsViewActiveDisbursementsItemAction", () => {
-  const renderComponent = (neuron: SnsNeuron) => {
+  const renderComponent = (neuron: SnsGovernanceDid.Neuron) => {
     const { container } = render(SnsViewActiveDisbursementsItemAction, {
       props: {
         neuron,

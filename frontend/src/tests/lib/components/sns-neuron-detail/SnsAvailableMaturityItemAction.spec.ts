@@ -10,7 +10,7 @@ import { JestPageObjectElement } from "$tests/page-objects/jest.page-object";
 import { TokenAmountV2 } from "@dfinity/utils";
 import {
   SnsNeuronPermissionType,
-  type SnsNeuron,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { render } from "@testing-library/svelte";
@@ -31,7 +31,7 @@ describe("SnsAvailableMaturityItemAction", () => {
     permissions: [controllerPermissions],
   });
   const renderComponent = (
-    neuron: SnsNeuron,
+    neuron: SnsGovernanceDid.Neuron,
     fee = TokenAmountV2.fromUlps({ amount: 10_000n, token })
   ) => {
     const { container } = render(SnsAvailableMaturityItemAction, {

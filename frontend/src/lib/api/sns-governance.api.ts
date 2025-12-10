@@ -3,13 +3,9 @@ import { logWithTimestamp } from "$lib/utils/dev.utils";
 import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
 import type { IcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
 import type {
+  SnsGovernanceDid,
   SnsListProposalsParams,
-  SnsNervousSystemParameters,
-  SnsNeuron,
-  SnsNeuronId,
   SnsNeuronPermissionType,
-  SnsProposalId,
-  SnsTopic,
   SnsVote,
 } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
@@ -23,7 +19,7 @@ export const querySnsNeurons = async ({
   identity: Identity;
   rootCanisterId: Principal;
   certified: boolean;
-}): Promise<SnsNeuron[]> => {
+}): Promise<SnsGovernanceDid.Neuron[]> => {
   logWithTimestamp("Getting sns neurons: call...");
   const { listNeurons } = await wrapper({
     identity,
@@ -50,8 +46,8 @@ export const getSnsNeuron = async ({
   identity: Identity;
   rootCanisterId: Principal;
   certified: boolean;
-  neuronId: SnsNeuronId;
-}): Promise<SnsNeuron> => {
+  neuronId: SnsGovernanceDid.NeuronId;
+}): Promise<SnsGovernanceDid.Neuron> => {
   logWithTimestamp("Getting sns neuron: call...");
   const { getNeuron } = await wrapper({
     identity,
@@ -78,8 +74,8 @@ export const querySnsNeuron = async ({
   identity: Identity;
   rootCanisterId: Principal;
   certified: boolean;
-  neuronId: SnsNeuronId;
-}): Promise<SnsNeuron | undefined> => {
+  neuronId: SnsGovernanceDid.NeuronId;
+}): Promise<SnsGovernanceDid.Neuron | undefined> => {
   logWithTimestamp("Querying sns neuron: call...");
   const { queryNeuron } = await wrapper({
     identity,
@@ -105,7 +101,7 @@ export const addNeuronPermissions = async ({
   rootCanisterId: Principal;
   permissions: SnsNeuronPermissionType[];
   principal: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<void> => {
   logWithTimestamp("Adding neuron permissions: call...");
   const { addNeuronPermissions } = await wrapper({
@@ -133,7 +129,7 @@ export const removeNeuronPermissions = async ({
   rootCanisterId: Principal;
   permissions: SnsNeuronPermissionType[];
   principal: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<void> => {
   logWithTimestamp("Removing neuron permissions: call...");
   const { removeNeuronPermissions } = await wrapper({
@@ -157,7 +153,7 @@ export const disburse = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<void> => {
   logWithTimestamp(`Disburse sns neuron call...`);
 
@@ -183,7 +179,7 @@ export const splitNeuron = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   amount: bigint;
   memo: bigint;
 }): Promise<void> => {
@@ -211,7 +207,7 @@ export const startDissolving = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<void> => {
   logWithTimestamp(`Start dissolving sns neuron call...`);
 
@@ -233,7 +229,7 @@ export const stopDissolving = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<void> => {
   logWithTimestamp(`Stop dissolving sns neuron call...`);
 
@@ -256,7 +252,7 @@ export const increaseDissolveDelay = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   additionalDissolveDelaySeconds: number;
 }): Promise<void> => {
   logWithTimestamp(`Increase sns dissolve delay call...`);
@@ -280,7 +276,7 @@ export const getNeuronBalance = async ({
   certified,
   identity,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
   certified: boolean;
   identity: Identity;
@@ -312,7 +308,7 @@ export const refreshNeuron = async ({
 }: {
   rootCanisterId: Principal;
   identity: Identity;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
 }): Promise<void> => {
   logWithTimestamp(
     `Refreshing neuron ${subaccountToHexString(neuronId.id)} call...`
@@ -343,7 +339,7 @@ export const claimNeuron = async ({
   memo: bigint;
   controller: Principal;
   subaccount: Uint8Array;
-}): Promise<SnsNeuronId> => {
+}): Promise<SnsGovernanceDid.NeuronId> => {
   logWithTimestamp(`Claiming neuron call...`);
 
   const { claimNeuron: claimNeuronApi } = await wrapper({
@@ -370,7 +366,7 @@ export const nervousSystemParameters = async ({
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
-}): Promise<SnsNervousSystemParameters> => {
+}): Promise<SnsGovernanceDid.NervousSystemParameters> => {
   logWithTimestamp(`Querying nervous system parameters...`);
 
   const { nervousSystemParameters: nervousSystemParametersApi } = await wrapper(
@@ -396,9 +392,9 @@ export const setFollowees = async ({
 }: {
   rootCanisterId: Principal;
   identity: Identity;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   functionId: bigint;
-  followees: SnsNeuronId[];
+  followees: SnsGovernanceDid.NeuronId[];
 }): Promise<void> => {
   logWithTimestamp(`Setting sns neuron followee call...`);
 
@@ -423,13 +419,13 @@ export const setFollowing = async ({
   identity,
   topicFollowing,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
   identity: Identity;
   topicFollowing: Array<{
-    topic: SnsTopic;
+    topic: SnsGovernanceDid.Topic;
     followees: Array<{
-      neuronId: SnsNeuronId;
+      neuronId: SnsGovernanceDid.NeuronId;
       alias?: string;
     }>;
   }>;
@@ -456,7 +452,7 @@ export const stakeMaturity = async ({
   identity,
   percentageToStake,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
   identity: Identity;
   percentageToStake: number;
@@ -484,7 +480,7 @@ export const disburseMaturity = async ({
   percentageToDisburse,
   toAccount,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
   identity: Identity;
   percentageToDisburse: number;
@@ -514,10 +510,10 @@ export const registerVote = async ({
   proposalId,
   vote,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
   identity: Identity;
-  proposalId: SnsProposalId;
+  proposalId: SnsGovernanceDid.ProposalId;
   vote: SnsVote;
 }): Promise<void> => {
   logWithTimestamp(`Register vote: call...`);
@@ -543,7 +539,7 @@ export const autoStakeMaturity = async ({
   identity,
   autoStake,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   rootCanisterId: Principal;
   identity: Identity;
   autoStake: boolean;
@@ -602,7 +598,7 @@ export const queryProposal = async ({
   rootCanisterId: Principal;
   identity: Identity;
   certified: boolean;
-  proposalId: SnsProposalId;
+  proposalId: SnsGovernanceDid.ProposalId;
 }) => {
   try {
     logWithTimestamp(`Getting proposal ${proposalId.id} call...`);

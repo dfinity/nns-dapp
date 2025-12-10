@@ -1,26 +1,26 @@
 import { snsProposalsStore } from "$lib/stores/sns-proposals.store";
 import { mockPrincipal } from "$tests/mocks/auth.store.mock";
 import { mockSnsProposal } from "$tests/mocks/sns-proposals.mock";
-import type { SnsProposalData } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { get } from "svelte/store";
 
 describe("SNS Proposals stores", () => {
-  const snsProposal1: SnsProposalData = {
+  const snsProposal1: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 2n }],
   };
-  const snsProposal2: SnsProposalData = {
+  const snsProposal2: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 2n }],
   };
-  const snsProposal3: SnsProposalData = {
+  const snsProposal3: SnsGovernanceDid.ProposalData = {
     ...mockSnsProposal,
     id: [{ id: 3n }],
   };
   describe("snsProposalsStore", () => {
     it("should set proposals for a project", () => {
-      const proposals: SnsProposalData[] = [
+      const proposals: SnsGovernanceDid.ProposalData[] = [
         snsProposal1,
         snsProposal2,
         snsProposal3,
@@ -39,14 +39,17 @@ describe("SNS Proposals stores", () => {
     });
 
     it("should add proposals for another project", () => {
-      const proposals: SnsProposalData[] = [snsProposal1, snsProposal2];
+      const proposals: SnsGovernanceDid.ProposalData[] = [
+        snsProposal1,
+        snsProposal2,
+      ];
       snsProposalsStore.setProposals({
         rootCanisterId: mockPrincipal,
         proposals,
         certified: true,
         completed: false,
       });
-      const proposals2: SnsProposalData[] = [snsProposal3];
+      const proposals2: SnsGovernanceDid.ProposalData[] = [snsProposal3];
       const principal2 = Principal.fromText("aaaaa-aa");
       snsProposalsStore.setProposals({
         rootCanisterId: principal2,
@@ -64,14 +67,17 @@ describe("SNS Proposals stores", () => {
     });
 
     it("should add proposals to a project with proposals", () => {
-      const proposals: SnsProposalData[] = [snsProposal1, snsProposal2];
+      const proposals: SnsGovernanceDid.ProposalData[] = [
+        snsProposal1,
+        snsProposal2,
+      ];
       snsProposalsStore.setProposals({
         rootCanisterId: mockPrincipal,
         proposals,
         certified: true,
         completed: false,
       });
-      const proposals2: SnsProposalData[] = [snsProposal3];
+      const proposals2: SnsGovernanceDid.ProposalData[] = [snsProposal3];
       snsProposalsStore.addProposals({
         rootCanisterId: mockPrincipal,
         proposals: proposals2,
@@ -86,14 +92,17 @@ describe("SNS Proposals stores", () => {
     });
 
     it("should add proposals to a project without proposals using `addProposals`", () => {
-      const proposals: SnsProposalData[] = [snsProposal1, snsProposal2];
+      const proposals: SnsGovernanceDid.ProposalData[] = [
+        snsProposal1,
+        snsProposal2,
+      ];
       snsProposalsStore.addProposals({
         rootCanisterId: mockPrincipal,
         proposals,
         certified: true,
         completed: false,
       });
-      const proposals2: SnsProposalData[] = [snsProposal3];
+      const proposals2: SnsGovernanceDid.ProposalData[] = [snsProposal3];
       snsProposalsStore.addProposals({
         rootCanisterId: mockPrincipal,
         proposals: proposals2,

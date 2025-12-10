@@ -8,13 +8,7 @@ import type {
 import { nowInBigIntNanoSeconds } from "$lib/utils/date.utils";
 import { logWithTimestamp } from "$lib/utils/dev.utils";
 import type { IcrcAccount } from "@icp-sdk/canisters/ledger/icrc";
-import type {
-  SnsGetDerivedStateResponse,
-  SnsGetLifecycleResponse,
-  SnsNeuronId,
-  SnsSwapBuyerState,
-  SnsWrapper,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid, SnsWrapper } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Principal } from "@icp-sdk/core/principal";
 
@@ -191,11 +185,10 @@ export const querySnsSwapCommitment = async ({
     certified,
   });
 
-  const userCommitment: SnsSwapBuyerState | undefined = await getUserCommitment(
-    {
+  const userCommitment: SnsSwapDid.BuyerState | undefined =
+    await getUserCommitment({
       principal_id: [identity.getPrincipal()],
-    }
-  );
+    });
 
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap commitment certified:${certified} done.`
@@ -215,7 +208,7 @@ export const querySnsDerivedState = async ({
   rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
-}): Promise<SnsGetDerivedStateResponse | undefined> => {
+}): Promise<SnsSwapDid.GetDerivedStateResponse | undefined> => {
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} swap derived state certified:${certified} call...`
   );
@@ -226,7 +219,7 @@ export const querySnsDerivedState = async ({
     certified,
   });
 
-  const derivedState: SnsGetDerivedStateResponse | undefined =
+  const derivedState: SnsSwapDid.GetDerivedStateResponse | undefined =
     await getDerivedState({});
 
   logWithTimestamp(
@@ -244,7 +237,7 @@ export const querySnsLifecycle = async ({
   rootCanisterId: QueryRootCanisterId;
   identity: Identity;
   certified: boolean;
-}): Promise<SnsGetLifecycleResponse | undefined> => {
+}): Promise<SnsSwapDid.GetLifecycleResponse | undefined> => {
   logWithTimestamp(
     `Getting Sns ${rootCanisterId} sale lifecycle certified:${certified} call...`
   );
@@ -255,7 +248,7 @@ export const querySnsLifecycle = async ({
     certified,
   });
 
-  const lifecycleResponse: SnsGetLifecycleResponse | undefined =
+  const lifecycleResponse: SnsSwapDid.GetLifecycleResponse | undefined =
     await getLifecycle({});
 
   logWithTimestamp(
@@ -287,7 +280,7 @@ export const stakeNeuron = async ({
   identity: Identity;
   source: IcrcAccount;
   fee: bigint;
-}): Promise<SnsNeuronId> => {
+}): Promise<SnsSwapDid.NeuronId> => {
   logWithTimestamp(`Staking neuron with ${stakeE8s}: call...`);
 
   const { stakeNeuron: stakeNeuronApi } = await wrapper({
@@ -316,7 +309,7 @@ export const increaseStakeNeuron = async ({
   identity,
   source,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsSwapDid.NeuronId;
   stakeE8s: bigint;
   rootCanisterId: Principal;
   identity: Identity;

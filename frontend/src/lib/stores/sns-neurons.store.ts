@@ -1,11 +1,11 @@
 import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
 import { removeKeys } from "$lib/utils/utils";
-import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable } from "svelte/store";
 
 export interface ProjectNeuronStore {
-  neurons: SnsNeuron[];
+  neurons: SnsGovernanceDid.Neuron[];
   // certified is an optimistic value - i.e. it represents the last value that has been pushed in store
   certified: boolean | undefined;
 }
@@ -32,7 +32,7 @@ const initSnsNeuronsStore = () => {
       certified,
     }: {
       rootCanisterId: Principal;
-      neurons: SnsNeuron[];
+      neurons: SnsGovernanceDid.Neuron[];
       certified: boolean | undefined;
     }) {
       update((currentState: NeuronsStore) => ({
@@ -50,7 +50,7 @@ const initSnsNeuronsStore = () => {
       certified,
     }: {
       rootCanisterId: Principal;
-      neurons: SnsNeuron[];
+      neurons: SnsGovernanceDid.Neuron[];
       certified: boolean | undefined;
     }) {
       update((currentState: NeuronsStore) => {

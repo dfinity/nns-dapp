@@ -36,7 +36,7 @@ import { fromNullable } from "@dfinity/utils";
 import {
   SnsNeuronPermissionType,
   SnsSwapLifecycle,
-  type SnsNeuronId,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import { Principal } from "@icp-sdk/core/principal";
 import { render, waitFor } from "@testing-library/svelte";
@@ -103,7 +103,7 @@ describe("SnsNeuronDetail", () => {
     return SnsNeuronDetailPo.under(new JestPageObjectElement(container));
   };
 
-  const validNeuronId: SnsNeuronId = {
+  const validNeuronId: SnsGovernanceDid.NeuronId = {
     id: new Uint8Array([1, 5, 3, 9, 9, 3, 2]),
   };
   const validNeuronIdAsHexString = subaccountToHexString(validNeuronId.id);

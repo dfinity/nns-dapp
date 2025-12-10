@@ -10,18 +10,15 @@
   } from "$lib/utils/sns-neuron.utils";
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { Tooltip } from "@dfinity/gix-components";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     fromDefinedNullable,
     type Token,
     type TokenAmountV2,
   } from "@dfinity/utils";
 
-  export let neuron: SnsNeuron;
-  export let parameters: SnsNervousSystemParameters;
+  export let neuron: SnsGovernanceDid.Neuron;
+  export let parameters: SnsGovernanceDid.NervousSystemParameters;
   export let transactionFee: TokenAmountV2;
   export let token: Token;
 

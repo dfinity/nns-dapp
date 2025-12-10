@@ -21,7 +21,7 @@ import {
 import en from "$tests/mocks/i18n.mock";
 import { createTransactionWithId } from "$tests/mocks/icp-transactions.mock";
 import { ICPToken, TokenAmountV2 } from "@dfinity/utils";
-import type { Operation } from "@icp-sdk/canisters/ledger/icp";
+import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 
 describe("icp-transactions.utils", () => {
   const defaultTimestamp = new Date("2023-01-01T00:00:00.000Z");
@@ -30,7 +30,7 @@ describe("icp-transactions.utils", () => {
   const amount = 200_000_000n;
   const fee = 10_000n;
   const transactionId = 1234n;
-  const defaultTransferOperation: Operation = {
+  const defaultTransferOperation: IcpIndexDid.Operation = {
     Transfer: {
       to,
       fee: { e8s: fee },
@@ -58,7 +58,7 @@ describe("icp-transactions.utils", () => {
     timestamp: defaultTimestamp,
     memoText: "0",
   };
-  const toSelfOperation: Operation = {
+  const toSelfOperation: IcpIndexDid.Operation = {
     Transfer: {
       to: from,
       fee: { e8s: fee },
@@ -73,7 +73,7 @@ describe("icp-transactions.utils", () => {
     id = transactionId,
   }: {
     id?: bigint;
-    operation: Operation;
+    operation: IcpIndexDid.Operation;
     memo?: bigint;
   }) =>
     createTransactionWithId({

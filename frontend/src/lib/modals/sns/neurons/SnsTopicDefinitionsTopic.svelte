@@ -3,7 +3,7 @@
   import type { TopicInfoWithUnknown } from "$lib/types/sns-aggregator";
   import { fromDefinedNullable, fromNullable } from "@dfinity/utils";
   import { getAllSnsNSFunctions } from "$lib/utils/sns-topics.utils";
-  import type { SnsNervousSystemFunction } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import TestIdWrapper from "$lib/components/common/TestIdWrapper.svelte";
 
   export let topicInfo: TopicInfoWithUnknown;
@@ -13,7 +13,7 @@
   let description: string;
   $: description = fromDefinedNullable(topicInfo.description);
 
-  let nsFunctions: SnsNervousSystemFunction[];
+  let nsFunctions: SnsGovernanceDid.NervousSystemFunction[];
   $: nsFunctions = getAllSnsNSFunctions(topicInfo);
 </script>
 

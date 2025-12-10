@@ -18,18 +18,15 @@
   import { formatTokenE8s } from "$lib/utils/token.utils";
   import { Html, KeyValuePairInfo, Section } from "@dfinity/gix-components";
   import { Principal } from "@icp-sdk/core/principal";
-  import type {
-    SnsNervousSystemParameters,
-    SnsNeuron,
-  } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import {
     fromDefinedNullable,
     secondsToDuration,
     type Token,
   } from "@dfinity/utils";
 
-  export let parameters: SnsNervousSystemParameters;
-  export let neuron: SnsNeuron;
+  export let parameters: SnsGovernanceDid.NervousSystemParameters;
+  export let neuron: SnsGovernanceDid.Neuron;
   export let token: Token;
 
   let universe: Universe;

@@ -1,9 +1,9 @@
-import type { SnsGetLifecycleResponse } from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 import { writable, type Readable } from "svelte/store";
 
 interface SnsLifecycleProjectData {
-  data: SnsGetLifecycleResponse;
+  data: SnsSwapDid.GetLifecycleResponse;
   certified: boolean;
 }
 
@@ -14,7 +14,7 @@ export interface SnsLifecycleData {
 export interface SnsLifecycleStore extends Readable<SnsLifecycleData> {
   setData: (data: {
     rootCanisterId: Principal;
-    data: SnsGetLifecycleResponse;
+    data: SnsSwapDid.GetLifecycleResponse;
     certified: boolean;
   }) => void;
   reset: () => void;
@@ -37,7 +37,7 @@ const initSnsLifecycleStore = (): SnsLifecycleStore => {
       certified,
     }: {
       rootCanisterId: Principal;
-      data: SnsGetLifecycleResponse;
+      data: SnsSwapDid.GetLifecycleResponse;
       certified: boolean;
     }) {
       update((currentState) => ({

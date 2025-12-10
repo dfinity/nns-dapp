@@ -1,6 +1,6 @@
-import type { SnsGetAutoFinalizationStatusResponse } from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 
-export const snsFinalizationStatusResponseMock: SnsGetAutoFinalizationStatusResponse =
+export const snsFinalizationStatusResponseMock: SnsSwapDid.GetAutoFinalizationStatusResponse =
   {
     auto_finalize_swap_response: [],
     has_auto_finalize_been_attempted: [false],
@@ -9,7 +9,7 @@ export const snsFinalizationStatusResponseMock: SnsGetAutoFinalizationStatusResp
 
 export const createFinalizationStatusMock = (
   isFinalizing: boolean
-): SnsGetAutoFinalizationStatusResponse => ({
+): SnsSwapDid.GetAutoFinalizationStatusResponse => ({
   is_auto_finalize_enabled: [true],
   // This needs to be empty.
   // Check `isSnsFinalizing` sns util for more details

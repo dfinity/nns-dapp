@@ -43,46 +43,36 @@ import {
   nonNullish,
 } from "@dfinity/utils";
 import { Vote } from "@icp-sdk/canisters/nns";
-import type {
-  SnsBallot,
-  SnsNervousSystemFunction,
-  SnsNeuron,
-  SnsNeuronId,
-  SnsProposalData,
-  SnsProposalId,
-  SnsTally,
-  SnsVote,
-} from "@icp-sdk/canisters/sns";
+import type { SnsGovernanceDid, SnsVote } from "@icp-sdk/canisters/sns";
 import {
   SnsProposalDecisionStatus,
   SnsProposalRewardStatus,
-  type SnsPercentage,
 } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 export type SnsProposalDataMap = {
-  // Mapped directly from SnsProposalData directly
-  id?: SnsProposalId;
+  // Mapped directly from SnsGovernanceDid.ProposalData directly
+  id?: SnsGovernanceDid.ProposalId;
   payload_text_rendering?: string;
   action: bigint;
-  ballots: Array<[string, SnsBallot]>;
+  ballots: Array<[string, SnsGovernanceDid.Ballot]>;
   reward_event_round: bigint;
   failed_timestamp_seconds: bigint;
   proposal_creation_timestamp_seconds: bigint;
   initial_voting_period_seconds: bigint;
   reject_cost_e8s: bigint;
-  latest_tally?: SnsTally;
+  latest_tally?: SnsGovernanceDid.Tally;
   wait_for_quiet_deadline_increase_seconds: bigint;
   decided_timestamp_seconds: bigint;
-  proposer?: SnsNeuronId;
+  proposer?: SnsGovernanceDid.NeuronId;
   /** will be removed in the future */
   is_eligible_for_rewards: boolean;
   executed_timestamp_seconds: bigint;
 
-  // Extracted from SnsProposalData.wait_for_quiet_state
+  // Extracted from SnsGovernanceDid.ProposalData.wait_for_quiet_state
   current_deadline_timestamp_seconds?: bigint;
 
-  // Extracted from SnsProposalData.proposal
+  // Extracted from SnsGovernanceDid.ProposalData.proposal
   title: string;
   url?: string;
   summary: string;
@@ -115,8 +105,8 @@ export const mapProposalInfo = ({
   nsFunctions,
   topics,
 }: {
-  proposalData: SnsProposalData;
-  nsFunctions: SnsNervousSystemFunction[] | undefined;
+  proposalData: SnsGovernanceDid.ProposalData;
+  nsFunctions: SnsGovernanceDid.NervousSystemFunction[] | undefined;
   topics: TopicInfoWithUnknown[] | undefined;
 }): SnsProposalDataMap => {
   const {
@@ -161,7 +151,7 @@ export const mapProposalInfo = ({
       : undefined;
 
   return {
-    // Mapped directly from SnsProposalData directly
+    // Mapped directly from SnsGovernanceDid.ProposalData directly
     id: fromNullable(id),
     payload_text_rendering: fromNullable(payload_text_rendering),
     action,
@@ -178,11 +168,11 @@ export const mapProposalInfo = ({
     is_eligible_for_rewards,
     executed_timestamp_seconds,
 
-    // Extracted from SnsProposalData.wait_for_quiet_state
+    // Extracted from SnsGovernanceDid.ProposalData.wait_for_quiet_state
     current_deadline_timestamp_seconds:
       fromNullable(wait_for_quiet_state)?.current_deadline_timestamp_seconds,
 
-    // Extracted from SnsProposalData.proposal
+    // Extracted from SnsGovernanceDid.ProposalData.proposal
     title: proposalInfo?.title ?? "",
     url: proposalInfo?.url,
     summary: proposalInfo?.summary ?? "",
@@ -210,14 +200,14 @@ export const mapProposalInfo = ({
 };
 
 export const minimumYesProportionOfTotal = (
-  proposal: SnsProposalData
+  proposal: SnsGovernanceDid.ProposalData
 ): bigint =>
   // `minimum_yes_proportion_of_total` property could be missing in older canister versions
   fromPercentageBasisPoints(proposal.minimum_yes_proportion_of_total ?? []) ??
   MINIMUM_YES_PROPORTION_OF_TOTAL_VOTING_POWER;
 
 export const minimumYesProportionOfExercised = (
-  proposal: SnsProposalData
+  proposal: SnsGovernanceDid.ProposalData
 ): bigint =>
   // `minimum_yes_proportion_of_exercised` property could be missing in older canister versions
   fromPercentageBasisPoints(
@@ -228,10 +218,12 @@ export const minimumYesProportionOfExercised = (
  * Returns whether the proposal is accepted or not based on the data.
  *
  * Reference: https://github.com/dfinity/ic/blob/dc2c20b26eaddb459698e4f9a30e521c21fb3d6e/rs/sns/governance/src/proposal.rs#L1095
- * @param {SnsProposalData} proposal
+ * @param {SnsGovernanceDid.ProposalData} proposal
  * @returns {boolean}
  */
-export const isAccepted = (proposal: SnsProposalData): boolean => {
+export const isAccepted = (
+  proposal: SnsGovernanceDid.ProposalData
+): boolean => {
   const { latest_tally } = proposal;
   const tally = fromNullable(latest_tally);
 
@@ -283,11 +275,11 @@ const majorityDecision = ({
  * Returns the decision status of a proposal based on the data.
  *
  * Refecence: https://github.com/dfinity/ic/blob/226ab04e0984367da356bbe27c90447863d33a27/rs/sns/governance/src/proposal.rs#L717
- * @param {SnsProposalData} proposal
+ * @param {SnsGovernanceDid.ProposalData} proposal
  * @returns {SnsProposalDecisionStatus}
  */
 export const snsDecisionStatus = (
-  proposal: SnsProposalData
+  proposal: SnsGovernanceDid.ProposalData
 ): SnsProposalDecisionStatus => {
   const {
     decided_timestamp_seconds,
@@ -316,7 +308,7 @@ export const snsDecisionStatus = (
  *
  * Reference: https://github.com/dfinity/ic/blob/bc2c84c5e3dc14bedb7ef9bbe231748886a34a29/rs/sns/governance/src/proposal.rs#L1692-L1706
  *
- * @param {SnsProposalData} proposal
+ * @param {SnsGovernanceDid.ProposalData} proposal
  * @returns {SnsProposalRewardStatus}
  */
 export const snsRewardStatus = ({
@@ -326,7 +318,7 @@ export const snsRewardStatus = ({
   reward_event_end_timestamp_seconds,
   proposal_creation_timestamp_seconds,
   initial_voting_period_seconds,
-}: SnsProposalData): SnsProposalRewardStatus => {
+}: SnsGovernanceDid.ProposalData): SnsProposalRewardStatus => {
   if (
     nonNullish(fromNullable(reward_event_end_timestamp_seconds)) ||
     reward_event_round > 0n
@@ -350,8 +342,8 @@ export const snsRewardStatus = ({
 };
 
 export const lastProposalId = (
-  proposals: SnsProposalData[]
-): SnsProposalId | undefined => {
+  proposals: SnsGovernanceDid.ProposalData[]
+): SnsGovernanceDid.ProposalId | undefined => {
   const last = sortSnsProposalsById(proposals)?.[proposals.length - 1];
   return fromNullable(last?.id ?? []);
 };
@@ -361,10 +353,10 @@ export const lastProposalId = (
  *
  * Returns a new array.
  *
- * @param {SnsProposalData[]} proposals
- * @returns {SnsProposalData[]}
+ * @param {SnsGovernanceDid.ProposalData[]} proposals
+ * @returns {SnsGovernanceDid.ProposalData[]}
  */
-export const sortSnsProposalsById = <P extends SnsProposalData>(
+export const sortSnsProposalsById = <P extends SnsGovernanceDid.ProposalData>(
   proposals: P[] | undefined
 ): P[] | undefined =>
   proposals === undefined
@@ -373,13 +365,17 @@ export const sortSnsProposalsById = <P extends SnsProposalData>(
         (fromNullable(idA)?.id ?? 0n) > (fromNullable(idB)?.id ?? 0n) ? -1 : 1
       );
 
-export const snsProposalIdString = (proposal: SnsProposalData): string =>
-  fromDefinedNullable(proposal.id).id.toString();
+export const snsProposalIdString = (
+  proposal: SnsGovernanceDid.ProposalData
+): string => fromDefinedNullable(proposal.id).id.toString();
 
-export const snsProposalId = (proposal: SnsProposalData): bigint =>
-  fromDefinedNullable(proposal.id).id;
+export const snsProposalId = (
+  proposal: SnsGovernanceDid.ProposalData
+): bigint => fromDefinedNullable(proposal.id).id;
 
-export const snsProposalAcceptingVotes = (proposal: SnsProposalData): boolean =>
+export const snsProposalAcceptingVotes = (
+  proposal: SnsGovernanceDid.ProposalData
+): boolean =>
   snsRewardStatus(proposal) ===
   SnsProposalRewardStatus.PROPOSAL_REWARD_STATUS_ACCEPT_VOTES;
 
@@ -390,8 +386,8 @@ export const ballotVotingPower = ({
   proposal,
   neuron,
 }: {
-  proposal: SnsProposalData;
-  neuron: SnsNeuron;
+  proposal: SnsGovernanceDid.ProposalData;
+  neuron: SnsGovernanceDid.Neuron;
 }): bigint =>
   BigInt(
     proposal.ballots.find(
@@ -403,8 +399,8 @@ export const snsNeuronToVotingNeuron = ({
   neuron,
   proposal,
 }: {
-  neuron: SnsNeuron;
-  proposal: SnsProposalData;
+  neuron: SnsGovernanceDid.Neuron;
+  proposal: SnsGovernanceDid.ProposalData;
 }): VotingNeuron => ({
   neuronIdString: getSnsNeuronIdAsHexString(neuron),
   votingPower: ballotVotingPower({ proposal, neuron }),
@@ -419,7 +415,7 @@ export const toSnsVote = (vote: SnsVote | Vote): SnsVote =>
   vote as unknown as SnsVote;
 
 export const getUniversalProposalStatus = (
-  proposalData: SnsProposalData
+  proposalData: SnsGovernanceDid.ProposalData
 ): UniversalProposalStatus => {
   const status = snsDecisionStatus(proposalData);
   const statusTypeMap: Record<
@@ -451,7 +447,7 @@ export const toExcludeTypeParameter = ({
   snsFunctions,
 }: {
   filter: Filter<SnsProposalTypeFilterId>[];
-  snsFunctions: SnsNervousSystemFunction[];
+  snsFunctions: SnsGovernanceDid.NervousSystemFunction[];
 }): bigint[] => {
   // If no filter is selected, return all functions
   if (filter.length === 0) {
@@ -508,7 +504,7 @@ export const generateSnsProposalTypesFilterData = ({
   typesFilterState,
   snsName,
 }: {
-  nsFunctions: SnsNervousSystemFunction[];
+  nsFunctions: SnsGovernanceDid.NervousSystemFunction[];
   typesFilterState: Filter<SnsProposalTypeFilterId>[];
   snsName: string;
 }): Filter<SnsProposalTypeFilterId>[] => {
@@ -553,7 +549,7 @@ export const generateSnsProposalTypesFilterData = ({
 };
 
 export const fromPercentageBasisPoints = (
-  value: [] | [SnsPercentage]
+  value: [] | [SnsGovernanceDid.Percentage]
 ): bigint | undefined => {
   const percentage = fromNullable(value);
   return isNullish(percentage)

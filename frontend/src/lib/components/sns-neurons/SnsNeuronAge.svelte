@@ -3,10 +3,10 @@
   import { i18n } from "$lib/stores/i18n";
   import { neuronAge } from "$lib/utils/sns-neuron.utils";
   import { KeyValuePair } from "@dfinity/gix-components";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { secondsToDuration } from "@dfinity/utils";
 
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
 
   let age: bigint;
   $: age = neuronAge(neuron);

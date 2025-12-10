@@ -30,7 +30,7 @@ import {
   TokenAmountV2,
   type TokenAmount,
 } from "@dfinity/utils";
-import { SnsSwapLifecycle, type SnsSwapTicket } from "@icp-sdk/canisters/sns";
+import { SnsSwapLifecycle, type SnsSwapDid } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export const filterProjectsStatus = ({
@@ -338,7 +338,7 @@ export const participateButtonStatus = ({
   summary: SnsSummaryWrapper | undefined | null;
   swapCommitment: SnsSwapCommitment | undefined | null;
   loggedIn: boolean;
-  ticket: SnsSwapTicket | undefined | null;
+  ticket: SnsSwapDid.Ticket | undefined | null;
   userCountry: StoreData<Country>;
 }): ParticipationButtonStatus => {
   if (!loggedIn) {

@@ -9,12 +9,12 @@
     getLegacyFolloweesByTopics,
   } from "$lib/utils/sns-topics.utils";
   import { Collapsible, IconErrorOutline } from "@dfinity/gix-components";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { subaccountToHexString } from "$lib/utils/sns-neuron.utils";
   import FollowSnsNeuronsByTopicLegacyFollowee from "$lib/modals/sns/neurons//FollowSnsNeuronsByTopicLegacyFollowee.svelte";
 
   type Props = {
-    neuron: SnsNeuron;
+    neuron: SnsGovernanceDid.Neuron;
     topicInfos: TopicInfoWithUnknown[];
     selectedTopics: SnsTopicKey[];
     openNextStep: () => void;

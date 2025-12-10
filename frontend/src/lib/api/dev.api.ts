@@ -24,7 +24,7 @@ import type { E8s, NeuronId } from "@icp-sdk/canisters/nns";
 import {
   SnsGovernanceCanister,
   SnsGovernanceTestCanister,
-  type SnsNeuronId,
+  type SnsGovernanceDid,
 } from "@icp-sdk/canisters/sns";
 import type { Identity } from "@icp-sdk/core/agent";
 import { Actor, HttpAgent, type Agent } from "@icp-sdk/core/agent";
@@ -202,7 +202,7 @@ export const makeSnsDummyProposals = async ({
   identity,
   rootCanisterId,
 }: {
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   identity: Identity;
   rootCanisterId: Principal;
 }): Promise<void> => {
@@ -254,7 +254,7 @@ export const addMaturity = async ({
 }: {
   identity: Identity;
   rootCanisterId: Principal;
-  neuronId: SnsNeuronId;
+  neuronId: SnsGovernanceDid.NeuronId;
   amountE8s: bigint;
 }): Promise<void> => {
   logWithTimestamp("Adding neuron maturity: call...");

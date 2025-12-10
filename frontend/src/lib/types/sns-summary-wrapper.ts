@@ -5,13 +5,7 @@ import type {
   SnsSummarySwap,
 } from "$lib/types/sns";
 import { fromDefinedNullable, fromNullable, isNullish } from "@dfinity/utils";
-import type {
-  SnsGetLifecycleResponse,
-  SnsParams,
-  SnsSwapDerivedState,
-  SnsSwapInit,
-  SnsSwapLifecycle,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid, SnsSwapLifecycle } from "@icp-sdk/canisters/sns";
 import type { Principal } from "@icp-sdk/core/principal";
 
 export class SnsSummaryWrapper implements SnsSummary {
@@ -44,16 +38,16 @@ export class SnsSummaryWrapper implements SnsSummary {
   get swap(): SnsSummarySwap {
     return this.summary.swap;
   }
-  get derived(): SnsSwapDerivedState {
+  get derived(): SnsSwapDid.DerivedState {
     return this.summary.derived;
   }
-  get init(): SnsSwapInit {
+  get init(): SnsSwapDid.Init {
     return this.summary.init;
   }
-  get swapParams(): SnsParams {
+  get swapParams(): SnsSwapDid.Params {
     return this.summary.swapParams;
   }
-  get lifecycle(): SnsGetLifecycleResponse {
+  get lifecycle(): SnsSwapDid.GetLifecycleResponse {
     return this.summary.lifecycle;
   }
 
@@ -92,7 +86,7 @@ export class SnsSummaryWrapper implements SnsSummary {
   }
 
   public overrideDerivedState(
-    newDerivedState: SnsSwapDerivedState
+    newDerivedState: SnsSwapDid.DerivedState
   ): SnsSummaryWrapper {
     return new SnsSummaryWrapper({
       ...this.summary,
@@ -101,7 +95,7 @@ export class SnsSummaryWrapper implements SnsSummary {
   }
 
   public overrideLifecycleResponse(
-    newLifecycle: SnsGetLifecycleResponse
+    newLifecycle: SnsSwapDid.GetLifecycleResponse
   ): SnsSummaryWrapper {
     const lifecycle = fromNullable(newLifecycle.lifecycle ?? []);
     const saleOpenTimestamp = fromNullable(

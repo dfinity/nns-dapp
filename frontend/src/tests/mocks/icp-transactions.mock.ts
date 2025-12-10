@@ -3,13 +3,9 @@ import {
   mockMainAccount,
   mockSubAccount,
 } from "$tests/mocks/icp-accounts.store.mock";
-import type {
-  Operation,
-  Transaction,
-  TransactionWithId,
-} from "@icp-sdk/canisters/ledger/icp";
+import type { IcpIndexDid } from "@icp-sdk/canisters/ledger/icp";
 
-export const mockTransactionTransfer: Transaction = {
+export const mockTransactionTransfer: IcpIndexDid.Transaction = {
   memo: 0n,
   icrc1_memo: [],
   operation: {
@@ -36,11 +32,11 @@ export const createTransactionWithId = ({
   timestamp = defaultTimestamp,
   id = 1234n,
 }: {
-  operation?: Operation;
+  operation?: IcpIndexDid.Operation;
   memo?: bigint;
   timestamp?: Date;
   id?: bigint;
-}): TransactionWithId => {
+}): IcpIndexDid.TransactionWithId => {
   const timestampNanos = {
     timestamp_nanos: dateToNanoSeconds(timestamp),
   };
@@ -56,7 +52,7 @@ export const createTransactionWithId = ({
   };
 };
 
-export const mockTransactionWithId: TransactionWithId = {
+export const mockTransactionWithId: IcpIndexDid.TransactionWithId = {
   id: 234n,
   transaction: mockTransactionTransfer,
 };

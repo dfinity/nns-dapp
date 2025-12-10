@@ -7,11 +7,11 @@
   import { SELECTED_SNS_NEURON_CONTEXT_KEY } from "$lib/types/sns-neuron-detail.context";
   import { getSnsNeuronIdAsHexString } from "$lib/utils/sns-neuron.utils";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { type Component, setContext } from "svelte";
   import { writable } from "svelte/store";
 
-  export let neuron: SnsNeuron | undefined;
+  export let neuron: SnsGovernanceDid.Neuron | undefined;
   export let rootCanisterId: Principal | null;
   export let testComponent: Component;
   export let passPropNeuron = false;

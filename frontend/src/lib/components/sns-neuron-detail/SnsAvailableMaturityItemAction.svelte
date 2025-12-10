@@ -12,10 +12,10 @@
     hasPermissionToStakeMaturity,
   } from "$lib/utils/sns-neuron.utils";
   import { IconExpandCircleDown } from "@dfinity/gix-components";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import type { Token, TokenAmountV2 } from "@dfinity/utils";
 
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
   export let fee: TokenAmountV2;
   export let token: Token;
 

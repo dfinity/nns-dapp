@@ -1,6 +1,6 @@
 import { snsDerivedStateStore } from "$lib/stores/sns-derived-state.store";
 import { mockDerivedResponse, principal } from "$tests/mocks/sns-projects.mock";
-import type { SnsGetDerivedStateResponse } from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import { get } from "svelte/store";
 
 describe("sns derived state store", () => {
@@ -22,7 +22,7 @@ describe("sns derived state store", () => {
     const rootCanisterId = principal(0);
     const rootCanisterId2 = principal(1);
 
-    const anotherDerivedResponse: SnsGetDerivedStateResponse = {
+    const anotherDerivedResponse: SnsSwapDid.GetDerivedStateResponse = {
       ...mockDerivedResponse,
       sns_tokens_per_icp: [4],
     };
@@ -55,7 +55,7 @@ describe("sns derived state store", () => {
   it("should override derived states", () => {
     const rootCanisterId = principal(0);
 
-    const anotherDerivedResponse: SnsGetDerivedStateResponse = {
+    const anotherDerivedResponse: SnsSwapDid.GetDerivedStateResponse = {
       ...mockDerivedResponse,
       sns_tokens_per_icp: [4],
     };

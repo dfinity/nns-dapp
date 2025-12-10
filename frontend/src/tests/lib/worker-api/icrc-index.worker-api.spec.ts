@@ -5,7 +5,7 @@ import { mockIdentity, mockPrincipal } from "$tests/mocks/auth.store.mock";
 import * as dfinityUtils from "@dfinity/utils";
 import {
   IcrcIndexNgCanister,
-  type IcrcIndexNgTransaction,
+  type IcrcIndexNgDid,
 } from "@icp-sdk/canisters/ledger/icrc";
 import { mock } from "vitest-mock-extended";
 
@@ -34,7 +34,7 @@ describe("icrc-index.worker-api", () => {
 
   const transaction = {
     burn: [],
-  } as unknown as IcrcIndexNgTransaction;
+  } as unknown as IcrcIndexNgDid.Transaction;
 
   it("should returns transactions", async () => {
     const id = 1n;

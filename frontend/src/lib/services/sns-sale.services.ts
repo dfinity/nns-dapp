@@ -62,11 +62,7 @@ import {
   TxTooOldError,
   type BlockHeight,
 } from "@icp-sdk/canisters/ledger/icp";
-import type {
-  SnsInvalidUserAmount,
-  SnsRefreshBuyerTokensResponse,
-  SnsSwapTicket,
-} from "@icp-sdk/canisters/sns";
+import type { SnsSwapDid } from "@icp-sdk/canisters/sns";
 import {
   GetOpenTicketErrorType,
   NewSaleTicketResponseErrorType,
@@ -119,12 +115,12 @@ const pollGetOpenTicket = async ({
   identity: Identity;
   certified: boolean;
   maxAttempts?: number;
-}): Promise<SnsSwapTicket | undefined> => {
+}): Promise<SnsSwapDid.Ticket | undefined> => {
   // Reset polling toast
   toastId = undefined;
   try {
     return await poll({
-      fn: (): Promise<SnsSwapTicket | undefined> =>
+      fn: (): Promise<SnsSwapDid.Ticket | undefined> =>
         getOpenTicketApi({
           identity,
           swapCanisterId,
@@ -277,7 +273,7 @@ const handleNewSaleTicketError = ({
       }
       case NewSaleTicketResponseErrorType.TYPE_INVALID_USER_AMOUNT: {
         const { min_amount_icp_e8s_included, max_amount_icp_e8s_included } =
-          newSaleTicketError.invalidUserAmount as SnsInvalidUserAmount;
+          newSaleTicketError.invalidUserAmount as SnsSwapDid.InvalidUserAmount;
         toastsError({
           labelKey: "error__sns.sns_sale_invalid_amount",
           substitutions: {
@@ -323,7 +319,7 @@ const pollNewSaleTicket = async (params: {
   subaccount?: Uint8Array;
 }) =>
   poll({
-    fn: (): Promise<SnsSwapTicket> => newSaleTicketApi(params),
+    fn: (): Promise<SnsSwapDid.Ticket> => newSaleTicketApi(params),
     shouldExit: shoulStopPollingNewTicket,
     millisecondsToWait: WAIT_FOR_TICKET_MILLIS,
     useExponentialBackoff: true,
@@ -403,7 +399,7 @@ export const restoreSnsSaleParticipation = async ({
     certified: true,
   });
 
-  const ticket: SnsSwapTicket | undefined | null =
+  const ticket: SnsSwapDid.Ticket | undefined | null =
     get(snsTicketsStore)[rootCanisterId?.toText()]?.ticket;
 
   // no open tickets
@@ -514,7 +510,7 @@ const pollNotifyParticipation = async ({
     const confirmationText = project && getConditionsToAccept(project.summary);
 
     return await poll({
-      fn: (): Promise<SnsRefreshBuyerTokensResponse> =>
+      fn: (): Promise<SnsSwapDid.RefreshBuyerTokensResponse> =>
         notifyParticipation({
           buyer,
           rootCanisterId,
@@ -573,7 +569,7 @@ const notifyParticipationAndRemoveTicket = async ({
   rootCanisterId: Principal;
   identity: Identity;
   hasTooOldError: boolean;
-  ticket: SnsSwapTicket;
+  ticket: SnsSwapDid.Ticket;
   userCommitment: bigint;
 }): Promise<{ success: boolean }> => {
   try {
@@ -689,7 +685,7 @@ export const participateInSnsSale = async ({
   updateProgress,
   ticket,
 }: ParticipateInSnsSaleParameters & {
-  ticket: SnsSwapTicket;
+  ticket: SnsSwapDid.Ticket;
   swapCanisterId: Principal;
 }): Promise<{
   success: boolean;

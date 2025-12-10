@@ -8,11 +8,11 @@
   } from "$lib/types/sns-neuron-detail.context";
   import { Modal, busy, startBusy, stopBusy } from "@dfinity/gix-components";
   import type { Principal } from "@icp-sdk/core/principal";
-  import type { SnsNeuron } from "@icp-sdk/canisters/sns";
+  import type { SnsGovernanceDid } from "@icp-sdk/canisters/sns";
   import { createEventDispatcher, getContext } from "svelte";
 
   export let rootCanisterId: Principal;
-  export let neuron: SnsNeuron;
+  export let neuron: SnsGovernanceDid.Neuron;
   export let functionId: bigint;
 
   // This mean we can't use this modal outside of the neuron detail page.
